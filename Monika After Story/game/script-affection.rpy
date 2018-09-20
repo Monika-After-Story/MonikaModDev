@@ -301,6 +301,9 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_YES = mas_layout.QUIT_YES_DIS
+        if persistent._mas_acs_enable_promisering:
+            renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
+            persistent._mas_acs_enable_promisering = False
 
 
     def _upsetToNormal():
@@ -876,7 +879,7 @@ init 15 python in mas_affection:
         if len(quip) > 0:
             return quip
         return "What would you like to play?"
-        
+
 
 
 default persistent._mas_long_absence = False

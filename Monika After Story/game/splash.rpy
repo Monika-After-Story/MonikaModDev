@@ -29,8 +29,8 @@ init python:
     "I have granted kids to hell",
     "PM died for this.",
     "It was only partially your fault.",
-    "This game is not suitable for children\nor those who are easily dismembered.",
-    "Don't forget to backup Monika's character file."
+    "This game is not suitable for children\nor those who are easily dismembered."
+#    "Don't forget to backup Monika's character file."
     ]
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
@@ -320,9 +320,12 @@ label quit:
             persistent.sessions["last_session_end"] 
             - persistent.sessions["current_session_start"]
         )
-        # gotta prevent negative time addons
-        if today_time > datetime.timedelta(0):
-            persistent.sessions['total_playtime'] += today_time
+        new_time = today_time + persistent.sessions["total_playtime"]
+
+        # prevent out of boudns time
+        if datetime.timedelta(0) < new_time <= mas_maxPlaytime():
+            persistent.sessions['total_playtime'] = new_time
+
 
         # set the monika size
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])

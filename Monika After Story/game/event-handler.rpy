@@ -88,6 +88,7 @@ init 850 python:
     mas_all_ev_db.update(store.mas_moods.mood_db)
     mas_all_ev_db.update(store.mas_stories.story_database)
     mas_all_ev_db.update(store.mas_compliments.compliment_database)
+    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
 
     def mas_getEV(ev_label):
         """
@@ -515,18 +516,10 @@ init -1 python in evhand:
     # restart topic blacklist
     RESTART_BLKLST = [
         "mas_crashed_start",
-        "monika_affection_nickname"
+        "monika_affection_nickname",
+        "mas_coffee_finished_brewing",
+        "mas_coffee_finished_drinking"
     ]
-
-    #### delayed action maps
-    # how this works:
-    #   add a label that should have a delayed action as keys
-    #   values should consist of tuple:
-    #       [0] -> conditional as string for this action to pass
-    #       [1] -> action constant for what should be done (EV_ACTION)
-    DELAYED_ACTION_MAP = {
-        
-    }
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -1242,11 +1235,12 @@ label call_next_event:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
-
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
+
+        # return to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
         $ mas_DropShield_dlg()
 

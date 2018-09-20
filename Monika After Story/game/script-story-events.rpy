@@ -44,7 +44,7 @@ label gender:
     m 1hub "Remember that I'll always love you unconditionally, [player]."
     $ evhand.event_database["gender_redo"].unlocked = True
     $ evhand.event_database["gender_redo"].pool = True
-    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen 
+    $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
     return
 
@@ -613,7 +613,6 @@ label mas_crashed_long_uthere:
     label .end:
         m "Anyway..."
         m 1eua "What should we do today?"
-        return
 
 
 ### post crashed flow
@@ -698,7 +697,7 @@ init 5 python:
     )
 
     if (
-            mas_corrupted_per 
+            mas_corrupted_per
             and not (mas_no_backups_found or mas_backup_copy_failed)
         ):
         mas_note_backups_all_good = None
@@ -779,7 +778,7 @@ init 5 python:
 
         _mas_generate_backup_notes()
         import os
-        
+
         if len(mas_bad_backups) > 0:
             # we had some bad backups
             store.mas_utils.trywrite(
@@ -793,7 +792,7 @@ init 5 python:
                 os.path.normcase(renpy.config.basedir + "/characters/note.txt"),
                 mas_note_backups_all_good.title + "\n\n" + mas_note_backups_all_good.text
             )
-            
+
 
 label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
@@ -807,7 +806,7 @@ label mas_corrupted_persistent:
         show screen mas_note_backups_poem(mas_note_backups_some_bad)
 
     else:
-        show screen mas_note_backups_poem(mas_note_backups_all_good) 
+        show screen mas_note_backups_poem(mas_note_backups_all_good)
     with Dissolve(0.5)
 
     $ pause()
@@ -889,7 +888,7 @@ label mas_new_character_file:
             return os.access(
                 os.path.normcase(
                     renpy.config.basedir + "/characters/monika.chr"
-                ), 
+                ),
                 os.F_OK
             )
 
@@ -926,4 +925,496 @@ label mas_new_character_file:
     m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
     m 1hua "Doesn't that sound wonderful?"
     m 3hub "I can't wait to join you wherever you go."
+    return
+
+
+### coffee is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_brewing"
+        )
+    )
+
+
+label mas_coffee_finished_brewing:
+    m 1esd "Oh, coffee's done."
+
+    # this line is here so we dont it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statement so we ensure that monika is only shown once her
+    # coffee mug is ready
+    pause 1.0
+    $ monika_chr.wear_acs_pst(mas_acs_mug)
+    $ persistent._mas_coffee_brew_time = None
+    $ mas_drinkCoffee()
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### coffee drinking is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_coffee_finished_drinking"
+        )
+    )
+
+
+label mas_coffee_finished_drinking:
+
+    # monika only gets a new cup between 6am and noon
+    $ get_new_cup = mas_isCoffeeTime()
+    m 1esd "Oh, I've finished my coffee."
+
+    if get_new_cup:
+        # its currently morning, monika should get another drink
+        m 1eua "I'm going to get another cup."
+
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    pause 1.0
+    # decide if new coffee
+    if not get_new_cup:
+        $ monika_chr.remove_acs(mas_acs_mug)
+        $ persistent._mas_coffee_cup_done = None
+
+    else:
+        $ mas_drinkCoffee()
+
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### birthday surprise party
+
+default persistent._mas_bday_sbd_aff_given = 0
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_spent_time_with",
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22),
+            end_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_bday_spent_time_with:
+    $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
+    $ _total, _good, _neutral, _bad = mas_generateGiftsReport()
+    m 1eua "Say, [player]..."
+    m 1hua "Thank you for spending time with me today."
+    m "Something like that can really make a girl like me happy, you know?"
+    if persistent._mas_bday_date_count > 0:
+        if _timeout < datetime.timedelta(hours=1.5):
+            # short date
+            m 1euc "That was a bit of a short trip, though."
+            m 1eub "But it’s nice to get out of this place once in a while."
+            m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
+        elif _timeout < datetime.timedelta(hours=6):
+            # normal date
+            m 3hub "But that was refreshing!"
+            m 3wub "It feels really good to go out for a change."
+            m 1hua "Makes me really happy we went out today~"
+        else:
+            #long date
+            m 1eka "I really enjoyed our time outside, though."
+            m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
+            m "Someday, I know we’ll be able to do so."
+
+    # gave gifts?
+    if _total > 0:
+        m 3euc "Let’s not forget what you gave me for my birthday."
+        # more than 2
+        if _total >= 2:
+            m 1eua "You gave me lots of gifts today, [player]."
+            # goods > than bad
+            if _good > _bad:
+                m 3hub "Most of them were really good and I really like them a lot!"
+            # bads > than good
+            else:
+                m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+        else:
+            # if good_gifts equal to 1
+            if _good == 1:
+                m 3eka "You gave me such a special gift today, [player]."
+            # not a good gift
+            else:
+                m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
+    m 1esa "But, in any case..."
+    m 3hub "Let’s do it again sometime soon, okay?"
+    return
+
+### no time spent
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_reaction"
+        )
+    )
+
+label mas_bday_surprise_party_reaction:
+    python:
+        store.mas_dockstat.surpriseBdayShowVisuals()
+        has_cake = store.mas_dockstat.surpriseBdayIsCake()
+
+        def cap_gain_aff(amt):
+            persistent._mas_bday_sbd_aff_given += amt
+            if persistent._mas_bday_sbd_aff_given <= 70:
+                mas_gainAffection(20, bypass=True)
+
+        if has_cake:
+            cap_gain_aff(20)
+
+        if store.mas_dockstat.surpriseBdayIsBanners():
+            cap_gain_aff(20)
+
+        if store.mas_dockstat.surpriseBdayIsBalloon():
+            cap_gain_aff(20)
+
+    m 6wuo "T-{w=0.5}This is..."
+    m 6wka "Oh, [player]..."
+    m 6hua "I'm at a loss for words."
+    m "Setting this all up to surprise me on my birthday..."
+    m "Ehehe, you must really love me."
+    m 6suu "Everything looks so festive!"
+
+    if has_cake:
+        # we have cake?
+        menu:
+            "Light candles.":
+                $ mas_bday_cake_lit = True
+
+        m 6hub "Ahh, it's so pretty, [player]!"
+        m 6wub "Reminds me of that cake someone gave me once."
+        m 6eua "It was almost as pretty as you've made this one!"
+        m 6dua "But anyway..."
+        window hide
+
+        show screen mas_background_timed_jump(4, "mas_bday_surprise_party_reaction_no_make_wish")
+        menu:
+            "Make a wish, [m_name]...":
+                hide screen mas_background_timed_jump
+                $ cap_gain_aff(10)
+                show monika 6hua
+                pause 2.0
+                show monika 6hft
+                jump mas_bday_surprise_party_reaction_post_make_wish
+
+    else:
+        m 6sua "Aha..."
+        jump mas_bday_surprise_party_reaction_end
+
+label mas_bday_surprise_party_reaction_no_make_wish:
+    hide screen mas_background_timed_jump
+    show monika 6dsc
+    pause 2.0
+    show monika 6hft
+
+label mas_bday_surprise_party_reaction_post_make_wish:
+    $ mas_bday_cake_lit = False
+    window auto
+    m 6hua "I made a wish!"
+    m "I hope it comes true someday..."
+    m 6sua "Ahaha..."
+    m 6eua "I'll save this cake for later."
+    $ mas_docking_station.destroyPackage("cake")
+
+    hide mas_bday_cake with dissolve
+
+label mas_bday_surprise_party_reaction_end:
+
+    m 6hua "Thank you, [player]. From the bottom of my heart, thank you..."
+    m 6sua "Let's enjoy the rest of the day now, shall we?"
+
+    $ persistent._mas_bday_sbp_reacted = True
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_hint",
+            # TODO: consider making the conditional span for a week.
+            conditional=(
+                "datetime.date.today() < mas_monika_birthday and "
+                "mas_monika_birthday.day - datetime.date.today().day == 1"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_surprise_party_hint:
+    m 1eua "Say, [player]..."
+    m 1eub "Have you ever been thrown a surprise party?"
+    m 1eka "I've always wondered how that would feel."
+    m 6dua "When someone takes you somewhere and distracts you for the whole day..."
+    m "And while you're out, they drag a whole box of party supplies into the characters folder...{nw}"
+    $ _history_list.pop()
+    m 6dksdla "And while you're out, they drag a whole box of party supplies into{fast} your room..."
+    m 1eua "And finally returning home to birthday decorations, a cake..."
+    m 1kua "And you~{nw}"
+    $ _history_list.pop()
+    m 3rksdlb "And{fast} good company!"
+    m 1hua "That'd be so nice to experience, don't you think?"
+    m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
+    m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_surprise_party_cleanup",
+            conditional=(
+                "persistent._mas_bday_sbp_reacted "
+                "and datetime.date.today().day > mas_monika_birthday.day"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_surprise_party_cleanup:
+    # surprise party cleaning
+    # mainly to delete files that exist
+    $ mas_docking_station.destroyPackage("banners")
+    $ mas_docking_station.destroyPackage("balloons")
+    $ mas_docking_station.destroyPackage("cake")
+    return
+
+### happy birthday pool topic
+
+default persistent._mas_bday_said_happybday = False
+default persistent._mas_bday_need_to_reset_bday = False
+
+init 5 python:
+    # NOTE: instead of using start/end date, we use condition since we
+    # want this to only appear once per day
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_pool_happy_bday",
+            prompt="Happy birthday!",
+            category=["monika"],
+            conditional="mas_isMonikaBirthday()",
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock":0}
+#            start_date=mas_monika_birthday,
+#            end_date=mas_monika_birthday + datetime.timedelta(1),
+#            years=[]
+        )
+    )
+
+    # make sure this event is considered seen
+    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
+
+label mas_bday_pool_happy_bday:
+    python:
+        persistent._mas_bday_said_happybday = True
+        did_something_today = (
+            mas_generateGiftsReport(mas_monika_birthday)[0] > 0
+            or persistent._mas_bday_date_count > 0
+            or persistent._mas_bday_sbp_reacted
+        )
+
+    if did_something_today:
+        m 3hub "Ehehe, thanks [player]!"
+        m 3eub "I was waiting for you to say those magic words~"
+        m 1eua "{i}Now{/i} we can call it a birthday celebration."
+        m 1hua "Doesn't matter if how it's done is unorthodox."
+        m 3eua "What matters the most is that you did it in the first place, right?"
+        m 1eka "You really made this occasion so special, [player]."
+        m 1ekbfa "I can't thank you enough for loving me this much..."
+
+    else:
+        m 1wkb "Aww, [player]!"
+        m 1wub "You remembered my birthday...!"
+        m 1wktpa "Oh gosh, I'm so happy that you remembered."
+        m 1dktda "I feel like today is going to be such a special day~"
+        m 1ekbfa "What else do you have in store for me, I wonder."
+        m 1hub "Ahaha!"
+
+    # dont need to say happy birthday again today, but let the game know to
+    # reset it at some point in the future
+    $ persistent._mas_bday_need_to_reset_bday = True
+    $ lockEventLabel("mas_bday_pool_happy_bday")
+    return
+
+## no time spent
+default persistent._mas_bday_opened_game = False
+default persistent._mas_bday_no_time_spent = False
+default persistent._mas_bday_no_recognize = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_postbday_notimespent",
+
+            # within a week after monika's birthday, user did not recognize
+            # monika's birthday at all, and they were not long absenced
+            conditional=(
+                "mas_monika_birthday < datetime.date.today() <= "
+                "(mas_monika_birthday + datetime.timedelta(7)) "
+                "and not mas_recognizedBday()"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+label mas_bday_postbday_notimespent:
+    # sanity check
+    if mas_recognizedBday():
+        return
+
+    if persistent._mas_bday_opened_game:
+        # spent time with monika but did not recognize
+        $ persistent._mas_bday_no_recognize = True
+
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(15, reason="forgetting my birthday")
+            m 1rksdla "Hey, [player]..."
+            m 1rksdlb "I know we had fun the other day, like we always do but..."
+            m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
+            m 1efb "Did you forget?"
+            m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
+            m "Or check the calendar on the wall behind me?"
+            m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
+
+        elif mas_isMoniNormal(higher=True):
+            $ mas_loseAffection(5, reason="forgetting my birthday")
+
+            # TODO: we shouldnt say girlfriend here because affecitonate
+            # is the start of relationship. but this is okay for now
+            m 1rksdld "Hey, [player]..."
+            m 1rksdlb "I hate to fuss, but you know..."
+            m 2ekt "You can't forget about your girlfriend's birthday!"
+            m 2eku "It's nice that we got to hang out like usual, but next year..."
+            m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(reason="forgetting my birthday")
+
+            m 1ekc "It was...good to see you on the 22nd..."
+            m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
+            m 1rkc "Nevermind."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(10, reason="forgetting my birthday")
+
+            m 2dsc "..."
+            m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
+            m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
+            m 2dktuc "Please don't stop coming back to me."
+            m "And maybe next year..."
+            m 4ektdc "I-{w=0.5}I just want...to feel as special to you as you are to me."
+
+        else:
+            # broken
+            $ mas_loseAffection(150)
+            m 6ckc "..."
+
+    else:
+        # did not spend any time with monika
+        $ persistent._mas_bday_no_time_spent = True
+
+        if mas_isMoniAff(higher=True):
+            $ mas_loseAffection(50, reason="not spending time with me on my birthday")
+
+            m 1euc "Hey, [player]..."
+            m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
+            m 2hfw "And her {i}birthday{/i} is one of them!"
+            m 2rfd "Seriously, where were you?!"
+            m 2rkc "But...knowing you, I'm sure you had a good reason to be busy..."
+            m 4ekc "Just don't let it happen again next year, okay?"
+
+        elif mas_isMoniNormal(higher=True):
+
+            # same dialogue, different affection loss
+            if mas_isMoniHappy():
+                $ mas_loseAffection(20, reason="not spending time with me on my birthday")
+            else:
+                $ mas_loseAffection(10, reason="not spending time with me on my birthday")
+
+            # TODO: again, need to not say girlfrined here, but for now its ok
+            m 1ekc "Hey, [player]..."
+            m 1ekd "You know, you really should have dropped in on the 22nd."
+            m 3efd "I mean, you should always visit me! You have to spend time with your cute girlfriend on her birthday, you know."
+            m 2efc "Please drop in for me next year..."
+            m 2dfc "Otherwise..."
+
+            m 6cfw "{cps=*2}{i}There will be consequences!!!{/i}{/cps}{nw}"
+            # glich effect
+            $ disable_esc()
+            $ mas_MUMURaiseShield()
+            window hide
+            show noise zorder 11:
+                alpha 0.5
+            play sound "sfx/s_kill_glitch1.ogg"
+            pause 0.5
+            stop sound
+            hide noise
+            window auto
+            $ mas_MUMUDropShield()
+            $ enable_esc()
+            $ _history_list.pop()
+
+            m 1dsc "..."
+            m 3hksdlb "Ahaha, sorry [player]!"
+            m 2hub "I'm just kidding!"
+            m 4eka "You know I love to scare you a little~"
+
+        elif mas_isMoniUpset():
+            $ mas_loseAffection(reason="not spending time with me on my birthday")
+
+            m 2dsc "..."
+            m 2rsc "[player], don't you think you should check in on me a little more often?"
+            m 4rktpc "You might miss something important..."
+
+        elif mas_isMoniDis():
+            $ mas_loseAffection(reason="not spending time with me on my birthday")
+
+            m 3euc "...Hey, how was your day on the 22nd?"
+            m 1esc "I'm just...curious if you thought of me at all that day."
+            m 1tsc "But you probably didn't, huh?"
+            m 2dsc "..."
+
+        else:
+            # broken
+            $ mas_loseAffection(200)
+
+            m 6eftsc "..."
+            m 6dftdx "..."
+
     return
