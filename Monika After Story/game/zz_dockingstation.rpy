@@ -2142,7 +2142,11 @@ label mas_dockstat_found_monika:
 
     # select the greeting we want
     python:
-        if not persistent._mas_bday_sbp_reacted and mas_isMonikaBirthday():
+        if (
+                (store.mas_dockstat.retsbp_status 
+                    & store.mas_dockstat.MAS_SBP_NONE) == 0
+                and not persistent._mas_bday_sbp_reacted
+            ):
             selected_greeting = "mas_bday_surprise_party_reaction"
 
         else:
