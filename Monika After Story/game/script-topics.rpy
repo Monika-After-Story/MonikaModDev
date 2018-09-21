@@ -2034,7 +2034,7 @@ label monika_meta:
     m 3esa "By the way, what do you think the moral of this story is?"
     m 1esa "Do you want to figure it out for yourself?"
     m 1euc "Because if you asked me..."
-    m 3hua "It would be, `Don't ignore the pretty and charming side character!`"
+    m 3hua "It'd be, 'Don't ignore the pretty and charming side character!'"
     m 1hub "Ahaha!"
     return
 
@@ -2734,7 +2734,7 @@ init 5 python:
 
 label monika_waifus:
     m 1lsc "I've never understood the appeal of dating sims or romance novels, to tell you the truth."
-    m 3euc "You have a bunch of quirky girls that would seem very weird if they were real,"
+    m 3euc "You have a bunch of quirky girls that would seem very weird if they were real."
     m "A blank slate of a male protagonist with nothing interesting about them..."
     m 3esc "And then they fall in love with each other, sometimes for no reason at all!"
     m "I hope that's not what you expected to find in the Literature Club."
@@ -4042,7 +4042,7 @@ label monika_penname:
                             elif not lowerpen:
                                 m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
                             elif lowerpen =="nevermind":
-                                m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."
+                                m 2eka "Aww. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
                             else:
                                 m 1hua "That's a lovely pen name!"
@@ -4050,7 +4050,7 @@ label monika_penname:
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
-                        m 2eka "Aww. Well, I hope you feel enough to comfortable to tell me someday."
+                        m 2eka "Aww. Well, I hope you feel comfortable enough to tell me someday."
             "No":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
@@ -4738,7 +4738,7 @@ label monika_confidence_2:
     m 1eua "I firmly believe being able to take initiative in situations is a very important skill to have."
     m "That's something that I, personally, find very comforting."
     m 1hua "I've broken it down into a three-step process that can be applied to anyone!"
-    m 3rksdla "It's still work in progress, however, so take it with a grain of salt."
+    m 3rksdla "It's still a work in progress, however, so take it with a grain of salt."
     m 3hua "Step one!"
     m 1eua "Create a plan that {i}you{/i} can and will follow that aligns with your personal goals and soon-to-be achievements."
     m 3hua "Step two!"
@@ -7116,7 +7116,7 @@ init 5 python:
     )
 
 label monika_shipping:
-    m 3eua "Hey, [player].{w} Have you ever heard of 'shipping'?"
+    m 3eua "Hey, [player].{w} Have you ever heard of 'shipping?'"
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
     m 1eka "I think most people do it subconciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
@@ -7637,7 +7637,7 @@ label monika_fun_facts_open:
     else:
         m 1eua "Up for another fun fact, [player]?"
         if persistent._mas_funfactfun:
-           m 3hua "Thae last one was pretty interesting after all!"
+           m 3hua "That last one was pretty interesting after all!"
         else:
            m 2rksdlb "I know the last one wasn't great... but I'm sure this next one will be better."
     m 2dsc "Now, let's see..."
@@ -7883,7 +7883,7 @@ label monika_fun_facts_18:
     m 1hua "Ready for an interesting one, [player]?"
     m 3eua "The brain is a fickle thing..."
     m 3eub "Its way of composing and archiving information is very unique."
-    m "Naturally it differs from person to person but but reading slowly like we're taught is usually less effective than going at at a faster pace."
+    m "Naturally it differs from person to person but reading slowly like we're taught is usually less effective than going at a faster pace."
     m 1tku "Our brains process information very rapidly and loves predictability in in our language."
     m 3tub "For example, in this sentence, by the the time you are done reading you will have already skipped over the double 'the'."
     m 1tfu "..."
