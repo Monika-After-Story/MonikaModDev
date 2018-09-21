@@ -671,7 +671,7 @@ label bye_going_somewhere:
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
-            m 2hub "Oh , good! Let me finish getting ready."
+            m 2hub "Oh, good! Let me finish getting ready."
 
 
 label bye_going_somewhere_rtg:
