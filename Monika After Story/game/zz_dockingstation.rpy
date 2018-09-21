@@ -1,6 +1,6 @@
 # Module that provides an interface for loading / saving files that we interact with
 #
-# NOTE: this is meant purely for reading / writing files into base64 with 
+# NOTE: this is meant purely for reading / writing files into base64 with
 #   checksums. If you want readable text files for users, DO NOT USE THIS.
 #
 # NOTE: some clarifications:
@@ -51,7 +51,30 @@ init -900 python in mas_ics:
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof)
     }
-        
+
+    ########################## SURPRISE BDAY PARTY ############################
+    # cake
+    sbp_cake = (
+        "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
+    )
+
+    # banners
+    sbp_banners = (
+        "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
+    )
+
+    # balloons
+    sbp_balloons = (
+        "eda87e74b8dc9d5082a0f2a7d5202dc0e7b96ec36cbaebc98eb046584834b8e9"
+    )
+
+    # surprise bday party dicts to map filenames to checksums
+    sbp_map = {
+        "cake": sbp_cake,
+        "banners": sbp_banners,
+        "balloons": sbp_balloons
+    }
+
     ###########################################################################
 
 
@@ -85,6 +108,7 @@ init -45 python:
         # 1 - docking station as str
         # 2 - exception (if applicable)
         ERR = "[ERROR] {0} | {1} | {2}\n"
+        ERR_DEL = "Failure removing package '{0}'."
         ERR_GET = "Failure getting package '{0}'."
         ERR_OPEN = "Failure opening package '{0}'."
         ERR_READ = "Failure reading package '{0}'."
@@ -113,7 +137,8 @@ init -45 python:
 
             IN:
                 station - the path to the folder this docking station interacts
-                    with. (absolute path) 
+                    with. (absolute path), will try to create the folder if it
+                    doesn't exist. Exceptions will be logged.
                     NOTE: END WITH '/' please
                     (Default: DEF_STATION_PATH)
             """
@@ -125,6 +150,17 @@ init -45 python:
 
             self.station = os.path.normcase(station)
 
+            if not os.path.isdir(self.station):
+                try:
+                    os.makedirs(self.station)
+                except Exception as e:
+                   mas_utils.writelog(self.ERR.format(
+                       self.ERR_CREATE.format(self.station),
+                       str(self),
+                       repr(e)
+                   ))
+
+
 
         def __str__(self):
             """
@@ -132,7 +168,7 @@ init -45 python:
             """
             return "DS: [{0}]".format(self.station)
 
-       
+
         def checkForPackage(self, package_name, check_read=True):
             """
             Checks if a package exists in the docking station
@@ -183,6 +219,58 @@ init -45 python:
             return pkg_slip
 
 
+        def destroyPackage(self, package_name):
+            """
+            Attempts to destroy the given package in the docking station.
+
+            NOTE: exceptions are logged
+
+            IN:
+                package_name - name of the package to delete
+
+            RETURNS:
+                True if package no exist or was deleted. False otherwise
+            """
+            if not self.checkForPackage(package_name, False):
+                return True
+
+            # otherwise we have a package
+            try:
+                os.remove(self._trackPackage(package_name))
+                return True
+
+            except Exception as e:
+                mas_utils.writelog(self.ERR.format(
+                    self.ERR_DEL.format(package_name),
+                    str(self),
+                    repr(e)
+                ))
+                return False
+
+
+        def getPackageList(self, ext_filter=""):
+            """
+            Gets a list of the packages in the docking station.
+
+            IN:
+                ext_filter - extension filter to use when getting list.
+                    the '.' is added if not already given.
+                    If not given, we get all the packages
+                    (Default: "")
+
+            RETURNS: list of packages
+            """
+            # correct filter if needed
+            if len(ext_filter) > 0 and not ext_filter.startswith("."):
+                ext_filter = "." + ext_filter
+
+            return [
+                package
+                for package in os.listdir(self.station)
+                if package.endswith(ext_filter)
+            ]
+
+
         def getPackage(self, package_name):
             """
             Gets a package from the docking station
@@ -211,7 +299,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_OPEN.format(package_name),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
                 if package is not None:
                     package.close()
@@ -269,10 +357,10 @@ init -45 python:
             return self.base64.b64encode(os.urandom(amount))[:amount]
 
 
-        def sendPackage(self, 
-                package_name, 
-                package, 
-                unpacked=False, 
+        def sendPackage(self,
+                package_name,
+                package,
+                unpacked=False,
                 pkg_slip=False
             ):
             """
@@ -288,7 +376,7 @@ init -45 python:
                     False means that it is in base64
                     (Default: False)
                 pkg_slip - True means we should generate a sha256 checksum for
-                    the package and return that 
+                    the package and return that
                     (Default: False)
 
             RETURNS:
@@ -318,7 +406,7 @@ init -45 python:
                     str(e)
                 ))
                 return False
-                
+
             finally:
                 # always close the mailbox
                 if mailbox is not None:
@@ -327,7 +415,7 @@ init -45 python:
             return False
 
 
-        def signForPackage(self, 
+        def signForPackage(self,
                 package_name,
                 pkg_slip,
                 keep_contents=False,
@@ -395,7 +483,7 @@ init -45 python:
                 if keep_contents:
                     return contents
 
-                ### or discard the results 
+                ### or discard the results
                 if contents is not None:
                     contents.close()
 
@@ -421,10 +509,10 @@ init -45 python:
             return 0
 
 
-        def smartUnpack(self, 
-                    package_name, 
-                    pkg_slip, 
-                    contents=None, 
+        def smartUnpack(self,
+                    package_name,
+                    pkg_slip,
+                    contents=None,
                     lines=0,
                     b64=True,
                     bs=None
@@ -586,7 +674,7 @@ init -45 python:
 
             RETURNS:
                 StringIO buffer containing the package decoded
-                Or None if pkg_slip checksum was passed in and the given 
+                Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
             contents = None
@@ -610,7 +698,7 @@ init -45 python:
 
             except Exception as e:
                 # if we get an exception, close the contents buffer and raise
-                # the exception 
+                # the exception
                 if contents is not None:
                     contents.close()
                 raise e
@@ -701,7 +789,7 @@ init -45 python:
             _contents = MASDockingStation._blockiter(contents, bs)
 
             if pkg_slip and pack:
-                # encode the data, then checksum the base64, then write to 
+                # encode the data, then checksum the base64, then write to
                 # output
                 checklist = self.hashlib.sha256()
 
@@ -747,7 +835,7 @@ init -45 python:
             IN:
                 box - file descriptor to read data from
                 contents - file descriptor to write data to
-                unpack - if True, decode input data from base64 prior to 
+                unpack - if True, decode input data from base64 prior to
                     writing output data
                     (Default: True)
                 pkg_slip - if True, genereate a checksum of the data.
@@ -822,7 +910,7 @@ init -45 python:
                 mas_utils.writelog(self.ERR.format(
                     self.ERR_GET.format(package_path),
                     str(self),
-                    str(e)
+                    repr(e)
                 ))
 
                 # in error case, assume failure
@@ -887,6 +975,17 @@ default persistent._mas_dockstat_going_to_leave = False
 # NOTE: do NOT set this directly. Use the helper functions
 default persistent._mas_dockstat_moni_size = 0
 
+default persistent._mas_bday_sbp_reacted = False
+# True means we have reacted to the surprise birthday party.
+# NOTE: we need to consider how we want to do this in future bdays. probably
+# may do historical when we can
+
+# this will act historial until we have better data poitns
+default persistent._mas_bday_sbp_found_cake = False
+default persistent._mas_bday_sbp_found_banners = False
+default persistent._mas_bday_sbp_found_balloons = False
+
+
 init -500 python in mas_dockstat:
     # blocksize is relatively constant
     blocksize = 4 * (1024**2)
@@ -908,6 +1007,21 @@ init -500 python in mas_dockstat:
 
     # Monika data is in persitent form
     MAS_PKG_DP = 16
+
+    ## surprise party constants for the state of the surprise party
+    # bit based
+
+    MAS_SBP_NONE = 1
+    # no surprise party files
+
+    MAS_SBP_CAKE = 2
+    # cake was found
+
+    MAS_SBP_BANR = 4
+    # banner was found
+
+    MAS_SBP_BLON = 8
+    # balloon was found
 
 init python in mas_dockstat:
     import store
@@ -952,12 +1066,13 @@ init python in mas_dockstat:
 
 
 init 200 python in mas_dockstat:
-    # special store 
+    # special store
     # lets use this store to handle generation of docking station files
     import store
     import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
+    import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
     import os
@@ -968,6 +1083,9 @@ init 200 python in mas_dockstat:
     # we set these during init phase if we found a monika
     retmoni_status = None
     retmoni_data = None
+
+    # and these are set for bday related stuff
+    retsbp_status = None
 
 
     def _buildMetaDataList(_outbuffer):
@@ -984,7 +1102,7 @@ init 200 python in mas_dockstat:
         num_f = "{:6f}"
         first_sesh = ""
         affection_val = ""
-       
+
         # metadata parsing
         if store.persistent.sessions is not None:
             first_sesh_dt = store.persistent.sessions.get("first_session",None)
@@ -999,7 +1117,7 @@ init 200 python in mas_dockstat:
 
         if store.persistent._mas_affection is not None:
             _affection = store.persistent._mas_affection.get("affection", None)
-            
+
             if _affection is not None:
                 affection_val = num_f.format(_affection)
 
@@ -1017,7 +1135,7 @@ init 200 python in mas_dockstat:
     def _buildMetaDataPer(_outbuffer):
         """
         Writes out the persistent's data into the given buffer
-        
+
         Exceptions are logged
 
         OUT:
@@ -1033,12 +1151,202 @@ init 200 python in mas_dockstat:
             _outbuffer.write(cPickle.dumps(store.persistent))
             _outbuffer.write(END_DELIM)
             return True
-                
+
         except Exception as e:
             mas_utils.writelog(
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
             )
             return False
+
+
+    def packageCheck(
+            dockstat,
+            pkg_name,
+            pkg_slip,
+            on_succ,
+            on_fail,
+            sign=True
+        ):
+        """
+        Checks for existence of a package that matches the pkg name and slip.
+
+        This acts as a wrapper around the signForPackage that can encapsulate
+        return values with different values.
+
+        Success is when signForPackage returns 1. All other values are
+        considered failures.
+
+        NOTE: if sign is False, then we use createPackageSlip + getPackage
+        instead. use this if you don't want to delete the package once you
+        have checked them in.
+
+        IN:
+            dockstat - docking station to check packag ein
+            pkg_name - name of the package to check
+            pkg_slip - checksum of this package
+            on_succ - value to return on successful package check
+            on_fail - value to return on failed package check
+            sign - True to use signForPackage (aka delete after checking),
+                False uses getPackage + createPackageSlip (aka no delete after
+                checking)
+                (Default: True)
+        """
+        if sign:
+            if dockstat.signForPackage(pkg_name, pkg_slip, bs=b64_blocksize) == 1:
+                return on_succ
+
+        else:
+            # use getPackage and createPackageSlip
+            package = dockstat.getPackage(pkg_name)
+            if package is None:
+                return on_fail
+
+            try:
+                read_slip = dockstat.createPackageSlip(package, b64_blocksize)
+
+                if read_slip == pkg_slip:
+                    return on_succ
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[WARN]: package slip fail? {0} | {1}\n".format(
+                        pkg_name,
+                        repr(e)
+                    )
+                )
+
+            finally:
+                if package is not None:
+                    package.close()
+
+        return on_fail
+
+
+    def surpriseBdayCheck(dockstat):
+        """
+        Checks for surprise party files in the given docking station.
+        Returns a bit set of surprise party states
+
+        Also sets the dockstat retsbp status var
+
+        IN:
+            dockstat - the docking station to check surprise party files
+
+        RETURNS:
+            MAS_SBP bit constants
+        """
+        global retsbp_status
+        if not store.mas_isMonikaBirthday():
+            retsbp_status = MAS_SBP_NONE
+            return MAS_SBP_NONE
+
+        ret_val = (
+            packageCheck(
+                dockstat,
+                "cake",
+                mas_ics.sbp_cake,
+                MAS_SBP_CAKE,
+                0,
+                False
+            )
+            | packageCheck(
+                dockstat,
+                "banners",
+                mas_ics.sbp_banners,
+                MAS_SBP_BANR,
+                0,
+                False
+            )
+            | packageCheck(
+                dockstat,
+                "balloons",
+                mas_ics.sbp_balloons,
+                MAS_SBP_BLON,
+                0,
+                False
+            )
+        )
+
+        if ret_val == 0:
+            retsbp_status = MAS_SBP_NONE
+            return MAS_SBP_NONE
+
+        retsbp_status = ret_val
+        return ret_val
+
+
+    def surpriseBdayShowVisuals(_status=None, bday_bypass=False):
+        """
+        Checks status and shows bday visuals if we need to
+
+        IN:
+            _status - status to use when checking. If None, we check status
+                ourselves.
+                (Default: None)
+            bday_bypass - set to True to bypass birthday check
+                (Defalt: False)
+        """
+        if not bday_bypass and not store.mas_isMonikaBirthday():
+            return
+
+        if _status is None:
+            _status = surpriseBdayCheck(store.mas_docking_station)
+
+        if (_status & MAS_SBP_NONE) > 0:
+            surpriseBdayHideVisuals()
+            return
+
+        # otherwise we have visuals to show
+        if (
+                (_status & MAS_SBP_CAKE) > 0
+                and not store.persistent._mas_bday_sbp_reacted
+            ):
+            store.persistent._mas_bday_sbp_found_cake = True
+            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+        else:
+            renpy.hide("mas_bday_cake")
+
+        if (_status & MAS_SBP_BANR) > 0:
+            store.persistent._mas_bday_sbp_found_banners = True
+            renpy.show("mas_bday_banners", zorder=7)
+        else:
+            renpy.hide("mas_bday_banners")
+
+        if (_status & MAS_SBP_BLON) > 0:
+            store.persistent._mas_bday_sbp_found_balloons = True
+            renpy.show("mas_bday_balloons", zorder=8)
+        else:
+            renpy.hide("mas_bday_balloons")
+
+
+    def surpriseBdayHideVisuals():
+        """
+        Hides all visuals for surprise party
+        """
+        renpy.hide("mas_bday_cake")
+        renpy.hide("mas_bday_banners")
+        renpy.hide("mas_bday_balloons")
+
+
+    def surpriseBdayIsCake():
+        """
+        Returns true if cake was found, False otherwise
+        """
+        return (retsbp_status & MAS_SBP_CAKE) > 0
+
+
+    def surpriseBdayIsBanners():
+        """
+        Returns true if banners were found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BANR) > 0
+
+
+    def surpriseBdayIsBalloon():
+        """
+        Returns true if balloon was found, false otherwise
+        """
+        return (retsbp_status & MAS_SBP_BLON) > 0
 
 
     def generateMonika(dockstat):
@@ -1089,7 +1397,7 @@ init 200 python in mas_dockstat:
             ))
             moni_buffer.close()
             return False
-            
+
         finally:
             # always close moni_chr
             if moni_chr is not None:
@@ -1105,7 +1413,7 @@ init 200 python in mas_dockstat:
             # First, lets iterate over the data to figure out how many lines
             # we will need, as well as how large this thing will be
             moni_buffer_iter = store.MASDockingStation._blockiter(
-                moni_buffer, 
+                moni_buffer,
                 blocksize
             )
             lines = 0
@@ -1122,7 +1430,7 @@ init 200 python in mas_dockstat:
             # fill a new buffer with the number of lines and reset it for
             # blocksize iterating
             moni_buffer_iter = store.MASDockingStation._blockiter(
-                moni_buffer, 
+                moni_buffer,
                 blocksize
             )
             moni_tbuffer = fastIO()
@@ -1198,7 +1506,7 @@ init 200 python in mas_dockstat:
                     moni_fbuffer.write(data)
 
             else:
-                # otherwise, we shoudl just write out the last line and 
+                # otherwise, we shoudl just write out the last line and
                 # be done with it
                 data = encoder(_line)
                 checklist.update(data)
@@ -1213,7 +1521,7 @@ init 200 python in mas_dockstat:
             ))
 
             # attempt to delete existing file if its there
-            # NOTE: dont care if it fails, we just want to try it 
+            # NOTE: dont care if it fails, we just want to try it
             try:
                 # NOTE: we do buffer closing here because we need to try
                 # file deletion in here too
@@ -1367,12 +1675,12 @@ init 200 python in mas_dockstat:
             [3]: affection, integer value (dont really rely on this for much)
             [4]: monika's hair setting
             [5]: monika's clothes setting
-            
+
             OR None if general (not item-specific) parse errors occurs)
         """
         try:
             data_list = data_line.split("|")
-            
+
             # now parse what needs to be parsed
             data_list[0] = mas_utils.tryparsedt(data_list[0])
             data_list[3] = mas_utils.tryparseint(data_list[3], 0)
@@ -1415,9 +1723,9 @@ init 200 python in mas_dockstat:
         Selects the correct Return Home greeting.
         Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to 
+        NOTE: this calls mas_getEV, so do NOT run this function prior to
             runtime
-        
+
         IN:
             _type - list of additoinal mas_greetings types to search on
 
@@ -1447,10 +1755,15 @@ init 200 python in mas_dockstat:
         return store.mas_getEV("greeting_returned_home")
 
 
-    def diffCheckTimes():
+    def diffCheckTimes(index=None):
         """
         Returns the difference between the latest checkout and check in times
         We do checkin - checkout.
+
+        IN:
+            index - the index of checkout/checkin to use when diffing
+                If None, we use the latest one
+                (Default: None)
 
         RETURNS: timedelta of the difference between checkin and checkout
         """
@@ -1460,7 +1773,43 @@ init 200 python in mas_dockstat:
         if len(checkin_log) == 0 or len(checkout_log) == 0:
             return datetime.timedelta(0)
 
-        return checkin_log[-1:][0][0] - checkout_log[-1:][0][0]
+        if index is None:
+            index = len(checkout_log)-1
+
+        return checkin_log[index][0] - checkout_log[index][0]
+
+
+    def timeOut(_date):
+        """
+        Given a date, return how long monika has been out
+
+        We assume that checkout logs are the source of truth
+
+        IN:
+            _date - date to check
+        """
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+
+        if len(checkout_log) == 0:
+            return datetime.timedelta(0)
+
+        # we only want the checkout dates for today
+        checkout_indexes = [
+            index
+            for index in range(0, len(checkout_log))
+            if checkout_log[index][0].date() == _date
+        ]
+
+        if len(checkout_indexes) == 0:
+            return datetime.timedelta(0)
+
+        # otherwise we have checkouts today, lets calculat time
+        time_out = datetime.timedelta(0)
+
+        for index in checkout_indexes:
+            time_out += diffCheckTimes(index)
+
+        return time_out
 
 
     # lock stuff needed for the threaded version of generateMonika
@@ -1620,7 +1969,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
     # generate the monika file
 #    $ moni_chksum = store.mas_dockstat.generateMonika(mas_docking_station)
     $ can_moni_leave = moni_chksum and moni_chksum != -1
-     
+
     if can_moni_leave:
         # file successfully made
         # monika can leave
@@ -1673,6 +2022,9 @@ label mas_dockstat_empty_desk:
     $ ed_zorder = MAS_MONIKA_Z - 1
     show emptydesk zorder ed_zorder at i11
 
+    # show birthday visuals?
+    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+
 label mas_dockstat_empty_desk_loop:
 
     python:
@@ -1697,6 +2049,9 @@ label mas_dockstat_empty_desk_loop:
 
             # get result
             moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
+
+            # but check for surprise visuals
+            store.mas_dockstat.surpriseBdayShowVisuals()
 
             if (moni_status & mas_dockstat.MAS_PKG_FO) > 0:
                 # found a different monika, jump to the different monika
@@ -1763,11 +2118,11 @@ label mas_dockstat_different_monika:
     show monika 1ekd zorder MAS_MONIKA_Z at t11
 
     # 1 line of dialgoue before we remove the empty desk
-    m "[player]?" 
+    m "[player]?"
     hide emptydesk
 
     m "Wait, you're not [player]."
-   
+
     # TODO: more dialogue
 
     $ mas_dockstat.retmoni_data = None
@@ -1787,13 +2142,17 @@ label mas_dockstat_found_monika:
 
     # select the greeting we want
     python:
-        selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
-            persistent._mas_greeting_type
-        ).eventlabel
+        if not persistent._mas_bday_sbp_reacted and mas_isMonikaBirthday():
+            selected_greeting = "mas_bday_surprise_party_reaction"
+
+        else:
+            selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
+                persistent._mas_greeting_type
+            ).eventlabel
 
         # reset greeting type
         persistent._mas_greeting_type = None
-        
+
         # removee the monika
         store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
