@@ -57,7 +57,7 @@ init -900 python in mas_ics:
     sbp_cake = (
         "93436e6003cd924f8908e2d7107d4bf356a54e49adc1fe7dc5eec68049ced6cd"
     )
-    
+
     # banners
     sbp_banners = (
         "293247db6985e782f8a6409cc19a806666fe463cede6ce214a3ee15655c25712"
@@ -74,7 +74,7 @@ init -900 python in mas_ics:
         "banners": sbp_banners,
         "balloons": sbp_balloons
     }
-        
+
     ###########################################################################
 
 
@@ -258,7 +258,7 @@ init -45 python:
                     If not given, we get all the packages
                     (Default: "")
 
-            RETURNS: list of packages 
+            RETURNS: list of packages
             """
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
@@ -1010,7 +1010,7 @@ init -500 python in mas_dockstat:
 
     ## surprise party constants for the state of the surprise party
     # bit based
-    
+
     MAS_SBP_NONE = 1
     # no surprise party files
 
@@ -1173,7 +1173,7 @@ init 200 python in mas_dockstat:
         This acts as a wrapper around the signForPackage that can encapsulate
         return values with different values.
 
-        Success is when signForPackage returns 1. All other values are 
+        Success is when signForPackage returns 1. All other values are
         considered failures.
 
         NOTE: if sign is False, then we use createPackageSlip + getPackage
@@ -2021,7 +2021,7 @@ label mas_dockstat_empty_desk:
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
     show emptydesk zorder ed_zorder at i11
-    
+
     # show birthday visuals?
     $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
@@ -2142,9 +2142,9 @@ label mas_dockstat_found_monika:
 
     # select the greeting we want
     python:
-        if not persistent._mas_bday_sbp_reacted:
+        if not persistent._mas_bday_sbp_reacted and mas_isMonikaBirthday():
             selected_greeting = "mas_bday_surprise_party_reaction"
-       
+
         else:
             selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
                 persistent._mas_greeting_type
@@ -2163,7 +2163,3 @@ label mas_dockstat_found_monika:
         startup_check = False
 
     jump ch30_post_greeting_check
-
-
-
-
