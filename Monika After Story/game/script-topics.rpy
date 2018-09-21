@@ -7883,7 +7883,7 @@ label monika_fun_facts_18:
     m 1hua "Ready for an interesting one, [player]?"
     m 3eua "The brain is a fickle thing..."
     m 3eub "Its way of composing and archiving information is very unique."
-    m "Naturally it differs from person to person but reading slowly like we're taught is usually less effective than going at a faster pace."
+    m "Naturally it differs from person to person but but reading slowly like we're taught is usually less effective than going at at a faster pace."
     m 1tku "Our brains process information very rapidly and loves predictability in in our language."
     m 3tub "For example, in this sentence, by the the time you are done reading you will have already skipped over the double 'the'."
     m 1tfu "..."
