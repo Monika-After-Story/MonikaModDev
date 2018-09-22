@@ -1142,6 +1142,13 @@ label ch30_reset:
                 store.mas_sprites.ACS_MAP[acs_name]
             )
 
+    ## accessory hotfixes
+    # mainly to re add accessories that may have been removed for some reason
+    # this is likely to occur in crashes / reloads
+    python:
+        if persistent._mas_acs_enable_promisering:
+            monika_chr.wear_acs_pst(mas_acs_promisering)
+
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
