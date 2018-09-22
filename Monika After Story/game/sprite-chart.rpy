@@ -1829,7 +1829,7 @@ init -2 python:
                 head,
                 left,
                 right,
-                acs_all_list,
+                [], # TODO maybe need a ring in standing mode?
                 single=single
             )
 
