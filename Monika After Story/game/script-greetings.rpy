@@ -1820,7 +1820,7 @@ label greeting_returned_home_bday:
 
         def cap_gain_aff(amount):
             persistent._mas_bday_date_affection_gained += amount
-            if persistent._mas_bday_date_affection_gained < 50:
+            if persistent._mas_bday_date_affection_gained <= 50:
                 mas_gainAffection(amount, bypass=True)
 
 

@@ -1090,7 +1090,7 @@ label mas_bday_surprise_party_reaction:
         def cap_gain_aff(amt):
             persistent._mas_bday_sbd_aff_given += amt
             if persistent._mas_bday_sbd_aff_given <= 70:
-                mas_gainAffection(20, bypass=True)
+                mas_gainAffection(amt, bypass=True)
 
         if has_cake:
             cap_gain_aff(20)
