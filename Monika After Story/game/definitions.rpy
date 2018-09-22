@@ -2939,6 +2939,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_coffee_brew_time = None
         persistent._mas_coffee_cup_done = None
+        removeEventIfExist(brew_ev.eventlabel)
+        removeEventIfExist(drink_ev.eventlabel)
 
 
     def _mas_startupCoffeeLogic():
@@ -2985,6 +2987,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
+                    removeEventIfExist(brew_ev.eventlabel)
                     mas_drinkCoffee(persistent._mas_coffee_brew_time)
 
                     if not still_drink(persistent._mas_coffee_cup_done):
@@ -3004,6 +3007,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_coffee_brew_time = None
+                removeEventIfExist(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_mug):
