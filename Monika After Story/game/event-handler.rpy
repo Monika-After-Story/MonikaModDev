@@ -1324,6 +1324,9 @@ label prompt_menu:
     else: #nevermind
         $_return = None
 
+    if len(persistent.event_list) > 0:
+        $ mas_skip_mid_loop_eval = True
+
     show monika idle at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
