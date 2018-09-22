@@ -1849,7 +1849,7 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 label _first_time_calendar_use:
     $ mas_calRaiseOverlayShield()
-    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
+    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]."
     m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
     show monika 1eua
