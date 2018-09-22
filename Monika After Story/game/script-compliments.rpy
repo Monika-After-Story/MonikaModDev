@@ -518,7 +518,7 @@ init 5 python:
 
 label mas_compliment_bestgirl:
     m 1hua "I love it when you compliment me, [player]!"
-    m 1eua "I think I'm best girl, too!"
+    m 1eua "I think I'm the best girl, too!"
     m 1lfu "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
     m 3tsb "A useless childhood friend who never bothered to confess to you until it was way too late..."
     m "A shy girl who was overdramatic and always taking herself too seriously..."
