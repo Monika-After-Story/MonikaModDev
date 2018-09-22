@@ -2884,7 +2884,7 @@ init 2 python:
             "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
             "> datetime.timedelta(0, {0})"
         ).format(end_brew)
-        brew_ev.action = EV_ACT_PUSH
+        brew_ev.action = EV_ACT_QUEUE
 
 
     def mas_drinkCoffee(_start_time=None):
@@ -2919,7 +2919,7 @@ init 2 python:
             "persistent._mas_coffee_cup_done is not None "
             "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
         )
-        drink_ev.action = EV_ACT_PUSH
+        drink_ev.action = EV_ACT_QUEUE
 
         # increment cup count
         persistent._mas_coffee_cups_drank += 1
