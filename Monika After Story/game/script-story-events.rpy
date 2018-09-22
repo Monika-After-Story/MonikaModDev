@@ -1289,7 +1289,7 @@ init 5 python:
                 "(mas_monika_birthday + datetime.timedelta(7)) "
                 "and not mas_recognizedBday()"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
