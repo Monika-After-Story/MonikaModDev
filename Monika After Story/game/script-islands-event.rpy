@@ -307,7 +307,7 @@ label mas_monika_day3:
     return
 
 label mas_monika_night1:
-    m "You're probably wondering what happend to that orange comet that occassionaly passes by."
+    m "You're probably wondering what happened to that orange comet that occassionaly passes by."
     m "Don't worry, I've dealt with it."
     m "I wouldn't want you to get hurt~"
     return
@@ -331,7 +331,7 @@ label mas_monika_night3:
 
 label mas_monika_daynight1:
     m "Maybe I should add more shrubs and trees."
-    m "Make the islands more prettier you know?"
+    m "Make the islands prettier you know?"
     m "I just have to find the right flowers and foliage to go with it."
     m "Or maybe each island should have its own set of plants so that everything will be different and have variety."
     m "I'm getting excited thinking about it~"
