@@ -1419,24 +1419,23 @@ label mas_bday_postbday_notimespent:
 
     return
     
-default filestruct = None
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_steamInstall_detected",
+            eventlabel="mas_steam_install_detected",
             conditional=(
-                "not renpy.config.basedir.lower().find('steamapps') == -1"
+                "persistent.steam"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
-label mas_steamInstall_detected:
+label mas_steam_install_detected:
     $ filestruct = renpy.config.basedir[renpy.config.basedir.rfind('/') + 1:]
 
     if renpy.seen_label("mas_updater_steam_issue"):
-        m 1ekd "Hey [player], you know how I told you Steam is a meanie and won't let me run the updater?"
+        m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
         m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
 
     else:     
