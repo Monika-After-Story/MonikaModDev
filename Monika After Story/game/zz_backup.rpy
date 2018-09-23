@@ -361,7 +361,7 @@ init -900 python:
 
     
     # run the backup system if persistents arent screwd
-    if not mas_corrupted_per:
+    if not mas_corrupted_per and persistent._mas_moni_ckhsum is None:
         __mas__memoryBackup()
 
 
