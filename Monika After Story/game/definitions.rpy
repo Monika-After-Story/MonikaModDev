@@ -2884,7 +2884,7 @@ init 2 python:
             "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
             "> datetime.timedelta(0, {0})"
         ).format(end_brew)
-        brew_ev.action = EV_ACT_PUSH
+        brew_ev.action = EV_ACT_QUEUE
 
 
     def mas_drinkCoffee(_start_time=None):
@@ -2919,7 +2919,7 @@ init 2 python:
             "persistent._mas_coffee_cup_done is not None "
             "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
         )
-        drink_ev.action = EV_ACT_PUSH
+        drink_ev.action = EV_ACT_QUEUE
 
         # increment cup count
         persistent._mas_coffee_cups_drank += 1
@@ -2939,6 +2939,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_coffee_brew_time = None
         persistent._mas_coffee_cup_done = None
+        removeEventIfExist(brew_ev.eventlabel)
+        removeEventIfExist(drink_ev.eventlabel)
 
 
     def _mas_startupCoffeeLogic():
@@ -2985,6 +2987,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
+                    removeEventIfExist(brew_ev.eventlabel)
                     mas_drinkCoffee(persistent._mas_coffee_brew_time)
 
                     if not still_drink(persistent._mas_coffee_cup_done):
@@ -3004,6 +3007,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_coffee_brew_time = None
+                removeEventIfExist(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_mug):
@@ -4288,7 +4292,6 @@ default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apolo
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
-default persistent._mas_player_bday = None
 default persistent._mas_first_calendar_check = False
 
 # rain
