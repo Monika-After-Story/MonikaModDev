@@ -4292,7 +4292,6 @@ default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apolo
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
-default persistent._mas_player_bday = None
 default persistent._mas_first_calendar_check = False
 
 # rain

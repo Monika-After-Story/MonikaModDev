@@ -899,14 +899,15 @@ label monika_tea:
     m 2eka "I wish she made coffee once in a while!"
     m 3eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
-    m 1eua "I probably could have just changed the script myself."
-    m 1hub "Ahaha!"
-    m "I guess I never really thought of that."
-    m 2eua "Well, there's no sense thinking about it now."
+    
     if persistent._mas_acs_enable_coffee:
         m 1hua "I can just make coffee whenever I want to, thanks to you."
     else:
-        m 5eua "But if you still get to drink coffee, then that makes me a little jealous~"
+        m 1eua "I probably could have just changed the script myself."
+        m 1hub "Ahaha!"
+        m "I guess I never really thought of that."
+        m 2eua "Well, there's no sense thinking about it now."
+        m 5lkc "Maybe if there was a way to get some coffee in here..."
     return
 
 
@@ -5457,7 +5458,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
-    if renpy.seen_label('monika_tea'):
+    if renpy.seen_label('monika_tea') or not persistent._mas_acs_enable_coffee:
         m 3eua "Have you been drinking coffee lately, [player]?"
         m 2tfu "I hope it's not just to make me jealous, ehehe~"
     m 2eua "Coffee is such a nice thing to have when you need a little pep of energy."

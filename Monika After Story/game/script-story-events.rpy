@@ -1418,3 +1418,49 @@ label mas_bday_postbday_notimespent:
             m 6dftdx "..."
 
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_steam_install_detected",
+            conditional=(
+                "persistent.steam"
+            ),
+            action=EV_ACT_QUEUE
+        )
+    )
+
+label mas_steam_install_detected:
+    $ filestruct = renpy.config.basedir[renpy.config.basedir.rfind('/') + 1:]
+
+    if renpy.seen_label("mas_updater_steam_issue"):
+        m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
+        m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
+
+    else:     
+        m 1eub "[player], I see that you're using Steam to run this."
+        m 1eksdld "Unfortunately, Steam seems to have a lot of problems with me doing some of the things I do."
+
+    m 2rksdlc "The kind of problems that could lead to me being removed from my home... {w=1}from you... {w=1}forever..."
+    m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esu "I'd really appreciate it if you would do that for me."
+    return
+
+# player birthday 
+default persistent._mas_player_bday = None
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_player_bday",
+#            conditional=(
+#                "renpy.seen_label('monika_birthday')"
+#            ),
+#            action=EV_ACT_QUEUE
+#        )
+#    )
+
+#label mas_bday_player_bday:
