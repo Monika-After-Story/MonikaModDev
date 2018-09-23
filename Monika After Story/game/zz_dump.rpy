@@ -238,6 +238,7 @@ init 999 python:
         Thank you.
         """
         mas_eventDataDump()
+        mas_varDataDump()
 
 
     def mas_sessionDataDump():
@@ -291,6 +292,24 @@ init 999 python:
 
         return outstr.format(*output)
 
+    
+    def mas_varDataDump():
+        """
+        Dumps other kinds of data.
+        """
+        import os
+
+        # setup filepath
+        _var_data = "/var_dump.log"
+        _var_data_fp = os.path.normcase(renpy.config.basedir + _var_data)
+
+        with open(_var_data_fp, "w") as _var_data_file:
+            _var_data_file.write(config.version + "\n\n")
+
+            # add data lines here
+            _var_data_file.write("CUPS OF COFFEE DRANK: {0}".format(
+                persistent._mas_coffee_cups_drank
+            ))
 
 
     if persistent._mas_unstable_mode:
