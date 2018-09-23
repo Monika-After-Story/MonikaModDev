@@ -1447,3 +1447,20 @@ label mas_steam_install_detected:
     show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esu "I'd really appreciate it if you would do that for me."
     return
+
+# player birthday 
+default persistent._mas_player_bday = None
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_player_bday",
+#            conditional=(
+#                "renpy.seen_label('monika_birthday')"
+#            ),
+#            action=EV_ACT_QUEUE
+#        )
+#    )
+
+#label mas_bday_player_bday:
