@@ -9788,6 +9788,68 @@ image monika 5luu = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5lubfsdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfsdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
 # bored
 image monika 5tsc = DynamicDisplayable(
     mas_drawmonika,
