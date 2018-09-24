@@ -753,7 +753,7 @@ label mas_updater_steam_issue:
     m 1eub "[player]!{w} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on Github.{w} {a=https://github.com/Monika-After-Story/MonikaModDev/releases}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on Github.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
