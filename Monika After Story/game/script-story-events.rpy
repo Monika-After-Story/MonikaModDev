@@ -168,7 +168,10 @@ label preferredname:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:
@@ -241,7 +244,10 @@ label monika_changename:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare_1
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:

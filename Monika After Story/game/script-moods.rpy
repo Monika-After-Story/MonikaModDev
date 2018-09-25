@@ -119,7 +119,7 @@ init 5 python:
 
 label mas_mood_hungry:
     m 3hub "If you're hungry, go get something to eat, silly."
-    if persistent.playername.lower() == "natsuki":
+    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
         m 1hksdlb "I'd hate for you to get like Natsuki did that one time back when we were in the club.{nw}"
         # natsuki hungers easter egg
         call natsuki_name_scare_hungry from _mas_nnsh

@@ -742,7 +742,10 @@ label ch30_autoload:
 
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if persistent.playername.lower() == "yuri":
+    if (
+            persistent.playername.lower() == "yuri"
+            and not persistent._mas_sensitive_mode
+        ):
         call yuri_name_scare from _call_yuri_name_scare
 
     # check persistent to see if player put Monika to sleep correctly
