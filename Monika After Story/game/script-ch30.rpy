@@ -537,6 +537,12 @@ label pick_a_game:
             and not chess_disabled
         )
 
+        # hangman text
+        if persistent._mas_sensitive_mode:
+            _hangman_text = "Word Guesser"
+        else:
+            _hangman_text = "Hangman"
+
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
 
@@ -550,7 +556,7 @@ label pick_a_game:
             if not renpy.seen_label('game_chess'):
                 $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
-        "Hangman" if persistent.game_unlocks['hangman']:
+        "[_hangman_text]" if persistent.game_unlocks['hangman']:
             if not renpy.seen_label("game_hangman"):
                 $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
