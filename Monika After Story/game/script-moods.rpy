@@ -175,7 +175,6 @@ label mas_mood_sad:
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-# TODO: Change 5eub back to 5hubfb in the Major choice when the blush is fixed
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
     m 2b "Was it a major accomplishment, or a minor one?"
@@ -190,7 +189,8 @@ label mas_mood_proud:
             m 1lsbsa "My heart is fluttering just thinking about it!"
             m 1lksdla "Gosh, I'm getting awfully excited about this..."
             m 3hub "It'll be reality someday..."
-            m 5eub "But until then, just know that I'm very proud of you, my love!"
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfb "But until then, just know that I'm very proud of you, my love!"
         "Minor":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -199,7 +199,8 @@ label mas_mood_proud:
             m 2rksdla "They can be challenging to reach on their own."
             m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
             m 4hub "So keep hitting those small goals, [player]!"
-            m 5eub "And remember, I love you, and I'm always cheering you on!"
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfb "And remember, I love you, and I'm always cheering you on!"
 return
 
 init 5 python:
@@ -362,9 +363,33 @@ label mas_mood_lucky:
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-
 label mas_mood_bored:
-    m 1o "Oh, I'm sorry that I'm boring you, [player]."
+    if mas_isMoniAff(higher=True):
+        m 1eka "Oh..."
+        m 3hub "Well, we should do something then!"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1ekc "Do I really bore you that much, [player]?"
+        menu:
+            "No, I'm not bored {i}of you{/i}...":
+                m 1hua "Oh... That's such a relief!"
+                m 1eka "But, if you're bored, we should find something to do then..."
+
+            "Well...":
+                $ mas_loseAffection()
+                m 2ekc "Oh... {w=1}I see."
+                m 2dkc "I didn't realize I was boring you..."
+                m 2eka "I'm sure we can find something to do..."                   
+
+    elif mas_isMoniDis(higher=True):
+        $ mas_loseAffection()
+        m 2lksdlc "I'm sorry that I'm boring you, [player]."
+    
+    else:
+        $ mas_loseAffection()
+        m 6ckc "You know [player], If I make you so miserable all of the time..."
+        m "Maybe you should just go find something else to do."
+        return "quit"
 
     python:
         unlockedgames = [
@@ -376,10 +401,25 @@ label mas_mood_bored:
         gamepicked = renpy.random.choice(unlockedgames)
 
     if gamepicked == "piano":
-        m 1b  "Maybe you could play something for me on the piano?"
-    else:
-        m 3j "Maybe we could play a game of [gamepicked]."
+        if mas_isMoniAff(higher=True):
+            m 3eub "You could play something for me on the piano!"
 
+        elif mas_isMoniNormal(higher=True):
+            m 4eka "Maybe you could play something for me on the piano?"
+
+        elif  mas_isMoniDis(higher=True):
+            m 2rkc "Maybe you could play something on the piano..."        
+
+    else:
+        if mas_isMoniAff(higher=True):
+            m 3eub "We could play a game of [gamepicked]!"
+
+        elif mas_isMoniNormal(higher=True):
+            m 4eka "Maybe we could play a game of [gamepicked]?"
+
+        elif  mas_isMoniDis(higher=True):
+            m 2rkc "Maybe we could play a game of [gamepicked]..."
+        
     m "What do you say, [player]?"
     menu:
         "Yes":
@@ -392,9 +432,26 @@ label mas_mood_bored:
             elif gamepicked == "piano":
                 call mas_piano_start
         "No":
-            m 1ekc "Oh, alright then."
-            m 1eka "Let me know if you want to do something with me, [player]~"
+            if mas_isMoniAff(higher=True):
+                m 1eka "Okay..."
+                if mas_isMoniEnamored(higher=True):
+                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5tsu "We could just stare into each other's eyes a little longer..."
+                    m "We'll never get bored of that~"
+                else: 
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "We could just stare into each other's eyes a little longer..."
+                    m "That will never get boring~"        
+
+            elif mas_isMoniNormal(higher=True):
+                m 1ekc "Oh, that's okay..."
+                m 1eka "Be sure to let me know if you want to do something with me later~"
+
+            elif  mas_isMoniDis(higher=True):
+                m 2ekc "Fine..."
+                m 2dkc "Let me know if you ever actually want to do anything with me."
     return
+
 
 # TODO: dropping year older so we dont have any issues on 922
 #init 5 python:
