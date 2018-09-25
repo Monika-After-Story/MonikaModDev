@@ -566,6 +566,10 @@ python early:
             #       (Default: None )
             #   sensitive - boolean value to match if the event is sensitive
             #       or not
+            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
+            #           if sensitive mode is True.
+            #           AKA: we only filter sensitve topics if sensitve mode is
+            #           enabled.
             #       (Default: None)
             #
             # RETURNS:
@@ -605,7 +609,8 @@ python early:
             if sensitive is None:
                 try:
                     # i have no idea if this is reachable from here
-                    sensitive = persistent._mas_sensitive_mode
+                    if persistent._mas_sensitive_mode:
+                        sensitive = False
                 except:
                     pass
 

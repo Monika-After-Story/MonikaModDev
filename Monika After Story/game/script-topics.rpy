@@ -305,19 +305,24 @@ init 11 python:
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_god',
-                                                            prompt="Thoughts on God",
-                                                            label=None,
-                                                            category=['philosophy'],
-                                                            random=True,
-                                                            unlocked=False,
-                                                            pool=False,
-                                                            conditional=None,
-                                                            action=None,
-                                                            start_date=None,
-                                                            end_date=None,
-                                                            unlock_date=None
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_god',
+            prompt="Thoughts on God",
+            label=None,
+            category=['philosophy'],
+            random=True,
+            unlocked=False,
+            pool=False,
+            conditional=None,
+            action=None,
+            start_date=None,
+            end_date=None,
+            unlock_date=None,
+            sensitive=True
+        )
+    )
 
 label monika_god:
     m 1eua "[player], do you believe in God?"
