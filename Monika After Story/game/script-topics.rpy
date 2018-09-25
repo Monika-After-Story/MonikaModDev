@@ -102,6 +102,8 @@ init -1 python:
         Randomly selects an element from the the given list and pushes the event
         This also removes the element from that list.
 
+        NOTE: this does sensitivy checks
+
         IN:
             sel_list - list to select from
 
@@ -109,7 +111,11 @@ init -1 python:
             persistent.random_seen
         """
         sel_ev = mas_randomSelectAndRemove(sel_list)
+
         if sel_ev:
+            if persistent._mas_sensitive_mode and sel_ev.sensitive:
+                return
+
             pushEvent(sel_ev.eventlabel)
             persistent.random_seen += 1
 
