@@ -4348,6 +4348,10 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+
+# sensitive mode enabler
+default persistent._mas_sensitive_mode = False
+
 init python:
     startup_check = False
     try:
