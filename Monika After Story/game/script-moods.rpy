@@ -407,7 +407,7 @@ label mas_mood_bored:
         elif mas_isMoniNormal(higher=True):
             m 4eka "Maybe you could play something for me on the piano?"
 
-        elif  mas_isMoniDis(higher=True):
+        else:
             m 2rkc "Maybe you could play something on the piano..."        
 
     else:
@@ -417,7 +417,7 @@ label mas_mood_bored:
         elif mas_isMoniNormal(higher=True):
             m 4eka "Maybe we could play a game of [gamepicked]?"
 
-        elif  mas_isMoniDis(higher=True):
+        else:
             m 2rkc "Maybe we could play a game of [gamepicked]..."
         
     m "What do you say, [player]?"
@@ -447,7 +447,7 @@ label mas_mood_bored:
                 m 1ekc "Oh, that's okay..."
                 m 1eka "Be sure to let me know if you want to do something with me later~"
 
-            elif  mas_isMoniDis(higher=True):
+            else:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
     return
