@@ -422,37 +422,56 @@ label monika_selfesteem:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sayori",
+            category=['club members'],
+            prompt="Sayori regrets",
+            random=True
+        )
+    )
 
 label monika_sayori:
     m 2euc "I was thinking about Sayori earlier..."
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
-    m "You're not still hung up over it, right?"
-    m 2wud "...Oh my gosh, I can't believe I just said that."
-    m "That pun was completely unintentional, I swear!"
-    m 2lksdlb "But anyway..."
-    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "If you're comfortable, that is."
-    menu:
-        "Yes.":
-            m "You know how Sayori is really clumsy?"
-            m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
-            m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-            m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-            m 4rksdla "But a few seconds in, she must have changed her mind or something..."
-            m "Because she started clawing at the rope, trying to free herself."
-            m "She must have kept at it all the way until she lost consciousness."
-            m "That's why her fingertips were all bloody, anyway."
-            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-            m "So you can't really fault her for that."
-            m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-            m "It's not healthy to think about the things you could have done differently."
-            m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-            m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-        "No.":
-            m "I understand, [player]."
-    m 2euc "Still, though..."
-    m "I wonder how things would be if you and I just started dating from the get-go?"
+
+    if (
+            not persistent._mas_sensitive_mode 
+            and not renpy.seen_label("monika_sayori")
+        ):
+        m "You're not still hung up over it, right?"
+        m 2wud "...Oh my gosh, I can't believe I just said that."
+        m "That pun was completely unintentional, I swear!"
+        m 2lksdlb "But anyway..."
+
+    if not persistent._mas_sensitive_mode:
+        m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+        menu:
+            m "If you're comfortable, that is."
+            "Yes.":
+                m "You know how Sayori is really clumsy?"
+                m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
+                m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+                m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+                m 4rksdla "But a few seconds in, she must have changed her mind or something..."
+                m "Because she started clawing at the rope, trying to free herself."
+                m "She must have kept at it all the way until she lost consciousness."
+                m "That's why her fingertips were all bloody, anyway."
+                m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+                m "So you can't really fault her for that."
+                m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+                m "It's not healthy to think about the things you could have done differently."
+                m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+                m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+            "No.":
+                m "I understand, [player]."
+        m 2euc "Still, though..."
+    else:
+        m 2ekc "..."
+
+    # TODO: this should be adjusted dialogue based on act
+    m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
     m 1esc "But what's the point when none of it is even real?"
     m 1euc "I mean, it's the same ending either way, right?"
@@ -2868,8 +2887,18 @@ label monika_torment:
     m 3hksdlb "...The answer's not me, by the way."
     return
 
+# TODO: should this be moved to stories? or removed entirely?
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_szs",category=['misc'],prompt="Funeral procession",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_szs",
+            category=['misc'],
+            prompt="Funeral procession",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_szs:
     m 3euc "A woman left the supermarket and ran into a very long funeral procession."
