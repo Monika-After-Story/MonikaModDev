@@ -1018,8 +1018,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
             action=EV_ACT_QUEUE,
-            start_date=datetime.datetime(2018,9,22,22),
-            end_date=datetime.datetime(2018,9,22,23,59),
+            start_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22),
+            end_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59),
             years=[]
         )
     )

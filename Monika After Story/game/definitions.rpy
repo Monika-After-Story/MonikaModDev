@@ -2738,6 +2738,12 @@ init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+    def mas_getNextMonikaBirthday():
+        today = datetime.date.today()
+        if mas_monika_birthday < today:
+            return datetime.date(today.year + 1, 9, 22)
+        return mas_monika_birthday
+
 
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
