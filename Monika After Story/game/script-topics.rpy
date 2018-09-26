@@ -1094,7 +1094,15 @@ label monika_horror:
 default persistent._mas_pm_like_rap = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rap",category=['literature'],prompt="Rap music",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rap",
+            category=['literature','media','music'],
+            prompt="Rap music",
+            random=True
+        )
+    )
 
 label monika_rap:
     m 1hua "You know what's a neat form of literature?"
@@ -1108,13 +1116,14 @@ label monika_rap:
     m 1lksdla "I kind of wish I had a rapper in the Literature Club."
     m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
     m 1hua "It would really be a learning experience!"
-    m 1eua "Do you listen to rap music, [player]?"
+    show monika 1eua
     menu:
+        m "Do you listen to rap music, [player]?"
         "Yes.":
             $ persistent._mas_pm_like_rap = True
             m 3eub "That's really cool!"
-            m 3eua "I'd be more than happy to vibe with you to your favorite rap artists..."
-            m 1hub "And feel free to turn up the bass all the way if you want. Ehehe!"
+            m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
+            m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
 
         "No.":
             $ persistent._mas_pm_like_rap = False
@@ -3745,19 +3754,29 @@ label monika_pleasure:
 default persistent._mas_pm_like_vocaloids = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vocaloid",category=['media','misc','technology'],prompt="Vocaloids",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_vocaloid",
+            category=['media','misc','technology','music'],
+            prompt="Vocaloids",
+            random=True
+        )
+    )
 
 label monika_vocaloid:
     m 1eua "Hey, [player]?"
     m "You like listening to music right?"
-    m 3eub "Do you by chance like 'virtual idols?'"
+
+    show monika 3eub
     menu:
+        m "Do you by chance like 'virtual idols?'"
         "Yes.":
             $ persistent._mas_pm_like_vocaloids = True
             m 3hub "That's really neat!"
             m 3eub "I hear that these songs often have hidden meanings behind them."
             m 1eua "Maybe we could listen and try to figure them out together..."
-            m 1eka "Doesn't that just sound like a great time?"
+            m 1eka "Doesn't that sound like a great time?"
 
         "No.":
             $ persistent._mas_pm_like_vocaloids = False
@@ -4860,7 +4879,15 @@ label monika_fruits:
 default persistent._mas_pm_like_rock_n_roll = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rock",category=['media','literature'],prompt="Rock and roll",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+                eventlabel="monika_rock",
+                category=['media','literature',"music"],
+                prompt="Rock and roll",
+                random=True
+            )
+        )
 
 label monika_rock:
     m 3eua "You wanna know a cool form of literature?"
@@ -4882,17 +4909,19 @@ label monika_rock:
     m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
-    m 3eua "Do you listen to rock and roll, [player]?"    
+
+    show monika 3eua
     menu:
+        m "Do you listen to rock and roll, [player]?"    
         "Yes.":
             $ persistent._mas_pm_like_rock_n_roll = True
             m 3hub "Great!"
-            m 1eua "Whenever you feel like blasting on some good ol' rock 'n' roll, go ahead."
+            m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
             m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
             
         "No.":
             $ persistent._mas_pm_like_rock_n_roll = False
-            m 1ekc "Oh... Well that's okay, everyone has their own taste in music."
+            m 1ekc "Oh...that's okay, everyone has their own taste in music."
             m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."                
     return "derandom"
 
@@ -5072,24 +5101,36 @@ label monika_meditation:
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
 
+# TODO: persistent.instrument should be historical at some point
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_orchestra",category=['media','you'],prompt="Classical music",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_orchestra",
+            category=['media',"music"],
+            prompt="Classical music",
+            random=True
+        )
+    )
 
 label monika_orchestra:
-    m 3euc "Hey, [player], do you listen to orchestral music?"
+
+    show monika 3euc
     menu:
+        m "Hey, [player], do you listen to orchestral music?"
         "Yes.":
             $ persistent._mas_pm_like_orchestral_music = True
             m 3eub "That's great!"
-            m 3eua "I love the way that so many different instruments can get together and create such wonderful music."
-            m 1eua "I'm amazed with how much they've practiced to achieve that kind of synchronization."
-            m "With how many there are in a group, it probably takes them a lot of dedication to do that."
-            m 1eka "It'd be so soothing to sit and listen to a symphony with you on a lazy Sunday afternoon, [player]."
+            m 3eua "I love how such wonderful music can arise when so many different instruments are played together."
+            m 1eua "I'm amazed with how much practive musicians do to achieve that kind of synchronization."
+            m "It probably takes them a lot of dedication to do that."
+            m 1eka "But anyway, {w}it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
 
         "No.":
             $ persistent._mas_pm_like_orchestral_music = False
             m 1ekc "I guess it {i}is{/i} a pretty niche genre and doesn't suit everyone's ear."
-            m 1esa "You have to admit though, with so many players, there must be a lot of effort that goes into practicing for shows."    
+            m 1esa "You have to admit though, with so many players, there must be a lot of effort that goes into practicing for shows." 
 
     m 1eua "That reminds me, [player]."
     m "If you ever want me to play for you..."
@@ -5170,11 +5211,20 @@ default persistent._mas_pm_like_jazz = None
 default persistent._mas_pm_play_jazz = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_jazz",category=['media'],prompt="Jazz",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_jazz",
+            category=['media',"music"],
+            prompt="Jazz",
+            random=True
+        )
+    )
 
 label monika_jazz:
-    m 1eua "Say, [player], do you like jazz music?"
+    show monika 1eua
     menu:
+        m "Say, [player], do you like jazz music?"
         "Yes.":
             $ persistent._mas_pm_like_jazz = True
             m 1hua "Oh, okay!"
@@ -6000,10 +6050,26 @@ label monika_asks_family:
 #do you like other music
 default persistent._mas_pm_like_other_music = None
 
+# historical music history
+default persistent._mas_pm_like_other_music_history = list()
+
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music concerts",random=True))
+     addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_concerts",
+            category=['media',"music"],
+            prompt="Music concerts",
+            random=True
+        )
+    )
 
 label monika_concerts:
+
+    # TODO: perhaps this should be separated into something specific to music
+    # genres and the concert just referencing back to that?
+    # this topic is starting to get too complicated
+
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
     if (
             renpy.seen_label("monika_jazz")
@@ -6016,24 +6082,43 @@ label monika_concerts:
         m 1hua "Well..." 
     m 3eub "Why don't we go to a concert?"             
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
-    m 1eua "Are there any other types of music you'd like to see live that we haven't talked about yet?"
+
+    show monika 1eua
     menu:
+        m "Are there any other types of music you'd like to see live that we haven't talked about yet?"
         "Yes.":
             $ persistent._mas_pm_like_other_music = True
             m 3eua "Great! What other kind of music do you like, [player]?"
-            $ musicgenrename = renpy.input('What kind of music do you listen to?',length=15).strip(' \t\n\r')
-            $ tempmusicgenre = musicgenrename.lower()
+
+            python:
+                musicgenrename = renpy.input('What kind of music do you listen to?',length=15).strip(' \t\n\r')
+                tempmusicgenre = musicgenrename.lower()
+                persistent._mas_pm_like_other_music_history.append((
+                    datetime.datetime.now(),
+                    tempmusicgenre
+                ))
+
+            # NOTE: should be think? maybe?
+            m 1eua "Interesting..."
             m 3hub "I'd love to go to a [tempmusicgenre] concert with you!"
             
         "No.":
-            if not persistent._mas_pm_like_vocaloids and not persistent._mas_pm_like_rap and not persistent._mas_pm_like_rock_n_roll and not persistent._mas_pm_like_orchestral_music and not persistent._mas_pm_like_jazz:
-               $ persistent._mas_pm_like_other_music = False
-               m 1ekc "Oh... Well that's okay, [player]..."
-               m 1eka "I'm sure we can find something else to do."
-               return
+            if (
+                    not persistent._mas_pm_like_vocaloids
+                    and not persistent._mas_pm_like_rap
+                    and not persistent._mas_pm_like_rock_n_roll
+                    and not persistent._mas_pm_like_orchestral_music
+                    and not persistent._mas_pm_like_jazz
+                ):
+                $ persistent._mas_pm_like_other_music = False
+                m 1ekc "Oh... well that's okay, [player]..."
+                m 1eka "I'm sure we can find something else to do."
+                return
+
             else:
-               $ persistent._mas_pm_like_other_music = False
-               m 1eua "Ok, [player], we'll just choose from the other types of music we've already discussed!"
+                $ persistent._mas_pm_like_other_music = False
+                m 1eua "Ok, [player], we'll just choose from the other types of music we've already discussed!"
+
     m 1hua "Just imagine us..."
     if persistent._mas_pm_like_orchestral_music:
         m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
@@ -6063,7 +6148,7 @@ label monika_concerts:
     m 4eua "But if you're not that interested in concerts,"
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
