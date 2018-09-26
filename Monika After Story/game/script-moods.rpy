@@ -369,10 +369,12 @@ label mas_mood_bored:
         m 3hub "Well, we should do something then!"
 
     elif mas_isMoniNormal(higher=True):
-        m 1ekc "Do I really bore you that much, [player]?"
+        show monika 1ekc
+        pause 1.0
         menu:
+            m "Do I really bore you that much, [player]?"
             "No, I'm not bored {i}of you{/i}...":
-                m 1hua "Oh... That's such a relief!"
+                m 1hua "Oh,{w} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
 
             "Well...":
@@ -387,7 +389,7 @@ label mas_mood_bored:
     
     else:
         $ mas_loseAffection()
-        m 6ckc "You know [player], If I make you so miserable all of the time..."
+        m 6ckc "You know [player], if I make you so miserable all of the time..."
         m "Maybe you should just go find something else to do."
         return "quit"
 
@@ -420,8 +422,8 @@ label mas_mood_bored:
         else:
             m 2rkc "Maybe we could play a game of [gamepicked]..."
         
-    m "What do you say, [player]?"
     menu:
+        m "What do you say, [player]?"
         "Yes":
             if gamepicked == "pong":
                 call game_pong
