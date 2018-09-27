@@ -7443,6 +7443,7 @@ image monika 3hubsb = DynamicDisplayable(
     arms="restleftpointright",
     blush="shade"
 )
+
 image monika 3hubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
