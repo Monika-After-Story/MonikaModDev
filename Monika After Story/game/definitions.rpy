@@ -2289,6 +2289,20 @@ init -100 python in mas_utils:
         return result_list
 
 
+    def log_entry(entry_log, value):
+        """
+        Generic entry add to the given log. 
+        Stores both time and given value as a tuple:
+            [0]: datetime.now()
+            [1]: value
+
+        IN:
+            entry_log - list to log entry to
+            value - value to log in this entry
+        """
+        entry_log.append((datetime.datetime.now(), value))
+
+
     class ISCRAM(ctypes.BigEndianStructure):
         _iscramfieldbuilder = [
             3, 3, 2, 1, 3, 2, 2, 1, 3, 3, 1, 3, 1

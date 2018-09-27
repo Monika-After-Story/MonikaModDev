@@ -25,18 +25,10 @@ init 970 python:
 
     if persistent._mas_moni_chksum is not None:
         # do check for monika existence
-        moni_tuple = store.mas_dockstat.findMonika(
-            mas_docking_station
-        )
-
-        # set the init data
-        store.mas_dockstat.retmoni_status = moni_tuple[0]
-        store.mas_dockstat.retmoni_data = moni_tuple[1]
+        store.mas_dockstat.init_findMonika(mas_docking_station)
 
         # check surprise party
         store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
-
-        del moni_tuple
 
 
     postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
@@ -59,7 +51,7 @@ init 970 python:
         persistent._mas_bday_opened_game = True
 
     # quick fix for dates
-    # NOTE: remove this in 088
+    # NOTE: remove this in 089
     if (
             persistent._mas_bday_date_affection_gained >= 50 and
             not persistent._mas_bday_date_affection_fix
@@ -694,20 +686,10 @@ label ch30_autoload:
     #       during this flow, we have her say the same shit as the returning
     #       home greeting.
     if store.mas_dockstat.retmoni_status is not None:
-        # non None means we have a status
-        $ mas_from_empty = False
-        $ moni_status = store.mas_dockstat.retmoni_status
+        # this jumps to where we need to go next.
+        $ store.mas_dockstat.triageMonika(False)
 
-        if (moni_status & store.mas_dockstat.MAS_PKG_FO) > 0:
-            # TODOL: jump to the mas_dockstat_different_monika label
-            jump mas_dockstat_empty_desk
-
-        if (moni_status & store.mas_dockstat.MAS_PKG_F) > 0:
-            jump mas_dockstat_found_monika
-
-        # otherwise, lets jump to the empty desk
-        jump mas_dockstat_empty_desk
-
+label mas_ch30_post_retmoni_check:
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
