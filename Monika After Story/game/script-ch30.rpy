@@ -879,6 +879,10 @@ label ch30_loop:
     else:
         $ config.allow_skipping = False
 
+    # check for outstanding threads
+    if store.mas_dockstat.abort_gen_promise:
+        $ store.mas_dockstat.abortGenPromise()
+
     if mas_skip_mid_loop_eval:
         jump ch30_post_mid_loop_eval
 
