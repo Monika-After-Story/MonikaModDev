@@ -942,7 +942,6 @@ init -45 python:
 
             return False
 
-
     mas_docking_station = MASDockingStation()
 
 
@@ -1023,6 +1022,7 @@ init -500 python in mas_dockstat:
     MAS_SBP_BLON = 8
     # balloon was found
 
+
 init python in mas_dockstat:
     import store
     import cPickle
@@ -1078,7 +1078,6 @@ init 200 python in mas_dockstat:
     import os
     import random
     import datetime
-    import threading
 
     # we set these during init phase if we found a monika
     retmoni_status = None
@@ -1157,6 +1156,88 @@ init 200 python in mas_dockstat:
                 "[ERROR]: failed to pickle data: {0}\n".format(repr(e))
             )
             return False
+
+
+    def checkMonika(status, moni_data):
+        """
+        Parses if a given set of monika data is a rogue monika, our monika,
+        and so on, and does checkins and more for the appropriate case.
+
+        IN:
+            status - findMonika's return status
+            moni_data - findMonika's return data
+
+        RETURNS:
+            TBD
+        """
+        # TODO
+        return
+
+
+    def checkinMonika():
+        """
+        Adds entry to checkin log that monika has returned to the spaceroom.
+        Also clears the global checksum var.
+        """
+        mas_utils.log_entry(
+            store.persistent._mas_dockstat_checkin_log,
+            store.persistent._mas_moni_chksum
+        )
+        store.persistent._mas_moni_chksum = None
+
+
+    def checkoutMonika(chksum):
+        """
+        Adds entry to checkout log that monika has left the spaceroom.
+        Also sets the chk to the global checksum var.
+        Also removes monikas that had the same checksum
+
+        IN:
+            chksum - monika's checksum when checking her out.
+        """
+        # sanity checks
+        if chksum is None or chksum == -1 or len(chksum) == 0:
+            return
+
+        mas_utils.log_entry(
+            store.persistent._mas_dockstat_checkout_log,
+            chksum
+        )
+        store.persistent._mas_moni_chksum = chksum
+
+        if chksum in store.persistent._mas_dockstat_moni_log:
+            store.persistent._mas_dockstat_moni_log.pop(chksum)
+
+
+    def triageMonika(from_empty):
+        """
+        Jumps to an appropriate label based on retmoni_status and retmoni_data.
+        If retmoni_status is None, we dont do anything.
+
+        IN:
+            from_empty - True if we should assume from empty desk, False
+                otherwise.
+        """
+        if retmoni_status is None:
+            return
+
+        # otherwise, parse the status
+        if (retmoni_status & MAS_PKG_FO) > 0:
+            # TODO: jump to mas_dockstat_different_monika label
+            label_jump = "mas_dockstat_empty_desk"
+
+        elif (retmoni_status & MAS_PKG_F) > 0:
+            # found monika
+            label_jump = "mas_dockstat_found_monika"
+
+        else:
+            # none of the above
+            label_jump = "mas_dockstat_empty_desk"
+
+        if from_empty:
+            label_jump += "_from_empty"
+
+        renpy.jump(label_jump)
 
 
     def packageCheck(
@@ -1575,9 +1656,25 @@ init 200 python in mas_dockstat:
         return moni_sum
 
 
+    def init_findMonika(dockstat):
+        """
+        findMonika variation that is meant to be run at init time.
+
+        IN:
+            dockstat - MASDockingStation to use
+        """
+        global retmoni_status, retmoni_data
+
+        # try to find this monika
+        retmoni_status, retmoni_data = findMonika(dockstat)
+
+
     def findMonika(dockstat):
         """
         Attempts to find monika in the giving docking station
+
+        IN:
+            dockstat - MASDockingStation to use
 
         RETURNS: tuple of the following format:
             [0]: MAS_PKG_* constants depending on the state of monika
@@ -1648,14 +1745,6 @@ init 200 python in mas_dockstat:
             return (ret_code | MAS_PKG_FO, real_data)
 
         # otherwise, we have a matching monika!
-        # lets log this monika
-        store.persistent._mas_dockstat_checkin_log.append((
-            datetime.datetime.now(),
-            store.persistent._mas_moni_chksum
-        ))
-
-        # and clear the checksum
-        store.persistent._mas_moni_chksum = None
         return (ret_code | MAS_PKG_F, real_data)
 
 
@@ -1812,149 +1901,46 @@ init 200 python in mas_dockstat:
         return time_out
 
 
-    # lock stuff needed for the threaded version of generateMonika
-    _th_lock_generateMonika = threading.Lock()
-    _th_cond_generateMonika = None
-    _th_result_generateMonika = None
+init 205 python in mas_dockstat:
+    import store.mas_threading as mas_threading
+    # thread classes for monika files
 
+    # runs monika file generation
+    monikagen_promise = mas_threading.MASAsyncWrapper(
+        generateMonika,
+        [store.mas_docking_station]
+    )
 
-    def _th_generateMonika():
+    # runs monika file check
+    monikafind_promise = mas_threading.MASAsyncWrapper(
+        findMonika,
+        [store.mas_docking_station]
+    )
+
+    # other important vars for this
+
+    abort_gen_promise = False
+    # if True, we aborted monika generation, but since its an async call,
+    # ch30_loop needs to handle this
+
+    def abortGenPromise():
         """
-        Threaded variant of monika generation, using stock docking station
-
-        NOTE: this doesnt' actualyl have the thread, it just runs the primary
-        usage of the stock docking station code and saves the result
+        Attempts to about the monikagen promise and properly delete the
+        monika package.
         """
-        global _th_result_generateMonika
+        global abort_gen_promise
 
-        # generate monika
-        _result_genMoni = generateMonika(store.mas_docking_station)
+        if not abort_gen_promise:
+            return
 
-        # acquire a lock on the condition and set the result var
-        with _th_cond_generateMonika:
-            _th_result_generateMonika = _result_genMoni
-            _th_cond_generateMonika.notify()
+        # otherwise we need to abourt this.
+        if not monikagen_promise.done():
+            return
 
-
-    def _startGenerateMonika():
-        """
-        This actually callst he threaded variant in background for general
-        usage.
-        """
-        global _th_cond_generateMonika
-
-        if _th_cond_generateMonika is None:
-            # only start a thread if we can build a condition
-            _th_cond_generateMonika = threading.Condition(
-                _th_lock_generateMonika
-            )
-
-            moni_gen_thread = threading.Thread(
-                target=_th_generateMonika
-            )
-            moni_gen_thread.start()
-
-
-    def _endGenerateMonika():
-        """
-        Returns the result of the generateMonika function when it finishes.
-
-        RETURNS:
-            result of generateMonika, function
-        """
-        global _th_result_generateMonika, _th_cond_generateMonika
-
-        if _th_cond_generateMonika is None:
-            return None
-
-        # acqure lock
-        _th_cond_generateMonika.acquire()
-
-        # check conditional and wait
-        while _th_result_generateMonika is None:
-            _th_cond_generateMonika.wait()
-
-        # we have a success, retrieve value copy
-        _result = _th_result_generateMonika
-        _th_result_generateMonika = None
-
-        # release conditional
-        _th_cond_generateMonika.release()
-        _th_cond_generateMonika = None
-
-        return _result
-
-
-    # lock stuff needed for threading find Monika
-    _th_lock_findMonika = threading.Lock()
-    _th_cond_findMonika = None
-    _th_result_findMonika = None
-
-
-    def _th_findMonika():
-        """
-        Threaded variant of finding monika, using stock docking station
-
-        NOTE: this doesn't actually have the thread, it just runs the primary
-            usage of teh stock docking station code and saves result
-        """
-        global _th_result_findMonika
-
-        # find monika
-        _result_findMoni = findMonika(store.mas_docking_station)
-
-        # acquire lock on condition and set result var
-        with _th_cond_findMonika:
-            _th_result_findMonika = tuple(_result_findMoni)
-            _th_cond_findMonika.notify()
-
-
-    def _startFindMonika():
-        """
-        Starts the find monika thread
-        """
-        global _th_cond_findMonika
-
-        if _th_cond_findMonika is None:
-            # only start a thread if condition doesnt exist
-
-            _th_cond_findMonika = threading.Condition(_th_lock_findMonika)
-
-            moni_find_thread = threading.Thread(
-                target=_th_findMonika
-            )
-            moni_find_thread.start()
-
-
-    def _endFindMonika():
-        """
-        Resulting the result of the find monika function when it finishes
-
-        RETURNS:
-            result of find monika function
-        """
-        global _th_result_findMonika, _th_cond_findMonika
-
-        if _th_cond_findMonika is None:
-            # please dont do this
-            return (0, None)
-
-        # acquire lock
-        _th_cond_findMonika.acquire()
-
-        # check conditional and wait
-        while _th_result_findMonika is None:
-            _th_cond_findMonika.wait()
-
-        # we have a success, retrieve value copy
-        _result = tuple(_th_result_findMonika)
-        _th_result_findMonika = None
-
-        # releaes conditional
-        _th_cond_findMonika.release()
-        _th_cond_findMonika = None
-
-        return _result
+        # promise is done! lets abort
+        monikagen_promise.end()
+        store.mas_docking_station.destroyPackage("monika")
+        abort_gen_promise = False
 
 
 ### Docking station labels regarding monika leaving the station
@@ -1980,15 +1966,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
             m 1eua "Alright."
 
         # setup check and log this file checkout
-        python:
-            persistent._mas_moni_chksum = moni_chksum
-            persistent._mas_dockstat_checkout_log.append((
-                datetime.datetime.now(),
-                moni_chksum
-            ))
-
-            if moni_chksum in persistent._mas_dockstat_moni_log:
-                persistent._mas_dockstat_moni_log.pop(moni_chksum)
+        $ store.mas_dockstat.checkoutMonika(moni_chksum)
 
         m 1eua "I'm ready to go."
 
@@ -2013,7 +1991,7 @@ label mas_dockstat_first_time_goers:
     m 1eua "Anyway..."
     return
 
-# empty desk. This one includes file checking every 1 seconds for monika
+# empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
     call spaceroom(hide_monika=True)
     $ mas_from_empty = True
@@ -2025,56 +2003,40 @@ label mas_dockstat_empty_desk:
     # show birthday visuals?
     $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
-label mas_dockstat_empty_desk_loop:
+label mas_dockstat_empty_desk_preloop:
 
-    python:
-        # setup ui hiding
-        import store.mas_dockstat as mas_dockstat
-        mas_OVLHide()
-        mas_calRaiseOverlayShield()
-        mas_calShowOverlay()
-        disable_esc()
-        mas_enable_quit()
+    # setup ui hiding
+    $ import store.mas_dockstat as mas_dockstat
+    $ mas_OVLHide()
+    $ mas_calRaiseOverlayShield()
+    $ mas_calShowOverlay()
+    $ disable_esc()
+    $ mas_enable_quit()
+    $ promise = mas_dockstat.monikafind_promise
 
-        # now just check for monika
-        moni_found = False
-        while not moni_found:
-            # wait a second
+label mas_dockstat_empty_desk_from_empty:
 
-            # begin the find thread
-            mas_dockstat._startFindMonika()
+    # begin the find thread
+    if promise.ready:
+        $ promise.start()
 
-            # wait 4 seconds before checking again
-            renpy.pause(1.0, hard=True)
+    # wait 1 seconds before checking again
+    $ renpy.pause(1.0, hard=True)
 
-            # get result
-            moni_status, mas_dockstat.retmoni_data = mas_dockstat._endFindMonika()
+    # check for surprise visuals
+    $ store.mas_dockstat.surpriseBdayShowVisuals()
 
-            # but check for surprise visuals
-            store.mas_dockstat.surpriseBdayShowVisuals()
+    # check for monika
+    if promise.done():
+        # we have a result! lets get and then check if we found anything.
+        $ _status, _data_line = promise.get()
+        $ mas_dockstat.retmoni_status = _status
+        $ mas_dockstat.retmoni_data = _data_line
+        $ mas_dockstat.triageMonika(True)
 
-            if (moni_status & mas_dockstat.MAS_PKG_FO) > 0:
-                # found a different monika, jump to the different monika
-                # greeting
-                #moni_found = True
-
-                # with a different monika, she won't care if you quit, but
-                # if you do, it's game over for this monika
-
-                #renpy.jump("mas_dockstat_different_monika")
-                #TODO: for now, lets just continue this loop
-                moni_found = None
-
-            elif (moni_status & mas_dockstat.MAS_PKG_F) > 0:
-                # found our monika, jump to the found monika greeting
-                moni_found = True
-                renpy.jump("mas_dockstat_found_monika")
-
-            # otherwise we still havent' found monika, so lets just continue
-            # the loop
-
-    # we should never, ever reach here. If we do, just do a straight quit
-    jump _quit
+    # otherwise we still havent' found monika, so lets just continue
+    # the loop
+    jump mas_dockstat_empty_desk_from_empty
 
 define mas_dockstat.different_moni_flow = False
 
@@ -2130,15 +2092,23 @@ label mas_dockstat_different_monika:
 
     jump ch30_post_greeting_check
 
+
+# found our monika, but we coming from empty desk
+label mas_dockstat_found_monika_from_empty:
+    show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
+    hide emptydesk
+
+    # dont want users using our promises
+    $ promise = None
+
+    # FALL THROUGH
+
 # found our monika
 label mas_dockstat_found_monika:
 
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
-
-    if mas_from_empty:
-        show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
-        hide emptydesk
+    $ store.mas_dockstat.checkinMonika()
 
     # select the greeting we want
     python:
@@ -2158,7 +2128,7 @@ label mas_dockstat_found_monika:
         persistent._mas_greeting_type = None
 
         # removee the monika
-        store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+        mas_docking_station.destroyPackage("monika")
 
         # reenabel a bunch of things
         mas_OVLShow()
