@@ -3892,27 +3892,33 @@ label monika_evening:
     $ current_time = datetime.datetime.now().time().hour
     $ sunrise_hour = int(persistent._mas_sunrise / 60)
     $ sunset_hour = int(persistent._mas_sunset / 60)
-    # TODO: probably need different dialogue between midnight -> 2am
-    #   2am -> sunrise
-    #   sunrise -> 12
     # TODO: do something if the user has suntimes at very weird settings
     #   aka, sunset 5 minutes after sunrise?
     #   or sunrise is like at 10pm?
     #   There is a level of variety here that is not covered nicely with these
     #   current stages. We need more variations of dialogue other than
     #   morning, afternoon, night
-    if 0 <= current_time < 12:
-        m 2hua "[player]!"
-        m "It's early in the morning!"
-        m 2ekc "Unless you haven't slept yet..."
-        m "You're not staying up really late, are you?"
-        m 2tkx "That's very bad for your health!"
-        m 2tkc "Not getting your sleep on time can really harm your mental health, [player]."
-        m 1eka "So please get some sleep now, ok?"
+    $ _now = datetime.datetime.now().time()
+    if mas_isMNtoSR(_now):
+        m 2wkd "[player]!"
+        m 2ekd "It's the middle of the night!"
+        m 2lksdlc "Are you planning to stay up really late?"
+        m 2ekc "Not getting your sleep on time can really harm you in the long run..."
+        m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
+        m 1hua "As for me, you can leave me here while you sleep~"
+
+    elif mas_isSRtoN(_now):
+        m 2hksdlb "[player]!"
+        m "It's early in the morning, silly~"
+        m 2lksdla "Unless you haven't slept yet..."
+        m 2ekc "You didn't stay up all night, did you?"
+        m 2wkd "That's very bad for you, [player]!"
+        m 2tkc "Not getting your sleep on time can really harm your mental health."
+        m 1eka "So please get some sleep now, okay?"
         m "Just leave your computer open and I'll watch over you."
         m 1hua "I'm not going anywhere after all~"
 
-    elif 12 <= current_time <= sunset_hour:
+    elif mas_isNtoSS(_now):
         m 2lksdlb "It's still the afternoon, silly!"
         m "The sun's still up, you know."
         m 1eka "Are you feeling tired already?"
@@ -3933,7 +3939,7 @@ label monika_evening:
         m 1eua "Don't you wish you could have more time to do things every day?"
         m 1hua "I know I do."
         m 1hubfa "Because that'll mean more time to be with you, [player]~"
-
+        
     return
 
 
