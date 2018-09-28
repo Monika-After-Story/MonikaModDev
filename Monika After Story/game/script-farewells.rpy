@@ -648,13 +648,28 @@ label bye_going_somewhere:
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
+    $ first_pass = True
 
     # launch I/O thread
-    $ store.mas_dockstat._startGenerateMonika()
+    $ promise = store.mas_dockstat.monikagen_promise
+    $ promise.start()
 
-    show screen mas_background_timed_jump(4.0, "bye_going_somewhere_rtg")
+label bye_going_somewhere_iowait:
+    hide screen mas_background_timed_jump
+
+    # we want to display the menu first to give users a chance to quit
+    if first_pass:
+        $ first_pass = False
+
+    elif promise.done():
+        # i/o thread is done!
+        jump bye_going_somewhere_rtg
+
+    # display menu options
+    # 4 seconds seems decent enough for waiting.
+    show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "Give me a second to get ready."
+        m "Give me a second to get ready.{fast}"
         "Wait, wait!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
@@ -664,21 +679,26 @@ label bye_going_somewhere:
     menu:
         "Actually, I can't take you right now.":
             $ persistent._mas_dockstat_going_to_leave = False
+            $ store.mas_dockstat.abort_gen_promise = True
 
-            # cleanup I/O thread
-            $ store.mas_dockstat._endGenerateMonika()
-            $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+            # but maybe the thread is done already?
+            $ store.mas_dockstat.abortGenPromise()
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
+            # if we get here, we should jump back to the top so we can
+            # continue waiting
             m 2hub "Oh, good! Let me finish getting ready."
+
+    # by default, continue looping
+    jump bye_going_somewhere_iowait
 
 
 label bye_going_somewhere_rtg:
-    hide screen mas_background_timed_jump
 
-    # cleanup I/O thread
-    $ moni_chksum = store.mas_dockstat._endGenerateMonika()
+    # io thread should be done by now
+    $ moni_chksum = promise.get()
+    $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
         return "quit"

@@ -178,6 +178,10 @@ image mas_bday_banners = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
 image mas_bday_balloons = ConditionSwitch(
+    "persistent._mas_sensitive_mode and morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
+    "persistent._mas_sensitive_mode and not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png",
     "morning_flag",
     "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
     "not morning_flag",
@@ -3840,6 +3844,20 @@ image monika 1ekbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1ekbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1dkbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7414,6 +7432,20 @@ image monika 3hksdrb = DynamicDisplayable(
     right="1r",
     arms="restleftpointright",
     sweat="right"
+)
+
+image monika 3hubsb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
 )
 
 image monika 3hubfb = DynamicDisplayable(
