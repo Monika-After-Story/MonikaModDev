@@ -3886,12 +3886,17 @@ label monika_morning:
 #Add one for the afternoon?
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_evening",category=['misc'],prompt="Good evening",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_evening",
+            category=['misc'],
+            prompt="Good evening",
+            pool=True
+        )
+    )
 
 label monika_evening:
-    $ current_time = datetime.datetime.now().time().hour
-    $ sunrise_hour = int(persistent._mas_sunrise / 60)
-    $ sunset_hour = int(persistent._mas_sunset / 60)
     # TODO: do something if the user has suntimes at very weird settings
     #   aka, sunset 5 minutes after sunrise?
     #   or sunrise is like at 10pm?
@@ -3903,8 +3908,12 @@ label monika_evening:
         m 2wkd "[player]!"
         m 2ekd "It's the middle of the night!"
         m 2lksdlc "Are you planning to stay up really late?"
-        m 2ekc "Not getting your sleep on time can really harm you in the long run..."
+        m 2ekc "Not getting enough sleep can really harm you in the long run..."
         m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
+        # TODO: when docking station extends to sleep, monika can suggest 
+        # taking her charcter file.
+        # TODO: when sleeping mode is finished, monika can suggest that she
+        # will sleep with the user
         m 1hua "As for me, you can leave me here while you sleep~"
 
     elif mas_isSRtoN(_now):
@@ -3915,6 +3924,10 @@ label monika_evening:
         m 2wkd "That's very bad for you, [player]!"
         m 2tkc "Not getting your sleep on time can really harm your mental health."
         m 1eka "So please get some sleep now, okay?"
+        # TODO: when docking station extends to sleep, monika can suggest
+        # taking her character file
+        # TODO: when sleep mode is finished, monika can suggest that
+        # she will sleep with you
         m "Just leave your computer open and I'll watch over you."
         m 1hua "I'm not going anywhere after all~"
 
