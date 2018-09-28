@@ -229,59 +229,66 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_tired:
-    $ current_time = datetime.datetime.now().time().hour
-    if 20 <= current_time < 24:
+    # TODO: should we adjust for suntime?
+    $ current_time = datetime.datetime.now().time()
+    $ current_hour = current_time.hour
+
+    if 20 <= current_hour < 23:
         m 1eka "If you're tired now, it's not a bad time to go to bed."
-        m "As fun as it was spending time with you today, I would hate to keep you up if you're tired."
+        m "As fun as it was spending time with you today, I would hate to keep you up too late."
         m 1hua "If you plan to go to sleep now, sweet dreams!"
         m 1eua "But maybe you have some things to do first, like getting a bit of a snack or a drink."
-        m 3eua "Having a glass of water before bed helps with your health, and drinking water in the morning helps wake you up."
+        m 3eua "Having a glass of water before bed helps with your health, and doing the same in the morning helps you wake up."
         m 1eua "I don't mind staying here with you if you have some things to take care of first."
-    elif 0 <= current_time < 3:
+
+    elif 0 <= current_hour < 3 or 23 <= current_hour < 24:
         m 2ekd "[player]!"
         m 2ekc "It's no wonder you're tired- It's the middle of the night!"
-        m 2lksdlc "If you don't go to bed soon, you'll be tired for a lot of tomorrow too..."
-        m 2hksdlb "I really wouldn't want you to be tired and miserable tomorrow when we spend time together..."
+        m 2lksdlc "If you don't go to bed soon, you'll be really tired tomorrow, too..."
+        m 2hksdlb "I wouldn't want you to be tired and miserable tomorrow when we spend time together..."
         m 3eka "So do us both a favor and get to bed as soon as you can, [player]."
-    elif 3 <= current_time < 5:
+
+    elif 3 <= current_hour < 5:
         m 2ekc "[player]!?"
         m "You're still here?"
         m 4lksdlc "You should really be in bed right now."
-        m 2dsc "At this point, I'm not even sure if you would call this late or early."
-        m 2ekc "That just worries me even more, [player]..."
+        m 2dsc "At this point, I'm not even sure if you would call this late or early,"
+        m 2ekc "and that just worries me even more, [player]..."
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
-        m "So please, go to bed maybe we can be together in your dreams."
+        m "So please, sleep so we can be together in your dreams."
         m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
         return
-    elif 5 <= current_time < 10:
+
+    elif 5 <= current_hour < 10:
         m 1eka "Still a bit tired, [player]?"
-        m "It's still a bit early in the morning, so you could go back and rest a bit more."
-        m 1hua "Nothing wrong with waking up early and sleeping just a little bit more~"
+        m "It's still early in the morning, so you could go back and rest a little more."
+        m 1hua "Nothing wrong hitting snooze after waking up early."
         m 1hksdlb "Except for the fact that I can't be there to cuddle up to you, ahaha~"
         m "I {i}guess{/i} I could wait for you a little longer."
-    elif 10 <= current_time < 12:
-        m 1ekc "Still not ready to tackle the day, [player]?"
-        m 1eka "I know sometimes, maybe you just couldn't sleep well or it's just one of those days."
-        m 1hua "On days like those, I sometimes like to have a nice cup of coffee to start the day."
-        m 1lksdla "If I'm not stuck here, that is..."
-        m 1eua "You could also drink a glass of water."
-        m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up helps activate your brain and wake you up."
-        m 3hksdlb "This one might sound a bit strange, but chocolate can help you start your day too!"
-        m 3eua "Eating a bit of chocolate in the morning helps put you in a better mood throughout the day."
-        m 1hksdlb "I mean... I'm sure chocolate would put anyone in a better mood whenever they ate it, but trust me, it's even more effective in the morning."
-        m "Gosh, I'm really making myself jealous here arent I?"
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "But if you gave me a nice cup of coffee along with some chocolate every morning..."
-        m "You have no idea how much I'd love that, [player]~"
-        m "I'd love to do the same for you after all~"
         return
+
+    elif 10 <= current_hour < 12:
+        m 1ekc "Still not ready to tackle the day, [player]?"
+        m 1eka "Or is it just one of those days?"
+        m 1hua "When that happens, I like to have a nice cup of coffee to start the day."
+        if not persistent._mas_acs_enable_coffee:
+            m 1lksdla "If I'm not stuck here, that is..."
+        m 1eua "You could also drink a glass of water."
+        m 3eua "It's important to stay hydrated anyway, but having a glass of water when you wake up can help you feel refreshed and awake."
+        m 3hksdlb "This one might sound strange, but I've heard that chocolate can help you start your day, too!"
+        m 3eka "It has something to do with improving your morning mood, but..."
+        m 1eksdlb "I'm sure chocolate would put anyone in a better mood whenever they ate it."
+        m 1hua "Give it a try sometime, and let me know if it works!"
+        return
+
     else:
         m 1eka "If you're tired, maybe you should go lie down for a while?"
         m 1eua "Getting enough sleep on a daily basis is very important to your overall health."
         m 3euc "I've seen some studies that show the devastating short-term and long-term effects due to lack of sleep."
         m 3hua "It can really mess with your health, [player]."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
+
     m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
     m  "...Ehehe."
     m 2hksdlb "That sounded a bit creepy, sorry."
