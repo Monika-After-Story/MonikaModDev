@@ -2,6 +2,8 @@
 
 # sayori music chnage/scare
 label sayori_name_scare:
+    if persistent._mas_sensitive_mode:
+        return
     python:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
@@ -13,6 +15,8 @@ label sayori_name_scare:
 
 # yuri scare
 label yuri_name_scare:
+    if persistent._mas_sensitive_mode:
+        return
 #    show yuri 3s zorder 2 at t11
     # disable stuff
     $ HKBHideButtons()
@@ -37,6 +41,8 @@ label yuri_name_scare:
 
 # natsuki scare
 label natsuki_name_scare(playing_okayev=False):
+    if persistent._mas_sensitive_mode:
+        return
 
     # disable stuff
     $ HKBHideButtons()
@@ -160,6 +166,9 @@ image n_rects3:
 
 #natsuki scare 2:
 label natsuki_name_scare_hungry:
+    if persistent._mas_sensitive_mode:
+        return
+
 #label natsuki_name_scare2:
     # disable stuff
     $ HKBHideButtons()

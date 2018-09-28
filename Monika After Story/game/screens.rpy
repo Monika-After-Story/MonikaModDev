@@ -6,6 +6,22 @@ init -1 python:
     layout.QUIT_YES = "Please don't close the game on me!"
     layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
 
+    # tooltips
+    layout.MAS_TT_SENS_MODE = (
+        "Sensitive mode removes content that may be disturbing, offensive, "
+        " or considered tasteless."
+    )
+    layout.MAS_TT_UNSTABLE = (
+        "Unstable mode downloads updates from the experimental unstable "
+        "branch of development. It his HIGHLY recommended to make a backup "
+        "of your persistents before enabling this mode."
+    )
+    layout.MAS_TT_REPEAT = (
+        "Enable this to let Monika repeat topics that you have already seen."
+    )
+
+
+
 
 init python in mas_layout:
     import store
@@ -17,7 +33,7 @@ init python in mas_layout:
     UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistent before enabling this mode. Please report " +
+        "backup of your persistents before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
 
@@ -1059,6 +1075,8 @@ screen preferences():
     else:
         $ cols = 4
 
+    default tooltip = Tooltip("")
+
     use game_menu(_("Settings"), scroll="viewport"):
 
         vbox:
@@ -1075,11 +1093,11 @@ screen preferences():
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Skip")
+#                    textbutton _("Unseen Text") action Preference("skip", "toggle")
+#                    textbutton _("After Choices") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
 
                 #Disable/Enable space animation AND lens flair in room
@@ -1102,12 +1120,20 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
+                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                    textbutton _("Repeat Topics"):
+                        action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_REPEAT)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
-
+                vbox:
+                    style_prefix "check"
+                    label _(" ")
+                    textbutton _("Sensitive Mode"):
+                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
             null height (4 * gui.pref_spacing)
 
@@ -1267,7 +1293,11 @@ screen preferences():
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
-
+    
+    text tooltip.value:
+        xalign 0.0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
 
     text "v[config.version]":
                 xalign 1.0 yalign 1.0

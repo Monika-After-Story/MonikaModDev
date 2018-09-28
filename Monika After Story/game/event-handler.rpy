@@ -26,6 +26,8 @@ init -500 python:
     # initalies the locks db
 
     # the template is the regular starter case for most events
+    # True means that the property is locked on startup (wont change),
+    # False means it is unlocked (will change)
     mas_init_lockdb_template = (
         True, # event label
         False, # prompt
@@ -43,7 +45,8 @@ init -500 python:
         False, # diary_entry
         False, # rules
         True, # last_seen
-        False # years
+        False, # years
+        False # sensitive
     )
 
     # set defaults

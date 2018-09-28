@@ -14,6 +14,7 @@ init -1 python in songs:
     import mutagen.mp3 as muta3
     import mutagen.oggopus as mutaopus
     import mutagen.oggvorbis as mutaogg
+    import store
 
     # MUSICAL CONSTANTS
     # SONG NAMES
@@ -26,6 +27,7 @@ init -1 python in songs:
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
+    SAYO_NARA_SENS = "Sayonara"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     KAZOO_COVER = "Your Reality (Kazoo Cover)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
@@ -160,7 +162,11 @@ init -1 python in songs:
             
 
         # sayori only allows this
-        music_choices.append((SAYO_NARA, FP_SAYO_NARA))
+        if store.persistent._mas_sensitive_mode:
+            sayonara_name = SAYO_NARA_SENS
+        else:
+            sayonara_name = SAYO_NARA
+        music_choices.append((sayonara_name, FP_SAYO_NARA))
 
         # grab custom music
         __scanCustomBGM(music_choices)
@@ -714,7 +720,10 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if persistent.playername.lower() == "sayori":
+    if (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        ):
         # sayori specific
 
         # init choices
@@ -937,7 +946,10 @@ init python:
         #   persistent.playername
 
         # sayori cannot make the volume quieter
-        if persistent.playername.lower() != "sayori":
+        if (
+                persistent.playername.lower() != "sayori"
+                or persistent._mas_sensitive_mode
+            ):
             songs.adjustVolume(up=False)
 
 
@@ -961,7 +973,10 @@ init python:
         # sayori cannot mute
         if (
                 curr_volume > 0.0 
-                and persistent.playername.lower() != "sayori"
+                and (
+                    persistent.playername.lower() != "sayori"
+                    or persistent._mas_sensitive_mode
+                )
                 and mute_enabled
             ):
             songs.music_volume = curr_volume
