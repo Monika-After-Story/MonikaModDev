@@ -7397,7 +7397,8 @@ label monika_yellowwp:
             m 4euc "It's a metaphor for her own captivity, obviously..."
             m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2ekd "There was... also mention of a rope, so I always had my own interpretation of the ending..."
-            m 2euc "Sayori liked that story too, if I remember right."
+            if not persistent._mas_sensitive_mode:
+                m 2euc "Sayori liked that story too, if I remember right."
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always... pleasant."
