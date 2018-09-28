@@ -6,9 +6,6 @@
         import random
         import math
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-
         class PongDisplayable(renpy.Displayable):
 
             def __init__(self):
@@ -19,7 +16,7 @@
                 self.paddle = Image("mod_assets/pong.png")
                 self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
-                self.monika = Text(_("Monika"), size=36)
+                self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # The sizes of some of the images.
@@ -271,6 +268,8 @@ label demo_minigame_pong:
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
 
+    show monika 1eua
+
     if winner == "monika":
         $ inst_dialogue = store.mas_pong.DLG_WINNER
 
@@ -283,6 +282,8 @@ label demo_minigame_pong:
         $ inst_dialogue = store.mas_pong.DLG_LOSER
 
     call expression inst_dialogue from _mas_pong_inst_dialogue
+
+    $ mas_gainAffection(modifier=0.5)
 
     menu:
         m "Do you want to play again?"
@@ -311,7 +312,7 @@ label demo_minigame_pong:
 
 # store to hold pong related constants
 init -1 python in mas_pong:
-    
+
     DLG_WINNER = "mas_pong_dlg_winner"
     DLG_WINNER_FAST = "mas_pong_dlg_winner_fast"
     DLG_LOSER = "mas_pong_dlg_loser"
@@ -342,7 +343,7 @@ label mas_pong_dlg_winner_end:
     m 1hub "Ahaha!"
     m 1eua "Thanks for letting me win, [player]."
     m 1tku "Only elementary schoolers seriously lose at Pong, right?"
-    m 1hua "Ehehe~"   
+    m 1hua "Ehehe~"
     return
 
 # quick dialogue shown when monika is the pong winner
@@ -360,7 +361,7 @@ label mas_pong_dlg_loser_end:
     m 1wuo "Wow, I was actually trying that time."
     m 1eua "You must have really practiced at Pong to get so good."
     m 1tku "Is that something for you to be proud of?"
-    m 1hua "I guess you wanted to impress me, [player]~"   
+    m 1hua "I guess you wanted to impress me, [player]~"
     return
 
 # quick dialogue shown when monika is the pong loser

@@ -154,6 +154,7 @@ init -1 python in songs:
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
+            
 
         # sayori only allows this
         music_choices.append((SAYO_NARA, FP_SAYO_NARA))
@@ -987,14 +988,12 @@ init python:
 
     def mas_startup_song():
         """
-        Starts playing either the persistent track or the current track.
+        Starts playing either the persistent track
 
         Meant for usage in startup processes.
         """
         if persistent.current_track is not None:
             play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
 
 
     def select_music():

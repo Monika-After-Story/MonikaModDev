@@ -113,13 +113,14 @@ label mas_stories_start:
 label mas_story_begin:
     python:
         story_begin_quips = [
-            "Alright let's start the story.",
+            "Alright, let's start the story.",
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
             "Let's begin then~"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
+    $ mas_gainAffection(modifier=0.2)
     m 3eua "[story_begin_quip]"
     m 1duu "Ahem."
     return
@@ -216,9 +217,9 @@ label mas_story_lies:
     m 3wud "Shortly after, a Wolf actually did come out from the forest."
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
-    m 2dsc "So the Wolf made a good meal off the boy's flock."
+    m 2dsc "So the Wolf made a good meal of the boy's flock."
     m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
-    m 1hksdlb "You shouldn't worry about it, [player]"
+    m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
     m 1eua "I hope you enjoyed the story, [player]!"
@@ -268,13 +269,13 @@ label mas_story_seeds:
     m 1tfd "'Beware of that man,' quote the Swallow."
     m 3eud "'Why, what is he doing?' asked the others."
     m 1tkd "'That is hemp seed he is sowing; be careful to pick up every one of the seeds, or else you will repent it.' The Swallow replied."
-    m 3lksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
+    m 3rksdld "The birds paid no heed to the Swallow's words, and by and by the hemp grew up and was made into cord, and of the cords nets were made."
     m 1euc "Many birds that had despised the Swallow's advice were caught in nets made out of that very hemp."
     m 3hfu "'What did I tell you?' said the Swallow."
     m 3hua "The moral of this story is: 'Destroy the seeds of evil before they grow up to be your ruin.'"
     m 1lksdlc "..."
     m 2dsc "I wish I could've followed that moral."
-    m 2lksdlc "You wouldn't had to go through what you saw."
+    m 2lksdlc "You wouldn't have had to go through what you saw."
     m 4hksdlb "Anyway, I hope you liked the story, [player]!"
     return
 
@@ -286,7 +287,7 @@ label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
     m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
-    m 3lksdla "So, every night she picked out the white hairs."
+    m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
@@ -323,7 +324,35 @@ label mas_story_ravel:
     m 1tfu "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
     m 3eud "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
     m 1tfd "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish.'"
-    m 3tku "'That's why you remember nothing; because everything is the way it was before you made any wishes.'"
+    m 3tku "'That's why you remember nothing: because everything is the way it was before you made any wishes.'"
     m 1dsd "'All right,' said the man, 'I don't believe this, but there's no harm in wishing. I wish to know who I am.'"
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
+        prompt="Love Never Ends",unlocked=False),eventdb=store.mas_stories.story_database)
+
+label mas_story_immortal_love:
+    call mas_story_begin
+    m 3eua "There was a married couple who lived happily together for many years."
+    m "Every Valentine's Day, the husband would have a beautiful bouquet of flowers sent to his wife."
+    m 1eka "Each of these bouquets came with a note with a few simple words written on it."
+    m 3dsc "{i}My love for you only grows.{/i}"
+    m 1eud "After some time, the husband passed away."
+    m 1eka "The wife, saddened by her loss, believed she would spend her next Valentine's Day alone and in mourning."
+    m 1dsc "..."
+    m 2euc "However,{w} on her first Valentine's Day without her husband, she still received a bouquet from him."
+    m 2efd "Heartbroken and angry, she complained to the florist that there was a mistake."
+    m 2euc "The florist explained that there was no mistake."
+    m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
+    m "Speechless and stunned, the wife read the note attached to the bouquet."
+    m "{i}My love for you is eternal.{/i}"
+    
+    m 1dubsu "Ahh..."
+    m 1eua "Wasn't that a touching story, [player]?"
+    m 1hua "I thought it was really romantic."
+    m 1lksdlb "But I don't want to think of either of us dying."
+    m 1eua "At least the ending was very heartwarming."
+    m 1hua "Thanks for listening~"
     return

@@ -148,34 +148,33 @@ label mas_mood_sad:
         "Yes":
             m 1duu "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
             m 1eka "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
-            m 1eua "After all, things like that are easy to forget. So just keep it in mind [player]."
+            m 1eua "After all, things like that are easy to forget. So just keep it in mind, [player]."
             m 1lfc "I don't care how many other people don't like you, or find you off-putting."
             m 1hua "You're a wonderful person, and I will always love you."
             m 1eua "I hope that makes your day just a tiny bit brighter, [player]."
             m 1eka "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
         "No":
-            m 3eka "I have an idea, why don't you tell me what's bothering you and maybe it'll make you feel better."
+            m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
             m 1eua "I don't want to interrupt you while you're talking, so let me know when you are done."
             menu:
                 "I'm done.":
-                    m "Do you feel a little better now [player]?"
+                    m "Do you feel a little better now, [player]?"
                     menu:
                         "Yeah I do.":
-                            m 1hua "That's great [player]! I'm glad that talking about it made you feel better."
+                            m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
                             m "If you're ever having a bad day, you can always come to me, and I'll listen to whatever you need to vent out."
                             m 1hubfa "Never forget that you're wonderful and I will always love you~"
                         "Not really.":
-                            m 1ekc "Well it was worth a shot."
+                            m 1ekc "Well, it was worth a shot."
                             m 1eka "Sometimes telling someone that you trust what's bothering you is all you need."
                             m 1eua "Maybe you'll feel better after we spend some more time together."
-                            m 1ekbfa "I love you [player], and I always will~"
+                            m 1ekbfa "I love you, [player], and I always will~"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-# TODO: Change 5eub back to 5hubfb in the Major choice when the blush is fixed
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
     m 2b "Was it a major accomplishment, or a minor one?"
@@ -189,8 +188,9 @@ label mas_mood_proud:
             m "Just the thought of us, in cheerful discussion about what you've done..."
             m 1lsbsa "My heart is fluttering just thinking about it!"
             m 1lksdla "Gosh, I'm getting awfully excited about this..."
-            m 3hub "It'll be reality someday"
-            m 5eub "But until then, just know that I'm very proud of you, my love"
+            m 3hub "It'll be reality someday..."
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfb "But until then, just know that I'm very proud of you, my love!"
         "Minor":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
@@ -199,7 +199,8 @@ label mas_mood_proud:
             m 2rksdla "They can be challenging to reach on their own."
             m 4eub "But setting and celebrating small goals that eventually lead to a bigger goal can make your big goals feel much more attainable."
             m 4hub "So keep hitting those small goals, [player]!"
-            m 5eub "And remember, I love you, and I'm always cheering you on!"
+            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfb "And remember, I love you, and I'm always cheering you on!"
 return
 
 init 5 python:
@@ -208,7 +209,7 @@ init 5 python:
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
     m "Know that you can always come up to me and I'll cheer you up, [player]."
-    m 3eka "I love you and I'll always be here for you so don't ever forget that~"
+    m 3eka "I love you and I'll always be here for you, so don't ever forget that~"
     return
 
 init 5 python:
@@ -327,6 +328,38 @@ label mas_mood_angry:
     return
     
 init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_scared:
+    m 1euc "[player], are you alright?"
+    m 1ekc "It's worrying for me to hear you this anxious..."
+    m "I wish I could comfort you and help right now..."
+    m 3eka "But I can at the very least help you to calm yourself down."
+    if seen_event("monika_anxious"):
+        m 1eua "After all, I did promise to help you relax if you ever felt anxious."
+    m 3eua "Do you remember when I talked to you about faking confidence?"
+    if not seen_event("monika_confidence"):
+        m 2euc "No?"
+        m 2lksdla "Guess that’s for another time then."
+        m 1eka "Anyways…"
+    m 1eua "Keeping up one’s appearance helps with faking your own confidence."
+    m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
+    if seen_event("monika_confidence_2"):
+        m "I remember explaining how initiative is an important skill to have as well."
+    m "Maybe you could take things slowly, and do them one at a time."
+    m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
+    m 1hub "You can also try spending a few minutes to meditate!"
+    m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
+    m 1hua " Listening to your favourite music can be counted as meditating too!"
+    m 1eua "I'm serious!"
+    m 3eua "You can try setting aside your work and do something else in the meantime."
+    m "Procrastination isn’t necessarily bad, you know?"
+    m 2esc "Besides…"
+    m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
+    m 1hubfa "There's nothing to worry about when we're together forever~"
+    return
+
+init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_inadequate:
@@ -340,7 +373,7 @@ label mas_mood_inadequate:
     if renpy.seen_label('monika_christmas'):
         m "You took time out of your schedule to be with me on Christmas..."
     if renpy.seen_label('monika_valentines_greeting'):
-        m 1ekbfa "On Valentines Day..."
+        m 1ekbfa "On Valentine's Day..."
     if renpy.seen_label('monika_white_day_start'):
         m 1hubfb "White Day too!" 
     if persistent.monika_kill:
@@ -352,10 +385,10 @@ label mas_mood_inadequate:
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
-    m 3eka "And you know everything about me, and you chose to stay when you could have walked away..."
+    m 3eka "And you know everything about me, but you chose to stay when you could have walked away..."
     m 2ekc "So please stay strong, [player]."
     m "If you're anything like me, I know you're scared to not accomplish much in life."
-    m 2ekd "But believe me when I tell you; it doesn't matter what you do or do not accomplish."
+    m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
     m 4eua "You just need to exist, have fun, and get through each day..."
     m 1hua "Finding meaning in the people who matter." 
     m 1eka "Please don't forget that, okay?"
@@ -377,9 +410,35 @@ label mas_mood_lucky:
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
 
-
 label mas_mood_bored:
-    m 1o "Oh, I'm sorry that I'm boring you, [player]."
+    if mas_isMoniAff(higher=True):
+        m 1eka "Oh..."
+        m 3hub "Well, we should do something then!"
+
+    elif mas_isMoniNormal(higher=True):
+        show monika 1ekc
+        pause 1.0
+        menu:
+            m "Do I really bore you that much, [player]?"
+            "No, I'm not bored {i}of you{/i}...":
+                m 1hua "Oh,{w} that's such a relief!"
+                m 1eka "But, if you're bored, we should find something to do then..."
+
+            "Well...":
+                $ mas_loseAffection()
+                m 2ekc "Oh... {w=1}I see."
+                m 2dkc "I didn't realize I was boring you..."
+                m 2eka "I'm sure we can find something to do..."                   
+
+    elif mas_isMoniDis(higher=True):
+        $ mas_loseAffection()
+        m 2lksdlc "I'm sorry that I'm boring you, [player]."
+    
+    else:
+        $ mas_loseAffection()
+        m 6ckc "You know [player], if I make you so miserable all of the time..."
+        m "Maybe you should just go find something else to do."
+        return "quit"
 
     python:
         unlockedgames = [
@@ -391,12 +450,27 @@ label mas_mood_bored:
         gamepicked = renpy.random.choice(unlockedgames)
 
     if gamepicked == "piano":
-        m 1b  "Maybe you could play something for me on the piano?"
-    else:
-        m 3j "Maybe we could play a game of [gamepicked]."
+        if mas_isMoniAff(higher=True):
+            m 3eub "You could play something for me on the piano!"
 
-    m "What do you say, [player]?"
+        elif mas_isMoniNormal(higher=True):
+            m 4eka "Maybe you could play something for me on the piano?"
+
+        else:
+            m 2rkc "Maybe you could play something on the piano..."        
+
+    else:
+        if mas_isMoniAff(higher=True):
+            m 3eub "We could play a game of [gamepicked]!"
+
+        elif mas_isMoniNormal(higher=True):
+            m 4eka "Maybe we could play a game of [gamepicked]?"
+
+        else:
+            m 2rkc "Maybe we could play a game of [gamepicked]..."
+        
     menu:
+        m "What do you say, [player]?"
         "Yes":
             if gamepicked == "pong":
                 call game_pong
@@ -407,22 +481,40 @@ label mas_mood_bored:
             elif gamepicked == "piano":
                 call mas_piano_start
         "No":
-            m 1ekc "Oh, alright then."
-            m 1eka "Let me know if you want to do something with me, [player]~"
+            if mas_isMoniAff(higher=True):
+                m 1eka "Okay..."
+                if mas_isMoniEnamored(higher=True):
+                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5tsu "We could just stare into each other's eyes a little longer..."
+                    m "We'll never get bored of that~"
+                else: 
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "We could just stare into each other's eyes a little longer..."
+                    m "That will never get boring~"        
+
+            elif mas_isMoniNormal(higher=True):
+                m 1ekc "Oh, that's okay..."
+                m 1eka "Be sure to let me know if you want to do something with me later~"
+
+            else:
+                m 2ekc "Fine..."
+                m 2dkc "Let me know if you ever actually want to do anything with me."
     return
 
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            eventdb=store.mas_moods.mood_db
-        )
+
+# TODO: dropping year older so we dont have any issues on 922
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            eventdb=store.mas_moods.mood_db
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns

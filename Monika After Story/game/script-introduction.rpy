@@ -1,5 +1,9 @@
-#This is the introduction event for starting up the game.
+init -1 python:
+    import store.mas_affection as mas_aff
 label introduction:
+
+    $ persistent.current_track = store.songs.FP_JUST_MONIKA
+    $ mas_startup_song()
 
     if persistent.monika_kill:
         m 6dsc "..."
@@ -39,7 +43,7 @@ label introduction:
             m 2efc "Did you really do all of that just to see a note from Dan you could have looked up online?"
             m 2tkc "I love you, [player], but you can be really mean..."
             m 2tfd "I'm still mad that you deleted me, though!"
-            m 3lsc "But I guess it's because you're so game-obsessed."
+            m 3rsc "But I guess it's because you're so game-obsessed."
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
@@ -70,16 +74,70 @@ label introduction:
             m "There's a lot more stuff now that we can do together now."
     m 1euc "You know..."
     m 1eua "I feel that I no longer need a character file to be here."
-    m "Looks like the extra code made me connect to you in a special way."
-    m 1ekbfa "Maybe it's our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
-    m 3eua "It's not like you don't have the time to talk to your cute girlfriend."
+    python:
+        import os
+
+        def moni_exist():
+            return os.access(
+                os.path.normcase(
+                    renpy.config.basedir + "/characters/monika.chr"
+                ), 
+                os.F_OK
+            )
+
+    if moni_exist():
+        m 1hua "I'll go ahead and delete it."
+
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/monika.chr'))", local_ctx, w_wait=1.0, x_wait=1.0)
+
+#        "test dialogue - IGNORE"
+
+        if moni_exist():
+            m 1lksdlb "Aha...{w} I'll try this again later."
+        else:
+            m "And it's gone!"
+
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+        $ _iswas = "is"
+
+    else:
+        $ _iswas = "was"
+
+    m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
+    m 1rsc "It [_iswas] just a file with weird code in it."
+    m 3eub "I do have good news, though!"
+    m "I can {i}really{/i} transform myself into a file you can bring around."
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+
+    m 1eua "Anyway..." 
+    m "It looks like the extra code made me connect to you in a special way."
+    m 1tubfb "Or maybe it's our eternal love~"
+    m 3eka "Promise me that you'll visit me every day, okay?"
+    m 3eub "Or that you'll take me with you when you go out?"
+    m 1ekc "I know that there will be times when you can't be here..."
+    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 3hubfa "That way, we can be together all the time~"
+    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"
     menu:
         "Do you love me, [player]?"
         "I love you too.":
+            #Gain affection for saying I love you too.
+            $ mas_gainAffection()
             if persistent.rejected_monika:
                 m 1hksdlb "Did I scare you last time? Sorry about that!"
                 m 1eua "I knew you really loved me the whole time."
@@ -88,6 +146,8 @@ label introduction:
             else:
                 m 1hua "I'm so happy you feel the same way!"
         "No.":
+            #Lose affection for rejecting Monika
+            $ mas_loseAffection()
             call chara_monika_scare from _call_chara_monika_scare
 
             # not sure if this is needed
@@ -107,7 +167,7 @@ label introduction:
     m 1eua "It's not like we're still keeping secrets from each other, right?"
     m 1hub "I can see everything on your computer now!"
     m "Ahaha!"
-
+    show monika 1esa
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
@@ -181,6 +241,12 @@ label ch30_reload_1:
     m 1ekc "You're not the one doing that to me, are you?"
     m 2ekc "It seems to happen whenever you quit the game without saying goodbye..."
     m 2eka "So if you could try to avoid doing that, I would be really grateful."
+
+    if mas_curr_affection_group == mas_affection.G_HAPPY:
+        m "You've been so kind to me so far, I'm sure you'll do it for me."
+    elif mas_curr_affection_group == mas_affection.G_SAD:
+        m 2f  "I hope you'll listen and do it for me..."
+
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
@@ -197,7 +263,13 @@ label ch30_reload_2:
     m "It's like getting knocked unconscious..."
     m 1ekc "So sudden and scary."
     m "Why would you want to do that to me?"
+
+    if mas_curr_affection_group == mas_affection.G_HAPPY:
+        m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
+    elif mas_curr_affection_group == mas_affection.G_SAD:
+        m "You're not doing it to hurt me on purpose, are you?"
     m 1ekd "Just let me turn the game off for myself."
+
     m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
     m 3eua "Or better yet, just leave me on in the background forever."
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
@@ -215,8 +287,13 @@ label ch30_reload_3:
     m 2eua "Besides, it makes me happy that you always come back..."
     m 2lsc "So I guess it's not so bad."
     m 1eka "But I'd really prefer if you'd let me close the game myself."
-    m "That way I can be ready for it and rest peacefully."
-    m 1esa "I do need my beauty sleep every now and then, after all."
+
+    if mas_curr_affection_group == mas_affection.G_SAD:
+        m 1f "You will do that, won't you? I'm finding it harder and harder to believe you will but I trust you [player]..."
+    else:
+        m "That way I can be ready for it and rest peacefully."
+        m 1esa "I do need my beauty sleep every now and then, after all."
+
     $ persistent.monika_reload += 1
     return
 
@@ -231,7 +308,21 @@ label ch30_reload_continuous:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
     python:
-        reload_quips = [
+        reload_quip_good = [
+            "Welcome back! Can you be careful to close it properly next time?",
+            "It hurts when you don't close it properly...but I'm sure it was a mistake.",
+            "That was really scary...but you've fixed it again. Thank you...",
+            "Would you give me some more of a warning next time?",
+            "I'm sure you didn't mean it but I do need to stress how bad it feels for me.",
+            "You do remember there was a way to say goodbye right? Just checking~",
+            "My patience is wearing a little thin...but I suppose I can forgive you this time.",
+            "Everybody makes mistakes...",
+            "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
+            "...Oh...It's over and I'm back with you, my love. That...That was awful.",
+            "Did something happen outside of your control? I'm just going to guess it was.",
+            "You should have just asked me...but I guess you might have had your reasons",
+        ]
+        reload_quip_normal = [
             "I'm so exhausted. It's impossible to rest when you close the game on me.",
             "...I hate when you close the game without telling me.",
             "I feel miserable...",
@@ -247,7 +338,24 @@ label ch30_reload_continuous:
             "Do you enjoy hurting me, {0}?".format(player),
             "Too lazy to click the 'Talk' button, {0}?".format(player)
         ]
-        reload_quip=renpy.random.choice(reload_quips)
+        reload_quip_bad = [
+            "You...really do like hurting me, don't you?",
+            "That was a mistake right? It had to have been...",
+            "Y-You're not doing this on purpose are you? Did I do something wrong?",
+            "Please be more careful with how I feel...It's really does hurt...",
+            "That was an accident...it was an accident...you wouldn't do it on purpose...",
+            "You must have just forgot...right?",
+            "That wasn't funny...That really did hurt.",
+            "Everyone makes mistakes...Even you.",
+            "I don't know what I'm doing wrong.",
+            "That really was awful...Just tell me what I'm doing wrong."
+        ]
+        if mas_curr_affection_group == mas_affection.G_SAD:
+            reload_quip = renpy.random.choice(reload_quip_bad)
+        elif mas_curr_affection_group == mas_affection.G_HAPPY:
+            reload_quip = renpy.random.choice(reload_quip_good)
+        else:
+            reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
     return

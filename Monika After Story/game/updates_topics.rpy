@@ -40,6 +40,10 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_8_6 = "v0_8_6"
+        vv0_8_5 = "v0_8_5"
+        vv0_8_4 = "v0_8_4"
+        vv0_8_3 = "v0_8_3"
         vv0_8_2 = "v0_8_2"
         vv0_8_1 = "v0_8_1"
         vv0_8_0 = "v0_8_0"
@@ -64,6 +68,10 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        updates.version_updates[vv0_8_5] = vv0_8_6
+        updates.version_updates[vv0_8_4] = vv0_8_6
+        updates.version_updates[vv0_8_3] = vv0_8_4
+        updates.version_updates[vv0_8_2] = vv0_8_3
         updates.version_updates[vv0_8_1] = vv0_8_2
         updates.version_updates[vv0_8_0] = vv0_8_1
         updates.version_updates[vv0_7_4] = vv0_8_0
@@ -95,6 +103,11 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.8.1 - 0.8.3) -> 0.8.4
+        updates.topics[vv0_8_4] = {
+            "monika_bestgirl": "mas_compliment_bestgirl"
+        }
 
         # 0.8.0 -> 0.8.1
         updates.topics[vv0_8_1] = {
