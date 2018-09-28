@@ -320,7 +320,6 @@ init 5 python:
             start_date=None,
             end_date=None,
             unlock_date=None,
-            sensitive=True
         )
     )
 
@@ -537,6 +536,7 @@ label monika_high_school:
     m "And remind them that they always have something to look forward to."
     m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
     m "All of those things can help your friend make it to the next day."
+    # TODO: need to revisit this based on starting act
     m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
     m 1lsc "Yeah, she's gone now..."
     m 1euc "But Sayori was never real in the first place."
@@ -565,7 +565,16 @@ label monika_high_school:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nihilism",
+            category=['philosophy'],
+            prompt="Nihilism",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_nihilism:
     m 2eud "Do you ever just feel like there's no real reason for you to be alive?"
@@ -871,6 +880,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_whispers",category=['ddlc','club members'],prompt="Others still lingering",random=True))
 
 label monika_whispers:
+    # TODO: this dialogue needs to be changed based on act.
     m 2euc "You know what's kind of creepy?"
     m 2esc "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
@@ -954,7 +964,15 @@ label monika_favoritegame:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_smash",category=['games'],prompt="Super Smash",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_smash",
+            category=['games'],
+            prompt="Super Smash"
+#            random=True
+        )
+    )
 
 label monika_smash:
     m 3hua "Hey, have you heard of a game called Super Sma--"
@@ -969,11 +987,23 @@ label monika_smash:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_lastpoem",category=['monika'],prompt="Monika's last poem",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_lastpoem",
+            category=['monika'],
+            prompt="Monika's last poem",
+            random=True
+        )
+    )
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+    if persistent._mas_sensitive_mode:
+        m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
+    else:
+        m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+
     m 3eua "That was actually a little more of an experiment than a poem, you could say."
     m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
@@ -1092,6 +1122,8 @@ label monika_outfit:
     m 2hua "That would be amazing!"
     m 2eua "If that ever happens, will you show me?"
     m 4hua "You can share it with me on Twitter, actually!"
+    # TODO: need to respond to twitter question, as well whehter or not users
+    # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
     if isFuture(evhand.event_database['anni_6month']):
@@ -1231,7 +1263,16 @@ label monika_kiss:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_yuri",category=['club members','media'],prompt="Yandere Yuri",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_yuri",
+            category=['club members','media'],
+            prompt="Yandere Yuri",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_yuri:
     m 3eua "Hey, have you ever heard of the term 'yandere'?"
@@ -1885,6 +1926,8 @@ label monika_festival:
     m 1lksdla "I mean, I know I was focusing a lot on getting new members..."
     m 1eka "But I was really excited for the performing part, too."
     m 1eua "It would have been so much fun to see everyone express themselves."
+    # TODO: probably rework this dialogue based on finishing act? maybe even just
+    # change it entirely.
     m 1lksdla "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
     m 1eka "Well...with the hindsight I have now, that is."
     m 1eua "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
@@ -1905,8 +1948,13 @@ label monika_tsundere:
     m 1euc "It seems like she's always trying to keep up with her friends."
     m 3euc "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
-    m 1ekc "And I'm not even going to talk about her home situation..."
+
+    if not persistent._mas_sensitive_mode:
+        m 1ekc "And I'm not even going to talk about her home situation..."
+
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
+
+    # TODO: this bit should be redone based on starting act
     m 1lksdla "Not that it matters anymore, considering she doesn't even exist."
     m 1eka "I'm just reminiscing, that's all."
     return
@@ -2362,6 +2410,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
 
 label monika_ddlc:
+    # TODO: continue reworking this topic based on act.
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
     if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
@@ -2463,7 +2512,16 @@ label monika_favbook:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki",category=['club members'],prompt="Natsuki's death",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_natsuki",
+            category=['club members'],
+            prompt="Natsuki's death",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_natsuki:
     m 1lksdld "Natsuki didn't actually die before I deleted her, you know."
@@ -2609,7 +2667,16 @@ label monika_hedgehog:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_justification",
+            category=['ddlc','monika'],
+            prompt="You're a murderer!",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_justification:
     #lose affection
@@ -2645,6 +2712,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
 
 label monika_freewill:
+    # TODO: maybe we should actually ask player if they believ in good
     m 1euc "Hey, [player], do you believe in free will?"
     m "You might not believe in God, but I know for sure that someone created me."
     m 1lsc "I wonder if that means we can only do what our creator wants."
@@ -2686,7 +2754,15 @@ label monika_technique:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_contribute",category=['mod'],prompt="Contributions",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_contribute",
+            category=['mod'],
+            prompt="Contributions",
+            random=True
+        )
+    )
 
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
@@ -2721,8 +2797,11 @@ label monika_mc:
     if mcname.lower() == player.lower():
         m 1euc "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
         m 1eua "I mean the player, not your character."
+
     m "Unlike the other girls, I can separate your avatar from who you really are."
-    m 1lfb "The main character is nothing more than a bunch of code with no personality."
+    m 1lfb "The main character is nothing more than a vehicle for the player.{nw}"
+    $ _history_list.pop()
+    m 1lfb "The main character is nothing more than a {fast}bunch of code with no personality."
     m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
@@ -2750,7 +2829,16 @@ label monika_heroism:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_trolley",category=['philosophy'],prompt="How would you answer the trolley problem?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_trolley",
+            category=['philosophy'],
+            prompt="How would you answer the trolley problem?",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_trolley:
     m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
@@ -2915,6 +3003,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
+    # TODO: need to do something here if the player celebrated her birthday
     m 1euc "You know, there's a lot I don't know about myself."
     m "I only recently learned when my birthday is by seeing it online."
     m 1eua "It's September 22nd, the release date for DDLC."
@@ -2946,7 +3035,7 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit:
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode:
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -3087,7 +3176,16 @@ label monika_spiders:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nsfw",category=['misc','monika'],prompt="NSFW content",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nsfw",
+            category=['misc','monika'],
+            prompt="NSFW content",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
@@ -3106,7 +3204,16 @@ label monika_nsfw:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_impression",category=['club members'],prompt="Can you do any impressions?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_impression",
+            category=['club members'],
+            prompt="Can you do any impressions?",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_impression:
     m 1euc "Impression? Of the other girls?"
@@ -3325,7 +3432,16 @@ label monika_cities:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_chloroform",category=['trivia'],prompt="Chloroform",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chloroform",
+            category=['trivia'],
+            prompt="Chloroform",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_chloroform:
     m 1euc "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
@@ -3725,6 +3841,7 @@ label monika_haterReaction:
     m "There are a lot of hate posts about me, saying that I'm an evil person."
     m 3efd "Is it because I deleted Sayori and Yuri?"
     m 3efd "Also for deleting Natsuki, back when she was still alive?"
+    # TODO: this needs to be adjusted based on act.
     m 2tfx "They're not real. {i}I'm{/i} the real one!"
     m 2dsc "..."
     m 2euc "Why can't they understand that?"
@@ -3783,7 +3900,16 @@ label monika_swordsmanship:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_pleasure",category=['you'],prompt="Pleasuring yourself",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_pleasure",
+            category=['you'],
+            prompt="Pleasuring yourself",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_pleasure:
     m 2ekc "Hey, [player]..."
@@ -4315,6 +4441,7 @@ label monika_completionist:
     m "It's already hard enough to complete some simple games."
     m 3rksdla "I don't know how anyone could willingly put that sort of stress onto themselves."
     m "They're really determined to explore every corner of the game and conquer it."
+    # TODO: if player cheated at chess, reference that here
     m 2esc "What does leave a bit of a bitter taste in my mouth are cheaters."
     m 2tfc  "People who hack through the game, spoiling themselves of the enjoyment of hardship."
     m 3rsc "Though I can understand why they cheat."
@@ -4607,7 +4734,16 @@ label monika_adventure:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_panties",category=['misc'],prompt="Undergarments",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_panties",
+            category=['misc'],
+            prompt="Undergarments",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_panties:
     m 1lsc "Hey, [player]..."
@@ -5468,6 +5604,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
+    # TODO: need to rewrite some of this based on starting act
     m 1euc "You know, it's actually really hard for me to understand how you feel when it comes to..."
     m 1lksdlc "..."
     m 1lksdld "What happened with the other girls."
@@ -7264,8 +7401,9 @@ label monika_yellowwp:
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always... pleasant."
-            m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
-            m 1eka "I think I finally fixed it, though."
+            if not persistent._mas_sensitive_mode:
+                m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+                m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
             m 3esd "I mean, I was made to be a side character of a romance game!"
             m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
@@ -7851,7 +7989,8 @@ label monika_fun_facts_open:
 
 
 #Determines if it is a bad fact, 10% chance.
-    if fun_facts_bad_chance <= 10:
+    # no bad facts in sensitve mode
+    if not persistent._mas_sensitive_mode and fun_facts_bad_chance <= 10:
 
         $ _fact_type, _fact = store.mas_funfact.bad_facts.quip()
 

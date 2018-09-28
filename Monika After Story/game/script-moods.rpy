@@ -329,6 +329,7 @@ label mas_mood_inadequate:
         m 1ekbfa "On Valentine's Day..."
     if renpy.seen_label('monika_white_day_start'):
         m 1hubfb "White Day too!" 
+    # TODO mention celebrating birthday
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
     if not persistent.monika_kill:
@@ -401,6 +402,10 @@ label mas_mood_bored:
         ]
 
         gamepicked = renpy.random.choice(unlockedgames)
+        display_picked = gamepicked
+
+        if gamepicked == "hangman" and persistent._mas_sensitive_mode:
+            display_picked = "word guesser"
 
     if gamepicked == "piano":
         if mas_isMoniAff(higher=True):
@@ -414,13 +419,13 @@ label mas_mood_bored:
 
     else:
         if mas_isMoniAff(higher=True):
-            m 3eub "We could play a game of [gamepicked]!"
+            m 3eub "We could play a game of [display_picked]!"
 
         elif mas_isMoniNormal(higher=True):
-            m 4eka "Maybe we could play a game of [gamepicked]?"
+            m 4eka "Maybe we could play a game of [display_picked]?"
 
         else:
-            m 2rkc "Maybe we could play a game of [gamepicked]..."
+            m 2rkc "Maybe we could play a game of [display_picked]..."
         
     menu:
         m "What do you say, [player]?"
