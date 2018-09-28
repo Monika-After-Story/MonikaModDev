@@ -2575,6 +2575,47 @@ init -1 python:
         return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
 
 
+    def mas_isMNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within midnight to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+        NOTE: lower bound is 0 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of midnight and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 0, _hour, _min)
+
+
+    def mas_isNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within noon to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of noon and the given hour
+            /min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 12*60, _hour, _min)
+
+
     def mas_isAnytoST(_time, _hour, _min, _suntime):
         """
         Checks if the given time is within this range:
@@ -2638,6 +2679,48 @@ init -1 python:
             and sunset, False otherwise
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
+
+    def mas_isAnytoMN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to midnight (next
+        day)
+
+        NOTE: lower bound is limited to midnight
+        NOTE: upper bound is 24 - midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - mintue to use for lower bound
+                (DEfault: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and midnight, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 24*60)
+
+
+    def mas_isAnytoN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to noon.
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given tim eis within the bounds of the given hour/min
+            and Noon, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 12*60)
 
 
     def mas_isMNtoSR(_time):
