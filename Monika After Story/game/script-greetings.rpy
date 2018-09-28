@@ -582,12 +582,16 @@ label i_greeting_monikaroom:
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
+    $ _opendoor_text = "... Gently open the door."
+    if persistent._mas_sensitive_mode:
+        $ _opendoor_text = "Open the door."
+
     menu:
-        "... Gently open the door" if not persistent.seen_monika_in_room:
+        "[_opendoor_text]" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
             jump monikaroom_greeting_opendoor
-        "Open the door" if persistent.seen_monika_in_room:
+        "Open the door." if persistent.seen_monika_in_room:
             if persistent.opendoor_opencount > 0:
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
@@ -598,11 +602,11 @@ label monikaroom_greeting_choice:
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
-        "Knock":
+        "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
             jump monikaroom_greeting_knock
-        "Listen" if not has_listened:
+        "Listen." if not has_listened:
             $ has_listened = True # we cant do this twice per run
             $ mroom_greet = renpy.random.choice(gmr.eardoor)
 #            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]

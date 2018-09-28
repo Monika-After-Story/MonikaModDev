@@ -168,7 +168,10 @@ label preferredname:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:
@@ -241,7 +244,10 @@ label monika_changename:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare_1
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:
@@ -306,6 +312,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label unlock_hangman:
+    if persistent._mas_sensitive_mode:
+        $ game_name = "Word Guesser"
+    else:
+        $ game_name = "Hangman"
+
     m 1eua "Guess what, [player]."
     m 3hub "I got a new game for you to try!"
     if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
@@ -317,20 +328,30 @@ label unlock_hangman:
     else:
         m 1ekc "I was actually worried that you didn't like the other games I made for us to play..."
     m 1hua "Soooo~"
-    m 1hub "I made Hangman!"
-    m 1lksdlb "Hopefully it's not in poor taste..."
+    m 1hub "I made [game_name]!"
+
+    if not persistent._mas_sensitive_mode:
+        m 1lksdlb "Hopefully it's not in poor taste..."
+
     m 1eua "It was always my favorite game to play with the club."
-    m 1lsc "But, come to think of it..."
-    m "The game is actually quite morbid."
-    m 3rssdrc "You guess letters for a word to save someone's life."
-    m "Get them all correct and the person doesn't hang."
-    m 1lksdlc "But guess them all wrong..."
-    m "They die because you didn't guess the right letters."
-    m 1euc "Pretty dark, isn't it?"
-    m 1hksdlb "But don't worry, [player], it's just a game after all!"
-    m 1eua "I assure you that no one will be hurt with this game."
-    if persistent.playername.lower() == "sayori":
-        m 3tku "...Maybe~"
+
+    if not persistent._mas_sensitive_mode:
+        m 1lsc "But, come to think of it..."
+        m "The game is actually quite morbid."
+        m 3rssdrc "You guess letters for a word to save someone's life."
+        m "Get them all correct and the person doesn't hang."
+        m 1lksdlc "But guess them all wrong..."
+        m "They die because you didn't guess the right letters."
+        m 1euc "Pretty dark, isn't it?"
+        m 1hksdlb "But don't worry, [player], it's just a game after all!"
+        m 1eua "I assure you that no one will be hurt with this game."
+
+        if persistent.playername.lower() == "sayori":
+            m 3tku "...Maybe~"
+
+    else:
+        m 1hua "I hope you'll enjoy playing it with me!"
+
     $persistent.game_unlocks['hangman']=True
     return
 
