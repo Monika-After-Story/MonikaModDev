@@ -102,6 +102,8 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
+    #   sensitive - True means this is a sensitve topic, False means it is not
+    #       (Default: False)
     class Event(object):
 
         # tuple constants
@@ -122,7 +124,8 @@ python early:
             "diary_entry":13,
             "rules":14,
             "last_seen":15,
-            "years":16
+            "years":16,
+            "sensitive":17
         }
 
         # name constants
@@ -165,7 +168,8 @@ python early:
                 diary_entry=None,
                 rules=dict(),
                 last_seen=None,
-                years=None
+                years=None,
+                sensitive=False
             ):
 
             # setting up defaults
@@ -216,7 +220,8 @@ python early:
                 diary_entry,
                 rules,
                 last_seen,
-                years
+                years,
+                sensitive
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -446,7 +451,9 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None
+            ):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -495,6 +502,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # sensitivyt
+            if sensitive is not None and event.sensitive != sensitive:
+                return False
+
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
                 return False
@@ -513,7 +524,9 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None
+            ):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -551,6 +564,13 @@ python early:
             #   moni_wants - boolean value to match if the event has the monika
             #       wants this first.
             #       (Default: None )
+            #   sensitive - boolean value to match if the event is sensitive
+            #       or not
+            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
+            #           if sensitive mode is True.
+            #           AKA: we only filter sensitve topics if sensitve mode is
+            #           enabled.
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -569,7 +589,8 @@ python early:
                     and action is None
                     and seen is None
                     and excl_cat is None
-                    and moni_wants is None)):
+                    and moni_wants is None
+                    and sensitive is None)):
                 return events
 
             # copy check
@@ -585,6 +606,13 @@ python early:
                 category = None
             if action and len(action) == 0:
                 action = None
+            if sensitive is None:
+                try:
+                    # i have no idea if this is reachable from here
+                    if persistent._mas_sensitive_mode:
+                        sensitive = False
+                except:
+                    pass
 
             filt_ev_dict = dict()
 
@@ -593,7 +621,8 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat,moni_wants=moni_wants):
+                        excl_cat=excl_cat,moni_wants=moni_wants,
+                        sensitive=sensitive):
 
                     filt_ev_dict[k] = v
 
@@ -2575,6 +2604,47 @@ init -1 python:
         return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
 
 
+    def mas_isMNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within midnight to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+        NOTE: lower bound is 0 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of midnight and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 0, _hour, _min)
+
+
+    def mas_isNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within noon to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of noon and the given hour
+            /min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 12*60, _hour, _min)
+
+
     def mas_isAnytoST(_time, _hour, _min, _suntime):
         """
         Checks if the given time is within this range:
@@ -2638,6 +2708,48 @@ init -1 python:
             and sunset, False otherwise
         """
         return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
+
+    def mas_isAnytoMN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to midnight (next
+        day)
+
+        NOTE: lower bound is limited to midnight
+        NOTE: upper bound is 24 - midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - mintue to use for lower bound
+                (DEfault: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and midnight, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 24*60)
+
+
+    def mas_isAnytoN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to noon.
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given tim eis within the bounds of the given hour/min
+            and Noon, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 12*60)
 
 
     def mas_isMNtoSR(_time):
@@ -4348,6 +4460,10 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+
+# sensitive mode enabler
+default persistent._mas_sensitive_mode = False
+
 init python:
     startup_check = False
     try:

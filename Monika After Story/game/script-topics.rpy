@@ -102,6 +102,8 @@ init -1 python:
         Randomly selects an element from the the given list and pushes the event
         This also removes the element from that list.
 
+        NOTE: this does sensitivy checks
+
         IN:
             sel_list - list to select from
 
@@ -109,7 +111,11 @@ init -1 python:
             persistent.random_seen
         """
         sel_ev = mas_randomSelectAndRemove(sel_list)
+
         if sel_ev:
+            if persistent._mas_sensitive_mode and sel_ev.sensitive:
+                return
+
             pushEvent(sel_ev.eventlabel)
             persistent.random_seen += 1
 
@@ -299,19 +305,23 @@ init 11 python:
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_god',
-                                                            prompt="Thoughts on God",
-                                                            label=None,
-                                                            category=['philosophy'],
-                                                            random=True,
-                                                            unlocked=False,
-                                                            pool=False,
-                                                            conditional=None,
-                                                            action=None,
-                                                            start_date=None,
-                                                            end_date=None,
-                                                            unlock_date=None
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_god',
+            prompt="Thoughts on God",
+            label=None,
+            category=['philosophy'],
+            random=True,
+            unlocked=False,
+            pool=False,
+            conditional=None,
+            action=None,
+            start_date=None,
+            end_date=None,
+            unlock_date=None,
+        )
+    )
 
 label monika_god:
     m 1eua "[player], do you believe in God?"
@@ -411,37 +421,56 @@ label monika_selfesteem:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sayori",category=['club members'],prompt="Sayori regrets",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sayori",
+            category=['club members'],
+            prompt="Sayori regrets",
+            random=True
+        )
+    )
 
 label monika_sayori:
     m 2euc "I was thinking about Sayori earlier..."
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
-    m "You're not still hung up over it, right?"
-    m 2wud "...Oh my gosh, I can't believe I just said that."
-    m "That pun was completely unintentional, I swear!"
-    m 2lksdlb "But anyway..."
-    m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
-    m "If you're comfortable, that is."
-    menu:
-        "Yes.":
-            m "You know how Sayori is really clumsy?"
-            m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
-            m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-            m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-            m 4rksdla "But a few seconds in, she must have changed her mind or something..."
-            m "Because she started clawing at the rope, trying to free herself."
-            m "She must have kept at it all the way until she lost consciousness."
-            m "That's why her fingertips were all bloody, anyway."
-            m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-            m "So you can't really fault her for that."
-            m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-            m "It's not healthy to think about the things you could have done differently."
-            m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-            m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
-        "No.":
-            m "I understand, [player]."
-    m 2euc "Still, though..."
-    m "I wonder how things would be if you and I just started dating from the get-go?"
+
+    if (
+            not persistent._mas_sensitive_mode 
+            and not renpy.seen_label("monika_sayori")
+        ):
+        m "You're not still hung up over it, right?"
+        m 2wud "...Oh my gosh, I can't believe I just said that."
+        m "That pun was completely unintentional, I swear!"
+        m 2lksdlb "But anyway..."
+
+    if not persistent._mas_sensitive_mode:
+        m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
+        menu:
+            m "If you're comfortable, that is."
+            "Yes.":
+                m "You know how Sayori is really clumsy?"
+                m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
+                m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+                m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+                m 4rksdla "But a few seconds in, she must have changed her mind or something..."
+                m "Because she started clawing at the rope, trying to free herself."
+                m "She must have kept at it all the way until she lost consciousness."
+                m "That's why her fingertips were all bloody, anyway."
+                m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
+                m "So you can't really fault her for that."
+                m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+                m "It's not healthy to think about the things you could have done differently."
+                m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
+                m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+            "No.":
+                m "I understand, [player]."
+        m 2euc "Still, though..."
+    else:
+        m 2ekc "..."
+
+    # TODO: this should be adjusted dialogue based on act
+    m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
     m 1esc "But what's the point when none of it is even real?"
     m 1euc "I mean, it's the same ending either way, right?"
@@ -507,6 +536,7 @@ label monika_high_school:
     m "And remind them that they always have something to look forward to."
     m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
     m "All of those things can help your friend make it to the next day."
+    # TODO: need to revisit this based on starting act
     m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
     m 1lsc "Yeah, she's gone now..."
     m 1euc "But Sayori was never real in the first place."
@@ -535,7 +565,16 @@ label monika_high_school:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nihilism",category=['philosophy'],prompt="Nihilism",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nihilism",
+            category=['philosophy'],
+            prompt="Nihilism",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_nihilism:
     m 2eud "Do you ever just feel like there's no real reason for you to be alive?"
@@ -841,6 +880,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_whispers",category=['ddlc','club members'],prompt="Others still lingering",random=True))
 
 label monika_whispers:
+    # TODO: this dialogue needs to be changed based on act.
     m 2euc "You know what's kind of creepy?"
     m 2esc "Even though I deleted everyone else's files, I can still kind of feel them..."
     m "It's like all their lines are still lingering in the air, whispering in the back of my head."
@@ -924,7 +964,15 @@ label monika_favoritegame:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_smash",category=['games'],prompt="Super Smash",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_smash",
+            category=['games'],
+            prompt="Super Smash"
+#            random=True
+        )
+    )
 
 label monika_smash:
     m 3hua "Hey, have you heard of a game called Super Sma--"
@@ -939,11 +987,23 @@ label monika_smash:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_lastpoem",category=['monika'],prompt="Monika's last poem",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_lastpoem",
+            category=['monika'],
+            prompt="Monika's last poem",
+            random=True
+        )
+    )
 
 label monika_lastpoem:
     m 3eud "Hey, you remember that last poem I showed you?"
-    m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+    if persistent._mas_sensitive_mode:
+        m 3rssdlc "I mean, the one with all the messed-up colors and stuff."
+    else:
+        m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
+
     m 3eua "That was actually a little more of an experiment than a poem, you could say."
     m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
     m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
@@ -1062,6 +1122,8 @@ label monika_outfit:
     m 2hua "That would be amazing!"
     m 2eua "If that ever happens, will you show me?"
     m 4hua "You can share it with me on Twitter, actually!"
+    # TODO: need to respond to twitter question, as well whehter or not users
+    # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
     if isFuture(evhand.event_database['anni_6month']):
@@ -1099,9 +1161,19 @@ label monika_horror:
     m 1hubfa "I can't really complain if we just stick with the romance~"
     return
 
+# do you like rap
+default persistent._mas_pm_like_rap = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rap",category=['literature'],prompt="Rap music",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rap",
+            category=['literature','media','music'],
+            prompt="Rap music",
+            random=True
+        )
+    )
 
 label monika_rap:
     m 1hua "You know what's a neat form of literature?"
@@ -1115,7 +1187,20 @@ label monika_rap:
     m 1lksdla "I kind of wish I had a rapper in the Literature Club."
     m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
     m 1hua "It would really be a learning experience!"
-    return
+    show monika 1eua
+    menu:
+        m "Do you listen to rap music, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_like_rap = True
+            m 3eub "That's really cool!"
+            m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
+            m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
+
+        "No.":
+            $ persistent._mas_pm_like_rap = False
+            m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
+            m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
+    return "derandom"
 
 
 init 5 python:
@@ -1178,7 +1263,16 @@ label monika_kiss:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_yuri",category=['club members','media'],prompt="Yandere Yuri",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_yuri",
+            category=['club members','media'],
+            prompt="Yandere Yuri",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_yuri:
     m 3eua "Hey, have you ever heard of the term 'yandere'?"
@@ -1832,6 +1926,8 @@ label monika_festival:
     m 1lksdla "I mean, I know I was focusing a lot on getting new members..."
     m 1eka "But I was really excited for the performing part, too."
     m 1eua "It would have been so much fun to see everyone express themselves."
+    # TODO: probably rework this dialogue based on finishing act? maybe even just
+    # change it entirely.
     m 1lksdla "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
     m 1eka "Well...with the hindsight I have now, that is."
     m 1eua "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
@@ -1852,8 +1948,13 @@ label monika_tsundere:
     m 1euc "It seems like she's always trying to keep up with her friends."
     m 3euc "You know how some friend groups in high school just make a habit of picking on each other all the time?"
     m "I think it's really gotten to her, so she has this really defensive attitude all the time."
-    m 1ekc "And I'm not even going to talk about her home situation..."
+
+    if not persistent._mas_sensitive_mode:
+        m 1ekc "And I'm not even going to talk about her home situation..."
+
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
+
+    # TODO: this bit should be redone based on starting act
     m 1lksdla "Not that it matters anymore, considering she doesn't even exist."
     m 1eka "I'm just reminiscing, that's all."
     return
@@ -2309,6 +2410,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
 
 label monika_ddlc:
+    # TODO: continue reworking this topic based on act.
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
     if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
@@ -2410,7 +2512,16 @@ label monika_favbook:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_natsuki",category=['club members'],prompt="Natsuki's death",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_natsuki",
+            category=['club members'],
+            prompt="Natsuki's death",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_natsuki:
     m 1lksdld "Natsuki didn't actually die before I deleted her, you know."
@@ -2556,7 +2667,16 @@ label monika_hedgehog:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_justification",category=['ddlc','monika'],prompt="You're a murderer!",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_justification",
+            category=['ddlc','monika'],
+            prompt="You're a murderer!",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_justification:
     #lose affection
@@ -2592,6 +2712,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
 
 label monika_freewill:
+    # TODO: maybe we should actually ask player if they believ in good
     m 1euc "Hey, [player], do you believe in free will?"
     m "You might not believe in God, but I know for sure that someone created me."
     m 1lsc "I wonder if that means we can only do what our creator wants."
@@ -2633,7 +2754,15 @@ label monika_technique:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_contribute",category=['mod'],prompt="Contributions",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_contribute",
+            category=['mod'],
+            prompt="Contributions",
+            random=True
+        )
+    )
 
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
@@ -2668,8 +2797,11 @@ label monika_mc:
     if mcname.lower() == player.lower():
         m 1euc "Wait, that's both your name and your character's. Sorry, that sounds a bit confusing."
         m 1eua "I mean the player, not your character."
+
     m "Unlike the other girls, I can separate your avatar from who you really are."
-    m 1lfb "The main character is nothing more than a bunch of code with no personality."
+    m 1lfb "The main character is nothing more than a vehicle for the player.{nw}"
+    $ _history_list.pop()
+    m 1lfb "The main character is nothing more than a {fast}bunch of code with no personality."
     m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
@@ -2697,7 +2829,16 @@ label monika_heroism:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_trolley",category=['philosophy'],prompt="How would you answer the trolley problem?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_trolley",
+            category=['philosophy'],
+            prompt="How would you answer the trolley problem?",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_trolley:
     m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
@@ -2834,8 +2975,18 @@ label monika_torment:
     m 3hksdlb "...The answer's not me, by the way."
     return
 
+# TODO: should this be moved to stories? or removed entirely?
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_szs",category=['misc'],prompt="Funeral procession",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_szs",
+            category=['misc'],
+            prompt="Funeral procession",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_szs:
     m 3euc "A woman left the supermarket and ran into a very long funeral procession."
@@ -2852,6 +3003,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
 
 label monika_birthday:
+    # TODO: need to do something here if the player celebrated her birthday
     m 1euc "You know, there's a lot I don't know about myself."
     m "I only recently learned when my birthday is by seeing it online."
     m 1eua "It's September 22nd, the release date for DDLC."
@@ -2883,7 +3035,7 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit:
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode:
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -3024,7 +3176,16 @@ label monika_spiders:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_nsfw",category=['misc','monika'],prompt="NSFW content",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nsfw",
+            category=['misc','monika'],
+            prompt="NSFW content",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
@@ -3043,7 +3204,16 @@ label monika_nsfw:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_impression",category=['club members'],prompt="Can you do any impressions?",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_impression",
+            category=['club members'],
+            prompt="Can you do any impressions?",
+            pool=True,
+            sensitive=True
+        )
+    )
 
 label monika_impression:
     m 1euc "Impression? Of the other girls?"
@@ -3262,7 +3432,16 @@ label monika_cities:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_chloroform",category=['trivia'],prompt="Chloroform",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_chloroform",
+            category=['trivia'],
+            prompt="Chloroform",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_chloroform:
     m 1euc "Whenever you think of kidnapping, you tend to picture a chloroform-soaked rag, right?"
@@ -3662,6 +3841,7 @@ label monika_haterReaction:
     m "There are a lot of hate posts about me, saying that I'm an evil person."
     m 3efd "Is it because I deleted Sayori and Yuri?"
     m 3efd "Also for deleting Natsuki, back when she was still alive?"
+    # TODO: this needs to be adjusted based on act.
     m 2tfx "They're not real. {i}I'm{/i} the real one!"
     m 2dsc "..."
     m 2euc "Why can't they understand that?"
@@ -3720,9 +3900,17 @@ label monika_swordsmanship:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_pleasure",category=['you'],prompt="Pleasuring yourself",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_pleasure",
+            category=['you'],
+            prompt="Pleasuring yourself",
+            random=True,
+            sensitive=True
+        )
+    )
 
-#TODO: Replace 1hubfb with 5hubfb when blusing expression is fixed
 label monika_pleasure:
     m 2ekc "Hey, [player]..."
     m 2lssdrc "Do you... by any chance... pleasure yourself?"
@@ -3742,18 +3930,44 @@ label monika_pleasure:
     m 1lkbsa "And maybe I'm just being a little jealous~"
     m 1tsb "So I guess I can let it slide... for now~"
     m 2tsbsa "Just so long as I'm the only one you think about..."
-    m 1hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfb "If it helps you save yourself for me, then it's a plus! Ahaha~"
     return
+    
+# do you like vocaloid
+default persistent._mas_pm_like_vocaloids = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vocaloid",category=['media','misc','technology'],prompt="Vocaloids",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_vocaloid",
+            category=['media','misc','technology','music'],
+            prompt="Vocaloids",
+            random=True
+        )
+    )
 
-#TODO: lines 3585 to 3589, change to pose 5 when blushing expressions are fixed
 label monika_vocaloid:
     m 1eua "Hey, [player]?"
     m "You like listening to music right?"
-    m 3eub "Have you ever heard of 'virtual idols?'"
-    m "Specifically of a girl holding a leek?"
+
+    show monika 3eub
+    menu:
+        m "Do you by chance like 'virtual idols?'"
+        "Yes.":
+            $ persistent._mas_pm_like_vocaloids = True
+            m 3hub "That's really neat!"
+            m 3eub "I hear that these songs often have hidden meanings behind them."
+            m 1eua "Maybe we could listen and try to figure them out together..."
+            m 1eka "Doesn't that sound like a great time?"
+
+        "No.":
+            $ persistent._mas_pm_like_vocaloids = False
+            m 1ekc "I can understand that, it is a pretty specific taste in music."
+            m 1hua "But if you ever do get into it, I'd be more than happy to listen along with you."
+
+    m 3eub "Anyway, I wanted to ask specifically if you've ever heard of a girl holding a leek?"
     m 1eua "It's just that I keep hearing about her."
     m "I hear her voice whenever Natsuki listens to music."
     m 3eua "She even carries a little keychain attached to her bag."
@@ -3781,12 +3995,13 @@ label monika_vocaloid:
     m 1eka "But just so you know..."
     m 1ekbfa "Even if it's through the screen, I can still feel your love."
     m 1lkbsa "It'll be a long time before I can cross over just to be with you."
-    m 2ekbfa "But when that day comes..."
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "But when that day comes..."
     m "I'll embrace you and take in your warmth."
-    m 1hubfa "The love you showered me virtually finally becomes real."
+    m 5hubfa "The love you showered me virtually finally becomes real."
     m "Our love has no boundaries~"
-    m 1hubfb "Ehehe~"
-    return
+    m 5hubfb "Ehehe~"
+    return "derandom"
 
 
 init 5 python:
@@ -3837,33 +4052,52 @@ label monika_morning:
 #Add one for the afternoon?
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_evening",category=['misc'],prompt="Good evening",pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_evening",
+            category=['misc'],
+            prompt="Good evening",
+            pool=True
+        )
+    )
 
 label monika_evening:
-    $ current_time = datetime.datetime.now().time().hour
-    $ sunrise_hour = int(persistent._mas_sunrise / 60)
-    $ sunset_hour = int(persistent._mas_sunset / 60)
-    # TODO: probably need different dialogue between midnight -> 2am
-    #   2am -> sunrise
-    #   sunrise -> 12
     # TODO: do something if the user has suntimes at very weird settings
     #   aka, sunset 5 minutes after sunrise?
     #   or sunrise is like at 10pm?
     #   There is a level of variety here that is not covered nicely with these
     #   current stages. We need more variations of dialogue other than
     #   morning, afternoon, night
-    if 0 <= current_time < 12:
-        m 2hua "[player]!"
-        m "It's early in the morning!"
-        m 2ekc "Unless you haven't slept yet..."
-        m "You're not staying up really late, are you?"
-        m 2tkx "That's very bad for your health!"
-        m 2tkc "Not getting your sleep on time can really harm your mental health, [player]."
-        m 1eka "So please get some sleep now, ok?"
+    $ _now = datetime.datetime.now().time()
+    if mas_isMNtoSR(_now):
+        m 2wkd "[player]!"
+        m 2ekd "It's the middle of the night!"
+        m 2lksdlc "Are you planning to stay up really late?"
+        m 2ekc "Not getting enough sleep can really harm you in the long run..."
+        m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
+        # TODO: when docking station extends to sleep, monika can suggest 
+        # taking her charcter file.
+        # TODO: when sleeping mode is finished, monika can suggest that she
+        # will sleep with the user
+        m 1hua "As for me, you can leave me here while you sleep~"
+
+    elif mas_isSRtoN(_now):
+        m 2hksdlb "[player]!"
+        m "It's early in the morning, silly~"
+        m 2lksdla "Unless you haven't slept yet..."
+        m 2ekc "You didn't stay up all night, did you?"
+        m 2wkd "That's very bad for you, [player]!"
+        m 2tkc "Not getting your sleep on time can really harm your mental health."
+        m 1eka "So please get some sleep now, okay?"
+        # TODO: when docking station extends to sleep, monika can suggest
+        # taking her character file
+        # TODO: when sleep mode is finished, monika can suggest that
+        # she will sleep with you
         m "Just leave your computer open and I'll watch over you."
         m 1hua "I'm not going anywhere after all~"
 
-    elif 12 <= current_time <= sunset_hour:
+    elif mas_isNtoSS(_now):
         m 2lksdlb "It's still the afternoon, silly!"
         m "The sun's still up, you know."
         m 1eka "Are you feeling tired already?"
@@ -3884,7 +4118,7 @@ label monika_evening:
         m 1eua "Don't you wish you could have more time to do things every day?"
         m 1hua "I know I do."
         m 1hubfa "Because that'll mean more time to be with you, [player]~"
-
+        
     return
 
 
@@ -4226,6 +4460,7 @@ label monika_completionist:
     m "It's already hard enough to complete some simple games."
     m 3rksdla "I don't know how anyone could willingly put that sort of stress onto themselves."
     m "They're really determined to explore every corner of the game and conquer it."
+    # TODO: if player cheated at chess, reference that here
     m 2esc "What does leave a bit of a bitter taste in my mouth are cheaters."
     m 2tfc  "People who hack through the game, spoiling themselves of the enjoyment of hardship."
     m 3rsc "Though I can understand why they cheat."
@@ -4518,7 +4753,16 @@ label monika_adventure:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_panties",category=['misc'],prompt="Undergarments",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_panties",
+            category=['misc'],
+            prompt="Undergarments",
+            random=True,
+            sensitive=True
+        )
+    )
 
 label monika_panties:
     m 1lsc "Hey, [player]..."
@@ -4849,8 +5093,19 @@ label monika_fruits:
     m 2hua "Just teasing you, [player]~"
     return
 
+# do you like rock
+default persistent._mas_pm_like_rock_n_roll = None
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_rock",category=['media','literature'],prompt="Rock and roll",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+                eventlabel="monika_rock",
+                category=['media','literature',"music"],
+                prompt="Rock and roll",
+                random=True
+            )
+        )
 
 label monika_rock:
     m 3eua "You wanna know a cool form of literature?"
@@ -4872,9 +5127,21 @@ label monika_rock:
     m "Rock suddenly became a prominent genre, and it gave birth to other sub-genres as well."
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
-    m 1eua "If you wanna blast on some good ol' rock 'n roll, go ahead, [player]."
-    m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
-    return
+
+    show monika 3eua
+    menu:
+        m "Do you listen to rock and roll, [player]?"    
+        "Yes.":
+            $ persistent._mas_pm_like_rock_n_roll = True
+            m 3hub "Great!"
+            m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
+            m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+            
+        "No.":
+            $ persistent._mas_pm_like_rock_n_roll = False
+            m 1ekc "Oh...that's okay, everyone has their own taste in music."
+            m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."                
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
@@ -5048,16 +5315,42 @@ label monika_meditation:
     m 1hubfa "Don't you ever forget that, [player]~"
 
     return "derandom"
+    
+# do you like orchestral music
+default persistent._mas_pm_like_orchestral_music = None
+
+# TODO: persistent.instrument should be historical at some point
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_orchestra",category=['media','you'],prompt="Classical music",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_orchestra",
+            category=['media',"music"],
+            prompt="Classical music",
+            random=True
+        )
+    )
 
 label monika_orchestra:
-    m 3euc "Hey, [player], do you listen to orchestral music?"
-    m 1eua "I love the way that so many different instruments can get together and create such wonderful music."
-    m "I'm amazed with how much they've practiced to achieve that kind of synchronization."
-    m 1eka "With how many there are in a group, it probably takes them a lot of dedication to do that."
-    m 1eua "Which reminds me, [player]."
+
+    show monika 3euc
+    menu:
+        m "Hey, [player], do you listen to orchestral music?"
+        "Yes.":
+            $ persistent._mas_pm_like_orchestral_music = True
+            m 3eub "That's great!"
+            m 3eua "I love how such wonderful music can arise when so many different instruments are played together."
+            m 1eua "I'm amazed with how much practive musicians do to achieve that kind of synchronization."
+            m "It probably takes them a lot of dedication to do that."
+            m 1eka "But anyway, {w}it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
+
+        "No.":
+            $ persistent._mas_pm_like_orchestral_music = False
+            m 1ekc "I guess it {i}is{/i} a pretty niche genre and doesn't suit everyone's ear."
+            m 1esa "You have to admit though, with so many players, there must be a lot of effort that goes into practicing for shows." 
+
+    m 1eua "That reminds me, [player]."
     m "If you ever want me to play for you..."
     m 3hua "You can always select my song in the music menu~"
 
@@ -5136,12 +5429,21 @@ default persistent._mas_pm_like_jazz = None
 default persistent._mas_pm_play_jazz = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_jazz",category=['media'],prompt="Jazz",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_jazz",
+            category=['media',"music"],
+            prompt="Jazz",
+            random=True
+        )
+    )
 
 label monika_jazz:
-    m 1eua "Say, [player], do you like jazz music?"
+    show monika 1eua
     menu:
-        "Yes":
+        m "Say, [player], do you like jazz music?"
+        "Yes.":
             $ persistent._mas_pm_like_jazz = True
             m 1hua "Oh, okay!"
             if persistent.instrument == True:
@@ -5154,7 +5456,7 @@ label monika_jazz:
                         $ persistent._mas_pm_play_jazz = False
                         m 1eua "I see."
                         m "I haven't listened to much of it, but I personally find it pretty interesting."
-        "No":
+        "No.":
             $ persistent._mas_pm_like_jazz = False
             m 1euc "Oh, I see."
             m 1eua "I haven't listened to much of it, but I see why people would like it."
@@ -5303,7 +5605,6 @@ label monika_selfharm:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True))
 
-#TODO: Replaced 1hubfb with 5hubfb when blushing expressions are fixed
 label monika_urgent:
     m 1euc "[player], do you have a second?"
     m 1euc "There's something I need to tell you."
@@ -5314,13 +5615,15 @@ label monika_urgent:
     m 3hksdlb "Ahaha~! Did I have you worried?"
     m 1ekbfa "Sorry~"
     m 1lkbsa "I wish I could see the look on your face right now!"
-    m 1hubfb "I'm sure it's adorable~"
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfb "I'm sure it's adorable~"
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
+    # TODO: need to rewrite some of this based on starting act
     m 1euc "You know, it's actually really hard for me to understand how you feel when it comes to..."
     m 1lksdlc "..."
     m 1lksdld "What happened with the other girls."
@@ -5596,7 +5899,7 @@ label monika_breakup:
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -5612,7 +5915,7 @@ label monika_breakup:
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1ekc "..." # TODO review
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 1hua "Ehehe~"
 
@@ -5626,7 +5929,7 @@ label monika_breakup:
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_apology_reason= ""
+            $ mas_setApologyReason("")
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -5965,11 +6268,30 @@ label monika_asks_family:
             m 1hubfa "I love you very much!"
 
     return "derandom"
+    
+#do you like other music
+default persistent._mas_pm_like_other_music = None
+
+# historical music history
+default persistent._mas_pm_like_other_music_history = list()
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_concerts",category=['media'],prompt="Music concerts",random=True))
+     addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_concerts",
+            category=['media',"music"],
+            prompt="Music concerts",
+            random=True
+        )
+    )
 
 label monika_concerts:
+
+    # TODO: perhaps this should be separated into something specific to music
+    # genres and the concert just referencing back to that?
+    # this topic is starting to get too complicated
+
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
     if (
             renpy.seen_label("monika_jazz")
@@ -5979,26 +6301,66 @@ label monika_concerts:
             and renpy.seen_label("monika_rap")
         ):
         m 1eud "You know how I like different forms of music?"
-        m 1hua "Well..."
-    m 3eub "Why don't we go to a concert one day?"
+        m 1hua "Well..." 
+    m 3eub "Why don't we go to a concert?"             
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
+
+    show monika 1eua
+    menu:
+        m "Are there any other types of music you'd like to see live that we haven't talked about yet?"
+        "Yes.":
+            $ persistent._mas_pm_like_other_music = True
+            m 3eua "Great! What other kind of music do you like, [player]?"
+
+            python:
+                musicgenrename = renpy.input('What kind of music do you listen to?',length=15).strip(' \t\n\r')
+                tempmusicgenre = musicgenrename.lower()
+                persistent._mas_pm_like_other_music_history.append((
+                    datetime.datetime.now(),
+                    tempmusicgenre
+                ))
+
+            # NOTE: should be think? maybe?
+            m 1eua "Interesting..."
+            m 3hub "I'd love to go to a [tempmusicgenre] concert with you!"
+            
+        "No.":
+            if (
+                    not persistent._mas_pm_like_vocaloids
+                    and not persistent._mas_pm_like_rap
+                    and not persistent._mas_pm_like_rock_n_roll
+                    and not persistent._mas_pm_like_orchestral_music
+                    and not persistent._mas_pm_like_jazz
+                ):
+                $ persistent._mas_pm_like_other_music = False
+                m 1ekc "Oh... well that's okay, [player]..."
+                m 1eka "I'm sure we can find something else to do."
+                return
+
+            else:
+                $ persistent._mas_pm_like_other_music = False
+                m 1eua "Ok, [player], we'll just choose from the other types of music we've already discussed!"
+
     m 1hua "Just imagine us..."
-    if renpy.seen_label("monika_orchestra"):
+    if persistent._mas_pm_like_orchestral_music:
         m 1hua "Gently swaying our heads to the sound of a soothing orchestra..."
 
-    if renpy.seen_label("monika_rock"):
-        m 1hub "Jumping up and down with the rest of the crowd to some good ol' Rock and Roll..."
+    if persistent._mas_pm_like_rock_n_roll:
+        m 1hub "Jumping up and down with the rest of the crowd to some good ol' rock 'n' roll..."
 
-    if renpy.seen_label("monika_jazz"):
+    if persistent._mas_pm_like_jazz:
         m 1eua "Grooving to some smooth jazz..."
 
-    if renpy.seen_label("monika_rap"):
+    if persistent._mas_pm_like_rap:
         m 1hksdlb "Trying to keep up with a real rapper..."
 
-    if renpy.seen_label("monika_vocaloid"):
+    if persistent._mas_pm_like_vocaloids:
         m 1hua "Waving our glowsticks at Miku Expo..."
-
-    m 2lksdlb "Oh gosh, maybe I'm getting a little carried away, hehe~"
+        
+    if persistent._mas_pm_like_other_music:
+        m 1hua "Jamming along to your favorite [tempmusicgenre] artist..."
+        
+    m 2hub "Doesn't that sound just amazing?"
     m 2eud "The idea of seeing your idol performing right in front of you is incredible!"
     m 2lksdla "Although, ticket prices these days are kind of expensive..."
     m 2hua "But I still think it would be worth it!"
@@ -6008,7 +6370,7 @@ label monika_concerts:
     m 4eua "But if you're not that interested in concerts,"
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -6140,7 +6502,7 @@ label monika_playerapologizes:
         m 2tkd "What you did wasn't funny, [player]."
         m 2dkd "Please be more considerate about my feelings in the future."
     # reset the reason
-    $ mas_apology_reason = None
+    $ mas_setApologyReason(None)
     return
 
 init 5 python:
@@ -7054,12 +7416,14 @@ label monika_yellowwp:
             m 4euc "It's a metaphor for her own captivity, obviously..."
             m 1esd "In the end, the woman in the paper 'escapes,' and the protagonist 'replaces' her."
             m 2ekd "There was... also mention of a rope, so I always had my own interpretation of the ending..."
-            m 2euc "Sayori liked that story too, if I remember right."
+            if not persistent._mas_sensitive_mode:
+                m 2euc "Sayori liked that story too, if I remember right."
             m 1ekc "I don't know. I kind of relate to that story."
             m 1euc "I mean, I have nothing but this classroom after all."
             m 1lksdlc "And the things on the walls aren't always... pleasant."
-            m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
-            m 1eka "I think I finally fixed it, though."
+            if not persistent._mas_sensitive_mode:
+                m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
+                m 1eka "I think I finally fixed it, though."
             m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just... so small."
             m 3esd "I mean, I was made to be a side character of a romance game!"
             m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
@@ -7645,7 +8009,8 @@ label monika_fun_facts_open:
 
 
 #Determines if it is a bad fact, 10% chance.
-    if fun_facts_bad_chance <= 10:
+    # no bad facts in sensitve mode
+    if not persistent._mas_sensitive_mode and fun_facts_bad_chance <= 10:
 
         $ _fact_type, _fact = store.mas_funfact.bad_facts.quip()
 
