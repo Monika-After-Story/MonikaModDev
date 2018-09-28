@@ -5458,7 +5458,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_coffee",category=['misc'],prompt="Coffee intake",random=True))
 
 label monika_coffee:
-    if renpy.seen_label('monika_tea') or not persistent._mas_acs_enable_coffee:
+    if renpy.seen_label('monika_tea') and not persistent._mas_acs_enable_coffee:
         m 3eua "Have you been drinking coffee lately, [player]?"
         m 2tfu "I hope it's not just to make me jealous, ehehe~"
     m 2eua "Coffee is such a nice thing to have when you need a little pep of energy."
