@@ -6957,7 +6957,7 @@ label monika_graduation:
     m "..."
     
     #Went through and timed out on the menu twice
-    if not persistent._mas_pm_monika_listened:
+    if not persistent._mas_pm_monika_listened is False:
         m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
         m 2esc "Let's forget about this and talk about something else, okay [player]?"
         return "derandom"
@@ -7030,7 +7030,7 @@ label monika_grad_speech_call:
     #if you want to hear it again
     else:
         #did you timeout once?
-        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened:
+        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened is True:
             m 2eub "Sure thing [player], I'll happily give my speech again!"
             m 2eka "You have enough time, right?"
 
