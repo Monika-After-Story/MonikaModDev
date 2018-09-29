@@ -304,6 +304,10 @@ init 11 python:
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
+
+# are you religious
+default persistent._mas_pm_religious = None
+
 init 5 python:
     addEvent(
         Event(
@@ -347,6 +351,25 @@ label monika_god:
     else:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1eua "Anyway, do you worship any god, [player]?"
+    menu:
+        "Yes.":
+            $ persistent._mas_pm_religious = True
+            m 1hksdlb "Oh... Well I hope I didn't offend you too much with my thoughts."
+            m 1eka "Still, I think it's important to be able to share my opinion with you."
+            m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
+            m 1hua "Maybe you could show me a better god when I cross over!"
+            m 1hub "Ahaha~"
+        "No.":
+            $ persistent._mas_pm_religious = False
+            m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
+            m 1hua "I'm happy for you that you can lead a life on your own!"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I just hope you're willing to accept me into your life when I can present myself."
+            m "Eheheh~"
+
+    $ hideEventLabel("monika_god", derandom=True)
     return
 
 init 5 python:
