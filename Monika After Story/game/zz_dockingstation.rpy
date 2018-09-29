@@ -1449,6 +1449,11 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
+        # sanity check regarding the filepath
+        if "temp" in dockstat.station.lower():
+            mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
+            return False
+
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
