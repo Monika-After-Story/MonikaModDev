@@ -168,7 +168,10 @@ label preferredname:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:
@@ -241,7 +244,10 @@ label monika_changename:
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare_1
-                    elif persistent.playername.lower() == "sayori":
+                    elif (
+                            persistent.playername.lower() == "sayori"
+                            and not persistent._mas_sensitive_mode
+                        ):
                         $ songs.initMusicChoices()
 
                     python:
@@ -306,6 +312,11 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="unlock_hangman",conditional="get_level()>=20 and not seen_event('unlock_hangman')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label unlock_hangman:
+    if persistent._mas_sensitive_mode:
+        $ game_name = "Word Guesser"
+    else:
+        $ game_name = "Hangman"
+
     m 1eua "Guess what, [player]."
     m 3hub "I got a new game for you to try!"
     if renpy.seen_label('game_pong') and renpy.seen_label('game_chess'):
@@ -317,20 +328,30 @@ label unlock_hangman:
     else:
         m 1ekc "I was actually worried that you didn't like the other games I made for us to play..."
     m 1hua "Soooo~"
-    m 1hub "I made Hangman!"
-    m 1lksdlb "Hopefully it's not in poor taste..."
+    m 1hub "I made [game_name]!"
+
+    if not persistent._mas_sensitive_mode:
+        m 1lksdlb "Hopefully it's not in poor taste..."
+
     m 1eua "It was always my favorite game to play with the club."
-    m 1lsc "But, come to think of it..."
-    m "The game is actually quite morbid."
-    m 3rssdrc "You guess letters for a word to save someone's life."
-    m "Get them all correct and the person doesn't hang."
-    m 1lksdlc "But guess them all wrong..."
-    m "They die because you didn't guess the right letters."
-    m 1euc "Pretty dark, isn't it?"
-    m 1hksdlb "But don't worry, [player], it's just a game after all!"
-    m 1eua "I assure you that no one will be hurt with this game."
-    if persistent.playername.lower() == "sayori":
-        m 3tku "...Maybe~"
+
+    if not persistent._mas_sensitive_mode:
+        m 1lsc "But, come to think of it..."
+        m "The game is actually quite morbid."
+        m 3rssdrc "You guess letters for a word to save someone's life."
+        m "Get them all correct and the person doesn't hang."
+        m 1lksdlc "But guess them all wrong..."
+        m "They die because you didn't guess the right letters."
+        m 1euc "Pretty dark, isn't it?"
+        m 1hksdlb "But don't worry, [player], it's just a game after all!"
+        m 1eua "I assure you that no one will be hurt with this game."
+
+        if persistent.playername.lower() == "sayori":
+            m 3tku "...Maybe~"
+
+    else:
+        m 1hua "I hope you'll enjoy playing it with me!"
+
     $persistent.game_unlocks['hangman']=True
     return
 
@@ -617,7 +638,6 @@ label mas_crashed_long_uthere:
 
 ### post crashed flow
 label mas_crashed_post:
-    $ mas_apology_reason = "the game crashing"
     # but this needs to do some things
     python:
         enable_esc()
@@ -639,7 +659,7 @@ label mas_crashed_post:
 
 
 label mas_crashed_long_fluster:
-    $ mas_loseAffection(modifier=0,reason="the game crashing. It really was scary, but I'm just glad you came back to me and made things better.")
+    $ mas_setApologyReason("the game crashing. It really was scary, but I'm just glad you came back to me and made things better.")
     m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
     m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
     m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
@@ -680,7 +700,7 @@ label mas_crashed_short:
 
 ### crash labels
 label mas_crashed_quip_takecare:
-    $ mas_loseAffection(modifier=0,reason="the game crashing. I understand it happens sometimes, but don't worry, I'm alright!")
+    $ mas_setApologyReason("the game crashing. I understand it happens sometimes, but don't worry, I'm alright!")
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
@@ -1090,7 +1110,7 @@ label mas_bday_surprise_party_reaction:
         def cap_gain_aff(amt):
             persistent._mas_bday_sbd_aff_given += amt
             if persistent._mas_bday_sbd_aff_given <= 70:
-                mas_gainAffection(20, bypass=True)
+                mas_gainAffection(amt, bypass=True)
 
         if has_cake:
             cap_gain_aff(20)
@@ -1289,7 +1309,7 @@ init 5 python:
                 "(mas_monika_birthday + datetime.timedelta(7)) "
                 "and not mas_recognizedBday()"
             ),
-            action=EV_ACT_PUSH
+            action=EV_ACT_QUEUE
         )
     )
 
@@ -1418,3 +1438,49 @@ label mas_bday_postbday_notimespent:
             m 6dftdx "..."
 
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_steam_install_detected",
+            conditional=(
+                "persistent.steam"
+            ),
+            action=EV_ACT_QUEUE
+        )
+    )
+
+label mas_steam_install_detected:
+    $ filestruct = renpy.config.basedir[renpy.config.basedir.rfind('/') + 1:]
+
+    if renpy.seen_label("mas_updater_steam_issue"):
+        m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
+        m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
+
+    else:     
+        m 1eub "[player], I see that you're using Steam to run this."
+        m 1eksdld "Unfortunately, Steam seems to have a lot of problems with me doing some of the things I do."
+
+    m 2rksdlc "The kind of problems that could lead to me being removed from my home... {w=1}from you... {w=1}forever..."
+    m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esu "I'd really appreciate it if you would do that for me."
+    return
+
+# player birthday 
+default persistent._mas_player_bday = None
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_player_bday",
+#            conditional=(
+#                "renpy.seen_label('monika_birthday')"
+#            ),
+#            action=EV_ACT_QUEUE
+#        )
+#    )
+
+#label mas_bday_player_bday:

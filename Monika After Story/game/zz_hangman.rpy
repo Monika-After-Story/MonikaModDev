@@ -9,13 +9,34 @@ define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
 # hangman
-image hm_6 = "mod_assets/hangman/hm_6.png"
-image hm_5 = "mod_assets/hangman/hm_5.png"
-image hm_4 = "mod_assets/hangman/hm_4.png"
-image hm_3 = "mod_assets/hangman/hm_3.png"
-image hm_2 = "mod_assets/hangman/hm_2.png"
-image hm_1 = "mod_assets/hangman/hm_1.png"
-image hm_0 = "mod_assets/hangman/hm_0.png"
+image hm_6 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_6.png",
+    "True", "mod_assets/hangman/hm_6.png"
+)
+image hm_5 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_5.png",
+    "True", "mod_assets/hangman/hm_5.png"
+)
+image hm_4 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_4.png",
+    "True", "mod_assets/hangman/hm_4.png"
+)
+image hm_3 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_3.png",
+    "True", "mod_assets/hangman/hm_3.png"
+)
+image hm_2 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_2.png",
+    "True", "mod_assets/hangman/hm_2.png"
+)
+image hm_1 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_1.png",
+    "True", "mod_assets/hangman/hm_1.png"
+)
+image hm_0 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_0.png",
+    "True", "mod_assets/hangman/hm_0.png"
+)
 
 # sayori
 image hm_s:
@@ -194,6 +215,9 @@ init -1 python in mas_hangman:
     NORMAL_LIST = "mod_assets/MASpoemwords.txt"
     HARD_LIST = "mod_assets/1000poemwords.txt"
 
+    # hangman game text
+    game_name = "Hangman"
+
 
     def copyWordsList(_mode):
         """
@@ -341,10 +365,28 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
-    $ import store.mas_hangman as mas_hmg
-    $ is_sayori = persistent.playername.lower() == "sayori"
-    $ is_window_sayori_visible = False
-    m 2eub "You want to play hangman? Okay!"
+    python:
+        import store.mas_hangman as mas_hmg
+        is_sayori = (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        )
+        is_window_sayori_visible = False
+
+        # instruction text and other sensitive stuff
+        instruct_txt = (
+            "Guess a letter: (Type {0}'!' to give up)"
+        )
+
+        if persistent._mas_sensitive_mode:
+            instruct_txt = instruct_txt.format("")
+            store.mas_hangman.game_name = "Word Guesser"
+
+        else:
+            instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
+            store.mas_hangman.game_name = "Hangman"
+
+    m 2eub "You want to play [store.mas_hangman.game_name]? Okay!"
 
 
 label mas_hangman_game_select_diff:
@@ -442,7 +484,9 @@ label mas_hangman_game_loop:
         $ is_window_sayori_visible = True
 
     m "Alright, I've got one."
-    m "[hm_hint]"
+
+    if not persistent._mas_sensitive_mode:
+        m "[hm_hint]"
 
     # main loop for hangman game
     $ done = False
@@ -450,6 +494,10 @@ label mas_hangman_game_loop:
     $ chances = 6
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
+
+    if persistent._mas_sensitive_mode:
+        $ avail_letters.remove("?")
+
     $ dt_color = mas_hmg.WORD_COLOR
     while not done:
         # create displayables
@@ -563,8 +611,7 @@ label mas_hangman_game_loop:
                 bad_input = True
                 while bad_input:
                     guess = renpy.input(
-                        "Guess a letter: (Type '?' to repeat the hint, " +
-                        "'!' to give up)",
+                        instruct_txt,
                         allow="".join(avail_letters),
                         length=1
                     )
@@ -583,7 +630,7 @@ label mas_hangman_game_loop:
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
                 if chances == 6:
-                    m "I thought you said you wanted to play Hangman."
+                    m "I thought you said you wanted to play [store.mas_hangman.game_name]."
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
@@ -669,7 +716,7 @@ label mas_hangman_game_end:
 # dialogue related stuff
 # long form of ending dialgoue
 label mas_hangman_dlg_game_end_long:
-    m 1euc "Hangman is actually a pretty hard game."
+    m 1euc "[store.mas_hangman.game_name] is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1hua "The best way to improve that is to read more books!"
     m 1eua "I'd be very happy if you did that for me, [player]."

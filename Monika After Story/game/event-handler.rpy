@@ -26,6 +26,8 @@ init -500 python:
     # initalies the locks db
 
     # the template is the regular starter case for most events
+    # True means that the property is locked on startup (wont change),
+    # False means it is unlocked (will change)
     mas_init_lockdb_template = (
         True, # event label
         False, # prompt
@@ -43,7 +45,8 @@ init -500 python:
         False, # diary_entry
         False, # rules
         True, # last_seen
-        False # years
+        False, # years
+        False # sensitive
     )
 
     # set defaults
@@ -968,6 +971,18 @@ init python:
             event_label = persistent.event_list[-1]
 
         return event_label
+
+
+    def removeEventIfExist(event_label):
+        """
+        Removes an event off the event list if it exists
+
+        IN:
+            event_label - label of the event to remove
+        """
+        if event_label in persistent.event_list:
+            persistent.event_list.remove(event_label)
+
 
     def seen_event(event_label):
         #

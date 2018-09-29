@@ -130,6 +130,25 @@ init -1 python in mas_affection:
         log.write(audit_text)
 
 
+    def raw_audit(old, new, change, tag):
+        """
+        Non affection-dependent auditing for general usage.
+
+        IN:
+            old - the "old" value
+            new - the "new" value
+            change - the chnage amount
+            tag - a string to label this audit change
+        """
+        log.write(_audit.format(
+            datetime.datetime.now(),
+            tag,
+            change,
+            old,
+            new
+        ))
+
+
     # numerical constants of affection levels
     BROKEN = 1
     DISTRESSED = 2
@@ -886,6 +905,7 @@ default persistent._mas_long_absence = False
 default persistent._mas_pctaieibe = None
 default persistent._mas_pctaneibe = None
 default persistent._mas_pctadeibe = None
+default persistent._mas_aff_backup = None
 
 init -10 python:
     def _mas_AffSave():
@@ -902,6 +922,15 @@ init -10 python:
 
         # audit this change
         store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
+
+        # backup this value
+        store.mas_affection.raw_audit(
+            persistent._mas_aff_backup,
+            aff_value,
+            aff_value,
+            "SET BACKUP"
+        )
+        persistent._mas_aff_backup = aff_value
 
 
     def _mas_AffLoad():
@@ -937,11 +966,38 @@ init -10 python:
 
         # pull numerical afffection for audting
         new_value = persistent._mas_affection["affection"]
+
+        # if the back is None, set the backup
+        if persistent._mas_aff_backup is None:
+            persistent._mas_aff_backup = new_value
+
+            # audit
+            store.mas_affection.raw_audit(
+                "None",
+                new_value,
+                new_value,
+                "NEW BACKUP"
+            )
+
+
+        else:
+            # TODO: for now we are just going to log any differences,
+            # if after a while we can see that there is an isue with value
+            # retrievval, then we can do something about this
+            if new_value != persistent._mas_aff_backup:
+                store.mas_affection.raw_audit(
+                    new_value,
+                    persistent._mas_aff_backup,
+                    persistent._mas_aff_backup,
+                    "BACKUP DIFF?"
+                )
+                # new_value = persistent._mas_aff_backup
+
         # audit this change
         store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
 
         # and set what we got
-#        persistent._mas_affection["affection"] = new_value
+        persistent._mas_affection["affection"] = new_value
 
 
 # need to have affection initlaized post event_handler
@@ -1397,9 +1453,8 @@ init 20 python:
             reason=""
         ):
 
-        global mas_apology_reason
-
-        mas_apology_reason = reason
+        #set apology flag
+        mas_setApologyReason(reason)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
@@ -1435,6 +1490,19 @@ init 20 python:
             persistent._mas_affection["affection"] = amount
             # Updates the experience levels if necessary.
             mas_updateAffectionExp()
+
+    def mas_setApologyReason(reason):
+        """
+        Sets a reason for apologizing
+
+        IN:
+            reason - The reason for the apology
+                (required)
+
+        """
+        global mas_apology_reason
+
+        mas_apology_reason = reason
 
 
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
