@@ -370,22 +370,19 @@ label monika_ptod_tip004:
     return
 
 ###############################################################################
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_ptod_tip005",
-#            category=["python tips"],
-#            prompt="Comparisons and booleans",
-#            conditional="store.mas_ptod.has_day_past_tip(2)",
-#   actually, this should probably unlock after we talk about variable 
-#   assignment, since we can do an example like variable = a == b kind of thing
-#            action=EV_ACT_POOL
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ptod_tip005",
+            category=["python tips"],
+            prompt="Comparisons and booleans",
+            conditional="store.mas_ptod.has_day_past_tip(6)",
+            action=EV_ACT_POOL
+        )
+    )
 
 label monika_ptod_tip005:
-    # [show this once]
     # So if you remember, a single = does assignment, the == does 
     # compariosns
     #
