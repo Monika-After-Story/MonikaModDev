@@ -9,13 +9,14 @@ default disable_voice_option = None
 init -1 python:
     import sys
     base_path = config.basedir  # directory of the current module file, where all the FLAC bundled binaries are stored
-    base_path += "/game/python-packages/speech_recognition"
-    sys.path.append(base_path)
+    sys.path.append(base_path + "/game/python-packages/speech_recognition")
+    sys.path.append(base_path + "/game/python-packages/sphinxbase")
+    sys.path.append(base_path + "/game/python-packages/pocketsphinx")
     disable_voice_option = False
     try:
         import _portaudio
         import speech_recognition as sr
-        sr.path_to_game_dir = base_path
+        sr.path_to_game_dir = base_path + "/game/python-packages/speech_recognition"
     except ImportError:
         disable_voice_option = True #pass #raise Exception('Fail importing _portaudio')
 

@@ -735,7 +735,7 @@ class Recognizer(AudioSource):
             raise RequestError("outdated PocketSphinx installation; ensure you have PocketSphinx version 0.0.9 or better.")
 
         if isinstance(language, str):  # directory containing language data
-            language_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pocketsphinx-data", language)
+            language_directory = path_to_game_dir + "/pocketsphinx-data/en-US" #os.path.join(os.path.dirname(os.path.realpath(__file__)), "pocketsphinx-data", language)
             if not os.path.isdir(language_directory):
                 raise RequestError("missing PocketSphinx language data directory: \"{}\"".format(language_directory))
             acoustic_parameters_directory = os.path.join(language_directory, "acoustic-model")
@@ -752,10 +752,10 @@ class Recognizer(AudioSource):
 
         # create decoder object
         config = pocketsphinx.Decoder.default_config()
-        config.set_string("-hmm", acoustic_parameters_directory)  # set the path of the hidden Markov model (HMM) parameter files
-        config.set_string("-lm", language_model_file)
-        config.set_string("-dict", phoneme_dictionary_file)
-        config.set_string("-logfn", os.devnull)  # disable logging (logging causes unwanted output in terminal)
+        config.set_string("-hmm", str(acoustic_parameters_directory))  # set the path of the hidden Markov model (HMM) parameter files
+        config.set_string("-lm", str(language_model_file))
+        config.set_string("-dict", str(phoneme_dictionary_file))
+        config.set_string("-logfn", str(os.devnull))  # disable logging (logging causes unwanted output in terminal)
         decoder = pocketsphinx.Decoder(config)
 
         # obtain audio data
@@ -1183,7 +1183,7 @@ def get_flac_converter():
     
     flac_converter = shutil_which("flac")  # check for installed version first
     if flac_converter is None:  # flac utility is not installed
-        #base_path = path_to_game_dir  # directory of the current module file, where all the FLAC bundled binaries are stored
+
         system, machine = platform.system(), platform.machine()
         if system == "Windows" and machine in {"i686", "i786", "x86", "x86_64", "AMD64"}:
             flac_converter = os.path.join(path_to_game_dir, "flac-win32.exe")
