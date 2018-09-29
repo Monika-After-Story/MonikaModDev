@@ -8134,7 +8134,7 @@ label monika_fun_facts_8:
     m 1eub "Ah, this is a nice easy one."
     m 3eub "Did you know that honey never spoils?"
     m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
-    m "The reason why this happens is because honey is mostly made of sugar and only a bit a of water, making it solid over time."
+    m "The reason why this happens is because honey is mostly made of sugar and only a bit of water, making it solid over time."
     m 1euc "Most of the honey that you see in groceries don’t crystalize as fast as real honey would because they’ve been pasteurized in the process of making them."
     m 1eud "Which removes the stuff that makes the honey go solid quickly."
     m 3eub "But wouldn’t be nice to eat crystalized honey too?"
@@ -8269,7 +8269,7 @@ label monika_fun_facts_20:
     m 1hua "Now this is a wholesome one..."
     m 1eua "Currently, we have the lowest crime rates, maternity death, infant mortality and illiteracy ever in human history."
     m 3eub "Life expectancy, average income, and standards of living is the highest for most of the global population too!"
-    m 3eka "This tells me that it can always can get better. It really does show that despite all the bad things, the good times will always come afterwards."
+    m 3eka "This tells me that it can always get better. It really does show that despite all the bad things, the good times will always come afterwards."
     m 1hua "There really is {i}hope{/i}..."
     return
 
