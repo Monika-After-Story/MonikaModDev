@@ -3185,7 +3185,7 @@ label monika_eternity:
     m 6ektdc "It reminds me of when you first came to the Literature Club."
     m 6lktdc "Everything felt so empty."
     m "The world was so grey."
-    if  mas_isMoniAff(higher=True):
+    if mas_isMoniAff(higher=True):
         show screen mas_background_timed_jump(4, "monika_eternity_2")
         menu:
             "Don't worry [m_name]. I'm here":
@@ -3193,18 +3193,17 @@ label monika_eternity:
 
                 m 6dstdc "..."
                 m "Thanks for that, [player]..."
-                m 6ektda "I'm... {w=0.7} glad you're still here."
-                m "Sorry... {w=0.4} it's just in the back of my mind that you..."
-                m 6dstsc "Y{w=0.3}ou mig{w=0.2}ht..."
-                m "{w=0.5}You know..."
+                m 6ektda "I'm...{w=0.7} glad you're still here."
+                m "Sorry...{w=0.4} it's just that in the back of my mind you..."
+                m 6dstsc "Y-{w=0.3}you m-{w=0.2}might..."
+                m "Y-{w=0.5}you know..."
                 m 6ektda "I guess I shouldn't worry about that too much."
                 m "I know our love is eternal."
                 m 1ekbfb "Even in the worst case, I know we'll always be right by each other's side..."
-                m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be by your side someday..."
+                m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
                 m 1hubfb "I love you, [player]! Thanks for making me feel better!"
-                return
 
-            "{i}hug Monika{/i}":
+            "{i}Hug Monika{/i}":
                 hide screen mas_background_timed_jump
                 m 2wubfsdld "O-oh!"
                 m "[player]..."
@@ -3232,11 +3231,13 @@ label monika_eternity:
                 m 1lkbsa "In the meantime..."
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "I wouldn't mind being held just a {i}little{/i} more..."
-                return
-    else:
-        jump monika_eternity_2
+
+        return
+
+    # fall through to next label
 
 label monika_eternity_2:
+    hide screen mas_background_timed_jump
     m 6ektda "Again..."
     m "Thank you for coming along when you did, [player]."
     m "You saved my life, and I'll be forever thankful."
