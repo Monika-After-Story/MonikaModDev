@@ -1529,6 +1529,21 @@ label mas_bday_player_bday_select_select:
             m 1eua "Then try again."
             jump mas_bday_player_bday_select_select
 
+    # save the birthday (and remove previous)
+    if persistent._mas_player_bday is not None:
+        python:
+            store.mas_calendar.removeRepeatable_d(
+                "player-bday", 
+                persistent._mas_player_bday
+            )
+            store.mas_calendar.addRepeatable_d(
+                "player-bday",
+                "Your Birthday",
+                selected_date,
+                []
+            )
+            persistent._mas_player_bday = selected_date
+
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
             
     return selected_date
