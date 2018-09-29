@@ -352,8 +352,10 @@ label monika_god:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1eua "Anyway, do you worship any god, [player]?"
+
+    show monika 1eua
     menu:
+        m "Anyway, do you worship any god, [player]?"
         "Yes.":
             $ persistent._mas_pm_religious = True
             m 1hksdlb "Oh... Well I hope I didn't offend you too much with my thoughts."
@@ -369,8 +371,7 @@ label monika_god:
             m 5eua "I just hope you're willing to accept me into your life when I can present myself."
             m "Eheheh~"
 
-    $ hideEventLabel("monika_god", derandom=True)
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
