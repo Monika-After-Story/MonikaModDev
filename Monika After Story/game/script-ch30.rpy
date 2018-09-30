@@ -10,9 +10,6 @@ define mas_skip_mid_loop_eval = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
-# affection hotfix for dates
-default persistent._mas_bday_date_affection_fix = False
-
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -25,10 +22,18 @@ init 970 python:
 
     if persistent._mas_moni_chksum is not None:
         # do check for monika existence
-        store.mas_dockstat.init_findMonika(mas_docking_station)
+        moni_tuple = store.mas_dockstat.findMonika(
+            mas_docking_station
+        )
+
+        # set the init data
+        store.mas_dockstat.retmoni_status = moni_tuple[0]
+        store.mas_dockstat.retmoni_data = moni_tuple[1]
 
         # check surprise party
         store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
+
+        del moni_tuple
 
 
     postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
@@ -49,15 +54,6 @@ init 970 python:
 
     if mas_isMonikaBirthday():
         persistent._mas_bday_opened_game = True
-
-    # quick fix for dates
-    # NOTE: remove this in 089
-    if (
-            persistent._mas_bday_date_affection_gained >= 50 and
-            not persistent._mas_bday_date_affection_fix
-        ):
-        mas_gainAffection(50, bypass=True)
-        persistent._mas_bday_date_affection_fix = True
 
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
@@ -529,12 +525,6 @@ label pick_a_game:
             and not chess_disabled
         )
 
-        # hangman text
-        if persistent._mas_sensitive_mode:
-            _hangman_text = "Word Guesser"
-        else:
-            _hangman_text = "Hangman"
-
         # decide the say dialogue
         play_menu_dlg = store.mas_affection.play_quip()[1]
 
@@ -548,7 +538,7 @@ label pick_a_game:
             if not renpy.seen_label('game_chess'):
                 $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
-        "[_hangman_text]" if persistent.game_unlocks['hangman']:
+        "Hangman" if persistent.game_unlocks['hangman']:
             if not renpy.seen_label("game_hangman"):
                 $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
@@ -692,10 +682,20 @@ label ch30_autoload:
     #       during this flow, we have her say the same shit as the returning
     #       home greeting.
     if store.mas_dockstat.retmoni_status is not None:
-        # this jumps to where we need to go next.
-        $ store.mas_dockstat.triageMonika(False)
+        # non None means we have a status
+        $ mas_from_empty = False
+        $ moni_status = store.mas_dockstat.retmoni_status
 
-label mas_ch30_post_retmoni_check:
+        if (moni_status & store.mas_dockstat.MAS_PKG_FO) > 0:
+            # TODOL: jump to the mas_dockstat_different_monika label
+            jump mas_dockstat_empty_desk
+
+        if (moni_status & store.mas_dockstat.MAS_PKG_F) > 0:
+            jump mas_dockstat_found_monika
+
+        # otherwise, lets jump to the empty desk
+        jump mas_dockstat_empty_desk
+
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -724,10 +724,7 @@ label mas_ch30_post_retmoni_check:
 
 
     # yuri scare incoming. No monikaroom when yuri is the name
-    if (
-            persistent.playername.lower() == "yuri"
-            and not persistent._mas_sensitive_mode
-        ):
+    if persistent.playername.lower() == "yuri":
         call yuri_name_scare from _call_yuri_name_scare
 
     # check persistent to see if player put Monika to sleep correctly
@@ -888,10 +885,6 @@ label ch30_loop:
     else:
         $ config.allow_skipping = False
 
-    # check for outstanding threads
-    if store.mas_dockstat.abort_gen_promise:
-        $ store.mas_dockstat.abortGenPromise()
-
     if mas_skip_mid_loop_eval:
         jump ch30_post_mid_loop_eval
 
@@ -960,11 +953,20 @@ label ch30_post_mid_loop_eval:
         if mas_randchat.rand_low == 0:
             # we are not repeating for now
             # we'll wait 60 seconds inbetween loops
-            $ renpy.pause(60, hard=True)
+            python:
+                for x in range(120):
+                    renpy.pause(0.5, hard=True)
+                    if len(persistent.event_list) > 0:
+                        renpy.jump("ch30_post_mid_loop_eval")
             jump post_pick_random_topic
 
         $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
-        $ renpy.pause(waittime, hard=True)
+        python:
+                for x in range(waittime*2):
+                    renpy.pause(0.5, hard=True)
+                    if len(persistent.event_list) > 0:
+                        renpy.jump("ch30_post_mid_loop_eval")
+        #$ renpy.pause(waittime, hard=True)
         window auto
 
 #        python:
@@ -1148,13 +1150,6 @@ label ch30_reset:
             monika_chr.wear_acs_pst(
                 store.mas_sprites.ACS_MAP[acs_name]
             )
-
-    ## accessory hotfixes
-    # mainly to re add accessories that may have been removed for some reason
-    # this is likely to occur in crashes / reloads
-    python:
-        if persistent._mas_acs_enable_promisering:
-            monika_chr.wear_acs_pst(mas_acs_promisering)
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)

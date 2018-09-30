@@ -69,10 +69,10 @@ label dev_monika_voice_recognition_check:
                     except WaitTimeoutError as e:
                         error_message = e
                         renpy.jump("no_input")
-                #try:
-                player_input_text = r.recognize_sphinx(audio)
-                #except Exception:
-                #    renpy.jump("cant_recognise")
+                try:
+                    player_input_text = r.recognize_sphinx(audio)
+                except Exception:
+                    renpy.jump("cant_recognise")
                 player_input_text = player_input_text.lower()
                 player_input_text = player_input_text.replace("monica", "monika")
     m 1hub "[player], I heard that you said %(player_input_text)s. Am I correct?"
@@ -90,7 +90,7 @@ label no_input:
     m "Perhaps it would be good idea to check the voice.log file"
     python:
         file = open(base_path+"/log/voice.log", 'w')
-        file.write("Error message:" + str(error_message))
+        file.write("Error message: " + str(error_message))
         file.close()
     return   
 
@@ -100,7 +100,7 @@ label cant_recognise:
     m "Perhaps it would be good idea to check the voice.log file"
     python:
         file = open(base_path+"/log/voice.log", 'w')
-        file.write("Error message:" + str(error_message))
+        file.write("Error message: " + str(error_message))
         file.close()
     return      
              
@@ -110,7 +110,7 @@ label no_found_portaudio:
     m "Perhaps it would be good idea to check the voice.log file"
     python:
         file = open(base_path+"/log/voice.log", 'w')
-        file.write("Error message:" + str(error_message))
+        file.write("Error message: " + str(error_message))
         file.close()
     return
     
@@ -120,7 +120,7 @@ label no_found_speech_recognition:
     m "Perhaps it would be good idea to check the voice.log file"
     python:
         file = open(base_path+"/log/voice.log", 'w')
-        file.write("Error message:" + str(error_message))
+        file.write("Error message: " + str(error_message))
         file.close()
     return
     
@@ -131,6 +131,6 @@ label No_inpu_device:
     m "Perhaps it would be good idea to check the voice.log file"
     python:
         file = open(base_path+"/log/voice.log", 'w')
-        file.write("Error message:" + str(error_message))
+        file.write("Error message: " + str(error_message))
         file.close()
     return
