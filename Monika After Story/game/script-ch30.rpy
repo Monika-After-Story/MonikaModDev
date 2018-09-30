@@ -10,6 +10,8 @@ define mas_skip_mid_loop_eval = False
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
 
+# affection hotfix for dates
+default persistent._mas_bday_date_affection_fix = False
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -55,6 +57,14 @@ init 970 python:
     if mas_isMonikaBirthday():
         persistent._mas_bday_opened_game = True
 
+    # quick fix for dates
+    # NOTE: remove this in 088
+    if (
+            persistent._mas_bday_date_affection_gained >= 50 and
+            not persistent._mas_bday_date_affection_fix
+        ):
+        mas_gainAffection(50, bypass=True)
+        persistent._mas_bday_date_affection_fix = True
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
@@ -1151,6 +1161,12 @@ label ch30_reset:
                 store.mas_sprites.ACS_MAP[acs_name]
             )
 
+    ## accessory hotfixes
+    # mainly to re add accessories that may have been removed for some reason
+    # this is likely to occur in crashes / reloads
+    python:
+        if persistent._mas_acs_enable_promisering:
+            monika_chr.wear_acs_pst(mas_acs_promisering)
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
 
