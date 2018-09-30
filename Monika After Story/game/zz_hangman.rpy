@@ -365,6 +365,9 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
+
+    $ disable_esc()
+
     python:
         import store.mas_hangman as mas_hmg
         is_sayori = (
@@ -710,6 +713,8 @@ label mas_hangman_game_end:
         call mas_hangman_dlg_game_end_short from _mas_hangman_dges
     else:
         call mas_hangman_dlg_game_end_long from _mas_hangman_dgel
+
+    $ enable_esc()
 
     return
 
