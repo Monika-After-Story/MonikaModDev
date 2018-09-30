@@ -157,8 +157,6 @@ label monika_listen:
             return
 
 init -1 python:
-    import _portaudio
-    import speech_recognition as sr
     def callback(recognizer, audio):
         # received audio data, now we'll recognize it using Google Speech Recognition
         try:
