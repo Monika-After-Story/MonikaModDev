@@ -1468,8 +1468,6 @@ label mas_steam_install_detected:
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
-# player birthday 
-default persistent._mas_player_bday = None
 
 #init 5 python:
 #    addEvent(
@@ -1484,3 +1482,72 @@ default persistent._mas_player_bday = None
 #    )
 
 #label mas_bday_player_bday:
+label mas_bday_player_bday_select:
+    m 1eua "When is your birthdate?"
+
+label mas_bday_player_bday_select_select:
+    call mas_start_calendar_select_date
+
+    $ selected_date_t = _return
+    $ selected_date = selected_date_t.date()
+    $ _today = datetime.date.today()
+
+    if selected_date > _today:
+        m 2efc "[player]!"
+        m "You can't have been born in the future!"
+        m 1hua "Try again!"
+        jump mas_bday_player_bday_select_select
+
+    elif selected_date == _today:
+        m 2efc "[player]!"
+        m "You can't have been born today!"
+        m 1hua "Try again!" 
+        jump mas_bday_player_bday_select_select
+
+    # otherwise, player selected a valid date
+    $ new_bday, diff = store.mas_calendar.genFriendlyDispDate(selected_date_t)
+    m 1eua "Alright, [player]."
+    m "Just to double-check..."
+    menu:
+        m "Your birthday is [new_bday]."
+        "Yes":
+            show monika 1eka
+            
+            # one more confirmation
+            menu:
+                m "Are you sure? I'm never going to forget this date."
+                "Yes, I'm sure!":
+                    m 1hua "Then it's settled!"
+
+                "Actually...":
+                    m 1hksdrb "Aha, I figured you weren't so sure."
+                    m 1eka "Try again~"
+                    jump mas_bday_player_bday_select_select
+
+        "No":
+            m 1euc "Oh, that's wrong?"
+            m 1eua "Then try again."
+            jump mas_bday_player_bday_select_select
+
+    # save the birthday (and remove previous)
+    if persistent._mas_player_bday is not None:
+        python:
+            store.mas_calendar.removeRepeatable_d(
+                "player-bday", 
+                persistent._mas_player_bday
+            )
+            store.mas_calendar.addRepeatable_d(
+                "player-bday",
+                "Your Birthday",
+                selected_date,
+                []
+            )
+            persistent._mas_player_bday = selected_date
+
+    # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
+            
+    return selected_date
+
+
+
+

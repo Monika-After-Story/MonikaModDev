@@ -1701,6 +1701,16 @@ init python:
             year_param=[persistent.sessions["first_session"].year]
         )
 
+    # add birthday if we have one
+    if persistent._mas_player_bday is not None:
+        calendar.addRepeatable_d(
+            "player-bday",
+            "Your Birthday", 
+            persistent._mas_player_bday,
+            []
+        )
+
+
 
 init 100 python:
     # calendar related but later
