@@ -2859,7 +2859,10 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
+        
+    def mas_getsessionlength():
+        mas_currentsessionlength = datetime.datetime.now() - persistent.sessions['current_session_start']
+        return mas_currentsessionlength
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
