@@ -157,16 +157,6 @@ init 5 python:
 
 label monika_ptod_tip001:
     
-    # speical stuff for unstablers
-    # TODO: remove this in 086
-    $ tip_ev = mas_getEV("monika_ptod_tip001")
-    if tip_ev.unlock_date is None:
-        $ import datetime
-        $ tip_ev.unlock_date = datetime.datetime.now()
-
-    if tip_ev.shown_count == 0:
-        $ tip_ev.shown_count = 1
-
     m 1esa "Python was created by Guido Van Rossum in the early '90s."
     m "It is super versatile, so you can find it in web apps, embedded systems, Linux, and of course..."
     m 1hua "This mod!"
@@ -491,7 +481,7 @@ label monika_ptod_tip006:
             m 1hua "Yay!"
 
         "I'm a bit confused.":
-            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or settting variables."
+            m 1eksdla "That's okay.{w} Even though I mentioned symbols and values here, programmers usually just refer to this as creating, assigning, or setting variables."
             m "The symbol / value names are really only useful for hinting at how variables work under the hood, so don't feel bad if you didn't understand it all."
             m 1eua "Just knowing how to work with variables is enough for future lessons."
             m "Anyway..."

@@ -115,6 +115,8 @@ label mas_farewell_start:
     # otherwise, select a random farewell
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
+    # dont evalulate the mid loop checks since we are quitting
+    $ mas_skip_mid_loop_eval = True
 
     return
 
@@ -580,35 +582,50 @@ label bye_going_somewhere:
 # back will increase affection)
 # lets limit this to like once per day
 #
+
+    python:
+        # setup the random chances
+        if mas_isMonikaBirthday():
+            dis_chance = 10
+            upset_chance = 0
+
+        else:
+            dis_chance = 50
+            upset_chance = 10
+
     if mas_isMoniBroken(lower=True):
         # broken monika dont ever want to go with u
         jump bye_going_somewhere_nothanks
 
     elif mas_isMoniDis(lower=True):
         # distressed monika has a 50% chance of not going with you
-        if random.randint(1,2) == 1:
+        if random.randint(1,100) <= dis_chance:
             jump bye_going_somewhere_nothanks
         
         # otherwse we go
         m 1wud "You really want to bring me along?"
-        m 1ekd "Are you sure this isn't some...{nw}"
+        m 1ekd "Are you sure this isn't some--{nw}"
         $ _history_list.pop()
         m 1lksdlc "..."
         m 1eksdlb "What am I saying? Of course I'll go with you!"
 
     elif mas_isMoniUpset(lower=True):
         # upset monika has a 10% chance of not going with you
-        if random.randint(1,10) == 1:
+        if random.randint(1, 100) <= upset_chance:
             jump bye_going_somewhere_nothanks
 
         # otherwise we go
         m 1wud "You really want to bring me along?"
         m 1eka "..."
         m 1hua "Well, I suposed it can't hurt to join you."
-        m 1hub "I really can't wait to spend more time with you."
+        m 2dsc "Just...please."
+        m 2rkc "{i}Please{/i} understand what I'm going through."
+        m 1dkc "..."
 
     elif mas_isMoniLove(higher=True):
-        m 1hua "All right! Let's go!"
+        m 1hub "Oh, okay!"
+        m 3tub "Taking me somewhere special today?"
+        m 1hua "I can't wait!"
 
 #    elif mas_isMoniAff(higher=True):
         # TODO: affecitonate/enamored monika will always go wtih you and assume its a
@@ -620,16 +637,39 @@ label bye_going_somewhere:
         #   and will ask u to wait for her to get ready
         m 1sub "Really?"
         m 1hua "Yay!"
+        m 1ekbfa "I wonder where you'll take me today..."
+
+    if mas_isMonikaBirthday():
+        m 1hua "Ehehe. It's a bit romantic, isn't it?"
+        m 1eua "Maybe you'd even want to call it a da-{nw}"
+        $ _history_list.pop()
+        $ _history_list.pop()
+        m 1hua "Oh! Sorry, did I say something?"
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
+    $ first_pass = True
 
     # launch I/O thread
-    $ store.mas_dockstat._startGenerateMonika()
+    $ promise = store.mas_dockstat.monikagen_promise
+    $ promise.start()
 
-    show screen mas_background_timed_jump(4.0, "bye_going_somewhere_rtg")
+label bye_going_somewhere_iowait:
+    hide screen mas_background_timed_jump
+
+    # we want to display the menu first to give users a chance to quit
+    if first_pass:
+        $ first_pass = False
+
+    elif promise.done():
+        # i/o thread is done!
+        jump bye_going_somewhere_rtg
+
+    # display menu options
+    # 4 seconds seems decent enough for waiting.
+    show screen mas_background_timed_jump(4, "bye_going_somewhere_iowait")
     menu:
-        m "Give me a second to get ready."
+        m "Give me a second to get ready.{fast}"
         "Wait, wait!":
             hide screen mas_background_timed_jump
             $ persistent._mas_dockstat_cm_wait_count += 1
@@ -639,21 +679,26 @@ label bye_going_somewhere:
     menu:
         "Actually, I can't take you right now.":
             $ persistent._mas_dockstat_going_to_leave = False
+            $ store.mas_dockstat.abort_gen_promise = True
 
-            # cleanup I/O thread
-            $ store.mas_dockstat._endGenerateMonika()
-            $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+            # but maybe the thread is done already?
+            $ store.mas_dockstat.abortGenPromise()
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
-            m 2hub "Oh , good! Let me finish getting ready."
+            # if we get here, we should jump back to the top so we can
+            # continue waiting
+            m 2hub "Oh, good! Let me finish getting ready."
+
+    # by default, continue looping
+    jump bye_going_somewhere_iowait
 
 
 label bye_going_somewhere_rtg:
-    hide screen mas_background_timed_jump
 
-    # cleanup I/O thread
-    $ moni_chksum = store.mas_dockstat._endGenerateMonika()
+    # io thread should be done by now
+    $ moni_chksum = promise.get()
+    $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
         return "quit"

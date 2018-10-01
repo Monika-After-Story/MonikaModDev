@@ -150,7 +150,29 @@ init python:
         Wrapper aound _invoke_game_menu that follows additional ui rules
         """
         if not _windows_hidden:
+            prev_disable_animations = persistent._mas_disable_animations
             _invoke_game_menu()
+
+            # call backs for the game menu
+            if prev_disable_animations != persistent._mas_disable_animations:
+                mas_drawSpaceroomMasks()
+
+
+    def _mas_quick_menu_cb(screen_name):
+        """
+        Opens game menu to the appropraite quick screen.
+        NOTE: no checks are done here, please do not fuck this.
+        """
+        if not _windows_hidden:
+            prev_disable_animations = persistent._mas_disable_animations
+            renpy.call_in_new_context(
+                "_game_menu", 
+                _game_menu_screen=screen_name
+            )
+
+            # call backs for the game menu
+            if prev_disable_animations != persistent._mas_disable_animations:
+                mas_drawSpaceroomMasks()
 
 
     def _mas_hide_windows():
@@ -159,6 +181,7 @@ init python:
         """
         if not store.mas_hotkeys.no_window_hiding:
             renpy.call_in_new_context("_hide_windows")
+
 
     def set_keymaps():
         #

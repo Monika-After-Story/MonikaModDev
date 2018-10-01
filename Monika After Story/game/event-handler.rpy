@@ -26,6 +26,8 @@ init -500 python:
     # initalies the locks db
 
     # the template is the regular starter case for most events
+    # True means that the property is locked on startup (wont change),
+    # False means it is unlocked (will change)
     mas_init_lockdb_template = (
         True, # event label
         False, # prompt
@@ -43,7 +45,8 @@ init -500 python:
         False, # diary_entry
         False, # rules
         True, # last_seen
-        False # years
+        False, # years
+        False # sensitive
     )
 
     # set defaults
@@ -88,6 +91,7 @@ init 850 python:
     mas_all_ev_db.update(store.mas_moods.mood_db)
     mas_all_ev_db.update(store.mas_stories.story_database)
     mas_all_ev_db.update(store.mas_compliments.compliment_database)
+    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
 
     def mas_getEV(ev_label):
         """
@@ -515,18 +519,10 @@ init -1 python in evhand:
     # restart topic blacklist
     RESTART_BLKLST = [
         "mas_crashed_start",
-        "monika_affection_nickname"
+        "monika_affection_nickname",
+        "mas_coffee_finished_brewing",
+        "mas_coffee_finished_drinking"
     ]
-
-    #### delayed action maps
-    # how this works:
-    #   add a label that should have a delayed action as keys
-    #   values should consist of tuple:
-    #       [0] -> conditional as string for this action to pass
-    #       [1] -> action constant for what should be done (EV_ACTION)
-    DELAYED_ACTION_MAP = {
-        
-    }
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -976,6 +972,18 @@ init python:
 
         return event_label
 
+
+    def removeEventIfExist(event_label):
+        """
+        Removes an event off the event list if it exists
+
+        IN:
+            event_label - label of the event to remove
+        """
+        if event_label in persistent.event_list:
+            persistent.event_list.remove(event_label)
+
+
     def seen_event(event_label):
         #
         # This checks if an event has either been seen or is already on the
@@ -1242,11 +1250,12 @@ label call_next_event:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
-        show monika 1 at t11 zorder MAS_MONIKA_Z with dissolve #Return monika to normal pose
-
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
+
+        # return to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
         $ mas_DropShield_dlg()
 
@@ -1287,6 +1296,9 @@ label prompt_menu:
 
         repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
     #Top level menu
+    # NOTE: should we force this to a particualr exp considering that 
+    # monika now rotates
+    # NOTE: actually we could use boredom setup in here.
     show monika at t21
     #To make the menu line up right we have to build it up manually
     python:
@@ -1301,7 +1313,7 @@ label prompt_menu:
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        renpy.say(m, "What would you like to talk about?", interact=False)
+        renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
@@ -1327,7 +1339,7 @@ label prompt_menu:
     else: #nevermind
         $_return = None
 
-    show monika at t11
+    show monika idle at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
 

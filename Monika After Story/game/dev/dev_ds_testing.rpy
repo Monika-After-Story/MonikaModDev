@@ -20,13 +20,13 @@ label dev_ds_invoke_testing:
             global mas_test
             mas_test = store.mas_dockstat.generateMonika(mas_docking_station)
 
-    m "Hi there. I am going to test invoke in new thread by running the generate function in a new thread"
-    m "Okay, after this message, I will run the thread"
+    m "Hello there! I'm going to test invoke in new thread by running the generate function."
+    m 1hua "Okay, after this message, I'll run the thread."
     $ renpy.invoke_in_thread(mas_invokeME)
     if mas_test is None:
-        m "this happened"
+        m "Well, it happened!"
     else:
-        m "but it was not None"
+        m "But it was not None."
 
     m "Was that a good test?"
     return
