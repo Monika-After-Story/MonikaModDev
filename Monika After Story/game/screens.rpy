@@ -6,11 +6,26 @@ init -1 python:
     layout.QUIT_YES = "Please don't close the game on me!"
     layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
 
+    # tooltips
+    layout.MAS_TT_SENS_MODE = (
+        "Sensitive mode removes content that may be disturbing, offensive, "
+        " or considered tasteless."
+    )
+    layout.MAS_TT_UNSTABLE = (
+        "Unstable mode downloads updates from the experimental unstable "
+        "branch of development. It his HIGHLY recommended to make a backup "
+        "of your persistents before enabling this mode."
+    )
+    layout.MAS_TT_REPEAT = (
+        "Enable this to let Monika repeat topics that you have already seen."
+    )
+
+
+
 
 init python in mas_layout:
     import store
     import store.mas_affection as aff
-    gender = renpy.game.persistent.gender 
 
     QUIT_YES = store.layout.QUIT_YES
     QUIT_NO = store.layout.QUIT_NO
@@ -18,7 +33,7 @@ init python in mas_layout:
     UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistent before enabling this mode. Please report " +
+        "backup of your persistents before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
 
@@ -39,7 +54,7 @@ init python in mas_layout:
     QUIT_BROKEN = "Just go."
     QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
 
-    if gender == "M" or gender == "F":
+    if store.persistent.gender == "M" or store.persistent.gender == "F":
         _usage_quit_aff = QUIT_NO_AFF_G
     else:
         _usage_quit_aff = QUIT_NO_AFF_GL
@@ -105,7 +120,7 @@ init python in mas_layout:
         store.layout.QUIT_NO = quit_no
 
 
-init 3000 python:
+init 900 python:
     import store.mas_layout
     store.mas_layout.setupQuits()
 
@@ -509,14 +524,23 @@ screen quick_menu():
             yalign 0.995
 
             #textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
+
+#            textbutton _("History") action ShowMenu('history')
+            textbutton _("History") action Function(_mas_quick_menu_cb, "history")
+
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Load") action ShowMenu('load')
+
+#            textbutton _("Save") action ShowMenu('save')
+            textbutton _("Save") action Function(_mas_quick_menu_cb, "save")
+
+#            textbutton _("Load") action ShowMenu('load')
+            textbutton _("Load") action Function(_mas_quick_menu_cb, "load")
             #textbutton _("Q.Save") action QuickSave()
             #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Settings") action ShowMenu('preferences')
+
+#            textbutton _("Settings") action ShowMenu("preferences")
+            textbutton _("Settings") action Function(_mas_quick_menu_cb, "preferences")
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -1051,6 +1075,8 @@ screen preferences():
     else:
         $ cols = 4
 
+    default tooltip = Tooltip("")
+
     use game_menu(_("Settings"), scroll="viewport"):
 
         vbox:
@@ -1067,18 +1093,18 @@ screen preferences():
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Skip")
+#                    textbutton _("Unseen Text") action Preference("skip", "toggle")
+#                    textbutton _("After Choices") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
                     style_prefix "check"
                     label _("Graphics")
-                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
@@ -1094,12 +1120,20 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
+                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                    textbutton _("Repeat Topics"):
+                        action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_REPEAT)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
-
+                vbox:
+                    style_prefix "check"
+                    label _(" ")
+                    textbutton _("Sensitive Mode"):
+                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
             null height (4 * gui.pref_spacing)
 
@@ -1259,7 +1293,11 @@ screen preferences():
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
-
+    
+    text tooltip.value:
+        xalign 0.0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
 
     text "v[config.version]":
                 xalign 1.0 yalign 1.0

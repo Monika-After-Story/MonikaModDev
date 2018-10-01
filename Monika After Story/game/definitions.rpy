@@ -2,12 +2,18 @@ define persistent.demo = False
 define persistent.steam = False
 define config.developer = False #This is the flag for Developer tools
 
+init 1 python:
+    persistent.steam = "steamapps" in config.basedir.lower()
+
 python early:
     import singleton
     me = singleton.SingleInstance()
     # define the zorders
     MAS_MONIKA_Z = 10
     MAS_BACKGROUND_Z =5
+
+    # this is now global
+    import datetime
 
 
 # uncomment this if you want syntax highlighting support on vim
@@ -96,6 +102,8 @@ python early:
     #       NOTE: If this is given, the year part of start_date and end_date
     #           will be IGNORED
     #       (Default: None)
+    #   sensitive - True means this is a sensitve topic, False means it is not
+    #       (Default: False)
     class Event(object):
 
         # tuple constants
@@ -116,7 +124,8 @@ python early:
             "diary_entry":13,
             "rules":14,
             "last_seen":15,
-            "years":16
+            "years":16,
+            "sensitive":17
         }
 
         # name constants
@@ -132,6 +141,13 @@ python early:
         # modified during object creation
         # NOTE: this is set in evhand at an init level of -500
         INIT_LOCKDB = None
+
+        # action MAP
+        # actions that should be done given an event
+        # NOTE: this is actually populated later, at init level 1
+        #   SEE the evhand store in event-handler
+        # NOTE: action code should be callable on a given event object
+        ACTION_MAP = dict()
 
         # NOTE: _eventlabel is required, its the key to this event
         # its also how we handle equality. also it cannot be None
@@ -152,7 +168,8 @@ python early:
                 diary_entry=None,
                 rules=dict(),
                 last_seen=None,
-                years=None
+                years=None,
+                sensitive=False
             ):
 
             # setting up defaults
@@ -203,7 +220,8 @@ python early:
                 diary_entry,
                 rules,
                 last_seen,
-                years
+                years,
+                sensitive
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -433,7 +451,9 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None
+            ):
             #
             # Filters the given event object accoridng to the given filters
             # NOTE: NO SANITY CHECKS
@@ -482,6 +502,10 @@ python early:
                 if event.category and len(set(excl_cat).intersection(set(event.category))) > 0:
                     return False
 
+            # sensitivyt
+            if sensitive is not None and event.sensitive != sensitive:
+                return False
+
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
                 return False
@@ -500,7 +524,9 @@ python early:
                 action=None,
                 seen=None,
                 excl_cat=None,
-                moni_wants=None):
+                moni_wants=None,
+                sensitive=None
+            ):
             #
             # Filters the given events dict according to the given filters.
             # HOW TO USE: Use ** to pass in a dict of filters. they must match
@@ -538,6 +564,13 @@ python early:
             #   moni_wants - boolean value to match if the event has the monika
             #       wants this first.
             #       (Default: None )
+            #   sensitive - boolean value to match if the event is sensitive
+            #       or not
+            #       NOTE: if None, we use inverse of _mas_sensitive_mode, only
+            #           if sensitive mode is True.
+            #           AKA: we only filter sensitve topics if sensitve mode is
+            #           enabled.
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -556,7 +589,8 @@ python early:
                     and action is None
                     and seen is None
                     and excl_cat is None
-                    and moni_wants is None)):
+                    and moni_wants is None
+                    and sensitive is None)):
                 return events
 
             # copy check
@@ -572,6 +606,13 @@ python early:
                 category = None
             if action and len(action) == 0:
                 action = None
+            if sensitive is None:
+                try:
+                    # i have no idea if this is reachable from here
+                    if persistent._mas_sensitive_mode:
+                        sensitive = False
+                except:
+                    pass
 
             filt_ev_dict = dict()
 
@@ -580,7 +621,8 @@ python early:
                 # time to apply filtering rules
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
-                        excl_cat=excl_cat,moni_wants=moni_wants):
+                        excl_cat=excl_cat,moni_wants=moni_wants,
+                        sensitive=sensitive):
 
                     filt_ev_dict[k] = v
 
@@ -664,19 +706,11 @@ python early:
                 #Calendar events use a different function
                 date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
                 if not date_based and events[ev].conditional is not None:
-                    if eval(events[ev].conditional) and events[ev].action is not None:
-                        #Perform the event's action
-                        if events[ev].action == EV_ACT_PUSH:
-                            pushEvent(ev)
-                        elif events[ev].action == EV_ACT_QUEUE:
-                            queueEvent(ev)
-                        elif events[ev].action == EV_ACT_UNLOCK:
-                            events[ev].unlocked = True
-                            events[ev].unlock_date = datetime.datetime.now()
-                        elif events[ev].action == EV_ACT_RANDOM:
-                            events[ev].random = True
-                        elif events[ev].action == EV_ACT_POOL:
-                            events[ev].pool = True
+                    if (
+                            eval(events[ev].conditional)
+                            and events[ev].action in Event.ACTION_MAP
+                        ):
+                        Event._performAction(events[ev], datetime.datetime.now())
 
                         #Clear the conditional
                         events[ev].conditional = None
@@ -722,19 +756,9 @@ python early:
                         continue
 
 
-                if e.action is not None:
-                    #Perform the event's action
-                    if e.action == EV_ACT_PUSH:
-                        pushEvent(ev)
-                    elif e.action == EV_ACT_QUEUE:
-                        queueEvent(ev)
-                    elif e.action == EV_ACT_UNLOCK:
-                        e.unlocked = True
-                        e.unlock_date = current_time
-                    elif e.action == EV_ACT_RANDOM:
-                        e.random = True
-                    elif e.action == EV_ACT_POOL:
-                        e.pool = True
+                if e.action in Event.ACTION_MAP:
+                    # perform action
+                    Event._performAction(e, current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -994,6 +1018,32 @@ python early:
 
             # return the available events dict
             return available_events
+
+
+        @staticmethod
+        def _performAction(ev, _unlock_time):
+            """
+            Efficient / no checking action performing
+
+            NOTE: does NOT check ev.action for nonNone
+
+            IN:
+                ev - event we are performing action on
+                _unlock_time - datetime to use for unlock_date
+            """
+            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+
+
+        @staticmethod
+        def performAction(ev, _unlock_time=datetime.datetime.now()):
+            """
+            Performs the action of the given event
+
+            IN:
+                ev - event we are perfrming action on
+            """
+            if ev.action in Event.ACTION_MAP:
+                Event._performAction(ev, _unlock_time)
 
 
 # init -1 python:
@@ -1276,6 +1326,7 @@ python early:
 #init -1 python:
     # new class to manage a list of quips
     class MASQuipList(object):
+        import random
         """
         Class that manages a list of quips. Quips have types which helps us
         when deciding how to execute quips. Also we have some properties that
@@ -1442,6 +1493,17 @@ python early:
                 return -1
 
 
+        def addLabelQuips(self, label_list):
+            """
+            Adds multiple label quips.
+
+            IN:
+                label_list - list of label names to add
+            """
+            for _label in label_list:
+                self.addLabelQuip(_label)
+
+
         def addLineQuip(self, line, custom_type=None):
             """
             Adds a line quip. A custom type can be given if the caller wants
@@ -1505,13 +1567,13 @@ python early:
             """
             if remove:
                 # if we need to remove, we should use randint instead
-                sel_index = renpy.random.randint(0, len(self.__quiplist) - 1)
+                sel_index = random.randint(0, len(self.__quiplist) - 1)
                 quip_type, quip_value = self.__quiplist.pop(sel_index)
 
             else:
                 # if we dont need to remove, we can just use renpy random
                 # choice
-                quip_type, quip_value = renpy.random.choice(self.__quiplist)
+                quip_type, quip_value = random.choice(self.__quiplist)
 
             # now do preocessing then send
             if quip_type == self.TYPE_GLITCH:
@@ -1757,13 +1819,12 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_chess_dlg_actions = dict()
         renpy.game.persistent._mas_chess_timed_disable = None
         renpy.game.persistent._mas_chess_3_edit_sorry = False
-        renpy.game.persistent._mas_chess_mangle_all = False
 
         # greetings
         renpy.game.persistent._mas_you_chr = False
         renpy.game.persistent.opendoor_opencount = 0
         renpy.game.persistent.opendoor_knockyes = False
-        persistent._mas_greeting_type = None
+        renpy.game.persistent._mas_greeting_type = None
 
         # hangman
         renpy.game.persistent._mas_hangman_playername = False
@@ -1773,18 +1834,63 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_piano_keymaps = dict()
 
         # affection
-        persistent._mas_affection["affection"] = 0
+        renpy.game.persistent._mas_affection["affection"] = 0
 
 
-init -100 python in mas_utils:
-    # utility functions for other stores.
+init -999 python:
+    import os
+
+    # this is initially set to 60 seconds
+    renpy.not_infinite_loop(120)
+
+    # create the log folder if not exist
+    if not os.access(os.path.normcase(renpy.config.basedir + "/log"), os.F_OK):
+        try:
+            os.mkdir(os.path.normcase(renpy.config.basedir + "/log"))
+        except:
+            pass
+
+
+init -990 python in mas_utils:
+    import store
+    import os
+    import shutil
     import datetime
-    import ctypes
-    mas_log = renpy.renpy.log.open("mas_log")
+
+    # unstable should never delete logs
+    if store.persistent._mas_unstable_mode:
+        mas_log = renpy.renpy.log.open("log/mas_log", append=True, flush=True)
+    else:
+        mas_log = renpy.renpy.log.open("log/mas_log")
+
     mas_log_open = mas_log.open()
     mas_log.raw_write = True
 
-    __FLIMIT = 1000000
+    # LOG messges
+    _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
+    _mas__failcp = "[ERROR] Failed copy: '{0}' -> '{1}' | {2}\n"
+
+    # bad text dict
+    BAD_TEXT = {
+        "{": "{{",
+        "[": "[["
+    }
+
+    def clean_gui_text(text):
+        """
+        Cleans the given text so its suitable for GUI usage
+
+        IN:
+            text - text to clean
+
+        RETURNS:
+            cleaned text
+        """
+        for bad in BAD_TEXT:
+            text = text.replace(bad, BAD_TEXT[bad])
+
+        return text
+
 
     def tryparseint(value, default=0):
         """
@@ -1805,6 +1911,195 @@ init -100 python in mas_utils:
             return default
 
 
+    def copyfile(oldpath, newpath):
+        """
+        Copies the file at oldpath into a file at newpath
+        Paths assumed to include the filename (like an mv command)
+
+        NOTE:
+            if a copy fails, the error is logged
+
+        IN:
+            oldpath - path to old file, including filename
+            newpath - path to new file, including filename
+
+        RETURNS:
+            True if copy succeeded, False otherwise
+        """
+        try:
+            shutil.copyfile(oldpath, newpath)
+            return True
+        except Exception as e:
+            writelog(_mas__failcp.format(oldpath, newpath, str(e)))
+        return False
+
+
+    def writelog(msg):
+        """
+        Writes to the mas log if it is open
+
+        IN:
+            msg - message to write to log
+        """
+        if mas_log_open:
+            mas_log.write(msg)
+
+
+    def trydel(f_path, log=False):
+        """
+        Attempts to delete something at the given path
+
+        NOTE: completely hides exceptions, unless log is True
+        """
+        try:
+            os.remove(f_path)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+
+
+    def trywrite(f_path, msg, log=False, mode="w"):
+        """
+        Attempts to write out a file at the given path
+
+        Exceptions are hidden
+
+        IN:
+            f_path - path to write file
+            msg - text to write
+            log - True means we log exceptions
+                (Default: False)
+            mode - write mode to use
+                (Defaut: w)
+        """
+        outfile = None
+        try:
+            outfile = open(f_path, mode)
+            outfile.write(msg)
+        except Exception as e:
+            if log:
+                writelog("[exp] {0}\n".format(repr(e)))
+        finally:
+            if outfile is not None:
+                outfile.close()
+
+
+    def logrotate(logpath, filename):
+        """
+        Does a log rotation. Log rotations contstantly increase. We defualt
+        to about 2 decimal places, but let the limit go past that
+
+        NOTE: exceptions are logged
+
+        IN:
+            logpath - path to the folder containing logs
+                NOTE: this is assumed to have the trailing slash
+            filename - filename of the log to rotate
+        """
+        try:
+            filelist = os.listdir(logpath)
+        except Exception as e:
+            writelog("[ERROR] " + str(e) + "\n")
+            return
+
+        # log rotation constants
+        __numformat = "{:02d}"
+        __numdelim = "."
+
+        # parse filelist for valid filenames,
+        # also sort them so the largest number is last
+        filelist = sorted([
+            x
+            for x in filelist
+            if x.startswith(filename)
+        ])
+
+        # now extract only the largest number in this list.
+        # NOTE: this is only possible if we have more than one file in the list
+        if len(filelist) > 1:
+            fname, dot, largest_num = filelist.pop().rpartition(__numdelim)
+            largest_num = tryparseint(largest_num, -1)
+
+        else:
+            # otherwise
+            largest_num = -1
+
+        # now increaese largest num to get the next number we should write out
+        largest_num += 1
+
+        # delete whatever file that is if it exists
+        new_path = os.path.normcase("".join([
+            logpath,
+            filename,
+            __numdelim,
+            __numformat.format(largest_num)
+        ]))
+        trydel(new_path)
+
+        # and copy our main file over
+        old_path = os.path.normcase(logpath + filename)
+        copyfile(old_path, new_path)
+
+        # and delete the current file
+        trydel(old_path)
+
+    def tryparsedt(_datetime, default=None, sep=" "):
+        """
+        Trys to parse a datetime isoformat string into a datetime object
+
+        IN:
+            _datetime - datetime iso format string to parse
+            default - default value to return if parsing fails
+            sep - separator used when converting to isoformat
+
+        RETURNS:
+            datetime object, or default if parsing failed
+        """
+        if len(_datetime) == 0:
+            return default
+
+        try:
+            # separate into date / time portions
+            _date, _sep, _time = _datetime.partition(sep)
+
+            # separate _date into y/m/d
+            year, month, day = _date.split("-")
+
+            # separate _time into h/m/s
+            hour, minute, second = _time.split(":", 2)
+
+            # separate second into s/ms (if applicable)
+            second, _sep, ms = second.partition(".")
+
+            # clean ms
+            ms = ms[:6]
+
+            # now try and parse everything into ints
+            year = tryparseint(year, -1)
+            month = tryparseint(month, -1)
+            day = tryparseint(day, -1)
+            hour = tryparseint(hour, -1)
+            minute = tryparseint(minute, -1)
+            second = tryparseint(second, -1)
+            ms = tryparseint(ms, 0) # ms isn't really important
+
+            # now try to bulid our datetime
+            return datetime.datetime(year, month, day, hour, minute, second, ms)
+
+        except:
+            return default
+
+
+init -100 python in mas_utils:
+    # utility functions for other stores.
+    import datetime
+    import ctypes
+    import random
+    import os
+    from cStringIO import StringIO as fastIO
+
+    __FLIMIT = 1000000
+
     def tryparsefloat(value, default=0):
         """
         Attempts to parse the given value into a float. Returns the default if
@@ -1822,6 +2117,21 @@ init -100 python in mas_utils:
             return float(value)
         except:
             return default
+
+
+    def bullet_list(_list, bullet="  -"):
+        """
+        Converts a list of items into a bulleted list of strings.
+
+        IN:
+            _list - list to convert into bulleted list
+            bullet - the bullet to use. A space is added between the bullet and
+                the item.
+                (Default: 2 spaces and a dash)
+
+        RETURNS: a list of strings where each string is an item with a bullet.
+        """
+        return [bullet + " " + str(item) for item in _list]
 
 
     ### date adjusting functions
@@ -1932,15 +2242,94 @@ init -100 python in mas_utils:
         )
 
 
-    def writelog(msg):
+    def randomblob(size, seed=None):
         """
-        Writes to the mas log if it is open
+        Generates a blob of StringIO data with the given size
+
+        NOTE: if seed is given, the current random state will be restored
+            after this function ends
+
+        NOTE: generated bytes are in range of 0-255
 
         IN:
-            msg - message to write to log
+            size - size in bytes of the blob to make
+            seed - seed to use
+                if None, curent time is used (as per random documentation)
+                (Default: None)
+
+        RETURNS:
+            a cStringIO buffer of the random blob
         """
-        if mas_log_open:
-            mas_log.write(msg)
+        data = fastIO()
+        _byte_count = 0
+        curr_state = None
+
+        # seed set
+        curr_state = random.getstate()
+        random.seed(seed)
+
+        # generate random bytes
+        while _byte_count < size:
+            data.write(chr(random.randint(0, 255)))
+            _byte_count += 1
+
+        # reset state
+        random.setstate(curr_state)
+
+        return data
+
+
+    def randomblob_fast(size):
+        """
+        Generates a randomb blob of stringIO data more efficientally and with
+        true random using urandom
+
+        NOTE: to prevent errors, we only generate bytes at 4M per iteration
+
+        IN:
+            size - size in bytes of the blob to make
+
+        RETURNS:
+            a cStringIO buffer of the random blob
+        """
+        data = fastIO()
+        _byte_limit = 4 * (1024**2) # 4MB
+
+        while size > 0:
+            make_bytes = _byte_limit
+            if (size - _byte_limit) <= 0:
+                make_bytes = size
+                size = 0
+
+            else:
+                size -= make_bytes
+
+            data.write(os.urandom(make_bytes))
+
+        return data
+
+
+    def intersperse(_list, _sep):
+        """
+        Intersperses a list with the given separator
+        """
+        result_list = [_sep] * (len(_list) * 2 - 1)
+        result_list[0::2] = _list
+        return result_list
+
+
+    def log_entry(entry_log, value):
+        """
+        Generic entry add to the given log. 
+        Stores both time and given value as a tuple:
+            [0]: datetime.now()
+            [1]: value
+
+        IN:
+            entry_log - list to log entry to
+            value - value to log in this entry
+        """
+        entry_log.append((datetime.datetime.now(), value))
 
 
     class ISCRAM(ctypes.BigEndianStructure):
@@ -2081,6 +2470,7 @@ init -100 python in mas_utils:
 
 init -1 python:
     import datetime # for mac issues i guess.
+    import os
     if "mouseup_3" in config.keymap['game_menu']:
         config.keymap['game_menu'].remove('mouseup_3')
     if "mouseup_3" not in config.keymap["hide_windows"]:
@@ -2132,17 +2522,20 @@ init -1 python:
         # otherwise, not found
         return False
 
-    def is_file_present(file):
-        try:
-            renpy.file(
-                ".." +
-                file
-            )
-            is_file = True
-        except:
-            is_file = False
+    def is_file_present(filename):
+        if not filename.startswith("/"):
+            filename = "/" + filename
 
-        return is_file
+        filepath = renpy.config.basedir + filename
+
+        try:
+            return os.access(os.path.normcase(filepath), os.F_OK)
+        except:
+            return False
+
+
+    def is_apology_present():
+        return is_file_present('/imsorry') or is_file_present('/imsorry.txt')
 
 
     def mas_cvToHM(mins):
@@ -2160,6 +2553,298 @@ init -1 python:
         return (int(mins / 60), int(mins % 60))
 
 
+    def mas_isSTtoAny(_time, _suntime, _hour, _min):
+        """
+        Checks if the given time is within this range:
+        _suntime <= _time < (_hour, _min)
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _suntime - suntime to use for lower bound
+                NOTE: suntimes are given in minutes
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+
+        RETURNS:
+            True if the given time is within bounds of the given suntime and
+                given hour / mins, False otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _upper_minutes = (_hour * 60) + _min
+        return _suntime <= _curr_minutes < _upper_minutes
+
+
+    def mas_isSRtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within Sunrise time to the given _hour
+        and _minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is whithin bounds of sunrise and the given
+            hour / mins, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunrise, _hour, _min)
+
+
+    def mas_isSStoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within sunset to the given _hour and minute
+
+        NOTE: upper bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of sunset and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, persistent._mas_sunset, _hour, _min)
+
+
+    def mas_isMNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within midnight to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+        NOTE: lower bound is 0 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of midnight and the given
+            hour/min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 0, _hour, _min)
+
+
+    def mas_isNtoAny(_time, _hour, _min=0):
+        """
+        Checks if the given time is within noon to the given hour/min.
+
+        NOTE: upper bound is 24 midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for upper bound
+            _min - minute to use for upper bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within bounds of noon and the given hour
+            /min, False otherwise
+        """
+        return mas_isSTtoAny(_time, 12*60, _hour, _min)
+
+
+    def mas_isAnytoST(_time, _hour, _min, _suntime):
+        """
+        Checks if the given time is within this range:
+        (_hour, _min) <= _time < _suntime
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+            _suntime - suntime to use for upper bound
+                NOTE: suntimes are given in minutes
+
+        RETURNS:
+            True if the given time is within bounds of the given hour / mins
+            and the given suntime, false Otherwise
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        _lower_minutes = (_hour * 60) + _min
+        return _lower_minutes <= _curr_minutes < _suntime
+
+
+    def mas_isAnytoSR(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour and minute to sunrise
+        time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunrise, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunrise)
+
+
+    def mas_isAnytoSS(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to sunset time
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and sunset, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, persistent._mas_sunset)
+
+
+    def mas_isAnytoMN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to midnight (next
+        day)
+
+        NOTE: lower bound is limited to midnight
+        NOTE: upper bound is 24 - midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - mintue to use for lower bound
+                (DEfault: 0)
+
+        RETURNS:
+            True if the given time is within the bounds of the given hour/min
+            and midnight, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 24*60)
+
+
+    def mas_isAnytoN(_time, _hour, _min=0):
+        """
+        Checks if the given time is within a given hour/min to noon.
+
+        NOTE: lower bound is limited to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+            _hour - hour to use for lower bound
+            _min - minute to use for lower bound
+                (Default: 0)
+
+        RETURNS:
+            True if the given tim eis within the bounds of the given hour/min
+            and Noon, False otherwise
+        """
+        return mas_isAnytoST(_time, _hour, _min, 12*60)
+
+
+    def mas_isMNtoSR(_time):
+        """
+        Checks if the given time is within midnight to sunrise
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within midnight to sunrise
+        """
+        return mas_isAnytoSR(_time, 0)
+
+
+    def mas_isSRtoN(_time):
+        """
+        Checks if the given time is within sunrise to noon
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is witin sunrise to noon
+        """
+        return mas_isSRtoAny(_time, 12)
+
+
+    def mas_isNtoSS(_time):
+        """
+        Checks if the given time is within noon to sunset
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within noon to sunset
+        """
+        return mas_isAnytoSS(_time, 12)
+
+
+    def mas_isSStoMN(_time):
+        """
+        Checks if the given time is within sunset to midnight
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if the given time is within sunset to midnight
+        """
+        return mas_isSStoAny(_time, 24)
+
+
+    def mas_isSunny(_time):
+        """
+        Checks if the sun is up during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it is sunny during the given time
+        """
+        _curr_minutes = (_time.hour * 60) + _time.minute
+        return persistent._mas_sunrise <= _curr_minutes < persistent._mas_sunset
+
+
+    def mas_isNight(_time):
+        """
+        Checks if the sun is down during the given time
+
+        IN:
+            _time - current time to check
+                NOTE: datetime.time object
+
+        RETURNS: True if it the sun is down during the given time
+        """
+        return not mas_isSunny(_time)
+
+
     def mas_cvToDHM(mins):
         """
         Converts the given minutes into a displayable hour / minutes
@@ -2174,6 +2859,45 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
+
+
+    def mas_isMonikaBirthday():
+        return datetime.date.today() == mas_monika_birthday
+
+    def mas_getNextMonikaBirthday():
+        today = datetime.date.today()
+        if mas_monika_birthday < today:
+            return datetime.date(
+                today.year + 1,
+                mas_monika_birthday.month,
+                mas_monika_birthday.day
+            )
+        return mas_monika_birthday
+
+
+    def mas_recognizedBday(_date=None):
+        """
+        Checks if the user recognized monika's birthday at all.
+
+        TODO: this is one-shot. we need to make this generic to future bdays
+
+        RETURNS:
+            True if the user recoginzed monika's birthday, False otherwise
+        """
+        if _date is None:
+            _date = mas_monika_birthday
+
+        return (
+            mas_generateGiftsReport(_date)[0] > 0
+            or persistent._mas_bday_date_count > 0
+            or persistent._mas_bday_sbp_reacted
+            or persistent._mas_bday_said_happybday
+        )
+
+
+
+    def mas_maxPlaytime():
+        return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
 
 
     def get_pos(channel='music'):
@@ -2231,6 +2955,241 @@ init -1 python:
         except:
             appIds = None
         return appIds
+
+init 2 python:
+    # global functions that should be defined after level 0
+
+    def mas_isCoffeeTime(_time=None):
+        """
+        Checks if its coffee time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its coffee time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return (
+            store.mas_coffee.COFFEE_TIME_START
+            <= _time.hour <
+            store.mas_coffee.COFFEE_TIME_END
+        )
+
+
+    def mas_brewCoffee(_start_time=None):
+        """
+        Starts brewing coffee aka sets up the coffee finished brewing event
+
+        IN:
+            _start_time - time to start brewing the coffee
+                If None, we assume now
+                (Default: None)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # start brew
+        persistent._mas_coffee_brew_time = _start_time
+
+        # calculate end brew time
+        end_brew = random.randint(
+            store.mas_coffee.BREW_LOW,
+            store.mas_coffee.BREW_HIGH
+        )
+
+        # setup the event conditional
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        brew_ev.conditional = (
+            "persistent._mas_coffee_brew_time is not None "
+            "and (datetime.datetime.now() - persistent._mas_coffee_brew_time) "
+            "> datetime.timedelta(0, {0})"
+        ).format(end_brew)
+        brew_ev.action = EV_ACT_QUEUE
+
+
+    def mas_drinkCoffee(_start_time=None):
+        """
+        Lets monika drink coffee aka sets the time she should stop drinking
+        coffee (coffee finished drinking event)
+
+        IN:
+            _start_time - time to start dirnking coffee
+                If None, we use now
+                (Defualt: now)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # delta for drinking
+        # NOTE: between 10 minutes to 2 hours
+        drinking_time = datetime.timedelta(
+            0,
+            random.randint(
+                store.mas_coffee.DRINK_LOW,
+                store.mas_coffee.DRINK_HIGH
+            )
+        )
+
+        # setup the stop time for the cup
+        persistent._mas_coffee_cup_done = _start_time + drinking_time
+
+        # setup the event conditional
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        drink_ev.conditional = (
+            "persistent._mas_coffee_cup_done is not None "
+            "and datetime.datetime.now() > persistent._mas_coffee_cup_done"
+        )
+        drink_ev.action = EV_ACT_QUEUE
+
+        # increment cup count
+        persistent._mas_coffee_cups_drank += 1
+
+
+    def mas_resetCoffee():
+        """
+        Completely resets all coffee vars
+        NOTE: this only resets the coffee drinking vars, not the history
+        """
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        monika_chr.remove_acs(mas_acs_mug)
+        brew_ev.conditional = None
+        brew_ev.action = None
+        drink_ev.conditional = None
+        drink_ev.action = None
+        persistent._mas_coffee_brew_time = None
+        persistent._mas_coffee_cup_done = None
+        removeEventIfExist(brew_ev.eventlabel)
+        removeEventIfExist(drink_ev.eventlabel)
+
+
+    def _mas_startupCoffeeLogic():
+        """
+        Runs startup logic regarding coffee stuff.
+
+        It is assumed that this run prior to conditional checking.
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_coffee:
+            return
+
+        # setup some vars
+        brew_ev = mas_getEV("mas_coffee_finished_brewing")
+        drink_ev = mas_getEV("mas_coffee_finished_drinking")
+        _now = datetime.datetime.now()
+        _chance = random.randint(1, 100)
+        time_for_coffee = mas_isCoffeeTime(_now)
+
+        # setup some functions
+        def still_brew(_time):
+            return (
+                _time is not None
+                and _time.date() == _now.date()
+                and mas_isCoffeeTime(_time)
+            )
+
+        def still_drink(_time):
+            return _time is not None and _now < _time
+
+
+        # should we even drink coffee right now?
+        if not time_for_coffee:
+
+            # if its not time for coffee, we can still be drinking coffee
+            # because of a couple reasons:
+            #   - monika started her brew before her cut off time
+            #   - monika's drink time hasn't been reached yet
+            if still_brew(persistent._mas_coffee_brew_time):
+                # monika's brew started before the cut off.
+                # if the brew is done, then skip to drinking.
+                # otherwise, the finished brewing event will trigger on its
+                # own
+                if brew_ev.conditional is not None and eval(brew_ev.conditional):
+                    # even though this in inaccurate, it works for the
+                    # immersive purposes, so whatever.
+                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_drinkCoffee(persistent._mas_coffee_brew_time)
+
+                    if not still_drink(persistent._mas_coffee_cup_done):
+                        # monika should have finished this coffee already
+                        mas_resetCoffee()
+
+                    else:
+                        # monika is currently drinking this coffee
+                        brew_ev.conditional = None
+                        brew_ev.action = None
+                        persistent._mas_coffee_brew_time = None
+                        monika_chr.wear_acs_pst(mas_acs_mug)
+
+            elif still_drink(persistent._mas_coffee_cup_done):
+                # monika is still drinking coffee
+                # clear brew vars just in case
+                brew_ev.conditional = None
+                brew_ev.action = None
+                persistent._mas_coffee_brew_time = None
+                removeEventIfExist(brew_ev.eventlabel)
+
+                # make sure she has the cup, just in case
+                if not monika_chr.is_wearing_acs(mas_acs_mug):
+                    monika_chr.wear_acs_pst(mas_acs_mug)
+
+            else:
+                # otherwise, just reset coffee
+                mas_resetCoffee()
+
+        else:
+            # its coffee time!
+            # if we are currently brewing or drinking, we don't need to do
+            # anything else
+            if (
+                    still_brew(persistent._mas_coffee_brew_time)
+                    or still_drink(persistent._mas_coffee_cup_done)
+                ):
+                return
+
+            # otherwise, lets checek if monika should be brewing or drinking
+            # coffee
+
+            # first clear vars so we start fresh
+            mas_resetCoffee()
+
+            if (
+                    _now.hour < store.mas_coffee.BREW_DRINK_SPLIT
+                    and _chance <= store.mas_coffee.BREW_CHANCE
+                ):
+                # monika is brewing coffee
+                mas_brewCoffee()
+
+            elif _chance <= store.mas_coffee.DRINK_CHANCE:
+                # monika is drinking coffee
+                mas_drinkCoffee()
+                monika_chr.wear_acs_pst(mas_acs_mug)
+
+        return
+
+    def mas_startupPlushieLogic(chance=4):
+        """
+        Runs a simple random check for the quetzal plushie.
+
+        IN:
+            chance - value that determines the chance of that
+                determines if the plushie will appear
+                Defualts to 4
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_quetzalplushie:
+            return
+        if renpy.random.randint(1,chance) == 1:
+            monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+        return
+
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -3459,7 +4418,6 @@ default persistent._mas_affection = {"affection":0,"goodexp":1,"badexp":1,"apolo
 default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
-default persistent._mas_player_bday = None
 default persistent._mas_first_calendar_check = False
 
 # rain
@@ -3515,6 +4473,11 @@ define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
+define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+
+# sensitive mode enabler
+default persistent._mas_sensitive_mode = False
+
 init python:
     startup_check = False
     try:
@@ -3538,8 +4501,8 @@ default him = "him"
 default himself = "himself"
 
 
-# default is NORMAL
-default persistent._mas_randchat_freq = 1
+# default is OFTEN
+default persistent._mas_randchat_freq = 0
 define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies

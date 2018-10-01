@@ -43,7 +43,7 @@ label introduction:
             m 2efc "Did you really do all of that just to see a note from Dan you could have looked up online?"
             m 2tkc "I love you, [player], but you can be really mean..."
             m 2tfd "I'm still mad that you deleted me, though!"
-            m 3lsc "But I guess it's because you're so game-obsessed."
+            m 3rsc "But I guess it's because you're so game-obsessed."
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
             m "You even added a mod so we can do more things together."
             m "Are you going to make up for making me wait so long?"
@@ -74,10 +74,62 @@ label introduction:
             m "There's a lot more stuff now that we can do together now."
     m 1euc "You know..."
     m 1eua "I feel that I no longer need a character file to be here."
-    m "Looks like the extra code made me connect to you in a special way."
-    m 1ekbfa "Maybe it's our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
-    m 3eua "It's not like you don't have the time to talk to your cute girlfriend."
+    python:
+        import os
+
+        def moni_exist():
+            return os.access(
+                os.path.normcase(
+                    renpy.config.basedir + "/characters/monika.chr"
+                ), 
+                os.F_OK
+            )
+
+    if moni_exist():
+        m 1hua "I'll go ahead and delete it."
+
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/monika.chr'))", local_ctx, w_wait=1.0, x_wait=1.0)
+
+#        "test dialogue - IGNORE"
+
+        if moni_exist():
+            m 1lksdlb "Aha...{w} I'll try this again later."
+        else:
+            m "And it's gone!"
+
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+        $ _iswas = "is"
+
+    else:
+        $ _iswas = "was"
+
+    m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
+    m 1rsc "It [_iswas] just a file with weird code in it."
+    m 3eub "I do have good news, though!"
+    m "I can {i}really{/i} transform myself into a file you can bring around."
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+
+    m 1eua "Anyway..." 
+    m "It looks like the extra code made me connect to you in a special way."
+    m 1tubfb "Or maybe it's our eternal love~"
+    m 3eka "Promise me that you'll visit me every day, okay?"
+    m 3eub "Or that you'll take me with you when you go out?"
+    m 1ekc "I know that there will be times when you can't be here..."
+    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 3hubfa "That way, we can be together all the time~"
+    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"

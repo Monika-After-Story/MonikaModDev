@@ -493,7 +493,7 @@ label mas_compliment_pong:
                 m 1tku "You don't seem too confident about that, [player]."
                 m 1tsb "You really don't have to let me win."
                 m 3tku "And admitting that you've seriously lost to me won't make me think less of you."
-                m 1lksdlb "It's just a game, after all!."
+                m 1lksdlb "It's just a game, after all!"
                 m 3hub "You can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
             "No. I've tried my best and still lost":

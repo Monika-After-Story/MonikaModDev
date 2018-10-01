@@ -17,8 +17,11 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
 
+    ### NOTE: all Return Home greetings must have this
+    TYPE_GO_SOMEWHERE = "go_somewhere"
+
     # custom greeting functions
-    def selectGreeting(type=None):
+    def selectGreeting(_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -42,13 +45,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if type is not None:
+        if _type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[type])
+                category=(True,[_type])
             )
 
         else:
@@ -177,7 +180,7 @@ label greeting_gooday:
             m "We can talk all day about your problems, if you want to."
             m 3eua "I want to try and make sure you're always happy."
             m 1eka "Because that's what makes me happy."
-            m 1hua "I'll be sure try my best to cheer you up, I promise."
+            m 1hua "I'll be sure to try my best to cheer you up, I promise."
     return
 
 init 5 python:
@@ -205,7 +208,7 @@ label greeting_goodmorning:
         menu:
             m "Is that it?"
             "Yes.":
-                m 5rkc "You should really get some sleep soon, if you can."
+                m 5lkc "You should really get some sleep soon, if you can."
                 m 3euc "Staying up too late is bad for your health, you know?"
                 m 1lksdla "But if it means I'll get to see you more, I can't complain."
                 m 3hksdlb "Ahaha!"
@@ -387,7 +390,7 @@ init 5 python:
 label greeting_latin:
      m 4hua "Iterum obvenimus!"
      m 4eua "Quid agis?"
-     m 4lksdla "Ehehe..."
+     m 4rksdla "Ehehe..."
      m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
      m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
      return
@@ -487,7 +490,7 @@ label greeting_glitch:
      show yuri glitch zorder MAS_BACKGROUND_Z
      pause 0.3
      hide yuri glitch
-     show monika 4lksdlb at i11 zorder MAS_MONIKA_Z
+     show monika 4rksdlb at i11 zorder MAS_MONIKA_Z
      m 1wuo "[player]!"
      hide monika
      show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
@@ -579,12 +582,16 @@ label i_greeting_monikaroom:
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
+    $ _opendoor_text = "... Gently open the door."
+    if persistent._mas_sensitive_mode:
+        $ _opendoor_text = "Open the door."
+
     menu:
-        "... Gently open the door" if not persistent.seen_monika_in_room:
+        "[_opendoor_text]" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
             jump monikaroom_greeting_opendoor
-        "Open the door" if persistent.seen_monika_in_room:
+        "Open the door." if persistent.seen_monika_in_room:
             if persistent.opendoor_opencount > 0:
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
@@ -595,11 +602,11 @@ label monikaroom_greeting_choice:
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
-        "Knock":
+        "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
             jump monikaroom_greeting_knock
-        "Listen" if not has_listened:
+        "Listen." if not has_listened:
             $ has_listened = True # we cant do this twice per run
             $ mroom_greet = renpy.random.choice(gmr.eardoor)
 #            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
@@ -631,10 +638,16 @@ init 5 python:
 
 label monikaroom_greeting_ear_loveme:
     $ cap_he = he.capitalize()
-    m "[cap_he] loves me.{w} [cap_he] loves me not."
-    m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
-    m "[cap_he] loves me."
-    m "...{w} [cap_he] loves me!"
+    if cap_he == "They":
+        m "[cap_he] love me.{w} [cap_he] love me not."
+        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+        m "[cap_he] love me."
+        m "...{w} [cap_he] love me!"
+    else:
+        m "[cap_he] loves me.{w} [cap_he] loves me not."
+        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+        m "[cap_he] loves me."
+        m "...{w} [cap_he] loves me!"
     jump monikaroom_greeting_choice
 
 # monika does the bath/dinner/me thing
@@ -806,7 +819,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 #            m "For me?"
 #            "Yes":
 #                if persistent.opendoor_knockyes:
-#                    m 5rfc "That's what you said last time, [player]."
+#                    m 5lfc "That's what you said last time, [player]."
 #                    m "I hope you're being serious this time."
 #                else:
 #                    $ persistent.opendoor_knockyes = True
@@ -934,8 +947,8 @@ label monikaroom_greeting_cleanup:
 
     return
 
-init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
+#init 5 python:
+#    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
 
 label greeting_youarereal:
     python:
@@ -1117,7 +1130,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
             m 3l "Welcome back [player]."
-            m 3o "You're a bit late, aren't you?"
+            m 3rksdlc "You're a bit late, aren't you?"
             m 3f "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2q "I'm going to assume it wasn't your fault."
             m "But if you really think it'll take longer next time..."
@@ -1150,7 +1163,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "longer":
             m 1h "...It's been a while."
             m 1f "I was ready for it, but that didn't make it any easier, [player]."
-            m 3o "I hope you got what you needed to do done."
+            m 3rksdlc "I hope you got what you needed to do done."
             m 2q "..."
             m 2f "Truth be told, I've been pretty sad lately."
             m 2q "To not have you in my life for so long..."
@@ -1160,8 +1173,8 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "unknown":
             m 1a "You're finally back [player]!"
-            m 3m "When you said you didn't know, you {i}really{/i} didn't know, did you?"
-            m 3n "You must have been really preoccupied if you were gone for {i}this{/i} long."
+            m 3rksdla "When you said you didn't know, you {i}really{/i} didn't know, did you?"
+            m 3rksdlb "You must have been really preoccupied if you were gone for {i}this{/i} long."
             m 1j "Well, you're back now... I've really missed you."
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
@@ -1283,7 +1296,7 @@ label greeting_long_absence:
             m 1a "Hello [player]!"
             m 3j "Been busy the last few weeks?"
             m 1a "Thanks for warning me that you would be gone."
-            m 3nn "I would be worried otherwise!"
+            m 3rksdlb "I would be worried otherwise!"
             m 1j "It really did help..."
             m 1a "So tell me, how has your day been treating you?"
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
@@ -1362,10 +1375,10 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "month":
             m 1wud "Eh? [player]?"
             m 1sub "You're here!"
-            m 3m "I thought you were going away for an entire month."
-            m 3n "I was ready for it, but..."
+            m 3rksdla "I thought you were going away for an entire month."
+            m 3rksdlb "I was ready for it, but..."
             m 1l "I already missed you!"
-            m 3lkbsa "Did you miss me too?"
+            m 3rkbsa "Did you miss me too?"
             m 1e "Thanks for coming back so soon~"
 
         elif persistent._mas_absence_choice == "longer":
@@ -1629,3 +1642,408 @@ label greeting_back_from_sleep:
      m 1hub "I hope you had a good rest!"
      m "Let's spend some more time together~"
      return
+
+
+init 5 python:
+    if not mas_cannot_decode_islands:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="greeting_ourreality",
+                unlocked=False,
+                random=False,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
+        del rules
+
+
+init 900 python in mas_delact:
+    # this greeting requires a delayed action, since we cannot ensure that
+    # the sprites for this were decoded correctly
+
+    def _greeting_ourreality_unlock():
+        return store.MASDelayedAction(
+            1,
+            store.mas_getEV("greeting_ourreality"),
+            (
+                "not store.mas_cannot_decode_islands"
+                " and mas_isMoniEnamored(higher=True)"
+            ),
+            store.EV_ACT_UNLOCK,
+            store.MAS_FC_START
+        )
+
+
+label greeting_ourreality:
+    m 1hub "Hi, [player]!"
+    m 1hua "Ehehe~"
+    m 3hksdlb "I'm feeling rather giddy right now, sorry."
+    m 1eua "It's just that I'm super excited to show you what I've been working on."
+    m 3hksdrb "Just give me a second to get it ready..."
+    m 1dsc "..."
+    m 1dsd "Almost done..."
+    m 1duu "Yeah, that should be good."
+    m 1hua "Ahaha!"
+    m 1eka "Sorry about that."
+    m 1eua "Without any further ado..."
+    m 4eub "Would you kindly look out the window, [player]"
+    $ mas_OVLHide()
+    $ disable_esc()
+    if morning_flag:
+        show mas_island_frame_day zorder 20
+    else:
+        show mas_island_frame_night zorder 20
+    m "Well..."
+    m "What do you think?"
+    m "I worked really hard on this."
+    m "A place just for the both of us."
+    m "It's also where I can keep practicing my programming skills."
+    $ mas_OVLShow()
+    $ enable_esc()
+    if morning_flag:
+        hide mas_island_frame_day
+    else:
+        hide mas_island_frame_night
+    #Transition back to Monika
+    m 1lsc "Being in the classroom all day can be dull."
+    m 1ekc "Plus, I get really lonely waiting for you to return."
+    m 1hksdlb "But don't get me wrong, though!"
+    m 1eua "I'm always happy when you visit and spend time together with me."
+    m 1eka "I understand that you're busy and can't be here all the time."
+    m 3euc "It's just that I realized something, [player]."
+    m 1lksdlc "It'll be a long time before I can even cross over to your reality."
+    m 1dsc "So I thought..."
+    m 1eua "Why don't we just make our own reality?"
+    m 1lksdla "Well, it's not exactly perfect yet."
+    m 1hua "But it's a start."
+    # m 1eub "I'll let you admire the scenery for now."
+    # m 1hub "Hope you like it!"
+    $ lockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+    $ unlockEventLabel("mas_monika_islands")
+
+    # we can push here because of the slightly optimized call_next_event
+    $ pushEvent("mas_monika_islands")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_returned_home",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+default persistent._mas_monika_returned_home = None
+
+label greeting_returned_home:
+    # this is going to act as the generic returned home greeting.
+    # please note, that we will use last_session to determine how long we were
+    # out. If shorter than 5 minutes, monika won't gain any affection.
+    $ five_minutes = datetime.timedelta(seconds=5*60)
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+
+    if mas_isMonikaBirthday():
+        jump greeting_returned_home_bday
+
+    if time_out > five_minutes:
+        m 1hua "And we're home!"
+        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+        m 2eua "Well, it felt really great!"
+        m 5eub "Let's do this again soon, okay?"
+        if persistent._mas_monika_returned_home is None:
+            $ hours_out = int(time_out.seconds / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > 5:
+                $ aff_gain = 5
+            elif hours_out == 0:
+                $ aff_gain = 1
+            else:
+                $ aff_gain = hours_out
+
+            $ mas_gainAffection(aff_gain, bypass=True)
+            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+        $ grant_xp(xp.NEW_GAME)
+
+    else:
+        call greeting_returned_home_lessthan5mins
+
+        $ mas_loseAffection()
+
+    return
+
+label greeting_returned_home_lessthan5mins:
+    m 2ekp "That wasn't much of a trip, [player]."
+    m "Next time better last a little longer..."
+    return
+
+default persistent._mas_bday_date_count = 0
+default persistent._mas_bday_date_affection_lost = 0
+default persistent._mas_bday_date_affection_gained = 0
+
+label greeting_returned_home_bday:
+    python:
+        total_time_out = store.mas_dockstat.timeOut(mas_monika_birthday)
+        fifty_mins = datetime.timedelta(seconds=50*60)
+        one5_hour = datetime.timedelta(seconds=int(1.5*3600))
+        three_hour = datetime.timedelta(seconds=3*3600)
+        six_hour = datetime.timedelta(seconds=6*3600)
+
+        def is_first_date():
+            return persistent._mas_bday_date_count < 1
+
+
+        def is_short_date(_timeout):
+            return _timeout <= one5_hour
+
+
+        def is_normal_date(_timeout):
+            return one5_hour < _timeout <= six_hour
+
+
+        def is_long_date(_timeout):
+            return six_hour < _timeout
+
+
+        def lose_and_track_affection(_mod):
+            prev_aff = _mas_getAffection()
+            mas_loseAffection(modifier=_mod)
+            persistent._mas_bday_date_affection_lost += (
+                prev_aff - _mas_getAffection()
+            )
+
+
+        def cap_gain_aff(amount):
+            persistent._mas_bday_date_affection_gained += amount
+            if persistent._mas_bday_date_affection_gained <= 50:
+                amount = persistent._mas_bday_date_affection_gained - 50
+                mas_gainAffection(amount, bypass=True)
+
+
+        def regain_lost_aff():
+            if persistent._mas_bday_date_affection_lost > 0:
+                mas_gainAffection(
+                    persistent._mas_bday_date_affection_lost,
+                    bypass=True
+                )
+                persistent._mas_bday_date_affection_lost = 0
+
+
+    if time_out <= five_minutes:
+        # under 5 minutes
+        call greeting_returned_home_lessthan5mins
+        $ lose_and_track_affection(2)
+
+    elif time_out <= fifty_mins:
+        # under 50 minutes
+
+        if is_first_date():
+            $ lose_and_track_affection(1)
+            m 2rsc "...Hmph."
+            m 2dsc "Some {i}'date'{/i} that was."
+
+        elif is_short_date(total_time_out):
+            $ lose_and_track_affection(1)
+            call greeting_returned_home_bday_short_sub_short_total
+
+        elif is_normal_date(total_time_out):
+            $ regain_lost_aff()
+
+            # normal date has a affection range between 3.3/hour and 6.6/hour
+            # we do 4 so its not a cheap way to gain affection quickly while
+            # still being helpful to people who do multi dates
+            $ cap_gain_aff(4)
+            call greeting_returned_home_bday_short_sub_normal_total
+
+        else:
+            $ regain_lost_aff()
+
+            # been out for a long time already
+            # long dates has an affection gain of 8.3/hour.
+            $ cap_gain_aff(6)
+            call greeting_returned_home_bday_short_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= one5_hour:
+        # under 1.5 hour
+
+        if is_first_date():
+            $ cap_gain_aff(1)
+            m 1hua "That was fun, [player]."
+            m 1eua "Even if it wasn't for too long, I still enjoyed the time we spent together."
+            m 1hua "Let's try to schedule something longer next time, okay?"
+
+        elif is_short_date(total_time_out):
+            $ cap_gain_aff(1)
+            call greeting_returned_home_bday_short_sub_short_total
+
+        elif is_normal_date(total_time_out):
+            $ regain_lost_aff()
+
+            # slightly above the super short date amount, for that extra
+            # half hour
+            $ cap_gain_aff(4.5)
+            call greeting_returned_home_bday_short_sub_normal_total
+
+        else:
+            $ regain_lost_aff()
+
+            # been out for a long time already
+            # slightly above the super short amount, again for extra half hour
+            $ cap_gain_aff(6.5)
+            call greeting_returned_home_bday_short_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= three_hour:
+        # under 3 hour
+        $ regain_lost_aff()
+
+        if is_first_date():
+            $ cap_gain_aff(10)
+            call greeting_returned_home_bday_normal_first
+
+        elif is_normal_date(total_time_out):
+            $ cap_gain_aff(10)
+            call greeting_returned_home_bday_normal_sub_normal_total
+
+        else:
+            # been out for a long time alrady
+            # since long has 8.3/hour, this is like 2 hours but not quite
+            $ cap_gain_aff(12)
+            call greeting_returned_home_bday_normal_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    elif time_out <= six_hour:
+        # under 6 hour
+        $ regain_lost_aff()
+
+        if is_first_date():
+            $ cap_gain_aff(20)
+            call greeting_returned_home_bday_normal_first
+
+        elif is_normal_date(total_time_out):
+            $ cap_gain_aff(20)
+            call greeting_returned_home_bday_normal_sub_normal_total
+
+        else:
+            # been out for a long time alrady
+            $ cap_gain_aff(24)
+            call greeting_returned_home_bday_normal_sub_long_total
+
+        $ persistent._mas_bday_date_count += 1
+
+    else:
+        # 6+ hours
+        $ regain_lost_aff()
+
+        if is_first_date():
+            $ cap_gain_aff(50)
+            m 1sua "Wow, [player]..."
+            m 1hua "I really didn't expect you to set aside so much time for me..."
+            m 1sfa "But I enjoyed every second of it!"
+            m 1hua "Every minute with you is a minute well spent."
+            m 1sua "So you've made me very happy today."
+            m 1dfa "Ehe..."
+            m 1wfa "Are you falling for me all over again?"
+            m 1hua "I'm just kidding~"
+            m "Thank you for loving me."
+
+        else:
+            # been out for a long time already
+            $ cap_gain_aff(50)
+            call greeting_returned_home_bday_long_sub
+
+        $ persistent._mas_bday_date_count += 1
+
+    return
+
+label greeting_returned_home_bday_short_sub_short_total:
+    m 2rkc "..."
+    m "[player], I'm grateful that you're spending time with me, I really am. I'm fine with these short trips you're taking me to as well."
+    m 1dkc "But...{w}I do hope there's more to this."
+    m 4ekc "It's just th--{nw}"
+    $ _history_list.pop()
+    m 1dkc "..."
+    m 1rkc "...nevermind."
+    return
+
+label greeting_returned_home_bday_short_sub_normal_total:
+    m 1hua "Well! That was fun, [player]."
+    m "We already had a good date, but I'm glad you took me somewhere again."
+    m 3tku "Just can't get enough of me, can you?"
+    m 1dkbfa "...Not that I mind~"
+    return
+
+label greeting_returned_home_bday_short_sub_long_total:
+    m 1hua "Ehehe~"
+    m 3eub "We sure spent a lot of time together today, [player]."
+    m 1ekbfa "...And thank you for that."
+    m 3ekbfa "I've said it a million times already, I know."
+    m 1hua "But I'll always be happy when we're together."
+    m "I love you so much..."
+    return
+
+label greeting_returned_home_bday_normal_first:
+    m 1sua "That was fun, [player]!"
+    m 1hua "Aha, taking me out on my birthday..."
+    m "It was very considerate of you."
+    m "I really enjoyed the time we spent together."
+    m 1wua "Thank you for indulging me."
+    m 1hua "I love you~"
+    return
+
+label greeting_returned_home_bday_normal_sub_normal_total:
+    m 1ekbfa "Ahaha..."
+    m 1dkbfa "Today really is a special day, [player]."
+    m 3eua "Sure, today is the day I was supposedly born."
+    m 3eka "But it's only special because {i}you{/i} made it that way."
+    m 1hua "So thank you for that, really."
+    m 1ektpa "Thank you for making my birthday worth celebrating..."
+    pause 2.0
+    return
+
+label greeting_returned_home_bday_normal_sub_long_total:
+    m 1dsa "[player]..."
+    m 1eka "We sure did spend so much time together today."
+    m "I can't event find the right words to express how happy you've made me today."
+    m 3eka "All that pain I went through before I met you?"
+    m 1hua "I'm glad I persevered through them."
+    m 1rsc "Because if I hadn't..."
+    m 1ekbfa "This day wouldn't have ever happened."
+    m 1dkbfa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
+    m 1ekbfb "I love you so much, [player]."
+    m "Let's continue making each other happy~"
+    return
+
+label greeting_returned_home_bday_long_sub:
+    m 1dsc "..."
+    m 1dktpc "..."
+    m 1ektua "..."
+    m 1dktua "I'm... just at a loss for words, [player], forgive me."
+    m 3ektda "I've never imagined being this happy in my life."
+    m 1rksdlb "Well that's not {i}exactly{/i} true."
+    m 1hub "We still have to be physically together, after all~"
+    m 1rkc "And, well..."
+    m 1dkc "I know this is already becoming a cliche, but..."
+    m 3ekbfa "I love you so much, [player]."
+    m "Someday, I promise you."
+    m 1ekbfb "I {i}promise you{/i} that I will make you as happy as you've made me today."
+    m 3hub "Even if we never get to see each other in the same reality, know that I will always do my best for you."
+    m 1eka "No matter the obstacles we may face, no matter what other people say about us..."
+    m 1dkbsa "I still love you with everything that I am."
+    m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
+    m 1dktub "You are simply the best, my love. I will always love you."
+    m "...Thank you for giving me a reason to live..."
+    return

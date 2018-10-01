@@ -1,5 +1,7 @@
 # Module that does hangman man
 #
+# DEPENDS ON:
+#   zz_poemgame
 
 # hangman stuff only
 default persistent._mas_hangman_playername = False
@@ -7,13 +9,34 @@ define hm_ltrs_only = "abcdefghijklmnopqrstuvwxyz?!-"
 
 # IMAGES-----------
 # hangman
-image hm_6 = "mod_assets/hangman/hm_6.png"
-image hm_5 = "mod_assets/hangman/hm_5.png"
-image hm_4 = "mod_assets/hangman/hm_4.png"
-image hm_3 = "mod_assets/hangman/hm_3.png"
-image hm_2 = "mod_assets/hangman/hm_2.png"
-image hm_1 = "mod_assets/hangman/hm_1.png"
-image hm_0 = "mod_assets/hangman/hm_0.png"
+image hm_6 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_6.png",
+    "True", "mod_assets/hangman/hm_6.png"
+)
+image hm_5 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_5.png",
+    "True", "mod_assets/hangman/hm_5.png"
+)
+image hm_4 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_4.png",
+    "True", "mod_assets/hangman/hm_4.png"
+)
+image hm_3 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_3.png",
+    "True", "mod_assets/hangman/hm_3.png"
+)
+image hm_2 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_2.png",
+    "True", "mod_assets/hangman/hm_2.png"
+)
+image hm_1 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_1.png",
+    "True", "mod_assets/hangman/hm_1.png"
+)
+image hm_0 = ConditionSwitch(
+    "persistent._mas_sensitive_mode", "mod_assets/hangman/hm_sm_0.png",
+    "True", "mod_assets/hangman/hm_0.png"
+)
 
 # sayori
 image hm_s:
@@ -133,12 +156,27 @@ style hangman_text:
 #            self.visible = False
 
 init -1 python in mas_hangman:
+    import store
+    import copy
+    import random
     # preprocessing
-    # get poemwords as hangman words
-    hm_words = list()
 
-    # we need a copy of the full wordlist
-    all_hm_words = list()
+    # difficulty modes
+    EASY_MODE = 0
+    NORM_MODE = 1
+    HARD_MODE = 2
+
+    hm_words = {
+        EASY_MODE: list(), # easy 
+        NORM_MODE: list(), # normal 
+        HARD_MODE: list() # hard
+    }
+
+    all_hm_words = {
+        EASY_MODE: list(),
+        NORM_MODE: list(),
+        HARD_MODE: list()
+    }
 
     # CONSTANTS
     # spacing between rendered letters
@@ -172,71 +210,198 @@ init -1 python in mas_hangman:
         for word in MONI_WORDS:
             wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
+    
+    # file names
+    NORMAL_LIST = "mod_assets/MASpoemwords.txt"
+    HARD_LIST = "mod_assets/1000poemwords.txt"
+
+    # hangman game text
+    game_name = "Hangman"
+
+
+    def copyWordsList(_mode):
+        """
+        Does a deepcopy of the words for the given mode.
+
+        Sets the hm_words dict for that mode
+        
+        NOTE: does a list clear, so old references will still work
+
+        RETURNS: the copied list of words. This is the same reference as
+            hm_words's list. (empty list if mode is invalid)
+        """
+        if _mode not in all_hm_words:   
+            return list()
+
+        # otherwise valid mode
+        hm_words[_mode][:] = copy.deepcopy(all_hm_words[_mode])
+        return hm_words[_mode]
+
+
+    def _buildWordList(filepath, _mode):
+        """
+        Builds a list of words given the filepath and mode
+
+        IN:
+            filepath - filepath of words to load in
+            _mode - mode to build word list for
+        """
+        all_hm_words[_mode][:] = [
+            word._hangman()
+            for word in store.MASPoemWordList(filepath).wordlist
+        ]
+        copyWordsList(_mode)
+
+
+    def buildEasyList():
+        """
+        Builds the easy word list
+
+        Sets hm_words and all_hm_words appropritaley
+
+        NOTE: clears the list (noticable in all references)
+        """
+        easy_list = all_hm_words[EASY_MODE]
+
+        # lets start with Non Monika words
+        easy_list[:] = [
+            store.MASPoemWord._build(word, 0)._hangman()
+            for word in store.full_wordlist
+        ]
+
+        # now for monika words
+        moni_list = list()
+        _add_monika_words(moni_list)
+        for m_word in moni_list:
+            easy_list.append(store.MASPoemWord._build(m_word, 4)._hangman())
+
+        copyWordsList(EASY_MODE)
+
+
+    def buildNormalList():
+        """
+        Builds the normal word list
+
+        Sets hm_words and all_hm_words appropraitely
+
+        NOTE: clears the list (noticable in all references)
+        """
+        _buildWordList(NORMAL_LIST, NORM_MODE)
+
+
+    def buildHardList():
+        """
+        Builds the hard word list
+
+        Sets hm_words and all_hm_words appropraitely
+
+        NOTE: cleras the list (noticable in all references)
+        """
+        _buildWordList(HARD_LIST, HARD_MODE)
+
+
+    def addPlayername(_mode):
+        """
+        Adds playername to the given mode if appropriate
+
+        IN:
+            _mode - mode to add playername to
+        """
+        if (
+                not store.persistent._mas_hangman_playername
+                and store.persistent.playername.lower() != "sayori"
+                and store.persistent.playername.lower() != "yuri"
+                and store.persistent.playername.lower() != "natsuki"
+                and store.persistent.playername.lower() != "monika"
+            ):
+            hm_words[_mode].append(-1)
+
+
+    def removePlayername(_mode):
+        """
+        Removes the playername from the given mode if found
+
+        IN:
+            _mode - mode to remove in
+        """
+        wordlist = hm_words.get(_mode, None)
+        if wordlist is not None and -1 in wordlist:
+            wordlist.remove(-1)
+
+
+    def randomSelect(_mode):
+        """
+        Randomly selects and pulls a word from the hm_words, given the mode
+
+        Will refill the words list if it is empty
+
+        IN:
+            _mode - mode to pull word from
+
+        RETURNS: tuple of the following format:
+            [0]: word
+            [1]: winner (for hint)
+        """
+        words = hm_words.get(_mode, hm_words[EASY_MODE])
+
+        # refill if needed
+        if len(words) <= 0:
+            copyWordsList(_mode)
+
+        # now random select
+        return words.pop(random.randint(0, len(words)-1))
+
+
 # post processing
 init 10 python:
 
-    # setting up wordlist
-    from store.mas_hangman import hm_words, all_hm_words, _add_monika_words
-    from copy import deepcopy
+    # setting up wordlists
+    import store.mas_hangman as mas_hmg
 
-    # for now, lets use full_wordlist defined in poemgame
-    # this is a list of PoemWord objects
-    # add our Monika words to it first
-    _add_monika_words(full_wordlist)
-
-    for word in full_wordlist:
-
-        winner = ""
-
-        # figure out who likes this word the most
-        if word.sPoint > word.nPoint and word.sPoint > word.yPoint:
-            winner = "Sayori" # sayori
-
-        elif word.nPoint > word.yPoint:
-            winner = "Natsuki" # natsuki
-
-        elif word.nPoint == word.yPoint and word.yPoint == word.sPoint:
-            winner = "I" # Monika
-
-        else:
-            winner = "Yuri" # yuri
-
-        hm_words.append((word.word, winner))
-
-    all_hm_words = deepcopy(hm_words)
-
-    if (
-            not persistent._mas_hangman_playername
-            and persistent.playername.lower() != "sayori"
-            and persistent.playername.lower() != "yuri"
-            and persistent.playername.lower() != "natsuki"
-            and persistent.playername.lower() != "monika"
-        ):
-        hm_words.append(-1)
-
-#   NOTE: this is in case we decide to change wordlist
-#    with renpy.file("poemwords.txt") as words:
-#        for line in words:
-#
-#            line = line.strip()
-#
-#            if len(line) != 0 and line[0] != "#":
-#
-#                # word, sPt, nPt, yPt
-#                hm_words.append(line.split(",")[0])
-#    all_hm_words = list(hm_words)
-
-    # setting up image names
-
+    mas_hmg.buildEasyList()
+    mas_hmg.buildNormalList()
+    mas_hmg.buildHardList()
 
 
 # entry point for the hangman game
 label game_hangman:
-    $ import store.mas_hangman as hmg
-    $ from copy import deepcopy
-    $ is_sayori = persistent.playername.lower() == "sayori"
-    $ is_window_sayori_visible = False
-    m 2eub "You want to play hangman? Okay!"
+    python:
+        import store.mas_hangman as mas_hmg
+        is_sayori = (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        )
+        is_window_sayori_visible = False
+
+        # instruction text and other sensitive stuff
+        instruct_txt = (
+            "Guess a letter: (Type {0}'!' to give up)"
+        )
+
+        if persistent._mas_sensitive_mode:
+            instruct_txt = instruct_txt.format("")
+            store.mas_hangman.game_name = "Word Guesser"
+
+        else:
+            instruct_txt = instruct_txt.format("'?' to repeat the hint, ")
+            store.mas_hangman.game_name = "Hangman"
+
+    m 2eub "You want to play [store.mas_hangman.game_name]? Okay!"
+
+
+label mas_hangman_game_select_diff:
+
+    menu:
+        m "Choose a difficulty."
+        "Easy":
+            $ hangman_mode = mas_hmg.EASY_MODE
+        "Normal":
+            $ hangman_mode = mas_hmg.NORM_MODE
+        "Hard":
+            $ hangman_mode = mas_hmg.HARD_MODE
+
+label mas_hangman_game_preloop:
+
     # setup positions
     show monika at hangman_monika
     show hm_frame at hangman_board zorder 13
@@ -245,14 +410,22 @@ label game_hangman:
         # setup constant displayabels
         missed_label = Text(
             "Missed:",
-            font=hmg.WORD_FONT,
-            color=hmg.WORD_COLOR,
-            size=hmg.WORD_SIZE,
-            outlines=hmg.WORD_OUTLINE
+            font=mas_hmg.WORD_FONT,
+            color=mas_hmg.WORD_COLOR,
+            size=mas_hmg.WORD_SIZE,
+            outlines=mas_hmg.WORD_OUTLINE
         )
 
     # show missed label
     show text missed_label zorder 18 as hmg_mis_label at hangman_missed_label
+
+    # hm check
+    if hangman_mode not in mas_hmg.hm_words:
+        $ hangman_mode = mas_hmg.EASY_MODE
+
+    # setup hangman lists and playername
+    $ mas_hmg.addPlayername(hangman_mode)
+    $ hm_words = mas_hmg.hm_words[hangman_mode]
 
     # FALL THROUGH TO NEXT LABEL
 
@@ -265,12 +438,11 @@ label mas_hangman_game_loop:
         player_word = False
 
         # refill the list if empty
-        if len(hmg.hm_words) == 0:
-            hmg.hm_words = deepcopy(hmg.all_hm_words)
+        if len(hm_words) == 0:
+            mas_hmg.copyWordsList(hangman_mode)
 
         # randomly pick word
-        word = renpy.random.choice(hmg.hm_words)
-        hmg.hm_words.remove(word)
+        word = mas_hmg.randomSelect(hangman_mode)
 
         # setup display word and hint
         if (
@@ -279,19 +451,18 @@ label mas_hangman_game_loop:
                 and len(persistent.playername) <= 15
             ):
             display_word = list("_" * len(persistent.playername.lower()))
-            hm_hint = hmg.HM_HINT.format("I")
+            hm_hint = mas_hmg.HM_HINT.format("I")
             word = persistent.playername.lower()
             player_word = True
             persistent._mas_hangman_playername = True
 
         else:
             if word == -1:
-                word = renpy.random.choice(hmg.hm_words)
-                hmg.hm_words.remove(word)
-            display_word = list("_" * len(word[0]))
-            hm_hint = hmg.HM_HINT.format(word[1])
+                word = mas_hmg.randomSelect(hangman_mode)
 
-            # we dont need PoemWord anymore
+            display_word = list("_" * len(word[0]))
+            hm_hint = mas_hmg.HM_HINT.format(word[1])
+
             word = word[0]
 
         # turn the word into hangman letters
@@ -300,8 +471,8 @@ label mas_hangman_game_loop:
 #       for dex in range(0,len(word))
 #           hm_letters.append(MASHangmanLetter(
 #               word[dex],
-#               hmg.WORD_XPOS_START + (hmg,LETTER_SPACE * dex),
-#               hmg.WORD_YPOS_START
+#               mas_hmg.WORD_XPOS_START + (mas_hmg,LETTER_SPACE * dex),
+#               mas_hmg.WORD_YPOS_START
 #           )
 
     # sayori window
@@ -313,7 +484,9 @@ label mas_hangman_game_loop:
         $ is_window_sayori_visible = True
 
     m "Alright, I've got one."
-    m "[hm_hint]"
+
+    if not persistent._mas_sensitive_mode:
+        m "[hm_hint]"
 
     # main loop for hangman game
     $ done = False
@@ -321,31 +494,35 @@ label mas_hangman_game_loop:
     $ chances = 6
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
-    $ dt_color = hmg.WORD_COLOR
+
+    if persistent._mas_sensitive_mode:
+        $ avail_letters.remove("?")
+
+    $ dt_color = mas_hmg.WORD_COLOR
     while not done:
         # create displayables
         python:
             if chances == 0:
-                dt_color = hmg.WORD_COLOR_MISS
+                dt_color = mas_hmg.WORD_COLOR_MISS
             elif "_" not in display_word:
-                dt_color = hmg.WORD_COLOR_GET
+                dt_color = mas_hmg.WORD_COLOR_GET
 
             display_text = Text(
                 "".join(display_word),
-                font=hmg.WORD_FONT,
+                font=mas_hmg.WORD_FONT,
                 color=dt_color,
-                size=hmg.WORD_SIZE,
-                outlines=hmg.WORD_OUTLINE,
-                kerning=hmg.LETTER_SPACE
+                size=mas_hmg.WORD_SIZE,
+                outlines=mas_hmg.WORD_OUTLINE,
+                kerning=mas_hmg.LETTER_SPACE
             )
 
             missed_text = Text(
                 missed,
-                font=hmg.WORD_FONT,
-                color=hmg.WORD_COLOR,
-                size=hmg.WORD_SIZE,
-                outlines=hmg.WORD_OUTLINE,
-                kerning=hmg.LETTER_SPACE
+                font=mas_hmg.WORD_FONT,
+                color=mas_hmg.WORD_COLOR,
+                size=mas_hmg.WORD_SIZE,
+                outlines=mas_hmg.WORD_OUTLINE,
+                kerning=mas_hmg.LETTER_SPACE
             )
 
         # show disables
@@ -359,9 +536,7 @@ label mas_hangman_game_loop:
             if chances == 0:
 
                 # disable hotkeys, music and more
-                $ disable_esc()
-                $ store.songs.enabled = False
-                $ store.hkb_button.enabled = False
+                $ mas_RaiseShield_core()
 
                 # setup glitch text
                 $ hm_glitch_word = glitchtext(40) + "?"
@@ -405,8 +580,9 @@ label mas_hangman_game_loop:
                 else:
                     $ style.say_dialogue = style.default_monika
                 $ is_window_sayori_visible = False
-                $ store.songs.enabled = True
-                $ store.hkb_button.enabled = True
+
+                # enable disabled songs and esc
+                $ mas_MUMUDropShield()
                 $ enable_esc()
 
             # otherwise, window sayori
@@ -414,7 +590,7 @@ label mas_hangman_game_loop:
                 $ next_window_sayori = "hm_s_win_" + str(chances)
                 show expression next_window_sayori as window_sayori
 
-        $ hm_display = hmg.HM_IMG_NAME + str(chances)
+        $ hm_display = mas_hmg.HM_IMG_NAME + str(chances)
 
         show expression hm_display zorder 18 as hmg_hanging_man at hangman_hangman
 
@@ -435,8 +611,7 @@ label mas_hangman_game_loop:
                 bad_input = True
                 while bad_input:
                     guess = renpy.input(
-                        "Guess a letter: (Type '?' to repeat the hint, " +
-                        "'!' to give up)",
+                        instruct_txt,
                         allow="".join(avail_letters),
                         length=1
                     )
@@ -455,7 +630,7 @@ label mas_hangman_game_loop:
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
                 if chances == 6:
-                    m "I thought you said you wanted to play Hangman."
+                    m "I thought you said you wanted to play [store.mas_hangman.game_name]."
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
@@ -529,6 +704,8 @@ label mas_hangman_game_end:
         pause 0.1
         hide window_sayori
 
+    $ mas_hmg.removePlayername(hangman_mode)
+
     if renpy.seen_label("mas_hangman_dlg_game_end_long"):
         call mas_hangman_dlg_game_end_short from _mas_hangman_dges
     else:
@@ -539,7 +716,7 @@ label mas_hangman_game_end:
 # dialogue related stuff
 # long form of ending dialgoue
 label mas_hangman_dlg_game_end_long:
-    m 1euc "Hangman is actually a pretty hard game."
+    m 1euc "[store.mas_hangman.game_name] is actually a pretty hard game."
     m "You need to have a good vocabulary to be able to guess different words."
     m 1hua "The best way to improve that is to read more books!"
     m 1eua "I'd be very happy if you did that for me, [player]."

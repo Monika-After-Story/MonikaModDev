@@ -651,6 +651,7 @@ init python in mas_updater:
         """
         import time
         import os
+        import shutil
 
         curr_time = time.time()
 
@@ -665,27 +666,26 @@ init python in mas_updater:
         if last_updated > curr_time:
             last_updated = 0
 
-        #Make sure the update folder is where it should be
-        can_update = renpy.store.updater.can_update()
-        if not can_update:
-
+        # always move update folder if possible
+        game_update = os.path.normcase(renpy.config.basedir + "/game/update")
+        ddlc_update = os.path.normcase(renpy.config.basedir + "/update")
+        base_update = os.path.normcase(renpy.config.basedir)
+        if os.access(game_update, os.F_OK):
             try:
-                os.rename(
-                    renpy.config.basedir + "/game/update",
-                    renpy.config.basedir + "/update"
-                )
+                if os.access(ddlc_update, os.F_OK):
+                    shutil.rmtree(ddlc_update)
+
+                shutil.move(game_update, base_update)
                 can_update = renpy.store.updater.can_update()
 
-                if not can_update:
-                    # still cant move the update folder. notify user
-                    renpy.game.persistent._mas_can_update = False
-
             except:
-                # we cant move the update folder. We should notify user
-                renpy.game.persistent._mas_can_update = False
+                can_update = False
 
         else:
-            renpy.game.persistent._mas_can_update = True
+            can_update = renpy.store.updater.can_update()
+
+        # notify user
+        renpy.game.persistent._mas_can_update = can_update
 
         if force:
             check_wait = 0
@@ -748,12 +748,45 @@ init 10 python:
         the_thread.start()
 
 
+label mas_updater_steam_issue:
+#    show monika at t11
+    m 1eub "[player]!{w} I see you're using Steam."
+    m 1eksdlb "Unfortunately..."
+    m 1efp "I can't run the updater because Steam is a meanie!"
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
+    m 1hua "Make sure to say goodbye to me first before installing the update."
+    return
+
+
 label forced_update_now:
     $ mas_updater.force = True
+
+    # steam check
+    if persistent.steam and not persistent._mas_unstable_mode:
+
+        $ mas_RaiseShield_core()
+
+        call mas_updater_steam_issue
+
+        if store.mas_globals.dlg_workflow:
+            # current in dialogue workflow, we should only enable the escape
+            # and music stuff
+            $ enable_esc()
+            $ mas_MUMUDropShield()
+
+        else:
+            # otherwise, reenable core interactions
+            $ mas_DropShield_core()
+
+        return
 
 #This file goes through the actions for updating Monika After story
 label update_now:
     $import time #this instance of time can stay
+
+    # steam check
+    if persistent.steam and not persistent._mas_unstable_mode:
+        return
 
     # screen check
     if renpy.showing("masupdateroverlay", layer="overlay"):
@@ -783,7 +816,14 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
+
+            # call quit so we can save important stuff
+            call quit
+            $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
+
+            # we have to quit because calling QUIT breaks things
+            jump _quit
 
         else:
             # just update the last checked, regardless of issue

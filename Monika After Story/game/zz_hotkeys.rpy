@@ -1,6 +1,19 @@
 # Module that is just for hotkeys and other keymaps
 #
 
+init -10 python in mas_hotkeys:
+    # earlier store for some hotkey related state
+
+    # True means allow Dismiss, False means do not
+    allow_dismiss = True
+
+    def allowdismiss():
+        """
+        Justreturns current state of no_dismiss
+        """
+        return allow_dismiss
+
+
 init -1 python in mas_hotkeys:
     # store for the main 3 hotkeys.
 
@@ -17,6 +30,9 @@ init -1 python in mas_hotkeys:
     # True means the music lowering / stopping functions will work.
     # False means they will not
     mu_stop_enabled = True
+
+    # True means dont allow windows to be hidden
+    no_window_hiding = False
 
 
 init python:
@@ -94,7 +110,7 @@ init python:
         """
         if store.mas_hotkeys.music_enabled and not _windows_hidden:
             inc_musicvol()
-    
+
 
     def _mas_hk_dec_musicvol():
         """
@@ -127,14 +143,44 @@ init python:
         """
         if store.mas_hotkeys.music_enabled and not _windows_hidden:
             select_music()
-    
+
 
     def _mas_game_menu():
         """
         Wrapper aound _invoke_game_menu that follows additional ui rules
         """
         if not _windows_hidden:
+            prev_disable_animations = persistent._mas_disable_animations
             _invoke_game_menu()
+
+            # call backs for the game menu
+            if prev_disable_animations != persistent._mas_disable_animations:
+                mas_drawSpaceroomMasks()
+
+
+    def _mas_quick_menu_cb(screen_name):
+        """
+        Opens game menu to the appropraite quick screen.
+        NOTE: no checks are done here, please do not fuck this.
+        """
+        if not _windows_hidden:
+            prev_disable_animations = persistent._mas_disable_animations
+            renpy.call_in_new_context(
+                "_game_menu", 
+                _game_menu_screen=screen_name
+            )
+
+            # call backs for the game menu
+            if prev_disable_animations != persistent._mas_disable_animations:
+                mas_drawSpaceroomMasks()
+
+
+    def _mas_hide_windows():
+        """
+        Wrapper around the _hide_windows label that hides windows
+        """
+        if not store.mas_hotkeys.no_window_hiding:
+            renpy.call_in_new_context("_hide_windows")
 
 
     def set_keymaps():
@@ -161,6 +207,10 @@ init python:
         config.keymap["mas_game_menu"] = list(config.keymap["game_menu"])
         config.keymap["game_menu"] = []
 
+        # get and replcae the hide_windows with our version
+        config.keymap["mas_hide_windows"] = list(config.keymap["hide_windows"])
+        config.keymap["hide_windows"] = []
+
         # Define what those actions call
         config.underlay.append(
             renpy.Keymap(open_dialogue=_mas_hk_show_dialogue_box)
@@ -171,8 +221,7 @@ init python:
         config.underlay.append(renpy.Keymap(inc_musicvol=_mas_hk_inc_musicvol))
         config.underlay.append(renpy.Keymap(dec_musicvol=_mas_hk_dec_musicvol))
         config.underlay.append(renpy.Keymap(mas_game_menu=_mas_game_menu))
+        config.underlay.append(renpy.Keymap(mas_hide_windows=_mas_hide_windows))
 
         # finally enable those buttons
         mas_HKDropShield()
-
-

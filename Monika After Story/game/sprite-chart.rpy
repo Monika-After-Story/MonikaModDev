@@ -32,17 +32,20 @@
 #   w - wide eyes (wide)
 #   s - sparkly eyes (sparkle)
 #   t - straight/smug eyes (smug)
-#   c - crazy eyes (crazy) NOTE: UNUSED
+#   c - crazy eyes (crazy)
 #   r - look right eyes (right)
 #   l - look left eyes (left)
 #   h - closed happy eyes (closedhappy)
 #   d - closed sad eyes (closedsad)
+#   k - left eye wink (winkleft)
+#   n - right eye wink (winkright)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
 #   u - up / happy (up)
 #   k - knit / upset / concerned (knit)
 #   s - straight / normal / regular (mid)
+#   t - thinking (think)
 #
 # <nose type> - type of nose
 #   nd - default nose (def) NOTE: UNUSED
@@ -58,6 +61,10 @@
 # <tears type> - type of tears
 #   ts - tears streaming / running (streaming)
 #   td - dried tears (dried)
+#   tl - tears, single stream, left eye (left)
+#   tr - tears, single stream, right eye (right)
+#   tp - like dried tears but with no redness (pooled)
+#   tu - tears, single stream, both eyes (up)
 #
 # <sweat type> - type of sweat drop
 #   sdl - sweat drop left (def)
@@ -87,6 +94,8 @@
 # NOTE:
 # not every possible combination has been created as an image. If you want
 # a particular expression, make a github issue about it and why we need it.
+#
+# hmmmmmm (1etecc)
 
 # This defines a dynamic displayable for Monika whose position and style changes
 # depending on the variables is_sitting and the function morning_flag
@@ -149,6 +158,35 @@ image emptydesk = ConditionSwitch(
 )
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
+
+### bday stuff
+define mas_bday_cake_lit = False
+image mas_bday_cake = ConditionSwitch(
+    "morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "not morning_flag and mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "not morning_flag and not mas_bday_cake_lit",
+    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+)
+image mas_bday_banners = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
+)
+image mas_bday_balloons = ConditionSwitch(
+    "persistent._mas_sensitive_mode and morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
+    "persistent._mas_sensitive_mode and not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png",
+    "morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+)
 
 init -5 python in mas_sprites:
     # specific image generation functions
@@ -243,8 +281,69 @@ init -5 python in mas_sprites:
         "test"
     ]
 
+    # list of available hairstyles
+    HAIRS = [
+        "def", # ponytail
+        "down" # hair down
+    ]
+
+    # list of available clothes
+    CLOTHES = [
+        "def" # school uniform
+    ]
+
+    # tryparses for the hair and clothes
+    def tryparsehair(_hair, default="def"):
+        """
+        Returns the given hair if it exists, or the default if not exist
+
+        IN:
+            _hair - hair to check for existence
+            default - default if hair dont exist
+
+        RETURNS:
+            the hair if it exists, or default if not
+        """
+        if _hair in HAIRS:
+            return _hair
+
+        return default
+
+    def tryparseclothes(_clothes, default="def"):
+        """
+        Returns the given clothes if it exists, or the default if not exist
+
+        IN:
+            _clothes - clothes to check for existence
+            default - default if clothes dont exist
+
+        RETURNS:
+            the clothes if it exists, or default if not
+        """
+        if _clothes in CLOTHES:
+            return _clothes
+
+        return default
+
+
     ## Accessory dictionary
     ACS_MAP = dict()
+
+    ## Pose list
+    # NOTE: do NOT include leans in here.
+    POSES = [
+        "steepling",
+        "crossed",
+        "restleftpointright",
+        "pointright",
+        "down"
+    ]
+
+    ## lean poses
+    # NOTE: do NOT include regular poses in here
+    L_POSES = [
+        "def"
+    ]
 
     def acs_lean_mode(lean):
         """
@@ -339,7 +438,7 @@ init -5 python in mas_sprites:
     # sprite maker functions
 
 
-    def _ms_accessory(acs, isnight, issitting, lean=None):
+    def _ms_accessory(acs, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory string
 
@@ -347,12 +446,36 @@ init -5 python in mas_sprites:
             acs - MASAccessory object
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - current pose
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
         RETURNS:
             accessory string
         """
+        if acs.no_lean:
+            # the lean version is the same as regular
+            lean = None
+
+        # pose map check
+        # Since None means we dont show, we are going to assume that the
+        # accessory should be shown if the pose key is missing.
+        if lean:
+            poseid = acs.pose_map.l_map.get(lean, None)
+
+            if acs.pose_map.use_reg_for_l:
+                # clear lean if dont want to use it for rendering
+                lean = None
+
+        else:
+            poseid = acs.pose_map.map.get(pose, None)
+
+        if poseid is None:
+            # a None here means we should shouldnt' even show this acs
+            # for this pose. Weird, but maybe it happens?
+            return ""
+
         if issitting:
             acs_str = acs.img_sit
 
@@ -363,23 +486,21 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return ""
 
-        if acs.no_lean:
-            # the lean version is the same as regular
-            lean = None
-
         return "".join([
             LOC_Z,
             ',"',
             A_T_MAIN,
             acs_lean_mode(lean),
             acs_str,
+            ART_DLM,
+            poseid,
             night_mode(isnight),
             FILE_EXT,
             '"'
         ])
 
 
-    def _ms_accessorylist(acs_list, isnight, issitting, lean=None):
+    def _ms_accessorylist(acs_list, isnight, issitting, pose=None, lean=None):
         """
         Creates accessory strings for a list of accessories
 
@@ -387,6 +508,8 @@ init -5 python in mas_sprites:
             acs_list - list of MASAccessory object, in order of rendering
             isnight - True will generate night string, false will not
             issitting - True will use sitting pic, false will not
+            pose - arms pose for we are currently rendering
+                (Default: None)
             lean - type of lean
                 (Default: None)
 
@@ -396,9 +519,15 @@ init -5 python in mas_sprites:
         if len(acs_list) == 0:
             return ""
 
-        return "," + ",".join([
-            _ms_accessory(acs, isnight, issitting, lean=lean)
+        acs_gen = [
+            _ms_accessory(acs, isnight, issitting, pose, lean=lean)
             for acs in acs_list
+        ]
+
+        return "," + ",".join([
+            _acs
+            for _acs in acs_gen
+            if len(_acs) > 0
         ])
 
 
@@ -874,12 +1003,12 @@ init -5 python in mas_sprites:
             L_COMP,
             "(",
             loc_str,
-            _ms_accessorylist(acs_pre_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
-            _ms_accessorylist(acs_mid_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
             ",",
             LOC_Z,
             ",",
@@ -896,7 +1025,7 @@ init -5 python in mas_sprites:
                 tears=tears,
                 emote=emote
             ),
-            _ms_accessorylist(acs_pst_list, isnight, True, lean=lean),
+            _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
             "),",
             ZOOM,
             ")"
@@ -1117,6 +1246,7 @@ init -2 python:
 #    import renpy.exports as renpy # we need this so Ren'Py properly handles rollback with classes
 #    from operator import attrgetter # we need this for sorting items
     import math
+    from collections import namedtuple
 
     # Monika character base
     class MASMonika(renpy.store.object):
@@ -1353,8 +1483,8 @@ init -2 python:
             """
             acs_list = self.__get_acs(acs_type)
 
-            if acs_list is not None:
-                acs_list.append(accessory)
+            if acs_list is not None and accessory not in acs_list:
+                mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -1421,6 +1551,89 @@ init -2 python:
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
+    # pose map helps map poses to an image
+    class MASPoseMap(renpy.store.object):
+        """
+        The Posemap helps connect pose names to images
+
+        This is done via a dict containing pose names and where they
+        map to.
+
+        There is also a seperate dict to handle lean variants
+        """
+        from store.mas_sprites import POSES, L_POSES
+
+        def __init__(self,
+                default=None,
+                l_default=None,
+                use_reg_for_l=False,
+                p1=None,
+                p2=None,
+                p3=None,
+                p4=None,
+                p5=None,
+                p6=None
+            ):
+            """
+            Constructor
+
+            If None is passed in for any var, we assume that no image should
+            be shown for that pose
+
+            NOTE: all defaults are None
+
+            IN:
+                default - default pose id to use for poses that are not
+                    specified (aka are None).
+                l_default - default pose id to use for lean poses that are not
+                    specified (aka are None).
+                use_reg_for_l - if True and default is not None and l_default
+                    is None, then we use the default instead of l_default
+                    when rendering for lean poses
+                p1 - pose id to use for pose 1
+                    - steepling
+                p2 - pose id to use for pose 2
+                    - crossed
+                p3 - pose id to use for pose 3
+                    - restleftpointright
+                p4 - pose id to use for pose 4
+                    - pointright
+                p5 - pose id to use for pose 5
+                    - LEAN: def
+                p6 - pose id to use for pose 6
+                    - down
+            """
+            self.map = {
+                self.POSES[0]: p1,
+                self.POSES[1]: p2,
+                self.POSES[2]: p3,
+                self.POSES[3]: p4,
+                self.POSES[4]: p6
+            }
+            self.l_map = {
+                self.L_POSES[0]: p5
+            }
+            self.use_reg_for_l = use_reg_for_l
+
+            self.__set_posedefs(self.map, default)
+            if use_reg_for_l and l_default is None and default is not None:
+                self.__set_posedefs(self.l_map, default)
+            else:
+                self.__set_posedefs(self.l_map, l_default)
+
+
+        def __set_posedefs(self, pose_dict, _def):
+            """
+            Sets pose defaults
+
+            IN:
+                pose_dict - dict of poses
+                _def - default to use here
+            """
+            for k in pose_dict:
+                if pose_dict[k] is None:
+                    pose_dict[k] = _def
+
 
     # instead of clothes, these are accessories
     class MASAccessory(renpy.store.object):
@@ -1439,6 +1652,7 @@ init -2 python:
         def __init__(self,
                 name,
                 img_sit,
+                pose_map,
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
@@ -1451,6 +1665,7 @@ init -2 python:
             IN:
                 name - name of this accessory
                 img_sit - file name of the sitting image
+                pose_map - MASPoseMap object that contains pose mappings
                 img_stand - file name of the standing image
                     IF this is not passed in, we assume the standing version
                         has no accessory.
@@ -1479,6 +1694,10 @@ init -2 python:
             self.priority=priority
             self.no_lean = no_lean
             self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1575,20 +1794,9 @@ init -2 python:
         """
 
         # gather accessories
-        unsort_pre = character.acs.get(MASMonika.PRE_ACS, [])
-        unsort_mid = character.acs.get(MASMonika.MID_ACS, [])
-        unsort_pst = character.acs.get(MASMonika.PST_ACS, [])
-
-        # and generate a big list
-        unsort_all = list(unsort_pre)
-        unsort_all.extend(unsort_mid)
-        unsort_all.extend(unsort_pst)
-
-        # sort the accessories
-        acs_pre_list = sorted(unsort_pre, key=MASAccessory.get_priority)
-        acs_mid_list = sorted(unsort_mid, key=MASAccessory.get_priority)
-        acs_pst_list = sorted(unsort_pst, key=MASAccessory.get_priority)
-        acs_all_list = sorted(unsort_all, key=MASAccessory.get_priority)
+        acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
+        acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
+        acs_pst_list = character.acs.get(MASMonika.PST_ACS, [])
 
         # are we sitting or not
         if is_sitting:
@@ -1625,7 +1833,7 @@ init -2 python:
                 head,
                 left,
                 right,
-                acs_all_list,
+                [], # TODO maybe need a ring in standing mode?
                 single=single
             )
 
@@ -1647,6 +1855,18 @@ init -1 python:
     #
     # <accessory name> MUST BE UNIQUE
     #
+    # File naming:
+    # Accessories should be named like:
+    #   acs-<acs identifier/name>-<pose id>-<night suffix>
+    #
+    # Leaning:
+    #   acs-leaning-<leantype>-<acs identifier/name>-<pose id>-<night suffix>
+    #
+    # acs name - name of the accessory (shoud be unique)
+    # pose id - identifier to map this image to a pose (should be unique
+    #       per accessory)
+    # leantype - leaning type, if appropriate
+    #
     # NOTE: pleaes preface each accessory with the following commen template
     # this is to ensure we hvae an accurate description of what each accessory
     # is:
@@ -1660,11 +1880,107 @@ init -1 python:
     mas_acs_mug = MASAccessory(
         "mug",
         "mug",
-        no_lean=True,
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
+    ### PROMISE RING
+    ## promisering
+    # Promise ring that can be given to Monika
+    mas_acs_promisering = MASAccessory(
+        "promisering",
+        "promisering",
+        MASPoseMap(
+            p1=None,
+            p2="4",
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_acs(mas_acs_promisering)
+    ### QUETZAL PLUSHIE
+    ## qplushie
+    # Quetzal plushie that sits on Monika's desk
+    mas_acs_quetzalplushie = MASAccessory(
+        "quetzalplushie",
+        "quetzalplushie",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False
+    )
+    store.mas_sprites.init_acs(mas_acs_quetzalplushie)
+
+#### ACCCESSORY VARIABLES (IMG025)
+# variables that accessories may need for enabling / disabling / whatever
+# please comment the groups and usage like so:
+### accessory name
+# <var>
+# <var comment>
+
+### COFFEE MUG
+
+default persistent._mas_acs_enable_coffee = False
+# True enables coffee, False disables coffee
+
+default persistent._mas_coffee_been_given = False
+# True means user has given monika coffee before, False means no
+
+default persistent._mas_coffee_brew_time = None
+# datetime that coffee startd brewing. None if coffe not brewing
+
+default persistent._mas_coffee_cup_done = None
+# datetime that monika will finish her coffee. None means she isnt drinking any
+
+default persistent._mas_coffee_cups_drank = 0
+# number of cups of coffee monika has drank
+
+define mas_coffee.BREW_LOW = 2*60
+# lower bound of seconds it takes to brew some coffee
+
+define mas_coffee.BREW_HIGH = 4*60
+# upper bound of seconds it takes to brew some coffee
+
+define mas_coffee.DRINK_LOW = 10 * 60
+# lower bound of seconds it takes for monika to drink coffee
+
+define mas_coffee.DRINK_HIGH = 2 * 3600
+# upper bound of seconds it takes for monika to drink coffee
+
+define mas_coffee.BREW_CHANCE = 80
+# percent chance out of 100 that we are brewing coffee during the appropriate
+# times
+
+define mas_coffee.DRINK_CHANCE = 80
+# percent chance out of 100 that we are drinking coffee during the appropriate
+# times
+
+define mas_coffee.COFFEE_TIME_START = 5
+# hour that coffee time begins (inclusive)
+
+define mas_coffee.COFFEE_TIME_END =  12
+# hour that coffee time ends (exclusive)
+
+define mas_coffee.BREW_DRINK_SPLIT = 9
+# hour between the coffee times where brewing turns to drinking
+# from COFFEE_TIME_START to this time, brew chance is used
+# from this time to COFFEE_TIME_END, drink chance is used
+
+### QUETZAL PLUSHIE ###
+default persistent._mas_acs_enable_quetzalplushie = False
+# True enables plushie, False disables plushie
+
+### PROMISE RING ###
+default persistent._mas_acs_enable_promisering = False
+# True enables plushie, False disables plushie
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
@@ -1898,6 +2214,19 @@ image monika 1hua = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1hsb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1hub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -1906,6 +2235,19 @@ image monika 1hub = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1huu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smug",
+    head="j",
     left="1l",
     right="1r",
     arms="steepling"
@@ -1981,6 +2323,19 @@ image monika 1eksdlb = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
 
 image monika 1lksdlc = DynamicDisplayable(
     mas_drawmonika,
@@ -2022,6 +2377,19 @@ image monika 1lksdrb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     sweat="right"
+)
+
+image monika 1dsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
 )
 
 image monika 1dsc = DynamicDisplayable(
@@ -2169,6 +2537,19 @@ image monika 1efo = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1efp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="pout",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1eftsu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2210,6 +2591,19 @@ image monika 1wfx = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1wfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1wfw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2218,6 +2612,19 @@ image monika 1wfw = DynamicDisplayable(
     nose="def",
     mouth="wide",
     head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1wua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="d",
     left="1l",
     right="1r",
     arms="steepling"
@@ -2290,6 +2697,85 @@ image monika 1subftsb = DynamicDisplayable(
     arms="steepling",
     blush="full",
     tears="streaming"
+)
+
+image monika 1sublo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="gasp",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1suo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="gasp",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1hka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1kua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="winkleft",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1sua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1sfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling"
 )
 
 image monika 1sub = DynamicDisplayable(
@@ -2475,6 +2961,19 @@ image monika 1tsb = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1tsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tsbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2487,6 +2986,33 @@ image monika 1tsbsa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="shade"
+)
+
+image monika 1rsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1rssdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
 )
 
 image monika 1rfx = DynamicDisplayable(
@@ -2726,6 +3252,19 @@ image monika 1rkc = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1rud = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1rksdlc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2928,6 +3467,19 @@ image monika 1dfc = DynamicDisplayable(
     nose="def",
     mouth="smirk",
     head="q",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1dfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="r",
     left="1l",
     right="1r",
     arms="steepling"
@@ -3149,6 +3701,93 @@ image monika 1hubfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1hkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 1dkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 1skbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 1skbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1hkbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
+image monika 1dkbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
 image monika 1tubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3203,7 +3842,34 @@ image monika 1ekbfa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+)
 
+image monika 1ekbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
+)
+
+image monika 1dkbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
 )
 
 image monika 1dkbfa = DynamicDisplayable(
@@ -3218,9 +3884,7 @@ image monika 1dkbfa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
-
 )
-
 
 image monika 1ekbfb = DynamicDisplayable(
     mas_drawmonika,
@@ -3234,7 +3898,48 @@ image monika 1ekbfb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+)
 
+image monika 1dktub = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="big",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="up"
+)
+
+image monika 1dktua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="up"
+)
+
+image monika 1ektua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="up"
 )
 
 image monika 1ektsc = DynamicDisplayable(
@@ -3262,6 +3967,47 @@ image monika 1wuw = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling"
+)
+
+image monika 1wka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1wkb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="big",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1wkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
 )
 
 image monika 1wub = DynamicDisplayable(
@@ -3319,6 +4065,21 @@ image monika 1lkbfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1lkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines",
+    tears="pooled"
+)
+
 image monika 1wubfsdld = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3331,6 +4092,20 @@ image monika 1wubfsdld = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full",
+    sweat="def"
+)
+
+image monika 1rusdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling",
     sweat="def"
 )
 
@@ -3362,6 +4137,19 @@ image monika 1ektdc = DynamicDisplayable(
     tears="dried"
 )
 
+image monika 1ekt = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="triangle",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1ektdd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3369,6 +4157,20 @@ image monika 1ektdd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="dried"
+)
+
+image monika 1dktda = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
     head="f",
     left="1l",
     right="1r",
@@ -3389,6 +4191,20 @@ image monika 1wkd = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1wktpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="pooled"
+)
+
 image monika 1wktsd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3403,6 +4219,20 @@ image monika 1wktsd = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 1dktpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="pooled"
+)
+
 image monika 1dktsd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3415,6 +4245,20 @@ image monika 1dktsd = DynamicDisplayable(
     right="1r",
     arms="steepling",
     tears="streaming"
+)
+
+image monika 1ektpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="pooled"
 )
 
 image monika 1ektsd = DynamicDisplayable(
@@ -3870,6 +4714,32 @@ image monika 2wfw = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2wfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2wfd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="small",
+    head="c",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2wud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4127,6 +4997,33 @@ image monika 2tsbsa = DynamicDisplayable(
     character=monika_chr,
     eyebrows="mid",
     eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="shade"
+)
+
+image monika 2rsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2rsbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
     nose="def",
     mouth="smile",
     head="a",
@@ -4416,6 +5313,20 @@ image monika 2lksdlw = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 2rktpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="pooled"
+)
+
 image monika 2rksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4456,6 +5367,21 @@ image monika 2lsbssdrb = DynamicDisplayable(
     right="2r",
     arms="crossed",
     sweat="right",
+    blush="shade"
+)
+
+image monika 2lsbssdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def",
     blush="shade"
 )
 
@@ -4839,6 +5765,20 @@ image monika 2ekbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2dktuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="up"
+)
+
 image monika 2dkbfa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4867,6 +5807,18 @@ image monika 2ekbfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 2ekp = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="pout",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
 
 image monika 2tfp = DynamicDisplayable(
     mas_drawmonika,
@@ -4889,6 +5841,32 @@ image monika 2lfp = DynamicDisplayable(
     nose="def",
     mouth="pout",
     head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2ekt = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="triangle",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2eku = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smug",
+    head="f",
     left="1l",
     right="2r",
     arms="crossed"
@@ -5723,6 +6701,75 @@ image monika 3tsbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 3rkbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
+)
+
+image monika 3rsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3rssdrc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="right"
+)
+
+image monika 3rssdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
+image monika 3rssdlc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
 image monika 3rfx = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5826,6 +6873,51 @@ image monika 3lfx = DynamicDisplayable(
     left="2l",
     right="1r",
     arms="restleftpointright"
+)
+
+image monika 3hkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 3dkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
+)
+
+image monika 3lkbltpa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines",
+    tears="pooled"
 )
 
 image monika 3lfu = DynamicDisplayable(
@@ -6342,6 +7434,20 @@ image monika 3hksdrb = DynamicDisplayable(
     sweat="right"
 )
 
+image monika 3hubsb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
+)
+
 image monika 3hubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6368,6 +7474,19 @@ image monika 3tubfb = DynamicDisplayable(
     right="1r",
     arms="restleftpointright",
     blush="full"
+)
+
+image monika 3tsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="small",
+    head="r",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
 )
 
 image monika 3subfb = DynamicDisplayable(
@@ -6427,6 +7546,18 @@ image monika 3dkbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 3ekb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
 
 image monika 3ekbfb = DynamicDisplayable(
     mas_drawmonika,
@@ -6440,6 +7571,20 @@ image monika 3ekbfb = DynamicDisplayable(
     right="1r",
     arms="restleftpointright",
     blush="full"
+)
+
+image monika 3ektda = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    tears="dried"
 )
 
 image monika 3ektsc = DynamicDisplayable(
@@ -6991,6 +8136,19 @@ image monika 4wfw = DynamicDisplayable(
     arms="pointright"
 )
 
+image monika 4wua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
 image monika 4wud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7254,6 +8412,61 @@ image monika 4tsbsa = DynamicDisplayable(
     right="2r",
     arms="pointright",
     blush="shade"
+)
+
+image monika 4rkbfb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="o",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    blush="full"
+)
+
+image monika 4rsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4rssdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="right"
+)
+
+image monika 4rssdrc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    sweat="right"
 )
 
 image monika 4rfx = DynamicDisplayable(
@@ -7520,6 +8733,20 @@ image monika 4lksdlw = DynamicDisplayable(
     right="2r",
     arms="pointright",
     sweat="def"
+)
+
+image monika 4rktpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    tears="pooled"
 )
 
 image monika 4rksdla = DynamicDisplayable(
@@ -7988,6 +9215,20 @@ image monika 4ektsc = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 4ektdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    tears="dried"
+)
+
 image monika 4wuw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8112,6 +9353,49 @@ image monika 5euc = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5esu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3a"
+)
+
+image monika 5tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3a"
+)
+
+image monika 5hubfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
+    single="3b"
+)
+
 image monika 5hubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8166,6 +9450,51 @@ image monika 5efa = DynamicDisplayable(
     left="",
     right="",
     lean="def",
+    single="3b"
+)
+
+image monika 5esbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
+    single="3b"
+)
+
+image monika 5ekbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="full",
+    single="3b"
+)
+
+image monika 5eubla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    blush="lines",
     single="3b"
 )
 
@@ -8405,6 +9734,107 @@ image monika 5rfc = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5lfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    lean="def",
+    single="3b"
+)
+
+image monika 5luu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
+# bored
+image monika 5tsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smirk",
+    head="",
+    left="",
+    right="",
+    lean="def",
+    single="3b"
+)
+
 image monika 6dubsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8417,6 +9847,32 @@ image monika 6dubsa = DynamicDisplayable(
     right="1r",
     arms="down",
     blush="shade"
+)
+
+image monika 6eua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="down"
 )
 
 image monika 6dubsu = DynamicDisplayable(
@@ -8473,6 +9929,20 @@ image monika 6ektsa = DynamicDisplayable(
     right="1r",
     arms="down",
     tears="streaming"
+)
+
+image monika 6dksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="down",
+    sweat="def"
 )
 
 image monika 6ektda = DynamicDisplayable(
@@ -8654,6 +10124,34 @@ image monika 6dftsc = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 6dftdx = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedsad",
+    nose="def",
+    mouth="disgust",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6eftsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
 image monika 6tst = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8680,6 +10178,136 @@ image monika 6wfw = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6hub = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6hua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6hft = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedhappy",
+    nose="def",
+    mouth="triangle",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6wka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6wub = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6wuo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="gasp",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6rkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6lkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6suu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="smug",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6sua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
 image monika 6sub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8688,6 +10316,32 @@ image monika 6sub = DynamicDisplayable(
     nose="def",
     mouth="big",
     head="b",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6ckc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="crazy",
+    nose="def",
+    mouth="smirk",
+    head="c",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6cfw = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="crazy",
+    nose="def",
+    mouth="wide",
+    head="c",
     left="1l",
     right="1r",
     arms="down"
@@ -8907,3 +10561,227 @@ image monika 6ATL_cryleftright:
                 0.8
 
         repeat
+
+# similar to cryleft and right
+# meant for DISTRESSED
+image monika 6ATL_lookleftright:
+
+    # select image
+    block:
+        choice:
+            "monika 6rkc"
+        choice:
+            "monika 6lkc"
+
+    # select a wait time
+    block:
+        choice:
+            5.0
+        choice:
+            6.0
+        choice:
+            7.0
+        choice:
+            8.0
+        choice:
+            9.0
+        choice:
+            10.0
+    repeat
+
+### [IMG045]
+# special purpose ATLs that cant really be used for other things atm
+
+# Below 0 to upset affection
+image monika ATL_0_to_upset:
+
+    # 1 time this part
+    "monika 1esc"
+    5.0
+
+    # repeat this part
+    block:
+        # select image
+        block:
+            choice 0.95:
+                "monika 1esc"
+            choice 0.05:
+                "monika 5tsc"
+
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
+
+# affectionate
+image monika ATL_affectionate:
+    # select image
+    block:
+        choice 0.02:
+            "monika 1eua"
+            1.0
+            choice:
+                "monika 1sua"
+                4.0
+            choice:
+                "monika 1kua"
+                1.5
+            "monika 1eua"
+
+        choice 0.98:
+            choice 0.94898:
+                "monika 1eua"
+            choice 0.051020:
+                "monika 1hua"
+
+    # select wait time
+    block:
+        choice:
+            10.0
+        choice:
+            12.0
+        choice:
+            14.0
+        choice:
+            16.0
+        choice:
+            18.0
+        choice:
+            20.0
+
+    repeat
+
+# enamored
+image monika ATL_enamored:
+
+    # 1 time this part
+    "monika 1eua"
+    5.0
+
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
+                "monika 1eua"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
+
+            choice 0.98:
+                choice 0.765306:
+                    "monika 1eua"
+                choice 0.112245:
+                    "monika 5esu"
+                choice 0.061224:
+                    "monika 5tsu"
+                choice 0.061224:
+                    "monika 1huu"
+
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
+
+# love
+image monika ATL_love:
+
+    # 1 time this parrt
+    "monika 1eua"
+    5.0
+
+    # repeat
+    block:
+        # select image
+        block:
+            choice 0.02:
+                "monika 1eua"
+                1.0
+                choice:
+                    "monika 1sua"
+                    4.0
+                choice:
+                    "monika 1kua"
+                    1.5
+                "monika 1eua"
+
+            choice 0.98:
+                choice 0.510104:
+                    "monika 1eua"
+                choice 0.255102:
+                    "monika 5esu"
+                choice 0.091837:
+                    "monika 5tsu"
+                choice 0.091837:
+                    "monika 1huu"
+                choice 0.051020:
+                    "monika 5eubla"
+
+        # select wait time
+        block:
+            choice:
+                10.0
+            choice:
+                12.0
+            choice:
+                14.0
+            choice:
+                16.0
+            choice:
+                18.0
+            choice:
+                20.0
+
+        repeat
+
+
+### [IMG050]
+# condition-switched images for old school image selecting
+image monika idle = ConditionSwitch(
+    "mas_isMoniBroken(lower=True)", "monika 6ckc",
+    "mas_isMoniDis()", "monika 6ATL_lookleftright",
+    "mas_isMoniUpset()", "monika 2efc",
+    "mas_isMoniNormal() and mas_isBelowZero()", "monika ATL_0_to_upset",
+    "mas_isMoniHappy()", "monika 1eua",
+    "mas_isMoniAff()", "monika ATL_affectionate",
+    "mas_isMoniEnamored()", "monika ATL_enamored",
+    "mas_isMoniLove()", "monika ATL_love",
+    "True", "monika 1esa",
+    predict_all=True
+)
+
+
+### [IMG100]
+# chibi monika sprites
+image chibika smile = "gui/poemgame/m_sticker_1.png"
+image chibika sad = "mod_assets/other/m_sticker_sad.png"
+image chibika 3 = "gui/poemgame/m_sticker_2.png"

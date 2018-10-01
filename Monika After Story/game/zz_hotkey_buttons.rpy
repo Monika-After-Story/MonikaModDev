@@ -181,14 +181,6 @@ screen hkb_overlay():
                 background Image("mod_assets/hkb_disabled_background.png")
                 text "Talk"
 
-# NOTE: disabled until we have additoinal content
-#if allow_dialogue and store.hkb_button.enabled:
-#            textbutton _("Movies") action Jump("ch30_monikamovie")
-#        else:
-#            textbutton _("Movies"):
-#                action NullAction()
-#                style "hkbd_button"
-
 
         if store.hkb_button.music_enabled:
             textbutton _("Music") action Function(select_music)
@@ -199,7 +191,7 @@ screen hkb_overlay():
 
                 background Image("mod_assets/hkb_disabled_background.png")
                 text "Music"
-           
+
 
         if store.hkb_button.play_enabled:
             textbutton _("Play") action Function(pick_game)
@@ -210,7 +202,7 @@ screen hkb_overlay():
 
                 background Image("mod_assets/hkb_disabled_background.png")
                 text "Play"
-           
+
 
 screen movie_overlay():
 

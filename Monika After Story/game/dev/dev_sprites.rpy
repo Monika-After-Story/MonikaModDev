@@ -72,3 +72,35 @@ init 100 python:
             abc.write(line + "\n")
 
         abc.close()
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_acs_pose_test",
+            category=["dev"],
+            prompt="ACCESSORY POSE TEST",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_acs_pose_test:
+    m 1hua "Hello there!"
+    m 1eua "I'm going to test the wonderful accessory system."
+    m "First, I'll clear all current accessories."
+    $ monika_chr.remove_all_acs()
+    m 6sub "I'm going to put on the ring now~"
+    $ monika_chr.wear_acs_pst(mas_acs_promisering)
+    m 1eua "You should see it now!"
+    m 2eua "And it's gone."
+    m 3eua "Here it is!"
+    m 4eua "Still here~"
+    m 5eua "And it's gone."
+    m 6sub "Still gone..."
+    m "And let's take it all off now~"
+    $ monika_chr.remove_all_acs()
+    m "Please remember to try it at different times!"
+    m 1hua "We wouldn't want anything missing now, would we?"
+    return

@@ -26,23 +26,23 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
-default persistent._mas_084_hotfix_farewellbug = None
+#default persistent._mas_084_hotfix_farewellbug = None
 
 # post many things, but not late update script appropriate
 # init-based update scripts
 # TODO: remove this when we reach 085
-init 600 python:
-    if (
-            persistent._mas_084_hotfix_farewellbug is None
-            and renpy.seen_label("bye_long_absence")
-        ):
-        # reset affection to 0 to help people that got screwed with
-        # the farewell bug
-        _mas_AffLoad()
-        if persistent._mas_affection["affection"] < 0:
-            mas_setAffection(0)
-            _mas_AffSave()
-    persistent._mas_084_hotfix_farewellbug = True
+# this was init 600 python
+#    if (
+#            persistent._mas_084_hotfix_farewellbug is None
+#            and renpy.seen_label("bye_long_absence")
+#        ):
+#        # reset affection to 0 to help people that got screwed with
+#        # the farewell bug
+#        _mas_AffLoad()
+#        if persistent._mas_affection["affection"] < 0:
+#            mas_setAffection(0)
+#            _mas_AffSave()
+#    persistent._mas_084_hotfix_farewellbug = True
 
 
 # create some functions
@@ -186,7 +186,7 @@ init python:
             updateTo = updates.version_updates[startVers]
 
             # we should only call update labels that we have
-            if renpy.has_label(updateTo):
+            if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
@@ -199,27 +199,30 @@ init 10 python:
     # okay do we have a version number?
     if persistent.version_number is None:
         # here comes the logic train
-        if no_topics_list:
-            # we are in version 0.2.2 (the horror!)
-            updateGameFrom("v0_2_2")
 
-        elif (renpy.seen_label("monika_ribbon") or
-                "monika_ribbon" in persistent.monika_random_topics):
-            # we are in version 0.3.3
-            updateGameFrom("v0_3_3")
-
-        elif found_monika_ani:
-            # we are in version 0.3.2
-            updateGameFrom("v0_3_2")
-
-        elif (renpy.seen_label("monika_monika") or
-                "monika_monika" in persistent.monika_random_topics):
-            # we are in version 0.3.1
-            updateGameFrom("v0_3_1")
-
-        else:
-            # we are in version 0.3.0
-            updateGameFrom("v0_3_0")
+# NOTE: we are dropping this because of issues we are having with update
+#   scripts running when we least expect.
+#        if no_topics_list:
+#            # we are in version 0.2.2 (the horror!)
+#            updateGameFrom("v0_2_2")
+#
+#        elif (renpy.seen_label("monika_ribbon") or
+#                "monika_ribbon" in persistent.monika_random_topics):
+#            # we are in version 0.3.3
+#            updateGameFrom("v0_3_3")
+#
+#        elif found_monika_ani:
+#            # we are in version 0.3.2
+#            updateGameFrom("v0_3_2")
+#
+#        elif (renpy.seen_label("monika_monika") or
+#                "monika_monika" in persistent.monika_random_topics):
+#            # we are in version 0.3.1
+#            updateGameFrom("v0_3_1")
+#
+#        else:
+#            # we are in version 0.3.0
+#            updateGameFrom("v0_3_0")
 
         # set the version now
         persistent.version_number = config.version
@@ -241,6 +244,29 @@ init 10 python:
 
         # and clear update data
         clearUpdateStructs()
+
+
+    ### special function for resetting versions
+    def _mas_resetVersionUpdates():
+        """
+        Resets all version update script's seen status
+        """
+        late_updates = [
+            "v0_8_3",
+            "v0_8_4"
+        ]
+
+        renpy.call_in_new_context("vv_updates_topics")
+        ver_list = store.updates.version_updates.keys()
+
+        ver_list.extend(["mas_lupd_" + x for x in late_updates])
+        ver_list.append("v" + "_".join(
+            config.version[:config.version.index("-")].split(".")
+        ))
+
+        for _version in ver_list:
+            if _version in persistent._seen_ever:
+                persistent._seen_ever.pop(_version)
 
 
 # UPDATE SCRIPTS ==============================================================
@@ -267,6 +293,29 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.8.6
+label v0_8_6(version="v0_8_6"):
+    python:
+        import store.evhand as evhand
+        import datetime
+        
+        # unlock gender redo if we have seen the other event
+        genderredo_ev = evhand.event_database.get("gender_redo", None)
+        if genderredo_ev and renpy.seen_label("gender"):
+            genderredo_ev.unlocked = True
+            genderredo_ev.pool = True
+            # this should be seen'd as it doesnt make sense to have it in
+            # unseen
+            persistent._seen_ever["gender_redo"] = True
+
+        # give the new character file event a conditoinal to push
+        new_char_ev = evhand.event_database.get("mas_new_character_file", None)
+        if new_char_ev and not renpy.seen_label("mas_new_character_file"):
+            new_char_ev.conditional = "True"
+            new_char_ev.action = EV_ACT_PUSH
+
+    return
 
 # 0.8.4
 label v0_8_4(version="v0_8_4"):
@@ -813,10 +862,10 @@ label mas_lupd_v0_8_3:
     return
 
 
-init 5000 python:
+init 999 python:
     for __temp_version in persistent._mas_zz_lupd_ex_v:
         __lupd_v = "mas_lupd_" + __temp_version
-        if renpy.has_label(__lupd_v):
+        if renpy.has_label(__lupd_v) and not renpy.seen_label(__lupd_v):
             renpy.call_in_new_context(__lupd_v)
 
     persistent._mas_zz_lupd_ex_v = list()
