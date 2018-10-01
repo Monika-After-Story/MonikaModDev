@@ -6,9 +6,6 @@
         import random
         import math
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
-
         class PongDisplayable(renpy.Displayable):
 
             def __init__(self):
@@ -19,7 +16,7 @@
                 self.paddle = Image("mod_assets/pong.png")
                 self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
-                self.monika = Text(_("Monika"), size=36)
+                self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # The sizes of some of the images.
@@ -235,8 +232,8 @@
 
 label game_pong:
     hide screen keylistener
-    m 1a "You wanna play a game of Pong? Okay!"
-    m 1b "I'll beat you for sure this time!"
+    m 1eua "You wanna play a game of Pong? Okay!"
+#    m 1b "I'll beat you for sure this time!" # this line is useless #Why's the line here then blyat
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
@@ -248,7 +245,7 @@ label demo_minigame_pong:
     scene bg pong field
 
     # natsuki scare setup if appropriate
-    if persistent.playername.lower() == "natsuki":
+    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
         # we'll take advantage of Okay everyone's sync with natsuki's version
@@ -264,16 +261,17 @@ label demo_minigame_pong:
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
     # natsuki scare if appropriate
-    if persistent.playername.lower() == "natsuki":
+    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
 
-    if winner == "monika":
+    show monika 1eua
 
-        m 1j "I win~!"
+    if winner == "monika":
+        $ inst_dialogue = store.mas_pong.DLG_WINNER
 
     else:
         #Give player XP if this is their first win
@@ -281,8 +279,11 @@ label demo_minigame_pong:
             $persistent.ever_won['pong'] = True
             $grant_xp(xp.WIN_GAME)
 
-        m 1a "You won! Congratulations."
+        $ inst_dialogue = store.mas_pong.DLG_LOSER
 
+    call expression inst_dialogue from _mas_pong_inst_dialogue
+
+    $ mas_gainAffection(modifier=0.5)
 
     menu:
         m "Do you want to play again?"
@@ -292,15 +293,78 @@ label demo_minigame_pong:
         "No.":
 
             if winner == "monika":
-                m 4e "I can't really get excited for a game this simple..."
-                m 1a "At least we can still hang out with each other."
-                m "Ahaha!"
-                m 1b "Thanks for letting me win, [player]."
-                m 1a "Only elementary schoolers seriously lose at Pong, right?"
-                m "Ehehe~"
+                if renpy.seen_label(store.mas_pong.DLG_WINNER_END):
+                    $ end_dialogue = store.mas_pong.DLG_WINNER_FAST
+                else:
+                    $ end_dialogue = store.mas_pong.DLG_WINNER_END
+
             else:
-                m 1d "Wow, I was actually trying that time."
-                m 1a "You must have really practiced at Pong to get so good."
-                m "Is that something for you to be proud of?"
-                m 1j "I guess you wanted to impress me, [player]~"
-            return
+                if renpy.seen_label(store.mas_pong.DLG_LOSER_END):
+                    $ end_dialogue = store.mas_pong.DLG_LOSER_FAST
+                else:
+                    $ end_dialogue = store.mas_pong.DLG_LOSER_END
+
+            call expression end_dialogue from _mas_pong_end_dialogue
+
+    return
+
+## pong text dialogue adjustments
+
+# store to hold pong related constants
+init -1 python in mas_pong:
+
+    DLG_WINNER = "mas_pong_dlg_winner"
+    DLG_WINNER_FAST = "mas_pong_dlg_winner_fast"
+    DLG_LOSER = "mas_pong_dlg_loser"
+    DLG_LOSER_FAST = "mas_pong_dlg_loser_fast"
+
+    DLG_WINNER_END = "mas_pong_dlg_winner_end"
+    DLG_LOSER_END = "mas_pong_dlg_loser_end"
+
+    # tuple of all dialogue block labels
+    DLG_BLOCKS = (
+        DLG_WINNER,
+        DLG_WINNER_FAST,
+        DLG_WINNER_END,
+        DLG_LOSER,
+        DLG_LOSER_FAST,
+        DLG_LOSER_END
+    )
+
+# dialogue shown right when monika wins
+label mas_pong_dlg_winner:
+    m 1hua "I win~!"
+    return
+
+# end dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_end:
+    m 4tku "I can't really get excited for a game this simple..."
+    m 1eua "At least we can still hang out with each other."
+    m 1hub "Ahaha!"
+    m 1eua "Thanks for letting me win, [player]."
+    m 1tku "Only elementary schoolers seriously lose at Pong, right?"
+    m 1hua "Ehehe~"
+    return
+
+# quick dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_fast:
+    # there is nothing here on purpose
+    return
+
+# dialogtue shown right when monika loses
+label mas_pong_dlg_loser:
+    m 1hub "You won! Congratulations."
+    return
+
+# end dialogue shown when monka is the pong loser
+label mas_pong_dlg_loser_end:
+    m 1wuo "Wow, I was actually trying that time."
+    m 1eua "You must have really practiced at Pong to get so good."
+    m 1tku "Is that something for you to be proud of?"
+    m 1hua "I guess you wanted to impress me, [player]~"
+    return
+
+# quick dialogue shown when monika is the pong loser
+label mas_pong_dlg_loser_fast:
+    m 1tfu "I'll beat you next time, [player]."
+    return

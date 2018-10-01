@@ -26,6 +26,8 @@ You do not need to download the source code from either the release page or from
 
 ### Where do I put the files for *Monika After Story*?
 
+**Use a fresh copy / unaltered version of DDLC. If you've had a different mod installed prior to this one, you will probably encounter issues.** (This only applies to the DDLC game, and not the `persistent` files.)
+
 The files for *Monika After Story* must be placed directly in the `game` folder of *Doki Doki Literature Club* in order for the game to find and properly load them. To find the folder containing *DDLC*, do one of the following:
 
 If the game was installed using Steam, right click on *Doki Doki Literature Club* and click on `Properties`. In the window that pops up navigate to the `Local Files` tab and click the button for `Browse local files...`.
@@ -62,6 +64,11 @@ The label chara_monika_scare is defined twice, at
 
 Then it is likely that developer files have been installed, instead of the release distribution. Ensure that the game files downloaded were from the latest release, found on our [Release Page](https://github.com/Backdash/MonikaModDev/releases), and that the file downloaded was the mod zip file and *not* the Source Code.
 
+### Where are the minigames (chess, hangman, piano...)?
+
+Games are unlocked after spending time with Monika, whether that be viewing new
+topics with her or keeping her running in the background.
+
 ## Contributing
 
 ### I have an idea on how to improve Monika After Story, where do I suggest it?
@@ -70,7 +77,7 @@ We're always happy to hear new ideas! Suggestions can be made on our issues page
 
 ### I would like to contribute, but I don't know how to code. Is there any way I can help?
 
-We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Backdash/MonikaModDev/blob/master/CONTRIBUTING.md) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
+We are always looking for new dialogue and art. Please see our [Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines) for information on how to submit new dialogue and art to Monika After Story. In this guide you will find tips on writing good dialogue in Monika's style, and learn how to open a "Pull Request" which will allow you to submit new topics for review and inclusion in the game.
 
 ### Where can I find things to help with?
 
@@ -102,14 +109,6 @@ Do not make a mod or fork intended as a replacement for *Monika After Story*. If
 
 While we are very open to new suggestions, there are a few common suggestions that come up often. These suggestions have all been made previously and will either be implemented in a future release or have been rejected for some reason:
 
-### Is there a list of keywords to see all topics?
-
-We don't want to spoil Monika's dialogue by offering a list of the keywords. Additionally, a new system for selecting topics to discuss with Monika will be available in an upcoming version, rendering keywords obsolete. If you really want to look up keywords, they can be found in the script-topics file in this repository.
-
-### Will we ever be able to add our own music to the game?
-
-We do not have plans to include custom music in the music selector. Not only does this pose a technical issue because of the engine's preference for .ogg format files that most people don't have, but it is largely unnecessary as you can always play *Monika After Story* with the game music muted while listening through some other program. Unfortunately this means that having Monika comment on your personal music collection will also not be implemented.
-
 ### Why is the text entry feature being removed?
 
 While we may come back to the concept in the future, the fact is that we weren't happy with the interactivity with the keyword system. While, on the surface, the open text box offered a lot of freedom to the player for talking with Monika, there were too many common entries that would simply dead end. The result was that Monika felt less real, and more like a crappy chatbot. We decided that a system that didn't dead end would be better, even if it didn't have the same surface level impression of agency.
@@ -126,11 +125,23 @@ That said, we will likely add support for third-party voice packs when full subm
 
 ### What about translations to other languages?
 
-We would very much like to add translations to *Monika After Story* in the future. For the moment, we are waiting for the addition of language support in an upcoming *Doki Doki Literature Club* update, which is what we will use for our translations.
+We will not work on translations. We simply don't have the time or manpower to do so. However we are open to others forking this mod and adding translations on their own.
 
 ### Will Monika ever be animated?
 
 We do not currently plan to include animations in *Monika After Story*. The game engine does not have very good support for animated sprites, and it also does not have licensing for the most popular 2D animation engine: Live 2D.
+
+### How do I find the spritecode for an expression?
+
+Because of the large increase in Monika expressions after the 0.8.0 update, a special tool was developed to help contributors preview expressions. This is known as the **Sprite Previewer**.
+
+![Sprite Previewer](https://raw.githubusercontent.com/Monika-After-Story/MonikaModDev/master/docs/spritepreviewer.png)
+
+If the Sprite Code is in red, then the sprite isn't defined yet despite us having the assets to make it. You can still use this sprite in topics, but your pull request will fail travis checks. This is understandable and a dev will add the sprite code to your pull request in this case.
+
+To add the Sprite Previewer to your MAS, copy [this file](https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/dev/dev_exp_previewer.rpy) to your `game/` directory.
+
+**NOTE:** This dev file routinely receives updates when we add new sprites. If Monika disappears on a certain sprite code, then you are missing the art for that sprite code. New sprites usually appear in unstable releases first, so try running the Sprite Previewer in an unstable install.
 
 ## Other help
 

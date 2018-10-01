@@ -28,7 +28,7 @@ init -4 python:
     #   mPoint - the amount of points this gives monika (int)
     #   glitch - True means this a glitch word, false if not
     #
-    class MASPoemWord():
+    class MASPoemWord(object):
         def __init__(self, word, sPoint, nPoint, yPoint, mPoint, glitch=False):
             self.word = word
             self.sPoint = sPoint
@@ -36,6 +36,88 @@ init -4 python:
             self.yPoint = yPoint
             self.mPoint = mPoint
             self.glitch = glitch
+
+
+        def _merge(self, _poemword, mPoint):
+            """
+            Merges a PoemWord into this MASPoemWord 
+
+            IN:
+                _poemword - PoemWord object to merge
+                mPoint - points to use for Monika
+            """
+            self.word = _poemword.word
+            self.sPoint = _poemword.sPoint
+            self.nPoint = _poemword.nPoint
+            self.yPoint = _poemword.yPoint
+            self.mPoint = mPoint
+            self.glitch = _poemword.glitch
+
+
+        def _hangman(self, mon="I", say="Sayori", nat="Natsuki", yur="Yuri"):
+            """
+            Returns the approprite tuple of this word and the winner name.
+
+            All the input arguments are to change winnner names.
+
+            NOTE: highly specialized. Only used in hangman.
+            NOTE: monika will always have a bias here
+
+            RETURNS: tuple of the following format:
+                [0]: the word as a string
+                [1]: the winner as a string
+            """
+            the_winner = self.winner()
+
+            # monika wins ties
+            if the_winner == self.mPoint:
+                girl = mon # monika
+
+            elif the_winner == self.sPoint:
+                girl = say # sayori
+
+            elif the_winner == self.nPoint:
+                girl = nat # natsuki
+
+            elif the_winner == self.yPoint:
+                girl = yur # yuri
+
+            else:
+                # monika is also the default
+                girl = mon # monika
+
+            return (self.word, girl)
+
+
+        def winner(self):
+            """
+            Returns the point value of the winner
+            """
+            # figure out who likes this word the most
+            return max(self.mPoint, self.sPoint, self.nPoint, self.yPoint)
+
+
+        @staticmethod
+        def _build(_poemword, mPoint):
+            """
+            Builds a MASPoemword from a PoemWord
+
+            IN:
+                _poemword - Poemword object to build from
+                mPoint - points to use for MOnika
+
+            RETURNS: a MASPoemWord
+            """
+            return MASPoemWord(
+                _poemword.word,
+                _poemword.sPoint,
+                _poemword.nPoint,
+                _poemword.yPoint,
+                mPoint,
+                _poemword.glitch
+            )
+
+
 
     
     # poemword list class. Allows us to dynamically create Poemwords for 
@@ -46,7 +128,7 @@ init -4 python:
     #   wordfile - name/path of file this list is generated from. If None, this
     #       list was not generated from a file.
     #
-    class MASPoemWordList:
+    class MASPoemWordList(object):
         def __init__(self, wordfile=None):
             #
             # Contrusctor for PoemWord list
@@ -163,6 +245,10 @@ init -10 python in mas_poemgame_consts:
     # eyes odds
     ODDS_EYES = 5
 
+    # grid styles
+    PG_TEXT = "poemgame_text"
+    PG_TEXT_CLR = "#000"
+
 # store to handle mas_poemgame functions
 init -2 python in mas_poemgame_fun:
     import store.mas_poemgame_consts as mas_pgc
@@ -248,6 +334,102 @@ init -2 python in mas_poemgame_fun:
             or flow == mas_pgc.STOCK_MODE
             or flow == mas_pgc.MONIKA_MODE
         )
+
+### UTILITY FUNCTIONS #########################################################
+# contains special poem-game related utilities designed for generic use
+# note that the stuff in here may not be used in actual poemgame calls, but
+# maybe useful for other things.
+
+# Creates a textbutton grid interaction
+#
+# NOTE: the textbuttons, by default, will use the poemgame_text style and
+# colors. If you want different styles, create a style prefix and set it
+# accordingly.
+#
+# NOTE: if you want a different alignment of the words, use a style prefix
+#   and set the appropriate align properties.
+#
+# IN:
+#   words - list of tuples of the following format:
+#       [0] -> string of text to display for a button
+#       [1] -> value to return when this button is clicked
+#   row_info - tuple of row info data of the following format:
+#       [0] -> number of rows
+#       [1] -> spacing between rows
+#           If None, a spacing value will be calculated using height and number
+#           of rows.
+#   col_info - tuple of column info data of the following format:
+#       [0] -> number of columns
+#       [1] -> spacing between columns
+#           If None, a spacing value will be calculatd using width and number
+#           of cols.
+#   xywh - tuple of the area this grid should occupy
+#       [0] -> xpos of top left corner
+#       [1] -> ypos of top left corner
+#       [2] -> width of grid
+#       [3] -> height of grid
+#   bg_image - image/solid whatever to use as the background to this.
+#       NOTE: uses xywh to determine location and size
+#       (Default: None)
+#   is_modal - True if this should be a modal, false otherwise
+#       (Default: False)
+#   _zorder - zorder this screen should display at
+#       (Default: None - 0)
+#   _style_prefix - style prefix to use for this screen
+#       (Default: None)
+#   _layer - layer to show this screen on
+#       (Default: None)
+screen mas_pg_textbutton_grid(words, row_info, col_info, xywh, bg_image=None, is_modal=False, _zorder=None, _style_prefix=None, _layer=None):
+
+    # precalc setup for rows/cols
+    python:
+        row_spacing = row_info[1]
+        col_spacing = col_info[1]
+        if row_spacing is None:
+            row_spacing = int(xywh[3] / row_info[0])
+        if col_spacing is None:
+            col_spacing = int(xywh[2] / col_info[0])
+
+    # start with screen props
+    if is_modal:
+        modal True
+    if _zorder:
+        zorder _zorder
+    if _style_prefix:
+        style_prefix _style_prefix
+    if _layer:
+        layer _layer
+
+    # fixed area
+    fixed:
+        area xywh
+        if bg_image:
+            add bg_image
+
+        # setup start point
+#        $ tb_x = xywh[0]
+#        $ tb_y = xywh[1]
+        $ word_index = 0
+
+        # columns first
+        for col in range(col_info[0]):
+
+            # rows are arranged in vboxes
+            vbox:
+                for row in range(row_info[0]):
+                    if word_index < len(words):
+                        textbutton _(words[word_index][0]):
+                            xpos (col * col_spacing)
+                            ypos (row * row_spacing)
+                            if not _style_prefix:
+                                text_style store.mas_poemgame_consts.PG_TEXT
+                                text_color store.mas_poemgame_consts.PG_TEXT_CLR
+                            action Return(words[word_index][1])
+                        $ word_index += 1
+
+
+### POEMGAME ##################################################################
+# actual poemgame stuff below
 
 ### EXAMPLES OF USE ##################
 
