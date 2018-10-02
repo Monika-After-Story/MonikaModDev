@@ -5290,8 +5290,7 @@ init 5 python:
             eventlabel="monika_promisering",
             category=['romance'],
             prompt="Promise Ring",
-            random=True,
-            conditional=("mas_isMoniHappy(higher=True)")
+            random=True
             )
         )
 
