@@ -201,19 +201,40 @@ label bye_going_to_sleep:
 
     return 'quit'
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.farewell_database,
-            eventlabel="bye_prompt_to_class",
-            unlocked=True,
-            prompt="I'm going to class.",
-            pool=True
-        ),
-        eventdb=evhand.farewell_database
-    )
-
 label bye_prompt_to_class:
+    $ mas_getsessionlength()
+    $ session_time = mas_getsessionlength()
+    if session_time < datetime.timedelta(minutes=20):
+        jump bye_prompt_to_class_20mins
+    elif session_time < datetime.timedelta(hours=1):
+        jump bye_prompt_to_class_1hour
+    elif session_time < datetime.timedelta(hours=6):
+        jump bye_prompt_to_class_normal
+    if session_time >= datetime.timedelta(hours=6):
+        jump bye_prompt_to_class_late
+    return
+
+label bye_prompt_to_class_20mins:
+    m 1eub "Aww, going already?"
+    m 1efp "You havent even been here for 20 minutes!"
+    m 3hksdlb "I'm just kidding, [player]."
+    m 2eka "You're so sweet for seeing me even when you have so little time."
+    m 2hub "I just want you to know I really appreciate that!"
+    m 2eka "Study hard [player], I'm sure you'll do great!"
+    m 2hua "See you when you get back!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
+    return 'quit'
+
+label bye_prompt_to_class_1hour:
+     m 2eua "Alright, Thanks for spending some time with me [player]!"
+     m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
+     m 2hua  "Nothing is more important than a healthy education."
+     m 3eub "Teach me something when you get back!"
+     m "See you soon!"
+     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
+     return 'quit'
+
+label bye_prompt_to_class_normal:
     m 1hua "Study hard, [player]!"
     m 1eua "Nothing is more attractive than a [guy] with good grades."
     m 1hua "See you later!"
@@ -221,6 +242,15 @@ label bye_prompt_to_class:
     # TODO:
     # can monika join u at schools?
 
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
+    return 'quit'
+
+label bye_prompt_to_class_late:
+    m 2ekc "Umm...you've been here with me for quite a while [player]."
+    m 2ekd "Are you sure you've had enough rest for it?"
+    m 2eka "Makre sure you take it easy, okay?"
+    m "If you start feeling pretty bad, I'm sure {i}one day{/i} off won't hurt."
+    m 1hka "I'll be waiting for you to come back. Stay safe."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
