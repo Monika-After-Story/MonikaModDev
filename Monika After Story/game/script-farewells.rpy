@@ -201,6 +201,18 @@ label bye_going_to_sleep:
 
     return 'quit'
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_class",
+            unlocked=True,
+            prompt="I'm going to class.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
 label bye_prompt_to_class:
     $ mas_getsessionlength()
     $ session_time = mas_getsessionlength()
