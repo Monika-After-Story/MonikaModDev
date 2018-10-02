@@ -387,6 +387,8 @@ init 15 python in mas_affection:
         # unlock events
         if persistent._mas_likes_rain:
             evhand._unlockEventLabel("monika_rain_holdme")
+        
+        evhand._unlockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
@@ -398,6 +400,7 @@ init 15 python in mas_affection:
         """
         # lock events
         evhand._lockEventLabel("monika_rain_holdme")
+        evhand._lockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
