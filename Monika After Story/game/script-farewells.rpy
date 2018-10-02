@@ -221,7 +221,7 @@ label bye_prompt_to_class:
         jump bye_prompt_to_class_1hour
     elif session_time < datetime.timedelta(hours=6):
         jump bye_prompt_to_class_normal
-    if session_time >= datetime.timedelta(hours=6):
+    else:
         jump bye_prompt_to_class_late
     return
 
