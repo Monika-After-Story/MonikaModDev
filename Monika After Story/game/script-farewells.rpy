@@ -214,8 +214,7 @@ init 5 python:
     )
 
 label bye_prompt_to_class:
-    $ mas_getsessionlength()
-    $ session_time = mas_getsessionlength()
+    $ session_time = mas_getSessionLength()
     if session_time < datetime.timedelta(minutes=20):
         jump bye_prompt_to_class_20mins
     elif session_time < datetime.timedelta(hours=1):
