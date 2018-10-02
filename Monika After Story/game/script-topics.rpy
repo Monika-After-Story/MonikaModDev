@@ -5281,7 +5281,7 @@ label monika_immortal:
     m 1ekbfa "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
-default persistent._mas_wearsRing = None
+default persistent._mas_pm_wearsRing = None
 
 init 5 python:
     addEvent(
@@ -5305,7 +5305,7 @@ label monika_promisering:
         m "Do you wear a ring, [player]?"
 
         "I do.":
-            $ persistent._mas_wearsRing = True
+            $ persistent._mas_pm_wearsRing = True
 
             m 1hua "Aww, [player]!"
             m 1eka "You have no idea how happy that makes me."
@@ -5313,22 +5313,20 @@ label monika_promisering:
             m "It means the world to me."
         
         "I don't.":
-            $ persistent._mas_wearsRing = False
+            $ persistent._mas_pm_wearsRing = False
             
             m 4rksdla "Maybe you ought to get one."
             m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
             m 2lfu "It would help keep those... unwanted suitors away from you, too."
-            show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
             m 1ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
             m "It would make me really happy."
 
     if not persistent._mas_acs_enable_promisering:
-        show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 1hubfa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
         m 1eua "And then I could wear it forever."
         m 3ekbfa "But until then, just remember that my commitment to you is unwavering."
     else:
-        if not persistent._mas_wearsRing:
+        if not persistent._mas_pm_wearsRing:
             m 1ekbsa "As happy as you made me when you gave me this ring."
             m "I honestly can't express just how much it meant when you gave me this..."
             m 1ekbfa "Your promise..."
@@ -5341,7 +5339,7 @@ label monika_promisering:
         m 5esbfa "My commitment to you is unwavering, [player]."
         m 5ekbfa "Thank you for such a wonderful gift, I love you."
 
-    return
+    return "derandom"
 
 # do you like playing sports
 default persistent._mas_pm_like_playing_sports = None
