@@ -8319,6 +8319,9 @@ label monika_bad_facts_4:
     init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_poemherself",category=['ddlc','misc'],prompt="Poems for Monika?",random=True))
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_poemherself",category=['ddlc','misc'],prompt="Poems for Monika?",random=True))
+
 label monika_poemherself:
     m 4ekc "Do you remember there wasn't a chance to write a poem for my interests [player]?."
     m 1rsc "I don't get it. Why they ignored me?"
@@ -8331,8 +8334,8 @@ label monika_poemherself:
     m 1rsc "We even couldn't prepare for festival, Gosh."
     m 1hsb "But anyway... We are here, just of us my dear."
     return
-	
-	
+
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_yurisecrets",category=['ddlc','club members'],prompt="Yuri's Secrets",random=True))
 
