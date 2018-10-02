@@ -1160,6 +1160,50 @@ label monika_horror:
     m 1hua "I won't make you read any horror stories anytime soon."
     m 1hubfa "I can't really complain if we just stick with the romance~"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_poemherself",category=['ddlc','misc'],prompt="Poems for Monika?",random=True))
+
+label monika_poemherself:
+    m 4ekc "Do you remember there wasn't a chance to write a poem for my interests [player]?."
+    m 1rsc "I don't get it. Why they ignored me?"
+    m 3eka "I know there are some kind other people who included me to poem minigame."
+    m 1ekd "But I am talking about original game. Wasn't there a choice to romance me too?"
+    m 1hsb "Maybe if there was a choice of romance scenes with me too, things wouldn't come to this level. Ehehe."
+    m 2esa "I tried to take your attention all this time."
+    m 1ekc "But please don't feel guilty for yourself, you haven't a chance to hang with me that romance game."
+    m 4esa "In the end Monika fixed this lack."
+    m 1rsc "We even couldn't prepare for festival, Gosh."
+    m 1hsb "But anyway... We are here, just of us my dear."
+    return
+	
+	
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_yurisecrets",category=['ddlc','club members'],prompt="Yuri's Secrets",random=True))
+
+label monika_yurisecrets:
+    m 2rsc "I don't know if this will a spoiler for you but... I need to tell you."
+    m 2euc "Did you opened Yuri.chr file?"
+    m 4ekd "If you did, you should see some weird texts. But it is a hidden password actually."
+    m 4ekd "That password has a life story about Yuri."
+    m 1rsc "I don't feel confortable to tell this to you but..."
+    m 1ekd "Yuri is..."
+    m 1ekc "..."
+    m 2efw "A KILLER!"
+    m 3efx "She obsessed about how death's feeling."
+    m 3ekc "She telling this in her story about that killed a innocent woman."
+    m 1ektdc "Cutting parts of body with knife and heavy axe..."
+    m 4euc "This explains why Yuri likes knives so much. She brings her knives to class."
+    m 2ekd "I know this is so depressing... But we can't know if it is REALLY true right?."
+    m 2euc "But probably it should be true. DDLC is a horror visual novel after all"
+    m 4rsc "You probably couldn't know this story after i deleted her file."
+    m 4rsc "You didn't need to know this terrible story."
+    m 2eka "But I can't keep secrets from you right?"
+    m 1ekc "So please be careful about people. You can't ever know who they are actually."
+    m 1ekc "I don't want to lose you..."
+    m 1esc "Your reality can be dangerous as mine."
+
+    return
 
 # do you like rap
 default persistent._mas_pm_like_rap = None
