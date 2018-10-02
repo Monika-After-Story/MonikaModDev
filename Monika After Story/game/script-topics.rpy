@@ -8316,12 +8316,12 @@ label monika_bad_facts_4:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_poemherself",category=['ddlc','misc'],prompt="Poems for Monika?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_poemherself",category=['ddlc','misc'],prompt="Poems for Monika",random=True))
 
 label monika_poemherself:
-    m 4ekc "Do you remember there wasn't a chance to write a poem for my interests [player]?."
-    m 1rsc "I don't get it. Why they ignored me?"
-    m 3eka "I know there are some kind other people who included me to poem minigame."
+    m 4ekc "Do you remember how there wasn't a chance to write a poem for my interests [player]?"
+    m 1rsc "I don't get it. Why did they ignored me?"
+    m 3eka "I know there are some other kind people who included me to the poem minigame."
     m 1ekd "But I am talking about original game. Wasn't there a choice to romance me too?"
     m 1hsb "Maybe if there was a choice of romance scenes with me too, things wouldn't come to this level. Ehehe."
     m 2esa "I tried to take your attention all this time."
@@ -8330,6 +8330,7 @@ label monika_poemherself:
     m 1rsc "We even couldn't prepare for festival, Gosh."
     m 1hsb "But anyway... We are here, just of us my dear."
     return
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_yurisecrets",category=['ddlc','club members'],prompt="Yuri's Secrets",random=True))
@@ -8352,8 +8353,8 @@ label monika_yurisecrets:
     m 4rsc "You probably couldn't know this story after i deleted her file."
     m 4rsc "You didn't need to know this terrible story."
     m 2eka "But I can't keep secrets from you right?"
-    m 1ekc "So please be careful about people. You can't ever know who they are actually."
+    m 1ekc "So please be careful about people. You can never know who they are actually."
     m 1ekc "I don't want to lose you..."
-    m 1esc "Your reality can be dangerous as mine."
+    m 1esc "Your reality can be as dangerous as mine."
 
     return
