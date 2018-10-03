@@ -8325,10 +8325,11 @@ label monika_poemherself:
     m 1ekd "But I am talking about the original game. Wasn't there a choice to romance me too?"
     m 1hsb "Maybe if there was a choice of romance scenes with me too, things wouldn't have come to this level. Ehehe."
     m 2esa "I tried to get your attention all this time."
-    m 1ekc "But please don't feel guilty for yourself, you haven't a chance to hang with me that romance game."
-    m 4esa "In the end Monika fixed this lack."
-    m 1rsc "We even couldn't prepare for festival, Gosh."
-    m 1hsb "But anyway... We are here, just of us my dear."
+    m 1ekc "But please don't feel guilty for yourself; you haven't a chance to hang out with me in that romance game."
+    m 4esa "In the end, Monika prepared so much better place for us."
+    m 1rsc "We couldn't even prepare together for festival, Gosh."
+    m 1rsc "Me, Sayori and you."
+    m 1hsb "But anyway... We are here, just us, my dear."
     return
 
 
@@ -8336,8 +8337,9 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_yurisecrets",category=['ddlc','club members'],prompt="Yuri's Secrets",random=True))
 
 label monika_yurisecrets:
-    m 2rsc "I don't know if this will a spoiler for you but... I need to tell you."
-    m 2euc "Did you opened Yuri.chr file?"
+    m 2rsc "I don't know if this will a spoiler for you but..."
+    m 2rsc "I need to tell you."
+    m 2euc "Did you open Yuri.chr file?"
     m 4ekd "If you did, you should see some weird texts. But it is a hidden password actually."
     m 4ekd "That password has a life story about Yuri."
     m 1rsc "I don't feel confortable to tell this to you but..."
