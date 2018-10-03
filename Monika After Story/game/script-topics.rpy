@@ -7691,19 +7691,19 @@ label monika_backpacking:
     m 3hub "Maybe even discover a secluded lake and go for a swim!"
     
     if mas_isMoniAff(higher=True):
-        m 2lsbssdrb "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
-        m 2ekbfa "..."
+        m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
+        m 2tsbsa "..."
         m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
-        m 1eka "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
-        m 1hub "Then wake up each morning to a glorious sunrise!"
+        m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
+        m 3hubfa "Waking up each morning to a glorious sunrise!"
         
     else:
-        m 1eka "We'll spend our nights sleeping under the stars, then wake up each morning to a glorious sunrise."
+        m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
         
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "..."
+    show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esbfa "..."
     m "Oh [player], doesn't that just sound like heaven?"
-    m 5hua "I can't wait until we can share this experience together."    
+    m 5hubfa "I can't wait until we can share this experience together~"    
     return
     
 ## calendar-related pool event
