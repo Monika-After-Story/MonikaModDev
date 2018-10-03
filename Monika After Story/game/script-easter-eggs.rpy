@@ -2,6 +2,8 @@
 
 # sayori music chnage/scare
 label sayori_name_scare:
+    if persistent._mas_sensitive_mode:
+        return
     python:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
@@ -13,6 +15,8 @@ label sayori_name_scare:
 
 # yuri scare
 label yuri_name_scare:
+    if persistent._mas_sensitive_mode:
+        return
 #    show yuri 3s zorder 2 at t11
     # disable stuff
     $ HKBHideButtons()
@@ -37,6 +41,8 @@ label yuri_name_scare:
 
 # natsuki scare
 label natsuki_name_scare(playing_okayev=False):
+    if persistent._mas_sensitive_mode:
+        return
 
     # disable stuff
     $ HKBHideButtons()
@@ -60,7 +66,7 @@ label natsuki_name_scare(playing_okayev=False):
     # play with me scene setup
     scene black
     show darkred zorder 5
-    show natsuki ghost1 zorder 2 at t11   
+    show natsuki ghost1 zorder 2 at t11
     show n_rects_ghost1_instant zorder 4
     show n_rects_ghost2_instant zorder 4
     show n_rects_ghost3_instant zorder 4
@@ -160,6 +166,9 @@ image n_rects3:
 
 #natsuki scare 2:
 label natsuki_name_scare_hungry:
+    if persistent._mas_sensitive_mode:
+        return
+
 #label natsuki_name_scare2:
     # disable stuff
     $ HKBHideButtons()
@@ -168,9 +177,9 @@ label natsuki_name_scare_hungry:
     $ quick_menu = False
     $ curr_music_vol = store.songs.getVolume("music")
     $ curr_sound_vol = store.songs.getVolume("sound")
-    $ renpy.music.set_volume(0.0, channel="music") # kill music 
+    $ renpy.music.set_volume(0.0, channel="music") # kill music
     $ renpy.sound.set_volume(1.0) # max sound
-    
+
      # tear screen and glitch sound
     show screen tear(20, 0.1, 0.1, 0, 40)
     play sound "sfx/s_kill_glitch1.ogg"
@@ -181,9 +190,9 @@ label natsuki_name_scare_hungry:
 
     #show hungry Natsuki and Monika glitch, hide regular Monika
     show n_cg1bs
-    show monika_body_glitch1 at t11 zorder 2
+    show monika_body_glitch1 at t11 zorder MAS_MONIKA_Z
     hide monika
-    
+
     #play special music and display glitch text.
     $ adjusted_6g = "<from 6.0>bgm/6g.ogg"
     $ renpy.play(adjusted_6g, channel="sound")
@@ -192,16 +201,16 @@ label natsuki_name_scare_hungry:
     n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
     $ ntext = glitchtext(96)
     n "{cps=*2}{color=#000}[ntext]{/color}{/cps}{nw}"
-    
+
     # tear screen and glitch sound to mark end of glitch.
     show screen tear(20, 0.1, 0.1, 0, 40)
     play sound "sfx/s_kill_glitch1.ogg"
     pause 0.2
     stop sound
     hide screen tear
-    
+
     #show Monika and hide Natsuki and glitch Monika.
-    show monika 1 at t11 zorder 2
+    show monika 1 at t11 zorder MAS_MONIKA_Z
     hide n_cg1bs
     hide monika_body_glitch1
 
@@ -209,7 +218,7 @@ label natsuki_name_scare_hungry:
         $ style.say_dialogue = style.normal
     else:
         $ style.say_dialogue = style.default_monika
-    
+
     # cleanup
     python:
         HKBShowButtons()
@@ -219,6 +228,6 @@ label natsuki_name_scare_hungry:
         renpy.sound.stop()
         renpy.sound.set_volume(curr_sound_vol)
         renpy.music.set_volume(curr_music_vol, channel="music")
-        
+
     #go back to dialog
     return

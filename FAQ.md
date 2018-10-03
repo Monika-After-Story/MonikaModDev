@@ -109,14 +109,6 @@ Do not make a mod or fork intended as a replacement for *Monika After Story*. If
 
 While we are very open to new suggestions, there are a few common suggestions that come up often. These suggestions have all been made previously and will either be implemented in a future release or have been rejected for some reason:
 
-### Is there a list of keywords to see all topics?
-
-We don't want to spoil Monika's dialogue by offering a list of the keywords. Additionally, a new system for selecting topics to discuss with Monika will be available in an upcoming version, rendering keywords obsolete. If you really want to look up keywords, they can be found in the script-topics file in this repository.
-
-### Will we ever be able to add our own music to the game?
-
-We do not have plans to include custom music in the music selector. Not only does this pose a technical issue because of the engine's preference for .ogg format files that most people don't have, but it is largely unnecessary as you can always play *Monika After Story* with the game music muted while listening through some other program. Unfortunately this means that having Monika comment on your personal music collection will also not be implemented.
-
 ### Why is the text entry feature being removed?
 
 While we may come back to the concept in the future, the fact is that we weren't happy with the interactivity with the keyword system. While, on the surface, the open text box offered a lot of freedom to the player for talking with Monika, there were too many common entries that would simply dead end. The result was that Monika felt less real, and more like a crappy chatbot. We decided that a system that didn't dead end would be better, even if it didn't have the same surface level impression of agency.
@@ -133,11 +125,23 @@ That said, we will likely add support for third-party voice packs when full subm
 
 ### What about translations to other languages?
 
-We would very much like to add translations to *Monika After Story* in the future. For the moment, we are waiting for the addition of language support in an upcoming *Doki Doki Literature Club* update, which is what we will use for our translations.
+We will not work on translations. We simply don't have the time or manpower to do so. However we are open to others forking this mod and adding translations on their own.
 
 ### Will Monika ever be animated?
 
 We do not currently plan to include animations in *Monika After Story*. The game engine does not have very good support for animated sprites, and it also does not have licensing for the most popular 2D animation engine: Live 2D.
+
+### How do I find the spritecode for an expression?
+
+Because of the large increase in Monika expressions after the 0.8.0 update, a special tool was developed to help contributors preview expressions. This is known as the **Sprite Previewer**.
+
+![Sprite Previewer](https://raw.githubusercontent.com/Monika-After-Story/MonikaModDev/master/docs/spritepreviewer.png)
+
+If the Sprite Code is in red, then the sprite isn't defined yet despite us having the assets to make it. You can still use this sprite in topics, but your pull request will fail travis checks. This is understandable and a dev will add the sprite code to your pull request in this case.
+
+To add the Sprite Previewer to your MAS, copy [this file](https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/dev/dev_exp_previewer.rpy) to your `game/` directory.
+
+**NOTE:** This dev file routinely receives updates when we add new sprites. If Monika disappears on a certain sprite code, then you are missing the art for that sprite code. New sprites usually appear in unstable releases first, so try running the Sprite Previewer in an unstable install.
 
 ## Other help
 

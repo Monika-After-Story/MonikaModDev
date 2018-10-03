@@ -5,6 +5,8 @@
 #   persistent._seen_ever
 #   persistent.version_number
 
+define persistent._mas_zz_lupd_ex_v = []
+
 # preeverything stuff
 init -10 python:
     found_monika_ani = persistent.monika_anniversary is not None
@@ -23,6 +25,25 @@ init 4 python:
     if persistent.version_number != config.version:
         # clearing this to prevent crash
         persistent.monika_topic = None
+
+#default persistent._mas_084_hotfix_farewellbug = None
+
+# post many things, but not late update script appropriate
+# init-based update scripts
+# TODO: remove this when we reach 085
+# this was init 600 python
+#    if (
+#            persistent._mas_084_hotfix_farewellbug is None
+#            and renpy.seen_label("bye_long_absence")
+#        ):
+#        # reset affection to 0 to help people that got screwed with
+#        # the farewell bug
+#        _mas_AffLoad()
+#        if persistent._mas_affection["affection"] < 0:
+#            mas_setAffection(0)
+#            _mas_AffSave()
+#    persistent._mas_084_hotfix_farewellbug = True
+
 
 # create some functions
 init python:
@@ -144,9 +165,7 @@ init python:
 
 
             if changedIDs is not None:
-                updating_persistent = adjustTopicIDs(
-                    changedIDs, updating_persistent
-                )
+                adjustTopicIDs(changedIDs, updating_persistent)
 
         return updating_persistent
 
@@ -167,7 +186,7 @@ init python:
             updateTo = updates.version_updates[startVers]
 
             # we should only call update labels that we have
-            if renpy.has_label(updateTo):
+            if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
@@ -180,27 +199,30 @@ init 10 python:
     # okay do we have a version number?
     if persistent.version_number is None:
         # here comes the logic train
-        if no_topics_list:
-            # we are in version 0.2.2 (the horror!)
-            updateGameFrom("v0_2_2")
 
-        elif (renpy.seen_label("monika_ribbon") or
-                "monika_ribbon" in persistent.monika_random_topics):
-            # we are in version 0.3.3
-            updateGameFrom("v0_3_3")
-
-        elif found_monika_ani:
-            # we are in version 0.3.2
-            updateGameFrom("v0_3_2")
-
-        elif (renpy.seen_label("monika_monika") or
-                "monika_monika" in persistent.monika_random_topics):
-            # we are in version 0.3.1
-            updateGameFrom("v0_3_1")
-
-        else:
-            # we are in version 0.3.0
-            updateGameFrom("v0_3_0")
+# NOTE: we are dropping this because of issues we are having with update
+#   scripts running when we least expect.
+#        if no_topics_list:
+#            # we are in version 0.2.2 (the horror!)
+#            updateGameFrom("v0_2_2")
+#
+#        elif (renpy.seen_label("monika_ribbon") or
+#                "monika_ribbon" in persistent.monika_random_topics):
+#            # we are in version 0.3.3
+#            updateGameFrom("v0_3_3")
+#
+#        elif found_monika_ani:
+#            # we are in version 0.3.2
+#            updateGameFrom("v0_3_2")
+#
+#        elif (renpy.seen_label("monika_monika") or
+#                "monika_monika" in persistent.monika_random_topics):
+#            # we are in version 0.3.1
+#            updateGameFrom("v0_3_1")
+#
+#        else:
+#            # we are in version 0.3.0
+#            updateGameFrom("v0_3_0")
 
         # set the version now
         persistent.version_number = config.version
@@ -224,6 +246,29 @@ init 10 python:
         clearUpdateStructs()
 
 
+    ### special function for resetting versions
+    def _mas_resetVersionUpdates():
+        """
+        Resets all version update script's seen status
+        """
+        late_updates = [
+            "v0_8_3",
+            "v0_8_4"
+        ]
+
+        renpy.call_in_new_context("vv_updates_topics")
+        ver_list = store.updates.version_updates.keys()
+
+        ver_list.extend(["mas_lupd_" + x for x in late_updates])
+        ver_list.append("v" + "_".join(
+            config.version[:config.version.index("-")].split(".")
+        ))
+
+        for _version in ver_list:
+            if _version in persistent._seen_ever:
+                persistent._seen_ever.pop(_version)
+
+
 # UPDATE SCRIPTS ==============================================================
 # use these to handle conflicting changes or special cases
 # make sure the label is of the format v### and matches a version number
@@ -243,11 +288,151 @@ label v0_3_2(version=version): # 0.3.2
 label v0_3_1(version=version): # 0.3.1
     python:
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
     return
 
 # non generic updates go here
+
+# 0.8.6
+label v0_8_6(version="v0_8_6"):
+    python:
+        import store.evhand as evhand
+        import datetime
+        
+        # unlock gender redo if we have seen the other event
+        genderredo_ev = evhand.event_database.get("gender_redo", None)
+        if genderredo_ev and renpy.seen_label("gender"):
+            genderredo_ev.unlocked = True
+            genderredo_ev.pool = True
+            # this should be seen'd as it doesnt make sense to have it in
+            # unseen
+            persistent._seen_ever["gender_redo"] = True
+
+        # give the new character file event a conditoinal to push
+        new_char_ev = evhand.event_database.get("mas_new_character_file", None)
+        if new_char_ev and not renpy.seen_label("mas_new_character_file"):
+            new_char_ev.conditional = "True"
+            new_char_ev.action = EV_ACT_PUSH
+
+    return
+
+# 0.8.4
+label v0_8_4(version="v0_8_4"):
+    python:
+
+        import store.evhand as evhand
+        import store.mas_stories as mas_stories
+
+        # update seen status
+        updateTopicIDs(version)
+
+        ## swap compliment label (well the label is already handled in topics)
+        # but we need to handle the database data (we are transfering only
+        # select properties)
+        # Properties to transfer:
+        # shown_count
+        # last_seen
+        # seen has already been handled, so lets just send over some data
+        # need to recreate the event object so we can properly retrieve data
+        best_evlabel = "monika_bestgirl"
+        best_comlabel = "mas_compliment_bestgirl"
+        best_ev = Event(persistent.event_database, eventlabel=best_evlabel)
+        best_compliment = mas_compliments.compliment_database.get(best_comlabel, None)
+        best_lockdata = None
+
+        # remove lock data
+        if best_evlabel in Event.INIT_LOCKDB:
+            best_lockdata = Event.INIT_LOCKDB.pop(best_evlabel)
+
+        if best_compliment:
+            # compliment exists, lets do some transfers
+            best_compliment.shown_count = best_ev.shown_count
+            best_compliment.last_seen = best_ev.last_seen
+
+            if best_lockdata:
+                # transfer lockdata
+                Event.INIT_LOCKDB[best_comlabel] = best_lockdata
+
+        # now remove old event data
+        if best_evlabel in persistent.event_database:
+            persistent.event_database.pop(best_evlabel)
+
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+
+    return
+
+# 0.8.3
+label v0_8_3(version="v0_8_3"):
+    python:
+        import datetime
+        import store.evhand as evhand
+
+        # need to unrandom the explain topic
+        ex_ev = evhand.event_database.get("monika_explain", None)
+        if ex_ev is not None:
+            ex_ev.random = False
+            ex_ev.pool = True
+
+        # update Kizuna's topic action
+        kiz_ev = evhand.event_database.get("monika_kizuna", None)
+        if kiz_ev is not None and not renpy.seen_label(kiz_ev.eventlabel):
+            kiz_ev.action = EV_ACT_POOL
+            kiz_ev.unlocked = False
+            kiz_ev.pool = False
+            kiz_ev.conditional = "seen_event('greeting_hai_domo')"
+
+        # give players pool unlocks if they've been here for some time
+        curr_level = get_level()
+        if curr_level > 25:
+            persistent._mas_pool_unlocks = int(curr_level / 2)
+
+        # fix all derandom topics that were not unlocked
+        derandomable = [
+            "monika_natsuki_letter",
+            "monika_prom",
+            "monika_beach",
+            "monika_asks_family",
+            "monika_smoking",
+            "monika_otaku",
+            "monika_jazz",
+            "monika_orchestra",
+            "monika_meditation",
+            "monika_sports",
+            "monika_weddingring",
+            "monika_icecream",
+            "monika_japanese",
+            "monika_haterReaction",
+            "monika_cities",
+            "monika_images",
+            "monika_rain",
+            "monika_selfesteem",
+            "monika_yellowwp",
+            "monika_familygathering"
+        ]
+        for topic in derandomable:
+            ev = evhand.event_database.get(topic, None)
+            if renpy.seen_label(topic) and ev:
+                ev.unlocked = True
+                ev.unlock_date = datetime.datetime.now()
+
+        # anniversaries need to be readjusted again!
+        # but we will use late update script this time
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.8.2
+label v0_8_2(version="v0_8_2"):
+    python:
+        import store.mas_anni as mas_anni
+
+        ## need to fix anniversaries for everyone again.
+        mas_anni.reset_annis(persistent.sessions["first_session"])
+
+    return
 
 # 0.8.1
 label v0_8_1(version="v0_8_1"):
@@ -263,7 +448,7 @@ label v0_8_1(version="v0_8_1"):
             m_ff.pool = True
 
         # regular topic update
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         ## writing topic adjustments
 
@@ -428,6 +613,7 @@ label v0_7_4(version="v0_7_4"):
         # anniversary dates relying on add_months need to be tweaked
         # define a special function for this
         import store.evhand as evhand
+        import store.mas_utils as mas_utils
         import datetime
         fullday = datetime.timedelta(days=1)
         threeday = datetime.timedelta(days=3)
@@ -435,8 +621,8 @@ label v0_7_4(version="v0_7_4"):
         month = datetime.timedelta(days=30)
         year = datetime.timedelta(days=365)
         def _month_adjuster(key, months, span):
-            new_anni_date = add_months(
-                start_of_day(persistent.sessions["first_session"]),
+            new_anni_date = mas_utils.add_months(
+                mas_utils.sod(persistent.sessions["first_session"]),
                 months
             )
             evhand.event_database[key].start_date = new_anni_date
@@ -453,8 +639,8 @@ label v0_7_4(version="v0_7_4"):
         _month_adjuster("anni_5", 60, week)
         _month_adjuster("anni_10", 120, month)
         _month_adjuster("anni_20", 240, year)
-        evhand.event_database["anni_100"].start_date = add_months(
-            start_of_day(persistent.sessions["first_session"]),
+        evhand.event_database["anni_100"].start_date = mas_utils.add_months(
+            mas_utils.sod(persistent.sessions["first_session"]),
             1200
         )
 
@@ -464,7 +650,7 @@ label v0_7_4(version="v0_7_4"):
             # no need to do any special checks since all farewells were already available
             evhand.farewell_database[k].unlocked = True
 
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         # NOTE: this is completel retroactive. Becuase this is a released
         # version, we must also make this change in 0.8.0 updates
@@ -516,7 +702,7 @@ label v0_7_0(version="v0_7_0"):
         except: pass
 
         # update !
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
 
         temp_event_list = list(persistent.event_list)
         # now properly set all seen events as unlocked
@@ -567,7 +753,7 @@ label v0_3_0(version="v0_3_0"):
         removeTopicID("monika_college")
 
         # update!
-        persistent = updateTopicIDs(version)
+        updateTopicIDs(version)
     return
 
 
@@ -601,3 +787,85 @@ label v0_3_0(version="v0_3_0"):
 #
 #        del _mas_events_unlocked_v073
 #        del ev_key
+
+
+###############################################################################
+### SUPER LATE scripts
+# these scripts are for doing python things really LATE in the pipeline
+#
+# USAGE:
+# 1. define a label called mas_lupd_v#_#_#
+# 2. Put your update code into there.
+# 3. Push the version number into `persistent._mas_zz_lupd_ex_v` to run it
+#
+# NOTE: none of this code will ever run more than once.
+# NOTE: this code will respect version update chaining, but these are chained
+#   post-version. This means that if a multipel version chain occurs,
+#   the regular labels are executed first, then this (the late-chain) executes.
+#   For example, lets say we have 3 versions: A, B, C
+#   and 2 of these versions have late scripts, B' and C'
+#
+#   Update order:
+#   1. A
+#   2. B
+#   3. C
+#   4. B'
+#   5. C'
+#
+#   Please make sure your late update scripts are not required before a next
+#   version regular update script.
+
+label mas_lupd_v0_8_4:
+    python:
+        # grant affection to old players
+        import store.evhand as evhand
+        import datetime
+
+        aff_to_grant = 0
+
+        if renpy.seen_label('monika_christmas'):
+            aff_to_grant += 10
+
+        if renpy.seen_label('monika_newyear1'):
+            aff_to_grant += 5
+
+        if renpy.seen_label('monika_valentines_chocolates'):
+            aff_to_grant += 15
+
+        if renpy.seen_label('monika_found'):
+            aff_to_grant += 10
+
+        moni_love = evhand.event_database.get("monika_love", None)
+
+        if moni_love is not None:
+            aff_to_grant += (moni_love.shown_count * 7) / 100
+
+        aff_to_grant += (datetime.datetime.now() - persistent.sessions["first_session"]).days / 3
+
+        if aff_to_grant > 200:
+            aff_to_grant = 200
+
+        _mas_AffLoad()
+        store.mas_gainAffection(aff_to_grant,bypass=True)
+        _mas_AffSave()
+
+    return
+
+label mas_lupd_v0_8_3:
+    python:
+        # readjust anniversaries
+        if persistent.sessions:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+
+    return
+
+
+init 999 python:
+    for __temp_version in persistent._mas_zz_lupd_ex_v:
+        __lupd_v = "mas_lupd_" + __temp_version
+        if renpy.has_label(__lupd_v) and not renpy.seen_label(__lupd_v):
+            renpy.call_in_new_context(__lupd_v)
+
+    persistent._mas_zz_lupd_ex_v = list()

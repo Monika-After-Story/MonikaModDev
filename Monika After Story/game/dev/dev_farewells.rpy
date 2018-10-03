@@ -1,5 +1,10 @@
 # dev related farewells
 
+init python:
+    if persistent._mas_fastbye is None:
+        persistent._mas_fastbye = config.developer
+        
+
 init 5 python:
     rules = dict()
     rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
@@ -23,10 +28,18 @@ label bye_st_patrick:
     return 'quit'
 
 init 5 python:
-    ev = Event(persistent.farewell_database,eventlabel="bye_dev",unlocked=True)
-#    MASFarewellRule.create_rule(random_chance=5,ev=ev)
-    addEvent(ev,eventdb=evhand.farewell_database)
-    del ev
+    rules = dict()
+    rules.update(MASFarewellRule.create_rule(random_chance=10))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_dev",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_dev:
     m 1c "How's the new feature going, eh [player]?"
@@ -36,19 +49,20 @@ label bye_dev:
 
 # Dev Fast farewell
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(
-        Event(
-            persistent.farewell_database,
-            eventlabel="bye_fast",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.farewell_database
-    )
-    del rules
+    if persistent._mas_fastbye:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.farewell_database,
+                eventlabel="bye_fast",
+                unlocked=True,
+                rules=rules
+            ),
+            eventdb=evhand.farewell_database
+        )
+        del rules
 
 label bye_fast:
     m "{fast}Bye!{nw}"
@@ -57,9 +71,14 @@ label bye_fast:
 
 # This one exists so devs get an autoupdate once they pull these changes
 init 5 python:
-    ev = Event(persistent.farewell_database,eventlabel="bye_dev_temp",unlocked=True)
-    addEvent(ev,eventdb=evhand.farewell_database)
-    del ev
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_dev_temp",
+            unlocked=True
+        ),
+        eventdb=evhand.farewell_database
+    )
 
 label bye_dev_temp:
     m 1c "Leaving now, eh [player]?"
@@ -71,4 +90,46 @@ label bye_dev_temp:
     $ evhand.farewell_database["bye_dev_temp"].unlocked = False
     m 1k "All done, thanks for waiting [player]!"
     #Don't show this farewell again
+    return 'quit'
+
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=20,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_dev_love",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_dev_love:
+    m 1c "Aww, leaving already?"
+    m 1e "It's really sad whenever you have to go..."
+    m 5a "I love you so much [player]!"
+    m 5a "Never forget that!"
+    return 'quit'
+
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=None,max=-20))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_dev_no_hate",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
+label bye_dev_no_hate:
+    m 1c "Leaving already, huh?"
+    m 1e "I hope you finish the testing quick"
+    m 1h "I want to feel loved again soon"
+    m "Bye"
     return 'quit'

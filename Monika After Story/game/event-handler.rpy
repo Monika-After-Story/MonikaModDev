@@ -6,15 +6,15 @@
 # NOTE: proof oc concept
 # transform to have monika just chill
 image monika_waiting_img:
-    "monika 1a"
+    "monika 1eua"
     1.0
-    "monika 1c"
+    "monika 1euc"
     1.0
-    "monika 1h"
+    "monika 1esc"
     1.0
-    "monika 1o"
+    "monika 1lksdlc"
     1.0
-    "monika 1g"
+    "monika 1ekd"
     1.0
     repeat
 
@@ -26,6 +26,8 @@ init -500 python:
     # initalies the locks db
 
     # the template is the regular starter case for most events
+    # True means that the property is locked on startup (wont change),
+    # False means it is unlocked (will change)
     mas_init_lockdb_template = (
         True, # event label
         False, # prompt
@@ -42,20 +44,27 @@ init -500 python:
         True, # shown_count
         False, # diary_entry
         False, # rules
-        True # last_seen
+        True, # last_seen
+        False, # years
+        False # sensitive
     )
 
     # set defaults
-    if (
-            persistent._mas_event_init_lockdb_template is not None
-            and len(persistent._mas_event_init_lockdb_template)
-                != len(mas_init_lockdb_template)
-        ):
+#    if (
+#            persistent._mas_event_init_lockdb_template is not None
+#            and len(persistent._mas_event_init_lockdb_template)
+#                != len(mas_init_lockdb_template)
+#        ):
         # differing lengths mean we have new items to deal with
 
-        for ev_key in persistent._mas_event_init_lockdb:
-            stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+    # set db defaults
+    if persistent._mas_event_init_lockdb is None:
+        persistent._mas_event_init_lockdb = dict()
 
+    for ev_key in persistent._mas_event_init_lockdb:
+        stored_lock_row = persistent._mas_event_init_lockdb[ev_key]
+
+        if len(mas_init_lockdb_template) != len(stored_lock_row):
             # splice and dice
             lock_row = list(mas_init_lockdb_template)
             lock_row[0:len(stored_lock_row)] = list(stored_lock_row)
@@ -65,14 +74,399 @@ init -500 python:
     persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
 
     # set db defaults
-    if persistent._mas_event_init_lockdb is None:
-        persistent._mas_event_init_lockdb = dict()
+#    if persistent._mas_event_init_lockdb is None:
+#        persistent._mas_event_init_lockdb = dict()
 
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
+
+init 850 python:
+    # mainly to create centralized database for calendar lookup
+    # (and possible general db lookups)
+    mas_all_ev_db = dict()
+    mas_all_ev_db.update(store.evhand.event_database)
+    mas_all_ev_db.update(store.evhand.farewell_database)
+    mas_all_ev_db.update(store.evhand.greeting_database)
+    mas_all_ev_db.update(store.mas_moods.mood_db)
+    mas_all_ev_db.update(store.mas_stories.story_database)
+    mas_all_ev_db.update(store.mas_compliments.compliment_database)
+    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
+
+    def mas_getEV(ev_label):
+        """
+        Global get function that retreives an event given the label
+
+        Designed to be used as a wrapper around the mas_all_ev_db dict
+        NOTE: only available at RUNTIME
+
+        IN:
+            ev_label - eventlabel to find event for
+
+        RETURNS:
+            the event object you were looking for, or None if not found
+        """
+        return mas_all_ev_db.get(ev_label, None)
+
+
+    def mas_getEVCL(ev_label):
+        """
+        Global get function that retrieves the calendar label for an event
+        given the eventlabel. This is mainly to help with calendar.
+
+        IN:
+            ev_label - eventlabel to find calendar label for
+
+        RETURNS:
+            the calendar label you were looking for, or "Unknown Event" if
+            not found.
+        """
+        ev = mas_getEV(ev_label)
+        if ev is None:
+            return "Unknown Event"
+        else:
+            return ev.label
+
+python early:
+    # FLOW CHECK CONSTANTS
+    # these define where in game flow should a delayed action be checked
+    # these are bit based so you can define multiple using bitwise operations
+
+    # checked during init process
+    # NOTE: this is at runlevel 995
+    # AKA after the all event database has been built
+    MAS_FC_INIT = 1
+
+    # checked during runtime start (aka splash)
+    MAS_FC_START = 2
+
+    # checked at end of game (aka quit)
+    MAS_FC_END = 4
+
+    # checked during idle, roughly every minute
+    MAS_FC_IDLE_ROUTINE = 8
+
+    # checked during idle, only once per session
+    # NOTE: in other words, only check when we enter spcaeroom
+    MAS_FC_IDLE_ONCE = 16
+
+    MAS_FC_CONSTANTS = [
+        MAS_FC_INIT,
+        MAS_FC_START,
+        MAS_FC_END,
+        MAS_FC_IDLE_ROUTINE,
+        MAS_FC_IDLE_ONCE
+    ]
+
+
+init -600 python:
+    # THE DELAYED ACTION MAP
+    # this is the one we actually use when running stuff
+    # please note that this is internal use only.
+    # right below this is the class definition that should be used for general
+    # purpose
+    if persistent._mas_delayed_action_list is None:
+
+        # this list will only contain DelayedAction IDs
+        # we will match these IDs using the delayed action map.
+        persistent._mas_delayed_action_list = list()
+
+    # the runtime version of this list is actually a dict
+    # key: ID of the delayed action
+    # value: the DelayedAction to perform
+    mas_delayed_action_map = dict()
+
+    class MASDelayedAction(object):
+        """
+        A Delayed action consists of the following:
+
+        All exceptions are logged
+      
+        id - the unique ID of this DelayedAction
+        ev - the event this action is associated with
+        conditional - the logical conditional we want to check before performing
+            action
+            NOTE: this is not checked for correctness
+        action - EV_ACTION constant this delayed action will perform
+            NOTE: this is not checked for existence
+            NOTE: this can also be a callable
+                the event would be passd in as ev
+                if callable, make this return True upon success and false 
+                    othrewise
+        flowcheck - FC constant saying when this delayed action should be
+            checked
+            NOTE: this is not checked for existence
+        been_checked - True if this action has been checked this game session
+        executed - True if this delayed action has been executed
+            - Delayed actions that have been executed CANNOT be executed again
+        """
+        import store.mas_utils as m_util
+
+        ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
+
+
+        def __init__(self, _id, ev, conditional, action, flowcheck):
+            """
+            Constructor
+
+            NOTE: MAY raise exceptions
+            NOTE: also logs exceptions.
+
+            IN:
+                _id - id of this delayedAction
+                ev - event this action is related to
+                conditional - conditional to check to do this action
+                action - EV_ACTION constant for this delayed action
+                    NOTE: this can also be a callable
+                        ev would be passed in as ev
+                    If callable, make this return True on success, False
+                        otherwise
+                flowcheck - FC constant saying when this delaeyd action should
+                    be checked
+            """
+            try:
+                eval(conditional)
+            except Exception as e:
+                self.m_util.writelog(self.ERR_COND.format(
+                    conditional,
+                    str(e)
+                ))
+                raise e
+
+            self.conditional = conditional
+            self.action = action
+            self.flowcheck = flowcheck
+            self.been_checked = False
+            self.executed = False
+            self.ev = ev
+            self.id = _id
+
+
+        def __call__(self):
+            """
+            Checks if the conditional passes then performs the action
+
+            NOTE: logs exceptions
+
+            RETURNS:
+                True on successful action performed, False otherwise
+            """
+            # NO event? dont even do this
+            if self.ev is None or self.executed or self.action is None:
+                return False
+
+            # this should already have been checked on start
+            try:
+                if eval(self.conditional):
+                    if self.action in Event.ACTION_MAP:
+                        Event.ACTION_MAP[self.action](
+                            self.ev, unlock_time=datetime.datetime.now()
+                        )
+                        self.executed = True
+
+                    else:
+                        # action must be a callable
+                        self.executed = self.action(ev=self.ev)
+                            
+            except Exception as e:
+                self.m_util.writelog(self.ERR_COND.format(
+                    self.conditional,
+                    str(e)
+                ))                   
+#                raise e
+
+            return self.executed
+
+        
+        @staticmethod
+        def makeWithLabel(_id, ev_label, conditional, action, flowcheck):
+            """
+            Makes a MASDelayedAction using an eventlabel instead of an event
+
+            IN:
+                _id - id of this delayedAction
+                ev_label - label of the event this action is related to
+                conditional - conditional to check to do to tihs action
+                action - EV_ACTION constant for this delayed action
+                    NOTE: this can also be a cllable
+                        ev would be passed in as ev
+                    If callable, make this return True on success, False
+                        otherwise
+                flowcheck - FC constant saying when this delayed action should
+                    be checked
+            """
+            return MASDelayedAction(
+                _id,
+                mas_getEV(ev_label),
+                conditional,
+                action,
+                flowcheck
+            )
+
+
+    # now for helper functions for working with delayed actions
+    def mas_removeDelayedAction(_id):
+        """
+        Removes a delayed action with the given ID
+
+        NOTE: this removes from both persistent and the runtime lists
+
+        IN:
+            _id - id of the delayed action to remove
+        """
+        if _id in persistent._mas_delayed_action_list:
+            persistent._mas_delayed_action_list.remove(_id)
+
+        if _id in mas_delayed_action_map:
+            mas_delayed_action_map.pop(_id)
+
+
+    def mas_removeDelayedActions_list(_ids):
+        """
+        Removes a list of delayed actions with given Ids
+
+        IN:
+            _ids - list of Ids to remove
+        """
+        for _id in _ids:
+            mas_removeDelayedAction(_id)
+
+
+    def mas_removeDelayedActions(*args):
+        """
+        Multiple argument delayed action removal
+
+        Assumes all given args are IDS
+        """
+        mas_removeDelayedActions_list(args)
+
+
+    def mas_runDelayedActions(flow):
+        """
+        Attempts to run currently held delayed actions for the given flow mode
+
+        Delayed actions that are successfully completed are removed from the
+        list
+
+        IN:
+            flow - FC constant for the current flow
+        """
+        if flow not in MAS_FC_CONSTANTS:
+            return
+
+        # otherwise, lets try going thru the list
+        for action_id in list(mas_delayed_action_map):
+            action = mas_delayed_action_map[action_id]
+
+            # bitcheck the flow
+            if (action.flowcheck & flow) > 0:                        
+                if action():
+                    # then pop the item if it was successful
+                    mas_removeDelayedAction(action_id)
+
+                # we have now checked this action
+                action.been_checked = True
+
+
+    def mas_addDelayedAction(_id):
+        """
+        Creates a delayed action with the given ID and adds it to the delayed
+        action map (runtime)
+
+        NOTE: this handles duplicates, so its better to use this
+
+        NOTE: this also adds to persistent, just in case
+
+        IN:
+            _id - id of the delayed action to create
+        """
+        if _id in mas_delayed_action_map:
+            return
+
+        # otherwise, lets get the constructor for the delayedaction
+        make_action = store.mas_delact.MAP.get(_id, None)
+        if make_action is None:
+            return
+
+        # we have a constructor, lets create!
+        mas_delayed_action_map[_id] = make_action()
+
+        # and lastlty, check persistent as well
+        if _id not in persistent._mas_delayed_action_list:
+            persistent._mas_delayed_action_list.append(_id)
+
+
+    def mas_addDelayedActions_list(_ids):
+        """
+        Creates delayed actions given a list of Ids
+
+        IN:
+            _ids - list of IDS to add
+        """
+        for _id in _ids:
+            mas_addDelayedAction(_id)
+
+
+    def mas_addDelayedActions(*args):
+        """
+        Creates delayed actions given ids as args
+
+        assumes each arg is a valid id 
+        """
+        mas_addDelayedActions_list(args)
+
+
+init 995 python:
+    # this is where we run the init level batch of delayed actions
+    mas_runDelayedActions(MAS_FC_INIT)
+
+init -600 python in mas_delact:
+    # we can assume store is imported for all mas_delacts
+    import store
+
+init 994 python in mas_delact:
+    # store containing a map for delayed action mapping
+
+    # delayed action map:
+    # key: ID of the delayed action
+    # value: function to call that will generate the delayed action object
+    #   NOTE: this function MUST be runnable at init level 995.
+    #   NOTE: the result delayedaction does NOT have to be runnable at 995.
+    MAP = {
+        1: _greeting_ourreality_unlock,
+        2: _mas_monika_islands_unlock
+    }
+
+    # this is also where we initialize the delayed action map
+    def loadDelayedActionMap():
+        """
+        Checks the persistent delayed action list and generates the 
+        runtime map of delayed actions
+        """
+        store.mas_addDelayedActions_list(
+            store.persistent._mas_delayed_action_list
+        )
+
+
+    def saveDelayedActionMap():
+        """
+        Checks the runtime map of delayed actions and saves them into the
+        persistent value. 
+
+        NOTE: this does not ADD to the persistent's list. This recreates it
+            entirely.
+        """
+        store.persistent._mas_delayed_action_list = [
+            action_id for action_id in store.mas_delayed_action_map
+        ]
+
+
+    # now run the init
+    loadDelayedActionMap()
+
 # special store to contain scrollable menu constants
 init -1 python in evhand:
+    import store
 
     # this is the event database
     event_database = dict()
@@ -120,7 +514,15 @@ init -1 python in evhand:
 
     # time stuff
     import datetime
-    LAST_SEEN_DELTA = datetime.timedelta(hours=24)
+    LAST_SEEN_DELTA = datetime.timedelta(hours=6)
+
+    # restart topic blacklist
+    RESTART_BLKLST = [
+        "mas_crashed_start",
+        "monika_affection_nickname",
+        "mas_coffee_finished_brewing",
+        "mas_coffee_finished_drinking"
+    ]
 
     # as well as special functions
     def addIfNew(items, pool):
@@ -155,10 +557,180 @@ init -1 python in evhand:
         #       [1]: eventlabel
         return [(db[x].prompt, x) for x in key_list]
 
+
+    def _isFuture(ev, date=None):
+        """INTERNAL
+        Checks if the start_date of the given event happens after the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's start_date is in the future, False otherwise
+        """
+
+        # sanity check
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        start_date = ev.start_date
+
+        # if we don't have an end date we return false
+        if start_date is None:
+            return False
+
+        return date < start_date
+
+
+    def _isPast(ev, date=None):
+        """INTERNAL
+        Checks if the end_date of the given event happens before the
+        given time.
+
+        IN:
+            ev - Event to check the start_time
+            date - a datetime object used to check against
+                If None is passed it will check against current time
+                (Default: None)
+
+        RETURNS:
+            True if the Event's end_date is in the past, False otherwise
+        """
+
+        # if there's no event to check return False
+        if ev is None:
+            return False
+
+        # if no date is passed
+        if date is None:
+            date = datetime.datetime.now()
+
+        end_date = ev.end_date
+
+        # if we don't have an end date we return false
+        if end_date is None:
+            return False
+
+        return end_date < date
+
+
+    def _isPresent(ev):
+        """INTERNAL
+        Checks if current date falls within the given event's start/end date
+        range
+
+        IN:
+            ev - Event to check the start_time and end_time
+
+        RETURNS:
+            True if current time is inside the  Event's start_date/end_date
+            interval, False otherwise
+        """
+        # check we have an event
+        if ev is None:
+            return False
+
+        start_date = ev.start_date
+        end_date = ev.end_date
+
+        current = datetime.datetime.now()
+
+        # return false if either start or end is None
+        if start_date is None or end_date is None:
+            return False
+
+        return start_date <= current <= end_date
+
+
+    def _hideEvent(
+            event,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Internalized hideEvent
+        """
+        if event:
+
+            if lock:
+                event.unlocked = False
+
+            if derandom:
+                event.random = False
+
+            if depool:
+                event.pool = False
+
+            if decond:
+                event.conditional = None
+
+
+    def _hideEventLabel(
+            eventlabel,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=event_database
+        ):
+        """
+        Internalized hideEventLabel
+        """
+        ev = eventdb.get(eventlabel, None)
+
+        _hideEvent(
+            ev,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def _lockEvent(ev):
+        """
+        Internalized lockEvent
+        """
+        _hideEvent(ev, lock=True)
+
+
+    def _lockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized lockEventLabel
+        """
+        _hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+
+
+    def _unlockEvent(ev):
+        """
+        Internalized unlockEvent
+        """
+        if ev:
+            ev.unlocked = True
+
+
+    def _unlockEventLabel(evlabel, eventdb=event_database):
+        """
+        Internalized unlockEventLabel
+        """
+        _unlockEvent(eventdb.get(evlabel, None))
+
+
 init python:
     import store.evhand as evhand
+    import datetime
 
-    def addEvent(event, eventdb=evhand.event_database):
+    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
@@ -168,6 +740,8 @@ init python:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
         #       (Default: evhand.event_database)
+        #   skipCalendar - flag that marks wheter or not calendar check should
+        #       be skipped
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -182,7 +756,10 @@ init python:
 #                    pass
 #            except:
 #                raise EventException("Syntax error in conditional statement for event '" + event.eventlabel + "'.")
-
+        # if should not skip calendar check and event has a start_date
+        if not skipCalendar and type(event.start_date) is datetime.datetime:
+            # add it to the calendar database
+            store.mas_calendar.addEvent(event)
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
@@ -211,14 +788,13 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        ev = eventdb.get(eventlabel, None)
-
-        hideEvent(
-            ev,
+        evhand._hideEventLabel(
+            eventlabel,
             lock=lock,
             derandom=derandom,
             depool=depool,
-            decond=decond
+            decond=decond,
+            eventdb=eventdb
         )
 
 
@@ -244,20 +820,13 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
-
-        if event:
-
-            if lock:
-                event.unlocked = False
-
-            if derandom:
-                event.random = False
-
-            if depool:
-                event.pool = False
-
-            if decond:
-                event.conditional = None
+        evhand._hideEvent(
+            event,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
 
 
     def lockEvent(ev):
@@ -267,7 +836,7 @@ init python:
         IN:
             ev - the event object to lock
         """
-        hideEvent(ev, lock=True)
+        evhand._lockEvent(ev)
 
 
     def lockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -278,7 +847,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        hideEventLabel(evlabel, lock=True, eventdb=eventdb)
+        evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
     def pushEvent(event_label):
@@ -317,8 +886,7 @@ init python:
         IN:
             ev - the event object to unlock
         """
-        if ev:
-            ev.unlocked = True
+        evhand._unlockEvent(ev)
 
 
     def unlockEventLabel(evlabel, eventdb=evhand.event_database):
@@ -329,7 +897,7 @@ init python:
             evlabel - event label of the event to lock
             eventdb - Event database to find this label
         """
-        unlockEvent(eventdb.get(evlabel, None))
+        evhand._unlockEventLabel(evlabel, eventdb=eventdb)
 
 
     def isFuture(ev, date=None):
@@ -346,22 +914,7 @@ init python:
         RETURNS:
             True if the Event's start_date is in the future, False otherwise
         """
-
-        # sanity check
-        if ev is None:
-            return False
-
-        # if no date is passed
-        if date is None:
-            date = datetime.datetime.now()
-
-        start_date = ev.start_date
-
-        # if we don't have an end date we return false
-        if start_date is None:
-            return False
-
-        return date < start_date
+        return evhand._isFuture(ev, date=date)
 
 
     def isPast(ev, date=None):
@@ -378,22 +931,7 @@ init python:
         RETURNS:
             True if the Event's end_date is in the past, False otherwise
         """
-
-        # if there's no event to check return False
-        if ev is None:
-            return False
-
-        # if no date is passed
-        if date is None:
-            date = datetime.datetime.now()
-
-        end_date = ev.end_date
-
-        # if we don't have an end date we return false
-        if end_date is None:
-            return False
-
-        return end_date < date
+        return evhand._isPast(ev, date=date)
 
 
     def isPresent(ev):
@@ -408,20 +946,7 @@ init python:
             True if current time is inside the  Event's start_date/end_date
             interval, False otherwise
         """
-        # check we have an event
-        if ev is None:
-            return False
-
-        start_date = ev.start_date
-        end_date = ev.end_date
-
-        current = datetime.datetime.now()
-
-        # return false if either start or end is None
-        if start_date is None or end_date is None:
-            return False
-
-        return start_date <= current <= end_date
+        return evhand._isPresent(ev)
 
 
     def popEvent(remove=True):
@@ -447,6 +972,18 @@ init python:
 
         return event_label
 
+
+    def removeEventIfExist(event_label):
+        """
+        Removes an event off the event list if it exists
+
+        IN:
+            event_label - label of the event to remove
+        """
+        if event_label in persistent.event_list:
+            persistent.event_list.remove(event_label)
+
+
     def seen_event(event_label):
         #
         # This checks if an event has either been seen or is already on the
@@ -470,17 +1007,42 @@ init python:
         #
         # IN:
         #
-        if persistent.current_monikatopic:
+        if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
-            if (not persistent.current_monikatopic.startswith('greeting_')
-                    and not persistent.current_monikatopic.startswith('i_greeting')
-                    and not persistent.current_monikatopic.startswith('bye')
-                    and not persistent.current_monikatopic.startswith('ch30_reload')
-                ):
-                pushEvent(persistent.current_monikatopic)
-                pushEvent('continue_event')
-                persistent.current_monikatopic = 0
+            pushEvent(persistent.current_monikatopic)
+            pushEvent('continue_event')
+            persistent.current_monikatopic = 0
         return
+
+
+    def mas_isRstBlk(topic_label):
+        """
+        Checks if the event with the current label is blacklistd from being
+        restarted
+
+        IN:
+            topic_label - label of the event we are trying to restart
+        """
+        if not topic_label:
+            return True
+
+        if topic_label.startswith("greeting_"):
+            return True
+
+        if topic_label.startswith("bye"):
+            return True
+
+        if topic_label.startswith("i_greeting"):
+            return True
+
+        if topic_label.startswith("ch30_reload"):
+            return True
+
+        # check the blacklist
+        if topic_label in evhand.RESTART_BLKLST:
+            return True
+
+        return False
 
 
     def mas_cleanJustSeen(eventlist, db):
@@ -528,7 +1090,7 @@ init python:
         import datetime
         now = datetime.datetime.now()
         cleaned_list = list();
-        
+
         for ev in ev_list:
             if ev.last_seen is not None:
                 # this topic has been seen before, must check time
@@ -542,54 +1104,18 @@ init python:
         return cleaned_list
 
 
-# This calls the next event in the list. It returns the name of the
-# event called or None if the list is empty or the label is invalid
-#
-# ASSUMES:
-#   persistent.event_list
-#   persistent.current_monikatopic
-label call_next_event:
+    def mas_unlockPrompt():
+        """
+        Unlocks a pool event
 
-
-    $event_label = popEvent()
-    if event_label and renpy.has_label(event_label):
-        $ allow_dialogue = False
-        if not seen_event(event_label): #Give 15 xp for seeing a new event
-            $grant_xp(xp.NEW_EVENT)
-        call expression event_label from _call_expression
-        $ persistent.current_monikatopic=0
-
-        #if this is a random topic, make sure it's unlocked for prompts
-        $ ev = evhand.event_database.get(event_label, None)
-        if ev is not None:
-            if ev.random and not ev.unlocked:
-                python:
-                    ev.unlocked=True
-                    ev.unlock_date=datetime.datetime.now()
-
-            # increment shown count
-            $ ev.shown_count += 1
-            $ ev.last_seen = datetime.datetime.now()
-
-        if _return == 'quit':
-            $persistent.closed_self = True #Monika happily closes herself
-            jump _quit
-
-        show monika 1 at t11 zorder 2 with dissolve #Return monika to normal pose
-
-        # loop over until all events have been called
-        jump call_next_event
-
-    else:
-        $ allow_dialogue = True
-
-    return False
-
-# This either picks an event from the pool or events or, sometimes offers a set
-# of three topics to get an event from.
-label unlock_prompt:
-    python:
-        pool_events = Event.filterEvents(evhand.event_database,unlocked=False,pool=True)
+        RETURNS:
+            True if an event was unlocked. False otherwise
+        """
+        pool_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=False,
+            pool=True
+        )
         pool_event_keys = [
             evlabel
             for evlabel in pool_events
@@ -602,6 +1128,154 @@ label unlock_prompt:
             evhand.event_database[sel_evlabel].unlocked = True
             evhand.event_database[sel_evlabel].unlock_date = datetime.datetime.now()
 
+            return True
+
+        # otherwise we didnt unlock anything because nothing available
+        return False
+
+
+init 1 python in evhand:
+    # mainly to contain action-based functions and fill an appropriate action
+    # map
+    # all action-based functions are designed for speed, so they don't 
+    # do any sort of sanity checks
+    # NOTE: do NOT use these in dialogue code. These are designed for
+    #   internal use only
+    import store
+    import datetime
+
+    def actionPush(ev, **kwargs):
+        """
+        Runs Push Event action for the given event
+
+        IN:
+            ev - event to push to event stack
+        """
+        store.pushEvent(ev.eventlabel)
+
+
+    def actionQueue(ev, **kwargs):
+        """
+        Runs Queue event action for the given event
+
+        IN:
+            ev - event to queue to event stack
+        """
+        store.queueEvent(ev.eventlabel)
+
+
+    def actionUnlock(ev, unlock_time, **kwargs):
+        """
+        Unlocks an event. Also setse the unlock_date to the given
+            unlock time
+
+        IN:
+            ev - event to unlock
+            unlock_time - time to set unlock_date to
+        """
+        ev.unlocked = True
+        ev.unlock_date = unlock_time
+
+
+    def actionRandom(ev, **kwargs):
+        """
+        Randos an event.
+
+        IN:
+            ev - event to random
+        """
+        ev.random = True
+
+
+    def actionPool(ev, **kwargs):
+        """
+        Pools an event.
+
+        IN:
+            ev - event to pool
+        """
+        ev.pool = True
+
+
+    # now to setup the action map
+    store.Event.ACTION_MAP = {
+        store.EV_ACT_UNLOCK: actionUnlock,
+        store.EV_ACT_QUEUE: actionQueue,
+        store.EV_ACT_PUSH: actionPush,
+        store.EV_ACT_RANDOM: actionRandom,
+        store.EV_ACT_POOL: actionPool
+    }
+
+
+# This calls the next event in the list. It returns the name of the
+# event called or None if the list is empty or the label is invalid
+#
+label call_next_event:
+
+
+    $event_label = popEvent()
+    if event_label and renpy.has_label(event_label):
+
+        if not seen_event(event_label): #Give 15 xp for seeing a new event
+            $grant_xp(xp.NEW_EVENT)
+
+        $ mas_RaiseShield_dlg()
+
+        call expression event_label from _call_expression
+        $ persistent.current_monikatopic=0
+
+        #if this is a random topic, make sure it's unlocked for prompts
+        $ ev = evhand.event_database.get(event_label, None)
+        if ev is not None:
+            if ev.random and not ev.unlocked:
+                python:
+                    ev.unlocked=True
+                    ev.unlock_date=datetime.datetime.now()
+
+        else:
+            # othrewise, pull an ev from the all event database
+            # so we can log some data
+            $ ev = mas_getEV(event_label)
+
+        if ev is not None:
+            # increment shown count
+            $ ev.shown_count += 1
+            $ ev.last_seen = datetime.datetime.now()
+
+        if _return is not None:
+            if "derandom" in _return:
+                $ ev.random = False
+
+            if "quit" in _return:
+                $persistent.closed_self = True #Monika happily closes herself
+                jump _quit
+
+        # loop over until all events have been called
+        if len(persistent.event_list) > 0:
+            jump call_next_event
+
+        # return to normal pose
+        show monika idle at t11 zorder MAS_MONIKA_Z
+
+        $ mas_DropShield_dlg()
+
+    else:
+        $ mas_DropShield_dlg()
+
+    return False
+
+# keep track of number of pool unlocks
+default persistent._mas_pool_unlocks = 0
+
+# This either picks an event from the pool or events or, sometimes offers a set
+# of three topics to get an event from.
+label unlock_prompt:
+    python:
+        if not mas_unlockPrompt():
+            # we dont have any unlockable pool topics?
+            # lets count this so we can use it later
+            persistent._mas_pool_unlocks += 1
+
     return
 
 #The prompt menu is what pops up when hitting the "Talk" button, it shows a list
@@ -609,7 +1283,7 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
-    $allow_dialogue = False
+    $ mas_RaiseShield_dlg()
 
     python:
         unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
@@ -622,6 +1296,9 @@ label prompt_menu:
 
         repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
     #Top level menu
+    # NOTE: should we force this to a particualr exp considering that 
+    # monika now rotates
+    # NOTE: actually we could use boredom setup in here.
     show monika at t21
     #To make the menu line up right we have to build it up manually
     python:
@@ -631,11 +1308,12 @@ label prompt_menu:
         talk_menu.append(("Ask a question.", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation.", "repeat"))
+        talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
-        renpy.say(m, "What would you like to talk about?", interact=False)
+        renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
 
     if madechoice == "unseen":
@@ -646,6 +1324,9 @@ label prompt_menu:
 
     elif madechoice == "repeat":
         call prompts_categories(False) from _call_prompts_categories_1
+
+    elif madechoice == "love":
+        $ pushEvent("monika_love")
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -658,8 +1339,8 @@ label prompt_menu:
     else: #nevermind
         $_return = None
 
-    show monika at t11
-    $allow_dialogue = True
+    show monika idle at t11
+    $ mas_DropShield_dlg()
     jump ch30_loop
 
 label show_prompt_list(sorted_event_keys):
