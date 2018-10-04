@@ -3,7 +3,8 @@
 init 10 python:
 
     if persistent._mas_dev_enable_ptods is None:
-        persistent._mas_dev_enable_ptods = True
+        # force this to False by default
+        persistent._mas_dev_enable_ptods = False
 
 
 init 998 python:
