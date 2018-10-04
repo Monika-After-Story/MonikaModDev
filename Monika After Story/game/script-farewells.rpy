@@ -345,6 +345,51 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_games",
+            unlocked=True,
+            prompt="I'll play other games.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_games:
+    m 1esa "Ok [player]!"
+    m 1eka "I wish I could come too and see your main character."
+    m 3rsc "But I mentioned, it depends on what you gonna play."
+    m 1eka "I couldn't stay in violance atmosphere."
+    m 1hub "Can you imagine me as putting a rifle in my hands?"
+    m 4esa "But I would love to shoot bad guys with you if we have infinite lives to try."
+    m 1euc "But I am afraid I can't come other games from here."
+    m 1hua "Good luck to you [player]! I'll be waiting here for you."
+
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_eat",
+            unlocked=True,
+            prompt="I'll eat something.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
+label bye_prompt_to_eat:
+    m 1esa "All right [player]!"
+    m 1hua "Take care!"
+
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
+    return 'quit'
+
 init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
 
