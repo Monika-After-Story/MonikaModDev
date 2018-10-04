@@ -4874,7 +4874,7 @@ label monika_panties:
     m 2rksdla "It does remind me of someone, though."
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
-    if isFuture (evhand.event_database['anni_1year'])
+    if isFuture (evhand.event_database['anni_1year']):
         m 21ssdrc "You're not... {i}into those kind of things, are you [player]?"
         "menu"
             "Yes"
@@ -4900,7 +4900,7 @@ label monika_panties:
             m 1eka : "In any case, {i}don't be afraid to tell me about your pleasure, okay [player]?"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m "I won't judge you for it, and I'm still going to love you for what you are."
-    else:
+    else
     m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
     m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
     m 4tsbsa "Perhaps, you want to take a little peek~?"
