@@ -4892,7 +4892,7 @@ label monika_panties:
                m "I'm just kidding!"
                m 5eua "I don't mind if we stick to being wholesome, to be honest~"
                m "It's more romantic that way."
-           "I don't want to talk about it..."
+           "I don't want to talk about it...":
                m 1eua "I understand, [player]."
                m 1rkc "I know that some topics are best kept to self until the right time comes."
                m 1rksdld "Not to mention it's controversial..."
@@ -4900,7 +4900,7 @@ label monika_panties:
                m 1eka : "In any case, {i}don't be afraid to tell me about your pleasure, okay [player]?"
                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                m "I won't judge you for it, and I'm still going to love you for what you are."
-    else: 
+    else:
     m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
     m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
     m 4tsbsa "Perhaps, you want to take a little peek~?"
