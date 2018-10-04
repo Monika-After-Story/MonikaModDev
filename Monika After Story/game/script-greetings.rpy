@@ -1610,7 +1610,7 @@ init 5 python:
 label greeting_back_from_game:
      m 1hua "Oh, welcome back, [player]!"
      menu:
-         m "Did you enjoy well with your game?"
+         m "Did you enjoy your game?"
          "Yes.":
              m 1hub "That's good!"
              m 1eua "Remember to get some break, okay?"
@@ -1621,8 +1621,8 @@ label greeting_back_from_game:
 
          "No.":
              m 1eka "Don't worry, it is just a game you know."
-             m 4eka "You can always find new games that better suits for you [player]."
-             m 2ekc "I'm sorry for you didn't get fun."
+             m 4eka "You can always try again when you pumped up or find new games that better suits for you [player]."
+             m 2ekc "I'm sorry for you didn't have fun."
              m 4eka "Just remember that I'm here when you need me, okay?"
              m 1hubfa "I love you so much, [player]."
      return
@@ -1640,9 +1640,9 @@ init 5 python:
     )
 
 label greeting_back_from_eat:
-     m 1hua "Welcome back honey."
+     m 1hua "Welcome back, honey."
      m 4tku "We are eating healthy things, right?"
-     m 1esa "Let's spend more time then [player]."
+     m 1esa "Let's spend more time together then, [player]."
      return
 
 init 5 python:
