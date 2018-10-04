@@ -4875,13 +4875,13 @@ label monika_panties:
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
     if isFuture (evhand.event_database['anni_1year']):
-       m 21ssdrc "You're not... {i}into those kind of things, are you [player]?"
+       m 1lkbfb "Are you...{i}into those kind of things, [player]?"
        menu:
            "Yes":
-               m 11wubsw "O-oh..."
+               m 1ekbfb "O-oh..."
                m 1lsbssdrb "I-if you're into any of them, you could just ask me for [i]it[/i], you know?"
-               m 1lkbfb "I could... {i}help you relieve that tension off of you or something..."
-               m "Isn't that what a couple supposed to do for their loved ones?"
+               m 1lkbfb "I could...{i}help you relieve that tension off of you or something..."
+               m "Isn't that what a couple supposed to do?"
                m 1hub "Ahaha!"
                m 1ekbfa "But until that day comes, you're just gonna have to endure those thoughts for me, okay?"
            "No":
@@ -4897,9 +4897,9 @@ label monika_panties:
                m 1rkc "I know that some topics are best kept to self until the right time comes."
                m 1rksdld "Not to mention it's controversial..."
                m 1ekbfa "..."
-               m 1eka "In any case, {i}don't be afraid to tell me about your pleasure, okay [player]?"
+               m 1eka "In any case,{i}don't be afraid to tell me about your pleasure, okay [player]?"
                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-               m "I won't judge you for it, and I'm still going to love you for what you are."
+               m "I won't judge you for it, and nothing makes me happier than making you happy~"
     else:
         m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
         m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
