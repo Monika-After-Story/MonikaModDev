@@ -1620,7 +1620,6 @@ label greeting_back_from_game:
              m 1hub "Ahaha!"
 
          "No.":
-             m 1eka "Don't worry, it is just a game you know."
              m 4eka "You can always try again when you pumped up or find new games that better suits for you [player]."
              m 2ekc "I'm sorry for you didn't have fun."
              m 4eka "Just remember that I'm here when you need me, okay?"
