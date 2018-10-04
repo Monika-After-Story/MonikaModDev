@@ -261,6 +261,12 @@ init -5 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
+    # TODO: need to make a map for clothes and a map for hair
+    # TODO: need to create MASClothes and MASHair classes
+    # TODO: need to add those objects to MASMonika
+    # TODO: need to adjust all the generator functions to work with the
+    #   classes
+
     ### [BLK001]
     # non leanable clothes
     lean_clothes_blacklist = [
