@@ -4901,18 +4901,18 @@ label monika_panties:
                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                m "I won't judge you for it, and I'm still going to love you for what you are."
     else:
-    m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
-    m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
-    m 4tsbsa "Perhaps, you want to take a little peek~?"
-    m 1hub "Ahaha!"
-    m 1tku "I'm only teasing you, [player]."
-    m 1tfu "Admit it, you got a little excited, right?"
-    m 1lsbsa "Besides..."
-    m 1lkbsa "If you really wanted to catch a scent of me..."
-    m 1hubfa "You could just ask for a hug!"
-    m 1ekbfa "Gosh, I just want to feel your embrace more."
-    m "After all, we're here forever, and I'm here for you."
-    m 1hubfb "I love you so much, [player]~"
+        m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
+        m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
+        m 4tsbsa "Perhaps, you want to take a little peek~?"
+        m 1hub "Ahaha!"
+        m 1tku "I'm only teasing you, [player]."
+        m 1tfu "Admit it, you got a little excited, right?"
+        m 1lsbsa "Besides..."
+        m 1lkbsa "If you really wanted to catch a scent of me..."
+        m 1hubfa "You could just ask for a hug!"
+        m 1ekbfa "Gosh, I just want to feel your embrace more."
+        m "After all, we're here forever, and I'm here for you."
+        m 1hubfb "I love you so much, [player]~"
     return
 
 init 5 python:
