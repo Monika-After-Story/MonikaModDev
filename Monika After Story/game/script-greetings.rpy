@@ -16,6 +16,8 @@ init -1 python in mas_greetings:
     TYPE_WORK = "work"
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
+    TYPE_GAME = "game"
+    TYPE_EAT = "eat"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -1591,6 +1593,56 @@ label greeting_back_from_school:
              m "I'm sorry to hear that."
              m 1eka "Just remember that no matter what happens, I'll be here for you."
              m 1ekbfa "I love you so, so much."
+     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_game",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GAME],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_back_from_game:
+     m 1hua "Oh, welcome back, [player]!"
+     menu:
+         m "Did you enjoy well with your game?"
+         "Yes.":
+             m 1hub "That's good!"
+             m 1eua "Remember to get some break, okay?"
+             m 4esa "Games can be addictive. Don't let games to siphoning your all time."
+             m 1hua "Now, you can relax with me!"
+             m 1hsb "I would like to be your best game since I'm stuck here as an application."
+             m 1hub "Ahaha!"
+
+         "No.":
+             m 1eka "Don't worry, it is just a game you know."
+             m 4eka "You can always find new games that better suits for you [player]."
+             m 2ekc "I'm sorry for you didn't get fun."
+             m 4eka "Just remember that I'm here when you need me, okay?"
+             m 1hubfa "I love you so much, [player]."
+     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_eat",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_EAT],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_back_from_eat:
+     m 1hua "Welcome back honey."
+     m 4tku "We are eating healthy things, right?"
+     m 1esa "Let's spend more time then [player]."
      return
 
 init 5 python:
