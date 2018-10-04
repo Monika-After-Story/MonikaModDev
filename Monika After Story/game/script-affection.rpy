@@ -908,6 +908,9 @@ default persistent._mas_pctadeibe = None
 default persistent._mas_aff_backup = None
 
 init -10 python:
+    if persistent._mas_aff_mismatches is None:
+        persistent._mas_aff_mismatches = 0
+
     def _mas_AffSave():
         aff_value = _mas_getAffection()
         #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
@@ -924,13 +927,14 @@ init -10 python:
         store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
 
         # backup this value
-        store.mas_affection.raw_audit(
-            persistent._mas_aff_backup,
-            aff_value,
-            aff_value,
-            "SET BACKUP"
-        )
-        persistent._mas_aff_backup = aff_value
+        if persistent._mas_aff_backup != aff_value:
+            store.mas_affection.raw_audit(
+                persistent._mas_aff_backup,
+                aff_value,
+                aff_value,
+                "SET BACKUP"
+            )
+            persistent._mas_aff_backup = aff_value
 
 
     def _mas_AffLoad():
@@ -981,17 +985,16 @@ init -10 python:
 
 
         else:
-            # TODO: for now we are just going to log any differences,
-            # if after a while we can see that there is an isue with value
-            # retrievval, then we can do something about this
+            # restore from backup if we have a mismatch
             if new_value != persistent._mas_aff_backup:
+                persistent._mas_aff_mismatches += 1
                 store.mas_affection.raw_audit(
                     new_value,
                     persistent._mas_aff_backup,
                     persistent._mas_aff_backup,
-                    "BACKUP DIFF?"
+                    "RESTORE"
                 )
-                # new_value = persistent._mas_aff_backup
+                new_value = persistent._mas_aff_backup
 
         # audit this change
         store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
