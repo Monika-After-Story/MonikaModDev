@@ -57,8 +57,8 @@ init -1 python in mas_affection:
         # start counter if None
         store.persistent._mas_affection_log_counter = 0
 
-    elif store.persistent._mas_affection_log_counter >= 100:
-        # if 100, do a logrotate
+    elif store.persistent._mas_affection_log_counter >= 500:
+        # if 500 sessions, do a logrotate
         mas_utils.logrotate(
             os.path.normcase(renpy.config.basedir + "/log/"),
             "aff_log.txt"
