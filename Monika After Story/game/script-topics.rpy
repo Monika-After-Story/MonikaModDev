@@ -4897,7 +4897,7 @@ label monika_panties:
                m 1rkc "I know that some topics are best kept to self until the right time comes."
                m 1rksdld "Not to mention it's controversial..."
                m 1ekbfa "..."
-               m 1eka : "In any case, {i}don't be afraid to tell me about your pleasure, okay [player]?"
+               m 1eka "In any case, {i}don't be afraid to tell me about your pleasure, okay [player]?"
                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                m "I won't judge you for it, and I'm still going to love you for what you are."
     else:
