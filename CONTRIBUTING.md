@@ -22,7 +22,9 @@ Adding new content to this game is easy, and doesn't require any specialized too
 
 To add new [random topics](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-topics.rpy) and [greetings](https://github.com/Backdash/MonikaModDev/blob/content/Monika%20After%20Story/game/script-greetings.rpy), or to make changes and fix typos, you can simply navigate to the appropriate file on the `content` branch of our github site and click the pencil icon in the upper right corner to begin making changes. When you are finished, add a short message describing your changes, and click the green button labeled "Propose Changes." A collaborator will be notified, and will review your changes before merging them into the mod.
 
-Now that monika's dialogue includes expressions, please use [this cheatsheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) to pick appropriate expressions and poses for your topics. At the moment, all poses revert to Monika's standard sitting pose, but when more poses are added, any expressions using them will update automatically.
+If the topic you want to add might be memey in nature and potentially unfit for official MAS, you can instead add the topic to **script-community-addons.rpy** in the `community` branch. This branch is dedicated to unofficial content and is released as drop-in submod content.
+
+Now that monika's dialogue includes expressions, please use [this cheatsheet](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/MonikaCheatsheetupdate2.jpg) to pick appropriate expressions and poses for your topics. At the moment, all poses revert to Monika's standard sitting pose, but when more poses are added, any expressions using them will update automatically.
 
 For new game art or music, please open a ticket on [issues](https://github.com/Backdash/MonikaModDev/issues), and attach the files you'd like to submit. Again, a collaborator will look over your submission and figure out how best to use it in our game. To get an idea of what we might be needing, check for any open [art-related issues](https://github.com/Backdash/MonikaModDev/issues?q=is%3Aissue+is%3Aopen+label%3Aart).
 
@@ -62,7 +64,7 @@ While we're generally accepting of most help, there are a few things that we are
 * Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
 * Code clearly, using descriptive variable names, comments, and modularizing as functions wherever appropriate.
 * Keep feature submissions as small as possible, preferably one new feature per submission.
-* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Community Code of Conduct](https://github.com/Backdash/MonikaModDev/blob/master/CODE_OF_CONDUCT.md).
+* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Community Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct).
 * Ensure all dialogue fits Monika's voice. Do your best to consider word choice, conversationalism, and her interests.
 
 ### Monika's "Voice"
@@ -100,7 +102,7 @@ At this point, you're ready to make your changes! Feel free to ask for help; eve
 
 >If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
 
-## Making dialogue
+## Making Dialogue
 
 ![Guide 1](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide1.png?raw=True)
 
@@ -110,34 +112,22 @@ If you're planning to write multiple topics, please submit a pull request with a
 
 Once the branch is set to **content**, click the pencil button to start editing.
 
-![Guide 2](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide2.png?raw=True)
+![Guide 2](https://github.com/Monika-After-Story/MonikaModDev/blob/master/docs/Making-Dialogue-Guide1.png)
 
-Keywords act as triggers to your topic. (Use synonyms if applicable to your topic: If your topic is about money, use words such as money, dollars, cash etc.)
+List of categories:
+Psychology, Society, School, Life, Media,Literature,Games Literature Club, Romance, Club Members,You,Monika, DDLC, Mod, Technology, Philosophy, Misc, and Trivia.
 
 **IMPORTANT:** Do NOT use capital letters on keywords. The input lowercases all strings, hence making capitalized letters in keywords unreachable.
 
-Identifiers differentiate topics from one another, so use the title of your topic as the identifier.
+When writing dialogue always start with m **spritecode** " and end with".
 
-It's optional to have your topic brought up by Monika at random. If you don't want her to bring it up randomly, don't use the line.
+To find a **spritecode**, use the [Sprite Previewer](https://github.com/Monika-After-Story/MonikaModDev/blob/master/FAQ.md#how-do-i-find-the-spritecode-for-an-expression).
 
-Use the title of your topic as a label. (**IMPORTANT:** Please make sure that the label you choose has not already been used.)
-
-When writing dialogue always start with m **#X** " and end with".
-
-For **#X** refer to the [cheat sheet](https://github.com/Backdash/MonikaModDev/blob/master/docs/MonikaCheatsheet.jpg) for the numbers and letters.
+If you want to write more complicated dialogue, visit [Dialogue Coding](https://github.com/Monika-After-Story/MonikaModDev/wiki/Dialogue-Coding) 
 
 Place return at the last line, after the last sentence of your dialogue.
 
-![Guide 3](https://github.com/Backdash/MonikaModDev/blob/master/docs/writing-guide3.png?raw=True)
-
-If you're writing dialogue with choices, simply write "menu":". All lines in a menu must be indented. 
-Dialogue in a particular choice must have an addtional indent. (**IMPORTANT**: Do NOT place an expression on the line that will serve as the question, it will make the game crash.)
-
-The line below the menu will act as the question. Choices are on the same line, but end with a colon (:).
-
-You don't necesasarily have to write as yes or no, it can be written in any way as long as it makes sense as a choice.
-
-After making your edits refer to the Pull Request Guide below so you can submit it.
+Once you're done, refer to the guide below to submit your topic as a pull request.
 
 ## Submitting a Pull Request
 
