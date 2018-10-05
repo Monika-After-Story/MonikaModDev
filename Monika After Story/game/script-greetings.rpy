@@ -1616,7 +1616,7 @@ label greeting_back_from_game:
              m 1eua "Remember to get some break, okay?"
              m 4esa "Games can be addictive. Don't let games to siphoning your all time."
              m 1hua "Now, you can relax with me!"
-             m 1hsb "I would like to be your best game since I'm stuck here as an application."
+             m 1hsb "Maybe you would tell me your gaming experiences."
              m 1hub "Ahaha!"
 
          "No.":
