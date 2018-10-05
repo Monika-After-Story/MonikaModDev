@@ -439,19 +439,65 @@ label monika_ptod_tip005:
 
     m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
     m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
-    m 3eua "Here's an example:"
-    call mas_wx_cmd("a == b and a == c")
-    call mas_wx_cmd("a == b and a >= c")
-    call mas_wx_cmd("a != b and a >= c")
+    m 1hua "Let's go through some examples."
+
+    $ val_a = local_ctx["a"]
+    $ val_b = local_ctx["b"]
+    $ val_c = local_ctx["c"]
+
+    call mas_w_cmd("a == b and a == c")
+    m 3eua "Since 'a' and 'b' are both [val_a], the first comparison evaluates to {b}True{/b}."
+    m "'c', however, is [val_c], so the second comparison evaluates to {b}False{/b}."
+    m 3eub "Since at least one comparison evaluated to {b}False{/b}, the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a == b and a >= c")
+    m 3eua "In this example, the first comparison again evaluates to {b}True{/b}."
+    m "[val_a] is certainly greater-than-or-equal-to [val_c], so the second comparison evaluates to {b}True{/b} as well."
+    m 3eub "Since both comparisons evaluated to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b and a >= c")
+    m 3eua "In this example, the first comparison evaluates to {b}False{/b} this time."
+    m "Since we immediately have at least one comparison evaluating to {b}False{/b}, it doesn't matter what the second comparison evaluates to."
+    m 3eub "We know for sure that the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+
+    m "Same goes for the next example:"
     call mas_wx_cmd("a != b and a == c")
+
     m 1eub "Again, when using the {b}and{/b} operator, the result is {b}True{/b} if and only if both comparisons evaluate to {b}True{/b}."
 
     m 1eua "In contrast, the {b}or{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if either comparison evaluates to {b}True{/b},{w} and {b}False{/b} if both comparisons evaluate to {b}False{/b}."
-    m 3eua "Here's an example of that:"
-    call mas_wx_cmd("a == b or a == c")
-    call mas_wx_cmd("a == b or a >= c")
-    call mas_wx_cmd("a != b or a >= c")
-    call mas_wx_cmd("a != b or a == c")
+    m 3eua "Let's go through some examples."
+
+    call mas_w_cmd("a == b or a == c")
+    m 3eua "This time, since the first comparison evaluates to {b}True{/b}, we don't have to check the second comparison."
+    m 3eub "The result of this expression is {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a == b or a >= c")
+    m 3eua "Again, the first comparison evaluates to {b}True{/b}, so the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b or a >= c")
+    m 3eua "In this case, the first comparison evaluates to {b}False{/b}."
+    m "Since [val_a] is greater-than-or-equal-to [val_c], the second comparison evaluates to {b}True{/b}."
+    m 3eub "And since at least one comparison evaluated to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
+    call mas_w_cmd("a != b or a == c")
+    m 3eua "We know that the first comparison evaluates to {b}False{/b}."
+    m "Since [val_a] is certainly not equal to [val_c], the second comparison also evaluates to {b}False{/b}."
+    m 3eub "Since neither comparison evaluated to {b}True{/b}, the complete expression evaluates to {b}False{/b}."
+    call mas_x_cmd()
+    pause 1.0
+
     m 3eub "Again, when using the {b}or{/b} operator, the result is {b}True{/b} if either comparison evaluates to {b}True{/b}."
 
     m 1eua "There is also a third logical operator called the {b}not{/b} operator. Instead of linking multiple comparisons together, this operator inverts the boolean value of a comparison."
@@ -474,9 +520,18 @@ label monika_ptod_tip005:
 
     m 3eub "And use those variables in comparisons as well!"
     call mas_wx_cmd("d and e")
+    m "Since 'd' is {b}True{/b} but 'e' is {b}False{/b}, this expression evaluates to {b}False{/b}."
+
     call mas_wx_cmd("d or e")
+    m "Since 'd' is {b}True{/b}, we know that at least one of the comparisons in this expression is {b}True{/b}. Therefore the complete expression is {b}True{/b}."
+
     call mas_wx_cmd("not (d or e)")
+    m 3eua "We know that the inner expression 'd or e' evaluates to {b}True{/b}. The inverse of that is {b}False{/b}, so this expression evaluates to {b}False{/b}."
+
     call mas_wx_cmd("d and not e")
+    m 3eub "In this case, we know that 'd' is {b}True{/b}."
+    m "The 'not' operator is applied to 'e', which inverts its {b}False{/b} value to {b}True{/b}."
+    m 3eua "Since both comparison expressions evaluate to {b}True{/b}, the complete expression evaluates to {b}True{/b}."
 
     m 1eua "Comparisons are used everywhere in every programming language."
     m 1hua "If you ever decide to do programming for a living, you'll find that a lot of your code is just checking if some comparisons are true so you can make your programs do the {i}right{/i} thing."

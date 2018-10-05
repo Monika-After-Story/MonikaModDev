@@ -35,13 +35,34 @@ init 998 python:
             mas_ptod.M_PTOD.format(tip_num)
             for tip_num in range(0,1000)
         ]
-        yesterday = datetime.date.today() - datetime.timedelta(1)
+        yesterday = datetime.datetime.now() - datetime.timedelta(1)
 
         for tip in tip_list:
             tip_ev = mas_getEV(tip)
 
-            if tip.unlock_date is not None:
-                tip.unlock_date = yesterday
+            if tip_ev and tip_ev.unlock_date is not None:
+                tip_ev.unlock_date = yesterday
+
+
+    def mas_ptod_unlocktip(*nums):
+        """
+        Unlocks tips with the given numbers.
+        This does not do warp time.
+        """
+        tip_list = [
+            mas_ptod.M_PTOD.format(num)
+            for num in nums
+        ]
+        now = datetime.datetime.now()
+
+        for tip in tip_list:
+            tip_ev = mas_getEV(tip)
+
+            tip_ev.unlocked = True
+            tip_ev.pool = True
+            tip_ev.unlock_date = now
+            tip_ev.shown_count = 1
+            tip_ev.last_seen = now
 
 
 ### test eevent to show this screen
