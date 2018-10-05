@@ -4875,7 +4875,7 @@ label monika_panties:
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
     if isFuture(evhand.event_database['anni_1']):
-       m 1lkbfb "Are you...{w}into those kind of things, [player]?"
+       m 1lkbfb "Are you...{w=1}into those kind of things, [player]?"
        menu:
            "Yes":
                m 1ekbfb "O-oh..."
@@ -4897,7 +4897,7 @@ label monika_panties:
                m 1rkc "I know that some topics are best kept to self until the right time comes."
                m 1rksdld "Not to mention it's controversial..."
                m 1ekbfa "..."
-               m 1eka "In any case, {w}don't be afraid to tell me about your pleasure, okay [player]?"
+               m 1eka "In any case, {w=1}don't be afraid to tell me about your pleasure, okay [player]?"
                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                m "I won't judge you for it, and nothing makes me happier than making you happy~"
     else:
