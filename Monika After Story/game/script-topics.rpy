@@ -7236,6 +7236,50 @@ label monika_hydration:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,"monika_dating",prompt="Dating Experience",category=['you','commitment'],random=True))
+    
+label monika_dating:
+    m 2eud "You know I've been really curious lately, [player]..."
+    m 2eka "We've been talking for so long that now I think would be the best time to ask you this important question..."
+    m 1eud "How much dating experience do you have?"
+    m 1lud "Like... have you ever been in a relationship before?"
+    menu:
+        "Maybe more than once?"
+        "Yes, I've been through plenty...":
+            m 1ekd "Aww I'm so sorry [player]..."
+            m 1lkc "You've been through many heart breaks haven't you... 
+            m 2esc "To be honest [player]... I don't think they deserved someone like you."
+            m 4rsd "Someone who's kind, loyal, sweet, loving, and faithful."
+            m 4lubsb "And cute and funny and romantic and--"
+            m 2wubw "Oh!"
+            m 3hkbfsdlb "Sorry I lost track of what I was going to say next ahaha!
+            m 1ekbfa "I could go on about how wonderful you are [player] ehehe. Just know this though."
+            m 2ekbfa "No matter how many heart breaks you've been through, I'll always be here for you."
+            m 5ekbfa "Our soul searching is finally over. I'll be yours forever [player]!
+            m 5ekbfb "Will you be mine?
+        
+        "Yes, but only once":
+            m 1ekb "Ah, not a lot of experience huh?"
+            m 2eka "That's okay [player], I can relate too so don't worry"
+            m 2rkb "Yeah I may appear like a girl who gets all the guys but really I don't ahaha!
+            m 3rka "Especially with how occupied I've kept myself over the years I just never had the time"
+            m 2eka "But now that I do I think it's safe to say I'm ready to start something special..."
+            m 5ekbsa "With you [player]..."
+            m 5tkbfa "Are you ready?
+        
+        "No, you're my first"   
+            m 6wubfw "What?! I-I'm your first?!"
+            m 1tubfa "Oh.. I see."
+            m 1tubfb "You're just saying that to make me feel extra special huh [player]?
+            m 3lka "There's no way someone like you has never dated before, I mean look at you!"
+            m 4ekbsa "You're the definition of cute and sweetness!"
+            m 6ekbsa "Well.. If you're not just messing with me and actually telling me the truth then.."
+            m 5ekbsa "I'm honored to be your first [player].
+            m 5ekbfb "I hope to be your one and only."
+            m 5ekbfu "Will you be mine?"
+            return
+            
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
 
 label monika_challenge:
