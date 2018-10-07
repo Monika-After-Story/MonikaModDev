@@ -7236,7 +7236,7 @@ label monika_hydration:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,"monika_dating",prompt="Dating Experience",category=['you','commitment'],random=True))
+    addEvent(Event(persistent.event_database,"monika_dating",prompt="Dating Experience",category=['you'],random=True))
     
 label monika_dating:
     m 2eud "You know I've been really curious lately, [player]..."
@@ -7277,7 +7277,7 @@ label monika_dating:
             m 1ekbfb "I'm honored to be your first [player]!"
             m 5ekbfa "I hope to be your one and only."
             m 5ekbfa "Will you be mine?"
-           return
+    return
             
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_challenge",category=['misc','psychology'],prompt="Challenges",random=True))
