@@ -7710,7 +7710,7 @@ label monika_past_relationships:
                     m 1eka "I hope it's not too much trouble whenever somebody tries to confess to you."
                     m 1eua "I get that you might not want to be distracted by a relationship and that's respectable."
                     m 1tubfb "I just hope you don't mind me coming into your life and loving you."
-                    m 1tubfa "Ehehehe~"
+                    m 1tsbsa "Ehehehe~"
     return
 
 init 5 python:
