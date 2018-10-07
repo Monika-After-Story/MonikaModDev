@@ -193,13 +193,13 @@ label greeting_back:
     m 1hua "Let's have another lovely day together, alright?"
     return
 
+#added paths for upset, distressed, and broken ~ JW
 init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=10))
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_gooday", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
     del rules
 
-#added paths for upset, distressed, and broken ~ JW
 label greeting_gooday:
     if mas_isMoniNormal(higher=True):
         m 1hua "Hello again, [player]. How are you doing?"
@@ -908,7 +908,7 @@ label greeting_monika_monday_morning:
 
     return
 
-###Need help with these, not sure how to make some of the door knock affection dependent and some not, maybe lock all at low affection? ~ JW
+###Need help with these, not sure how to make some of the door knock affection dependent and some not, since not all make sense for low affection like dinner/bath/me ~ JW
 
 # special local var to handle custom monikaroom options
 define gmr.eardoor = list()
@@ -2382,11 +2382,12 @@ label greeting_returned_home:
             m 2rkc "To be honest, I wasn't completely sure I should go with you..."
             m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it wa such a good idea..."
             m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
-            m 2rka "We should really do this again sometime... {w=1}If you want."
+            m 2rka "We should really do this again sometime..."
+            m 2esc "If you want."
             if persistent._mas_monika_returned_home is None:
                 $ hours_out = int(time_out.seconds / 3600)
 
-                # you gain 1 per hour, max 5, min 1
+                # changed the point structure for low aff, might be a good idea, might now ~ JW
                 if hours_out > 5:
                     $ aff_gain = 2.5
                 elif hours_out == 0:
@@ -2403,6 +2404,8 @@ label greeting_returned_home:
         call greeting_returned_home_lessthan5mins
 
         $ mas_loseAffection()
+        if mas_isMoniUpset(lower=True):
+            return 'quit'
 
     return
 
@@ -2421,7 +2424,7 @@ label greeting_returned_home_lessthan5mins:
         m 6dktdc "..."
         m 6ektsc "I don't know why you insist on being so cruel, [player]."
         m 6rktsc "I'd...{w=1}I'd like to be alone right now."
-        return 'quit'
+        return
 
     else:
         m 6rkc "But...{w=1]we just left..."
@@ -2432,13 +2435,13 @@ label greeting_returned_home_lessthan5mins:
         m "Maybe we'd finally have a good time again..."
         m 6ektda "That you actually wanted to spend more time with me."
         m 6dktsc "..."
-        m 6ektsc "But I guess it was just foolish for me to thing that."
+        m 6ektsc "But I guess it was just foolish for me to think that."
         m 6rktsc "I should have known better... {w=1}I should never have agreed to go."
         m 6dktsc "..."
         m 6ektdc "Please, [player]... {w=2}If you don't want to spend time with me, fine..."
         m 6rkrdc "But at least have the decency not to pretend otherwise, only to continually humiliate me."
-        m 6dktdc "I'd like to be left alone right now.{nw}"
-        return 'quit'
+        m 6dktdc "I'd like to be left alone right now."
+        return
 
 default persistent._mas_bday_date_count = 0
 default persistent._mas_bday_date_affection_lost = 0
