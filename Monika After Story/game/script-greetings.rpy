@@ -2427,7 +2427,7 @@ label greeting_returned_home_lessthan5mins:
         return
 
     else:
-        m 6rkc "But...{w=1]we just left..."
+        m 6rkc "But...{w=1}we just left..."
         m 6dkc "..."
         m "I...{w=0.5}I was so excited when you asked me to go with you."
         m 6ekc "After all we've been through..."
