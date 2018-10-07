@@ -5083,9 +5083,9 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_trick",category=['club members'],prompt="[player]'s Second Choice",random=True))
 
 label monika_trick:
-    m 1c "Say [player], I have a question..."
-    m 3o "I hope I don't sound insecure when I say this..."
-    m 3m "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
+    m 1eua "Say [player], I have a question..."
+    m 1ekc "I hope I don't sound insecure when I say this..."
+    m 1euc "If you {i}really{/i} had to choose one of the other club members to be with..."
     show screen mas_background_timed_jump(10, "monika_trick_2")
     menu:
         m "Who would you choose?"
@@ -5111,50 +5111,57 @@ label monika_trick_2:
 
 label monika_trick_yuri:
     hide screen mas_background_timed_jump
-    m 1h "I can see why, she's intelligent and physically attractive."
-    m 3a "It's a good thing I have both of those qualities in abundance!"
-    m 3d "Oh wait, it's not because she became obsessed over you, is it?"
-    m 3c "Are you really that into yanderes?"
-    m 1o "..."
-    m 1n "...Ahaha, there's no need for me to be jealous..."
-    m 3e "You love me and I love you and that's all that matters."
-    m 3l "I guess it's my fault for even asking~"
+    m 3euc "Yuri, huh? I can see why."
+    m "She's quite intelligent and physically attractive too."
+    m 1rkc "Although socially speaking, she is kind of lacking..."
+    m "Without her reclusiveness, she'd be a lot more similar to me, you know?"    
+    m 1dsc "..."
+    m 2hub "Ahaha!" 
+    m 4eua "There's no need for me to be jealous."
+    m 5eua "You love me and I love you and that's all that matters."
+    m 5eub "But it does make you wonder the possibilities when someone you know is a lot more different than how you know them."
     return
 
 label monika_trick_natsuki:
     hide screen mas_background_timed_jump
-    m 1h "That's... a little surprising."
-    m 2n "I would have thought it would have been Sayori or Yuri."
-    m 2a "Do you feel like you connect with her because of her hobbies?"
-    m 2d "Or perhaps you feel a bit of pity because of her home situatuion?"
-    m 2l "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
-    m 3b "To be confident and stand by what you like isn't always easy when others judge you for it."
-    m "I'm sometimes even a little bit jealous of her ability to display confidence."
-    m 3j "Plus her ability to cook cupcakes is astounding!"
+    m 3eud "Oh, Natsuki?"
+    m "Do you feel a connection with her because of her hobbies and interests?"
+    m 3ekc "Or perhaps you feel a bit of pity because of her situation?"
+    m 2dsc "I do have to say that she's quite a tough girl."
+    m 2rkc "Enduring that kind of father..."
+    m 4ekd "You just can't help but feel bad for her."
+    m 1euc "Not to mention that you can't deny how admirable her confidence and personality is."
+    m 1rkslda "Sometimes, I get a bit jealous of her ability to display it without fear."
+    m 3hub "And did I mention how good she is at baking?"
+    m "Ahaha!"
     return
 
 label monika_trick_sayori:
     hide screen mas_background_timed_jump
-    m 1h "That's what I expected..."
-    m "It's because she was best friends with the main character, isn't it?"
-    m 1i "It makes sense to have the main character end up with the childhood friend."
-    m 3o "It really is typical in romance games..."
-    m 2p "Honestly that's kind of why I had to...deal...with Sayori first."
-    m 1q "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
-    m 2f "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
-    m 3g "You would have completed the game and I would be stuck in a hellish void forever..."
-    m 2q "Never having even been acknowledged by the one I love."
-    m 3p "...I don't regret what I did because of that, but I'm sorry you had to see what I needed to do."
+    m 1rkc "Aha, dear Sayori..."
+    m 3eksdla "The main character ending up with the childhood friend."
+    m "It's a common trope you see in a lot of visual novels, manga, etc."
+    m 2euc "But it doesn't make sense to me at times when there's no backstory explained on what makes that kind of friendship very special."
+    m 2dsc "It's sloppy writing, if you ask me."
+    m 4tkc "Don't you think it's better to see what made you close with her in the first place, [player]?"
+    m 1hua "Ehehe, anyway."
+    m 3eua "Sayori's just a bundle of fun, to be honest."
+    m 1euc "She can be a bit of an airhead sometimes, but she's very cheerful most of the time."
+    m 1esc "A bit tragic when you find out about her mental condition, though."
+    m "If you think about it, she could've just been a bubbly, cute girl."
+    m 2dsc "But that's not what her creator wanted, sadly."
     return
 
 label monika_trick_monika:
     hide screen mas_background_timed_jump
-    m 1l "That wasn't supposed to be an option, silly!"
-    m 3e "But it really does make me happy that you only have eyes for me..."
-    m 3j "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
-    m 3k "I love you [player]!"
-    m 5a "And I only have eyes for you too!"
+    $ mas_gainAffection()
+    m 1hub "Ehehe~"
+    m 3hua "Correct answer, [player]!"
+    m 3eka "I was curious if you would try to find my choice."
+    m 1ekbfa "And it makes me really happy that you were patient enough for it~"
+    m 1hubfa "I love you~!"
     return
+
 
 ####################################################
 # Saving this for future use
