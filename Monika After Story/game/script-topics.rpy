@@ -7240,21 +7240,22 @@ init 5 python:
     
 label monika_dating:
     m 2eud "You know I've been really curious lately, [player]..."
-    m 2eka "We've been talking for so long that now I think would be the best time to ask you this important question..."
+    m 2eka "We've been talking for so long now, that I think would be the best time to ask you this important question..."
     m 1eud "How much dating experience do you have?"
     m 1lud "Like... have you ever been in a relationship before?"
     menu:
         m "Maybe more than once?"
         "Yes, I've been through plenty...":
             m 1ekd "Aww I'm so sorry [player]..."
-            m 6lkc "You've been through many heart breaks haven't you..." 
+            m 6lkc "You've been through many heartbreaks haven't you..." 
             m 2esc "To be honest [player]... I don't think they deserved someone like you."
             m 3ekb "Someone who's kind, loyal, sweet, loving, and faithful."
-            m 4lubfb "And cute and funny and romantic and--"
+            m 4lubfb "And cute and funny and romantic and-"
             m 2wubsw "Oh!"
-            m 3hksdlb "Sorry I lost track of what I was going to say next ahaha!"
-            m 1ekbfa "I could go on about how wonderful you are [player] ehehe. Just know this though."
-            m 2ekbfa "No matter how many heart breaks you've been through, I'll always be here for you."
+            m 3hksdlb "Sorry, I lost track of what I was going to say next, ahaha!"
+            m 1ekbfa "I could go on about how wonderful you are [player] ehehe."
+            m 1hubfa "Just know this..."
+            m 2ekbfa "No matter how many heartbreaks you've been through, I'll always be here for you."
             m 5ekbfa "Our soul searching is finally over. I'll be yours forever [player]!"
             m 5ekbfa "Will you be mine?"
         
@@ -7270,11 +7271,11 @@ label monika_dating:
         "No, you're my first":  
             m 6wubsw "What?! I-I'm your first?!"
             m 1tubfb "Oh.. I see."
-            m 1tfb "You're just saying that to make me feel extra special huh [player]?"
-            m 1tku "There's no way someone like you has never dated before, I mean look at you!"
+            m 1tfb "You're just saying that to make me feel extra special aren't you, [player]?"
+            m 1tku "There's no way someone like you has never dated before; I mean look at you!"
             m 2hubfb "You're the definition of cute and sweetness!"
-            m 2ekbfa "Well.. If you're not just messing with me and actually telling me the truth then.."
-            m 1ekbfb "I'm honored to be your first [player]!"
+            m 2ekbfa "Well... If you're not just messing with me and actually telling me the truth then..."
+            m 1ekbfb "I'm honored to be your first, [player]!"
             m 5ekbfa "I hope to be your one and only."
             m 5ekbfa "Will you be mine?"
     return
