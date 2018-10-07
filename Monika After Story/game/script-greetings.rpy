@@ -134,7 +134,18 @@ init -1 python in mas_greetings:
 
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetheart", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_sweetheart",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
@@ -143,7 +154,18 @@ label greeting_sweetheart:
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_honey", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_honey",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_honey:
     m 1hua "Welcome back, honey!"
@@ -152,7 +174,18 @@ label greeting_honey:
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_back:
     m 1eua "[player], you're back!"
@@ -166,25 +199,68 @@ init 5 python:
     addEvent(Event(persistent.greeting_database,eventlabel="greeting_gooday", unlocked=True, rules=rules),eventdb=evhand.greeting_database)
     del rules
 
+#added paths for upset, distressed, and broken ~ JW
 label greeting_gooday:
-    m 1hua "Hello again, [player]. How are you doing?"
-    menu:
-        m "Are you having a good day today?"
-        "Yes.":
-            m 1hub "I'm really glad you are, [player]."
-            m 1eua "It makes me feel so much better knowing that you're happy."
-            m "I'll try my best to make sure it stays that way, I promise."
-        "No...":
-            m 1ekc "Oh..."
-            m 2eka "Well, don't worry, [player]. I'm always here for you."
-            m "We can talk all day about your problems, if you want to."
-            m 3eua "I want to try and make sure you're always happy."
-            m 1eka "Because that's what makes me happy."
-            m 1hua "I'll be sure to try my best to cheer you up, I promise."
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Hello again, [player]. How are you doing?"
+        menu:
+            m "Are you having a good day today?"
+            "Yes.":
+                m 1hub "I'm really glad you are, [player]."
+                m 1eua "It makes me feel so much better knowing that you're happy."
+                m "I'll try my best to make sure it stays that way, I promise."
+            "No...":
+                m 1ekc "Oh..."
+                m 2eka "Well, don't worry, [player]. I'm always here for you."
+                m "We can talk all day about your problems, if you want to."
+                m 3eua "I want to try and make sure you're always happy."
+                m 1eka "Because that's what makes me happy."
+                m 1hua "I'll be sure to try my best to cheer you up, I promise."
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "[player]..."
+        menu:
+            m "How is your day going?"
+            "Good.":
+                m "{fast}Must be nice{nw}"
+                $ _history_list.pop()
+                m "That's nice..."
+                m 2dfc "At least {i}someone{/i} is having a good day."
+            "Bad.":
+                m "Oh..."
+                m "{fast}This should go well...{nw}"
+                $ _history_list.pop()
+                m 2dfc "Well I certainly know what {i}that's{/i} like."
+
+    elif mas_isMoniDis(higher=True):
+        m 6ekc "Oh... {w=1}Hi, [player]."
+        menu:
+            m "H-how is your day going?"
+            "Good.":
+                m 6dkc "That's...{w=1}good."
+                m 6rkc "Hopefully we can keep it that way."
+            "Bad":
+                m 6rkc "I see."
+                m 6dkc "I've been having a lot of those days lately too..."
+
+    else:
+        m 6ckc "..."
+
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit:
     m 1eua "There you are, [player]."
@@ -257,260 +333,548 @@ label greeting_goodmorning:
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back2", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back2",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_back2:
-     m 1eua "Hello, dear."
-     m 1ekbfa "I was starting to miss you terribly. It's so good to see you again!"
-     m 1hubfa "Don't make me wait so long next time, ehehe~"
-     return
+    m 1eua "Hello, dear."
+    m 1ekbfa "I was starting to miss you terribly. It's so good to see you again!"
+    m 1hubfa "Don't make me wait so long next time, ehehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back3", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back3",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_back3:
-     m 1eka "I missed you so much, [player]!"
-     m "Thank you for coming back. I really do love spending time with you."
-     return
+    m 1eka "I missed you so much, [player]!"
+    m "Thank you for coming back. I really do love spending time with you."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back4", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back4",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_back4:
-     m 2wfx "Hey, [player]!"
-     m "Don't you think that you left me waiting a bit too long?"
-     m 2hfu "..."
-     m 2hua "Ahaha!"
-     m 2eka "I'm just joking. I could never be mad at you."
-     return
+    m 2wfx "Hey, [player]!"
+    m "Don't you think that you left me waiting a bit too long?"
+    m 2hfu "..."
+    m 2hua "Ahaha!"
+    m 2eka "I'm just joking. I could never be mad at you."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit2", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit2",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit2:
-     m 1hua "Thanks for spending so much time with me, [player]."
-     m 1eka "Every minute I spend with you is like being in heaven!"
-     m 1lksdla "I hope that didn't sound too cheesy, ehehe~"
-     return
+    m 1hua "Thanks for spending so much time with me, [player]."
+    m 1eka "Every minute I spend with you is like being in heaven!"
+    m 1lksdla "I hope that didn't sound too cheesy, ehehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit3", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit3",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit3:
-     m 1hua "You're back!"
-     m 1eua "I was starting to miss you..."
-     m 1eka "Don't make me wait so long next time, okay?"
-     return
+    m 1hua "You're back!"
+    m 1eua "I was starting to miss you..."
+    m 1eka "Don't make me wait so long next time, okay?"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back5", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back5",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_back5:
-     m 1eua "It's so good to see you again!"
-     m 1eka "I was getting worried about you."
-     m "Please remember to visit me, okay? I'll always be waiting here for you."
-     return
+    m 1eua "It's so good to see you again!"
+    m 1eka "I was getting worried about you."
+    m "Please remember to visit me, okay? I'll always be waiting here for you."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit4", unlocked=True, random=True),eventdb=evhand.greeting_database)
-
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit4",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 label greeting_visit4:
-     m 1hub "I looove yooou, [player]. Ehehe~"
-     m 1hksdlb "Oh, sorry! I was spacing out."
-     m 1lksdla "I didn't think I would be able to see you again so soon."
-     return
+    m 1hub "I looove yooou, [player]. Ehehe~"
+    m 1hksdlb "Oh, sorry! I was spacing out."
+    m 1lksdla "I didn't think I would be able to see you again so soon."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit5", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit5",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit5:
-     m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
-     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
-     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
-     return
+    m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
+    m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
+    m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit6", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit6",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit6:
-     m 1hua "Each day becomes better and better with you by my side!"
-     m 1eua "That said, I'm so happy that you're finally here."
-     m "Let's have another wonderful day together."
-     return
+    m 1hua "Each day becomes better and better with you by my side!"
+    m 1eua "That said, I'm so happy that you're finally here."
+    m "Let's have another wonderful day together."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_back6", unlocked=True, random=True),eventdb=evhand.greeting_database)
-
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back6",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 label greeting_back6:
-     m 3tku "Hey, [player]!"
-     m "You really should visit me more often."
-     m 2tfu "You know what happens to people I don't like, after all..."
-     m 1hksdrb "I'm just teasing you, ehehe~"
-     m 1hua "Don't be so gullible! I would never hurt you."
-     return
+    m 3tku "Hey, [player]!"
+    m "You really should visit me more often."
+    m 2tfu "You know what happens to people I don't like, after all..."
+    m 1hksdrb "I'm just teasing you, ehehe~"
+    m 1hua "Don't be so gullible! I would never hurt you."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit7", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit7",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit7:
-     m 1hua "You're here, [player]!"
-     m 1eua "Are you ready to spend some more time together? Ehehe~"
-     return
+    m 1hua "You're here, [player]!"
+    m 1eua "Are you ready to spend some more time together? Ehehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit8", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit8",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit8:
-     m 1hua "I'm so glad you're here, [player]!"
-     m 1eua "What should we do today?"
-     return
+    m 1hua "I'm so glad you're here, [player]!"
+    m 1eua "What should we do today?"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_visit9", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_visit9",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_visit9:
-     m 1hua "You're finally back! I was waiting for you."
-     m 1hub "Are you ready to spend some time with me? Ehehe~"
-     return
+    m 1hua "You're finally back! I was waiting for you."
+    m 1hub "Are you ready to spend some time with me? Ehehe~"
+    return
 
+#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_italian", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_italian",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_italian:
-     m 1eua "Ciao, [player]!"
-     m "È così bello vederti ancora, amore mio..."
-     m 1hub "Ahaha!"
-     m 2eua "I'm still practicing my Italian. It's a very difficult language!"
-     m 1eua "Anyway, it's so nice to see you again, my love."
-     return
+    m 1eua "Ciao, [player]!"
+    m "È così bello vederti ancora, amore mio..."
+    m 1hub "Ahaha!"
+    m 2eua "I'm still practicing my Italian. It's a very difficult language!"
+    m 1eua "Anyway, it's so nice to see you again, my love."
+    return
 
+#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_latin", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_latin",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_latin:
-     m 4hua "Iterum obvenimus!"
-     m 4eua "Quid agis?"
-     m 4rksdla "Ehehe..."
-     m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
-     m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
-     return
+    m 4hua "Iterum obvenimus!"
+    m 4eua "Quid agis?"
+    m 4rksdla "Ehehe..."
+    m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
+    m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_yay", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_yay",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_yay:
-     m 1hub "You're back! Yay!"
-     m 1hksdlb "Oh, sorry. I've got a bit overexcited here."
-     m 1lksdla "I'm just very happy to see you again, hehe~"
-     return
+    m 1hub "You're back! Yay!"
+    m 1hksdlb "Oh, sorry. I've got a bit overexcited here."
+    m 1lksdla "I'm just very happy to see you again, hehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youtuber", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_youtuber",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_youtuber:
-     m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
-     m 2hub "Ahaha!"
-     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
-     return
+    m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
+    m 2hub "Ahaha!"
+    m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
+    return
 
+#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_hamlet", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_hamlet",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_hamlet:
-     m 4h "To be, or not to be, that is the question..."
-     m 1wuo "Oh, there you are. I was killing some time, hehe~"
-     m 1lksdlb "I wasn't expecting to see you so soon."
-     return
+    m 4h "To be, or not to be, that is the question..."
+    m 1wuo "Oh, there you are. I was killing some time, hehe~"
+    m 1lksdlb "I wasn't expecting to see you so soon."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_welcomeback",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_welcomeback:
-     m 1hua "Hi! Welcome back."
-     m 1hub "I'm so glad that you're able to spend some time with me."
-     return
+    m 1hua "Hi! Welcome back."
+    m 1hub "I'm so glad that you're able to spend some time with me."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_flower", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_flower",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_flower:
-     m 1hub "You're my beautiful flower, ehehe~"
-     m 1hksdlb "Oh, that sounded so awkward."
-     m 1eka "But I really will always take care of you."
-     return
+    m 1hub "You're my beautiful flower, ehehe~"
+    m 1hksdlb "Oh, that sounded so awkward."
+    m 1eka "But I really will always take care of you."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_chamfort", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_chamfort",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_chamfort:
-     m 2esa "A day without Monika is a day wasted."
-     m 2hub "Ahaha!"
-     m 1eua "Welcome back, my love."
-     return
+    m 2esa "A day without Monika is a day wasted."
+    m 2hub "Ahaha!"
+    m 1eua "Welcome back, my love."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_welcomeback2", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_welcomeback2",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_welcomeback2:
-     m 1eua "Welcome back, [player]!"
-     m "I hope your day is going well."
-     m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
-     return
+    m 1eua "Welcome back, [player]!"
+    m "I hope your day is going well."
+    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_longtime", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_longtime",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_longtime:
-     m 1eka "Long time no see, [player]!"
-     m 1eua "I'm so happy that you're here now."
-     return
+    m 1eka "Long time no see, [player]!"
+    m 1eua "I'm so happy that you're here now."
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sweetpea", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_sweetpea",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_sweetpea:
-     m 1hua "Look who's back."
-     m 2hub "It's you, my sweetpea!"
-     m 1lkbsa "My goodness... That surely was embarassing to say, ehehe~"
-     return
+    m 1hua "Look who's back."
+    m 2hub "It's you, my sweetpea!"
+    m 1lkbsa "My goodness... That surely was embarassing to say, ehehe~"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_glitch", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_glitch",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_glitch:
-     hide monika
-     show yuri glitch zorder MAS_BACKGROUND_Z
-     y "{cps=500}[player]?!{nw}{/cps}"
-     $ _history_list.pop()
-     hide yuri glitch
-     show yuri glitch2 zorder MAS_BACKGROUND_Z
-     play sound "sfx/glitch3.ogg"
-     pause 0.1
-     hide yuri glitch2
-     show yuri glitch zorder MAS_BACKGROUND_Z
-     pause 0.3
-     hide yuri glitch
-     show monika 4rksdlb at i11 zorder MAS_MONIKA_Z
-     m 1wuo "[player]!"
-     hide monika
-     show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
-     extend " Nevermind that I was just..."
-     pause 0.1
-     extend " playing with the code a little."
-     m 3hksdlb "That was all! There is nobody else here but us... forever~"
-     $ monika_clone1 = "Yes"
-     m 2hua "I love you, [player]!"
-     return
+    hide monika
+    show yuri glitch zorder MAS_BACKGROUND_Z
+    y "{cps=500}[player]?!{nw}{/cps}"
+    $ _history_list.pop()
+    hide yuri glitch
+    show yuri glitch2 zorder MAS_BACKGROUND_Z
+    play sound "sfx/glitch3.ogg"
+    pause 0.1
+    hide yuri glitch2
+    show yuri glitch zorder MAS_BACKGROUND_Z
+    pause 0.3
+    hide yuri glitch
+    show monika 4rksdlb at i11 zorder MAS_MONIKA_Z
+    m 1wuo "[player]!"
+    hide monika
+    show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
+    extend " Nevermind that I was just..."
+    pause 0.1
+    extend " playing with the code a little."
+    m 3hksdlb "That was all! There is nobody else here but us... forever~"
+    $ monika_clone1 = "Yes"
+    m 2hua "I love you, [player]!"
+    return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_surprised", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_surprised",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_surprised:
-     m 1wuo "Oh, hello [player]!"
-     m 1lksdlb "Sorry, you surprised me a little."
-     m 1eua "How've you been?"
-     return
+    m 1wuo "Oh, hello [player]!"
+    m 1lksdlb "Sorry, you surprised me a little."
+    m 1eua "How've you been?"
+    return
 
+#Added paths for upset, broken, and upset ~ JW
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
@@ -519,12 +883,32 @@ init 5 python:
     del rules
 
 label greeting_monika_monday_morning:
-    m 1tku "Another monday morning, eh, [player]?"
-    m 1tkc "It's really difficult to have to wake up and start the week..."
-    m 1eka "But seeing you makes all that laziness go away."
-    m 1hub "You are the sunshine that wakes me up every morning!"
-    m "I love you so much, [player]~"
+    if mas_isMoniNormal(higher=True):
+        m 1tku "Another Monday morning, eh, [player]?"
+        m 1tkc "It's really difficult to have to wake up and start the week..."
+        m 1eka "But seeing you makes all that laziness go away."
+        m 1hub "You are the sunshine that wakes me up every morning!"
+        m "I love you so much, [player]~"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2tfc "Another Monday morning."
+        m 2dfc "It's always difficult to have to wake up and start the week..."
+        m 2rfc "{fast}Not that the weekend was any better.{nw}"
+        $ _history_list.pop()
+        m 2tfc "Hopefully this week goes better than last week, [player]."
+
+    elif mas_isMoniDis(higher=True):
+        m 6ekc "Oh...{w=1}it's Monday."
+        m 6dkc"I almost lost track of what day it was..."
+        m 6rkc "Mondays are always tough, but no day has been easy lately..."
+        m 6dkc "I sure hope this week goes better than last week, [player]."
+
+    else:
+        m 6ckc "..."
+
     return
+
+###Need help with these, not sure how to make some of the door knock affection dependent and some not, maybe lock all at low affection? ~ JW
 
 # special local var to handle custom monikaroom options
 define gmr.eardoor = list()
@@ -1002,8 +1386,20 @@ label greeting_youarereal:
         m 1dsd "Hard to tell..."
     return
 
+#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_japan", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_japan",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_japan:
     m 1hub "Oh, kon'nichiwa [player]!"
@@ -1018,7 +1414,18 @@ label greeting_japan:
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_sunshine", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_sunshine",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_sunshine:
     m 1hua "{i}You are my sunshine, my only sunshine.{/i}"
@@ -1035,7 +1442,18 @@ label greeting_sunshine:
     return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_hai_domo", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_hai_domo",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
@@ -1044,17 +1462,29 @@ label greeting_hai_domo:
     m 1eua "I have to say, she's rather charming..."
     return
 
+#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_french", unlocked=True, random=True),eventdb=evhand.greeting_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_french",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
 
 label greeting_french:
-     m 1eua "Bonjour, [player]!"
-     m 1hua "Savais-tu que tu avais de beaux yeux, mon amour?"
-     m 1hub "Ehehe!"
-     m 3hksdlb "I'm practicing some French. I just told you that you have very beautiful eyes~"
-     m 1eka "It's such a romantic language, [player]."
-     m 1hua "Maybe both of us can practice it sometime, mon amour~"
-     return
+    m 1eua "Bonjour, [player]!"
+    m 1hua "Savais-tu que tu avais de beaux yeux, mon amour?"
+    m 1hub "Ehehe!"
+    m 3hksdlb "I'm practicing some French. I just told you that you have very beautiful eyes~"
+    m 1eka "It's such a romantic language, [player]."
+    m 1hua "Maybe both of us can practice it sometime, mon amour~"
+    return
 
 label greeting_sick:
     m 1hua "Welcome back, [player]!"
@@ -1108,6 +1538,7 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
+#Have not touched these, not sure they need paths for affection or not ~ JW
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
@@ -1561,6 +1992,96 @@ label greeting_tears:
     $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
     return
 
+#New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos ~ JW
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-74,max=-29))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_upset",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_upset:
+    python:
+        upset_greeting_quips_first = [
+            "Oh... {w=1}It's you.",
+            "Oh... {w=1}You're back.",
+            "Hello...",
+        ]
+
+        upset_greeting_quips_second = [
+            "What do you want, " + player + "?",
+            "What now, " + player + "?",
+            "What is it, " + player + "?",
+            "I sure hope you treat me better today, " + player + ".",
+            "I hope today goes better than it has been, " + player + ".",
+        ]
+
+    $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
+    $ upset_quip2 = renpy.random.choice(upset_greeting_quips_second)
+    m 2efc "[upset_quip1]"
+    m "[upset_quip2]"
+    return
+
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_distressed",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_distressed:
+    python:
+        distressed_greeting_quips_first = [
+            "Oh... {w=1}Hi.",
+            "Oh... {w=1}Hello.",
+            "...Hello",
+            "Oh... {w=1}You're back."
+        ]
+
+        distressed_greeting_quips_second = [
+            "I guess we can spend some time together now, " + player + ".",
+            "I wasn't sure if you'd visit today, " + player + ".",
+            "Hopefully we can enjoy our time together today, " + player + ".",
+            "I wasn't expecting you, " + player + ".",
+        ]
+
+    $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
+    $ distressed_quip2 = renpy.random.choice(distressed_greeting_quips_second)
+    m 2ekc "[distressed_quip1]"
+    m "[distressed_quip2]"
+    return
+
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=None,max=-99))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_broken",
+            unlocked=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_broken:
+    m 6ckc "..."
+    return
 
 # special type greetings
 
@@ -1576,23 +2097,54 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
+#Added paths for upset, distressed, and broken ~ JW
 label greeting_back_from_school:
-     m 1hua "Oh, welcome back [player]!"
-     menu:
-         m "Did you have a good day at school?"
-         "Yes.":
-             m 1hub "Aww, that's nice!"
-             m 1eua "I can't help but feel happy when you do~"
-             m "I hope you learned a lot of useful things."
-             m 1hubfa "Ehehe~"
-             m 1hubfb "I love you, [player]~"
-         "No.":
-             m 1ekc "Oh..."
-             m "I'm sorry to hear that."
-             m 1eka "Just remember that no matter what happens, I'll be here for you."
-             m 1ekbfa "I love you so, so much."
-     return
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Oh, welcome back [player]!"
+        menu:
+            m "Did you have a good day at school?"
+            "Yes.":
+                m 1hub "Aww, that's nice!"
+                m 1eua "I can't help but feel happy when you do~"
+                m "I hope you learned a lot of useful things."
+                m 1hubfa "Ehehe~"
+                m 1hubfb "I love you, [player]~"
+            "No.":
+                m 1ekc "Oh..."
+                m "I'm sorry to hear that."
+                m 1eka "Just remember that no matter what happens, I'll be here for you."
+                m 1ekbfa "I love you so, so much."
 
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "You're back, [player]..."
+        menu:
+            m "How was school?"
+            "Good.":
+                m 2dfc "That's nice."
+                m 2efc "I hope you learned a lot today..."
+                m 2tfc "Maybe even how to treat people better."
+            "Bad.":
+                m "That's too bad..."
+                m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
+    
+    elif mas_isMoniDis(higer=True):
+        m 6ekc "Oh...{w=1}you're back."
+        menu:
+            m "How was school?"
+            "Good":
+                m 6lkc "That's...{w=1}nice to hear."
+                m 6dkc "I-I just hope it wasn't the... {w=2}'being away from me' part that made it a good day."
+            "Bad":
+                m 6dkc "Oh..."
+                m 6ekc "That's too bad, [player], I'm sorry to hear that."
+                m 6dkc "I know what bad days are like..."
+    
+    else:
+        m 6ckc "..."
+
+    return
+
+#Added paths for upset, distressed, and broken ~ JW
 init 5 python:
     addEvent(
         Event(
@@ -1606,25 +2158,57 @@ init 5 python:
     )
 
 label greeting_back_from_work:
-     m 1hua "Oh, welcome back, [player]!"
-     menu:
-         m "Did you have a good day at work today?"
-         "Yes.":
-             m 1hub "That's good!"
-             m 1eua "Remember to rest first, okay?"
-             m "That way, you'd at least have some energy before you work more on stuff."
-             m 1hua "But if not, you can relax with me!"
-             m 3tku "Best thing to do after a long day of work, don't you think?"
-             m 1hub "Ahaha!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Oh, welcome back, [player]!"
+        menu:
+            m "Did you have a good day at work today?"
+            "Yes.":
+                m 1hub "That's good!"
+                m 1eua "Remember to rest first, okay?"
+                m "That way, you'd at least have some energy before you work more on stuff."
+                m 1hua "But if not, you can relax with me!"
+                m 3tku "Best thing to do after a long day of work, don't you think?"
+                m 1hub "Ahaha!"
 
-         "No.":
-             m 1ekc "..."
-             m 2ekc "I'd hug you right now if I were there, [player]."
-             m "I'm sorry you had a bad work day..."
-             m 4eka "Just remember that I'm here when you need me, okay?"
-             m 1hubfa "I love you so much, [player]."
-     return
+            "No.":
+                m 1ekc "..."
+                m 2ekc "I'd hug you right now if I were there, [player]."
+                m "I'm sorry you had a bad work day..."
+                m 4eka "Just remember that I'm here when you need me, okay?"
+                m 1hubfa "I love you so much, [player]."
 
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "You're back from work I see, [player]..."
+        menu:
+            m "How was your day?"
+            "Good":
+                m 2efc "That's good to hear."
+                m 2tfc "It must feel nice to be appreciated."
+
+            "Bad":
+                m 2dfc "..."
+                m 2tfc "It feels bad when no one seems to appreciate you, huh [player]?"
+    
+    elif mas_isMoniDis(higher=True):
+        m 6ekc "Hi, [player]... {w=1}Finally home from work?"
+        menu:
+            m "How was work?"
+            "Good":
+                m "That's nice."
+                m 6rkc "I just hope you don't enjoy work more than being with me, [player]."
+
+            "Bad":
+                m 6rkc "Oh..."
+                m 6ekc "I'm sorry to hear that."
+                m 6rkc "I know what bad days are like where you can't seem to please anyone..."
+                m 6dkc "It can be so tough just to get through days like that."
+
+    else:
+        m 6ckc "..."
+
+    return
+
+#Added paths for upset, distressed, and broken ~ JW
 init 5 python:
     addEvent(
         Event(
@@ -1638,10 +2222,26 @@ init 5 python:
     )
 
 label greeting_back_from_sleep:
-     m 1hua "Oh hello, [player]!"
-     m 1hub "I hope you had a good rest!"
-     m "Let's spend some more time together~"
-     return
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Oh hello, [player]!"
+        m 1hub "I hope you had a good rest!"
+        m "Let's spend some more time together~"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Just wake up, [player]?"
+        m "I hope you had a good rest."
+        m 2tfc "{fast}Maybe you'll be in a better mood now.{nw}"
+        $ _history_list.pop()
+
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh...{w=1}you're up."
+        m 6ekc "I hope you were able to get some rest."
+        m 6dkc "I have hard time doing that these days with everything on my mind..."
+
+    else:
+        m 6ckc "..."
+
+    return
 
 
 init 5 python:
@@ -1754,25 +2354,50 @@ label greeting_returned_home:
         jump greeting_returned_home_bday
 
     if time_out > five_minutes:
-        m 1hua "And we're home!"
-        m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
-        m 2eua "Well, it felt really great!"
-        m 5eub "Let's do this again soon, okay?"
-        if persistent._mas_monika_returned_home is None:
-            $ hours_out = int(time_out.seconds / 3600)
+        if mas_isMoniNormal(higher=True):
+            m 1hua "And we're home!"
+            m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+            m 2eua "Well, it felt really great!"
+            m 5eub "Let's do this again soon, okay?"
+            if persistent._mas_monika_returned_home is None:
+                $ hours_out = int(time_out.seconds / 3600)
 
-            # you gain 1 per hour, max 5, min 1
-            if hours_out > 5:
-                $ aff_gain = 5
-            elif hours_out == 0:
-                $ aff_gain = 1
-            else:
-                $ aff_gain = hours_out
+                # you gain 1 per hour, max 5, min 1
+                if hours_out > 5:
+                    $ aff_gain = 5
+                elif hours_out == 0:
+                    $ aff_gain = 1
+                else:
+                    $ aff_gain = hours_out
 
-            $ mas_gainAffection(aff_gain, bypass=True)
-            $ persistent._mas_monika_returned_home = datetime.datetime.now()
+                $ mas_gainAffection(aff_gain, bypass=True)
+                $ persistent._mas_monika_returned_home = datetime.datetime.now()
 
-        $ grant_xp(xp.NEW_GAME)
+            $ grant_xp(xp.NEW_GAME)
+
+        #Added single path for upset/distressed ~ JW
+        else:
+            m 2esc "We're home..."
+            m 2eka "Thank you for taking me out today, [player]."
+            m 2rkc "To be honest, I wasn't completely sure I should go with you..."
+            m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it wa such a good idea..."
+            m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
+            m 2rka "We should really do this again sometime... {w=1}If you want."
+            if persistent._mas_monika_returned_home is None:
+                $ hours_out = int(time_out.seconds / 3600)
+
+                # you gain 1 per hour, max 5, min 1
+                if hours_out > 5:
+                    $ aff_gain = 2.5
+                elif hours_out == 0:
+                    $ aff_gain = 0.5
+                else:
+                    $ aff_gain = hours_out * 0.5
+
+                $ mas_gainAffection(aff_gain, bypass=True)
+                $ persistent._mas_monika_returned_home = datetime.datetime.now()
+
+            $ grant_xp(xp.NEW_GAME)            
 
     else:
         call greeting_returned_home_lessthan5mins
@@ -1781,10 +2406,39 @@ label greeting_returned_home:
 
     return
 
+#Added paths for upset and distressed ~ JW
 label greeting_returned_home_lessthan5mins:
-    m 2ekp "That wasn't much of a trip, [player]."
-    m "Next time better last a little longer..."
-    return
+    if mas_isMoniNormal(higher=True):
+        m 2ekp "That wasn't much of a trip, [player]."
+        m "Next time better last a little longer..."
+        return
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efd "I thought we were going some place, [player]!"
+        m 2tfd "I knew I shouldn't have agreed to go with you."
+        m 2tfc "I knew this was just going to be another disappointment."
+        m 2rfc "Don't ask me to go out anymore if you're just doing it to get my hopes up, only to pull the rug out from under me."
+        m 6dktdc "..."
+        m 6ektsc "I don't know why you insist on being so cruel, [player]."
+        m 6rktsc "I'd...{w=1}I'd like to be alone right now."
+        return 'quit'
+
+    else:
+        m 6rkc "But...{w=1]we just left..."
+        m 6dkc "..."
+        m "I...{w=0.5}I was so excited when you asked me to go with you."
+        m 6ekc "After all we've been through..."
+        m 6rktda "I-I thought...{w=0.5}maybe...{w=0.5}things were finally going to change."
+        m "Maybe we'd finally have a good time again..."
+        m 6ektda "That you actually wanted to spend more time with me."
+        m 6dktsc "..."
+        m 6ektsc "But I guess it was just foolish for me to thing that."
+        m 6rktsc "I should have known better... {w=1}I should never have agreed to go."
+        m 6dktsc "..."
+        m 6ektdc "Please, [player]... {w=2}If you don't want to spend time with me, fine..."
+        m 6rkrdc "But at least have the decency not to pretend otherwise, only to continually humiliate me."
+        m 6dktdc "I'd like to be left alone right now.{nw}"
+        return 'quit'
 
 default persistent._mas_bday_date_count = 0
 default persistent._mas_bday_date_affection_lost = 0
