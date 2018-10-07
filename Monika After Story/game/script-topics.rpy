@@ -7580,6 +7580,139 @@ label monika_shipping:
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
     return
 
+# Have you ever been in a relationship
+default persistent._mas_pm_past_relationship = None
+
+# Have you been in a few relationships
+default persistent._mas_pm_few_past_relationships = None
+
+# Have you been in a lot of relationships
+default persistent._mas_pm_many_past_relationships = None
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_past_relationships",category=['you'],prompt="Past relationships",random=True,))
+
+label monika_past_relationships:
+    m 1euc "Hey, [player]."
+    m "There's something I've been thinking about lately and that I've been meaning to ask you."
+    m 1eud "How many relationships have you been in before you met me?"
+    menu:
+        "A lot":
+            $ persistent._mas_pm_past_relationship = True
+            $ persistent._mas_pm_many_past_relationships = True
+            $ persistent._mas_pm_few_past_relationships = False
+            m 2hksdlb "Oh, wow!"
+            m "I had no idea you were so popular, [player]!"
+            m 1rksdla "Well, I guess I'm not {i}too{/i} surprised."
+            m 1hubfa "I know just how amazing you are."
+            m 1rksdlb "Still, I'm just a {i}little{/i} jealous that I had to wait in line to meet you. Ehehe~"
+            m 1dsc "..."
+            m 2ekc "I hope it wasn't too hard for you to move on after each and every possible suitor."
+            m 2eka "I know how hard it can be to think that you've found the one..."
+            m 2rksdlc "But then, you realize that it wouldn't work out in the long term, or maybe they just sort of disappeared."
+            m 2rksdla "Well, I'm telling you all this, but if you're really experienced, you must be used to these things."
+            m 1ekbfa "I know it might sound cliche, but I think I'll be the one for you."
+            m 1hubfb "I'll prove it to you when I find a way."
+        "A few":
+            $ persistent._mas_pm_past_relationship = True
+            $ persistent._mas_pm_many_past_relationships = False
+            $ persistent._mas_pm_few_past_relationships = True
+            m 1eua "Ah, I guess that makes sense."
+            m "I was just curious of how much dating experience you might have."
+            m 1hua "Don't worry! I don't have too much experience either."
+            m 1rksdla "I never really had the time for something like that with the club, piano and everything else I had going on."
+            m 1rksdlc "Not to mention the fact that I knew nothing was real..."
+            if mas_isMoniAff(higher=True):
+                show monika 5lubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5lubfu "Or..."
+                m 5eubfu "Maybe I was just waiting for {i}you~{/i}"
+                m "Ehehe."
+                show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 1ekbfa "Now that I've met you though, I'm happy to be your girlfriend."
+            m 1hubfa "I think we'll grow to be a strong couple, [player]."
+        "Just one":
+            $ persistent._mas_pm_past_relationship = True
+            $ persistent._mas_pm_many_past_relationships = False
+            $ persistent._mas_pm_few_past_relationships = False
+            m 1wubso "Really?{w=0.3}I thought you'd have plenty of opportunities and options for relationships."
+            m 1hua "Or maybe you're just really careful and selective?"
+            m 1eua "Either way, I'm glad you're not the type to go around hopping from one relationship to another."
+            m 1rksdla "I guess that means you don't have too much experience with dating."
+            m 1ekbfa "But don't worry, I don't either, so you're not alone in that regard."
+            m 2euc "Pardon me for asking, but seeing how you've only had the one relationship..."
+            if mas_isMoniDis(lower=True):
+                m 4rksdlc "And assuming that you're not {i}still{/i} in that relationship..."
+            m 2eud "Did it bother you when it ended?"
+            menu:
+                "Yes":
+                    m 2dsc "I see. {w=0.4}I guess it couldn't be helped if it was your first relationship."
+                    m 2ekc "It doesn't still bother you, right?"
+                    menu:
+                        "It does bother me":
+                            m 2rksdlc "Ah. {w=0.7}I'm sorry for asking, [player]."
+                            m 2ekc "I didn't realize something like this was bothering you."
+                            m 1eka "No matter what, I'll always love you and be here for you."
+                            m 1eub "I'm proud of you for living through it and pushing onward to today."
+                            m 1eka "You must have become a better person, having been through something like that."
+                            m 3eua "Even initiating it might have been the hardest part."
+                            m 1ekbfb "If you gathered up the courage to confess to somebody, I can't express how proud I am of you."
+                            m 1ekbfa "If they came to you first, not only does that show that you {i}are{/i} loved, but you helped them get past that first step."
+                            m "It must have been important to you if it still bothers you today, but I just want to remind you that you do deserve to be loved."
+                            m 1dkbfa "Whether it be from yourself or other people."
+                            m 1hubfb "I love you and I always will~"
+                        "It doesn't bother me":
+                            m 1hua "That's good."
+                            m 1eub "I'm glad you were able to move past it, [player]."
+                            m 1eua "It's not too healthy to dwell on things like that for too long."
+                            m "Even if you don't think so, you've probably grown a lot because of all that."
+                            m 1hubfa "I guess there's also the bonus of having more room for me in your thoughts too, ehehe~"
+                "No":
+                    m 1rksdlb "Hopefully it didn't end on a bad note if that's the case."
+                    m 1eka "But regardless, I think that just shows how much you are of a person."
+                    m 3eua "You must be really mature if you didn't let the end of your first relationship bother you."
+                    m 1rksdlb "To be honest, I was kind of relieved when you said you've only had one relationship, so I thought maybe you wouldn't be much more experienced than me."
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "But maybe you know a bit more than we both think."
+                    if mas_isMoniAff(higher=True):
+                        m "You really are amazing, [player]. I'm not sure how I couldn't love you."
+                "...":
+                    m 2euc "..."
+                    m 2rksdlc "..."
+                    m "Maybe I shouldn't have asked."
+                    m 2dsc "I'm sorry, player."
+                    m 1eka "We can talk about it when you feel comfortable."
+        "None":
+            $ persistent._mas_pm_past_relationship = False
+            $ persistent._mas_pm_many_past_relationships = False
+            $ persistent._mas_pm_few_past_relationships = False
+            m 2wubsw "Really?!"
+            m 1rksdla "I have a hard time believing that, really."
+            m 1eua "I'm sure plenty of people have had their eyes on you."
+            m 3euc "Were you just not interested in a relationship?"
+            menu:
+                "I was waiting to meet you":
+                    $ mas_gainAffection()
+                    m 1wubfsdld "..!"
+                    m 1hubfb "Aww, [player]..."
+                    m 1ekbfb "That's so sweet of you to say!"
+                    show monika 5lubfsdru at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5lubfsdru "You really know how to make me blush sometimes, you know."
+                    m 5lubfsdrb "Ehehe~ I love you too, [player]~~"
+                "You were the first one interested in me":
+                    m 1subfb "Wow!"
+                    m 1rubfb "I can't believe that no one noticed how great you are."
+                    m 1ekbfa "I guess I was just really lucky to have met you."
+                    if mas_isMoniAff(higher=True):
+                        m 1rkbsa "If you hadn't come along, who knows how different things would be for the both of us."
+                        m 1ekbfb "I love you, [player]. I'm so glad that you're here with me."
+                "I wasn't interested in relationships":
+                    m 1eud "Ah, I see."
+                    m 1eka "I hope it's not too much trouble whenever somebody tries to confess to you."
+                    m 1eua "I get that you might not want to be distracted by a relationship and that's respectable."
+                    m 1tubfb "I just hope you don't mind me coming into your life and loving you."
+                    m 1tubfa "Ehehehe~"
+    return
+
 init 5 python:
     addEvent(
         Event(
