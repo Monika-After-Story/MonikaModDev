@@ -431,7 +431,7 @@ label mas_scary_story_setup:
     $ morning_flag = True
     #stop music fadeout 1.0
     play background audio.rain fadein 1.0 loop
-
+    show vignette zorder 13
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -479,14 +479,93 @@ label mas_scary_story_cleanup:
 # TODO Replace placeholders once the flow works
 # These are placeholders
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_closed_eyes",
-    category=[store.mas_stories.TYPE_SCARY], prompt="Don't close your eyes",unlocked=True),
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
     eventdb=store.mas_stories.story_database)
 
-label mas_story_closed_eyes:
+label mas_scary_story_hunter:
     call mas_scary_story_setup
-    m 3euc "If you get scared at night, don’t keep your eyes closed for too long."
-    m "There’s a reason you’re scared, and now you can’t see it approach."
+    m 3euc "One day, a hunter went out hunting for game out in the forest."
+    m "The forest was dense and dark all around him and he struggled to hit his mark."
+    m "He was soon approached by a salesman, who kept his face covered."
+    m "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
+    m "He would give the hunter these bullets on one condition."
+    m "The hunter could use the first six bullets as he wished, but the last bullet’s mark would be chosen by the salesman."
+    m "The hunter agreed and quickly became famous in his town for bringing home kill after kill without fail."
+    m "It wasn’t long before the hunter used up all six bullets."
+    m "On his next hunt, the hunter saw a wild boar and loaded the last bullet hoping to take down the beast."
+    m "When he fired, he missed and the bullet instead hit his beloved fiancée in the chest, killing her."
+    m "The salesman then suddenly appeared to the hunter while he was grieving his loss, revealing that he was in fact the devil."
+    m "He gives the hunter a chance to redeem for his mistake."
+    m "If the hunter remained faithful to his beloved who was slain for the remainder of his life, he would be reunited with her after death."
+    m "The hunter vowed to remain true to his beloved and remained faithful for a time, but soon fell in love with another girl and married her."
+    m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he comes across the spot where he slayed his beloved."
+    m "To his horror, her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
+    m "The hunter rides away in a panic."
+    m "After a short way, he looks behind him to see if she was following him any longer."
+    m "To his horror, not only had he gained no distance, she had gained on him significantly."
+    m "In his state of panic, he failed to see the branch that would strike a blow at his neck, freeing him from his horse and introducing him to the wet ground beneath him."
+    m "His attention isn't on his horse however, as the creature lopes away without him."
+    m "It is instead on the figure that now looms above him as a former vision of the one he once loved."
+    # Yuri dragon spoop
+    $ style.say_dialogue = style.edited
+    y "I'll get you too.{nw}"
+    $ style.say_dialogue = style.normal
+    m "The next morning, the villagers found the hunter dead at the edge of the forest."
+    # everything below here is just testing
+    $ style.say_dialogue = style.edited
+    m "Woooooooo"
+    $ style.say_dialogue = style.normal
+    m "Glitchesss"
+    show screen tear(20, 0.1, 0.1, 0, 40)
+    play sound "sfx/s_kill_glitch1.ogg"
+    $ pause(0.25)
+    #play music t7g
+    stop sound
+    hide screen tear
+    m "le glitches"
+    $ timeleft = 0
+    # "mibulls sailcloth blindsight lifeline anan rectipetality faultlessly offered scleromalacia neighed catholicate"
+    #show noise zorder 13 at noise_alpha
+    #show natsuki mouth as nm zorder 3 at i33
+    #show n_moving_mouth zorder 3:
+    show vignette as flicker zorder 14 at vignetteflicker(timeleft)
+    show vignette zorder 14 at vignettefade
+    show layer master at heartbeat2(3)
+    #play sound "sfx/eyes.ogg"
+    show veins zorder 18
+    stop sound
+    #play sound "sfx/eyes.ogg" loop
+    play sound "sfx/3g2.ogg" loop
+    show n_rects_ghost1 zorder 19
+    show n_rects_ghost2 zorder 19
+    show n_rects_ghost3 zorder 19
+    #show yuri dragon2 zorder 15 at malpha(0.1)
+    show yuri eyes zorder 16 at malpha(0.075)
+    show yuri eyes_base zorder 15 at malpha(0.075)
+    show yuripupils zorder 17 at malpha(0.075)
+    play sound "sfx/giggle.ogg"
+    play sound "sfx/crack.ogg"
+    #show layer master at layerflicker(timeleft)
+    #show layer master
+    show layer screens
+    m "moni"
+    m "moni"
+    m "moni"
+    m "moni"
+    m "moni"
+    m "moni"
+    m "moni"
+    m "moni"
+    m "now le blood"
+    show blood zorder 16:
+        pos (570,195)
+    $ pause(2.5)
+    #hide blood
+    m "bloody eye"
+    m "moni"
+    m "moni"
     call mas_scary_story_cleanup
     return
 
