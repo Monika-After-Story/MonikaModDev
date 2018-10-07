@@ -7244,7 +7244,7 @@ label monika_dating:
     m 1eud "How much dating experience do you have?"
     m 1lud "Like... have you ever been in a relationship before?"
     menu:
-       m "Maybe more than once?"
+        m "Maybe more than once?"
         "Yes, I've been through plenty...":
             m 1ekd "Aww I'm so sorry [player]..."
             m 6lkc "You've been through many heart breaks haven't you..." 
