@@ -270,13 +270,14 @@ label monika_read_file:
         while count <= len(individualLines)-1:
 
             #Expression handling
+            randExp = renpy.random.randint(0,3)
+
             badPhrases = badPhrasesSearch.search(individualLines[count])
             if badPhrases is None:
                 goodPhrases = goodPhrasesSearch.search(individualLines[count])
                 #Just the good
                 if goodPhrases is not None:
                     goodCount += 1
-                    randExp = renpy.random.randint(0,3)
 
                     if randExp == 0:
                         renpy.show("monika 1hua")
@@ -288,7 +289,6 @@ label monika_read_file:
                         renpy.show("monika 2eka")
                 #If nothing good/bad was said
                 else:
-                    randExp = renpy.random.randint(0,2)
 
                     #Overall opinion is very good
                     if goodCount - badCount > 5:
@@ -326,8 +326,6 @@ label monika_read_file:
             #And the bad
             else:
                 badCount += 1
-
-                randExp = renpy.random.randint(0,3)
 
                 if randExp == 0:
                     renpy.show("monika 1efc")
