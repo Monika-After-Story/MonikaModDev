@@ -5995,6 +5995,19 @@ image monika 2rkc = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2rka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9862,6 +9875,46 @@ image monika 6eua = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6ekc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dktdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
 image monika 6dua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9945,6 +9998,34 @@ image monika 6dksdla = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 6dktdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6dktsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
+)
+
 image monika 6ektda = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9985,6 +10066,34 @@ image monika 6rktsc = DynamicDisplayable(
     right="1r",
     arms="down",
     tears="streaming"
+)
+
+image monika 6rktda = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6rktdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
 )
 
 image monika 6rksdlc = DynamicDisplayable(

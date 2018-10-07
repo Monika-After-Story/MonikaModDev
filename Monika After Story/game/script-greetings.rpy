@@ -899,7 +899,7 @@ label greeting_monika_monday_morning:
 
     elif mas_isMoniDis(higher=True):
         m 6ekc "Oh...{w=1}it's Monday."
-        m 6dkc"I almost lost track of what day it was..."
+        m 6dkc "I almost lost track of what day it was..."
         m 6rkc "Mondays are always tough, but no day has been easy lately..."
         m 6dkc "I sure hope this week goes better than last week, [player]."
 
@@ -2126,7 +2126,7 @@ label greeting_back_from_school:
             "Bad.":
                 m "That's too bad..."
                 m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
-    
+
     elif mas_isMoniDis(higer=True):
         m 6ekc "Oh...{w=1}you're back."
         menu:
@@ -2138,7 +2138,7 @@ label greeting_back_from_school:
                 m 6dkc "Oh..."
                 m 6ekc "That's too bad, [player], I'm sorry to hear that."
                 m 6dkc "I know what bad days are like..."
-    
+
     else:
         m 6ckc "..."
 
@@ -2188,7 +2188,7 @@ label greeting_back_from_work:
             "Bad":
                 m 2dfc "..."
                 m 2tfc "It feels bad when no one seems to appreciate you, huh [player]?"
-    
+
     elif mas_isMoniDis(higher=True):
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
         menu:
@@ -2398,7 +2398,7 @@ label greeting_returned_home:
                 $ mas_gainAffection(aff_gain, bypass=True)
                 $ persistent._mas_monika_returned_home = datetime.datetime.now()
 
-            $ grant_xp(xp.NEW_GAME)            
+            $ grant_xp(xp.NEW_GAME)
 
     else:
         call greeting_returned_home_lessthan5mins
@@ -2439,7 +2439,7 @@ label greeting_returned_home_lessthan5mins:
         m 6rktsc "I should have known better... {w=1}I should never have agreed to go."
         m 6dktsc "..."
         m 6ektdc "Please, [player]... {w=2}If you don't want to spend time with me, fine..."
-        m 6rkrdc "But at least have the decency not to pretend otherwise, only to continually humiliate me."
+        m 6rktdc "But at least have the decency not to pretend otherwise, only to continually humiliate me."
         m 6dktdc "I'd like to be left alone right now."
         return
 
