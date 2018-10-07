@@ -9901,20 +9901,6 @@ image monika 6dkc = DynamicDisplayable(
     arms="down"
 )
 
-image monika 6dktdc = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    head="a",
-    left="1l",
-    right="1r",
-    arms="down",
-    tears="dried"
-)
-
 image monika 6dua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
