@@ -365,6 +365,9 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
+
+    $ disable_esc()
+
     python:
         import store.mas_hangman as mas_hmg
         is_sayori = (
@@ -492,6 +495,7 @@ label mas_hangman_game_loop:
     $ done = False
     $ win = False
     $ chances = 6
+    $ guesses = 0
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
 
@@ -629,7 +633,7 @@ label mas_hangman_game_loop:
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
-                if chances == 6:
+                if guesses == 0:
                     m "I thought you said you wanted to play [store.mas_hangman.game_name]."
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
@@ -643,6 +647,7 @@ label mas_hangman_game_loop:
                         m "I mean, you'd have to miss [chances] more letter to actually lose."
                 m 1eka "Can you play to the end next time, [player]? For me?"
             else:
+                $ guesses += 1
                 python:
                     if guess in word:
                         for index in range(0,len(word)):
@@ -710,6 +715,8 @@ label mas_hangman_game_end:
         call mas_hangman_dlg_game_end_short from _mas_hangman_dges
     else:
         call mas_hangman_dlg_game_end_long from _mas_hangman_dgel
+
+    $ enable_esc()
 
     return
 
