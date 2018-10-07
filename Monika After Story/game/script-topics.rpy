@@ -7259,7 +7259,7 @@ label monika_dating:
             m 5ekbfa "Will you be mine?"
         
         "Yes, but only once":
-            m 1ekb "Ah, not a lot of experience huh?"
+            m 1eka "Ah, not a lot of experience huh?"
             m 2eka "That's okay [player], I can relate too so don't worry"
             m 3ekb "Yeah I may appear like a girl who gets all the guys but really I don't ahaha!"
             m 2lksdlb "Especially with how occupied I've kept myself over the years I just never had the time"
