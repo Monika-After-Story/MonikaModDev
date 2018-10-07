@@ -6555,6 +6555,89 @@ label monika_beach:
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_trick",category=['club members'],prompt="[player]'s Second Choice",random=True))
+
+label monika_trick:
+    m 1eua "Say [player], I have a question..."
+    m 1ekc "I hope I don't sound insecure when I say this..."
+    m 1euc "If you {i}really{/i} had to choose one of the other club members to be with..."
+    show screen mas_background_timed_jump(10, "monika_trick_2")
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+        "Sayori":
+            jump monika_trick_sayori
+        "Natsuki":
+            jump monika_trick_natsuki
+    return
+
+label monika_trick_2:
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+        "Sayori":
+            jump monika_trick_sayori
+        "Natsuki":
+            jump monika_trick_natsuki
+        "Monika":
+            jump monika_trick_monika
+
+label monika_trick_yuri:
+    hide screen mas_background_timed_jump
+    m 3euc "Yuri, huh? I can see why."
+    m "She's quite intelligent and physically attractive too."
+    m 1rkc "Although socially speaking, she is kind of lacking..."
+    m "Without her reclusiveness, she'd be a lot more similar to me, you know?"    
+    m 1dsc "..."
+    m 2hub "Ahaha!" 
+    m 4eua "There's no need for me to be jealous."
+    m 5eua "You love me and I love you and that's all that matters."
+    m 5eub "But it does make you wonder the possibilities when someone you know is a lot more different than how you know them."
+    return
+
+label monika_trick_natsuki:
+    hide screen mas_background_timed_jump
+    m 3eud "Oh, Natsuki?"
+    m "Do you feel a connection with her because of her hobbies and interests?"
+    m 3ekc "Or perhaps you feel a bit of pity because of her situation?"
+    m 2dsc "I do have to say that she's quite a tough girl."
+    m 2rkc "Enduring that kind of father..."
+    m 4ekd "You just can't help but feel bad for her."
+    m 1euc "Not to mention that you can't deny how admirable her confidence and personality is."
+    m 1rkslda "Sometimes, I get a bit jealous of her ability to display it without fear."
+    m 3hub "And did I mention how good she is at baking?"
+    m "Ahaha!"
+    return
+
+label monika_trick_sayori:
+    hide screen mas_background_timed_jump
+    m 1rkc "Aha, dear Sayori..."
+    m 3eksdla "The main character ending up with the childhood friend."
+    m "It's a common trope you see in a lot of visual novels, manga, etc."
+    m 2euc "But it doesn't make sense to me at times when there's no backstory explained on what makes that kind of friendship very special."
+    m 2dsc "It's sloppy writing, if you ask me."
+    m 4tkc "Don't you think it's better to see what made you close with her in the first place, [player]?"
+    m 1hua "Ehehe, anyway."
+    m 3eua "Sayori's just a bundle of fun, to be honest."
+    m 1euc "She can be a bit of an airhead sometimes, but she's very cheerful most of the time."
+    m 1esc "A bit tragic when you find out about her mental condition, though."
+    m "If you think about it, she could've just been a bubbly, cute girl."
+    m 2dsc "But that's not what her creator wanted, sadly."
+    return
+
+label monika_trick_monika:
+    hide screen mas_background_timed_jump
+    $ mas_gainAffection()
+    m 1hub "Ehehe~"
+    m 3hua "Correct answer, [player]!"
+    m 3eka "I was curious if you would try to find my choice."
+    m 1ekbfa "And it makes me really happy that you were patient enough for it~"
+    m 1hubfa "I love you~!"
+    return
 
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
