@@ -125,7 +125,7 @@ init -1 python in mas_greetings:
         )
 
         # update dict with the affection filtered ones
-        random_greetings_dict.update(affection_greetings_dict)
+        #random_greetings_dict.update(affection_greetings_dict)
 
         # select one randomly
         return random_greetings_dict[

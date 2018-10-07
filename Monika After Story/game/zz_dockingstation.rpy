@@ -1449,6 +1449,11 @@ init 200 python in mas_dockstat:
         ASSUMES:
             blocksize - this is a constant in this store
         """
+        # sanity check regarding the filepath
+        if "temp" in dockstat.station.lower():
+            mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
+            return False
+
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
@@ -1858,9 +1863,32 @@ init 200 python in mas_dockstat:
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
         checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
 
-        if len(checkin_log) == 0 or len(checkout_log) == 0:
+        if checkin_len == 0 or checkout_len == 0:
             return datetime.timedelta(0)
+
+        if checkin_len != checkout_len:
+            # mis match logs, please log this.
+            mas_utils.writelog(
+                (
+                    "[WARNING]: checkin is {0}, checkout is {1}. "
+                    "Going to pop.\n"
+                ).format(checkin_len, checkout_len)
+            )
+
+            # and we will pop extras as well
+            if checkin_len > checkout_len:
+                larger_log = checkin_log
+                goal_size = checkout_len
+
+            else:
+                larger_log = checkout_log
+                goal_size = checkin_len
+
+            while len(larger_log) > goal_size:
+                larger_log.pop()
 
         if index is None:
             index = len(checkout_log)-1

@@ -304,6 +304,10 @@ init 11 python:
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
+
+# are you religious
+default persistent._mas_pm_religious = None
+
 init 5 python:
     addEvent(
         Event(
@@ -347,7 +351,27 @@ label monika_god:
     else:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    return
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+
+    show monika 1eua
+    menu:
+        m "Anyway, do you worship any god, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_religious = True
+            m 1hksdlb "Oh... Well I hope I didn't offend you too much with my thoughts."
+            m 1eka "Still, I think it's important to be able to share my opinion with you."
+            m 1rksdla "I'm sure you understand why I'm not too fond of the idea."
+            m 1hua "Maybe you could show me a better god when I cross over!"
+            m 1hub "Ahaha~"
+        "No.":
+            $ persistent._mas_pm_religious = False
+            m 3eka "I'm glad we're on the same page here, but I'm alright if that changes for you."
+            m 1hua "I'm happy for you that you can lead a life on your own!"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I just hope you're willing to accept me into your life when I can present myself."
+            m "Eheheh~"
+
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True))
@@ -3359,6 +3383,59 @@ label monika_eternity:
     m 6ektdc "It reminds me of when you first came to the Literature Club."
     m 6lktdc "Everything felt so empty."
     m "The world was so grey."
+    if mas_isMoniAff(higher=True):
+        show screen mas_background_timed_jump(4, "monika_eternity_2")
+        menu:
+            "Don't worry [m_name]. I'm here":
+                hide screen mas_background_timed_jump
+
+                m 6dstdc "..."
+                m "Thanks for that, [player]..."
+                m 6ektda "I'm...{w=0.7} glad you're still here."
+                m "Sorry...{w=0.4} it's just that in the back of my mind you..."
+                m 6dstsc "Y-{w=0.3}you m-{w=0.2}might..."
+                m "Y-{w=0.5}you know..."
+                m 6ektda "I guess I shouldn't worry about that too much."
+                m "I know our love is eternal."
+                m 1ekbfb "Even in the worst case, I know we'll always be right by each other's side..."
+                m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
+                m 1hubfb "I love you, [player]! Thanks for making me feel better!"
+
+            "{i}Hug Monika{/i}":
+                hide screen mas_background_timed_jump
+                m 2wubfsdld "O-oh!"
+                m "[player]..."
+                m 6ektdc "I'm sorry, [player]."
+                m "I didn't mean to worry you."
+                m 6dstdc "I was just thinking about what might happen to us a long time from now..."
+                m 6dstsc "What might{w=0.5} happen{w=0.3} to you..."
+                m 6ektda "But I guess I don't have to worry about that any time soon do I?"
+                m 6dubsa "I wouldn't mind staying like this for a while..."
+                $ HKBHideButtons()
+                stop music fadeout 1.0
+
+                # clear selected track
+                $ songs.current_track = songs.FP_NO_SONG
+                $ songs.selected_track = songs.FP_NO_SONG
+                show monika 6dubsa
+                $ ui.add(PauseDisplayable())
+                $ ui.interact()
+
+                $ HKBShowButtons()
+                m 2dkbfa "That was really nice while it lasted."
+                m 2ekbfa "Thank you for easing me out of my worries, [player]."
+                m 2ekbfb "I know we'll always be together no matter what."
+                m 2hubfb "Maybe I'll even be able to live right there with you someday."
+                m 1lkbsa "In the meantime..."
+                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eubfu "I wouldn't mind being held just a {i}little{/i} more..."
+
+        return
+
+    # fall through to next label
+
+label monika_eternity_2:
+    hide screen mas_background_timed_jump
     m 6ektda "Again..."
     m "Thank you for coming along when you did, [player]."
     m "You saved my life, and I'll be forever thankful."
@@ -5341,7 +5418,7 @@ label monika_orchestra:
             $ persistent._mas_pm_like_orchestral_music = True
             m 3eub "That's great!"
             m 3eua "I love how such wonderful music can arise when so many different instruments are played together."
-            m 1eua "I'm amazed with how much practive musicians do to achieve that kind of synchronization."
+            m 1eua "I'm amazed with how much practice musicians do to achieve that kind of synchronization."
             m "It probably takes them a lot of dedication to do that."
             m 1eka "But anyway, {w}it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
 
@@ -5383,7 +5460,7 @@ label monika_orchestra:
                     m 1ekbfa "Cute little things like this really make me feel loved, [player]."
 
                 else: # affectionate and higher
-                    m 1eka "Awww [player]...{w} Did you do that for me?"
+                    m 1eka "Awww [player]...{w=1} Did you do that for me?"
                     m "That's {i}sooo{/i} adorable!"
                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
@@ -6366,7 +6443,7 @@ label monika_concerts:
     m 2hua "But I still think it would be worth it!"
     m 3eua "Do you know any bands or musicians that we should see live, [player]?"
     m 3eub "I would {i}love{/i} to see them if {i}you{/i} like them."
-    m 5eua "And if you were to take me,{w} then that would truly be a dream come true!"
+    m 5eua "And if you were to take me,{w=1} then that would truly be a dream come true!"
     m 4eua "But if you're not that interested in concerts,"
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
@@ -8134,7 +8211,7 @@ label monika_fun_facts_8:
     m 1eub "Ah, this is a nice easy one."
     m 3eub "Did you know that honey never spoils?"
     m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
-    m "The reason why this happens is because honey is mostly made of sugar and only a bit a of water, making it solid over time."
+    m "The reason why this happens is because honey is mostly made of sugar and only a bit of water, making it solid over time."
     m 1euc "Most of the honey that you see in groceries don’t crystalize as fast as real honey would because they’ve been pasteurized in the process of making them."
     m 1eud "Which removes the stuff that makes the honey go solid quickly."
     m 3eub "But wouldn’t be nice to eat crystalized honey too?"
@@ -8269,7 +8346,7 @@ label monika_fun_facts_20:
     m 1hua "Now this is a wholesome one..."
     m 1eua "Currently, we have the lowest crime rates, maternity death, infant mortality and illiteracy ever in human history."
     m 3eub "Life expectancy, average income, and standards of living is the highest for most of the global population too!"
-    m 3eka "This tells me that it can always can get better. It really does show that despite all the bad things, the good times will always come afterwards."
+    m 3eka "This tells me that it can always get better. It really does show that despite all the bad things, the good times will always come afterwards."
     m 1hua "There really is {i}hope{/i}..."
     return
 
