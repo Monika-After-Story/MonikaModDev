@@ -141,6 +141,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_sweetheart",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -161,6 +162,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_honey",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -181,6 +183,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -256,6 +259,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -340,6 +344,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back2",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -360,6 +365,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back3",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -379,6 +385,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back4",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -401,6 +408,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit2",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -421,6 +429,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit3",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -461,6 +470,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit4",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -480,6 +490,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit5",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -500,6 +511,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit6",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -520,11 +532,13 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back6",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
     )
     del rules
+
 label greeting_back6:
     m 3tku "Hey, [player]!"
     m "You really should visit me more often."
@@ -541,6 +555,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit7",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -560,6 +575,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit8",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -579,6 +595,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_visit9",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -599,6 +616,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_italian",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -622,6 +640,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -644,6 +663,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -664,6 +684,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_youtuber",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -685,6 +706,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -705,6 +727,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_welcomeback",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -724,6 +747,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_flower",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -744,6 +768,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_chamfort",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -764,6 +789,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_welcomeback2",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -784,6 +810,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_longtime",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -803,6 +830,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_sweetpea",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -823,6 +851,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_glitch",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -862,6 +891,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_surprised",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -1395,6 +1425,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_japan",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -1421,6 +1452,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_sunshine",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -1449,6 +1481,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_hai_domo",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -1471,6 +1504,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_french",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -2001,6 +2035,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_upset",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -2037,6 +2072,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_distressed",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
@@ -2073,6 +2109,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_broken",
             unlocked=True,
+            random=True,
             rules=rules
         ),
         eventdb=evhand.greeting_database
