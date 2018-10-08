@@ -423,6 +423,7 @@ label mas_story_immortal_love:
 # Scary stories start here
 label mas_scary_story_setup:
     show monika 1dsc
+    $ mas_temp_r_flag = mas_is_raining
     $ scene_change = True
     $ mas_is_raining = True
     pause 1.0
@@ -460,18 +461,16 @@ label mas_scary_story_cleanup:
         story_end_quip=renpy.random.choice(story_end_quips)
 
     m 3eua "[story_end_quip]"
+    if not mas_temp_r_flag:
+        stop background fadeout 1.0
     show monika 1dsc
     $ scene_change = True
-    $ mas_is_raining = False
+    $ mas_is_raining = mas_temp_r_flag
     pause 1.0
     hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
     call spaceroom
-    stop background fadeout 1.0
-
-    $ HKBShowButtons()
     $ store.songs.enabled = True
-
     $ HKBShowButtons()
     m 1esa "I hope you liked it, [player]~"
     return
@@ -500,72 +499,30 @@ label mas_scary_story_hunter:
     m "If the hunter remained faithful to his beloved who was slain for the remainder of his life, he would be reunited with her after death."
     m "The hunter vowed to remain true to his beloved and remained faithful for a time, but soon fell in love with another girl and married her."
     m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he comes across the spot where he slayed his beloved."
-    m "To his horror, her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rides away in a panic."
     m "After a short way, he looks behind him to see if she was following him any longer."
     m "To his horror, not only had he gained no distance, she had gained on him significantly."
     m "In his state of panic, he failed to see the branch that would strike a blow at his neck, freeing him from his horse and introducing him to the wet ground beneath him."
     m "His attention isn't on his horse however, as the creature lopes away without him."
+    show emptydesk at i11 zorder 9
     m "It is instead on the figure that now looms above him as a former vision of the one he once loved."
-    # Yuri dragon spoop
-    $ style.say_dialogue = style.edited
-    y "I'll get you too.{nw}"
-    $ style.say_dialogue = style.normal
-    m "The next morning, the villagers found the hunter dead at the edge of the forest."
-    # everything below here is just testing
-    $ style.say_dialogue = style.edited
-    m "Woooooooo"
-    $ style.say_dialogue = style.normal
-    m "Glitchesss"
-    show screen tear(20, 0.1, 0.1, 0, 40)
-    play sound "sfx/s_kill_glitch1.ogg"
-    $ pause(0.25)
-    #play music t7g
-    stop sound
-    hide screen tear
-    m "le glitches"
-    $ timeleft = 0
-    # "mibulls sailcloth blindsight lifeline anan rectipetality faultlessly offered scleromalacia neighed catholicate"
-    #show noise zorder 13 at noise_alpha
-    #show natsuki mouth as nm zorder 3 at i33
-    #show n_moving_mouth zorder 3:
-    show vignette as flicker zorder 14 at vignetteflicker(timeleft)
-    show vignette zorder 14 at vignettefade
-    show layer master at heartbeat2(3)
-    #play sound "sfx/eyes.ogg"
-    show veins zorder 18
-    stop sound
-    #play sound "sfx/eyes.ogg" loop
-    play sound "sfx/3g2.ogg" loop
-    show n_rects_ghost1 zorder 19
-    show n_rects_ghost2 zorder 19
-    show n_rects_ghost3 zorder 19
-    #show yuri dragon2 zorder 15 at malpha(0.1)
-    show yuri eyes zorder 16 at malpha(0.075)
-    show yuri eyes_base zorder 15 at malpha(0.075)
-    show yuripupils zorder 17 at malpha(0.075)
+    # Yuri dragon spoop TODO this is going to be 1 in 10 but for testing I won't add that as of now.
+
+    # hide monika so it's just yuri
+    hide monika
+    hide monika
     play sound "sfx/giggle.ogg"
-    play sound "sfx/crack.ogg"
-    #show layer master at layerflicker(timeleft)
-    #show layer master
-    show layer screens
-    m "moni"
-    m "moni"
-    m "moni"
-    m "moni"
-    m "moni"
-    m "moni"
-    m "moni"
-    m "moni"
-    m "now le blood"
-    show blood zorder 16:
-        pos (570,195)
-    $ pause(2.5)
-    #hide blood
-    m "bloody eye"
-    m "moni"
-    m "moni"
+    show yuri dragon2 zorder 15 at malpha
+    $ style.say_dialogue = style.edited
+    y "{cps=*2}I'll get you too.{/cps}{nw}"
+    hide yuri
+    $ style.say_dialogue = style.normal
+    show monika 1eua at i11 zorder MAS_MONIKA_Z
+    # spoop ends
+    m "The next morning, the villagers found the hunter dead at the edge of the forest."
+    hide emptydesk
     call mas_scary_story_cleanup
     return
 
