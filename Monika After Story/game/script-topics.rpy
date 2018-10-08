@@ -4890,7 +4890,7 @@ label monika_panties:
        
     else:
         m 1lkbfb "Are you...{w=1}into those kind of things, [player]?"
-       menu:
+        menu:
            "Yes":
                m 1ekbfb "O-oh..."
                m 1lsbssdrb "I-if you're into any of them, you could just ask me for {i}it{/i}, you know?"
