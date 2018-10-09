@@ -1000,11 +1000,17 @@ label monikaroom_greeting_choice:
     if persistent._mas_sensitive_mode:
         $ _opendoor_text = "Open the door."
 
+    if mas_isMoniBroken():
+        pause 4.0
+
     menu:
         "[_opendoor_text]" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
-            jump monikaroom_greeting_opendoor
+            if mas_isMoniBroken():
+                jump monikaroom_greeting_opendoor_locked
+            else:
+                jump monikaroom_greeting_opendoor
         "Open the door." if persistent.seen_monika_in_room:
             if persistent.opendoor_opencount > 0:
                 #Lose affection for not knocking before entering.
@@ -1020,7 +1026,7 @@ label monikaroom_greeting_choice:
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
             jump monikaroom_greeting_knock
-        "Listen." if not has_listened:
+        "Listen." if not has_listened or not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
             $ mroom_greet = renpy.random.choice(gmr.eardoor)
 #            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
@@ -1066,7 +1072,8 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
+    if mas_curr_affection > 30:
+        gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
     m "Welcome back, [player]."
@@ -1146,6 +1153,9 @@ init 10 python:
 
 # locked door, because we are awaitng more content
 label monikaroom_greeting_opendoor_locked:
+    if mas_isMoniBroken():
+        pause 7.0
+        return "quit"
     # monika knows you are here
     $ mas_disable_quit()
 
