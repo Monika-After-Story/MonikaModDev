@@ -944,7 +944,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 20
+define opendoor.chance = 2
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
@@ -1328,6 +1328,10 @@ label monikaroom_greeting_opendoor:
     # NOTE: return is expected in monikaroom_greeting_post
 
 label monikaroom_greeting_knock:
+    if mas_isMoniBroken():
+        pause 7.0
+        return "quit"
+        
     m "Who is it~?"
     menu:
         "It's me.":
