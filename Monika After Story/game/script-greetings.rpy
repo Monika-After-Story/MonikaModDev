@@ -1444,13 +1444,13 @@ label monikaroom_greeting_post:
     elif mas_isMoniUpset(higher=True):
         m 2efc "Just let me grab a table and a chair..."
         $ is_sitting = True
-        show monika 2 at ls32 zorder MAS_MONIKA_Z
+        show monika 2efc at ls32 zorder MAS_MONIKA_Z
         m 2efc "What did you want, [player]?"
 
     else:
         m 6ekc "I need to grab a table and a chair..."
         $ is_sitting = True
-        show monika 6 at ls32 zorder MAS_MONIKA_Z
+        show monika 6ekc at ls32 zorder MAS_MONIKA_Z
         m 6ekc "Was there anything you wanted, [player]?"
 
     jump monikaroom_greeting_cleanup
