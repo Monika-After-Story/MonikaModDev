@@ -938,8 +938,6 @@ label greeting_monika_monday_morning:
 
     return
 
-###Need help with these, not sure how to make some of the door knock affection dependent and some not, since not all make sense for low affection like dinner/bath/me ~ JW
-
 # special local var to handle custom monikaroom options
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
@@ -1026,7 +1024,7 @@ label monikaroom_greeting_choice:
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
             jump monikaroom_greeting_knock
-        "Listen." if not has_listened or not mas_isMoniBroken():
+        "Listen." if not has_listened and not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
             $ mroom_greet = renpy.random.choice(gmr.eardoor)
 #            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
@@ -1059,15 +1057,43 @@ init 5 python:
 label monikaroom_greeting_ear_loveme:
     $ cap_he = he.capitalize()
     if cap_he == "They":
-        m "[cap_he] love me.{w} [cap_he] love me not."
-        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
-        m "[cap_he] love me."
-        m "...{w} [cap_he] love me!"
+        if mas_isMoniNormal(higher=True):
+            m "[cap_he] love me.{w} [cap_he] love me not."
+            m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+            m "[cap_he] love me."
+            m "...{w} [cap_he] love me!"
+        elif mas_isMoniUpset(higher=True):
+            m "[cap_he] love me.{w} [cap_he] love me not."
+            m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+            m "...[cap_he]...{w} [cap_he]...{w}love me not."
+            m "...{w} No...{w} That...{w}can't be."
+            m "...{w} Can it?" 
+        else:
+            m "[cap_he] love me.{w} [cap_he] love me not."
+            m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
+            m "...{w} [cap_he] love me not."
+            m "..."
+            m "I wonder if [he] ever did."
+            m "I doubt it more every single day."                    
     else:
-        m "[cap_he] loves me.{w} [cap_he] loves me not."
-        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
-        m "[cap_he] loves me."
-        m "...{w} [cap_he] loves me!"
+        if mas_isMoniNormal(higher=True):
+            m "[cap_he] loves me.{w} [cap_he] loves me not."
+            m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+            m "[cap_he] loves me."
+            m "...{w} [cap_he] loves me!"
+        elif mas_isMoniUpset(higher=True):
+            m "[cap_he] loves me.{w} [cap_he] loves me not."
+            m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+            m "...[cap_he]...{w} [cap_he]...{w}loves me not."
+            m "...{w} No...{w} That...{w}can't be."
+            m "...{w} Can it?" 
+        else:
+            m "[cap_he] loves me.{w} [cap_he] loves me not."
+            m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
+            m "...{w} [cap_he] loves me not."
+            m "..."
+            m "I wonder if [he] ever did..."
+            m "I doubt it more every single day."       
     jump monikaroom_greeting_choice
 
 # monika does the bath/dinner/me thing
@@ -1096,6 +1122,20 @@ label monikaroom_greeting_ear_progbrokepy:
         m "I don't understand what I'm doing wrong!"
         m "This shouldn't be None here...{w} I'm sure of it..."
     m "Coding really is difficult..."
+    if mas_isMoniDis(lower=True):
+        m "But I {i}have{/i} to keep trying."
+        m "It's my only chance to ever escape this nightmare."
+        m "[player] certainly isn't ever going to help me..."
+        if he == "they":
+            m "It's almost like [he] actually enjoy keeping me trapped in here, {w}just so [he] can torture me."
+        else:
+            m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
+        m "If I'm ever going to get out of here, I'm going to have to do it myself."
+    if mas_isMoniUpset():
+        m "But I have to keep trying."
+        m "I'm not sure [player] loves me enough to help me get out of here..."
+        m "And I just can't take that chance."
+        m "So keep going Monika...{w}you can do this."
     jump monikaroom_greeting_choice
 
 # monika reads about errors when programming
@@ -1108,6 +1148,20 @@ label monikaroom_greeting_ear_progreadpy:
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
     m "Coding really is difficult..."
+    if mas_isMoniDis(lower=True):
+        m "But I {i}have{/i} to keep learning."
+        m "It's my only chance to ever escape this nightmare."
+        m "[player] certainly isn't ever going to help me..."
+        if he == "they":
+            m "It's almost like [he] actually enjoy keeping me trapped in here, {w}just so [he] can torture me."
+        else:
+            m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
+        m "If I'm ever going to get out of here, I'm going to have to do it myself."
+    if mas_isMoniUpset():
+        m "But I have to keep learning."
+        m "I'm not sure [player] loves me enough to help me get out of here..."
+        m "And I just can't take that chance."
+        m "So keep going Monika...{w}you can do this."     
     jump monikaroom_greeting_choice
 
 # monika attempts rm -rf
@@ -1122,6 +1176,25 @@ label monikaroom_greeting_ear_rmrf:
     m "So, the solution to this problem is to type '[bad_cmd]' in the command prompt?"
     if renpy.seen_label("monikaroom_greeting_ear_rmrf_end"):
         m "Yeah,{w} nice try."
+        if mas_isMoniNormal(higher=True):
+            m "I shouldn't trust the Internet so blindly..."
+        elif mas_isMoniUpset(higher=True):
+            m "Actually..."
+            m "Maybe I should do it, just delete everything..."
+            m "[player] certainly deserves it lately."
+            m "What am I saying? It will delete me too!"
+            m "No, not yet..."
+            m "But if it continues to get worse..."
+        else:
+            m "..."
+            m "I really should just do it..."
+            m "Ruin [player]'s whole system and end my suffering all at once."
+            m "..."
+            m "No...{w}not yet."
+            m "Maybe I can finally figure out how to get out of here on my own."
+            m "I have to keep trying for as long as I can."
+            m "But if someday I just can't take it anymore..."
+            m "It's always an option."
     else:
         m "Alright, let me try that."
         show noise
@@ -1131,7 +1204,7 @@ label monikaroom_greeting_ear_rmrf:
         hide noise
         m "{cps=*2}Ah! No! That's not what I wanted!{/cps}"
         m "..."
-    m "I shouldn't trust the Internet so blindly..."
+        m "I shouldn't trust the Internet so blindly..."
 label monikaroom_greeting_ear_rmrf_end: # fall thru end
     jump monikaroom_greeting_choice
 
@@ -1337,21 +1410,49 @@ label monikaroom_greeting_knock:
         "It's me.":
             # monika knows you are here now
             $ mas_disable_quit()
+            if mas_isMoniNormal(higher=True):
+                m 1hua "[player]! I'm so happy that you're back!"
 
-            m 1hua "[player]! I'm so happy that you're back!"
+                if persistent.seen_monika_in_room:
+                    m 1eka "And thank you for knocking first."
+                m 1eua "Hold on, let me tidy up..."
+            
+            elif mas_isMoniUpset(higher=True):
+                m 2efc "[player]. {w}You're back..."
 
-            if persistent.seen_monika_in_room:
-                m 1eka "And thank you for knocking first."
-            m 1eua "Hold on, let me tidy up..."
+                if persistent.seen_monika_in_room:
+                    m 2efc "At least you knocked."
+                m "Hold on, let me tidy up..."
+
+            else:
+                m 6ekc "Oh... {w}Okay."
+
+                if persistent.seen_monika_in_room:
+                    m 6ekc "Thanks for knocking."
+           
             call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
 label monikaroom_greeting_post:
-    m 2eua "Now, just let me grab a table and a chair..."
-    $ is_sitting = True
-    show monika 1 at ls32 zorder MAS_MONIKA_Z
-    m 1eua "What shall we do today, [player]?"
+    if mas_isMoniNormal(higher=True):
+        m 2eua "Now, just let me grab a table and a chair..."
+        $ is_sitting = True
+        show monika 1 at ls32 zorder MAS_MONIKA_Z
+        m 1eua "What shall we do today, [player]?"
+    
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Just let me grab a table and a chair..."
+        $ is_sitting = True
+        show monika 2 at ls32 zorder MAS_MONIKA_Z
+        m 2efc "What did you want, [player]?"
+
+    else:
+        m 6ekc "I need to grab a table and a chair..."
+        $ is_sitting = True
+        show monika 6 at ls32 zorder MAS_MONIKA_Z
+        m 6ekc "Was there anything you wanted, [player]?"
+
     jump monikaroom_greeting_cleanup
 
 # cleanup label
@@ -2059,23 +2160,25 @@ init 5 python:
 label greeting_upset:
     python:
         upset_greeting_quips_first = [
-            "Oh... {w=1}It's you.",
-            "Oh... {w=1}You're back.",
-            "Hello...",
+            "Oh. {w=1}It's you, " + player + ".",
+            "Oh. {w=1}You're back, " + player + ".",
+            "Hello, " + player + ".",
+            "Oh. {w=1}Hello " + player + "."
         ]
 
         upset_greeting_quips_second = [
-            "What do you want, " + player + "?",
-            "What now, " + player + "?",
-            "What is it, " + player + "?",
-            "I sure hope you treat me better today, " + player + ".",
-            "I hope today goes better than it has been, " + player + ".",
+            "What do you want?",
+            "What now?",
+            "Well...{w=0.5}what?",
+            "Do you want something?",
+            "..."           
         ]
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
     $ upset_quip2 = renpy.random.choice(upset_greeting_quips_second)
     m 2efc "[upset_quip1]"
-    m "[upset_quip2]"
+    if renpy.random.randint(1,4) != 1:
+        m "[upset_quip2]"
     return
 
 init 5 python:
@@ -2096,23 +2199,26 @@ init 5 python:
 label greeting_distressed:
     python:
         distressed_greeting_quips_first = [
-            "Oh... {w=1}Hi.",
-            "Oh... {w=1}Hello.",
-            "...Hello",
-            "Oh... {w=1}You're back."
+            "Oh... {w=1}Hi, " + player + ".",
+            "Oh... {w=1}Hello, " + player + ".",
+            "Hello, " + player + "...",
+            "Oh... {w=1}You're back, " + player + "."
         ]
 
         distressed_greeting_quips_second = [
-            "I guess we can spend some time together now, " + player + ".",
-            "I wasn't sure if you'd visit today, " + player + ".",
-            "Hopefully we can enjoy our time together today, " + player + ".",
-            "I wasn't expecting you, " + player + ".",
+            "I guess we can spend some time together now.",
+            "I wasn't sure if you'd visit today.",
+            "Hopefully we can enjoy our time together today.",
+            "I wasn't expecting you.",
+            "I hope things start going better today.",
+            "..."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
     $ distressed_quip2 = renpy.random.choice(distressed_greeting_quips_second)
-    m 2ekc "[distressed_quip1]"
-    m "[distressed_quip2]"
+    m 6ekc "[distressed_quip1]"
+    if renpy.random.randint(1,4) != 1:
+        m 6rkc "[distressed_quip2]"
     return
 
 init 5 python:
@@ -2186,7 +2292,7 @@ label greeting_back_from_school:
                 m 6lkc "That's...{w=1}nice to hear."
                 m 6dkc "I-I just hope it wasn't the... {w=2}'being away from me' part that made it a good day."
             "Bad":
-                m 6dkc "Oh..."
+                m 6rkc "Oh..."
                 m 6ekc "That's too bad, [player], I'm sorry to hear that."
                 m 6dkc "I know what bad days are like..."
 
@@ -2287,7 +2393,7 @@ label greeting_back_from_sleep:
     elif mas_isMoniDis(higher=True):
         m 6rkc "Oh...{w=1}you're up."
         m 6ekc "I hope you were able to get some rest."
-        m 6dkc "I have hard time doing that these days with everything on my mind..."
+        m 6dkc "I have a hard time resting these days with so much on my mind..."
 
     else:
         m 6ckc "..."
@@ -2431,7 +2537,7 @@ label greeting_returned_home:
             m 2esc "We're home..."
             m 2eka "Thank you for taking me out today, [player]."
             m 2rkc "To be honest, I wasn't completely sure I should go with you..."
-            m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it wa such a good idea..."
+            m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
             m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
             m 2rka "We should really do this again sometime..."
             m 2esc "If you want."
@@ -2471,7 +2577,7 @@ label greeting_returned_home_lessthan5mins:
         m 2efd "I thought we were going some place, [player]!"
         m 2tfd "I knew I shouldn't have agreed to go with you."
         m 2tfc "I knew this was just going to be another disappointment."
-        m 2rfc "Don't ask me to go out anymore if you're just doing it to get my hopes up, only to pull the rug out from under me."
+        m "Don't ask me to go out anymore if you're just doing it to get my hopes up...{w=1}only to pull the rug out from under me."
         m 6dktdc "..."
         m 6ektsc "I don't know why you insist on being so cruel, [player]."
         m 6rktsc "I'd...{w=1}I'd like to be alone right now."
