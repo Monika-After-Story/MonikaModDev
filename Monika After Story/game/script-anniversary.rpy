@@ -210,6 +210,85 @@ init 10 python in mas_anni:
                 renpy.game.persistent._seen_ever[anni] = True
                 ev.unlocked = True
 
+    def isAnni(milestone=None):
+        """
+        INPUTS:
+            milestone:
+                Expected values|Operation:
+
+                    None|Checks if today is a yearly anniversary
+                    1w|Checks if today is a 1 week anniversary
+                    1m|Checks if today is a 1 month anniversary
+                    3m|Checks if today is a 3 month anniversary
+                    6m|Checks if today is a 6 month anniversary
+                    
+        RETURNS:
+            True if datetime.date.today() is an anniversary date
+            False if today is not an anniversary date
+        """
+        import calendar
+
+        if calendar.isleap(__persistent.sessions.get("first_session", None).year) and not calendar.isleap(datetime.date.today().year):
+            firstSesh = datetime.date(__persistent.sessions.get("first_session", None).year,3,1)
+        else:
+            firstSesh = __persistent.sessions.get("first_session", None)
+        compare = None
+
+        if milestone == '1w':
+            compare = renpy.store.mas_anni.build_anni(weeks=1)
+                
+        elif milestone == '1m':
+            compare = renpy.store.mas_anni.build_anni(months=1)
+
+        elif milestone == '3m':
+            compare = renpy.store.mas_anni.build_anni(months=3)
+
+        elif milestone == '6m':
+            compare = renpy.store.mas_anni.build_anni(months=6)
+
+
+        if compare is not None and compare.strftime('%m/%d/%Y') == datetime.date.today().strftime('%m/%d/%Y'):
+            return True
+        else:
+            compare = firstSesh
+            if compare.strftime('%m/%d') == datetime.date.today().strftime('%m/%d') and renpy.store.mas_anni.anniCount() > 0:
+                return True
+        return False
+
+    def anniCount():
+        """    
+        RETURNS:
+            Integer value representing how many years the player has been with Monika
+        """
+
+        import calendar
+
+        if calendar.isleap(__persistent.sessions.get("first_session", None).year) and not calendar.isleap(datetime.date.today().year):
+            firstSesh = datetime.date(__persistent.sessions.get("first_session", None).year,3,1)
+        else:
+            firstSesh = __persistent.sessions.get("first_session", None)
+
+        compare = datetime.date.today()
+
+        compareMonthDay = datetime.date(2000, compare.month, compare.day)
+        firstseshMonthDay = datetime.date(2000, firstSesh.month, firstSesh.day)
+
+        if compare.year > firstSesh.year and compareMonthDay < firstseshMonthDay:
+            yearDelta = compare.year - firstSesh.year - 1
+        else:
+            yearDelta = compare.year - firstSesh.year
+        return yearDelta
+
+    def pastSixMonths():
+        """    
+        RETURNS:
+            True if current date is past the 6 month threshold 
+            False if below the 6 month threshold
+        """
+        if datetime.date.today() >= renpy.store.mas_anni.build_anni(months=6).date():
+            return True
+        return False
+
 
 init 5 python:
     addEvent(
