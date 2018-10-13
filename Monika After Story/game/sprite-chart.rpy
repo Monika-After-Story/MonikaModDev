@@ -1980,9 +1980,8 @@ init -2 python:
 define monika_chr = MASMonika()
 
 init -1 python:
-    # HAIR (IMG 015)
+    # HAIR (IMG015)
     # Hairs are representations of image objects with propertes
-    # (like the accessories
     #
     # NAMING:
     # mas_hair_<hair name>
@@ -2001,12 +2000,70 @@ init -1 python:
     ### PONYTAIL WITH RIBBON (default)
     ## def
     # Monika's default hairstyle, aka the ponytail
-#    mas_hair_def = MASHair(
-#        "def",
-#        "def",
-#        MASPoseMap(
-#            default
+    mas_hair_def = MASHair(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        )
+    )
 
+    ### DOWN
+    ## down
+    # Hair is down, not tied up
+    mas_hair_down = MASHair(
+        "down",
+        "down",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        )
+    )
+
+    ### BUN WITH RIBBON
+    ## bun
+    # Hair tied into a bun, using the ribbon
+    mas_hair_bun = MASHair(
+        "bun",
+        "bun",
+        MASPoseMap(
+            default=True,
+            p5=None
+        )
+    )
+
+
+init -1 python:
+    # CLOTHES (IMG018)
+    # Clothes are representations of image objects with properties
+    #
+    # NAMING:
+    # mas_clothes_<clothes name>
+    #
+    # <clothes name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for clothes file naming
+    # NOTE: PoseMaps are used to determine which lean types exist for
+    #  a given clothes type, NOT filenames
+    #
+    # NOTE: template
+    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
+    ## clothesidentifiername
+    # General description of the clothes
+
+    ### SCHOOL UNIFORM (default)
+    ## def
+    # Monika's school uniform
+    mas_clothes_def = MASClothes(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True
+    )
 
 
 init -1 python:
