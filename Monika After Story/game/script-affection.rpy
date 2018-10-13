@@ -342,11 +342,6 @@ init 15 python in mas_affection:
                 evhand._unlockEventLabel("monika_rain_start")
             evhand._unlockEventLabel("monika_rain")
 
-        evhand._unlockEventLabel(
-            "i_greeting_monikaroom",
-            eventdb=evhand.greeting_database
-        )
-
         if not persistent._mas_hair_changed:
             evhand._unlockEventLabel(
                 "greeting_hairdown",
@@ -365,12 +360,7 @@ init 15 python in mas_affection:
         evhand._lockEventLabel("monika_rain_start")
         evhand._lockEventLabel("monika_rain_stop")
         evhand._lockEventLabel("monika_rain")
-        # TODO; actually, the opendoor greeting shuld be changd so bad affection
-        # will make her angry during the greeting
-        evhand._lockEventLabel(
-            "i_greeting_monikaroom",
-            eventdb=evhand.greeting_database
-        )
+
         evhand._lockEventLabel(
             "greeting_hairdown",
             eventdb=evhand.greeting_database

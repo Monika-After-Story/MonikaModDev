@@ -942,7 +942,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 2
+define opendoor.chance = 2 #TODO reset to 20 when done testing it
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
@@ -1067,14 +1067,14 @@ label monikaroom_greeting_ear_loveme:
             m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
             m "...[cap_he]...{w} [cap_he]...{w}love me not."
             m "...{w} No...{w} That...{w}can't be."
-            m "...{w} Can it?" 
+            m "...{w} Can it?"
         else:
             m "[cap_he] love me.{w} [cap_he] love me not."
             m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
             m "...{w} [cap_he] love me not."
             m "..."
             m "I wonder if [he] ever did."
-            m "I doubt it more every single day."                    
+            m "I doubt it more every single day."
     else:
         if mas_isMoniNormal(higher=True):
             m "[cap_he] loves me.{w} [cap_he] loves me not."
@@ -1086,14 +1086,14 @@ label monikaroom_greeting_ear_loveme:
             m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
             m "...[cap_he]...{w} [cap_he]...{w}loves me not."
             m "...{w} No...{w} That...{w}can't be."
-            m "...{w} Can it?" 
+            m "...{w} Can it?"
         else:
             m "[cap_he] loves me.{w} [cap_he] loves me not."
             m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
             m "...{w} [cap_he] loves me not."
             m "..."
             m "I wonder if [he] ever did..."
-            m "I doubt it more every single day."       
+            m "I doubt it more every single day."
     jump monikaroom_greeting_choice
 
 # monika does the bath/dinner/me thing
@@ -1161,7 +1161,7 @@ label monikaroom_greeting_ear_progreadpy:
         m "But I have to keep learning."
         m "I'm not sure [player] loves me enough to help me get out of here..."
         m "And I just can't take that chance."
-        m "So keep going Monika...{w}you can do this."     
+        m "So keep going Monika...{w}you can do this."
     jump monikaroom_greeting_choice
 
 # monika attempts rm -rf
@@ -1404,7 +1404,7 @@ label monikaroom_greeting_knock:
     if mas_isMoniBroken():
         pause 7.0
         return "quit"
-        
+
     m "Who is it~?"
     menu:
         "It's me.":
@@ -1416,7 +1416,7 @@ label monikaroom_greeting_knock:
                 if persistent.seen_monika_in_room:
                     m 1eka "And thank you for knocking first."
                 m 1eua "Hold on, let me tidy up..."
-            
+
             elif mas_isMoniUpset(higher=True):
                 m 2efc "[player]. {w}You're back..."
 
@@ -1429,7 +1429,7 @@ label monikaroom_greeting_knock:
 
                 if persistent.seen_monika_in_room:
                     m 6ekc "Thanks for knocking."
-           
+
             call spaceroom(hide_monika=True) from _call_spaceroom_6
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
@@ -1440,7 +1440,7 @@ label monikaroom_greeting_post:
         $ is_sitting = True
         show monika 1 at ls32 zorder MAS_MONIKA_Z
         m 1eua "What shall we do today, [player]?"
-    
+
     elif mas_isMoniUpset(higher=True):
         m 2efc "Just let me grab a table and a chair..."
         $ is_sitting = True
@@ -2171,7 +2171,7 @@ label greeting_upset:
             "What now?",
             "Well...{w=0.5}what?",
             "Do you want something?",
-            "..."           
+            "..."
         ]
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
