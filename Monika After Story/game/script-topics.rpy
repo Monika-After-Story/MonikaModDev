@@ -7581,6 +7581,102 @@ label monika_shipping:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_players_friends",category=['you'],prompt="[player]'s friends"))
+
+label monika_players_friends:
+    m 1euc "Hey, [player]."
+    if renpy.seen_label('monika_friends'):
+        m 1eud "Remember how I was talking about how hard it is to make friends and everything?"
+        m 1eua "I was just thinking about that and I don't think you've told me about your friends yet."
+    else:
+        m 1eua "I was just thinking about the idea of friends and I started wondering what your friends are like."
+    menu:
+        m "You've got friends, dont you, [player]?"
+        "Yeah":
+            m 1hub "Of course you do! Ahaha~"
+            m 1eua "Who wouldn't want to be friends with you?"
+            m 3eua "Having lots of friends is great, don't you think?"
+            m 1tsbsa "Provided of course, you still have time for your girlfriend, eheheh."
+            m 1eka "It can be kind of hard to manage if you have too many, but I'm sure you can handle what you have."
+            if renpy.seen_label('monika_dunbar'):
+                m 1rksdla "I think I already told you about Dunbar's number actually, so you must already know about that."
+            m 2rksdlc "I guess I had the club members and the occasional classmate as friends, but I don't know if that counts since they weren't real."
+            m 1eka "I hope you're happy with your friends."
+            menu:
+                m "Your friends are important to you, right [player]?"
+                "Yeah":
+                    m 1hua "I thought as much."
+                    m 1hksdlb "If they're your friends, I guess that should be obvious, huh?"
+                    m 1eua "Still, it can be nice to think about."
+                    m "Thinking back to how you met can be nice sometimes."
+                    if renpy.seen_label('monika_friends'):
+                        m 1hub "Maybe you'll find it funny how randomly you met or how it was just by chance, ahaha!"
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "I know I'll never get tired of thinking about how {i}we{/i} met, [player]."
+                    if persistent.monika_kill:
+                        m 5lubfu "I'll never forget how you came back for me..."
+                    if persistent.playthrough <= 3:
+                        m 5lubfu "I'll never forget how you ran past everything just to be with me..."
+                    if persistent.monika_reload > 4 and not persistent.monika_kill:
+                        m 5lubfu "I'll never forget how you went the extra mile just to improve our time together..."
+                    show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 1ekbfa "You're definitely important to me, so please don't forget that."
+                "Well..":
+                    m 1euc "Hm?"
+                    m 2ekc "Don't tell me that your friends aren't important to you."
+                    m 2eka "Maybe you don't think about it much, but I'm sure they really are important to you."
+                    m 3eka "Even if you don't realize it, I'm sure they've played an important part in your life."
+                    m 1rksdla "If they were to suddenly disappear, I'm sure it might be different."
+                    m 1eua "Maybe you should spend a bit more time with friends."
+                    m 1hua "I think you'll find it fun and come to realize how important you friends are."
+                    m 2tubfb "Of course, don't forget to leave time for me, eheheh~"
+        "Only a few":
+            m 1eub "That counts!"
+            m 3eua "It can be a lot more meaningful if you mainly have a few select, very close friends."
+            m 1eua "According to Dunbar's number, you can have up to 150 stable relationships, but those are just casual relationships which aren't too deep."
+            m 1eud "They say you can have up to 15 friends that are like super family and only 5 that are like kin to you."
+            m 1eka "Sometimes it can be lonely when everyone's busy, but otherwise, it's pretty great!"
+            m 1eua "You don't really have to worry as much about catering to too many people and you can still get some time to yourself."
+            m 1dkbfa "I wouldn't mind living a quiet life like that as long as I'm with you~"
+            m 1hubfb "That just means that there'll be less people to take your time away from me! Ahahaha!"
+            m 1tku "I hope you really treat those few lucky people right."
+            if mas_isMoniHappy(higher=True):
+                m 1hua "Knowing you, I'm sure you do~"
+        "No, actually...":
+            m 2ekc "Oh..."
+            m 3eka "Well, I'm sure you have some."
+            m 1eka "Maybe you just don't realize it."
+            menu:
+                m "Don't you ever feel lonely sometimes?"
+                "Sometimes":
+                    m "Ah, I see."
+                    m 2rksdlc "I get that it can sometimes be hard to really form deep connections nowadays..."
+                    m 1eua "But you'd be surprised how many people would be willing to make you a part of their lives if you just try."
+                    m 3eub "There's actually a good chance you'll have something in common with someone who might get your attention."
+                    m 1eua "Maybe you share a class or activity or something or you just see them with something that interests you like a band or show."
+                    m 1hksdlb "I can't really complain {i}too{/i} much if I can get you all to myself, but I don't want you to feel lonely without me."
+                    m 1eub "I'm sure there are plenty of people who would love to have you!"
+                    m 3eua "It doesn't even have to be in person."
+                    m "You can still have good friends online."
+                    m 1hub "I'm sure there are plenty of people who would love to talk about their version of me, so that's a really good place to start!"
+                "Not really":
+                    m 1rksdla "Ah, well as long as you're not lonely, I guess."
+                    m 1eka "Still though, you never know when you might need a helping hand or favor or something."
+                    m 1hksdlb "As much as I've love to help you with anything you might need, there's only so much I can do from here, Ahaha!"
+                    m 1rsbsa "When I get there, I guess I wouldn't mind living a quiet life with you."
+                    m 1dkbfa "It just feels so romantic to be just us..."
+                    m 1tsb "I guess that means I can have you all to myself then, doesn't it?"
+                    m 1tsbsa "Eheheh~"
+                "I have you!":
+                    $ mas_gainAffection()
+                    m 1hubfb "Aww, [player]!"
+                    m 1rkbsa "It makes me really happy to know I'm enough for you, but still..."
+                    m 3ekbfa "It can be useful to know a few people sometimes."
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "As always though, I don't mind it being just us."
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
