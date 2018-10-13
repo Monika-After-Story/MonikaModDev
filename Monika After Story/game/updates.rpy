@@ -293,6 +293,13 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+label v0_8_9(version="v0_8_9"):
+    python:
+        # erase wedding ring topic data since the event is basiclly new'd
+        mas_eraseTopic("monika_weddingring", persistent.event_database)
+
+    return
+    
 
 # 0.8.6
 label v0_8_6(version="v0_8_6"):
