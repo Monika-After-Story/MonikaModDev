@@ -637,7 +637,10 @@ label mas_hangman_game_loop:
                 elif chances == 5:
                     m 1ekc "Don't give up so easily."
                     m 3eka "That was only your first wrong letter!"
-                    m 1eka "You were nowhere near losing with [chances] more chances."
+                    if chances > 1:
+                        m 1eka "You still had [chances] more lives left."
+                    else:
+                        m 1eka "You still had [chances] more life left."
                     m 1hua "I know you can do it!"
                     m 1eka "It would really mean a lot to me if you just tried a bit harder."
                 else:
