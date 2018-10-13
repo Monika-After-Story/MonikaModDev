@@ -7590,7 +7590,7 @@ default persistent._mas_pm_few_past_relationships = None
 default persistent._mas_pm_many_past_relationships = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_past_relationships",category=['you'],prompt="Past relationships",random=True,))
+    addEvent(Event(persistent.event_database,eventlabel="monika_past_relationships",category=['you'],prompt="Past relationships",random=True))
 
 label monika_past_relationships:
     m 1euc "Hey, [player]."
