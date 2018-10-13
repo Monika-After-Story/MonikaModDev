@@ -1635,17 +1635,63 @@ init -2 python:
                     pose_dict[k] = _def
 
 
+    # base class for MAS sprite things
+    class MASSpriteBase(renpy.store.object):
+        """
+        Base class for MAS sprite objects
+
+        PROPERTIES:
+            name - name of the item
+            img_sit - filename of the sitting version of the item
+            img_stand - filename of the standing version of the item
+            pose_map - MASPoseMap object that contains pose mappings
+            stay_on_start - determines if the item stays on startup
+        """
+
+        def __init__(self, 
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False
+            ):
+            """
+            MASSpriteBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image
+                pose_map - MASPoseMAp object that contains pose mappings
+                img_stand - filename of the standing image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting.
+                    (Default: False)
+            """
+            self.name = name
+            self.img_sit = img_sit
+            self.img_stand = img_stand
+            self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
+
+
     # instead of clothes, these are accessories
-    class MASAccessory(renpy.store.object):
+    class MASAccessory(MASSpriteBase):
         """
         MASAccesory objects
 
         PROPERTIES:
-            name - name of the accessory
-            img_sit - filename of the sitting version of the accessory
-            img_stand - filename of the standing version of the accessory
-            priority - render priority of the accessory. Lower is rendred
-                first
+            rec_layer - recommended layer to place this accessory
+            priority - render priority. Lower is rendered first
+            no_lean - determins if the leaning versions are hte same as the
+                regular ones.
+
+        SEE MASSpriteBase for inherited properties
         """
 
 
@@ -1687,17 +1733,16 @@ init -2 python:
                     startup.
                     (Default: False)
             """
-            self.name = name
-            self.img_sit = img_sit
-            self.img_stand = img_stand
+            super(MASAccessory, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
             self.__rec_layer = rec_layer
             self.priority=priority
             self.no_lean = no_lean
-            self.stay_on_start = stay_on_start
-            self.pose_map = pose_map
-
-            if type(pose_map) != MASPoseMap:
-                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1720,6 +1765,95 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
+
+
+    class MASHair(MASSpriteBase):
+        """
+        MASHair objects
+
+        Representations of hair items
+
+        PROPERTIES:
+            (no additional)
+
+        SEE MASSpriteBase for inherited properties
+
+        POSEMAP explanations:
+            Use an empty string to 
+        """
+        
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=True
+            ):
+            """
+            MASHair constructor
+
+            IN;
+                name - name of this hairstyle
+                img_sit - filename of the sitting image for this hairstyle
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for this hairstyle
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_strat - True means the hairstyle should reappear on
+                    startup. False means a restart clears the hairstyle
+                    (Default: True)
+            """
+            super(MASHair, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
+
+
+    class MASClothes(MASSpriteBase):
+        """
+        MASClothes objects
+
+        Representations of clothes
+
+        PROPERTIES:
+            (no additional)
+
+        SEE MASSpriteBase for inherited properties
+        """
+        
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False
+            ):
+            """
+            MASClothes constructor
+
+            IN;
+                name - name of these clothes
+                img_sit - filename of the sitting image for these clothes
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for these clothes
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the clothes should reappear on
+                    startup. False means a restart clears the clothes
+                    (Default: False)
+            """
+            super(MASClothes, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
 
 
     # The main drawing function...
@@ -1844,6 +1978,36 @@ init -2 python:
 
 # Monika
 define monika_chr = MASMonika()
+
+init -1 python:
+    # HAIR (IMG 015)
+    # Hairs are representations of image objects with propertes
+    # (like the accessories
+    #
+    # NAMING:
+    # mas_hair_<hair name>
+    #
+    # <hair name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for hair file naming
+    # NOTE: PoseMaps are used to determin which lean types exist for
+    #   a given hair type, NOT filenames
+    #
+    # NOTE: template:
+    ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
+    ## hairidentifiername
+    # General description of the hair style
+
+    ### PONYTAIL WITH RIBBON (default)
+    ## def
+    # Monika's default hairstyle, aka the ponytail
+#    mas_hair_def = MASHair(
+#        "def",
+#        "def",
+#        MASPoseMap(
+#            default
+
+
 
 init -1 python:
     # ACCESSORIES (IMG020)
