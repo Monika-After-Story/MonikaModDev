@@ -4936,13 +4936,29 @@ label monika_piggybank:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True))
-
+    
+#insert endless possibilities of wholesome goodness here
+python:
+    daydream_quips = [
+        "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
+        "the two of us resting our heads under the Cherry Blossom tree..."
+        "about me gently petting your head while your head resting on my lap..."
+        "us having a duet together, with you singing my song and I play the piano..."
+        "about having a wonderful dinner together, while we feed each other..."
+        "about us cuddling each other while we're watching a show on television..."
+        "about waking up next to you in the morning, watching you sleep beside me..."
+        "about writing a special poem for my one and only..."
+        "the both of us doing nothing together, lazing on the couch while you kept me closer..."
+        "you holding my hand while we take a stroll outside, on a sunny day..."
+        ]
+    daydream_quip=renpy.random.choice(daydream_quips)
+        
 label monika_daydream:
     m 2lsc "..."
     m 2lsbsa "..."
     m 2tsbsa "..."
     m 2wubsw "Oh, sorry! I was just daydreaming for a second there."
-    m 1lkbsa "I was imagining the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
+    m 1lkbsa "I was imagining [daydream_quips]"
     m 1ekbfa "Wouldn't that be wonderful, [player]?"
     m 1hubfa "Let's hope we can make that a reality one of these days, ehehe~"
     return
