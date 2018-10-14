@@ -1095,8 +1095,8 @@ label ch30_reset:
     python:
         # setup hair / clothes
         monika_chr.change_outfit(
-            persistent._mas_monika_clothes,
-            persistent._mas_monika_hair
+            store.mas_sprites.CLOTH_MAP[persistent._mas_monika_clothes],
+            store.mas_sprites.HAIR_MAP[persistent._mas_monika_hair]
         )
 
         if (

@@ -329,6 +329,12 @@ init -5 python in mas_sprites:
     ## Accessory dictionary
     ACS_MAP = dict()
 
+    ## hair dictionary
+    HAIR_MAP = dict()
+
+    ## clothes dictionary
+    CLOTH_MAP = dict()
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
@@ -344,6 +350,7 @@ init -5 python in mas_sprites:
     L_POSES = [
         "def"
     ]
+
 
     def acs_lean_mode(lean):
         """
@@ -393,6 +400,38 @@ init -5 python in mas_sprites:
         ACS_MAP[mas_acs.name] = mas_acs
 
 
+    def init_hair(mas_hair):
+        """
+        Initlializes the given MAS hairstyle into a dictionary map setting
+
+        IN:
+            mas_hair - MASHair to initialize
+        """
+        if mas_hair.name in HAIR_MAP:
+            raise Exception(
+                "MASHair name '{0}' already exists.".format(mas_hair.name)
+            )
+
+        # otherwise, unique name
+        HAIR_MAP[mas_hair.name] = mas_hair
+
+
+    def init_clothes(mas_cloth):
+        """
+        Initlializes the given MAS clothes into a dictionary map setting
+
+        IN:
+            mas_clothes - MASClothes to initialize
+        """
+        if mas_cloth.name in CLOTH_MAP:
+            raise Exception(
+                "MASClothes name '{0}' already exists.".format(mas_cloth.name)
+            )
+
+        # otherwise, unique name
+        CLOTH_MAP[mas_cloth.name] = mas_cloth
+
+
     def night_mode(isnight):
         """
         Returns the appropriate night string
@@ -423,11 +462,11 @@ init -5 python in mas_sprites:
             # monika is wearing a blacklisted accessory
             return True
 
-        if character.hair in lean_hair_blacklist:
+        if not character.hair.pose_map.l_map.get(lean, False):
             # blacklisted hair
             return True
 
-        if character.clothes in lean_clothes_blacklist:
+        if not character.clothes.pose_map.l_map.get(lean, False):
             # blacklisted clothes
             return True
 
@@ -1269,8 +1308,9 @@ init -2 python:
             self.haircolor="default"
             self.skin_hue=0 # monika probably doesn't have different skin color
             self.lipstick="default" # i guess no lipstick
-            self.clothes = "def" # default clothes is school outfit
-            self.hair = "def" # default hair is the usual whtie ribbon
+
+            self.clothes = mas_clothes_def # default clothes is school outfit
+            self.hair = mas_hair_def # default hair is the usual whtie ribbon
 
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
@@ -1455,14 +1495,14 @@ init -2 python:
             """
             Resets clothing to default
             """
-            self.clothes = "def"
+            self.clothes = mas_clothes_def
 
 
         def reset_hair(self):
             """
             Resets hair to default
             """
-            self.hair = "def"
+            self.hair = mas_hair_def
 
 
         def reset_outfit(self):
@@ -1680,6 +1720,83 @@ init -2 python:
                 raise Exception("PoseMap is REQUIRED")
 
 
+    class MASSpriteFallbackBase(MASSpriteBase):
+        """
+        MAS sprites that can use pose maps as fallback maps.
+
+        PROPERTIES:
+            fallback - If true, the PoseMap contains fallbacks that poses
+                will revert to. If something is None, then it means to 
+                blacklist.
+
+        SEE MASSpriteBase for inherited properties
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                fallback=False
+            ):
+            """
+            MASSpriteFallbackBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image for this item
+                pose_map - MASPoseMap object that contains pose mappings or
+                    fallback mappings
+                img_stand - filename of the stnading image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting
+                    (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
+            """
+            super(MASSpriteFallbackBase, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
+            self.fallback = fallback
+
+
+        def get_fallback(self, pose, lean):
+            """
+            Gets the fallback pose for a given pose or lean
+
+            NOTE: the fallback variable is NOT checked
+
+            Lean is checked first if its not None.
+
+            IN:
+                pose - pose to retrieve fallback for
+                lean - lean to retrieve fallback for
+
+            RETURNS:
+                tuple fo thef ollowing format:
+                [0]: arms type
+                    - default for this is steepling
+                [1]: lean type
+                    - defualt for this is None
+            """
+            # now check for fallbacks
+            if lean is not None:
+                # we have a lean, check for fallbacks
+                return ("steepling", self.pose_map.l_map.get(lean, None))
+
+            # otherwise check the pose 
+            return (self.pose_map.map.get(pose, "steepling"), None)
+
+
     # instead of clothes, these are accessories
     class MASAccessory(MASSpriteBase):
         """
@@ -1767,7 +1884,7 @@ init -2 python:
             return self.__rec_layer
 
 
-    class MASHair(MASSpriteBase):
+    class MASHair(MASSpriteFallbackBase):
         """
         MASHair objects
 
@@ -1776,7 +1893,7 @@ init -2 python:
         PROPERTIES:
             (no additional)
 
-        SEE MASSpriteBase for inherited properties
+        SEE MASSpriteFallbackBase for inherited properties
 
         POSEMAP explanations:
             Use an empty string to 
@@ -1787,7 +1904,8 @@ init -2 python:
                 img_sit,
                 pose_map,
                 img_stand="",
-                stay_on_start=True
+                stay_on_start=True,
+                fallback=False
             ):
             """
             MASHair constructor
@@ -1803,17 +1921,21 @@ init -2 python:
                 stay_on_strat - True means the hairstyle should reappear on
                     startup. False means a restart clears the hairstyle
                     (Default: True)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
             """
             super(MASHair, self).__init__(
                 name,
                 img_sit,
                 pose_map,
                 img_stand,
-                stay_on_start
+                stay_on_start,
+                fallback
             )
 
 
-    class MASClothes(MASSpriteBase):
+    class MASClothes(MASSpriteFallbackBase):
         """
         MASClothes objects
 
@@ -1822,7 +1944,7 @@ init -2 python:
         PROPERTIES:
             (no additional)
 
-        SEE MASSpriteBase for inherited properties
+        SEE MASSpriteFallbackBase for inherited properties
         """
         
         def __init__(self,
@@ -1830,7 +1952,8 @@ init -2 python:
                 img_sit,
                 pose_map,
                 img_stand="",
-                stay_on_start=False
+                stay_on_start=False,
+                fallback=False
             ):
             """
             MASClothes constructor
@@ -1846,13 +1969,17 @@ init -2 python:
                 stay_on_start - True means the clothes should reappear on
                     startup. False means a restart clears the clothes
                     (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules
+                    (Default: False)
             """
             super(MASClothes, self).__init__(
                 name,
                 img_sit,
                 pose_map,
                 img_stand,
-                stay_on_start
+                stay_on_start,
+                fallback
             )
 
 
@@ -1939,9 +2066,16 @@ init -2 python:
                 # set lean to None if its on the blacklist
                 lean = None
 
+            # fallback adjustments:
+            if character.hair.fallback:
+                arms, lean = character.hair.get_fallback(arms, lean)
+
+            if character.clothes.fallback:
+                arms, lean = character.clothes.get_fallback(arms, lean)
+
             cmd = store.mas_sprites._ms_sitting(
-                character.clothes,
-                character.hair,
+                character.clothes.name,
+                character.hair.name,
                 eyebrows,
                 eyes,
                 nose,
@@ -1960,6 +2094,7 @@ init -2 python:
             )
 
         else:
+        # TODO: this is missing img_stand checks
         # TODO change this to an elif and else the custom stnading mode
 #        elif stock:
             # stock standing mode
@@ -1992,6 +2127,19 @@ init -1 python:
     # NOTE: PoseMaps are used to determin which lean types exist for
     #   a given hair type, NOT filenames
     #
+    # NOTE: the fallback system:
+    #   by setting fallback to True, you can use the fallback system to
+    #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
+    #   fallback to a lean type. Lean types can only fallback to other lean
+    #   types OR steepling. 
+    #
+    #   When using the fallback system, map poses to the pose/lean types
+    #   that you want to fallback on.
+    #   AKA: to make pose 2 fallback to steepling, do `p2="steepling"`
+    #   To make everything fallback to steepling, do `default="steepling"`
+    #   This means that steepling MUST exist for the fallback system to work
+    #   perfectly.
+    #
     # NOTE: template:
     ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
     ## hairidentifiername
@@ -2008,6 +2156,7 @@ init -1 python:
             use_reg_for_l=True
         )
     )
+    store.mas_sprites.init_hair(mas_hair_def)
 
     ### DOWN
     ## down
@@ -2020,6 +2169,7 @@ init -1 python:
             use_reg_for_l=True
         )
     )
+    store.mas_sprites.init_hair(mas_hair_down)
 
     ### BUN WITH RIBBON
     ## bun
@@ -2032,6 +2182,7 @@ init -1 python:
             p5=None
         )
     )
+    store.mas_sprites.init_hair(mas_hair_bun)
 
 
 init -1 python:
@@ -2046,6 +2197,8 @@ init -1 python:
     # NOTE: see the existing standards for clothes file naming
     # NOTE: PoseMaps are used to determine which lean types exist for
     #  a given clothes type, NOT filenames
+    #
+    # NOTE: see IMG015 for info about the fallback system
     #
     # NOTE: template
     ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
@@ -2064,6 +2217,7 @@ init -1 python:
         ),
         stay_on_start=True
     )
+    store.mas_sprites.init_clothes(mas_clothes_def)
 
 
 init -1 python:

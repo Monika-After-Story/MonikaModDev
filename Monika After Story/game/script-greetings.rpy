@@ -1451,7 +1451,7 @@ label greeting_hairdown:
     # 5 - music is off (skip visual)
 
     # have monika's hair down
-    $ monika_chr.change_hair("down")
+    $ monika_chr.change_hair(mas_hair_down)
 
     call spaceroom
 
