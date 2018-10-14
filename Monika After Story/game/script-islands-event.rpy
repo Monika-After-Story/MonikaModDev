@@ -209,6 +209,8 @@ label mas_monika_glitchedmess:
     m "Practice makes perfect after all, right?"
     return
 
+default persistent.mas_pm_seen_cherry_blossom = None
+
 label mas_monika_cherry_blossom_tree:
     python:
 
@@ -233,6 +235,7 @@ label mas_monika_cherry_blossom1:
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is just awe-inspiring."
+    $ persistent.mas_pm_seen_cherry_blossom = True
     return
 
 label mas_monika_cherry_blossom2:
