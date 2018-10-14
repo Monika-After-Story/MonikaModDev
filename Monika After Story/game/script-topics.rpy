@@ -4941,7 +4941,8 @@ init 5 python:
 python:
     daydream_quips = [
         "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
-        "the two of us resting our heads under the Cherry Blossom tree..."
+        if persistent.mas_pm_seen_cherry_blossom = True:
+            "the two of us resting our heads under the Cherry Blossom tree..."
         "about me gently petting your head while your head resting on my lap..."
         "us having a duet together, with you singing my song and I play the piano..."
         "about having a wonderful dinner together, while we feed each other..."
