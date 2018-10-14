@@ -261,26 +261,6 @@ init -5 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
-    ### [BLK001]
-    # non leanable clothes
-    lean_clothes_blacklist = [
-        "test"
-    ]
-
-    ### [BLK002]
-    # non leanable hair
-    lean_hair_blacklist = [
-#        "down",  # Thanks to Trilasent for giving us leaning hair downs
-        "bun"
-    ]
-
-    ### [BLK003]
-    # non leanable accessories
-    lean_acs_blacklist = [
-#        "mug"
-        "test"
-    ]
-
     # list of available hairstyles
     HAIRS = [
         "def", # ponytail
@@ -293,6 +273,7 @@ init -5 python in mas_sprites:
     ]
 
     # tryparses for the hair and clothes
+    # TODO: adjust this for docking station when ready
     def tryparsehair(_hair, default="def"):
         """
         Returns the given hair if it exists, or the default if not exist
@@ -309,6 +290,8 @@ init -5 python in mas_sprites:
 
         return default
 
+
+    # TODO: adjust this for docking station when ready
     def tryparseclothes(_clothes, default="def"):
         """
         Returns the given clothes if it exists, or the default if not exist
