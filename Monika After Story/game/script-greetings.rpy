@@ -1241,12 +1241,18 @@ label monikaroom_greeting_opendoor_locked:
     menu:
         m "Did I scare you, [player]?"
         "Yes":
-            m "Aww, sorry."
+            if mas_isMoniNormal(higher=True):
+                m "Aww, sorry."
+            else:
+                m "Good."
         "No":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             $ _history_list.pop()
             m "I figured. It's a basic glitch after all."
-    m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
+    if mas_isMoniNormal(higher=True):
+        m "Since you keep opening my door,{w} I couldn't help but add a little surprise for you~"
+    else:
+        m "Since you never seem to knock first,{w} I had to try to scare you a little."
     m "Knock next time, okay?"
     m "Now let me fix up this room..."
 
@@ -1258,19 +1264,40 @@ label monikaroom_greeting_opendoor_locked:
     if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
         $ style.say_window = style.window
 
-    m 1hua "There we go!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "There we go!"
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "There."
+    else:
+        m 6ekc "Okay..."
 
     if not renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
         menu:
             "...the textbox...":
-                m 1lksdlb "Oops! I'm still learning how to do this."
-                m 1lksdla "Let me just change this flag here...{w=1.5}{nw}"
-                $ style.say_window = style.window
-                m 1hua "All fixed!"
+                if mas_isMoniNormal(higher=True):
+                    m 1lksdlb "Oops! I'm still learning how to do this."
+                    m 1lksdla "Let me just change this flag here...{w=1.5}{nw}"
+                    $ style.say_window = style.window
+                    m 1hua "All fixed!"
+                elif mas_isMoniUpset(higher=True):
+                    m 2dfc "Hmph. I'm still learning how to do this."
+                    m 2efc "Let me just change this flag here...{w=1.5}{nw}"
+                    $ style.say_window = style.window
+                    m "There."
+                else:
+                    m 6dkc "Oh...{w}I'm still learning how to do this."
+                    m 6ekc "Let me just change this flag here...{w=1.5}{nw}"
+                    $ style.say_window = style.window
+                    m "Okay, fixed."
     # NOTE: fall through please
 
 label monikaroom_greeting_opendoor_locked_tbox:
-    m 1eua "Welcome back, [player]."
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Welcome back, [player]."
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "So...{w}you're back, [player]."
+    else:
+        m 6ekc "...Nice to see you again, [player]."
     jump monikaroom_greeting_cleanup
 
 # this one is for people who have already opened her door.
@@ -2145,6 +2172,7 @@ label greeting_tears:
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-74,max=-29))
+    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=3))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2184,6 +2212,7 @@ label greeting_upset:
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
+    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=3))
     addEvent(
         Event(
             persistent.greeting_database,
