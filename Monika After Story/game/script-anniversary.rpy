@@ -1,4 +1,3 @@
-
 init -1 python in mas_anni:
     import store.evhand as evhand
     import store.mas_calendar as mas_cal
@@ -226,12 +225,14 @@ init 10 python in mas_anni:
             True if datetime.date.today() is an anniversary date
             False if today is not an anniversary date
         """
-        import calendar
+        #Sanity checks
+        if __persistent.sessions is None:
+            return False
 
-        if calendar.isleap(__persistent.sessions.get("first_session", None).year) and not calendar.isleap(datetime.date.today().year):
-            firstSesh = datetime.date(__persistent.sessions.get("first_session", None).year,3,1)
-        else:
-            firstSesh = __persistent.sessions.get("first_session", None)
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return False
+
         compare = None
 
         if milestone == '1w':
@@ -247,37 +248,31 @@ init 10 python in mas_anni:
             compare = renpy.store.mas_anni.build_anni(months=6)
 
 
-        if compare is not None and compare.strftime('%m/%d/%Y') == datetime.date.today().strftime('%m/%d/%Y'):
-            return True
+        if compare is not None:
+            return compare.date() == datetime.date.today()
         else:
             compare = firstSesh
-            if compare.strftime('%m/%d') == datetime.date.today().strftime('%m/%d') and renpy.store.mas_anni.anniCount() > 0:
-                return True
-        return False
+            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and renpy.store.mas_anni.anniCount() > 0
 
     def anniCount():
         """    
         RETURNS:
             Integer value representing how many years the player has been with Monika
         """
+        #Sanity checks
+        if __persistent.sessions is None:
+            return 0
 
-        import calendar
-
-        if calendar.isleap(__persistent.sessions.get("first_session", None).year) and not calendar.isleap(datetime.date.today().year):
-            firstSesh = datetime.date(__persistent.sessions.get("first_session", None).year,3,1)
-        else:
-            firstSesh = __persistent.sessions.get("first_session", None)
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return 0
 
         compare = datetime.date.today()
 
-        compareMonthDay = datetime.date(2000, compare.month, compare.day)
-        firstseshMonthDay = datetime.date(2000, firstSesh.month, firstSesh.day)
-
-        if compare.year > firstSesh.year and compareMonthDay < firstseshMonthDay:
-            yearDelta = compare.year - firstSesh.year - 1
+        if compare.year > firstSesh.year and datetime.date.today() < datetime.date(datetime.date.today().year, firstSesh.month, firstSesh.day):
+            return compare.year - firstSesh.year - 1
         else:
-            yearDelta = compare.year - firstSesh.year
-        return yearDelta
+            return compare.year - firstSesh.year
 
     def pastSixMonths():
         """    
@@ -285,9 +280,7 @@ init 10 python in mas_anni:
             True if current date is past the 6 month threshold 
             False if below the 6 month threshold
         """
-        if datetime.date.today() >= renpy.store.mas_anni.build_anni(months=6).date():
-            return True
-        return False
+        return datetime.date.today() >= renpy.store.mas_anni.build_anni(months=6).date()
 
 
 init 5 python:
