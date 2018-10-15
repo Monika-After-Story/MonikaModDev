@@ -475,8 +475,6 @@ label mas_scary_story_cleanup:
     m 1esa "I hope you liked it, [player]~"
     return
 
-# TODO Replace placeholders once the flow works
-# These are placeholders
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
     category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
@@ -526,15 +524,238 @@ label mas_scary_story_hunter:
     call mas_scary_story_cleanup
     return
 
-# These are placeholders
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grandpa",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The new grandpa",unlocked=False),
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_kuchisake_onna",
+    category=[store.mas_stories.TYPE_SCARY], prompt="Kuchisake-Onna",unlocked=False),
     eventdb=store.mas_stories.story_database)
 
-label mas_story_grandpa:
+label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m "Grandpa died smoking a cigar in his favorite chair."
-    m "We got a new one but from the ash marks he leaves behind he has a new favorite chair."
+    m "There once was a beautiful woman, whom was the wife of a samurai."
+    m "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
+    m "She would often ask men to rate her appearance."
+    m "The woman ended up cheating on her husband and he quickly found out."
+    m "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile; asking her, ‘who will think you are beautiful, now?’."
+    m "Shortly after, the woman died."
+    m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
+    m "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
+    m "They say she now wanders around aimlessly at night, her face covered with a surgical mask."
+    m "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’."
+    m "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
+    m "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_o_tei",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The tale of O-Tei",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_o_tei:
+    call mas_scary_story_setup
+    m "A long time ago, there lived a man named Kenji, who was studying to be a physician."
+    m "Kenji was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
+    m "Unfortunately, Tomoe contracted a serious illness before that could happen."
+    m "She summoned her husband-to-be, as she lay on her deathbed."
+    m "As he knelt by her bedside, she said to him, ‘We have been promised to each other since childhood, unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
+    m "'I want you to promise me that you will not grieve my loss, because I believe we shall meet again.'."
+    m "Kenji answered earnestly that yes they would meet again in the afterlife."
+    m "Tomoe replied ‘No, I believe that we are destined to meet each other again in this world, only if you wish it to be so.’."
+    m "Kenji replied tenderly, ‘To see you again, my love, would be no less a joy than a duty, but if we were to meet again, how would I know that it is you?’."
+    m "Tomoe replies, ‘That I cannot answer, you will know when the time comes, remember these words of mine.’."
+    m "And there she ceased to speak and expired."
+    m "Kenji grieved deeply for the loss of his love."
+    m "Years passed, Kenji never forgot Tomoe, but since he was the only son in his family, he was required to marry someone else and carry on the family name."
+    m "Time was not kind to Kenji, however, he lost his parents, and shortly after, his wife and child died as well."
+    m "One day, he decided to abandon his home and take a long journey to forget his troubles."
+    m "Somewhere along his journey, he came across a mountain village."
+    m "At the inn he decided to stay for the night, his heart nearly lept out of his chest."
+    m "The girl that greeted him, reminded him so much of his former lover, that he had to pinch himself to ensure he wasn’t dreaming."
+    m "As she came and went, her attitude and motion reminded him so much of her."
+    m "He remembered the last conversation that he and Tomoe had before she passed away."
+    m "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'."
+    m "'If you don’t mind me asking, are you from around here and what is your name?'."
+    m "Immediately, in the unforgotten voice of his deceased beloved, the girl answered: 'My name is Tomoe, and you are Kenji, my promised husband. 17 years ago, I died and you made a promise to marry me if I could come back to this world and now I stand before you.'."
+    m "Then she fell unconscious and could not recall what she had said to him previously."
+    m "A short time later Kenji married the girl and they lived a happy, long life together afterwards."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_mujina",
+    category=[store.mas_stories.TYPE_SCARY], prompt="Mujina",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_mujina:
+    call mas_scary_story_setup
+    m "One night, at a late hour, an old merchant was walking down a road, heading home after a long day of selling his wares."
+    m "The road he travelled on led to a large hill, that was very dark and secluded at night, and many travelers tended to avoid the area."
+    m "The man was tired though, and decided to take the road anyways, because it would get him home quicker."
+    m "On the one side of the hill was an old moat, that was quite deep."
+    m "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
+    m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."
+    m "The woman was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
+    m "The man said to her, ‘Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.’ The woman continued to weep."
+    m "The man started again, ‘Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!’."
+    m "Slowly, the woman rose up, with her head still turned, continuing to sob."
+    m "The man laid his hand lightly on her shoulder and said ‘Miss…’."
+    m "At that moment, the woman turned around, dropping her sleeve, revealing a face with no features."
+    m "No eyes, nose or mouth anywhere! {W}The man ran up the hill screaming. "
+    m "He continued to run until in the distance he saw the light of a lantern and ran towards it."
+    m "The lantern belonged to a travelling salesman that was walking along."
+    m "The old man stopped in front of him, doubled over to catch his breath."
+    m "The salesman asked why the man was running."
+    m "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’."
+    m "The salesman responded ‘Oh, you mean like this?’."
+    m "The man looked up at the salesman only to be greeted again by the familiarly vague shape of a human face devoid of features."
+    m "The old man let out a scream and then suddenly, the lantern went out."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The ubume",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_ubume:
+    call mas_scary_story_setup
+    m "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
+    m "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
+    m "The next night, around the same time, the woman would walk into the shop to buy some more candy."
+    m "After a few nights of this happening, the confectioner became curious about the woman and decided to follow her the next time she came in."
+    m "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
+    m "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree. He followed the woman to the outside of a nearby temple, where she simply vanished."
+    m "The confectioner was shocked by this and decided to head back home."
+    m "The next day, he went to the temple and told the monk there what he saw."
+    m "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly fallen dead in the street."
+    m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy, and had her buried in the cemetery behind the temple."
+    m "As the monk led the confectioner to the site of the grave, they both heard a baby crying."
+    m "They quickly got some shovels, dug up the grave and raised the lid off of the coffin."
+    m "Inside they found a newborn baby boy sucking on a piece of candy."
+    m "The monk took the child out of the grave and raised him as his own."
+    m "The woman’s ghost was never seen again after that."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The woman in black",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_womaninblack:
+    call mas_scary_story_setup
+    m "One night, a colonel boarded a train on his way home."
+    m "The colonel was content because he was able to secure a compartment to himself and promptly fell asleep."
+    m "A short time later, he awoke with a start, feeling stiff and uneasy."
+    m "To his surprise, he noticed that there was now a woman sitting opposite of him."
+    m "The woman's attire was entirely black, including a veil that obscured her face."
+    m "The woman appeared to be looking down at something in her lap, although there wasn’t anything there."
+    m "The colonel was a friendly fellow and tried to make small talk with the woman."
+    m "To his dismay, the woman did not respond to his pleasantries."
+    m "Suddenly, the woman started rocking back and forth and singing a soft lullaby."
+    m "Before the colonel could inquire about it, the train suddenly screeched to a halt."
+    m "A suitcase from the compartment above fell and hit him on the head, knocking him unconscious."
+    m "When he came to, the woman was gone. The colonel questioned some of the train workers about the woman, but none of them had seen her."
+    m "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
+    m "A few months later, the colonel was talking to a railway official that informed him that some time ago, a woman and her husband were travelling on a train together."
+    m "The woman’s husband had his head too far out one of the windows and was decapitated by a wire."
+    m "The headless body fell into her lap. When the train arrived at its stop, the woman was found holding the corpse and singing a lullaby to it."
+    m "She never regained her sanity and died a few months later."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_resurrection_mary",
+    category=[store.mas_stories.TYPE_SCARY], prompt="Resurrection Mary",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_resurrection_mary:
+    call mas_scary_story_setup
+    m "At a dancehall around Christmas time, a young man named Lewis was enjoying some time with his friends, when a young woman he hadn’t seen before caught his attention."
+    m "The girl was tall, blond, blue-eyed and very beautiful."
+    m "The woman was wearing a fancy white dress, with white dancing shoes and a thin shawl."
+    m "Lewis found the girl captivating and decided to ask the woman to dance with him and she accepted his invitation."
+    m "The woman was certainly beautiful, but Lewis felt there was something strange about her."
+    m "As they danced, he tried to get to know her a little better, but all she would say about herself was that her name was Mary and that she was from the south side of town."
+    m "Also, her skin was cool and clammy to the touch. At one point during the evening, he kissed Mary, and found her lips were as cool as her skin."
+    m "The two spent much of the night together dancing. When the time came to leave, Lewis offered Mary a ride home and she again accepted the invitation."
+    m "She directed him to drive down a certain road, and he obliged."
+    m "As they were passing the gates of a cemetery, Mary asked Lewis to pull over."
+    m "Although perplexed, Lewis stopped the car as she requested."
+    m "She then opened the door, leaned in towards Lewis, whispered that she had to go and that he could not go with her."
+    m "She then got out of the car and walked towards the cemetery gate before disappearing."
+    m "Lewis sat in the car for a long time bewildered by what had just happened."
+    m "He never saw the beautiful woman ever again."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The resuscitated corpse",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_corpse:
+    call mas_scary_story_setup
+    m "There once was an old man that ran an old roadside inn. One evening, 4 men arrived and asked for a room."
+    m "The old man replied that all of the rooms were taken, but he could find them a place to sleep if they weren’t too particular."
+    m "The men were exhausted and assured the old man that any place would do."
+    m "The old man led them to a room around back. Lying in the corner of the room was the corpse of a woman."
+    m "The old man explained that his daughter-in-law had recently perished and she was awaiting burial."
+    m "After the old man departed, 3 of the 4 men fell asleep. The last man couldn’t fall asleep."
+    m "Suddenly, the man heard a creaking noise."
+    m "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
+    m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
+    m "The woman bit the pillow and apparently not realizing she hadn’t bit the last man, returned to her original resting spot."
+    m "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
+    m "As soon as his feet touched the ground, however, he heard another creak."
+    m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
+    m "After a short distance, he looked behind him and saw that the corpse was not far behind him."
+    m "A chase ensued and as she caught up to him, he found himself standing under a tree."
+    m "The woman charged towards him with her claw-like fingernails extended."
+    m "At the last second, the man dodged and the woman struck the tree with great ferocity."
+    m "Her fingernails were now deeply embedded in the tree."
+    m "She wildly swung her freehand at the man as he lay on the ground, unable to reach him."
+    m "The man, frightened and exhausted crawled a short distance away and then passed out."
+    m "The next morning a passing police officer found the man and brought him back to consciousness."
+    m "The man recounted what had happened. The officer, thinking the man was a drunkard, walked the man back to the inn."
+    m "As they arrived, the inn was in a state of great commotion."
+    m "The 3 travelers had been found dead in their beds and the body of the daughter-in-law was lying where she had been the night before, but now her clothes were soiled with blood and a piece of bark was found under her fingernail."
+    m "After some questioning, the innkeeper finally admitted that the woman had died six months previously and he was trying to save enough money to give her a proper burial."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
+    category=[store.mas_stories.TYPE_SCARY], prompt="Jack O Lantern",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_jack_o_lantern:
+    call mas_scary_story_setup
+    m ""
+    m ""
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_baobhan_sith",
+    category=[store.mas_stories.TYPE_SCARY], prompt="Baobhan Sith",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_baobhan_sith:
+    call mas_scary_story_setup
+    m ""
+    m ""
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The serial killer",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_serial_killer:
+    call mas_scary_story_setup
+    m ""
+    m ""
     call mas_scary_story_cleanup
     return
