@@ -255,16 +255,16 @@ init 10 python in mas_anni:
             return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and renpy.store.mas_anni.anniCount() > 0
 
     def isAnniWeek():
-        return isAnni('1w')
+        return renpy.store.mas_anni.isAnni('1w')
     
     def isAnniOneMonth():
-        return isAnni('1m')
+        return renpy.store.mas_anni.isAnni('1m')
 
     def isAnniThreeMonth():
-        return isAnni('3m')
+        return renpy.store.mas_anni.isAnni('3m')
 
     def isAnniSixMonth():
-        return isAnni('6m')
+        return renpy.store.mas_anni.isAnni('6m')
         
     def anniCount():
         """    
