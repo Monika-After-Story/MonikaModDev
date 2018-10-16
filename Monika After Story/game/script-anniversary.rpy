@@ -254,6 +254,18 @@ init 10 python in mas_anni:
             compare = firstSesh
             return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and renpy.store.mas_anni.anniCount() > 0
 
+    def isAnniWeek():
+        return isAnni('1w')
+    
+    def isAnniOneMonth():
+        return isAnni('1m')
+
+    def isAnniThreeMonth():
+        return isAnni('3m')
+
+    def isAnniSixMonth():
+        return isAnni('6m')
+        
     def anniCount():
         """    
         RETURNS:
