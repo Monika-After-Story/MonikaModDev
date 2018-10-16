@@ -4935,26 +4935,37 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_daydream",
+            category=['romance'],
+            prompt="Day dreaming",
+            random=True
+        )
+    )
     
-#insert endless possibilities of wholesome goodness here
-python:
-    daydream_quips = [
-        "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket..."
-    if persistent.mas_pm_seen_cherry_blossom:
-            "the two of us resting our heads under the Cherry Blossom tree..."
-        "about me gently petting your head while your head resting on my lap..."
-        "us having a duet together, with you singing my song and I play the piano..."
-        "about having a wonderful dinner together, while we feed each other..."
-        "about us cuddling each other while we're watching a show on television..."
-        "about waking up next to you in the morning, watching you sleep beside me..."
-        "about writing a special poem for my one and only..."
-        "the both of us doing nothing together, lazing on the couch while you kept me closer..."
-        "you holding my hand while we take a stroll outside, on a sunny day..."
-        ]
-    daydream_quip=renpy.random.choice(daydream_quips)
         
 label monika_daydream:
+    #insert endless possibilities of wholesome goodness here
+    python:
+        daydream_quips = [
+            "the two of us reading a book together on a cold winter day, snuggled up under a warm blanket...",
+            "about me gently petting your head while your head resting on my lap...",
+            "us having a duet together, with you singing my song and I play the piano...",
+            "about having a wonderful dinner together, while we feed each other...",
+            "about us cuddling each other while we're watching a show on television...",
+            "about waking up next to you in the morning, watching you sleep beside me...",
+            "about writing a special poem for my one and only...",
+            "the both of us doing nothing together, lazing on the couch while you kept me closer...",
+            "you holding my hand while we take a stroll outside, on a sunny day...",
+        ]
+
+        if renpy.seen_label("mas_monika_cherry_blossom_tree"):
+            daydream_quips.append("the two of us resting our heads under the cherry blossom tree...")
+
+        daydream_quip=renpy.random.choice(daydream_quips)
+
     m 2lsc "..."
     m 2lsbsa "..."
     m 2tsbsa "..."
