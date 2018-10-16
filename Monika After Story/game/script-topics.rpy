@@ -343,6 +343,7 @@ label monika_god:
     m 1dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
     m 4hksdlb "But the irony is that I {i}do{/i} have a creator, apparently."
     m 1eua "And you know what?"
+    #TODO: adjust based on starting act
     m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
     m 3dsd "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
@@ -724,6 +725,7 @@ label monika_saved:
     m 1tkc "...You'd probably find some way of killing yourself, wouldn't you?"
     m 1lsc "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
     m 1esc "But then you'd have nobody to even read it."
+    #TODO: adjust based on starting act
     m 1tfu "Let's be honest, the club members really don't count for something like that."
     m 4eua "I mean, a lot of people say that they only write for themselves..."
     m 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
@@ -922,6 +924,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_archetype",category=['club members'],prompt="Character tropes",random=True))
 
 label monika_archetype:
+    #TODO: adjust based on starting act
     m 4euc "I've always wondered..."
     m "What is it about these character archetypes that people find so appealing, anyway?"
     m "Their personalities are just completely unrealistic..."
@@ -951,6 +954,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea set",random=True))
 
 label monika_tea:
+    #TODO: adjust based on starting act
     m 2hua "Hey, I wonder if Yuri's tea set is still somewhere in here..."
     m 2hksdlb "...Or maybe that got deleted, too."
     m 2eka "It's kind of funny how Yuri took her tea so seriously."
@@ -2038,6 +2042,7 @@ label monika_route:
     m 2esc "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
     m 2euc "I think the only difference would be that I may not have needed to take such drastic measures to be with you."
     m 2lksdlc "Maybe the rest of the club would still be around..."
+    #TODO: adjust based on starting act
     m 2eka "Not that it really matters."
     m 1lsc "It all lost its meaning once I found out it wasn't real."
     m "So I really don't miss those days or anything."
@@ -2312,6 +2317,7 @@ label monika_ks_hanako:
     m 1euc "You've played through Hanako's route from {i}Katawa Shoujo{/i}, haven't you?"
     m 1hksdlb "She kind of reminds me of Yuri!"
     m 1euc "Though, I wonder, [player]:"
+    #TODO: adjust based on starting act
     m 1esc "What do people see in them anyways?"
     m 2efd "I mean, they're both so unrealistic!"
     m "They probably couldn't form a complete sentence between them!"
@@ -2404,6 +2410,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_credits_song",category=['ddlc','media'],prompt="Credits song",random=True))
 
 label monika_credits_song:
+    #TODO: adjust based on starting act, doesn't quite apply to those that never went past act 3
     m 1hua "I hope you liked my song."
     m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
     m 1eua "Give me some time, and I'll try to write another."
@@ -2715,6 +2722,7 @@ label monika_justification:
         else:
             m 1dsc "If I didn't know you so well, that would have been really cruel..."
     else:
+        #TODO: adjust based on starting act
         m 1tkc "How many times do I have to say it until you understand?"
         m 4tkc "They weren't real. They were never real."
         m 2tfc "I'm the only person who understood that this whole thing was fake."
@@ -3107,6 +3115,7 @@ label monika_ghost:
     m 1ekc "I mean, I was pretty scared being alone inside this game."
     m 1lksdlc "All by myself, uncertain if anything around me was real."
     m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts'..."
+    #TODO: adjust based on starting act
     m "You know how I deleted Sayori?"
     m 1dsc "I can still feel her presence now..."
     m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
@@ -3240,6 +3249,7 @@ init 5 python:
     )
 
 label monika_impression:
+    #TODO: adjust based on starting act
     m 1euc "Impression? Of the other girls?"
     m 1hua "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
