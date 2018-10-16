@@ -7672,7 +7672,7 @@ label monika_hair_down:
     show monika 1dsc
     pause 1.0
 
-    $ monika_chr.change_hair("down")
+    $ monika_chr.change_hair(mas_hair_down)
 
     m 3hub "And it's down!"
     m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
