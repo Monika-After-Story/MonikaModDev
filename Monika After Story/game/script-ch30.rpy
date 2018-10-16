@@ -1115,7 +1115,7 @@ label ch30_reset:
 
             for hair in hair_map:
                 # this is so we kind of automate the locking / unlocking prcoess
-                if hair == monika_chr.hair:
+                if hair == monika_chr.hair.name:
                     lockEventLabel(hair_map[hair])
                 else:
                     unlockEventLabel(hair_map[hair])
@@ -1129,7 +1129,7 @@ label ch30_reset:
 
 
         for clothes in clothes_map:
-            if clothes == monika_chr.clothes:
+            if clothes == monika_chr.clothes.name:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])
