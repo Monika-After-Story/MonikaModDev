@@ -236,35 +236,35 @@ init 10 python in mas_anni:
         compare = None
 
         if milestone == '1w':
-            compare = renpy.store.mas_anni.build_anni(weeks=1)
+            compare = build_anni(weeks=1)
                 
         elif milestone == '1m':
-            compare = renpy.store.mas_anni.build_anni(months=1)
+            compare = build_anni(months=1)
 
         elif milestone == '3m':
-            compare = renpy.store.mas_anni.build_anni(months=3)
+            compare = build_anni(months=3)
 
         elif milestone == '6m':
-            compare = renpy.store.mas_anni.build_anni(months=6)
+            compare = build_anni(months=6)
 
 
         if compare is not None:
             return compare.date() == datetime.date.today()
         else:
             compare = firstSesh
-            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and renpy.store.mas_anni.anniCount() > 0
+            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and anniCount() > 0
 
     def isAnniWeek():
-        return renpy.store.mas_anni.isAnni('1w')
+        return isAnni('1w')
     
     def isAnniOneMonth():
-        return renpy.store.mas_anni.isAnni('1m')
+        return risAnni('1m')
 
     def isAnniThreeMonth():
-        return renpy.store.mas_anni.isAnni('3m')
+        return isAnni('3m')
 
     def isAnniSixMonth():
-        return renpy.store.mas_anni.isAnni('6m')
+        return isAnni('6m')
         
     def anniCount():
         """    
@@ -292,7 +292,7 @@ init 10 python in mas_anni:
             True if current date is past the 6 month threshold 
             False if below the 6 month threshold
         """
-        return datetime.date.today() >= renpy.store.mas_anni.build_anni(months=6).date()
+        return datetime.date.today() >= build_anni(months=6).date()
 
 
 init 5 python:
