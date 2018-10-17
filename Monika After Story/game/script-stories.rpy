@@ -483,13 +483,13 @@ init 5 python:
 
 label mas_scary_story_hunter:
     call mas_scary_story_setup
-    m 3euc "One day, a hunter went out hunting for game out in the forest."
-    m "The forest was dense and dark all around him and he struggled to hit his mark."
-    m "He was soon approached by a salesman, who kept his face covered."
-    m "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
+    m 3esa "One day, a hunter went out hunting for game out in the forest."
+    m 3esc "The forest was dense and dark all around him and he struggled to hit his mark."
+    m 1esd "He was soon approached by a salesman, who kept his face covered."
+    m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
     m "The hunter could use the first six bullets as he wished, but the last bullet’s mark would be chosen by the salesman."
-    m "The hunter agreed and quickly became famous in his town for bringing home kill after kill without fail."
+    m 1esa "The hunter agreed and quickly became famous in his town for bringing home kill after kill without fail."
     m "It wasn’t long before the hunter used up all six bullets."
     m "On his next hunt, the hunter saw a wild boar and loaded the last bullet hoping to take down the beast."
     m "When he fired, he missed and the bullet instead hit his beloved fiancée in the chest, killing her."
@@ -530,16 +530,16 @@ init 5 python:
 
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m "There once was a beautiful woman, whom was the wife of a samurai."
-    m "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
-    m "She would often ask men to rate her appearance."
-    m "The woman ended up cheating on her husband and he quickly found out."
-    m "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile; asking her, ‘who will think you are beautiful, now?’."
-    m "Shortly after, the woman died."
+    m 3eua "There once was a beautiful woman, whom was the wife of a samurai."
+    m 3eub "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
+    m 1tsu "She would often ask men to rate her appearance."
+    m 1esd "The woman ended up cheating on her husband and he quickly found out."
+    m 1efd "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile; asking her, ‘who will think you are beautiful, now?’."
+    m 2dsd "Shortly after, the woman died."
     m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
-    m "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
+    m 3eud "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
     m "They say she now wanders around aimlessly at night, her face covered with a surgical mask."
-    m "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’."
+    m 1esa "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’."
     # TODO 1 in 15 chance
     hide monika
     show screen tear(20, 0.1, 0.1, 0, 40)
@@ -579,8 +579,8 @@ label mas_scary_story_kuchisake_onna:
         hide black
         $ style.say_dialogue = style.normal
         show monika 1eua at i11 zorder MAS_MONIKA_Z
-    m "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
-    m "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
+    m 3eud "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
+    m 3esa "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
     call mas_scary_story_cleanup
     return
 
