@@ -1925,10 +1925,16 @@ init -2 python:
         Representations of clothes
 
         PROPERTIES:
-            (no additional)
+            hair_map - dict of available hair styles for these clothes
+                keys should be hair name properites. Values should also be
+                hair name properties.
+                use "all" to signify a default hair style for all mappings that
+                are not found.
 
         SEE MASSpriteFallbackBase for inherited properties
         """
+        import store.mas_sprites as mas_sprites
+
         
         def __init__(self,
                 name,
@@ -1936,7 +1942,8 @@ init -2 python:
                 pose_map,
                 img_stand="",
                 stay_on_start=False,
-                fallback=False
+                fallback=False,
+                hair_map={}
             ):
             """
             MASClothes constructor
@@ -1955,6 +1962,12 @@ init -2 python:
                 fallback - True means the MASPoseMap includes fallback codes
                     for each pose instead of just enable/disable rules
                     (Default: False)
+                hair_map - dict of available hair styles and what they map to
+                    These should all be strings. To signify a default, add
+                    a single item called "all" with the value being the hair
+                    to map to.
+                    NOTE: use the name property for hairstyles.
+                    (Default: {})
             """
             super(MASClothes, self).__init__(
                 name,
@@ -1964,6 +1977,27 @@ init -2 python:
                 stay_on_start,
                 fallback
             )
+
+            self.hair_map = hair_map
+
+            # add defaults if we need them
+            if "all" in hair_map:
+                for hair_name in mas_sprites.HAIR_MAP:
+                    if hair_name not in self.hair_map:
+                        self.hair_map[hair_name] = self.hair_map["all"]
+
+        
+        def get_hair(self, hair):
+            """
+            Given a hair type, grabs the available mapping for this hair type
+
+            IN:
+                hair - hair type to get mapping for
+
+            RETURNS:
+                the hair mapping to use inplace for the given hair type         
+            """
+            return self.hair_map.get(hair, hair)
 
 
     # The main drawing function...
@@ -2056,9 +2090,12 @@ init -2 python:
             if character.clothes.fallback:
                 arms, lean = character.clothes.get_fallback(arms, lean)
 
+            # get the mapped hair for the current clothes
+            hair_name = character.clothes.get_hair(character.hair.name)
+
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.name,
-                character.hair.name,
+                hair_name,
                 eyebrows,
                 eyes,
                 nose,
@@ -2169,6 +2206,7 @@ init -1 python:
 
 
 init -1 python:
+    # THIS MUST BE AFTER THE HAIR SECTION
     # CLOTHES (IMG018)
     # Clothes are representations of image objects with properties
     #
