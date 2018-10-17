@@ -2240,6 +2240,26 @@ init -1 python:
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
 
+    ### MARISA COSTUME
+    ## marisa
+    # Witch costume based on Marisa
+    mas_clothes_marisa = MASClothes(
+        "marisa",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="down",
+            p3="steepling",
+            p4="down",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_marisa)
+
 
 init -1 python:
     # ACCESSORIES (IMG020)

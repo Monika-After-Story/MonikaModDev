@@ -185,7 +185,8 @@ init 999 python:
         ### sprite code maps
         SEL_TX_MAP = {
             "torso": {
-                "def": "School Uniform"
+                "def": "School Uniform",
+                "marisa": "Witch Costume"
             },
             "arms": {
                 1: "Resting on Hands",
@@ -305,7 +306,8 @@ init 999 python:
         # sprite code map
         SC_MAP = {
             "torso": [
-                "def"
+                "def",
+                "marisa"
             ],
             "arms": [
                 1,
