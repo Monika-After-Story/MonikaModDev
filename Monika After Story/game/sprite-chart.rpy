@@ -261,6 +261,12 @@ init -5 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
+    ## BLK010
+    # ACCESSORY BLACKLIST
+    lean_acs_blacklist = [
+        "test"
+    ]
+
     # list of available hairstyles
     HAIRS = [
         "def", # ponytail
