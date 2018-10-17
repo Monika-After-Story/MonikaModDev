@@ -1987,7 +1987,7 @@ init -2 python:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
         
-        def hair_map(self, hair):
+        def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
 
@@ -2090,9 +2090,12 @@ init -2 python:
             if character.clothes.fallback:
                 arms, lean = character.clothes.get_fallback(arms, lean)
 
+            # get the mapped hair for the current clothes
+            hair_name = character.clothes.get_hair(character.hair.name)
+
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.name,
-                character.hair.name,
+                hair_name,
                 eyebrows,
                 eyes,
                 nose,
