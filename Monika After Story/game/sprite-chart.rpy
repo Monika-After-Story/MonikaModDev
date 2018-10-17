@@ -2260,6 +2260,25 @@ init -1 python:
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
 
+    ### RIN COSTUME
+    ## rin
+    # Neko costume based on Rin
+    mas_clothes_rin = MASClothes(
+        "rin",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="down",
+            p3="steepling",
+            p4="down",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_rin)
 
 init -1 python:
     # ACCESSORIES (IMG020)

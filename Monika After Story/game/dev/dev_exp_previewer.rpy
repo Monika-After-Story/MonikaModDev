@@ -186,7 +186,8 @@ init 999 python:
         SEL_TX_MAP = {
             "torso": {
                 "def": "School Uniform",
-                "marisa": "Witch Costume"
+                "marisa": "Witch Costume",
+                "rin": "Neko Costume"
             },
             "arms": {
                 1: "Resting on Hands",
@@ -307,7 +308,8 @@ init 999 python:
         SC_MAP = {
             "torso": [
                 "def",
-                "marisa"
+                "marisa",
+                "rin"
             ],
             "arms": [
                 1,
