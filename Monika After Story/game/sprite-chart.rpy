@@ -237,7 +237,8 @@ init -5 python in mas_sprites:
     TRAN = "Transform"
 
     # zoom
-    ZOOM = "zoom=1.25"
+    ZOOM = "zoom="
+    value_zoom = 1.25
 
     # Prefixes for files
     PREFIX_BODY = "torso" + ART_DLM
@@ -1056,6 +1057,7 @@ init -5 python in mas_sprites:
             _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
             "),",
             ZOOM,
+            str(value_zoom),
             ")"
         ])
 
