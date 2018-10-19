@@ -649,10 +649,10 @@ label mas_scary_story_mujina:
     m "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."
     m "The woman was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
-    m "The man said to her, ‘Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.’ The woman continued to weep."
-    m "The man started again, ‘Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!’."
+    m "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' The woman continued to weep."
+    m "The man started again, 'Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!'."
     m "Slowly, the woman rose up, with her head still turned, continuing to sob."
-    m "The man laid his hand lightly on her shoulder and said ‘Miss…’."
+    m "The man laid his hand lightly on her shoulder and said 'Miss…'."
     m "At that moment, the woman turned around, dropping her sleeve, revealing a face with no features."
     m "No eyes, nose or mouth anywhere! {w}The man ran up the hill screaming. "
     m "He continued to run until in the distance he saw the light of a lantern and ran towards it."
@@ -688,24 +688,24 @@ init 5 python:
 label mas_scary_story_ubume:
     call mas_scary_story_setup
     m 4eud "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
-    m "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
-    m "The next night, around the same time, the woman would walk into the shop to buy some more candy."
+    m 4esa "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
+    m 1esa "The next night, around the same time, the woman would walk into the shop to buy some more candy."
     m "After a few nights of this happening, the confectioner became curious about the woman and decided to follow her the next time she came in."
-    m "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
-    m "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree."
+    m 3esa "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
+    m 3wuo "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree."
     # 1 in 20
     if renpy.random.randint(1,20) == 1 or mas_full_scares:
         play sound "sfx/giggle.ogg"
-    m "He followed the woman to the outside of a nearby temple, where she simply vanished."
-    m "The confectioner was shocked by this and decided to head back home."
-    m "The next day, he went to the temple and told the monk there what he saw."
-    m "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly fallen dead in the street."
+    m 1eud "He followed the woman to the outside of a nearby temple, where she simply vanished."
+    m 1esd "The confectioner was shocked by this and decided to head back home."
+    m 3esa "The next day, he went to the temple and told the monk there what he saw."
+    m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly fallen dead in the street."
     m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy, and had her buried in the cemetery behind the temple."
-    m "As the monk led the confectioner to the site of the grave, they both heard a baby crying."
+    m 1eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying."
     m "They quickly got some shovels, dug up the grave and raised the lid off of the coffin."
-    m "Inside they found a newborn baby boy sucking on a piece of candy."
-    m "The monk took the child out of the grave and raised him as his own."
-    m "The woman’s ghost was never seen again after that."
+    m 1esa "Inside they found a newborn baby boy sucking on a piece of candy."
+    m 1esb "The monk took the child out of the grave and raised him as his own."
+    m 1hub "The woman’s ghost was never seen again after that."
     call mas_scary_story_cleanup
     return
 
@@ -717,26 +717,26 @@ init 5 python:
 label mas_scary_story_womaninblack:
     call mas_scary_story_setup
     m 3esa "One night, a colonel boarded a train on his way home."
-    m "The colonel was content because he was able to secure a compartment to himself and promptly fell asleep."
-    m "A short time later, he awoke with a start, feeling stiff and uneasy."
-    m "To his surprise, he noticed that there was now a woman sitting opposite of him."
-    m "The woman's attire was entirely black, including a veil that obscured her face."
+    m 1esa "The colonel was content because he was able to secure a compartment to himself and promptly fell asleep."
+    m 3eud "A short time later, he awoke with a start, feeling stiff and uneasy."
+    m 1eud "To his surprise, he noticed that there was now a woman sitting opposite of him."
+    m 1esd "The woman's attire was entirely black, including a veil that obscured her face."
     m "The woman appeared to be looking down at something in her lap, although there wasn’t anything there."
-    m "The colonel was a friendly fellow and tried to make small talk with the woman."
-    m "To his dismay, the woman did not respond to his pleasantries."
-    m "Suddenly, the woman started rocking back and forth and singing a soft lullaby."
+    m 3esb "The colonel was a friendly fellow and tried to make small talk with the woman."
+    m 1dsd "To his dismay, the woman did not respond to his pleasantries."
+    m 1eud "Suddenly, the woman started rocking back and forth and singing a soft lullaby."
     m "Before the colonel could inquire about it, the train suddenly screeched to a halt."
     m "A suitcase from the compartment above fell and hit him on the head, knocking him unconscious."
     show black zorder 100
     play sound "sfx/crack.ogg"
     $ pause(1.5)
     hide black
-    m "When he came to, the woman was gone. The colonel questioned some of the train workers about the woman, but none of them had seen her."
-    m "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
-    m "A few months later, the colonel was talking to a railway official that informed him that some time ago, a woman and her husband were travelling on a train together."
-    m "The woman’s husband had his head too far out one of the windows and was decapitated by a wire."
-    m "The headless body fell into her lap. When the train arrived at its stop, the woman was found holding the corpse and singing a lullaby to it."
-    m "She never regained her sanity and died a few months later."
+    m 3esd "When he came to, the woman was gone. The colonel questioned some of the train workers about the woman, but none of them had seen her."
+    m 3ekd "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
+    m 1esd "A few months later, the colonel was talking to a railway official that informed him that some time ago, a woman and her husband were travelling on a train together."
+    m 1dsd "The woman’s husband had his head too far out one of the windows and was decapitated by a wire."
+    m 1esd "The headless body fell into her lap. When the train arrived at its stop, the woman was found holding the corpse and singing a lullaby to it."
+    m 1esc "She never regained her sanity and died a few months later."
     call mas_scary_story_cleanup
     return
 
@@ -748,20 +748,20 @@ init 5 python:
 label mas_scary_story_resurrection_mary:
     call mas_scary_story_setup
     m 3eua "At a dancehall around Christmas time, a young man named Lewis was enjoying some time with his friends, when a young woman he hadn’t seen before caught his attention."
-    m "The girl was tall, blond, blue-eyed and very beautiful."
-    m "The woman was wearing a fancy white dress, with white dancing shoes and a thin shawl."
-    m "Lewis found the girl captivating and decided to ask the woman to dance with him and she accepted his invitation."
-    m "The woman was certainly beautiful, but Lewis felt there was something strange about her."
-    m "As they danced, he tried to get to know her a little better, but all she would say about herself was that her name was Mary and that she was from the south side of town."
+    m 1eub "The girl was tall, blond, blue-eyed and very beautiful."
+    m 1hub "The woman was wearing a fancy white dress, with white dancing shoes and a thin shawl."
+    m 3esb "Lewis found the girl captivating and decided to ask the woman to dance with him and she accepted his invitation."
+    m 1eud "The woman was certainly beautiful, but Lewis felt there was something strange about her."
+    m 3esd "As they danced, he tried to get to know her a little better, but all she would say about herself was that her name was Mary and that she was from the south side of town."
     m "Also, her skin was cool and clammy to the touch. At one point during the evening, he kissed Mary, and found her lips were as cool as her skin."
-    m "The two spent much of the night together dancing. When the time came to leave, Lewis offered Mary a ride home and she again accepted the invitation."
-    m "She directed him to drive down a certain road, and he obliged."
-    m "As they were passing the gates of a cemetery, Mary asked Lewis to pull over."
-    m "Although perplexed, Lewis stopped the car as she requested."
-    m "She then opened the door, leaned in towards Lewis, whispered that she had to go and that he could not go with her."
-    m "She then got out of the car and walked towards the cemetery gate before disappearing."
+    m 1esb "The two spent much of the night together dancing. When the time came to leave, Lewis offered Mary a ride home and she again accepted the invitation."
+    m 3esb "She directed him to drive down a certain road, and he obliged."
+    m 3eud "As they were passing the gates of a cemetery, Mary asked Lewis to pull over."
+    m 1eud "Although perplexed, Lewis stopped the car as she requested."
+    m 3eud "She then opened the door, leaned in towards Lewis, whispered that she had to go and that he could not go with her."
+    m 1euc "She then got out of the car and walked towards the cemetery gate before disappearing."
     m "Lewis sat in the car for a long time bewildered by what had just happened."
-    m "He never saw the beautiful woman ever again."
+    m 1esd "He never saw the beautiful woman ever again."
     # 1 in 20
     if renpy.random.randint(1,20) == 1 or mas_full_scares:
         play sound "sfx/giggle.ogg"
@@ -776,41 +776,41 @@ init 5 python:
 label mas_scary_story_corpse:
     call mas_scary_story_setup
     m 1esa "There once was an old man that ran an old roadside inn. One evening, 4 men arrived and asked for a room."
-    m "The old man replied that all of the rooms were taken, but he could find them a place to sleep if they weren’t too particular."
-    m "The men were exhausted and assured the old man that any place would do."
-    m "The old man led them to a room around back. Lying in the corner of the room was the corpse of a woman."
+    m 3eua "The old man replied that all of the rooms were taken, but he could find them a place to sleep if they weren’t too particular."
+    m 1esa "The men were exhausted and assured the old man that any place would do."
+    m 1eud "The old man led them to a room around back. Lying in the corner of the room was the corpse of a woman."
     m "The old man explained that his daughter-in-law had recently perished and she was awaiting burial."
-    m "After the old man departed, 3 of the 4 men fell asleep. The last man couldn’t fall asleep."
-    m "Suddenly, the man heard a creaking noise."
+    m 1eua "After the old man departed, 3 of the 4 men fell asleep. The last man couldn’t fall asleep."
+    m 1wuo "Suddenly, the man heard a creaking noise."
     if renpy.random.randint(1,2) == 1 or mas_full_scares:
         play sound "sfx/crack.ogg"
-    m "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
+    m 3wuo "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
     m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
-    m "The woman bit the pillow and apparently not realizing she hadn’t bit the last man, returned to her original resting spot."
-    m "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
-    m "As soon as his feet touched the ground, however, he heard another creak."
+    m 1eud "The woman bit the pillow and apparently not realizing she hadn’t bit the last man, returned to her original resting spot."
+    m 3eud "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
+    m 3wuo "As soon as his feet touched the ground, however, he heard another creak."
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
     show layer master at heartbeat2(1)
     show vignette as flicker zorder 14 at vignetteflicker(0)
-    m "After a short distance, he looked behind him and saw that the corpse was not far behind him."
-    m "A chase ensued and as she caught up to him, he found himself standing under a tree."
+    m 3eud "After a short distance, he looked behind him and saw that the corpse was not far behind him."
+    m 3wud "A chase ensued and as she caught up to him, he found himself standing under a tree."
     m "The woman charged towards him with her claw-like fingernails extended."
-    m "At the last second, the man dodged and the woman struck the tree with great ferocity."
-    m "Her fingernails were now deeply embedded in the tree."
-    m "She wildly swung her freehand at the man as he lay on the ground, unable to reach him."
-    m "The man, frightened and exhausted crawled a short distance away and then passed out."
+    m 4wud "At the last second, the man dodged and the woman struck the tree with great ferocity."
+    m 3wud "Her fingernails were now deeply embedded in the tree."
+    m 1wud "She wildly swung her freehand at the man as he lay on the ground, unable to reach him."
+    m 1eud "The man, frightened and exhausted crawled a short distance away and then passed out."
     show layer master
     hide flicker
     show black zorder 100
     $ pause(2.5)
     hide black
-    m "The next morning a passing police officer found the man and brought him back to consciousness."
+    m 1esd "The next morning a passing police officer found the man and brought him back to consciousness."
     m "The man recounted what had happened. The officer, thinking the man was a drunkard, walked the man back to the inn."
-    m "As they arrived, the inn was in a state of great commotion."
-    m "The 3 travelers had been found dead in their beds."
+    m 1eud "As they arrived, the inn was in a state of great commotion."
+    m 3eud "The 3 travelers had been found dead in their beds."
     m "The body of the daughter-in-law was lying where she had been the night before, but now her clothes were soiled with blood and a piece of bark was found under her fingernail."
-    m "After some questioning, the innkeeper finally admitted that the woman had died six months previously and he was trying to save enough money to give her a proper burial."
+    m 3esd "After some questioning, the innkeeper finally admitted that the woman had died six months previously and he was trying to save enough money to give her a proper burial."
     call mas_scary_story_cleanup
     return
 
@@ -824,24 +824,25 @@ label mas_scary_story_jack_o_lantern:
     # chance of 1 in 4
     $ _mas_jack_scare = renpy.random.randint(1,4) == 1
     m 4esd "There was once a man named Jack. Jack was a miserable, old drunk who took pleasure in playing tricks on people."
-    m "One night, Jack ran into the Devil and invited him to have a drink with him."
+    m 3esa "One night, Jack ran into the Devil and invited him to have a drink with him."
     m "After Jack had had his fill, he turned to the Devil and asked him to turn into a coin so he could pay for their drinks, as he didn’t have the money to pay for them."
-    m "Once the Devil did so, Jack pocketed the coin and walked out without paying."
+    m 1esa "Once the Devil did so, Jack pocketed the coin and walked out without paying."
     m "The Devil could not turn back to his original form because Jack had put it into his pocket next to a silver cross."
-    m "Jack eventually freed the Devil, under the condition that he would not bother Jack for 1 year and that, should Jack die, he would not claim his soul. The next year, Jack ran into the Devil again."
-    m "This time he tricked him into climbing into a tree to pick a piece of fruit."
-    m "While he was in the tree, Jack surrounded it with white crosses so that the Devil could not come down."
+    m 3esa "Jack eventually freed the Devil, under the condition that he would not bother Jack for 1 year and that, should Jack die, he would not claim his soul."
+    m "The next year, Jack ran into the Devil again. This time he tricked him into climbing into a tree to pick a piece of fruit."
+    m 3esd "While he was in the tree, Jack surrounded it with white crosses so that the Devil could not come down."
     m "Once the Devil promised not to bother him again for another 10 years, Jack removed them. When Jack died, he went to Heaven."
-    m "When he arrived, he was told he could not enter for how poorly a life he had lived on Earth."
-    m "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
-    m "Jack became scared, for he had no place to go."
-    m "Jack asked the Devil how he could leave, as there was no light."
+    m 1eud "When he arrived, he was told he could not enter for how poorly a life he had lived on Earth."
+    m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
+    m 1eud "Jack became scared, for he had no place to go."
+    m 1esd "Jack asked the Devil how he could leave, as there was no light."
     if _mas_jack_scare or mas_full_scares:
         hide vignette
-        show darkred zorder 25
-    m "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
+        show darkred zorder 25:
+            alpha 0.7
+    m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him and carved it out and placed the ember inside of it."
-    m "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O’Lantern."
+    m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O’Lantern."
     if _mas_jack_scare or mas_full_scares:
         hide darkred
         show vignette zorder 13
@@ -856,23 +857,22 @@ init 5 python:
 label mas_scary_story_baobhan_sith:
     call mas_scary_story_setup
     m 1esa "There was once a young group of hunters, who stopped for the night in a small hunting lodge."
-    m "As the men settled in, they built a fire, and began eating and drinking merrily, for it had been a good day."
-    m "They said to themselves the only thing that they lacked was the company of some beautiful women by their sides."
-    m "Not too long after they said this, there came a knock at their door."
-    m "There in the doorway stood four beautiful women."
+    m 3esb "As the men settled in, they built a fire, and began eating and drinking merrily, for it had been a good day."
+    m 1tku "They said to themselves the only thing that they lacked was the company of some beautiful women by their sides."
+    m 1tsb "Not too long after they said this, there came a knock at their door."
+    m 3eub "There in the doorway stood four beautiful women."
     m "The women, having become lost in the wilderness, asked if they may join the men in their shelter for the night."
-    m "The men, silently congratulating themselves on their good fortunes, invited the women in."
-    m "After a while of enjoying each other’s company, the women expressed a wish to dance."
-    m "The men wasted no time coupling off with each of the maidens."
-    m "As they are dancing, one of the men notices that the other couples are dancing rather erratically."
-    m "Then, to his horror, he realizes that the other men have blood pouring from their necks onto their shirts."
-    m "In a blind panic, the man abandoned his partner and bolted out the door, which he was fortunate enough to be close to, before he could share the fate of his friends."
-    m "The man ran into the forest and ended up hiding amongst the horses he and his friends had ridden during that day’s hunt."
+    m 1tku "The men, silently congratulating themselves on their good fortunes, invited the women in."
+    m 1esa "After a while of enjoying each other’s company, the women expressed a wish to dance."
+    m 1tku "The men wasted no time coupling off with each of the maidens."
+    m 1eub "As they are dancing, one of the men notices that the other couples are dancing rather erratically."
+    m 1wuo "Then, to his horror, he realizes that the other men have blood pouring from their necks onto their shirts."
+    m 3wuo "In a blind panic, the man abandoned his partner and bolted out the door, which he was fortunate enough to be close to, before he could share the fate of his friends."
+    m 3wud"The man ran into the forest and ended up hiding amongst the horses he and his friends had ridden during that day’s hunt."
     m "The women, not far behind, closed in, but appeared unable to get past the horses to the man."
-    m "So there the man stood, weary eyed, among the animals all night long as the women circled around the horses, trying to find a way to get to the man."
-    m "Just before dawn, the women gave up and retreated back into the woods."
-    m "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
-    m "When he looked inside, he saw his three comrades dead on the floor, their skin almost translucent, as they lay in a pool of their own blood."
+    m 1eud "So there the man stood, weary eyed, among the animals all night long as the women circled around the horses, trying to find a way to get to the man."
+    m 1esa "Just before dawn, the women gave up and retreated back into the woods."
+    m 1esd "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     # chance of 1 in 14
     if renpy.random.randint(1,14) == 1 or mas_full_scares:
         play sound "sfx/stab.ogg"
@@ -899,6 +899,7 @@ label mas_scary_story_baobhan_sith:
         hide bl5
         hide bl6
         hide bl7
+    m 3wuo "When he looked inside, he saw his three comrades dead on the floor, their skin almost translucent, as they lay in a pool of their own blood."
     call mas_scary_story_cleanup
     return
 
@@ -909,11 +910,18 @@ init 5 python:
 
 label mas_scary_story_serial_killer:
     call mas_scary_story_setup
-    m 4esa "A young couple park at a cemetery one night for some undisturbed lovemaking."
-    m "They are interrupted by a radio report that a mass murderer has escaped from a psychiatric hospital nearby and may be headed in their direction."
+    m 4esb "A young couple park at a cemetery one night for some undisturbed lovemaking."
+    m 4wud "They are interrupted by a radio report that a mass murderer has escaped from a psychiatric hospital nearby and may be headed in their direction."
     m "They decide to leave, but the car won't start."
-    m "The young man gets out of the car to go for help and instructs the girl to stay in the car with the doors locked."
+    m 4esd "The young man gets out of the car to go for help and instructs the girl to stay in the car with the doors locked."
     m "A few moments later, she hears a scratching sound on the roof of the car."
+    m 1esd "She thinks to herself it must be a tree branch in the wind."
+    m 1eud "Her date doesn't return and after some time passes, a police car drives by."
+    m "An officer stops and gets out of the car."
+    m 3eud "The police officer instructs the girl to get out of the car, walk towards him and not look back."
+    m "She does as he instructs her to. Not too long after, more police cars arrive."
+    m "Curiosity gets the better of the girl and she looks behind her."
+    m 4wuo "She is horrified to see the body of her boyfriend hanging head down from a tree, his throat slit from ear to ear."
     # chance of 1 in 8
     if renpy.random.randint(1,8) == 1 or mas_full_scares:
         show y_sticker hopg zorder 17:
@@ -921,13 +929,6 @@ label mas_scary_story_serial_killer:
             alpha 1.0
             linear 1.0 alpha 0
         play sound "sfx/eyes.ogg"
-    m "She thinks to herself it must be a tree branch in the wind."
-    m "Her date doesn't return and after some time passes, a police car drives by."
-    m "An officer stops and gets out of the car."
-    m "The police officer instructs the girl to get out of the car, walk towards him and not look back."
-    m "She does as he instructs her to. Not too long after, more police cars arrive."
-    m "Curiosity gets the better of the girl and she looks behind her."
-    m "She is horrified to see the body of her boyfriend hanging head down from a tree, his throat slit from ear to ear."
     m "His fingernails scratching the car roof."
     hide y_sticker
     call mas_scary_story_cleanup
@@ -941,29 +942,28 @@ init 5 python:
 label mas_scary_story_revenant:
     call mas_scary_story_setup
     m 4eua "There was once a man who married a woman."
-    m "The man was a wealthy person who made his money through ill-gotten means."
-    m "Shortly after their marriage, the man started to hear rumors that his wife was being unfaithful to him."
-    m "Anxious to ascertain the truth, the man told his wife he was going away on a business trip for a few days and left the house."
-    m "Unbeknownst to his wife, the man snuck back into the house later in the evening with the aid of one of his servants."
+    m 4ekd "The man was a wealthy person who made his money through ill-gotten means."
+    m 2eud "Shortly after their marriage, the man started to hear rumors that his wife was being unfaithful to him."
+    m 2esd "Anxious to ascertain the truth, the man told his wife he was going away on a business trip for a few days and left the house."
+    m 2eud "Unbeknownst to his wife, the man snuck back into the house later in the evening with the aid of one of his servants."
     m "The man climbed up one of the beams overhanging in his bedchamber and laid in wait."
-    m "Shortly afterwards his wife entered with a man of the neighborhood, the two chatted for a while and then began to undress themselves."
-    m "The man, at this time, clumsily fell to the ground not far from where the two were, unconscious."
+    m 4ekd "Shortly afterwards his wife entered with a man of the neighborhood, the two chatted for a while and then began to undress themselves."
+    m 4eud "The man, at this time, clumsily fell to the ground not far from where the two were, unconscious."
     m "The adulterer grabbed his clothes and ran away, but the wife came over to her husband and gently patted his hair until he awoke."
     m "The man chastised his wife for her adultery and threatened punishment after he recovered from his fall."
-    m "The man, however, never recovered from his fall and died overnight and was buried the next day."
-    m "That night, the man’s corpse rose up from his grave and began to wander the neighborhoods."
+    m 2dsc "The man, however, never recovered from his fall and died overnight and was buried the next day."
+    m 2esd "That night, the man’s corpse rose up from his grave and began to wander the neighborhoods."
     m "As dawn broke, he would return to his grave."
-    m "This continued night after night and people began locking their doors, fearing to go out to run any errands after the sun went down."
+    m 3esd "This continued night after night and people began locking their doors, fearing to go out to run any errands after the sun went down."
     m "Lest they run into the creature and be beaten black and blue."
-    m "Not long afterwards, the town became plagued by disease and there was no doubt in their minds that the corpse was to blame."
-    m "People started fleeing the town, lest they too should die by the disease."
-    m "As the town was falling apart, a meeting was gathered and it was decided that they corpse should be dug up and disposed of."
+    m 2dsd "Not long afterwards, the town became plagued by disease and there was no doubt in their minds that the corpse was to blame."
+    m 2dsc "People started fleeing the town, lest they too should die by the disease."
+    m 2esd "As the town was falling apart, a meeting was gathered and it was decided that they corpse should be dug up and disposed of."
     m "A group of people took spades and found the cemetery the man was buried in."
     m "They didn’t have to dig long before they reached the man’s corpse."
-    m "Once he was fully disinterred, the villagers beat the carcass with their shovels and dragged the body out of town."
-    m "There, they built a great fire and threw the body on the fire."
-    m "The man’s corpse let out a blood curdling scream and attempted to crawl out of the flames before finally succumbing to it."
-    m "Afterwards, the village recovered and prospered."
-    hide y_sticker
+    m 4eud "Once he was fully disinterred, the villagers beat the carcass with their shovels and dragged the body out of town."
+    m 3esd "There, they built a great fire and threw the body on the fire."
+    m 3eub "The man’s corpse let out a blood curdling scream and attempted to crawl out of the flames before finally succumbing to it."
+    m 1esa "Afterwards, the village recovered and prospered."
     call mas_scary_story_cleanup
     return
