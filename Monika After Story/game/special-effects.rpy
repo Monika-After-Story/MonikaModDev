@@ -12,7 +12,7 @@ image yuri dragon2:
 image blood splatter1:
     size (1, 1)
     truecenter
-    Blood("blood_particle",dripTime=0.0, burstSize=150, burstSpeedX=200.0, burstSpeedY=400.0, numSquirts=10, squirtPower=400, squirtTime=1.0).sm
+    Blood("blood_particle",dripTime=0.5, burstSize=150, burstSpeedX=400.0, burstSpeedY=400.0, numSquirts=15, squirtPower=400, squirtTime=2.0).sm
 
 
 image k_rects_eyes1:
@@ -36,6 +36,13 @@ image natsuki mas_ghost:
         ease 0.025 xoffset 20
         repeat
     0.25
+image mujina:
+    "mod_assets/other/mujina.png"
+    zoom 1.25
+    parallel:
+        easeout 0.5 zoom 4.5 yoffset 1200
+    0.5
+
 
 transform k_scare:
     tinstant(640)

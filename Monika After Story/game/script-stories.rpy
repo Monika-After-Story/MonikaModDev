@@ -11,6 +11,7 @@
 default persistent._mas_story_database = dict()
 default mas_can_unlock_story = False
 default mas_can_unlock_scary_story = False
+default mas_full_scares = False
 
 
 # store containing stories-related things
@@ -411,7 +412,6 @@ label mas_story_immortal_love:
     m "The husband had ordered many bouquets in advance to ensure that his beloved wife would continue to receive flowers long after his death."
     m "Speechless and stunned, the wife read the note attached to the bouquet."
     m "{i}My love for you is eternal.{/i}"
-
     m 1dubsu "Ahh..."
     m 1eua "Wasn't that a touching story, [player]?"
     m 1hua "I thought it was really romantic."
@@ -507,17 +507,16 @@ label mas_scary_story_hunter:
     m "His attention isn't on his horse however, as the creature lopes away without him."
     show emptydesk at i11 zorder 9
     m "It is instead on the figure that now looms above him as a former vision of the one he once loved."
-    # Yuri dragon spoop TODO this is going to be 1 in 10 but for testing I won't add that as of now.
-    # hide monika so it's just yuri
-    hide monika
-    play sound "sfx/giggle.ogg"
-    show yuri dragon2 zorder 15 at malpha
-    $ style.say_dialogue = style.edited
-    y "{cps=*2}I'll get you too.{/cps}{nw}"
-    hide yuri
-    $ style.say_dialogue = style.normal
-    show monika 1eua at i11 zorder MAS_MONIKA_Z
-    # spoop ends
+    # 1 in 10
+    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+        hide monika
+        play sound "sfx/giggle.ogg"
+        show yuri dragon2 zorder 15 at malpha
+        $ style.say_dialogue = style.edited
+        y "{cps=*2}I'll get you too.{/cps}{nw}"
+        hide yuri
+        $ style.say_dialogue = style.normal
+        show monika 1eua at i11 zorder MAS_MONIKA_Z
     m "The next morning, the villagers found the hunter dead at the edge of the forest."
     hide emptydesk
     call mas_scary_story_cleanup
@@ -540,29 +539,34 @@ label mas_scary_story_kuchisake_onna:
     m 3eud "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
     m "They say she now wanders around aimlessly at night, her face covered with a surgical mask."
     m 1esa "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’."
-    # TODO 1 in 15 chance
-    hide monika
-    show screen tear(20, 0.1, 0.1, 0, 40)
-    play sound "sfx/s_kill_glitch1.ogg"
-    show natsuki ghost2 zorder 16 at i11
-    show k_rects_eyes1 zorder 17
-    show k_rects_eyes2 zorder 17
-    $ pause(0.25)
-    #play music t7g
-    stop sound
-    hide screen tear
-    $ style.say_dialogue = style.edited
-    show screen mas_background_timed_jump(5, "mas_scary_story_kuchisake_onna.no")
-    menu:
-        "am I pretty?"
-        "Yes":
-            hide screen mas_background_timed_jump
-            jump mas_scary_story_kuchisake_onna.end
-        "No":
-            jump mas_scary_story_kuchisake_onna.no
+    # 1 in 15
+    if renpy.random.randint(1,15) == 1 or mas_full_scares:
+        hide monika
+        show screen tear(20, 0.1, 0.1, 0, 40)
+        play sound "sfx/s_kill_glitch1.ogg"
+        show natsuki ghost2 zorder 16 at i11
+        show k_rects_eyes1 zorder 17
+        show k_rects_eyes2 zorder 17
+        $ pause(0.25)
+        #play music t7g
+        stop sound
+        hide screen tear
+        $ style.say_dialogue = style.edited
+        show screen mas_background_timed_jump(5, "mas_scary_story_kuchisake_onna.no")
+        menu:
+            "am I pretty?"
+            "Yes":
+                hide screen mas_background_timed_jump
+                jump mas_scary_story_kuchisake_onna.clean
+            "No":
+                jump mas_scary_story_kuchisake_onna.no
+    else:
+        jump mas_scary_story_kuchisake_onna.end
+
     label .no:
         hide screen mas_background_timed_jump
         "is that, so?{w=1.0}{nw}"
+        $ _history_list.pop()
         $ _history_list.pop()
         $ pause(1.0)
         hide natsuki
@@ -570,7 +574,8 @@ label mas_scary_story_kuchisake_onna:
         show natsuki mas_ghost onlayer front at i11
         $ pause(0.25)
         hide natsuki mas_ghost onlayer front
-    label .end:
+
+    label .clean:
         show black zorder 100
         hide k_rects_eyes1
         hide k_rects_eyes2
@@ -579,8 +584,10 @@ label mas_scary_story_kuchisake_onna:
         hide black
         $ style.say_dialogue = style.normal
         show monika 1eua at i11 zorder MAS_MONIKA_Z
-    m 3eud "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
-    m 3esa "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
+
+    label .end:
+        m 3eud "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
+        m 3esa "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
     call mas_scary_story_cleanup
     return
 
@@ -591,7 +598,7 @@ init 5 python:
 
 label mas_scary_story_o_tei:
     call mas_scary_story_setup
-    m "A long time ago, there lived a man named Kenji, who was studying to be a physician."
+    m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
     m "Kenji was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
     m "Unfortunately, Tomoe contracted a serious illness before that could happen."
     m "She summoned her husband-to-be, as she lay on her deathbed."
@@ -611,9 +618,11 @@ label mas_scary_story_o_tei:
     m "At the inn he decided to stay for the night, his heart nearly lept out of his chest."
     m "The girl that greeted him, reminded him so much of his former lover, that he had to pinch himself to ensure he wasn’t dreaming."
     m "As she came and went, her attitude and motion reminded him so much of her."
-    show yuri eyes zorder 16 at otei_appear(a=0.075,time=4.0)
-    show yuri eyes_base zorder 15 at otei_appear(a=0.085,time=3.0)
-    show yuripupils zorder 17 at otei_appear(a=0.095,time=5.0)
+    # 1 in 9
+    if renpy.random.randint(1,9) == 1 or mas_full_scares:
+        show yuri eyes zorder 16 at otei_appear(a=0.075,time=4.0)
+        show yuri eyes_base zorder 15 at otei_appear(a=0.085,time=3.0)
+        show yuripupils zorder 17 at otei_appear(a=0.095,time=5.0)
     m "He remembered the last conversation that he and Tomoe had before she passed away."
     m "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'."
     m "'If you don’t mind me asking, are you from around here and what is your name?'."
@@ -633,7 +642,7 @@ init 5 python:
 
 label mas_scary_story_mujina:
     call mas_scary_story_setup
-    m "One night, at a late hour, an old merchant was walking down a road, heading home after a long day of selling his wares."
+    m 4eua "One night, at a late hour, an old merchant was walking down a road, heading home after a long day of selling his wares."
     m "The road he travelled on led to a large hill, that was very dark and secluded at night, and many travelers tended to avoid the area."
     m "The man was tired though, and decided to take the road anyways, because it would get him home quicker."
     m "On the one side of the hill was an old moat, that was quite deep."
@@ -651,13 +660,22 @@ label mas_scary_story_mujina:
     m "The old man stopped in front of him, doubled over to catch his breath."
     m "The salesman asked why the man was running."
     m "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’."
-    m "The salesman responded ‘Oh, you mean like this?’."
+    # 1 in 10
+    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+        $ style.say_dialogue = style.edited
+        m "The salesman responded ‘Oh, you mean like this?’.{nw}"
+        show mujina zorder 18 at otei_appear(a=1.0,time=0.25)
+        play sound "sfx/glitch1.ogg"
+        $ style.say_dialogue = style.normal
+        $ pause(0.4)
+        stop sound
+        hide mujina
+    else:
+        m "The salesman responded 'Oh, you mean like this?'."
     m "The man looked up at the salesman only to be greeted again by the familiarly vague shape of a human face devoid of features."
     m "The old man let out a scream and then suddenly, the lantern went out."
     show black zorder 100
-    play sound "sfx/glitch1.ogg"
-    $ pause(1.5)
-    stop sound
+    $ pause(3.5)
     hide black
     call mas_scary_story_cleanup
     return
@@ -669,14 +687,15 @@ init 5 python:
 
 label mas_scary_story_ubume:
     call mas_scary_story_setup
-    m "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
+    m 4eud "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
     m "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
     m "The next night, around the same time, the woman would walk into the shop to buy some more candy."
     m "After a few nights of this happening, the confectioner became curious about the woman and decided to follow her the next time she came in."
     m "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
     m "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree."
-    # TODO 1 in 20
-    play sound "sfx/giggle.ogg"
+    # 1 in 20
+    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+        play sound "sfx/giggle.ogg"
     m "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m "The confectioner was shocked by this and decided to head back home."
     m "The next day, he went to the temple and told the monk there what he saw."
@@ -697,7 +716,7 @@ init 5 python:
 
 label mas_scary_story_womaninblack:
     call mas_scary_story_setup
-    m "One night, a colonel boarded a train on his way home."
+    m 3esa "One night, a colonel boarded a train on his way home."
     m "The colonel was content because he was able to secure a compartment to himself and promptly fell asleep."
     m "A short time later, he awoke with a start, feeling stiff and uneasy."
     m "To his surprise, he noticed that there was now a woman sitting opposite of him."
@@ -728,7 +747,7 @@ init 5 python:
 
 label mas_scary_story_resurrection_mary:
     call mas_scary_story_setup
-    m "At a dancehall around Christmas time, a young man named Lewis was enjoying some time with his friends, when a young woman he hadn’t seen before caught his attention."
+    m 3eua "At a dancehall around Christmas time, a young man named Lewis was enjoying some time with his friends, when a young woman he hadn’t seen before caught his attention."
     m "The girl was tall, blond, blue-eyed and very beautiful."
     m "The woman was wearing a fancy white dress, with white dancing shoes and a thin shawl."
     m "Lewis found the girl captivating and decided to ask the woman to dance with him and she accepted his invitation."
@@ -743,8 +762,9 @@ label mas_scary_story_resurrection_mary:
     m "She then got out of the car and walked towards the cemetery gate before disappearing."
     m "Lewis sat in the car for a long time bewildered by what had just happened."
     m "He never saw the beautiful woman ever again."
-    # TODO 1 in 20
-    play sound "sfx/giggle.ogg"
+    # 1 in 20
+    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+        play sound "sfx/giggle.ogg"
     call mas_scary_story_cleanup
     return
 
@@ -755,15 +775,15 @@ init 5 python:
 
 label mas_scary_story_corpse:
     call mas_scary_story_setup
-    m "There once was an old man that ran an old roadside inn. One evening, 4 men arrived and asked for a room."
+    m 1esa "There once was an old man that ran an old roadside inn. One evening, 4 men arrived and asked for a room."
     m "The old man replied that all of the rooms were taken, but he could find them a place to sleep if they weren’t too particular."
     m "The men were exhausted and assured the old man that any place would do."
     m "The old man led them to a room around back. Lying in the corner of the room was the corpse of a woman."
     m "The old man explained that his daughter-in-law had recently perished and she was awaiting burial."
     m "After the old man departed, 3 of the 4 men fell asleep. The last man couldn’t fall asleep."
     m "Suddenly, the man heard a creaking noise."
-    # need opinion on this one since it's for storytelling purposes
-    play sound "sfx/crack.ogg"
+    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+        play sound "sfx/crack.ogg"
     m "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
     m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
     m "The woman bit the pillow and apparently not realizing she hadn’t bit the last man, returned to her original resting spot."
@@ -801,10 +821,9 @@ init 5 python:
 
 label mas_scary_story_jack_o_lantern:
     call mas_scary_story_setup
-    show darkred zorder 25:
-        alpha 0
-        linear 2.0 alpha 1.0
-    m "There was once a man named Jack. Jack was a miserable, old drunk who took pleasure in playing tricks on people."
+    # chance of 1 in 4
+    $ _mas_jack_scare = renpy.random.randint(1,4) == 1
+    m 4esd "There was once a man named Jack. Jack was a miserable, old drunk who took pleasure in playing tricks on people."
     m "One night, Jack ran into the Devil and invited him to have a drink with him."
     m "After Jack had had his fill, he turned to the Devil and asked him to turn into a coin so he could pay for their drinks, as he didn’t have the money to pay for them."
     m "Once the Devil did so, Jack pocketed the coin and walked out without paying."
@@ -817,10 +836,15 @@ label mas_scary_story_jack_o_lantern:
     m "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m "Jack became scared, for he had no place to go."
     m "Jack asked the Devil how he could leave, as there was no light."
+    if _mas_jack_scare or mas_full_scares:
+        hide vignette
+        show darkred zorder 25
     m "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him and carved it out and placed the ember inside of it."
     m "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O’Lantern."
-    hide darkred
+    if _mas_jack_scare or mas_full_scares:
+        hide darkred
+        show vignette zorder 13
     call mas_scary_story_cleanup
     return
 
@@ -831,7 +855,7 @@ init 5 python:
 
 label mas_scary_story_baobhan_sith:
     call mas_scary_story_setup
-    m "There was once a young group of hunters, who stopped for the night in a small hunting lodge."
+    m 1esa "There was once a young group of hunters, who stopped for the night in a small hunting lodge."
     m "As the men settled in, they built a fire, and began eating and drinking merrily, for it had been a good day."
     m "They said to themselves the only thing that they lacked was the company of some beautiful women by their sides."
     m "Not too long after they said this, there came a knock at their door."
@@ -849,30 +873,32 @@ label mas_scary_story_baobhan_sith:
     m "Just before dawn, the women gave up and retreated back into the woods."
     m "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     m "When he looked inside, he saw his three comrades dead on the floor, their skin almost translucent, as they lay in a pool of their own blood."
-    play sound "sfx/stab.ogg"
-    show blood splatter1 zorder 16:
-        pos (570,195)
-    show blood splatter1 as bl2 zorder 16:
-        pos (50,95)
-    show blood splatter1 as bl3 zorder 16:
-        pos (370,695)
-    show blood splatter1 as bl4 zorder 16:
-        pos (150,295)
-    show blood splatter1 as bl5 zorder 16:
-        pos (950,505)
-    show blood splatter1 as bl6 zorder 16:
-        pos (700,795)
-    show blood splatter1 as bl7 zorder 16:
-        pos (1050,95)
-    $ pause(1.5)
-    stop sound
-    hide blood
-    hide bl2
-    hide bl3
-    hide bl4
-    hide bl5
-    hide bl6
-    hide bl7
+    # chance of 1 in 14
+    if renpy.random.randint(1,14) == 1 or mas_full_scares:
+        play sound "sfx/stab.ogg"
+        show blood splatter1 zorder 16:
+            pos (870,195)
+        show blood splatter1 as bl2 zorder 16:
+            pos (50,95)
+        show blood splatter1 as bl3 zorder 16:
+            pos (170,695)
+        show blood splatter1 as bl4 zorder 16:
+            pos (150,395)
+        show blood splatter1 as bl5 zorder 16:
+            pos (950,505)
+        show blood splatter1 as bl6 zorder 16:
+            pos (700,795)
+        show blood splatter1 as bl7 zorder 16:
+            pos (1050,95)
+        $ pause(1.8)
+        stop sound
+        hide blood
+        hide bl2
+        hide bl3
+        hide bl4
+        hide bl5
+        hide bl6
+        hide bl7
     call mas_scary_story_cleanup
     return
 
@@ -883,12 +909,18 @@ init 5 python:
 
 label mas_scary_story_serial_killer:
     call mas_scary_story_setup
-    m "A young couple park at a cemetery one night for some undisturbed lovemaking."
+    m 4esa "A young couple park at a cemetery one night for some undisturbed lovemaking."
     m "They are interrupted by a radio report that a mass murderer has escaped from a psychiatric hospital nearby and may be headed in their direction."
     m "They decide to leave, but the car won't start."
     m "The young man gets out of the car to go for help and instructs the girl to stay in the car with the doors locked."
     m "A few moments later, she hears a scratching sound on the roof of the car."
-    play sound "sfx/mscare.ogg"
+    # chance of 1 in 8
+    if renpy.random.randint(1,8) == 1 or mas_full_scares:
+        show y_sticker hopg zorder 17:
+            pos(600,425)
+            alpha 1.0
+            linear 1.0 alpha 0
+        play sound "sfx/eyes.ogg"
     m "She thinks to herself it must be a tree branch in the wind."
     m "Her date doesn't return and after some time passes, a police car drives by."
     m "An officer stops and gets out of the car."
@@ -897,5 +929,41 @@ label mas_scary_story_serial_killer:
     m "Curiosity gets the better of the girl and she looks behind her."
     m "She is horrified to see the body of her boyfriend hanging head down from a tree, his throat slit from ear to ear."
     m "His fingernails scratching the car roof."
+    hide y_sticker
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_revenant",
+    category=[store.mas_stories.TYPE_SCARY], prompt="The Revenant",unlocked=False),
+    eventdb=store.mas_stories.story_database)
+
+label mas_scary_story_revenant:
+    call mas_scary_story_setup
+    m 4eua "There was once a man who married a woman."
+    m "The man was a wealthy person who made his money through ill-gotten means."
+    m "Shortly after their marriage, the man started to hear rumors that his wife was being unfaithful to him."
+    m "Anxious to ascertain the truth, the man told his wife he was going away on a business trip for a few days and left the house."
+    m "Unbeknownst to his wife, the man snuck back into the house later in the evening with the aid of one of his servants."
+    m "The man climbed up one of the beams overhanging in his bedchamber and laid in wait."
+    m "Shortly afterwards his wife entered with a man of the neighborhood, the two chatted for a while and then began to undress themselves."
+    m "The man, at this time, clumsily fell to the ground not far from where the two were, unconscious."
+    m "The adulterer grabbed his clothes and ran away, but the wife came over to her husband and gently patted his hair until he awoke."
+    m "The man chastised his wife for her adultery and threatened punishment after he recovered from his fall."
+    m "The man, however, never recovered from his fall and died overnight and was buried the next day."
+    m "That night, the man’s corpse rose up from his grave and began to wander the neighborhoods."
+    m "As dawn broke, he would return to his grave."
+    m "This continued night after night and people began locking their doors, fearing to go out to run any errands after the sun went down."
+    m "Lest they run into the creature and be beaten black and blue."
+    m "Not long afterwards, the town became plagued by disease and there was no doubt in their minds that the corpse was to blame."
+    m "People started fleeing the town, lest they too should die by the disease."
+    m "As the town was falling apart, a meeting was gathered and it was decided that they corpse should be dug up and disposed of."
+    m "A group of people took spades and found the cemetery the man was buried in."
+    m "They didn’t have to dig long before they reached the man’s corpse."
+    m "Once he was fully disinterred, the villagers beat the carcass with their shovels and dragged the body out of town."
+    m "There, they built a great fire and threw the body on the fire."
+    m "The man’s corpse let out a blood curdling scream and attempted to crawl out of the flames before finally succumbing to it."
+    m "Afterwards, the village recovered and prospered."
+    hide y_sticker
     call mas_scary_story_cleanup
     return
