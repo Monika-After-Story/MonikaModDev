@@ -460,7 +460,7 @@ label monika_sayori:
     m 2lsc "I still wish I could have handled that whole thing a little more tactfully."
 
     if (
-            not persistent._mas_sensitive_mode 
+            not persistent._mas_sensitive_mode
             and not renpy.seen_label("monika_sayori")
         ):
         m "You're not still hung up over it, right?"
@@ -4153,7 +4153,7 @@ label monika_evening:
         m 2lksdlc "Are you planning to stay up really late?"
         m 2ekc "Not getting enough sleep can really harm you in the long run..."
         m 2eka "I think now would be a good time to wrap up anything you might be doing and get some sleep."
-        # TODO: when docking station extends to sleep, monika can suggest 
+        # TODO: when docking station extends to sleep, monika can suggest
         # taking her charcter file.
         # TODO: when sleeping mode is finished, monika can suggest that she
         # will sleep with the user
@@ -4195,7 +4195,7 @@ label monika_evening:
         m 1eua "Don't you wish you could have more time to do things every day?"
         m 1hua "I know I do."
         m 1hubfa "Because that'll mean more time to be with you, [player]~"
-        
+
     return
 
 
@@ -7619,7 +7619,8 @@ init 5 python:
             category=['literature'],
             prompt="Can you tell me a horror story?",
             pool=True,
-            unlocked=True
+            unlocked=True,
+            sensitive=True
         )
     )
 

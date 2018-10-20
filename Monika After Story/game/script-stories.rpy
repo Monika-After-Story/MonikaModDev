@@ -533,7 +533,8 @@ label mas_scary_story_kuchisake_onna:
     m 3eub "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
     m 1tsu "She would often ask men to rate her appearance."
     m 1esd "The woman ended up cheating on her husband and he quickly found out."
-    m 1efd "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile; asking her, ‘who will think you are beautiful, now?’."
+    m 1efd "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile."
+    m "Then he asked her, 'who will think you are beautiful, now?'."
     m 2dsd "Shortly after, the woman died."
     m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
     m 3eud "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
@@ -599,39 +600,39 @@ init 5 python:
 label mas_scary_story_o_tei:
     call mas_scary_story_setup
     m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
-    m "Kenji was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
-    m "Unfortunately, Tomoe contracted a serious illness before that could happen."
-    m "She summoned her husband-to-be, as she lay on her deathbed."
+    m 3eub "Kenji was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
+    m 1esd "Unfortunately, Tomoe contracted a serious illness before that could happen."
+    m 2dsd "She summoned her husband-to-be, as she lay on her deathbed."
     m "As he knelt by her bedside, she said to him, 'We have been promised to each other since childhood...'"
-    m "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
-    m "'I want you to promise me that you will not grieve my loss, because I believe we shall meet again.'."
-    m "Kenji answered earnestly that yes they would meet again in the afterlife."
-    m "Tomoe replied 'No, I believe that we are destined to meet each other again in this world, only if you wish it to be so.'."
-    m "Kenji replied tenderly, 'To see you again, my love, would be no less a joy than a duty, but if we were to meet again, how would I know that it is you?'."
-    m "Tomoe replies, 'That I cannot answer, you will know when the time comes, remember these words of mine.'."
-    m "And there she ceased to speak and expired."
+    m 2esd "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
+    m 2esb "'I want you to promise me that you will not grieve my loss, because I believe we shall meet again.'."
+    m 3esd "Kenji answered earnestly that yes they would meet again in the afterlife."
+    m 4esa "Tomoe replied 'No, I believe that we are destined to meet each other again in this world, only if you wish it to be so.'."
+    m 2esd "Kenji replied tenderly, 'To see you again, my love, would be no less a joy than a duty, but if we were to meet again, how would I know that it is you?'."
+    m 2dsd "Tomoe replies, 'That I cannot answer, you will know when the time comes, remember these words of mine.'."
+    m 2dsc "And there she ceased to speak and expired."
     m "Kenji grieved deeply for the loss of his love."
-    m "Years passed, Kenji never forgot Tomoe, but since he was the only son in his family, he was required to marry someone else and carry on the family name."
+    m 2dsd "Years passed, Kenji never forgot Tomoe, but since he was the only son in his family, he was required to marry someone else and carry on the family name."
     m "Time was not kind to Kenji, however, he lost his parents, and shortly after, his wife and child died as well."
-    m "One day, he decided to abandon his home and take a long journey to forget his troubles."
-    m "Somewhere along his journey, he came across a mountain village."
+    m 2esd "One day, he decided to abandon his home and take a long journey to forget his troubles."
+    m 4esa "Somewhere along his journey, he came across a mountain village."
     m "At the inn he decided to stay for the night, his heart nearly lept out of his chest."
     m "The girl that greeted him, reminded him so much of his former lover, that he had to pinch himself to ensure he wasn’t dreaming."
-    m "As she came and went, her attitude and motion reminded him so much of her."
+    m 4esd "As she came and went, her attitude and motion reminded him so much of her."
     # 1 in 9
     if renpy.random.randint(1,9) == 1 or mas_full_scares:
         show yuri eyes zorder 16 at otei_appear(a=0.075,time=4.0)
         show yuri eyes_base zorder 15 at otei_appear(a=0.085,time=3.0)
         show yuripupils zorder 17 at otei_appear(a=0.095,time=5.0)
-    m "He remembered the last conversation that he and Tomoe had before she passed away."
-    m "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'."
-    m "'If you don’t mind me asking, are you from around here and what is your name?'."
-    m "Immediately, in the unforgotten voice of his deceased beloved, the girl answered: 'My name is Tomoe, and you are Kenji, my promised husband.`"
-    m "`17 years ago, I died and you made a promise to marry me if I could come back to this world and now I stand before you.'."
+    m 3esa "He remembered the last conversation that he and Tomoe had before she passed away."
+    m 1esd "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'."
+    m 1eud "'If you don’t mind me asking, are you from around here and what is your name?'."
+    m 1eua "Immediately, in the unforgotten voice of his deceased beloved, the girl answered: 'My name is Tomoe, and you are Kenji, my promised husband.'"
+    m "'17 years ago, I died and you made a promise to marry me if I could come back to this world and now I stand before you.'."
     hide yuri
     hide yuripupils
-    m "Then she fell unconscious and could not recall what she had said to him previously."
-    m "A short time later Kenji married the girl and they lived a happy, long life together afterwards."
+    m 3eud "Then she fell unconscious and could not recall what she had said to him previously."
+    m 1hub "A short time later Kenji married the girl and they lived a happy, long life together afterwards."
     call mas_scary_story_cleanup
     return
 
@@ -643,27 +644,27 @@ init 5 python:
 label mas_scary_story_mujina:
     call mas_scary_story_setup
     m 4eua "One night, at a late hour, an old merchant was walking down a road, heading home after a long day of selling his wares."
-    m "The road he travelled on led to a large hill, that was very dark and secluded at night, and many travelers tended to avoid the area."
-    m "The man was tired though, and decided to take the road anyways, because it would get him home quicker."
+    m 3esa "The road he travelled on led to a large hill, that was very dark and secluded at night, and many travelers tended to avoid the area."
+    m 1esd "The man was tired though, and decided to take the road anyways, because it would get him home quicker."
     m "On the one side of the hill was an old moat, that was quite deep."
-    m "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
+    m 3esd "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."
-    m "The woman was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
-    m "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' The woman continued to weep."
+    m 1esd "The woman was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
+    m 1eud "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' The woman continued to weep."
     m "The man started again, 'Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!'."
-    m "Slowly, the woman rose up, with her head still turned, continuing to sob."
+    m 3eud "Slowly, the woman rose up, with her head still turned, continuing to sob."
     m "The man laid his hand lightly on her shoulder and said 'Miss…'."
-    m "At that moment, the woman turned around, dropping her sleeve, revealing a face with no features."
-    m "No eyes, nose or mouth anywhere! {w}The man ran up the hill screaming. "
-    m "He continued to run until in the distance he saw the light of a lantern and ran towards it."
-    m "The lantern belonged to a travelling salesman that was walking along."
-    m "The old man stopped in front of him, doubled over to catch his breath."
+    m 1wud "At that moment, the woman turned around, dropping her sleeve, revealing a face with no features."
+    m 3wud "No eyes, nose or mouth anywhere! {w}The man ran up the hill screaming. "
+    m 3esd "He continued to run until in the distance he saw the light of a lantern and ran towards it."
+    m 1esd "The lantern belonged to a travelling salesman that was walking along."
+    m 1esa "The old man stopped in front of him, doubled over to catch his breath."
     m "The salesman asked why the man was running."
-    m "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’."
+    m 2eud "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’."
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         $ style.say_dialogue = style.edited
-        m "The salesman responded ‘Oh, you mean like this?’.{nw}"
+        m 2wud "The salesman responded ‘Oh, you mean like this?’.{nw}"
         show mujina zorder 18 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
         $ style.say_dialogue = style.normal
@@ -671,8 +672,8 @@ label mas_scary_story_mujina:
         stop sound
         hide mujina
     else:
-        m "The salesman responded 'Oh, you mean like this?'."
-    m "The man looked up at the salesman only to be greeted again by the familiarly vague shape of a human face devoid of features."
+        m 2tku "The salesman responded 'Oh, you mean like this?'."
+    m 4wud "The man looked up at the salesman only to be greeted again by the familiarly vague shape of a human face devoid of features."
     m "The old man let out a scream and then suddenly, the lantern went out."
     show black zorder 100
     $ pause(3.5)
@@ -839,7 +840,7 @@ label mas_scary_story_jack_o_lantern:
     if _mas_jack_scare or mas_full_scares:
         hide vignette
         show darkred zorder 25:
-            alpha 0.7
+            alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him and carved it out and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O’Lantern."
@@ -868,7 +869,7 @@ label mas_scary_story_baobhan_sith:
     m 1eub "As they are dancing, one of the men notices that the other couples are dancing rather erratically."
     m 1wuo "Then, to his horror, he realizes that the other men have blood pouring from their necks onto their shirts."
     m 3wuo "In a blind panic, the man abandoned his partner and bolted out the door, which he was fortunate enough to be close to, before he could share the fate of his friends."
-    m 3wud"The man ran into the forest and ended up hiding amongst the horses he and his friends had ridden during that day’s hunt."
+    m 3wud "The man ran into the forest and ended up hiding amongst the horses he and his friends had ridden during that day’s hunt."
     m "The women, not far behind, closed in, but appeared unable to get past the horses to the man."
     m 1eud "So there the man stood, weary eyed, among the animals all night long as the women circled around the horses, trying to find a way to get to the man."
     m 1esa "Just before dawn, the women gave up and retreated back into the woods."
@@ -876,8 +877,6 @@ label mas_scary_story_baobhan_sith:
     # chance of 1 in 14
     if renpy.random.randint(1,14) == 1 or mas_full_scares:
         play sound "sfx/stab.ogg"
-        show blood splatter1 zorder 16:
-            pos (870,195)
         show blood splatter1 as bl2 zorder 16:
             pos (50,95)
         show blood splatter1 as bl3 zorder 16:
@@ -890,9 +889,8 @@ label mas_scary_story_baobhan_sith:
             pos (700,795)
         show blood splatter1 as bl7 zorder 16:
             pos (1050,95)
-        $ pause(1.8)
+        $ pause(1.5)
         stop sound
-        hide blood
         hide bl2
         hide bl3
         hide bl4

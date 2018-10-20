@@ -2201,6 +2201,19 @@ image monika 1esd = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1hua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4405,6 +4418,19 @@ image monika 2esd = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2hua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6139,6 +6165,19 @@ image monika 3esd = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3hua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7770,6 +7809,19 @@ image monika 4eud = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="d",
     left="2l",
     right="2r",
