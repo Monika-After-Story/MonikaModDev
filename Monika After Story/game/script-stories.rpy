@@ -483,13 +483,13 @@ init 5 python:
 
 label mas_scary_story_hunter:
     call mas_scary_story_setup
-    m 3esa "One day, a hunter went out hunting for game out in the forest."
+    m 3esa "One day, a hunter went out hunting for game in the forest."
     m 3esc "The forest was dense and dark all around him and he struggled to hit his mark."
     m 1esd "He was soon approached by a salesman, who kept his face covered."
     m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
     m "The hunter could use the first six bullets as he wished, but the last bullet’s mark would be chosen by the salesman."
-    m 1esa "The hunter agreed and quickly became famous in his town for bringing home kill after kill without fail."
+    m 1esa "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
     m 1eud "It wasn’t long before the hunter used up all six bullets."
     m 1esd "On his next hunt, the hunter saw a wild boar and loaded the last bullet hoping to take down the beast."
     m 3eud "When he fired, he missed and the bullet instead hit his beloved fiancée in the chest, killing her."
@@ -500,7 +500,7 @@ label mas_scary_story_hunter:
     m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
     m 2wuo "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
-    m "The hunter rides away in a panic."
+    m "The hunter rode away in a panic."
     m 1esd "After a short way, he looked behind him to see if she was following him any longer."
     m 1wuo "To his horror, not only had he gained no distance, she had gained on him significantly."
     m "In his state of panic, he failed to see the branch that would strike a blow at his neck, freeing him from his horse and introducing him to the wet ground beneath him."
@@ -534,12 +534,12 @@ label mas_scary_story_kuchisake_onna:
     m 1tsu "She would often ask men to rate her appearance."
     m 1esd "The woman ended up cheating on her husband and he quickly found out."
     m 1efd "When he confronted her about it, they got into an argument and the samurai slit her mouth from ear to ear, in the shape of a wide smile."
-    m "Then he asked her, 'who will think you are beautiful, now?'."
+    m "Then he asked her, 'who will think you are beautiful, now?'"
     m 2dsd "Shortly after, the woman died."
     m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
     m 3eud "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
     m "They say she now wanders around aimlessly at night, her face covered with a surgical mask."
-    m 1esa "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’."
+    m 1esa "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’"
     # 1 in 15
     if renpy.random.randint(1,15) == 1 or mas_full_scares:
         hide monika
@@ -566,7 +566,7 @@ label mas_scary_story_kuchisake_onna:
 
     label .no:
         hide screen mas_background_timed_jump
-        "is that, so?{w=1.0}{nw}"
+        "Is that, so?{w=1.0}{nw}"
         $ _history_list.pop()
         $ _history_list.pop()
         $ pause(1.0)
@@ -644,23 +644,23 @@ init 5 python:
 label mas_scary_story_mujina:
     call mas_scary_story_setup
     m 4eua "One night, at a late hour, an old merchant was walking down a road, heading home after a long day of selling his wares."
-    m 3esa "The road he travelled on led to a large hill, that was very dark and secluded at night, and many travelers tended to avoid the area."
+    m 3esa "The road he travelled on led to a large hill, that was very dark and secluded at night, so many travelers tended to avoid the area."
     m 1esd "The man was tired though, and decided to take the road anyways, because it would get him home quicker."
     m "On the one side of the hill was an old moat, that was quite deep."
     m 3esd "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."
     m 1esd "She was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
-    m 1eud "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' The woman continued to weep."
-    m "The man started again, 'Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!'."
+    m 1eud "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' But the woman continued to weep."
+    m "The man started again, 'Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!'"
     m 3eud "Slowly, the woman rose up, with her head still turned, continuing to sob."
-    m "The man laid his hand lightly on her shoulder and said 'Miss…'."
+    m "The man laid his hand lightly on her shoulder and said 'Miss--'{nw}"
     m 1wud "At that moment, the woman turned around, dropping her sleeve, revealing a face with no features."
-    m 3wud "No eyes, nose or mouth anywhere! {w}The man ran up the hill screaming. "
+    m 3wud "No eyes, nose or mouth anywhere! {w}The man ran up the hill screaming."
     m 3esd "He continued to run until in the distance he saw the light of a lantern and ran towards it."
     m 1esd "The lantern belonged to a travelling salesman that was walking along."
     m 1esa "The old man stopped in front of him, doubled over to catch his breath."
     m "The salesman asked why the man was running."
-    m 2eud "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’."
+    m 2eud "After the old man caught his breath a little, he said to the salesman, ‘I saw a woman by the moat, she didn’t have a face!’"
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         $ style.say_dialogue = style.edited
@@ -688,11 +688,11 @@ init 5 python:
 
 label mas_scary_story_ubume:
     call mas_scary_story_setup
-    m 4eud "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
+    m 4eud "One night, at a late hour, a woman walked into a confectionery store to buy some candy right before the owner was about to head off to bed."
     m 4esa "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
     m 1esa "The next night, around the same time, the woman walked into the shop to buy some more candy."
     m "After a few nights of this happening, the confectioner became curious about the woman and decided to follow her the next time she came in."
-    m 3esa "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
+    m 3esa "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily on her way."
     m 3wuo "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree."
     # 1 in 20
     if renpy.random.randint(1,20) == 1 or mas_full_scares:
@@ -842,7 +842,7 @@ label mas_scary_story_jack_o_lantern:
         show darkred zorder 25:
             alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
-    m "Jack pulled out a turnip he had with him and carved it out and placed the ember inside of it."
+    m "Jack pulled out a turnip he had with him, carved it out, and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O’Lantern."
     if _mas_jack_scare or mas_full_scares:
         hide darkred
@@ -940,7 +940,7 @@ init 5 python:
 label mas_scary_story_revenant:
     call mas_scary_story_setup
     m 4eua "There was once a man who married a woman."
-    m 4ekd "The man was a wealthy person who made his money through ill-gotten means."
+    m 4ekd "He was a wealthy person who made his money through ill-gotten means."
     m 2eud "Shortly after their marriage, he started to hear rumors that his wife was being unfaithful to him."
     m 2esd "Anxious to ascertain the truth, the man told his wife he was going away on a business trip for a few days and left the house."
     m 2eud "Unbeknownst to his wife, the man snuck back into the house later in the evening with the aid of one of his servants."
