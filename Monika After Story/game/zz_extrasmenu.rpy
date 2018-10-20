@@ -196,6 +196,12 @@ style mas_mbs_button_text is default:
 #            textbutton _("not") action NullAction()
 #            textbutton _("not3") action NullAction()
 
+style mas_adjust_vbar:
+    xsize 18
+    base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)
+    thumb "gui/slider/horizontal_hover_thumb.png"
+    bar_vertical True
+
 screen mas_extramenu_area():
     zorder 52
     frame:
@@ -209,8 +215,18 @@ screen mas_extramenu_area():
             action Jump("mas_extra_menu_close")
 
         # zoom control
-#        frame:
-#            area (
+        frame:
+            area (195, 500, 80, 205)
+            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
+
+            vbox:
+                label "Zoom":
+                    style "hkb_button_text"
+
+                bar value FieldValue(store.mas_sprites, "zoom_level", 20):
+                    style "mas_adjust_vbar"
+                    xalign 0.5
+                $ store.mas_sprites.adjust_zoom()
 
 
 

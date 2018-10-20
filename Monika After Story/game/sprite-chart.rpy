@@ -238,7 +238,15 @@ init -5 python in mas_sprites:
 
     # zoom
     ZOOM = "zoom="
-    value_zoom = 1.25
+    default_value_zoom = 1.25
+
+    # TODO change this to persistent value
+    value_zoom = default_value_zoom
+    default_zoom_level = 10
+
+    # TODO change this to persisten value
+    zoom_level = default_zoom_level
+    zoom_step = 0.05
 
     # Prefixes for files
     PREFIX_BODY = "torso" + ART_DLM
@@ -278,6 +286,26 @@ init -5 python in mas_sprites:
     CLOTHES = [
         "def" # school uniform
     ]
+
+    # zoom adjuster
+    def adjust_zoom():
+        """
+        Sets the value zoom to an appropraite amoutn based on the current
+        zoom level.
+        """
+        global value_zoom
+        if zoom_level > default_zoom_level:
+            value_zoom = default_value_zoom + (
+                (zoom_level-default_zoom_level) * zoom_step
+            )
+        elif zoom_level < default_zoom_level:
+            value_zoom = default_value_zoom - (
+                (default_zoom_level-zoom_level) * zoom_step
+            )
+        else:
+            # zoom level is at 10
+            value_zoom = default_value_zoom
+
 
     # tryparses for the hair and clothes
     # TODO: adjust this for docking station when ready
