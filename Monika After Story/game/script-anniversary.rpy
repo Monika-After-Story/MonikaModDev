@@ -258,7 +258,7 @@ init 10 python in mas_anni:
         return isAnni('1w')
     
     def isAnniOneMonth():
-        return risAnni('1m')
+        return isAnni('1m')
 
     def isAnniThreeMonth():
         return isAnni('3m')
