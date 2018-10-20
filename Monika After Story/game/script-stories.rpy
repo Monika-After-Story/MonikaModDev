@@ -494,19 +494,19 @@ label mas_scary_story_hunter:
     m 1esd "On his next hunt, the hunter saw a wild boar and loaded the last bullet hoping to take down the beast."
     m 3eud "When he fired, he missed and the bullet instead hit his beloved fiancée in the chest, killing her."
     m "The salesman then suddenly appeared to the hunter while he was grieving his loss, revealing that he was in fact the devil."
-    m 4esd "He gives the hunter a chance to redeem for his mistake."
-    m 4esb "If the hunter remained faithful to his beloved who was slain for the remainder of his life, he would be reunited with her after death."
-    m 1eud "The hunter vowed to remain true to his beloved and remained faithful for a time, but soon fell in love with another girl and married her."
-    m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he comes across the spot where he slayed his beloved."
+    m 4esd "He gave the hunter a chance to redeem for his mistake."
+    m 4esb "If the hunter remained faithful to his slain beloved for the remainder of his life, he would be reunited with her after death."
+    m 1eud "The hunter vowed to remain true and remained faithful for a time, but soon fell in love with another girl and married her."
+    m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
     m 2wuo "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rides away in a panic."
-    m 1esd "After a short way, he looks behind him to see if she was following him any longer."
+    m 1esd "After a short way, he looked behind him to see if she was following him any longer."
     m 1wuo "To his horror, not only had he gained no distance, she had gained on him significantly."
     m "In his state of panic, he failed to see the branch that would strike a blow at his neck, freeing him from his horse and introducing him to the wet ground beneath him."
-    m 4wuo "His attention isn't on his horse however, as the creature lopes away without him."
+    m 4wuo "His attention wasn't on his horse however, as the creature loped away without him."
     show emptydesk at i11 zorder 9
-    m "It is instead on the figure that now looms above him as a former vision of the one he once loved."
+    m "It was instead on the figure that now loomed above him as a former vision of the one he once loved."
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         hide monika
@@ -533,7 +533,7 @@ label mas_scary_story_kuchisake_onna:
     m 3eub "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
     m 1tsu "She would often ask men to rate her appearance."
     m 1esd "The woman ended up cheating on her husband and he quickly found out."
-    m 1efd "When he confronted the woman about it, they got into an argument and the samurai ended up slitting her mouth from ear to ear, in the shape of a wide smile."
+    m 1efd "When he confronted her about it, they got into an argument and the samurai slit her mouth from ear to ear, in the shape of a wide smile."
     m "Then he asked her, 'who will think you are beautiful, now?'."
     m 2dsd "Shortly after, the woman died."
     m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
@@ -605,19 +605,19 @@ label mas_scary_story_o_tei:
     m 2dsd "She summoned her husband-to-be, as she lay on her deathbed."
     m "As he knelt by her bedside, she said to him, 'We have been promised to each other since childhood...'"
     m 2esd "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
-    m 2esb "'I want you to promise me that you will not grieve my loss, because I believe we shall meet again.'."
-    m 3esd "Kenji answered earnestly that yes they would meet again in the afterlife."
-    m 4esa "Tomoe replied 'No, I believe that we are destined to meet each other again in this world, only if you wish it to be so.'."
-    m 2esd "Kenji replied tenderly, 'To see you again, my love, would be no less a joy than a duty, but if we were to meet again, how would I know that it is you?'."
-    m 2dsd "Tomoe replies, 'That I cannot answer, you will know when the time comes, remember these words of mine.'."
-    m 2dsc "And there she ceased to speak and expired."
+    m 2esb "'I want you to promise me that you will not grieve my loss, because I believe we shall meet again.'"
+    m 3esd "Kenji answered earnestly that yes, they would meet again in the afterlife."
+    m 4esa "Tomoe replied 'No, I believe that we are destined to meet each other again in this world, but only if you wish it to be so.'"
+    m 2esd "Kenji replied tenderly, 'To see you again, my love, would be no less a joy than a duty, but if we were to meet again, how would I know that it is you?'"
+    m 2dsd "Tomoe replied, 'That I cannot answer, you will know when the time comes, remember these words of mine.'"
+    m 2dsc "She then ceased to speak and expired."
     m "Kenji grieved deeply for the loss of his love."
     m 2dsd "Years passed, Kenji never forgot Tomoe, but since he was the only son in his family, he was required to marry someone else and carry on the family name."
-    m "Time was not kind to Kenji, however, he lost his parents, and shortly after, his wife and child died as well."
+    m "Time was not kind to Kenji, however, as he lost his parents, and shortly after, his wife and child died as well."
     m 2esd "One day, he decided to abandon his home and take a long journey to forget his troubles."
     m 4esa "Somewhere along his journey, he came across a mountain village."
-    m "At the inn he decided to stay for the night, his heart nearly lept out of his chest."
-    m "The girl that greeted him, reminded him so much of his former lover, that he had to pinch himself to ensure he wasn’t dreaming."
+    m "At the inn he decided to stay at for the night, his heart nearly lept out of his chest."
+    m "The girl that greeted him reminded him so much of his former lover that he had to pinch himself to ensure he wasn’t dreaming."
     m 4esd "As she came and went, her attitude and motion reminded him so much of her."
     # 1 in 9
     if renpy.random.randint(1,9) == 1 or mas_full_scares:
@@ -625,10 +625,10 @@ label mas_scary_story_o_tei:
         show yuri eyes_base zorder 15 at otei_appear(a=0.085,time=3.0)
         show yuripupils zorder 17 at otei_appear(a=0.095,time=5.0)
     m 3esa "He remembered the last conversation that he and Tomoe had before she passed away."
-    m 1esd "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'."
-    m 1eud "'If you don’t mind me asking, are you from around here and what is your name?'."
+    m 1esd "He flagged down the girl and said to her, 'I’m sorry to bother you, but you remind me so much of someone I knew long ago that it startled me at first.'"
+    m 1eud "'If you don’t mind me asking, are you from around here and what is your name?'"
     m 1eua "Immediately, in the unforgotten voice of his deceased beloved, the girl answered: 'My name is Tomoe, and you are Kenji, my promised husband.'"
-    m "'17 years ago, I died and you made a promise to marry me if I could come back to this world and now I stand before you.'."
+    m "'Seventeen years ago, I died and you made a promise to marry me if I could come back to this world and now I stand before you.'"
     hide yuri
     hide yuripupils
     m 3eud "Then she fell unconscious and could not recall what she had said to him previously."
@@ -649,7 +649,7 @@ label mas_scary_story_mujina:
     m "On the one side of the hill was an old moat, that was quite deep."
     m 3esd "As he went along, he noticed a woman crouching by the moat, all alone, weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."
-    m 1esd "The woman was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
+    m 1esd "She was petite and well-dressed, covering her face with one of the sleeves of her kimono facing away from him."
     m 1eud "The man said to her, 'Miss, please don’t cry, tell me what is the matter? If there is anything I can do to help you, I would be glad to do it.' The woman continued to weep."
     m "The man started again, 'Miss, listen to me, this is no place for a lady at night. Please stop crying, tell me how I may help you!'."
     m 3eud "Slowly, the woman rose up, with her head still turned, continuing to sob."
@@ -664,7 +664,7 @@ label mas_scary_story_mujina:
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         $ style.say_dialogue = style.edited
-        m 2wud "The salesman responded ‘Oh, you mean like this?’.{nw}"
+        m 2wud "The salesman responded ‘Oh, you mean like this?’{nw}"
         show mujina zorder 18 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
         $ style.say_dialogue = style.normal
@@ -672,9 +672,9 @@ label mas_scary_story_mujina:
         stop sound
         hide mujina
     else:
-        m 2tku "The salesman responded 'Oh, you mean like this?'."
+        m 2tku "The salesman responded 'Oh, you mean like this?'"
     m 4wud "The man looked up at the salesman only to be greeted again by the familiarly vague shape of a human face devoid of features."
-    m "The old man let out a scream and then suddenly, the lantern went out."
+    m "The old man let out a scream and then suddenly,{w=1} the lantern went out."
     show black zorder 100
     $ pause(3.5)
     hide black
@@ -690,7 +690,7 @@ label mas_scary_story_ubume:
     call mas_scary_story_setup
     m 4eud "One night, at a late hour, a woman walked into a confectionery store to buy some candy, right before the owner was about to head off to bed."
     m 4esa "The village was small, and the confectioner didn’t recognize the woman, but didn’t think much of it, and sold the woman the candy that she requested."
-    m 1esa "The next night, around the same time, the woman would walk into the shop to buy some more candy."
+    m 1esa "The next night, around the same time, the woman walked into the shop to buy some more candy."
     m "After a few nights of this happening, the confectioner became curious about the woman and decided to follow her the next time she came in."
     m 3esa "The next night, the woman arrived at her normal time, purchased the candy that she always did and went happily along her way."
     m 3wuo "After the woman walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him had turned into a leaf from a tree."
@@ -718,15 +718,15 @@ init 5 python:
 label mas_scary_story_womaninblack:
     call mas_scary_story_setup
     m 3esa "One night, a colonel boarded a train on his way home."
-    m 1esa "The colonel was content because he was able to secure a compartment to himself and promptly fell asleep."
+    m 1esa "The his was content because he was able to secure a compartment to himself and promptly fell asleep."
     m 3eud "A short time later, he awoke with a start, feeling stiff and uneasy."
     m 1eud "To his surprise, he noticed that there was now a woman sitting opposite of him."
-    m 1esd "The woman's attire was entirely black, including a veil that obscured her face."
-    m "The woman appeared to be looking down at something in her lap, although there wasn’t anything there."
-    m 3esb "The colonel was a friendly fellow and tried to make small talk with the woman."
-    m 1dsd "To his dismay, the woman did not respond to his pleasantries."
-    m 1eud "Suddenly, the woman started rocking back and forth and singing a soft lullaby."
-    m "Before the colonel could inquire about it, the train suddenly screeched to a halt."
+    m 1esd "Her attire was entirely black, including a veil that obscured her face."
+    m "She appeared to be looking down at something in her lap, although there wasn’t anything there."
+    m 3esb "The colonel was a friendly fellow and tried to make small talk with her."
+    m 1dsd "To his dismay, she did not respond to his pleasantries."
+    m 1eud "Suddenly, she began rocking back and forth and singing a soft lullaby."
+    m "Before the colonel could inquire about it, the train screeched to a halt."
     m "A suitcase from the compartment above fell and hit him on the head, knocking him unconscious."
     show black zorder 100
     play sound "sfx/crack.ogg"
@@ -736,7 +736,7 @@ label mas_scary_story_womaninblack:
     m 3ekd "To boot, once the colonel had entered the compartment it was locked, as was customary, and no one had entered or left the compartment after he had entered."
     m 1esd "A few months later, the colonel was talking to a railway official that informed him that some time ago, a woman and her husband were travelling on a train together."
     m 1dsd "The woman’s husband had his head too far out one of the windows and was decapitated by a wire."
-    m 1esd "The headless body fell into her lap. When the train arrived at its stop, the woman was found holding the corpse and singing a lullaby to it."
+    m 1esd "The headless body fell into her lap. When the train arrived at its stop, she was found holding the corpse and singing a lullaby to it."
     m 1esc "She never regained her sanity and died a few months later."
     call mas_scary_story_cleanup
     return
@@ -749,10 +749,10 @@ init 5 python:
 label mas_scary_story_resurrection_mary:
     call mas_scary_story_setup
     m 3eua "At a dancehall around Christmas time, a young man named Lewis was enjoying some time with his friends, when a young woman he hadn’t seen before caught his attention."
-    m 1eub "The girl was tall, blond, blue-eyed and very beautiful."
-    m 1hub "The woman was wearing a fancy white dress, with white dancing shoes and a thin shawl."
-    m 3esb "Lewis found the girl captivating and decided to ask the woman to dance with him and she accepted his invitation."
-    m 1eud "The woman was certainly beautiful, but Lewis felt there was something strange about her."
+    m 1eub "The girl was tall, blonde, blue-eyed and very beautiful."
+    m 1hub "She was wearing a fancy white dress, with white dancing shoes and a thin shawl."
+    m 3esb "Lewis found the girl captivating and decided to ask her to dance with him and she accepted his invitation."
+    m 1eud "She was certainly beautiful, but Lewis felt there was something strange about her."
     m 3esd "As they danced, he tried to get to know her a little better, but all she would say about herself was that her name was Mary and that she was from the south side of town."
     m "Also, her skin was cool and clammy to the touch. At one point during the evening, he kissed Mary, and found her lips were as cool as her skin."
     m 1esb "The two spent much of the night together dancing. When the time came to leave, Lewis offered Mary a ride home and she again accepted the invitation."
@@ -778,9 +778,9 @@ label mas_scary_story_corpse:
     call mas_scary_story_setup
     m 1esa "There once was an old man that ran an old roadside inn. One evening, 4 men arrived and asked for a room."
     m 3eua "The old man replied that all of the rooms were taken, but he could find them a place to sleep if they weren’t too particular."
-    m 1esa "The men were exhausted and assured the old man that any place would do."
-    m 1eud "The old man led them to a room around back. Lying in the corner of the room was the corpse of a woman."
-    m "The old man explained that his daughter-in-law had recently perished and she was awaiting burial."
+    m 1esa "The men were exhausted and assured the man that any place would do."
+    m 1eud "He led them to a room around back. Lying in the corner of the room was the corpse of a woman."
+    m "He explained that his daughter-in-law had recently perished and she was awaiting burial."
     m 1eua "After the old man departed, 3 of the 4 men fell asleep. The last man couldn’t fall asleep."
     m 1wuo "Suddenly, the man heard a creaking noise."
     if renpy.random.randint(1,2) == 1 or mas_full_scares:
@@ -796,8 +796,8 @@ label mas_scary_story_corpse:
     show vignette as flicker zorder 14 at vignetteflicker(0)
     m 3eud "After a short distance, he looked behind him and saw that the corpse was not far behind him."
     m 3wud "A chase ensued and as she caught up to him, he found himself standing under a tree."
-    m "The woman charged towards him with her claw-like fingernails extended."
-    m 4wud "At the last second, the man dodged and the woman struck the tree with great ferocity."
+    m "She charged towards him with her claw-like fingernails extended."
+    m 4wud "At the last second, the man dodged and she struck the tree with great ferocity."
     m 3wud "Her fingernails were now deeply embedded in the tree."
     m 1wud "She wildly swung her freehand at the man as he lay on the ground, unable to reach him."
     m 1eud "The man, frightened and exhausted crawled a short distance away and then passed out."
@@ -868,10 +868,10 @@ label mas_scary_story_baobhan_sith:
     m 1tku "The men wasted no time coupling off with each of the maidens."
     m 1eub "As they are dancing, one of the men notices that the other couples are dancing rather erratically."
     m 1wuo "Then, to his horror, he realizes that the other men have blood pouring from their necks onto their shirts."
-    m 3wuo "In a blind panic, the man abandoned his partner and bolted out the door, which he was fortunate enough to be close to, before he could share the fate of his friends."
-    m 3wud "The man ran into the forest and ended up hiding amongst the horses he and his friends had ridden during that day’s hunt."
+    m 3wuo "In a blind panic, the man abandoned his partner and bolted out the door, before he could share the fate of his friends."
+    m 3wud "He ran into the forest and hid amongst the horses he and his friends had ridden during that day’s hunt."
     m "The women, not far behind, closed in, but appeared unable to get past the horses to the man."
-    m 1eud "So there the man stood, weary eyed, among the animals all night long as the women circled around the horses, trying to find a way to get to the man."
+    m 1eud "So there he stood, weary eyed, among the animals all night long as the women circled around the horses, trying to find a way to get to him."
     m 1esa "Just before dawn, the women gave up and retreated back into the woods."
     m 1esd "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     # chance of 1 in 14
@@ -909,9 +909,9 @@ init 5 python:
 label mas_scary_story_serial_killer:
     call mas_scary_story_setup
     m 4esb "A young couple park at a cemetery one night for some undisturbed lovemaking."
-    m 4wud "They are interrupted by a radio report that a mass murderer has escaped from a psychiatric hospital nearby and may be headed in their direction."
-    m "They decide to leave, but the car won't start."
-    m 4esd "The young man gets out of the car to go for help and instructs the girl to stay in the car with the doors locked."
+    m 4wud "They were interrupted by a radio report that a mass murderer had escaped from a psychiatric hospital nearby and might be headed in their direction."
+    m "They decided to leave, but the car wouldn't start."
+    m 4esd "The young man got out of the car to go for help and instructed the girl to stay inside with the doors locked."
     m "A few moments later, she hears a scratching sound on the roof of the car."
     m 1esd "She thinks to herself it must be a tree branch in the wind."
     m 1eud "Her date doesn't return and after some time passes, a police car drives by."
@@ -941,27 +941,26 @@ label mas_scary_story_revenant:
     call mas_scary_story_setup
     m 4eua "There was once a man who married a woman."
     m 4ekd "The man was a wealthy person who made his money through ill-gotten means."
-    m 2eud "Shortly after their marriage, the man started to hear rumors that his wife was being unfaithful to him."
+    m 2eud "Shortly after their marriage, he started to hear rumors that his wife was being unfaithful to him."
     m 2esd "Anxious to ascertain the truth, the man told his wife he was going away on a business trip for a few days and left the house."
     m 2eud "Unbeknownst to his wife, the man snuck back into the house later in the evening with the aid of one of his servants."
     m "The man climbed up one of the beams overhanging in his bedchamber and laid in wait."
     m 4ekd "Shortly afterwards his wife entered with a man of the neighborhood, the two chatted for a while and then began to undress themselves."
     m 4eud "The man, at this time, clumsily fell to the ground not far from where the two were, unconscious."
     m "The adulterer grabbed his clothes and ran away, but the wife came over to her husband and gently patted his hair until he awoke."
-    m "The man chastised his wife for her adultery and threatened punishment after he recovered from his fall."
-    m 2dsc "The man, however, never recovered from his fall and died overnight and was buried the next day."
+    m "The man chastised his wife for her adultery and threatened punishment once he recovered from his fall."
+    m 2dsc "The man, however, never recovered from his fall and died overnight. He was buried the next day."
     m 2esd "That night, the man’s corpse rose up from his grave and began to wander the neighborhoods."
     m "As dawn broke, he would return to his grave."
     m 3esd "This continued night after night and people began locking their doors, fearing to go out to run any errands after the sun went down."
     m "Lest they run into the creature and be beaten black and blue."
     m 2dsd "Not long afterwards, the town became plagued by disease and there was no doubt in their minds that the corpse was to blame."
     m 2dsc "People started fleeing the town, lest they too should die by the disease."
-    m 2esd "As the town was falling apart, a meeting was gathered and it was decided that they corpse should be dug up and disposed of."
+    m 2esd "As the town was falling apart, a meeting was gathered and it was decided that the corpse should be dug up and disposed of."
     m "A group of people took spades and found the cemetery the man was buried in."
     m "They didn’t have to dig long before they reached the man’s corpse."
     m 4eud "Once he was fully disinterred, the villagers beat the carcass with their shovels and dragged the body out of town."
     m 3esd "There, they built a great fire and threw the body on the fire."
     m 3eub "The man’s corpse let out a blood curdling scream and attempted to crawl out of the flames before finally succumbing to it."
-    m 1esa "Afterwards, the village recovered and prospered."
     call mas_scary_story_cleanup
     return
