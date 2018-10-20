@@ -27,6 +27,7 @@ init python:
         Disables the hotkey buttons
         """
         store.hkb_button.talk_enabled = False
+        store.hkb_button.extra_enabled = False
         store.hkb_button.music_enabled = False
         store.hkb_button.play_enabled = False
 
@@ -36,6 +37,7 @@ init python:
         Enables the hotkey buttons
         """
         store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
         store.hkb_button.music_enabled = True
         store.hkb_button.play_enabled = True
 
@@ -188,7 +190,7 @@ screen hkb_overlay():
 
 
         if store.hkb_button.extra_enabled:
-            textbutton _("Extra") action Function(open_extra_menu)
+            textbutton _("Extra") action Function(mas_open_extra_menu)
         else:
             frame:
                 ypadding 5
