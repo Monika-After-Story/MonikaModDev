@@ -242,11 +242,21 @@ init -5 python in mas_sprites:
 
     # TODO change this to persistent value
     value_zoom = default_value_zoom
-    default_zoom_level = 10
+    default_zoom_level = 3
 
     # TODO change this to persisten value
     zoom_level = default_zoom_level
     zoom_step = 0.05
+
+    max_zoom = 20
+
+    # adjustable location stuff
+    default_x = 0
+    default_y = 0
+    adjust_x = default_x
+    adjust_y = default_y
+#    y_step = 40
+    y_step = 10
 
     # Prefixes for files
     PREFIX_BODY = "torso" + ART_DLM
@@ -293,18 +303,22 @@ init -5 python in mas_sprites:
         Sets the value zoom to an appropraite amoutn based on the current
         zoom level.
         """
-        global value_zoom
+        global value_zoom, adjust_y
         if zoom_level > default_zoom_level:
             value_zoom = default_value_zoom + (
                 (zoom_level-default_zoom_level) * zoom_step
             )
+            adjust_y = default_y + ((zoom_level-default_zoom_level) * y_step)
+
         elif zoom_level < default_zoom_level:
             value_zoom = default_value_zoom - (
                 (default_zoom_level-zoom_level) * zoom_step
             )
+            adjust_y = default_y
         else:
             # zoom level is at 10
             value_zoom = default_value_zoom
+            adjust_y = default_y
 
 
     # tryparses for the hair and clothes
@@ -492,6 +506,13 @@ init -5 python in mas_sprites:
         return False
 
 
+    def build_loc():
+        """
+        RETURNS location string for the sprite
+        """
+        return "".join(["(", str(adjust_x), ",", str(adjust_y), ")"])
+
+
     # sprite maker functions
 
 
@@ -544,7 +565,7 @@ init -5 python in mas_sprites:
             return ""
 
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             A_T_MAIN,
             acs_lean_mode(lean),
@@ -581,11 +602,31 @@ init -5 python in mas_sprites:
             for acs in acs_list
         ]
 
-        return "," + ",".join([
+        acs_gen_str = ",".join([
             _acs
             for _acs in acs_gen
             if len(_acs) > 0
         ])
+
+        if lean:
+            loc_str = LOC_LEAN
+
+        else:
+            loc_str = LOC_REG
+
+        if len(acs_gen_str) > 1:
+            return "," + "".join([
+                build_loc(),
+                ",",
+                L_COMP,
+                "(",
+                loc_str,
+                ",",
+                acs_gen_str,
+                ")"
+            ])
+
+        return ""
 
 
     def _ms_arms(clothing, arms, isnight):
@@ -601,7 +642,7 @@ init -5 python in mas_sprites:
             arms string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             C_MAIN,
             clothing,
@@ -628,7 +669,7 @@ init -5 python in mas_sprites:
             blush string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -694,7 +735,7 @@ init -5 python in mas_sprites:
             emote string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -720,7 +761,7 @@ init -5 python in mas_sprites:
             eyebags string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -746,7 +787,7 @@ init -5 python in mas_sprites:
             eyebrows string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -772,7 +813,7 @@ init -5 python in mas_sprites:
             eyes stirng
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -877,7 +918,7 @@ init -5 python in mas_sprites:
         """
         # NOTE: untested
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -904,7 +945,7 @@ init -5 python in mas_sprites:
         """
         # NOTE UNTESTED
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -931,7 +972,7 @@ init -5 python in mas_sprites:
             mouth string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -957,7 +998,7 @@ init -5 python in mas_sprites:
             nose string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -983,7 +1024,7 @@ init -5 python in mas_sprites:
         """
         # NOTE: UNTESTED
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -1062,12 +1103,12 @@ init -5 python in mas_sprites:
             loc_str,
             _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
             ",",
-            LOC_Z,
+            build_loc(),
             ",",
             _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
             _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
             ",",
-            LOC_Z,
+            build_loc(),
             ",",
             _ms_face(
                 eyebrows,
@@ -1150,7 +1191,7 @@ init -5 python in mas_sprites:
                 "(",
                 LOC_STAND,
                 ",",
-                LOC_Z,
+                build_loc(),
                 ',"',
                 STOCK_ART_PATH,
                 single,
@@ -1165,19 +1206,19 @@ init -5 python in mas_sprites:
             "(",
             LOC_STAND,
             ",",
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             left,
             FILE_EXT,
             '",',
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             right,
             FILE_EXT,
             '",',
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             head,
@@ -1202,7 +1243,7 @@ init -5 python in mas_sprites:
             sweatdrop string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -1228,7 +1269,7 @@ init -5 python in mas_sprites:
             tear strring
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             F_T_MAIN,
             face_lean_mode(lean),
@@ -1253,7 +1294,7 @@ init -5 python in mas_sprites:
             torso string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             C_MAIN,
             clothing,
@@ -1280,7 +1321,7 @@ init -5 python in mas_sprites:
             leaning torso string
         """
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             C_MAIN,
             clothing,

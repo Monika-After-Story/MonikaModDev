@@ -202,6 +202,23 @@ style mas_adjust_vbar:
     thumb "gui/slider/horizontal_hover_thumb.png"
     bar_vertical True
 
+style mas_adjustable_button is default:
+    idle_background Frame("mod_assets/buttons/squares/square_idle.png", left=3, top=3)
+    hover_background Frame("mod_assets/buttons/squares/square_hover.png", left=3, top=3)
+    hover_sound gui.hover_sound
+    activate_sound gui.activate_sound
+
+style mas_adjustable_button_text is default:
+    idle_color "#000"
+    hover_color "#fa9"
+    outlines []
+    kerning 0.2
+    xalign 0.5
+    yalign 0.5
+    font gui.default_font
+    size gui.text_size
+
+
 screen mas_extramenu_area():
     zorder 52
     frame:
@@ -216,25 +233,30 @@ screen mas_extramenu_area():
 
         # zoom control
         frame:
-            area (195, 500, 80, 205)
+            area (195, 450, 80, 255)
             background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
 
             vbox:
+                spacing 2
+
                 label "Zoom":
                     style "hkb_button_text"
 
-                bar value FieldValue(store.mas_sprites, "zoom_level", 20):
+                # resets the zoom value back to default
+                textbutton _("Reset"):
+                    style "mas_adjustable_button"
+                    xsize 70
+                    ysize 35
+                    xalign 0.5
+                    action SetField(store.mas_sprites, "zoom_level", store.mas_sprites.default_zoom_level)
+
+                # actual slider for adjusting zoom
+                bar value FieldValue(store.mas_sprites, "zoom_level", store.mas_sprites.max_zoom):
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
 
 
-
-#        textbutton _("not"):
-#            area (
-        
-#        fixed:
-#            area (
 
 
 
