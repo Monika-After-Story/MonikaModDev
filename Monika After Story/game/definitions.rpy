@@ -2864,6 +2864,7 @@ init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
         if mas_monika_birthday < today:
@@ -2894,6 +2895,12 @@ init -1 python:
             or persistent._mas_bday_said_happybday
         )
 
+
+    def mas_isO31():
+        """
+        Returns True if today is o31
+        """
+        return datetime.date.today() == mas_o31
 
 
     def mas_maxPlaytime():
@@ -4474,6 +4481,7 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+define mas_o31 = datetime.date(datetime.date.today.().year, 10, 31)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
