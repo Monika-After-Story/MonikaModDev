@@ -30,6 +30,15 @@ init -1 python in mas_stories:
     STORY_RETURN = "I changed my mind."
     story_database = dict()
 
+    def _unlock_everything():
+        stories = renpy.store.Event.filterEvents(
+            renpy.store.mas_stories.story_database,
+            unlocked=False
+        )
+        for _, story in stories.iteritems():
+            story.unlocked = True
+
+
 
 # entry point for stories flow
 label mas_stories_start(scary=False):
@@ -426,17 +435,20 @@ label mas_scary_story_setup:
     $ mas_temp_r_flag = mas_is_raining
     $ scene_change = True
     $ mas_is_raining = True
+    #TODO persistent music spoop for o31
+    stop music fadeout 1.0
     pause 1.0
     $ mas_temp_m_flag = morning_flag
     call spaceroom(start_bg="monika_gloomy_room")
     $ morning_flag = True
-    #stop music fadeout 1.0
+    play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop
     show vignette zorder 13
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
     $ HKBHideButtons()
+    $ mas_RaiseShield_core()
     #$ store.songs.enabled = False
     python:
         story_begin_quips = [
@@ -454,12 +466,12 @@ label mas_scary_story_setup:
 label mas_scary_story_cleanup:
     python:
         story_end_quips = [
-            "Scared, " + player + "?",
-            "Did I scare you, " + player + "?",
+            "Scared, [player]?",
+            "Did I scare you, [player]",
             "How was it?",
             "Well?"
         ]
-        story_end_quip=renpy.random.choice(story_end_quips)
+        story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
     m 3eua "[story_end_quip]"
     if not mas_temp_r_flag:
@@ -472,9 +484,11 @@ label mas_scary_story_cleanup:
     $ morning_flag = mas_temp_m_flag
     hide vignette
     call spaceroom
-    $ store.songs.enabled = True
-    $ HKBShowButtons()
+#    $ store.songs.enabled = True
+    $ play_song(songs.current_track)
     m 1esa "I hope you liked it, [player]~"
+    $ mas_DropShield_core()
+    $ HKBShowButtons()
     return
 
 init 5 python:
@@ -507,7 +521,7 @@ label mas_scary_story_hunter:
     m "The hunter rode away in a panic."
     m 1euc "After a short way, he looked behind him to see if she was following him any longer."
     m 1wkd "To his horror, not only had he not further his distance, but she had gained on him significantly."
-    m 3wkd"In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
+    m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
     show emptydesk at i11 zorder 9
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
@@ -799,10 +813,13 @@ label mas_scary_story_corpse:
     m 1eud "The woman bit the pillow and apparently not realizing she hadn’t bit the last man, returned to her original resting spot."
     m 3eud "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
     m 3wuo "As soon as his feet touched the ground, however, he heard another creak."
+    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+        play sound "sfx/crack.ogg"
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
     show layer master at heartbeat2(1)
     show vignette as flicker zorder 14 at vignetteflicker(0)
+    play sound hb loop
     m 3eud "After a short distance, he looked behind him and saw that the corpse was not far behind him."
     m 3wud "A chase ensued and as she caught up to him, he found himself standing under a tree."
     m "She charged towards him with her claw-like fingernails extended."
@@ -811,6 +828,7 @@ label mas_scary_story_corpse:
     m 1wud "She wildly swung her freehand at the man as he lay on the ground, unable to reach him."
     m 1eud "The man, frightened and exhausted crawled a short distance away and then passed out."
     show layer master
+    stop sound
     hide flicker
     show black zorder 100
     $ pause(2.5)
@@ -934,8 +952,8 @@ label mas_scary_story_serial_killer:
         show y_sticker hopg zorder 17:
             pos(600,425)
             alpha 1.0
-            linear 1.0 alpha 0
-        play sound "sfx/eyes.ogg"
+            linear 1.6 alpha 0
+        play sound "<from 0.4 to 2.0 >sfx/eyes.ogg"
     m "His fingernails scratching the car roof."
     hide y_sticker
     call mas_scary_story_cleanup
