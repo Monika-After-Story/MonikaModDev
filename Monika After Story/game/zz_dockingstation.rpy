@@ -2118,7 +2118,7 @@ label mas_dockstat_different_monika:
     $ mas_dockstat.retmoni_data = None
     $ startup_check = False
 
-    jump ch30_post_greeting_check
+    jump ch30_post_exp_check
 
 
 # found our monika, but we coming from empty desk
@@ -2164,4 +2164,4 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
-    jump ch30_post_greeting_check
+    jump ch30_post_exp_check

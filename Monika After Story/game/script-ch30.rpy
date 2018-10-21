@@ -6,6 +6,7 @@ default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 define mas_skip_mid_loop_eval = False
+define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
@@ -403,6 +404,24 @@ init python:
         return False
 
 
+    def mas_forceRain():
+        """
+        Sets rain variables and locks appropriate rain events
+        """
+        global scene_change, mas_is_raining
+        scene_change = True
+        mas_is_raining = True
+        renpy.music.play(
+            audio.rain,
+            channel="background",
+            loop=True,
+            fadein=1.0
+        )
+        lockEventLabel("monika_rain_start")
+        lockEventLabel("monika_rain_stop")
+        lockEventLabel("monika_rain")
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -418,9 +437,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
 
     # o31
-    # TODO: this needs to check if are calling from introduction
-    if mas_isO31() and scene_change:
-        play background audio.rain fadein 1.0 loop
+    # TODO: double check the scene change logic for this
+    if mas_isO31() and not mas_in_intro_flow and scene_change:
         show vignette zorder 13
 
     if is_morning():
@@ -472,6 +490,9 @@ label ch30_main:
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
 
+    # so other flows are aware that we are in intro
+    $ mas_in_intro_flow = True
+
     # before we render visuals:
     # 1 - all core interactions should be disabeld
     $ mas_RaiseShield_core()
@@ -481,7 +502,6 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
-    # TODO set a flag to notify other places that we are in introduction
     call spaceroom from _call_spaceroom_4
 
     # lets just call the intro instead of pushing it as an event
@@ -703,12 +723,15 @@ label ch30_autoload:
         # this jumps to where we need to go next.
         $ store.mas_dockstat.triageMonika(False)
 
-
-    # TODO: on o31, most of these checks should be skipped. We still want
-    # the midrun eval, but we dont want greetings or other flow breaking 
-    # things.
-
 label mas_ch30_post_retmoni_check:
+
+    if mas_isO31():
+        jump mas_holiday_o31_autoload_check
+
+
+label mas_ch30_post_holiday_check:
+    # post holiday checks
+
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
@@ -772,8 +795,14 @@ label mas_ch30_post_retmoni_check:
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
 
+label ch30_post_greeting_check:
+    # this label skips only greeting checks
+
     #If you were interrupted, push that event back on the stack
     $ restartEvent()
+
+label ch30_post_restartevent_check:
+    # this label skips the restart event and greeting checks
 
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
@@ -816,7 +845,7 @@ label mas_ch30_post_retmoni_check:
             # Grant bad exp for closing the game incorrectly.
             mas_loseAffection(modifier=2, reason="closing the game on me")
 
-label ch30_post_greeting_check:
+label ch30_post_exp_check:
     # this label skips greeting selection as well as exp checks for game close
     # we assume here that you set selected_greeting if you needed to
 
@@ -854,12 +883,7 @@ label ch30_post_greeting_check:
 
         # rain check
         if mas_shouldRain():
-            $ scene_change = True
-            $ mas_is_raining = True
-            play background audio.rain fadein 1.0 loop
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain_stop")
-            $ lockEventLabel("monika_rain")
+            mas_forceRain()
 
     # FALL THROUGH TO PRELOOP
 
