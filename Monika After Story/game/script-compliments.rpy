@@ -377,7 +377,7 @@ label mas_compliment_thanks:
     m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name]":
-            if not mas_isMoniLove():
+            if mas_getEV('mas_compliment_thanks').shown_count == 0:
                 $ mas_gainAffection(10,bypass=True)
             m 1ekbfa "[player]... "
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
