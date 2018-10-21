@@ -377,7 +377,8 @@ label mas_compliment_thanks:
     m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
     menu:
         "You mean everything to me, [m_name]":
-            $ mas_gainAffection(10,bypass=True)
+            if not mas_isMoniLove():
+                $ mas_gainAffection(10,bypass=True)
             m 1ekbfa "[player]... "
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both..."
@@ -385,7 +386,9 @@ label mas_compliment_thanks:
         "Yeah":
             m 1hub "Hehehe~"
             m 1eub "I love you, [player]."
-    $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
+    if not mas_isMoniLove():
+        $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
     return
 
 init 5 python:
