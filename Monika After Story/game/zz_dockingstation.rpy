@@ -145,8 +145,8 @@ init -45 python:
             if station is None:
                 station = self.DEF_STATION_PATH
 
-            if not station.endswith("/"):
-                station += "/"
+#            if not station.endswith("/"):
+#                station += "/"
 
             self.station = os.path.normcase(station)
 
