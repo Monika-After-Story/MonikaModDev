@@ -27,7 +27,7 @@ init -1 python in mas_stories:
     STORY_H = 640
     STORY_XALIGN = -0.05
     STORY_AREA = (STORY_X, STORY_Y, STORY_W, STORY_H)
-    STORY_RETURN = "I changed my mind"
+    STORY_RETURN = "I changed my mind."
     story_database = dict()
 
 
@@ -96,8 +96,8 @@ label mas_stories_start(scary=False):
 
         # check if we have seen it already
         if seen_event(story):
-            m 1ekc "Sorry [player], that's the only story I can tell you right now"
-            m 1lksdlb "I'll think of a story to tell you next time"
+            m 1ekc "Sorry [player]. That's the only story I can tell you right now."
+            m 3hksdlb "Don't worry! I'll think of a story to tell you next time"
             return
 
         # increment event's shown count and update last seen
@@ -142,7 +142,7 @@ label mas_story_begin:
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
-            "Let's begin then~"
+            "Let's begin, then~"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     $ mas_gainAffection(modifier=0.2)
@@ -444,7 +444,7 @@ label mas_scary_story_setup:
             "Ready to hear the story?",
             "Ready for story time?",
             "Let's begin~",
-            "Let's begin then~"
+            "Let's begin, then~"
         ]
         story_begin_quip=renpy.random.choice(story_begin_quips)
     m 3eua "[story_begin_quip]"
@@ -456,7 +456,8 @@ label mas_scary_story_cleanup:
         story_end_quips = [
             "Scared, " + player + "?",
             "Did I scare you, " + player + "?",
-            "How was it?"
+            "How was it?",
+            "Well?"
         ]
         story_end_quip=renpy.random.choice(story_end_quips)
 
@@ -484,29 +485,32 @@ init 5 python:
 label mas_scary_story_hunter:
     call mas_scary_story_setup
     m 3esa "One day, a hunter went out hunting for game in the forest."
-    m 3esc "The forest was dense and dark all around him and he struggled to hit his mark."
+    m 3esc "The forest was dense and dark all around him, so he struggled to hit his mark."
     m 1esd "He was soon approached by a salesman, who kept his face covered."
     m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
-    m "The hunter could use the first six bullets as he wished, but the last bullet’s mark would be chosen by the salesman."
-    m 1esa "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
-    m 1eud "It wasn’t long before the hunter used up all six bullets."
-    m 1esd "On his next hunt, the hunter saw a wild boar and loaded the last bullet hoping to take down the beast."
-    m 3eud "When he fired, he missed and the bullet instead hit his beloved fiancée in the chest, killing her."
-    m "The salesman then suddenly appeared to the hunter while he was grieving his loss, revealing that he was in fact the devil."
-    m 4esd "He gave the hunter a chance to redeem for his mistake."
-    m 4esb "If the hunter remained faithful to his slain beloved for the remainder of his life, he would be reunited with her after death."
-    m 1eud "The hunter vowed to remain true and remained faithful for a time, but soon fell in love with another girl and married her."
-    m "One year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
-    m 2wuo "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
+    m 1euc "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
+    m 3eud "It wasn't long before the hunter used up all six bullets."
+    m 1esc "On his next hunt, the hunter saw a wild boar, the largest he had ever seen. It was too great of a prey to pass up on."
+    m 1euc "He loaded the last bullet hoping to take down the beast..."
+    m 1dsc "But when he fired, the bullet instead hit his beloved fiancée in the chest, killing her."
+    m 3esc "The salesman then appeared to the hunter as he grieved his tragic loss, revealing that he was in fact the Devil."
+    m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
+    m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
+    m 1eud "The hunter vowed to remain true to her for for as long as he lived..."
+    m 1dsd "...{w}Or so he would."
+    m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
+    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
+    m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
-    m 1esd "After a short way, he looked behind him to see if she was following him any longer."
-    m 1wuo "To his horror, not only had he gained no distance, she had gained on him significantly."
-    m "In his state of panic, he failed to see the branch that would strike a blow at his neck, freeing him from his horse and introducing him to the wet ground beneath him."
-    m 4wuo "His attention wasn't on his horse however, as the creature loped away without him."
+    m 1euc "After a short way, he looked behind him to see if she was following him any longer."
+    m 1wkd "To his horror, not only had he not further his distance, but she had gained on him significantly."
+    m 3wkd"In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
+    m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
     show emptydesk at i11 zorder 9
-    m "It was instead on the figure that now loomed above him as a former vision of the one he once loved."
+    m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         hide monika
@@ -526,20 +530,22 @@ init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_kuchisake_onna",
     category=[store.mas_stories.TYPE_SCARY], prompt="Kuchisake-Onna",unlocked=False),
     eventdb=store.mas_stories.story_database)
-
+#Stopping point - Edit done. Review exps
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m 3eua "There once was a beautiful woman, whom was the wife of a samurai."
-    m 3eub "Not only was she very beautiful, but she was very vain, and welcomed the attention of any man prepared to offer it to her."
-    m 1tsu "She would often ask men to rate her appearance."
-    m 1esd "The woman ended up cheating on her husband and he quickly found out."
-    m 1efd "When he confronted her about it, they got into an argument and the samurai slit her mouth from ear to ear, in the shape of a wide smile."
-    m "Then he asked her, 'who will think you are beautiful, now?'"
-    m 2dsd "Shortly after, the woman died."
-    m "The samurai, full of regret for what he had done, committed seppuku shortly afterwards as well."
-    m 3eud "The woman’s story doesn’t end here though, she came back as a vengeful spirit."
-    m "They say she now wanders around aimlessly at night, her face covered with a surgical mask."
-    m 1esa "When she comes across someone walking by themselves, she will suddenly pose the question, ‘am I pretty?’"
+    m 3eud "There once was a beautiful woman, whom was the wife of a samurai."
+    m 3eub "She was as incredibly beautiful as she was vain, welcoming the attention of any man prepared to offer it to her."
+    m 1tsu "And often, would ask men to appraise her appearance."
+    m 1esd "The woman was prone to cheat on her husband multiple times and was soon found out about her affairs."
+    m 1efd "When he confronted her, he was beyond infuriated as she was damaging their status as nobles, humiliating him."
+    m "He then brutally punished her by cutting her mouth from ear to ear, disfiguring her delicate beauty."
+    m "'Who will think as beauitful now?' were his haunting words to her."
+    m 2dsd "Shortly after, the woman died, unable to live further after she was tarnished and treated like a freak by everyone around he."
+    m "Her husband, denounced by his cruelty, committed seppuku shortly after."
+    m 3eud "The woman, dying from such a fate, became a vengeful and malicious spirit."
+    m "They say she now wanders around aimlessly at night, her face covered with a mask and a bladed weapon on her hands."
+    m 1esa "Anyone unlucky enough to come across her will hear her spine-chilling question..."
+    m "{b}{i}Am I p r e t t y?{/b}{/i}" #Can we add 1cua here? -monik
     # 1 in 15
     if renpy.random.randint(1,15) == 1 or mas_full_scares:
         hide monika
@@ -587,8 +593,11 @@ label mas_scary_story_kuchisake_onna:
         show monika 1eua at i11 zorder MAS_MONIKA_Z
 
     label .end:
-        m 3eud "If the person doesn’t give her the answer she seeks, she will slay them where they stand with a large pair of scissors she has stashed away."
-        m 3esa "So, when you are walking alone at night, make sure you have someone to walk with, lest you end up the next victim of this hostile spirit."
+        m 3eud "The fate she gives you depends on your answer, actually."
+        m "Meeting her isn't always certain to seal your doom."
+        m 3esa "However..."
+        m "If you're not smart with how you deal with the question..."
+        m "You might just end up like her."
     call mas_scary_story_cleanup
     return
 
