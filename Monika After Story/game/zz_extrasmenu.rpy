@@ -8,7 +8,9 @@
 #   the extras menu is a grid screen showed when the eExtras menu option is
 #   activated. 
 #
-
+# TOC:
+# EXM010 - ZOOM stuff
+# EXM900 - EXTRA menu stuff
 
 
 init python:
@@ -81,25 +83,128 @@ init -1 python in mas_extramenu:
 
 label mas_extra_menu:
     $ store.mas_extramenu.menu_visible = True
+    $ prev_zoom = store.mas_sprites.zoom_level
 
     # disable other overlays
     $ mas_RaiseShield_core()
 
+    if not persistent._mas_opened_extra_menu:
+        call mas_extra_menu_firsttime
+
+    $ persistent._mas_opened_extra_menu = True
+
     show screen mas_extramenu_area
-    jump temp_loop
+    jump mas_idle_loop
 
 label mas_extra_menu_close:
     $ store.mas_extramenu.menu_visible = False
     hide screen mas_extramenu_area
+
+    if store.mas_sprites.zoom_level != prev_zoom:
+        call mas_extra_menu_zoom_callback
 
     # re-enable overlays
     $ mas_DropShield_core()
 
     jump ch30_loop
 
-label temp_loop:
+label mas_idle_loop:
     pause 10.0
-    jump temp_loop
+    jump mas_idle_loop
+
+default persistent._mas_opened_extra_menu = False
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_extra_menu_firsttime",
+            prompt="Can you explain the Extras menu?"
+        )
+    )
+
+label mas_extra_menu_firsttime:
+    if not persistent._mas_opened_extra_menu:
+        m "test"
+
+    m "test2"
+
+    if not persistent._mas_opened_extra_menu:
+        m "test3"
+
+    python:
+        this_ev = mas_getEV("mas_extra_menu_firsttime")
+        this_ev.unlocked = True
+        this_ev.pool = True
+
+    # explaining different features here
+    call mas_extra_menu_zoom_intro
+
+    return
+
+################################# ZOOM LABELS #################################
+# [EXM010]
+
+label mas_extra_menu_zoom_intro:
+    m "i talk about zoom"
+    return
+
+default persistent._mas_pm_zoomed_out = False
+default persistent._mas_pm_zoomed_in = False
+default persistent._mas_pm_zoomed_in_max = False
+
+label mas_extra_menu_zoom_callback:
+    $ import store.mas_sprites as mas_sprites
+    $ aff_larger_than_zero = _mas_getAffection() > 0
+    # logic about the zoom
+
+    if mas_sprites.zoom_level < mas_sprites.default_zoom_level:
+
+        if (
+                aff_larger_than_zero
+                and not persistent._mas_pm_zoomed_out
+            ):
+            # zoomed OUT
+            call mas_extra_menu_zoom_out_first_time
+            $ persistent._mas_pm_zoomed_out = True
+
+    elif mas_sprites.zoom_level == mas_sprites.max_zoom:
+        
+        if (
+                aff_larger_than_zero
+                and not persistent._mas_pm_zoomed_in_max
+            ):
+            # zoomed in max
+            call mas_extra_menu_zoom_in_max_first_time
+            $ persistent._mas_pm_zoomed_in_max = True
+            $ persistent._mas_pm_zoomed_in = True
+
+    elif mas_sprites.zoom_level > mas_sprites.default_zoom_level:
+        
+        if (
+                aff_larger_than_zero
+                and not persistent._mas_pm_zoomed_in
+            ):
+            # zoomed in not max
+            call mas_extra_menu_zoom_in_first_time
+            $ persistent._mas_pm_zoomed_in = True
+
+    return
+
+label mas_extra_menu_zoom_out_first_time:
+    m "you zoomed out!"
+    return
+
+label mas_extra_menu_zoom_in_first_time:
+    m "you zooomed in!"
+    return
+
+label mas_extra_menu_zoom_in_max_first_time:
+    m "You zoomed into the max view the first time!"
+    return
+
+################################# EXTRA MENU STUFF ############################
+# [EXM900]
 
 # trasnform for the modebar show
 transform mas_modebar_tr_show:

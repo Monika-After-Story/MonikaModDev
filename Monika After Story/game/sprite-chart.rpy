@@ -106,6 +106,9 @@ default persistent._mas_acs_pre_list = list()
 default persistent._mas_acs_mid_list = list()
 default persistent._mas_acs_pst_list = list()
 
+# zoom levels
+default persistent._mas_zoom_zoom_level = None
+
 image monika g1:
     "monika/g1.png"
     xoffset 35 yoffset 55
@@ -190,6 +193,7 @@ image mas_bday_balloons = ConditionSwitch(
 
 init -5 python in mas_sprites:
     # specific image generation functions
+    import store
 
     # main art path
     MOD_ART_PATH = "mod_assets/monika/"
@@ -238,16 +242,19 @@ init -5 python in mas_sprites:
 
     # zoom
     ZOOM = "zoom="
-    default_value_zoom = 1.25
 
-    # TODO change this to persistent value
-    value_zoom = default_value_zoom
     default_zoom_level = 3
+   
+    if store.persistent._mas_zoom_zoom_level is None:
+        store.persistent._mas_zoom_zoom_level = default_zoom_level
+        zoom_level = default_zoom_level
 
-    # TODO change this to persisten value
-    zoom_level = default_zoom_level
+    else:
+        zoom_level = store.persistent._mas_zoom_zoom_level
+
     zoom_step = 0.05
-
+    default_value_zoom = 1.25
+    value_zoom = default_value_zoom
     max_zoom = 20
 
     # adjustable location stuff
@@ -302,6 +309,7 @@ init -5 python in mas_sprites:
         """
         Sets the value zoom to an appropraite amoutn based on the current
         zoom level.
+        NOTE: also sets the persistent save for zoom
         """
         global value_zoom, adjust_y
         if zoom_level > default_zoom_level:
@@ -319,6 +327,8 @@ init -5 python in mas_sprites:
             # zoom level is at 10
             value_zoom = default_value_zoom
             adjust_y = default_y
+
+        store.persistent._mas_zoom_zoom_level = zoom_level
 
 
     # tryparses for the hair and clothes
