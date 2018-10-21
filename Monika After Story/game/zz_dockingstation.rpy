@@ -75,6 +75,23 @@ init -900 python in mas_ics:
         "balloons": sbp_balloons
     }
 
+    #################################### O31 ##################################
+    # marisa cg
+    o31_marisa = "TEST"
+
+    # rin cg
+    o31_rin = "TEST2"
+
+    # cg dict to map filenames to checksums and real filenames
+    # key: filename of b64 encode
+    # value: tuple:
+    #   [0] - filename to save the image as
+    #   [1] - checksum for that image   
+    o31_map = {
+        "o31mcg": ("o31_marisa_cg.png", o31_marisa),
+        "o31rcg": ("o31_rin_cg.png", o31_rin)
+    }
+
     ###########################################################################
 
 

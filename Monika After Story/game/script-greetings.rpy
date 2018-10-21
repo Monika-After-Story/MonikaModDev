@@ -20,6 +20,9 @@ init -1 python in mas_greetings:
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
 
+    # holiday specific
+    TYPE_HOL_O31 = "o31"
+
     # custom greeting functions
     def selectGreeting(_type=None):
         """
