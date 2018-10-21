@@ -416,6 +416,13 @@ init python:
 #       (Default: False)
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
+
+    # o31
+    # TODO: this needs to check if are calling from introduction
+    if mas_isO31() and scene_change:
+        play background audio.rain fadein 1.0 loop
+        show vignette zorder 13
+
     if is_morning():
         if not morning_flag or scene_change:
             $ morning_flag = True
@@ -474,6 +481,7 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
+    # TODO set a flag to notify other places that we are in introduction
     call spaceroom from _call_spaceroom_4
 
     # lets just call the intro instead of pushing it as an event
@@ -694,6 +702,11 @@ label ch30_autoload:
     if store.mas_dockstat.retmoni_status is not None:
         # this jumps to where we need to go next.
         $ store.mas_dockstat.triageMonika(False)
+
+
+    # TODO: on o31, most of these checks should be skipped. We still want
+    # the midrun eval, but we dont want greetings or other flow breaking 
+    # things.
 
 label mas_ch30_post_retmoni_check:
 
