@@ -43,6 +43,9 @@ label mas_holiday_o31_autoload_check:
     $ import random
     $ mas_skip_visuals = True
     # TODO check if viginette covers python console / hangman / chess
+    # TODO: rain should be forced on o31, use the forceRain function
+    #   to also lock rain events
+    # TODO: islands event should be LOCKED on o31
     #
 
     if (
