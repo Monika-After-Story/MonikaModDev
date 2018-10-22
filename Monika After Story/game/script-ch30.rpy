@@ -44,7 +44,7 @@ init 970 python:
             and postbday_ev.conditional is not None
             and eval(postbday_ev.conditional)
         ):
-        # reset the post bday event if users did long absence to skip the 
+        # reset the post bday event if users did long absence to skip the
         # event
         postbday_ev.conditional = None
         postbday_ev.action = None
@@ -905,7 +905,7 @@ label ch30_post_exp_check:
 
         # rain check
         if mas_shouldRain():
-            mas_forceRain()
+            $ mas_forceRain()
 
     # FALL THROUGH TO PRELOOP
 

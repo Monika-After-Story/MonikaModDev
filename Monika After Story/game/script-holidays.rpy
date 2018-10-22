@@ -49,7 +49,7 @@ label mas_holiday_o31_autoload_check:
     #
 
     if (
-            persistent._mas_o31_current_costume is None 
+            persistent._mas_o31_current_costume is None
             and persistent._mas_o31_costumes_allowed
         ):
         # select a costume. Once this has been selected, this is what monika
@@ -102,3 +102,40 @@ label greeting_o31_rin:
     # TODO handle visuals
     m "I am rin"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_trick_or_treat_back",
+            unlocked=True,
+            random=True
+            category=[store.mas_greetings.TYPE_TRICK_TREAT]
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_trick_or_treat_back:
+    # TODO Say something and do things
+    m "..."
+    return
+
+### o31 farewells
+init 5 python:
+    if mas_isO31():
+        addEvent(
+            Event(
+                persistent.farewell_database,
+                eventlabel="bye_trick_or_treat",
+                unlocked=True,
+                prompt="I'm going to take you trick or treating",
+                pool=True
+            ),
+            eventdb=evhand.farewell_database
+        )
+
+label bye_trick_or_treat:
+    # TODO dialogue should go here
+    m "Sure thing!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_TRICK_TREAT
+    return 'quit'

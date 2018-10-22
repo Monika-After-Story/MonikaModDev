@@ -2320,7 +2320,7 @@ init -100 python in mas_utils:
 
     def log_entry(entry_log, value):
         """
-        Generic entry add to the given log. 
+        Generic entry add to the given log.
         Stores both time and given value as a tuple:
             [0]: datetime.now()
             [1]: value
@@ -4483,7 +4483,7 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
-define mas_o31 = datetime.date(datetime.date.today.().year, 10, 31)
+define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
