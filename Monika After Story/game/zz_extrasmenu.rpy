@@ -326,6 +326,10 @@ style mas_adjustable_button_text is default:
 
 screen mas_extramenu_area():
     zorder 52
+
+    key "e" action Jump("mas_extra_menu_close")
+    key "E" action Jump("mas_extra_menu_close")
+
     frame:
         area (0, 0, 1280, 720)
         background Solid("#0000007F")
