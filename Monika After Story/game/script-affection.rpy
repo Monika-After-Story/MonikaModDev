@@ -489,12 +489,16 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_LOVE
+        store.unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
 
 
     def _loveToEnamored():
         """
         Runs when transitioning from love to enamored
         """
+        if store.seen_event("mas_compliment_thanks"):
+            store.lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
         return
 
 
