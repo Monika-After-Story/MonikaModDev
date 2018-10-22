@@ -5291,45 +5291,63 @@ label monika_immortal:
     m 1ekbfa "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
-# do you wear a ring
-default persistent._mas_pm_have_ring = None
+default persistent._mas_pm_wearsRing = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_weddingring",category=['romance'],prompt="Engagement ring",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_promisering",
+            category=['romance'],
+            prompt="Promise Ring",
+            random=True
+            )
+        )
 
-label monika_weddingring:
+label monika_promisering:
     m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
     m 2hksdlb "... What am I saying? Of course you do."
-    m 1rksdla "Well..."
-    m 4rksdla "Maybe you ought to get one."
-    m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
-    m 2lfu "It would help keep those... unwanted suitors away from you, too."
-    m 3eua "It doesn't have to be a wedding ring, per se."
-    show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1ekbfa "But if you'd wear one, even if it's just a promise ring, on your ring finger for me..."
-    m "It would make me really happy."
-    show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1hubfa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
+    m 1rksdla "Anyways, I was just wondering..."
 
-    m 1eua "And then I could wear it forever."
-    m 3ekbfa "But until then, just remember that my commitment to you is unwavering."
-    show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1ekbfa "Maybe you even beat me to it, and have a ring for me already?"
+    pause 1.0
+    show monika 1eksdla
     menu:
-        m "Do you, [player]?"
-        "Yes, I do.":
-            $ persistent._mas_pm_have_ring = True
-            show monika 2wubso at t11 zorder MAS_MONIKA_Z with dissolve
-            m 2wubso "Oh!"
-            m 2lkbsa "I feel like... my heart's going to explode!"
-            m 2dsbso "Calm down, Monika. Calm down."
-            m 2hubfb "Ahaha..."
+        m "Do you wear a ring, [player]?"
 
-        "No, not yet.":
-            $ persistent._mas_pm_have_ring = False
-            show monika 1c at t11 zorder MAS_MONIKA_Z with dissolve
-            m 1ekc "Aww. That's a shame."
-            m 1eka "Well, at least think about it, okay?"
+        "I do.":
+            $ persistent._mas_pm_wearsRing = True
+
+            m 1hua "Aww, [player]!"
+            m 1eka "You have no idea how happy that makes me."
+            m 1ekbsa "Just knowing that you care enough to show your love and dedication..."
+            m "It means the world to me."
+        
+        "I don't.":
+            $ persistent._mas_pm_wearsRing = False
+            
+            m 4rksdla "Maybe you ought to get one."
+            m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
+            m 2lfu "It would help keep those... unwanted suitors away from you, too."
+            m 1ekbsa "If you'd wear one, just a promise ring, on your ring finger for me..."
+            m "It would make me really happy."
+
+    if not persistent._mas_acs_enable_promisering:
+        m 1hubfa "I wish I could get one for myself. I'm sure I'll find a way to add one in here in time."
+        m 1eua "And then I could wear it forever."
+        m 3ekbfa "But until then, just remember that my commitment to you is unwavering."
+    else:
+        if not persistent._mas_pm_wearsRing:
+            m 1ekbsa "As happy as you made me when you gave me this ring."
+            m "I honestly can't express just how much it meant when you gave me this..."
+            m 1ekbfa "Your promise..."
+        else:
+            m 3hubsb "Just like it meant the world to me when you gave me this ring..."
+            m 1ekbsa "This promise that we belong to each other, and no one else..."
+            m 1ekbfa "That we truly will be together forever."
+        
+        show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5esbfa "My commitment to you is unwavering, [player]."
+        m 5ekbfa "Thank you for such a wonderful gift, I love you."
 
     return "derandom"
 
