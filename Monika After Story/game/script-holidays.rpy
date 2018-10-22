@@ -109,7 +109,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_trick_or_treat_back",
             unlocked=True,
-            random=True
+            random=True,
             category=[store.mas_greetings.TYPE_TRICK_TREAT]
         ),
         eventdb=evhand.greeting_database
