@@ -24,6 +24,10 @@ init -1 python in mas_globals:
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
+    # TODO: dont be in o31 viginette mode if she is returning home today
+    # but was not previously in o31 viginette mode
+
+
     if persistent._mas_moni_chksum is not None:
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
@@ -53,12 +57,26 @@ init 970 python:
 
     # quick fix for dates
     # NOTE: remove this in 089
-    if (
-            persistent._mas_bday_date_affection_gained >= 50 and
-            not persistent._mas_bday_date_affection_fix
-        ):
-        mas_gainAffection(50, bypass=True)
-        persistent._mas_bday_date_affection_fix = True
+#    if (
+#            persistent._mas_bday_date_affection_gained >= 50 and
+#            not persistent._mas_bday_date_affection_fix
+#        ):
+#        mas_gainAffection(50, bypass=True)
+#        persistent._mas_bday_date_affection_fix = True
+
+    # o31 costumes flag
+    # we only enable costumes if you are not playing for the first time today.
+    if persistent._mas_o31_costumes_allowed is None:
+        first_sesh = persistent.sessions.get("first_session", None)
+        if first_sesh is not None:
+            # fresh players will have first session today
+            persistent._mas_o31_costumes_allowed = (
+                first_sesh.date() != datetime.date.today()
+            )
+
+        else:
+            # no first sesh? you are also fresh
+            persistent._mas_o31_costumes_allowed = False
 
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
@@ -438,7 +456,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     # o31
     # TODO: double check the scene change logic for this
-    if mas_isO31() and not mas_in_intro_flow and scene_change:
+    # TODO: wait this is wrong still
+    if mas_isO31():
         show vignette zorder 13
 
     if is_morning():
@@ -518,6 +537,9 @@ label ch30_main:
 
     # 3 - set keymaps
     $ set_keymaps()
+
+    # now we out of intro
+    $ mas_in_intro_flow = False
 
     jump ch30_preloop
 
@@ -1273,6 +1295,15 @@ label ch30_reset:
                 bday_spent_ev.action = EV_ACT_QUEUE
                 bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
                 bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
+
+
+    ## o31 flag setup
+    python:
+        mas_o31_in_o31_mode = (
+            mas_isO31()
+            and store.mas_dockstat.retmoni_status is None
+        )
+
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

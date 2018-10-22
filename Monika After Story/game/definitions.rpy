@@ -2896,11 +2896,13 @@ init -1 python:
         )
 
 
-    def mas_isO31():
+    def mas_isO31(_date=datetime.date.today()):
         """
-        Returns True if today is o31
+        Returns True if the given date is o31
+
+        IF None is passed in, we use today's date
         """
-        return datetime.date.today() == mas_o31
+        return _date == mas_o31
 
 
     def mas_maxPlaytime():

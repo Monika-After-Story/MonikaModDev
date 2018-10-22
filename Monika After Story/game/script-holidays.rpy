@@ -17,8 +17,19 @@ default persistent._mas_o31_seen_costumes = None
 default persistent._mas_o31_costume_greeting_seen = False
 # set to true after seeing a costume greeting
 
+default persistent._mas_o31_costumes_allowed = None
+# true if user gets to see costumes
+# this is set once and never touched again
+
+default persistent._mas_o31_in_o31_mode = None
+# True if we should be in o31 mode (aka viginette)
+# This should be only True if:
+#   user is NOT returning monika on o31 from a date/trip taken before o31
+#   user's current session started on o31
+
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
+define mas_o31_in_o31_mode = False
 
 init 101 python:
     # o31 setup
@@ -31,8 +42,13 @@ init 101 python:
 label mas_holiday_o31_autoload_check:
     $ import random
     $ mas_skip_visuals = True
+    # TODO check if viginette covers python console / hangman / chess
+    #
 
-    if persistent._mas_o31_current_costume is None:
+    if (
+            persistent._mas_o31_current_costume is None 
+            and persistent._mas_o31_costumes_allowed
+        ):
         # select a costume. Once this has been selected, this is what monika
         # will wear until day change
 
@@ -64,6 +80,7 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
+    # TODO handle visuals
     m "I am marisa"
     return
 
@@ -79,5 +96,6 @@ init 5 python:
     )
 
 label greeting_o31_rin:
+    # TODO handle visuals
     m "I am rin"
     return
