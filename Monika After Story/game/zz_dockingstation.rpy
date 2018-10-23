@@ -83,7 +83,7 @@ init -900 python in mas_ics:
 
     # marisa cg
     o31_marisa = (
-        "c1fe797c1894aa11f01484950a9b6b8b82aa3f99a21f3cd14bace2dd567857af"
+        "6a05463e8200af9846e7f70f4c03e6feddb6c5a93395d7b17a91a6fd23da29af"
     )
 
     # rin cg

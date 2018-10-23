@@ -96,8 +96,6 @@ label mas_holiday_o31_autoload_check:
 
     python:
         import random
-        mas_skip_visuals = True
-        persistent._mas_o31_in_o31_mode = True
 
         if (
                 persistent._mas_o31_current_costume is None
@@ -105,6 +103,8 @@ label mas_holiday_o31_autoload_check:
             ):
             # select a costume. Once this has been selected, this is what monika
             # will wear until day change
+            persistent._mas_o31_in_o31_mode = True
+            mas_skip_visuals = True
 
             if random.randint(1,100) <= mas_o31_marisa_chance:
                 persistent._mas_o31_current_costume = "marisa"
@@ -126,7 +126,11 @@ label mas_holiday_o31_autoload_check:
             store.mas_globals.show_vignette = True
             mas_forceRain()
 
-    jump ch30_post_restartevent_check
+    if mas_skip_visuals:
+        jump ch30_post_restartevent_check
+
+    # otherwise, jump back to the holiday check point
+    jump mas_ch30_post_holiday_check
 
 ## post returned home greeting to setup game relaunch
 label mas_holiday_o31_returned_home_relaunch:
@@ -141,8 +145,8 @@ image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
 
 ### o31 transforms
 transform mas_o31_cg_scroll:
-    xanchor 0.0 xpos 0 yanchor 0.0 ypos -1520
-    linear 7.0 ypos 0.0
+    xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520 
+    ease 15.0 yoffset 0.0
 
 ### o31 greetings
 init 5 python:
@@ -177,13 +181,19 @@ label greeting_o31_marisa:
     # ASSUMING:
     #   vignette should be enabled.
     call spaceroom(hide_monika=True)
+    show empty_desk at zorder 9
 
     m "I am off screen"
 
     if store.mas_o31_event.o31_cg_decoded:
         # got cg
-        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll
-        m "check out my visuals"
+        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        m "check out my visuals{w=5}{nw}"
+
+        m "extra long dialogue wait{w=10}{nw}"
+
+        m "take a moment"
+        hide mas_o31_marisa_cg with dissolve
 
     else:
         # no cg
@@ -191,6 +201,7 @@ label greeting_o31_marisa:
 
     show monika 1eua at t11 zorder MAS_MONIKA_Z
     m "I am marisa"
+    hide empty_desk
 
     # cleanup
     # 1 - music hotkeys should be enabled
