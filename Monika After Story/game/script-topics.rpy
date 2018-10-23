@@ -1169,7 +1169,7 @@ default persistent._mas_pm_likes_spoops = False
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_horror",category=['media'],prompt="Horror genre",random=True))
 
-label dev_monika_horror:
+label monika_horror:
     m 3eua "Hey, [player]?"
 
     menu:
