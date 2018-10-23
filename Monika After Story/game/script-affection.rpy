@@ -387,6 +387,8 @@ init 15 python in mas_affection:
         # unlock events
         if persistent._mas_likes_rain:
             evhand._unlockEventLabel("monika_rain_holdme")
+        
+        evhand._unlockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
@@ -398,6 +400,7 @@ init 15 python in mas_affection:
         """
         # lock events
         evhand._lockEventLabel("monika_rain_holdme")
+        evhand._lockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
@@ -773,11 +776,19 @@ init 15 python in mas_affection:
 
         ## LOVE quips
         quips = [
-            "Hey, what's up?",
+#            "Hey, what's up?",
             "What's on your mind?",
+            "What's on your mind, darling?",
             "Anything on your mind?",
-            "What's up, [player]?",
-            "What's up?",
+            "What's up, honey?",
+            "What's up, dear?",
+            "What's up, sweetie?",
+#            "What's up?",
+            "Yes, sweetheart?",
+            "Yes, honey?",
+            "Yes, dear?",
+            "^_^",
+            "<3",
             "Anything you'd like to talk about?",
             "We can talk about anything you like, [player]."
         ]
@@ -856,6 +867,9 @@ init 15 python in mas_affection:
 
         ## LOVE quips
         quips = [
+            "What would you like to play? <3",
+            "Choose anything you like, honey.",
+            "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",
             "I'd love to play with you!"

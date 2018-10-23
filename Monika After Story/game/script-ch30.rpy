@@ -67,6 +67,7 @@ image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
+image monika_gloomy_room = "mod_assets/monika_day_room_rain.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -794,6 +795,7 @@ label mas_ch30_post_retmoni_check:
 
             #Set unlock flag for stories
             mas_can_unlock_story = True
+            mas_can_unlock_scary_story = True
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
@@ -1095,8 +1097,8 @@ label ch30_reset:
     python:
         # setup hair / clothes
         monika_chr.change_outfit(
-            persistent._mas_monika_clothes,
-            persistent._mas_monika_hair
+            store.mas_sprites.CLOTH_MAP[persistent._mas_monika_clothes],
+            store.mas_sprites.HAIR_MAP[persistent._mas_monika_hair]
         )
 
         if (
@@ -1115,7 +1117,7 @@ label ch30_reset:
 
             for hair in hair_map:
                 # this is so we kind of automate the locking / unlocking prcoess
-                if hair == monika_chr.hair:
+                if hair == monika_chr.hair.name:
                     lockEventLabel(hair_map[hair])
                 else:
                     unlockEventLabel(hair_map[hair])
@@ -1129,7 +1131,7 @@ label ch30_reset:
 
 
         for clothes in clothes_map:
-            if clothes == monika_chr.clothes:
+            if clothes == monika_chr.clothes.name:
                 lockEventLabel(clothes_map[clothes])
             else:
                 unlockEventLabel(clothes_map[clothes])

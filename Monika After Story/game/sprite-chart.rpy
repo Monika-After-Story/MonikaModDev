@@ -261,23 +261,9 @@ init -5 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
-    ### [BLK001]
-    # non leanable clothes
-    lean_clothes_blacklist = [
-        "test"
-    ]
-
-    ### [BLK002]
-    # non leanable hair
-    lean_hair_blacklist = [
-#        "down",  # Thanks to Trilasent for giving us leaning hair downs
-        "bun"
-    ]
-
-    ### [BLK003]
-    # non leanable accessories
+    ## BLK010
+    # ACCESSORY BLACKLIST
     lean_acs_blacklist = [
-#        "mug"
         "test"
     ]
 
@@ -293,6 +279,7 @@ init -5 python in mas_sprites:
     ]
 
     # tryparses for the hair and clothes
+    # TODO: adjust this for docking station when ready
     def tryparsehair(_hair, default="def"):
         """
         Returns the given hair if it exists, or the default if not exist
@@ -309,6 +296,8 @@ init -5 python in mas_sprites:
 
         return default
 
+
+    # TODO: adjust this for docking station when ready
     def tryparseclothes(_clothes, default="def"):
         """
         Returns the given clothes if it exists, or the default if not exist
@@ -329,6 +318,12 @@ init -5 python in mas_sprites:
     ## Accessory dictionary
     ACS_MAP = dict()
 
+    ## hair dictionary
+    HAIR_MAP = dict()
+
+    ## clothes dictionary
+    CLOTH_MAP = dict()
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
@@ -344,6 +339,7 @@ init -5 python in mas_sprites:
     L_POSES = [
         "def"
     ]
+
 
     def acs_lean_mode(lean):
         """
@@ -393,6 +389,38 @@ init -5 python in mas_sprites:
         ACS_MAP[mas_acs.name] = mas_acs
 
 
+    def init_hair(mas_hair):
+        """
+        Initlializes the given MAS hairstyle into a dictionary map setting
+
+        IN:
+            mas_hair - MASHair to initialize
+        """
+        if mas_hair.name in HAIR_MAP:
+            raise Exception(
+                "MASHair name '{0}' already exists.".format(mas_hair.name)
+            )
+
+        # otherwise, unique name
+        HAIR_MAP[mas_hair.name] = mas_hair
+
+
+    def init_clothes(mas_cloth):
+        """
+        Initlializes the given MAS clothes into a dictionary map setting
+
+        IN:
+            mas_clothes - MASClothes to initialize
+        """
+        if mas_cloth.name in CLOTH_MAP:
+            raise Exception(
+                "MASClothes name '{0}' already exists.".format(mas_cloth.name)
+            )
+
+        # otherwise, unique name
+        CLOTH_MAP[mas_cloth.name] = mas_cloth
+
+
     def night_mode(isnight):
         """
         Returns the appropriate night string
@@ -423,11 +451,11 @@ init -5 python in mas_sprites:
             # monika is wearing a blacklisted accessory
             return True
 
-        if character.hair in lean_hair_blacklist:
+        if not character.hair.pose_map.l_map.get(lean, False):
             # blacklisted hair
             return True
 
-        if character.clothes in lean_clothes_blacklist:
+        if not character.clothes.pose_map.l_map.get(lean, False):
             # blacklisted clothes
             return True
 
@@ -1269,8 +1297,9 @@ init -2 python:
             self.haircolor="default"
             self.skin_hue=0 # monika probably doesn't have different skin color
             self.lipstick="default" # i guess no lipstick
-            self.clothes = "def" # default clothes is school outfit
-            self.hair = "def" # default hair is the usual whtie ribbon
+
+            self.clothes = mas_clothes_def # default clothes is school outfit
+            self.hair = mas_hair_def # default hair is the usual whtie ribbon
 
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
@@ -1455,14 +1484,14 @@ init -2 python:
             """
             Resets clothing to default
             """
-            self.clothes = "def"
+            self.clothes = mas_clothes_def
 
 
         def reset_hair(self):
             """
             Resets hair to default
             """
-            self.hair = "def"
+            self.hair = mas_hair_def
 
 
         def reset_outfit(self):
@@ -1635,17 +1664,140 @@ init -2 python:
                     pose_dict[k] = _def
 
 
+    # base class for MAS sprite things
+    class MASSpriteBase(renpy.store.object):
+        """
+        Base class for MAS sprite objects
+
+        PROPERTIES:
+            name - name of the item
+            img_sit - filename of the sitting version of the item
+            img_stand - filename of the standing version of the item
+            pose_map - MASPoseMap object that contains pose mappings
+            stay_on_start - determines if the item stays on startup
+        """
+
+        def __init__(self, 
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False
+            ):
+            """
+            MASSpriteBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image
+                pose_map - MASPoseMAp object that contains pose mappings
+                img_stand - filename of the standing image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting.
+                    (Default: False)
+            """
+            self.name = name
+            self.img_sit = img_sit
+            self.img_stand = img_stand
+            self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
+
+
+    class MASSpriteFallbackBase(MASSpriteBase):
+        """
+        MAS sprites that can use pose maps as fallback maps.
+
+        PROPERTIES:
+            fallback - If true, the PoseMap contains fallbacks that poses
+                will revert to. If something is None, then it means to 
+                blacklist.
+
+        SEE MASSpriteBase for inherited properties
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                fallback=False
+            ):
+            """
+            MASSpriteFallbackBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image for this item
+                pose_map - MASPoseMap object that contains pose mappings or
+                    fallback mappings
+                img_stand - filename of the stnading image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting
+                    (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
+            """
+            super(MASSpriteFallbackBase, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
+            self.fallback = fallback
+
+
+        def get_fallback(self, pose, lean):
+            """
+            Gets the fallback pose for a given pose or lean
+
+            NOTE: the fallback variable is NOT checked
+
+            Lean is checked first if its not None.
+
+            IN:
+                pose - pose to retrieve fallback for
+                lean - lean to retrieve fallback for
+
+            RETURNS:
+                tuple fo thef ollowing format:
+                [0]: arms type
+                    - default for this is steepling
+                [1]: lean type
+                    - defualt for this is None
+            """
+            # now check for fallbacks
+            if lean is not None:
+                # we have a lean, check for fallbacks
+                return ("steepling", self.pose_map.l_map.get(lean, None))
+
+            # otherwise check the pose 
+            return (self.pose_map.map.get(pose, "steepling"), None)
+
+
     # instead of clothes, these are accessories
-    class MASAccessory(renpy.store.object):
+    class MASAccessory(MASSpriteBase):
         """
         MASAccesory objects
 
         PROPERTIES:
-            name - name of the accessory
-            img_sit - filename of the sitting version of the accessory
-            img_stand - filename of the standing version of the accessory
-            priority - render priority of the accessory. Lower is rendred
-                first
+            rec_layer - recommended layer to place this accessory
+            priority - render priority. Lower is rendered first
+            no_lean - determins if the leaning versions are hte same as the
+                regular ones.
+
+        SEE MASSpriteBase for inherited properties
         """
 
 
@@ -1687,17 +1839,16 @@ init -2 python:
                     startup.
                     (Default: False)
             """
-            self.name = name
-            self.img_sit = img_sit
-            self.img_stand = img_stand
+            super(MASAccessory, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start
+            )
             self.__rec_layer = rec_layer
             self.priority=priority
             self.no_lean = no_lean
-            self.stay_on_start = stay_on_start
-            self.pose_map = pose_map
-
-            if type(pose_map) != MASPoseMap:
-                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1720,6 +1871,139 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
+
+
+    class MASHair(MASSpriteFallbackBase):
+        """
+        MASHair objects
+
+        Representations of hair items
+
+        PROPERTIES:
+            (no additional)
+
+        SEE MASSpriteFallbackBase for inherited properties
+
+        POSEMAP explanations:
+            Use an empty string to 
+        """
+        
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=True,
+                fallback=False
+            ):
+            """
+            MASHair constructor
+
+            IN;
+                name - name of this hairstyle
+                img_sit - filename of the sitting image for this hairstyle
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for this hairstyle
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_strat - True means the hairstyle should reappear on
+                    startup. False means a restart clears the hairstyle
+                    (Default: True)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
+            """
+            super(MASHair, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                fallback
+            )
+
+
+    class MASClothes(MASSpriteFallbackBase):
+        """
+        MASClothes objects
+
+        Representations of clothes
+
+        PROPERTIES:
+            hair_map - dict of available hair styles for these clothes
+                keys should be hair name properites. Values should also be
+                hair name properties.
+                use "all" to signify a default hair style for all mappings that
+                are not found.
+
+        SEE MASSpriteFallbackBase for inherited properties
+        """
+        import store.mas_sprites as mas_sprites
+
+        
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                fallback=False,
+                hair_map={}
+            ):
+            """
+            MASClothes constructor
+
+            IN;
+                name - name of these clothes
+                img_sit - filename of the sitting image for these clothes
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for these clothes
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the clothes should reappear on
+                    startup. False means a restart clears the clothes
+                    (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules
+                    (Default: False)
+                hair_map - dict of available hair styles and what they map to
+                    These should all be strings. To signify a default, add
+                    a single item called "all" with the value being the hair
+                    to map to.
+                    NOTE: use the name property for hairstyles.
+                    (Default: {})
+            """
+            super(MASClothes, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                fallback
+            )
+
+            self.hair_map = hair_map
+
+            # add defaults if we need them
+            if "all" in hair_map:
+                for hair_name in mas_sprites.HAIR_MAP:
+                    if hair_name not in self.hair_map:
+                        self.hair_map[hair_name] = self.hair_map["all"]
+
+        
+        def get_hair(self, hair):
+            """
+            Given a hair type, grabs the available mapping for this hair type
+
+            IN:
+                hair - hair type to get mapping for
+
+            RETURNS:
+                the hair mapping to use inplace for the given hair type         
+            """
+            return self.hair_map.get(hair, hair)
 
 
     # The main drawing function...
@@ -1805,9 +2089,19 @@ init -2 python:
                 # set lean to None if its on the blacklist
                 lean = None
 
+            # fallback adjustments:
+            if character.hair.fallback:
+                arms, lean = character.hair.get_fallback(arms, lean)
+
+            if character.clothes.fallback:
+                arms, lean = character.clothes.get_fallback(arms, lean)
+
+            # get the mapped hair for the current clothes
+            hair_name = character.clothes.get_hair(character.hair.name)
+
             cmd = store.mas_sprites._ms_sitting(
-                character.clothes,
-                character.hair,
+                character.clothes.name,
+                hair_name,
                 eyebrows,
                 eyes,
                 nose,
@@ -1826,6 +2120,7 @@ init -2 python:
             )
 
         else:
+        # TODO: this is missing img_stand checks
         # TODO change this to an elif and else the custom stnading mode
 #        elif stock:
             # stock standing mode
@@ -1844,6 +2139,113 @@ init -2 python:
 
 # Monika
 define monika_chr = MASMonika()
+
+init -1 python:
+    # HAIR (IMG015)
+    # Hairs are representations of image objects with propertes
+    #
+    # NAMING:
+    # mas_hair_<hair name>
+    #
+    # <hair name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for hair file naming
+    # NOTE: PoseMaps are used to determin which lean types exist for
+    #   a given hair type, NOT filenames
+    #
+    # NOTE: the fallback system:
+    #   by setting fallback to True, you can use the fallback system to
+    #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
+    #   fallback to a lean type. Lean types can only fallback to other lean
+    #   types OR steepling. 
+    #
+    #   When using the fallback system, map poses to the pose/lean types
+    #   that you want to fallback on.
+    #   AKA: to make pose 2 fallback to steepling, do `p2="steepling"`
+    #   To make everything fallback to steepling, do `default="steepling"`
+    #   This means that steepling MUST exist for the fallback system to work
+    #   perfectly.
+    #
+    # NOTE: template:
+    ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
+    ## hairidentifiername
+    # General description of the hair style
+
+    ### PONYTAIL WITH RIBBON (default)
+    ## def
+    # Monika's default hairstyle, aka the ponytail
+    mas_hair_def = MASHair(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_hair(mas_hair_def)
+
+    ### DOWN
+    ## down
+    # Hair is down, not tied up
+    mas_hair_down = MASHair(
+        "down",
+        "down",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        )
+    )
+    store.mas_sprites.init_hair(mas_hair_down)
+
+    ### BUN WITH RIBBON
+    ## bun
+    # Hair tied into a bun, using the ribbon
+    mas_hair_bun = MASHair(
+        "bun",
+        "bun",
+        MASPoseMap(
+            default=True,
+            p5=None
+        )
+    )
+    store.mas_sprites.init_hair(mas_hair_bun)
+
+
+init -1 python:
+    # THIS MUST BE AFTER THE HAIR SECTION
+    # CLOTHES (IMG018)
+    # Clothes are representations of image objects with properties
+    #
+    # NAMING:
+    # mas_clothes_<clothes name>
+    #
+    # <clothes name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for clothes file naming
+    # NOTE: PoseMaps are used to determine which lean types exist for
+    #  a given clothes type, NOT filenames
+    #
+    # NOTE: see IMG015 for info about the fallback system
+    #
+    # NOTE: template
+    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
+    ## clothesidentifiername
+    # General description of the clothes
+
+    ### SCHOOL UNIFORM (default)
+    ## def
+    # Monika's school uniform
+    mas_clothes_def = MASClothes(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_clothes(mas_clothes_def)
+
 
 init -1 python:
     # ACCESSORIES (IMG020)
@@ -2195,6 +2597,19 @@ image monika 1esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="1l",
     right="1r",
@@ -2822,6 +3237,19 @@ image monika 1tfu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="furrowed",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
     eyes="smug",
     nose="def",
     mouth="smug",
@@ -3564,6 +3992,19 @@ image monika 1dftdc = DynamicDisplayable(
     right="1r",
     arms="steepling",
     tears="dried"
+)
+
+image monika 1cua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="crazy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
 )
 
 image monika 1duu = DynamicDisplayable(
@@ -4386,6 +4827,19 @@ image monika 2esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="1l",
     right="2r",
@@ -6086,6 +6540,20 @@ image monika 3ekd = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
 image monika 3esc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6106,6 +6574,19 @@ image monika 3esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="2l",
     right="1r",
@@ -7743,6 +8224,19 @@ image monika 4eud = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="d",
     left="2l",
     right="2r",
@@ -9816,6 +10310,68 @@ image monika 5luu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfsdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfsdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    sweat="right",
     lean="def",
     single="3b"
 )

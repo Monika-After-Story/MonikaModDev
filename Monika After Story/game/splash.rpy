@@ -331,8 +331,8 @@ label quit:
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
     if persistent._mas_hair_changed:
-        $ persistent._mas_monika_hair = monika_chr.hair
-        $ persistent._mas_monika_clothes = monika_chr.clothes
+        $ persistent._mas_monika_hair = monika_chr.hair.name
+        $ persistent._mas_monika_clothes = monika_chr.clothes.name
 
     # accessory saving
     python:
