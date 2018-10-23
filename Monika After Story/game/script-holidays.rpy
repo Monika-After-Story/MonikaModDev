@@ -27,6 +27,9 @@ default persistent._mas_o31_in_o31_mode = False
 #   user is NOT returning monika on o31 from a date/trip taken before o31
 #   user's current session started on o31
 
+default persistent._mas_o31_dockstat_return = False
+# TRue if monika closes the game so she can set up o31
+
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
@@ -134,7 +137,18 @@ label mas_holiday_o31_autoload_check:
 
 ## post returned home greeting to setup game relaunch
 label mas_holiday_o31_returned_home_relaunch:
-    m "please reset"
+    m 1eua "So, today is..."
+    m 1euc "...wait."
+    m "..."
+    m 2wuo "Oh!"
+    m 2wuw "Oh my gosh!"
+    m 2hub "It's Halloween already, [player]."
+    m 1eua "...{w}Say."
+    m 3eua "I'm going to close the game."
+    m 1eua "After that you can reopen it."
+    m 1hubfa "I have something special in store for you, ehehe~"
+
+    $ persistent._mas_o31_dockstat_return = True
     return "quit"
 
 ### o31 images
@@ -233,6 +247,8 @@ init 5 python:
     )
 
 label greeting_o31_rin:
+    jump greeting_o31_marisa
+
     # TODO handle visuals
     m "I am rin"
     return
