@@ -181,7 +181,7 @@ label greeting_o31_marisa:
     # ASSUMING:
     #   vignette should be enabled.
     call spaceroom(hide_monika=True)
-    show empty_desk at zorder 9
+    show emptydesk at i11 zorder 9
 
     m "I am off screen"
 
@@ -201,7 +201,7 @@ label greeting_o31_marisa:
 
     show monika 1eua at t11 zorder MAS_MONIKA_Z
     m "I am marisa"
-    hide empty_desk
+    hide emptydesk
 
     # cleanup
     # 1 - music hotkeys should be enabled
