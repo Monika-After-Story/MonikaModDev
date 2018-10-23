@@ -44,7 +44,7 @@ init 101 python:
     if not mas_isO31():
         # disable o31 mode
         persistent._mas_o31_in_o31_mode = False
-        
+
 
 init -11 python in mas_o31_event:
     import store
@@ -69,7 +69,7 @@ init -11 python in mas_o31_event:
         """
         return mds.decodeImages(o31_cg_station, mis.o31_map, [key])
 
-    
+
     def removeImages():
         """
         Removes decoded images at the end of their lifecycle
@@ -159,7 +159,7 @@ image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
 
 ### o31 transforms
 transform mas_o31_cg_scroll:
-    xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520 
+    xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520
     ease 15.0 yoffset 0.0
 
 ### o31 greetings
@@ -176,7 +176,7 @@ init 5 python:
 
 label greeting_o31_marisa:
     # starting with no visuals
-    
+
     # couple of things:
     # 1 - music hotkeys should be disabled
     $ store.mas_hotkeys.music_enabled = False
@@ -191,7 +191,7 @@ label greeting_o31_marisa:
 
     # enable the marisa clothes
     $ monika_chr.change_clothes(mas_clothes_marisa)
-    
+
     # ASSUMING:
     #   vignette should be enabled.
     call spaceroom(hide_monika=True)

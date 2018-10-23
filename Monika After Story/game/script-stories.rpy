@@ -526,7 +526,7 @@ label mas_scary_story_hunter:
     show emptydesk at i11 zorder 9
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide monika
         play sound "sfx/giggle.ogg"
         show yuri dragon2 zorder 72 at malpha
@@ -561,7 +561,7 @@ label mas_scary_story_kuchisake_onna:
     m 1dsd "Anyone unlucky enough to come across her will hear her spine-chilling question..."
     m 1cua "{b}{i}Am I p r e t t y?{/b}{/i}" #Can we add 1cua here? -monik
     # 1 in 15
-    if renpy.random.randint(1,15) == 1 or mas_full_scares:
+    if renpy.random.randint(1,15) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide monika
         show screen tear(20, 0.1, 0.1, 0, 40)
         play sound "sfx/s_kill_glitch1.ogg"
@@ -643,7 +643,7 @@ label mas_scary_story_o_tei:
     m 3wud "The girl that greeted him looked exactly like Tomoe."
     m "Everything he saw in her reminded him perfectly of his past love."
     # 1 in 9
-    if renpy.random.randint(1,9) == 1 or mas_full_scares:
+    if renpy.random.randint(1,9) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
         show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
         show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
@@ -691,7 +691,7 @@ label mas_scary_story_mujina:
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         $ style.say_dialogue = style.edited
         m 2tub "The salesman responded, 'Oh, you mean...{w=2} {b}like this?{/b}'{nw}"
         show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
@@ -726,7 +726,7 @@ label mas_scary_story_ubume:
     m 1esd "The next night, the woman arrived at her usual time, purchased the candy that she always did, and went happily on her way."
     m 3wud "After she walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him turned into leaves from a tree."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/giggle.ogg"
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
@@ -799,7 +799,7 @@ label mas_scary_story_resurrection_mary:
     m "Lewis sat in the car for a long time bewildered by what had just happened."
     m 1esd "He never saw the beautiful woman ever again."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/giggle.ogg"
     call mas_scary_story_cleanup
     return
@@ -818,14 +818,14 @@ label mas_scary_story_corpse:
     m "He explained that his daughter-in-law had recently perished and she was awaiting burial."
     m 1eua "After the old man departed, 3 of the 4 men fell asleep. The last man couldn't fall asleep."
     m 1wuo "Suddenly, the man heard a creaking noise."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/crack.ogg"
     m 3wuo "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
     m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
     m 1eud "The woman bit the pillow and apparently not realizing she hadn't bit the last man, returned to her original resting spot."
     m 3eud "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
     m 3wuo "As soon as his feet touched the ground, however, he heard another creak."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/crack.ogg"
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
@@ -876,14 +876,14 @@ label mas_scary_story_jack_o_lantern:
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
-    if _mas_jack_scare or mas_full_scares:
+    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide vignette
         show darkred zorder 82:
             alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him, carved it out, and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O'Lantern."
-    if _mas_jack_scare or mas_full_scares:
+    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide darkred
         show vignette zorder 70
     call mas_scary_story_cleanup
@@ -914,7 +914,7 @@ label mas_scary_story_baobhan_sith:
     m 1esa "Just before dawn, the women gave up and retreated back into the woods."
     m 1esd "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     # chance of 1 in 14
-    if renpy.random.randint(1,14) == 1 or mas_full_scares:
+    if renpy.random.randint(1,14) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/stab.ogg"
         show blood splatter1 as bl2 zorder 73:
             pos (50,95)
@@ -954,14 +954,14 @@ label mas_scary_story_serial_killer:
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."
-    m 1euc "After a long time had passed, a police car drives by but no sight of her boyfriend."
-    m 1eud "The police officer went to the car and instructs the girl to exit the vehicle and walk towards him and not look back."
+    m 1euc "After a long time had passed, a police car drove by and stopped but still no sight of her boyfriend."
+    m 1eud "The police officer went to the car and instructed the girl to exit the vehicle and walk toward him and not look back."
     m "She did so slowly..."
     m 1ekc "The girl then noticed numerous other police cars arriving with their sirens blaring behind the first one to arrive."
-    m 1dsd "Curiosity then got the better of her and looked at the car..."
+    m 1dsd "Curiosity then got the better of her and she turned to look at the car..."
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8
-    if renpy.random.randint(1,8) == 1 or mas_full_scares:
+    if renpy.random.randint(1,8) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         show y_sticker hopg zorder 74:
             pos(600,425)
             alpha 1.0
