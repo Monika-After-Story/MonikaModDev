@@ -1307,11 +1307,18 @@ label ch30_reset:
                 bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
 
 
-    ## o31 flag setup
+    ## o31 content
     python:
+        # show vignette if we are in o31 mode
         if persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
 
+        # reset clothes if its past o31
+        if (
+                store.mas_o31_event.isMonikaInCostume(monika_chr) 
+                and not mas_isO31()
+            ):
+            monika_chr.reset_clothes()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

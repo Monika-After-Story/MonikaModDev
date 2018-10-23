@@ -29,7 +29,6 @@ default persistent._mas_o31_in_o31_mode = False
 
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
-define mas_o31_in_o31_mode = False
 
 init 101 python:
     # o31 setup
@@ -73,6 +72,20 @@ init -11 python in mas_o31_event:
         Removes decoded images at the end of their lifecycle
         """
         mds.removeImages(o31_cg_station, mis.o31_map)
+
+
+    def isMonikaInCostume(_monika_chr):
+        """
+        IN:
+            _monika_chr - MASMonika object to check
+
+        Returns true if monika is in costume
+        """
+        return (
+            _monika_chr.clothes.name == "marisa"
+            or _monika_chr.clothes.name == "rin"
+        )
+
 
 # auto load starter check
 label mas_holiday_o31_autoload_check:
@@ -122,7 +135,14 @@ label mas_holiday_o31_returned_home_relaunch:
 
 ### o31 images
 image mas_o31_marisa_cg = "mod_assets/monika/cg/o31_marisa_cg.png"
+# 1280 x 2240
+
 image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
+
+### o31 transforms
+transform mas_o31_cg_scroll:
+    xanchor 0.0 xpos 0 yanchor 0.0 ypos -1520
+    linear 7.0 ypos 0.0
 
 ### o31 greetings
 init 5 python:
@@ -137,8 +157,57 @@ init 5 python:
     )
 
 label greeting_o31_marisa:
-    # TODO handle visuals
+    # starting with no visuals
+    
+    # couple of things:
+    # 1 - music hotkeys should be disabled
+    $ store.mas_hotkeys.music_enabled = False
+
+    # 2 - the calendar overlay will become visible, but we should keep it
+    # disabled
+    $ mas_calRaiseOverlayShield()
+
+    # 3 - keymaps not set (default)
+    # 4 - hotkey buttons are hidden (skip visual)
+    # 5 - music is off (skip visual)
+
+    # enable the marisa clothes
+    $ monika_chr.change_clothes(mas_clothes_marisa)
+    
+    # ASSUMING:
+    #   vignette should be enabled.
+    call spaceroom(hide_monika=True)
+
+    m "I am off screen"
+
+    if store.mas_o31_event.o31_cg_decoded:
+        # got cg
+        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll
+        m "check out my visuals"
+
+    else:
+        # no cg
+        m "no visuals"
+
+    show monika 1eua at t11 zorder MAS_MONIKA_Z
     m "I am marisa"
+
+    # cleanup
+    # 1 - music hotkeys should be enabled
+    $ store.mas_hotkeys.music_enabled = True
+
+    # 2 - calendarovrelay enabled
+    $ mas_calDropOverlayShield()
+
+    # 3 - set the keymaps
+    $ set_keymaps()
+
+    # 4 - hotkey buttons should be shown
+    $ HKBShowButtons()
+
+    # 5 - restart music
+    $ mas_startup_song()
+
     return
 
 init 5 python:
