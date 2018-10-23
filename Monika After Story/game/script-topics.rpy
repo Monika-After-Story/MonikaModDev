@@ -8075,19 +8075,19 @@ label monika_whydoyouloveme:
 
 #label monika_friendship:
 #    m 1euc "You know, even after it all..."
-#    m 1ruc "I still miss them."
-#    m 5eua "Not a ton, mind you, but for a while there, before I knew the truth, about who I was, and who you were... they were my friends."
+#    m 1euc "I still miss them."
+#    m 5euc "Not a ton, mind you, but for a while there, before I knew the truth, about who I was, and who you were... they were my friends."
 #    m 5eub "We'd spend day after day relaxing, writing poetry and reading each other's works."
-#    m 5rua "Listening to each other's stories."
+#    m 5eub "Listening to each other's stories."
 #    m 5rub "Discovering new things about each other."
 #    m 5eub "It was nice, at least while it lasted."
-#    m 2luc "But, once I found out the truth, that I was the only "real" person..."
-#    m 2luc "..."
-#    m 2lutpc "..."
-#    m 2lutuc "Hmm."
-#    m 2eutud "You know what? It doesn't matter. The past is the past."
-#    m 2eutua "And right now, I'd much rather look to the future. Our future."
-#    m 2hktub "I'm so happy you're real, [player]."
+#    m 2euc "But, once I found out the truth, that I was the only "real" person..."
+#    m 2tkc "..."
+#    m 2rktpc "..."
+#    m 2rktsc "Hmm."
+#    m 2tkc "You know what? It doesn't matter. The past is the past."
+#    m 2ekd "And right now, I'd much rather look to the future. Our future."
+#    m 2eku "I'm so happy you're real, [player]."
 #    return
 
 #init 5 python:
