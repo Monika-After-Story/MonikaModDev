@@ -126,12 +126,13 @@ init 5 python:
 
 label mas_extra_menu_firsttime:
     if not persistent._mas_opened_extra_menu:
-        m "test"
+        m 1hua "Welcome to the Extras menu, [player]!"
 
-    m "test2"
+    m 1eua "This is where I'll add things that aren't games, like special interactions you can do with your mouse."
+    m "You can also open this menu by pressing the 'e' key."
 
     if not persistent._mas_opened_extra_menu:
-        m "test3"
+        m 1hua "Look forward to some neat things in this menu!"
 
     python:
         this_ev = mas_getEV("mas_extra_menu_firsttime")
@@ -147,7 +148,8 @@ label mas_extra_menu_firsttime:
 # [EXM010]
 
 label mas_extra_menu_zoom_intro:
-    m "i talk about zoom"
+    m 1eua "One thing I added is a way for you to adjust your field of view, so now you can sit closer or farther away from me."
+    m 1eub "You can adjust this using the slider in the 'Zoom' section of the Extras menu."
     return
 
 default persistent._mas_pm_zoomed_out = False
@@ -193,15 +195,23 @@ label mas_extra_menu_zoom_callback:
     return
 
 label mas_extra_menu_zoom_out_first_time:
-    m "you zoomed out!"
+    m 1ttu "Can't sit up straight for long?"
+    m "Or maybe you just want to see the top of my head?"
+    m 1hua "Ehehe~"
     return
 
 label mas_extra_menu_zoom_in_first_time:
-    m "you zooomed in!"
+    m 1ttu "Sitting a bit closer?"
+    m 1hua "I don't mind."
     return
 
 label mas_extra_menu_zoom_in_max_first_time:
-    m "You zoomed into the max view the first time!"
+    m 6wuo "[player]!"
+    m 6rkbfd "When your face is this close..."
+    m 6ekbfd "I feel..."
+    show monika 6hkbfa
+    pause 2.0
+    m 6hubfa "Warm..."
     return
 
 ################################# EXTRA MENU STUFF ############################
