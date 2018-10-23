@@ -168,7 +168,6 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_o31_marisa",
-            unlocked=True,
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
         eventdb=evhand.greeting_database
@@ -240,7 +239,6 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_o31_rin",
-            unlocked=True,
             category=[store.mas_greetings.TYPE_HOL_O31]
         ),
         eventdb=evhand.greeting_database
