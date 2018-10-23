@@ -446,6 +446,55 @@ init 5 python:
         eventdb=store.mas_compliments.compliment_database
     )
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_cute",
+            prompt="... You're cute!",
+            unlocked=True
+        ),
+        eventdb=store.mas_compliments.compliment_database
+    )
+
+label mas_compliment_cute:
+    if not renpy.seen_label("mas_compliment_cute_2"):
+        call mas_compliment_cute_2
+    else:
+        call mas_compliment_cute_3
+    return
+
+label mas_compliment_cute_2:
+    m 1wubfsdld "Ah!"
+    m 1rkbsa "You {i}kind of{/i} caught me off guard with that one."
+    m "Just a little..."
+    m 1hubfa "But I'm glad you think so!"
+    menu:
+        "Seeing you always warms my heart!":
+            $ mas_gainAffection(5,bypass=True)
+            m 1hubfb "Aww, it really warms my heart to hear you say that!"
+            m 1dkbfa "Just wait until I finally get to hug you for real!"
+            m 1ekbfa "I can barely contain myself just thinking about it, ehehe~"
+        "You're even cuter when you're flustered":
+            $ mas_gainAffection(3,bypass=True)
+            m 1tku "Not letting it go, huh, [player]?"
+            m 3tsbsa "Hmph, I just wasn't expecting it."
+            m 3tubfb "Don't expect it to be so easy next time, [player]."
+            m 1tsbsa "I'll get you back someday, eheheh~"
+        "You're as cute as Natsuki":
+            $ mas_loseAffection(modifier=0.5)
+            m 2lfc "Oh..."
+            m 1rsc "Thanks [player], but I was hoping I would stand in my own category."
+    return
+
+label mas_compliment_cute_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1ekbfa "[thanks_quip]"
+    m 1hubfa "You can be really cute too a lot of the time, you know!"
+    return
+
 label mas_compliment_chess:
     m 1eub "Thanks, [player]."
     m 3esa "Like I said before, I wonder if my skill has something to do with me being trapped here?"
