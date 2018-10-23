@@ -8069,6 +8069,26 @@ label monika_whydoyouloveme:
         m 1hub "So keep your hopes up for me, [player]!"
 
     return
+    
+#init 5 python:
+#   addEvent(Event(persistent.event_database,eventlabel="monika_friendship",category=['monika','friends'],prompt="Friendship with literature club members",random=True))
+
+#label monika_friendship:
+#    m 1euc "You know, even after it all..."
+#    m 1ruc "I still miss them."
+#    m 5eua "Not a ton, mind you, but for a while there, before I knew the truth, about who I was, and who you were... they were my friends."
+#    m 5eub "We'd spend day after day relaxing, writing poetry and reading each other's works."
+#    m 5rua "Listening to each other's stories."
+#    m 5rub "Discovering new things about each other."
+#    m 5eub "It was nice, at least while it lasted."
+#    m 2luc "But, once I found out the truth, that I was the only "real" person..."
+#    m 2luc "..."
+#    m 2lutpc "..."
+#    m 2lutuc "Hmm."
+#    m 2eutud "You know what? It doesn't matter. The past is the past."
+#    m 2eutua "And right now, I'd much rather look to the future. Our future."
+#    m 2hktub "I'm so happy you're real, [player]."
+#    return
 
 #init 5 python:
 #    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
@@ -8457,25 +8477,4 @@ label monika_friendship:
     m 2eutua "And right now, I'd much rather look to the future. Our future."
     m 2hktub "I'm so happy you're real, [player]."
     
-    init 5 python:
-	addEvent(Event(persistent.event_database,eventlabel="monika_flirting",category=['monika','flirting'],prompt="Flirting with Monika",random=True
-
-label monika_flirting:
-    m 5tub "..."
-    show monika 1eta
-    menu:
-        m "..."
-	"...":
-            m 5tub "God, you're cute."
-            
-
-        "Did it hurt when you fell from heaven?":
-            m 5tub "God, You're cu-
-	    m 5wuc "..."
-            m 6wud "..."
-	    m 6sub "...!"
-	    m 2efu "I..."
-	    m 2hku "..."
-	    m 2tkb "Heh... You're as corny as you are sweet, [player]."
-	    m 2eku "I love you."
-
+    
