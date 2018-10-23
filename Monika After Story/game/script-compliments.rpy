@@ -466,7 +466,7 @@ label mas_compliment_cute:
 
 label mas_compliment_cute_2:
     m 1wubfsdld "Ah!"
-    m 1rkbsa "You {i}kind of{/i} caught me off guard with that one."
+    m 3rkbsa "You {i}kind of{/i} caught me off guard with that one."
     m "Just a little..."
     m 1hubfa "But I'm glad you think so!"
     menu:
