@@ -560,7 +560,7 @@ label mas_scary_story_kuchisake_onna:
     m 3eud "The woman, dying from such a fate, became a vengeful and malicious spirit."
     m "They say she now wanders around aimlessly at night, her face covered with a mask and a bladed weapon on her hands."
     m 1dsd "Anyone unlucky enough to come across her will hear her spine-chilling question..."
-    m 1cua "{b}{i}Am I p r e t t y?{/b}{/i}" #Can we add 1cua here? -monik
+    m 1cua "{b}{i}Am I p r e t t y?{/i}{/b}"
     # 1 in 15
     if renpy.random.randint(1,15) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide monika
