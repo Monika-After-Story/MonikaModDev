@@ -754,6 +754,7 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
+#   TODO: enable this when ready
 #    if mas_isO31():
 #        jump mas_holiday_o31_autoload_check
 
