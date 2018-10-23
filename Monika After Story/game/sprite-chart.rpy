@@ -3304,7 +3304,7 @@ image monika 1tfx = DynamicDisplayable(
 image monika 1ttu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
-    eyebrows="think"
+    eyebrows="think",
     eyes="smug",
     nose="def",
     mouth="smug",
