@@ -443,7 +443,7 @@ label mas_scary_story_setup:
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop
-    show vignette zorder 13
+    show vignette zorder 70
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -529,7 +529,7 @@ label mas_scary_story_hunter:
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         hide monika
         play sound "sfx/giggle.ogg"
-        show yuri dragon2 zorder 15 at malpha
+        show yuri dragon2 zorder 72 at malpha
         $ style.say_dialogue = style.edited
         y "{cps=*2}I'll get you too.{/cps}{nw}"
         hide yuri
@@ -565,9 +565,9 @@ label mas_scary_story_kuchisake_onna:
         hide monika
         show screen tear(20, 0.1, 0.1, 0, 40)
         play sound "sfx/s_kill_glitch1.ogg"
-        show natsuki ghost2 zorder 16 at i11
-        show k_rects_eyes1 zorder 17
-        show k_rects_eyes2 zorder 17
+        show natsuki ghost2 zorder 73 at i11
+        show k_rects_eyes1 zorder 74
+        show k_rects_eyes2 zorder 74
         $ pause(0.25)
         #play music t7g
         stop sound
@@ -644,9 +644,9 @@ label mas_scary_story_o_tei:
     m "Everything he saw in her reminded him perfectly of his past love."
     # 1 in 9
     if renpy.random.randint(1,9) == 1 or mas_full_scares:
-        show yuri eyes zorder 16 at otei_appear(a=0.075,time=4.0)
-        show yuri eyes_base zorder 15 at otei_appear(a=0.085,time=3.0)
-        show yuripupils zorder 17 at otei_appear(a=0.095,time=5.0)
+        show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
+        show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
+        show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
     m 1eud "Kenji then remembered the last words they exchanged before her departure."
     m "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
     m "'If you don't mind me asking, what is your name?'"
@@ -694,7 +694,7 @@ label mas_scary_story_mujina:
     if renpy.random.randint(1,10) == 1 or mas_full_scares:
         $ style.say_dialogue = style.edited
         m 2tub "The salesman responded, 'Oh, you mean...{w=2} {b}like this?{/b}'{nw}"
-        show mujina zorder 18 at otei_appear(a=1.0,time=0.25)
+        show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
         $ style.say_dialogue = style.normal
         $ pause(0.4)
@@ -732,7 +732,7 @@ label mas_scary_story_ubume:
     m 1esc "The confectioner was shocked by this and decided to head back home."
     m 3eud "The next day, he went to the temple and told the monk there what he saw."
     m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly died on the street."
-    m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy." 
+    m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy."
     m 1esc"He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
     m 4eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying from beneath the ground."
     m "Immediately, they fetched a couple of shovels and dug up the grave."
@@ -830,7 +830,7 @@ label mas_scary_story_corpse:
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
     show layer master at heartbeat2(1)
-    show vignette as flicker zorder 14 at vignetteflicker(0)
+    show vignette as flicker zorder 72 at vignetteflicker(0)
     play sound hb loop
     m 3eud "After a short distance, he looked behind him and saw that the corpse was not far behind him."
     m 3wud "A chase ensued and as she caught up to him, he found himself standing under a tree."
@@ -878,14 +878,14 @@ label mas_scary_story_jack_o_lantern:
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
     if _mas_jack_scare or mas_full_scares:
         hide vignette
-        show darkred zorder 25:
+        show darkred zorder 82:
             alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him, carved it out, and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O'Lantern."
     if _mas_jack_scare or mas_full_scares:
         hide darkred
-        show vignette zorder 13
+        show vignette zorder 70
     call mas_scary_story_cleanup
     return
 
@@ -916,17 +916,17 @@ label mas_scary_story_baobhan_sith:
     # chance of 1 in 14
     if renpy.random.randint(1,14) == 1 or mas_full_scares:
         play sound "sfx/stab.ogg"
-        show blood splatter1 as bl2 zorder 16:
+        show blood splatter1 as bl2 zorder 73:
             pos (50,95)
-        show blood splatter1 as bl3 zorder 16:
+        show blood splatter1 as bl3 zorder 73:
             pos (170,695)
-        show blood splatter1 as bl4 zorder 16:
+        show blood splatter1 as bl4 zorder 73:
             pos (150,395)
-        show blood splatter1 as bl5 zorder 16:
+        show blood splatter1 as bl5 zorder 73:
             pos (950,505)
-        show blood splatter1 as bl6 zorder 16:
+        show blood splatter1 as bl6 zorder 73:
             pos (700,795)
-        show blood splatter1 as bl7 zorder 16:
+        show blood splatter1 as bl7 zorder 73:
             pos (1050,95)
         $ pause(1.5)
         stop sound
@@ -962,7 +962,7 @@ label mas_scary_story_serial_killer:
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8
     if renpy.random.randint(1,8) == 1 or mas_full_scares:
-        show y_sticker hopg zorder 17:
+        show y_sticker hopg zorder 74:
             pos(600,425)
             alpha 1.0
             linear 1.6 alpha 0
