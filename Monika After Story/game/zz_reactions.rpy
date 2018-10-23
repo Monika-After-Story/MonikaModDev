@@ -819,7 +819,6 @@ label mas_reaction_candy:
 
         call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
         call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candy.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
-        # TODO test this too
         $ store.mas_ptod.ex_cn()
         hide screen mas_py_console_teaching
         show monika at t11
@@ -828,7 +827,7 @@ label mas_reaction_candy:
     $ gift_ev = mas_getEV("mas_reaction_candy")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     #TODO check if this is a good way to allow multi gifts
-    $ persistent._mas_filereacts_reacted_map.pop("mas_reaction_candycorn",None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
 init 5 python:
@@ -877,7 +876,6 @@ label mas_reaction_candycorn:
 
         call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
         call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candycorn.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
-        # TODO test this
         $ store.mas_ptod.ex_cn()
         hide screen mas_py_console_teaching
         show monika at t11
@@ -886,5 +884,5 @@ label mas_reaction_candycorn:
     $ gift_ev = mas_getEV("mas_reaction_candycorn")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     #TODO check if this is a good way to allow multi gifts
-    $ persistent._mas_filereacts_reacted_map.pop("mas_reaction_candycorn",None)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
