@@ -439,6 +439,7 @@ label mas_scary_story_setup:
     stop music fadeout 1.0
     pause 1.0
     $ mas_temp_m_flag = morning_flag
+    $ store.mas_sprites.reset_zoom()
     call spaceroom(start_bg="monika_gloomy_room")
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop

@@ -169,6 +169,9 @@ label splashscreen:
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
 
+        # set zoom
+        store.mas_sprites.adjust_zoom()
+
     if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
         # we have a corrupted persistent but was unable to recover via the
         # backup system
