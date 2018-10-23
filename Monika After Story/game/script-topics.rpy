@@ -1163,7 +1163,7 @@ label monika_outfit:
         m 5eua "So let's keep it between just us..."
     return
 
-efault persistent._mas_pm_likes_horror = None
+default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
 
 init 5 python:
