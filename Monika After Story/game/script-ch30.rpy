@@ -67,6 +67,7 @@ image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
+image monika_gloomy_room = "mod_assets/monika_day_room_rain.png"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha
@@ -794,6 +795,7 @@ label mas_ch30_post_retmoni_check:
 
             #Set unlock flag for stories
             mas_can_unlock_story = True
+            mas_can_unlock_scary_story = True
 
             # unlock extra pool topics if we can
             while persistent._mas_pool_unlocks > 0 and mas_unlockPrompt():
