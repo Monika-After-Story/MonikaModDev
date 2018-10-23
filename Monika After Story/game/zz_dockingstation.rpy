@@ -145,8 +145,8 @@ init -45 python:
             if station is None:
                 station = self.DEF_STATION_PATH
 
-            if not station.endswith("/"):
-                station += "/"
+#            if not station.endswith("/"):
+#                station += "/"
 
             self.station = os.path.normcase(station)
 
@@ -1890,7 +1890,7 @@ init 200 python in mas_dockstat:
             while len(larger_log) > goal_size:
                 larger_log.pop()
 
-        if index is None:
+        if index is None or index >= len(checkout_log):
             index = len(checkout_log)-1
 
         return checkin_log[index][0] - checkout_log[index][0]
@@ -2026,6 +2026,7 @@ label mas_dockstat_empty_desk:
 
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
+    $ store.mas_sprites.reset_zoom()
     show emptydesk zorder ed_zorder at i11
 
     # show birthday visuals?

@@ -531,6 +531,7 @@ init 5 python:
 label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
+    $ store.mas_sprites.reset_zoom()
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
