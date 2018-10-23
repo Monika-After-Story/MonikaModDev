@@ -298,6 +298,16 @@ label v0_8_9(version="v0_8_9"):
         # erase wedding ring topic data since the event is basiclly new'd
         mas_eraseTopic("monika_weddingring", persistent.event_database)
 
+        # setup conditional for monika_horror
+        # TODO: post halloween we need to reset this to no conditional
+        horror_ev = mas_getEV("monika_horror", None)
+        if horror_ev:
+            horror_ev.conditional = (
+                "datetime.date(2018, 10, 25) <= datetime.date.today() "
+                "<= datetime.date(2018, 10, 30)"
+            )
+            horror_ev.action = EV_ACT_QUEUE
+
     return
     
 
