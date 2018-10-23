@@ -194,7 +194,7 @@ init -1 python in mas_filereacts:
             generic_reacts.insert(0, "mas_reaction_end")
 
             # add the starter
-            if mas_isMonikaBirthday():
+            if store.mas_isMonikaBirthday():
                 generic_reacts.append("mas_reaction_gift_starter_bday")
             else:
                 generic_reacts.append("mas_reaction_gift_starter_neutral")
@@ -406,6 +406,26 @@ init python:
         Globalied version for gift stats tracking
         """
         return mas_filereacts.get_report_for_date(date)
+
+    def mas_getGiftStatsForDate(label,date=None):
+        """
+        Globalied version to get the stats for a specific gift
+        IN:
+            label - the gift label identifier.
+            date - the date to get the stats for, if None is given will check
+                today's date.
+                (Defaults to None)
+
+        RETURNS:
+            The number of times the gift has been given that date
+        """
+        if date is None:
+            date = datetime.date.today()
+        historic = persistent._mas_filereacts_historic.get(date,None)
+
+        if historic is None:
+            return 0
+        return historic.get(label,0)
 
 
 
@@ -752,7 +772,7 @@ init 5 python:
         addReaction("mas_reaction_candy", "candy")
 
 label mas_reaction_candy:
-    $ times_candy_given = 0 #placeholder
+    $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candy")
     if times_candy_given == 0:
         m 1wua "Oh...{w=1}what's this?"
         m 1sua "You got me candy, [player], yay!"
@@ -764,31 +784,31 @@ label mas_reaction_candy:
         m 1eka "You always know exactly what will make me happy~"
         m 1hub "Now let's enjoy some of this delicious candy!"
     elif times_candy_given == 1:
-        1wua "Aww, you got me more candy, [player]?"
-        1hub "Thank you!"
-        3tku "The first batch was {i}sooo{/i} good, I couldn't wait to have more."
-        1hua "You really do spoil me, [player]~"
+        m 1wua "Aww, you got me more candy, [player]?"
+        m 1hub "Thank you!"
+        m 3tku "The first batch was {i}sooo{/i} good, I couldn't wait to have more."
+        m 1hua "You really do spoil me, [player]~"
     elif times_candy_given == 2:
-        1wud "Wow, even {i}more{/i} candy, [player]?"
-        1eka "That's really nice of you..."
-        1lksdla "But I think this is enough."
-        1lksdlb "I'm already feeling jittery from all the sugar, ahaha!"
-        1ekbfa "The only sweetness I need now is you~"
+        m 1wud "Wow, even {i}more{/i} candy, [player]?"
+        m 1eka "That's really nice of you..."
+        m 1lksdla "But I think this is enough."
+        m 1lksdlb "I'm already feeling jittery from all the sugar, ahaha!"
+        m 1ekbfa "The only sweetness I need now is you~"
     elif times_candy_given == 3:
-        2wud "[player]...{w=1} you got me {i}even more{/i} candy?!"
-        2lksdla "I really do appreciate it, but I told you I've had enough for one day..."
-        2lksdlb "If I eat anymore I'm going to get sick, ahaha!"
-        1eka "And you wouldn't want that, right?"
+        m 2wud "[player]...{w=1} you got me {i}even more{/i} candy?!"
+        m 2lksdla "I really do appreciate it, but I told you I've had enough for one day..."
+        m 2lksdlb "If I eat anymore I'm going to get sick, ahaha!"
+        m 1eka "And you wouldn't want that, right?"
     elif times_candy_given == 4:
-        2wfd "[player]!"
-        2tfd "Are you not listening to me?"
-        2tfc "I told you I don't want anymore candy today!"
-        2ekc "So please, stop."
-        2rkc "It was really nice of you to get me all of this candy on Halloween, but enough is enough..."
-        2ekc "I can't eat all of this."
+        m 2wfd "[player]!"
+        m 2tfd "Are you not listening to me?"
+        m 2tfc "I told you I don't want anymore candy today!"
+        m 2ekc "So please, stop."
+        m 2rkc "It was really nice of you to get me all of this candy on Halloween, but enough is enough..."
+        m 2ekc "I can't eat all of this."
     else:
         $ mas_loseAffection() #rip
-        2tfc "..."
+        m 2tfc "..."
         python:
             store.mas_ptod.rst_cn()
             local_ctx = {
@@ -799,10 +819,16 @@ label mas_reaction_candy:
 
         call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
         call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candy.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
+        # TODO test this too
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
 
     $ mas_receivedGift("mas_reaction_candy")
     $ gift_ev = mas_getEV("mas_reaction_candy")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    #TODO check if this is a good way to allow multi gifts
+    $ persistent._mas_filereacts_reacted_map.pop("mas_reaction_candycorn",None)
     return
 
 init 5 python:
@@ -810,37 +836,37 @@ init 5 python:
         addReaction("mas_reaction_candycorn", "candycorn")
 
 label mas_reaction_candycorn:
-    $ times_candy_given = 0 #placeholder
+    $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
-        1wua "Oh...{w=1}what's this?"
-        1eka "Aww did you get me candy, [player]?"
-        1hua "Yay!"
-        3eub "Let's see what you got for me..."
-        4ekc "..."
-        2eka "Oh...{w=2}candy corn."
-        2eka "..."
-        2lksdla "That's really nice of you..."
-        2lksdla "But...{w=1}umm...{w=1}I don't actually like candy corn."
-        2hksdlb "Sorry, ahaha..."
-        4eka "I do appreciate you trying to give me candy on Halloween, though."
-        1hua "And if you could find a way to get some other candy for me, it'd make me really happy, [player]!"
+        m 1wua "Oh...{w=1}what's this?"
+        m 1eka "Aww did you get me candy, [player]?"
+        m 1hua "Yay!"
+        m 3eub "Let's see what you got for me..."
+        m 4ekc "..."
+        m 2eka "Oh...{w=2}candy corn."
+        m 2eka "..."
+        m 2lksdla "That's really nice of you..."
+        m 2lksdla "But...{w=1}umm...{w=1}I don't actually like candy corn."
+        m 2hksdlb "Sorry, ahaha..."
+        m 4eka "I do appreciate you trying to give me candy on Halloween, though."
+        m 1hua "And if you could find a way to get some other candy for me, it'd make me really happy, [player]!"
     elif times_candy_given == 1:
-        2esc "Oh."
-        2esc "More candy corn, [player]?"
-        4esc "I already told you I don't really like candy corn."
-        4ekc "So could you please try to find something else?"
-        1eka "I don't get sweets that often anymore..."
-        1ekbfa "Well...{w=1}besides you, [player]..."
-        1hubfa "Ehehe~"
+        m 2esc "Oh."
+        m 2esc "More candy corn, [player]?"
+        m 4esc "I already told you I don't really like candy corn."
+        m 4ekc "So could you please try to find something else?"
+        m 1eka "I don't get sweets that often anymore..."
+        m 1ekbfa "Well...{w=1}besides you, [player]..."
+        m 1hubfa "Ehehe~"
     elif times_candy_given == 2:
-        2wfw "[player]!"
-        2tfc "I really tried not to be rude about this, but..."
-        2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyways."
-        2rfc "It's starting to feel like you're just trying to mess with me at this point."
-        2tkc "So please, either find me some other kind of candy or just stop."
-    elif times_candy_given == 3:
+        m 2wfw "[player]!"
+        m 2tfc "I really tried not to be rude about this, but..."
+        m 2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyways."
+        m 2rfc "It's starting to feel like you're just trying to mess with me at this point."
+        m 2tkc "So please, either find me some other kind of candy or just stop."
+    else:
         $ mas_loseAffection() # should have seen it coming
-        2tfc "..."
+        m 2tfc "..."
         python:
             store.mas_ptod.rst_cn()
             local_ctx = {
@@ -851,8 +877,14 @@ label mas_reaction_candycorn:
 
         call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
         call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candycorn.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
+        # TODO test this
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
 
     $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_candycorn")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    #TODO check if this is a good way to allow multi gifts
+    $ persistent._mas_filereacts_reacted_map.pop("mas_reaction_candycorn",None)
     return
