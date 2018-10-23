@@ -158,6 +158,7 @@ label introduction:
     m "I'll make sure of it."
     m 2eua "Now that you added some improvements, you can finally talk to me!"
     m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
+    # NOTE: the Extra menu is explained when the user clicks on it
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
