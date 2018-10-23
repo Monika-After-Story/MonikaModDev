@@ -733,7 +733,7 @@ label mas_scary_story_ubume:
     m 3eud "The next day, he went to the temple and told the monk there what he saw."
     m 1dsd "The priest told the confectioner that a young woman that was travelling through the village recently had suddenly died on the street."
     m "The monk felt compassion for the poor dead woman, as she had been in her last month of pregnancy."
-    m 1esc"He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
+    m 1esc "He had her buried in the cemetery behind the temple and gave her and her child safe passage to the afterlife."
     m 4eud "As the monk led the confectioner to the site of the grave, they both heard a baby crying from beneath the ground."
     m "Immediately, they fetched a couple of shovels and dug up the grave."
     m 1wuw "Much to their shock, they found a newborn baby boy sucking on a piece of candy."
@@ -957,7 +957,7 @@ label mas_scary_story_serial_killer:
     m 1euc "After a long time had passed, a police car drives by but no sight of her boyfriend."
     m 1eud "The police officer went to the car and instructs the girl to exit the vehicle and walk towards him and not look back."
     m "She did so slowly..."
-    m 1kc "The girl then noticed numerous other police cars arriving with their sirens blaring behind the first one to arrive."
+    m 1ekc "The girl then noticed numerous other police cars arriving with their sirens blaring behind the first one to arrive."
     m 1dsd "Curiosity then got the better of her and looked at the car..."
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8

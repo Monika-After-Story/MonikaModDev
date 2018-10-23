@@ -3592,6 +3592,19 @@ image monika 1dftdc = DynamicDisplayable(
     tears="dried"
 )
 
+image monika 1cua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="crazy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1duu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
