@@ -244,7 +244,7 @@ init -5 python in mas_sprites:
     ZOOM = "zoom="
 
     default_zoom_level = 3
-   
+
     if store.persistent._mas_zoom_zoom_level is None:
         store.persistent._mas_zoom_zoom_level = default_zoom_level
         zoom_level = default_zoom_level
@@ -1768,7 +1768,7 @@ init -2 python:
             stay_on_start - determines if the item stays on startup
         """
 
-        def __init__(self, 
+        def __init__(self,
                 name,
                 img_sit,
                 pose_map,
@@ -1806,7 +1806,7 @@ init -2 python:
 
         PROPERTIES:
             fallback - If true, the PoseMap contains fallbacks that poses
-                will revert to. If something is None, then it means to 
+                will revert to. If something is None, then it means to
                 blacklist.
 
         SEE MASSpriteBase for inherited properties
@@ -1873,7 +1873,7 @@ init -2 python:
                 # we have a lean, check for fallbacks
                 return ("steepling", self.pose_map.l_map.get(lean, None))
 
-            # otherwise check the pose 
+            # otherwise check the pose
             return (self.pose_map.map.get(pose, "steepling"), None)
 
 
@@ -1976,9 +1976,9 @@ init -2 python:
         SEE MASSpriteFallbackBase for inherited properties
 
         POSEMAP explanations:
-            Use an empty string to 
+            Use an empty string to
         """
-        
+
         def __init__(self,
                 name,
                 img_sit,
@@ -2032,7 +2032,7 @@ init -2 python:
         """
         import store.mas_sprites as mas_sprites
 
-        
+
         def __init__(self,
                 name,
                 img_sit,
@@ -2083,7 +2083,7 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-        
+
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
@@ -2092,7 +2092,7 @@ init -2 python:
                 hair - hair type to get mapping for
 
             RETURNS:
-                the hair mapping to use inplace for the given hair type         
+                the hair mapping to use inplace for the given hair type
             """
             return self.hair_map.get(hair, hair)
 
@@ -2248,7 +2248,7 @@ init -1 python:
     #   by setting fallback to True, you can use the fallback system to
     #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
     #   fallback to a lean type. Lean types can only fallback to other lean
-    #   types OR steepling. 
+    #   types OR steepling.
     #
     #   When using the fallback system, map poses to the pose/lean types
     #   that you want to fallback on.
@@ -2345,9 +2345,9 @@ init -1 python:
         "def",
         MASPoseMap(
             p1="steepling",
-            p2="down",
-            p3="steepling",
-            p4="down",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
             p6="down"
         ),
         fallback=True,
