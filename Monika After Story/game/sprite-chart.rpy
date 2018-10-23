@@ -331,6 +331,16 @@ init -5 python in mas_sprites:
         store.persistent._mas_zoom_zoom_level = zoom_level
 
 
+    def reset_zoom():
+        """
+        Resets the zoom to the default value
+        NOTE: also set sthe persistent save for zoom
+        """
+        global zoom_level
+        zoom_level = default_zoom_level
+        adjust_zoom()
+
+
     # tryparses for the hair and clothes
     # TODO: adjust this for docking station when ready
     def tryparsehair(_hair, default="def"):
