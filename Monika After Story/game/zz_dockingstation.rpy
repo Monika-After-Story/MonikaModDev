@@ -2026,6 +2026,7 @@ label mas_dockstat_empty_desk:
 
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
+    $ store.mas_sprites.reset_zoom()
     show emptydesk zorder ed_zorder at i11
 
     # show birthday visuals?
