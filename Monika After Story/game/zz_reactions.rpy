@@ -194,7 +194,10 @@ init -1 python in mas_filereacts:
             generic_reacts.insert(0, "mas_reaction_end")
 
             # add the starter
-            generic_reacts.append("mas_reaction_gift_starter_bday")
+            if mas_isMonikaBirthday():
+                generic_reacts.append("mas_reaction_gift_starter_bday")
+            else:
+                generic_reacts.append("mas_reaction_gift_starter_neutral")
 #            generic_reacts.append(gift_starters.quip()[1])
 
         # now return the list
@@ -468,6 +471,12 @@ label mas_reaction_gift_starter_bday:
     m 1suo "Oh, it's..."
     return
 
+label mas_reaction_gift_starter_neutral:
+    m 1sublo "T-{w=1}This is..."
+    m "A gift? For me?"
+    m 1sua "Now, let's see what's inside?"
+    return
+
 
 ### REACTIONS [RCT100]
 
@@ -570,7 +579,8 @@ label mas_reaction_gift_coffee:
     return
 
 init 5 python:
-    addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
+    if mas_isMonikaBirthday():
+        addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
 
 label mas_reaction_quetzal_plush:
     if not persistent._mas_acs_enable_quetzalplushie:
@@ -596,7 +606,8 @@ label mas_reaction_quetzal_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_promisering", "promisering")
+    if mas_isMonikaBirthday():
+        addReaction("mas_reaction_promisering", "promisering")
 
 label mas_reaction_promisering:
     if not persistent._mas_acs_enable_promisering:
@@ -651,7 +662,8 @@ label mas_reaction_promisering:
     return
 
 init 5 python:
-    addReaction("mas_reaction_plush", "plushie")
+    if mas_isMonikaBirthday():
+        addReaction("mas_reaction_plush", "plushie")
 
 label mas_reaction_plush:
     m 1wud "What’s this, [player]?"
@@ -668,7 +680,8 @@ label mas_reaction_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_bday_cake", "birthdaycake")
+    if mas_isMonikaBirthday():
+        addReaction("mas_reaction_bday_cake", "birthdaycake")
 
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
@@ -693,7 +706,9 @@ label mas_reaction_bday_cake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake")
+    if mas_isMonikaBirthday():
+
+        if mas_isMonikaBirthday():    addReaction("mas_reaction_cupcake", "cupcake")
 
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
@@ -709,7 +724,8 @@ label mas_reaction_cupcake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_knife", "knife")
+    if mas_isMonikaBirthday():
+        addReaction("mas_reaction_knife", "knife")
 
 label mas_reaction_knife:
     m 1euc "...?"
@@ -728,4 +744,44 @@ label mas_reaction_knife:
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False
+    return
+
+init 5 python:
+    if mas_isO31():
+        addReaction("mas_reaction_candy", "candy")
+
+label mas_reaction_candy:
+    #TODO Unreviewed dialogue (I took it from the doc)
+    m 1wua "Oh...{w=1}what's this?"
+    m 1sua "You got me candy, [player], yay!"
+    m 1eka "That's so {i}sweet{/i}..."
+    m 1hub "Ahaha!"
+    m 1eka "Kidding aside, that's really nice of you."
+    m 2lksdlc "I don't get to have much candy anymore, and it just wouldn't be Halloween without it..."
+    m 1eka "So thank you, [player]..."
+    m 1eka "You always know exactly what will make me happy~"
+    m 1hub "Now let's enjoy some of this delicious candy!"
+    $ mas_receivedGift("mas_reaction_candy") # while technically she didn't accept this one counts
+    $ gift_ev = mas_getEV("mas_reaction_candy")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+init 5 python:
+    if mas_isO31():
+        addReaction("mas_reaction_candycorn", "candycorn")
+
+label mas_reaction_candycorn:
+    #TODO Unreviewed dialogue (I took it from the doc) and it0s not even the one that goes here rip
+    m 1wua "Oh...{w=1}what's this?"
+    m 1sua "You got me candy, [player], yay!"
+    m 1eka "That's so {i}sweet{/i}..."
+    m 1hub "Ahaha!"
+    m 1eka "Kidding aside, that's really nice of you."
+    m 2lksdlc "I don't get to have much candy anymore, and it just wouldn't be Halloween without it..."
+    m 1eka "So thank you, [player]..."
+    m 1eka "You always know exactly what will make me happy~"
+    m 1hub "Now let's enjoy some of this delicious candy!"
+    $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
+    $ gift_ev = mas_getEV("mas_reaction_candycorn")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
     return
