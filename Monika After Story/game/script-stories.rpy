@@ -954,11 +954,11 @@ label mas_scary_story_serial_killer:
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."
-    m 1euc "After a long time had passed, a police car drives by but no sight of her boyfriend."
-    m 1eud "The police officer went to the car and instructs the girl to exit the vehicle and walk towards him and not look back."
+    m 1euc "After a long time had passed, a police car drove by and stopped but still no sight of her boyfriend."
+    m 1eud "The police officer went to the car and instructed the girl to exit the vehicle and walk toward him and not look back."
     m "She did so slowly..."
     m 1ekc "The girl then noticed numerous other police cars arriving with their sirens blaring behind the first one to arrive."
-    m 1dsd "Curiosity then got the better of her and looked at the car..."
+    m 1dsd "Curiosity then got the better of her and she turned to look at the car..."
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8
     if renpy.random.randint(1,8) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
