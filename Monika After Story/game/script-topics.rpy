@@ -1163,17 +1163,46 @@ label monika_outfit:
         m 5eua "So let's keep it between just us..."
     return
 
+default persistent._mas_pm_likes_horror = None
+default persistent._mas_pm_likes_spoops = False
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_horror",category=['media'],prompt="Horror genre",random=True))
 
 label monika_horror:
-    m 3eua "Hey, do you like horror?"
-    m "I remember we talked about it a little bit when you first joined the club."
-    m 4eub "I can enjoy horror novels, but not really horror movies."
-    m "The problem I have with horror movies is that most of them just rely on easy tactics."
-    m "Like dark lighting and scary-looking monsters and jump scares, and things like that."
-    m 4eka "It's not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
-    m "But with novels, it's a little different."
+    m 3eua "Hey, [player]?"
+
+    menu:
+        m "Do you like horror?"
+
+        "I do.":
+            $ persistent._mas_pm_likes_horror = True
+            m 3hub "That's great [player]!"
+        "I don't.":
+            $ persistent._mas_pm_likes_horror = False
+            m 2eka "I can understand. It's definitely not for everyone."
+    
+    m 3eua "I remember we talked about this a little bit when you first joined the club."
+    m 4eub "Personally I can enjoy horror novels, but not really horror movies."
+    m 2esc "The problem I have with horror movies is that most of them just rely on easy tactics."
+    m 4esc "Like dark lighting and scary-looking monsters and jump scares, and things like that."
+
+    #If you're not a fan of horror, you're probably not a fan of spoops. Are you? (So we can just assume if player doesn't like horror, they don't want spoops)
+    if persistent._mas_pm_likes_horror:
+        show monika 2esc
+        menu:
+            m "Do you like spooks?"
+
+            "I do.":
+                $ persistent._mas_pm_likes_spoops = True
+                m 2rkc "I suppose it {i}can{/i} be interesting for the first few times when you're watching a movie or something."
+                m 2eka "To me, it's just not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
+
+            "I don't.":
+                $ persistent._mas_pm_likes_spoops = False
+                m 4eka "Yeah, it's just not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
+
+    m 2eua "But with novels, it's a little different."
     m 2euc "The story and writing need to be descriptive enough to put genuinely disturbing thoughts into the reader's head."
     m "It really needs to etch them deeply into the story and characters, and just mess with your mind."
     m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
@@ -1187,7 +1216,7 @@ label monika_horror:
     m 1eka "Ahaha, don't worry."
     m 1hua "I won't make you read any horror stories anytime soon."
     m 1hubfa "I can't really complain if we just stick with the romance~"
-    return
+    return "derandom"
 
 # do you like rap
 default persistent._mas_pm_like_rap = None
