@@ -20,15 +20,18 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+    show_vignette = False
+    # TRue means show the vignette mask, False means no show
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
-    # TODO: dont be in o31 viginette mode if she is returning home today
-    # but was not previously in o31 viginette mode
-
+#    mas_temp_moni_chksum = None
 
     if persistent._mas_moni_chksum is not None:
+#        mas_temp_moni_chksum = persistent._mas_moni_chksum
+        
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
@@ -454,12 +457,6 @@ init python:
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
 
-    # o31
-    # TODO: double check the scene change logic for this
-    # TODO: wait this is wrong still
-    if mas_isO31():
-        show vignette zorder 13
-
     if is_morning():
         if not morning_flag or scene_change:
             $ morning_flag = True
@@ -491,6 +488,10 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     $scene_change = False
 
+    # o31
+    if store.mas_globals.show_vignette:
+        show vignette zorder 70
+
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
         $ store.mas_dockstat.surpriseBdayShowVisuals()
@@ -508,6 +509,12 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # o31? o31 mode you are in
+    if mas_isO31():
+        $ persistent._mas_o31_in_o31_mode = True
+        $ store.mas_globals.show_vignette = True
+        $ mas_forceRain()
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
@@ -747,8 +754,8 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
-    if mas_isO31():
-        jump mas_holiday_o31_autoload_check
+#    if mas_isO31():
+#        jump mas_holiday_o31_autoload_check
 
 
 label mas_ch30_post_holiday_check:
@@ -1299,10 +1306,8 @@ label ch30_reset:
 
     ## o31 flag setup
     python:
-        mas_o31_in_o31_mode = (
-            mas_isO31()
-            and store.mas_dockstat.retmoni_status is None
-        )
+        if persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
 
 
     ## certain things may need to be reset if we took monika out

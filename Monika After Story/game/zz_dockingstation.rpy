@@ -76,8 +76,15 @@ init -900 python in mas_ics:
     }
 
     #################################### O31 ##################################
+    # cg folder
+    o31_cg_folder = os.path.normcase(
+        renpy.config.basedir + "/game/mod_assets/monika/cg/"
+    )
+
     # marisa cg
-    o31_marisa = "TEST"
+    o31_marisa = (
+        "c1fe797c1894aa11f01484950a9b6b8b82aa3f99a21f3cd14bace2dd567857af"
+    )
 
     # rin cg
     o31_rin = "TEST2"
@@ -1039,13 +1046,118 @@ init -500 python in mas_dockstat:
     MAS_SBP_BLON = 8
     # balloon was found
 
+init -11 python in mas_dockstat:
+    import store.mas_utils as mas_utils
+
+    def decodeImages(dockstat, image_dict, selective=[]):
+        """
+        Attempts to decode the iamges
+
+        IN:
+            dockstat - docking station to use
+            image_dict - image map to use
+            selective - list of images keys to decode
+                If not passed in, we decode EVERYTHINg
+                (DEfault: [])
+
+        Returns TRUE upon success, False otherwise
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+
+            # read in the base64 versions, output an image
+            b64_pkg = dockstat.getPackage(b64_name)
+
+            if b64_pkg is None:
+                # if we didnt find the image, we in big trouble
+                return False
+
+            # setup the outfile
+            real_pkg = None
+            real_chksum = None
+            real_path = dockstat._trackPackage(real_name)
+
+            # now try to decode image
+            try:
+                real_pkg = open(real_path, "wb")
+
+                # unpack this package
+                dockstat._unpack(
+                    b64_pkg,
+                    real_pkg,
+                    True,
+                    False,
+                    bs=b64_blocksize
+                )
+
+                # close and reopen as read
+                real_pkg.close()
+                real_pkg = open(real_path, "rb")
+
+                # check pkg slip
+                real_chksum = dockstat.createPackageSlip(
+                    real_pkg,
+                    bs=blocksize
+                )
+
+            except Exception as e:
+                mas_utils.writelog(
+                    "[ERROR] failed to decode '{0}' | {1}\n".format(
+                        b64_name,
+                        str(e)
+                    )
+                )
+                return False
+
+            finally:
+                # always close the base64 package
+                b64_pkg.close()
+
+                if real_pkg is not None:
+                    real_pkg.close()
+
+            # now to check this image for chksum correctness
+            if real_chksum is None:
+                # bad shit happened here somehow
+                mas_utils.trydel(real_path)
+                return False
+
+            if real_chksum != chksum:
+                # decoded was wrong somehow
+                mas_utils.trydel(real_path)
+                return False
+
+        # otherwise success somehow
+        return True
+
+
+    def removeImages(dockstat, image_dict, selective=[]):
+        """
+        Removes the decoded images at the end of their lifecycle
+
+        IN:
+            dockstat - docking station
+            image_dict - image map to use
+            selective - list of image keys to delete
+                If not passed in, we delete everything in the image dict
+                (Default: [])
+
+        AKA quitting
+        """
+        if len(selective) == 0:
+            selective = image_dict.keys()
+
+        for b64_name in selective:
+            real_name, chksum = image_dict[b64_name]
+            mas_utils.trydel(dockstat._trackPackage(real_name), log=True)
+
 
 init python in mas_dockstat:
     import store
     import cPickle
-
-    # blocksize is relatively constant
-    blocksize = 4 * (1024**2)
 
     # previous vars dict
     previous_vars = dict()
@@ -1086,7 +1198,6 @@ init 200 python in mas_dockstat:
     # special store
     # lets use this store to handle generation of docking station files
     import store
-    import store.mas_utils as mas_utils
     import store.mas_sprites as mas_sprites
     import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
@@ -1318,6 +1429,33 @@ init 200 python in mas_dockstat:
                     package.close()
 
         return on_fail
+
+
+# NOTE: actually we dont need this
+#    def o31ShowVignette(moni_chksum):
+#        """
+#        Sets vignette flag to appropriate value depending on whether or not
+#        user returns monika from an overnight outing.
+#
+#        IN:
+#            moni_chksum - checksum created when taking monika out
+#        """
+#        # not in o31? no show vignette
+#        if not store.mas_isO31():
+#            store.mas_globals.show_vignette = False
+#            return
+#
+#        # we already setup o31 mode? keep showing the vignette
+#        if store.persistent._mas_o31_in_o31_mode:
+#            store.mas_globals.show_vignette = True
+#            return
+#
+#        # otherwise its o31 and we are not set in o31 mode yet, which
+#        # means we need to double check 
+#        checkout_time, checkin_time = getCheckTimes(moni_chksum)
+#
+#        if
+
 
 
     def surpriseBdayCheck(dockstat):
@@ -1864,6 +2002,54 @@ init 200 python in mas_dockstat:
 
         # otherwise, always return the generic random event
         return store.mas_getEV("greeting_returned_home")
+
+
+    def getCheckTimes(chksum=None):
+        """
+        Gets the corresponding checkin/out times for the given chksum.
+
+        IN:
+            chksum - chksum to retrieve checkin/checkout times.
+                If None, then we simply get the latest checkin/checkout,
+                regardless if they match or not.
+                (Default: None)
+
+        RETURNS tuple of the following format:
+            [0] - checkout time
+            [1] - checkin time
+        If any param is None, then we couldn't find the matching chksum or 
+        there were no entries
+        """
+        checkin_log = store.persistent._mas_dockstat_checkin_log
+        checkout_log = store.persistent._mas_dockstat_checkout_log
+        checkin_time = None
+        checkout_time = None
+        checkin_len = len(checkin_log)
+        checkout_len = len(checkout_log)
+
+        # quick function to find a time based on checksum
+        def find_time(check_log, check_sum):
+            for _time, _chksum in check_log:
+                if _chksum == check_sum:
+                    return _time
+
+            return None
+
+        if checkin_len > 0:
+            if chksum is None:
+                checkin_time = checkin_log[checkin_len-1][0]
+
+            else:
+                checkin_time = find_time(checkin_log, chksum)
+
+        if checkout_len > 0:
+            if chksum is None:
+                checkout_time = checkout_log[checkout_len-1][0]
+
+            else:
+                checkout_time = find_time(checkout_log, chksum)
+           
+        return (checkout_time, checkin_time)
 
 
     def diffCheckTimes(index=None):

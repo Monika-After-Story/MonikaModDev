@@ -21,7 +21,7 @@ default persistent._mas_o31_costumes_allowed = None
 # true if user gets to see costumes
 # this is set once and never touched again
 
-default persistent._mas_o31_in_o31_mode = None
+default persistent._mas_o31_in_o31_mode = False
 # True if we should be in o31 mode (aka viginette)
 # This should be only True if:
 #   user is NOT returning monika on o31 from a date/trip taken before o31
@@ -39,36 +39,85 @@ init 101 python:
             "rin": False
         }
 
+    if not mas_isO31():
+        # disable o31 mode
+        persistent._mas_o31_in_o31_mode = False
+        
+
+init -11 python in mas_o31_event:
+    import store
+    import store.mas_dockstat as mds
+    import store.mas_ics as mis
+
+    # setup the docking station for o31
+    o31_cg_station = store.MASDockingStation(mis.o31_cg_folder)
+
+    # cg available?
+    o31_cg_decoded = False
+
+
+    def decodeImage(key):
+        """
+        Attempts to decode a cg image
+
+        IN:
+            key - o31 cg key to decode
+
+        RETURNS True upon success, False otherwise
+        """
+        return mds.decodeImages(o31_cg_station, mis.o31_map, [key])
+
+    
+    def removeImages():
+        """
+        Removes decoded images at the end of their lifecycle
+        """
+        mds.removeImages(o31_cg_station, mis.o31_map)
+
+
 label mas_holiday_o31_autoload_check:
-    $ import random
-    $ mas_skip_visuals = True
-    # TODO check if viginette covers python console / hangman / chess
-    # TODO: rain should be forced on o31, use the forceRain function
-    #   to also lock rain events
-    # TODO: islands event should be LOCKED on o31
-    #
+    # ASSUMPTIONS:
+    #   monika is NOT outside
+    #   monika is NOT returning home
+    #   we are NOT in introduction
 
-    if (
-            persistent._mas_o31_current_costume is None
-            and persistent._mas_o31_costumes_allowed
-        ):
-        # select a costume. Once this has been selected, this is what monika
-        # will wear until day change
+    python:
+        import random
+        mas_skip_visuals = True
+        persistent._mas_o31_in_o31_mode = True
 
-        if random.randint(1,100) <= mas_o31_marisa_chance:
-            $ persistent._mas_o31_current_costume = "marisa"
-            $ selected_greeting = "greeting_o31_marisa"
-            # TODO: decode the apprporiate cg
+        if (
+                persistent._mas_o31_current_costume is None
+                and persistent._mas_o31_costumes_allowed
+            ):
+            # select a costume. Once this has been selected, this is what monika
+            # will wear until day change
 
-        else:
-            $ persistent._mas_o31_current_costume = "rin"
-            $ selected_greeting = "greeting_o31_rin"
-            # TODO: decode the apprporiate cg
+            if random.randint(1,100) <= mas_o31_marisa_chance:
+                persistent._mas_o31_current_costume = "marisa"
+                selected_greeting = "greeting_o31_marisa"
+                store.mas_o31_event.o31_cg_decoded = (
+                    store.mas_o31_event.decodeImage("o31mcg")
+                )
 
-        $ persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
+            else:
+                persistent._mas_o31_current_costume = "rin"
+                selected_greeting = "greeting_o31_rin"
+                # store.mas_o31_event.o31_cg_decoded = (
+    #                    store.mas_o31_event.decodeImage("o31rcg")
+    #                )
+
+            persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
+
+        if persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
+            mas_forceRain()
 
     jump ch30_post_restartevent_check
 
+### o31 images
+image mas_o31_marisa_cg = "mod_assets/monika/cg/o31_marisa_cg.png"
+image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
 
 ### o31 greetings
 init 5 python:
