@@ -1000,6 +1000,8 @@ label ch30_loop:
             if mas_isMonikaBirthday():
                 mas_checkReactions()
 
+            # TODO: o31 fielc ehckes
+
             #Update time
             calendar_last_checked=datetime.datetime.now()
 

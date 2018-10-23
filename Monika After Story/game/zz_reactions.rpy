@@ -500,8 +500,8 @@ label mas_reaction_gift_generic:
     $ store.mas_filereacts.delete_file(None)
     return
 
-init 5 python:
-    addReaction("mas_reaction_gift_test1", "test1")
+#init 5 python:
+#    addReaction("mas_reaction_gift_test1", "test1")
 
 label mas_reaction_gift_test1:
     m "Thank you for gift test 1!"
@@ -510,8 +510,8 @@ label mas_reaction_gift_test1:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_gift_test2", "test2")
+#init 5 python:
+#    addReaction("mas_reaction_gift_test2", "test2")
 
 label mas_reaction_gift_test2:
     m "Thank you for gift test 2!"

@@ -1756,9 +1756,14 @@ label greeting_returned_home:
     $ five_minutes = datetime.timedelta(seconds=5*60)
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
+    # event checks
     if mas_isMonikaBirthday():
         jump greeting_returned_home_bday
 
+    if mas_isO31() and not persistent._mas_o31_in_o31_mode:
+        $ queueEvent("mas_holiday_o31_returned_home_relaunch")
+
+    # main dialogue
     if time_out > five_minutes:
         m 1hua "And we're home!"
         m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."

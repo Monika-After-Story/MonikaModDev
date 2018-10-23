@@ -74,7 +74,7 @@ init -11 python in mas_o31_event:
         """
         mds.removeImages(o31_cg_station, mis.o31_map)
 
-
+# auto load starter check
 label mas_holiday_o31_autoload_check:
     # ASSUMPTIONS:
     #   monika is NOT outside
@@ -114,6 +114,11 @@ label mas_holiday_o31_autoload_check:
             mas_forceRain()
 
     jump ch30_post_restartevent_check
+
+## post returned home greeting to setup game relaunch
+label mas_holiday_o31_returned_home_relaunch:
+    m "please reset"
+    return "quit"
 
 ### o31 images
 image mas_o31_marisa_cg = "mod_assets/monika/cg/o31_marisa_cg.png"
