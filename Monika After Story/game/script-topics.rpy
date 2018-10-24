@@ -3190,13 +3190,11 @@ label monika_mountains:
     m "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud at what we've done."
     menu:
         m "Wouldn't you like that too, [player]?"
-        
-	"Yes.":
+        "Yes.":
             m 5eubla "Well...I hope that one day, we'll have that chance. To make it to the top of our mountain."
             m 5hua "And I'll do anything to give us that shot."
             
 	"No.":
-	    show monika 1wud at t11 zorder MAS_MONIKA_Z with dissolve
 	    m 1wud "Oh."
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
