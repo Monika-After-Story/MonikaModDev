@@ -163,7 +163,7 @@ image mas_o31_rin_cg = "mod_assets/monika/cg/o31_rin_cg.png"
 ### o31 transforms
 transform mas_o31_cg_scroll:
     xanchor 0.0 xpos 0 yanchor 0.0 ypos 0.0 yoffset -1520
-    ease 15.0 yoffset 0.0
+    ease 20.0 yoffset 0.0
 
 ### o31 greetings
 init 5 python:
@@ -194,30 +194,65 @@ label greeting_o31_marisa:
     # enable the marisa clothes
     $ monika_chr.change_clothes(mas_clothes_marisa)
 
-    # ASSUMING:
-    #   vignette should be enabled.
-    call spaceroom(hide_monika=True)
-    show emptydesk at i11 zorder 9
-
-    m "I am off screen"
-
+    # decoded CG means that we start with monika offscreen
     if store.mas_o31_event.o31_cg_decoded:
-        # got cg
-        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
-        m "check out my visuals{w=5}{nw}"
-
-        m "extra long dialogue wait{w=10}{nw}"
-
-        m "take a moment"
-        hide mas_o31_marisa_cg with dissolve
+        # ASSUMING:
+        #   vignette should be enabled.
+        call spaceroom(hide_monika=True)
+        show emptydesk at i11 zorder 9
 
     else:
-        # no cg
-        m "no visuals"
+        # ASSUMING:
+        #   vignette should be enabled
+        call spaceroom
 
-    show monika 1eua at t11 zorder MAS_MONIKA_Z
-    m "I am marisa"
-    hide emptydesk
+    m 1eua "Ah!"
+    m 1hua "Seems like my spell worked."
+    m 3efu "As my newly summoned servant, you'll have to do my bidding until the very end!"
+    m 1rksdla "..."
+    m 1hub "Ahaha!"
+
+    # decoded CG means we display CG
+    if store.mas_o31_event.o31_cg_decoded:
+        $ cg_delay = datetime.timedelta(seconds=20)
+
+        # got cg
+        m "I'm over here, [player]~"
+        window hide
+
+        show mas_o31_marisa_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
+
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
+
+        hide emptydesk
+        show monika 1hua at i11 zorder MAS_MONIKA_Z
+        window auto
+        m "Tadaa~!"
+
+    # post CG dialogue
+    # (CG might still be visible during this state, though)
+    m 1hua "Well..."
+    m 1wub "What do you think?"
+    m 1wua "Suits me pretty well, right?"
+    m 1eua "It took me quite a while to make this costume, you know."
+    m 3hksdlb "Getting the right measurements, making sure nothing was too tight or loose, that sort of stuff."
+    m 3eksdla "Especially the hat!"
+    m 1dkc "The ribbon wouldn't stay still at all..."
+    m 1rksdla "Luckily I got that sorted out."
+    m 3hua "I'd say I did a good job myself."
+    m 1hub "Ehehe~"
+    m 3eka "I'm wondering if you'll be able to see what's different today."
+    m "Besides my costume of course~"
+    m 1hua "But anyways..."
+
+    if store.mas_o31_event.o31_cg_decoded:
+        show monika 1eua
+        hide mas_o31_marisa_cg with dissolve
+
+    m 3ekbfa "I'm really excited to spend Halloween with you."
+    m 1hua "Let's have fun today!"
 
     # cleanup
     # 1 - music hotkeys should be enabled
@@ -249,9 +284,42 @@ init 5 python:
 
 label greeting_o31_rin:
     jump greeting_o31_marisa
+    # starting with no visuals
+
+    # couple of things:
+    # 1 - music hotkeys should be disabled
+    $ store.mas_hotkeys.music_enabled = False
+
+    # 2 - the calendar overlay will become visible, but we should keep it
+    # disabled
+    $ mas_calRaiseOverlayShield()
+
+    # 3 - keymaps not set (default)
+    # 4 - hotkey buttons are hidden (skip visual)
+    # 5 - music is off (skip visual)
+
+    # enable the marisa clothes
+    $ monika_chr.change_clothes(mas_clothes_marisa)
 
     # TODO handle visuals
     m "I am rin"
+
+    # cleanup
+    # 1 - music hotkeys should be enabled
+    $ store.mas_hotkeys.music_enabled = True
+
+    # 2 - calendarovrelay enabled
+    $ mas_calDropOverlayShield()
+
+    # 3 - set the keymaps
+    $ set_keymaps()
+
+    # 4 - hotkey buttons should be shown
+    $ HKBShowButtons()
+
+    # 5 - restart music
+    $ mas_startup_song()
+
     return
 
 init 5 python:
