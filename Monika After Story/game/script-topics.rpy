@@ -3183,7 +3183,7 @@ label monika_mountains:
     m 1sub "Of how one would hike up through the forests and trees."
     m 1eub "Climbing up cliff faces and trudge through streams."
     m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
-    show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
     m 5rub "And finally... after all your effort and struggles..."
     m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
     m "I... I truly want to share that with you."
@@ -3196,6 +3196,7 @@ label monika_mountains:
             m 5hua "And I'll do anything to give us that shot."
             
 	"No.":
+	 show monika 1wud at t11 zorder MAS_MONIKA_Z with dissolve
             m 1wud "Oh."
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
