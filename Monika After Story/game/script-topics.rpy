@@ -3152,13 +3152,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['misc'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
-    m 1eua "Do you ever go camping, [player]?"
-    m 3eua "It's a wonderful way to relax and get some fresh air,"
-    m "As well as to see the areas around you, to visit state and national parks."
+    m 1eua "Do you ever go camping, [player]? It's a wonderful way to relax and get some fresh air,"
+    m 3eua "As well as to see the areas around you, to visit state and national parks."
     m 1huu "It's almost like a more relaxed backpacking trip!"
     m 1eua "But, while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
-    m 3lud "Such as bug spray or sunscreen. Many people forget or even forgo them; thinking them unimportant."
-    m 1eud "But without it, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
+    m 3lud "A good example would be bug spray or sunscreen. Many people forget or even forgo them; thinking them unimportant."
+    m 1eud "Without it, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
     m "So, please promise me that the next time you go outdoors, be it camping or backpacking, you won't forget them."
     m "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eub "But, on the bright side..."
@@ -3174,7 +3173,7 @@ init 5 python:
 
 label monika_mountain:
     m 1eua "Have you ever been in the mountains, [player]?"
-    m "And I don't mean driving through them, or in a mountain town."
+    m "I don't mean driving through them, or in a mountain town, either."
     m "I mean really up there. In the fresh air, tens of thousands of feet up, seeing the rest of world below you."
     m "..."
     m 1eub "I've always wanted to try that."
@@ -3194,11 +3193,11 @@ label monika_mountain:
             m 5eubla "Well...I hope that one day, we'll have that chance. To make it to the top of our mountain."
             m 5hua "And I'll do anything to give us that shot."
             
-        "No.":
+        "Not really.":
             show monika 1wud at t11 zorder MAS_MONIKA_Z with dissolve
             m 1wud "Oh."
             m 1rud "Well... I suppose it doesn't matter." 
-            m 1eua "As long as I have you."
+            m 1eua "As long as I have you, I'll be happy wherever we are."
     
     return "derandom"
 
