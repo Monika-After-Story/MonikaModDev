@@ -132,6 +132,9 @@ label mas_holiday_o31_autoload_check:
     if mas_skip_visuals:
         jump ch30_post_restartevent_check
 
+    # always disable the opendoro greeting on o31
+    $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
+
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check
 
