@@ -3199,7 +3199,6 @@ label monika_mountains:
             m 1wud "Oh."
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
-	    
 	    return
 
 init 5 python:
