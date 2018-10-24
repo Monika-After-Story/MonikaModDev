@@ -3173,7 +3173,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['misc'],prompt="Mountains",random=True))
 
 label monika_mountains:
-
     m 1eua "Have you ever been in the mountains, [player]?"
     m "And I don't mean driving through them, or in a mountain town."
     m "I mean really up there. In the fresh air, tens of thousands of feet up, seeing the rest of world below you."
