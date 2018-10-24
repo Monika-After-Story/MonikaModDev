@@ -3152,7 +3152,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['outdoors'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
-
     m 1eua "Do you ever go camping, [player]?"
     m 3eua "It's a wonderful way to relax and get fresh air."
     m 3eud "But, there are several dangers that most don't think about."
