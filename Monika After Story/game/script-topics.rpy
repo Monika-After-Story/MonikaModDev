@@ -3162,7 +3162,7 @@ label monika_outdoors:
     m 1eub "On the bright side..."
     m "Once I cross over, if you remember to bring the sunscreen..."
     m 1tfu "I might need help putting it on."
-    m 1hub "Ahahahaha!
+    m 1hub "Ahahahaha!"
     m 1efu "I'm only teasing you, [player]."
     m 1tfu "Well, at least a little."
     return
