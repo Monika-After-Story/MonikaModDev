@@ -3170,7 +3170,7 @@ label monika_outdoors:
     return
     
 init 5 python:
-	addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['misc'],prompt="Mountains",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['misc'],prompt="Mountains",random=True))
 
 label monika_mountains:
 
