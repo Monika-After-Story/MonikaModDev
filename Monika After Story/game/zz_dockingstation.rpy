@@ -2198,16 +2198,12 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
         # setup check and log this file checkout
         $ store.mas_dockstat.checkoutMonika(moni_chksum)
-
-        m 1eua "I'm ready to go."
+        # NOTE: callers must handle dialogue for this
 
     else:
         $ persistent._mas_dockstat_going_to_leave = False
         # we failed to generate file somehow
-        m 1ekc "Oh no..."
-        m 1lksdlb "I wasn't able to turn myself into a file."
-        m "I think you'll have to go on without me this time."
-        m 1ekc "Sorry, [player]."
+        # NOTE: callers must handle the dialogue for this
 
     return can_moni_leave
 
@@ -2221,6 +2217,20 @@ label mas_dockstat_first_time_goers:
     m 1ekc "Please be careful with me. It's so easy to delete files after all..."
     m 1eua "Anyway..."
     return
+
+label mas_dockstat_abort_gen:
+    # call this label to abort monika gen promise
+
+    # we are not leaving
+    $ persistent._mas_dockstat_going_to_leave = False
+
+    # we should abort the promise (this lets spaceroom idle abort, as well)
+    $ store.mas_dockstat.abort_gen_promise = True
+
+    # attempt to abort the promise
+    $ store.mas_dockstat.abortGenPromise()
+    return
+
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:

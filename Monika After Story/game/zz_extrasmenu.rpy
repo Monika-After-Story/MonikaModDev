@@ -106,6 +106,8 @@ label mas_extra_menu_close:
     # re-enable overlays
     $ mas_DropShield_core()
 
+    show monika idle
+
     jump ch30_loop
 
 label mas_idle_loop:
@@ -198,13 +200,11 @@ label mas_extra_menu_zoom_out_first_time:
     m 1ttu "Can't sit up straight for long?"
     m "Or maybe you just want to see the top of my head?"
     m 1hua "Ehehe~"
-    show monika idle
     return
 
 label mas_extra_menu_zoom_in_first_time:
     m 1ttu "Sitting a bit closer?"
     m 1hua "I don't mind."
-    show monika idle
     return
 
 label mas_extra_menu_zoom_in_max_first_time:
@@ -214,7 +214,6 @@ label mas_extra_menu_zoom_in_max_first_time:
     show monika 6hkbfa
     pause 2.0
     m 6hubfa "Warm..."
-    show monika idle
     return
 
 ################################# EXTRA MENU STUFF ############################

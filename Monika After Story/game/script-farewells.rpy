@@ -675,14 +675,11 @@ label bye_going_somewhere_iowait:
             $ persistent._mas_dockstat_cm_wait_count += 1
 
     # fall thru to the wait wait flow
-    m 1ekc "What is it?"
+    show monika 1ekc
     menu:
+        m "What is it?"
         "Actually, I can't take you right now.":
-            $ persistent._mas_dockstat_going_to_leave = False
-            $ store.mas_dockstat.abort_gen_promise = True
-
-            # but maybe the thread is done already?
-            $ store.mas_dockstat.abortGenPromise()
+            call mas_dockstat_abort_gen
             jump bye_going_somewhere_leavemenu
 
         "Nothing.":
@@ -701,9 +698,17 @@ label bye_going_somewhere_rtg:
     $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GO_SOMEWHERE
+        m 1eua "I'm ready to go."
         return "quit"
 
-    # otherwise, ask if player still going
+    # otherwise, we failed, so monika should tell player
+    m 1ekc "Oh no..."
+    m 1lksdlb "I wasn't able to turn myself into a file."
+    m "I think you'll have to go on without me this time."
+    m 1ekc "Sorry, [player]."
+
+    # ask if player is still going to leave
     menu:
         m "Are you still going to go?"
         "Yes.":
