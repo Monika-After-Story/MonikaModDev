@@ -3196,11 +3196,11 @@ label monika_mountains:
             m 5hua "And I'll do anything to give us that shot."
             
 	"No.":
-	 show monika 1wud at t11 zorder MAS_MONIKA_Z with dissolve
-            m 1wud "Oh."
+	    m 1wud "Oh."
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
-	    return
+    
+    return "Derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_algernon",category=['literature'],prompt="Flowers for Algernon",random=True))
