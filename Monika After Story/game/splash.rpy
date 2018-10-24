@@ -181,6 +181,7 @@ label splashscreen:
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
+    persistent.tried_skip = False
     if not persistent.first_run:
         $ quick_menu = False
         pause 0.5
@@ -320,7 +321,7 @@ label quit:
         store.mas_calendar.saveCalendarDatabase(CustomEncoder)
         persistent.sessions['last_session_end']=datetime.datetime.now()
         today_time = (
-            persistent.sessions["last_session_end"] 
+            persistent.sessions["last_session_end"]
             - persistent.sessions["current_session_start"]
         )
         new_time = today_time + persistent.sessions["total_playtime"]

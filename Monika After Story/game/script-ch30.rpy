@@ -1,5 +1,5 @@
 default persistent.monika_reload = 0
-default persistent.tried_skip = None
+default persistent.tried_skip = False
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
@@ -372,12 +372,12 @@ init python:
                 end -> end of dialogue (user has interacted)
         """
         # skip check
-        if config.skipping and not config.developer:
-            persistent.tried_skip = True
-            config.skipping = False
-            config.allow_skipping = False
-            renpy.jump("ch30_noskip")
-            return
+        # if config.skipping and not config.developer:
+        #     persistent.tried_skip = True
+        #     config.skipping = False
+        #     config.allow_skipping = False
+        #     renpy.jump("ch30_noskip")
+        #     return
 
         if event == "begin":
             store.mas_hotkeys.allow_dismiss = False
@@ -902,10 +902,10 @@ label ch30_post_exp_check:
     if selected_greeting:
         $ pushEvent(selected_greeting)
 
-    if not persistent.tried_skip:
-        $ config.allow_skipping = True
-    else:
-        $ config.allow_skipping = False
+    # if not persistent.tried_skip:
+    #     $ config.allow_skipping = True
+    # else:
+    #     $ config.allow_skipping = False
 
     window auto
 
@@ -952,10 +952,10 @@ label ch30_loop:
 
 
     $ persistent.autoload = "ch30_autoload"
-    if not persistent.tried_skip:
-        $ config.allow_skipping = True
-    else:
-        $ config.allow_skipping = False
+    # if not persistent.tried_skip:
+    #     $ config.allow_skipping = True
+    # else:
+    #     $ config.allow_skipping = False
 
     # check for outstanding threads
     if store.mas_dockstat.abort_gen_promise:
@@ -1317,7 +1317,7 @@ label ch30_reset:
 
         # reset clothes if its past o31
         if (
-                store.mas_o31_event.isMonikaInCostume(monika_chr) 
+                store.mas_o31_event.isMonikaInCostume(monika_chr)
                 and not mas_isO31()
             ):
             monika_chr.reset_clothes()
