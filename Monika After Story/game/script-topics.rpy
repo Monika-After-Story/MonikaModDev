@@ -3188,10 +3188,10 @@ label monika_mountains:
     m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
     m "I... I truly want to share that with you."
     m "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud at what we've done."
-    show monika 5eub
     menu:
         m "Wouldn't you like that too, [player]?"
-        "Yes.":
+        
+	"Yes.":
             m 5eubla "Well...I hope that one day, we'll have that chance. To make it to the top of our mountain."
             m 5hua "And I'll do anything to give us that shot."
             
