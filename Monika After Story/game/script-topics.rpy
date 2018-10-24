@@ -3159,7 +3159,7 @@ label monika_outdoors:
     m 1eua "But, while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
     m 3lud "Such as bug spray or sunscreen. Many people forget or even forgo them; thinking them unimportant."
     m 1eud "But without it, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
-    m "So, please promise me that the next time you go outdoors, you won't forget them."
+    m "So, please promise me that the next time you go outdoors, be it camping, or even backpacking, you won't forget them."
     m "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eub "But, on the bright side..."
     m "Once I cross over, if you remember to bring the sunscreen..."
