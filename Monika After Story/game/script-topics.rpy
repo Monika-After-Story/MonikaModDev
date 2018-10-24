@@ -3149,20 +3149,22 @@ label monika_ribbon:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['outdoors'],prompt="Camping safety",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['misc'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
     m 1eua "Do you ever go camping, [player]?"
-    m 3eua "It's a wonderful way to relax and get fresh air."
-    m 3eud "But, there are several dangers that most don't think about."
-    m 3lud "Such as bug spray, or sunscreen. Many people forget, or even forgo them, thinking them unimportant."
-    m 1eud "But without it, sunburns are almost inevitable, and many insects carry diseases that can truly harm you."
+    m 3eua "It's a wonderful way to relax and get some fresh air,"
+    m "As well as to see the areas around you, to visit state and national parks."
+    m 1huu "It's almost like a more relaxed backpacking trip!"
+    m 1eua "But, while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
+    m 3lud "Such as bug spray or sunscreen. Many people forget or even forgo them; thinking them unimportant."
+    m 1eud "But without it, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
     m "So, please promise me that the next time you go outdoors, you won't forget them."
-    m "It may be inconvenient, but if you don't use them, you many up miserable, or even get really sick."
-    m 1eub "On the bright side..."
+    m "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
+    m 1eub "But, on the bright side..."
     m "Once I cross over, if you remember to bring the sunscreen..."
     m 1tfu "I might need help putting it on."
-    m 1hub "Ahahahaha!"
+    m 1hub "Ahahaha!"
     m 1efu "I'm only teasing you, [player]."
     m 1tfu "Well, at least a little."
     return
