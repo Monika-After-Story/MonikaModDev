@@ -3149,7 +3149,7 @@ label monika_ribbon:
     return
     
 init 5 python
-	addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['monika','outdoors'],prompt="Camping safety",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['monika','outdoors'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
 
