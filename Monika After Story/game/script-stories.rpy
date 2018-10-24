@@ -585,34 +585,34 @@ label mas_scary_story_kuchisake_onna:
     else:
         jump mas_scary_story_kuchisake_onna.end
 
-    label .no:
-        hide screen mas_background_timed_jump
-        "{b}{i}Is that, so?{w=1.0}{nw}{/i}{/b}"
-        $ _history_list.pop()
-        $ _history_list.pop()
-        $ pause(1.0)
-        hide natsuki
-        play sound "sfx/run.ogg"
-        show natsuki mas_ghost onlayer front at i11
-        $ pause(0.25)
-        hide natsuki mas_ghost onlayer front
+label .no:
+    hide screen mas_background_timed_jump
+    "{b}{i}Is that, so?{w=1.0}{nw}{/i}{/b}"
+    $ _history_list.pop()
+    $ _history_list.pop()
+    $ pause(1.0)
+    hide natsuki
+    play sound "sfx/run.ogg"
+    show natsuki mas_ghost onlayer front at i11
+    $ pause(0.25)
+    hide natsuki mas_ghost onlayer front
 
-    label .clean:
-        show black zorder 100
-        hide k_rects_eyes1
-        hide k_rects_eyes2
-        hide natsuki
-        $ pause(1.5)
-        hide black
-        $ style.say_dialogue = style.normal
-        show monika 1eua at i11 zorder MAS_MONIKA_Z
+label .clean:
+    show black zorder 100
+    hide k_rects_eyes1
+    hide k_rects_eyes2
+    hide natsuki
+    $ pause(1.5)
+    hide black
+    $ style.say_dialogue = style.normal
+    show monika 1eua at i11 zorder MAS_MONIKA_Z
 
-    label .end:
-        m 3eud "The fate she gives you depends on your answer, actually."
-        m "Meeting her isn't always certain to seal your doom."
-        m 3esc "However..."
-        m "If you're not smart with how you deal with the question..."
-        m 3tku "You might just end up like her."
+label .end:
+    m 3eud "The fate she gives you depends on your answer, actually."
+    m "Meeting her isn't always certain to seal your doom."
+    m 3esc "However..."
+    m "If you're not smart with how you deal with the question..."
+    m 3tku "You might just end up like her."
     call mas_scary_story_cleanup
     return
 
