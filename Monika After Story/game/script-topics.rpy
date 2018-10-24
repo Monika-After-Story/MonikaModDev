@@ -3192,10 +3192,12 @@ label monika_mountains:
         m "Wouldn't you like that too, [player]?"
         
 	"Yes.":
+	    $ persistent._mas_pm_wants_to_go_into_mountains = True
             m 5eubla "Well...I hope that one day, we'll have that chance. To make it to the top of our mountain."
             m 5hua "And I'll do anything to give us that shot."
             
 	"No.":
+	    $ persistent._mas_pm_want_to_go_into_mountains = False
 	    m 1wud "Oh."
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
