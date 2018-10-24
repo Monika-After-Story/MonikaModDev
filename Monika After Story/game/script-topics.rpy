@@ -3148,8 +3148,8 @@ label monika_ribbon:
     m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
     return
     
-init 5 python
-    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['monika','outdoors'],prompt="Camping safety",random=True))
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['outdoors'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
 
