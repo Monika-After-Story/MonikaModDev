@@ -639,12 +639,24 @@ label bye_going_somewhere:
         m 1hua "Yay!"
         m 1ekbfa "I wonder where you'll take me today..."
 
+    # event based
     if mas_isMonikaBirthday():
         m 1hua "Ehehe. It's a bit romantic, isn't it?"
         m 1eua "Maybe you'd even want to call it a da-{nw}"
         $ _history_list.pop()
         $ _history_list.pop()
         m 1hua "Oh! Sorry, did I say something?"
+
+    if mas_isO31():
+        show monika 1wub
+        menu:
+            m "Oh! Are we going trick or treating, [player]?"
+            "Yes.":
+                jump bye_trick_or_treat
+
+            "No.":
+                m 2ekp "Oh, okay."
+                
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
