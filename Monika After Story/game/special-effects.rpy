@@ -36,6 +36,7 @@ image natsuki mas_ghost:
         ease 0.025 xoffset 20
         repeat
     0.25
+
 image mujina:
     "mod_assets/other/mujina.png"
     zoom 1.25
@@ -43,6 +44,13 @@ image mujina:
         easeout 0.5 zoom 4.5 yoffset 1200
     0.5
 
+image thunder:
+    "mod_assets/other/thunder.png"
+    alpha 1.0
+    parallel:
+        easeout 2.8 alpha 0.0
+    3.0
+    Null()
 
 transform k_scare:
     tinstant(640)

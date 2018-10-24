@@ -492,6 +492,16 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     # o31
     if store.mas_globals.show_vignette:
         show vignette zorder 70
+        # Thunder
+        # TODO I'm unsure if this is the best place to put this
+        if renpy.random.randint(1,6) == 1:
+            show thunder zoder 6
+            $ pause(0.5)
+            play sound "mod_assets/thunder.wav"
+            if renpy.random.randint(1,10) == 1 and not persistent._mas_sensitive_mode:
+                #TODO Sayori thingy
+                pass
+
 
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
