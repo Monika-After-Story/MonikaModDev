@@ -3162,10 +3162,10 @@ label monika_outdoors:
     m "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eub "But, on the bright side..."
     m "Once I cross over, if you remember to bring the sunscreen..."
-    m 1tfu "I might need help putting it on."
+    m 1tfu "I might need a little help putting it on."
     m 1hub "Ahahaha!"
     m 1efu "I'm only teasing you, [player]."
-    m 1tfu "Well, at least a little."
+    m 1tfu "Well, at least a little. Ehehe."
     return
     
 init 5 python:
