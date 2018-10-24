@@ -3203,7 +3203,7 @@ label monika_mountains:
 	    m 1rud "Well... I suppose it doesn't matter." 
 	    m 1eua "As long as I have you."
     
-    return "Derandom"
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_algernon",category=['literature'],prompt="Flowers for Algernon",random=True))
