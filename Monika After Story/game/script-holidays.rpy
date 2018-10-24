@@ -337,7 +337,7 @@ label greeting_o31_rin:
     if store.mas_o31_event.o31_cg_decoded:
         m "cg"
         # TODO
-        
+
     else:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
         m 1hub "Hi [player]!"
@@ -385,14 +385,14 @@ init 5 python:
 
 label greeting_trick_or_treat_back:
     # trick/treating returned home greeting
-    
+
     python:
         # lots of setup here
         five_minutes = datetime.timedelta(seconds=5*60)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
-        
+
         if len(persistent._mas_dockstat_checkin_log) > 0:
             checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
             is_past_sunrise_post31 = (
@@ -404,7 +404,7 @@ label greeting_trick_or_treat_back:
                     + datetime.timedelta(days=1)
                 )
             )
-    
+
 
     # TODO
     m "am back"
@@ -429,7 +429,7 @@ label bye_trick_or_treat:
     $ too_early_to_go = curr_hour < 17
     $ too_late_to_go = curr_hour >= 23
 
-    if too_early_to_go
+    if too_early_to_go:
         # before 5pm is too early.
         m 3eksdla "Doesn't it seem a little early for trick or treating, [player]?"
         m 3rksdla "I don't think there's going to be anyone giving out candy yet..."
@@ -446,7 +446,7 @@ label bye_trick_or_treat:
                 m 4eub "Let's just make the most out of it later this evening, okay?"
                 return
 
-    elif too_late_to_go
+    elif too_late_to_go:
         # after 11pm is too late!
         m "Too late"
 
@@ -524,4 +524,3 @@ label bye_trick_or_treat_rtg:
     m 1ekc "Oh no..."
     m "CANT DO IT"
     return
-        

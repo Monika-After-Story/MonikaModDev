@@ -4163,6 +4163,19 @@ image monika 1duu = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1dtc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1dubsu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6718,6 +6731,32 @@ image monika 3esc = DynamicDisplayable(
     nose="def",
     mouth="smirk",
     head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3etc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3etd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
     left="2l",
     right="1r",
     arms="restleftpointright"
