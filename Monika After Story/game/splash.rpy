@@ -181,6 +181,7 @@ label splashscreen:
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
+    $ persistent.tried_skip = False
     if not persistent.first_run:
         $ quick_menu = False
         pause 0.5
@@ -244,7 +245,7 @@ label splashscreen:
     show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
-    $ config.allow_skipping = True
+    $ config.allow_skipping = False
     return
 
 label warningscreen:
@@ -253,7 +254,7 @@ label warningscreen:
     pause 3.0
 
 label after_load:
-    $ config.allow_skipping = allow_skipping
+    $ config.allow_skipping = False
     $ _dismiss_pause = config.developer
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
@@ -320,7 +321,7 @@ label quit:
         store.mas_calendar.saveCalendarDatabase(CustomEncoder)
         persistent.sessions['last_session_end']=datetime.datetime.now()
         today_time = (
-            persistent.sessions["last_session_end"] 
+            persistent.sessions["last_session_end"]
             - persistent.sessions["current_session_start"]
         )
         new_time = today_time + persistent.sessions["total_playtime"]
