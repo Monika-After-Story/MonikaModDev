@@ -444,7 +444,8 @@ label mas_scary_story_setup:
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop
-    show vignette zorder 70
+    if not mas_isO31():
+        show vignette zorder 70
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -468,7 +469,7 @@ label mas_scary_story_cleanup:
     python:
         story_end_quips = [
             "Scared, [player]?",
-            "Did I scare you, [player]",
+            "Did I scare you, [player]?",
             "How was it?",
             "Well?"
         ]
@@ -483,7 +484,8 @@ label mas_scary_story_cleanup:
     pause 1.0
     hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
-    hide vignette
+    if not mas_isO31():
+        hide vignette
     call spaceroom
 #    $ store.songs.enabled = True
     $ play_song(songs.current_track)
