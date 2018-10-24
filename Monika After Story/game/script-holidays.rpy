@@ -30,6 +30,24 @@ default persistent._mas_o31_in_o31_mode = False
 default persistent._mas_o31_dockstat_return = False
 # TRue if monika closes the game so she can set up o31
 
+default persistent._mas_o31_went_trick_or_treating = None
+# set to a string describing how long we were out
+#   aborted - tried to go but did not for some reason
+#   short - under 5 minutes
+#   mid - under an hour
+#   right - under 3 hours
+#   long - over 3 hours
+#   longlong - over 3 hours + sunrise
+
+default persistent._mas_o31_trick_or_treating_start_time = None
+# set to a string describing when we offered trick/treat
+# we can combine this with the above to check if user even went out and why
+# they did not
+#   early - we did it early
+#   normal - we did it normal time
+#   late - we did it late
+
+
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
@@ -119,9 +137,9 @@ label mas_holiday_o31_autoload_check:
             else:
                 persistent._mas_o31_current_costume = "rin"
                 selected_greeting = "greeting_o31_rin"
-                # store.mas_o31_event.o31_cg_decoded = (
-    #                    store.mas_o31_event.decodeImage("o31rcg")
-    #                )
+                store.mas_o31_event.o31_cg_decoded = (
+                    store.mas_o31_event.decodeImage("o31rcg")
+                )
 
             persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
 
@@ -286,7 +304,6 @@ init 5 python:
     )
 
 label greeting_o31_rin:
-    jump greeting_o31_marisa
     # starting with no visuals
 
     # couple of things:
@@ -304,8 +321,38 @@ label greeting_o31_rin:
     # enable the marisa clothes
     $ monika_chr.change_clothes(mas_clothes_marisa)
 
-    # TODO handle visuals
-    m "I am rin"
+    # reset zoom
+    $ store.mas_sprites.reset_zoom()
+    $ title_cased_hes = hes.title()
+
+    # ASSUME vignette
+    call spaceroom(hide_monika=True)
+    show emptydesk at i11 zorder 9
+
+    m "Ugh, I hope I got these braids right."
+    m "Why does this costume have to be so complicated...?"
+    m "Oh shoot! [title_cased_hes] here!"
+    pause 3.0
+
+    if store.mas_o31_event.o31_cg_decoded:
+        m "cg"
+        # TODO
+        
+    else:
+        show monika 1eua at t11 zorder MAS_MONIKA_Z
+        m 1hub "Hi [player]!"
+        hide emptydesk
+        m 3hub "Do you like my costume?"
+
+    # regular dialogue
+    m 3etc "Honestly, I don't even know who this is supposed to be."
+    m 3etd "I just found it in the closet with a note attached that had the word 'Rin', a drawing of a girl pushing a wheelbarrow, and some blue floaty thingies."
+    m 1euc "Along with instructions on how to style your hair to go along with this outfit."
+    m "Judging by these cat ears, I'm guessing this character is a catgirl."
+    m 1dtc "But why would she push a wheelbarrow around?"
+    pause 1.0
+    m 1hksdlb "Anyway, it was pain getting my hair done."
+    m 1eub "So I hope you like the costume!"
 
     # cleanup
     # 1 - music hotkeys should be enabled
@@ -337,6 +384,28 @@ init 5 python:
     )
 
 label greeting_trick_or_treat_back:
+    # trick/treating returned home greeting
+    
+    python:
+        # lots of setup here
+        five_minutes = datetime.timedelta(seconds=5*60)
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkin_time = None
+        is_past_sunrise_post31 = False
+        
+        if len(persistent._mas_dockstat_checkin_log) > 0:
+            checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
+            is_past_sunrise_post31 = (
+                datetime.datetime.now() > (
+                    datetime.combine(
+                        mas_o31,
+                        datetime.time(seconds=persistent._mas_sunrise * 60)
+                    )
+                    + datetime.timedelta(days=1)
+                )
+            )
+    
+
     # TODO
     m "am back"
     return
