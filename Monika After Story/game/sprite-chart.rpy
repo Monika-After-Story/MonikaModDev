@@ -244,7 +244,7 @@ init -5 python in mas_sprites:
     ZOOM = "zoom="
 
     default_zoom_level = 3
-   
+
     if store.persistent._mas_zoom_zoom_level is None:
         store.persistent._mas_zoom_zoom_level = default_zoom_level
         zoom_level = default_zoom_level
@@ -1768,7 +1768,7 @@ init -2 python:
             stay_on_start - determines if the item stays on startup
         """
 
-        def __init__(self, 
+        def __init__(self,
                 name,
                 img_sit,
                 pose_map,
@@ -1806,7 +1806,7 @@ init -2 python:
 
         PROPERTIES:
             fallback - If true, the PoseMap contains fallbacks that poses
-                will revert to. If something is None, then it means to 
+                will revert to. If something is None, then it means to
                 blacklist.
 
         SEE MASSpriteBase for inherited properties
@@ -1873,7 +1873,7 @@ init -2 python:
                 # we have a lean, check for fallbacks
                 return ("steepling", self.pose_map.l_map.get(lean, None))
 
-            # otherwise check the pose 
+            # otherwise check the pose
             return (self.pose_map.map.get(pose, "steepling"), None)
 
 
@@ -1976,9 +1976,9 @@ init -2 python:
         SEE MASSpriteFallbackBase for inherited properties
 
         POSEMAP explanations:
-            Use an empty string to 
+            Use an empty string to
         """
-        
+
         def __init__(self,
                 name,
                 img_sit,
@@ -2032,7 +2032,7 @@ init -2 python:
         """
         import store.mas_sprites as mas_sprites
 
-        
+
         def __init__(self,
                 name,
                 img_sit,
@@ -2083,7 +2083,7 @@ init -2 python:
                     if hair_name not in self.hair_map:
                         self.hair_map[hair_name] = self.hair_map["all"]
 
-        
+
         def get_hair(self, hair):
             """
             Given a hair type, grabs the available mapping for this hair type
@@ -2092,7 +2092,7 @@ init -2 python:
                 hair - hair type to get mapping for
 
             RETURNS:
-                the hair mapping to use inplace for the given hair type         
+                the hair mapping to use inplace for the given hair type
             """
             return self.hair_map.get(hair, hair)
 
@@ -2248,7 +2248,7 @@ init -1 python:
     #   by setting fallback to True, you can use the fallback system to
     #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
     #   fallback to a lean type. Lean types can only fallback to other lean
-    #   types OR steepling. 
+    #   types OR steepling.
     #
     #   When using the fallback system, map poses to the pose/lean types
     #   that you want to fallback on.
@@ -2337,6 +2337,45 @@ init -1 python:
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
 
+    ### MARISA COSTUME
+    ## marisa
+    # Witch costume based on Marisa
+    mas_clothes_marisa = MASClothes(
+        "marisa",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_marisa)
+
+    ### RIN COSTUME
+    ## rin
+    # Neko costume based on Rin
+    mas_clothes_rin = MASClothes(
+        "rin",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_rin)
 
 init -1 python:
     # ACCESSORIES (IMG020)
@@ -4119,6 +4158,19 @@ image monika 1duu = DynamicDisplayable(
     nose="def",
     mouth="smug",
     head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1dtc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="i",
     left="1l",
     right="1r",
     arms="steepling"
@@ -6540,6 +6592,19 @@ image monika 2wkd = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2etc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2rkc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6666,6 +6731,32 @@ image monika 3esc = DynamicDisplayable(
     nose="def",
     mouth="smirk",
     head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3etc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3etd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
     left="2l",
     right="1r",
     arms="restleftpointright"

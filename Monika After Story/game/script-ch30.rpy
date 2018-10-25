@@ -1,11 +1,12 @@
 default persistent.monika_reload = 0
-default persistent.tried_skip = None
+default persistent.tried_skip = False
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 define mas_skip_mid_loop_eval = False
+define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
 default persistent._mas_disable_animations = False
@@ -19,16 +20,35 @@ init -1 python in mas_globals:
     # True means we are in the dialogue workflow. False means not
     dlg_workflow = False
 
+    show_vignette = False
+    # TRue means show the vignette mask, False means no show
+
+    show_lightning = False
+    # True means show lightening, False means do not
+
+    lightning_chance = 6
+    lightning_s_chance = 10
+    # lghtning chances
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
 
+#    mas_temp_moni_chksum = None
+
     if persistent._mas_moni_chksum is not None:
+#        mas_temp_moni_chksum = persistent._mas_moni_chksum
+        
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
         # check surprise party
         store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
+
+        # check if coming from TT
+        store.mas_o31_event.mas_return_from_tt = (
+            store.mas_o31_event.isTTGreeting()
+        )
 
 
     postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
@@ -39,7 +59,7 @@ init 970 python:
             and postbday_ev.conditional is not None
             and eval(postbday_ev.conditional)
         ):
-        # reset the post bday event if users did long absence to skip the 
+        # reset the post bday event if users did long absence to skip the
         # event
         postbday_ev.conditional = None
         postbday_ev.action = None
@@ -52,12 +72,26 @@ init 970 python:
 
     # quick fix for dates
     # NOTE: remove this in 089
-    if (
-            persistent._mas_bday_date_affection_gained >= 50 and
-            not persistent._mas_bday_date_affection_fix
-        ):
-        mas_gainAffection(50, bypass=True)
-        persistent._mas_bday_date_affection_fix = True
+#    if (
+#            persistent._mas_bday_date_affection_gained >= 50 and
+#            not persistent._mas_bday_date_affection_fix
+#        ):
+#        mas_gainAffection(50, bypass=True)
+#        persistent._mas_bday_date_affection_fix = True
+
+    # o31 costumes flag
+    # we only enable costumes if you are not playing for the first time today.
+    if persistent._mas_o31_costumes_allowed is None:
+        first_sesh = persistent.sessions.get("first_session", None)
+        if first_sesh is not None:
+            # fresh players will have first session today
+            persistent._mas_o31_costumes_allowed = (
+                first_sesh.date() != mas_o31
+            )
+
+        else:
+            # no first sesh? you are also fresh
+            persistent._mas_o31_costumes_allowed = False
 
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
@@ -350,12 +384,12 @@ init python:
                 end -> end of dialogue (user has interacted)
         """
         # skip check
-        if config.skipping and not config.developer:
-            persistent.tried_skip = True
-            config.skipping = False
-            config.allow_skipping = False
-            renpy.jump("ch30_noskip")
-            return
+        # if config.skipping and not config.developer:
+        #     persistent.tried_skip = True
+        #     config.skipping = False
+        #     config.allow_skipping = False
+        #     renpy.jump("ch30_noskip")
+        #     return
 
         if event == "begin":
             store.mas_hotkeys.allow_dismiss = False
@@ -404,6 +438,32 @@ init python:
         return False
 
 
+    def mas_forceRain():
+        """
+        Sets rain variables and locks appropriate rain events
+        """
+        global scene_change, mas_is_raining
+        scene_change = True
+        mas_is_raining = True
+        renpy.music.play(
+            audio.rain,
+            channel="background",
+            loop=True,
+            fadein=1.0
+        )
+        lockEventLabel("monika_rain_start")
+        lockEventLabel("monika_rain_stop")
+        lockEventLabel("monika_rain")
+
+
+    def mas_lockHair():
+        """
+        Locks all hair topics
+        """
+        lockEventLabel("monika_hair_down")
+        lockEventLabel("monika_hair_ponytail")
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -417,6 +477,7 @@ init python:
 #       (Default: False)
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     default dissolve_time = 0.5
+
     if is_morning():
         if not morning_flag or scene_change:
             $ morning_flag = True
@@ -448,6 +509,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     $scene_change = False
 
+    if store.mas_globals.show_vignette:
+        show vignette zorder 70
+
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
         $ store.mas_dockstat.surpriseBdayShowVisuals()
@@ -465,6 +529,17 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # o31? o31 mode you are in
+    if mas_isO31():
+        $ persistent._mas_o31_in_o31_mode = True
+        $ store.mas_globals.show_vignette = True
+        $ store.mas_globals.show_lightning = True
+        $ mas_forceRain()
+        $ mas_lockHair()
+
+    # so other flows are aware that we are in intro
+    $ mas_in_intro_flow = True
 
     # before we render visuals:
     # 1 - all core interactions should be disabeld
@@ -491,6 +566,9 @@ label ch30_main:
 
     # 3 - set keymaps
     $ set_keymaps()
+
+    # now we out of intro
+    $ mas_in_intro_flow = False
 
     jump ch30_preloop
 
@@ -698,6 +776,14 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
+    if mas_isO31():
+        jump mas_holiday_o31_autoload_check
+
+
+label mas_ch30_post_holiday_check:
+    # post holiday checks
+
+
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         #If the conditions are met and Monika expects an apology, jump to this label.
@@ -760,8 +846,14 @@ label mas_ch30_post_retmoni_check:
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
 
+label ch30_post_greeting_check:
+    # this label skips only greeting checks
+
     #If you were interrupted, push that event back on the stack
     $ restartEvent()
+
+label ch30_post_restartevent_check:
+    # this label skips the restart event and greeting checks
 
     #Grant XP for time spent away from the game if Monika was put to sleep right
     python:
@@ -805,12 +897,12 @@ label mas_ch30_post_retmoni_check:
             # Grant bad exp for closing the game incorrectly.
             mas_loseAffection(modifier=2, reason="closing the game on me")
 
-label ch30_post_greeting_check:
+label ch30_post_exp_check:
     # this label skips greeting selection as well as exp checks for game close
     # we assume here that you set selected_greeting if you needed to
 
     # file reactions
-    if mas_isMonikaBirthday():
+    if mas_isMonikaBirthday() or mas_isO31():
         $ mas_checkReactions()
 
     #Run actions for any events that need to be changed based on a condition
@@ -830,10 +922,10 @@ label ch30_post_greeting_check:
     if selected_greeting:
         $ pushEvent(selected_greeting)
 
-    if not persistent.tried_skip:
-        $ config.allow_skipping = True
-    else:
-        $ config.allow_skipping = False
+    # if not persistent.tried_skip:
+    #     $ config.allow_skipping = True
+    # else:
+    #     $ config.allow_skipping = False
 
     window auto
 
@@ -843,12 +935,7 @@ label ch30_post_greeting_check:
 
         # rain check
         if mas_shouldRain():
-            $ scene_change = True
-            $ mas_is_raining = True
-            play background audio.rain fadein 1.0 loop
-            $ lockEventLabel("monika_rain_start")
-            $ lockEventLabel("monika_rain_stop")
-            $ lockEventLabel("monika_rain")
+            $ mas_forceRain()
 
     # FALL THROUGH TO PRELOOP
 
@@ -885,10 +972,10 @@ label ch30_loop:
 
 
     $ persistent.autoload = "ch30_autoload"
-    if not persistent.tried_skip:
-        $ config.allow_skipping = True
-    else:
-        $ config.allow_skipping = False
+    # if not persistent.tried_skip:
+    #     $ config.allow_skipping = True
+    # else:
+    #     $ config.allow_skipping = False
 
     # check for outstanding threads
     if store.mas_dockstat.abort_gen_promise:
@@ -932,8 +1019,10 @@ label ch30_loop:
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             # run file checks
-            if mas_isMonikaBirthday():
+            if mas_isMonikaBirthday() or mas_isO31():
                 mas_checkReactions()
+
+            # TODO: o31 fielc ehckes
 
             #Update time
             calendar_last_checked=datetime.datetime.now()
@@ -958,6 +1047,26 @@ label ch30_post_mid_loop_eval:
     if not _return:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
+
+        # Thunder / lightening if enabled
+        if (
+                store.mas_globals.show_lightning 
+                and renpy.random.randint(
+                    1, store.mas_globals.lightning_chance
+                ) == 1
+            ):
+            if (
+                    not persistent._mas_sensitive_mode
+                    and renpy.random.randint(
+                        1, store.mas_globals.lightning_s_chance
+                    ) == 1
+                ):
+                show mas_lightning_s zorder 4
+            else:
+                show mas_lightning zorder 4
+
+            $ pause(0.5)
+            play sound "mod_assets/sounds/amb/thunder.wav"
 
         if mas_randchat.rand_low == 0:
             # we are not repeating for now
@@ -1239,6 +1348,16 @@ label ch30_reset:
                 bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
                 bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
 
+
+    ## o31 content
+    python:
+        # reset clothes if its past o31
+        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+            if persistent._mas_o31_in_o31_mode:
+                mas_lockHair()
+            else:
+                monika_chr.reset_clothes()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -1246,5 +1365,8 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+            monika_chr.remove_acs(mas_acs_promisering)
 
     return

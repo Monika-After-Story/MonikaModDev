@@ -342,10 +342,11 @@ init 15 python in mas_affection:
                 evhand._unlockEventLabel("monika_rain_start")
             evhand._unlockEventLabel("monika_rain")
 
-        evhand._unlockEventLabel(
-            "i_greeting_monikaroom",
-            eventdb=evhand.greeting_database
-        )
+        if not store.mas_isO31():
+            evhand._unlockEventLabel(
+                "i_greeting_monikaroom",
+                eventdb=evhand.greeting_database
+            )
 
         if not persistent._mas_hair_changed:
             evhand._unlockEventLabel(
