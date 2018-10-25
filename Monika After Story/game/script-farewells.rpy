@@ -710,10 +710,7 @@ label bye_going_somewhere_rtg:
     $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
-        # NOTE: we should not set this because the default greeting is the
-        # TYPE_GO_SOMEWHERE
-#        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GO_SOMEWHERE
-        $ persistent._mas_greeting_type = None
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GENERIC_RET
         m 1eua "I'm ready to go."
         return "quit"
 
