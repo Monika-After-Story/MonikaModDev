@@ -303,7 +303,7 @@ label v0_8_9(version="v0_8_9"):
         horror_ev = mas_getEV("monika_horror", None)
         if horror_ev:
             horror_ev.conditional = (
-                "datetime.date(2018, 10, 25) <= datetime.date.today() "
+                "datetime.date(2018, 10, 26) <= datetime.date.today() "
                 "<= datetime.date(2018, 10, 30)"
             )
             horror_ev.action = EV_ACT_QUEUE
