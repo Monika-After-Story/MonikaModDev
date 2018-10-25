@@ -2380,4 +2380,11 @@ label mas_dockstat_found_monika:
         enable_esc()
         startup_check = False
 
+        # o31 re-entry checks
+        if mas_isO31() and persistent._mas_o31_in_o31_mode:
+            store.mas_globals.show_vignette = True
+            store.mas_globals.show_lightning = True
+            mas_forceRain()
+            mas_lockHair()
+
     jump ch30_post_exp_check
