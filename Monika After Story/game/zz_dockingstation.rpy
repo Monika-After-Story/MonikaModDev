@@ -87,7 +87,9 @@ init -900 python in mas_ics:
     )
 
     # rin cg
-    o31_rin = "TEST2"
+    o31_rin = (
+        "c8fb05e801e0eb1f234b4af99d910e561a9afbbd1a5df6bee6edd602c94adb81"
+    )
 
     # cg dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
