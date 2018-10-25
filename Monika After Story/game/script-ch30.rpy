@@ -31,12 +31,17 @@ init 970 python:
 
     if persistent._mas_moni_chksum is not None:
 #        mas_temp_moni_chksum = persistent._mas_moni_chksum
-
+        
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
         # check surprise party
         store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
+
+        # check if coming from TT
+        store.mas_o31_event.mas_return_from_tt = (
+            store.mas_o31_event.isTTGreeting()
+        )
 
 
     postbday_ev = mas_getEV("mas_bday_postbday_notimespent")
@@ -1328,7 +1333,7 @@ label ch30_reset:
         # reset clothes if its past o31
         if (
                 store.mas_o31_event.isMonikaInCostume(monika_chr)
-                and not mas_isO31()
+                and not persistent._mas_o31_in_o31_mode
             ):
             monika_chr.reset_clothes()
 

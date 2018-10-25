@@ -66,7 +66,11 @@ init 101 python:
             "rin": False
         }
 
-    if not mas_isO31():
+    if (
+            persistent._mas_o31_in_o31_mode
+            and not mas_isO31()
+            and not store.mas_o31_event.isTTGreeting()
+        ):
         # disable o31 mode
         persistent._mas_o31_in_o31_mode = False
 
@@ -81,6 +85,9 @@ init -11 python in mas_o31_event:
 
     # cg available?
     o31_cg_decoded = False
+
+    # was monika just returned form a TT event
+    mas_return_from_tt = False
 
 
     def decodeImage(key):
@@ -112,6 +119,19 @@ init -11 python in mas_o31_event:
         return (
             _monika_chr.clothes.name == "marisa"
             or _monika_chr.clothes.name == "rin"
+        )
+
+
+    def isTTGreeting():
+        """
+        RETURNS True if the persistent greeting type is the TT one
+        """
+        return (
+            persistent._mas_greeting_type is not None
+            and (
+                persistent._mas_greeting_type[0] 
+                == store.mas_greetings.TYPE_HOL_O31_TT
+            )
         )
 
 
@@ -409,7 +429,7 @@ label greeting_trick_or_treat_back:
             checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
             is_past_sunrise_post31 = (
                 datetime.datetime.now() > (
-                    datetime.combine(
+                    datetime.datetime.combine(
                         mas_o31,
                         datetime.time(seconds=persistent._mas_sunrise * 60)
                     )
