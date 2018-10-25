@@ -86,7 +86,7 @@ init 970 python:
         if first_sesh is not None:
             # fresh players will have first session today
             persistent._mas_o31_costumes_allowed = (
-                first_sesh.date() != datetime.date.today()
+                first_sesh.date() != mas_o31
             )
 
         else:
