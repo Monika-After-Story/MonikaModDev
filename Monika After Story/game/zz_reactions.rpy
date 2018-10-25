@@ -728,8 +728,7 @@ label mas_reaction_bday_cake:
 
 init 5 python:
     if mas_isMonikaBirthday():
-
-        if mas_isMonikaBirthday():    addReaction("mas_reaction_cupcake", "cupcake")
+        addReaction("mas_reaction_cupcake", "cupcake")
 
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
