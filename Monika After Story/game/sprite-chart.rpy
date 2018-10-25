@@ -2365,9 +2365,9 @@ init -1 python:
         "def",
         MASPoseMap(
             p1="steepling",
-            p2="down",
-            p3="steepling",
-            p4="down",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
             p6="down"
         ),
         fallback=True,
