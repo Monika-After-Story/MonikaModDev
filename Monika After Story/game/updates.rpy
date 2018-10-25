@@ -295,12 +295,14 @@ label v0_3_1(version=version): # 0.3.1
 # non generic updates go here
 label v0_8_9(version="v0_8_9"):
     python:
+        import store.evhand as evhand
+
         # erase wedding ring topic data since the event is basiclly new'd
         mas_eraseTopic("monika_weddingring", persistent.event_database)
 
         # setup conditional for monika_horror
         # TODO: post halloween we need to reset this to no conditional
-        horror_ev = mas_getEV("monika_horror", None)
+        horror_ev = evhand.event_database.get("monika_horror", None)
         if horror_ev:
             horror_ev.conditional = (
                 "datetime.date(2018, 10, 26) <= datetime.date.today() "
