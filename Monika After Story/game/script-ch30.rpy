@@ -770,7 +770,7 @@ label ch30_autoload:
 
 label mas_ch30_post_retmoni_check:
 
-    if mas_isO31() or persistent._mas_o31_in_o31_mode:
+    if mas_isO31():
         jump mas_holiday_o31_autoload_check
 
 

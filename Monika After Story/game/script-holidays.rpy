@@ -353,7 +353,7 @@ label greeting_o31_rin:
 
     # reset zoom
     $ store.mas_sprites.reset_zoom()
-    $ title_cased_hes = hes.title()
+    $ title_cased_hes = hes.capitalize()
 
     # ASSUME vignette
     call spaceroom(hide_monika=True)
@@ -362,11 +362,32 @@ label greeting_o31_rin:
     m "Ugh, I hope I got these braids right."
     m "Why does this costume have to be so complicated...?"
     m "Oh shoot! [title_cased_hes] here!"
+    window hide
     pause 3.0
 
     if store.mas_o31_event.o31_cg_decoded:
-        m "cg"
-        # TODO
+        $ cg_delay = datetime.timedelta(seconds=20)
+
+        # got cg
+        window auto
+        m "Say, [player]..."
+        window hide
+
+        show mas_o31_rin_cg zorder 20 at mas_o31_cg_scroll with dissolve
+        $ start_time = datetime.datetime.now()
+
+        while datetime.datetime.now() - start_time < cg_delay:
+            pause 1.0
+
+        hide emptydesk
+        window auto
+        m "What do {b}nya{/b} think?"
+
+        scene black
+        $ scene_change = True
+        pause 2.0
+        call spaceroom
+        m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
@@ -381,7 +402,7 @@ label greeting_o31_rin:
     m "Judging by these cat ears, I'm guessing this character is a catgirl."
     m 1dtc "But why would she push a wheelbarrow around?"
     pause 1.0
-    m 1hksdlb "Anyway, it was pain getting my hair done."
+    m 1hksdlb "Anyway, it was a pain getting my hair done."
     m 1eub "So I hope you like the costume!"
 
     # cleanup
