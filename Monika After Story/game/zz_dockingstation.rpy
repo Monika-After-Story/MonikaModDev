@@ -2354,7 +2354,6 @@ label mas_dockstat_found_monika:
 
     # select the greeting we want
     python:
-        #TODO: o31 greeting needs to be here
         if (
                 (store.mas_dockstat.retsbp_status 
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
