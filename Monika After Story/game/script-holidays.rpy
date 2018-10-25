@@ -345,8 +345,11 @@ label greeting_o31_rin:
     # 4 - hotkey buttons are hidden (skip visual)
     # 5 - music is off (skip visual)
 
-    # enable the marisa clothes
-    $ monika_chr.change_clothes(mas_clothes_marisa)
+    # enable the rin clothes
+    $ monika_chr.change_clothes(mas_clothes_rin)
+
+    # rin cannot wear promise ring because of reasons
+    $ monika_chr.remove_acs(mas_acs_promisering)
 
     # reset zoom
     $ store.mas_sprites.reset_zoom()

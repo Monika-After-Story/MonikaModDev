@@ -1345,4 +1345,10 @@ label ch30_reset:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
+        if (
+                persistent._mas_o31_in_o31_mode and
+                persistent._mas_o31_current_costume == "rin"
+            ):
+            monika_chr.remove_acs(mas_acs_promisering)
+
     return
