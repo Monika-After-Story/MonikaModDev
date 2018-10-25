@@ -127,9 +127,9 @@ init -11 python in mas_o31_event:
         RETURNS True if the persistent greeting type is the TT one
         """
         return (
-            persistent._mas_greeting_type is not None
+            store.persistent._mas_greeting_type is not None
             and (
-                persistent._mas_greeting_type[0] 
+                store.persistent._mas_greeting_type[0] 
                 == store.mas_greetings.TYPE_HOL_O31_TT
             )
         )
@@ -424,14 +424,16 @@ label greeting_trick_or_treat_back:
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
+        wearing_costume = store.mas_o31_event.isMonikaInCostume(monika_chr)
 
         if len(persistent._mas_dockstat_checkin_log) > 0:
             checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
+            sunrise_hour, sunrise_min = mas_cvToHM(persistent._mas_sunrise)
             is_past_sunrise_post31 = (
                 datetime.datetime.now() > (
                     datetime.datetime.combine(
                         mas_o31,
-                        datetime.time(seconds=persistent._mas_sunrise * 60)
+                        datetime.time(sunrise_hour, sunrise_min)
                     )
                     + datetime.timedelta(days=1)
                 )
@@ -463,8 +465,14 @@ label greeting_trick_or_treat_back:
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
         m 1eka "I really enjoyed trick or treating with you, [player]..."
-        m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-        m 2eub "Dressing up and going out was still really great!"
+        
+        if wearing_costume:
+            m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+            m 2eub "Dressing up and going out was still really great!"
+        else:
+            m 2eka "Even if I couldn't see anything..."
+            m 2eub "Going out was still really great!"
+
         m 4eub "Let's do this again next year!"
 
     elif not is_past_sunrise_post31:
@@ -475,8 +483,14 @@ label greeting_trick_or_treat_back:
         m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
         m 1wub "We must have gotten a ton of candy!"
         m 3eka "I really enjoyed being there with you..."
-        m 2eka "Even if I couldn't see anything and no one else could see my costume..."
-        m 2eub "Dressing up and going out was still really great!"
+
+        if wearing_costume:
+            m 2eka "Even if I couldn't see anything and no one else could see my costume..."
+            m 2eub "Dressing up and going out was still really great!"
+        else:
+            m 2eka "Even if I couldn't see anything..."
+            m 2eub "Going out was still really great!"
+
         m 4eub "Let's do this again next year!"
 
     else:
@@ -487,8 +501,14 @@ label greeting_trick_or_treat_back:
         m 1wuw "It's the next morning, [player], we were out all night..."
         m "I guess we had too much fun, ehehe~"
         m 2eka "But anyways, thanks for taking me along, I really enjoyed it."
-        m "Even if I couldn't see anything and no one else could see my costume..."
-        m 2eub "Dressing up and going out was still really great!"
+
+        if wearing_costume:
+            m "Even if I couldn't see anything and no one else could see my costume..."
+            m 2eub "Dressing up and going out was still really great!"
+        else:
+            m "Even if I couldn't see anything..."
+            m 2eub "Going out was still really great!"
+
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
         
     return
@@ -508,10 +528,17 @@ init 5 python:
         )
 
 label bye_trick_or_treat:
-    $ curr_hour = datetime.datetime.now().hour
-    $ too_early_to_go = curr_hour < 17
-    $ too_late_to_go = curr_hour >= 23
-    $ already_went = persistent._mas_o31_went_trick_or_treating is not None
+    python:
+        curr_hour = datetime.datetime.now().hour
+        too_early_to_go = curr_hour < 17
+        too_late_to_go = curr_hour >= 23
+        already_went = (
+            persistent._mas_o31_went_trick_or_treating_short
+            or persistent._mas_o31_went_trick_or_treating_mid
+            or persistent._mas_o31_went_trick_or_treating_right
+            or persistent._mas_o31_went_trick_or_treating_long
+            or persistent._mas_o31_went_trick_or_treating_longlong
+        )
 
     if already_went:
         m 1eka "Again?"
