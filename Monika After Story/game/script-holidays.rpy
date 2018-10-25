@@ -154,6 +154,9 @@ label mas_holiday_o31_autoload_check:
             persistent._mas_o31_in_o31_mode = True
             mas_skip_visuals = True
 
+            # no promise ring when wearing costumes
+            monika_chr.remove_acs(mas_acs_promisering)
+
             if random.randint(1,100) <= mas_o31_marisa_chance:
                 persistent._mas_o31_current_costume = "marisa"
                 selected_greeting = "greeting_o31_marisa"
@@ -349,9 +352,6 @@ label greeting_o31_rin:
 
     # enable the rin clothes
     $ monika_chr.change_clothes(mas_clothes_rin)
-
-    # rin cannot wear promise ring because of reasons
-    $ monika_chr.remove_acs(mas_acs_promisering)
 
     # reset zoom
     $ store.mas_sprites.reset_zoom()
