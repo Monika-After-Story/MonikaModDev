@@ -174,6 +174,7 @@ label mas_holiday_o31_autoload_check:
             store.mas_globals.show_vignette = True
             store.mas_globals.show_lightning = True
             mas_forceRain()
+            mas_lockHair()
 
     if mas_skip_visuals:
         jump ch30_post_restartevent_check

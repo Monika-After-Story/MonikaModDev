@@ -456,6 +456,14 @@ init python:
         lockEventLabel("monika_rain")
 
 
+    def mas_lockHair():
+        """
+        Locks all hair topics
+        """
+        lockEventLabel("monika_hair_down")
+        lockEventLabel("monika_hair_ponytail")
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -528,6 +536,7 @@ label ch30_main:
         $ store.mas_globals.show_vignette = True
         $ store.mas_globals.show_lightning = True
         $ mas_forceRain()
+        $ mas_lockHair()
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
@@ -1343,11 +1352,11 @@ label ch30_reset:
     ## o31 content
     python:
         # reset clothes if its past o31
-        if (
-                store.mas_o31_event.isMonikaInCostume(monika_chr)
-                and not persistent._mas_o31_in_o31_mode
-            ):
-            monika_chr.reset_clothes()
+        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+            if persistent._mas_o31_in_o31_mode:
+                mas_lockHair()
+            else:
+                monika_chr.reset_clothes()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
