@@ -497,7 +497,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         if renpy.random.randint(1,6) == 1:
             show thunder zoder 6
             $ pause(0.5)
-            play sound "mod_assets/thunder.wav"
+            play sound "mod_assets/sounds/amb/thunder.wav"
             if renpy.random.randint(1,10) == 1 and not persistent._mas_sensitive_mode:
                 #TODO Sayori thingy
                 pass
