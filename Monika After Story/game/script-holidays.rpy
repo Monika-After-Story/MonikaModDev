@@ -172,6 +172,7 @@ label mas_holiday_o31_autoload_check:
 
         if persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
+            store.mas_globals.show_lightning = True
             mas_forceRain()
 
     if mas_skip_visuals:

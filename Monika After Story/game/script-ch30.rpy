@@ -23,6 +23,13 @@ init -1 python in mas_globals:
     show_vignette = False
     # TRue means show the vignette mask, False means no show
 
+    show_lightning = False
+    # True means show lightening, False means do not
+
+    lightning_chance = 6
+    lightning_s_chance = 10
+    # lghtning chances
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -494,19 +501,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     $scene_change = False
 
-    # o31
     if store.mas_globals.show_vignette:
         show vignette zorder 70
-        # Thunder
-        # TODO I'm unsure if this is the best place to put this
-        if renpy.random.randint(1,6) == 1:
-            show thunder zoder 6
-            $ pause(0.5)
-            play sound "mod_assets/sounds/amb/thunder.wav"
-            if renpy.random.randint(1,10) == 1 and not persistent._mas_sensitive_mode:
-                #TODO Sayori thingy
-                pass
-
 
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
@@ -530,6 +526,7 @@ label ch30_main:
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
         $ store.mas_globals.show_vignette = True
+        $ store.mas_globals.show_lightning = True
         $ mas_forceRain()
 
     # so other flows are aware that we are in intro
@@ -1042,6 +1039,26 @@ label ch30_post_mid_loop_eval:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
 
+        # Thunder / lightening if enabled
+        if (
+                store.mas_globals.show_lightning 
+                and renpy.random.randint(
+                    1, store.mas_globals.lightning_chance
+                ) == 1
+            ):
+            if (
+                    not persistent._mas_sensitive_mode
+                    and renpy.random.randint(
+                        1, store.mas_globals.lightning_s_chance
+                    ) == 1
+                ):
+                show mas_lightning_s zorder 4
+            else:
+                show mas_lightning zorder 4
+
+            $ pause(0.5)
+            play sound "mod_assets/sounds/amb/thunder.wav"
+
         if mas_randchat.rand_low == 0:
             # we are not repeating for now
             # we'll wait 60 seconds inbetween loops
@@ -1325,10 +1342,6 @@ label ch30_reset:
 
     ## o31 content
     python:
-        # show vignette if we are in o31 mode
-        if persistent._mas_o31_in_o31_mode:
-            store.mas_globals.show_vignette = True
-
         # reset clothes if its past o31
         if (
                 store.mas_o31_event.isMonikaInCostume(monika_chr)

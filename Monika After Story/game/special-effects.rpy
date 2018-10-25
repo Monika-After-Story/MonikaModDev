@@ -44,13 +44,61 @@ image mujina:
         easeout 0.5 zoom 4.5 yoffset 1200
     0.5
 
-image thunder:
+image mas_lightning:
     "mod_assets/other/thunder.png"
     alpha 1.0
+
+    choice:
+        block:
+            0.05
+            alpha 0.0
+            0.05
+            alpha 1.0
+            repeat 3
+
+    choice:
+        block:
+            0.05
+            alpha 0.0
+            0.05
+            alpha 1.0
+            repeat 2
+
+    choice:
+        0.05
+
     parallel:
         easeout 2.8 alpha 0.0
     3.0
     Null()
+
+image mas_lightning_s_bg = LiveComposite(
+    (1280, 720),
+    (0, 0), "mod_assets/other/thunder.png",
+    (30, 200), "mod_assets/other/tree_sil.png"
+)
+
+image mas_lightning_s:
+    "mas_lightning_s_bg"
+    alpha 1.0
+
+    block:
+        0.05
+        alpha 0.0
+        0.05
+        alpha 1.0
+        repeat 2
+
+    0.05
+    alpha 0.0
+    0.05
+    "mod_assets/other/thunder.png"
+    alpha 1.0
+
+    parallel:
+        easeout 2.8 alpha 0.0
+    3.0
+    Null()    
 
 transform k_scare:
     tinstant(640)
