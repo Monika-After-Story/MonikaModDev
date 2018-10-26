@@ -1,3 +1,8 @@
+#TODOS:
+#imsorry.txt handling
+
+#NOTE: Thanks John for helping w/ dialogue+exps
+
 default fileToRead = None
 default fileEmpty = False
 default birthdayDone = False
@@ -7,7 +12,8 @@ default ilyCount = 0
 default badCount = 0
 default goodCount = 0
 
-if not datetime.datetime.now().strftime("%m-%d") == "09-22":
+#Gotta make sure bday card isn't done twice
+if not mas_isMonikaBirthday():
     $ birthdayDone = False
 
 default amtOfTextFiles = 0
@@ -29,21 +35,40 @@ label monika_letter_reader:
 
     m 1eka "Awww, [player]!"
     m 1hua "That's so sweet of you!"
-    m 1hub "I can't wait to read what you wrote!"
+
+    if renpy.store.mas_anni.isAnni():
+        m "I know it's kind of silly to celebrate one week together, [player] but it means a lot that you'd write something for it."
+    
+    elif renpy.store.mas_anni.isAnniWeek():
+        m "Writing for one month together, I see [player]. I'm looking forward to reading your card."
+
+    elif renpy.store.mas_anni.isAnniOneMonth():
+        m "Three months come and gone, it's really sweet that you'd write something for me, [player]."
+
+    elif renpy.store.mas_anni.isAnniThreeMonth():
+        m "I hope you're enjoying our time together as much as I am, [player]."
+        m "These past six months have been amazing. I can't wait to read your card for today."        
+    
+    elif MASAnni.isAnniversary():
+        m "It's so sweet that you'd make me an anniversary card, [player]."
+    
+    else:
+        m 1hub "I can't wait to read what you wrote!"
+
     show monika 1hua
 
     python:
 
-        #Good Phrases:
+        #Good Phrases: (expand)
         goodPhrases = [
             "i love you",
             "truly love you",
             "you are amazing",
             "you're amazing",
-
+            
         ]
 
-        #Bad Phrases:
+        #Bad Phrases: (expand)
         badPhrases = [
             "i hate you",
             "you are vile",
@@ -98,7 +123,7 @@ label monika_letter_reader:
         m 2ekc "Oh... Alright then."
         return
 
-    elif not madechoice.lower().find("birthday") == -1 and not birthdayDone and datetime.datetime.now().strftime("%m-%d") == "09-22":
+    elif not madechoice.lower().find("birthday") == -1 and not birthdayDone and mas_isMonikaBirthday():
         show monika at t11
         $ fileToRead = madechoice
         $ bithdayDone = True
@@ -125,6 +150,7 @@ label monika_letter_reader:
         m "I can't even begin to tell you what all this means to me."
         m 6ektda "This really is the best gift I could have ever hoped for and I'll cherish it forever."
         m "Thank you for making this day truly special."
+        #This like will have to be removed for official
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
         
         if (ilyCount == 0):
@@ -272,9 +298,9 @@ label monika_read_file:
             #Expression handling
             randExp = renpy.random.randint(0,3)
 
-            badPhrases = badPhrasesSearch.search(individualLines[count])
+            badPhrases = badPhrasesSearch.search(individualLines[count].lower())
             if badPhrases is None:
-                goodPhrases = goodPhrasesSearch.search(individualLines[count])
+                goodPhrases = goodPhrasesSearch.search(individualLines[count].lower())
                 #Just the good
                 if goodPhrases is not None:
                     goodCount += 1
@@ -284,9 +310,9 @@ label monika_read_file:
                     elif randExp == 1:
                         renpy.show("monika 1eub")
                     elif randExp == 2:
-                        renpy.show("monika 2hub")
+                        renpy.show("monika 1hub")
                     else:
-                        renpy.show("monika 2eka")
+                        renpy.show("monika 1eka")
                 #If nothing good/bad was said
                 else:
 
