@@ -1434,7 +1434,13 @@ init -2 python:
             IN:
                 new_cloth - new clothes to wear
             """
+            if self.clothes.name == new_cloth.name:
+                return
+
+            # otherwise, different, so do the regular progrmaming point rule
+            self.clothes.exit(self)
             self.clothes = new_cloth
+            self.clothes.entry(self)
 
 
         def change_hair(self, new_hair):
@@ -1444,7 +1450,13 @@ init -2 python:
             IN:
                 new_hair - new hair to wear
             """
+            if self.hair.name == new_hair.name:
+                return
+
+            # otherwise, different, so do programming points
+            self.hair.exit(self)
             self.hair = new_hair
+            self.hair.entry(self)
 
 
         def change_outfit(self, new_cloth, new_hair):
@@ -1540,6 +1552,7 @@ init -2 python:
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory in acs_list:
+                accessory.exit(self)
                 acs_list.remove(accessory)
 
             if accessory.name in self.lean_acs_blacklist:
@@ -1565,6 +1578,8 @@ init -2 python:
             if acs_type in self.acs:
                 # need to clear blacklisted
                 for acs in self.acs[acs_type]:
+                    acs.exit(self)
+
                     if acs.name in self.lean_acs_blacklist:
                         self.lean_acs_blacklist.remove(acs.name)
 
@@ -1575,14 +1590,14 @@ init -2 python:
             """
             Resets clothing to default
             """
-            self.clothes = mas_clothes_def
+            self.change_clothes(mas_clothes_def)
 
 
         def reset_hair(self):
             """
             Resets hair to default
             """
-            self.hair = mas_hair_def
+            self.change_hair(mas_hair_def)
 
 
         def reset_outfit(self):
@@ -1605,6 +1620,7 @@ init -2 python:
 
             if acs_list is not None and accessory not in acs_list:
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
+                accessory.entry(self)
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -1766,6 +1782,14 @@ init -2 python:
             img_stand - filename of the standing version of the item
             pose_map - MASPoseMap object that contains pose mappings
             stay_on_start - determines if the item stays on startup
+            entry_pp - programmign point to call when wearing this sprite
+                the MASMonika object that is being changed is fed into this
+                function
+                NOTE: this is called after the item is added to MASMonika
+            exit_pp - programming point to call when taking off this sprite
+                the MASMonika object that is being changed is fed into this
+                function
+                NOTE: this is called before the item is removed from MASMonika
         """
 
         def __init__(self,
@@ -1773,7 +1797,9 @@ init -2 python:
                 img_sit,
                 pose_map,
                 img_stand="",
-                stay_on_start=False
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASSpriteBase constructor
@@ -1789,6 +1815,14 @@ init -2 python:
                 stay_on_start - True means the item should reappear on startup
                     False means the item should always drop when restarting.
                     (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
             self.name = name
             self.img_sit = img_sit
@@ -1798,6 +1832,28 @@ init -2 python:
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
+
+
+        def entry(self, _monika_chr):
+            """
+            Calls the entry programming point if it exists
+
+            IN:
+                _monika_chr - the MASMonika object being changed
+            """
+            if self.entry_pp is not None:
+                self.entry_pp(_monika_chr)
+
+
+        def exit(self, _monika_chr):
+            """
+            Calls the exit programming point if it exists
+
+            IN:
+                _monika_chr - the MASMonika object being changed
+            """
+            if self.exit_pp is not None:
+                self.exit_pp(_monika_chr)
 
 
     class MASSpriteFallbackBase(MASSpriteBase):
@@ -1818,7 +1874,9 @@ init -2 python:
                 pose_map,
                 img_stand="",
                 stay_on_start=False,
-                fallback=False
+                fallback=False,
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASSpriteFallbackBase constructor
@@ -1838,13 +1896,23 @@ init -2 python:
                 fallback - True means the MASPoseMap includes fallback codes
                     for each pose instead of just enable/disable rules.
                     (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
                 img_sit,
                 pose_map,
                 img_stand,
-                stay_on_start
+                stay_on_start,
+                entry_pp,
+                exit_pp
             )
             self.fallback = fallback
 
@@ -1900,7 +1968,9 @@ init -2 python:
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
                 no_lean=False,
-                stay_on_start=False
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASAccessory constructor
@@ -1929,13 +1999,23 @@ init -2 python:
                     startup. False means the accessory is dropped on next
                     startup.
                     (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
             super(MASAccessory, self).__init__(
                 name,
                 img_sit,
                 pose_map,
                 img_stand,
-                stay_on_start
+                stay_on_start,
+                entry_pp,
+                exit_pp
             )
             self.__rec_layer = rec_layer
             self.priority=priority
@@ -1985,7 +2065,9 @@ init -2 python:
                 pose_map,
                 img_stand="",
                 stay_on_start=True,
-                fallback=False
+                fallback=False,
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASHair constructor
@@ -2004,6 +2086,14 @@ init -2 python:
                 fallback - True means the MASPoseMap includes fallback codes
                     for each pose instead of just enable/disable rules.
                     (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -2011,7 +2101,9 @@ init -2 python:
                 pose_map,
                 img_stand,
                 stay_on_start,
-                fallback
+                fallback,
+                entry_pp,
+                exit_pp
             )
 
 
@@ -2040,7 +2132,9 @@ init -2 python:
                 img_stand="",
                 stay_on_start=False,
                 fallback=False,
-                hair_map={}
+                hair_map={},
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASClothes constructor
@@ -2065,6 +2159,14 @@ init -2 python:
                     to map to.
                     NOTE: use the name property for hairstyles.
                     (Default: {})
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
             super(MASClothes, self).__init__(
                 name,
@@ -2072,7 +2174,9 @@ init -2 python:
                 pose_map,
                 img_stand,
                 stay_on_start,
-                fallback
+                fallback,
+                entry_pp,
+                exit_pp
             )
 
             self.hair_map = hair_map
@@ -2230,6 +2334,17 @@ init -2 python:
 
 # Monika
 define monika_chr = MASMonika()
+
+init -2 python in mas_sprites:
+    # all progrmaming points should go here
+    # organize by type then id
+
+    ######### HAIR ###########
+
+    ######### CLOTHES ###########
+
+    ######### ACS ###########
+
 
 init -1 python:
     # HAIR (IMG015)
