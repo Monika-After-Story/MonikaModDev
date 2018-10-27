@@ -303,7 +303,7 @@ label v0_8_10(version="v0_8_10"):
             first_sesh = persistent.sessions.get("first_session", None)
             if first_sesh:
                 store.mas_anni.reset_annis(first_sesh)
-                unlock_past_annis()
+                store.mas_anni.unlock_past_annis()
 
     return
 
