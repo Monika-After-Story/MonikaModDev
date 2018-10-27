@@ -1,5 +1,6 @@
 #TODOS:
 #imsorry.txt handling
+#Implement docking station for reading
 
 #NOTE: Thanks John for helping w/ dialogue+exps
 
@@ -86,15 +87,10 @@ label monika_letter_reader:
         ]
         
         path = renpy.config.basedir
-        from os import listdir 
-        from os.path import isfile, join 
-        listOfFiles = [f for f in listdir(path + "\\characters\\") if isfile(join(path + "\\characters\\", f))]
-
         file_menu = []
         
-        for val in listOfFiles:
-            if val.endswith(".txt"):
-                file_menu.append((val, val, False, False))
+        for val in mas_docking_station.getPackageList(".txt"):
+            file_menu.append((val, val, False, False))
 
         return_prompt_back = ("Nevermind", False, False, False, 20)
 
@@ -262,7 +258,7 @@ label monika_read_file:
     python:
         count = 0
         individualLines = []
-        allText = open(path + "\\characters\\" + fileToRead, 'r').read().replace('\n\n', '\n').replace('\n\n\n', '\n').replace('. ', '.\n').replace('! ', '!\n').replace('? ', '?\n')
+        allText = open(mas_docking_station._trackPackage(fileToRead)).read().replace('\n\n', '\n').replace('\n\n\n', '\n').replace('. ', '.\n').replace('! ', '!\n').replace('? ', '?\n')
 
 
         while not allText.find('\n', count) == -1:
