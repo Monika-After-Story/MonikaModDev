@@ -1829,6 +1829,8 @@ init -2 python:
             self.img_stand = img_stand
             self.stay_on_start = stay_on_start
             self.pose_map = pose_map
+            self.entry_pp = entry_pp
+            self.exit_pp = exit_pp
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -2338,10 +2340,37 @@ define monika_chr = MASMonika()
 init -2 python in mas_sprites:
     # all progrmaming points should go here
     # organize by type then id
+    # ASSUME all programming points only run at runtime
+    import store
+
+    temp_storage = dict()
+    # all programming points have access to this storage var.
+    # use names + an identifier as keys so you wont collide
+    # NOTE: this will NOT be maintained on a restart
 
     ######### HAIR ###########
 
     ######### CLOTHES ###########
+    def _clothes_rin_entry(_moni_chr):
+        """
+        Entry programming point for rin clothes
+        """
+        temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2=None,
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+
+    def _clothes_rin_exit(_moni_chr):
+        """
+        Exit programming point for rin clothes
+        """
+        store.mas_acs_promisering.pose_map = temp_storage["clothes.rin"]
 
     ######### ACS ###########
 
@@ -2488,7 +2517,9 @@ init -1 python:
         fallback=True,
         hair_map={
             "all": "custom"
-        }
+        },
+        entry_pp=store.mas_sprites._clothes_rin_entry,
+        exit_pp=store.mas_sprites._clothes_rin_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
 
