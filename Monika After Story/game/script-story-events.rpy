@@ -961,6 +961,8 @@ init 5 python:
 
 
 label mas_coffee_finished_brewing:
+
+    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, coffee's done."
 
     # this line is here so we dont it looks better when we hide monika
@@ -1000,6 +1002,7 @@ label mas_coffee_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
+    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, I've finished my coffee."
 
     if get_new_cup:
