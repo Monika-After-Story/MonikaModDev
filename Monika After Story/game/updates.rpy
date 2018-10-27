@@ -293,6 +293,21 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.8.10
+label v0_8_10(version="v0_8_10"):
+    python:
+
+        # reset and unlock past anniversaries
+        if persistent.sessions is not None:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_sprites.reset_annis(first_sesh)
+                unlock_past_annis()
+
+    return
+
+# 0.8.9
 label v0_8_9(version="v0_8_9"):
     python:
         import store.evhand as evhand
