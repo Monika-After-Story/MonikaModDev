@@ -106,7 +106,7 @@ init -860 python in mas_history:
     # we did not find the key in the archives (for the given year)
 
     ### archive functions:
-    def lookup(key, year)
+    def lookup(key, year):
         """
         Looks up data in the historical archives.
 
@@ -134,7 +134,7 @@ init -860 python in mas_history:
         return (L_FOUND, data_file[key])
 
 
-    def lookup_ot(key, *years)
+    def lookup_ot(key, *years):
         """
         Looks up data overtime in the historical archives.
 
