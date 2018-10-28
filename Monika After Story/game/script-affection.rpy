@@ -300,6 +300,7 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from distressed to broken
         """
+        evhand._unlockEventLabel("monika_song_crime_and_punishment")
         # change quit message
         layout.QUIT_YES = mas_layout.QUIT_YES_BROKEN
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
