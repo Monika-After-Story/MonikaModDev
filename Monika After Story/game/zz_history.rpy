@@ -14,7 +14,7 @@
 #
 # DATA KEY LAYOUT:
 #   data keys need to follow a structure so we can ensure uniqueness:
-#   <topic category>.<sub category>.<sub sub category>.<name>
+#   <topic category>.<sub category>.<sub sub category>...<name>
 #   EX: o31.activity.tricktreat.went_outside
 #   topic category - main topic category
 #       o31 - halloween
@@ -24,10 +24,12 @@
 #       pm - player model 
 #       and so on
 #   sub category - fine tuned category if needed
-#       Use BASE if not needed
 #   sub sub category - even more fine tuned category if needed
-#       Use BASE if not needed
+#   ...
 #   name - variable name. this should be pretty descriptive
+#   
+#   You don't need to use the sub categories if you dont need them.
+#   However, topic category is REQUIRED
 #       
 # MAPPING
 #   Data saving is done by mapping a persistent variable name (as string) to
@@ -70,6 +72,10 @@
 #   
 #   MASHistorySaver objects are created on start and stored in `mhs_db`
 #   Access is given via public functions. DO NOT ACCESS DIRECTLY
+#
+# CREATION:
+#   All MASHistorySaver objects should be created before init level -800.
+#   Tuple persistent data is loaded at -800, then the algorithms are ran.
 
 init -860 python in mas_history:
     import store
@@ -181,6 +187,52 @@ init -860 python in mas_history:
         store.persistent._mas_history_archives[year][key] = value
 
 
+    ### history saver data save/load
+    def loadMHSData():
+        """
+        Loads persistent MASHistorySaver data into the mhs_db
+
+        ASSUMES: the mhs database is already filled
+        """
+        for mhs_id, mhs_data in store.persistent._mas_history_mhs_data.iteritems():
+            mhs = mhs_db.get(mhs_id, None)
+            if mhs is not None:
+                mhs.fromTuple(mhs_data)
+
+
+    def saveMHSData():
+        """
+        Saves MASHistorySaver data from mhs_db into persistent
+        """
+        for mhs_id, mhs in mhs_db.iteritems():
+            store.persistent._mas_history_mhs_data[mhs_id] = mhs.toTuple()
+
+
+    ### mhs_db functions
+    def addMHS(mhs):
+        """
+        Adds the given mhs to the database.
+
+        IN:
+            mhs - MASHistorySaver object to add
+        
+        ASSUMES that the given mhs does not conflict with existing
+        """
+        mhs_db[mhs.id] = mhs
+
+
+    def getMHS(mhs_id):
+        """
+        Gets the MASHistorySaver object with the given id
+
+        IN:
+            mhs_id - id of the MASHistorySaver object to get
+
+        RETURNS: MASHistorySaver object, or None if not found
+        """
+        return mhs_db.get(mhs_id, None)
+
+
 init -850 python:
 
     ## public archive functions
@@ -236,7 +288,7 @@ init -850 python:
         save over certain intervals.
 
         PROPERTIES:
-            mhs_id - identifier of this MASHistorySaver object
+            id - identifier of this MASHistorySaver object
                 NOTE: Must be unique
             trigger - datetime to trigger the saving
                 NOTE: this is changed automatically when saving is done
@@ -248,6 +300,8 @@ init -850 python:
                 trigger.year - 1 as the year to determine where to save
                 historical data. This is mainly for year-end events like 
                 d31 and new years
+            dont_reset - True means we do NOT reset the persistent var
+                when doing the save.
             entry_pp - programming point called before saving data
                 self is passed to this
             exitpp - programming point called after saving data
@@ -260,6 +314,7 @@ init -850 python:
                 trigger,
                 mapping,
                 use_year_before=False,
+                dont_reset=False,
                 entry_pp=None,
                 exit_pp=None
             ):
@@ -283,6 +338,9 @@ init -850 python:
                 use_year_before - True will use trigger.year-1 when saving
                     historical data instead of trigger.year. 
                     (Default: False)
+                dont_reset - True will NOT reset the persistent var after
+                    saving.
+                    (Default: False)
                 entry_pp - programming point called before saving data
                     self is passed to this
                     (Default: None)
@@ -296,7 +354,7 @@ init -850 python:
                     "History object '{0}' already exists".format(mhs_id)
                 )
 
-            self.mhs_id = mhs_id
+            self.id = mhs_id
             self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
             self.mapping = mapping
@@ -318,12 +376,12 @@ init -850 python:
 
             RETURNS: _trigger with the correct year
             """
-            current_date = datetime.date.today()
-            _temp_trigger = _trigger.replace(year=current_date.year)
+            _now = datetime.datetime.now()
+            _temp_trigger = _trigger.replace(year=_now.year)
 
-            if current_date > _temp_trigger:
+            if current_dt > _temp_trigger:
                 # trigger has already past, set the trigger for next year
-                return _trigger.replace(year=current_date.year + 1)
+                return _trigger.replace(year=_now.year + 1)
 
             # trigger has NOT passed yet, set the trigger for this year
             return _temp_trigger
@@ -348,8 +406,8 @@ init -850 python:
             IN:
                 _trigger - trigger to change to
             """
-            current_date = datetime.date.today()
-            if _trigger.year > (current_date.year + 1):
+            _today = datetime.date.today()
+            if _trigger.year > (_today.year + 1):
                 # if the trigger year is at least 2 years beyond current, its
                 # definitely a time travel issue.
 
@@ -379,10 +437,18 @@ init -850 python:
             dest = self.mas_history
             save_year = self.trigger.year
 
+            if self.use_year_before:
+                save_year -= 1
+
             # go through mapping and save data
-            for p_key in self.mapping:
-                p_data = source.get(p_key, None)
-                dest._store(p_data, self.mapping[p_key], save_year)
+            for p_key, data_key in self.mapping.iteritems():
+
+                # retrieve and save
+                dest._store(source.get(p_key, None), data_key, save_year)
+
+                # reset
+                if not self.dont_reset:
+                    source[p_key] = None
 
             # change trigger year
             self.trigger = MASHistorySaver.correctTriggerYear(self.trigger)
@@ -399,3 +465,82 @@ init -850 python:
                 [0]: trigger - the trigger property of this object
             """
             return (self.trigger,)
+
+
+init -800 python in mas_history:
+    # and now we run the MASHistorySaver algorithms
+
+    def _runMHSAlg():
+        """
+        Runs the historical data saving algorithm
+
+        ASSUMES:
+            - mhs_db is filled with MASHistorySaver objects 
+        """
+        # now we go through the mhs_db and run their save algs if their trigger
+        # is past today.
+        _now = datetime.datetime.now()
+        
+        for mhs in mhs_db.itervalues():
+            if mhs.trigger <= _now:
+                mhs.save()
+
+    # first, we need to load existing MHS data
+    loadMHSData()
+
+    # now run the algorithm
+    _runMHSAlg()
+
+
+
+init -816 python in mas_delact:
+    ## need a place to define DelayedAction callbacks? do it here I guess.
+    nothing = "temp"
+
+
+init -815 python in mas_history:
+    ## Need a place define callbacks/programming points? Do it here I guess.
+
+    # BDAY
+    def _bday_exit_pp(mhs):
+        # this PP will just add the appropriate delayed action IDs to the 
+        # persistent delayed action list.
+        _MDA_safeadd(3, 4, 5, 6, 7)
+
+
+init -810 python:
+    ## Add MASHistorySaver objects here. 
+    ## NOTE: If you've declared all the persistent variables you want to use
+    ##  in one file, its better to create your MASHistorySaver object there.
+    ##
+    ## Use this python block in case you made persistent variables in various
+    ## locations
+
+    # PLAYER MODEL
+    # NOTE: because player model variables are used basically everywhere, 
+    #   rather than make a ton of player model MHS objects, lets just make a 
+    #   generic one that runs on jan 1 of every year.
+    # TODO
+
+    # BDAY
+    # NOTE: kind of wish I put all the bday variables together. Since they are
+    #   not together, they will be here.
+    store.mas_history.addMHS(MASHistorySaver(
+        "922",
+        datetime.datetime(2018, 9, 30),
+        {
+            "_mas_bday_opened_game": "922.actions.opened_game",
+            "_mas_bday_no_time_spent": "922.actions.no_time_spent",
+            "_mas_bday_no_recognize": "922.actions.no_recognize",
+            "_mas_bday_said_happybday": "922.actions.said_happybday",
+            "_mas_bday_date_count": "922.actions.date.count",
+            "_mas_bday_date_affection_lost": "922.actions.date.aff_lost",
+            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
+            "_mas_bday_sbp_aff_given": "922.actions.surprise.aff_given",
+            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
+            "_mas_bday_sbp_found_cake": "922.actions.surprise.found_cake",
+            "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
+            "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
+        },
+        exit_pp=store.mas_history._bday_exit_pp
+    ))
