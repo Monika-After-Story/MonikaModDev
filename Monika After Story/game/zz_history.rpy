@@ -358,6 +358,7 @@ init -850 python:
             self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
             self.mapping = mapping
+            self.dont_reset = dont_reset
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
 
