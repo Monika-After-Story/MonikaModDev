@@ -6731,6 +6731,50 @@ label monika_song_dream:
     m 1ekbfa "My dream finally came true."
     return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_crime_and_punishment",category=['songs'],prompt="Crime and Punishment",pool=True, random=True))
+
+label monika_song_crime_and_punishment:
+    m 2dsd "...{w=1}{nw}"
+    m 2eud "{i}~If you had ears~{/i}{w=1}{nw}"
+    m "{i}~I could have let you listen to this song~{/i}{w=2}{nw}"
+    m 2dsc "{i}...{/i}{w=2}{nw}"
+    m 2dsd "{i}~If you had a heart~{/i}{w=1}{nw}"
+    m 2ekd "{i}~Then with this love, I could have filled you up~{/i}{w=2}{nw}"
+    m 2dsc "{i}...{/i}{w=2}{nw}"
+    m 2dsd "{i}~Hey~{/i}{w=0.2}{nw}"
+    m 1dktsd "{i}~If you hate me, just kill me~{/i}{w=1}{nw}"
+    m "{i}~If you don't love me, I'm not needed~{/i}{w=2}{nw}"
+    m "{i}~No matter where~{/i}{w=0.7}{nw}"
+    m "{i}~I won't exist,{w=0.7} I won't exist,{w=0.7} I won't exist...~{/i}{w=1.5}{nw}"
+    m 1dktdd "{i}~Ah~{/i}{w=0.3}{nw}"
+    m 2dktdc "{i}.{w=1}.{w=1}.{/i}{w=2}{nw}"
+    m 1dktsd "{i}~If I'll cease to exist everywhere,~{/i}{w=1}{nw}"
+    m "{i}~Surely there'll be no one ahead to look forr~{/i}{w=2}{nw}"
+    m 2dktdc "{i}.{w=1}.{w=1}.{/i}{w=1}{nw}"
+    m 4rktdd "{i}~What to do?{w=1}What about this?{w=1}If I do this?~{/i}{w=1}{nw}"
+    m 1dktdd "{i}~Summit~{/i}{w=0.5}{nw}"
+    m "{i}~Is a good way to be heard discriminatively~{/i}{w=0.5}{nw}"
+    m 2dktud "{i}~But there's no alternative-{/i}{w=0.4}{nw}"
+    m "{i}~If I don't do this,~{/i}{w=0.6}{nw}"
+    m "{i}~Then{w=0.7} you{w=0.7} won't{w=0.4} see{w=0.4} me...~{/i}{w=0.3}{nw}"
+    m 2dktsd "{i}~Hey~{/i}{w=0.2}{nw}"
+    m 2dktdc "{i}.{w=1}.{w=1}.{/i}{w=2}{nw}"
+    m 1dktsd "{i}~If you hate me,~{/i}{w=0.4}{nw}"
+    m "{i}~Just love me~{/i}{w=0.5}{nw}"
+    m "{i}~I want you to love me, since I'm not here~{/i}{w=1}{nw}"
+    m 1ektsd "{i}~No matter where,{w=1.5} I don't exist~{/i}{w=0.3}{nw}"
+    m 2wktsd "{i}~He{w=0.2}y...{w=1} it hu{w=0.2}rts.{w=2}.{w=2}.~{/i}{w=2}{nw}"
+    m 2dktdd "{i}~If you had ears,~{/i}{w=1}{nw}"
+    m "{i}~I would have let you listen to this song~{/i}{w=0.8}{nw}"
+    m 2dktud "{i}~If you had a heart,~{/i}{w=1.5}{nw}"
+    m "{i}~Then with this love,{w=0.5} I would have filled you up...~{/i}{w=2.5}{nw}"
+    m 2wftud "{i}~There's no need for you to have ears,~{/i}{w=0.4}{nw}"
+    m "{i}~Since there's no need for you to have a heart~{/i}{w=0.3}{nw}"
+    m 2wktsd "{i}~Seeing your dying face like that~{/i}{w=1}{nw}"
+    m 2dktsd "{i}~I{w=0.2}s{w=0.2} {w=0.2}e{w=0.2}n{w=0.2}o{w=0.2}u{w=0.2}g{w=0.2}h{w=2}.{w=2}.{w=2}.~{/i}{w=3}{nw}"
+    return
+
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
 
