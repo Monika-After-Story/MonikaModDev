@@ -1490,10 +1490,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_rpy_files",
-            conditional=(
-                "len(listRpy) != 0"
-            ),
-            action=EV_ACT_QUEUE
+            rules={"no unlock": None}
         )
     )
 
