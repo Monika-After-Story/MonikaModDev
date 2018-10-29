@@ -356,15 +356,6 @@ init -850 python:
                 raise Exception(
                     "History object '{0}' already exists".format(mhs_id)
                 )
-
-            self.id = mhs_id
-            self.setTrigger(trigger)  # use the set function for cleansing
-            self.use_year_before = use_year_before
-            self.mapping = mapping
-            self.dont_reset = dont_reset
-            self.entry_pp = entry_pp
-            self.exit_pp = exit_pp
-
             # init first sesh
             if MASHistorySaver.first_sesh == -1:
                 if persistent.sessions is not None:
@@ -375,6 +366,14 @@ init -850 python:
 
                 else:
                     MASHistorySaver.first_sesh = None
+
+            self.id = mhs_id
+            self.setTrigger(trigger)  # use the set function for cleansing
+            self.use_year_before = use_year_before
+            self.mapping = mapping
+            self.dont_reset = dont_reset
+            self.entry_pp = entry_pp
+            self.exit_pp = exit_pp
 
        
         @staticmethod
@@ -421,17 +420,17 @@ init -850 python:
             IN:
                 _trigger - trigger to change to
             """
-            _today = datetime.date.today()
+            _now = datetime.datetime.now()
 
             # grab first sesh
             # if we do not have a first sesh, then assume today is first
             # sessions
             first_sesh = MASHistorySaver.first_sesh
             if first_sesh is None:
-                first_sesh = _today
+                first_sesh = _now
 
             if (
-                    _trigger.year > (_today.year + 1)
+                    _trigger.year > (_now.year + 1)
                     or _trigger <= first_sesh
                 ):
                 # if the trigger year is at least 2 years beyond current, its
