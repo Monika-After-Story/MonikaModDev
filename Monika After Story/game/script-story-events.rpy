@@ -1229,6 +1229,7 @@ init -876 python in mas_delact:
 
     def _mas_bday_surprise_party_hint_reset_action(ev):
         # updates conditional and action
+        # TODO: should we show to users who arleady did a surprise party?
         ev.conditional = (
             "datetime.date.today() < mas_monika_birthday and "
             "mas_monika_birthday.day - datetime.date.today().day == 1"
