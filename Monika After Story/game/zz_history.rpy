@@ -306,6 +306,8 @@ init -850 python:
                 self is passed to this
             exitpp - programming point called after saving data
                 self is passed to this
+            trigger_pp - programming point called to update trigger with
+                instead of the default year+1
         """
         import store.mas_history as mas_history
 
@@ -319,7 +321,8 @@ init -850 python:
                 use_year_before=False,
                 dont_reset=False,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                trigger_pp=None
             ):
             """
             Constructor
@@ -350,6 +353,10 @@ init -850 python:
                 exit_pp - programming point called after saving data
                     self is passed to this
                     (Default: None)
+                trigger_pp - if not None, this pp is called with the current
+                    trigger when updating trigger, and the returned datetime 
+                    is used as the new trigger.
+                    (Default: None)
             """
             # sanity checks
             if mhs_id in self.mas_history.mhs_db:
@@ -374,6 +381,7 @@ init -850 python:
             self.dont_reset = dont_reset
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
+            self.trigger_pp = trigger_pp
 
        
         @staticmethod
@@ -478,8 +486,12 @@ init -850 python:
                 if not self.dont_reset:
                     source[p_key] = None
 
-            # change trigger year
-            self.trigger = MASHistorySaver.correctTriggerYear(self.trigger)
+            # update trigger
+            if self.trigger_pp is not None:
+                self.trigger = self.trigger_pp(self.trigger)
+
+            else:
+                self.trigger = MASHistorySaver.correctTriggerYear(self.trigger)
 
             if self.exit_pp is not None:
                 self.exit_pp(self)
