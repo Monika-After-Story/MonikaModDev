@@ -129,7 +129,19 @@ label mas_farewell_start:
 ###
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_leaving_already",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_leaving_already",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_leaving_already:
     m 1tkc "Aww, leaving already?"
@@ -144,25 +156,72 @@ init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="bye_goodbye",unlocked=True,random=True),eventdb=evhand.farewell_database)
 
 label bye_goodbye:
-    m 1eua "Goodbye, [player]!"
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Goodbye, [player]!"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Goodbye."
+
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh...{w=1} Goodbye"
+
+    else:
+        m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_sayanora",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_sayanora",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_sayanora:
     m 1hua "Sayonara, [player]~"
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_farewellfornow",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_farewellfornow",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_farewellfornow:
     m 1eka "Farewell for now, my love~"
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_untilwemeetagain",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_untilwemeetagain",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
@@ -170,7 +229,20 @@ label bye_untilwemeetagain:
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_take_care",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_take_care",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
 
 label bye_take_care:
     m 1eua "Don't forget that I always love you, [player]~"
@@ -192,8 +264,20 @@ init 5 python:
     del rules
 
 label bye_going_to_sleep:
-    m 1esa "Are you going to sleep, [player]?"
-    m 1eka "I'll be seeing you in your dreams."
+    if mas_isMoniNormal(higher=True):
+        m 1esa "Are you going to sleep, [player]?"
+        m 1eka "I'll be seeing you in your dreams."
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Going to sleep, [player]?"
+        m 2esc "Goodnight."
+    
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh...{w=1}going to sleep, [player]?"
+        m 6lkc "Goodnight."
+
+    else:
+        m 6ckc "..."
 
     # TODO:
     # can monika sleep with you?
@@ -429,10 +513,21 @@ init 5 python:
     del rules
 
 label bye_goodnight:
-    m 1eua "Goodnight, [player]."
-    m 1eka "I'll see you tomorrow, okay?"
-    m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
-    m 1ekbfa "I love you~"
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Goodnight, [player]."
+        m 1eka "I'll see you tomorrow, okay?"
+        m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 1ekbfa "I love you~"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Goodnight."
+
+    elif mas_isMoniDis(higher=True):
+        m 6lkc "...Goodnight."
+
+    else:
+        m 6ckc "..."
+        
     return 'quit'
 
 
