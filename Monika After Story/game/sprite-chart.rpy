@@ -265,6 +265,9 @@ init -5 python in mas_sprites:
 #    y_step = 40
     y_step = 10
 
+    # adding optimized initial parts of the sprite string
+    PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
+
     # Prefixes for files
     PREFIX_BODY = "torso" + ART_DLM
     PREFIX_ARMS = "arms" + ART_DLM
@@ -528,9 +531,10 @@ init -5 python in mas_sprites:
 
     def build_loc():
         """
-        RETURNS location string for the sprite
+        RETURNS location string for the sprite as a tuple of strings.
+        Use this with an extend on the main sprite list
         """
-        return "".join(["(", str(adjust_x), ",", str(adjust_y), ")"])
+        return ("(", str(adjust_x), ",", str(adjust_y), ")")
 
 
     # sprite maker functions
@@ -1115,13 +1119,48 @@ init -5 python in mas_sprites:
         else:
             loc_str = LOC_REG
 
+        # location string tuple (for individual composites)
+        loc_str_tup = build_loc()
+        
+        # initial portions of list
+        sprite_str_list = [
+            PRE_SPRITE_STR,
+            loc_str
+        ]
+
+        # pre accessories
+        sprite_str_list.extend(
+            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean)
+        )
+
+        # between pre acs and body
+        sprite_str_list.append(",")
+        sprite_str_list.extend(loc_str_tup)
+        sprite_str_list.append(",")
+
+        # body
+        sprite_str_list.extend(
+            _ms_body(clothing, hair, isnight, lean=lean, arms=arms)
+        )
+
+        # between body and face acs
+        sprite_str_list.extend(
+            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean)
+        )
+
+        # between mid acs and face
+        sprite_str_list.append(",")
+        sprite_str_list.extend(loc_str_tup)
+        sprite_str_list.append(",")
+            
+
         return "".join([
             TRAN,
             "(",
             L_COMP,
             "(",
             loc_str,
-            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
+# HERE
             ",",
             build_loc(),
             ",",
