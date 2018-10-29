@@ -169,6 +169,9 @@ label splashscreen:
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
         store.mas_calendar.loadCalendarDatabase()
 
+        # set zoom
+        store.mas_sprites.adjust_zoom()
+
     if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
         # we have a corrupted persistent but was unable to recover via the
         # backup system
@@ -178,6 +181,7 @@ label splashscreen:
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
+    $ persistent.tried_skip = False
     if not persistent.first_run:
         $ quick_menu = False
         pause 0.5
@@ -241,7 +245,7 @@ label splashscreen:
     show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
-    $ config.allow_skipping = True
+    $ config.allow_skipping = False
     return
 
 label warningscreen:
@@ -250,7 +254,7 @@ label warningscreen:
     pause 3.0
 
 label after_load:
-    $ config.allow_skipping = allow_skipping
+    $ config.allow_skipping = False
     $ _dismiss_pause = config.developer
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
@@ -294,11 +298,11 @@ label autoload:
         jump mas_chess_go_ham_and_delete_everything
 
     # okay lets setup monika's clothes
-    python:
-        monika_chr.change_outfit(
-            persistent._mas_monika_clothes,
-            persistent._mas_monika_hair
-        )
+#    python:
+#        monika_chr.change_outfit(
+#            persistent._mas_monika_clothes,
+#            persistent._mas_monika_hair
+#        )
 
     # need to set the monisize correctly
     $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
@@ -317,7 +321,7 @@ label quit:
         store.mas_calendar.saveCalendarDatabase(CustomEncoder)
         persistent.sessions['last_session_end']=datetime.datetime.now()
         today_time = (
-            persistent.sessions["last_session_end"] 
+            persistent.sessions["last_session_end"]
             - persistent.sessions["current_session_start"]
         )
         new_time = today_time + persistent.sessions["total_playtime"]
@@ -331,8 +335,8 @@ label quit:
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
     if persistent._mas_hair_changed:
-        $ persistent._mas_monika_hair = monika_chr.hair
-        $ persistent._mas_monika_clothes = monika_chr.clothes
+        $ persistent._mas_monika_hair = monika_chr.hair.name
+        $ persistent._mas_monika_clothes = monika_chr.clothes.name
 
     # accessory saving
     python:
@@ -354,6 +358,7 @@ label quit:
 
     # remove special images
     $ store.mas_island_event.removeImages()
+    $ store.mas_o31_event.removeImages()
 
     # delayed action stuff
     $ mas_runDelayedActions(MAS_FC_END)
