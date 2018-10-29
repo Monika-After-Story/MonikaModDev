@@ -309,6 +309,9 @@ init -850 python:
         """
         import store.mas_history as mas_history
 
+        # also setup first session as a static variable
+        first_sesh = -1
+
         def __init__(self, 
                 mhs_id,
                 trigger,
@@ -362,6 +365,17 @@ init -850 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
 
+            # init first sesh
+            if MASHistorySaver.first_sesh == -1:
+                if persistent.sessions is not None:
+                    MASHistorySaver.first_sesh = persistent.sessions.get(
+                        "first_session",
+                        None
+                    )
+
+                else:
+                    MASHistorySaver.first_sesh = None
+
        
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -408,9 +422,23 @@ init -850 python:
                 _trigger - trigger to change to
             """
             _today = datetime.date.today()
-            if _trigger.year > (_today.year + 1):
+
+            # grab first sesh
+            # if we do not have a first sesh, then assume today is first
+            # sessions
+            first_sesh = MASHistorySaver.first_sesh
+            if first_sesh is None:
+                first_sesh = _today
+
+            if (
+                    _trigger.year > (_today.year + 1)
+                    or _trigger <= first_sesh
+                ):
                 # if the trigger year is at least 2 years beyond current, its
                 # definitely a time travel issue.
+                #
+                # or if the trigger is before or same date as the first session
+                # then we should move it into the future
 
                 # but we need to determine if the trigger has already happend
                 # in teh current year or will happen this year so we can 
@@ -483,6 +511,8 @@ init -800 python in mas_history:
         _now = datetime.datetime.now()
         
         for mhs in mhs_db.itervalues():
+            # trigger rules:
+            #   current date must be past trigger
             if mhs.trigger <= _now:
                 mhs.save()
 
