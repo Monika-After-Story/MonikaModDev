@@ -380,7 +380,7 @@ init -850 python:
             _now = datetime.datetime.now()
             _temp_trigger = _trigger.replace(year=_now.year)
 
-            if current_dt > _temp_trigger:
+            if _now > _temp_trigger:
                 # trigger has already past, set the trigger for next year
                 return _trigger.replace(year=_now.year + 1)
 
@@ -501,6 +501,7 @@ init -816 python in mas_delact:
 
 init -815 python in mas_history:
     ## Need a place define callbacks/programming points? Do it here I guess.
+    from store.mas_delact import _MDA_safeadd
 
     # BDAY
     def _bday_exit_pp(mhs):
