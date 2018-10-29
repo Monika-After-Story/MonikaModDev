@@ -399,7 +399,7 @@ init -3 python in mas_piano_keys:
     PNM_LOAD_FAILED = "PNM '{0}' load failed."
 
     JSON_LOAD_FAILED = "Failed to load json at '{0}'."
-    FILE_LOAD_FAILED = "Failed to load file at '{0}'."
+    FILE_LOAD_FAILED = "Failed to load file at '{0}'. | {1}\n"
 
 
     MSG_INFO = "[info]: {0}\n"
@@ -1480,8 +1480,12 @@ init 790 python in mas_piano_keys:
             j_path = pnml_basedir + j_song
             try:
                 addSong(j_path, True)
-            except:
-                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(j_path)))
+            except Exception as e:
+                log.write(
+                    MSG_ERR.format(
+                        FILE_LOAD_FAILED.format(j_path, repr(e))
+                    )
+                )
 
 
     def addStockSongs():
@@ -1499,7 +1503,7 @@ init 790 python in mas_piano_keys:
             try:
                 addSong(song_path)
             except:
-                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path)))
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path, "")))
 
 
 ### END =======================================================================

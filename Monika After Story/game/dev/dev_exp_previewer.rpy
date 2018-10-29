@@ -45,6 +45,7 @@ init 999 python:
         we are about to go there
         """
         import pygame
+        import store.mas_sprites as mas_sprites
 
         # CONSTANTS
         VIEW_WIDTH = 1280
@@ -184,7 +185,9 @@ init 999 python:
         ### sprite code maps
         SEL_TX_MAP = {
             "torso": {
-                "def": "School Uniform"
+                "def": "School Uniform",
+                "marisa": "Witch Costume",
+                "rin": "Neko Costume"
             },
             "arms": {
                 1: "Resting on Hands",
@@ -304,7 +307,9 @@ init 999 python:
         # sprite code map
         SC_MAP = {
             "torso": [
-                "def"
+                "def",
+                "marisa",
+                "rin"
             ],
             "arms": [
                 1,
@@ -891,7 +896,10 @@ init 999 python:
         def _sel_hair(self, direct):
             self._adj_sel(direct, "hair")
             self._update_sel_tx("hair")
-            monika_chr.change_hair(self._get_spr_code("hair"))
+            monika_chr.change_hair(mas_sprites.HAIR_MAP.get(
+                self._get_spr_code("hair"),
+                mas_hair_def
+            ))
 
 
         def _sel_mouth(self, direct):
@@ -928,7 +936,10 @@ init 999 python:
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")
             self._update_sel_tx("torso")
-            monika_chr.change_clothes(self._get_spr_code("torso"))
+            monika_chr.change_clothes(mas_sprites.CLOTH_MAP.get(
+                self._get_spr_code("torso"),
+                mas_clothes_def
+            ))
 
 
         ######################### button functions ###########################

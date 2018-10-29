@@ -1701,6 +1701,16 @@ init python:
             year_param=[persistent.sessions["first_session"].year]
         )
 
+    # add birthday if we have one
+    if persistent._mas_player_bday is not None:
+        calendar.addRepeatable_d(
+            "player-bday",
+            "Your Birthday",
+            persistent._mas_player_bday,
+            []
+        )
+
+
 
 init 100 python:
     # calendar related but later
@@ -1860,7 +1870,7 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika 1
+    show monika idle
 
     $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True

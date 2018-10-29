@@ -514,25 +514,29 @@ label mas_mood_bored:
     return
 
 
-# TODO: dropping year older so we dont have any issues on 922
-#init 5 python:
-#    if not persistent._mas_mood_bday_locked:
-#        addEvent(
-#            Event(
-#                persistent._mas_mood_database,
-#                "mas_mood_yearolder",
-#                prompt="like a year older",
-#                category=[store.mas_moods.TYPE_NEUTRAL],
-#                unlocked=True
-#            ),
-#            eventdb=store.mas_moods.mood_db
-#        )
+# TODO: we need to add some sort of reaction to birthdays soon
+init 5 python:
+    if not persistent._mas_mood_bday_locked:
+        addEvent(
+            Event(
+                persistent._mas_mood_database,
+                "mas_mood_yearolder",
+                prompt="like a year older",
+                category=[store.mas_moods.TYPE_NEUTRAL],
+                unlocked=True
+            ),
+            eventdb=store.mas_moods.mood_db
+        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
 default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
+
+# player birthday 
+# datetime.date
+default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime
@@ -590,15 +594,42 @@ label mas_mood_yearolder:
     menu:
         m "Could today be your...{w}birthday?"
         "YES!":
-            $ persistent._mas_player_bday = datetime.date.today()
+            python:
+                persistent._mas_player_bday = datetime.date.today()
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
+
             label .mas_mood_yearolder_yesloud:
                 jump mas_mood_yearolder_yes
         "Yes, unfortunately...":
-            $ persistent._mas_player_bday = datetime.date.today()
+            python:
+                persistent._mas_player_bday = datetime.date.today()
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
             jump mas_mood_yearolder_yesu
 
         "No":
             m 1lksdla "Aw, well,{w} it was worth a guess."
+
+            m "Now that we're talking about it, though..."
+            call mas_bday_player_bday_select
+            python:
+                persistent._mas_player_bday = selected_date
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
+
             jump mas_mood_yearolder_no
 
 label mas_mood_yearolder_end:
@@ -644,16 +675,43 @@ label mas_mood_yearolder_false:
             menu:
                 m "Then is today your birthday?"
                 "Yes":
-                    $ persistent._mas_player_bday = datetime.date.today()
+                    python:
+                        store.mas_calendar.removeRepeatable_d(
+                            "player-bday",
+                            persistent._mas_player_bday
+                        )
+                        persistent._mas_player_bday = datetime.date.today()
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday", 
+                            persistent._mas_player_bday,
+                            []
+                        )
+
                     m 1hua "Happy birthday, [player]."
                     m 1eka "But don't lie to me next time."
                     jump mas_mood_yearolder_end
 
                 "No":
-                    $ persistent._mas_player_bday = None
                     m 2tfp "..."
                     m 2tkc "Alright, [player]."
-                    m 2tfc "Don't lie to me next time."
+                    m "Then..."
+                    call mas_bday_player_bday_select
+                    python:
+                        store.mas_calendar.removeRepeatable_d(
+                            "player-bday",
+                            selected_date
+                        )
+                        persistent._mas_player_bday = selected_date
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday", 
+                            persistent._mas_player_bday,
+                            []
+                        )
+
+#                    m 2tfc "Don't lie to me next time."
+
                     jump mas_mood_yearolder_end
 
         "It is!":
@@ -671,9 +729,16 @@ label mas_mood_yearolder_bday_true:
 
 label mas_mood_yearolder_wontforget:
     # YES flow continues here
-    m 1eka "If only you told me this sooner..."
-    m 1lksdla "I would have made you a gift."
-    m 1hua "I'll make you something next year, [player]. I won't forget!"
+    # TODO: wait we really need an actual gift scene soon
+
+    m 1ekc "I'm sorry I don't have anything for you yet."
+    m "I'm still figuring out how to give you something more than just a text file."
+    m 1hua "I'll make you something good next year, [player]. I promise!"
+
+    # original wont forget, kept here for reference
+#    m 1eka "If only you told me this sooner..."
+#    m 1lksdla "I would have made you a gift."
+#    m 1hua "I'll make you something next year, [player]. I won't forget!"
     jump mas_mood_yearolder_end
 
 # empathatic yes, today is your birthday
