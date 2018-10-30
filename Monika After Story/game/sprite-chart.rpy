@@ -1315,6 +1315,8 @@ init -5 python in mas_sprites:
         RETURNS:
             stock standing string
         """
+        # TODO: update this to work with the more optimized system for
+        # building sprites
         if single:
             return "".join([
                 I_COMP,
@@ -1327,7 +1329,7 @@ init -5 python in mas_sprites:
                 single,
                 FILE_EXT,
                 '"',
-                _ms_accessorylist(acs_list, False, False),
+#                _ms_accessorylist(acs_list, False, False),
                 ")"
             ])
 
@@ -1354,7 +1356,7 @@ init -5 python in mas_sprites:
             head,
             FILE_EXT,
             '"',
-            _ms_accessorylist(acs_list, False, False),
+#            _ms_accessorylist(acs_list, False, False),
             ")"
         ])
 
