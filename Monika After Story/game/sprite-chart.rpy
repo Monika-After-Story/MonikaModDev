@@ -407,20 +407,23 @@ init -5 python in mas_sprites:
     ]
 
 
-    def acs_lean_mode(lean):
+    def acs_lean_mode(sprite_list, lean):
         """
-        Returns the appropriate accessory prefix dpenedong on lean
+        Adds the appropriate accessory prefix dpenedong on lean
 
         IN:
+            sprite_list - list to add sprites to 
             lean - type of lean
-
-        RETURNS:
-            appropratie accessory prefix
         """
         if lean:
-            return "".join([PREFIX_ACS_LEAN, lean, ART_DLM])
+            sprite_list.extend((
+                PREFIX_ACS_LEAN,
+                lean,
+                ART_DLM
+            ))
 
-        return PREFIX_ACS
+        else:
+            sprite_list.append(PREFIX_ACS)
 
 
     def face_lean_mode(lean):
@@ -431,10 +434,14 @@ init -5 python in mas_sprites:
             lean - type of lean
 
         RETURNS:
-            appropriate face prefix
+            appropriat eface prefix string
         """
         if lean:
-            return "".join([PREFIX_FACE_LEAN, lean, ART_DLM])
+            return "".join((
+                PREFIX_FACE_LEAN,
+                lean,
+                ART_DLM
+            ))
 
         return PREFIX_FACE
 
@@ -531,30 +538,36 @@ init -5 python in mas_sprites:
 
     def build_loc():
         """
-        RETURNS location string for the sprite as a tuple of strings.
-        Use this with an extend on the main sprite list
+        RETURNS location string for the sprite 
         """
-        return ("(", str(adjust_x), ",", str(adjust_y), ")")
+        return "".join(("(", str(adjust_x), ",", str(adjust_y), ")"))
 
 
     # sprite maker functions
 
 
-    def _ms_accessory(acs, isnight, issitting, pose=None, lean=None):
+    def _ms_accessory(
+            sprite_list,
+            pos_str,
+            acs,
+            n_suffix,
+            issitting,
+            pose=None,
+            lean=None
+        ):
         """
-        Creates accessory string
+        Adds accessory string
 
         IN:
+            sprite_list - list to add sprites to
+            pos_str - position string to use
             acs - MASAccessory object
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
             pose - current pose
                 (Default: None)
             lean - type of lean
                 (Default: None)
-
-        RETURNS:
-            accessory string
         """
         if acs.no_lean:
             # the lean version is the same as regular
@@ -576,7 +589,7 @@ init -5 python in mas_sprites:
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
             # for this pose. Weird, but maybe it happens?
-            return ""
+            return 
 
         if issitting:
             acs_str = acs.img_sit
@@ -586,51 +599,75 @@ init -5 python in mas_sprites:
 
         else:
             # standing string is null or None
-            return ""
+            return
 
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
-            A_T_MAIN,
-            acs_lean_mode(lean),
+            A_T_MAIN
+        ))
+        acs_lean_mode(sprite_list, lean)
+        sprite_list.extend((
             acs_str,
             ART_DLM,
             poseid,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_accessorylist(acs_list, isnight, issitting, pose=None, lean=None):
+    def _ms_accessorylist(
+            sprite_list,
+            pos_str, 
+            acs_list,
+            n_suffix,
+            issitting,
+            pose=None,
+            lean=None
+        ):
         """
-        Creates accessory strings for a list of accessories
+        Adds accessory strings for a list of accessories
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             acs_list - list of MASAccessory object, in order of rendering
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
             pose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
                 (Default: None)
-
-        RETURNS:
-            accessory string list
         """
         if len(acs_list) == 0:
-            return ""
+            return
 
-        acs_gen = [
-            _ms_accessory(acs, isnight, issitting, pose, lean=lean)
-            for acs in acs_list
-        ]
+        temp_acs_list = []
 
-        acs_gen_str = ",".join([
-            _acs
-            for _acs in acs_gen
-            if len(_acs) > 0
-        ])
+        for acs in acs_list:
+            temp_temp_acs_list = []
+            _ms_accessory(
+                temp_temp_acs_list,
+                pos_str,
+                acs,
+                n_suffix,
+                issitting,
+                pose,
+                lean=lean
+            )
+
+            if len(temp_temp_acs_list) > 0:
+                temp_acs_list.extend(temp_temp_acs_list)
+                temp_acs_list.append(",")
+
+        if len(temp_acs_list) == 0:
+            return
+
+        # otherwise, we could render at least 1 accessory
+
+        # pop the last comman
+        temp_acs_list.pop()
 
         if lean:
             loc_str = LOC_LEAN
@@ -638,223 +675,230 @@ init -5 python in mas_sprites:
         else:
             loc_str = LOC_REG
 
-        if len(acs_gen_str) > 1:
-            return "," + "".join([
-                build_loc(),
-                ",",
-                L_COMP,
-                "(",
-                loc_str,
-                ",",
-                acs_gen_str,
-                ")"
-            ])
+        # add the sprites to the list
+        sprite_list.extend((
+            ",",
+            pos_str,
+            ",",
+            L_COMP,
+            "(",
+            loc_str,
+            ","
+        ))
+        sprite_list.extend(temp_acs_list)
+        sprite_list.append(")")
 
-        return ""
 
-
-    def _ms_arms(clothing, arms, isnight):
+    def _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix):
         """
-        Creates arms string
+        Adds arms string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             arms - type of arms
-            isnight - True will generate night string, false will not
-
-        RETURNS:
-            arms string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str, 
             ',"',
             C_MAIN,
             clothing,
             "/",
             PREFIX_ARMS,
             arms,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_blush(blush, isnight, lean=None):
+    def _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix):
         """
-        Creates blush string
+        Adds blush string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             blush - type of blush
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            blush string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_BLUSH,
             blush,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_body(clothing, hair, isnight, lean=None, arms=""):
+    def _ms_body(
+            sprite_list,
+            pos_str,
+            clothing,
+            hair,
+            n_suffix,
+            lean=None,
+            arms=""
+        ):
         """
-        Creates body string
+        Adds body string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             lean - type of lean
                 (Default: None)
             arms - type of arms
                 (Default: "")
-
-        RETURNS:
-            body string
         """
+        sprite_list.extend((
+            I_COMP,
+            "("
+        ))
+
         if lean:
             # leaning is a single parter
-            body_str = ",".join([
+            sprite_list.extend((
                 LOC_LEAN,
-                _ms_torsoleaning(clothing, hair, lean, isnight)
-            ])
+                ","
+            ))
+            _ms_torsoleaning(
+                sprite_list,
+                pos_str,
+                clothing,
+                hair,
+                lean,
+                n_suffix,
+            )
 
         else:
             # not leaning is a 2parter
-            body_str = ",".join([
+            sprite_list.extend((
                 LOC_REG,
-                _ms_torso(clothing, hair, isnight),
-                _ms_arms(clothing, arms, isnight)
-            ])
+                ","
+            ))
+            _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix),
+            sprite_list.append(",")
+            _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix)
 
         # add the rest of the parts
-        return "".join([
-            I_COMP,
-            "(",
-            body_str,
-            ")"
-        ])
+        sprite_list.append(")")
 
 
-    def _ms_emote(emote, isnight, lean=None):
+    def _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix):
         """
-        Creates emote string
+        Adds emote string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             emote - type of emote
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Dfeualt: None)
-
-        RETURNS:
-            emote string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EMOTE,
             emote,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyebags(eyebags, isnight, lean=None):
+    def _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix):
         """
-        Creates eyebags string
+        Adds eyebags string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebags - type of eyebags
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Dfeault: None)
-
-        RETURNS:
-            eyebags string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYEG,
             eyebags,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyebrows(eyebrows, isnight, lean=None):
+    def _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix):
         """
-        Creates eyebrow string
+        Adds eyebrow strings
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebrows - type of eyebrows
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            eyebrows string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYEB,
             eyebrows,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyes(eyes, isnight, lean=None):
+    def _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix):
         """
-        Creates eyes string
+        Adds eye string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyes - type of eyes
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            eyes stirng
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYES,
             eyes,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
     def _ms_face(
+            sprite_list,
+            pos_str,
             eyebrows,
             eyes,
             nose,
             mouth,
-            isnight,
+            n_suffix,
             lean=None,
             eyebags=None,
             sweat=None,
@@ -863,15 +907,17 @@ init -5 python in mas_sprites:
             emote=None
         ):
         """
-        Create face string
+        Adds face string
         (the order these are drawn are in order of argument)
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
             mouth - type of mouth
-            isnight - True will generate a night string, false will not
+            n_suffix - night suffix to use
             lean - type of lean
                 (Default: None)
             eyebags - type of eyebags
@@ -884,48 +930,55 @@ init -5 python in mas_sprites:
                 (Default: None)
             emote - type of emote
                 (Default: None)
-
-        RETURNS:
-            face string
         """
-        subparts = list()
+        sprite_list.extend((
+            I_COMP,
+            "("
+        ))
 
         # lean checking
         if lean:
-            subparts.append(LOC_LEAN)
+            sprite_list.append(LOC_LEAN)
 
         else:
-            subparts.append(LOC_REG)
+            sprite_list.append(LOC_REG)
+
+        # setup the face prefix string
+        f_prefix = face_lean_mode(lean)
 
         # now for the required parts
-        subparts.append(_ms_eyes(eyes, isnight, lean=lean))
-        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
-        subparts.append(_ms_nose(nose, isnight, lean=lean))
-        subparts.append(_ms_mouth(mouth, isnight, lean=lean))
+        sprite_list.append(",")
+        _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix)
 
         # and optional parts
         if eyebags:
-            subparts.append(_ms_eyebags(eyebags, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix)
 
         if sweat:
-            subparts.append(_ms_sweat(sweat, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix)
 
         if blush:
-            subparts.append(_ms_blush(blush, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix)
 
         if tears:
-            subparts.append(_ms_tears(tears, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix)
 
         if emote:
-            subparts.append(_ms_emote(emote, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix)
 
-        # alright, now build the face string
-        return "".join([
-            I_COMP,
-            "(",
-            ",".join(subparts),
-            ")"
-        ])
+        # finally the last paren
+        sprite_list.append(")")
 
 
     def _ms_head(clothing, hair, head):
@@ -982,56 +1035,54 @@ init -5 python in mas_sprites:
         ])
 
 
-    def _ms_mouth(mouth, isnight, lean=None):
+    def _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix):
         """
-        Creates mouth string
+        Adds mouth string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             mouth - type of mouse
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            mouth string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str, 
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_MOUTH,
             mouth,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_nose(nose, isnight, lean=None):
+    def _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix):
         """
-        Creates nose string
+        Adds nose string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             nose - type of nose
-            isnight - True will genreate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            nose string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        # NOTE: if we never get a new nose, we can just optimize this to 
+        #   a hardcoded string
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_NOSE,
             nose,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
     def _ms_right(clothing, hair, right):
@@ -1119,8 +1170,12 @@ init -5 python in mas_sprites:
         else:
             loc_str = LOC_REG
 
-        # location string tuple (for individual composites)
-        loc_str_tup = build_loc()
+        # location string from build loc
+        loc_build_str = build_loc()
+        loc_build_tup = (",", loc_build_str, ",")
+
+        # night suffix?
+        n_suffix = night_mode(isnight)
         
         # initial portions of list
         sprite_str_list = [
@@ -1129,65 +1184,81 @@ init -5 python in mas_sprites:
         ]
 
         # pre accessories
-        sprite_str_list.extend(
-            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean)
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_pre_list,
+            n_suffix,
+            True,
+            arms,
+            lean=lean
         )
 
         # between pre acs and body
-        sprite_str_list.append(",")
-        sprite_str_list.extend(loc_str_tup)
-        sprite_str_list.append(",")
+        sprite_str_list.extend(loc_build_tup)
 
         # body
-        sprite_str_list.extend(
-            _ms_body(clothing, hair, isnight, lean=lean, arms=arms)
+        _ms_body(
+            sprite_str_list,
+            loc_build_str,
+            clothing,
+            hair,
+            n_suffix,
+            lean=lean,
+            arms=arms
         )
 
         # between body and face acs
-        sprite_str_list.extend(
-            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean)
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_mid_list, 
+            n_suffix,
+            True,
+            arms,
+            lean=lean
         )
 
         # between mid acs and face
-        sprite_str_list.append(",")
-        sprite_str_list.extend(loc_str_tup)
-        sprite_str_list.append(",")
-            
+        sprite_str_list.extend(loc_build_tup)
 
-        return "".join([
-            TRAN,
-            "(",
-            L_COMP,
-            "(",
-            loc_str,
-# HERE
-            ",",
-            build_loc(),
-            ",",
-            _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
-            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
-            ",",
-            build_loc(),
-            ",",
-            _ms_face(
-                eyebrows,
-                eyes,
-                nose,
-                mouth,
-                isnight,
-                lean=lean,
-                eyebags=eyebags,
-                sweat=sweat,
-                blush=blush,
-                tears=tears,
-                emote=emote
-            ),
-            _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
+        # face
+        _ms_face(
+            sprite_str_list,
+            loc_build_str,
+            eyebrows,
+            eyes,
+            nose,
+            mouth,
+            n_suffix,
+            lean=lean,
+            eyebags=eyebags,
+            sweat=sweat,
+            blush=blush,
+            tears=tears,
+            emote=emote
+        )
+
+        # after face acs
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_pst_list, 
+            n_suffix,
+            True,
+            arms,
+            lean=lean
+        )
+
+        # zoom
+        sprite_str_list.extend((
             "),",
             ZOOM,
             str(value_zoom),
             ")"
-        ])
+        ))
+
+        return "".join(sprite_str_list)
 
 
     def _ms_standing(clothing, hair, head, left, right, acs_list):
@@ -1288,99 +1359,93 @@ init -5 python in mas_sprites:
         ])
 
 
-    def _ms_sweat(sweat, isnight, lean=None):
+    def _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix):
         """
-        Creates sweatdrop string
+        Adds sweatdrop string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             sweat -  type of sweatdrop
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Defualt: None)
-
-        RETURNS:
-            sweatdrop string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_SWEAT,
             sweat,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_tears(tears, isnight, lean=None):
+    def _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix):
         """
-        Creates tear string
+        Adds tear string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             tears - type of tears
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            tear strring
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_TEARS,
             tears,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_torso(clothing, hair, isnight):
+    def _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix):
         """
-        Creates torso string
+        Adds torso string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
-            isnight - True will generate night string, false will not
-
-        RETURNS:
-            torso string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             C_MAIN,
             clothing,
             "/",
             PREFIX_BODY,
             hair,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_torsoleaning(clothing, hair, lean, isnight):
+    def _ms_torsoleaning(sprite_list, pos_str, clothing, hair, lean, n_suffix):
         """
-        Creates leaning torso string
+        Adds torso leaning string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of ahri
             lean - type of leaning
-            isnight - True will genreate night string, false will not
-
-        RETURNS:
-            leaning torso string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            build_loc(),
+        sprite_list.extend((
+            pos_str,
             ',"',
             C_MAIN,
             clothing,
@@ -1389,10 +1454,10 @@ init -5 python in mas_sprites:
             hair,
             ART_DLM,
             lean,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
 # Dynamic sprite builder
