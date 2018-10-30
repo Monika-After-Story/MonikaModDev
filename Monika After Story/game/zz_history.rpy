@@ -280,6 +280,36 @@ init -850 python:
         return store.mas_history.lookup_otl(key, years_list)
 
 
+    def mas_HistVerify(key, _verify, *years):
+        """
+        Verifies if data at the given key matches the verification value.
+
+        IN:
+            key - data key to lookup
+            _verify - the data we want to match to
+            years - years to look up data (as args)
+                Dont pass in anything if you want to lookup all years since
+                2017
+
+        RETURNS: tuple of the following format:
+            [0]: true/False if we found data that matched the verification
+            [1]: list of years that matched the verification
+        """
+        if len(years) == 0:
+            years = range(2017, datetime.date.today().year+1)
+
+        found_data = mas_HistLookup_otl(key, years)
+        years_found = []
+
+        for year, data_tuple in found_data.iteritems():
+            status, _data = data_tuple
+            
+            if status == store.mas_history.L_FOUND and _data == _verify:
+                years_found.append(year)
+
+        return (len(years_found) > 0, years_found)
+
+
     ## MASHistorySaver stuff
     
     class MASHistorySaver(object):
@@ -533,6 +563,8 @@ init -800 python in mas_history:
     # now run the algorithm
     _runMHSAlg()
 
+    # save trigger data
+    saveMHSData()
 
 
 init -816 python in mas_delact:
