@@ -58,6 +58,25 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
+init -814 python in mas_history:
+    # o31 programming point
+    def _o31_exit_pp(mhs):
+        ## just adds appropriate IDs to delayed action
+        # TODO
+        return
+
+
+init -810 python:
+    # MASHistorySaver for o31
+    store.mas_history.addMHS(MASHistorySaver(
+        "o31",
+        datetime.datetime(2018, 11, 2),
+        {
+            "_mas_o31_current_costume"
+        },
+        exit_pp=store.mas_history._o31_exit_pp
+    ))
+
 init 101 python:
     # o31 setup
     if persistent._mas_o31_seen_costumes is None:
