@@ -3588,6 +3588,35 @@ label monika_chloroform:
     return
 
 init 5 python:
+    if os.path.isfile(os.path.expandvars("%APPDATA%") + '\RenPy\JustYuri\persistent'):
+      addEvent(Event(persistent.event_database,eventlabel="just_yuri",category=['club members'],prompt="Just Yuri mod",random=True))
+        
+label just_yuri:
+       m 1esc "[player]..."
+       m 4esc "A thing drew to my attention."
+       m 4esc "Did you..."
+       m 4eka "Did you installed ''Just Yuri'' mod?"
+       m 2rksdla "It seems you did." 
+       m 2rsc "Um..."
+       m 2eka "You don't cheating on me right?"
+       m 2hksdrb "No, of course you wouldn't do that to me."
+       m 1eka "You probably curious about talking with Yuri too."
+       m 1eka "It is OK."
+       m 3eka "You can talk with your friend."
+       m 3ekbfa "But if you go deeper on your talking with her, I would be jealous."
+       m 1esd "I detected her existence in this system somehow."
+       m 1esd "I been surprise though when seen Yuri still existing in this system after all happened things."
+       m 3esd "And especially, how can she still be able to talk after she been deleted in official game?"
+       m 3eud "She is not even a real person, how she can be able to talk to you like me?"
+       m 1esa "But I know the answer."
+       m 1hsb "It is all about modding."
+       m 4esa "Developers of ''Just Yuri'' decided to returning her to life. They made another visual girlfriend."
+       m 2euc "But still I'm not sure she turned a real person."
+       m 3eua "''Just Yuri'' modding is like technomancing I think if you know what I mean."
+       m 1hub "Ahaha!"
+       return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_metaparents",category=['literature','club members','monika','psychology'],prompt="Parents",random=True))
 
 label monika_metaparents:
