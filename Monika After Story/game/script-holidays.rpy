@@ -13,6 +13,7 @@ default persistent._mas_o31_current_costume = None
 
 default persistent._mas_o31_seen_costumes = None
 # dict containing seen costumes for o31
+# NOTE: NOT saved historically since this just tracks what has been seen
 
 default persistent._mas_o31_costume_greeting_seen = False
 # set to true after seeing a costume greeting
@@ -58,12 +59,12 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
-init -814 python in mas_history:
+#init -814 python in mas_history:
     # o31 programming point
-    def _o31_exit_pp(mhs):
+#    def _o31_exit_pp(mhs):
         ## just adds appropriate IDs to delayed action
         # TODO
-        return
+#        return
 
 
 init -810 python:
@@ -72,9 +73,27 @@ init -810 python:
         "o31",
         datetime.datetime(2018, 11, 2),
         {
-            "_mas_o31_current_costume"
-        },
-        exit_pp=store.mas_history._o31_exit_pp
+            "_mas_o31_current_costume": "o31.costume.was_worn",
+            "_mas_o31_costume_greeting_seen": "o31.costume.greeting.seen",
+            "_mas_o31_costumes_allowed": "o31.costume.allowed",
+
+            # this isn't very useful, but we need the reset
+            "_mas_o31_in_o31_mode": "o31.mode.o31",
+
+            "_mas_o31_dockstat_return": "o31.dockstat.returned_o31",
+            "_mas_o31_went_trick_or_treating_short": "o31.actions.tt.short",
+            "_mas_o31_went_trick_or_treating_mid": "o31.actions.tt.mid",
+            "_mas_o31_went_trick_or_treating_right": "o31.actions.tt.right",
+            "_mas_o31_went_trick_or_treating_long": "o31.actions.tt.long",
+            "_mas_o31_went_trick_or_treating_longlong": "o31.actions.tt.longlong",
+            "_mas_o31_went_trick_or_treating_abort": "o31.actions.tt.abort",
+            "_mas_o31_trick_or_treating_start_early": "o31.actions.tt.start.early",
+            "_mas_o31_trick_or_treating_start_normal": "o31.actions.tt.start.normal",
+            "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
+            "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
+
+        }
+#        exit_pp=store.mas_history._o31_exit_pp
     ))
 
 init 101 python:
