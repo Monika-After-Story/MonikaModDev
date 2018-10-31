@@ -595,7 +595,102 @@ init -810 python:
     # NOTE: because player model variables are used basically everywhere, 
     #   rather than make a ton of player model MHS objects, lets just make a 
     #   generic one that runs on jan 1 of every year.
-    # TODO
+    #
+    # Sub cats:
+    #   lifestyle - what you do
+    #   emotions - emotional/mental states
+    #   family - family related stuff
+    #   actions - what you have done
+    #   location - location-based stuff
+    #   likes - likes/wants
+    #   know - knowledge
+    store.mas_history.addMHS(MASHistorySaver(
+        "pm",
+        datetime.datetime(2019, 1, 1),
+        {
+            # lifestyles (of the rich and famous)
+            "_mas_pm_religious": "pm.lifestyle.religious",
+            "_mas_pm_like_playing_sports": "pm.lifestyle.plays_sports",
+            "_mas_pm_meditates": "pm.lifestyle.meditates",
+            "_mas_pm_see_therapist": "pm.lifestyle.sees_therapist",
+
+            # lifestyle / ring
+            "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
+
+            # lifestyle / music
+            "_mas_pm_play_jazz": "pm.lifestyle.music.play_jazz",
+
+            # lifestyle / smoking
+            "_mas_pm_do_smoke": "pm.lifestyle.smoking.smokes",
+            "_mas_pm_do_smoke_quit": "pm.lifestyle.smoking.trying_to_quit",
+
+            # lifestyle / food
+            "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
+
+            # emotions
+            "_mas_pm_love_yourself": "pm.emotions.love_self",
+
+            # family
+            "_mas_pm_have_fam": "pm.family.have_family",
+            "_mas_pm_have_fam_sibs": "pm.family.have_siblings",
+            "_mas_pm_no_fam_bother": "pm.family.bothers_you",
+            "_mas_pm_have_fam_mess": "pm.family.is_mess",
+            "_mas_pm_have_fam_mess_better": "pm.family.will_get_better",
+            "_mas_pm_no_talk_fam": "pm.family.no_talk_about",
+            "_mas_pm_fam_like_monika": "pm.family.likes_monika",
+
+            # actions
+            "_mas_pm_drawn_art": "pm.actions.drawn_art",
+
+            # actions / prom
+            "_mas_pm_gone_to_prom": "pm.actions.prom.went",
+            "_mas_pm_prom_good": "pm.actions.prom.good",
+            "_mas_pm_had_prom_date": "pm.actions.prom.had_date",
+            "_mas_pm_prom_monika": "pm.actions.prom.wanted_monika",
+            "_mas_pm_prom_not_interested": "pm.actions.prom.no_interest",
+            "_mas_pm_prom_shy": "pm.actions.prom.too_shy",
+            "_mas_pm_no_prom": "pm.actions.prom.no_prom",
+
+            # actions / books
+            "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
+
+            # actions / mas / zoom
+            "_mas_pm_zoomed_out": "pm.actions.mas.zoom.out",
+            "_mas_pm_zoomed_in": "pm.actions.mas.zoom.in",
+            "_mas_pm_zoomed_in_max": "pm.actions.mas.zoom.in_max",
+
+            # location
+            "_mas_pm_live_in_city": "pm.location.live_in_city",
+            "_mas_pm_live_near_beach": "pm.location.live_near_beach",
+
+            # likes
+            "_mas_pm_likes_horror": "pm.likes.horror",
+            "_mas_pm_likes_spoops": "pm.likes.spooks",
+            "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+
+            # likes / monika
+            "_mas_pm_a_hater": "pm.likes.monika.not",
+
+            # likes / music
+            "_mas_pm_like_rap": "pm.likes.music.rap",
+            "_mas_pm_like_vocaloids": "pm.likes.music.vocaloids",
+            "_mas_pm_like_rock_n_roll": "pm.likes.music.rock_n_roll",
+            "_mas_pm_like_orchestral_music": "pm.likes.music.orchestral",
+            "_mas_pm_like_jazz": "pm.likes.music.jazz",
+            "_mas_pm_like_other_music": "pm.likes.music.other",
+
+            # likes / food
+            "_mas_pm_like_mint_ice_cream": "pm.likes.food.mint_ice_cream",
+
+            # knowledge
+            # knowledge / lang
+            "_mas_pm_lang_other": "pm.know.lang.other",
+            "_mas_pm_lang_jpn": "pm.know.lang.jpn"
+
+        },
+        use_year_before=True,
+        dont_reset=True
+    ))
 
     # BDAY
     # NOTE: kind of wish I put all the bday variables together. Since they are
