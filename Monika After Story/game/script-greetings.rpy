@@ -1468,8 +1468,6 @@ label greeting_hairdown:
     menu:
         m "Do you like it?"
         "Yes":
-            # make it possible to switch hair at will
-            $ unlockEventLabel("monika_hair_ponytail")
             $ persistent._mas_likes_hairdown = True
 
             # maybe 6sub is better?
@@ -1491,7 +1489,6 @@ label greeting_hairdown:
             # you will never get this chance again
 
     # lock this greeting forever.
-    $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
     $ persistent._mas_hair_changed = True # menas we have seen this
 
     # cleanup
