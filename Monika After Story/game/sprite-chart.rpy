@@ -1540,10 +1540,6 @@ init -2 python:
             IN:
                 new_cloth - new clothes to wear
             """
-            if self.clothes.name == new_cloth.name:
-                return
-
-            # otherwise, different, so do the regular progrmaming point rule
             self.clothes.exit(self)
             self.clothes = new_cloth
             self.clothes.entry(self)
@@ -1556,10 +1552,6 @@ init -2 python:
             IN:
                 new_hair - new hair to wear
             """
-            if self.hair.name == new_hair.name:
-                return
-
-            # otherwise, different, so do programming points
             self.hair.exit(self)
             self.hair = new_hair
             self.hair.entry(self)
@@ -2455,6 +2447,33 @@ init -2 python in mas_sprites:
     # NOTE: this will NOT be maintained on a restart
 
     ######### HAIR ###########
+    def _hair_def_entry(_moni_chr):
+        """
+        Entry programming point for ponytail
+        """
+        store.lockEventLabel("monika_hair_ponytail")
+
+
+    def _hair_def_exit(_moni_chr):
+        """
+        Exit programming point for ponytail
+        """
+        store.unlockEventLabel("monika_hair_ponytail")
+
+
+    def _hair_down_entry(_moni_chr):
+        """
+        Entry programming point for hair down
+        """
+        store.lockEventLabel("monika_hair_down")
+
+
+    def _hair_down_exit(_moni_chr):
+        """
+        Exit programming point for hair down
+        """
+        store.unlockEventLabel("monika_hair_down")
+
 
     ######### CLOTHES ###########
     def _clothes_rin_entry(_moni_chr):
@@ -2521,7 +2540,9 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        )
+        ),
+        entry_pp=store.mas_sprites._hair_def_entry,
+        exit_pp=store.mas_sprites._hair_def_exit
     )
     store.mas_sprites.init_hair(mas_hair_def)
 
@@ -2534,7 +2555,9 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        )
+        ),
+        entry_pp=store.mas_sprites._hair_down_entry,
+        exit_pp=store.mas_sprites._hair_down_exit
     )
     store.mas_sprites.init_hair(mas_hair_down)
 
