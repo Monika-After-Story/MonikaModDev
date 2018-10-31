@@ -112,6 +112,19 @@ init 101 python:
         # disable o31 mode
         persistent._mas_o31_in_o31_mode = False
 
+        # unlock the special greetings if need be
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
+
 
 init -11 python in mas_o31_event:
     import store
@@ -222,6 +235,9 @@ label mas_holiday_o31_autoload_check:
 
     # always disable the opendoro greeting on o31
     $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
+
+    # and the hairdown greeting as well
+    $ lockEventLabel("greeting_hairdown", store.evhand.greeting_database)
 
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check

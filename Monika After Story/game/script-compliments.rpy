@@ -276,7 +276,7 @@ label mas_compliment_hair:
     return
 
 label mas_compliment_hair_2:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1wubfb "Thank you so much, [player]..."
         m 1lkbfb "I was really nervous the first time I changed my hair here."
     else:
@@ -300,7 +300,7 @@ label mas_compliment_hair_2:
     return
 
 label mas_compliment_hair_3:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1wubfb "Thank you so much, [player]!"
         m 1lkbfb "I'm really happy that you like this hairstyle."
     else:

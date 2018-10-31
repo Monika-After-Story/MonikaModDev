@@ -315,6 +315,17 @@ label v0_8_10(version="v0_8_10"):
                 "922.actions.surprise.aff_given"
             ] = persistent._mas_bday_sbd_aff_given
 
+        # unlock the special greetings we accidentally locked
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
     return
 
 # 0.8.9
