@@ -310,7 +310,7 @@ label v0_8_10(version="v0_8_10"):
             "i_greeting_monikaroom",
             store.evhand.greeting_database
         )
-        if persistent._mas_hair_changed:
+        if not persistent._mas_hair_changed:
             unlockEventLabel(
                 "greeting_hairdown", 
                 store.evhand.greeting_database
