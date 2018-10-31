@@ -305,6 +305,17 @@ label v0_8_10(version="v0_8_10"):
                 store.mas_anni.reset_annis(first_sesh)
                 store.mas_anni.unlock_past_annis()
 
+        # unlock the special greetings we accidentally locked
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+        if persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
     return
 
 # 0.8.9
