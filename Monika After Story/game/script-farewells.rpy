@@ -265,26 +265,54 @@ label bye_prompt_to_class_late:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.farewell_database,
-            eventlabel="bye_prompt_to_work",
-            unlocked=True,
-            prompt="I'm going to work.",
-            pool=True
-        ),
-        eventdb=evhand.farewell_database
-    )
-
 label bye_prompt_to_work:
-    m 1hua "Work hard, [player]!"
-    m 1esa "I'll be here for you when you get home from work."
-    m 1hua "Bye-bye!"
+    $ mas_getsessionlength()
+    $ session_time = mas_getsessionlength()
+    if session_time < datetime.timedelta(minutes=20):
+        jump bye_prompt_to_work_20mins
+    elif session_time < datetime.timedelta(hours=1):
+        jump bye_prompt_to_work_1hour
+    elif session_time < datetime.timedelta(hours=6):
+        jump bye_prompt_to_work_normal
+    if session_time >= datetime.timedelta(hours=6):
+        jump bye_prompt_to_work_late
+    return
 
-    # TODO:
-    # can monika join u at work
+label bye_prompt_to_work_20mins:
+    m 2eka "Aww, okay! Just checking in on me before heading out?"
+    m 3eka "You must be really short on time if you're leaving already."
+    m "It was really sweet of you to see me, even when so busy!"
+    m 3hub "Work hard [player]! Make me proud!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
+    return 'quit'
 
+label bye_prompt_to_work_1hour:
+    m 1hksdlb "Oh! Alright! I was starting to get really comfortable, Ahaha."
+    m 1rusdlb "I was expecting us to be a here a bit longer but you're a busy [guy]!"
+    m 1eka "It was great seeing you, even if it wasn't as long as I wanted..."
+    m 1kua "But then if it were up to me I'd have you all day!"
+    m 1hua "I'll be here waiting for you to get back home from work!"
+    m "Tell me all about it when you get back!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
+    return 'quit'
+
+label bye_prompt_to_work_normal:
+    m 2eua "Heading to work then [player]?"
+    m 2eka "The day may be good or bad...but if it becomes too much think of something nice!"
+    m 4eka "Every day, no matter how badly it's going ends after all!"
+    m 2tku "Maybe you can think of me if it becomes stressful..."
+    m 2esa "Just do your best! I'll see you when you get back!"
+    m 2eka "I know you'll do great!"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
+    return 'quit'
+
+label bye_prompt_to_work_late:
+    m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
+    m 2rksdlc "I was hoping you'd rest before doing anything too big."
+    m 2ekc "Try not to overexert yourself, okay?"
+    m 2ekd "If you need to take a breather, don't be afraid to do so!"
+    m 3eka "Just come home to me happy and healthy."
+    m 3eua "Stay safe [player]!"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
