@@ -20,6 +20,8 @@ init -1 python in mas_hotkeys:
     # True means the talk hotkey is enabled, False means it is not
     talk_enabled = False
 
+    # True means the ask hotkey is enabled, False means it is not
+    ask_enabled = False
     # True means the eextra hotkey is enabled, False means it is not
     extra_enabled = False
 
@@ -45,6 +47,7 @@ init python:
         Disables the main hotkeys
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.ask_enabled = False
         store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.music_enabled = False
         store.mas_hotkeys.play_enabled = False
@@ -55,6 +58,7 @@ init python:
         Enables the main hotkeys
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.ask_enabled = True
         store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.music_enabled = True
         store.mas_hotkeys.play_enabled = True
@@ -66,6 +70,7 @@ init python:
         """
         return (
             store.mas_hotkeys.talk_enabled
+            and store.mas_hotkeys.ask_enabled
             and store.mas_hotkeys.extra_enabled
             and store.mas_hotkeys.music_enabled
             and store.mas_hotkeys.play_enabled
@@ -133,13 +138,19 @@ init python:
         if store.mas_hotkeys.talk_enabled and not _windows_hidden:
             show_dialogue_box()
 
+    def _mas_hk_mas_ask_monika():
+        """
+        hotkey specific show dialgoue box
+        """
+        if store.mas_hotkeys.ask_enabled and not _windows_hidden:
+            show_dialogue_box()
 
     def _mas_hk_open_extra_menu():
         """
         hotkey specific open extras menu
         """
         if store.mas_hotkeys.extra_enabled and not _windows_hidden:
-            mas_open_extra_menu()
+            ask_monika()
 
 
     def _mas_hk_pick_game():
@@ -206,6 +217,7 @@ init python:
         #   config.underlay
         #Add keys for new functions
         config.keymap["open_dialogue"] = ["t","T"]
+        config.keymap["mas_ask_monika"] = ["a", "A"]
         config.keymap["mas_extra_menu"] = ["e", "E"]
         config.keymap["change_music"] = ["noshift_m","noshift_M"]
         config.keymap["play_game"] = ["p","P"]
@@ -228,7 +240,10 @@ init python:
 
         # Define what those actions call
         config.underlay.append(
-            renpy.Keymap(open_dialogue=_mas_hk_show_dialogue_box)
+            renpy.Keymap(open_dialogue=_mas_hk_mas_ask_monika)
+        )
+        config.underlay.append(
+            renpy.Keymap(mas_ask_monika=_mas_hk_open_extra_menu)
         )
         config.underlay.append(
             renpy.Keymap(mas_extra_menu=_mas_hk_open_extra_menu)

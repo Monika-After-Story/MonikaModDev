@@ -16,6 +16,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey 
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
@@ -31,6 +32,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
@@ -48,6 +50,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
@@ -58,9 +61,11 @@ init python:
         Intended Flow:
             - Monika stops talking
         """
+        store.mas_hotkeys.ask_enabled = True                                    
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
+        store.hkb_button.ask_enabled = True                                   
         store.hkb_button.talk_enabled = True
         store.hkb_button.extra_enabled = True
         store.hkb_button.play_enabled = True
@@ -72,6 +77,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
@@ -82,9 +88,11 @@ init python:
         Intended Flow:
             - Monika starts talking
         """
+        store.mas_hotkeys.ask_enabled = False                                     
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False
+        store.hkb_button.ask_enabled = False                                    
         store.hkb_button.talk_enabled = False
         store.hkb_button.extra_enabled = False
         store.hkb_button.play_enabled = False
@@ -98,6 +106,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey
             - Music button
             - Play button + hotkey
@@ -106,6 +115,7 @@ init python:
         Intended Flow:
             - The Music menu is closed
         """
+        store.mas_hotkeys.ask_enabled = True                                    
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
@@ -116,6 +126,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Ask button + hotkey
             - Extra button + hotkey
             - Music button
             - Play button + hotkey
@@ -124,6 +135,7 @@ init python:
         Intended Flow:
             - The Music menu is opened
         """
+        store.mas_hotkeys.ask_enabled = False                                     
         store.mas_hotkeys.talk_enabled = False
         store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False

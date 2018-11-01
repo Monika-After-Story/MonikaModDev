@@ -601,7 +601,7 @@ class Recognizer(AudioSource):
         pause_buffer_count = int(math.ceil(self.pause_threshold / seconds_per_buffer))  # number of buffers of non-speaking audio during a phrase, before the phrase should be considered complete
         phrase_buffer_count = int(math.ceil(self.phrase_threshold / seconds_per_buffer))  # minimum number of buffers of speaking audio before we consider the speaking audio a phrase
         non_speaking_buffer_count = int(math.ceil(self.non_speaking_duration / seconds_per_buffer))  # maximum number of buffers of non-speaking audio to retain before and after a phrase
-
+        
         # read audio input for phrases until there is a phrase that is long enough
         elapsed_time = 0  # number of seconds of audio read
         buffer = b""  # an empty buffer means that the stream has ended and there is no data left to read

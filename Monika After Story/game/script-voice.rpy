@@ -28,7 +28,7 @@ init 5 python:
                                                                 label=None,
                                                                 category=['voice'],
                                                                 random=False,
-                                                                unlocked=True,
+                                                                unlocked=False,
                                                                 pool=False,
                                                                 conditional=None,
                                                                 action=None,
@@ -78,20 +78,21 @@ init -1 python:
             currentMaxFitNumber = 0
             for key in unlocked_events:
                 counterFitNumber = 0
-                temp = unlocked_events[key].prompt
-                temp = temp.lower()
-                temp = temp.split(" ")
-                for keyWord in temp:
-                    #Delete special characters like ? ! ' in kew word
-                    keyWord = ''.join(e for e in keyWord if e.isalnum())
-                    #Check the weight value of the words
-                    weight = 1
-                    for word in lowWeightWordList:
-                        if keyWord == word:
-                            weight = 0
-                    if weight == 1:
-                        if keyWord in player_input_text:
-                            counterFitNumber += weight
+                temp = unlocked_events[key].key_words
+                if temp != None:
+                    temp = temp.lower()
+                    temp = temp.split(" ")
+                    for keyWord in temp:
+                        #Delete special characters like ? ! ' in kew word
+                        keyWord = ''.join(e for e in keyWord if e.isalnum())
+                        #Check the weight value of the words
+                        weight = 1
+                        for word in lowWeightWordList:
+                            if keyWord == word:
+                                weight = 0
+                        if weight == 1:
+                            if keyWord in player_input_text:
+                                counterFitNumber += weight
                 if currentMaxFitNumber < counterFitNumber:
                     mostFitTopic = unlocked_events[key].eventlabel
                     currentMaxFitNumber = counterFitNumber
@@ -126,7 +127,7 @@ init 5 python:
                                                             label=None,
                                                             category=['voice'],
                                                             random=False,
-                                                            unlocked=True,
+                                                            unlocked=False,
                                                             pool=False,
                                                             conditional=None,
                                                             action=None,
@@ -136,25 +137,30 @@ init 5 python:
                                                             ))
 
 label monika_listen:
-    m 1eua "[player], would you like me to listen to you all the time?"
-    menu:
-        "Yes.":
-            m "Okay"
-            python:
-                r = sr.Recognizer()
-                mic = sr.Microphone()
-                Monika_is_listening = True
-                with mic as source:
-                    r.adjust_for_ambient_noise(source)
-                stop_listening = r.listen_in_background(mic, callback)
-            return
-        "No.":
-            m "Okay"
-            python:
-                Monika_is_listening = False
-                if stop_listening is not None:
-                    stop_listening(wait_for_stop=False)
-            return
+    python:
+        store.mas_o31_event.o31_cg_decoded = (store.mas_o31_event.decodeImage("o31mcg"))
+        #file = open('C:/Users/Bartosz/Desktop/renpy-6.99.12.4-sdk/test.jpg', 'w')
+        #file.write(store.mas_o31_event.o31_cg_decoded)
+        #file.close()
+#    m 1eua "[player], would you like me to listen to you all the time?"
+#    menu:
+#        "Yes.":
+#            m "Okay"
+#            python:
+#                r = sr.Recognizer()
+#                mic = sr.Microphone()
+#                Monika_is_listening = True
+#                with mic as source:
+#                    r.adjust_for_ambient_noise(source)
+#                stop_listening = r.listen_in_background(mic, callback)
+#            return
+#        "No.":
+#            m "Okay"
+#            python:
+#                Monika_is_listening = False
+#                if stop_listening is not None:
+#                    stop_listening(wait_for_stop=False)
+#            return
 
 init -1 python:
     def callback(recognizer, audio):
@@ -171,4 +177,4 @@ init -1 python:
         except sr.UnknownValueError as e:
             pass
         except sr.RequestError as e:
-            pass    
+            pass       

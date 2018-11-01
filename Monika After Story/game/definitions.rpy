@@ -125,7 +125,8 @@ python early:
             "rules":14,
             "last_seen":15,
             "years":16,
-            "sensitive":17
+            "sensitive":17,
+            "key_words":18
         }
 
         # name constants
@@ -169,7 +170,8 @@ python early:
                 rules=dict(),
                 last_seen=None,
                 years=None,
-                sensitive=False
+                sensitive=False,
+                key_words=None
             ):
 
             # setting up defaults
@@ -201,6 +203,8 @@ python early:
             if not label:
                 label = prompt
 
+            if not key_words:
+                key_words = " test"
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (
@@ -221,7 +225,8 @@ python early:
                 rules,
                 last_seen,
                 years,
-                sensitive
+                sensitive,
+                key_words
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -248,7 +253,6 @@ python early:
                     # if the lock exists, then iterate through the names
                     # and only update items that are unlocked
                     for name,index in Event.T_EVENT_NAMES.iteritems():
-
                         if not lock_entry[index]:
                             stored_data_list[index] = data_row[index]
 
@@ -269,6 +273,7 @@ python early:
                     self.diary_entry = diary_entry
                     self.rules = rules
                     self.years = years
+                    self.key_words = key_words
 
             # new items are added appropriately
             else:
@@ -329,7 +334,6 @@ python early:
         # get attribute ovverride
         def __getattr__(self, name):
             attr_loc = self.T_EVENT_NAMES.get(name, None)
-
             if attr_loc:
                 # found the location
                 data_row = self.per_eventdb.get(self.eventlabel, None)
@@ -452,7 +456,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                key_word=None
             ):
             #
             # Filters the given event object accoridng to the given filters
@@ -505,7 +510,9 @@ python early:
             # sensitivyt
             if sensitive is not None and event.sensitive != sensitive:
                 return False
+            
 
+            
             # check if event contains the monika wants this rule
             if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
                 return False
@@ -525,7 +532,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                key_words=None
             ):
             #
             # Filters the given events dict according to the given filters.
@@ -590,7 +598,8 @@ python early:
                     and seen is None
                     and excl_cat is None
                     and moni_wants is None
-                    and sensitive is None)):
+                    and sensitive is None
+                    and key_words is None)):
                 return events
 
             # copy check

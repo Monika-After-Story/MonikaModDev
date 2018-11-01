@@ -46,7 +46,8 @@ init -500 python:
         False, # rules
         True, # last_seen
         False, # years
-        False # sensitive
+        False, # sensitive
+        False # key_words
     )
 
     # set defaults
@@ -74,8 +75,8 @@ init -500 python:
     persistent._mas_event_init_lockdb_template = mas_init_lockdb_template
 
     # set db defaults
-#    if persistent._mas_event_init_lockdb is None:
-#        persistent._mas_event_init_lockdb = dict()
+    if persistent._mas_event_init_lockdb is None:
+        persistent._mas_event_init_lockdb = dict()
 
     # initalizes LOCKDB for the Event class
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb

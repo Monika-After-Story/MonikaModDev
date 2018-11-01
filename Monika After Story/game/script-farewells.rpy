@@ -208,7 +208,8 @@ init 5 python:
             eventlabel="bye_prompt_to_class",
             unlocked=True,
             prompt="I'm going to class.",
-            pool=True
+            pool=True,
+            key_words="bye goodbye class"
         ),
         eventdb=evhand.farewell_database
     )
@@ -231,7 +232,8 @@ init 5 python:
             eventlabel="bye_prompt_to_work",
             unlocked=True,
             prompt="I'm going to work.",
-            pool=True
+            pool=True,
+            key_words="bye goodbye work"
         ),
         eventdb=evhand.farewell_database
     )
@@ -254,7 +256,8 @@ init 5 python:
             eventlabel="bye_prompt_sleep",
             unlocked=True,
             prompt="I'm going to sleep.",
-            pool=True
+            pool=True,
+            key_words="bye goodbye sleep goodnight"
         ),
         eventdb=evhand.farewell_database
     )
@@ -445,7 +448,8 @@ init 5 python:
             eventlabel="bye_long_absence",
             unlocked=True,
             prompt="I'll be going away for a while.",
-            pool=True
+            pool=True,
+            key_words="bye goodbye while"
         ),
         eventdb=evhand.farewell_database
     )
@@ -570,7 +574,8 @@ init 5 python:
             eventlabel="bye_going_somewhere",
             unlocked=True,
             prompt="I'm going to take you somewhere.",
-            pool=True
+            pool=True,
+            key_words="take somewhere"
         ),
         eventdb=evhand.farewell_database
     )
