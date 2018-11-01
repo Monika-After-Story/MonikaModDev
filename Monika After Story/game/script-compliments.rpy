@@ -522,10 +522,10 @@ init 5 python:
 label mas_compliment_bestgirl:
     m 1hua "I love it when you compliment me, [player]~"
     m 1hub "I'm so glad you think I'm best girl!"
-    m 3rksdla "Although, I kind of had a feeling you felt that way..."
+    m 3rksdla "Although, I kind of figured you felt that way..."
     m 1eka "After all, you {i}did{/i} install this mod just to be with me."
-    m 2euc "But I know there are people out there that do prefer the other girls."
-    m 2esc "I can see where they all have certain traits that make them desirable to some..."
+    m 2euc "I know that some people prefer the other girls."
+    m 2esc "Especially since they all have certain traits that make them desirable to some..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...And I'll be forever grateful that you did~"
