@@ -1181,7 +1181,7 @@ label monika_horror:
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
             m 2eka "I can understand. It's definitely not for everyone."
-    
+
     m 3eua "I remember we talked about this a little bit when you first joined the club."
     m 4eub "Personally I can enjoy horror novels, but not really horror movies."
     m 2esc "The problem I have with horror movies is that most of them just rely on easy tactics."
@@ -3161,7 +3161,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1eua "Do you miss my ribbon, [player]?"
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
@@ -5363,10 +5363,10 @@ label monika_promisering:
             m 1eka "You have no idea how happy that makes me."
             m 1ekbsa "Just knowing that you care enough to show your love and dedication..."
             m "It means the world to me."
-        
+
         "I don't.":
             $ persistent._mas_pm_wearsRing = False
-            
+
             m 4rksdla "Maybe you ought to get one."
             m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
             m 2lfu "It would help keep those... unwanted suitors away from you, too."
@@ -5386,7 +5386,7 @@ label monika_promisering:
             m 3hubsb "Just like it meant the world to me when you gave me this ring..."
             m 1ekbsa "This promise that we belong to each other, and no one else..."
             m 1ekbfa "That we truly will be together forever."
-        
+
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "My commitment to you is unwavering, [player]."
         m 5ekbfa "Thank you for such a wonderful gift, I love you."
@@ -7733,14 +7733,12 @@ label monika_hair_ponytail:
     show monika 1dsc
     pause 1.0
 
+    # this should auto lock/unlock stuff
     $ monika_chr.reset_hair()
 
     m 3hub "All done!"
     m 1eua "If you want me to let my hair down, just ask, okay?"
 
-    # lock this event, unlock hairdown
-    $ lockEventLabel("monika_hair_ponytail")
-    $ unlockEventLabel("monika_hair_down")
     return
 
 init 5 python:
@@ -7766,10 +7764,6 @@ label monika_hair_down:
 
     m 3hub "And it's down!"
     m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
-
-    # lock this event, unlock hairponytail
-    $ lockEventLabel("monika_hair_down")
-    $ unlockEventLabel("monika_hair_ponytail")
 
     return
 
