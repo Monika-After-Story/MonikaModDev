@@ -298,6 +298,7 @@ label v0_3_1(version=version): # 0.3.1
 label v0_8_10(version="v0_8_10"):
     python:
         import store.evhand as evhand
+        import store.mas_history as mas_history
 
         # reset and unlock past anniversaries
         if persistent.sessions is not None:
@@ -305,6 +306,15 @@ label v0_8_10(version="v0_8_10"):
             if first_sesh:
                 store.mas_anni.reset_annis(first_sesh)
                 store.mas_anni.unlock_past_annis()
+
+        # correctly save the sbd persistent data since we renamed it
+        if (
+                persistent._mas_bday_sbd_aff_given is not None
+                and persistent._mas_bday_sbd_aff_given > 0
+            ):
+            persistent._mas_history_archives[2018][
+                "922.actions.surprise.aff_given"
+            ] = persistent._mas_bday_sbd_aff_given
 
         # unlock the special greetings we accidentally locked
         unlockEventLabel(
