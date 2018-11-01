@@ -158,12 +158,6 @@ label preferredname:
                 elif lowername == mas_monika_twitter_handle:
                     m 2esc "..."
                     # TODO: actaully have dialog here
-                elif len(lowername) >= 10:
-                    m 2hksdlb "[player]..."
-                    m "That name's a bit too long."
-                    if len(lowername) > 20:
-                        m "And I'm sure you're just being silly since names aren't that long, you know."
-                    m 1esa "Try again."
                 else:
                     # sayori name check
                     if tempname.lower() == "sayori":
@@ -198,11 +192,21 @@ label preferredname:
 
     #Unlock prompt to change name again
     $evhand.event_database["monika_changename"].unlocked = True
+    $ evhand.event_database["monika_changename"].pool = True
+    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
     return
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_changename",category=['you','misc'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_changename",
+            category=['you','misc'],
+            prompt="Can you change my name?",
+            unlocked=False
+        )
+    ) #This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1eua "You want to change your name?"
@@ -232,15 +236,7 @@ label monika_changename:
                 elif lowername == mas_monika_twitter_handle:
                     m 2esc "..."
                     # TODO: actaully have dialog here
-                elif len(lowername) >= 10:
-                    m 2hksdlb "[player]..."
-                    m "That name's a bit too long."
-                    if len(lowername) > 20:
-                        m "And I'm sure you're just being silly since names aren't that long, you know."
-                    m 1esa "Try again."
-
                 else:
-
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare_1
