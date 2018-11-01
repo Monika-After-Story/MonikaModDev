@@ -297,6 +297,7 @@ label v0_3_1(version=version): # 0.3.1
 # 0.8.10
 label v0_8_10(version="v0_8_10"):
     python:
+        import store.evhand as evhand
 
         # reset and unlock past anniversaries
         if persistent.sessions is not None:
@@ -315,6 +316,13 @@ label v0_8_10(version="v0_8_10"):
                 "greeting_hairdown", 
                 store.evhand.greeting_database
             )
+
+        # move the changename topic to pool
+        changename_ev = evhand.event_database.get("monika_changename", None)
+        if changename_ev and renpy.seen_label("preferredname"):
+            changename_ev.unlocked = True
+            changename_ev.pool = True
+            persistent._seen_ever["monika_changename"] = True
 
     return
 

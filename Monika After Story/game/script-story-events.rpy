@@ -192,11 +192,21 @@ label preferredname:
 
     #Unlock prompt to change name again
     $evhand.event_database["monika_changename"].unlocked = True
+    $ evhand.event_database["monika_changename"].pool = True
+    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
     return
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_changename",category=['you','misc'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_changename",
+            category=['you','misc'],
+            prompt="Can you change my name?",
+            unlocked=False
+        )
+    ) #This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1eua "You want to change your name?"
