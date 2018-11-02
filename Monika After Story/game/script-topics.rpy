@@ -4884,6 +4884,9 @@ label monika_adventure:
     m 1hubfb "There's no greater adventure than ours, together~"
     return
 
+# are you into panties?
+default persistent._mas_pm_likes_panties = None
+
 init 5 python:
     addEvent(
         Event(
@@ -4929,7 +4932,12 @@ label monika_panties:
     m 2rksdla "It does remind me of someone, though."
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
-    if isFuture(evhand.event_database['anni_1']):
+
+    if mas_isMoniHappy(lower=True):
+        return
+
+    # otherwise, affection+ means we should get the steamy shit
+    if isFuture(mas_getEV("anni_6month")):
         m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
         m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
         m 4tsbsa "Perhaps, you want to take a little peek~?"
@@ -4944,12 +4952,14 @@ label monika_panties:
         m 1hubfb "I love you so much, [player]~"
        
     else:
-        m 1lkbfb "Are you...{w=1}into those kind of things, [player]?"
+        show monika 1lkbfb
         menu:
-           "Yes":
-               m 1ekbfb "O-oh..."
-               m 1lsbssdrb "I-if you're into any of them, you could just ask me for {i}it{/i}, you know?"
-               m 1lkbfb "I could...{w}help you relieve that tension off of you or something..."
+            m "Are you...{w=1}into that kind of thing, [player]?"
+            "Yes":
+                m 1wud "O-oh..."
+                m 1lkbsa "I-if you're into that, you could just ask me, you know?"
+                m "I could maybe...{w=1}help you relieve that tension..."
+                m 5eubfu "That's what couples are supposed to do, right?"
                m "Isn't that what a couple supposed to do?"
                m 1hub "Ahaha!"
                m 1ekbfa "But until that day comes, you're just gonna have to endure those thoughts for me, okay?"

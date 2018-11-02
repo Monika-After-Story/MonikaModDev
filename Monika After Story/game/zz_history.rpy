@@ -670,6 +670,7 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+            "_mas_pm_likes_panties": "pm.likes.panties",
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
