@@ -8513,7 +8513,11 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_add_custom_music",
             category=['mod',"media"],
-            prompt="How do I add my own music?"
+            prompt="How do I add my own music?",
+            conditional="persistent._mas_pm_added_custom_bgm",
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock": None}
         )
     )
 
@@ -8532,13 +8536,9 @@ label monika_add_custom_music_instruct:
     m 3hub "See, [player], I told you it was easy, ahaha!"
 
     # unlock the topic as a pool topic, also mark it as seen
-    $ cust_music_ev = mas_getEV("monika_add_custom_music")
-    $ cust_music_ev.unlocked = True
-    $ cust_music_ev.pool = True
+    $ unlockEventLabel("monika_add_custom_music")
     $ persistent._seen_ever["monika_add_custom_music"] = True
-    $ load_music_ev = mas_getEV("monika_load_custom_music")
-    $ load_music_ev.unlocked = True
-    $ load_music_ev.pool = True
+    $ unlockEventLabel("monika_load_custom_music")
     $ persistent._seen_ever["monika_load_custom_music"] = True
     return
 
@@ -8548,7 +8548,11 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_load_custom_music",
             category=['mod',"media"],
-            prompt="Can you check for new music?"
+            prompt="Can you check for new music?",
+            conditional="persistent._mas_pm_added_custom_bgm",
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock": None}
         )
     )
 
