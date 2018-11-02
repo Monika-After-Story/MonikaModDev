@@ -178,6 +178,7 @@ label chara_monika_scare:
     m "Hmm...?"
     m 1esc "How curious."
     m "You must have misunderstood."
+    $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
     # this is a 2 step process
