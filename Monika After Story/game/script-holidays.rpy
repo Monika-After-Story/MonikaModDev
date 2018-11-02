@@ -178,11 +178,8 @@ init -11 python in mas_o31_event:
         RETURNS True if the persistent greeting type is the TT one
         """
         return (
-            store.persistent._mas_greeting_type is not None
-            and (
-                store.persistent._mas_greeting_type[0] 
-                == store.mas_greetings.TYPE_HOL_O31_TT
-            )
+            store.persistent._mas_greeting_type 
+            == store.mas_greetings.TYPE_HOL_O31_TT
         )
 
 
@@ -769,7 +766,7 @@ label bye_trick_or_treat_rtg:
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
         m 1hub "Let's go trick or treating!"
-        $ persistent._mas_greeting_type = [store.mas_greetings.TYPE_HOL_O31_TT]
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
         return "quit"
 
     # otherwise, failure in generation

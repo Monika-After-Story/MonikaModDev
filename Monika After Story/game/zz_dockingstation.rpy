@@ -1980,15 +1980,15 @@ init 200 python in mas_dockstat:
             runtime
 
         IN:
-            _type - list of additoinal mas_greetings types to search on
+            _type - additional mas_greetings types to search on
 
         RETURNS:
             Event object representing the selected greeting
         """
         if _type is not None:
-            greeting_types = list(_type)
+            greeting_types = [_type]
         else:
-            greeting_types = list()
+            greeting_types = []
 
         # add the return home type
         greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
