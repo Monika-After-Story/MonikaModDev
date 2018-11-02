@@ -110,8 +110,6 @@ image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
 image monika_scare = "images/cg/monika/monika_scare.png"
-image chara9 = "mod_assets/chara9.png"
-image chara_exception = "mod_assets/chara_exception.png"
 
 image monika_body_glitch1:
     "images/cg/monika/monika_glitch1.png"
@@ -147,19 +145,6 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-image ut_slash:
-    "mod_assets/spr_slice_o_0.png"
-    0.1
-    "mod_assets/spr_slice_o_1.png"
-    0.1
-    "mod_assets/spr_slice_o_2.png"
-    0.1
-    "mod_assets/spr_slice_o_3.png"
-    0.1
-    "mod_assets/spr_slice_o_4.png"
-    0.1
-    "mod_assets/spr_slice_o_5.png"
-    0.1
 
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
@@ -280,6 +265,20 @@ init python:
         Jumps to the pick a game workflow
         """
         renpy.jump('pick_a_game')
+
+
+    def mas_getuser():
+        """
+        Attempts to get the current user
+
+        RETURNS: current user if found, or None if not found
+        """
+        for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
+            user = os.environ.get(name)
+            if user:
+                return user
+
+        return None
 
 
     def mas_enable_quitbox():
