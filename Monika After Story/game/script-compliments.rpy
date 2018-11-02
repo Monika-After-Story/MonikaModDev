@@ -276,7 +276,7 @@ label mas_compliment_hair:
     return
 
 label mas_compliment_hair_2:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1wubfb "Thank you so much, [player]..."
         m 1lkbfb "I was really nervous the first time I changed my hair here."
     else:
@@ -300,7 +300,7 @@ label mas_compliment_hair_2:
     return
 
 label mas_compliment_hair_3:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1wubfb "Thank you so much, [player]!"
         m 1lkbfb "I'm really happy that you like this hairstyle."
     else:
@@ -520,14 +520,13 @@ init 5 python:
     )
 
 label mas_compliment_bestgirl:
-    m 1hua "I love it when you compliment me, [player]!"
-    m 1eua "I think I'm best girl, too!"
-    m 1lfu "Even not counting the whole, 'I'm the only one with free will' thing, how could anybody have preferred the other three girls to me?"
-    m 3tsb "A useless childhood friend who never bothered to confess to you until it was way too late..."
-    m "A shy girl who was overdramatic and always taking herself too seriously..."
-    m "A moody manga fan obsessed with everything being cute."
-    m 1tku "They even said it themselves. I'm more desirable than the three of them combined."
-    m 3tfu "Anyone who wouldn't have chosen me out of that bunch simply has no taste."
-    m 1hua "So I'm glad you did, [player]."
-    m 1hub "Your perfect girlfriend, Monika, will always love you, too!"
+    m 1hua "I love it when you compliment me, [player]~"
+    m 1hub "I'm so glad you think I'm best girl!"
+    m 3rksdla "Although, I kind of figured you felt that way..."
+    m 1eka "After all, you {i}did{/i} install this mod just to be with me."
+    m 2euc "I know that some people prefer the other girls."
+    m 2esc "Especially since they all have certain traits that make them desirable to some..."
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "But if you ask me, you made the right choice."
+    m 5hubfa "...And I'll be forever grateful that you did~"
     return

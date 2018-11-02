@@ -20,21 +20,20 @@ label dev_exp_previewer:
 
     $ HKBHideButtons()
     $ prev_mflag = morning_flag
+    $ prev_hair = monika_chr.hair
+    $ prev_clothes = monika_chr.clothes
     $ monika_chr.reset_outfit()
     $ morning_flag = True
 
     $ ui.add(MASExpPreviewer())
     $ result = ui.interact()
 
-    $ monika_chr.reset_outfit()
+    $ monika_chr.change_outfit(prev_clothes, prev_hair)
     $ morning_flag = prev_mflag
     $ HKBShowButtons()
 
     show monika at i11
     window auto
-
-    $ lockEventLabel("monika_hair_ponytail")
-    $ unlockEventLabel("monika_hair_down")
 
     return
 
