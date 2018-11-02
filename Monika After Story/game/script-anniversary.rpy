@@ -55,7 +55,7 @@ init -1 python in mas_anni:
 #        return mas_utils.am3(new_date + datetime.timedelta(days=1))
 # NOTE: doing am3 leads to calendar problems
 #   we'll just restrict this to midnight to midnight -1
-        return mas_utils.mdnt(new_date)
+        return mas_utils.mdnt(new_date + datetime.timedelta(days=1))
 
     def build_anni_end(years=0, months=0, weeks=0):
         """

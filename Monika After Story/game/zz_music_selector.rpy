@@ -8,6 +8,8 @@
 # 3. Drop your music into that directory.
 # 4. Start the game
 
+default persistent._mas_pm_added_custom_bgm = False
+
 # music inits first, so the screen can be made well
 init -1 python in songs:
     import os
@@ -261,6 +263,9 @@ init -1 python in songs:
                     loop_prefix + custom_music_reldir + ogg_file
                 ))
 
+                # we added something!
+                store.persistent._mas_pm_added_custom_bgm = True
+
 
     def _getAudioFile(filepath):
         """
@@ -301,17 +306,17 @@ init -1 python in songs:
         RETURNS:
             The name of this Song (probably)
         """
-        if _ext == EXT_MP3:
-            disp_name = _getMP3Name(_audio_file)
+        disp_name = None
 
-        elif _ext == EXT_OGG:
-            disp_name = _getOggName(_audio_file)
+        if _audio_file.tags is not None:
+            if _ext == EXT_MP3:
+                disp_name = _getMP3Name(_audio_file)
 
-        elif _ext == EXT_OPUS:
-            disp_name = _getOggName(_audio_file)
+            elif _ext == EXT_OGG:
+                disp_name = _getOggName(_audio_file)
 
-        else:
-            disp_name = None
+            elif _ext == EXT_OPUS:
+                disp_name = _getOggName(_audio_file)
 
         if not disp_name:
             # let's just use filename minus extension at this point
@@ -332,6 +337,9 @@ init -1 python in songs:
         RETURNS:
             loop string, or and empty string if no loop string available
         """
+        if _audio_file.tags is None:
+            return ""
+
         if _ext == EXT_MP3:
             # NOTE: we do not support mp3 looping atm
             return ""
