@@ -4884,15 +4884,18 @@ label monika_adventure:
     m 1hubfb "There's no greater adventure than ours, together~"
     return
 
-# are you into panties?
 default persistent._mas_pm_likes_panties = None
+# are you into panties?
+
+default persistent._mas_pm_no_talk_panties = None
+# dont want to talk about panties
 
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_panties",
-            category=['misc'],
+            category=['misc',"clothes"],
             prompt="Undergarments",
             random=True,
             sensitive=True
@@ -4933,11 +4936,8 @@ label monika_panties:
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
 
-    if mas_isMoniHappy(lower=True):
-        return
-
-    # otherwise, affection+ means we should get the steamy shit
-    if isFuture(mas_getEV("anni_6month")):
+    if mas_isMoniHappy():
+        # happy gets you this
         m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
         m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
         m 4tsbsa "Perhaps, you want to take a little peek~?"
@@ -4950,35 +4950,40 @@ label monika_panties:
         m 1ekbfa "Gosh, I just want to feel your embrace more."
         m "After all, we're here forever, and I'm here for you."
         m 1hubfb "I love you so much, [player]~"
-       
-    else:
+     
+    elif mas_isMoniAff(higher=True):
+        # affectionate+
         show monika 1lkbfb
         menu:
             m "Are you...{w=1}into that kind of thing, [player]?"
             "Yes":
+                $ persistent._mas_pm_likes_panties = True
+                $ persistent._mas_pm_no_talk_panties = False
                 m 1wud "O-oh..."
                 m 1lkbsa "I-if you're into that, you could just ask me, you know?"
                 m "I could maybe...{w=1}help you relieve that tension..."
                 m 5eubfu "That's what couples are supposed to do, right?"
-               m "Isn't that what a couple supposed to do?"
-               m 1hub "Ahaha!"
-               m 1ekbfa "But until that day comes, you're just gonna have to endure those thoughts for me, okay?"
-           "No":
-               m 1wud "Oh, I see..."
-               m 4rkbfb "I guess some people have their own guilty pleasures..."
-               m 2tub "Or maybe, you're into something other than that?"
-               m 1hub "Ahaha~"
-               m "I'm just kidding!"
-               m 5eua "I don't mind if we stick to being wholesome, to be honest~"
-               m "It's more romantic that way."
-           "I don't want to talk about it...":
-               m 1eua "I understand, [player]."
-               m 1rkc "I know that some topics are best kept to self until the right time comes."
-               m 1rksdld "Not to mention it's controversial..."
-               m 1ekbfa "..."
-               m 1eka "In any case, {w=1}don't be afraid to tell me about your pleasure, okay [player]?"
-               show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-               m "I won't judge you for it, and nothing makes me happier than making you happy~"
+                m 5hubfb "Ahaha!"
+                m 5ekbfa "But until that day comes, you're just going to have to endure those thoughts for me, okay?"
+            "No":
+                $ persistent._mas_pm_likes_panties = False
+                $ persistent._mas_pm_no_talk_panties = False
+                m 1eka "Oh, I see..."
+                m 2tku "I guess some people have their own guilty pleasures..."
+                m "Maybe you're into something else?"
+                m 4hubfb "Ahaha~"
+                m 4hubfa "I'm just kidding!"
+                m 5ekbfa "I don't mind if we stick to being wholesom, to be honest..."
+                m "It's more romantic that way~"
+            "I don't want to talk about it...":
+                $ persistent._mas_pm_no_talk_panties = True
+                m 1ekc "I understand, [player]."
+                m 1rksdld "I know that some topics are best kept private until the right time."
+                m 1ekbfa "But I want you to feel like you can tell me anything..."
+                m "So, don't be afraid to tell me about your...{w=1}fantasies, okay [player]?"
+                m 1hubfa "I won't judge you for it...{w=1}after all, nothing makes me happier than making you happy~"
+        return "derandom"
+
     return
 
 init 5 python:

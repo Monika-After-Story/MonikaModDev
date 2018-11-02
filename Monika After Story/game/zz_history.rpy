@@ -670,7 +670,6 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
-            "_mas_pm_likes_panties": "pm.likes.panties",
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
@@ -686,11 +685,14 @@ init -810 python:
             # likes / food
             "_mas_pm_like_mint_ice_cream": "pm.likes.food.mint_ice_cream",
 
+            # likes / clothes
+            "_mas_pm_likes_panties": "pm.likes.clothes.panties",
+            "_mas_pm_no_talk_panties": "pm.likes.clothes.panties.no_talk",
+
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
             "_mas_pm_lang_jpn": "pm.know.lang.jpn"
-
         },
         use_year_before=True,
         dont_reset=True
