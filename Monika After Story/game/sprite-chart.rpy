@@ -106,6 +106,9 @@ default persistent._mas_acs_pre_list = list()
 default persistent._mas_acs_mid_list = list()
 default persistent._mas_acs_pst_list = list()
 
+# zoom levels
+default persistent._mas_zoom_zoom_level = None
+
 image monika g1:
     "monika/g1.png"
     xoffset 35 yoffset 55
@@ -190,6 +193,7 @@ image mas_bday_balloons = ConditionSwitch(
 
 init -5 python in mas_sprites:
     # specific image generation functions
+    import store
 
     # main art path
     MOD_ART_PATH = "mod_assets/monika/"
@@ -237,7 +241,32 @@ init -5 python in mas_sprites:
     TRAN = "Transform"
 
     # zoom
-    ZOOM = "zoom=1.25"
+    ZOOM = "zoom="
+
+    default_zoom_level = 3
+
+    if store.persistent._mas_zoom_zoom_level is None:
+        store.persistent._mas_zoom_zoom_level = default_zoom_level
+        zoom_level = default_zoom_level
+
+    else:
+        zoom_level = store.persistent._mas_zoom_zoom_level
+
+    zoom_step = 0.05
+    default_value_zoom = 1.25
+    value_zoom = default_value_zoom
+    max_zoom = 20
+
+    # adjustable location stuff
+    default_x = 0
+    default_y = 0
+    adjust_x = default_x
+    adjust_y = default_y
+#    y_step = 40
+    y_step = 10
+
+    # adding optimized initial parts of the sprite string
+    PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
 
     # Prefixes for files
     PREFIX_BODY = "torso" + ART_DLM
@@ -261,23 +290,9 @@ init -5 python in mas_sprites:
     NIGHT_SUFFIX = ART_DLM + "n"
     FILE_EXT = ".png"
 
-    ### [BLK001]
-    # non leanable clothes
-    lean_clothes_blacklist = [
-        "test"
-    ]
-
-    ### [BLK002]
-    # non leanable hair
-    lean_hair_blacklist = [
-#        "down",  # Thanks to Trilasent for giving us leaning hair downs
-        "bun"
-    ]
-
-    ### [BLK003]
-    # non leanable accessories
+    ## BLK010
+    # ACCESSORY BLACKLIST
     lean_acs_blacklist = [
-#        "mug"
         "test"
     ]
 
@@ -292,7 +307,45 @@ init -5 python in mas_sprites:
         "def" # school uniform
     ]
 
+    # zoom adjuster
+    def adjust_zoom():
+        """
+        Sets the value zoom to an appropraite amoutn based on the current
+        zoom level.
+        NOTE: also sets the persistent save for zoom
+        """
+        global value_zoom, adjust_y
+        if zoom_level > default_zoom_level:
+            value_zoom = default_value_zoom + (
+                (zoom_level-default_zoom_level) * zoom_step
+            )
+            adjust_y = default_y + ((zoom_level-default_zoom_level) * y_step)
+
+        elif zoom_level < default_zoom_level:
+            value_zoom = default_value_zoom - (
+                (default_zoom_level-zoom_level) * zoom_step
+            )
+            adjust_y = default_y
+        else:
+            # zoom level is at 10
+            value_zoom = default_value_zoom
+            adjust_y = default_y
+
+        store.persistent._mas_zoom_zoom_level = zoom_level
+
+
+    def reset_zoom():
+        """
+        Resets the zoom to the default value
+        NOTE: also set sthe persistent save for zoom
+        """
+        global zoom_level
+        zoom_level = default_zoom_level
+        adjust_zoom()
+
+
     # tryparses for the hair and clothes
+    # TODO: adjust this for docking station when ready
     def tryparsehair(_hair, default="def"):
         """
         Returns the given hair if it exists, or the default if not exist
@@ -309,6 +362,8 @@ init -5 python in mas_sprites:
 
         return default
 
+
+    # TODO: adjust this for docking station when ready
     def tryparseclothes(_clothes, default="def"):
         """
         Returns the given clothes if it exists, or the default if not exist
@@ -329,6 +384,12 @@ init -5 python in mas_sprites:
     ## Accessory dictionary
     ACS_MAP = dict()
 
+    ## hair dictionary
+    HAIR_MAP = dict()
+
+    ## clothes dictionary
+    CLOTH_MAP = dict()
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
@@ -345,20 +406,24 @@ init -5 python in mas_sprites:
         "def"
     ]
 
-    def acs_lean_mode(lean):
+
+    def acs_lean_mode(sprite_list, lean):
         """
-        Returns the appropriate accessory prefix dpenedong on lean
+        Adds the appropriate accessory prefix dpenedong on lean
 
         IN:
+            sprite_list - list to add sprites to 
             lean - type of lean
-
-        RETURNS:
-            appropratie accessory prefix
         """
         if lean:
-            return "".join([PREFIX_ACS_LEAN, lean, ART_DLM])
+            sprite_list.extend((
+                PREFIX_ACS_LEAN,
+                lean,
+                ART_DLM
+            ))
 
-        return PREFIX_ACS
+        else:
+            sprite_list.append(PREFIX_ACS)
 
 
     def face_lean_mode(lean):
@@ -369,10 +434,14 @@ init -5 python in mas_sprites:
             lean - type of lean
 
         RETURNS:
-            appropriate face prefix
+            appropriat eface prefix string
         """
         if lean:
-            return "".join([PREFIX_FACE_LEAN, lean, ART_DLM])
+            return "".join((
+                PREFIX_FACE_LEAN,
+                lean,
+                ART_DLM
+            ))
 
         return PREFIX_FACE
 
@@ -391,6 +460,38 @@ init -5 python in mas_sprites:
 
         # otherwise, unique name
         ACS_MAP[mas_acs.name] = mas_acs
+
+
+    def init_hair(mas_hair):
+        """
+        Initlializes the given MAS hairstyle into a dictionary map setting
+
+        IN:
+            mas_hair - MASHair to initialize
+        """
+        if mas_hair.name in HAIR_MAP:
+            raise Exception(
+                "MASHair name '{0}' already exists.".format(mas_hair.name)
+            )
+
+        # otherwise, unique name
+        HAIR_MAP[mas_hair.name] = mas_hair
+
+
+    def init_clothes(mas_cloth):
+        """
+        Initlializes the given MAS clothes into a dictionary map setting
+
+        IN:
+            mas_clothes - MASClothes to initialize
+        """
+        if mas_cloth.name in CLOTH_MAP:
+            raise Exception(
+                "MASClothes name '{0}' already exists.".format(mas_cloth.name)
+            )
+
+        # otherwise, unique name
+        CLOTH_MAP[mas_cloth.name] = mas_cloth
 
 
     def night_mode(isnight):
@@ -423,11 +524,11 @@ init -5 python in mas_sprites:
             # monika is wearing a blacklisted accessory
             return True
 
-        if character.hair in lean_hair_blacklist:
+        if not character.hair.pose_map.l_map.get(lean, False):
             # blacklisted hair
             return True
 
-        if character.clothes in lean_clothes_blacklist:
+        if not character.clothes.pose_map.l_map.get(lean, False):
             # blacklisted clothes
             return True
 
@@ -435,24 +536,38 @@ init -5 python in mas_sprites:
         return False
 
 
+    def build_loc():
+        """
+        RETURNS location string for the sprite 
+        """
+        return "".join(("(", str(adjust_x), ",", str(adjust_y), ")"))
+
+
     # sprite maker functions
 
 
-    def _ms_accessory(acs, isnight, issitting, pose=None, lean=None):
+    def _ms_accessory(
+            sprite_list,
+            pos_str,
+            acs,
+            n_suffix,
+            issitting,
+            pose=None,
+            lean=None
+        ):
         """
-        Creates accessory string
+        Adds accessory string
 
         IN:
+            sprite_list - list to add sprites to
+            pos_str - position string to use
             acs - MASAccessory object
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
             pose - current pose
                 (Default: None)
             lean - type of lean
                 (Default: None)
-
-        RETURNS:
-            accessory string
         """
         if acs.no_lean:
             # the lean version is the same as regular
@@ -474,7 +589,7 @@ init -5 python in mas_sprites:
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
             # for this pose. Weird, but maybe it happens?
-            return ""
+            return 
 
         if issitting:
             acs_str = acs.img_sit
@@ -484,255 +599,306 @@ init -5 python in mas_sprites:
 
         else:
             # standing string is null or None
-            return ""
+            return
 
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
-            A_T_MAIN,
-            acs_lean_mode(lean),
+            A_T_MAIN
+        ))
+        acs_lean_mode(sprite_list, lean)
+        sprite_list.extend((
             acs_str,
             ART_DLM,
             poseid,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_accessorylist(acs_list, isnight, issitting, pose=None, lean=None):
+    def _ms_accessorylist(
+            sprite_list,
+            pos_str, 
+            acs_list,
+            n_suffix,
+            issitting,
+            pose=None,
+            lean=None
+        ):
         """
-        Creates accessory strings for a list of accessories
+        Adds accessory strings for a list of accessories
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             acs_list - list of MASAccessory object, in order of rendering
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
             pose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
                 (Default: None)
-
-        RETURNS:
-            accessory string list
         """
         if len(acs_list) == 0:
-            return ""
+            return
 
-        acs_gen = [
-            _ms_accessory(acs, isnight, issitting, pose, lean=lean)
-            for acs in acs_list
-        ]
+        temp_acs_list = []
 
-        return "," + ",".join([
-            _acs
-            for _acs in acs_gen
-            if len(_acs) > 0
-        ])
+        for acs in acs_list:
+            temp_temp_acs_list = []
+            _ms_accessory(
+                temp_temp_acs_list,
+                pos_str,
+                acs,
+                n_suffix,
+                issitting,
+                pose,
+                lean=lean
+            )
+
+            if len(temp_temp_acs_list) > 0:
+                temp_acs_list.extend(temp_temp_acs_list)
+                temp_acs_list.append(",")
+
+        if len(temp_acs_list) == 0:
+            return
+
+        # otherwise, we could render at least 1 accessory
+
+        # pop the last comman
+        temp_acs_list.pop()
+
+        if lean:
+            loc_str = LOC_LEAN
+
+        else:
+            loc_str = LOC_REG
+
+        # add the sprites to the list
+        sprite_list.extend((
+            ",",
+            pos_str,
+            ",",
+            L_COMP,
+            "(",
+            loc_str,
+            ","
+        ))
+        sprite_list.extend(temp_acs_list)
+        sprite_list.append(")")
 
 
-    def _ms_arms(clothing, arms, isnight):
+    def _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix):
         """
-        Creates arms string
+        Adds arms string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             arms - type of arms
-            isnight - True will generate night string, false will not
-
-        RETURNS:
-            arms string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str, 
             ',"',
             C_MAIN,
             clothing,
             "/",
             PREFIX_ARMS,
             arms,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_blush(blush, isnight, lean=None):
+    def _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix):
         """
-        Creates blush string
+        Adds blush string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             blush - type of blush
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            blush string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_BLUSH,
             blush,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_body(clothing, hair, isnight, lean=None, arms=""):
+    def _ms_body(
+            sprite_list,
+            pos_str,
+            clothing,
+            hair,
+            n_suffix,
+            lean=None,
+            arms=""
+        ):
         """
-        Creates body string
+        Adds body string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
-            isnight - True will generate night string, false will not
+            n_suffix - night suffix to use
             lean - type of lean
                 (Default: None)
             arms - type of arms
                 (Default: "")
-
-        RETURNS:
-            body string
         """
+        sprite_list.extend((
+            I_COMP,
+            "("
+        ))
+
         if lean:
             # leaning is a single parter
-            body_str = ",".join([
+            sprite_list.extend((
                 LOC_LEAN,
-                _ms_torsoleaning(clothing, hair, lean, isnight)
-            ])
+                ","
+            ))
+            _ms_torsoleaning(
+                sprite_list,
+                pos_str,
+                clothing,
+                hair,
+                lean,
+                n_suffix,
+            )
 
         else:
             # not leaning is a 2parter
-            body_str = ",".join([
+            sprite_list.extend((
                 LOC_REG,
-                _ms_torso(clothing, hair, isnight),
-                _ms_arms(clothing, arms, isnight)
-            ])
+                ","
+            ))
+            _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix),
+            sprite_list.append(",")
+            _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix)
 
         # add the rest of the parts
-        return "".join([
-            I_COMP,
-            "(",
-            body_str,
-            ")"
-        ])
+        sprite_list.append(")")
 
 
-    def _ms_emote(emote, isnight, lean=None):
+    def _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix):
         """
-        Creates emote string
+        Adds emote string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             emote - type of emote
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Dfeualt: None)
-
-        RETURNS:
-            emote string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EMOTE,
             emote,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyebags(eyebags, isnight, lean=None):
+    def _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix):
         """
-        Creates eyebags string
+        Adds eyebags string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebags - type of eyebags
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Dfeault: None)
-
-        RETURNS:
-            eyebags string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYEG,
             eyebags,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyebrows(eyebrows, isnight, lean=None):
+    def _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix):
         """
-        Creates eyebrow string
+        Adds eyebrow strings
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebrows - type of eyebrows
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            eyebrows string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYEB,
             eyebrows,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_eyes(eyes, isnight, lean=None):
+    def _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix):
         """
-        Creates eyes string
+        Adds eye string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyes - type of eyes
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            eyes stirng
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_EYES,
             eyes,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
     def _ms_face(
+            sprite_list,
+            pos_str,
             eyebrows,
             eyes,
             nose,
             mouth,
-            isnight,
+            n_suffix,
             lean=None,
             eyebags=None,
             sweat=None,
@@ -741,15 +907,17 @@ init -5 python in mas_sprites:
             emote=None
         ):
         """
-        Create face string
+        Adds face string
         (the order these are drawn are in order of argument)
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
             mouth - type of mouth
-            isnight - True will generate a night string, false will not
+            n_suffix - night suffix to use
             lean - type of lean
                 (Default: None)
             eyebags - type of eyebags
@@ -762,48 +930,55 @@ init -5 python in mas_sprites:
                 (Default: None)
             emote - type of emote
                 (Default: None)
-
-        RETURNS:
-            face string
         """
-        subparts = list()
+        sprite_list.extend((
+            I_COMP,
+            "("
+        ))
 
         # lean checking
         if lean:
-            subparts.append(LOC_LEAN)
+            sprite_list.append(LOC_LEAN)
 
         else:
-            subparts.append(LOC_REG)
+            sprite_list.append(LOC_REG)
+
+        # setup the face prefix string
+        f_prefix = face_lean_mode(lean)
 
         # now for the required parts
-        subparts.append(_ms_eyes(eyes, isnight, lean=lean))
-        subparts.append(_ms_eyebrows(eyebrows, isnight, lean=lean))
-        subparts.append(_ms_nose(nose, isnight, lean=lean))
-        subparts.append(_ms_mouth(mouth, isnight, lean=lean))
+        sprite_list.append(",")
+        _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix)
+        sprite_list.append(",")
+        _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix)
 
         # and optional parts
         if eyebags:
-            subparts.append(_ms_eyebags(eyebags, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix)
 
         if sweat:
-            subparts.append(_ms_sweat(sweat, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix)
 
         if blush:
-            subparts.append(_ms_blush(blush, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix)
 
         if tears:
-            subparts.append(_ms_tears(tears, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix)
 
         if emote:
-            subparts.append(_ms_emote(emote, isnight, lean=lean))
+            sprite_list.append(",")
+            _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix)
 
-        # alright, now build the face string
-        return "".join([
-            I_COMP,
-            "(",
-            ",".join(subparts),
-            ")"
-        ])
+        # finally the last paren
+        sprite_list.append(")")
 
 
     def _ms_head(clothing, hair, head):
@@ -820,7 +995,7 @@ init -5 python in mas_sprites:
         """
         # NOTE: untested
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -847,7 +1022,7 @@ init -5 python in mas_sprites:
         """
         # NOTE UNTESTED
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -860,56 +1035,54 @@ init -5 python in mas_sprites:
         ])
 
 
-    def _ms_mouth(mouth, isnight, lean=None):
+    def _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix):
         """
-        Creates mouth string
+        Adds mouth string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             mouth - type of mouse
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            mouth string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str, 
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_MOUTH,
             mouth,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_nose(nose, isnight, lean=None):
+    def _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix):
         """
-        Creates nose string
+        Adds nose string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             nose - type of nose
-            isnight - True will genreate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            nose string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        # NOTE: if we never get a new nose, we can just optimize this to 
+        #   a hardcoded string
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_NOSE,
             nose,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
     def _ms_right(clothing, hair, right):
@@ -926,7 +1099,7 @@ init -5 python in mas_sprites:
         """
         # NOTE: UNTESTED
         return "".join([
-            LOC_Z,
+            build_loc(),
             ',"',
             S_MAIN,
             clothing,
@@ -997,39 +1170,95 @@ init -5 python in mas_sprites:
         else:
             loc_str = LOC_REG
 
-        return "".join([
-            TRAN,
-            "(",
-            L_COMP,
-            "(",
-            loc_str,
-            _ms_accessorylist(acs_pre_list, isnight, True, arms, lean=lean),
-            ",",
-            LOC_Z,
-            ",",
-            _ms_body(clothing, hair, isnight, lean=lean, arms=arms),
-            _ms_accessorylist(acs_mid_list, isnight, True, arms, lean=lean),
-            ",",
-            LOC_Z,
-            ",",
-            _ms_face(
-                eyebrows,
-                eyes,
-                nose,
-                mouth,
-                isnight,
-                lean=lean,
-                eyebags=eyebags,
-                sweat=sweat,
-                blush=blush,
-                tears=tears,
-                emote=emote
-            ),
-            _ms_accessorylist(acs_pst_list, isnight, True, arms, lean=lean),
+        # location string from build loc
+        loc_build_str = build_loc()
+        loc_build_tup = (",", loc_build_str, ",")
+
+        # night suffix?
+        n_suffix = night_mode(isnight)
+        
+        # initial portions of list
+        sprite_str_list = [
+            PRE_SPRITE_STR,
+            loc_str
+        ]
+
+        # pre accessories
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_pre_list,
+            n_suffix,
+            True,
+            arms,
+            lean=lean
+        )
+
+        # between pre acs and body
+        sprite_str_list.extend(loc_build_tup)
+
+        # body
+        _ms_body(
+            sprite_str_list,
+            loc_build_str,
+            clothing,
+            hair,
+            n_suffix,
+            lean=lean,
+            arms=arms
+        )
+
+        # between body and face acs
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_mid_list, 
+            n_suffix,
+            True,
+            arms,
+            lean=lean
+        )
+
+        # between mid acs and face
+        sprite_str_list.extend(loc_build_tup)
+
+        # face
+        _ms_face(
+            sprite_str_list,
+            loc_build_str,
+            eyebrows,
+            eyes,
+            nose,
+            mouth,
+            n_suffix,
+            lean=lean,
+            eyebags=eyebags,
+            sweat=sweat,
+            blush=blush,
+            tears=tears,
+            emote=emote
+        )
+
+        # after face acs
+        _ms_accessorylist(
+            sprite_str_list,
+            loc_build_str,
+            acs_pst_list, 
+            n_suffix,
+            True,
+            arms,
+            lean=lean
+        )
+
+        # zoom
+        sprite_str_list.extend((
             "),",
             ZOOM,
+            str(value_zoom),
             ")"
-        ])
+        ))
+
+        return "".join(sprite_str_list)
 
 
     def _ms_standing(clothing, hair, head, left, right, acs_list):
@@ -1086,19 +1315,21 @@ init -5 python in mas_sprites:
         RETURNS:
             stock standing string
         """
+        # TODO: update this to work with the more optimized system for
+        # building sprites
         if single:
             return "".join([
                 I_COMP,
                 "(",
                 LOC_STAND,
                 ",",
-                LOC_Z,
+                build_loc(),
                 ',"',
                 STOCK_ART_PATH,
                 single,
                 FILE_EXT,
                 '"',
-                _ms_accessorylist(acs_list, False, False),
+#                _ms_accessorylist(acs_list, False, False),
                 ")"
             ])
 
@@ -1107,122 +1338,116 @@ init -5 python in mas_sprites:
             "(",
             LOC_STAND,
             ",",
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             left,
             FILE_EXT,
             '",',
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             right,
             FILE_EXT,
             '",',
-            LOC_Z,
+            build_loc(),
             ',"',
             STOCK_ART_PATH,
             head,
             FILE_EXT,
             '"',
-            _ms_accessorylist(acs_list, False, False),
+#            _ms_accessorylist(acs_list, False, False),
             ")"
         ])
 
 
-    def _ms_sweat(sweat, isnight, lean=None):
+    def _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix):
         """
-        Creates sweatdrop string
+        Adds sweatdrop string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             sweat -  type of sweatdrop
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Defualt: None)
-
-        RETURNS:
-            sweatdrop string
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_SWEAT,
             sweat,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_tears(tears, isnight, lean=None):
+    def _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix):
         """
-        Creates tear string
+        Adds tear string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             tears - type of tears
-            isnight - True will generate night string, false will not
-            lean - type of lean
-                (Default: None)
-
-        RETURNS:
-            tear strring
+            n_suffix - night suffix to use
+            f_prefix - face prefix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             F_T_MAIN,
-            face_lean_mode(lean),
+            f_prefix,
             PREFIX_TEARS,
             tears,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_torso(clothing, hair, isnight):
+    def _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix):
         """
-        Creates torso string
+        Adds torso string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
-            isnight - True will generate night string, false will not
-
-        RETURNS:
-            torso string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             C_MAIN,
             clothing,
             "/",
             PREFIX_BODY,
             hair,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
-    def _ms_torsoleaning(clothing, hair, lean, isnight):
+    def _ms_torsoleaning(sprite_list, pos_str, clothing, hair, lean, n_suffix):
         """
-        Creates leaning torso string
+        Adds torso leaning string
 
         IN:
+            sprite_list - list to add sprite strings to
+            pos_str - position string to use
             clothing - type of clothing
             hair - type of ahri
             lean - type of leaning
-            isnight - True will genreate night string, false will not
-
-        RETURNS:
-            leaning torso string
+            n_suffix - night suffix to use
         """
-        return "".join([
-            LOC_Z,
+        sprite_list.extend((
+            pos_str,
             ',"',
             C_MAIN,
             clothing,
@@ -1231,10 +1456,10 @@ init -5 python in mas_sprites:
             hair,
             ART_DLM,
             lean,
-            night_mode(isnight),
+            n_suffix,
             FILE_EXT,
             '"'
-        ])
+        ))
 
 
 # Dynamic sprite builder
@@ -1269,8 +1494,9 @@ init -2 python:
             self.haircolor="default"
             self.skin_hue=0 # monika probably doesn't have different skin color
             self.lipstick="default" # i guess no lipstick
-            self.clothes = "def" # default clothes is school outfit
-            self.hair = "def" # default hair is the usual whtie ribbon
+
+            self.clothes = mas_clothes_def # default clothes is school outfit
+            self.hair = mas_hair_def # default hair is the usual whtie ribbon
 
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
@@ -1314,7 +1540,9 @@ init -2 python:
             IN:
                 new_cloth - new clothes to wear
             """
+            self.clothes.exit(self)
             self.clothes = new_cloth
+            self.clothes.entry(self)
 
 
         def change_hair(self, new_hair):
@@ -1324,7 +1552,9 @@ init -2 python:
             IN:
                 new_hair - new hair to wear
             """
+            self.hair.exit(self)
             self.hair = new_hair
+            self.hair.entry(self)
 
 
         def change_outfit(self, new_cloth, new_hair):
@@ -1420,6 +1650,7 @@ init -2 python:
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory in acs_list:
+                accessory.exit(self)
                 acs_list.remove(accessory)
 
             if accessory.name in self.lean_acs_blacklist:
@@ -1445,6 +1676,8 @@ init -2 python:
             if acs_type in self.acs:
                 # need to clear blacklisted
                 for acs in self.acs[acs_type]:
+                    acs.exit(self)
+
                     if acs.name in self.lean_acs_blacklist:
                         self.lean_acs_blacklist.remove(acs.name)
 
@@ -1455,14 +1688,14 @@ init -2 python:
             """
             Resets clothing to default
             """
-            self.clothes = "def"
+            self.change_clothes(mas_clothes_def)
 
 
         def reset_hair(self):
             """
             Resets hair to default
             """
-            self.hair = "def"
+            self.change_hair(mas_hair_def)
 
 
         def reset_outfit(self):
@@ -1485,6 +1718,7 @@ init -2 python:
 
             if acs_list is not None and accessory not in acs_list:
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
+                accessory.entry(self)
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
@@ -1635,17 +1869,194 @@ init -2 python:
                     pose_dict[k] = _def
 
 
+    # base class for MAS sprite things
+    class MASSpriteBase(renpy.store.object):
+        """
+        Base class for MAS sprite objects
+
+        PROPERTIES:
+            name - name of the item
+            img_sit - filename of the sitting version of the item
+            img_stand - filename of the standing version of the item
+            pose_map - MASPoseMap object that contains pose mappings
+            stay_on_start - determines if the item stays on startup
+            entry_pp - programmign point to call when wearing this sprite
+                the MASMonika object that is being changed is fed into this
+                function
+                NOTE: this is called after the item is added to MASMonika
+            exit_pp - programming point to call when taking off this sprite
+                the MASMonika object that is being changed is fed into this
+                function
+                NOTE: this is called before the item is removed from MASMonika
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None
+            ):
+            """
+            MASSpriteBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image
+                pose_map - MASPoseMAp object that contains pose mappings
+                img_stand - filename of the standing image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+            """
+            self.name = name
+            self.img_sit = img_sit
+            self.img_stand = img_stand
+            self.stay_on_start = stay_on_start
+            self.pose_map = pose_map
+            self.entry_pp = entry_pp
+            self.exit_pp = exit_pp
+
+            if type(pose_map) != MASPoseMap:
+                raise Exception("PoseMap is REQUIRED")
+
+
+        def entry(self, _monika_chr):
+            """
+            Calls the entry programming point if it exists
+
+            IN:
+                _monika_chr - the MASMonika object being changed
+            """
+            if self.entry_pp is not None:
+                self.entry_pp(_monika_chr)
+
+
+        def exit(self, _monika_chr):
+            """
+            Calls the exit programming point if it exists
+
+            IN:
+                _monika_chr - the MASMonika object being changed
+            """
+            if self.exit_pp is not None:
+                self.exit_pp(_monika_chr)
+
+
+    class MASSpriteFallbackBase(MASSpriteBase):
+        """
+        MAS sprites that can use pose maps as fallback maps.
+
+        PROPERTIES:
+            fallback - If true, the PoseMap contains fallbacks that poses
+                will revert to. If something is None, then it means to
+                blacklist.
+
+        SEE MASSpriteBase for inherited properties
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                fallback=False,
+                entry_pp=None,
+                exit_pp=None
+            ):
+            """
+            MASSpriteFallbackBase constructor
+
+            IN:
+                name - name of this item
+                img_sit - filename of the sitting image for this item
+                pose_map - MASPoseMap object that contains pose mappings or
+                    fallback mappings
+                img_stand - filename of the stnading image
+                    If this is not passed in, this is considered blacklisted
+                    from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the item should reappear on startup
+                    False means the item should always drop when restarting
+                    (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+            """
+            super(MASSpriteFallbackBase, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                entry_pp,
+                exit_pp
+            )
+            self.fallback = fallback
+
+
+        def get_fallback(self, pose, lean):
+            """
+            Gets the fallback pose for a given pose or lean
+
+            NOTE: the fallback variable is NOT checked
+
+            Lean is checked first if its not None.
+
+            IN:
+                pose - pose to retrieve fallback for
+                lean - lean to retrieve fallback for
+
+            RETURNS:
+                tuple fo thef ollowing format:
+                [0]: arms type
+                    - default for this is steepling
+                [1]: lean type
+                    - defualt for this is None
+            """
+            # now check for fallbacks
+            if lean is not None:
+                # we have a lean, check for fallbacks
+                return ("steepling", self.pose_map.l_map.get(lean, None))
+
+            # otherwise check the pose
+            return (self.pose_map.map.get(pose, "steepling"), None)
+
+
     # instead of clothes, these are accessories
-    class MASAccessory(renpy.store.object):
+    class MASAccessory(MASSpriteBase):
         """
         MASAccesory objects
 
         PROPERTIES:
-            name - name of the accessory
-            img_sit - filename of the sitting version of the accessory
-            img_stand - filename of the standing version of the accessory
-            priority - render priority of the accessory. Lower is rendred
-                first
+            rec_layer - recommended layer to place this accessory
+            priority - render priority. Lower is rendered first
+            no_lean - determins if the leaning versions are hte same as the
+                regular ones.
+
+        SEE MASSpriteBase for inherited properties
         """
 
 
@@ -1657,7 +2068,9 @@ init -2 python:
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
                 no_lean=False,
-                stay_on_start=False
+                stay_on_start=False,
+                entry_pp=None,
+                exit_pp=None
             ):
             """
             MASAccessory constructor
@@ -1686,18 +2099,27 @@ init -2 python:
                     startup. False means the accessory is dropped on next
                     startup.
                     (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
             """
-            self.name = name
-            self.img_sit = img_sit
-            self.img_stand = img_stand
+            super(MASAccessory, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                entry_pp,
+                exit_pp
+            )
             self.__rec_layer = rec_layer
             self.priority=priority
             self.no_lean = no_lean
-            self.stay_on_start = stay_on_start
-            self.pose_map = pose_map
-
-            if type(pose_map) != MASPoseMap:
-                raise Exception("PoseMap is REQUIRED")
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -1720,6 +2142,163 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
+
+
+    class MASHair(MASSpriteFallbackBase):
+        """
+        MASHair objects
+
+        Representations of hair items
+
+        PROPERTIES:
+            (no additional)
+
+        SEE MASSpriteFallbackBase for inherited properties
+
+        POSEMAP explanations:
+            Use an empty string to
+        """
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=True,
+                fallback=False,
+                entry_pp=None,
+                exit_pp=None
+            ):
+            """
+            MASHair constructor
+
+            IN;
+                name - name of this hairstyle
+                img_sit - filename of the sitting image for this hairstyle
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for this hairstyle
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_strat - True means the hairstyle should reappear on
+                    startup. False means a restart clears the hairstyle
+                    (Default: True)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules.
+                    (Default: False)
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+            """
+            super(MASHair, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                fallback,
+                entry_pp,
+                exit_pp
+            )
+
+
+    class MASClothes(MASSpriteFallbackBase):
+        """
+        MASClothes objects
+
+        Representations of clothes
+
+        PROPERTIES:
+            hair_map - dict of available hair styles for these clothes
+                keys should be hair name properites. Values should also be
+                hair name properties.
+                use "all" to signify a default hair style for all mappings that
+                are not found.
+
+        SEE MASSpriteFallbackBase for inherited properties
+        """
+        import store.mas_sprites as mas_sprites
+
+
+        def __init__(self,
+                name,
+                img_sit,
+                pose_map,
+                img_stand="",
+                stay_on_start=False,
+                fallback=False,
+                hair_map={},
+                entry_pp=None,
+                exit_pp=None
+            ):
+            """
+            MASClothes constructor
+
+            IN;
+                name - name of these clothes
+                img_sit - filename of the sitting image for these clothes
+                pose_map - MASPoseMap object that contains pose mappings
+                img_stand - filename of the standing image for these clothes
+                    If this is not passed in, this is considered blacklisted
+                        from standing sprites.
+                    (Default: "")
+                stay_on_start - True means the clothes should reappear on
+                    startup. False means a restart clears the clothes
+                    (Default: False)
+                fallback - True means the MASPoseMap includes fallback codes
+                    for each pose instead of just enable/disable rules
+                    (Default: False)
+                hair_map - dict of available hair styles and what they map to
+                    These should all be strings. To signify a default, add
+                    a single item called "all" with the value being the hair
+                    to map to.
+                    NOTE: use the name property for hairstyles.
+                    (Default: {})
+                entry_pp - programming point to call when wearing this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+                exit_pp - programming point to call when taking off this sprite
+                    the MASMonika object that is being changed is fed into this
+                    function
+                    (Default: None)
+            """
+            super(MASClothes, self).__init__(
+                name,
+                img_sit,
+                pose_map,
+                img_stand,
+                stay_on_start,
+                fallback,
+                entry_pp,
+                exit_pp
+            )
+
+            self.hair_map = hair_map
+
+            # add defaults if we need them
+            if "all" in hair_map:
+                for hair_name in mas_sprites.HAIR_MAP:
+                    if hair_name not in self.hair_map:
+                        self.hair_map[hair_name] = self.hair_map["all"]
+
+
+        def get_hair(self, hair):
+            """
+            Given a hair type, grabs the available mapping for this hair type
+
+            IN:
+                hair - hair type to get mapping for
+
+            RETURNS:
+                the hair mapping to use inplace for the given hair type
+            """
+            return self.hair_map.get(hair, hair)
 
 
     # The main drawing function...
@@ -1805,9 +2384,19 @@ init -2 python:
                 # set lean to None if its on the blacklist
                 lean = None
 
+            # fallback adjustments:
+            if character.hair.fallback:
+                arms, lean = character.hair.get_fallback(arms, lean)
+
+            if character.clothes.fallback:
+                arms, lean = character.clothes.get_fallback(arms, lean)
+
+            # get the mapped hair for the current clothes
+            hair_name = character.clothes.get_hair(character.hair.name)
+
             cmd = store.mas_sprites._ms_sitting(
-                character.clothes,
-                character.hair,
+                character.clothes.name,
+                hair_name,
                 eyebrows,
                 eyes,
                 nose,
@@ -1826,6 +2415,7 @@ init -2 python:
             )
 
         else:
+        # TODO: this is missing img_stand checks
         # TODO change this to an elif and else the custom stnading mode
 #        elif stock:
             # stock standing mode
@@ -1844,6 +2434,223 @@ init -2 python:
 
 # Monika
 define monika_chr = MASMonika()
+
+init -2 python in mas_sprites:
+    # all progrmaming points should go here
+    # organize by type then id
+    # ASSUME all programming points only run at runtime
+    import store
+
+    temp_storage = dict()
+    # all programming points have access to this storage var.
+    # use names + an identifier as keys so you wont collide
+    # NOTE: this will NOT be maintained on a restart
+
+    ######### HAIR ###########
+    def _hair_def_entry(_moni_chr):
+        """
+        Entry programming point for ponytail
+        """
+        store.lockEventLabel("monika_hair_ponytail")
+
+
+    def _hair_def_exit(_moni_chr):
+        """
+        Exit programming point for ponytail
+        """
+        store.unlockEventLabel("monika_hair_ponytail")
+
+
+    def _hair_down_entry(_moni_chr):
+        """
+        Entry programming point for hair down
+        """
+        store.lockEventLabel("monika_hair_down")
+
+
+    def _hair_down_exit(_moni_chr):
+        """
+        Exit programming point for hair down
+        """
+        store.unlockEventLabel("monika_hair_down")
+
+
+    ######### CLOTHES ###########
+    def _clothes_rin_entry(_moni_chr):
+        """
+        Entry programming point for rin clothes
+        """
+        temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2=None,
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+
+    def _clothes_rin_exit(_moni_chr):
+        """
+        Exit programming point for rin clothes
+        """
+        store.mas_acs_promisering.pose_map = temp_storage["clothes.rin"]
+
+    ######### ACS ###########
+
+
+init -1 python:
+    # HAIR (IMG015)
+    # Hairs are representations of image objects with propertes
+    #
+    # NAMING:
+    # mas_hair_<hair name>
+    #
+    # <hair name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for hair file naming
+    # NOTE: PoseMaps are used to determin which lean types exist for
+    #   a given hair type, NOT filenames
+    #
+    # NOTE: the fallback system:
+    #   by setting fallback to True, you can use the fallback system to
+    #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
+    #   fallback to a lean type. Lean types can only fallback to other lean
+    #   types OR steepling.
+    #
+    #   When using the fallback system, map poses to the pose/lean types
+    #   that you want to fallback on.
+    #   AKA: to make pose 2 fallback to steepling, do `p2="steepling"`
+    #   To make everything fallback to steepling, do `default="steepling"`
+    #   This means that steepling MUST exist for the fallback system to work
+    #   perfectly.
+    #
+    # NOTE: template:
+    ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
+    ## hairidentifiername
+    # General description of the hair style
+
+    ### PONYTAIL WITH RIBBON (default)
+    ## def
+    # Monika's default hairstyle, aka the ponytail
+    mas_hair_def = MASHair(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        entry_pp=store.mas_sprites._hair_def_entry,
+        exit_pp=store.mas_sprites._hair_def_exit
+    )
+    store.mas_sprites.init_hair(mas_hair_def)
+
+    ### DOWN
+    ## down
+    # Hair is down, not tied up
+    mas_hair_down = MASHair(
+        "down",
+        "down",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        entry_pp=store.mas_sprites._hair_down_entry,
+        exit_pp=store.mas_sprites._hair_down_exit
+    )
+    store.mas_sprites.init_hair(mas_hair_down)
+
+    ### BUN WITH RIBBON
+    ## bun
+    # Hair tied into a bun, using the ribbon
+    mas_hair_bun = MASHair(
+        "bun",
+        "bun",
+        MASPoseMap(
+            default=True,
+            p5=None
+        )
+    )
+    store.mas_sprites.init_hair(mas_hair_bun)
+
+
+init -1 python:
+    # THIS MUST BE AFTER THE HAIR SECTION
+    # CLOTHES (IMG018)
+    # Clothes are representations of image objects with properties
+    #
+    # NAMING:
+    # mas_clothes_<clothes name>
+    #
+    # <clothes name> MUST BE UNIQUE
+    #
+    # NOTE: see the existing standards for clothes file naming
+    # NOTE: PoseMaps are used to determine which lean types exist for
+    #  a given clothes type, NOT filenames
+    #
+    # NOTE: see IMG015 for info about the fallback system
+    #
+    # NOTE: template
+    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
+    ## clothesidentifiername
+    # General description of the clothes
+
+    ### SCHOOL UNIFORM (default)
+    ## def
+    # Monika's school uniform
+    mas_clothes_def = MASClothes(
+        "def",
+        "def",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_clothes(mas_clothes_def)
+
+    ### MARISA COSTUME
+    ## marisa
+    # Witch costume based on Marisa
+    mas_clothes_marisa = MASClothes(
+        "marisa",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        }
+    )
+    store.mas_sprites.init_clothes(mas_clothes_marisa)
+
+    ### RIN COSTUME
+    ## rin
+    # Neko costume based on Rin
+    mas_clothes_rin = MASClothes(
+        "rin",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
+        ),
+        fallback=True,
+        hair_map={
+            "all": "custom"
+        },
+        entry_pp=store.mas_sprites._clothes_rin_entry,
+        exit_pp=store.mas_sprites._clothes_rin_exit
+    )
+    store.mas_sprites.init_clothes(mas_clothes_rin)
 
 init -1 python:
     # ACCESSORIES (IMG020)
@@ -2195,6 +3002,19 @@ image monika 1esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="1l",
     right="1r",
@@ -2818,10 +3638,36 @@ image monika 1tfx = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1ttu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tfu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="furrowed",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
     eyes="smug",
     nose="def",
     mouth="smug",
@@ -3566,6 +4412,19 @@ image monika 1dftdc = DynamicDisplayable(
     tears="dried"
 )
 
+image monika 1cua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="crazy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1duu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3574,6 +4433,19 @@ image monika 1duu = DynamicDisplayable(
     nose="def",
     mouth="smug",
     head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1dtc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="i",
     left="1l",
     right="1r",
     arms="steepling"
@@ -4386,6 +5258,19 @@ image monika 2esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="1l",
     right="2r",
@@ -5982,6 +6867,19 @@ image monika 2wkd = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2etc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2rkc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6086,6 +6984,20 @@ image monika 3ekd = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="restleftpointright",
+    sweat="def"
+)
+
 image monika 3esc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6099,6 +7011,32 @@ image monika 3esc = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3etc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3etd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3esd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6106,6 +7044,19 @@ image monika 3esd = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="i",
     left="2l",
     right="1r",
@@ -7743,6 +8694,19 @@ image monika 4eud = DynamicDisplayable(
     eyes="normal",
     nose="def",
     mouth="small",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4esb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="big",
     head="d",
     left="2l",
     right="2r",
@@ -9820,6 +10784,68 @@ image monika 5luu = DynamicDisplayable(
     single="3b"
 )
 
+image monika 5lubfsdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lubfsdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    blush="full",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdrb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="big",
+    head="",
+    left="",
+    right="",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
+image monika 5lusdru = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="left",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    sweat="right",
+    lean="def",
+    single="3b"
+)
+
 # bored
 image monika 5tsc = DynamicDisplayable(
     mas_drawmonika,
@@ -9957,6 +10983,34 @@ image monika 6ektda = DynamicDisplayable(
     right="1r",
     arms="down",
     tears="dried"
+)
+
+image monika 6ekbfd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
+)
+
+image monika 6rkbfd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
 )
 
 image monika 6lktsc = DynamicDisplayable(
@@ -10189,6 +11243,34 @@ image monika 6hub = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down"
+)
+
+image monika 6hubfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
+)
+
+image monika 6hkbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
 )
 
 image monika 6hua = DynamicDisplayable(

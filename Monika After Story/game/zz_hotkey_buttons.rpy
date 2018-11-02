@@ -27,6 +27,7 @@ init python:
         Disables the hotkey buttons
         """
         store.hkb_button.talk_enabled = False
+        store.hkb_button.extra_enabled = False
         store.hkb_button.music_enabled = False
         store.hkb_button.play_enabled = False
 
@@ -36,6 +37,7 @@ init python:
         Enables the hotkey buttons
         """
         store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
         store.hkb_button.music_enabled = True
         store.hkb_button.play_enabled = True
 
@@ -48,6 +50,7 @@ init python:
             store.hkb_button.talk_enabled
             and store.hkb_button.music_enabled
             and store.hkb_button.play_enabled
+            and store.hkb_button.extra_enabled
         )
 
 
@@ -79,6 +82,9 @@ init -1 python in hkb_button:
 
     # property for enabling the talk button
     talk_enabled = True
+
+    # property for enabling the extra button
+    extra_enabled = True
 
     # property for enabling the music button
     music_enabled = True
@@ -168,7 +174,8 @@ screen hkb_overlay():
     vbox:
         xpos 0.05
 #        xalign 0.05
-        ypos 0.80
+        yanchor 1.0
+        ypos 715
 #        yalign 0.95
 
         if store.hkb_button.talk_enabled:
@@ -180,6 +187,17 @@ screen hkb_overlay():
 
                 background Image("mod_assets/hkb_disabled_background.png")
                 text "Talk"
+
+
+        if store.hkb_button.extra_enabled:
+            textbutton _("Extra") action Function(mas_open_extra_menu)
+        else:
+            frame:
+                ypadding 5
+                xsize 120
+
+                background Image("mod_assets/hkb_disabled_background.png")
+                text "Extra"
 
 
         if store.hkb_button.music_enabled:
