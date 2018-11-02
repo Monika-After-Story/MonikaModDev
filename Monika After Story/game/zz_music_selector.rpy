@@ -8,6 +8,8 @@
 # 3. Drop your music into that directory.
 # 4. Start the game
 
+default persistent._mas_pm_added_custom_bgm = False
+
 # music inits first, so the screen can be made well
 init -1 python in songs:
     import os
@@ -260,6 +262,9 @@ init -1 python in songs:
                     cleanGUIText(disp_name),
                     loop_prefix + custom_music_reldir + ogg_file
                 ))
+
+                # we added something!
+                store.persistent._mas_pm_added_custom_bgm = True
 
 
     def _getAudioFile(filepath):

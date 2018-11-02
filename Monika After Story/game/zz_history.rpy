@@ -654,6 +654,9 @@ init -810 python:
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
 
+            # actions / mas / music
+            "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
+
             # actions / mas / zoom
             "_mas_pm_zoomed_out": "pm.actions.mas.zoom.out",
             "_mas_pm_zoomed_in": "pm.actions.mas.zoom.in",
