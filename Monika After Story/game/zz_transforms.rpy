@@ -1,9 +1,5 @@
 # Module containing custom transform functions.
 # Last just because
-<<<<<<< HEAD
-=======
-# NOTE: Depends on script-poemgame
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
 # special early access image accessors
 init -10 python:
@@ -23,10 +19,6 @@ init -10 python:
         #   the image object that is held internally, or None if not found
         return renpy.display.image.images.get((char, expression), None)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 # user defined trasnforms
 transform leftin_slow(x=640, z=0.80):
     xcenter -300 yoffset 0 yanchor 1.0 ypos 1.03 zoom z*1.00 alpha 1.00 subpixel True
@@ -37,38 +29,3 @@ transform leftin_slow(x=640, z=0.80):
 transform ls32:
     leftin_slow(640)
 
-<<<<<<< HEAD
-=======
-### transforms for chibi monika
-transform mas_chdropin(x=640, y=405, travel_time=3.00):
-    ypos -300 xcenter x
-    easein travel_time ypos y
-
-transform mas_chflip(dir):
-    # -1 to face right. 
-    # 1 to face left
-    xzoom dir
-
-transform mas_chflip_s(dir, travel_time=0.36):
-    ease travel_time xzoom dir
-
-transform mas_chhopflip(dir, ydist=-15, travel_time=0.36):
-    # -1 to face right
-    # 1 to face left
-    easein_quad travel_time/2.0 yoffset ydist xzoom 0
-    easeout_quad travel_time/2.0 yoffset 0 xzoom dir
-
-transform mas_chmove(x, y, travel_time=1.0):
-    # x and y should be coordinates
-    # use this to directly move to a location
-    ease travel_time xpos x ypos y
-
-# NOTE: use sticker_hop for straight hopping
-
-transform mas_chriseup(x=300, y=405, travel_time=1.00):
-    ypos 800 xcenter x
-    easein travel_time ypos y
-
-
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5

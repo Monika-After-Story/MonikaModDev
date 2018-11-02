@@ -1,9 +1,5 @@
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
-<<<<<<< HEAD
-=======
-default persistent._mas_can_update = True
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
 define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
 define mas_updater.force = False
@@ -24,13 +20,8 @@ init -1 python:
     class MASUpdaterDisplayable(renpy.Displayable):
         # this displayable will handle UpdateVersion on its own while enabling
         # interactions
-<<<<<<< HEAD
         # since UpdateVersion occurs in a background thread, we want to 
         # handle most logic in the render function, despite the 
-=======
-        # since UpdateVersion occurs in a background thread, we want to
-        # handle most logic in the render function, despite the
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
         # event-driven framework
         # we will return -1 upon cancel / ok
         # 1 upon update
@@ -38,11 +29,7 @@ init -1 python:
         import pygame # mouse stuff
         import time # for timeouts
         import threading
-<<<<<<< HEAD
        
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
         # CONSTANTS
         BUTTON_WIDTH = 120
         BUTTON_HEIGHT = 35
@@ -67,11 +54,7 @@ init -1 python:
 
         # STATES
 
-<<<<<<< HEAD
         # prior to checking for an update. This is visiually the same as 
-=======
-        # prior to checking for an update. This is visiually the same as
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
         # checking for an update.
         STATE_PRECHECK = -1
 
@@ -116,11 +99,7 @@ init -1 python:
             # background tile
             # hangman frame color (50% trans)
             self.background = Solid(
-<<<<<<< HEAD
                 "#FFE6F47F", 
-=======
-                "#FFE6F47F",
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                 xsize=self.VIEW_WIDTH,
                 ysize=self.VIEW_HEIGHT
             )
@@ -212,11 +191,7 @@ init -1 python:
                 self._confirm_x
             )
             button_center_y = (
-<<<<<<< HEAD
                 (self._confirm_y + self.FRAME_HEIGHT) - 
-=======
-                (self._confirm_y + self.FRAME_HEIGHT) -
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                 self.BUTTON_BOT_SPACE
             )
 
@@ -224,11 +199,7 @@ init -1 python:
             button_left_x = (
                 int(
                     (
-<<<<<<< HEAD
                         self.FRAME_WIDTH - 
-=======
-                        self.FRAME_WIDTH -
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                         (
                             (2 * self.BUTTON_WIDTH) +
                             self.BUTTON_SPACING
@@ -362,11 +333,7 @@ init -1 python:
             # inital button states
             self._button_update.disable()
 
-<<<<<<< HEAD
             # inital time 
-=======
-            # inital time
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             self._prev_time = time.time()
 
             # thread stuff
@@ -379,11 +346,7 @@ init -1 python:
             Does the purely logical update checking
             This will set the appropriate states
             """
-<<<<<<< HEAD
             
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             if self._state == self.STATE_CHECKING:
                 # checking for updates
 
@@ -404,11 +367,7 @@ init -1 python:
                 # pre check, launch the checking thread
                 # threading stuff for the web connection
 #                MASUpdaterDisplayable._sendRequest(self.update_link, self._thread_result)
-<<<<<<< HEAD
                 self._thread_result = list() 
-=======
-                self._thread_result = list()
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                 self._check_thread = threading.Thread(
                     target=MASUpdaterDisplayable._sendRequest,
                     args=(self.update_link, self._thread_result)
@@ -423,11 +382,7 @@ init -1 python:
             """
             Sends out the http request and returns a response and stuff
             NOTE: designed to be called as a background thread
-<<<<<<< HEAD
             
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             ASSUMES:
                 _thread_result
                     appends appropriate state for use
@@ -441,11 +396,7 @@ init -1 python:
             url, single_slash, json_file = url.partition("/")
             read_json = None
             h_conn = httplib.HTTPConnection(
-<<<<<<< HEAD
                 url 
-=======
-                url
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             )
 
             try:
@@ -526,11 +477,7 @@ init -1 python:
             # now render
             r = renpy.Render(width, height)
 
-<<<<<<< HEAD
             # starting with backgrounds 
-=======
-            # starting with backgrounds
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             back = renpy.render(self.background, width, height, st, at)
             confirm = renpy.render(self.confirm, width, height, st, at)
 
@@ -576,11 +523,7 @@ init -1 python:
                 # json error
 
                 if self._state == self.STATE_TIMEOUT:
-<<<<<<< HEAD
                     # timeout  
-=======
-                    # timeout
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                     display_text = renpy.render(
                         self._text_timeout,
                         width,
@@ -627,11 +570,7 @@ init -1 python:
             r.blit(back, (0, 0))
             r.blit(confirm, (self._confirm_x, self._confirm_y))
             r.blit(
-<<<<<<< HEAD
                 display_text, 
-=======
-                display_text,
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                 (
                     int((width - pw) / 2),
                     int((height - ph) / 2) + self.TEXT_YOFFSET
@@ -664,11 +603,7 @@ init -1 python:
 
                 elif self._state == self.STATE_UPDATED:
                     # no update found
-<<<<<<< HEAD
                     
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                     if self._button_ok.event(ev, x, y, st):
                         # ok clicked! return -1
                         return -1
@@ -705,11 +640,7 @@ init -1 python:
 
 
 init python in mas_updater:
-<<<<<<< HEAD
     
-=======
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
     def checkUpdate():
         """
@@ -719,10 +650,6 @@ init python in mas_updater:
         """
         import time
         import os
-<<<<<<< HEAD
-=======
-        import shutil
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
         curr_time = time.time()
 
@@ -737,7 +664,6 @@ init python in mas_updater:
         if last_updated > curr_time:
             last_updated = 0
 
-<<<<<<< HEAD
         #Make sure the update folder is where it should be
         can_update = renpy.store.updater.can_update()
         if not can_update:
@@ -749,28 +675,6 @@ init python in mas_updater:
                         renpy.config.basedir + "/update"
                     )
                 except: pass
-=======
-        # always move update folder if possible
-        game_update = os.path.normcase(renpy.config.basedir + "/game/update")
-        ddlc_update = os.path.normcase(renpy.config.basedir + "/update")
-        base_update = os.path.normcase(renpy.config.basedir)
-        if os.access(game_update, os.F_OK):
-            try:
-                if os.access(ddlc_update, os.F_OK):
-                    shutil.rmtree(ddlc_update)
-
-                shutil.move(game_update, base_update)
-                can_update = renpy.store.updater.can_update()
-
-            except:
-                can_update = False
-
-        else:
-            can_update = renpy.store.updater.can_update()
-
-        # notify user
-        renpy.game.persistent._mas_can_update = can_update
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
         if force:
             check_wait = 0
@@ -797,11 +701,7 @@ init 10 python:
         update_link = mas_updater.checkUpdate()
 
         if not update_link:
-<<<<<<< HEAD
             return 
-=======
-            return
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
         # now we creathe thre thread list for renderering
         thread_result = list()
@@ -817,11 +717,7 @@ init 10 python:
                     "mas_update_available",
                     at_list=[mas_updater_slide],
                     layer="front",
-<<<<<<< HEAD
                     zorder=10,
-=======
-                    zorder=18,
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                     tag="masupdateroverlay"
                 )
 
@@ -841,76 +737,20 @@ init 10 python:
         the_thread.start()
 
 
-<<<<<<< HEAD
 label forced_update_now:
     $ mas_updater.force = True
 
-=======
-label mas_updater_steam_issue:
-#    show monika at t11
-    m 1eub "[player]!{w} I see you're using Steam."
-    m 1eksdlb "Unfortunately..."
-    m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
-    m 1hua "Make sure to say goodbye to me first before installing the update."
-    return
-
-
-label forced_update_now:
-    $ mas_updater.force = True
-
-    # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
-
-        $ mas_RaiseShield_core()
-
-        call mas_updater_steam_issue
-
-        if store.mas_globals.dlg_workflow:
-            # current in dialogue workflow, we should only enable the escape
-            # and music stuff
-            $ enable_esc()
-            $ mas_MUMUDropShield()
-
-        else:
-            # otherwise, reenable core interactions
-            $ mas_DropShield_core()
-
-        return
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 #This file goes through the actions for updating Monika After story
 label update_now:
     $import time #this instance of time can stay
 
-<<<<<<< HEAD
-=======
-    # steam check
-    if persistent.steam and not persistent._mas_unstable_mode:
-        return
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     # screen check
     if renpy.showing("masupdateroverlay", layer="overlay"):
         hide masupdateroverlay
 
     $ update_link = store.mas_updater.checkUpdate()
 
-<<<<<<< HEAD
     if update_link:
-=======
-    if not persistent._mas_can_update:
-        # updates are currently disabled
-        python:
-            no_update_dialog = (
-                "Error: Failed to move 'update/' folder. Please manually " +
-                "move the update folder from 'game/' to the base 'ddlc/' " +
-                "directory and try again."
-            )
-        call screen dialog(message=no_update_dialog, ok_action=Return())
-
-    elif update_link:
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
         # call the updater displayable
         python:
@@ -922,20 +762,8 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
-<<<<<<< HEAD
             $ updater.update(update_link, restart=True)
 
-=======
-
-            # call quit so we can save important stuff
-            call quit
-            $ renpy.save_persistent()
-            $ updater.update(update_link, restart=True)
-
-            # we have to quit because calling QUIT breaks things
-            jump _quit
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
         else:
             # just update the last checked, regardless of issue
             $ persistent._update_last_checked[update_link] = time.time()

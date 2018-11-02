@@ -2,14 +2,6 @@
 
 # TODO Delete this *Insert Monika with a handgun*
 # Seriously this is for testing only
-<<<<<<< HEAD
-=======
-
-init python:
-    if persistent._mas_fastgreeting is None:
-        persistent._mas_fastgreeting = config.developer
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 init 5 python:
     rules = dict()
     rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
@@ -22,12 +14,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-<<<<<<< HEAD
         eventdb=evhand.greeting_database
-=======
-        eventdb=evhand.greeting_database,
-        skipCalendar=True
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     )
     del rules
 
@@ -52,7 +39,6 @@ label greeting_st_patrick:
                     m 4j "Drink vodnika!"
     return
 
-<<<<<<< HEAD
 # Dev Fast greeting
 init 5 python:
     rules = dict()
@@ -62,14 +48,6 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_fast",
-=======
-init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=None,max=-20))
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_dev_no_hate",
             unlocked=True,
             rules=rules
         ),
@@ -77,79 +55,6 @@ init 5 python:
     )
     del rules
 
-
-label greeting_dev_no_hate:
-    m "Oh, hello [player]!"
-    m "Don't worry, I know you're just testing my negative affection reactions"
-    m "I know you actually love me a lot."
-    m "Thanks for all your efforts!"
-    return
-
-init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-14,max=14))
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_dev_neutral",
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
-    del rules
-
-<<<<<<< HEAD
-=======
-label greeting_dev_neutral:
-    m "Hello there [player]!"
-    m 1l "Did you just wiped out the persistent file?"
-    m 1l "or maybe you're just testing my neutral affection reactions?"
-    m "Don't worry about it, I'll never forget all you have done for me~"
-    m 1k "Thanks for all your efforts!"
-    return
-
-init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=20,max=None))
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_dev_love",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
-    del rules
-
-label greeting_dev_love:
-    m 1b "Welcome back, honey!"
-    m 5a "I'm so happy to see you again."
-    m 5a "I love you so much [player]!"
-    m 5a "Thanks for all your efforts!"
-    return
-
-
-# Dev Fast greeting
-init 5 python:
-    if persistent._mas_fastgreeting:
-        rules = dict()
-        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-        rules.update({"monika wants this first":""})
-        addEvent(
-            Event(
-                persistent.greeting_database,
-                eventlabel="greeting_fast",
-                unlocked=True,
-                rules=rules
-            ),
-            eventdb=evhand.greeting_database
-        )
-        del rules
-
->>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 label greeting_fast:
     m "{fast}Hello!{nw}"
     return
