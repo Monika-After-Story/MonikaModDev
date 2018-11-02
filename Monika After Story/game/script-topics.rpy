@@ -4973,7 +4973,7 @@ label monika_panties:
                 m "Maybe you're into something else?"
                 m 4hubfb "Ahaha~"
                 m 4hubfa "I'm just kidding!"
-                m 5ekbfa "I don't mind if we stick to being wholesom, to be honest..."
+                m 5ekbfa "I don't mind if we stick to being wholesome, to be honest..."
                 m "It's more romantic that way~"
             "I don't want to talk about it...":
                 $ persistent._mas_pm_no_talk_panties = True
