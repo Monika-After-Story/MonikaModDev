@@ -804,7 +804,7 @@ label greeting_welcomeback2:
 
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -818,8 +818,15 @@ init 5 python:
     del rules
 
 label greeting_longtime:
-    m 1eka "Long time no see, [player]!"
-    m 1eua "I'm so happy that you're here now."
+    if mas_isMoniNormal(higher=True):
+        m 1eka "Long time no see, [player]!"
+        m 1eua "I'm so happy that you're here now."
+    
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Long time no see, [player]."
+
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Long time no see, [player]..."
     return
 
 init 5 python:
@@ -1640,7 +1647,7 @@ label greeting_hai_domo:
 #For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2307,8 +2314,7 @@ label greeting_back_from_school:
             m "How was school?"
             "Good.":
                 m 2dfc "That's nice."
-                m 2efc "I hope you learned a lot today..."
-                m 2tfc "Maybe even how to treat people better."
+                m 2efc "I hope you actually learned {i}something{/i} today."
             "Bad.":
                 m "That's too bad..."
                 m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
@@ -2378,7 +2384,7 @@ label greeting_back_from_work:
     elif mas_isMoniDis(higher=True):
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
         menu:
-            m "How was work?"
+            m "How was your day?"
             "Good":
                 m "That's nice."
                 m 6rkc "I just hope you don't enjoy work more than being with me, [player]."

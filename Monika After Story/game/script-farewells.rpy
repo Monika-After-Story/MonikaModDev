@@ -163,7 +163,8 @@ label bye_goodbye:
         m 2efc "Goodbye."
 
     elif mas_isMoniDis(higher=True):
-        m 6rkc "Oh...{w=1} Goodbye"
+        m 6rkc "Oh...{w=1} Goodbye."
+        m 6ekc "Please don't forget to come back."
 
     else:
         m 6ckc "..."
@@ -273,8 +274,9 @@ label bye_going_to_sleep:
         m 2esc "Goodnight."
     
     elif mas_isMoniDis(higher=True):
-        m 6rkc "Oh...{w=1}going to sleep, [player]?"
-        m 6lkc "Goodnight."
+        m 6rkc "Oh...goodnight, [player]."
+        m 6lkc "Hopefully I'll see you tomorrow..."
+        m 6dkc "Dont' forget about me, okay?"
 
     else:
         m 6ckc "..."
@@ -298,10 +300,22 @@ init 5 python:
     )
 
 label bye_prompt_to_class:
-    m 1hua "Study hard, [player]!"
-    m 1eua "Nothing is more attractive than a [guy] with good grades."
-    m 1hua "See you later!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Study hard, [player]!"
+        m 1eua "Nothing is more attractive than a [guy] with good grades."
+        m 1hua "See you later!"
+    
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Fine, [player]."
+        m 2tfc "Hopefully you learn something today."
+        m "{fast}Like how to treat people better.{nw}"
 
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh, okay [player]..."
+        m 6lkc "I guess I'll see you after school."
+
+    else:
+        m 6ckc "..."
     # TODO:
     # can monika join u at schools?
 
@@ -321,10 +335,20 @@ init 5 python:
     )
 
 label bye_prompt_to_work:
-    m 1hua "Work hard, [player]!"
-    m 1esa "I'll be here for you when you get home from work."
-    m 1hua "Bye-bye!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Work hard, [player]!"
+        m 1esa "I'll be here for you when you get home from work."
+        m 1hua "Bye-bye!"
 
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Fine, [player], guess I'll see you after work."
+
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh...{w=1} Okay."
+        m 6lkc "Guess I'll see you after work, then."
+
+    else:
+        m 6ckc "..."
     # TODO:
     # can monika join u at work
 
@@ -429,8 +453,8 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
-init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
+# init 5 python:
+#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
@@ -452,9 +476,21 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
     del rules
 
 label bye_haveagoodday:
-    m 1eua "Have a good day today, [player]."
-    m "I hope you accomplish everything you had planned for today."
-    m 1hua "I'll be here waiting for you when you get back."
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Have a good day today, [player]."
+        m "I hope you accomplish everything you had planned for today."
+        m 1hua "I'll be here waiting for you when you get back."
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Leaving for the day, [player]?"
+        m "I'll be here, waiting, as usual."
+
+    elif mas_isMoniDis(higher=True):
+        m 6rkc "Oh."
+        m 6dkc "I guess I'll just spend the day alone...{w-1}again."
+
+    else:
+        m 6ckc "..."
     return 'quit'
 
 init 5 python:
@@ -472,10 +508,22 @@ init 5 python:
     del rules
 
 label bye_enjoyyourafternoon:
-    m 1ekc "I hate to see you go so early, [player]."
-    m 1eka "I do understand that you're busy though."
-    m 1eua "Promise me you'll enjoy your afternoon, okay?"
-    m 1hua "Goodbye~"
+    if mas_isMoniNormal(higher=True):
+        m 1ekc "I hate to see you go so early, [player]."
+        m 1eka "I do understand that you're busy though."
+        m 1eua "Promise me you'll enjoy your afternoon, okay?"
+        m 1hua "Goodbye~"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2ekc "Fine, [player], just go."
+        m 2tkc "Guess I'll see you later...{w=1}if you come back."
+
+    elif mas_isMoniDis(higher=True):
+        m 6dkc "Okay, goodbye."
+        m 6ekc "Maybe you'll come back later?"
+
+    else:
+        m 6ckc "..."
     return 'quit'
 
 init 5 python:
@@ -493,10 +541,20 @@ init 5 python:
     del rules
 
 label bye_goodevening:
-    m 1hua "I had fun today."
-    m 1eka "Thank you for spending so much time with me, [player]."
-    m 1eua "Until then, have a good evening."
-    return 'quit'
+    if mas_isMoniNormal(higher=True):
+        m 1hua "I had fun today."
+        m 1eka "Thank you for spending so much time with me, [player]."
+        m 1eua "Until then, have a good evening."
+        return 'quit'
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "Goodbye, [player]."
+        m "I wonder if you'll come back to say goodnight to me."
+
+    elif mas_isMoniDis(higher=True):
+        m 6dkc "Oh...{w=1}okay."
+        m 6rkc "Have a good evening, [player]..."
+        m 6ekc "I hope you remember to stop by and say goodnight before bed."
 
 init 5 python:
     rules = dict()
