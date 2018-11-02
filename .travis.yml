@@ -1,0 +1,32 @@
+# travis build script
+language: python
+python:
+    - "2.7"
+
+
+# dependencies
+install:
+    - cd ..
+
+      # renpy
+    - wget https://www.renpy.org/dl/6.99.12.4/renpy-6.99.12.4-sdk.tar.bz2
+    - tar xf renpy-6.99.12.4-sdk.tar.bz2
+    - rm renpy-6.99.12.4-sdk.tar.bz2
+    - mv renpy-6.99.12.4-sdk renpy
+
+      # mas build
+    - wget https://s3-us-west-2.amazonaws.com/monika-after-story/ddlc/mas.zip
+    - mkdir mas072
+    - unzip mas.zip -d mas072
+
+    # copy over files from game/
+    - cp -Rf MonikaModDev/Monika\ After\ Story/* mas072/
+
+# environment to handle alsa issues
+env:
+    - SDL_AUDIODRIVER=dummy
+
+# command to check syntax
+script: 
+    - python MonikaModDev/tools/travis.py
+    - cd renpy && ./renpy.sh "../mas072/" lint && ./renpy.sh launcher distribute "../mas072/"
