@@ -201,17 +201,17 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "mod_assets/Swipe.wav"
-    scene black
-    show ut_slash at top
-    pause 0.6
-    play sound "mod_assets/Hit.wav"
-    show chara9 at Shake(None, 2.0, dist=10)
-    pause 2
+#    play sound "mod_assets/Swipe.wav"
+#    scene black
+#    show ut_slash at top
+#    pause 0.6
+#    play sound "mod_assets/Hit.wav"
+#    show chara9 at Shake(None, 2.0, dist=10)
+#    pause 2
 
     #I think there's another method to show a fake exception, but w/e
-    show chara_exception at center
-    pause 1
+#    show chara_exception at center
+#    pause 1
     return
 
 #These are the comments made when you restart the game the first few times
