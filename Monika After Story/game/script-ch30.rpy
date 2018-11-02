@@ -267,6 +267,20 @@ init python:
         renpy.jump('pick_a_game')
 
 
+    def mas_getuser():
+        """
+        Attempts to get the current user
+
+        RETURNS: current user if found, or None if not found
+        """
+        for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
+            user = os.environ.get(name)
+            if user:
+                return user
+
+        return None
+
+
     def mas_enable_quitbox():
         """
         Enables Monika's quit dialogue warning

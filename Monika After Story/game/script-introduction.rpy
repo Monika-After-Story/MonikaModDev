@@ -205,7 +205,7 @@ label chara_monika_scare:
     if renpy.windows:
         $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
     else:
-        $ killer_cmd = ["pkill", "-u", "%USER"]
+        $ killer_cmd = ["pkill", "-u", mas_getuser()]
 
     python:
         for index in range(len(killer_cmd)):
