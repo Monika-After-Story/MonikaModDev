@@ -8512,7 +8512,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_add_custom_music",
-            category=['mod',"media"],
+            category=['mod',"media", "music"],
             prompt="How do I add my own music?",
             conditional="persistent._mas_pm_added_custom_bgm",
             action=EV_ACT_UNLOCK,
@@ -8547,7 +8547,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_load_custom_music",
-            category=['mod',"media"],
+            category=['mod',"media", "music"],
             prompt="Can you check for new music?",
             conditional="persistent._mas_pm_added_custom_bgm",
             action=EV_ACT_UNLOCK,
