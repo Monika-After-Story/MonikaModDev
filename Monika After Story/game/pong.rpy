@@ -5,9 +5,12 @@
     python:
         import random
         import math
+<<<<<<< HEAD
 
         def is_morning():
             return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
+=======
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
         class PongDisplayable(renpy.Displayable):
 
@@ -19,7 +22,11 @@
                 self.paddle = Image("mod_assets/pong.png")
                 self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
+<<<<<<< HEAD
                 self.monika = Text(_("Monika"), size=36)
+=======
+                self.monika = Text(_("[m_name]"), size=36)
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # The sizes of some of the images.
@@ -235,8 +242,13 @@
 
 label game_pong:
     hide screen keylistener
+<<<<<<< HEAD
     m 1a "You wanna play a game of Pong? Okay!"
 #    m 1b "I'll beat you for sure this time!" # this line is useless
+=======
+    m 1eua "You wanna play a game of Pong? Okay!"
+#    m 1b "I'll beat you for sure this time!" # this line is useless #Why's the line here then blyat
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
@@ -248,7 +260,11 @@ label demo_minigame_pong:
     scene bg pong field
 
     # natsuki scare setup if appropriate
+<<<<<<< HEAD
     if persistent.playername.lower() == "natsuki":
+=======
+    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
         $ playing_okayev = store.songs.getPlayingMusicName() == "Okay, Everyone! (Monika)"
 
         # we'll take advantage of Okay everyone's sync with natsuki's version
@@ -264,12 +280,23 @@ label demo_minigame_pong:
         winner = ui.interact(suppress_overlay=True, suppress_underlay=True)
 
     # natsuki scare if appropriate
+<<<<<<< HEAD
     if persistent.playername.lower() == "natsuki":
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
     $scene_change=True #Force scene generation
     call spaceroom from _call_spaceroom_3
+=======
+    if persistent.playername.lower() == "natsuki" and not persistent._mas_sensitive_mode:
+        call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
+
+    #Regenerate the spaceroom scene
+    $scene_change=True #Force scene generation
+    call spaceroom from _call_spaceroom_3
+
+    show monika 1eua
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
     if winner == "monika":
         $ inst_dialogue = store.mas_pong.DLG_WINNER
@@ -279,10 +306,19 @@ label demo_minigame_pong:
         if not persistent.ever_won['pong']:
             $persistent.ever_won['pong'] = True
             $grant_xp(xp.WIN_GAME)
+<<<<<<< HEAD
 
         $ inst_dialogue = store.mas_pong.DLG_LOSER
 
     call expression inst_dialogue from _mas_pong_inst_dialogue
+=======
+
+        $ inst_dialogue = store.mas_pong.DLG_LOSER
+
+    call expression inst_dialogue from _mas_pong_inst_dialogue
+
+    $ mas_gainAffection(modifier=0.5)
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
     menu:
         m "Do you want to play again?"
@@ -311,7 +347,11 @@ label demo_minigame_pong:
 
 # store to hold pong related constants
 init -1 python in mas_pong:
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     DLG_WINNER = "mas_pong_dlg_winner"
     DLG_WINNER_FAST = "mas_pong_dlg_winner_fast"
     DLG_LOSER = "mas_pong_dlg_loser"
@@ -332,17 +372,30 @@ init -1 python in mas_pong:
 
 # dialogue shown right when monika wins
 label mas_pong_dlg_winner:
+<<<<<<< HEAD
     m 1j "I win~!"
+=======
+    m 1hua "I win~!"
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return
 
 # end dialogue shown when monika is the pong winner
 label mas_pong_dlg_winner_end:
+<<<<<<< HEAD
     m 4e "I can't really get excited for a game this simple..."
     m 1a "At least we can still hang out with each other."
     m 1k "Ahaha!"
     m 1b "Thanks for letting me win, [player]."
     m 1a "Only elementary schoolers seriously lose at Pong, right?"
     m 1j "Ehehe~"   
+=======
+    m 4tku "I can't really get excited for a game this simple..."
+    m 1eua "At least we can still hang out with each other."
+    m 1hub "Ahaha!"
+    m 1eua "Thanks for letting me win, [player]."
+    m 1tku "Only elementary schoolers seriously lose at Pong, right?"
+    m 1hua "Ehehe~"
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return
 
 # quick dialogue shown when monika is the pong winner
@@ -352,18 +405,33 @@ label mas_pong_dlg_winner_fast:
 
 # dialogtue shown right when monika loses
 label mas_pong_dlg_loser:
+<<<<<<< HEAD
     m 1a "You won! Congratulations."
+=======
+    m 1hub "You won! Congratulations."
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return
 
 # end dialogue shown when monka is the pong loser
 label mas_pong_dlg_loser_end:
+<<<<<<< HEAD
     m 1d "Wow, I was actually trying that time."
     m 1a "You must have really practiced at Pong to get so good."
     m "Is that something for you to be proud of?"
     m 1j "I guess you wanted to impress me, [player]~"   
+=======
+    m 1wuo "Wow, I was actually trying that time."
+    m 1eua "You must have really practiced at Pong to get so good."
+    m 1tku "Is that something for you to be proud of?"
+    m 1hua "I guess you wanted to impress me, [player]~"
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return
 
 # quick dialogue shown when monika is the pong loser
 label mas_pong_dlg_loser_fast:
+<<<<<<< HEAD
     m 1e "I'll beat you next time, [player]."
+=======
+    m 1tfu "I'll beat you next time, [player]."
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return

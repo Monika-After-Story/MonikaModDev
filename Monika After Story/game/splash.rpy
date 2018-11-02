@@ -29,8 +29,8 @@ init python:
     "I have granted kids to hell",
     "PM died for this.",
     "It was only partially your fault.",
-    "This game is not suitable for children\nor those who are easily dismembered.",
-    "Don't forget to backup Monika's character file."
+    "This game is not suitable for children\nor those who are easily dismembered."
+#    "Don't forget to backup Monika's character file."
     ]
 
 image splash_warning = ParameterizedText(style="splash_text", xalign=0.5, yalign=0.5)
@@ -163,12 +163,33 @@ image tos2 = "bg/warning2.png"
 
 label splashscreen:
     python:
+<<<<<<< HEAD
         persistent.sessions['current_session_start']=datetime.datetime.now()
         persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+=======
+        _mas_AffStartup()
+
+        persistent.sessions['current_session_start']=datetime.datetime.now()
+        persistent.sessions['total_sessions'] = persistent.sessions['total_sessions']+ 1
+        store.mas_calendar.loadCalendarDatabase()
+
+        # set zoom
+        store.mas_sprites.adjust_zoom()
+
+    if mas_corrupted_per and (mas_no_backups_found or mas_backup_copy_failed):
+        # we have a corrupted persistent but was unable to recover via the
+        # backup system
+        call mas_backups_you_have_corrupted_persistent
+
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     scene white
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
+<<<<<<< HEAD
+=======
+    $ persistent.tried_skip = False
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     if not persistent.first_run:
         $ quick_menu = False
         pause 0.5
@@ -200,14 +221,28 @@ label splashscreen:
     python:
         basedir = config.basedir.replace("\\", "/")
 
+<<<<<<< HEAD
     #Check for game updates before loading the game or the splash screen
 #    call update_now from _call_update_now
+=======
+        # dump verseion to a firstrun-style file
+        with open(basedir + "/game/masrun", "w") as versfile:
+            versfile.write(config.name + "|" + config.version + "\n")
+
+
+    #Check for game updates before loading the game or the splash screen
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
     #autoload handling
     #Use persistent.autoload if you want to bypass the splashscreen on startup for some reason
     if persistent.autoload and not _restart:
         jump autoload
 
+<<<<<<< HEAD
+=======
+    $ mas_enable_quit()
+
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     # Start splash logic
     $ config.allow_skipping = False
 
@@ -226,7 +261,7 @@ label splashscreen:
     show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
-    $ config.allow_skipping = True
+    $ config.allow_skipping = False
     return
 
 label warningscreen:
@@ -235,7 +270,7 @@ label warningscreen:
     pause 3.0
 
 label after_load:
-    $ config.allow_skipping = allow_skipping
+    $ config.allow_skipping = False
     $ _dismiss_pause = config.developer
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
@@ -279,11 +314,25 @@ label autoload:
         jump mas_chess_go_ham_and_delete_everything
 
     # okay lets setup monika's clothes
+<<<<<<< HEAD
     python:
         monika_chr.change_outfit(
             persistent._mas_monika_clothes,
             persistent._mas_monika_hair
         )
+=======
+#    python:
+#        monika_chr.change_outfit(
+#            persistent._mas_monika_clothes,
+#            persistent._mas_monika_hair
+#        )
+
+    # need to set the monisize correctly
+    $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+
+    # finally lets run actions that needed to be run
+    $ mas_runDelayedActions(MAS_FC_START)
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
     jump expression persistent.autoload
 
@@ -292,10 +341,64 @@ label before_main_menu:
     return
 
 label quit:
+<<<<<<< HEAD
     $persistent.sessions['last_session_end']=datetime.datetime.now()
     $persistent.sessions['total_playtime']=persistent.sessions['total_playtime']+ (persistent.sessions['last_session_end']-persistent.sessions['current_session_start'])
 
     if persistent._mas_hair_changed:
         $ persistent._mas_monika_hair = monika_chr.hair
         $ persistent._mas_monika_clothes = monika_chr.clothes
+=======
+    python:
+        store.mas_calendar.saveCalendarDatabase(CustomEncoder)
+        persistent.sessions['last_session_end']=datetime.datetime.now()
+        today_time = (
+            persistent.sessions["last_session_end"]
+            - persistent.sessions["current_session_start"]
+        )
+        new_time = today_time + persistent.sessions["total_playtime"]
+
+        # prevent out of boudns time
+        if datetime.timedelta(0) < new_time <= mas_maxPlaytime():
+            persistent.sessions['total_playtime'] = new_time
+
+        # set the monika size
+        store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
+
+        # save current hair / clothes
+        persistent._mas_monika_hair = monika_chr.hair.name
+        persistent._mas_monika_clothes = monika_chr.clothes.name
+
+        # accessory saving
+        persistent._mas_acs_pre_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.PRE_ACS]
+            if acs.stay_on_start
+        ]
+        persistent._mas_acs_mid_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.MID_ACS]
+            if acs.stay_on_start
+        ]
+        persistent._mas_acs_pst_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.PST_ACS]
+            if acs.stay_on_start
+        ]
+
+        # remove special images
+        store.mas_island_event.removeImages()
+        store.mas_o31_event.removeImages()
+
+        # delayed action stuff
+        mas_runDelayedActions(MAS_FC_END)
+        store.mas_delact.saveDelayedActionMap()
+
+        _mas_AffSave()
+
+        # delete the monika file if we aren't leaving
+        if not persistent._mas_dockstat_going_to_leave:
+            store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
     return

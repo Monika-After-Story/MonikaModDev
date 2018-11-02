@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Introduction
 
 ### Let's help Monika get closer to our reality!
@@ -150,3 +151,6 @@ Add an appropriate title and a description of the changes you made, before you c
 # Join us!
 
 You can chat with the core team on [our development Discord channel](https://discord.gg/K2KuJeX). We're always friendly to new contributors, and it's not just a great place to get help, but also just a fun place to hang out with like-minded DDLC fans.
+=======
+Please see the [wiki page](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines).
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5

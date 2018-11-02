@@ -3,7 +3,11 @@
 # Monika After Story (MAS)
 Monika After Story is a mod for the free game [Doki Doki Literature Club](https://www.ddlc.moe) from [Team Salvato](http://teamsalvato.com/). MAS builds on Act 3 to create a simulator of your eternal life with Monika, featuring new events, handlers, and metacommentary!
 
+<<<<<<< HEAD
 Please check the [Releases](https://github.com/Backdash/MonikaModDev/releases) page for the latest stable build.
+=======
+Please check the [Releases](http://www.monikaafterstory.com/releases.html) page for the latest stable build.
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
 If you would like to make your own mod like this one, check out our sister project: the [DDLCModTemplate](https://github.com/therationalpi/DDLCModTemplate).
 
@@ -11,8 +15,15 @@ If you would like to make your own mod like this one, check out our sister proje
 
 Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
+<<<<<<< HEAD
 * Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
 
+=======
+* Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+
+* Click the latest version link. This will download a zip file to your system.
+
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 * Extract the contents the zip file into the `/game` folder of your DDLC installation.
 
 * Running DDLC will now load the Monika After Story Mod.
@@ -51,11 +62,21 @@ If you have a change you'd like to submit, open a [pull request](https://github.
 #### Adding Content
 Want to add some content to MAS? Here's a list of important .RPY files the game uses.
 
+<<<<<<< HEAD
 - **script.rpy**: This is where it all begins. Handles what chapter you start on, etc.
 - **script-ch30.rpy**: Script for Monika's room. Contains all the opening dialogue, events, etc.
 - **script-topics.rpy**: All topics used by Monika are written here. You can add your own dialogue by checking the information below!
 - **script-greetings.rpy**: Add lines for Monika to greet you when loading the game.
 - **splash.rpy**: Handles the splash screens seen in-game.
+=======
+- **script-ch30.rpy**: Main flow for MAS. This is where idle happens.
+- **script-topics.rpy**: All **random** and **pool** topics used by Monika are written here. You can add your own dialogue by checking the information below!
+- **script-greetings.rpy**: Add lines for Monika to greet you when loading the game.
+- **script-farewells.rpy**: Add lines for Monika to say to you when closing the game.
+- **script-moods.rpy**: Tell Monika that you're in _a mood_.
+- **script-stories.rpy**: Add stories for Monika to tell you.
+- **script-compliments.rpy**: Add compliments you can say to Monika.
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
 
 If you wish to add more dialogue to the space room, navigate to script-topics.rpy and use this template.
 
@@ -65,8 +86,13 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+<<<<<<< HEAD
             eventlabel="monika_example", # event label
             category=["example", "topic"], # list of categories this topic belongs in
+=======
+            eventlabel="monika_example", # event label (MUST BE UNIQUE)
+            category=["example", "topic"], # list of categories this topic belongs in (These are automatically capitalized)
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
             prompt="Example Topic", # button text
             random=True, # True if this topic should appear randomly
             pool=True # True if this topic should appear in "Ask a Question"
@@ -104,3 +130,7 @@ We do our best to conform to Team Salvato's [guidelines for fan works](http://te
 ### content: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=content)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### enhancement: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=enhancement)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### unstable: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=unstable)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+<<<<<<< HEAD
+=======
+### community: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=community)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+>>>>>>> be423abed5eb988f07d48c189406ae8a9bccd9f5
