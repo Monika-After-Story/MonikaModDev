@@ -265,7 +265,7 @@ init -5 python in mas_sprites:
     adjust_x = default_x
     adjust_y = default_y
 #    y_step = 40
-    y_step = 10
+    y_step = 20
 
     # adding optimized initial parts of the sprite string
     PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
@@ -550,7 +550,6 @@ init -5 python in mas_sprites:
 
     def _ms_accessory(
             sprite_list,
-            pos_str,
             acs,
             n_suffix,
             issitting,
@@ -562,7 +561,6 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprites to
-            pos_str - position string to use
             acs - MASAccessory object
             n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
@@ -604,7 +602,7 @@ init -5 python in mas_sprites:
             return
 
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             A_T_MAIN
         ))
@@ -691,19 +689,18 @@ init -5 python in mas_sprites:
         sprite_list.append(")")
 
 
-    def _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix):
+    def _ms_arms(sprite_list, clothing, arms, n_suffix):
         """
         Adds arms string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             clothing - type of clothing
             arms - type of arms
             n_suffix - night suffix to use
         """
         sprite_list.extend((
-            pos_str, 
+            LOC_Z,
             ',"',
             C_MAIN,
             clothing,
@@ -716,19 +713,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix):
+    def _ms_blush(sprite_list, blush, n_suffix, f_prefix):
         """
         Adds blush string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             blush - type of blush
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -742,7 +738,6 @@ init -5 python in mas_sprites:
 
     def _ms_body(
             sprite_list,
-            pos_str,
             clothing,
             hair,
             n_suffix,
@@ -754,7 +749,6 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
             n_suffix - night suffix to use
@@ -776,7 +770,6 @@ init -5 python in mas_sprites:
             ))
             _ms_torsoleaning(
                 sprite_list,
-                pos_str,
                 clothing,
                 hair,
                 lean,
@@ -789,27 +782,26 @@ init -5 python in mas_sprites:
                 LOC_REG,
                 ","
             ))
-            _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix),
+            _ms_torso(sprite_list, clothing, hair, n_suffix),
             sprite_list.append(",")
-            _ms_arms(sprite_list, pos_str, clothing, arms, n_suffix)
+            _ms_arms(sprite_list, clothing, arms, n_suffix)
 
         # add the rest of the parts
         sprite_list.append(")")
 
 
-    def _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix):
+    def _ms_emote(sprite_list, emote, n_suffix, f_prefix):
         """
         Adds emote string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             emote - type of emote
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -821,19 +813,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix):
+    def _ms_eyebags(sprite_list, eyebags, n_suffix, f_prefix):
         """
         Adds eyebags string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             eyebags - type of eyebags
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -845,19 +836,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix):
+    def _ms_eyebrows(sprite_list, eyebrows, n_suffix, f_prefix):
         """
         Adds eyebrow strings
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             eyebrows - type of eyebrows
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -869,19 +859,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix):
+    def _ms_eyes(sprite_list, eyes, n_suffix, f_prefix):
         """
         Adds eye string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             eyes - type of eyes
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -895,7 +884,6 @@ init -5 python in mas_sprites:
 
     def _ms_face(
             sprite_list,
-            pos_str,
             eyebrows,
             eyes,
             nose,
@@ -914,7 +902,6 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
@@ -950,34 +937,34 @@ init -5 python in mas_sprites:
 
         # now for the required parts
         sprite_list.append(",")
-        _ms_eyes(sprite_list, pos_str, eyes, n_suffix, f_prefix)
+        _ms_eyes(sprite_list, eyes, n_suffix, f_prefix)
         sprite_list.append(",")
-        _ms_eyebrows(sprite_list, pos_str, eyebrows, n_suffix, f_prefix)
+        _ms_eyebrows(sprite_list, eyebrows, n_suffix, f_prefix)
         sprite_list.append(",")
-        _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix)
+        _ms_nose(sprite_list, nose, n_suffix, f_prefix)
         sprite_list.append(",")
-        _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix)
+        _ms_mouth(sprite_list, mouth, n_suffix, f_prefix)
 
         # and optional parts
         if eyebags:
             sprite_list.append(",")
-            _ms_eyebags(sprite_list, pos_str, eyebags, n_suffix, f_prefix)
+            _ms_eyebags(sprite_list, eyebags, n_suffix, f_prefix)
 
         if sweat:
             sprite_list.append(",")
-            _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix)
+            _ms_sweat(sprite_list, sweat, n_suffix, f_prefix)
 
         if blush:
             sprite_list.append(",")
-            _ms_blush(sprite_list, pos_str, blush, n_suffix, f_prefix)
+            _ms_blush(sprite_list, blush, n_suffix, f_prefix)
 
         if tears:
             sprite_list.append(",")
-            _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix)
+            _ms_tears(sprite_list, tears, n_suffix, f_prefix)
 
         if emote:
             sprite_list.append(",")
-            _ms_emote(sprite_list, pos_str, emote, n_suffix, f_prefix)
+            _ms_emote(sprite_list, emote, n_suffix, f_prefix)
 
         # finally the last paren
         sprite_list.append(")")
@@ -1037,19 +1024,18 @@ init -5 python in mas_sprites:
         ])
 
 
-    def _ms_mouth(sprite_list, pos_str, mouth, n_suffix, f_prefix):
+    def _ms_mouth(sprite_list, mouth, n_suffix, f_prefix):
         """
         Adds mouth string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             mouth - type of mouse
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str, 
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -1061,13 +1047,12 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_nose(sprite_list, pos_str, nose, n_suffix, f_prefix):
+    def _ms_nose(sprite_list, nose, n_suffix, f_prefix):
         """
         Adds nose string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             nose - type of nose
             n_suffix - night suffix to use
             f_prefix - face prefix to use
@@ -1075,7 +1060,7 @@ init -5 python in mas_sprites:
         # NOTE: if we never get a new nose, we can just optimize this to 
         #   a hardcoded string
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -1217,7 +1202,6 @@ init -5 python in mas_sprites:
         # body
         _ms_body(
             sprite_str_list,
-            loc_build_str,
             clothing,
             hair,
             n_suffix,
@@ -1242,7 +1226,6 @@ init -5 python in mas_sprites:
         # face
         _ms_face(
             sprite_str_list,
-            loc_build_str,
             eyebrows,
             eyes,
             nose,
@@ -1378,19 +1361,18 @@ init -5 python in mas_sprites:
         ])
 
 
-    def _ms_sweat(sprite_list, pos_str, sweat, n_suffix, f_prefix):
+    def _ms_sweat(sprite_list, sweat, n_suffix, f_prefix):
         """
         Adds sweatdrop string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             sweat -  type of sweatdrop
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -1402,19 +1384,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_tears(sprite_list, pos_str, tears, n_suffix, f_prefix):
+    def _ms_tears(sprite_list, tears, n_suffix, f_prefix):
         """
         Adds tear string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             tears - type of tears
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             F_T_MAIN,
             f_prefix,
@@ -1426,19 +1407,18 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torso(sprite_list, pos_str, clothing, hair, n_suffix):
+    def _ms_torso(sprite_list, clothing, hair, n_suffix):
         """
         Adds torso string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             clothing - type of clothing
             hair - type of hair
             n_suffix - night suffix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             C_MAIN,
             clothing,
@@ -1451,20 +1431,19 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torsoleaning(sprite_list, pos_str, clothing, hair, lean, n_suffix):
+    def _ms_torsoleaning(sprite_list, clothing, hair, lean, n_suffix):
         """
         Adds torso leaning string
 
         IN:
             sprite_list - list to add sprite strings to
-            pos_str - position string to use
             clothing - type of clothing
             hair - type of ahri
             lean - type of leaning
             n_suffix - night suffix to use
         """
         sprite_list.extend((
-            pos_str,
+            LOC_Z,
             ',"',
             C_MAIN,
             clothing,
