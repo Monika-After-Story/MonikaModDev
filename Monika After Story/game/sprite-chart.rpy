@@ -103,6 +103,8 @@ define is_sitting = True
 
 # accessories list
 default persistent._mas_acs_pre_list = list()
+default persistent._mas_acs_bbh_list = list()
+default persistent._mas_acs_bfh_list = list()
 default persistent._mas_acs_mid_list = list()
 default persistent._mas_acs_pst_list = list()
 
@@ -1121,6 +1123,8 @@ init -5 python in mas_sprites:
             mouth,
             isnight,
             acs_pre_list,
+            acs_bbh_list,
+            acs_bfh_list,
             acs_mid_list,
             acs_pst_list,
             lean=None,
@@ -1538,7 +1542,7 @@ init -2 python:
             self.acs_mid = []
 
             # accessories to be rendered last
-            self.acs_post = []
+            self.acs_pst = []
 
             self.hair_hue=0 # hair color?
 
@@ -1546,7 +1550,7 @@ init -2 python:
             self.acs = {
                 self.PRE_ACS: self.acs_pre,
                 self.MID_ACS: self.acs_mid,
-                self.PST_ACS: self.acs_post,
+                self.PST_ACS: self.acs_pst,
                 self.BBH_ACS: self.acs_bbh,
                 self.BFH_ACS: self.acs_bfh
             }
@@ -2453,6 +2457,8 @@ init -2 python:
 
         # gather accessories
         acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
+        acs_bbh_list = character.acs.get(MASMonika.BBH_ACS, [])
+        acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
         acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
         acs_pst_list = character.acs.get(MASMonika.PST_ACS, [])
 
@@ -2482,6 +2488,8 @@ init -2 python:
                 mouth,
                 not morning_flag,
                 acs_pre_list,
+                acs_bbh_list,
+                acs_bfh_list,
                 acs_mid_list,
                 acs_pst_list,
                 lean=lean,
