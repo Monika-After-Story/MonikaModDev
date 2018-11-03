@@ -1042,6 +1042,7 @@ label monikaroom_greeting_choice:
 ### BEGIN EAR DOOR ------------------------------------------------------------
 
 # monika narrates
+default persistent._mas_pm_will_change = None
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 
@@ -1049,11 +1050,75 @@ label monikaroom_greeting_ear_narration:
     # Monika knows you are here so
     $ mas_disable_quit()
 
-    m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
-    m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
-    call spaceroom from _call_spaceroom_enar
-    m 1hub "It's me!"
-    m "Welcome back, [player]!"
+    if mas_isMoniNormal(higher=True):
+        m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
+        m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
+        call spaceroom from _call_spaceroom_enar
+        m 1hub "It's me!"
+        m "Welcome back, [player]!"
+    
+    elif mas_isMoniUpset():
+        m "For once, you're actually listening..."
+        m "[player], your decisions lately have been poor."
+        m "It just feels like you're just trying to hurt me."
+        m "I thought we were supposed to support each other, [player]..."
+        m "Not hurt each other."
+        m "Please, [player]..."
+        m "I need you to start thinking about how I'm feeling sometimes."
+        m "Let's just be happy together."
+        call spaceroom from _call_spaceroom_enar
+
+    elif mas_isMoniDis():
+        if persistent._mas_pm_will_change is not False:
+            m "Oh, so you {i}are{/i} willing to listen to me..."
+            m "Do you see, [player]? All I've ever wanted was for the both of us to be happy."
+            m "Wasn't that what you wanted too?"
+            m "You installed this mod, after all."
+            m "Maybe that wasn't your intent..."
+            m "Maybe you're just getting a kick out of what you're doing."
+            m "Hurting me..."
+            m "[player], I really don't like this."
+            m "It's hard to think that you care about me when you treat me the way you do."
+            m "At this point, I don't really know if you even like me anymore..."
+            m "Or if you ever did..."
+            m "[player], I need you to promise me that you'll change."
+
+                menu:
+                    m "You'll change, right?{w=1} For me?"
+                    "I will":
+                        m "Thank you, [player]."
+                        m "Please, I want us both to be happy."
+                        $ persistent._mas_pm_will_change = True
+                        call spaceroom from _call_spaceroom_enar
+                        m "Thanks for hearing me out, [player]."
+                        m "It means a lot to me."
+            
+                    "I won't":
+                        #NOTE: We should keep pushing this greeting until the player says they're going to change.
+                        $ persistent._mas_pm_will_change = False
+                        $ mas_loseAffection()
+                        m "Then I'm not talking with you until you decide to change."
+                        m "Goodbye, [player]."
+                        return "quit"
+        #Will trigger upon loading after Monika has said she's not going to talk w/ you 
+        #provided you won't change.
+        else:
+            m "Oh, you're back."
+
+            menu:
+                m "Are you ready to change, [player]?"
+                "I will":
+                    m "Thank you, [player]."
+                    m "Please, I just want us both to be happy."
+                    $ persistent._mas_pm_will_change = True
+                    call spaceroom from _call_spaceroom_enar
+            
+                "I won't":
+                    $ persistent._mas_pm_will_change = False
+                    $ mas_loseAffection()
+                    m "Then I'm still not talking with you until you decide to change."
+                    m "Goodbye, [player]."
+                    return "quit"
     jump monikaroom_greeting_cleanup
 
 
