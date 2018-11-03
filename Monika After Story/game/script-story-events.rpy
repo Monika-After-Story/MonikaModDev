@@ -1477,7 +1477,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_rpy_files",
+            eventlabel="monika_rpy_files"
         )
     )
 
