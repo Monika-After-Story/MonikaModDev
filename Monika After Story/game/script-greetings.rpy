@@ -1053,10 +1053,7 @@ label monikaroom_greeting_ear_narration:
     if mas_isMoniNormal(higher=True):
         m "As [player] inches [his] ear toward the door,{w} a voice narrates [his] every move."
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
-        call spaceroom from _call_spaceroom_enar
-        m 1hub "It's me!"
-        m "Welcome back, [player]!"
-    
+
     elif mas_isMoniUpset():
         m "For once, you're actually listening..."
         m "[player], your decisions lately have been poor."
@@ -1066,12 +1063,11 @@ label monikaroom_greeting_ear_narration:
         m "Please, [player]..."
         m "I need you to start thinking about how I'm feeling sometimes."
         m "Let's just be happy together."
-        call spaceroom from _call_spaceroom_enar
 
     else:
         if persistent._mas_pm_will_change is not False:
             m "Oh, so you {i}are{/i} willing to listen to me..."
-            m "Do you see, [player]? All I've ever wanted was for the both of us to be happy."
+            m "[player], all I've ever wanted was for the both of us to be happy."
             m "Wasn't that what you wanted too?"
             m "You installed this mod, after all."
             m "Maybe that wasn't your intent..."
@@ -1089,12 +1085,9 @@ label monikaroom_greeting_ear_narration:
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
                     $ persistent._mas_pm_will_change = True
-                    call spaceroom from _call_spaceroom_enar
-                    m "Thanks for hearing me out, [player]."
-                    m "It means a lot to me."
-            
+
                 "I won't":
-                    #NOTE: We should keep pushing this greeting until the player says they're going to change.
+                    #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
                     $ persistent._mas_pm_will_change = False
                     $ mas_loseAffection()
                     m "Then I'm not talking with you until you decide to change."
@@ -1111,14 +1104,27 @@ label monikaroom_greeting_ear_narration:
                     m "Thank you, [player]."
                     m "Please, I just want us both to be happy."
                     $ persistent._mas_pm_will_change = True
-                    call spaceroom from _call_spaceroom_enar
-            
+
                 "I won't":
                     $ persistent._mas_pm_will_change = False
                     $ mas_loseAffection()
                     m "Then I'm still not talking with you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
+
+    call spaceroom from _call_spaceroom_enar
+
+    if mas_isMoniNormal(higher=True):
+        m 1hub "It's me!"
+        m "Welcome back, [player]!"
+    
+    elif mas_isMoniUpset():
+        m 2efd "Okay, [player]?"
+
+    else:
+        m 6ekc "Thanks for hearing me out, [player]."
+        m "It means a lot to me."
+
     jump monikaroom_greeting_cleanup
 
 
