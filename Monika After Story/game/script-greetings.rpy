@@ -610,7 +610,7 @@ label greeting_visit9:
 #For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -700,7 +700,7 @@ label greeting_youtuber:
 #For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1639,7 +1639,7 @@ label greeting_youarereal:
 #For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1718,7 +1718,7 @@ label greeting_hai_domo:
 #For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2277,7 +2277,6 @@ label greeting_upset:
             "What now?",
             "Well...{w=0.5}what?",
             "Do you want something?",
-            "..."
         ]
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
@@ -2318,7 +2317,6 @@ label greeting_distressed:
             "Hopefully we can enjoy our time together today.",
             "I wasn't expecting you.",
             "I hope things start going better today.",
-            "..."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)

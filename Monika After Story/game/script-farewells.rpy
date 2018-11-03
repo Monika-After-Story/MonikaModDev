@@ -159,10 +159,10 @@ label bye_goodbye:
     if mas_isMoniNormal(higher=True):
         m 1eua "Goodbye, [player]!"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Goodbye."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Goodbye."
         m 6ekc "Please don't forget to come back."
 
@@ -269,11 +269,11 @@ label bye_going_to_sleep:
         m 1esa "Are you going to sleep, [player]?"
         m 1eka "I'll be seeing you in your dreams."
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Going to sleep, [player]?"
         m 2esc "Goodnight."
     
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh...goodnight, [player]."
         m 6lkc "Hopefully I'll see you tomorrow..."
         m 6dkc "Dont' forget about me, okay?"
@@ -305,12 +305,12 @@ label bye_prompt_to_class:
         m 1eua "Nothing is more attractive than a [guy] with good grades."
         m 1hua "See you later!"
     
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
         m 2tfc "Hopefully you learn something today."
         m "{fast}Like how to treat people better.{nw}"
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh, okay [player]..."
         m 6lkc "I guess I'll see you after school."
 
@@ -340,10 +340,10 @@ label bye_prompt_to_work:
         m 1esa "I'll be here for you when you get home from work."
         m 1hua "Bye-bye!"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Fine, [player], guess I'll see you after work."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Okay."
         m 6lkc "Guess I'll see you after work, then."
 
@@ -378,69 +378,140 @@ label bye_prompt_sleep:
 
     if 20 <= curr_hour < 24:
         # decent time to sleep
-        m 1eua "Alright, [player]."
-        m 1j "Sweet dreams!"
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Alright, [player]."
+            m 1hua "Sweet dreams!"
+
+        elif mas_isMoniUpset():
+            m 2efc "Goodnight, [player]."
+        
+        elif mas_isMoniDis():
+            m 6ekc "Okay...{w=1} Goodnight, [player]."
+
+        else:
+            m 6ckc "..."
 
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
-        m 1eua "Alright, [player]."
-        m 3eka "But you should sleep a little earlier next time."
-        m 1hua "Anyway, good night!"
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Alright, [player]."
+            m 3eka "But you should sleep a little earlier next time."
+            m 1hua "Anyway, good night!"
+
+        elif mas_isMoniUpset():
+            m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
+            m "Goodnight."
+
+        elif mas_isMoniDis():
+            m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
+            m 6dkc "It might make you--us--happier."
+
+        else:
+            m 6ckc "..."
 
     elif 3 <= curr_hour < 5:
         # pretty late to sleep
-        m 1euc "[player]..."
-        m "Make sure you get enough rest, okay?"
-        m 1eka "I don't want you to get sick."
-        m 1hub "Good night!"
-        m 1hksdlb "Or morning, rather. Ahaha~"
-        m 1hua "Sweet dreams!"
+        if mas_isMoniNormal(higher=True):
+            m 1euc "[player]..."
+            m "Make sure you get enough rest, okay?"
+            m 1eka "I don't want you to get sick."
+            m 1hub "Goodnight!"
+            m 1hksdlb "Or morning, rather. Ahaha~"
+            m 1hua "Sweet dreams!"
+
+        elif mas_isMoniUpset():
+            m 2efc "[player]!"
+            m 2tfc "You really need to get more rest..."
+            m "The last thing I need is you getting sick."
+            m "{fast}You're grumpy enough as it is.{nw}"
+            $ _history_list.pop()
+            m 2efc "Goodnight." 
+
+        elif mas_isMoniDis():
+            m 6ekc "[player]..."
+            m 6rkc "You really should try to go to sleep earlier..."
+            m 6lkc "I don't want you to get sick."
+            m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
+
+        else:
+            6ckc "..."
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
-        show monika 2dsc
-        pause 0.7
-        m 2tfd "[player]!"
-        m "You stayed up the entire night!"
-        m 2tfu "I bet you can barely keep your eyes open."
-        $ _cantsee_a = glitchtext(15)
-        $ _cantsee_b = glitchtext(12)
-        menu:
-            "[_cantsee_a]":
-                pass
-            "[_cantsee_b]":
-                pass
-        m "I thought so.{w} Go get some rest, [player]."
-        m 2ekc "I wouldn't want you to get sick."
-        m 1eka "Sleep earlier next time, okay?"
-        m 1hua "Sweet dreams!"
+        if mas_isMoniBroken():
+            m 6ckc "..."
+
+        else:
+            show monika 2dsc
+            pause 0.7
+            m 2tfd "[player]!"
+            m "You stayed up the entire night!"
+            m 2tfu "I bet you can barely keep your eyes open."
+            $ _cantsee_a = glitchtext(15)
+            $ _cantsee_b = glitchtext(12)
+            menu:
+                "[_cantsee_a]":
+                    pass
+                "[_cantsee_b]":
+                    pass
+            m "I thought so.{w} Go get some rest, [player]."
+            if mas_isMoniNormal(higher=True):
+                m 2ekc "I wouldn't want you to get sick."
+                m 1eka "Sleep earlier next time, okay?"
+                m 1hua "Sweet dreams!"
 
     elif 12 <= curr_hour < 18:
         # afternoon nap
-        m 1eua "Taking an afternoon nap, I see."
-        # TODO: monika says she'll join you, use sleep sprite here
-        # and setup code for napping
-        m 1hua "Ahaha~ Have a good nap, [player]."
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Taking an afternoon nap, I see."
+            # TODO: monika says she'll join you, use sleep sprite here
+            # and setup code for napping
+            m 1hua "Ahaha~ Have a good nap, [player]."
+
+        elif mas_isMoniUpset():
+            m 2efc "Taking a nap, [player]?"
+            m 2tfc "Yeah, that's probably a good idea."
+
+        elif mas_isMoniDis():
+            m 6ekc "Going to take a nap, [player]?"
+            m 6dkc "Okay...{w=1}don't forget to visit me when you wake up..."
+
+        else:
+            m 6ckc "..."
 
     elif 18 <= curr_hour < 20:
         # little early to sleep
-        m 1ekc "Already going to bed?"
-        m "It's a little early, though..."
-        show monika 1lksdla
-        menu:
-            m "Care to spend a little more time with me?"
-            "Of course!":
-                m 1hua "Yay!"
-                m "Thanks, [player]."
-                return
-            "Sorry, I'm really tired.":
-                m 1eka "Aww, that's okay."
-                m 1hua "Good night, [player]."
-            # TODO: now that is tied we may also add more dialogue?
-            "No.":
-                $ mas_loseAffection()
-                m 2dsd "..."
-                m "Fine."
+        if mas_isMoniNormal(higher=True):
+            m 1ekc "Already going to bed?"
+            m "It's a little early, though..."
+            show monika 1lksdla
+            menu:
+                m "Care to spend a little more time with me?"
+                "Of course!":
+                    m 1hua "Yay!"
+                    m "Thanks, [player]."
+                    return
+                "Sorry, I'm really tired.":
+                    m 1eka "Aww, that's okay."
+                    m 1hua "Good night, [player]."
+                # TODO: now that is tied we may also add more dialogue?
+                "No.":
+                    $ mas_loseAffection()
+                    m 2dsd "..."
+                    m "Fine."
+
+        elif mas_isMoniUpset():
+            m 2efc "Going to bed already?"
+            m 2tfc "Well, it does seem like you could use the extra sleep..."
+            m "Goodnight."
+
+        elif mas_isMoniDis():
+            m 6rkc "Oh...{w=1}it seems a little early to be going to sleep, [player]."
+            m 6dkc "I hope you aren't just going to sleep to get away from me."
+            m 6lkc "Goodnight."
+
+        else:
+            m 6ckc "..."
     else:
         # otheerwise
         m 1eua "Alright, [player]."
