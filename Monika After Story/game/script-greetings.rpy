@@ -1068,7 +1068,7 @@ label monikaroom_greeting_ear_narration:
         m "Let's just be happy together."
         call spaceroom from _call_spaceroom_enar
 
-    elif mas_isMoniDis():
+    else mas_isMoniDis():
         if persistent._mas_pm_will_change is not False:
             m "Oh, so you {i}are{/i} willing to listen to me..."
             m "Do you see, [player]? All I've ever wanted was for the both of us to be happy."
