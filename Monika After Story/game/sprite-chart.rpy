@@ -208,12 +208,13 @@ init -5 python in mas_sprites:
     KW_STOCK_ART = "def"
 
     ### other paths:
-    # H - hair (and body by connection)
+    # H - hair 
     # C - clothing
     # T - sitting
     # S - standing
     # F - face parts
     # A - accessories
+    H_MAIN = MOD_ART_PATH + "h/"
     C_MAIN = MOD_ART_PATH + "c/"
     F_MAIN = MOD_ART_PATH + "f/"
     A_MAIN = MOD_ART_PATH + "a/"
@@ -271,9 +272,12 @@ init -5 python in mas_sprites:
     PRE_SPRITE_STR = TRAN + "(" + L_COMP + "("
 
     # Prefixes for files
-    PREFIX_BODY = "torso" + ART_DLM
+    PREFIX_TORSO = "torso" + ART_DLM
+    PREFIX_BODY = "body" + ART_DLM
+    PREFIX_HAIR = "hair" + ART_DLM
     PREFIX_ARMS = "arms" + ART_DLM
-    PREFIX_BODY_LEAN = "torso-leaning" + ART_DLM
+    PREFIX_TORSO_LEAN = "torso-leaning" + ART_DLM
+    PREFIX_BODY_LEAN = "body-leaning" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
     PREFIX_ACS = "acs" + ART_DLM
@@ -290,7 +294,13 @@ init -5 python in mas_sprites:
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
+    FHAIR_SUFFIX  = ART_DLM + "front"
+    BHAIR_SUFFIX = ART_DLM + "back"
     FILE_EXT = ".png"
+
+    # other const
+    DEF_BODY = "def"
+    NEW_BODY_STR = PREFIX_BODY + DEF_BODY
 
     ## BLK010
     # ACCESSORY BLACKLIST
@@ -649,7 +659,6 @@ init -5 python in mas_sprites:
             temp_temp_acs_list = []
             _ms_accessory(
                 temp_temp_acs_list,
-                pos_str,
                 acs,
                 n_suffix,
                 issitting,
@@ -713,6 +722,35 @@ init -5 python in mas_sprites:
         ))
 
 
+    def _ms_arms_nh(sprite_list, loc_str, clothing, arms, n_suffix):
+        """
+        Adds arms string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - type of clothing
+            arms - type of arms
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            L_COMP,
+            "(",
+            loc_str,
+            ",",
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            PREFIX_ARMS,
+            arms,
+            n_suffix,
+            FILE_EXT,
+            '")'
+        ))
+
+
+
     def _ms_blush(sprite_list, blush, n_suffix, f_prefix):
         """
         Adds blush string
@@ -738,6 +776,7 @@ init -5 python in mas_sprites:
 
     def _ms_body(
             sprite_list,
+            loc_str,
             clothing,
             hair,
             n_suffix,
@@ -749,6 +788,7 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprite strings to
+            loc_str - location string to use
             clothing - type of clothing
             hair - type of hair
             n_suffix - night suffix to use
@@ -759,15 +799,13 @@ init -5 python in mas_sprites:
         """
         sprite_list.extend((
             I_COMP,
-            "("
+            "(",
+            loc_str,
+            ","
         ))
 
         if lean:
             # leaning is a single parter
-            sprite_list.extend((
-                LOC_LEAN,
-                ","
-            ))
             _ms_torsoleaning(
                 sprite_list,
                 clothing,
@@ -778,13 +816,49 @@ init -5 python in mas_sprites:
 
         else:
             # not leaning is a 2parter
-            sprite_list.extend((
-                LOC_REG,
-                ","
-            ))
             _ms_torso(sprite_list, clothing, hair, n_suffix),
             sprite_list.append(",")
             _ms_arms(sprite_list, clothing, arms, n_suffix)
+
+        # add the rest of the parts
+        sprite_list.append(")")
+
+
+    def _ms_body_nh(
+            sprite_list,
+            loc_str,
+            clothing,
+            n_suffix,
+            lean=None,
+        ):
+        """
+        Adds body string, with no hair 
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            n_suffix - night suffix to use
+            lean - type of lean
+                (Default: None)
+        """
+        sprite_list.extend((
+            I_COMP,
+            "(",
+            loc_str,
+            ","
+        ))
+
+        if lean:
+            _ms_torsoleaning_nh(
+                sprite_list,
+                clothing,
+                lean,
+                n_suffix,
+            )
+
+        else:
+            _ms_torso_nh(sprite_list, clothing, n_suffix),
 
         # add the rest of the parts
         sprite_list.append(")")
@@ -884,6 +958,7 @@ init -5 python in mas_sprites:
 
     def _ms_face(
             sprite_list,
+            loc_str,
             eyebrows,
             eyes,
             nose,
@@ -902,6 +977,7 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprite strings to
+            loc_str - location string
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
@@ -922,15 +998,9 @@ init -5 python in mas_sprites:
         """
         sprite_list.extend((
             I_COMP,
-            "("
+            "(",
+            loc_str,
         ))
-
-        # lean checking
-        if lean:
-            sprite_list.append(LOC_LEAN)
-
-        else:
-            sprite_list.append(LOC_REG)
 
         # setup the face prefix string
         f_prefix = face_lean_mode(lean)
@@ -968,6 +1038,42 @@ init -5 python in mas_sprites:
 
         # finally the last paren
         sprite_list.append(")")
+
+
+    def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split):
+        """
+        Creates split hair string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string to use
+            hair - type of hair
+            n_suffix - night suffix to use
+            front_split - True means use front split, False means use back
+            lean - type of lean
+                (Default: None)
+        """
+        if front_split:
+            hair_suffix = FHAIR_SUFFIX
+
+        else:
+            hair_suffix = BHAIR_SUFFIX
+
+        sprite_list.extend((
+            L_COMP,
+            "(",
+            loc_str,
+            ",",
+            LOC_Z,
+            ',"',
+            H_MAIN,
+            PREFIX_HAIR,
+            hair,
+            hair_suffix,
+            n_suffix,
+            FILE_EXT,
+            '")'
+        ))
 
 
     def _ms_head(clothing, hair, head):
@@ -1102,6 +1208,7 @@ init -5 python in mas_sprites:
     def _ms_sitting(
             clothing,
             hair,
+            hair_split,
             eyebrows,
             eyes,
             nose,
@@ -1126,12 +1233,17 @@ init -5 python in mas_sprites:
         IN:
             clothing - type of clothing
             hair - type of hair
+            hair_split - true if hair is split into 2 layers
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
             mouth - type of mouth
             isnight - True will genreate night string, false will not
             acs_pre_list - sorted list of MASAccessories to draw prior to body
+            acs_bbh_list - sroted list of MASAccessories to draw between back
+                hair and body
+            acs_bfh_list - sorted list of MASAccessories to draw between body
+                and front hair
             acs_mid_list - sorted list of MASAccessories to draw between body
                 and face
             acs_pst_list - sorted list of MASAccessories to draw after face
@@ -1174,18 +1286,25 @@ init -5 python in mas_sprites:
 
         ## NOTE: render order:
         #   1. pre-acs - every acs that should render before the body
-        #   2. back-hair - back portion of hair
+        #   2. back-hair - back portion of hair (split mode)
         #   3. post-back-hair-acs - acs that should render after back hair, but
-        #       before body
-        #   4. body - the actual body
+        #       before body (split mode)
+        #   4. body - the actual body (does not include arms in split mode)
         #   5. pre-front-hair-acs - acs that should render after body, but
-        #       before front hair
-        #   6. front-hair - front portion of hair
-        #   7. mid - acs that render between body and face
-        #   8. face - face expressions
-        #   9. post-acs - acs that should render after basically everything
+        #       before front hair (split mode
+        #   6. front-hair - front portion of hair (split mode)
+        #   7. arms - arms (split mode, lean mode)
+        #   8. mid - acs that render between body and face
+        #   9. face - face expressions
+        #   10. post-acs - acs that should render after basically everything
 
-        # pre accessories
+        # NOTE: if you have acs in the split hair locations, please note that
+        #   THEY WILL NOT SHOW if hair_split is True.
+        #   If you use a single layer hair system, use the prog points to
+        #   remove offending acs. This should only be an issue while we still
+        #   have sprites with torso-hair baked pieces.
+
+        # 1. pre accessories
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1196,20 +1315,77 @@ init -5 python in mas_sprites:
             lean=lean
         )
 
-        # between pre acs and body
+        # positoin setup
         sprite_str_list.extend(loc_build_tup)
 
-        # body
-        _ms_body(
-            sprite_str_list,
-            clothing,
-            hair,
-            n_suffix,
-            lean=lean,
-            arms=arms
-        )
+        if hair_split:
 
-        # between body and face acs
+            # 2. back-hair
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True)
+
+            # 3. post back hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bbh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # position setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 4. body
+            _ms_body_nh(
+                sprite_str_list,
+                loc_str,
+                clothing,
+                n_suffix,
+                lean=lean
+            )
+
+            # 5. pre-front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bfh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # position setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 6. front-hair
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
+
+            # no lean means we can ARMS
+            if not lean:
+                # position setup
+                sprite_str_list.extend(loc_build_tup)
+
+                # 7. arms
+                _ms_arms_nh(sprite_str_list, loc_str, clothing, arms, n_suffix)
+
+        else:
+            # in thise case, 2,3,5,6,7 are skipped.
+
+            # 4. body
+            _ms_body(
+                sprite_str_list,
+                loc_str,
+                clothing,
+                hair,
+                n_suffix,
+                lean=lean,
+                arms=arms
+            )
+
+        # 8. between body and face acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1220,12 +1396,13 @@ init -5 python in mas_sprites:
             lean=lean
         )
 
-        # between mid acs and face
+        # position setup
         sprite_str_list.extend(loc_build_tup)
 
-        # face
+        # 9. face
         _ms_face(
             sprite_str_list,
+            loc_str,
             eyebrows,
             eyes,
             nose,
@@ -1239,7 +1416,7 @@ init -5 python in mas_sprites:
             emote=emote
         )
 
-        # after face acs
+        # 10. after face acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1423,8 +1600,30 @@ init -5 python in mas_sprites:
             C_MAIN,
             clothing,
             "/",
-            PREFIX_BODY,
+            PREFIX_TORSO,
             hair,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
+    def _ms_torso_nh(sprite_list, clothing, n_suffix):
+        """
+        Adds torso string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - type of clothing
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            NEW_BODY_STR,
             n_suffix,
             FILE_EXT,
             '"'
@@ -1448,9 +1647,33 @@ init -5 python in mas_sprites:
             C_MAIN,
             clothing,
             "/",
-            PREFIX_BODY_LEAN,
+            PREFIX_TORSO_LEAN,
             hair,
             ART_DLM,
+            lean,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
+    def _ms_torsoleaning_nh(sprite_list, clothing, lean, n_suffix):
+        """
+        Adds torso leaning string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - type of clothing
+            lean - type of leaning
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            LOC_Z,
+            ',"',
+            C_MAIN,
+            clothing,
+            "/",
+            PREFIX_BODY_LEAN,
             lean,
             n_suffix,
             FILE_EXT,
@@ -1610,7 +1833,7 @@ init -2 python:
             RETURNS:
                 True if wearing accessory, false if not
             """
-            return accessory.name in self.acs_list_map:
+            return accessory.name in self.acs_list_map
 
 
         def is_wearing_acs_in(self, accessory, acs_type):
@@ -2213,7 +2436,7 @@ init -2 python:
         Representations of hair items
 
         PROPERTIES:
-            (no additional)
+            split - True means the hair is split into 2 sprites, front and back
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -2229,7 +2452,8 @@ init -2 python:
                 stay_on_start=True,
                 fallback=False,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                split=True
             ):
             """
             MASHair constructor
@@ -2256,6 +2480,9 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
+                split - True means the hair is split into 2 sprites, front and
+                    back, False means not split.
+                    (Default: True)
             """
             super(MASHair, self).__init__(
                 name,
@@ -2267,6 +2494,8 @@ init -2 python:
                 entry_pp,
                 exit_pp
             )
+
+            self.split = split
 
 
     class MASClothes(MASSpriteFallbackBase):
@@ -2363,6 +2592,13 @@ init -2 python:
             return self.hair_map.get(hair, hair)
 
 
+        def has_hair_map(self):
+            """
+            RETURNS: True if we have a mapping to check, False otherwise
+            """
+            return len(self.hair_map) > 0
+
+
     # The main drawing function...
     def mas_drawmonika(
             st,
@@ -2456,11 +2692,20 @@ init -2 python:
                 arms, lean = character.clothes.get_fallback(arms, lean)
 
             # get the mapped hair for the current clothes
-            hair_name = character.clothes.get_hair(character.hair.name)
+            if character.clothes.has_hair_map():
+                hair = store.mas_sprites.HAIR_MAP.get(
+                    character.clothes.get_hair(character.hair.name),
+                    mas_hair_def
+                )
+
+            else:
+                hair = character.hair
+
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.name,
-                hair_name,
+                hair.name,
+                hair.split,
                 eyebrows,
                 eyes,
                 nose,
@@ -2608,7 +2853,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         entry_pp=store.mas_sprites._hair_def_entry,
-        exit_pp=store.mas_sprites._hair_def_exit
+        exit_pp=store.mas_sprites._hair_def_exit,
+        split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
 
@@ -2623,7 +2869,8 @@ init -1 python:
             use_reg_for_l=True
         ),
         entry_pp=store.mas_sprites._hair_down_entry,
-        exit_pp=store.mas_sprites._hair_down_exit
+        exit_pp=store.mas_sprites._hair_down_exit,
+        split=False
     )
     store.mas_sprites.init_hair(mas_hair_down)
 
@@ -2636,9 +2883,22 @@ init -1 python:
         MASPoseMap(
             default=True,
             p5=None
-        )
+        ),
+        split=False
     )
     store.mas_sprites.init_hair(mas_hair_bun)
+
+    ### CUSTOM
+    ## custom
+    # Not a real hair object. If an outfit uses this, it's assumed that the
+    # actual clothes have the hair baked into them.
+    mas_hair_custom = MASHair(
+        "custom",
+        "custom",
+        MASPoseMap(),
+        split=False
+    )
+    store.mas_sprites.init_hair(mas_hair_custom)
 
 
 init -1 python:
@@ -2878,7 +3138,8 @@ default persistent._mas_acs_enable_promisering = False
 #
 # mod_assets/monika/f/<facial expressions>
 # mod_assets/monika/c/<clothing types>/<body/arms/poses>
-# mod_assets/monika/a/<accessories> NOTE: UNTESTED, do not use
+# mod_assets/monika/h/<hair types>
+# mod_assets/monika/a/<accessories>
 #
 # All layers must have a night version, which is denoted using the -n suffix.
 # All leaning layers must have a non-leaning fallback
@@ -2892,6 +3153,13 @@ default persistent._mas_acs_enable_promisering = False
 #   (ie: face-leaning-eyes-sparkle.png / face-leaning-eyes-sparkle-n.png)
 #
 ## BODY / POSE:
+# NEW
+# Non leaning:
+#   body-def{-n}.png
+# Leaning:
+#   body-leaning-{lean type}{-n}.png
+#
+# OLD:
 # Non leaning filenames / parts:
 #   torso-{hair type}{-n}.png
 #   arms-{arms name}{-n}.png
@@ -2901,8 +3169,8 @@ default persistent._mas_acs_enable_promisering = False
 #   torso-leaning-{hair type}-{lean name}{-n}.png
 #   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
 #
-#
-#
+## HAIR:
+# hair-{hair type}-{front/back}{-n}.png
 #
 
 image monika 1esa = DynamicDisplayable(

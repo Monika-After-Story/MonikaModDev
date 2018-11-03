@@ -343,6 +343,16 @@ label quit:
             for acs in monika_chr.acs[MASMonika.PRE_ACS]
             if acs.stay_on_start
         ]
+        persistent._mas_acs_bbh_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.BBH_ACS]
+            if acs.stay_on_start
+        ]
+        persistent._mas_acs_bfh_list = [
+            acs.name
+            for acs in monika_chr.acs[MASMonika.BFH_ACS]
+            if acs.stay_on_start
+        ]
         persistent._mas_acs_mid_list = [
             acs.name
             for acs in monika_chr.acs[MASMonika.MID_ACS]
