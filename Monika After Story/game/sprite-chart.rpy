@@ -1183,6 +1183,19 @@ init -5 python in mas_sprites:
             loc_str
         ]
 
+        ## NOTE: render order:
+        #   1. pre-acs - every acs that should render before the body
+        #   2. back-hair - back portion of hair
+        #   3. post-back-hair-acs - acs that should render after back hair, but
+        #       before body
+        #   4. body - the actual body
+        #   5. pre-front-hair-acs - acs that should render after body, but
+        #       before front hair
+        #   6. front-hair - front portion of hair
+        #   7. mid - acs that render between body and face
+        #   8. face - face expressions
+        #   9. post-acs - acs that should render after basically everything
+
         # pre accessories
         _ms_accessorylist(
             sprite_str_list,
@@ -1478,16 +1491,27 @@ init -2 python:
         import store.mas_sprites as mas_sprites
 
         # CONSTANTS
-        PRE_ACS = 0 # PRE ACCESSORY
-        MID_ACS = 1 # MID ACCESSORY
-        PST_ACS = 2 # post accessory
+        PRE_ACS = 0 # PRE ACCESSORY (before body)
+        MID_ACS = 1 # MID ACCESSORY (right before face)
+        PST_ACS = 2 # post accessory (after face)
+        BBH_ACS = 3 # betweeen Body and Back Hair accessory
+        BFH_ACS = 4 # between Body and Front Hair accessory
 
-        def __init__(self, pre_acs=[], mid_acs=[], pst_acs=[]):
+
+        def __init__(self, 
+                pre_acs=[], 
+                mid_acs=[], 
+                pst_acs=[], 
+                bbh_acs=[],
+                bfh_acs=[]
+            ):
             """
             IN:
                 pre_acs - list of pre accessories to load with
                 mid_acs - list of mid accessories to load with
                 pst_acs - list of pst accessories to load with
+                bbh_acs - list of bbh accessories to load with
+                bfh_acs - list of bfh accessories to load with
             """
             self.name="Monika"
             self.haircut="default"
@@ -1501,8 +1525,14 @@ init -2 python:
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
 
-            # accesories to be rendereed before the body
+            # accesories to be rendereed before anything
             self.acs_pre = []
+
+            # accessories to be rendered after back hair, before body
+            self.acs_bbh = []
+
+            # accessories to be rendered after body, before front hair
+            self.acs_bfh = []
 
             # accessories to be rendreed between body and face expressions
             self.acs_mid = []
@@ -1516,8 +1546,14 @@ init -2 python:
             self.acs = {
                 self.PRE_ACS: self.acs_pre,
                 self.MID_ACS: self.acs_mid,
-                self.PST_ACS: self.acs_post
+                self.PST_ACS: self.acs_post,
+                self.BBH_ACS: self.acs_bbh,
+                self.BFH_ACS: self.acs_bfh
             }
+
+            # use this dict to map acs IDs with which acs list they are in.
+            # this will increase speed of removal and checking.
+            self.acs_list_map = {}
 
 
         def __get_acs(self, acs_type):
@@ -1591,6 +1627,7 @@ init -2 python:
             RETURNS:
                 True if wearing accessory, false if not
             """
+            # TODO
             return (
                 self.is_wearing_acs_in(accessory, self.PST_ACS)
                 or self.is_wearing_acs_in(accessory, self.MID_ACS)
@@ -1634,6 +1671,7 @@ init -2 python:
             IN:
                 accessory - accessory to remove
             """
+            # TODO
             self.remove_acs_in(accessory, self.PRE_ACS)
             self.remove_acs_in(accessory, self.MID_ACS)
             self.remove_acs_in(accessory, self.PST_ACS)
@@ -1647,6 +1685,7 @@ init -2 python:
                 accessory - accessory to remove
                 acs_type - ACS type
             """
+            #TODO
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory in acs_list:
@@ -1662,6 +1701,8 @@ init -2 python:
             Removes all accessories from all accessory lists
             """
             self.remove_all_acs_in(self.PRE_ACS)
+            self.remove_all_acs_in(self.BBH_ACS)
+            self.remove_all_acs_in(self.BFH_ACS)
             self.remove_all_acs_in(self.MID_ACS)
             self.remove_all_acs_in(self.PST_ACS)
 
