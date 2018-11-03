@@ -1627,12 +1627,7 @@ init -2 python:
             RETURNS:
                 True if wearing accessory, false if not
             """
-            # TODO
-            return (
-                self.is_wearing_acs_in(accessory, self.PST_ACS)
-                or self.is_wearing_acs_in(accessory, self.MID_ACS)
-                or self.is_wearing_acs_in(accessory, self.PRE_ACS)
-            )
+            return accessory.name in self.acs_list_map:
 
 
         def is_wearing_acs_in(self, accessory, acs_type):
@@ -1666,15 +1661,16 @@ init -2 python:
 
         def remove_acs(self, accessory):
             """
-            Removes the given accessory from all the accessory lists
+            Removes the given accessory. this uses the map to determine where
+            the accessory is located.
 
             IN:
                 accessory - accessory to remove
             """
-            # TODO
-            self.remove_acs_in(accessory, self.PRE_ACS)
-            self.remove_acs_in(accessory, self.MID_ACS)
-            self.remove_acs_in(accessory, self.PST_ACS)
+            self.remove_acs_in(
+                accessory,
+                self.acs_list_map.get(accessory.name, None)
+            )
 
 
         def remove_acs_in(self, accessory, acs_type):
@@ -1685,15 +1681,22 @@ init -2 python:
                 accessory - accessory to remove
                 acs_type - ACS type
             """
-            #TODO
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory in acs_list:
+                # run programming point
                 accessory.exit(self)
-                acs_list.remove(accessory)
 
-            if accessory.name in self.lean_acs_blacklist:
-                self.lean_acs_blacklist.remove(accessory.name)
+                # cleanup blacklist
+                if accessory.name in self.lean_acs_blacklist:
+                    self.lean_acs_blacklist.remove(accessory.name)
+
+                # cleanup mapping
+                if accessory.name in self.acs_list_map:
+                    self.acs_list_map.remove(accessory.name)
+
+                # now remove
+                acs_list.remove(accessory)
 
 
         def remove_all_acs(self):
@@ -1717,10 +1720,16 @@ init -2 python:
             if acs_type in self.acs:
                 # need to clear blacklisted
                 for acs in self.acs[acs_type]:
+                    # run programming point
                     acs.exit(self)
 
+                    # cleanup blacklist
                     if acs.name in self.lean_acs_blacklist:
                         self.lean_acs_blacklist.remove(acs.name)
+
+                    # remove from mapping
+                    if acs.name in self.acs_list_map:
+                        self.acs_list_map.remove(acs.name)
 
                 self.acs[acs_type] = list()
 
@@ -1755,14 +1764,23 @@ init -2 python:
                 accessory - accessory to wear
                 acs_type - accessory type (location) to wear this accessory
             """
+            if accessory.name in self.acs_list_map:
+                # we never wear dupes
+                return
+
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory not in acs_list:
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
-                accessory.entry(self)
+
+                # add to mapping
+                self.acs_list_map[accessory.name] = acs_type
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
+
+                # run programming point for acs
+                accessory.entry(self)
 
 
         def wear_acs_pre(self, acs):
@@ -1773,6 +1791,26 @@ init -2 python:
                 acs - accessory to wear
             """
             self.wear_acs_in(acs, self.PRE_ACS)
+
+
+        def wear_acs_bbh(self, acs):
+            """
+            Wears the given accessory in the post back hair accessory loc
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.BBH_ACS)
+
+
+        def wear_acs_bfh(self, acs):
+            """
+            Wears the given accessory in the pre front hair accesory log
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.BFH_ACS)
 
 
         def wear_acs_mid(self, acs):
