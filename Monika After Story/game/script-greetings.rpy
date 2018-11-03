@@ -1083,23 +1083,23 @@ label monikaroom_greeting_ear_narration:
             m "Or if you ever did..."
             m "[player], I need you to promise me that you'll change."
 
-                menu:
-                    m "You'll change, right?{w=1} For me?"
-                    "I will":
-                        m "Thank you, [player]."
-                        m "Please, I want us both to be happy."
-                        $ persistent._mas_pm_will_change = True
-                        call spaceroom from _call_spaceroom_enar
-                        m "Thanks for hearing me out, [player]."
-                        m "It means a lot to me."
+            menu:
+                m "You'll change, right?{w=1} For me?"
+                "I will":
+                    m "Thank you, [player]."
+                    m "Please, I want us both to be happy."
+                    $ persistent._mas_pm_will_change = True
+                    call spaceroom from _call_spaceroom_enar
+                    m "Thanks for hearing me out, [player]."
+                    m "It means a lot to me."
             
-                    "I won't":
-                        #NOTE: We should keep pushing this greeting until the player says they're going to change.
-                        $ persistent._mas_pm_will_change = False
-                        $ mas_loseAffection()
-                        m "Then I'm not talking with you until you decide to change."
-                        m "Goodbye, [player]."
-                        return "quit"
+                "I won't":
+                    #NOTE: We should keep pushing this greeting until the player says they're going to change.
+                    $ persistent._mas_pm_will_change = False
+                    $ mas_loseAffection()
+                    m "Then I'm not talking with you until you decide to change."
+                    m "Goodbye, [player]."
+                    return "quit"
         #Will trigger upon loading after Monika has said she's not going to talk w/ you 
         #provided you won't change.
         else:
