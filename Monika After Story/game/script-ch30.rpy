@@ -1170,6 +1170,17 @@ label ch30_end:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    # setup the docking station to handle the detection
+    $ rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+    $ listRpy = rpyCheckStation.getPackageList(".rpy")
+
+    if len(listRpy) != 0 and persistent._mas_pm_has_rpy is not True and not config.developer:
+        $ queueEvent("monika_rpy_files")
+
+    $ del rpyCheckStation
+        
     python:
         import datetime
         today = datetime.date.today()

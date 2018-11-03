@@ -1472,25 +1472,12 @@ label mas_steam_install_detected:
     return
 
 default persistent._mas_pm_has_rpy = None
-init 1 python:
-    import store
-    import store.mas_ics as mas_ics
-    # setup the docking station to handle the rpys
-    rpyCheckStation = store.MASDockingStation(mas_ics.game_folder)
-
-    listRpy = MASDockingStation.getPackageList(rpyCheckStation,".rpy")
-
-    if len(listRpy) != 0 and persistent._mas_pm_has_rpy is not True:
-        pushEvent("monika_rpy_files")
-
-
 init 5 python:
 
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_rpy_files",
-            rules={"no unlock": None}
         )
     )
 
@@ -1533,11 +1520,11 @@ label monika_rpy_files:
 
                     call mas_wx_cmd_noxwait("import os", local_ctx)
                     
-                    $ count = 0
-                    while count < len(listRpy):
-                        $ path = '/game/'+listRpy[count]
-                        call mas_wx_cmd_noxwait("os.remove(os.path.normcase(basedir+\'"+path+"\'))", local_ctx)
-                        $ count += 1
+                    python:
+                        for rpy_filename in listRpy:
+                            path = '/game/'+rpy_filename
+                            store.mas_ptod.wx_cmd("os.remove(os.path.normcase(basedir+'"+path+"'))", local_ctx)
+                            renpy.pause(0.3)
 
                     m 2hua "There we go!"
                     m 2esa "Be sure next time to install a version without the source code. You can get it from here: {a=http://www.monikaafterstory.com/releases.html}{i}{u}http://www.monikaafterstory.com/releases.html{/u}{/i}{/a}"
