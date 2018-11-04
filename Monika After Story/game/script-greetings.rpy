@@ -2059,3 +2059,25 @@ label greeting_returned_home_bday_long_sub:
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
     return
+
+init 5 python:
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min = 100, max = None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel = "greeting_surprised2",
+            unlocked = True,
+            rules = rules
+        ),
+        eventdb = evhand.greeting_database
+    )
+    del rules
+
+label greeting_surprised2:
+     m 1hua "..."
+     m 1hubfa "..."
+     m 1wuo "Oh!"
+     m 1wubso "[player]! You surprised me!"
+     m 1lubfb "I was just thinking about how much I love you~"
+     return
