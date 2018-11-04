@@ -82,7 +82,7 @@ init 5 python:
             eventlabel="mas_compliment_beautiful",
             prompt="... You're beautiful!",
             unlocked=True,
-            key_words="beautiful"
+            key_words="beautiful_9"
         ),
         eventdb=store.mas_compliments.compliment_database)
 
@@ -127,7 +127,7 @@ init 5 python:
             eventlabel="mas_compliment_eyes",
             prompt="... I love your eyes!",
             unlocked=True,
-            key_words="love eyes"
+            key_words="love_1 eyes_5"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -172,7 +172,7 @@ init 5 python:
             eventlabel="mas_compliment_awesome",
             prompt="... You're awesome!",
             unlocked=True,
-            key_words="awesome"
+            key_words="awesome_10"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -224,7 +224,7 @@ init 5 python:
             eventlabel="mas_compliment_intelligent",
             prompt="... You're really intelligent!",
             unlocked=True,
-            key_words="intelligent"
+            key_words="intelligent_10"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -269,7 +269,7 @@ init 5 python:
             eventlabel="mas_compliment_hair",
             prompt="... I love your hair!",
             unlocked=True,
-            key_words="love hair"
+            key_words="love_1 hair_5"
         ),eventdb=store.mas_compliments.compliment_database
     )
 
@@ -320,7 +320,7 @@ init 5 python:
             eventlabel="mas_compliment_fit",
             prompt="... I love your dedication to fitness!",
             unlocked=True,
-            key_words="dedication fitness fit"
+            key_words="dedication_10 fitness_10 fit_2"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -404,7 +404,7 @@ init 5 python:
             eventlabel="mas_compliment_smile",
             prompt="... I love your smile!",
             unlocked=True,
-            key_words="smile"
+            key_words="smile_9"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -449,7 +449,7 @@ init 5 python:
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK,
-            key_words="chess"
+            key_words="chess_9"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -481,7 +481,7 @@ init 5 python:
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK,
-            key_words="pong"
+            key_words="pong_9"
         ),
         eventdb=store.mas_compliments.compliment_database
     )
@@ -524,7 +524,7 @@ init 5 python:
             eventlabel="mas_compliment_bestgirl",
             prompt="... You're the best girl!",
             unlocked=True,
-            key_words="best girl"
+            key_words="best_9 girl_9"
         ),
         eventdb=store.mas_compliments.compliment_database
     )

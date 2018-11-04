@@ -204,7 +204,7 @@ python early:
                 label = prompt
 
             if not key_words:
-                key_words = " test"
+                key_words = ""
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
             data_row = (

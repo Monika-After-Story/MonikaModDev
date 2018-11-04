@@ -113,6 +113,7 @@ label mas_farewell_start:
             return
 
     # otherwise, select a random farewell
+label random_farewell:
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
     # dont evalulate the mid loop checks since we are quitting
@@ -209,7 +210,7 @@ init 5 python:
             unlocked=True,
             prompt="I'm going to class.",
             pool=True,
-            key_words="bye goodbye class"
+            key_words="class_5"
         ),
         eventdb=evhand.farewell_database
     )
@@ -233,7 +234,7 @@ init 5 python:
             unlocked=True,
             prompt="I'm going to work.",
             pool=True,
-            key_words="bye goodbye work"
+            key_words="work_5"
         ),
         eventdb=evhand.farewell_database
     )
@@ -257,7 +258,7 @@ init 5 python:
             unlocked=True,
             prompt="I'm going to sleep.",
             pool=True,
-            key_words="bye goodbye sleep goodnight"
+            key_words="sleep_5 goodnight_5"
         ),
         eventdb=evhand.farewell_database
     )
@@ -449,7 +450,7 @@ init 5 python:
             unlocked=True,
             prompt="I'll be going away for a while.",
             pool=True,
-            key_words="bye goodbye while"
+            key_words="while_9 away_9"
         ),
         eventdb=evhand.farewell_database
     )
@@ -575,7 +576,7 @@ init 5 python:
             unlocked=True,
             prompt="I'm going to take you somewhere.",
             pool=True,
-            key_words="take somewhere"
+            key_words="take__5 somewhere_5"
         ),
         eventdb=evhand.farewell_database
     )

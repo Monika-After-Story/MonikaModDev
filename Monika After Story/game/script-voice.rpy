@@ -51,7 +51,6 @@ label monika_hear_voice:
                     except WaitTimeoutError:
                         renpy.jump("cant_hear")
                     try:
-                        #player_input_text = r.recognize_google(audio)
                         player_input_text = r.recognize_sphinx(audio)
                     except Exception:
                         renpy.jump("can_hear_but_cant_recognise")
@@ -68,41 +67,55 @@ label monika_hear_voice:
 init -1 python:
     def return_topic(player_input_text):
         mas_DropShield_dlg()
+        unlocked_events = []
+        #Check if we even have any text
         if player_input_text is not None:
+            #Get all unluck events
             import store.evhand as evhand
-            lowWeightWordList = ["monika", "i", "and", "or", "a", "an", "love", "why", "me", "of", "to", "is", "was", "for", "in", "be", "me", "the", "do", "does", "did", "you", "your", "have", "has", "too", "like", "can", "could", "how", "what", "where", "when", "will", "tell", "told",  "being", " ", "" ]
-            unlocked_events = Event.filterEvents(evhand.event_database, unlocked=True)
-            if "love you" in player_input_text or "love monika" in player_input_text:
-                return "monika_love"
+            import store.mas_moods as mas_moods
+            import store.mas_compliments as mas_compliments
             mostFitTopic = ""
             currentMaxFitNumber = 0
-            for key in unlocked_events:
-                counterFitNumber = 0
-                temp = unlocked_events[key].key_words
-                if temp != None:
-                    temp = temp.lower()
-                    temp = temp.split(" ")
-                    for keyWord in temp:
-                        #Delete special characters like ? ! ' in kew word
-                        keyWord = ''.join(e for e in keyWord if e.isalnum())
-                        #Check the weight value of the words
-                        weight = 1
-                        for word in lowWeightWordList:
-                            if keyWord == word:
-                                weight = 0
-                        if weight == 1:
-                            if keyWord in player_input_text:
-                                counterFitNumber += weight
-                if currentMaxFitNumber < counterFitNumber:
-                    mostFitTopic = unlocked_events[key].eventlabel
-                    currentMaxFitNumber = counterFitNumber
+            #exclusive words for filtering right event 
+            #We add all events to the array (as each events have separate database dicts)
+            if "feel" in player_input_text:
+                unlocked_events.append(Event.filterEvents(mas_moods.mood_db, unlocked=True))
+            elif "bye" in player_input_text or "goodbye" in player_input_text or "goodnight" in player_input_text:
+                mostFitTopic = "random_farewell"
+                unlocked_events.append(Event.filterEvents(evhand.farewell_database, unlocked=True, pool=True))
+            else:
+                unlocked_events.append(Event.filterEvents(evhand.event_database, unlocked=True))
+                unlocked_events.append(Event.filterEvents(mas_compliments.compliment_database, unlocked=True))
+            #Calculate fit for each unluck event in each dict.
+            for event in unlocked_events:
+                for key in event:
+                    counterFitNumber = 0
+                    temp = event[key].key_words
+                    #Check event has any key_words
+                    if temp != "":
+                        temp = temp.lower()
+                        temp = temp.split(" ")
+                        #Check if the individual key words of topic is in the text from pocketsphyinx
+                        for keyWord in temp:
+                            keyWord = keyWord.split("_")
+                            #If word is found add it's weight to the current topic weight
+                            if len(keyWord) > 1:
+                                if keyWord[0] in player_input_text:
+                                    counterFitNumber += int(keyWord[1])
+                    #Check if current topic weight is bigger than end Topic weight
+                    if currentMaxFitNumber < counterFitNumber:
+                        mostFitTopic = event[key].eventlabel
+                        currentMaxFitNumber = counterFitNumber
+            #Create and put to log what text from pocketsphyinx we got 
             file = open(base_path+"/log/what_Monika_heard.log", 'w')
             file.write("This is player input - " + player_input_text + " / Most fitting topic based on player input: " + mostFitTopic)
             file.close()
+            #Return most fitting topic
             if mostFitTopic == "":
-                return "No_topic_found" 
+                return "No_topic_found_test" 
             else:
                 return mostFitTopic
+                
                 
 label cant_hear:
     m 1eua "[player], I thought you wanted to tell me something"
