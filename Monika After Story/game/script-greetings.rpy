@@ -2068,6 +2068,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel = "greeting_surprised2",
             unlocked = True,
+            random = True,
             rules = rules
         ),
         eventdb = evhand.greeting_database
