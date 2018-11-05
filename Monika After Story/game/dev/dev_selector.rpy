@@ -23,14 +23,16 @@ label dev_selector_test:
                 "Test 1",
                 "test1",
                 "ring",
-                True
+                True,
+                hover_dlg="You hover over test 1"
             ),
             MASSelectableAccessory(
                 mas_acs_promisering,
                 "Test 2",
                 "test1",
                 "ring",
-                True
+                True,
+                hover_dlg="You hover over test 2"
             ),
             MASSelectableAccessory(
                 mas_acs_promisering,
@@ -54,15 +56,35 @@ label dev_selector_test:
                 True
             )
         ]
+        ctx_map = {}
+        show_dlg = []
+
+        test_items = [
+            MASSelectableImageButtonDisplayable(
+                tem,
+                ctx_map,
+                (1075, 5, 200, 625, 5),
+                show_dlg
+            )
+            for tem in test_items
+        ]
+
 
     m "first lets show the sidebar."
-    $ ctx_map = {}
 
-    show screen mas_selector_sidebar(test_items, ctx_map, "dev_selector_test_confirm", "dev_selector_test_cancel")
+    show screen mas_selector_sidebar(test_items, "dev_selector_test_confirm", "dev_selector_test_cancel")
 
-    m " okay! now we can test shit!"
+label dev_selector_test_loop:
+    python:
+        if len(show_dlg) == 0:
+            tx_out = "Wait here!"
 
-    m "does it look okay visually?"
+        else:
+            tx_out = show_dlg.pop()
+
+    m "[tx_out]"
+
+    jump dev_selector_test_loop
     
     m "now lets hide it"
     hide screen mas_selector_sidebar
@@ -77,5 +99,13 @@ label dev_selector_test_confirm:
 label dev_selector_test_cancel:
     hide screen mas_selector_sidebar
     m "You hit the cancel button!"
+    return
+
+label dev_selector_test_hover:
+    m "you hovere in test1"
+    return
+
+label dev_selector_test_hover2:
+    m " you hver in test2"
     return
 

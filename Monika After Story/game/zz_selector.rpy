@@ -83,6 +83,10 @@ init 200 python:
                     NOTE: the caller is responsible for actually calling this
                     set of dialogue.
             """
+#            self._check_dlg(hover_dlg)
+#            self._check_dlg(first_select_dlg)
+#            self._check_dlg(select_dlg)
+
             self.name = _sprite_object.name
             self.display_name = display_name
             self.thumb = thumb + ".png"
@@ -93,6 +97,11 @@ init 200 python:
             self.first_select_dlg = first_select_dlg
             self.select_dlg = select_dlg
             self.selected = False
+
+
+        def _check_dlg(self, dlg):
+            if dlg is not None and not renpy.has_label(dlg):
+                raise Exception("label '{0}' no exist".format(dlg))
 
 
     class MASSelectableAccessory(MASSelectableSprite):
@@ -324,6 +333,7 @@ init -1 python:
                 _selectable,
                 select_map,
                 viewport_bounds,
+                show_dlg=[],
                 multi_select=False
             ):
             """
@@ -339,6 +349,8 @@ init -1 python:
                     [2]: width of the viewport
                     [3]: height of the viewport
                     [4]: border size
+                show_dlg - list to add dialogue lines to show to the user.
+                    NOTE: its up to the caller to apply subs or not
                 multi_select - True means we can select more than one item.
                     False otherwise
                     (Default: False)
@@ -347,6 +359,7 @@ init -1 python:
 
             self.selectable = _selectable
             self.select_map = select_map
+            self.show_dlg = show_dlg
             self.multi_select = multi_select
 
             # image setups
@@ -383,9 +396,12 @@ init -1 python:
 
             # flags
             self.hovered = False
+            self.hover_jumped = False # True means we just jumped to label
             self.hover_width = self.WIDTH
             self.hover_height = self.TOTAL_HEIGHT # TODO
 
+            self.selected = False
+            self.select_jump = False
 
 
         def _check_display_name(self, _display_name_text):
@@ -425,6 +441,23 @@ init -1 python:
                 color=color,
                 outlines=[]
             )
+
+
+        def _hover_jump(self):
+            """
+            Jumps to hover if applicable.
+            Also does some hover data resetting.
+            """
+            if self.selectable.hover_dlg is not None:
+                if not self.hovered:
+                    self.hover_jumped = False
+
+                elif not self.hover_jumped:
+                    self.hover_jumped = True
+#                    renpy.say(m, "I AM HOVER", interact=False)
+                    self.show_dlg.append(self.selectable.hover_dlg)
+                    renpy.end_interaction(True)
+#                    renpy.call_in_new_context(self.selectable.hover_dlg)
 
 
         def _render_bottom_frame_piece(self, piece, st, at):
@@ -552,6 +585,7 @@ init -1 python:
             # text
             # NOTE: this is top left. to do align on bottom, you must get 
             #   size
+            # TODO: modify for adjustable top frames
             dnw, dnh = _disp_name.get_size()
             r.blit(_disp_name, (5, 35 - dnh))
 
@@ -595,6 +629,15 @@ init -1 python:
                         self.hovered = self._is_over_me(x, y)
                         renpy.redraw(self, 0)           
 
+                    elif ev.button == 1:
+                        # left click
+                        # select something
+                        pass
+
+
+            self._hover_jump()
+
+
 
         def render(self, width, height, st, at):
             """
@@ -634,12 +677,11 @@ style mas_selector_sidebar_vbar:
 # every couple of seconds.
 #
 # IN:
-#   items - list of MASSelectableSprite objects to display.
-#   item_map - dict mapping to pass to the displayables.
+#   items - list of MASSelectableImagebuttonDisplayables to display
 #   only_unlocked - True means we only show the unlocked ones.
 #   confirm - label to jump to when confirming
 #   cancel - label to jump to when canceling
-screen mas_selector_sidebar(items, item_map, confirm, cancel, only_unlocked=True):
+screen mas_selector_sidebar(items, confirm, cancel, only_unlocked=True):
     zorder 50
 
     frame:
@@ -659,7 +701,7 @@ screen mas_selector_sidebar(items, item_map, confirm, cancel, only_unlocked=True
                     null height 1
 
                     for selectable in items:
-                        add MASSelectableImageButtonDisplayable(selectable, item_map, (1075, 5, 200, 625, 5)):
+                        add selectable:
 #                            xoffset 5
                             xalign 0.5
 
