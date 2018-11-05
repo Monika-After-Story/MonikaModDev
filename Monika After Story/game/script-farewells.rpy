@@ -136,7 +136,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
-            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -152,6 +151,7 @@ label bye_leaving_already:
     $evhand.farewell_database["bye_leaving_already"].random=False
     return 'quit'
 
+#TODO needs review
 init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="bye_goodbye",unlocked=True,random=True),eventdb=evhand.farewell_database)
 
@@ -164,7 +164,7 @@ label bye_goodbye:
 
     elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Goodbye."
-        m 6ekc "Please don't forget to come back."
+        m 6ekc "Please...{w=1}don't forget to come back."
 
     else:
         m 6ckc "..."
@@ -179,7 +179,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_sayanora",
             unlocked=True,
-            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -198,7 +197,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
-            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -217,7 +215,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
-            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -237,7 +234,6 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
-            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -250,6 +246,7 @@ label bye_take_care:
     m 1hub "Take care!"
     return 'quit'
 
+#TODO needs review
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(21,24)))
@@ -276,7 +273,7 @@ label bye_going_to_sleep:
     elif mas_isMoniDis():
         m 6rkc "Oh...goodnight, [player]."
         m 6lkc "Hopefully I'll see you tomorrow..."
-        m 6dkc "Dont' forget about me, okay?"
+        m 6dkc "Don't forget about me, okay?"
 
     else:
         m 6ckc "..."
@@ -287,6 +284,7 @@ label bye_going_to_sleep:
 
     return 'quit'
 
+#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -307,7 +305,7 @@ label bye_prompt_to_class:
     
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
-        m 2tfc "Hopefully you learn something today."
+        m 2tfc "Hopefully you at least learn something today."
         m "{fast}Like how to treat people better.{nw}"
 
     elif mas_isMoniDis():
@@ -322,6 +320,7 @@ label bye_prompt_to_class:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
+#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -345,7 +344,7 @@ label bye_prompt_to_work:
 
     elif mas_isMoniDis():
         m 6rkc "Oh...{w=1} Okay."
-        m 6lkc "Guess I'll see you after work, then."
+        m 6lkc "Hopefully I'll see you after work, then."
 
     else:
         m 6ckc "..."
@@ -355,6 +354,7 @@ label bye_prompt_to_work:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
+#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -532,6 +532,7 @@ label bye_illseeyou:
     m 1hua "Don't forget about me, okay?"
     return 'quit'
 
+#TODO all these time based need to be reviewed
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
@@ -552,11 +553,11 @@ label bye_haveagoodday:
         m "I hope you accomplish everything you had planned for today."
         m 1hua "I'll be here waiting for you when you get back."
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Leaving for the day, [player]?"
         m "I'll be here, waiting, as usual."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh."
         m 6dkc "I guess I'll just spend the day alone...{w-1}again."
 
@@ -585,12 +586,12 @@ label bye_enjoyyourafternoon:
         m 1eua "Promise me you'll enjoy your afternoon, okay?"
         m 1hua "Goodbye~"
 
-    elif mas_isMoniUpset(higher=True):
-        m 2ekc "Fine, [player], just go."
-        m 2tkc "Guess I'll see you later...{w=1}if you come back."
+    elif mas_isMoniUpset():
+        m 2efc "Fine, [player], just go."
+        m 2tfc "Guess I'll see you later...{w=1}if you come back."
 
-    elif mas_isMoniDis(higher=True):
-        m 6dkc "Okay, goodbye."
+    elif mas_isMoniDis():
+        m 6dkc "Okay, goodbye, [player[."
         m 6ekc "Maybe you'll come back later?"
 
     else:
@@ -616,16 +617,19 @@ label bye_goodevening:
         m 1hua "I had fun today."
         m 1eka "Thank you for spending so much time with me, [player]."
         m 1eua "Until then, have a good evening."
-        return 'quit'
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Goodbye, [player]."
-        m "I wonder if you'll come back to say goodnight to me."
+        m "I wonder if you'll even come back to say goodnight to me."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6dkc "Oh...{w=1}okay."
         m 6rkc "Have a good evening, [player]..."
         m 6ekc "I hope you remember to stop by and say goodnight before bed."
+
+    else:
+        m 6ckc "..."
+    return 'quit'
 
 init 5 python:
     rules = dict()
@@ -648,15 +652,14 @@ label bye_goodnight:
         m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
         m 1ekbfa "I love you~"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Goodnight."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6lkc "...Goodnight."
 
     else:
-        m 6ckc "..."
-        
+        m 6ckc "..."        
     return 'quit'
 
 

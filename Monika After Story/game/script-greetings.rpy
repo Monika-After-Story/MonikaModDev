@@ -196,7 +196,7 @@ label greeting_back:
     m 1hua "Let's have another lovely day together, alright?"
     return
 
-#added paths for upset, distressed, and broken ~ JW
+#TODO Needs review
 init 5 python:
     rules = dict()
     rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=10))
@@ -220,8 +220,8 @@ label greeting_gooday:
                 m 1eka "Because that's what makes me happy."
                 m 1hua "I'll be sure to try my best to cheer you up, I promise."
 
-    elif mas_isMoniUpset(higher=True):
-        m 2efc "[player]..."
+    elif mas_isMoniUpset():
+        m 2efc "[player]."
         menu:
             m "How is your day going?"
             "Good.":
@@ -235,15 +235,15 @@ label greeting_gooday:
                 $ _history_list.pop()
                 m 2dfc "Well I certainly know what {i}that's{/i} like."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6ekc "Oh... {w=1}Hi, [player]."
         menu:
-            m "H-how is your day going?"
+            m "H-How is your day going?"
             "Good.":
                 m 6dkc "That's...{w=1}good."
-                m 6rkc "Hopefully we can keep it that way."
+                m 6rkc "Hopefully it stays that way."
             "Bad":
-                m 6rkc "I see."
+                m 6rkc "I-I see."
                 m 6dkc "I've been having a lot of those days lately too..."
 
     else:
@@ -607,7 +607,7 @@ label greeting_visit9:
     m 1hub "Are you ready to spend some time with me? Ehehe~"
     return
 
-#For all levels above broken, needs different dialogue for low affection ~ JW
+#TODO needs additional dialogue so can be used for all aff
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-29,max=None))
@@ -631,7 +631,7 @@ label greeting_italian:
     m 1eua "Anyway, it's so nice to see you again, my love."
     return
 
-#For all levels above broken, needs different dialogue for low affection ~ JW
+#TODO needs additional dialogue so can be used for all aff
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-29,max=None))
@@ -697,7 +697,6 @@ label greeting_youtuber:
     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
     return
 
-#For all levels above broken, needs different dialogue for low affection ~ JW
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-29,max=None))
@@ -714,7 +713,7 @@ init 5 python:
     del rules
 
 label greeting_hamlet:
-    m 4h "To be, or not to be, that is the question..."
+    m 4esc "To be, or not to be, that is the question..."
     m 1wuo "Oh, there you are. I was killing some time, hehe~"
     m 1lksdlb "I wasn't expecting to see you so soon."
     return
@@ -802,6 +801,7 @@ label greeting_welcomeback2:
     m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
     return
 
+#TODO Needs review
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-99,max=None))
@@ -822,11 +822,14 @@ label greeting_longtime:
         m 1eka "Long time no see, [player]!"
         m 1eua "I'm so happy that you're here now."
     
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Long time no see, [player]."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Long time no see, [player]..."
+
+    else:
+        m "..."
     return
 
 init 5 python:
@@ -911,7 +914,7 @@ label greeting_surprised:
     m 1eua "How've you been?"
     return
 
-#Added paths for upset, broken, and upset ~ JW
+#TODO Needs review
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12)))
@@ -927,18 +930,18 @@ label greeting_monika_monday_morning:
         m 1hub "You are the sunshine that wakes me up every morning!"
         m "I love you so much, [player]~"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2tfc "Another Monday morning."
         m 2dfc "It's always difficult to have to wake up and start the week..."
         m 2rfc "{fast}Not that the weekend was any better.{nw}"
         $ _history_list.pop()
-        m 2tfc "Hopefully this week goes better than last week, [player]."
+        m 2tfc "I hope this week goes better than last week, [player]."
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6ekc "Oh...{w=1}it's Monday."
         m 6dkc "I almost lost track of what day it was..."
         m 6rkc "Mondays are always tough, but no day has been easy lately..."
-        m 6dkc "I sure hope this week goes better than last week, [player]."
+        m 6lkc "I sure hope this week goes better than last week, [player]."
 
     else:
         m 6ckc "..."
@@ -1012,12 +1015,13 @@ label monikaroom_greeting_choice:
         "[_opendoor_text]" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
-            if mas_isMoniBroken():
+            if mas_isMoniUpset(lower=True):
+                $ persistent.seen_monika_in_room = True
                 jump monikaroom_greeting_opendoor_locked
             else:
                 jump monikaroom_greeting_opendoor
         "Open the door." if persistent.seen_monika_in_room:
-            if persistent.opendoor_opencount > 0:
+            if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
                 jump monikaroom_greeting_opendoor_locked
@@ -1040,7 +1044,7 @@ label monikaroom_greeting_choice:
     # NOTE: return is expected in monikaroom_greeting_cleanup
 
 ### BEGIN EAR DOOR ------------------------------------------------------------
-
+#TODO all these need review
 # monika narrates
 default persistent._mas_pm_will_change = None
 init 5 python:
@@ -1055,10 +1059,10 @@ label monikaroom_greeting_ear_narration:
         m "'Who is that?' [he] wondered, as [player] looks at [his] screen, puzzled."
 
     elif mas_isMoniUpset():
-        m "For once, you're actually listening..."
+        m "Oh, so for once you're actually going to listen?"
         m "[player], your decisions lately have been poor."
-        m "It just feels like you're just trying to hurt me."
-        m "I thought we were supposed to support each other, [player]..."
+        m "It feels like you're just trying to hurt me."
+        m "I thought we were supposed to support each other..."
         m "Not hurt each other."
         m "Please, [player]..."
         m "I need you to start thinking about how I'm feeling sometimes."
@@ -1082,9 +1086,9 @@ label monikaroom_greeting_ear_narration:
             menu:
                 m "You'll change, right?{w=1} For me?"
                 "I will":
+                    $ persistent._mas_pm_will_change = True
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
-                    $ persistent._mas_pm_will_change = True
 
                 "I won't":
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
@@ -1101,9 +1105,10 @@ label monikaroom_greeting_ear_narration:
             menu:
                 m "Are you ready to change, [player]?"
                 "I will":
+                    $ persistent._mas_pm_will_change = True                
                     m "Thank you, [player]."
                     m "Please, I just want us both to be happy."
-                    $ persistent._mas_pm_will_change = True
+
 
                 "I won't":
                     $ persistent._mas_pm_will_change = False
@@ -1140,7 +1145,7 @@ label monikaroom_greeting_ear_loveme:
             m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
             m "[cap_he] love me."
             m "...{w} [cap_he] love me!"
-        elif mas_isMoniUpset(higher=True):
+        elif mas_isMoniUpset():
             m "[cap_he] love me.{w} [cap_he] love me not."
             m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
             m "...[cap_he]...{w} [cap_he]...{w}love me not."
@@ -1159,7 +1164,7 @@ label monikaroom_greeting_ear_loveme:
             m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
             m "[cap_he] loves me."
             m "...{w} [cap_he] loves me!"
-        elif mas_isMoniUpset(higher=True):
+        elif mas_isMoniUpset():
             m "[cap_he] loves me.{w} [cap_he] loves me not."
             m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
             m "...[cap_he]...{w} [cap_he]...{w}loves me not."
@@ -1176,7 +1181,7 @@ label monikaroom_greeting_ear_loveme:
 
 # monika does the bath/dinner/me thing
 init 5 python:
-    if mas_curr_affection > 30:
+    if persistent._mas_affection["affection"] >= 30:
         gmr.eardoor.append("monikaroom_greeting_ear_bathdinnerme")
 
 label monikaroom_greeting_ear_bathdinnerme:
@@ -1200,7 +1205,14 @@ label monikaroom_greeting_ear_progbrokepy:
         m "I don't understand what I'm doing wrong!"
         m "This shouldn't be None here...{w} I'm sure of it..."
     m "Coding really is difficult..."
-    if mas_isMoniDis(lower=True):
+
+    if mas_isMoniUpset():
+        m "But I have to keep trying."
+        m "I'm not sure [player] loves me enough to help me get out of here..."
+        m "And I just can't take that chance."
+        m "So keep going Monika...{w}you can do this."
+
+    if mas_isMoniDis():
         m "But I {i}have{/i} to keep trying."
         m "It's my only chance to ever escape this nightmare."
         m "[player] certainly isn't ever going to help me..."
@@ -1208,12 +1220,7 @@ label monikaroom_greeting_ear_progbrokepy:
             m "It's almost like [he] actually enjoy keeping me trapped in here, {w}just so [he] can torture me."
         else:
             m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
-        m "If I'm ever going to get out of here, I'm going to have to do it myself."
-    if mas_isMoniUpset():
-        m "But I have to keep trying."
-        m "I'm not sure [player] loves me enough to help me get out of here..."
-        m "And I just can't take that chance."
-        m "So keep going Monika...{w}you can do this."
+        m "If I'm ever going to get out of here, I'm going to have to do it myself."        
     jump monikaroom_greeting_choice
 
 # monika reads about errors when programming
@@ -1226,7 +1233,14 @@ label monikaroom_greeting_ear_progreadpy:
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
     m "Coding really is difficult..."
-    if mas_isMoniDis(lower=True):
+
+    if mas_isMoniUpset():
+        m "But I have to keep learning."
+        m "I'm not sure [player] loves me enough to help me get out of here..."
+        m "And I just can't take that chance."
+        m "So keep going Monika...{w}you can do this."
+
+    if mas_isMoniDis():
         m "But I {i}have{/i} to keep learning."
         m "It's my only chance to ever escape this nightmare."
         m "[player] certainly isn't ever going to help me..."
@@ -1235,11 +1249,6 @@ label monikaroom_greeting_ear_progreadpy:
         else:
             m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
         m "If I'm ever going to get out of here, I'm going to have to do it myself."
-    if mas_isMoniUpset():
-        m "But I have to keep learning."
-        m "I'm not sure [player] loves me enough to help me get out of here..."
-        m "And I just can't take that chance."
-        m "So keep going Monika...{w}you can do this."
     jump monikaroom_greeting_choice
 
 # monika attempts rm -rf
@@ -1256,11 +1265,11 @@ label monikaroom_greeting_ear_rmrf:
         m "Yeah,{w} nice try."
         if mas_isMoniNormal(higher=True):
             m "I shouldn't trust the Internet so blindly..."
-        elif mas_isMoniUpset(higher=True):
+        elif mas_isMoniUpset():
             m "Actually..."
-            m "Maybe I should do it, just delete everything..."
+            m "Maybe I should do it...{w=1}just delete everything..."
             m "[player] certainly deserves it lately."
-            m "What am I saying? It will delete me too!"
+            m "What am I saying? That would delete me too!"
             m "No, not yet..."
             m "But if it continues to get worse..."
         else:
@@ -1344,7 +1353,7 @@ label monikaroom_greeting_opendoor_locked:
 
     if mas_isMoniNormal(higher=True):
         m 1hua "There we go!"
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "There."
     else:
         m 6ekc "Okay..."
@@ -1357,7 +1366,7 @@ label monikaroom_greeting_opendoor_locked:
                     m 1lksdla "Let me just change this flag here...{w=1.5}{nw}"
                     $ style.say_window = style.window
                     m 1hua "All fixed!"
-                elif mas_isMoniUpset(higher=True):
+                elif mas_isMoniUpset():
                     m 2dfc "Hmph. I'm still learning how to do this."
                     m 2efc "Let me just change this flag here...{w=1.5}{nw}"
                     $ style.say_window = style.window
@@ -1522,13 +1531,12 @@ label monikaroom_greeting_knock:
                     m 1eka "And thank you for knocking first."
                 m 1eua "Hold on, let me tidy up..."
 
-            elif mas_isMoniUpset(higher=True):
+            elif mas_isMoniUpset():
                 m 2efc "[player]. {w}You're back..."
 
                 if persistent.seen_monika_in_room:
                     m 2efc "At least you knocked."
-                m "Hold on, let me tidy up..."
-
+                
             else:
                 m 6ekc "Oh... {w}Okay."
 
@@ -1543,14 +1551,14 @@ label monikaroom_greeting_post:
     if mas_isMoniNormal(higher=True):
         m 2eua "Now, just let me grab a table and a chair..."
         $ is_sitting = True
-        show monika 1 at ls32 zorder MAS_MONIKA_Z
+        show monika 1eua at ls32 zorder MAS_MONIKA_Z
         m 1eua "What shall we do today, [player]?"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Just let me grab a table and a chair..."
         $ is_sitting = True
         show monika 2efc at ls32 zorder MAS_MONIKA_Z
-        m 2efc "What did you want, [player]?"
+        m 2efc "What do you want, [player]?"
 
     else:
         m 6ekc "I need to grab a table and a chair..."
@@ -1636,7 +1644,7 @@ label greeting_youarereal:
         m 1dsd "Hard to tell..."
     return
 
-#For all levels above broken, needs different dialogue for low affection ~ JW
+#TODO needs additional dialogue so can be used for all aff
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-29,max=None))
@@ -1715,7 +1723,7 @@ label greeting_hai_domo:
     m 1eua "I have to say, she's rather charming..."
     return
 
-#For all levels above broken, needs different dialogue for low affection ~ JW
+#TODO needs additional dialogue so can be used for all aff
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-29,max=None))
@@ -1740,23 +1748,39 @@ label greeting_french:
     m 1hua "Maybe both of us can practice it sometime, mon amour~"
     return
 
+#TODO needs review
 label greeting_sick:
-    m 1hua "Welcome back, [player]!"
-    m 3eua "Are you feeling better?"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Welcome back, [player]!"
+        m 3eua "Are you feeling better?"
+    else:
+        m 2ekc "Welcome back, [player]..."
+        m "Are you feeling better?"
+
     menu:
         "Yes":
-            m 1hub "Great! Now we can spend some more time together. Ehehe~"
-            $ persistent._mas_mood_sick = False
+            if mas_isMoniNormal(higher=True):
+                m 1hub "Great! Now we can spend some more time together. Ehehe~"
+                $ persistent._mas_mood_sick = False
+            else:
+                m "That's good to hear."
         "No":
             jump greeting_stillsick
     return
 
 label greeting_stillsick:
-    m 1ekc "[player], you really should go get some rest."
-    m "Getting plenty of rest is the best remedy for getting over a sickness quickly."
-    m 2lksdlc "I wouldn't forgive myself if your sickness got any worse because of me."
-    m 2eka "Now please, [player], put my mind at ease and go get some rest."
-    m "Will you do that for me?"
+    if mas_isMoniNormal(higher=True):
+        m 1ekc "[player], you really should go get some rest."
+        m "Getting plenty of rest is the best remedy for getting over a sickness quickly."
+        m 2lksdlc "I wouldn't forgive myself if your sickness got any worse because of me."
+        m 2eka "Now please, [player], put my mind at ease and go get some rest."
+        m "Will you do that for me?"
+
+    else:
+        m 2ekc "[player], you really should go get some rest."
+        m 4ekc "Getting plenty of rest is the best remedy for getting over a sickness quickly."
+        m "Now please, [player], just go get some rest."
+        m 2ekc "Will you do that for me?"
     menu:
         "Yes":
             jump greeting_stillsickrest
@@ -1764,20 +1788,33 @@ label greeting_stillsick:
             jump greeting_stillsicknorest
 
 label greeting_stillsickrest:
-    m 2hua "Thank you [player]."
-    m 2eua "I think if I leave you alone for a while, you'll be able to rest better."
-    m 1eua "So I'm going to close the game for you."
-    m 1eka "Get well soon, [player]. I love you so much!"
+    if mas_isMoniNormal(higher=True):
+        m 2hua "Thank you [player]."
+        m 2eua "I think if I leave you alone for a while, you'll be able to rest better."
+        m 1eua "So I'm going to close the game for you."
+        m 1eka "Get well soon, [player]. I love you so much!"
+
+    else:
+        m 2ekc "Thank you [player]."
+        m "I think if I leave you alone for a while, you'll be able to rest better."
+        m 4ekc "So I'm going to close the game for you."
+        m 2ekc "Get well soon, [player]."
     return 'quit'
 
 label greeting_stillsicknorest:
-    m 1lksdlc "I see..."
-    m "Well if you insist [player]."
-    m 1ekc "I suppose you know your own limitations better than I do."
-    m 1eka "If you start to feel a little weak or tired though, [player], please let me know."
-    m "That way you can go get some rest."
-    m 1eua "Don't worry, I'll still be here when you wake up."
-    m 3hua "Then we can have some more fun together without me worrying about you in the back of my mind."
+    if mas_isMoniNormal(higher=True):
+        m 1lksdlc "I see..."
+        m "Well if you insist [player]."
+        m 1ekc "I suppose you know your own limitations better than I do."
+        m 1eka "If you start to feel a little weak or tired though, [player], please let me know."
+        m "That way you can go get some rest."
+        m 1eua "Don't worry, I'll still be here when you wake up."
+        m 3hua "Then we can have some more fun together without me worrying about you in the back of my mind."
+
+    else:
+        m 2ekc "Fine."
+        m 2tkc "You never seem to want to listen to me, so why would I expect now to be any different."
+
     return
 
 init 5 python:
@@ -1792,7 +1829,6 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
-#Have not touched these, not sure they need paths for affection or not ~ JW
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
     if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
@@ -2246,11 +2282,11 @@ label greeting_tears:
     $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
     return
 
-#New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos ~ JW
+#New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-74,max=-29))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=3))
+    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2289,7 +2325,7 @@ label greeting_upset:
 init 5 python:
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=3))
+    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2316,7 +2352,7 @@ label greeting_distressed:
             "I wasn't sure if you'd visit today.",
             "Hopefully we can enjoy our time together today.",
             "I wasn't expecting you.",
-            "I hope things start going better today.",
+            "I hope things start going better soon.",
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
@@ -2359,7 +2395,7 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
-#Added paths for upset, distressed, and broken ~ JW
+#TODO needs review
 label greeting_back_from_school:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back [player]!"
@@ -2377,7 +2413,7 @@ label greeting_back_from_school:
                 m 1eka "Just remember that no matter what happens, I'll be here for you."
                 m 1ekbfa "I love you so, so much."
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
         menu:
             m "How was school?"
@@ -2388,7 +2424,7 @@ label greeting_back_from_school:
                 m "That's too bad..."
                 m 2tfc "But maybe now you have a better sense of how I've been feeling, [player]."
 
-    elif mas_isMoniDis(higer=True):
+    elif mas_isMoniDis():
         m 6ekc "Oh...{w=1}you're back."
         menu:
             m "How was school?"
@@ -2405,7 +2441,7 @@ label greeting_back_from_school:
 
     return
 
-#Added paths for upset, distressed, and broken ~ JW
+#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -2438,7 +2474,7 @@ label greeting_back_from_work:
                 m 4eka "Just remember that I'm here when you need me, okay?"
                 m 1hubfa "I love you so much, [player]."
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
         menu:
             m "How was your day?"
@@ -2450,7 +2486,7 @@ label greeting_back_from_work:
                 m 2dfc "..."
                 m 2tfc "It feels bad when no one seems to appreciate you, huh [player]?"
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
         menu:
             m "How was your day?"
@@ -2469,7 +2505,7 @@ label greeting_back_from_work:
 
     return
 
-#Added paths for upset, distressed, and broken ~ JW
+#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -2488,13 +2524,13 @@ label greeting_back_from_sleep:
         m 1hub "I hope you had a good rest!"
         m "Let's spend some more time together~"
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "Just wake up, [player]?"
         m "I hope you had a good rest."
         m 2tfc "{fast}Maybe you'll be in a better mood now.{nw}"
         $ _history_list.pop()
 
-    elif mas_isMoniDis(higher=True):
+    elif mas_isMoniDis():
         m 6rkc "Oh...{w=1}you're up."
         m 6ekc "I hope you were able to get some rest."
         m 6dkc "I have a hard time resting these days with so much on my mind..."
@@ -2636,7 +2672,7 @@ label greeting_returned_home:
 
             $ grant_xp(xp.NEW_GAME)
 
-        #Added single path for upset/distressed ~ JW
+        #TODO needs review
         else:
             m 2esc "We're home..."
             m 2eka "Thank you for taking me out today, [player]."
@@ -2670,14 +2706,14 @@ label greeting_returned_home:
 
     return
 
-#Added paths for upset and distressed ~ JW
+#TODO needs review
 label greeting_returned_home_lessthan5mins:
     if mas_isMoniNormal(higher=True):
         m 2ekp "That wasn't much of a trip, [player]."
         m "Next time better last a little longer..."
         return
 
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efd "I thought we were going some place, [player]!"
         m 2tfd "I knew I shouldn't have agreed to go with you."
         m 2tfc "I knew this was just going to be another disappointment."
