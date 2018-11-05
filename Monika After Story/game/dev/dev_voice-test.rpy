@@ -11,6 +11,7 @@ init 5 python:
     )
 
 label dev_monika_voice_recognition_check:
+    $ mas_RaiseShield_dlg()
     m 1esa  "I will perform tests for voice recognition [player]..."
     m 4esa  "Let's start with checking all the nessesary liberies "
     python:
@@ -81,9 +82,11 @@ label dev_monika_voice_recognition_check:
     menu:
         "Yes.":
             m 1hub "Everything works correctly than. I am really glad I can hear your voice [player] !"
+            $ mas_DropShield_dlg()
             return
         "No.":
             m 1eua "I am sorry. I try my best. Maybe next time I would hear you better"
+            $ mas_DropShield_dlg()
             return
             
 label no_input:
@@ -94,6 +97,7 @@ label no_input:
         file = open(base_path+"/log/voice.log", 'w')
         file.write("Error message: " + str(error_message))
         file.close()
+        mas_DropShield_dlg()
     return   
 
 label cant_recognise:
@@ -104,6 +108,7 @@ label cant_recognise:
         file = open(base_path+"/log/voice.log", 'w')
         file.write("Error message: " + str(error_message))
         file.close()
+        mas_DropShield_dlg()
     return      
              
 label no_found_portaudio:
@@ -114,6 +119,7 @@ label no_found_portaudio:
         file = open(base_path+"/log/voice.log", 'w')
         file.write("Error message: " + str(error_message))
         file.close()
+        mas_DropShield_dlg()
     return
     
 label no_found_speech_recognition:
@@ -124,6 +130,7 @@ label no_found_speech_recognition:
         file = open(base_path+"/log/voice.log", 'w')
         file.write("Error message: " + str(error_message))
         file.close()
+        mas_DropShield_dlg()
     return
     
        
@@ -135,6 +142,7 @@ label No_inpu_device:
         file = open(base_path+"/log/voice.log", 'w')
         file.write("Error message: " + str(error_message))
         file.close()
+        mas_DropShield_dlg()
     return
     
     
@@ -142,7 +150,6 @@ label No_inpu_device:
 #Function that find most fitting topic base on the return of text from pocketsphyinx
 init -1 python:
     def return_topic_test(player_input_text):
-        mas_DropShield_dlg()
         unlocked_events = []
         #Check if we even have any text
         if player_input_text is not None:
@@ -154,7 +161,12 @@ init -1 python:
             currentMaxFitNumber = 0
             #exclusive words for filtering right event 
             #We add all events to the array (as each events have separate database dicts)
-            if "feel" in player_input_text:
+            if "play" in player_input_text and ("chess" in player_input_text or "pong" in player_input_text or "hangman" in player_input_text or "piano" in player_input_text):
+                return preprocessing_games()     
+            elif "change" in player_input_text and "music" in player_input_text:  
+                select_music()
+                return "ch30_loop"  
+            elif "feel" in player_input_text:
                 unlocked_events.append(Event.filterEvents(mas_moods.mood_db, unlocked=True))
             elif "bye" in player_input_text or "goodbye" in player_input_text or "goodnight" in player_input_text:
                 mostFitTopic = "random_farewell"
@@ -191,4 +203,58 @@ init -1 python:
                 return "No_topic_found_test" 
             else:
                 return mostFitTopic
-                
+
+init -1 python:
+    def preprocessing_games():  
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                chess_disabled = False
+                persistent._mas_chess_timed_disable = None
+
+            else:
+                chess_disabled = True
+
+        else:
+            chess_disabled = False
+
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
+
+        # hangman text
+        if persistent._mas_sensitive_mode:
+            _hangman_text = "Word Guesser"
+        else:
+            _hangman_text = "Hangman"
+
+        # decide the say dialogue
+        play_menu_dlg = store.mas_affection.play_quip()[1]
+
+        if persistent.game_unlocks['pong']:
+            if "pong" in player_input_text:
+                if not renpy.seen_label('game_pong'):
+                    grant_xp(xp.NEW_GAME)
+                return "game_pong"
+        if chess_unlocked:
+            if "chess" in player_input_text:
+                if not renpy.seen_label('game_chess'):
+                    grant_xp(xp.NEW_GAME)
+                return "game_chess"
+        if persistent.game_unlocks['hangman']:
+            if "hangman" in player_input_text:
+                if not renpy.seen_label("game_hangman"):
+                    grant_xp(xp.NEW_GAME)
+                return "game_hangman"
+        if persistent.game_unlocks['piano']:
+            if "Piano" in player_input_text:
+                if not renpy.seen_label("mas_piano_start"):
+                    grant_xp(xp.NEW_GAME)
+                return "mas_piano_start"

@@ -38,6 +38,7 @@ init 5 python:
                                                                 ))
 
 label monika_hear_voice:
+    $ mas_RaiseShield_dlg()
     m 1eua "[player], would you like to tell me something?"
     menu:
         "Yes.":
@@ -51,7 +52,8 @@ label monika_hear_voice:
                     except WaitTimeoutError:
                         renpy.jump("cant_hear")
                     try:
-                        player_input_text = r.recognize_sphinx(audio)
+                        #player_input_text = r.recognize_sphinx(audio)
+                        player_input_text = r.recognize_google(audio)
                     except Exception:
                         renpy.jump("can_hear_but_cant_recognise")
                 player_input_text = player_input_text.lower()
@@ -60,13 +62,13 @@ label monika_hear_voice:
                 
         "No.":
             m "Maybe next time"
+            $ mas_DropShield_dlg()
             return
 
 #Here we can write logic to catch key words which than would jump into correct topics or do other stuff
 #currently it check if what player said is contain in prompt of event. Probably need be other way around or add key words to event which we will catch in player text
 init -1 python:
     def return_topic(player_input_text):
-        mas_DropShield_dlg()
         unlocked_events = []
         #Check if we even have any text
         if player_input_text is not None:
@@ -78,7 +80,12 @@ init -1 python:
             currentMaxFitNumber = 0
             #exclusive words for filtering right event 
             #We add all events to the array (as each events have separate database dicts)
-            if "feel" in player_input_text:
+            if "play" in player_input_text and ("chess" in player_input_text or "pong" in player_input_text or "Hangman" in player_input_text or "Piano" in player_input_text):
+                return preprocessing_games()   
+            elif "change" in player_input_text and "music" in player_input_text:  
+                select_music()
+                return "ch30_loop"                
+            elif "feel" in player_input_text:
                 unlocked_events.append(Event.filterEvents(mas_moods.mood_db, unlocked=True))
             elif "bye" in player_input_text or "goodbye" in player_input_text or "goodnight" in player_input_text:
                 mostFitTopic = "random_farewell"
@@ -112,9 +119,64 @@ init -1 python:
             file.close()
             #Return most fitting topic
             if mostFitTopic == "":
-                return "No_topic_found_test" 
+                return "no_topic_found" 
             else:
                 return mostFitTopic
+
+init -1 python:
+    def preprocessing_games():  
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                chess_disabled = False
+                persistent._mas_chess_timed_disable = None
+
+            else:
+                chess_disabled = True
+
+        else:
+            chess_disabled = False
+
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
+
+        # hangman text
+        if persistent._mas_sensitive_mode:
+            _hangman_text = "Word Guesser"
+        else:
+            _hangman_text = "Hangman"
+
+        # decide the say dialogue
+        play_menu_dlg = store.mas_affection.play_quip()[1]
+
+        if persistent.game_unlocks['pong']:
+            if "pong" in player_input_text:
+                if not renpy.seen_label('game_pong'):
+                    grant_xp(xp.NEW_GAME)
+                return "game_pong"
+        if chess_unlocked:
+            if "chess" in player_input_text:
+                if not renpy.seen_label('game_chess'):
+                    grant_xp(xp.NEW_GAME)
+                return "game_chess"
+        if persistent.game_unlocks['hangman']:
+            if "hangman" in player_input_text:
+                if not renpy.seen_label("game_hangman"):
+                    grant_xp(xp.NEW_GAME)
+                return "game_hangman"
+        if persistent.game_unlocks['piano']:
+            if "Piano" in player_input_text:
+                if not renpy.seen_label("mas_piano_start"):
+                    grant_xp(xp.NEW_GAME)
+                return "mas_piano_start"
                 
                 
 label cant_hear:
@@ -127,7 +189,7 @@ label can_hear_but_cant_recognise:
     m 1eua "However I couldn't understand it"
     return      
             
-label No_topic_found:
+label no_topic_found:
     m 1hub "[player], did you just say %(player_input_text)s?"
     m 1hub "I am not really sure how should I react to that"
     return   
