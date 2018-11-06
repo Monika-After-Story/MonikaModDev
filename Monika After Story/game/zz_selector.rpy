@@ -35,10 +35,10 @@ init 200 python:
                 False, otherwise.
                 Locked items will generally be displayed with a placeholder
                 thumb.
-            hover_dlg - label to call when hovering over this object
-            first_select_dlg - label to call the first time you select
-                this sprite
-            select_dlg - label to call everytime you select this sprite
+            hover_dlg - list of text to display when hovering over the object
+            first_select_dlg - text to display the first time you 
+                select this sprite
+            select_dlg - list text to display everytime you select this sprite
                 (after the first time)
             selected - True if this item is selected, False if not
         """
@@ -49,7 +49,6 @@ init 200 python:
                 display_name,
                 thumb, 
                 group,
-                unlocked=False,
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
@@ -66,22 +65,19 @@ init 200 python:
                 display_name - name to show on the selectable screen
                 thumb - thumbnail to use on the select screen
                 group - group id to group related selectable sprites.
-                unlocked - True if this item is unlocked, false otherwise
-                    (Default: False)
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - label to call when hovering over this object
+                hover_dlg - list of text to display when hovering over the 
+                    object
                     (Default: None)
-                first_select_dlg - label to call the first time you select this
-                    sprite. 
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.
+                first_select_dlg - text to display the first time you select
+                    this sprite
                     (Default: None)
-                select_dlg - label to call subsequent times you select this 
-                    sprite.
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.
+                select_dlg - list of text to display everytime you select this
+                    sprite
+                    (after the first time)            
+                    (Default: None)
             """
 #            self._check_dlg(hover_dlg)
 #            self._check_dlg(first_select_dlg)
@@ -91,7 +87,7 @@ init 200 python:
             self.display_name = display_name
             self.thumb = thumb + ".png"
             self.group = group
-            self.unlocked = unlocked
+            self.unlocked = False
             self.visible_when_locked = visible_when_locked
             self.hover_dlg = hover_dlg
             self.first_select_dlg = first_select_dlg
@@ -119,7 +115,6 @@ init 200 python:
                 display_name,
                 thumb,
                 group,
-                unlocked=False,
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
@@ -134,22 +129,19 @@ init 200 python:
                 display_name - name to show on the selectable screen
                 thumb - thumbnail to use on the select screen
                 group - group id to group related selectable sprites.
-                unlocked - True if this item is unlocked, false otherwise
-                    (Default: False)
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - label to call when hovering over this object
+                hover_dlg - list of text to display when hovering over the 
+                    object
                     (Default: None)
-                first_select_dlg - label to call the first time you select this
-                    sprite. 
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.
+                first_select_dlg - text to display the first time you select
+                    this sprite
                     (Default: None)
-                select_dlg - label to call subsequent times you select this 
-                    sprite.
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.        
+                select_dlg - list of text to display everytime you select this
+                    sprite
+                    (after the first time)            
+                    (Default: None)            
             """
             if type(_sprite_object) != MASAccessory:
                 raise Exception("not an acs: {0}".format(group))
@@ -159,7 +151,6 @@ init 200 python:
                 display_name,
                 "acs-" + thumb,
                 group,
-                unlocked,
                 visible_when_locked,
                 hover_dlg,
                 first_select_dlg,
@@ -183,7 +174,6 @@ init 200 python:
                 display_name,
                 thumb,
                 group,
-                unlocked=False,
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
@@ -198,22 +188,19 @@ init 200 python:
                 display_name - name to show on the selectable screen
                 thumb - thumbnail to use on the select screen
                 group - group id to group related selectable sprites.
-                unlocked - True if this item is unlocked, false otherwise
-                    (Default: False)
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - label to call when hovering over this object
+                hover_dlg - list of text to display when hovering over the 
+                    object
                     (Default: None)
-                first_select_dlg - label to call the first time you select this
-                    sprite. 
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.
+                first_select_dlg - text to display the first time you select
+                    this sprite
                     (Default: None)
-                select_dlg - label to call subsequent times you select this 
-                    sprite.
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.        
+                select_dlg - list of text to display everytime you select this
+                    sprite
+                    (after the first time)            
+                    (Default: None)            
             """
             if type(_sprite_object) != MASHair:
                 raise Exception("not a hair: {0}".format(group))
@@ -223,7 +210,6 @@ init 200 python:
                 display_name,
                 "hair-" + thumb,
                 group,
-                unlocked,
                 visible_when_locked,
                 hover_dlg,
                 first_select_dlg,
@@ -247,7 +233,6 @@ init 200 python:
                 display_name,
                 thumb,
                 group,
-                unlocked=False,
                 visible_when_locked=True,
                 hover_dlg=None,
                 first_select_dlg=None,
@@ -262,22 +247,19 @@ init 200 python:
                 display_name - name to show on the selectable screen
                 thumb - thumbnail to use on the select screen
                 group - group id to group related selectable sprites.
-                unlocked - True if this item is unlocked, false otherwise
-                    (Default: False)
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - label to call when hovering over this object
+                hover_dlg - list of text to display when hovering over the 
+                    object
                     (Default: None)
-                first_select_dlg - label to call the first time you select this
-                    sprite. 
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.
+                first_select_dlg - text to display the first time you select
+                    this sprite
                     (Default: None)
-                select_dlg - label to call subsequent times you select this 
-                    sprite.
-                    NOTE: the caller is responsible for actually calling this
-                    set of dialogue.        
+                select_dlg - list of text to display everytime you select this
+                    sprite
+                    (after the first time)            
+                    (Default: None)            
             """
             if type(_sprite_object) != MASClothes:
                 raise Exception("not a clothes: {0}".format(group))
@@ -287,7 +269,6 @@ init 200 python:
                 display_name,
                 "clothes-" + thumb,
                 group,
-                unlocked,
                 visible_when_locked,
                 hover_dlg,
                 first_select_dlg,
@@ -295,8 +276,102 @@ init 200 python:
             )
 
 
-init -1 python:
+init -10 python in mas_selspr:
+    import store
 
+    # mailbox constants
+    MB_DISP = "disp_text"
+    MB_DISP_DEF = "def_disp_text"
+
+    ## screen constants
+    SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
+    # keep this in sync with teh screen area 
+
+    ## string constants
+    DEF_DISP = "..."
+
+    class MASSelectableSpriteMailbox(store.MASMailbox):
+        """
+        SelectableSprite extension of the mailbox
+
+        PROPERTIES:
+            (no additional)
+
+        See MASMailbox for properties.
+        """
+
+        def __init__(self, def_disp_text=DEF_DISP):
+            """
+            Constructor for the selectable sprite mailbox
+            """
+            super(MASSelectableSpriteMailbox, self).__init__()
+            self.send_def_disp_text(def_disp_text)
+        
+
+        def _get(self, headline):
+            """
+            Class the super class's get
+
+            This is just for ease of use
+            """
+            return super(MASSelectableSpriteMailbox, self).get(headline)
+
+
+        def _send(self, headline, msg):
+            """
+            Calls the super classs's send
+
+            This is just for ease of use.
+            """
+            super(MASSelectableSpriteMailbox, self).send(headline, msg)
+
+
+        def get_def_disp_text(self):
+            """
+            Returns the default display text message
+
+            NOTE: does NOT remove.
+
+            RETURNS: display text, default
+            """
+            return self._get(MB_DISP_DEF)
+
+
+        def get_disp_text(self):
+            """
+            Removes and returns the display text message
+
+            RETURNS: display text
+            """
+            return self._get(MB_DISP)
+            
+
+        def send_def_disp_text(self, txt):
+            """
+            Sends default display message
+
+            IN:
+                txt - txt to display
+            """
+            self._send(MB_DISP_DEF, txt)
+
+
+        def send_disp_text(self, txt):
+            """
+            Sends display text message
+
+            IN:
+                txt - txt to display
+            """
+            self._send(MB_DISP, txt)
+
+
+init -10 python:
+
+
+
+init -1 python:
+    import random
     
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -304,6 +379,7 @@ init -1 python:
         Custom button for the selectable items.
         """
         import pygame
+        from store.mas_selspr import MB_DISP
 
         # constnats
         THUMB_DIR = "mod_assets/thumb/"
@@ -318,14 +394,12 @@ init -1 python:
         # frame properties.
         TOP_FRAME_HEIGHT = 38 # default
 
-
         # mouse stuff
         MOUSE_EVENTS = (
             pygame.MOUSEMOTION,
             pygame.MOUSEBUTTONDOWN,
             pygame.MOUSEBUTTONUP
         )
-
         MOUSE_WHEEL = (4, 5)
 
         
@@ -333,7 +407,7 @@ init -1 python:
                 _selectable,
                 select_map,
                 viewport_bounds,
-                show_dlg=[],
+                mailbox={},
                 multi_select=False
             ):
             """
@@ -349,8 +423,9 @@ init -1 python:
                     [2]: width of the viewport
                     [3]: height of the viewport
                     [4]: border size
-                show_dlg - list to add dialogue lines to show to the user.
-                    NOTE: its up to the caller to apply subs or not
+                mailbox - dict to send messages to outside from this
+                    displayable.
+                    (Default: {})
                 multi_select - True means we can select more than one item.
                     False otherwise
                     (Default: False)
@@ -359,8 +434,9 @@ init -1 python:
 
             self.selectable = _selectable
             self.select_map = select_map
-            self.show_dlg = show_dlg
+            self.mailbox = mailbox
             self.multi_select = multi_select
+            self.been_selected = False
 
             # image setups
             self.thumb = Image(self.THUMB_DIR + _selectable.thumb)
@@ -454,10 +530,8 @@ init -1 python:
 
                 elif not self.hover_jumped:
                     self.hover_jumped = True
-#                    renpy.say(m, "I AM HOVER", interact=False)
-                    self.show_dlg.append(self.selectable.hover_dlg)
+                    self._send_hover_text()
                     renpy.end_interaction(True)
-#                    renpy.call_in_new_context(self.selectable.hover_dlg)
 
 
         def _render_bottom_frame_piece(self, piece, st, at):
@@ -608,6 +682,107 @@ init -1 python:
             )
 
 
+        def _send_msg_disp_text(self, msg):
+            """
+            Sends text message to mailbox.
+
+            IN:
+                msg - text message to send
+            """
+            self.mailbox.send_disp_text(msg)
+
+
+        def _send_hover_text(self):
+            """
+            Sends hover text to mailbox
+
+            ASSUMES hover text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.hover_dlg
+                )
+            )
+
+
+        def _send_first_select_text(self):
+            """
+            Sends first select text to mailbox
+
+            ASSUMES first select text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.first_select_dlg
+                )
+            )
+
+
+        def _send_select_text(self):
+            """
+            Sends the select text to mailbox
+
+            ASSUMES select text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.select_dlg
+                )
+            )
+
+
+
+        def _select(self):
+            """
+            Makes this item a selected item. Also handles other logic realted
+            to selecting this.
+            """
+            # can't select self again if we are alreayd selected
+            if self.selected:
+                return
+
+            # otherwise select self
+            self.selected = True
+
+            if not self.multi_select:
+                # must clean select map
+                for item in self.select_map.itervalues():
+                    # setting to False will queue for removal of item
+                    # NOTE: the caller must handle teh removal
+                    item.selected = False
+
+            # add this item to the select map
+            self.select_map[self.selectable.name] = self
+
+            if self.been_selected:
+                if self.selectable.select_dlg is not None:
+                    self._send_select_text()
+                    renpy.end_interaction(True)
+
+            else:
+                # not been selected before
+                self.been_selected = True
+                if self.selectable.first_select_dlg is not None:
+                    self._send_first_select_text()
+                    renpy.end_interaction(True)
+
+                elif self.selectable.select_dlg is not None:
+                    self._send_select_text()
+                    renpy.end_interaction(True)
+
+
+        def _rand_select_dlg(self, dlg_list):
+            """
+            Randomly selects dialogue from the given list
+
+            IN:
+                dlg_list - list to select from
+
+            ASSUMES the list is not empty
+            """
+            return dlg_list[random.randint(0, len(dlg_list)-1)]
+
+
         def event(self, ev, x, y, st):
             """
             EVENT. We only want to handle 2 cases:
@@ -631,11 +806,12 @@ init -1 python:
 
                     elif ev.button == 1:
                         # left click
-                        # select something
-                        pass
+                        self._select()
+                        renpy.redraw(self, 0)
 
-
-            self._hover_jump()
+            # apply hover dialogue logic if not selected
+            if not self.selected:
+                self._hover_jump()
 
 
 
@@ -644,9 +820,15 @@ init -1 python:
             Render. we want the button here.
             """
             # first, render all items.
-            _bottom_renders = self._render_bottom_frame(self.hovered, st, at)
-            _top_renders = self._render_top_frame(self.hovered, st, at)
-            _disp_name = self._render_display_name(self.hovered, st, at)
+            _bottom_renders = self._render_bottom_frame(
+                self.hovered or self.selected, st, at
+            )
+            _top_renders = self._render_top_frame(
+                self.hovered or self.selected, st, at
+            )
+            _disp_name = self._render_display_name(
+                self.hovered or self.selected, st, at
+            )
 
             # now blit
             r = renpy.Render(self.WIDTH, self.TOTAL_HEIGHT)
@@ -678,10 +860,10 @@ style mas_selector_sidebar_vbar:
 #
 # IN:
 #   items - list of MASSelectableImagebuttonDisplayables to display
-#   only_unlocked - True means we only show the unlocked ones.
+#   mailbox - MASSelectableSpriteMailbox for messages
 #   confirm - label to jump to when confirming
 #   cancel - label to jump to when canceling
-screen mas_selector_sidebar(items, confirm, cancel, only_unlocked=True):
+screen mas_selector_sidebar(items, mailbox, confirm, cancel):
     zorder 50
 
     frame:
@@ -712,12 +894,97 @@ screen mas_selector_sidebar(items, confirm, cancel, only_unlocked=True):
                 style "hkb_button"
                 xalign 0.5
                 action Jump(confirm)
+#                action Function(mailbox.mas_send_return, 1)
             textbutton _("Cancel"):
                 style "hkb_button"
                 xalign 0.5
                 action Jump(cancel)
+#                action Function(mailbox.mas_send_return, -1)
 
         vbar value YScrollValue("sidebar_scroll"):
             style "mas_selector_sidebar_vbar"
             xoffset -25
 
+
+# sidebar selector label
+# NOTE: this shows the `mas_selector_sidebar` screen. It is the caller's
+#   responsibility to hide the screen when done.
+#
+# IN:
+#   items - list of MASSelectable objects to select from.
+#   confirm_label - label to jump to when user clicks Confirm.
+#   cancel_label - label to jump to when user clicks Cancel.
+#   preview_selections - True means the selections are previewed, False means
+#       they are not.
+#       (Default: True)
+#   only_unlocked - True means we only show unlocked items, False means
+#       show everything.
+#       (Default: True)
+#   mailbox - MASSelectableSpriteMailbox object to use
+#       Call send_def_disp_text to set the default display text.
+#       Call send_disp_text to set the inital display text.
+#       (Default: MASSelectbaleSpriteMailbox)
+#
+# OUT:
+#   select_map - map of selections. Organized like:
+#       name: MASSelectableImageButtonDisplayable object
+label mas_selector_sidebar_select(items, confirm_label, cancel_label, preview_selections=True, only_unlocked=True, mailbox=store.mas_selspr.MASSelectableSpriteMailbox(), select_map={}):
+
+    # TODO: this needs to be setup with speicalized types, because
+    #   if we want to do previews with acs/hair/clothes, they need to be
+    #   done separately.
+
+    # TODO: need to fill the select map with what is currently selected.
+    #   then that should be copied so we are aware of what is the current
+    #   layout.
+    #   OR: we can assume the list given does not include what is currently
+    #   being worn?
+    #   mailbox should be set with some stuff so that the confirm button
+    #   can be properly enabled/disabled depending if the current selection
+    #   is actually different or not.
+    
+    python:
+        # TODO: unlock check
+        disp_items = [
+            MASSelectableImageButtonDisplayable(
+                item,
+                select_map,
+                store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                mailbox
+            )
+            for item in items
+        ]
+
+    show screen mas_selector_sidebar(disp_items, confirm_label, cancel_label)
+
+label mas_selector_sidebar_select_loop:
+    python:
+        # display text parsing
+        disp_text = mailbox.get_disp_text()
+        if disp_text is None:
+            disp_text = mailbox.get_def_disp_text()
+
+        # select map parsing
+        for item in select_map.keys():
+            if not select_map[item].selected:
+                select_map.pop(item)
+                # TODO: if preview, remove preview item.
+
+        # NOTE: accessories is the caes where removal of items is very
+        #   important.
+        # NOTE: with hair/clothes, you cant add more than one outfit piece
+        #   anyway, so just a single change is sufficient.
+
+    $ renpy.say(m, disp_text)
+
+    jump mas_selector_sidebar_select_loop
+
+label mas_selector_sidebar_select_confirm:
+    # TODO: add property to say whether or not we want to save confirmed
+    #   changes or not.
+    return # TODO: return the mailbox value.
+
+label mas_selector_sidebar_select_cancel:
+    # TODO: reset whatever to what we currently are wearing
+    return # TODO: return the mailbox value.
+    
