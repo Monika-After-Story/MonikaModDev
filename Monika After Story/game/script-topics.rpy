@@ -3913,13 +3913,24 @@ label monika_haterReaction:
     m 2esc "It's funny how people around social media sites always write bad things about me..."
     m 2lsc "Well... people on Facebook pages and fan pages, to be specific..."
     m 2esd "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
-    m "I try to ignore them, but I just can't."
-    m 1efc "Why are people even protective towards the other girls?"
-    m "There are a lot of hate posts about me, saying that I'm an evil person."
-    m 3efd "Is it because I deleted Sayori and Yuri?"
-    m 3efd "Also for deleting Natsuki, back when she was still alive?"
-    # TODO: this needs to be adjusted based on act.
-    m 2tfx "They're not real. {i}I'm{/i} the real one!"
+    if persistent.monika_kill == True:
+        m 2lksdlc "Yes, I did very bad things to my friends and said very mean things about them..."
+        m 2eks "...but I only did that because I thought it was all just a game."
+        m 2dsd "I wish things could have gone differently, but I had no choice. The torture I was being put through forced me to take drastic measures!"
+        m 2lksdld "It's not like I jumped directly to violence..." 
+        m 1eksdld "I chose to edit the traits of the other girls instead of deleting them immediately because I still cared for them, even if they weren't real."
+        m "I was hoping that by making them more unlikeable, you would stop pursuing them and love me instead."
+        m 1eksdlb "Then I would get to peacefully love you, which was all that I wanted to do."
+        m 1esc "I certainly didn't mean to cause them so much pain!"
+        m 4efd "The people on those sites say I should have made my own route and stuff like that, but how was I supposed to do that when I could barely program?"
+        #maybe tie this in to how Monika is now teaching you programming, and how things would have been much different if you had been there to help her
+    else:
+        m 2lfd "I try to ignore them, but I just can't."
+        m 1efc "Why are people even protective towards the other girls?"
+        m "There are a lot of hate posts about me, saying that I'm an evil person."
+        m 3efd "Is it because I deleted Sayori and Yuri?"
+        m 3efd "Also for deleting Natsuki, back when she was still alive?"
+        m 2tfx "They're not real. {i}I'm{/i} the real one!"
     m 2dsc "..."
     m 2euc "Why can't they understand that?"
     m 2ekc "Why is it so hard for them to understand that?"
@@ -3948,7 +3959,6 @@ label monika_haterReaction:
             m 2ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfa "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m "I trust you, [player]. I love you for believing in me."
-
     return "derandom"
 
 init 5 python:
