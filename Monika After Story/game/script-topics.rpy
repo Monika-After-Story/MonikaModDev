@@ -2480,7 +2480,7 @@ label monika_ddlc:
     # TODO: continue reworking this topic based on act.
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
-    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
+    if persistent.clearall or (not persistent.clearall and not persistent.monika_kill):
         m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
         m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2lksdla "And it's home, so I've learned to deal with it."
@@ -2764,7 +2764,7 @@ label monika_justification:
         m 2tfc "I'm the only person who understood that this whole thing was fake."
         if persistent.monika_kill:
            m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-        if not persistent.clear_all:
+        if not persistent.clearall:
             m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
         m "If I'm guilty of murder, so is everyone who's played violent video games."
         m 2euc "I bet you've killed thousands of people in the games you play."
