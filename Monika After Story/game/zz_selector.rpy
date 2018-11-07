@@ -158,6 +158,16 @@ init 200 python:
             )
 
 
+        def get_sprobj(self):
+            """
+            Gets the sprite object associated with this selectable.
+
+            RETURNS: the sprite object for this selectbale, or None if not
+                found
+            """
+            return store.mas_sprites.ACS_MAP.get(self.name, None)
+
+
     class MASSelectableHair(MASSelectableSprite):
         """
         Wrappare around MASHair sprite objects
@@ -215,6 +225,16 @@ init 200 python:
                 first_select_dlg,
                 select_dlg
             )
+
+
+        def get_sprobj(self):
+            """
+            Gets the sprite object associated with this selectable.
+
+            RETURNS: the sprite object for this selectbale, or None if not
+                found
+            """
+            return store.mas_sprites.HAIR_MAP.get(self.name, None)
 
 
     class MASSelectableClothes(MASSelectableSprite):
@@ -276,12 +296,23 @@ init 200 python:
             )
 
 
+        def get_sprobj(self):
+            """
+            Gets the sprite object associated with this selectable.
+
+            RETURNS: the sprite object for this selectbale, or None if not
+                found
+            """
+            return store.mas_sprites.CLOTH_MAP.get(self.name, None)
+
+
 init -10 python in mas_selspr:
     import store
 
     # mailbox constants
     MB_DISP = "disp_text"
     MB_DISP_DEF = "def_disp_text"
+    MB_CONF = "conf_enable"
 
     ## screen constants
     SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
@@ -290,6 +321,51 @@ init -10 python in mas_selspr:
     ## string constants
     DEF_DISP = "..."
 
+    ## selection types
+    SELECT_ACS = 0
+    SELECT_HAIR = 1
+    SELECT_CLOTH = 2
+
+    ## selection group check
+    def valid_select_type(sel_con):
+        """
+        Returns True if valid selection constant, False otherwise
+
+        IN:
+            sel_con - selection constnat to check
+
+        RETURNS: True if vali dselection constant
+        """
+        sel_types = (SELECT_ACS, SELECT_HAIR, SELECT_CLOTH)
+        return sel_con in sel_types
+
+
+    ## acs/hair/clothes selection helper functions
+    def is_same(old_map_view, new_map_view):
+        """
+        Compares the given select map views for differences.
+
+        NOTE: we only check key existence. Use this after you clean the
+        map.
+
+        IN:
+            old_map_view - viewkeys view of the old map
+            new_map_view - viewkeys view of the new map
+
+        RETURNS:
+            True if the maps are the same, false if different.
+        """
+        old_len = len(old_map_view)
+
+        # lengths dont match? clearly these views do not match then.
+        if old_len != len(new_map_view):
+            return False
+
+        # otherwise, now we get intersection and verify length
+        return old_len == len(old_map_view & new_map_view)
+
+
+    # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
         """
         SelectableSprite extension of the mailbox
@@ -306,6 +382,7 @@ init -10 python in mas_selspr:
             """
             super(MASSelectableSpriteMailbox, self).__init__()
             self.send_def_disp_text(def_disp_text)
+            self.send_conf_enable(False)
         
 
         def _get(self, headline):
@@ -324,6 +401,17 @@ init -10 python in mas_selspr:
             This is just for ease of use.
             """
             super(MASSelectableSpriteMailbox, self).send(headline, msg)
+
+
+        def get_conf_enable(self):
+            """
+            Returns the value of the conf enable message
+
+            RETURNS:
+                True if the confirmation button should be enabled, False 
+                otherwise
+            """
+            return self._get(MB_CONF)
 
 
         def get_def_disp_text(self):
@@ -346,6 +434,16 @@ init -10 python in mas_selspr:
             return self._get(MB_DISP)
             
 
+        def send_conf_enable(self, enable):
+            """
+            Sends enable message
+
+            IN:
+                enable - True means to enable, False means to disable 
+            """
+            self._send(MB_CONF, enable)
+
+
         def send_def_disp_text(self, txt):
             """
             Sends default display message
@@ -364,10 +462,6 @@ init -10 python in mas_selspr:
                 txt - txt to display
             """
             self._send(MB_DISP, txt)
-
-
-init -10 python:
-
 
 
 init -1 python:
@@ -890,11 +984,18 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel):
                     null height 1
 
             null height 10
-            textbutton _("Confirm"):
-                style "hkb_button"
-                xalign 0.5
-                action Jump(confirm)
-#                action Function(mailbox.mas_send_return, 1)
+
+            if mailbox.get_conf_enable():
+                textbutton _("Confirm"):
+                    style "hkb_button"
+                    xalign 0.5
+                    action Jump(confirm)
+            else:
+                ypadding 5
+                xsize 120
+                background Image("mod_assets/hkb_disabled_background.png")
+                text "Confirm"
+
             textbutton _("Cancel"):
                 style "hkb_button"
                 xalign 0.5
@@ -905,46 +1006,55 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel):
             style "mas_selector_sidebar_vbar"
             xoffset -25
 
-
-# sidebar selector label
+# GENERAL sidebar selector label
+# NOTE: you should NOT call this label. You should call the helper labels
+# instead.
 # NOTE: this shows the `mas_selector_sidebar` screen. It is the caller's
 #   responsibility to hide the screen when done.
 #
 # IN:
 #   items - list of MASSelectable objects to select from.
-#   confirm_label - label to jump to when user clicks Confirm.
-#   cancel_label - label to jump to when user clicks Cancel.
+#   select_type - SELECT_* constant for the current mode. We throw
+#       exceptions if this is not passed in and is a valid type.
 #   preview_selections - True means the selections are previewed, False means
 #       they are not.
 #       (Default: True)
 #   only_unlocked - True means we only show unlocked items, False means
 #       show everything.
 #       (Default: True)
+#   save_on_confirm - True means we should save selections on a confirm
+#       (which means we dont undo selections), while False means we will
+#       undo selections on a confirm, and let the caller handle the actual
+#       selection saving.
+#       (Default: True)
 #   mailbox - MASSelectableSpriteMailbox object to use
 #       Call send_def_disp_text to set the default display text.
 #       Call send_disp_text to set the inital display text.
-#       (Default: MASSelectbaleSpriteMailbox)
+#       IF None, we create a MASSelectableSpriteMaibox for use.
 #
 # OUT:
 #   select_map - map of selections. Organized like:
 #       name: MASSelectableImageButtonDisplayable object
-label mas_selector_sidebar_select(items, confirm_label, cancel_label, preview_selections=True, only_unlocked=True, mailbox=store.mas_selspr.MASSelectableSpriteMailbox(), select_map={}):
+#
+# RETURNS True if we are confirming the changes, False if not.
+label mas_selector_sidebar_select(items, select_type, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
 
-    # TODO: this needs to be setup with speicalized types, because
-    #   if we want to do previews with acs/hair/clothes, they need to be
-    #   done separately.
-
-    # TODO: need to fill the select map with what is currently selected.
-    #   then that should be copied so we are aware of what is the current
-    #   layout.
-    #   OR: we can assume the list given does not include what is currently
-    #   being worn?
-    #   mailbox should be set with some stuff so that the confirm button
-    #   can be properly enabled/disabled depending if the current selection
-    #   is actually different or not.
-    
     python:
-        # TODO: unlock check
+        if not store.mas_selspr.valid_select_type(select_type):
+            raise Exception(
+                "invalid selection constant: {0}".format(select_type)
+            )
+
+        # otherwise, quickly setup the flags for what mode we are in.
+        selecting_acs = select_type == store.mas_selspr.SELECT_ACS
+        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
+        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
+
+        # setup the mailbox
+        if mailbox is None:
+            mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
+
+        # TODO unlock check
         disp_items = [
             MASSelectableImageButtonDisplayable(
                 item,
@@ -955,7 +1065,44 @@ label mas_selector_sidebar_select(items, confirm_label, cancel_label, preview_se
             for item in items
         ]
 
-    show screen mas_selector_sidebar(disp_items, confirm_label, cancel_label)
+
+    # TODO: this needs to be setup with speicalized types, because
+    #   if we want to do previews with acs/hair/clothes, they need to be
+    #   done separately.
+
+    # TODO: need to fill the select map with what is currently selected.
+    #   then that should be copied so we are aware of what is the current
+    #   layout.
+
+        if selecting_acs:
+            # setup the select map for current accessories
+            # that monika is wearing that are also in the item list.
+            pass
+
+        elif selecting_hair:
+            # add the current hair style to the select map and mark that it
+            # is selected
+            for item in disp_items:
+                if item.selectable.name == monika_chr.hair.name:
+                    select_map[monika_chr.hair.name] = item
+                    item.selected = True
+
+        else: # selecting clothes
+            # add the current clothes to the select map and mark that it is
+            # selected
+            for item in disp_items:
+                if item.selectable.name == monika_chr.clothes.name:
+                    select_map[monika_chr.clothes.name] = item
+                    item.selected = True
+
+        # make copy of old select map
+        old_select_map = dict(select_map)
+
+        # also create views that we use for comparisons
+        old_view = old_select_map.viewkeys()
+        new_view = select_map.viewkeys()
+
+    show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel")
 
 label mas_selector_sidebar_select_loop:
     python:
@@ -970,21 +1117,79 @@ label mas_selector_sidebar_select_loop:
                 select_map.pop(item)
                 # TODO: if preview, remove preview item.
 
+
+        # once select map is cleaned, determine the confirm button enable
+        mailbox.send_conf_enable(
+            not store.mas_selspr.is_same(old_view, new_view)
+        )
+
+        if preview_selections:
+
+            if selecting_acs:
+                # add the accessories
         # NOTE: accessories is the caes where removal of items is very
         #   important.
-        # NOTE: with hair/clothes, you cant add more than one outfit piece
-        #   anyway, so just a single change is sufficient.
+                pass
+
+            elif selecting_hair:
+                for item in select_map.values():
+                    if item.selected:
+                        monika_chr.change_hair(item.selectable.get_sprobj())
+
+            else: # selecting_clothes
+                for item in select_map.values():
+                    if item.selected:
+                        monika_chr.change_clothes(item.selectable.get_sprobj())
 
     $ renpy.say(m, disp_text)
 
     jump mas_selector_sidebar_select_loop
 
 label mas_selector_sidebar_select_confirm:
-    # TODO: add property to say whether or not we want to save confirmed
-    #   changes or not.
-    return # TODO: return the mailbox value.
+    hide screen mas_selector_sidebar
+    if not save_on_confirm:
+        # TODO: undo the selection map
+        pass
+    return True
 
 label mas_selector_sidebar_select_cancel:
+    hide screen mas_selector_sidebar
     # TODO: reset whatever to what we currently are wearing
-    return # TODO: return the mailbox value.
+    return False
+   
+# ACS sidebar selector label
+#
+# SEE mas_selector_sidebar_select for info on input params.
+# NOTE: select_type is not a param here.
+#
+# RETURNS: True if we are confirming the changes, False if not
+label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
+
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_ACS, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    return _return
+
+
+# HAIR sidebar selector label
+#
+# SEE mas_selector_sidebar_select for info on input params.
+# NOTE: select_type is not a param here.
+#
+# RETURNS: True if we are confirming the changes, False if not
+label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
     
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    return _return
+
+# CLOTH sidebar selector label
+#
+# SEE mas_selector_sidebar_select for info on input params.
+# NOTE: select_type is not a param here.
+#
+# RETURNS: True if we are confirming the changes, False if not
+label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
+    
+    call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    return _return
