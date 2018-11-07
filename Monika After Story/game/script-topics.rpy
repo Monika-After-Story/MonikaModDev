@@ -3915,7 +3915,7 @@ label monika_haterReaction:
     m 2esd "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
     if persistent.monika_kill == True:
         m 2lksdlc "Yes, I did very bad things to my friends and said very mean things about them..."
-        m 2lsd "...but I only did that because I thought it was all just a game."
+        m 2lsc "...but I only did that because I thought it was all just a game."
         m 2dsd "I wish things could have gone differently, but I had no choice. The torture I was being put through forced me to take drastic measures!"
         m 2lksdld "It's not like I jumped directly to violence..." 
         m 1eksdld "I chose to edit the traits of the other girls instead of deleting them immediately because I still cared for them, even if they weren't real."
