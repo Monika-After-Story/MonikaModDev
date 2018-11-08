@@ -16,6 +16,9 @@ default persistent._mas_filereacts_stop_map = dict()
 default persistent._mas_filereacts_historic = dict()
 # historic database used to track when and how many gifts Monika has received
 
+default persistent._mas_filereacts_last_reacted_date = None
+# stores the last date gifts were received so we can clear _mas_filereacts_reacted_map
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
@@ -127,11 +130,17 @@ init -1 python in mas_filereacts:
         RETURNS:
             list of event labels in the order they should be shown
         """
+
         GIFT_EXT = ".gift"
         raw_gifts = store.mas_docking_station.getPackageList(GIFT_EXT)
 
         if len(raw_gifts) == 0:
             return []
+
+        # is it a new day?
+        if store.persistent._mas_filereacts_last_reacted_date is None or store.persistent._mas_filereacts_last_reacted_date is not datetime.date.today():
+            store.persistent._mas_filereacts_last_reacted_date = datetime.date.today()
+            store.persistent._mas_filereacts_reacted_map = dict()
 
         # otherwise we found some potential gifts
         gifts_found = list()
@@ -600,8 +609,7 @@ label mas_reaction_gift_coffee:
     return
 
 init 5 python:
-    if mas_isMonikaBirthday():
-        addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
+    addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
 
 label mas_reaction_quetzal_plush:
     if not persistent._mas_acs_enable_quetzalplushie:
@@ -829,7 +837,6 @@ label mas_reaction_candy:
     $ mas_receivedGift("mas_reaction_candy")
     $ gift_ev = mas_getEV("mas_reaction_candy")
     $ store.mas_filereacts.delete_file(gift_ev.category)
-    #TODO check if this is a good way to allow multi gifts
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
