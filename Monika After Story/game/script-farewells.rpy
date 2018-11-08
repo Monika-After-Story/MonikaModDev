@@ -14,21 +14,34 @@ init -1 python in mas_farewells:
             a single farewell (as an Event) that we want to use
         """
 
-        # filter events by their unlocked property first
+        # check if we have moni_wants farewells
+        moni_wants_farewells = renpy.store.Event.filterEvents(
+            renpy.store.evhand.farewell_database,
+            unlocked=True,
+            pool=False, # may as well not filter these
+            moni_wants=True
+        )
+
+
+        if moni_wants_farewells is not None and len(moni_wants_farewells) > 0:
+
+            # select one label randomly
+            return moni_wants_farewells[
+                renpy.random.choice(moni_wants_farewells.keys())
+            ]
+
+        # now filter events by their unlocked property
         unlocked_farewells = renpy.store.Event.filterEvents(
             renpy.store.evhand.farewell_database,
             unlocked=True,
             pool=False
         )
 
-        # filter greetings using the affection rules dict
-        affection_farewells_dict = renpy.store.Event.checkAffectionRules(
-            unlocked_farewells
+        # filter farewells using the affection rules dict
+        unlocked_farewells = renpy.store.Event.checkAffectionRules(
+            unlocked_farewells,
+            keepNoRule=True
         )
-
-        # check for the special monikaWantsThisFirst case
-        if len(affection_farewells_dict) == 1 and affection_farewells_dict.values()[0].monikaWantsThisFirst():
-            return affection_farewells_dict.values()[0]
 
         # filter farewells using the special rules dict
         random_farewells_dict = renpy.store.Event.checkRepeatRules(
@@ -59,13 +72,27 @@ init -1 python in mas_farewells:
 
         # We couldn't find a suitable farewell we have to default to normal random selection
         # filter random events normally
-        random_farewells_dict = renpy.store.Event.filterEvents(
+        random_unlocked_farewells = renpy.store.Event.filterEvents(
             unlocked_farewells,
             random=True
         )
 
-        # update dict with the affection filtered ones
-        random_farewells_dict.update(affection_farewells_dict)
+        # check if we have farewell available to display with current filter
+        if len(random_unlocked_farewells) > 0:
+            # select one randomly
+            return random_unlocked_farewells[
+               renpy.random.choice(random_unlocked_farewells.keys())
+            ]
+
+        # We couldn't find a suitable farewell we have to default to normal random selection
+        # filter random events normally
+        renpy.log("rip we need update script")
+        random_farewells_dict = renpy.store.Event.filterEvents(
+            renpy.store.evhand.greeting_database,
+            unlocked=True,
+            random=True,
+            excl_cat=list()
+        )
 
         # select one randomly
         return random_farewells_dict[
@@ -125,7 +152,7 @@ label mas_farewell_start:
 # unlocked - True means this farewell is ready for selection
 # random - randoms are used in teh default farewell action
 # pool - pooled ones are selectable in the menu
-# rules - TODO documentation
+# rules - Dict containing different rules(check event-rules for more details)
 ###
 
 init 5 python:
@@ -136,6 +163,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_leaving_already",
             unlocked=True,
+            random=True,#TODO update script
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -177,8 +205,9 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_sayanora",
+            eventlabel="bye_sayanora",#sayanora?
             unlocked=True,
+            random=True,#TODO update script
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -197,6 +226,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
+            random=True,#TODO update script
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -215,6 +245,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
+            random=True,#TODO update script
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -234,6 +265,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
+            random=True,#TODO now we'll probably need an update script rip
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -269,7 +301,7 @@ label bye_going_to_sleep:
     elif mas_isMoniUpset():
         m 2efc "Going to sleep, [player]?"
         m 2esc "Goodnight."
-    
+
     elif mas_isMoniDis():
         m 6rkc "Oh...goodnight, [player]."
         m 6lkc "Hopefully I'll see you tomorrow..."
@@ -302,7 +334,7 @@ label bye_prompt_to_class:
         m 1hua "Study hard, [player]!"
         m 1eua "Nothing is more attractive than a [guy] with good grades."
         m 1hua "See you later!"
-    
+
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
         m 2tfc "Hopefully you at least learn something today."
@@ -384,7 +416,7 @@ label bye_prompt_sleep:
 
         elif mas_isMoniUpset():
             m 2efc "Goodnight, [player]."
-        
+
         elif mas_isMoniDis():
             m 6ekc "Okay...{w=1} Goodnight, [player]."
 
@@ -425,7 +457,7 @@ label bye_prompt_sleep:
             m "The last thing I need is you getting sick."
             m "{fast}You're grumpy enough as it is.{nw}"
             $ _history_list.pop()
-            m 2efc "Goodnight." 
+            m 2efc "Goodnight."
 
         elif mas_isMoniDis():
             m 6ekc "[player]..."
@@ -659,7 +691,7 @@ label bye_goodnight:
         m 6lkc "...Goodnight."
 
     else:
-        m 6ckc "..."        
+        m 6ckc "..."
     return 'quit'
 
 
@@ -828,7 +860,7 @@ label bye_going_somewhere:
         # distressed monika has a 50% chance of not going with you
         if random.randint(1,100) <= dis_chance:
             jump bye_going_somewhere_nothanks
-        
+
         # otherwse we go
         m 1wud "You really want to bring me along?"
         m 1ekd "Are you sure this isn't some--{nw}"
@@ -883,7 +915,7 @@ label bye_going_somewhere:
 
             "No.":
                 m 2ekp "Oh, okay."
-                
+
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
@@ -960,7 +992,7 @@ label bye_going_somewhere_rtg:
             m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
             $ mas_gainAffection()
 
-    return 
+    return
 
 
 label bye_going_somewhere_nothanks:
@@ -998,7 +1030,7 @@ label bye_going_somewhere_leavemenu:
                 m 1tfd "...Fine."
 
             return "quit"
-            
+
         "No.":
             if mas_isMoniNormal(higher=True):
                 m 2eka "...Thank you."
