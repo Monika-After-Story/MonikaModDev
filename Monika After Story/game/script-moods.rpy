@@ -357,7 +357,7 @@ label mas_mood_scared:
     m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
     m 1hub "You can also try spending a few minutes to meditate!"
     m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
-    m 1hua " Listening to your favourite music can be counted as meditating too!"
+    m 1hua " Listening to your favorite music can be counted as meditating too!"
     m 1eua "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn’t necessarily bad, you know?"
