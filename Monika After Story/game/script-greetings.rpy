@@ -828,7 +828,7 @@ label greeting_longtime:
     if mas_isMoniNormal(higher=True):
         m 1eka "Long time no see, [player]!"
         m 1eua "I'm so happy that you're here now."
-    
+
     elif mas_isMoniUpset():
         m 2efc "Long time no see, [player]."
 
@@ -1054,8 +1054,32 @@ label monikaroom_greeting_choice:
 #TODO all these need review
 # monika narrates
 default persistent._mas_pm_will_change = None
+
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
+#    if not persistent._mas_pm_will_change:
+    rules = dict()
+    rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True
+        )
+    )
+    rules.update({"monika wants this first":""})
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="monikaroom_will_change",
+            unlocked=False,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+    del rules
+
+label monikaroom_will_change:
+    scene black
+    # fall through
 
 label monikaroom_greeting_ear_narration:
     # Monika knows you are here so
@@ -1093,18 +1117,20 @@ label monikaroom_greeting_ear_narration:
             menu:
                 m "You'll change, right?{w=1} For me?"
                 "I will":
+                    $ mas_getEV("monikaroom_greeting_ear_narration").unlocked = False
                     $ persistent._mas_pm_will_change = True
                     m "Thank you, [player]."
                     m "Please, I want us both to be happy."
 
                 "I won't":
                     #NOTE: We should keep pushing this greeting until the player says they're going to change. -MD
+                    $ mas_getEV("monikaroom_will_change").unlocked = True
                     $ persistent._mas_pm_will_change = False
                     $ mas_loseAffection()
                     m "Then I'm not talking with you until you decide to change."
                     m "Goodbye, [player]."
                     return "quit"
-        #Will trigger upon loading after Monika has said she's not going to talk w/ you 
+        #Will trigger upon loading after Monika has said she's not going to talk w/ you
         #provided you won't change.
         else:
             m "Oh, you're back."
@@ -1112,7 +1138,8 @@ label monikaroom_greeting_ear_narration:
             menu:
                 m "Are you ready to change, [player]?"
                 "I will":
-                    $ persistent._mas_pm_will_change = True                
+                    $ persistent._mas_pm_will_change = True
+                    $ mas_getEV("monikaroom_will_change").unlocked = False
                     m "Thank you, [player]."
                     m "Please, I just want us both to be happy."
 
@@ -1122,6 +1149,7 @@ label monikaroom_greeting_ear_narration:
                     $ mas_loseAffection()
                     m "Then I'm still not talking with you until you decide to change."
                     m "Goodbye, [player]."
+                    $ mas_getEV("monikaroom_will_change").unlocked = True
                     return "quit"
 
     call spaceroom from _call_spaceroom_enar
@@ -1129,7 +1157,7 @@ label monikaroom_greeting_ear_narration:
     if mas_isMoniNormal(higher=True):
         m 1hub "It's me!"
         m "Welcome back, [player]!"
-    
+
     elif mas_isMoniUpset():
         m 2efd "Okay, [player]?"
 
@@ -1227,7 +1255,7 @@ label monikaroom_greeting_ear_progbrokepy:
             m "It's almost like [he] actually enjoy keeping me trapped in here, {w}just so [he] can torture me."
         else:
             m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
-        m "If I'm ever going to get out of here, I'm going to have to do it myself."        
+        m "If I'm ever going to get out of here, I'm going to have to do it myself."
     jump monikaroom_greeting_choice
 
 # monika reads about errors when programming
@@ -1543,7 +1571,7 @@ label monikaroom_greeting_knock:
 
                 if persistent.seen_monika_in_room:
                     m 2efc "At least you knocked."
-                
+
             else:
                 m 6ekc "Oh... {w}Okay."
 
