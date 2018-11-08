@@ -13,7 +13,7 @@ default persistent._mas_selspr_acs_db = {}
 default persistent._mas_selspr_hair_db = {}
 default persistent._mas_selspr_clothes_db = {}
 
-init 200 python:
+init -20 python:
 
     class MASSelectableSprite(object):
         """
@@ -326,6 +326,176 @@ init -10 python in mas_selspr:
     SELECT_HAIR = 1
     SELECT_CLOTH = 2
 
+    # create the selectable lists
+    # we also create a dict mapping similar to sprites.
+    # maps
+    ACS_SEL_MAP = {}
+    HAIR_SEL_MAP = {}
+    CLOTH_SEL_MAP = {}
+
+    # lists, these should be sorted so do insertSort
+    ACS_SEL_SL = []
+    HAIR_SEL_SL = []
+    CLOTH_SEL_SL = []
+
+
+    def selectable_key(selectable):
+        """
+        Returns the display name of a selectable. meant for sorting.
+
+        IN:
+            selectable - the selectbale to get key for
+
+        RETURNS the display name of the selectable
+        """
+        return selectable.display_name
+
+
+    ## init functions for the sprites to use
+    def init_selectable_acs(
+            acs,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked=True,
+            hover_dlg=None,
+            first_select_dlg=None,
+            select_dlg=None
+        ):
+        """
+        Inits the selectable acs
+
+        IN:
+            acs - the acs to create a selectable from
+            display_name - display name to use
+            thumb - thumbnail image
+            group - grouping id
+            visible_when_locked - True if this should be visible even if locked
+                (Default: True)
+            hover_dlg - list of dialogue to say when the item is hovered over
+                (Default: None)
+            first_select_dlg - list of dialogue to say when the item is 
+                selected for the first time
+                (Default: None)
+            select_dlg - list of dialogue to say when the item is selected 
+                after the first time
+                (Default: None)
+        """
+        # no duplicates
+        if acs.name in ACS_SEL_MAP:
+            raise Exception("ACS already is selectable: {0}".format(acs.name))
+
+        new_sel_acs = store.MASSelectableAccessory(
+            acs,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked,
+            hover_dlg,
+            first_select_dlg,
+            select_dlg
+        )
+        ACS_SEL_MAP[acs.name] = new_sel_acs
+        store.mas_insertSort(ACS_SEL_SL, new_sel_acs, selectable_key)
+
+
+    def init_selectable_clothes(
+            clothes,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked=True,
+            hover_dlg=None,
+            first_select_dlg=None,
+            select_dlg=None
+        ):
+        """
+        Inits the selectable clothes
+
+        IN:
+            clothes - the clothes to create selectable from
+            display_name - display name to use
+            thumb - thumbnail image
+            group - grouping id
+            visible_when_locked - True if this should be visible even if locked
+                (Default: True)
+            hover_dlg - list of dialogue to say when the item is hovered over
+                (Default: None)
+            first_select_dlg - list of dialogue to say when the item is 
+                selected for the first time
+                (Default: None)
+            select_dlg - list of dialogue to say when the item is selected 
+                after the first time
+                (Default: None)        
+        """
+        # no duplicates
+        if clothes.name in CLOTH_SEL_MAP:
+            raise Exception(
+                "Clothes already is selectable: {0}".format(clothes.name)
+            )
+
+        new_sel_clothes = store.MASSelectableClothes(
+            clothes,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked,
+            hover_dlg,
+            first_select_dlg,
+            select_dlg
+        )
+        CLOTH_SEL_MAP[clothes.name] = new_sel_clothes
+        store.mas_insertSort(CLOTH_SEL_SL, new_sel_clothes, selectable_key)
+
+
+    def init_selectable_hair(
+            hair,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked=True,
+            hover_dlg=None,
+            first_select_dlg=None,
+            select_dlg=None
+        ):
+        """
+        Inits the selectable hair
+
+        IN:
+            hair - the hair to create a selectable from
+            display_name - display name to use
+            thumb - thumbnail image
+            group - grouping id
+            visible_when_locked - True if this should be visible even if locked
+                (Default: True)
+            hover_dlg - list of dialogue to say when the item is hovered over
+                (Default: None)
+            first_select_dlg - list of dialogue to say when the item is 
+                selected for the first time
+                (Default: None)
+            select_dlg - list of dialogue to say when the item is selected 
+                after the first time
+                (Default: None)        
+        """
+        # no duplicates
+        if hair.name in HAIR_SEL_MAP:
+            raise Exception("Hair already is selectable: {0}".format(hair.name))
+
+        new_sel_hair = store.MASSelectableHair(
+            hair,
+            display_name,
+            thumb,
+            group,
+            visible_when_locked,
+            hover_dlg,
+            first_select_dlg,
+            select_dlg
+        )
+        HAIR_SEL_MAP[hair.name] = new_sel_hair
+        store.mas_insertSort(HAIR_SEL_SL, new_sel_hair, selectable_key)
+
+
+
     ## selection group check
     def valid_select_type(sel_con):
         """
@@ -394,6 +564,15 @@ init -10 python in mas_selspr:
             return super(MASSelectableSpriteMailbox, self).get(headline)
 
 
+        def _read(self, headline):
+            """
+            Calls the super class read
+
+            THis is just for ease of us
+            """
+            return super(MASSelectableSpriteMailbox, self).read(headline)
+
+
         def _send(self, headline, msg):
             """
             Calls the super classs's send
@@ -403,7 +582,7 @@ init -10 python in mas_selspr:
             super(MASSelectableSpriteMailbox, self).send(headline, msg)
 
 
-        def get_conf_enable(self):
+        def read_conf_enable(self):
             """
             Returns the value of the conf enable message
 
@@ -411,7 +590,7 @@ init -10 python in mas_selspr:
                 True if the confirmation button should be enabled, False 
                 otherwise
             """
-            return self._get(MB_CONF)
+            return self._read(MB_CONF)
 
 
         def get_def_disp_text(self):
@@ -476,7 +655,7 @@ init -1 python:
         from store.mas_selspr import MB_DISP
 
         # constnats
-        THUMB_DIR = "mod_assets/thumb/"
+        THUMB_DIR = "mod_assets/thumbs/"
 
         WIDTH = 180 # default width
         
@@ -573,6 +752,10 @@ init -1 python:
             self.selected = False
             self.select_jump = False
 
+            # when True, we make a call to end the interaction after reaching
+            # the end of event.
+            self.end_interaction = False
+
 
         def _check_display_name(self, _display_name_text):
             """
@@ -625,7 +808,7 @@ init -1 python:
                 elif not self.hover_jumped:
                     self.hover_jumped = True
                     self._send_hover_text()
-                    renpy.end_interaction(True)
+                    self.end_interaction = True
 
 
         def _render_bottom_frame_piece(self, piece, st, at):
@@ -825,7 +1008,6 @@ init -1 python:
             )
 
 
-
         def _select(self):
             """
             Makes this item a selected item. Also handles other logic realted
@@ -844,6 +1026,7 @@ init -1 python:
                     # setting to False will queue for removal of item
                     # NOTE: the caller must handle teh removal
                     item.selected = False
+                    renpy.redraw(item, 0)
 
             # add this item to the select map
             self.select_map[self.selectable.name] = self
@@ -851,18 +1034,18 @@ init -1 python:
             if self.been_selected:
                 if self.selectable.select_dlg is not None:
                     self._send_select_text()
-                    renpy.end_interaction(True)
+                    self.end_interaction = True
 
             else:
                 # not been selected before
                 self.been_selected = True
                 if self.selectable.first_select_dlg is not None:
                     self._send_first_select_text()
-                    renpy.end_interaction(True)
+                    self.end_interaction = True
 
                 elif self.selectable.select_dlg is not None:
                     self._send_select_text()
-                    renpy.end_interaction(True)
+                    self.end_interaction = True
 
 
         def _rand_select_dlg(self, dlg_list):
@@ -900,13 +1083,21 @@ init -1 python:
 
                     elif ev.button == 1:
                         # left click
-                        self._select()
-                        renpy.redraw(self, 0)
+                        if self._is_over_me(x, y):
+                            self._select()
+                            renpy.redraw(self, 0)
+
+#                        elif self.selected and not self.multi_select:
+#                            self.selected = False
+#                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
             if not self.selected:
                 self._hover_jump()
 
+            if self.end_interaction:
+                self.end_interaction = False
+                renpy.end_interaction(True)
 
 
         def render(self, width, height, st, at):
@@ -959,6 +1150,7 @@ style mas_selector_sidebar_vbar:
 #   cancel - label to jump to when canceling
 screen mas_selector_sidebar(items, mailbox, confirm, cancel):
     zorder 50
+#    modal True
 
     frame:
         area (1075, 5, 200, 625)
@@ -985,16 +1177,19 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel):
 
             null height 10
 
-            if mailbox.get_conf_enable():
+            if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
                     style "hkb_button"
                     xalign 0.5
                     action Jump(confirm)
             else:
-                ypadding 5
-                xsize 120
-                background Image("mod_assets/hkb_disabled_background.png")
-                text "Confirm"
+                frame:
+                    ypadding 5
+                    xsize 120
+                    xalign 0.5
+
+                    background Image("mod_assets/hkb_disabled_background.png")
+                    text "Confirm" style "hkb_text"
 
             textbutton _("Cancel"):
                 style "hkb_button"

@@ -2545,6 +2545,18 @@ init -1 python:
         exit_pp=store.mas_sprites._hair_def_exit
     )
     store.mas_sprites.init_hair(mas_hair_def)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_def,
+        "Ponytail",
+        "ponytail",
+        "hair",
+        hover_dlg=[
+            "Just like old times..."
+        ],
+        select_dlg=[
+            "Do you like my ribbon, [player]?"
+        ]
+    )
 
     ### DOWN
     ## down
@@ -2560,6 +2572,18 @@ init -1 python:
         exit_pp=store.mas_sprites._hair_down_exit
     )
     store.mas_sprites.init_hair(mas_hair_down)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_down,
+        "Down",
+        "down",
+        "hair",
+        hover_dlg=[
+            "Hair down hover!"
+        ],
+        select_dlg=[
+            "Feels nice to let my hair down..."
+        ]
+    )
 
     ### BUN WITH RIBBON
     ## bun
