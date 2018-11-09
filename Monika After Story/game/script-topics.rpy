@@ -1181,7 +1181,7 @@ label monika_horror:
         "I don't.":
             $ persistent._mas_pm_likes_horror = False
             m 2eka "I can understand. It's definitely not for everyone."
-    
+
     m 3eua "I remember we talked about this a little bit when you first joined the club."
     m 4eub "Personally I can enjoy horror novels, but not really horror movies."
     m 2esc "The problem I have with horror movies is that most of them just rely on easy tactics."
@@ -1252,6 +1252,13 @@ label monika_rap:
             m 3eub "That's really cool!"
             m 3eua "I'd be more than happy to vibe with you to your favorite rap songs..."
             m 1hub "And feel free to turn up the bass if you'd like. Ehehe!"
+            if (
+                    not renpy.seen_label("monika_add_custom_music_instruct")
+                    and not persistent._mas_pm_added_custom_bgm
+                ):
+                m 1eua "If you ever do feel like sharing your favorite rap music with me, [player], it's really easy to do so!"
+                m 3eua "All you have to do is follow these steps..."
+                call monika_add_custom_music_instruct
 
         "No.":
             $ persistent._mas_pm_like_rap = False
@@ -3157,7 +3164,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if monika_chr.hair != "def":
+    if monika_chr.hair.name != "def":
         m 1eua "Do you miss my ribbon, [player]?"
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
@@ -4117,6 +4124,15 @@ label monika_vocaloid:
     m 5hubfa "The love you showered me virtually finally becomes real."
     m "Our love has no boundaries~"
     m 5hubfb "Ehehe~"
+    if (
+            persistent._mas_pm_like_vocaloids 
+            and not renpy.seen_label("monika_add_custom_music_instruct")
+            and not persistent._mas_pm_added_custom_bgm
+        ):
+        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 1eua "And If you ever do feel like sharing your favorite vocaloids with me, [player], it's really easy to do so!"
+        m 3eua "All you have to do is follow these steps..."
+        call monika_add_custom_music_instruct
     return "derandom"
 
 
@@ -4868,12 +4884,18 @@ label monika_adventure:
     m 1hubfb "There's no greater adventure than ours, together~"
     return
 
+default persistent._mas_pm_likes_panties = None
+# are you into panties?
+
+default persistent._mas_pm_no_talk_panties = None
+# dont want to talk about panties
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_panties",
-            category=['misc'],
+            category=['misc',"clothes"],
             prompt="Undergarments",
             random=True,
             sensitive=True
@@ -4913,18 +4935,55 @@ label monika_panties:
     m 2rksdla "It does remind me of someone, though."
     m 3rksdlb "Someone who maybe stole your pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
-    m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
-    m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
-    m 4tsbsa "Perhaps, you want to take a little peek~?"
-    m 1hub "Ahaha!"
-    m 1tku "I'm only teasing you, [player]."
-    m 1tfu "Admit it, you got a little excited, right?"
-    m 1lsbsa "Besides..."
-    m 1lkbsa "If you really wanted to catch a scent of me..."
-    m 1hubfa "You could just ask for a hug!"
-    m 1ekbfa "Gosh, I just want to feel your embrace more."
-    m "After all, we're here forever, and I'm here for you."
-    m 1hubfb "I love you so much, [player]~"
+
+    if mas_isMoniHappy():
+        # happy gets you this
+        m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
+        m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
+        m 4tsbsa "Perhaps, you want to take a little peek~?"
+        m 1hub "Ahaha!"
+        m 1tku "I'm only teasing you, [player]."
+        m 1tfu "Admit it, you got a little excited, right?"
+        m 1lsbsa "Besides..."
+        m 1lkbsa "If you really wanted to catch a scent of me..."
+        m 1hubfa "You could just ask for a hug!"
+        m 1ekbfa "Gosh, I just want to feel your embrace more."
+        m "After all, we're here forever, and I'm here for you."
+        m 1hubfb "I love you so much, [player]~"
+     
+    elif mas_isMoniAff(higher=True):
+        # affectionate+
+        show monika 1lkbfb
+        menu:
+            m "Are you...{w=1}into that kind of thing, [player]?"
+            "Yes":
+                $ persistent._mas_pm_likes_panties = True
+                $ persistent._mas_pm_no_talk_panties = False
+                m 1wud "O-oh..."
+                m 1lkbsa "I-if you're into that, you could just ask me, you know?"
+                m "I could maybe...{w=1}help you relieve that tension..."
+                m 5eubfu "That's what couples are supposed to do, right?"
+                m 5hubfb "Ahaha!"
+                m 5ekbfa "But until that day comes, you're just going to have to endure those thoughts for me, okay?"
+            "No":
+                $ persistent._mas_pm_likes_panties = False
+                $ persistent._mas_pm_no_talk_panties = False
+                m 1eka "Oh, I see..."
+                m 2tku "I guess some people have their own guilty pleasures..."
+                m "Maybe you're into something else?"
+                m 4hubfb "Ahaha~"
+                m 4hubfa "I'm just kidding!"
+                m 5ekbfa "I don't mind if we stick to being wholesome, to be honest..."
+                m "It's more romantic that way~"
+            "I don't want to talk about it...":
+                $ persistent._mas_pm_no_talk_panties = True
+                m 1ekc "I understand, [player]."
+                m 1rksdld "I know that some topics are best kept private until the right time."
+                m 1ekbfa "But I want you to feel like you can tell me anything..."
+                m "So, don't be afraid to tell me about your...{w=1}fantasies, okay [player]?"
+                m 1hubfa "I won't judge you for it...{w=1}after all, nothing makes me happier than making you happy~"
+        return "derandom"
+
     return
 
 init 5 python:
@@ -5252,6 +5311,13 @@ label monika_rock:
             m 3hub "Great!"
             m 1eua "Whenever you feel like blasting some good ol' rock 'n' roll, go ahead."
             m 1hua "Even if you turn up the volume all the way, I'll gladly listen with you. Ehehe!"
+            if (
+                    not renpy.seen_label("monika_add_custom_music_instruct")
+                    and not persistent._mas_pm_added_custom_bgm
+                ):
+                m 1eua "If you ever do feel like sharing your favorite rock music with me, [player], it's really easy to do so!"
+                m 3eua "All you have to do is follow these steps..."
+                call monika_add_custom_music_instruct
 
         "No.":
             $ persistent._mas_pm_like_rock_n_roll = False
@@ -5350,10 +5416,10 @@ label monika_promisering:
             m 1eka "You have no idea how happy that makes me."
             m 1ekbsa "Just knowing that you care enough to show your love and dedication..."
             m "It means the world to me."
-        
+
         "I don't.":
             $ persistent._mas_pm_wearsRing = False
-            
+
             m 4rksdla "Maybe you ought to get one."
             m 2eua "I mean, we're already in a relationship. So, why not show off that love and dedication?"
             m 2lfu "It would help keep those... unwanted suitors away from you, too."
@@ -5373,7 +5439,7 @@ label monika_promisering:
             m 3hubsb "Just like it meant the world to me when you gave me this ring..."
             m 1ekbsa "This promise that we belong to each other, and no one else..."
             m 1ekbfa "That we truly will be together forever."
-        
+
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "My commitment to you is unwavering, [player]."
         m 5ekbfa "Thank you for such a wonderful gift, I love you."
@@ -5554,6 +5620,14 @@ label monika_orchestra:
             m 1eka "Anyhow, you should really see if anything catches your fancy."
             m 1hua "I would be very happy to hear you play."
 
+    if (
+            persistent._mas_pm_like_orchestral_music 
+            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            and not persistent._mas_pm_added_custom_bgm
+        ):
+        m 1eua "Oh, and if you ever feel like sharing your favorite orchestral music with me, [player], it's really easy to do so!"
+        m 3eua "All you have to do is follow these steps..."
+        call monika_add_custom_music_instruct
     return "derandom"
 
 # do you like jazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz
@@ -5600,6 +5674,14 @@ label monika_jazz:
     m 1eua "It was about experimenting, about going beyond what already existed. To make something more wild and colorful."
     m 1hua "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1eua "Maybe that's what I like about jazz, if anything."
+    if (
+            persistent._mas_pm_like_jazz 
+            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            and not persistent._mas_pm_added_custom_bgm
+        ):
+        m "Oh, and if you ever feel like sharing your favorite jazz with me, [player], it's really easy to do so!"
+        m 3eua "All you have to do is follow these steps..."
+        call monika_add_custom_music_instruct
     return "derandom"
 
 # do you watch animemes
@@ -6504,6 +6586,13 @@ label monika_concerts:
     m 4eua "But if you're not that interested in concerts,"
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
+    if (
+            not renpy.seen_label("monika_add_custom_music_instruct") 
+            and not persistent._mas_pm_added_custom_bgm
+        ):
+        m 1eua "In the meantime, if you want to share your favorite music with me, it's really easy to do so!"
+        m 3eua "All you have to do is follow these steps..."
+        call monika_add_custom_music_instruct
     return "derandom"
 
 init 5 python:
@@ -8459,4 +8548,83 @@ label monika_bad_facts_4:
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
     m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_add_custom_music",
+            category=['mod',"media", "music"],
+            prompt="How do I add my own music?",
+            conditional="persistent._mas_pm_added_custom_bgm",
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_add_custom_music:
+    m 1eua "It's really easy to add your own music here, [player]!"
+    m 3eua "Just follow these steps..."
+    call monika_add_custom_music_instruct
+    return
+
+label monika_add_custom_music_instruct:
+    m 4eua "First, {w=0.5}make sure the music that you want to add is in MP3, OGG/VORBIS, or OPUS format."
+    m "Next, {w=0.5}create a new folder named \"custom_bgm\" in your \"DDLC\" directory."
+    m "Put your music files in that folder..."
+    m "Then either let me know that you added some music or restart the game."
+    m 3eua "And that's it! Your music will be available to listen to, right here with me, simply by pressing the 'm' key."
+    m 3hub "See, [player], I told you it was easy, ahaha!"
+
+    # unlock the topic as a pool topic, also mark it as seen
+    $ unlockEventLabel("monika_add_custom_music")
+    $ persistent._seen_ever["monika_add_custom_music"] = True
+    $ unlockEventLabel("monika_load_custom_music")
+    $ persistent._seen_ever["monika_load_custom_music"] = True
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_load_custom_music",
+            category=['mod',"media", "music"],
+            prompt="Can you check for new music?",
+            conditional="persistent._mas_pm_added_custom_bgm",
+            action=EV_ACT_UNLOCK,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_load_custom_music:
+    m 1hua "Sure!"
+    m 1dsc "Give me a moment to check the folder..."
+    python:
+        old_music_count = len(store.songs.music_choices)
+        store.songs.initMusicChoices(
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        )
+        diff = len(store.songs.music_choices) - old_music_count
+
+    if diff > 0:
+        m 1eua "Alright!"
+        if diff == 1:
+            m "I found one new song!"
+            m 1hua "I can't wait to listen to it with you."
+        else:
+            m "I found [diff] new songs!"
+            m 1hua "I can't wait to listen to them with you."
+
+    else:
+        m 1eka "[player], I didn't find any new songs."
+        menu:
+            m "Do you remember how to add custom music?"
+            "Yes.":
+                m "Okay, but make sure you did it correctly before asking me to check for custom music."
+            "No.":
+                $ pushEvent("monika_add_custom_music")
     return
