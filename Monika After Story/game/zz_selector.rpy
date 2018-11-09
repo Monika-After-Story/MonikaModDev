@@ -522,8 +522,31 @@ init -10 python in mas_selspr:
                 (Default: False)
         """
         if select_type == SELECT_ACS:
-            # TODO NEEED to remove ALL ACS and then add the select map acs
-            pass
+            old_map_view = old_map.viewkeys()
+            new_map_view = new_map.viewkeys()
+
+            # determine which map is the "old" and which is "new"
+            # we want to remove what is excess from the desired map
+            if use_old:
+                remove_keys = new_map_view - old_map_view
+                remove_map = new_map
+                add_map = old_map
+
+            else:
+                remove_keys = old_map_view - new_map_view
+                remove_map = old_map
+                add_map = new_map
+        
+            # remove what is excess
+            for item_name in remove_keys:
+                moni_chr.remove_acs(
+                    remove_map[item_name].selectable.get_sprobj()
+                )
+
+            # then readd everything that was previous
+            for item in add_map.itervalues():
+                acs = item.selectable.get_sprobj()
+                moni_chr.wear_acs_in(acs, acs.rec_layer)
 
         elif select_type == SELECT_HAIR:
 
@@ -535,7 +558,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.values():
+            for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
 
@@ -558,7 +581,7 @@ init -10 python in mas_selspr:
                 select_map = new_map
 
             # change to that map
-            for item in select_map.values():
+            for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
 
@@ -589,8 +612,12 @@ init -10 python in mas_selspr:
             select_map - select map filled with appropriate selectbales.
         """
         if select_type == SELECT_ACS:
-            # TODO 
-            pass
+            for item in items:
+                if moni_chr.is_wearing_acs(item.selectable.get_sprobj()):
+                    select_map[item.selectable.name] = item
+                    item.selected = True
+
+                    # NOTE: cannot quit early because multiple accessories
 
         elif select_type == SELECT_HAIR:
             for item in items:
@@ -627,8 +654,7 @@ init -10 python in mas_selspr:
                 item = select_map.pop(item_name)
 
                 if remove_items and (select_type == SELECT_ACS):
-                    # TODO remove acs from Monika
-                    pass
+                    moni_chr.remove_acs(item.selectable.get_sprobj())
 
 
     ## selection group check
@@ -1386,7 +1412,7 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             )
 
         # otherwise, quickly setup the flags for what mode we are in.
-        selecting_acs = select_type == store.mas_selspr.SELECT_ACS
+#        selecting_acs = select_type == store.mas_selspr.SELECT_ACS
 #        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
 #        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
@@ -1404,15 +1430,6 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
             )
             for item in items
         ]
-
-
-    # TODO: this needs to be setup with speicalized types, because
-    #   if we want to do previews with acs/hair/clothes, they need to be
-    #   done separately.
-
-    # TODO: need to fill the select map with what is currently selected.
-    #   then that should be copied so we are aware of what is the current
-    #   layout.
 
         # fill select map
         store.mas_selspr._fill_select_map(
