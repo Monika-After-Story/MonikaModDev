@@ -1221,6 +1221,14 @@ label ch30_reset:
             monika_chr.wear_acs_pre(
                 store.mas_sprites.ACS_MAP[acs_name]
             )
+        for acs_name in persistent._mas_acs_bbh_list:
+            monika_chr.wear_acs_bbh(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
+        for acs_name in persistent._mas_acs_bfh_list:
+            monika_chr.wear_acs_bfh(
+                store.mas_sprites.ACS_MAP[acs_name]
+            )
         for acs_name in persistent._mas_acs_mid_list:
             monika_chr.wear_acs_mid(
                 store.mas_sprites.ACS_MAP[acs_name]
