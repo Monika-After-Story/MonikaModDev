@@ -308,6 +308,7 @@ init -20 python:
 
 init -10 python in mas_selspr:
     import store
+    import store.mas_utils as mas_utils
 
     # mailbox constants
     MB_DISP = "disp_text"
@@ -494,6 +495,140 @@ init -10 python in mas_selspr:
         HAIR_SEL_MAP[hair.name] = new_sel_hair
         store.mas_insertSort(HAIR_SEL_SL, new_sel_hair, selectable_key)
 
+
+    ## adjust an aspect of monika.
+    # NOTE: meant soley in use of preview and deselections.
+    def _adjust_monika(
+            moni_chr,
+            old_map,
+            new_map,
+            select_type,
+            use_old=False
+        ):
+        """
+        Adjusts an aspect of monika based on the select type
+
+        NOTE: this also logs exceptions if they occur. Also will undo 
+            a chnage that causes crash.
+
+        IN:
+            moni_chr - MASMonika object to adjust
+            old_map - the old select map (what was previously selected)
+            new_map - the new select map (what is currently selected)
+            select_type - the select type, which determins what parts of
+                monika to adjust
+            use_old - True means we are reverting back to the old map,
+                False meanse use the old map
+                (Default: False)
+        """
+        if select_type == SELECT_ACS:
+            # TODO NEEED to remove ALL ACS and then add the select map acs
+            pass
+
+        elif select_type == SELECT_HAIR:
+
+            # determine which map to change to
+            if use_old:
+                select_map = old_map
+            
+            else:
+                select_map = new_map
+
+            # change to that map
+            for item in select_map.values():
+                if use_old or item.selected:
+                    prev_hair = moni_chr.hair
+
+                    try:
+                        moni_chr.change_hair(item.selectable.get_sprobj())
+
+                    except Exception as e:
+                        mas_utils.writelog("BAD HAIR: " + repr(e))
+                        moni_chr.change_hair(prev_hair)
+
+                    return # always quit early since you can only have 1 hair
+
+        elif select_type == SELECT_CLOTH:
+
+            # determine which map to change to
+            if use_old:
+                select_map = old_map
+
+            else:
+                select_map = new_map
+
+            # change to that map
+            for item in select_map.values():
+                if use_old or item.selected:
+                    prev_cloth = moni_chr.clothes
+
+                    try:
+                        moni_chr.change_clothes(item.selectable.get_sprobj())
+
+                    except Exception as e:
+                        mas_utils.writelog("BAD CLOTHES: " + repr(e))
+                        moni_chr.change_clothes(prev_cloth)
+
+                    return # quit early since you can only have 1 clothes
+
+        # else, we do not do anything.
+
+
+    def _fill_select_map(moni_chr, select_type, items, select_map):
+        """
+        Fills the select map with what monika is currently wearing, based on
+        the given select type
+
+        IN:
+            moni_chr - MASMonika object to read from
+            select_type - the select type, which determins what part of monika
+                to read
+            items - list of displayables we should check if monika is wearing
+
+        OUT:
+            select_map - select map filled with appropriate selectbales.
+        """
+        if select_type == SELECT_ACS:
+            # TODO 
+            pass
+
+        elif select_type == SELECT_HAIR:
+            for item in items:
+                if item.selectable.name == moni_chr.hair.name:
+                    select_map[moni_chr.hair.name] = item
+                    item.selected = True
+                    return # we can quit early since you can only have 1 hair
+
+        elif select_type == SELECT_CLOTH:
+            for item in items:
+                if item.selectable.name == moni_chr.clothes.name:
+                    select_map[moni_chr.clothes.name] = item
+                    item.selected = True
+                    return # we can quit early since you only have 1 clothes
+
+        # else we do not do anything
+
+
+    def _clean_select_map(select_map, select_type, remove_items, moni_chr):
+        """
+        Cleans the select map of non-selected items.
+
+        IN:
+            select_map - select map to clean
+            select_type - select type, only used if remove_items is True
+            remove_items - True means we also remove items from monika chr
+            moni_chr - MASMonika object to modify.
+
+        OUT:
+            select_map - select map cleaned of non-selectd items
+        """
+        for item_name in select_map.keys():
+            if not select_map[item_name].selected:
+                item = select_map.pop(item_name)
+
+                if remove_items and (select_type == SELECT_ACS):
+                    # TODO remove acs from Monika
+                    pass
 
 
     ## selection group check
@@ -796,19 +931,25 @@ init -1 python:
             )
 
 
-        def _hover_jump(self):
+        def _hover(self):
             """
-            Jumps to hover if applicable.
-            Also does some hover data resetting.
+            Does hover actions, which include playing hover sound and sending
+            hover msg if appropriate
             """
-            if self.selectable.hover_dlg is not None:
-                if not self.hovered:
-                    self.hover_jumped = False
+            if not self.hovered:
+                self.hover_jumped = False
 
-                elif not self.hover_jumped:
-                    self.hover_jumped = True
+            elif not self.hover_jumped:
+                # first time hovering 
+                self.hover_jumped = True
+
+                # play hover sound
+                renpy.play(gui.hover_sound, channel="sound")
+
+                # send out hover dlg
+                if self.selectable.hover_dlg is not None:
                     self._send_hover_text()
-                    self.end_interaction = True
+                    self.end_interaction
 
 
         def _render_bottom_frame_piece(self, piece, st, at):
@@ -1031,6 +1172,10 @@ init -1 python:
             # add this item to the select map
             self.select_map[self.selectable.name] = self
 
+            # play the select sound
+            renpy.play(gui.activate_sound, channel="sound")
+
+            # the appropriate dialogue
             if self.been_selected:
                 if self.selectable.select_dlg is not None:
                     self._send_select_text()
@@ -1093,7 +1238,7 @@ init -1 python:
 
             # apply hover dialogue logic if not selected
             if not self.selected:
-                self._hover_jump()
+                self._hover()
 
             if self.end_interaction:
                 self.end_interaction = False
@@ -1242,8 +1387,8 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 
         # otherwise, quickly setup the flags for what mode we are in.
         selecting_acs = select_type == store.mas_selspr.SELECT_ACS
-        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
-        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
+#        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
+#        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
         # setup the mailbox
         if mailbox is None:
@@ -1269,26 +1414,13 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
     #   then that should be copied so we are aware of what is the current
     #   layout.
 
-        if selecting_acs:
-            # setup the select map for current accessories
-            # that monika is wearing that are also in the item list.
-            pass
-
-        elif selecting_hair:
-            # add the current hair style to the select map and mark that it
-            # is selected
-            for item in disp_items:
-                if item.selectable.name == monika_chr.hair.name:
-                    select_map[monika_chr.hair.name] = item
-                    item.selected = True
-
-        else: # selecting clothes
-            # add the current clothes to the select map and mark that it is
-            # selected
-            for item in disp_items:
-                if item.selectable.name == monika_chr.clothes.name:
-                    select_map[monika_chr.clothes.name] = item
-                    item.selected = True
+        # fill select map
+        store.mas_selspr._fill_select_map(
+            monika_chr,
+            select_type,
+            disp_items,
+            select_map
+        )
 
         # make copy of old select map
         old_select_map = dict(select_map)
@@ -1307,11 +1439,12 @@ label mas_selector_sidebar_select_loop:
             disp_text = mailbox.get_def_disp_text()
 
         # select map parsing
-        for item in select_map.keys():
-            if not select_map[item].selected:
-                select_map.pop(item)
-                # TODO: if preview, remove preview item.
-
+        store.mas_selspr._clean_select_map(
+            select_map,
+            select_type,
+            preview_selections,
+            monika_chr
+        )
 
         # once select map is cleaned, determine the confirm button enable
         mailbox.send_conf_enable(
@@ -1319,22 +1452,12 @@ label mas_selector_sidebar_select_loop:
         )
 
         if preview_selections:
-
-            if selecting_acs:
-                # add the accessories
-        # NOTE: accessories is the caes where removal of items is very
-        #   important.
-                pass
-
-            elif selecting_hair:
-                for item in select_map.values():
-                    if item.selected:
-                        monika_chr.change_hair(item.selectable.get_sprobj())
-
-            else: # selecting_clothes
-                for item in select_map.values():
-                    if item.selected:
-                        monika_chr.change_clothes(item.selectable.get_sprobj())
+            store.mas_selspr._adjust_monika(
+                monika_chr,
+                old_select_map,
+                select_map,
+                select_type
+            )
 
     $ renpy.say(m, disp_text)
 
@@ -1342,14 +1465,45 @@ label mas_selector_sidebar_select_loop:
 
 label mas_selector_sidebar_select_confirm:
     hide screen mas_selector_sidebar
-    if not save_on_confirm:
-        # TODO: undo the selection map
-        pass
+
+    python:
+        if not save_on_confirm:
+            store.mas_selspr._clean_select_map(
+                select_map,
+                select_type,
+                preview_selections,
+                monika_chr
+            )
+
+            store.mas_selspr._adjust_monika(
+                monika_chr,
+                old_select_map,
+                select_map,
+                select_type,
+                True
+            )
+
     return True
 
 label mas_selector_sidebar_select_cancel:
     hide screen mas_selector_sidebar
-    # TODO: reset whatever to what we currently are wearing
+
+    python:
+        store.mas_selspr._clean_select_map(
+            select_map,
+            select_type,
+            preview_selections,
+            monika_chr
+        )
+
+        store.mas_selspr._adjust_monika(
+            monika_chr,
+            old_select_map,
+            select_map,
+            select_type,
+            True
+        )
+
     return False
    
 # ACS sidebar selector label

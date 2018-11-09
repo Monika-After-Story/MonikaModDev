@@ -2633,6 +2633,18 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_def,
+        "School Uniform",
+        "schooluniform",
+        "clothes",
+        visible_when_locked=True,
+        hover_dlg=None,
+        select_dlg=[
+            "Ready for school!"
+        ]
+    )
+        
 
     ### MARISA COSTUME
     ## marisa
@@ -2653,6 +2665,18 @@ init -1 python:
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_marisa,
+        "Witch Costume",
+        "marisa",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Just an ordinary costume, ~ze."
+        ]
+    )
+
 
     ### RIN COSTUME
     ## rin
@@ -2675,6 +2699,19 @@ init -1 python:
         exit_pp=store.mas_sprites._clothes_rin_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_rin,
+        "Neko Costume",
+        "rin",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=[
+            "~nya?"
+        ],
+        select_dlg=[
+            "Nya!"
+        ]
+    )
 
 init -1 python:
     # ACCESSORIES (IMG020)

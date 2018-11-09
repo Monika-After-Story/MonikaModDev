@@ -113,8 +113,10 @@ init 5 python:
 
 label dev_selector_hair_test:
     python:
+        unlock_map = {}
         sorted_hair = store.mas_selspr.HAIR_SEL_SL
         for item in sorted_hair:
+            unlock_map[item.name] = item.unlocked
             item.unlocked = True
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Pick HAIR:")
@@ -124,10 +126,55 @@ label dev_selector_hair_test:
 
     call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
 
+    # undo the unlocks 
+    python:
+        for item in sorted_hair:
+            item.unlocked = unlock_map[item.name]
+
     if _return:
         m 1eub "You confirmed my hair!"
 
     else:
         m 1eka "You canceled my hair..."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_selector_clothes_test",
+            category=["dev"],
+            prompt="TEST SELECTOR (sidebar clothes)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_selector_clothes_test:
+    python:
+        unlock_map = {}
+        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
+        for item in sorted_clothes:
+            unlock_map[item.name] = item.unlocked
+            item.unlocked = True
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Pick clothes:")
+        sel_map = {}
+
+    m 1eua "Hi! Lets change my clothes!"
+
+    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # undo the unlocks 
+    python:
+        for item in sorted_clothes:
+            item.unlocked = unlock_map[item.name]
+
+    if _return:
+        m 1eub "You confirmed my clothes!"
+
+    else:
+        m 1eka "You canceled my clothes..."
 
     return
