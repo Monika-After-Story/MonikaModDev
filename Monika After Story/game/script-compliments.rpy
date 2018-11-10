@@ -552,23 +552,21 @@ label mas_compliment_thinking_of_you:
 label mas_compliment_thinking_of_you_2:
     m 1wubso "..."
     m 1wubfb "[player]..."
-    
-    if mas_isMoniUpset(higher=True):
         m 2hubfb "You have no idea what that means to me."
         
-    elif mas_isMoniDis):    
+    elif mas_isMoniDis():    
         m 1ekbfa "..."
         m "Thank you."
         
-    elif mas_isMoniBroken:
-        m 1rud "Hmmm... Thank you."
-        m 2eua "..."
+    elif mas_isMoniBroken():
+        m rksdld "Hmmm... Thank you."
+        m rksdla "..."
         $ mas_gainAffection(2,bypass=True)
         
         return
         
     menu:
-        "You're my everything!":
+        "You're everything I'll ever need":
             $ mas_gainAffection(5,bypass=True)
             m 1subfb "...!"
             m 2hubfb "Oh, I love you so much, [player]!"
@@ -583,7 +581,7 @@ label mas_compliment_thinking_of_you_2:
             m 2hub "..."
             m 2wud "...?"
             m "Oh, umm...."
-            m 2eku "I'm sorry?"
+            m 2tkd "I'm sorry?"
     return
 
 label mas_compliment_thinking_of_you_3:
