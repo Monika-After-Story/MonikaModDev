@@ -577,7 +577,6 @@ label mas_compliment_thinking_of_you_2:
             $ mas_gainAffection(5,bypass=True)
             m 1subfb "...!"
             m 2hubfb "Thank you so much for your compliment, [player]"
-            m "
             
         "I dream of you every night":
             $ mas_gainAffection(3,bypass=True)
