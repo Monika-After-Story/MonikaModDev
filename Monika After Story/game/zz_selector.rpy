@@ -892,6 +892,7 @@ init -1 python:
         THUMB_DIR = "mod_assets/thumbs/"
 
         WIDTH = 180 # default width
+        TX_WIDTH = 170 # width of the text object
         
         # technically this should change.
         TOTAL_HEIGHT = 218 
@@ -900,6 +901,8 @@ init -1 python:
         # this is the default, but the real may change using the expanding
         # frame properties.
         TOP_FRAME_HEIGHT = 38 # default
+        TOP_FRAME_TEXT_HEIGHT = 35 # part of the top frame where text should be
+        TOP_FRAME_CHUNK = 35 # each text chunk should consist of 35px
 
         # mouse stuff
         MOUSE_EVENTS = (
@@ -967,8 +970,9 @@ init -1 python:
             self.hover_overlay = Solid("#ffaa99aa")
 
             # text objects
-            self.item_name = self._display_name(False)
-            self.item_name_hover = self._display_name(True)
+            # NOTE: we build these on first render
+            self.item_name = None
+            self.item_name_hover = None
 
             # setup viewport bound values
             vpx, vpy, vpw, vph, vpb = viewport_bounds
@@ -990,8 +994,38 @@ init -1 python:
             # the end of event.
             self.end_interaction = False
 
+            # top frame sizes
 
-        def _check_display_name(self, _display_name_text):
+
+        def _blit_bottom_frame(self, r, _renders):
+            """
+            bliting the bottom frames
+
+            # TODO documentation
+            """
+            # TODO: modify for adjustable top frames
+            for _render in _renders:
+                r.blit(_render, (0, 38))
+
+
+        def _blit_top_frame(self, r, _renders, _disp_name):
+            """
+            bliting the top frames
+
+            # TODO documentaiton
+            """
+            for _render in _renders:
+                r.blit(_render, (0, 0))
+
+            # text
+            # NOTE: this is top left. to do align on bottom, you must get 
+            #   size
+            # TODO: modify for adjustable top frames
+            dnw, dnh = _disp_name.get_size()
+            r.blit(_disp_name, (5, self.TOP_FRAME_TEXT_HEIGHT - dnh))
+
+
+        def _check_display_name(self, _display_name_text, st, at):
             """
             Checks the given display name to see if it fits within the frame
             bounds. We will have to adjust if not
@@ -1000,17 +1034,33 @@ init -1 python:
                 _display_name_text - Text object of the display name
 
             RETURNS:
-                True if it fits, False if not
+                the created display name text if it fits, None if not.
             """
-            return True
+            # render the text object we want to test
+            _disp_text = self._display_name(False, _display_name_text)
+            _render = renpy.render(
+                _disp_text,
+                self.WIDTH,
+                self.TOP_FRAME_CHUNK,
+                st,
+                at
+            )
+            dtw, dth = _render.get_size()
+
+            # check width
+            if dtw > self.TX_WIDTH:
+                return None
+
+            return _disp_text
 
 
-        def _display_name(self, selected):
+        def _display_name(self, selected, _text):
             """
             Returns the text object for the display name.
 
             IN:
                 selected - True if selected, False if not
+                _text - actual text to convert into display name obj
 
             RETURNS:
                 the text object for the display name
@@ -1022,7 +1072,7 @@ init -1 python:
                 color = "#000"
 
             return Text(
-                self.selectable.display_name,
+                _text
                 font=gui.default_font,
                 size=gui.text_size,
                 color=color,
@@ -1051,17 +1101,34 @@ init -1 python:
                     self.end_interaction
 
 
-        def _render_bottom_frame_piece(self, piece, st, at):
+        def _is_over_me(self, x, y):
             """
-            Renders a single bottom frame piece and returns it
+            Returns True if the given x, y is over us.
+            This also handles if the mouse is past the viewport bounds.
+
+            IN:
+                x - x coord relative to upper left of this displayable
+                y - y coord relative to upper left of this displayable
             """
-            return renpy.render(
-                piece,
-                self.WIDTH,
-                self.SELECTOR_HEIGHT,
-                st,
-                at
+            mouse_x, mouse_y = renpy.get_mouse_pos()
+            return (
+                self.xlim_lo <= mouse_x <= self.xlim_up
+                and self.ylim_lo <= mouse_y <= self.ylim_up
+                and 0 <= x <= self.hover_width
+                and 0 <= y <= self.hover_height
             )
+
+
+        def _rand_select_dlg(self, dlg_list):
+            """
+            Randomly selects dialogue from the given list
+
+            IN:
+                dlg_list - list to select from
+
+            ASSUMES the list is not empty
+            """
+            return dlg_list[random.randint(0, len(dlg_list)-1)]
 
 
         def _render_bottom_frame(self, hover, st, at):
@@ -1087,6 +1154,41 @@ init -1 python:
                 )
 
             return _renders
+
+
+        def _render_bottom_frame_piece(self, piece, st, at):
+            """
+            Renders a single bottom frame piece and returns it
+            """
+            return renpy.render(
+                piece,
+                self.WIDTH,
+                self.SELECTOR_HEIGHT,
+                st,
+                at
+            )
+
+
+        def _render_display_name(self, hover, st, at):
+            """
+            Smart renders the display name. This is currently a place holder.
+            """
+            if hover:
+                return renpy.render(
+                    self.item_name_hover,
+                    self.WIDTH,
+                    self.TOP_FRAME_HEIGHT,
+                    st,
+                    at
+                )
+
+            return renpy.render(
+                self.item_name,
+                self.WIDTH,
+                self.TOP_FRAME_HEIGHT,
+                st,
+                at
+            )
 
 
         def _render_top_frame(self, hover, st, at):
@@ -1128,123 +1230,6 @@ init -1 python:
                 self.TOP_FRAME_HEIGHT,
                 st,
                 at
-            )
-
-
-        def _render_display_name(self, hover, st, at):
-            """
-            Smart renders the display name. This is currently a place holder.
-            """
-            if hover:
-                return renpy.render(
-                    self.item_name_hover,
-                    self.WIDTH,
-                    self.TOP_FRAME_HEIGHT,
-                    st,
-                    at
-                )
-
-            return renpy.render(
-                self.item_name,
-                self.WIDTH,
-                self.TOP_FRAME_HEIGHT,
-                st,
-                at
-            )
-
-
-        def _blit_bottom_frame(self, r, _renders):
-            """
-            bliting the bottom frames
-
-            # TODO documentation
-            """
-            # TODO: modify for adjustable top frames
-            for _render in _renders:
-                r.blit(_render, (0, 38))
-
-
-        def _blit_top_frame(self, r, _renders, _disp_name):
-            """
-            bliting the top frames
-
-            # TODO documentaiton
-            """
-            for _render in _renders:
-                r.blit(_render, (0, 0))
-
-            # text
-            # NOTE: this is top left. to do align on bottom, you must get 
-            #   size
-            # TODO: modify for adjustable top frames
-            dnw, dnh = _disp_name.get_size()
-            r.blit(_disp_name, (5, 35 - dnh))
-
-
-        def _is_over_me(self, x, y):
-            """
-            Returns True if the given x, y is over us.
-            This also handles if the mouse is past the viewport bounds.
-
-            IN:
-                x - x coord relative to upper left of this displayable
-                y - y coord relative to upper left of this displayable
-            """
-            mouse_x, mouse_y = renpy.get_mouse_pos()
-            return (
-                self.xlim_lo <= mouse_x <= self.xlim_up
-                and self.ylim_lo <= mouse_y <= self.ylim_up
-                and 0 <= x <= self.hover_width
-                and 0 <= y <= self.hover_height
-            )
-
-
-        def _send_msg_disp_text(self, msg):
-            """
-            Sends text message to mailbox.
-
-            IN:
-                msg - text message to send
-            """
-            self.mailbox.send_disp_text(msg)
-
-
-        def _send_hover_text(self):
-            """
-            Sends hover text to mailbox
-
-            ASSUMES hover text exists
-            """
-            self._send_msg_disp_text(
-                self._rand_select_dlg(
-                    self.selectable.hover_dlg
-                )
-            )
-
-
-        def _send_first_select_text(self):
-            """
-            Sends first select text to mailbox
-
-            ASSUMES first select text exists
-            """
-            self._send_msg_disp_text(
-                self._rand_select_dlg(
-                    self.selectable.first_select_dlg
-                )
-            )
-
-
-        def _send_select_text(self):
-            """
-            Sends the select text to mailbox
-
-            ASSUMES select text exists
-            """
-            self._send_msg_disp_text(
-                self._rand_select_dlg(
-                    self.selectable.select_dlg
-                )
             )
 
 
@@ -1292,16 +1277,77 @@ init -1 python:
                     self.end_interaction = True
 
 
-        def _rand_select_dlg(self, dlg_list):
+        def _send_first_select_text(self):
             """
-            Randomly selects dialogue from the given list
+            Sends first select text to mailbox
+
+            ASSUMES first select text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.first_select_dlg
+                )
+            )
+
+
+        def _send_hover_text(self):
+            """
+            Sends hover text to mailbox
+
+            ASSUMES hover text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.hover_dlg
+                )
+            )
+
+
+        def _send_msg_disp_text(self, msg):
+            """
+            Sends text message to mailbox.
 
             IN:
-                dlg_list - list to select from
-
-            ASSUMES the list is not empty
+                msg - text message to send
             """
-            return dlg_list[random.randint(0, len(dlg_list)-1)]
+            self.mailbox.send_disp_text(msg)
+
+
+        def _send_select_text(self):
+            """
+            Sends the select text to mailbox
+
+            ASSUMES select text exists
+            """
+            self._send_msg_disp_text(
+                self._rand_select_dlg(
+                    self.selectable.select_dlg
+                )
+            )
+
+
+        def _setup_display_name(self, st, at):
+            """
+            Sets up item_name and item_name_hover so they are ready for
+            render. 
+            
+            IN:
+                st - st for renpy render
+                at - at for renpy render
+
+            RETURNS:
+                the rendered display name items, ready for bliting.
+            """
+            # lets initially check if the pure text renders nicely
+            _render = self._check_display_name(
+                self.selectable.display_name,
+                st,
+                at
+            )
+
+#            if _render:
+#                self.item_name = [
+                
 
 
         def event(self, ev, x, y, st):
