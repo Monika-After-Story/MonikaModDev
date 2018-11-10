@@ -3099,6 +3099,7 @@ init -1 python:
         stay_on_start=True
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
+
     ### QUETZAL PLUSHIE
     ## qplushie
     # Quetzal plushie that sits on Monika's desk
