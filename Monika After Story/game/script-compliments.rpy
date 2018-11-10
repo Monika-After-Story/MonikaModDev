@@ -530,3 +530,68 @@ label mas_compliment_bestgirl:
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...And I'll be forever grateful that you did~"
     return
+    
+    init 5 python:
+        addEvent(
+            Event(
+                persistent._mas_compliments_database,
+                eventlabel="mas_compliment_you",
+                prompt="... I'm always thinking about you!",
+                unlocked=True
+            ),
+            eventdb=store.mas_compliments.compliment_database
+        )
+
+label mas_compliment_you:
+    if not renpy.seen_label("mas_compliment_you_2"):
+        call mas_compliment_you_2
+    else:
+        call mas_compliment_you_3
+    return
+
+label mas_compliment_you_2:
+    m 1wubso "..."
+    m 1wubfb "[player]..."
+    
+    if mas_isMoniUpset(higher=True):
+        m 2hubfb "You have no idea what that means to me."
+        
+    elif mas_isMoniDis(True):    
+        m 1ekbfa "..."
+        m "Thank you."
+        
+    elif mas_isMoniBroken(True):
+        m 1rud "Hmmm... Thank you."
+        m 2eua "..."
+        $ mas_gainAffection(2,bypass=True)
+        
+        return
+        
+    menu:
+        "You're my everything!":
+            $ mas_gainAffection(5,bypass=True)
+            m 1subfb "...!"
+            m 2hubfb "Oh, I love you so much, [player]!"
+            
+        "I dream of you every night":
+            $ mas_gainAffection(3,bypass=True)
+            m 2hub "Aww~!"
+            m 2wubfb "[player]..."
+            m 5hubfb "You are my dream."
+            
+        "It's very distracting":
+            m 2hub "..."
+            m 2wud "...?"
+            m "Oh, umm...."
+            m 2eku "I'm sorry?"
+            pass
+    return
+
+label mas_compliment_you_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1hubfa "Ehehe"
+    m 1ekbfa "[thanks_quip]"
+    m 5hubfb "You're the center of my world, [player]."
+    return
