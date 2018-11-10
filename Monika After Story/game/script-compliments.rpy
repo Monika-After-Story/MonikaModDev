@@ -584,7 +584,6 @@ label mas_compliment_you_2:
             m 2wud "...?"
             m "Oh, umm...."
             m 2eku "I'm sorry?"
-            pass
     return
 
 label mas_compliment_you_3:
