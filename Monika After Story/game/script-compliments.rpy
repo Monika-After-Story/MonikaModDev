@@ -535,32 +535,32 @@ label mas_compliment_bestgirl:
         addEvent(
             Event(
                 persistent._mas_compliments_database,
-                eventlabel="mas_compliment_you",
+                eventlabel="mas_compliment_thinking_of_you",
                 prompt="... I'm always thinking about you!",
                 unlocked=True
             ),
             eventdb=store.mas_compliments.compliment_database
         )
 
-label mas_compliment_you:
-    if not renpy.seen_label("mas_compliment_you_2"):
-        call mas_compliment_you_2
+label mas_compliment_thinking_of_you:
+    if not renpy.seen_label("mas_compliment_thinking_of_you_2"):
+        call mas_compliment_thinking_of_you_2
     else:
-        call mas_compliment_you_3
+        call mas_compliment_thinking_of_you_3
     return
 
-label mas_compliment_you_2:
+label mas_compliment_thinking_of_you_2:
     m 1wubso "..."
     m 1wubfb "[player]..."
     
     if mas_isMoniUpset(higher=True):
         m 2hubfb "You have no idea what that means to me."
         
-    elif mas_isMoniDis(True):    
+    elif mas_isMoniDis):    
         m 1ekbfa "..."
         m "Thank you."
         
-    elif mas_isMoniBroken(True):
+    elif mas_isMoniBroken:
         m 1rud "Hmmm... Thank you."
         m 2eua "..."
         $ mas_gainAffection(2,bypass=True)
@@ -586,7 +586,7 @@ label mas_compliment_you_2:
             m 2eku "I'm sorry?"
     return
 
-label mas_compliment_you_3:
+label mas_compliment_thinking_of_you_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
