@@ -553,19 +553,19 @@ label mas_compliment_thinking_of_you_2:
     m 1wubso "..."
     m 1wubfb "You..."
         
-    if mas_isMoniNormal:
+    if mas_isMoniNormal(higher=True):
         m 2hubfb "You have no idea what that means to me, [player]."
         
-    elif mas_isMoniUpset:
+    elif mas_isMoniUpset():
         m "That you would say that..."
         m "It means the world to me, [player]."
         
-    elif mas_isMoniDis:    
+    elif mas_isMoniDis():    
         m 1ekbfa "..."
         m "That's such a relief."
         m "Thank you."
         
-    elif mas_isMoniBroken:
+    elif mas_isMoniBroken():
         m 1rksdld "Hmmm... Thank you."
         m 1rksdla "..."
         $ mas_gainAffection(2,bypass=True)
@@ -573,10 +573,11 @@ label mas_compliment_thinking_of_you_2:
         return
         
     menu:
-        "Your very presence fills the corners of my imagination":
+        "You're always at the forefront of my mind":
             $ mas_gainAffection(5,bypass=True)
             m 1subfb "...!"
-            m 2hubfb "Oh, I love you so much, [player]!"
+            m 2hubfb "Thank you so much for your compliment, [player]"
+            m "
             
         "I dream of you every night":
             $ mas_gainAffection(3,bypass=True)
@@ -586,7 +587,7 @@ label mas_compliment_thinking_of_you_2:
             
         "It's very distracting":
             m 2hub "..."
-            m 2wud "...?"
+            m 2eud "...?"
             m "Oh, umm...."
             m 2tkd "I'm sorry?"
     return
