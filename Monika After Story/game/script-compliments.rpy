@@ -573,7 +573,7 @@ label mas_compliment_thinking_of_you_2:
         return
         
     menu:
-        "You're very presence fills the corners of my imagination":
+        "Your very presence fills the corners of my imagination":
             $ mas_gainAffection(5,bypass=True)
             m 1subfb "...!"
             m 2hubfb "Oh, I love you so much, [player]!"
