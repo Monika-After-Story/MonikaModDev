@@ -973,6 +973,8 @@ init -1 python:
             # NOTE: we build these on first render
             self.item_name = None
             self.item_name_hover = None
+#            self.item_name = self._display_name(False, self.selectable.display_name)
+#            self.item_name_hover = self._display_name(True, self.selectable.display_name)
 
             # setup viewport bound values
             vpx, vpy, vpw, vph, vpb = viewport_bounds
@@ -990,11 +992,17 @@ init -1 python:
             self.selected = False
             self.select_jump = False
 
+            self.first_render = True
+
             # when True, we make a call to end the interaction after reaching
             # the end of event.
             self.end_interaction = False
 
             # top frame sizes
+
+
+            # cached renders
+            self.render_cache = {}
 
 
         def _blit_bottom_frame(self, r, _renders):
@@ -1054,6 +1062,30 @@ init -1 python:
             return _disp_text
 
 
+        def _check_render_split(self, line, lines_list, st, at):
+            """
+            Checks the given line to see if it fits within a line render.
+
+            NOTE: adds hypen and multiple lines if the line is too long
+
+            IN:
+                line - the line we want to check for render
+                lines_list - list to add lines to
+                st - st for renpy render
+                at - at for renpy render
+
+            OUT:
+                lines_list - list with lines added
+            """
+            _render = self._check_display_name(line, st, at)
+            if not _render:
+                self._hypen_render_split(line, lines_list, st, at)
+
+            else:
+                self.item_name.append(_render)
+                lines_list.append(line)
+
+
         def _display_name(self, selected, _text):
             """
             Returns the text object for the display name.
@@ -1072,7 +1104,7 @@ init -1 python:
                 color = "#000"
 
             return Text(
-                _text
+                _text,
                 font=gui.default_font,
                 size=gui.text_size,
                 color=color,
@@ -1099,6 +1131,47 @@ init -1 python:
                 if self.selectable.hover_dlg is not None:
                     self._send_hover_text()
                     self.end_interaction
+
+
+        def _hypen_render_split(self, line, lines_list, st, at):
+            """
+            Splits a line via hypen.
+
+            We do a reverse through the string to find appropriate render
+            sizes.
+
+            NOTE: we add renders to self.item_name
+
+            IN:
+                line - line to split
+                lines_list - list to add lines to
+                st - st for renpy render
+                at - at for renpy render
+
+            OUT:
+                lines_list - list with lines added
+            """
+            # NOTE: we do reverse because it is more likely that text is
+            #   just barely too large, than dealing with one huge string.
+            index = len(line)-2
+            while index >= 0:
+                # split and add hypen
+                line1 = line[:index] + "-"
+
+                # check the render
+                _l1_render = self._check_display_name(line1, st, at)
+                if _l1_render:
+                    # add line 1
+                    self.item_name.append(_l1_render)
+                    lines_list.append(line1)
+
+                    # recurse 2nd line
+                    line2 = line[index:]
+                    self.check_render_split(line2, lines_list, st, at)
+                    return
+
+                # doesnt fit, decreaes index and continue
+                index -= 1
 
 
         def _is_over_me(self, x, y):
@@ -1328,15 +1401,12 @@ init -1 python:
 
         def _setup_display_name(self, st, at):
             """
-            Sets up item_name and item_name_hover so they are ready for
-            render. 
+            Sets up item_name and item_name_hover with list of renders, ready 
+            for bliting.
             
             IN:
                 st - st for renpy render
                 at - at for renpy render
-
-            RETURNS:
-                the rendered display name items, ready for bliting.
             """
             # lets initially check if the pure text renders nicely
             _render = self._check_display_name(
@@ -1345,9 +1415,103 @@ init -1 python:
                 at
             )
 
-#            if _render:
-#                self.item_name = [
-                
+            if _render:
+                self.item_name = [_render]
+                self.item_name_hover = [
+                    self._render_display_name(True, st, at)
+                ]
+                return
+
+            # if we got a None, the text is too long.
+
+            # prepare item_name for renders
+            self.item_name = []
+            
+
+        def _split_render(self, disp_name, st, at):
+            """
+            Attempts to split the displayname, then checks renders for it
+            to see if it fits within the bounds.
+
+            NOTE: this will add renders to self.item_name
+
+            IN:
+                disp_name - display name to split
+                st - st for renpy render
+                at - at for renpy render
+
+            RETURNS:
+                list of string lines that fit when rendered.
+            """
+            _tokens = disp_name.split()
+            _lines = []
+
+            self._split_render_tokens(_tokens, _lines, st, at)
+
+            return _lines
+
+
+        def _split_render_tokens(self, tokens, lines_list, st, at):
+            """
+            Token version of _split_render
+
+            IN:
+                tokens - tokens to handle with
+                lines_list - list of string lines that we rendered
+                st - st for renpy render
+                at - at for renpy render
+            """
+            if len(_tokens) > 2:
+                # TODO: use alg where we maximze line lengths
+                pass
+
+            elif len(_tokens) <= 1:
+                self._hypen_render_split(disp_name, lines_list, st, at)
+
+            else:
+                # otherwise, we can just use the 2 splits
+                self._check_render_split(_tokens[0], lines_list, st, at)
+                self._check_render_split(_tokens[1], lines_list, st, at)
+
+
+        def _token_render_split(self, tokens, lines_list, st, at):
+            """
+            Uses the given tokens to determine best fit render options for
+            those tokens.
+
+            NOTE: we also do self.item_name
+
+            IN:
+                tokens - list of string tokens to apply best fit
+                lines_list - list to add lines to
+                st - st for renpy render
+                at - at for renpy render
+
+            OUT:
+                lines_list - list with lines added
+            """
+            index = len(tokens)-1
+            while index >=0:
+                line1 = " ".join(tokens[:index])
+
+                # check the render
+                _l1_render = self._check_display_name(line1, st, at)
+                if _l1_render:
+                    # add line 1
+                    self.item_name.append(l1_render)
+                    lines_list.append(line1)
+
+                    # recurse the remaining tokens
+                    self._split_render_tokens(
+                        tokens[index:],
+                        lines_list,
+                        st,
+                        at
+                    )
+                    return
+
+                # otherwise, lower index
+                index -= 1
 
 
         def event(self, ev, x, y, st):
@@ -1394,16 +1558,31 @@ init -1 python:
             """
             Render. we want the button here.
             """
-            # first, render all items.
-            _bottom_renders = self._render_bottom_frame(
-                self.hovered or self.selected, st, at
-            )
-            _top_renders = self._render_top_frame(
-                self.hovered or self.selected, st, at
-            )
-            _disp_name = self._render_display_name(
-                self.hovered or self.selected, st, at
-            )
+            if self.first_render:
+                # on first render, we do the rendering.
+                # this is so we can just blit later instead of rendering each
+                # time.
+                self.render_cache = {
+                    "bottom": self._render_bottom_frame(False, st, at),
+                    "bottom_hover": self._render_bottom_frame(True, st, at),
+                    "top": self._render_top_frame(False, st, at),
+                    "top_hover": self._render_top_frame(True, st, at),
+                    "disp_name": self.item_name,
+                    "disp_name_hover": self.item_name_hover
+#                    "disp_name": self._render_display_name(False, st, at),
+#                    "disp_name_hover": self._render_display_name(True, st, at)
+                }
+                self.first_render = False
+
+            # now which renders are we going to select
+            if self.hovered or self.selected:
+                _suffix = "_hover"
+            else:
+                _suffix = ""
+
+            _bottom_renders = self.render_cache["bottom" + _suffix]
+            _top_renders = self.render_cache["top" + _suffix]
+            _disp_name = self.render_cache["disp_name" + _suffix]
 
             # now blit
             r = renpy.Render(self.WIDTH, self.TOTAL_HEIGHT)
