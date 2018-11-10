@@ -696,6 +696,17 @@ init -10 python in mas_selspr:
         return old_len == len(old_map_view & new_map_view)
 
 
+    def save_unlocked():
+        """
+        Goes through the selectables and saves their unlocked property.
+        
+        NOTE: we do this by adding the name into the appropriate persistent.
+        If something is in there, its unlocked, otherwise its locked.
+
+
+        """
+
+
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
         """
