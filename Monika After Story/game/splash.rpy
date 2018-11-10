@@ -333,6 +333,9 @@ label quit:
         # set the monika size
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
+        # save selectables
+        store.mas_selspr.save_selectables()
+
         # save current hair / clothes
         persistent._mas_monika_hair = monika_chr.hair.name
         persistent._mas_monika_clothes = monika_chr.clothes.name

@@ -8,7 +8,8 @@
 
 
 # databaess for selectable sprite data
-# currently we only store UNLOCKED
+# key: name of item
+# value: tuple containing data
 default persistent._mas_selspr_acs_db = {}
 default persistent._mas_selspr_hair_db = {}
 default persistent._mas_selspr_clothes_db = {}
@@ -98,6 +99,27 @@ init -20 python:
         def _check_dlg(self, dlg):
             if dlg is not None and not renpy.has_label(dlg):
                 raise Exception("label '{0}' no exist".format(dlg))
+
+
+        def fromTuple(self, read_tuple):
+            """
+            Loads data from the given tuple.
+
+            IN:
+                read_tuple - tuple of the following format:
+                    [0]: unlocked property
+                    [1]: visible_when_locked
+            """
+            self.unlocked, self.visible_when_locked = read_tuple
+
+
+        def toTuple(self):
+            """
+            RETURNS: tuple version of this data:
+                [0]: unlocked property
+                [1]: visible_when_locked
+            """
+            return (self.unlocked, self.visible_when_locked)
 
 
     class MASSelectableAccessory(MASSelectableSprite):
@@ -695,16 +717,56 @@ init -10 python in mas_selspr:
         # otherwise, now we get intersection and verify length
         return old_len == len(old_map_view & new_map_view)
 
+    
+    def _save_selectable(source, dest):
+        """
+        Saves selectable data from the given source into the destination.
 
-    def save_unlocked():
+        IN:
+            source - source data to read
+            dest - data place to save 
+        """
+        for item_name, item in source.iteritems():
+            dest[item_name] = item.toTuple()
+
+
+    def save_selectables():
         """
         Goes through the selectables and saves their unlocked property.
         
         NOTE: we do this by adding the name into the appropriate persistent.
-        If something is in there, its unlocked, otherwise its locked.
-
-
+        also the data we want to save
         """
+        _save_selectable(ACS_SEL_MAP, store.persistent._mas_selspr_acs_db)
+        _save_selectable(HAIR_SEL_MAP, store.persistent._mas_selspr_hair_db)
+        _save_selectable(
+            CLOTH_SEL_MAP,
+            store.persistent._mas_selspr_clothes_db
+        )
+
+
+    def _load_selectable(source, dest):
+        """
+        Loads selectable data from the given source into the destination.
+
+        IN:
+            source - source data to load from
+            dest - data to save the loaded data into
+        """
+        for item_name, item_tuple in source.iteritems():
+            dest[item_name].fromTuple(item_tuple)
+
+
+    def load_selectables():
+        """
+        Loads the persistent data into selectables.
+        """
+        _load_selectable(store.persistent._mas_selspr_acs_db, ACS_SEL_MAP)
+        _load_selectable(store.persistent._mas_selspr_hair_db, HAIR_SEL_MAP)
+        _load_selectable(
+            store.persistent._mas_selspr_clothes_db,
+            CLOTH_SEL_MAP
+        )
 
 
     # extension of mailbox
@@ -1302,6 +1364,10 @@ init -1 python:
             self._blit_top_frame(r, _top_renders, _disp_name)
             self._blit_bottom_frame(r, _bottom_renders)
             return r
+
+
+init 200 python in mas_selspr:
+    load_selectables()
 
 
 # now these tranforms are for the selector sidebar screen
