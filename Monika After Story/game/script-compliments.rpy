@@ -553,10 +553,10 @@ label mas_compliment_thinking_of_you_2:
     m 1wubso "..."
     m 1wubfb "You..."
         
-    if mas_isMoniNormal()
+    if mas_isMoniNormal():
         m 2hubfb "You have no idea what that means to me, [player]."
         
-    elif mas_isMoniUpset()
+    elif mas_isMoniUpset():
         m "That you would say that..."
         m "It means the world to me, [player]."
         
