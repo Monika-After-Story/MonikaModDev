@@ -294,6 +294,69 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.10
+label v0_8_10(version="v0_8_10"):
+    python:
+        import store.evhand as evhand
+        import store.mas_history as mas_history
+
+        # reset and unlock past anniversaries
+        if persistent.sessions is not None:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+                store.mas_anni.unlock_past_annis()
+
+        # correctly save the sbd persistent data since we renamed it
+        if (
+                persistent._mas_bday_sbd_aff_given is not None
+                and persistent._mas_bday_sbd_aff_given > 0
+            ):
+            persistent._mas_history_archives[2018][
+                "922.actions.surprise.aff_given"
+            ] = persistent._mas_bday_sbd_aff_given
+
+        # unlock the special greetings we accidentally locked
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
+        # move the changename topic to pool
+        changename_ev = evhand.event_database.get("monika_changename", None)
+        if changename_ev and renpy.seen_label("preferredname"):
+            changename_ev.unlocked = True
+            changename_ev.pool = True
+            persistent._seen_ever["monika_changename"] = True
+
+    return
+
+# 0.8.9
+label v0_8_9(version="v0_8_9"):
+    python:
+        import store.evhand as evhand
+
+        # erase wedding ring topic data since the event is basiclly new'd
+        mas_eraseTopic("monika_weddingring", persistent.event_database)
+
+        # setup conditional for monika_horror
+        # TODO: post halloween we need to reset this to no conditional
+        horror_ev = evhand.event_database.get("monika_horror", None)
+        if horror_ev:
+            horror_ev.conditional = (
+                "datetime.date(2018, 10, 26) <= datetime.date.today() "
+                "<= datetime.date(2018, 10, 30)"
+            )
+            horror_ev.action = EV_ACT_QUEUE
+
+    return
+    
+
 # 0.8.6
 label v0_8_6(version="v0_8_6"):
     python:
