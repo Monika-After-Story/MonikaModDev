@@ -638,6 +638,15 @@ label mas_hangman_game_loop:
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
+                elif chances == 5:
+                    m 1ekc "Don't give up so easily."
+                    m 3eka "That was only your first wrong letter!"
+                    if chances > 1:
+                        m 1eka "You still had [chances] more lives left."
+                    else:
+                        m 1eka "You still had [chances] more life left."
+                    m 1hua "I know you can do it!"
+                    m 1eka "It would really mean a lot to me if you just tried a bit harder."
                 else:
                     m "You should at least play to the end..."
                     m 1ekc "Giving up so easily is a sign of poor resolve."
