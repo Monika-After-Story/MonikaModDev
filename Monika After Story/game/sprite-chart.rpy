@@ -1775,6 +1775,36 @@ init -2 python:
             return self.acs.get(acs_type, None)
 
 
+        def _load_acs(self, per_acs, acs_type):
+            """
+            Loads accessories from the given persistent into the given
+            acs type.
+
+            IN:
+                per_acs - persistent list to grab acs from
+                acs_type - acs type to load acs into
+            """
+            for acs_name in per_acs:
+                self.wear_acs_in(store.mas_sprites.ACS_MAP[acs_name], acs_type)
+
+
+        def _save_acs(self, acs_type):
+            """
+            Generates list of accessory names to save to persistent.
+
+            IN:
+                acs_type - acs type to build acs names list
+
+            RETURNS:
+                list of acs names to save to persistent
+            """
+            return [
+                acs.name
+                for acs in self.acs[acs_type]
+                if acs.stay_on_start
+            ]
+
+
         def change_clothes(self, new_cloth):
             """
             Changes clothes to the given cloth
@@ -1854,6 +1884,28 @@ init -2 python:
                 return accessory in acs_list
 
             return False
+
+
+        def load(self):
+            """
+            Loads hair/clothes/accessories from persistent.
+            """
+            # clothes and hair
+            self.change_outfit(
+                store.mas_sprites.CLOTH_MAP[
+                    store.persistent._mas_monika_clothes
+                ],
+                store.mas_sprites.HAIR_MAP[
+                    store.persistent._mas_monika_hair
+                ]
+            )
+
+            # acs
+            self._load_acs(store.persistent._mas_acs_pre_list, self.PRE_ACS)
+            self._load_acs(store.persistent._mas_acs_bbh_list, self.BBH_ACS)
+            self._load_acs(store.persistent._mas_acs_bfh_list, self.BFH_ACS)
+            self._load_acs(store.persistent._mas_acs_mid_list, self.MID_ACS)
+            self._load_acs(store.persistent._mas_acs_pst_list, self.PST_ACS)
 
 
         def reset_all(self):
@@ -1960,6 +2012,22 @@ init -2 python:
             """
             self.reset_clothes()
             self.reset_hair()
+
+
+        def save(self):
+            """
+            Saves hair/clothes/acs to persistent
+            """
+            # hair and clothes
+            store.persistent._mas_monika_hair = self.hair.name
+            store.persistent._mas_monika_clothes = self.clothes.name
+
+            # acs
+            store.persistent._mas_acs_pre_list = self._save_acs(self.PRE_ACS)
+            store.persistent._mas_acs_bbh_list = self._save_acs(self.BBH_ACS)
+            store.persistent._mas_acs_bfh_list = self._save_acs(self.BFH_ACS)
+            store.persistent._mas_acs_mid_list = self._save_acs(self.MID_ACS)
+            store.persistent._mas_acs_pst_list = self._save_acs(self.PST_ACS)
 
 
         def wear_acs_in(self, accessory, acs_type):

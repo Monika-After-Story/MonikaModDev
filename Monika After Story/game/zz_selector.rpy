@@ -1862,6 +1862,9 @@ label mas_selector_sidebar_select_confirm:
                 True
             )
 
+            monika_chr.save()
+            renpy.save_persistent()
+
     return True
 
 label mas_selector_sidebar_select_cancel:

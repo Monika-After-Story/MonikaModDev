@@ -1208,35 +1208,9 @@ label ch30_reset:
 
         if persistent._mas_hair_changed:
             unlockEventLabel("monika_hair_down")
-    
-        # setup hair / clothes
-        monika_chr.change_outfit(
-            store.mas_sprites.CLOTH_MAP[persistent._mas_monika_clothes],
-            store.mas_sprites.HAIR_MAP[persistent._mas_monika_hair]
-        )
 
-    # accessories rest
-    python:
-        for acs_name in persistent._mas_acs_pre_list:
-            monika_chr.wear_acs_pre(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_bbh_list:
-            monika_chr.wear_acs_bbh(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_bfh_list:
-            monika_chr.wear_acs_bfh(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_mid_list:
-            monika_chr.wear_acs_mid(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_pst_list:
-            monika_chr.wear_acs_pst(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
+    # monika hair/acs
+    $ monika_chr.load()
 
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
