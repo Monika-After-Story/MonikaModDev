@@ -8442,7 +8442,7 @@ label monika_trick_natsuki:
     m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
     m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
     m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
-    m 3lksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
+    m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
     m 3eub "Plus her ability to cook cupcakes is astounding!"
     return
 
