@@ -1321,7 +1321,7 @@ init -5 python in mas_sprites:
         if hair_split:
 
             # 2. back-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
 
             # 3. post back hair acs
             _ms_accessorylist(
@@ -1361,7 +1361,7 @@ init -5 python in mas_sprites:
             sprite_str_list.extend(loc_build_tup)
 
             # 6. front-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True)
 
             # no lean means we can ARMS
             if not lean:
@@ -2853,8 +2853,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         entry_pp=store.mas_sprites._hair_def_entry,
-        exit_pp=store.mas_sprites._hair_def_exit,
-        split=False
+        exit_pp=store.mas_sprites._hair_def_exit
     )
     store.mas_sprites.init_hair(mas_hair_def)
 
