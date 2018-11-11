@@ -7790,6 +7790,7 @@ init 5 python:
             rules={"no unlock": None}
         )
     )
+    # TODO: modify this event to be the main hair topic
 
 label monika_hair_ponytail:
     m 1eua "Sure thing!"
@@ -7817,6 +7818,7 @@ init 5 python:
             rules={"no unlock": None}
         )
     )
+    # TODO: remove this event.
 
 label monika_hair_down:
     m 1eua "Sure thing, [player]."
