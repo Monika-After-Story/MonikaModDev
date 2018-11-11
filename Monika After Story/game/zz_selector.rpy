@@ -903,6 +903,7 @@ init -1 python:
         TOP_FRAME_HEIGHT = 38 # default
         TOP_FRAME_TEXT_HEIGHT = 35 # part of the top frame where text should be
         TOP_FRAME_CHUNK = 35 # each text chunk should consist of 35px
+        TOP_FRAME_SPACER = 5 # pixels between each text chunk line
 
         # mouse stuff
         MOUSE_EVENTS = (
@@ -955,14 +956,14 @@ init -1 python:
             )
             self.top_frame = Frame(
                 "mod_assets/frames/selector_top_frame.png",
-                left=3,
-                top=3,
+                left=4,
+                top=4,
                 tile=True
             )
             self.top_frame_selected = Frame(
                 "mod_assets/frames/selector_top_frame_selected.png",
-                left=3,
-                top=3,
+                left=4,
+                top=4,
                 tile=True
             )
 
@@ -999,7 +1000,7 @@ init -1 python:
             self.end_interaction = False
 
             # top frame sizes
-
+            self.top_frame_height = self.TOP_FRAME_HEIGHT
 
             # cached renders
             self.render_cache = {}
@@ -1009,28 +1010,38 @@ init -1 python:
             """
             bliting the bottom frames
 
-            # TODO documentation
+            IN:
+                r - render to blit to
+                _renders - list of bottom renders to blit
             """
-            # TODO: modify for adjustable top frames
             for _render in _renders:
-                r.blit(_render, (0, 38))
+                r.blit(_render, (0, self.top_frame_height))
 
 
         def _blit_top_frame(self, r, _renders, _disp_name):
             """
             bliting the top frames
 
-            # TODO documentaiton
+            IN:
+                r - render to blit to
+                _renders - list of top renders to blit
+                _disp_name - list of display name renders to blit
             """
             for _render in _renders:
                 r.blit(_render, (0, 0))
 
             # text
-            # NOTE: this is top left. to do align on bottom, you must get 
-            #   size
-            # TODO: modify for adjustable top frames
-            dnw, dnh = _disp_name.get_size()
-            r.blit(_disp_name, (5, self.TOP_FRAME_TEXT_HEIGHT - dnh))
+            line_index = 1
+            for line in _disp_name:
+                r.blit(
+                    line, 
+                    (
+                        5,
+                        (line_index * self.TOP_FRAME_CHUNK) 
+                        - line.get_size()[1]
+                    )
+                )
+                line_index += 1
 
 
         def _check_display_name(self, _display_name_text, st, at):
@@ -1039,16 +1050,16 @@ init -1 python:
             bounds. We will have to adjust if not
 
             IN:
-                _display_name_text - Text object of the display name
+                _display_name_text - display name as text
 
             RETURNS:
-                the created display name text if it fits, None if not.
+                the rendered display name rendre if it fits, None if not.
             """
             # render the text object we want to test
             _disp_text = self._display_name(False, _display_name_text)
             _render = renpy.render(
                 _disp_text,
-                self.WIDTH,
+                1000,
                 self.TOP_FRAME_CHUNK,
                 st,
                 at
@@ -1059,7 +1070,7 @@ init -1 python:
             if dtw > self.TX_WIDTH:
                 return None
 
-            return _disp_text
+            return _render
 
 
         def _check_render_split(self, line, lines_list, st, at):
@@ -1167,7 +1178,7 @@ init -1 python:
 
                     # recurse 2nd line
                     line2 = line[index:]
-                    self.check_render_split(line2, lines_list, st, at)
+                    self._check_render_split(line2, lines_list, st, at)
                     return
 
                 # doesnt fit, decreaes index and continue
@@ -1242,23 +1253,21 @@ init -1 python:
             )
 
 
-        def _render_display_name(self, hover, st, at):
+        def _render_display_name(self, hover, _text, st, at):
             """
-            Smart renders the display name. This is currently a place holder.
-            """
-            if hover:
-                return renpy.render(
-                    self.item_name_hover,
-                    self.WIDTH,
-                    self.TOP_FRAME_HEIGHT,
-                    st,
-                    at
-                )
+            Renders display name
 
+            IN:
+                hover - True if selected, False if not
+                _text - actual text to render
+                st - st for renpy render
+                at - at for renpy render
+
+            """
             return renpy.render(
-                self.item_name,
+                self._display_name(hover, _text),
                 self.WIDTH,
-                self.TOP_FRAME_HEIGHT,
+                self.TOP_FRAME_CHUNK,
                 st,
                 at
             )
@@ -1296,11 +1305,10 @@ init -1 python:
             """
             Renders a top frame piece. No Text, please
             """
-            # TODO smart frmae size
             return renpy.render(
                 piece,
                 self.WIDTH,
-                self.TOP_FRAME_HEIGHT,
+                self.top_frame_height,
                 st,
                 at
             )
@@ -1418,14 +1426,33 @@ init -1 python:
             if _render:
                 self.item_name = [_render]
                 self.item_name_hover = [
-                    self._render_display_name(True, st, at)
+                    self._render_display_name(
+                        True,
+                        self.selectable.display_name,
+                        st,
+                        at
+                    )
                 ]
                 return
 
             # if we got a None, the text is too long.
-
             # prepare item_name for renders
             self.item_name = []
+            _lines = self._split_render(self.selectable.display_name, st, at)
+
+            # render the hover variants
+            # and calculate total height
+#            top_height = 0
+            self.item_name_hover = [
+                self._render_display_name(True, line, st, at)
+                for line in _lines
+            ]
+#            top_height += (_render.get_size()[1] + self.TOP_FRAME_SPACER)
+
+            # now setup the new frame size
+            self.top_frame_height = (
+                (self.TOP_FRAME_CHUNK * len(self.item_name_hover))
+            )
             
 
         def _split_render(self, disp_name, st, at):
@@ -1451,7 +1478,7 @@ init -1 python:
             return _lines
 
 
-        def _split_render_tokens(self, tokens, lines_list, st, at):
+        def _split_render_tokens(self, tokens, lines_list, st, at, loop=False):
             """
             Token version of _split_render
 
@@ -1460,18 +1487,23 @@ init -1 python:
                 lines_list - list of string lines that we rendered
                 st - st for renpy render
                 at - at for renpy render
+                loop - True if we are recursively calling this.
+                    (Default: False)
             """
-            if len(_tokens) > 2:
-                # TODO: use alg where we maximze line lengths
-                pass
+            # sanity check
+            if len(tokens) == 0:
+                return
 
-            elif len(_tokens) <= 1:
-                self._hypen_render_split(disp_name, lines_list, st, at)
+            if len(tokens) > 2 or loop:
+                self._token_render_split(tokens, lines_list, st, at)
+
+            elif len(tokens) <= 1:
+                self._hypen_render_split(tokens[0], lines_list, st, at)
 
             else:
                 # otherwise, we can just use the 2 splits
-                self._check_render_split(_tokens[0], lines_list, st, at)
-                self._check_render_split(_tokens[1], lines_list, st, at)
+                self._check_render_split(tokens[0], lines_list, st, at)
+                self._check_render_split(tokens[1], lines_list, st, at)
 
 
         def _token_render_split(self, tokens, lines_list, st, at):
@@ -1490,15 +1522,18 @@ init -1 python:
             OUT:
                 lines_list - list with lines added
             """
-            index = len(tokens)-1
-            while index >=0:
+            # reverse order siunce we want to maximize render line size
+            index = len(tokens)
+            while index > 0:
+
+                # build a string with a number of tokens
                 line1 = " ".join(tokens[:index])
 
                 # check the render
                 _l1_render = self._check_display_name(line1, st, at)
                 if _l1_render:
                     # add line 1
-                    self.item_name.append(l1_render)
+                    self.item_name.append(_l1_render)
                     lines_list.append(line1)
 
                     # recurse the remaining tokens
@@ -1506,12 +1541,18 @@ init -1 python:
                         tokens[index:],
                         lines_list,
                         st,
-                        at
+                        at,
+                        True
                     )
                     return
 
                 # otherwise, lower index
                 index -= 1
+
+            # if we got here, then we are dealing with a single token that is
+            # too long.
+            self._hypen_render_split(tokens[0], lines_list, st, at)
+            self._split_render_tokens(tokens[1:], lines_list, st, at, True)
 
 
         def event(self, ev, x, y, st):
@@ -1562,6 +1603,11 @@ init -1 python:
                 # on first render, we do the rendering.
                 # this is so we can just blit later instead of rendering each
                 # time.
+
+                # setup the display name
+                self._setup_display_name(st, at)
+
+                # now save the render cache
                 self.render_cache = {
                     "bottom": self._render_bottom_frame(False, st, at),
                     "bottom_hover": self._render_bottom_frame(True, st, at),
@@ -1572,6 +1618,11 @@ init -1 python:
 #                    "disp_name": self._render_display_name(False, st, at),
 #                    "disp_name_hover": self._render_display_name(True, st, at)
                 }
+
+                # setup the hiehg tof this displyaable
+                self.real_height = self.top_frame_height + self.SELECTOR_HEIGHT
+
+                # now that we have cached renders, no need to render again
                 self.first_render = False
 
             # now which renders are we going to select
@@ -1585,7 +1636,7 @@ init -1 python:
             _disp_name = self.render_cache["disp_name" + _suffix]
 
             # now blit
-            r = renpy.Render(self.WIDTH, self.TOTAL_HEIGHT)
+            r = renpy.Render(self.WIDTH, self.real_height)
             self._blit_top_frame(r, _top_renders, _disp_name)
             self._blit_bottom_frame(r, _bottom_renders)
             return r

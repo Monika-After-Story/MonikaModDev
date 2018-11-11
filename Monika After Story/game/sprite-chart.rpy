@@ -1899,7 +1899,7 @@ init -2 python:
 
                 # cleanup mapping
                 if accessory.name in self.acs_list_map:
-                    self.acs_list_map.remove(accessory.name)
+                    self.acs_list_map.pop(accessory.name)
 
                 # now remove
                 acs_list.remove(accessory)
@@ -1935,7 +1935,7 @@ init -2 python:
 
                     # remove from mapping
                     if acs.name in self.acs_list_map:
-                        self.acs_list_map.remove(acs.name)
+                        self.acs_list_map.pop(acs.name)
 
                 self.acs[acs_type] = list()
 
