@@ -987,8 +987,10 @@ init -1 python:
             # flags
             self.hovered = False
             self.hover_jumped = False # True means we just jumped to label
+
+            # these get changed
             self.hover_width = self.WIDTH
-            self.hover_height = self.TOTAL_HEIGHT # TODO
+            self.hover_height = self.TOTAL_HEIGHT 
 
             self.selected = False
             self.select_jump = False
@@ -1144,7 +1146,7 @@ init -1 python:
                     self.end_interaction
 
 
-        def _hypen_render_split(self, line, lines_list, st, at):
+        def _hypen_render_split(self, line, lines_list, st, at, tokens=None):
             """
             Splits a line via hypen.
 
@@ -1158,6 +1160,9 @@ init -1 python:
                 lines_list - list to add lines to
                 st - st for renpy render
                 at - at for renpy render
+                tokens - current list of tokens, if we are in the token mode.
+                    Insert the leftover token word at position 1.
+                    (Default: None)
 
             OUT:
                 lines_list - list with lines added
@@ -1178,7 +1183,10 @@ init -1 python:
 
                     # recurse 2nd line
                     line2 = line[index:]
-                    self._check_render_split(line2, lines_list, st, at)
+                    if tokens is not None:
+                        tokens.insert(1, line2)
+                    else:
+                        self._check_render_split(line2, lines_list, st, at)
                     return
 
                 # doesnt fit, decreaes index and continue
@@ -1551,7 +1559,7 @@ init -1 python:
 
             # if we got here, then we are dealing with a single token that is
             # too long.
-            self._hypen_render_split(tokens[0], lines_list, st, at)
+            self._hypen_render_split(tokens[0], lines_list, st, at, tokens)
             self._split_render_tokens(tokens[1:], lines_list, st, at, True)
 
 
@@ -1621,6 +1629,7 @@ init -1 python:
 
                 # setup the hiehg tof this displyaable
                 self.real_height = self.top_frame_height + self.SELECTOR_HEIGHT
+                self.hover_height = self.real_height
 
                 # now that we have cached renders, no need to render again
                 self.first_render = False
