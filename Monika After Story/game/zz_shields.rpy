@@ -16,6 +16,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey 
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -30,6 +31,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -46,6 +48,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
 
@@ -56,8 +59,10 @@ init python:
             - Monika stops talking
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
         store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
         store.hkb_button.play_enabled = True
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
@@ -67,6 +72,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
 
@@ -77,8 +83,10 @@ init python:
             - Monika starts talking
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False
         store.hkb_button.talk_enabled = False
+        store.hkb_button.extra_enabled = False
         store.hkb_button.play_enabled = False
         store.mas_globals.dlg_workflow = True
         mas_calRaiseOverlayShield()
@@ -90,6 +98,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button
             - Play button + hotkey
             - Calendar overlay
@@ -98,6 +107,7 @@ init python:
             - The Music menu is closed
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
         mas_OVLDropShield()
 
@@ -106,6 +116,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button
             - Play button + hotkey
             - Calendar overlay           
@@ -114,6 +125,7 @@ init python:
             - The Music menu is opened
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False
         mas_OVLRaiseShield()
 
