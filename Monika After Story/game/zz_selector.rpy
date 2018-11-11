@@ -1098,6 +1098,9 @@ init -1 python:
             self.thumb_overlay = Image(
                 "mod_assets/frames/selector_overlay.png"
             )
+            self.thumb_overlay_locked = Image(
+                "mod_assets/frames/selector_overlay_disabled.png"
+            )
             self.top_frame = Frame(
                 "mod_assets/frames/selector_top_frame.png",
                 left=4,
@@ -1106,6 +1109,12 @@ init -1 python:
             )
             self.top_frame_selected = Frame(
                 "mod_assets/frames/selector_top_frame_selected.png",
+                left=4,
+                top=4,
+                tile=True
+            )
+            self.top_frame_locked = Frame(
+                "mod_assets/frames/selector_top_frame_disabled.png",
                 left=4,
                 top=4,
                 tile=True
@@ -1150,6 +1159,10 @@ init -1 python:
 
             # cached renders
             self.render_cache = {}
+
+            # TODO: we need thumbnails for locked items
+            self.locked = not self.selectable.unlocked
+            self.locked_thumb = Image("mod_assets/thumbs/locked.png")
 
 
         def _blit_bottom_frame(self, r, _renders):
@@ -1254,7 +1267,6 @@ init -1 python:
             RETURNS:
                 the text object for the display name
             """
-            # TODO: auto split
             if selected:
                 color = "#fa9"
             else:
@@ -1760,16 +1772,45 @@ init -1 python:
                 self._setup_display_name(st, at)
 
                 # now save the render cache
-                self.render_cache = {
-                    "bottom": self._render_bottom_frame(False, st, at),
-                    "bottom_hover": self._render_bottom_frame(True, st, at),
-                    "top": self._render_top_frame(False, st, at),
-                    "top_hover": self._render_top_frame(True, st, at),
-                    "disp_name": self.item_name,
-                    "disp_name_hover": self.item_name_hover
-#                    "disp_name": self._render_display_name(False, st, at),
-#                    "disp_name_hover": self._render_display_name(True, st, at)
-                }
+                if self.locked:
+                    _locked_bot_renders = [
+                        self._render_bottom_frame_piece(
+                            self.locked_thumb,
+                            st,
+                            at
+                        ),
+                        self._render_bottom_frame_piece(
+                            self.thumb_overlay_locked,
+                            st,
+                            at
+                        )
+                    ]
+                    _locked_top_renders = [
+                        self._render_top_frame_piece(
+                            self.top_frame_locked,
+                            st,
+                            at
+                        )
+                    ]
+
+                    self.render_cache = {
+                        "bottom": _locked_bot_renders,
+                        "bottom_hover": _locked_bot_renders,
+                        "top": _locked_top_renders,
+                        "top_hover:" locked_top_renders,
+                        "disp_name": self.item_name,
+                        "disp_name_hover": self.item_name
+                    }
+
+                else:
+                    self.render_cache = {
+                        "bottom": self._render_bottom_frame(False, st, at),
+                        "bottom_hover": self._render_bottom_frame(True, st, at),
+                        "top": self._render_top_frame(False, st, at),
+                        "top_hover": self._render_top_frame(True, st, at),
+                        "disp_name": self.item_name,
+                        "disp_name_hover": self.item_name_hover
+                    }
 
                 # setup the hiehg tof this displyaable
                 self.real_height = self.top_frame_height + self.SELECTOR_HEIGHT
@@ -1779,7 +1820,9 @@ init -1 python:
                 self.first_render = False
 
             # now which renders are we going to select
-            if self.hovered or self.selected:
+            if self.locked:
+                _suffix = ""
+            elif self.hovered or self.selected:
                 _suffix = "_hover"
             else:
                 _suffix = ""
@@ -1926,16 +1969,30 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
 
-        # TODO unlock check
-        disp_items = [
-            MASSelectableImageButtonDisplayable(
-                item,
-                select_map,
-                store.mas_selspr.SB_VIEWPORT_BOUNDS,
-                mailbox
-            )
-            for item in items
-        ]
+        # only show unlock
+        if only_unlocked:
+            disp_items = [
+                MASSelectableImageButtonDisplayable(
+                    item,
+                    select_map,
+                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    mailbox
+                )
+                for item in items
+                if item.unlocked
+            ]
+
+        else:
+            disp_items = [
+                MASSelectableImageButtonDisplayable(
+                    item,
+                    select_map,
+                    store.mas_selspr.SB_VIEWPORT_BOUNDS,
+                    mailbox
+                )
+                for item in items
+            ]
+
 
         # fill select map
         store.mas_selspr._fill_select_map(
