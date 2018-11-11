@@ -20,6 +20,9 @@ init -1 python in mas_hotkeys:
     # True means the talk hotkey is enabled, False means it is not
     talk_enabled = False
 
+    # True means the eextra hotkey is enabled, False means it is not
+    extra_enabled = False
+
     # True means the music hotkey is enabled, False means its not
     music_enabled = False
 
@@ -42,6 +45,7 @@ init python:
         Disables the main hotkeys
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.music_enabled = False
         store.mas_hotkeys.play_enabled = False
 
@@ -51,6 +55,7 @@ init python:
         Enables the main hotkeys
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.music_enabled = True
         store.mas_hotkeys.play_enabled = True
 
@@ -61,6 +66,7 @@ init python:
         """
         return (
             store.mas_hotkeys.talk_enabled
+            and store.mas_hotkeys.extra_enabled
             and store.mas_hotkeys.music_enabled
             and store.mas_hotkeys.play_enabled
         )
@@ -128,6 +134,14 @@ init python:
             show_dialogue_box()
 
 
+    def _mas_hk_open_extra_menu():
+        """
+        hotkey specific open extras menu
+        """
+        if store.mas_hotkeys.extra_enabled and not _windows_hidden:
+            mas_open_extra_menu()
+
+
     def _mas_hk_pick_game():
         """
         hotkey specific pick game
@@ -192,6 +206,7 @@ init python:
         #   config.underlay
         #Add keys for new functions
         config.keymap["open_dialogue"] = ["t","T"]
+        config.keymap["mas_extra_menu"] = ["e", "E"]
         config.keymap["change_music"] = ["noshift_m","noshift_M"]
         config.keymap["play_game"] = ["p","P"]
         config.keymap["mute_music"] = ["shift_m","shift_M"]
@@ -214,6 +229,9 @@ init python:
         # Define what those actions call
         config.underlay.append(
             renpy.Keymap(open_dialogue=_mas_hk_show_dialogue_box)
+        )
+        config.underlay.append(
+            renpy.Keymap(mas_extra_menu=_mas_hk_open_extra_menu)
         )
         config.underlay.append(renpy.Keymap(change_music=_mas_hk_select_music))
         config.underlay.append(renpy.Keymap(play_game=_mas_hk_pick_game))

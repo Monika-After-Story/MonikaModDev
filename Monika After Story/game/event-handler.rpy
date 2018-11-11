@@ -159,7 +159,7 @@ python early:
     ]
 
 
-init -600 python:
+init -880 python:
     # THE DELAYED ACTION MAP
     # this is the one we actually use when running stuff
     # please note that this is internal use only.
@@ -420,11 +420,28 @@ init 995 python:
     # this is where we run the init level batch of delayed actions
     mas_runDelayedActions(MAS_FC_INIT)
 
-init -600 python in mas_delact:
+init -880 python in mas_delact:
     # we can assume store is imported for all mas_delacts
     import store
 
-init 994 python in mas_delact:
+    def _MDA_safeadd(*ids):
+        """
+        Adds MASDelayedAction ids to the persistent mas delayed action list.
+
+        NOTE: this is only meant for code that runs super early yet needs to
+        add MASDelayedActions. 
+
+        NOTE: This will NOT add duplicates.
+
+        IN:
+            ids - ids to add to the delayed action list
+        """
+        for _id in ids:
+            if _id not in store.persistent._mas_delayed_action_list:
+                store.persistent._mas_delayed_action_list.append(_id)
+
+
+init -875 python in mas_delact:
     # store containing a map for delayed action mapping
 
     # delayed action map:
@@ -434,8 +451,16 @@ init 994 python in mas_delact:
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
         1: _greeting_ourreality_unlock,
-        2: _mas_monika_islands_unlock
+        2: _mas_monika_islands_unlock,
+        3: _mas_bday_postbday_notimespent_reset,
+        4: _mas_bday_pool_happy_bday_reset,
+        5: _mas_bday_surprise_party_cleanup_reset,
+        6: _mas_bday_surprise_party_hint_reset,
+        7: _mas_bday_spent_time_with_reset
     }
+
+
+init 994 python in mas_delact:
 
     # this is also where we initialize the delayed action map
     def loadDelayedActionMap():
