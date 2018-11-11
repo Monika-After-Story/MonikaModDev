@@ -2937,6 +2937,7 @@ init -1 python:
             "Do you like my ribbon, [player]?"
         ]
     )
+    store.mas_selspr.unlock_hair(mas_hair_def)
 
     ### DOWN
     ## down
@@ -3038,7 +3039,7 @@ init -1 python:
             "Ready for school!"
         ]
     )
-        
+    store.mas_selspr.unlock_clothes(mas_clothes_def)
 
     ### MARISA COSTUME
     ## marisa

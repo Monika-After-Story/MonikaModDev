@@ -769,6 +769,150 @@ init -10 python in mas_selspr:
         )
 
 
+    def _get_sel(item, select_type):
+        """
+        Retreives the selectable for the given item.
+
+        IN:
+            item - item to find Selectable for
+            select_type - the type of selectable we are trying to find
+
+        RETURNS the selectable for the item, or None if not found
+        """
+        if select_type == SELECT_ACS:
+            return get_sel_acs(item)
+
+        elif select_type == SELECT_HAIR:
+            return get_sel_hair(item)
+
+        elif select_type == SELECT_CLOTH:
+            return get_sel_clothes(item)
+
+        return None
+
+
+    def get_sel_acs(acs):
+        """
+        Retrieves the selectable for the given accessory.
+
+        IN:
+            acs - MASAccessory object to find selectable for
+
+        RETURNS the selectable for this acs, or None if not found.
+        """
+        return ACS_SEL_MAP.get(acs.name, None)
+
+
+    def get_sel_clothes(clothes):
+        """
+        Retrieves the selectable for the given clothes
+
+        IN:
+            clothes - MASClothes object to find selectable for
+
+        RETURNS the selectable for these clothes, or None if not found
+        """
+        return CLOTH_SEL_MAP.get(clothes.name, None)
+
+
+    def get_sel_hair(hair):
+        """
+        Retrieves the selectable for the given hair
+
+        IN:
+            hair - MASHair object to find selectbale for
+
+        RETURNS the selectable for this hair, or none if not found
+        """
+        return HAIR_SEL_MAP.get(hair.name, None)
+
+
+    def _lock_item(item, select_type):
+        """
+        Locks the given item's selectable.
+
+        IN:
+            item - item to find selectable for
+            select_type - the type of selectable we are trying to find
+        """
+        sel_item = _get_sel(item, select_type)
+        if sel_item:
+            sel_item.unlocked = False
+
+
+    def lock_acs(acs):
+        """
+        Locks the given accessory's selectable
+
+        IN:
+            acs - MASAccessory object to lock
+        """
+        _lock_item(acs, SELECT_ACS)
+
+
+    def lock_clothes(clothes):
+        """
+        Locks the given clothes' selectable
+
+        IN:
+            clothes - MASClothes object to lock
+        """
+        _lock_item(clothes, SELECT_CLOTH)
+
+
+    def lock_hair(hair):
+        """
+        locks the given hair's selectable
+
+        IN:
+            hair - MASHair object to lock
+        """
+        _lock_item(hair, SELECT_HAIR)
+
+
+    def _unlock_item(item, select_type):
+        """
+        Unlocks the given item's selectable
+
+        IN:
+            item - item to find selectable for
+            select_type - the type of selectable we are trying to find
+        """
+        sel_item = _get_sel(item, select_type)
+        if sel_item:
+            sel_item.unlocked = True
+
+
+    def unlock_acs(acs):
+        """
+        Unlocks the given accessory's selectable
+
+        IN:
+            acs - MASAccessory object to unlock
+        """
+        _unlock_item(acs, SELECT_ACS)
+
+
+    def unlock_clothes(clothes):
+        """
+        Unlocks the given clothes' selectable
+
+        IN:
+            clothes - MASClothes object to unlock
+        """
+        _unlock_item(clothes, SELECT_CLOTH)
+
+
+    def unlock_hair(hair):
+        """
+        Unlocks the given hair's selectable
+
+        IN:
+            hair - MASHair object to unlock
+        """
+        _unlock_item(hair, SELECT_HAIR)
+
+
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
         """

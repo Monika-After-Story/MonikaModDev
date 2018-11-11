@@ -334,6 +334,9 @@ label v0_8_10(version="v0_8_10"):
             changename_ev.pool = True
             persistent._seen_ever["monika_changename"] = True
 
+        # TODO: unlock hair if persistent mas_hair_changed is True
+        # TODO: unlock the costume(s) that were seen on o31
+
     return
 
 # 0.8.9
