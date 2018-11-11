@@ -8628,3 +8628,83 @@ label monika_load_custom_music:
             "No.":
                 $ pushEvent("monika_add_custom_music")
     return
+    
+    label monika_trick:
+    m 2eud "Say [player], I have a question..."
+    m 2lksdlb "I hope I don't sound insecure when I say this..."
+    m 2eka "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
+    show screen mas_background_timed_jump(10, "monika_trick_2")
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+        "Sayori":
+            jump monika_trick_sayori
+        "Natsuki":
+            jump monika_trick_natsuki
+    return
+
+label monika_trick_2:
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            jump monika_trick_yuri
+        "Sayori":
+            jump monika_trick_sayori
+        "Natsuki":
+            jump monika_trick_natsuki
+        "Monika":
+            jump monika_trick_monika
+
+label monika_trick_yuri:
+    hide screen mas_background_timed_jump
+    m 2euc "I can see why, she's intelligent and physically attractive."
+    m 2tub "It's a good thing I have both of those qualities in abundance!"
+    m 2etc "Oh wait, it's not because she became obsessed over you, is it?"
+    m 2eud "Are you really that into yanderes?"
+    m 2lksdlc "..."
+    m 1hksdlb "...Ahaha, there's no need for me to be jealous..."
+    m 1eua "You love me and I love you and that's all that matters."
+    m 1kua "I guess it's my fault for even asking~"
+    return
+
+label monika_trick_natsuki:
+    hide screen mas_background_timed_jump
+    m 2eud "That's... a little surprising."
+    m 2lksdla "I would have thought it would have been Sayori or Yuri."
+    m 1eud "Do you feel like you connect with her because of her hobbies?"
+    m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
+    m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
+    m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
+    m 3eub "Plus her ability to cook cupcakes is astounding!"
+    return
+
+label monika_trick_sayori:
+    hide screen mas_background_timed_jump
+    m 2dkc "That's what I expected..."
+    m 2ekc "It's because she was best friends with the main character, isn't it?"
+    m 6lkc "It makes sense to have the main character end up with the childhood friend."
+    m 2dkc "It really is typical in romance games..."
+    m 2ekc "Honestly that's kind of why I had to...deal...with Sayori first."
+    m 6ekc "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
+    m 6ekd "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
+    m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
+    m 6dktpc "Never having even been acknowledged by the one I love."
+    m 6dktrc "..."
+    if persistent.monika_kill:
+        m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
+    else:
+        m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
+    return
+
+label monika_trick_monika:
+    hide screen mas_background_timed_jump
+    m 1tkbfu "That wasn't supposed to be an option, silly!"
+    m 1tubfb "But it really does make me happy that you only have eyes for me..."
+    m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
+    m 5hubfu "I love you [player]!"
+    m 5eubfb "And I only have eyes for you too!"
+    return
+
+#6ekd, 6ektpc, 6dktpc, 6dktrc, 6ektrd, 1tkbfu, 1tubfu
