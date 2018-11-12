@@ -1728,8 +1728,9 @@ init -1 python:
             if ev.type in self.MOUSE_EVENTS:
                 
                 if ev.type == pygame.MOUSEMOTION:
-                    self.hovered = self._is_over_me(x, y)
-                    renpy.redraw(self, 0)
+                    if not self.locked:
+                        self.hovered = self._is_over_me(x, y)
+                        renpy.redraw(self, 0)
 
                 elif ev.type == pygame.MOUSEBUTTONDOWN:
                     
@@ -1737,12 +1738,13 @@ init -1 python:
                         # TODO: scrolling in mouse wheel is not perfect, 
                         #   the previously hovered item gest hovered instead
                         #   of what we actually want.
-                        self.hovered = self._is_over_me(x, y)
-                        renpy.redraw(self, 0)           
+                        if not self.locked:
+                            self.hovered = self._is_over_me(x, y)
+                            renpy.redraw(self, 0)           
 
                     elif ev.button == 1:
                         # left click
-                        if self._is_over_me(x, y):
+                        if not self.locked and self._is_over_me(x, y):
                             self._select()
                             renpy.redraw(self, 0)
 
@@ -1751,7 +1753,7 @@ init -1 python:
 #                            renpy.redraw(self, 0)
 
             # apply hover dialogue logic if not selected
-            if not self.selected:
+            if not self.selected and not self.locked:
                 self._hover()
 
             if self.end_interaction:
@@ -1797,7 +1799,7 @@ init -1 python:
                         "bottom": _locked_bot_renders,
                         "bottom_hover": _locked_bot_renders,
                         "top": _locked_top_renders,
-                        "top_hover:" locked_top_renders,
+                        "top_hover": _locked_top_renders,
                         "disp_name": self.item_name,
                         "disp_name_hover": self.item_name
                     }

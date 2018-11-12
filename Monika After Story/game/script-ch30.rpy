@@ -1210,6 +1210,7 @@ label ch30_reset:
         if persistent._mas_hair_changed:
             unlockEventLabel("monika_hair_down")
             unlockEventLabel("monika_hair_select")
+            store.mas_selspr.unlock_hair(mas_hair_down)
 
     # monika hair/acs
     $ monika_chr.load()
