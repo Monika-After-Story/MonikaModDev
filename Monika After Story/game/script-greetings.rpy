@@ -1492,6 +1492,9 @@ label greeting_hairdown:
     $ store.mas_selspr.unlock_hair(mas_hair_down)
     $ store.mas_selspr.save_selectables()
 
+    # unlock hair changed selector topic
+    $ unlockEventLabel("monika_hair_select")
+
     # cleanup
     # 1 - music hotkeys should be enabled
     $ store.mas_hotkeys.music_enabled = True

@@ -1203,11 +1203,13 @@ label ch30_reset:
 
     # reset hair / clothes
     python:
+        # TODO: remove all of this after version 0.8.10
         # first, unlock all hair / clothes events that could be reached
         unlockEventLabel("monika_hair_ponytail")
 
         if persistent._mas_hair_changed:
             unlockEventLabel("monika_hair_down")
+            unlockEventLabel("monika_hair_select")
 
     # monika hair/acs
     $ monika_chr.load()
