@@ -8221,23 +8221,32 @@ label monika_bored:
         if gamepicked == "hangman" and persistent._mas_sensitive_mode:
             display_picked = "word guesser"
 
-
-    m 6rkc "Hey [player]..."
-    m "Don't take this the wrong way, but im a little bored..."
+    if mas_isMoniAff(higher=True):
+        if mas_isMoniLove(higher=True):
+            m 6sub "Hey! we should do something!"
+        else: 
+            m 6eua "Hey [player], I was wondering if you would be interested in doing something together?"
+    elif mas_isMoniNormal(higher=True):
+        m 1esa "Hey, would you be interested in spending some time playing together?"
+        m 1lsc "If not, thats okay..."
+    elif mas_isMoniBroken(lower=True):
+        m 2ekc "Hey, [player]..."
+        m "Would you..."
+        m 2rkc "Nevermind..."
+        return
+    else:
+        m 1ekc "Hey [player]... would you be interested in doing something together?"
+        m 2dkc "If you want, that is..."
 
     if gamepicked == "piano":
         m 4eka "Maybe you could play something for me on the piano?"  
-
     else:
         if mas_isMoniAff(higher=True):
-            m 3eub "Could we play a game of [display_picked]?"
-
+            m 3eub "I'd love to play [display_picked]!"
         elif mas_isMoniNormal(higher=True):
             m 4eka "Maybe we could play a game of [display_picked]?"
-
         else:
             m 2rkc "Maybe we could play [display_picked]..."
-        
     menu:
         m "What do you say, [player]?"
         "Yes":
@@ -8253,18 +8262,18 @@ label monika_bored:
             #    call mas_tetris_when?
         "No":
             if mas_isMoniAff(higher=True):
-                m 1eka "Okay..."
-                if mas_isMoniEnamored(higher=True):
-                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5tsu "We could just stare into each other's eyes a little longer..."
-                    m "I'll never get bored of that~"
+                m 1eka "Oh, Okay..."
+                if mas_isMoniLove(higher=True):
+                    m 5tsu "Well, it's not a problem. I get that you can be busy sometimes."
+                    m "I'll be happy, even if you dont want to play [display_picked]."
                 else: 
-                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eua "We could just stare into each other's eyes a little longer..."
-                    m "That will never get boring~"        
+                    m "That will never get boring~"
             elif mas_isMoniNormal(higher=True):
                 m 1ekc "Oh, that's okay..."
-                m 1eka "Be sure to let me know if you want to do something with me later~"
+                m 1eka "Be sure to let me know if you want to do something with me later, alright?"
+            elif mas_isMoniDis(lower=True):
+                m 2ekc "You dont want to spend time with me...?"
             else:
                 #$ mas_loseAffection(reason="not wanting to play games with your girlfriend...")
                 m 2ekc "Fine..."
