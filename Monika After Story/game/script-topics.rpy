@@ -7778,20 +7778,19 @@ label monika_scary_stories:
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue
 # for these.
 
-init 5 python:
+#init 5 python:
     # NOTE: this event is DEPRECATED
-    # TODO: remove this event after version 0.8.10
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_hair_ponytail",
-            category=["monika"],
-            prompt="Can you tie your hair into a ponytail?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_ponytail",
+#            category=["monika"],
+#            prompt="Can you tie your hair into a ponytail?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
 
 label monika_hair_ponytail:
     m 1eua "Sure thing!"
@@ -7807,20 +7806,20 @@ label monika_hair_ponytail:
 
     return
 
-init 5 python:
+#init 5 python:
     # NOTE: this is DEPRECATED
     # TODO: remove this event after version 0.8.10
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_hair_down",
-            category=["monika"],
-            prompt="Can you let your hair down?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_down",
+#            category=["monika"],
+#            prompt="Can you let your hair down?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
 
 label monika_hair_down:
     m 1eua "Sure thing, [player]."

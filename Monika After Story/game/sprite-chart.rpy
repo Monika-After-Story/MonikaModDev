@@ -2920,8 +2920,8 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        entry_pp=store.mas_sprites._hair_def_entry,
-        exit_pp=store.mas_sprites._hair_def_exit,
+#        entry_pp=store.mas_sprites._hair_def_entry,
+#        exit_pp=store.mas_sprites._hair_def_exit,
         split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
@@ -2946,8 +2946,8 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        entry_pp=store.mas_sprites._hair_down_entry,
-        exit_pp=store.mas_sprites._hair_down_exit,
+#        entry_pp=store.mas_sprites._hair_down_entry,
+#        exit_pp=store.mas_sprites._hair_down_exit,
         split=False
     )
     store.mas_sprites.init_hair(mas_hair_down)
