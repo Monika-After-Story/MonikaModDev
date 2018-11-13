@@ -1483,9 +1483,24 @@ init -1 python:
             Makes this item a selected item. Also handles other logic realted
             to selecting this.
             """
-            # can't select self again if we are alreayd selected
+            # if already selected, then we need to deselect.
             if self.selected:
+                # TODO: this actually can break things if we dselect
+                #   probably should handle this a smarter way like if
+                #   something was selected originally, dont make it possible 
+                #   to deselect.
+                #   or make it select what was originally selected.
+                # deselect self
+#                self.selected = False
+#                renpy.redraw(self, 0)
+
+                # end interaction so display text is rest
+#                self.end_interaction = True
                 return
+
+            # TODO: should be moved to the top when deselect can happen
+            # play the select sound
+            renpy.play(gui.activate_sound, channel="sound")
 
             # otherwise select self
             self.selected = True
@@ -1500,9 +1515,6 @@ init -1 python:
 
             # add this item to the select map
             self.select_map[self.selectable.name] = self
-
-            # play the select sound
-            renpy.play(gui.activate_sound, channel="sound")
 
             # the appropriate dialogue
             if self.been_selected:
