@@ -8035,6 +8035,83 @@ label monika_whydoyouloveme:
 #    m 1a "I know you're doing your best to make things right."
 #    m 1k "That's why I love you, [player]!"
 #    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_bored",
+            category=['misc'],
+            random=True,
+            unlocked=True,
+            prompt="Boredom",
+            pool=False
+        )
+    )
+
+label monika_bored:
+    python:
+        unlockedgames = [
+            game
+            for game in persistent.game_unlocks
+            if persistent.game_unlocks[game]
+        ]
+
+        gamepicked = renpy.random.choice(unlockedgames)
+        display_picked = gamepicked
+
+        if gamepicked == "hangman" and persistent._mas_sensitive_mode:
+            display_picked = "word guesser"
+
+
+    m 6rkc "Hey [player]..."
+    m "Don't take this the wrong way, but im a little bored..."
+
+    if gamepicked == "piano":
+        m 4eka "Maybe you could play something for me on the piano?"  
+
+    else:
+        if mas_isMoniAff(higher=True):
+            m 3eub "Could we play a game of [display_picked]?"
+
+        elif mas_isMoniNormal(higher=True):
+            m 4eka "Maybe we could play a game of [display_picked]?"
+
+        else:
+            m 2rkc "Maybe we could play [display_picked]..."
+        
+    menu:
+        m "What do you say, [player]?"
+        "Yes":
+            if gamepicked == "pong":
+                call game_pong
+            elif gamepicked == "chess":
+                call game_chess
+            elif gamepicked == "hangman":
+                call game_hangman
+            elif gamepicked == "piano":
+                call mas_piano_start
+            #elif gamepicked == "tetris":
+            #    call mas_tetris_when?
+        "No":
+            if mas_isMoniAff(higher=True):
+                m 1eka "Okay..."
+                if mas_isMoniEnamored(higher=True):
+                    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5tsu "We could just stare into each other's eyes a little longer..."
+                    m "I'll never get bored of that~"
+                else: 
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "We could just stare into each other's eyes a little longer..."
+                    m "That will never get boring~"        
+            elif mas_isMoniNormal(higher=True):
+                m 1ekc "Oh, that's okay..."
+                m 1eka "Be sure to let me know if you want to do something with me later~"
+            else:
+                #$ mas_loseAffection(reason="not wanting to play games with your girlfriend...")
+                m 2ekc "Fine..."
+                m 2dkc "Let me know if you ever actually want to do anything with me."
+return
     
 init 5 python:
     addEvent(
