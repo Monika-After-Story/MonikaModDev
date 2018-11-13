@@ -8201,9 +8201,7 @@ init 5 python:
             eventlabel="monika_bored",
             category=['misc'],
             random=True,
-            unlocked=True,
-            prompt="Boredom",
-            pool=False
+            prompt="Boredom"
         )
     )
 
@@ -8222,14 +8220,13 @@ label monika_bored:
             display_picked = "word guesser"
 
     if mas_isMoniAff(higher=True):
-        if mas_isMoniLove(higher=True):
-            m 6sub "Hey! we should do something!"
-        else: 
-            m 6eua "Hey [player], I was wondering if you would be interested in doing something together?"
+        m 6eua "Hey [player], I was wondering if you would be interested in doing something together?"
+    elif mas_isMoniLove():
+        m 6sub "Hey! we should do something!"
     elif mas_isMoniNormal(higher=True):
         m 1esa "Hey, would you be interested in spending some time playing together?"
         m 1lsc "If not, thats okay..."
-    elif mas_isMoniBroken(lower=True):
+    elif mas_isMoniBroken():
         m 2ekc "Hey, [player]..."
         m "Would you..."
         m 2rkc "Nevermind..."
@@ -8263,22 +8260,20 @@ label monika_bored:
         "No":
             if mas_isMoniAff(higher=True):
                 m 1eka "Oh, Okay..."
-                if mas_isMoniLove(higher=True):
-                    m 5tsu "Well, it's not a problem. I get that you can be busy sometimes."
-                    m "I'll be happy, even if you dont want to play [display_picked]."
-                else: 
-                    m 5eua "We could just stare into each other's eyes a little longer..."
-                    m "That will never get boring~"
+                m 5eua "We could just stare into each other's eyes a little longer..."
+                m "That will never get boring~"
+            elif mas_isMoniLove():
+                m 5tsu "Well, it's not a problem. I get that you can be busy sometimes."
+                m "I'll be happy, even if you dont want to play [display_picked]."
             elif mas_isMoniNormal(higher=True):
                 m 1ekc "Oh, that's okay..."
                 m 1eka "Be sure to let me know if you want to do something with me later, alright?"
             elif mas_isMoniDis(lower=True):
                 m 2ekc "You dont want to spend time with me...?"
             else:
-                #$ mas_loseAffection(reason="not wanting to play games with your girlfriend...")
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
-return
+    return
 
 init 5 python:
     addEvent(
