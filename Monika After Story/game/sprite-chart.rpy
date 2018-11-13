@@ -2930,9 +2930,6 @@ init -1 python:
         "Ponytail",
         "ponytail",
         "hair",
-        hover_dlg=[
-            "Just like old times..."
-        ],
         select_dlg=[
             "Do you like my ribbon, [player]?"
         ]
@@ -2959,9 +2956,6 @@ init -1 python:
         "Down",
         "down",
         "hair",
-        hover_dlg=[
-            "Hair down hover!"
-        ],
         select_dlg=[
             "Feels nice to let my hair down..."
         ]

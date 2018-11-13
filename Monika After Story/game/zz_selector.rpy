@@ -1160,7 +1160,7 @@ init -1 python:
             # cached renders
             self.render_cache = {}
 
-            # TODO: we need thumbnails for locked items
+            # locked mode
             self.locked = not self.selectable.unlocked
             self.locked_thumb = Image("mod_assets/thumbs/locked.png")
 
