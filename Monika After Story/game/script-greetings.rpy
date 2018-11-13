@@ -1488,8 +1488,12 @@ label greeting_hairdown:
             m 1eua "Done."
             # you will never get this chance again
 
-    # lock this greeting forever.
-    $ persistent._mas_hair_changed = True # menas we have seen this
+    # save that hair down is unlocked
+    $ store.mas_selspr.unlock_hair(mas_hair_down)
+    $ store.mas_selspr.save_selectables()
+
+    # unlock hair changed selector topic
+    $ unlockEventLabel("monika_hair_select")
 
     # cleanup
     # 1 - music hotkeys should be enabled
