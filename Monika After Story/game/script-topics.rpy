@@ -8219,10 +8219,10 @@ label monika_bored:
         if gamepicked == "hangman" and persistent._mas_sensitive_mode:
             display_picked = "word guesser"
 
-    if mas_isMoniAff(higher=True):
-        m 6eua "Hey [player], I was wondering if you would be interested in doing something together?"
-    elif mas_isMoniLove():
+    if mas_isMoniLove():
         m 6sub "Hey! we should do something!"
+    elif mas_isMoniAff(higher=True):
+        m 6eua "Hey [player], I was wondering if you would be interested in doing something together?"
     elif mas_isMoniNormal(higher=True):
         m 1esa "Hey, would you be interested in spending some time playing together?"
         m 1lsc "If not, thats okay..."
@@ -8258,13 +8258,13 @@ label monika_bored:
             #elif gamepicked == "tetris":
             #    call mas_tetris_when?
         "No":
-            if mas_isMoniAff(higher=True):
+            if mas_isMoniLove():
+                m 5tsu "Well, it's not a problem. I get that you can be busy sometimes."
+                m "I'll be happy, even if you dont want to play [display_picked]."
+            elif mas_isMoniAff(higher=True):
                 m 1eka "Oh, Okay..."
                 m 5eua "We could just stare into each other's eyes a little longer..."
                 m "That will never get boring~"
-            elif mas_isMoniLove():
-                m 5tsu "Well, it's not a problem. I get that you can be busy sometimes."
-                m "I'll be happy, even if you dont want to play [display_picked]."
             elif mas_isMoniNormal(higher=True):
                 m 1ekc "Oh, that's okay..."
                 m 1eka "Be sure to let me know if you want to do something with me later, alright?"
