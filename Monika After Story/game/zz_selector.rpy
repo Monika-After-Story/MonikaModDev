@@ -1299,7 +1299,7 @@ init -1 python:
                 # send out hover dlg
                 if self.selectable.hover_dlg is not None:
                     self._send_hover_text()
-                    self.end_interaction
+                    self.end_interaction = True
 
 
         def _hypen_render_split(self, line, lines_list, st, at, tokens=None):
