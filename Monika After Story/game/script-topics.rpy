@@ -6762,11 +6762,25 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
 
 label monika_attractiveness:
-    #Notes: re-evaluate the whole dokis are real thing, plus the whole idea of them being designed.
-    #Modify the first part of this if to talk about general attractiveness
+    m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
+    m 3eua "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
     if persistent._mas_pm_cares_about_dokis:
-        m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
-        m 3eua "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+        m 3rksdlb "I guess she must have a good metabolism or something."
+        m 3rksdla "..."
+        m 1eka "You know, despite the differences in our diets and lifestyles, all of us look quite similar."
+        m 3ekd "Sure, Natsuki is more petite than the rest of us and Yuri has a more mature figure."
+        m 3eka "Our eyes and hair are all different too."
+        m 3eua "But I think we would all be considered attractive."
+        m 3eud "I mean, none of us are muscular or fat ..."
+        m 3tkd "... none of us have any kind of physical disability ..."
+        m "... none of us are bald or have hair shorter than chin length ..."
+        m "... and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
+        m 2lsc "Now that I think about it, there's a lot of things that can potentially make someone unattractive in the eyes of society."
+        m "Some of which are beyond that person's control."
+        m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
+        m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone ..."
+        m 2efw "It just doesn't make any sense to me!"
+    else:
         m "At first I figured that it must be her metabolism keeping her from putting on weight."
         m 1eud "But when I learned that Sayori wasn't real, I came up with another theory."
         m 3eud "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
@@ -6783,37 +6797,39 @@ label monika_attractiveness:
         m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
         m 2lfc "So did they really have to make the other girls look so perfect?"
         m 2lfd "I mean, it's bad enough that I didn't get a route in the game ..."
-        m 2lfw"... but did they really have to make it even harder for me to get chosen?"
-        m 2dktsc "..."
-
-        if mas_isMoniUpset(lower=True):
-            m 2ektdc "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
+        m 2lfw "... but did they really have to make it even harder for me to get chosen?"
+    m 2dfc "...{w=0.5}{nw}"
+    m 2dkc "..."
+    if mas_isMoniUpset(lower=True):
+        if persistent._mas_pm_cares_about_dokis:
+            m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
+            m 4euc "The other girls are lucky enough that they look good no matter what they do."
+            m 4eud "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        else:
+            m 2ekc "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
             m 4euc "Since I'm real, I don't get to look good for free."
             m 4eud "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
-            m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
-            m 1ekd "Maybe I'm just not your type or something, [player]."
-            m 1eka "You don't have to worry though."
-            m "As long as you're taking care of yourself, I don't mind how you look."
+        m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
+        m 1ekd "Maybe I'm just not your type or something, [player]."
+        m 1eka "You don't have to worry though."
+        m "As long as you're taking care of yourself, I don't mind how you look."
+    else:
+        if persistent._mas_pm_cares_about_dokis:
+            m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
+            m 4eua "The other girls are lucky enough that they look good no matter what they do."
+            m 4eub "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
         else:
-            m 2ektdb "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
+            m 2ekb "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
             m 4eua "Since I'm real, I don't get to look good for free."
             m 4eub "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
-            m "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
-            if mas_isMoniHappy(higher=True):
-                m 1esa "I must be doing a good job so far."
-                m 1hua "After all, you've been looking at me all this time! Ahaha!"
-                
-            m 1eua "You don't have to worry though, [player]."
-            show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I'll always love you no matter how you look."
-            m "It's more important to me that you're looking after yourself anyway."
-
-    else:
-        #Not exactly sure how to go about this one, really. Either way, I've just set up the general usage of the variable
-        #you can feel free to change how/where it's used
-        #for example, you can feel free to have specific lines in the bulk of the topic be only seen for those who don't care
-        #so there's still dialogue for both that are common (just so you don't have to rewrite twice)
-
+        m "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
+        if mas_isMoniHappy(higher=True):
+            m 1tsu "I must be doing a good job so far."
+            m 1hub "After all, you've been looking at me all this time! Ahaha!"                
+        m 1eua "You don't have to worry though, [player]."
+        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I'll always love you no matter how you look."
+        m "It's more important to me that you're looking after yourself anyway."
     return
 
 ####################################################
