@@ -690,6 +690,9 @@ init -810 python:
             "_mas_pm_likes_panties": "pm.likes.clothes.panties",
             "_mas_pm_no_talk_panties": "pm.likes.clothes.panties.no_talk",
 
+            # likes / dokis
+            "_mas_pm_cares_about_dokis": "pm.likes.dokis.cares_about_them",
+
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
