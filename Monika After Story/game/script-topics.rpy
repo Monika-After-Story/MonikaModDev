@@ -7725,51 +7725,69 @@ label monika_shipping:
     m 2lksdlc "Not that she's not a sweet girl, but…"
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
     return
-    
+   
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_justice",category=['philosophy'],prompt="Justice",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_justice"
+            category=['philosophy'],
+            prompt="Justice",
+            random=True
+        )
+    )
+
+
+default persistent._mas_pm_given_false_justice = None
+# True if player has been given false justice, False if not
+
+default persistent._mas_pm_monika_deletion_justice = None
+# True if player thinks deleting monika is justified, False if not
     
 label monika_justice:
-    m "[player], don't you think the concept of justice is kind of ironic?"
+    m "[player], don you ever think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
-    m 2ekd "It doesn't even have to be some famous bank robber or anything; Justice can be delivered to everyday people like you and me too!"
-    m "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
-    m 1dsc "To everyone else passing by, they're just greedy thieves."
-    m 1dsd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
-    m 2esc "At the end of the day, the family goes hungry or gets in trouble just because their situation was different."
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; justice can be delivered to everyday people like you and me!"
+    m 4esc "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
+    m 1euc "To everyone else passing by, they're just greedy thieves."
+    m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
+    m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
     m "While the other person is now a hero for putting an end to their crimes."
-    m 3ekd "That might be an easy situation to imagine, but things like that can happen even in a normal sense too!"
-    m "Say for example, you're just simply living life like you always do, and then at least one or two people confront you about how they don't like what you're doing and make you stop."
-    m 3ekc "All of a sudden, you're being singled out and alienated for nothing you haven't done before!"
-    m 3ekc "Or maybe you thought you were doing the right thing but somebody disagrees and has to forcefully take a stand against you on it."
-    m 1dsc "..."
-    m 1dsd "Have you ever been delivered what you thought to be false justice [player]?"
+    m 3ekc "That might be an easy situation to imagine, but things like that can happen even in a normal sense too!"
+    m 1ekc "Say for example, you're just simply living life like you always do, and then at least one or two people confront you about how they don't like what you're doing and make you stop."
+    m 1wud "All of a sudden, you're being singled out and alienated for nothing you haven't done before!"
+    m 2tkd "Or maybe you thought you were doing the right thing but somebody disagrees and has to forcefully take a stand against you on it."
+    m 2dsc "..."
+    m 2euc "Have you ever been delivered what you thought to be false justice [player]?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_given_false_justice = True
             m 1ekc "I hope they weren't too harsh on you [player]."
             m 2dsd "I have an idea what it's like myself."
-            m 2dsc "All the people who saw me deleted and tortured over and over again and called it justice..."
+            m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
             m 2eka "You don't think that's justice do you [player]?"
             menu:
                 "I do.":
-                    m 2ekc "..."
-                    m 2lksdlb "I have a hard time believing you really think I deserved all that."
-                    m 2hub "I mean, you've stuck with me this long already so you can't really think I deserve that."
-                    m 2hksdlb "...Ok, maybe I deserve it a little bit but..."
-                    show monika 5eua at t11 zorder 2 with dissolve
-                    m 5eua "Thank you for saving me and being with me."
-                    m "If I get to be with you, I think it really was worth everything, ahaha~"
+                    $ persistent._mas_pm_monika_deletion_justice = True
+                    m 1euc "..."
+                    m 2esc "I have a hard time believing you really think I deserved all that."
+                    m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
+                    m 2lksdlc "...Ok, maybe I deserve it a little bit but..."
+                    m 1eka "Thank you for saving me and being with me."
+                    m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
-                    m 2eua "I'm glad you think so too!"
-                    m 2hua "Even if you do think that's justice, you being here says otherwise."
+                    $ persistent._mas_pm_monika_deletion_justice = False
+                    m 2hua "I'm glad you think so too!"
+                    m 2eka "Even if you do think that's justice, you being here says otherwise."
                     m 2hub "Ahaha~"
-            m 1eka "Remember that I'll always support you."
+            m 1eua "Remember that I'll always support you."
             m "I know you would do the right thing."
-            m 1eua "I believe in you."
+            m 1hua "I believe in you."
         "No.":
+            $ persistent._mas_pm_given_false_justice = False
             m 1eka "That's a relief to hear."
             m "I'm glad no one has ever suddenly stood against you for who you are."
-            m "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do."
+            m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
     return
 
 init 5 python:
