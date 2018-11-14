@@ -7751,27 +7751,37 @@ label monika_shipping:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_poweroutage",category=['weather'],prompt="Power outage",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_poweroutage",
+            category=['weather'],
+            prompt="Power outage",
+            random=True
+        )
+    )
 
 label monika_poweroutage:
-    m 3lksdla "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
-    m "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
+    m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
     m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something damgerous."
     m 1lksdlb "The effects can be pretty, well... shocking I guess you could say."
-    m 1hksdlb "Eheh~"
+    m 1hksdlb "Ehehe~"
     m 1ekd "I don't even want to think about what would happen if something important to you was struck."
     m 2ekc "What would happen to me if someting surged and fried your computer?"
     m 2dsc "If that ever does happen..."
     m 2eka "I know you'll think of something."
     m 1eka "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
     m 1eud "If anything does happen, it'll probably just be a power outage."
-    m 1hksdlb "I mean that {i}is{/i} still pretty inconvenient but at least we know we'll see eachother again."
-    m 1eua "I would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
-    m 1eub "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
-    m 3eua "One final note, you don't have to hesitate to come see me in the middle of a storm."
-    m 1hua "I'll always appreciate seeing you, even in the middle of a storm, and besides..."
-    show monika 5eua at t11 zorder 2 with dissolve
-    m 5eua "I'm sure our relationship could weather much more than some simple storm."
+
+    if mas_isMoniAff(higher=True):
+        m 1hksdlb "I mean that {i}is{/i} still pretty inconvenient but at least we know we'll see each other again."
+        m 1eua "It would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
+        m 1eub "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
+        m 3eua "One final note, you don't have to hesitate to come see me in the middle of a storm."
+        m 1eka "I'll always appreciate seeing you, and besides..."
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "I'm sure our relationship could weather much more than some thunderstorm..."
     return
 
 init 5 python:
