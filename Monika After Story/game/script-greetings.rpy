@@ -1092,7 +1092,8 @@ label greeting_amnesia:
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
-    $ mas_getEV("greeting_amnesia").unlocked = False
+
+    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
     return
 
 label greeting_sick:
@@ -1525,7 +1526,10 @@ label greeting_hairdown:
     $ store.mas_selspr.save_selectables()
 
     # unlock hair changed selector topic
-    $ unlockEventLabel("monika_hair_select")
+    $ mas_unlockEventLabel("monika_hair_select")
+
+    # lock this greeting
+    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
 
     # cleanup
     # 1 - music hotkeys should be enabled

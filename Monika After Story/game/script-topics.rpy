@@ -3204,6 +3204,7 @@ label monika_algernon:
     m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
+
     $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
     return
 
