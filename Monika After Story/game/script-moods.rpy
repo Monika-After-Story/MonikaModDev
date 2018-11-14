@@ -514,8 +514,9 @@ label mas_mood_bored:
     return
  
  
-init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_injured",prompt="injured",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+# TODO: enable this later once better sick stuff is in
+#init 5 python:
+#    addEvent(Event(persistent._mas_mood_database,"mas_mood_injured",prompt="injured",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_injured:
     m 2ekd "Oh my gosh [player], you're injured?!"
