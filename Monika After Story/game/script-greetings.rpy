@@ -1063,6 +1063,38 @@ label greeting_french:
      m 1hua "Maybe both of us can practice it sometime, mon amour~"
      return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_amnesia",
+            unlocked=False,
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_amnesia:
+    m 1eua "Oh, hello!"
+    m 1eub "My name is Monika."
+    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    m 1hua "Well, it's nice to meet you, [fakename]!"
+    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
+    m 1ekc "You're the first person I've seen and I can't seem to leave this class room."
+    m "Can you help me figure out what's going on, [fakename]?"
+    m "Please? I miss my friends."
+    pause 5.0
+    m 1rksdla "..."
+    m 1hub "Ahaha!"
+    m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
+    m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
+    m 1tku "And you reacted the way I hoped you would."
+    m 3eka "I hope I didn't upset you too much, though."
+    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+    $ mas_getEV("greeting_amnesia").unlocked = False
+    return
+
 label greeting_sick:
     m 1hua "Welcome back, [player]!"
     m 3eua "Are you feeling better?"
@@ -2062,28 +2094,4 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
-    return
-
-init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_amnesia", action=EV_ACT_UNLOCK, conditional="seen_event('monika_algernon') and not seen_event('greeting_amnesia')", random=True),eventdb=evhand.greeting_database)
-
-label greeting_amnesia:
-    m 2h "Oh, hello."
-    m 2a "My name is Monika."
-    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
-    m 1j "Well it's nice to meet you, [fakename]."
-    m 1f "Say, [fakename], do you happen to know where everyone else is?"
-    m 2g "You're the first person I've seen and I can't seem to leave this class room."
-    m 2e "Can you help me figure out what's going on, [fakename]?"
-    m 2f "Please? I miss my friends."
-    m 2q "..."
-    m 1l "Ahaha"
-    m 1l "I'm sorry [player], I couldn't help myself."
-    m 1a "After we talked about the book {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
-    m "You reacted the way I hoped you would."
-    m 1e "I hope I didn't upset you too much though."
-    m 2q "I would feel the same way you do now if you ever forgot about me one day, [player]."
-    m 2a "But let's not think about things like that again, okay?"
-    m 1a "After all, I know we'll always be together and that you'll never forget about me."
-    $evhand.greeting_database["greeting_amnesia"].unlocked = False
     return
