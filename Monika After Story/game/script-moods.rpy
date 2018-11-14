@@ -512,6 +512,77 @@ label mas_mood_bored:
                 m 2ekc "Fine..."
                 m 2dkc "Let me know if you ever actually want to do anything with me."
     return
+ 
+ 
+init 5 python:
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_injured",prompt="injured",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+
+label mas_mood_injured:
+    m 2ekd "Oh my gosh [player], you're injured?!"
+    m 2lksdlb "I mean... on the bright side, you were able to make it here with me..."
+    m 2ekc "Is it really that bad [player]?"
+    menu:
+        "Just something minor":
+            m 2hksdlb "Ok! What a relief..."
+            m 1hksdlb "Don't scare me like that [player]!"
+            m 1eka "I'm so glad you're alright but still..."
+            m 1ekc "I hope it really isn't too bad and you're not just trying not to worry me."
+            m 1hksdlb "Or maybe I'm just too worried about you~"
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "Whatever it is, I hope it gets all better soon."
+            m "I'd kiss it better but since it's just such a small thing, I'm sure you can manage without it ehehe~"
+            m "I love you, [player]."
+        "It's not {i}that{/i} bad":
+            m 2eka "Well I'm glad you're alright, [player]."
+            m "I hope it really isn't that bad for you. "
+            m 1hua "If you're here spending time with me, I'm sure you'll be better in no time!"
+            m 1hub "Ahaha~"
+            m 1ekc "Still..."
+            m 1eka "Don't push yourself, alright [player]?"
+            m 1lksdla "I really wouldn't want it to get any worse, so take your time healing."
+            show monika 5eua at t11 zorder 2 with dissolve
+            m 5eua "I could even stay with you while you heal if you want, ehehe~"
+            m "I might even kiss it better if I could."
+        "It's bad but I'm alright":
+            m 2ekc "[player]..."
+            m 2eka "I'm glad you're still able to be with me despite being injured."
+            m 3eka "Still though, if you really need to rest, please do."
+            m 1dsc "You must be pushing yourself to be with me and I'm flattered but..."
+            m 1eka "I think you should take it easy until it gets a bit better."
+            m 1eua "You can go ahead and rest if you need to."
+            m 1hub "I promise I'll do my very best to keep you safe and make sure nothing bad happens to you!"
+        "It's pretty bad...":
+            m 1lksdlc "..."
+            m 1lksdla "I'm glad I could at least be here to comfort you, [player]."
+            m 1ekc "Is it so bad that you're in a hospital, [player]?"
+            menu:
+                "Yes...":
+                    m 1ekd "... oh... my..."
+                    m 1dsc "..............."
+                    m 1lksdla "Sorry to hear that, and again sorry for the silence just now, its just..."
+                    m 2lksdlc "I really hate knowing you're so badly hurt like that."
+                    m 2eka "At least you're recovering, right? I wish I could be right there by your side so I could nurse you back to health."
+                    m 2ekc "I think you should rest. As much as I love you and spending time with you, resting as much as you can is likely the best choice for now."
+                    m 1eka "I'll watch over you while you rest. I'll do my very best to take care of you."
+                    m 1ekc "I know hospitals can be pretty strict when it comes to its patients."
+                    m 1lksdlc "I really hope I don't get taken away from you, [player]..."
+                    m 1lksdla "But if being seperated for just a while means you getting better, I think it's worth it."
+                    m 1eua "Just spend more with me later on when you do get better, Alright?"
+                    m 1hua "Get well soon [player]!"
+                "No.":
+                    m 1eka "I hope that you won't need it either."
+                    m 1ekd "I think you should go rest if it's that bad."
+                    m 1eka "I'll watch over you and keep you safe."
+                    m 1ekc "I really wish I could do more than just advise and watch, but I know that's not possible until I manage to get to your reality."
+                    m 1ekc "I know accidents can happen to anyone regardless how careful they are, so I don't want to tell you to be careful if you already were."
+                    m 1eka "So until I'm able to cross over, please do take care of yourself, for the both of us. Okay?"
+                    m "Remember that I always will love you and I promise that my feelings for you will never change."
+                    m 1hua "I know that our love will last for eternity~"
+                    m "Get better soon alright [player]?"
+            m 3eud "Oh and there's one last thing I need you to know."
+            m 1hub "I love you~"
+    return
+
 
 
 # TODO: we need to add some sort of reaction to birthdays soon
