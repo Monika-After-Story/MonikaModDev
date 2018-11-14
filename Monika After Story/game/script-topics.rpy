@@ -8809,3 +8809,53 @@ label monika_load_custom_music:
             "No.":
                 $ pushEvent("monika_add_custom_music")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cares_about_dokis",
+            category=["monika", "club members"],
+            prompt="Insensitive Comments",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_cares_about_dokis = None
+# TRue if the player cares about the dokis, False if not
+
+label monika_cares_about_dokis:
+    m 3eub "Ah, [player]!"
+    m 4hua "Want to hear something funny that Sayori once did?"
+    m 4eua "So, one time I asked her to get some coffee for us in the club."
+    m 2rksdlb "The atmosphere was a bit too tense, and I thought it would liven it up a bit."
+    m 2eua "Well, coffee is kept in the staff room, you see. So I sent her there..."
+    m 4wud "...and she was gone for an entire hour! There were teachers in there and she didn't want to talk to them!"
+    m 2rfc "So she waited for {i}ages{/i} outside for them to leave."
+    m 2tfu "You could say that she {i}hu{/i}--"
+    m 2etc "...Hm..."
+    m 2eud "You know what, [player]? I just want to be sure of something..."
+    m 2rksdlc "I know that sometimes I can make some rather...{w=0.5}insensitive comments about the other girls, and it occurred to me..."
+    m 2ekc "Maybe you care about them enough that it bothers you."
+    m 4eub "...And it's perfectly okay if that's the case, [player]!"
+    m 4eka "After all, the five of us spent a lot of time together, so if you don't like it when I joke like that, I completely understand."
+
+    menu:
+        m "So [player], does it make you uncomfortable when I joke about the other girls?"
+        "Yes.":
+            $ persistent._mas_pm_cares_about_dokis = True
+
+            m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
+            m 2eksdld "I'm so sorry, [player]!"
+            m 2rksdlc "I'll try really hard to keep this in mind from now on."
+            m 2eksdlc "Just know I never meant to upset you."
+            m 2eka "But thank you for answering honestly, I want you to know you can always tell me anything."
+
+        "No.":
+            $ persistent._mas_pm_cares_about_dokis = False
+
+            m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
+            m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
+            m 1hub "Ahahaha!"
+
+    return "derandom"
