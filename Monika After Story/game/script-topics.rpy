@@ -5326,33 +5326,47 @@ label monika_rock:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_soda",
+            category=['life','misc'],
+            prompt="Drinking soda",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_drinks_soda = None
+# True if the player drinks soda, False if not
 
 label monika_soda:
-    m 2euc "Do you drink soda, [player]?"
+    show monika 2euc
     menu:
+        m "Do you drink soda, [player]?"
         "Yes.":
-            m 4ekc "You know they're really bad for you, right?"
-            m 2ekc "Soda has a lot of stuff that damages your body and overall health."
-            m 2tkd "They can also corrode your teeth and give you cavities."
-            m "You might also think that diet soda is less damaging but they're also very harmful to you."
+            $ persistent._mas_pm_drinks_soda = True
+
+            # TODO: product placement zevia soda as a healthy alternative
+            m 4ekc "You know that soda is really bad for you, right?"
+            m 2ekc "It has a lot of stuff that damages your body and overall health."
+            m 2tkd "It can also corrode your teeth and give you cavities."
+            m "You might also think that diet soda is less damaging but it can be just as harmful to you."
             m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
-            m 2lksdla "I wouldn't want you to become like Natsuki after all..."
             m 2eua "Why don't you try copying my healthy lifestyle?"
-            m 1hua "That way you can be more fit like me!"
+            m 1hua "That way, you can be more fit like me!"
             m 1hub "Ahaha!"
             m 2ekc "I'd really hate it if you let go of your health, [player]."
             m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
             m "So cut down on the soda, alright [player]?"
         "No.":
+            $ persistent._mas_pm_drinks_soda = False
             m 2eka "That's a relief to hear."
             m "I'm glad that I don't have to worry about you harming yourself by drinking too much soda."
-            m 3eub "Still, it's perfectly fine to have a small treat once in a while."
-            show monika 5eua at t11 zorder 2 with dissolve
-            m 5eua "Maybe someday we could both have a bit of soda together."
-            show monika 1lskdlb at t11 zorder 2 with dissolve
-            m 1lskdlb "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun."
-    return
+            m 3eub "Still, it's perfectly fine to have a small treat once in a while, you know?"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Maybe someday we could both have some soda together."
+            m 5hua "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun on a hot day."
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_clones",category=['monika','mod','philosophy'],prompt="Being cloned",random=True))
