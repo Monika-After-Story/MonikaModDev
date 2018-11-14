@@ -1,7 +1,7 @@
 #This file contains all of monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate action
+#or date-dependent event with an appropriate actiona
 
 define monika_random_topics = []
 define mas_rev_unseen = []
@@ -3204,6 +3204,7 @@ label monika_algernon:
     m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
+    $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
     return
 
 init 5 python:
@@ -4125,7 +4126,7 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m 5hubfb "Ehehe~"
     if (
-            persistent._mas_pm_like_vocaloids 
+            persistent._mas_pm_like_vocaloids
             and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
@@ -4950,7 +4951,7 @@ label monika_panties:
         m 1ekbfa "Gosh, I just want to feel your embrace more."
         m "After all, we're here forever, and I'm here for you."
         m 1hubfb "I love you so much, [player]~"
-     
+
     elif mas_isMoniAff(higher=True):
         # affectionate+
         show monika 1lkbfb
@@ -5645,8 +5646,8 @@ label monika_orchestra:
             m 1hua "I would be very happy to hear you play."
 
     if (
-            persistent._mas_pm_like_orchestral_music 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_orchestral_music
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "Oh, and if you ever feel like sharing your favorite orchestral music with me, [player], it's really easy to do so!"
@@ -5699,8 +5700,8 @@ label monika_jazz:
     m 1hua "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1eua "Maybe that's what I like about jazz, if anything."
     if (
-            persistent._mas_pm_like_jazz 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_jazz
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m "Oh, and if you ever feel like sharing your favorite jazz with me, [player], it's really easy to do so!"
@@ -6611,7 +6612,7 @@ label monika_concerts:
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
     if (
-            not renpy.seen_label("monika_add_custom_music_instruct") 
+            not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "In the meantime, if you want to share your favorite music with me, it's really easy to do so!"
@@ -6725,7 +6726,7 @@ label monika_beach:
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -6757,7 +6758,7 @@ label monika_solipsism:
     m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
     m 1eua "I want to know more about the way you think..."
     return
-     
+
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
 
