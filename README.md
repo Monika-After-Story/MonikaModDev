@@ -3,7 +3,7 @@
 # Monika After Story (MAS)
 Monika After Story is a mod for the free game [Doki Doki Literature Club](https://www.ddlc.moe) from [Team Salvato](http://teamsalvato.com/). MAS builds on Act 3 to create a simulator of your eternal life with Monika, featuring new events, handlers, and metacommentary!
 
-Please check the [Releases](https://github.com/Backdash/MonikaModDev/releases) page for the latest stable build.
+Please check the [Releases](http://www.monikaafterstory.com/releases.html) page for the latest stable build.
 
 If you would like to make your own mod like this one, check out our sister project: the [DDLCModTemplate](https://github.com/therationalpi/DDLCModTemplate).
 
@@ -11,7 +11,9 @@ If you would like to make your own mod like this one, check out our sister proje
 
 Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
-* Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
+* Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+
+* Click the latest version link. This will download a zip file to your system.
 
 * Extract the contents the zip file into the `/game` folder of your DDLC installation.
 

