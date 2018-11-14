@@ -3103,7 +3103,7 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode:
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -8845,6 +8845,16 @@ label monika_cares_about_dokis:
         "Yes.":
             $ persistent._mas_pm_cares_about_dokis = True
 
+            # TODO: the sayori event might be better off rewritten so it 
+            #   has a version that wont hurt someone who cares about dokis
+            $ mas_hideEventLabel("monika_sayori", lock=True, derandom=True)
+
+            # TODO: the natsuki event might be better off rewritten, like the
+            #   sayori event.
+            $ mas_hideEventLabel("monika_natsuki", lock=True, derandom=True)
+
+            
+
             m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
             m 2eksdld "I'm so sorry, [player]!"
             m 2rksdlc "I'll try really hard to keep this in mind from now on."
@@ -8853,6 +8863,10 @@ label monika_cares_about_dokis:
 
         "No.":
             $ persistent._mas_pm_cares_about_dokis = False
+
+            # NOTE: we never restore random for these topics
+            $ mas_unlockEventLabel("monika_sayori")
+            $ mas_unlockEventLabel("monika_natsuki")
 
             m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
             m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
