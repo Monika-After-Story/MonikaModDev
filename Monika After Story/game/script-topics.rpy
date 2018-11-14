@@ -8329,31 +8329,49 @@ label monika_whydoyouloveme:
 #    return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_stoicism",category=['philosophy'],prompt="Stoicism",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_stoicism",
+            category=['philosophy'],
+            prompt="Stoicism",
+            random=True
+        )
+    )
 
 label monika_stoicism:
-    m 2b "I've been reading up on some ancient Greek and Roman philosophy when you're not around, [player]."
-    m 2l "Ahaha! I know, that sounds super boring when you think about it."
-    m 2d "But there was a certain philosophy that caught my attention when I was reading."
-    m "It's called Stoicism, and it's a philosophy founded in Athens back in the 3rd century BCE."
-    m 4d "To put it simply, Stoicism is a philosophy that believes that human beings should learn to accept the circumstances of their situation..."
-    m "...And prevent themselves to be controlled by an irrational desire for pleasure or fear of pain so they can act accordingly in nature's plan."
-    m 2h "They usually get a bad rep today because people think that they're just cold and unfeeling." 
-    m 2a "However, stoics are not just a bunch of unfeeling people who are serious all the time!"
-    m "It's just that stoics practice self control over the way they feel about unfortunate events and react accordingly instead of impulsively."
-    m 2d "For example, maybe you failed an important exam at school."
-    m "What would you do, [player]?"
-    m "Would you panic? Become really depressed and give up trying? Or will you get angry over it and blame others?"
-    m 2r "You and I both know 3 girls who would react just like that, respectively."
-    m 4a "I don't know what you would do, but maybe you can take an example from the stoics and don't indulge such bad feelings!" 
-    m 4b "Maybe instead of doing all that, you can look at the whole situation objectively."
-    m 4e "Although the situation is not the best, there's really no practical reason to expend more energy into something you can't control."
-    m "You should focus on what you can change. Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit?" 
-    m 4l "It beats doing nothing! But that's just my opinion though! It's not that easy to be emotionally resilient to most things in life..."
-    m 4b "You should do whatever helps you destress. Your happiness is really important to me."
-    m "Besides, if you ever feel bad about something that's happened to you in your life..."
-    show monika 5a at t11 zorder 2 with dissolve
-    m "You can always come home to your sweet girlfriend and tell me what's been bothering you~"
+    m 1eua "I've been reading up on some ancient Greek and Roman philosophy whenever you're away, [player]."
+    m 1hksdlb "Ahaha! I know, that sounds super boring when you think about it..."
+    m 1eua "But there was a certain philosophy that caught my attention while I was reading."
+    m "It's called Stoicism, and it's a philosophy founded in Athens in the 3rd century BCE."
+    m 4eub "To put it simply, Stoicism is a philosophy that believes that human beings should learn to accept the circumstances of their situation..."
+    m "...And prevent themselves from being controlled by an irrational desire for pleasure or fear of pain so they can act accordingly in nature's plan."
+    m 2euc "They usually get a bad rep today because people think that they're just cold and unfeeling."
+    m 2eua "However, stoics are not just a bunch of unemotional people who are always serious."
+    m "Stoics practice self-control over the way they feel about unfortunate events and react accordingly instead of impulsively."
+    m 2eud "For example, let's say you failed an important exam at school, or missed a project deadline at work."
+    m 2esd "What would you do, [player]?"
+    m 4esd "Would you panic? Become really depressed and give up trying? Or will you get angry over it and blame others?"
+    m 1eua "I don't know what you would do, but maybe you can take after stoics and keep your emotions in check!"
+    m 1eka "Although the situation is less than ideal, there's really no practical reason to expend more energy into something that you can't control."
+    m 4eua "You should focus on what you can change."
+    m "Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit."
+    m "Or if you imagined the work scenario, start future projects earlier, setup schedules and reminders for those projects, and avoid distractions while you work."
+    m 4hub "It beats doing nothing!"
+    m 1eka "But that's just my opinion though, it's not that easy to be emotionally resilient to most things in life..."
+
+    if mas_isMoniUpset(lower=True):
+        return
+
+    if mas_isMoniAff(higher=True):
+        m 2tkc "You should do {i}whatever{/i} helps you de-stress. Your happiness is really important to me."
+        m 1eka "Besides, if you ever feel bad about something that's happened to you in your life..."
+        show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        m "You can always come home to your sweet girlfriend and tell me what's been bothering you~"
+
+    else:
+        m 2tkc "You should do whatever helps you de-stress. Your happiness is really important to me."
+
     return
 
 init 5 python:
