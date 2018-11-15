@@ -7859,6 +7859,66 @@ label monika_shipping:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_song_yozurina",category=['songs'],prompt="Yozurina",pool=True, random=True))
+
+label monika_song_yozurina:
+    m 1dsd "{i}~Meeting up at midnight~{/i}"
+    m "{i}~In a world scattered with bombs~{/i}"
+    m 3ekb "{i}~I was thinking about you, all this time~{/i}"
+    m 3rksdlb "{i}~Could it have been a misunderstanding of the distance between us?~{/i}"
+    m 1hub "{i}~'That show's so interesting, right'~{/i}"
+    m 1eub "{i}~Did you read that manga everyone's talking about?~{/i}"
+    m 1hub "{i}~Did you listen to this song yet?~{/i}"
+    m 1rsbsd "{i}~Fooling around, on the other sides of the screen~{/i}"
+    m 1dkbfb "{i}~The two of us laugh~{/i}"
+    m 1hubfb "{i}~Turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu...{w=2}turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu~{/i}"
+    m 1dsd "{i}~A vague remark~{/i}"
+    m 1rksdld "{i}~And unplaced a feeling in the air the leaves me unsatisfied~{/i}"
+    m 3hubfb "{i}~What a pain, nah... I couldn't say that~{/i}"
+    m 1hubfb "{i}~The 'I love you's swell bigger and bigger~{/i}"
+    m 2rksdld "{i}~'That sounds painful', 'how rough', 'ew gross'~{/i}"
+    m 1ekbfb "{i}~... I wanna be with you~{/i}"
+    m 1hub "{i}~How many times is this now?~{/i}"
+    m 1eub "{i}~Even if it's just messing around, or you're just pretending to be nice to me--{/i}"
+    m 3ekb "{i}~Even if you, in there~{/i}"
+    m 3rksdlb "{i}~Isn't really the real you...{/i}"
+    m 1ekbfb "{i}~Dawn comes yet again~{/i}"
+    m 1dsd "{i}~2 in the dead of night, I'm lowering my voice~{/i}"
+    m 1ekd "{i}~These days seem to be ending so unhealthily~{/i}"
+    m 1eud "{i}~With a one-two we replay them all at once~{/i}"
+    m "{i}~Today, yet again~{/i}"
+    m 1rubfb "{i}~We forget about time and fool around in the depths of space~{/i}"
+    m 1hubfb "{i}~Turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu...{w=2}turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu~{/i}"
+    m 1dsd "{i}~Sympathism logic~{/i}"
+    m 1eud "{i}~And a melted candy...{/i}"
+    m 1hubfb "{i}~How shady, nah... I couldn't care if you were~{/i}"
+    m 1subfb "{i}~I'm poisoned by all those 'I love you's~{/i}"
+    m 1rubfb "{i}~And I can't tell sour from sweet anymore...{/i}"
+    m 1ekbfb "{i}~... I want to go to see you~{/i}"
+    m 1hub "{i}~How many times is this now?~{/i}"
+    m 1tubfb "{i}~Even if you're actually a demon, or you've just played me all along--{/i}"
+    m 3ekb "{i}~Even if you, in there~{/i}"
+    m 3rksdlb "{i}~Aren't actually the person I'm fated to be with--{/i}"
+    m 1hubfb "{i}~I find myself hoping, yet again~{/i}"
+    m "{i}~Yeah Yeah Yeah Yeah~{/i}"
+    m 1hubfb "{i}~What a pain, nah... I couldn't say that~{/i}"
+    m 1ekbfb "{i}~The 'I love you's swell bigger and bigger~{/i}"
+    m 2rksdld "{i}~'That sounds painful', 'how rough', 'ew gross'~{/i}"
+    m 1ekbfb "{i}~... I wanna be together~{/i}"
+    m 1hub "{i}~How many times is this now?~{/i}"
+    m 1eub "{i}~Even if that sweet voice of yours you whisper with~{/i}"
+    m 1hubfb "{i}~Even if our memories together that swim through the dark, even if they're all lies...{/i}"
+    m 1rubfb "{i}~This is all an ephemeral dream, surely~{/i}"
+    m 1ekbfb "{i}~In the end, even if I'm just being catfished here...{/i}"
+    m 1hubfb "{i}~Dawn comes yet again~{/i}"
+    m "{i}~Turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu...{w=2}turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu...{w=2}turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu...{w=2}turu{w=0.2}tu{w=0.2}tu turu{w=0.2}tu{2=0.2}tu~{/i}"
+    m 1hubfa "Ehehe, sorry that was so long, [player]~"
+    m 1ekbfa "I just thought it really matched our situation."
+    m 3rkbsa "Vocaloid songs sure have a tendency for that if you can get behind them."
+    m 3hubfb "I guess this is what happens when I try to express my love for you, ahaha!"
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
