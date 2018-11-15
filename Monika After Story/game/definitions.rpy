@@ -1718,6 +1718,99 @@ python early:
             if self.raise_issues:
                 raise Exception(msg)
 
+
+# uncomment for syntax highlight on vim
+#init -1 python:
+
+    class MASMailbox(object):
+        """
+        Async communication between different objects.
+
+        NOTE: even though this is usable on its own, its highly recommended
+        that you extend this class to encapsulate message constants.
+
+        NOTE: this is NOT like notify, objects can only respond to messages
+            when they are active.
+
+        PROPERTIES:
+            box - the actual mailbox that contains messages
+        """
+        RETURN_KEY = "__mas_return"
+
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            self.box = {}
+
+
+        def get(self, headline):
+            """
+            Removes a message from the box, and returns it.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None.
+            """
+            if headline in self.box:
+                return self.box.pop(headline)
+
+            return None
+
+
+        def mas_get_return(self):
+            """
+            Removes and returns a MAS_RETURN message.
+
+            RETURNS:
+                the returned message, or None if no message data or if the
+                emssage was wasctually none
+            """
+            return self.get(self.RETURN_KEY)
+
+
+        def mas_send_return(self, msg):
+            """
+            Adds a MAS_RETURN message to the box.
+
+            IN:
+                msg - message to return
+            """
+            self.send(self.RETURN_KEY, msg)
+
+
+        def read(self, headline):
+            """
+            Reads a message from the box.
+            
+            NOTE: does NOT remove the message.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None
+            """
+            return self.box.get(headline, None)
+
+
+        def send(self, headline, msg):
+            """
+            Adds a message to the box.
+
+            IN:
+                headline - identifier for this message.
+                msg - message to send
+            """
+            self.box[headline] = msg
+
+
+
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
 
@@ -2320,7 +2413,7 @@ init -100 python in mas_utils:
 
     def log_entry(entry_log, value):
         """
-        Generic entry add to the given log. 
+        Generic entry add to the given log.
         Stores both time and given value as a tuple:
             [0]: datetime.now()
             [1]: value
@@ -2864,6 +2957,7 @@ init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
         if mas_monika_birthday < today:
@@ -2894,6 +2988,14 @@ init -1 python:
             or persistent._mas_bday_said_happybday
         )
 
+
+    def mas_isO31(_date=datetime.date.today()):
+        """
+        Returns True if the given date is o31
+
+        IF None is passed in, we use today's date
+        """
+        return _date == mas_o31
 
 
     def mas_maxPlaytime():
@@ -4474,6 +4576,7 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
+define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False

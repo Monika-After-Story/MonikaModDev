@@ -20,6 +20,13 @@ init -1 python in mas_greetings:
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
 
+    # generic return home (this also includes bday)
+    TYPE_GENERIC_RET = "generic_go_somewhere"
+
+    # holiday specific
+    TYPE_HOL_O31 = "o31"
+    TYPE_HOL_O31_TT = "trick_or_treat"
+
     # custom greeting functions
     def selectGreeting(_type=None):
         """
@@ -1056,6 +1063,39 @@ label greeting_french:
      m 1hua "Maybe both of us can practice it sometime, mon amour~"
      return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_amnesia",
+            unlocked=False,
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_amnesia:
+    m 1eua "Oh, hello!"
+    m 1eub "My name is Monika."
+    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    m 1hua "Well, it's nice to meet you, [fakename]!"
+    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
+    m 1ekc "You're the first person I've seen and I can't seem to leave this class room."
+    m "Can you help me figure out what's going on, [fakename]?"
+    m "Please? I miss my friends."
+    pause 5.0
+    m 1rksdla "..."
+    m 1hub "Ahaha!"
+    m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
+    m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
+    m 1tku "And you reacted the way I hoped you would."
+    m 3eka "I hope I didn't upset you too much, though."
+    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+
+    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
+    return
+
 label greeting_sick:
     m 1hua "Welcome back, [player]!"
     m 3eua "Are you feeling better?"
@@ -1451,7 +1491,7 @@ label greeting_hairdown:
     # 5 - music is off (skip visual)
 
     # have monika's hair down
-    $ monika_chr.change_hair("down")
+    $ monika_chr.change_hair(mas_hair_down)
 
     call spaceroom
 
@@ -1461,8 +1501,6 @@ label greeting_hairdown:
     menu:
         m "Do you like it?"
         "Yes":
-            # make it possible to switch hair at will
-            $ unlockEventLabel("monika_hair_ponytail")
             $ persistent._mas_likes_hairdown = True
 
             # maybe 6sub is better?
@@ -1483,9 +1521,15 @@ label greeting_hairdown:
             m 1eua "Done."
             # you will never get this chance again
 
-    # lock this greeting forever.
-    $ lockEventLabel("greeting_hairdown", evhand.greeting_database)
-    $ persistent._mas_hair_changed = True # menas we have seen this
+    # save that hair down is unlocked
+    $ store.mas_selspr.unlock_hair(mas_hair_down)
+    $ store.mas_selspr.save_selectables()
+
+    # unlock hair changed selector topic
+    $ mas_unlockEventLabel("monika_hair_select")
+
+    # lock this greeting
+    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
 
     # cleanup
     # 1 - music hotkeys should be enabled
@@ -1662,7 +1706,7 @@ init 5 python:
         del rules
 
 
-init 900 python in mas_delact:
+init -876 python in mas_delact:
     # this greeting requires a delayed action, since we cannot ensure that
     # the sprites for this were decoded correctly
 
@@ -1736,7 +1780,10 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_returned_home",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_GO_SOMEWHERE]
+            category=[
+                store.mas_greetings.TYPE_GO_SOMEWHERE,
+                store.mas_greetings.TYPE_GENERIC_RET
+            ]
         ),
         eventdb=evhand.greeting_database
     )
@@ -1750,9 +1797,14 @@ label greeting_returned_home:
     $ five_minutes = datetime.timedelta(seconds=5*60)
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
+    # event checks
     if mas_isMonikaBirthday():
         jump greeting_returned_home_bday
 
+    if mas_isO31() and not persistent._mas_o31_in_o31_mode:
+        $ queueEvent("mas_holiday_o31_returned_home_relaunch")
+
+    # main dialogue
     if time_out > five_minutes:
         m 1hua "And we're home!"
         m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
