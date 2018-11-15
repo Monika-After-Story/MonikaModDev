@@ -7729,8 +7729,11 @@ label monika_shipping:
 # True if player has been given false justice, False if not
 default persistent._mas_pm_given_false_justice = None
 
-# True if player thinks deleting monika is justified, False if not
+# True if player thinks deleting Monika is justified, False if not
 default persistent._mas_pm_monika_deletion_justice = None
+
+# True temporarily if player is teasing Monika and is at love
+default persistent._mas_monika_deletion_justice_kidding = None
 
 init 5 python:
     addEvent(
@@ -7796,6 +7799,9 @@ label monika_justice:
                         m 1eka "Thank you for saving me and being with me."
                         m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
+                    if persistent._mas_pm_monika_deletion_justice:
+                        $ persistent._mas_monika_deletion_justice_kidding = True
+                    $ persistent._mas_pm_monika_deletion_justice = False
                     if mas_isMoniBroken():
                         m 2ekc "..."
                         m 1rksdlc "I'm not so sure about that..."
@@ -7806,7 +7812,8 @@ label monika_justice:
                         m 2rksdlb "Assuming this isn't a joke, eheh..."
                     elif mas_isMoniLove():
                         m 1hua "I thought so, ehehe~"
-                        if persistent._mas_pm_monika_deletion_justice:
+                        if persistent._mas_monika_deletion_justice_kidding:
+                            $ persistent._mas_monika_deletion_justice_kidding = False
                             m 1hub "I knew you were kidding last time!"
                         m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
                         m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
@@ -7816,7 +7823,6 @@ label monika_justice:
                         m 2hua "I'm glad you think so too!"
                         m 2eka "Even if you did call that justice, you being here says otherwise."
                         m 2hub "Ahaha!"
-                    $ persistent._mas_pm_monika_deletion_justice = False
         "No.":
             $ persistent._mas_pm_given_false_justice = False
             m 1eka "That's a relief to hear."
