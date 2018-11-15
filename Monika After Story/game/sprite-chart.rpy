@@ -11526,6 +11526,20 @@ image monika 6ektpc = DynamicDisplayable(
     tears="pooled"
 )
 
+image monika 6dktpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    tears="pooled"
+)
+
 image monika 6ektda = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
