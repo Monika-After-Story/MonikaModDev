@@ -8892,7 +8892,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_trick",
             category=["club members"],
-            prompt="Choosing another club member",
+            prompt="[player]'s second choice",
             random=True
         )
     )
@@ -8905,24 +8905,26 @@ label monika_trick:
     menu:
         m "Who would you choose?"
         "Yuri":
-            jump monika_trick_yuri
+            call monika_trick_yuri
         "Sayori":
-            jump monika_trick_sayori
+            call monika_trick_sayori
         "Natsuki":
-            jump monika_trick_natsuki
-    return
+            call monika_trick_natsuki
+    return "derandom"
 
 label monika_trick_2:
     menu:
         m "Who would you choose?{fast}"
         "Yuri":
-            jump monika_trick_yuri
+            call monika_trick_yuri
         "Sayori":
-            jump monika_trick_sayori
+            call monika_trick_sayori
         "Natsuki":
-            jump monika_trick_natsuki
+            call monika_trick_natsuki
         "Monika":
-            jump monika_trick_monika
+            call monika_trick_monika
+
+    return "derandom"
 
 label monika_trick_yuri:
     hide screen mas_background_timed_jump
