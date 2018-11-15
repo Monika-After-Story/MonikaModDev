@@ -1677,6 +1677,7 @@ init -1 python in mas_calendar:
 init python:
 
     import store.mas_calendar as calendar
+    import datetime
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
@@ -1702,7 +1703,10 @@ init python:
         )
 
     # add birthday if we have one
-    if persistent._mas_player_bday is not None:
+    if (
+            persistent._mas_player_bday is not None
+            and type(persistent._mas_player_bday) == datetime.date
+        ):
         calendar.addRepeatable_d(
             "player-bday",
             "Your Birthday",
