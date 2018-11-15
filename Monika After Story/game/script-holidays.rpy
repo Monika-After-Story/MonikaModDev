@@ -211,6 +211,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31mcg")
                 )
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
 
             else:
                 persistent._mas_o31_current_costume = "rin"
@@ -218,6 +219,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31rcg")
                 )
+                store.mas_selspr.unlock_clothes(mas_clothes_rin)
 
             persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
 
