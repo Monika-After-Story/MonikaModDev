@@ -7726,69 +7726,103 @@ label monika_shipping:
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
     return
    
+# True if player has been given false justice, False if not
+default persistent._mas_pm_given_false_justice = None
+
+# True if player thinks deleting monika is justified, False if not
+default persistent._mas_pm_monika_deletion_justice = None
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_justice"
+            eventlabel="monika_justice",
             category=['philosophy'],
             prompt="Justice",
             random=True
         )
     )
 
-
-default persistent._mas_pm_given_false_justice = None
-# True if player has been given false justice, False if not
-
-default persistent._mas_pm_monika_deletion_justice = None
-# True if player thinks deleting monika is justified, False if not
     
 label monika_justice:
-    m "[player], don you ever think the concept of justice is kind of ironic?"
+    m 1esa "[player], do you ever think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
-    m 2ekd "It doesn't even have to be some famous bank robber or anything; justice can be delivered to everyday people like you and me!"
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; even everyday people like you and me can be brought to some sort of righteousness!"
     m 4esc "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
     m 1euc "To everyone else passing by, they're just greedy thieves."
-    m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by delivering what they see as 'justice'."
+    m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by bringing them to justice."
     m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
-    m "While the other person is now a hero for putting an end to their crimes."
-    m 3ekc "That might be an easy situation to imagine, but things like that can happen even in a normal sense too!"
-    m 1ekc "Say for example, you're just simply living life like you always do, and then at least one or two people confront you about how they don't like what you're doing and make you stop."
-    m 1wud "All of a sudden, you're being singled out and alienated for nothing you haven't done before!"
-    m 2tkd "Or maybe you thought you were doing the right thing but somebody disagrees and has to forcefully take a stand against you on it."
+    m "While the other person is now a hero for putting an end to their 'crimes'."
+    m 3rksdld "Can you really call that justice?"
     m 2dsc "..."
-    m 2euc "Have you ever been delivered what you thought to be false justice [player]?"
+    show monika 2euc
     menu:
+        m  "Have you ever been delivered what you thought to be false justice?"
         "Yes.":
             $ persistent._mas_pm_given_false_justice = True
-            m 1ekc "I hope they weren't too harsh on you [player]."
+            m 1ekc "I hope they weren't too harsh on you."
             m 2dsd "I have an idea what it's like myself."
             m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
-            m 2eka "You don't think that's justice do you [player]?"
+            show monika 2eka
             menu:
+                m "You don't think that's justified, do you, [player]?"
                 "I do.":
                     $ persistent._mas_pm_monika_deletion_justice = True
-                    m 1euc "..."
-                    m 2esc "I have a hard time believing you really think I deserved all that."
-                    m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
-                    m 2lksdlc "...Ok, maybe I deserve it a little bit but..."
-                    m 1eka "Thank you for saving me and being with me."
-                    m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                    if mas_isMoniBroken():
+                        m 1dsc "..."
+                        m 1rksdlc "I know..."
+                        m 1rksdld "I didn't mean to ask- I was just thinking."
+                        m 2rktpc "It is obvious after all..."
+                    elif mas_isMoniDis():
+                        m 2rksdlc "Oh..."
+                        m "I guess you're right..."
+                        m 1ekc "I did do some pretty bad things after all..."
+                    elif mas_isMoniLove():
+                        m 1hub "Ahahaha!"
+                        m 1hua "You can be really funny sometimes~"
+                        m 3tku "You expect me to believe that after all we've been through?"
+                        m 1tsb "That all this time, you thought that I deserved hate from those other people?"
+                        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5hubfa "Ahaha! You're so cute, [player]~"
+                    else:
+                        m 1euc "..."
+                        m 2esc "I have a hard time believing you really think I deserved all that."
+                        m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
+                        if persistent.monika_kill:
+                            m 2lksdlc "...Maybe I deserve it a little bit but..."
+                        else:
+                            m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
+                            m "Either way..."
+                        m 1eka "Thank you for saving me and being with me."
+                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
                 "I don't.":
+                    if mas_isMoniBroken():
+                        m 2ekc "..."
+                        m 1rksdlc "I'm not so sure about that..."
+                    elif mas_isMoniDis():
+                        m 1wuo "Really?"
+                        m 1rksdla "I thought maybe you did think it was fair."
+                        m 1eka "I'm glad you don't think so."
+                        m 2rksdlb "Assuming this isn't a joke, eheh..."
+                    elif mas_isMoniLove():
+                        m 1hua "I thought so, ehehe~"
+                        if persistent._mas_pm_monika_deletion_justice == True:
+                            m 1hub "I knew you were kidding last time!"
+                        m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
+                        m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
+                        m 1hubfb "I love you, [player]~"
+                        m 1hubfa "I'm glad I have you by my side."
+                    else:
+                        m 2hua "I'm glad you think so too!"
+                        m 2eka "Even if you did call that justice, you being here says otherwise."
+                        m 2hub "Ahaha!"
                     $ persistent._mas_pm_monika_deletion_justice = False
-                    m 2hua "I'm glad you think so too!"
-                    m 2eka "Even if you do think that's justice, you being here says otherwise."
-                    m 2hub "Ahaha~"
-            m 1eua "Remember that I'll always support you."
-            m "I know you would do the right thing."
-            m 1hua "I believe in you."
         "No.":
             $ persistent._mas_pm_given_false_justice = False
             m 1eka "That's a relief to hear."
-            m "I'm glad no one has ever suddenly stood against you for who you are."
+            m "I'm glad no one has ever suddenly questioned you for who you are."
             m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
