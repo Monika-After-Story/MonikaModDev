@@ -6831,35 +6831,6 @@ label monika_attractiveness:
         m 5eua "I'll always love you no matter how you look."
         m "It's more important to me that you're looking after yourself anyway."
     return
-
-####################################################
-# Saving this for future use
-# Could be expanded to something better
-# where where persistent.playthrough can be
-# checked and have a different response
-# depending on what the player did
-####################################################
-
-label monika_solipsism:
-    m 3eub "Have you ever heard about solipsism, [player]?"
-    m 3eua "It's a philosophical idea which states that only your mind is sure to exist."
-    m 1eud "What do you think of that?"
-    m "Is there really something other than yourself?"
-    m 1euc "Or maybe you and everything else are just some representations of my psyche?"
-    m 1dsd "Extensions of my own consciousness..."
-    m 1hub "Ahaha!"
-    m 1eub "I'm just kidding, of course."
-    m 1eua "It's more likely that {i}I'm{/i} a representation of your mind than the other way around."
-    m "I'm the 'game character', right?"
-    m 1dsc "Still... it makes you wonder about the nature of our realities. Or maybe 'fabric' would be a better term than 'nature'?"
-    m 1eua "Anyway, I recommend reading more about solipsism."
-    m 1eub "There are several varieties of it."
-    m "Like metaphysical, epistemological, or methodological solipsism."
-    m 1eua "You can read more about them online."
-    m "Then we could talk about these topics more in-depth."
-    m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
-    m 1eua "I want to know more about the way you think..."
-    return
      
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
