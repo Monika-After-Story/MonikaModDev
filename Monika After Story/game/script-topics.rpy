@@ -8914,7 +8914,7 @@ label monika_trick:
 
 label monika_trick_2:
     menu:
-        m "Who would you choose?"
+        m "Who would you choose?{fast}"
         "Yuri":
             jump monika_trick_yuri
         "Sayori":
