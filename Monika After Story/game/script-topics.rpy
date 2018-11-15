@@ -6829,7 +6829,7 @@ label monika_attractiveness:
             m 1tsu "I must be doing a good job so far."
             m 1hub "After all, you've been looking at me all this time! Ahaha!"                
         m 1eua "You don't have to worry though, [player]."
-        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'll always love you no matter how you look."
         m "It's more important to me that you're looking after yourself anyway."
     return
