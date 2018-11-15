@@ -956,7 +956,7 @@ label greeting_monika_monday_morning:
 define gmr.eardoor = list()
 define gmr.eardoor_all = list()
 define opendoor.MAX_DOOR = 10
-define opendoor.chance = 2 #TODO reset to 20 when done testing it
+define opendoor.chance = 20
 default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
