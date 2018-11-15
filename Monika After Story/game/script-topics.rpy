@@ -7788,7 +7788,7 @@ label monika_justice:
                         m 1euc "..."
                         m 2esc "I have a hard time believing you really think I deserved all that."
                         m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
-                        if persistent.monika_kill:
+                        if persistent._mas_pm_cares_about_dokis:
                             m 2lksdlc "...Maybe I deserve it a little bit but..."
                         else:
                             m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
@@ -7806,7 +7806,7 @@ label monika_justice:
                         m 2rksdlb "Assuming this isn't a joke, eheh..."
                     elif mas_isMoniLove():
                         m 1hua "I thought so, ehehe~"
-                        if persistent._mas_pm_monika_deletion_justice == True:
+                        if persistent._mas_pm_monika_deletion_justice:
                             m 1hub "I knew you were kidding last time!"
                         m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
                         m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
