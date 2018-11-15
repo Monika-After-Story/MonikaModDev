@@ -626,6 +626,7 @@ init -810 python:
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
+            "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
@@ -685,11 +686,17 @@ init -810 python:
             # likes / food
             "_mas_pm_like_mint_ice_cream": "pm.likes.food.mint_ice_cream",
 
+            # likes / clothes
+            "_mas_pm_likes_panties": "pm.likes.clothes.panties",
+            "_mas_pm_no_talk_panties": "pm.likes.clothes.panties.no_talk",
+
+            # likes / dokis
+            "_mas_pm_cares_about_dokis": "pm.likes.dokis.cares_about_them",
+
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
             "_mas_pm_lang_jpn": "pm.know.lang.jpn"
-
         },
         use_year_before=True,
         dont_reset=True
