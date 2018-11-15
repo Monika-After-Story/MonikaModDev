@@ -1,7 +1,7 @@
 #This file contains all of monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate action
+#or date-dependent event with an appropriate actiona
 
 define monika_random_topics = []
 define mas_rev_unseen = []
@@ -3103,7 +3103,7 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode:
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -3204,6 +3204,8 @@ label monika_algernon:
     m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
+
+    $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
     return
 
 init 5 python:
@@ -4125,7 +4127,7 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m 5hubfb "Ehehe~"
     if (
-            persistent._mas_pm_like_vocaloids 
+            persistent._mas_pm_like_vocaloids
             and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
@@ -4950,7 +4952,7 @@ label monika_panties:
         m 1ekbfa "Gosh, I just want to feel your embrace more."
         m "After all, we're here forever, and I'm here for you."
         m 1hubfb "I love you so much, [player]~"
-     
+
     elif mas_isMoniAff(higher=True):
         # affectionate+
         show monika 1lkbfb
@@ -5645,8 +5647,8 @@ label monika_orchestra:
             m 1hua "I would be very happy to hear you play."
 
     if (
-            persistent._mas_pm_like_orchestral_music 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_orchestral_music
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "Oh, and if you ever feel like sharing your favorite orchestral music with me, [player], it's really easy to do so!"
@@ -5699,8 +5701,8 @@ label monika_jazz:
     m 1hua "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1eua "Maybe that's what I like about jazz, if anything."
     if (
-            persistent._mas_pm_like_jazz 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_jazz
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m "Oh, and if you ever feel like sharing your favorite jazz with me, [player], it's really easy to do so!"
@@ -6611,7 +6613,7 @@ label monika_concerts:
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
     if (
-            not renpy.seen_label("monika_add_custom_music_instruct") 
+            not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "In the meantime, if you want to share your favorite music with me, it's really easy to do so!"
@@ -6725,7 +6727,7 @@ label monika_beach:
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -6757,7 +6759,7 @@ label monika_solipsism:
     m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
     m 1eua "I want to know more about the way you think..."
     return
-     
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
 
@@ -8883,3 +8885,67 @@ label monika_load_custom_music:
             "No.":
                 $ pushEvent("monika_add_custom_music")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cares_about_dokis",
+            category=["monika", "club members"],
+            prompt="Insensitive Comments",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_cares_about_dokis = None
+# TRue if the player cares about the dokis, False if not
+
+label monika_cares_about_dokis:
+    m 3eub "Ah, [player]!"
+    m 4hua "Want to hear something funny that Sayori once did?"
+    m 4eua "So, one time I asked her to get some coffee for us in the club."
+    m 2rksdlb "The atmosphere was a bit too tense, and I thought it would liven it up a bit."
+    m 2eua "Well, coffee is kept in the staff room, you see. So I sent her there..."
+    m 4wud "...and she was gone for an entire hour! There were teachers in there and she didn't want to talk to them!"
+    m 2rfc "So she waited for {i}ages{/i} outside for them to leave."
+    m 2tfu "You could say that she {i}hu{/i}--"
+    m 2etc "...Hm..."
+    m 2eud "You know what, [player]? I just want to be sure of something..."
+    m 2rksdlc "I know that sometimes I can make some rather...{w=0.5}insensitive comments about the other girls, and it occurred to me..."
+    m 2ekc "Maybe you care about them enough that it bothers you."
+    m 4eub "...And it's perfectly okay if that's the case, [player]!"
+    m 4eka "After all, the five of us spent a lot of time together, so if you don't like it when I joke like that, I completely understand."
+
+    menu:
+        m "So [player], does it make you uncomfortable when I joke about the other girls?"
+        "Yes.":
+            $ persistent._mas_pm_cares_about_dokis = True
+
+            # TODO: the sayori event might be better off rewritten so it 
+            #   has a version that wont hurt someone who cares about dokis
+            $ mas_hideEventLabel("monika_sayori", lock=True, derandom=True)
+
+            # TODO: the natsuki event might be better off rewritten, like the
+            #   sayori event.
+            $ mas_hideEventLabel("monika_natsuki", lock=True, derandom=True)
+
+            
+
+            m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
+            m 2eksdld "I'm so sorry, [player]!"
+            m 2rksdlc "I'll try really hard to keep this in mind from now on."
+            m 2eksdlc "Just know I never meant to upset you."
+            m 2eka "But thank you for answering honestly, I want you to know you can always tell me anything."
+
+        "No.":
+            $ persistent._mas_pm_cares_about_dokis = False
+
+            # NOTE: we never restore random for these topics
+            $ mas_unlockEventLabel("monika_sayori")
+            $ mas_unlockEventLabel("monika_natsuki")
+
+            m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
+            m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
+            m 1hub "Ahahaha!"
+
+    return "derandom"
