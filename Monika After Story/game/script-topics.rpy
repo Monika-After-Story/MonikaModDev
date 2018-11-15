@@ -8886,6 +8886,16 @@ label monika_load_custom_music:
                 $ pushEvent("monika_add_custom_music")
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_trick",
+            category=["club members"],
+            prompt="Choosing another club member",
+            random=True
+        )
+    )
 
 label monika_trick:
     m 2eud "Say [player], I have a question..."
@@ -8964,8 +8974,6 @@ label monika_trick_monika:
     m 5hubfu "I love you [player]!"
     m 5eubfb "And I only have eyes for you too!"
     return
-
-#6ekd, 6ektpc, 6dktpc, 6dktrc, 6ektrd, 1tkbfu, 1tubfu
 
 init 5 python:
     addEvent(
