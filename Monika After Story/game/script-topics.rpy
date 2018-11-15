@@ -3149,7 +3149,7 @@ label monika_ribbon:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['misc'],prompt="Camping safety",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['nature'],prompt="Camping safety",random=True))
 
 label monika_outdoors:
     m 1eua "Do you ever go camping, [player]? It's a wonderful way to relax and get some fresh air,"
@@ -3169,7 +3169,7 @@ label monika_outdoors:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['misc'],prompt="Mountains",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['nature'],prompt="Mountains",random=True))
 
 label monika_mountain:
     m 1eua "Have you ever been in the mountains, [player]?"
