@@ -7676,7 +7676,7 @@ label monika_hair_down:
 ##### End monika hair topics
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc'],prompt="Backpacking",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
 
 label monika_backpacking:
     m 1esa "You know what I've always wanted to do, [player]?"
