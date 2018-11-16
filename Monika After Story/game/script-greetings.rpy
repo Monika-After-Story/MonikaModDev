@@ -1874,7 +1874,6 @@ label greeting_amnesia:
     $ mas_lockEvent(mas_getEV("greeting_amnesia"))
     return
 
-#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -1887,6 +1886,9 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
+# TODO for better-sick, we would use the mood persistent and queue a topic.
+#   might have dialogue similar to this, so leaving this todo here.
+
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
         m 1hua "Welcome back, [player]!"
@@ -1897,9 +1899,9 @@ label greeting_sick:
 
     menu:
         "Yes":
+            $ persistent._mas_mood_sick = False
             if mas_isMoniNormal(higher=True):
                 m 1hub "Great! Now we can spend some more time together. Ehehe~"
-                $ persistent._mas_mood_sick = False
             else:
                 m "That's good to hear."
         "No":
@@ -1909,16 +1911,17 @@ label greeting_sick:
 label greeting_stillsick:
     if mas_isMoniNormal(higher=True):
         m 1ekc "[player], you really should go get some rest."
-        m "Getting plenty of rest is the best remedy for getting over a sickness quickly."
-        m 2lksdlc "I wouldn't forgive myself if your sickness got any worse because of me."
+        m "Getting plenty of rest is the best way to recover from sickness quickly."
+        m 2lksdlc "I wouldn't forgive myself if your health got any worse because of me."
         m 2eka "Now please, [player], put my mind at ease and go get some rest."
         m "Will you do that for me?"
 
     else:
         m 2ekc "[player], you really should go get some rest."
-        m 4ekc "Getting plenty of rest is the best remedy for getting over a sickness quickly."
+        m 4ekc "Getting plenty of rest is the best way to recover from sickness quickly."
         m "Now please, [player], just go get some rest."
         m 2ekc "Will you do that for me?"
+
     menu:
         "Yes":
             jump greeting_stillsickrest
@@ -1937,6 +1940,7 @@ label greeting_stillsickrest:
         m "I think if I leave you alone for a while, you'll be able to rest better."
         m 4ekc "So I'm going to close the game for you."
         m 2ekc "Get well soon, [player]."
+
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
