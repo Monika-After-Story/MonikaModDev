@@ -1397,7 +1397,7 @@ label monikaroom_greeting_opendoor_broken_quit:
 # locked door, because we are awaitng more content
 label monikaroom_greeting_opendoor_locked:
     if mas_isMoniBroken():
-        jump monikaroom_greeting_opendoor_broken_quit:
+        jump monikaroom_greeting_opendoor_broken_quit
 
     # monika knows you are here
     $ mas_disable_quit()
@@ -1605,7 +1605,7 @@ label monikaroom_greeting_opendoor:
 
 label monikaroom_greeting_knock:
     if mas_isMoniBroken():
-        jump monikaroom_greeting_opendoor_broken_quit:
+        jump monikaroom_greeting_opendoor_broken_quit
 
     m "Who is it~?"
     menu:
