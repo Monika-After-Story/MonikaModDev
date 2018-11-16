@@ -7872,11 +7872,11 @@ init 5 python:
 label monika_poweroutage:
     m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
     m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
-    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something damgerous."
+    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
     m 1lksdlb "The effects can be pretty, well... shocking I guess you could say."
     m 1hksdlb "Ehehe~"
     m 1ekd "I don't even want to think about what would happen if something important to you was struck."
-    m 2ekc "What would happen to me if someting surged and fried your computer?"
+    m 2ekc "What would happen to me if something surged and fried your computer?"
     m 2dsc "If that ever does happen..."
     m 2eka "I know you'll think of something."
     m 1eka "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
