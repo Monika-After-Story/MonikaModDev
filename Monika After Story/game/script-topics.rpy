@@ -7589,6 +7589,9 @@ default persistent._mas_pm_few_past_relationships = None
 # Have you been in a lot of relationships
 default persistent._mas_pm_many_past_relationships = None
 
+# Don't wanna talk about it
+default persistent._mas_pm_no_talk_past_relationships = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_past_relationships",category=['you'],prompt="Past relationships",random=True))
 
@@ -7601,6 +7604,7 @@ label monika_past_relationships:
             $ persistent._mas_pm_past_relationship = True
             $ persistent._mas_pm_many_past_relationships = True
             $ persistent._mas_pm_few_past_relationships = False
+            $ persistent._mas_pm_no_talk_past_relationships = False
             m 2hksdlb "Oh, wow!"
             m "I had no idea you were so popular, [player]!"
             m 1rksdla "Well, I guess I'm not {i}too{/i} surprised."
@@ -7617,6 +7621,7 @@ label monika_past_relationships:
             $ persistent._mas_pm_past_relationship = True
             $ persistent._mas_pm_many_past_relationships = False
             $ persistent._mas_pm_few_past_relationships = True
+            $ persistent._mas_pm_no_talk_past_relationships = False
             m 1eua "Ah, I guess that makes sense."
             m "I was just curious of how much dating experience you might have."
             m 1hua "Don't worry! I don't have too much experience either."
@@ -7634,6 +7639,7 @@ label monika_past_relationships:
             $ persistent._mas_pm_past_relationship = True
             $ persistent._mas_pm_many_past_relationships = False
             $ persistent._mas_pm_few_past_relationships = False
+            $ persistent._mas_pm_no_talk_past_relationships = False
             m 1wubso "Really?{w=0.3}I thought you'd have plenty of opportunities and options for relationships."
             m 1hua "Or maybe you're just really careful and selective?"
             m 1eua "Either way, I'm glad you're not the type to go around hopping from one relationship to another."
@@ -7685,6 +7691,7 @@ label monika_past_relationships:
             $ persistent._mas_pm_past_relationship = False
             $ persistent._mas_pm_many_past_relationships = False
             $ persistent._mas_pm_few_past_relationships = False
+            $ persistent._mas_pm_no_talk_past_relationships = False
             m 2wubsw "Really?!"
             m 1rksdla "I have a hard time believing that, really."
             m 1eua "I'm sure plenty of people have had their eyes on you."
@@ -7711,6 +7718,14 @@ label monika_past_relationships:
                     m 1eua "I get that you might not want to be distracted by a relationship and that's respectable."
                     m 1tubfb "I just hope you don't mind me coming into your life and loving you."
                     m 1tsbsa "Ehehehe~"
+        "I don't want to talk about this":
+            $ persistent._mas_pm_no_talk_past_relationships = True
+            m 2rksdlc "Oh..."
+            m 2ekc "I'm sorry."
+            m 1rksdlc "I didn't realize it made you uncomfortable..."
+            m 1eka "We can talk about it when you feel ready."
+            m 3ekbfa "There's no rush, after all."
+            m 1hubfb "As always, I love you, [player]~"
     return
 
 init 5 python:
