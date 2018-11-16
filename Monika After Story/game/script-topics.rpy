@@ -8147,6 +8147,37 @@ label monika_hair_select:
 
 ##### End monika hair topics
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
+
+label monika_backpacking:
+    m 1esa "You know what I've always wanted to do, [player]?"
+    m 3eub "I've always thought it would be so amazing to go backpacking in the wilderness!"
+    m 3eua "Take like an entire week and leave it all behind."
+    m 3esa "No responsibilities, no worries, no phones, no distractions."
+    m 1hua "Just imagine the two of us, alone with nature..."
+    m "The sounds of birds chirping and the wind blowing..."
+    m 1eka "Watching deer graze in the morning dew..."
+    m "I can't think of anything more peaceful."
+    m 1esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
+    m 3hub "Maybe even discover a secluded lake and go for a swim!"
+    
+    if mas_isMoniAff(higher=True):
+        m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
+        m 2tsbsa "..."
+        m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
+        m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
+        m 3hubfa "Waking up each morning to a glorious sunrise!"
+        
+    else:
+        m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
+        
+    show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esbfa "..."
+    m "Oh [player], doesn't that just sound like heaven?"
+    m 5hubfa "I can't wait until we can share this experience together~"    
+    return
+    
 ## calendar-related pool event
 # DEPENDS ON CALENDAR
 
