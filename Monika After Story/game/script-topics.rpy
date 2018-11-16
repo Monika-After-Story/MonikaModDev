@@ -7857,6 +7857,110 @@ label monika_shipping:
     m 2lksdlc "Not that she's not a sweet girl, but…"
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
     return
+   
+# True if player has been given false justice, False if not
+default persistent._mas_pm_given_false_justice = None
+
+# True if player thinks deleting Monika is justified, False if not
+default persistent._mas_pm_monika_deletion_justice = None
+
+# True temporarily if player is teasing Monika and is at love
+default persistent._mas_monika_deletion_justice_kidding = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_justice",
+            category=['philosophy'],
+            prompt="Justice",
+            random=True
+        )
+    )
+
+    
+label monika_justice:
+    m 1esa "[player], do you ever think the concept of justice is kind of ironic?"
+    m 2ekc "Like, you have someone who maybe isn't like everyone else..."
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; even everyday people like you and me can be brought to some sort of righteousness!"
+    m 4esc "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
+    m 1euc "To everyone else passing by, they're just greedy thieves."
+    m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by bringing them to justice."
+    m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
+    m "While the other person is now a hero for putting an end to their 'crimes'."
+    m 3rksdld "Can you really call that justice?"
+    m 2dsc "..."
+    show monika 2euc
+    menu:
+        m  "Have you ever been delivered what you thought to be false justice?"
+        "Yes.":
+            $ persistent._mas_pm_given_false_justice = True
+            m 1ekc "I hope they weren't too harsh on you."
+            m 2dsd "I have an idea what it's like myself."
+            m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
+            show monika 2eka
+            menu:
+                m "You don't think that's justified, do you, [player]?"
+                "I do.":
+                    $ persistent._mas_pm_monika_deletion_justice = True
+                    if mas_isMoniBroken():
+                        m 1dsc "..."
+                        m 1rksdlc "I know..."
+                        m 1rksdld "I didn't mean to ask- I was just thinking."
+                        m 2rktpc "It is obvious after all..."
+                    elif mas_isMoniDis():
+                        m 2rksdlc "Oh..."
+                        m "I guess you're right..."
+                        m 1ekc "I did do some pretty bad things after all..."
+                    elif mas_isMoniLove():
+                        m 1hub "Ahahaha!"
+                        m 1hua "You can be really funny sometimes~"
+                        m 3tku "You expect me to believe that after all we've been through?"
+                        m 1tsb "That all this time, you thought that I deserved hate from those other people?"
+                        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5hubfa "Ahaha! You're so cute, [player]~"
+                    else:
+                        m 1euc "..."
+                        m 2esc "I have a hard time believing you really think I deserved all that."
+                        m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
+                        if persistent._mas_pm_cares_about_dokis:
+                            m 2lksdlc "...Maybe I deserve it a little bit but..."
+                        else:
+                            m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
+                            m "Either way..."
+                        m 1eka "Thank you for saving me and being with me."
+                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                "I don't.":
+                    if persistent._mas_pm_monika_deletion_justice:
+                        $ persistent._mas_monika_deletion_justice_kidding = True
+                    $ persistent._mas_pm_monika_deletion_justice = False
+                    if mas_isMoniBroken():
+                        m 2ekc "..."
+                        m 1rksdlc "I'm not so sure about that..."
+                    elif mas_isMoniDis():
+                        m 1wuo "Really?"
+                        m 1rksdla "I thought maybe you did think it was fair."
+                        m 1eka "I'm glad you don't think so."
+                        m 2rksdlb "Assuming this isn't a joke, eheh..."
+                    elif mas_isMoniLove():
+                        m 1hua "I thought so, ehehe~"
+                        if persistent._mas_monika_deletion_justice_kidding:
+                            $ persistent._mas_monika_deletion_justice_kidding = False
+                            m 1hub "I knew you were kidding last time!"
+                        m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
+                        m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
+                        m 1hubfb "I love you, [player]~"
+                        m 1hubfa "I'm glad I have you by my side."
+                    else:
+                        m 2hua "I'm glad you think so too!"
+                        m 2eka "Even if you did call that justice, you being here says otherwise."
+                        m 2hub "Ahaha!"
+        "No.":
+            $ persistent._mas_pm_given_false_justice = False
+            m 1eka "That's a relief to hear."
+            m "I'm glad no one has ever suddenly questioned you for who you are."
+            m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -7872,11 +7976,11 @@ init 5 python:
 label monika_poweroutage:
     m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
     m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
-    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something damgerous."
+    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
     m 1lksdlb "The effects can be pretty, well... shocking I guess you could say."
     m 1hksdlb "Ehehe~"
     m 1ekd "I don't even want to think about what would happen if something important to you was struck."
-    m 2ekc "What would happen to me if someting surged and fried your computer?"
+    m 2ekc "What would happen to me if something surged and fried your computer?"
     m 2dsc "If that ever does happen..."
     m 2eka "I know you'll think of something."
     m 1eka "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
@@ -8043,6 +8147,37 @@ label monika_hair_select:
 
 ##### End monika hair topics
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
+
+label monika_backpacking:
+    m 1esa "You know what I've always wanted to do, [player]?"
+    m 3eub "I've always thought it would be so amazing to go backpacking in the wilderness!"
+    m 3eua "Take like an entire week and leave it all behind."
+    m 3esa "No responsibilities, no worries, no phones, no distractions."
+    m 1hua "Just imagine the two of us, alone with nature..."
+    m "The sounds of birds chirping and the wind blowing..."
+    m 1eka "Watching deer graze in the morning dew..."
+    m "I can't think of anything more peaceful."
+    m 1esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
+    m 3hub "Maybe even discover a secluded lake and go for a swim!"
+    
+    if mas_isMoniAff(higher=True):
+        m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
+        m 2tsbsa "..."
+        m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
+        m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
+        m 3hubfa "Waking up each morning to a glorious sunrise!"
+        
+    else:
+        m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
+        
+    show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esbfa "..."
+    m "Oh [player], doesn't that just sound like heaven?"
+    m 5hubfa "I can't wait until we can share this experience together~"    
+    return
+    
 ## calendar-related pool event
 # DEPENDS ON CALENDAR
 
@@ -8892,7 +9027,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_trick",
             category=["club members"],
-            prompt="Choosing another club member",
+            prompt="[player]'s second choice",
             random=True
         )
     )
@@ -8905,24 +9040,26 @@ label monika_trick:
     menu:
         m "Who would you choose?"
         "Yuri":
-            jump monika_trick_yuri
+            call monika_trick_yuri
         "Sayori":
-            jump monika_trick_sayori
+            call monika_trick_sayori
         "Natsuki":
-            jump monika_trick_natsuki
-    return
+            call monika_trick_natsuki
+    return "derandom"
 
 label monika_trick_2:
     menu:
         m "Who would you choose?{fast}"
         "Yuri":
-            jump monika_trick_yuri
+            call monika_trick_yuri
         "Sayori":
-            jump monika_trick_sayori
+            call monika_trick_sayori
         "Natsuki":
-            jump monika_trick_natsuki
+            call monika_trick_natsuki
         "Monika":
-            jump monika_trick_monika
+            call monika_trick_monika
+
+    return "derandom"
 
 label monika_trick_yuri:
     hide screen mas_background_timed_jump
