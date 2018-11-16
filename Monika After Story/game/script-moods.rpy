@@ -222,6 +222,7 @@ label mas_mood_sick:
     m 1hua "Don't worry, I'll be here waiting for you when you get back."
     m 3hub "Get well soon, my love!"
     $ persistent._mas_mood_sick = True
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.

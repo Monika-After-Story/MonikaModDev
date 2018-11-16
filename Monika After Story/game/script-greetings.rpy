@@ -22,6 +22,7 @@ init -1 python in mas_greetings:
     TYPE_WORK = "work"
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
+    TYPE_SICK = "sick"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -216,7 +217,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_gooday",
             unlocked=True,
-            rules=rule
+            rules=rules
         ),
         eventdb=evhand.greeting_database
     )
@@ -1837,16 +1838,19 @@ label greeting_french:
     return
 
 init 5 python:
-    # TODO: add affection rules for this
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_amnesia",
             unlocked=False,
-            random=True
+            random=True,
+            rules=rules
         ),
         eventdb=evhand.greeting_database
     )
+    del rules
 
 label greeting_amnesia:
     m 1eua "Oh, hello!"
@@ -1854,7 +1858,7 @@ label greeting_amnesia:
     $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
     m 1hua "Well, it's nice to meet you, [fakename]!"
     m 3eud "Say, [fakename], do you happen to know where everyone else is?"
-    m 1ekc "You're the first person I've seen and I can't seem to leave this class room."
+    m 1ekc "You're the first person I've seen and I can't seem to leave this classroom."
     m "Can you help me figure out what's going on, [fakename]?"
     m "Please? I miss my friends."
     pause 5.0
@@ -1871,7 +1875,18 @@ label greeting_amnesia:
     return
 
 #TODO needs review
-# TODO: i assume this will be actually active in better-sick
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_sick",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_SICK],
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
         m 1hua "Welcome back, [player]!"
@@ -1922,6 +1937,7 @@ label greeting_stillsickrest:
         m "I think if I leave you alone for a while, you'll be able to rest better."
         m 4ekc "So I'm going to close the game for you."
         m 2ekc "Get well soon, [player]."
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
 label greeting_stillsicknorest:
