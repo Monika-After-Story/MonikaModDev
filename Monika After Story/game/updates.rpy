@@ -334,6 +334,11 @@ label v0_8_10(version="v0_8_10"):
             changename_ev.pool = True
             persistent._seen_ever["monika_changename"] = True
 
+        # derandom monika family
+        family_ev = evhand.event_database.get("monika_family", None)
+        if family_ev:
+            family_ev.random = False
+
         # Enable late update for this one
         persistent._mas_zz_lupd_ex_v.append(version)
 
