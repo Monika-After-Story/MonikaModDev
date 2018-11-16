@@ -971,7 +971,7 @@ init -10 python in mas_selspr:
             return self._read(MB_CONF)
 
 
-        def get_def_disp_text(self):
+        def read_def_disp_text(self):
             """
             Returns the default display text message
 
@@ -979,7 +979,7 @@ init -10 python in mas_selspr:
 
             RETURNS: display text, default
             """
-            return self._get(MB_DISP_DEF)
+            return self._read(MB_DISP_DEF)
 
 
         def get_disp_text(self):
@@ -2030,7 +2030,7 @@ label mas_selector_sidebar_select_loop:
         # display text parsing
         disp_text = mailbox.get_disp_text()
         if disp_text is None:
-            disp_text = mailbox.get_def_disp_text()
+            disp_text = mailbox.read_def_disp_text()
 
         # select map parsing
         store.mas_selspr._clean_select_map(
@@ -2053,7 +2053,8 @@ label mas_selector_sidebar_select_loop:
                 select_type
             )
 
-    $ renpy.say(m, disp_text)
+        # force this to execute in this python block (no prediction)
+        renpy.say(m, disp_text)
 
     jump mas_selector_sidebar_select_loop
 
