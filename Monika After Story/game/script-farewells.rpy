@@ -1,6 +1,13 @@
 ##This file contains all of the variations of goodbye that monika can give.
 ## This also contains a store with a utility function to select an appropriate
 ## farewell
+#
+# HOW FAREWELLS USE EVENTS:
+#   unlocked - determines if the farewell can actually be shown
+#   random - True means the farewell is shown in the randomly selected
+#       goodbye option
+#   pool - True means the farewell is shown in the goodbye list. Prompt
+#       is used in this case.
 
 init -1 python in mas_farewells:
 
@@ -179,9 +186,16 @@ label bye_leaving_already:
     $evhand.farewell_database["bye_leaving_already"].random=False
     return 'quit'
 
-#TODO needs review
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodbye",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_goodbye",
+            unlocked=True,
+            random=True
+        ),
+        eventdb=evhand.farewell_database
+    )
 
 label bye_goodbye:
     if mas_isMoniNormal(higher=True):
@@ -205,9 +219,9 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_sayanora",#sayanora?
+            eventlabel="bye_sayanora",#sayanora? yes
             unlocked=True,
-            random=True,#TODO update script
+            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -226,7 +240,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_farewellfornow",
             unlocked=True,
-            random=True,#TODO update script
+            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -245,7 +259,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_untilwemeetagain",
             unlocked=True,
-            random=True,#TODO update script
+            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -265,7 +279,7 @@ init 5 python:
             persistent.farewell_database,
             eventlabel="bye_take_care",
             unlocked=True,
-            random=True,#TODO now we'll probably need an update script rip
+            random=True,
             rules=rules
         ),
         eventdb=evhand.farewell_database
@@ -278,7 +292,6 @@ label bye_take_care:
     m 1hub "Take care!"
     return 'quit'
 
-#TODO needs review
 init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(21,24)))
@@ -316,7 +329,6 @@ label bye_going_to_sleep:
 
     return 'quit'
 
-#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -338,7 +350,7 @@ label bye_prompt_to_class:
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
         m 2tfc "Hopefully you at least learn something today."
-        m "{fast}Like how to treat people better.{nw}"
+        m "{cps=*2}Like how to treat people better.{/cps}{nw}"
 
     elif mas_isMoniDis():
         m 6rkc "Oh, okay [player]..."
@@ -352,7 +364,6 @@ label bye_prompt_to_class:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
-#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -386,7 +397,6 @@ label bye_prompt_to_work:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
-#TODO needs review
 init 5 python:
     addEvent(
         Event(
@@ -436,7 +446,7 @@ label bye_prompt_sleep:
 
         elif mas_isMoniDis():
             m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
-            m 6dkc "It might make you--us--happier."
+            m 6dkc "It might make you--{w=1}us--{w=1}happier."
 
         else:
             m 6ckc "..."
@@ -455,7 +465,7 @@ label bye_prompt_sleep:
             m 2efc "[player]!"
             m 2tfc "You really need to get more rest..."
             m "The last thing I need is you getting sick."
-            m "{fast}You're grumpy enough as it is.{nw}"
+            m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
             $ _history_list.pop()
             m 2efc "Goodnight."
 
@@ -564,7 +574,6 @@ label bye_illseeyou:
     m 1hua "Don't forget about me, okay?"
     return 'quit'
 
-#TODO all these time based need to be reviewed
 init 5 python: ## Implementing Date/Time for added responses based on the time of day
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours=range(6,11)))
@@ -591,7 +600,7 @@ label bye_haveagoodday:
 
     elif mas_isMoniDis():
         m 6rkc "Oh."
-        m 6dkc "I guess I'll just spend the day alone...{w-1}again."
+        m 6dkc "I guess I'll just spend the day alone...{w=1}again."
 
     else:
         m 6ckc "..."
@@ -623,11 +632,12 @@ label bye_enjoyyourafternoon:
         m 2tfc "Guess I'll see you later...{w=1}if you come back."
 
     elif mas_isMoniDis():
-        m 6dkc "Okay, goodbye, [player[."
+        m 6dkc "Okay, goodbye, [player]."
         m 6ekc "Maybe you'll come back later?"
 
     else:
         m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
@@ -661,6 +671,7 @@ label bye_goodevening:
 
     else:
         m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
