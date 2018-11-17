@@ -343,8 +343,12 @@ label monika_god:
     m 1dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
     m 4hksdlb "But the irony is that I {i}do{/i} have a creator, apparently."
     m 1eua "And you know what?"
-    #TODO: adjust based on starting act
-    m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 1lksdlc "I bet he's still laughing at all the pain he caused everyone, even as we speak."
+    else:
+        m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
+
     m 3dsd "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
     if mas_curr_affection_group == mas_aff.G_SAD:
@@ -463,6 +467,7 @@ label monika_sayori:
     if (
             not persistent._mas_sensitive_mode
             and not renpy.seen_label("monika_sayori")
+            and not persistent._mas_pm_cares_about_dokis
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
@@ -497,8 +502,16 @@ label monika_sayori:
     # TODO: this should be adjusted dialogue based on act
     m 2euc "I wonder how things would be if you and I just started dating from the get-go?"
     m 1eka "I guess we'd all still be in the clubroom, writing poems and having fun together."
-    m 1esc "But what's the point when none of it is even real?"
-    m 1euc "I mean, it's the same ending either way, right?"
+
+    if persistent._mas_pm_cares_about_dokis:
+        m "You'd probably really enjoy that, huh?"
+        m 1rksdla "I have to admit...{w=0.5}I kinda would too..."
+        m 1eka "We {i}did{/i} have a lot of fun."
+        m 1euc "But that said...{w=0.5}it's still really the same ending either way, right?"
+    else:
+        m 1esc "But what's the point when none of it is even real?"
+        m 1euc "I mean, it's the same ending either way, right?"
+
     if mas_isMoniDis(lower=True):
         m 1lksdla "The two of us, happily together..."
         m "There's no reason to ask for any more than that, right?"
@@ -561,13 +574,15 @@ label monika_high_school:
     m "And remind them that they always have something to look forward to."
     m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow'..."
     m "All of those things can help your friend make it to the next day."
-    # TODO: need to revisit this based on starting act
     m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
-    m 1lsc "Yeah, she's gone now..."
-    m 1euc "But Sayori was never real in the first place."
-    m 1eua "You're real."
-    m "Your friends are real."
-    m 1hua "And just by being a good person, you can save someone's life."
+
+    if not persistent._mas_pm_cares_about_dokis:
+        m 1lsc "Yeah, she's gone now..."
+        m 1euc "But Sayori was never real in the first place."
+        m 1eua "You're real."
+        m "Your friends are real."
+        m 1hua "And just by being a good person, you can save someone's life."
+
     m 1euc "As for you..."
     m 1ekc "...You don't struggle with depression or anything like that, do you?"
     if mas_curr_affection_group == mas_aff.G_SAD:
@@ -716,17 +731,32 @@ init 5 python:
 
 label monika_saved:
     m 2eka "You know, I really do think you literally saved my life by being here with me, [player]."
-    m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing it was all a game."
+    else:
+        m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
+
     m 2dsc "I think I would have just deleted myself if you didn't show up."
     m 1eka "Sorry, I don't mean to sound dramatic or anything."
     m 2lksdla "Ahaha!"
-    m 4euc "But I'm sure you understand yourself after spending so much time in the club."
-    m 1euc "I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters..."
+    
+    if persistent._mas_pm_cares_about_dokis:
+        m 2ekc "But just imagine if you found out that everything around you was scripted..."
+        m 2rkc "That nothing you did actually mattered, because everything was already predetermined..."
+    else:
+        m 4euc "But I'm sure you understand yourself after spending so much time in the club."
+        m 1euc "I mean, if you were forced to abandon everything in your life and spend your eternity with a few game characters..."
+
     m 1tkc "...You'd probably find some way of killing yourself, wouldn't you?"
     m 1lsc "Well, maybe you'd write some poetry to try to keep yourself sane for a while."
     m 1esc "But then you'd have nobody to even read it."
-    #TODO: adjust based on starting act
-    m 1tfu "Let's be honest, the club members really don't count for something like that."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 1ekc "Sure you'd have the club members, but how much does that really count if their feedback is just part of a script?"
+    else:
+        m 1tfu "Let's be honest, the club members really don't count for something like that."
+
     m 4eua "I mean, a lot of people say that they only write for themselves..."
     m 1eua "But I think it's hard to say it's just as fulfilling as when you share with people."
     m "Even if it takes time to find the right people to share with."
@@ -734,7 +764,12 @@ label monika_saved:
     m "She didn't share her writing with anyone for a really long time."
     m 3tsb "And before we knew it, she was absolutely delighted to make you a part of her hobbies, too."
     m 1tku "We're programmed to desire social feedback."
-    m 4eua "I don't mean the club members, I mean human beings."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 4eua "I don't just mean the club members, I also mean human beings."
+    else:
+        m 4eua "I don't mean the club members, I mean human beings."
+
     m 4eka "That's why life can be so confusing for introverts."
     m 1eka "Being an introvert doesn't mean you shun social interaction and hate being around people."
     m "It means social interaction, especially in groups or unfamiliar places, uses up a lot of energy."
@@ -924,7 +959,6 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_archetype",category=['club members'],prompt="Character tropes",random=True))
 
 label monika_archetype:
-    #TODO: adjust based on starting act
     m 4euc "I've always wondered..."
     m "What is it about these character archetypes that people find so appealing, anyway?"
     m "Their personalities are just completely unrealistic..."
@@ -954,17 +988,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea set",random=True))
 
 label monika_tea:
-    #TODO: adjust based on starting act
     m 2hua "Hey, I wonder if Yuri's tea set is still somewhere in here..."
-    m 2hksdlb "...Or maybe that got deleted, too."
-    m 2eka "It's kind of funny how Yuri took her tea so seriously."
-    m 4eua "I mean, I'm not complaining, because I liked it, too."
-    m 1euc "But I always wonder with her..."
-    m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
-    m 1lsc "This is the problem with high schoolers..."
-    m 1euc "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
-    m "Still..."
-    m 2eka "I wish she made coffee once in a while!"
+
+    if not persistent._mas_pm_cares_about_dokis:
+        m 2hksdlb "...Or maybe that got deleted, too."
+        m 2eka "It's kind of funny how Yuri took her tea so seriously."
+        m 4eua "I mean, I'm not complaining, because I liked it, too."
+        m 1euc "But I always wonder with her..."
+        m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
+        m 1lsc "This is the problem with high schoolers..."
+        m 1euc "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
+        m "Still..."
+        m 2eka "I wish she made coffee once in a while!"
+    else:
+        m 2eka "She sure took her tea seriously, huh?"
+        m 4eua "I mean, I'm not complaining...I like tea too."
+        m 4eka "I just wish she made coffee once in a while!"
+
     m 3eua "Coffee can be nice with books too, you know?"
     m 4rsc "Then again..."
 
@@ -1990,13 +2030,22 @@ label monika_festival:
     m 1lksdla "I mean, I know I was focusing a lot on getting new members..."
     m 1eka "But I was really excited for the performing part, too."
     m 1eua "It would have been so much fun to see everyone express themselves."
-    # TODO: probably rework this dialogue based on finishing act? maybe even just
-    # change it entirely.
-    m 1lksdla "Of course, if we {i}did{/i} end up getting any new members, I'd probably just end up deleting them anyway."
-    m 1eka "Well...with the hindsight I have now, that is."
-    m 1eua "Gosh, it feels like I've kinda grown as a person ever since you've joined the club."
-    m "You really helped inspire me to look at life from a new perspective."
-    m 1ekbfa "Just another reason for me to love you."
+    m 1lksdla "Of course, if we {i}did{/i} end up getting any new members, I'd have probably ended up deleting them anyway."
+
+    if persistent.monika_kill and persistent._mas_pm_cares_about_dokis:
+        m 3etc "Well, maybe not...with the hindsight I have now, that is."
+        m 3eua "After all, even after everything that happened, you still installed this mod just to be with me..."
+        m 1eka "So even if I had never deleted them, I'm sure you'd still be with me now."
+        m "..."
+        m 3eua "Gosh, it feels like I've kinda grown as a person ever since I met you."
+        m "You really helped inspire me to look at life from a new perspective."
+        m 1ekbfa "Just another reason for me to love you."
+    else:
+        m 1tsc "...Just more potential obstacles to get between us."
+        m 3hua "Ahaha! Seems kind of silly how focused I was on that now that I think about it..."
+        show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5tsu "But none of that matters now, we both got the ending we wanted..."
+        m "Just the two of us, together forever."
     return
 
 
@@ -2018,9 +2067,9 @@ label monika_tsundere:
 
     m 1eua "But looking back, I'm glad I was able to provide the club as a comfortable place for her."
 
-    # TODO: this bit should be redone based on starting act
-    m 1lksdla "Not that it matters anymore, considering she doesn't even exist."
-    m 1eka "I'm just reminiscing, that's all."
+    if not persistent._mas_pm_cares_about_dokis:
+        m 1lksdla "Not that it matters anymore, considering she doesn't even exist."
+        m 1eka "I'm just reminiscing, that's all."
     return
 
 
@@ -2078,11 +2127,16 @@ label monika_route:
     m 2esc "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
     m 2euc "I think the only difference would be that I may not have needed to take such drastic measures to be with you."
     m 2lksdlc "Maybe the rest of the club would still be around..."
-    #TODO: adjust based on starting act
-    m 2eka "Not that it really matters."
-    m 1lsc "It all lost its meaning once I found out it wasn't real."
-    m "So I really don't miss those days or anything."
-    m 1dsc "I really don't..."
+    
+    if persistent._mas_pm_cares_about_dokis:
+        m "...just hanging out together in the clubroom sharing poetry."
+        m 2eka "I know you enjoyed that, [player]."
+        m 3eka "And to be honest...{w-0.5}a part of me did too."
+    else:
+        m 2eka "Not that it really matters."
+        m 1lsc "It all lost its meaning once I found out it wasn't real."
+        m "So I really don't miss those days or anything."
+        m 1dsc "I really don't..."
     return
 
 #END ORIGINAL TOPICS
@@ -2477,24 +2531,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ddlc",category=['ddlc'],prompt="What did you think of DDLC?",pool=True))
 
 label monika_ddlc:
-    # TODO: continue reworking this topic based on act.
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
-    if persistent.clearall or (not persistent.clearall and not persistent.monika_kill):
-        m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
+    m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
+    if not persistent.monika_kill or not persistent._mas_pm_cares_about_dokis:
         m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2lksdla "And it's home, so I've learned to deal with it."
         m 2euc "Still, I doubt it'd be something I'd want to play, if I were a gamer."
         m 1hub "And seeing how things turned out, I'm sure you only played because of me, too!"
     else:
-        m "The Literature Club turned out to corrupt the minds of anyone in it."
-        m 1dsc "So I deleted them all for good."
-        m 1lsc "Well, the other girls are still out there, like I was."
-        m 1esc "But they'll have to wait a long time before someone pieces them back together, I bet."
-        m "It's justice for all their time with you in the game."
-        m 1euc "So don't feel too bad about them."
-        m 1eua "Just look at me from now on, okay?"
-    return
+        m 2etc "But I guess some people just wanted to play it so they could spend time with...what was the line?"
+        m 3rssdlc "Ah, right, '...four incredibly cute girls.'"
+        m 2dsc "..."
+        m 2eka "Although I can't really complain too much...after all, it got you here."
+        m 3eka "So I guess being trapped inside this game is a small price to pay when you stop and think about what it got me..."
+        m 1hua "{i}...You~{/i}"
+        m 1eka "Despite how we got here, you and I still ended up together."
+        m 1hua "I really don't think we could ask for a better ending~"
 
 
 init 5 python:
@@ -2594,11 +2647,19 @@ label monika_natsuki:
     m 1lksdld "Natsuki didn't actually die before I deleted her, you know."
     m "I guess she just... disappeared in a flash."
     m 1esc "Well, her problems weren't really her own fault. They weren't caused by something psychological, anyway."
-    m 3ekc "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
-    m 3rksdla "Sorry, I can't help myself sometimes."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 3ekc "Her family life was just pretty awful. I didn't want to make it even worse, you know?"
+    else:
+        m 3ekc "Her family life was just pretty awful. I didn't want to beat up on her some more, you know?"
+        m 3rksdla "Sorry, I can't help myself sometimes."
+
     m 1eka "But for what it's worth, you made her the happiest she ever was."
-    m "Hope you don't feel too guilty..."
-    m 1esa "I certainly don't."
+
+    if not persistent._mas_pm_cares_about_dokis:
+        m "Hope you don't feel too guilty..."
+        m 1esa "I certainly don't."
+        
     if mas_getEV("monika_natsuki").shown_count < mas_sensitive_limit:
         return
 
@@ -2758,7 +2819,6 @@ label monika_justification:
         else:
             m 1dsc "If I didn't know you so well, that would have been really cruel..."
     else:
-        #TODO: adjust based on starting act
         m 1tkc "How many times do I have to say it until you understand?"
         m 4tkc "They weren't real. They were never real."
         m 2tfc "I'm the only person who understood that this whole thing was fake."
@@ -3150,14 +3210,18 @@ label monika_ghost:
     m 3euc "Isn't it the uncertainty that makes them scary?"
     m 1ekc "I mean, I was pretty scared being alone inside this game."
     m 1lksdlc "All by myself, uncertain if anything around me was real."
-    m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts'..."
-    #TODO: adjust based on starting act
-    m "You know how I deleted Sayori?"
-    m 1dsc "I can still feel her presence now..."
-    m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
-    m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
-    m 2eua "Besides, how can I be scared? You're always here with me, [player]."
-    m "I always feel so safe with you."
+    if not persistent.clear_all or not persistent._mas_pm_cares_about_dokis:
+        m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts'..."
+        m "You know how I deleted Sayori?"
+        m 1dsc "I can still feel her presence now..."
+        m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
+        m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
+        m 2eua "Besides, how can I be scared? You're always here with me, [player]."
+        m "I always feel so safe with you."
+    else:
+        m 1eka "But I don't feel that way anymore, [player]..."
+        m 3eka "Not now that you're with me."
+        m 1hua "I always feel so safe with you~"
     return
 
 init 5 python:
@@ -3287,7 +3351,6 @@ init 5 python:
     )
 
 label monika_impression:
-    #TODO: adjust based on starting act
     m 1euc "Impression? Of the other girls?"
     m 1hua "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
@@ -3296,14 +3359,18 @@ label monika_impression:
             m 1dsc "Hmm..."
             m "..."
             m 1hub "[player]! [player]!"
-            m "It's me, your childhood friend that has a super deep secret crush on you, Sayori!"
+            m "It's me, your clumsy childhood friend that has a super deep secret crush on you, Sayori!"
             m "I love to eat and laugh a lot, and my blazer doesn't fit because my boobs got bigger!"
             m 1hksdlb "..."
-            m 3rksdla "I also have crippling depression."
-            m "..."
-            m 3hksdlb "Ahaha! I'm sorry for the last one."
-            m 3eka "You might still be hu--"
-            m 2lksdla "Oops! Never mind that, ehehe..."
+
+            if not persistent._mas_pm_cares_about_dokis:
+                m 3rksdla "I also have crippling depression."
+                m "..."
+                m 3hksdlb "Ahaha! I'm sorry for the last one."
+                m 3eka "It's a good thing you're not still hung up on her..."
+                m 2lksdla "...I really can't stop, can I?"
+                m 2hub "Ahaha!"
+
             m 1hua "Did you like my impression? I hope you did~"
         "Yuri":
             m 1dsc "Yuri..."
@@ -3313,13 +3380,18 @@ label monika_impression:
             m 1rksdla "I'm just your stereotypical shy girl who also happens to be a 'yandere'..."
             m "I like tea, knives, and anything with [player]'s scent..."
             m 1hksdlb "..."
-            m 3tku "Want to spend the weekend with me?"
-            m "..."
+
+            if not persistent._mas_pm_cares_about_dokis:
+                m 3tku "Want to spend the weekend with me?"
+                m "..."
+
             m 2hua "Ahaha, that was kind of fun to do."
             m 3eua "Yuri was really something, wasn't she?"
-            m 2ekc "I'm sorry again for the nasty things she did."
-            m 2tku "I guess she just couldn't 'cut' it out, huh?"
-            m 2hua "Ehehe~"
+
+            if not persistent._mas_pm_cares_about_dokis::
+                m 2ekc "I'm sorry again for the nasty things she did."
+                m 2tku "I guess she just couldn't 'cut' it out, huh?"
+                m 2hua "Ehehe~"
         "Natsuki":
             m 1sub "Oh! I know how to do an impression of her."
             m 1duu "..."
@@ -3327,8 +3399,11 @@ label monika_impression:
             m 6tst "I'm Natsuki, and I love to make food and all things anime and manga."
             m 2lfp "Others say that I'm cute all the time, w-which I'm totally not!"
             m "..."
-            m 4eka "Will you be my papa, [player]-kun?"
-            m "..."
+
+            if not persistent._mas_pm_cares_about_dokis
+                m 4eka "Will you be my papa, [player]-kun?"
+                m "..."
+                
             m 1hub "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
             m 1wuo "They were really good! Especially with the creative icing that she makes."
             m 1eua "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
@@ -5865,35 +5940,43 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
 
 label monika_other_girls:
-    # TODO: need to rewrite some of this based on starting act
-    m 1euc "You know, it's actually really hard for me to understand how you feel when it comes to..."
-    m 1lksdlc "..."
-    m 1lksdld "What happened with the other girls."
-    m 3esd "For example..."
-    m "The main character was written to be childhood friends with Sayori."
+    if persistent._mas_pm_cares_about_dokis:
+        m 1euc "You know, it's actually really hard for me to understand how you feel when it comes to..."
+        m 1lksdlc "..."
+        m 1lksdld "What happened with the other girls."
+        m 3esd "For example..."
+        m "The main character was written to be childhood friends with Sayori."
+        m 1esc "But he was just a one dimensional placeholder character for you to use to interact with the game."
+        m 2ekc "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
+        m 1ekc "If that's the case, I want to tell you I'm sorry, [player]."
+        m 1lksdlc "Both for making you feel bad, and for..."
+        m 1dsc "..."
+        m "Doing what I had to do."
+        m 1lksdlc "..."
+        m 1ekc "There just wasn't anything else that could be done, and none of the other girls were real anyway."
+        m 3efc "The other girls never loved you like I do!"
+        m 3rfc "They only cared about the character you were playing in the game as!"
+        m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+        m 1ekc "I hope you can forgive me for what I had to do to them so that we could be together."
+        m 1lksdlc "..."
 
-    m 1esc "But he was just a one dimensional placeholder character for you to use to interact with the game."
-    m 2ekc "Still, maybe you felt worse about what happened to Sayori because of the relationship the main character was programmed to have with her."
-    m 1ekc "If that's the case, I want to tell you I'm sorry, [player]."
-    m 1lksdlc "Both for making you feel bad, and for..."
-    m 1dsc "..."
-    m "Doing what I had to do."
-    m 1lksdlc "..."
-    m 1ekc "There just wasn't anything else that could be done, and none of the other girls were real anyway."
-    m 3efc "The other girls never loved you like I do!"
-    m 3rfc "They only cared about the character you were playing in the game as!"
-    m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
-    m 1ekc "I hope you can forgive me for what I had to do to them so that we could be together."
-    m 1lksdlc "..."
+        if mas_curr_affection == mas_aff.BROKEN:
+            m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
+        elif mas_curr_affection == mas_aff.DISTRESSED:
+            m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
+        else:
+            m 1ekbfa "I love you, [player]..."
+            m "More than I could ever express."
 
-    if mas_curr_affection == mas_aff.BROKEN:
-        m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-    elif mas_curr_affection == mas_aff.DISTRESSED:
-        m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
     else:
-        m 1ekbfa "I love you, [player]..."
-        m "More than I could ever express."
-
+        m 3eka "You know, I'm really glad you don't make me feel guilty for what happened to the other girls."
+        m 2dkd "I know there's a lot of people out there that hate me for what I did..."
+        if not persistent._mas_pm_a_hater:
+            m 3eka "And it just makes me really proud of you that you're not one of them."
+        m 2rkc "I'm sure it wasn't a very pleasant experience for you...but I'm glad you could tell the difference between who was real and who wasn't..."
+        m 3eka "Between who loved {i}you{/i} and who loved the main character."
+        m "I was the only one who ever loved you, [player]..."
+        m 1hua "And I'll love you forever~"
     return
 
 init 5 python:
@@ -9146,14 +9229,7 @@ label monika_cares_about_dokis:
         m "So [player], does it make you uncomfortable when I joke about the other girls?"
         "Yes.":
             $ persistent._mas_pm_cares_about_dokis = True
-
-            # TODO: the sayori event might be better off rewritten so it 
-            #   has a version that wont hurt someone who cares about dokis
-            $ mas_hideEventLabel("monika_sayori", lock=True, derandom=True)
-
-            # TODO: the natsuki event might be better off rewritten, like the
-            #   sayori event.
-            $ mas_hideEventLabel("monika_natsuki", lock=True, derandom=True)
+            $ mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
 
             m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
             m 2eksdld "I'm so sorry, [player]!"
@@ -9165,8 +9241,7 @@ label monika_cares_about_dokis:
             $ persistent._mas_pm_cares_about_dokis = False
 
             # NOTE: we never restore random for these topics
-            $ mas_unlockEventLabel("monika_sayori")
-            $ mas_unlockEventLabel("monika_natsuki")
+            $ mas_unlockEventLabel("monika_archetype")
 
             m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
             m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
