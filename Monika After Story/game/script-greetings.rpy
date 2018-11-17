@@ -2501,8 +2501,8 @@ label greeting_distressed:
 
         distressed_greeting_quips_second = [
             "I guess we can spend some time together now.",
-            "I wasn't sure if you'd visit today.",
-            "Hopefully we can enjoy our time together today.",
+            "I wasn't sure when you'd visit again.",
+            "Hopefully we can enjoy our time together.",
             "I wasn't expecting you.",
             "I hope things start going better soon.",
         ]
