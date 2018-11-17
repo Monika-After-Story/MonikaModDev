@@ -1176,11 +1176,18 @@ label ch30_reset:
 
     $ listRpy = rpyCheckStation.getPackageList(".rpy")
 
-    if len(listRpy) != 0 and persistent._mas_pm_has_rpy is not True and not config.developer:
+    if len(listRpy) == 0 or persistent.current_monikatopic == "monika_rpy_files":
+        if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
+            $ persistent.current_monikatopic = 0
+
+        if "monika_rpy_files" in persistent.event_list:
+            $ persistent.event_list.remove("monika_rpy_files")
+        
+    elif len(listRpy) != 0 and persistent._mas_pm_has_rpy is not True:
         $ queueEvent("monika_rpy_files")
 
     $ del rpyCheckStation
-        
+
     python:
         import datetime
         today = datetime.date.today()
