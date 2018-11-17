@@ -3388,7 +3388,7 @@ label monika_impression:
             m 2hua "Ahaha, that was kind of fun to do."
             m 3eua "Yuri was really something, wasn't she?"
 
-            if not persistent._mas_pm_cares_about_dokis::
+            if not persistent._mas_pm_cares_about_dokis:
                 m 2ekc "I'm sorry again for the nasty things she did."
                 m 2tku "I guess she just couldn't 'cut' it out, huh?"
                 m 2hua "Ehehe~"
@@ -3400,7 +3400,7 @@ label monika_impression:
             m 2lfp "Others say that I'm cute all the time, w-which I'm totally not!"
             m "..."
 
-            if not persistent._mas_pm_cares_about_dokis
+            if not persistent._mas_pm_cares_about_dokis:
                 m 4eka "Will you be my papa, [player]-kun?"
                 m "..."
                 
