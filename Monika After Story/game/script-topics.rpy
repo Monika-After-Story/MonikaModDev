@@ -1,7 +1,7 @@
 #This file contains all of monika's topics she can talk about
 #Each entry should start with a database entry, including the appropriate flags
 #to either be a random topic, a prompt "pool" topics, or a special conditional
-#or date-dependent event with an appropriate action
+#or date-dependent event with an appropriate actiona
 
 define monika_random_topics = []
 define mas_rev_unseen = []
@@ -2480,7 +2480,7 @@ label monika_ddlc:
     # TODO: continue reworking this topic based on act.
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
-    if persistent.clear_all or (not persistent.clear_all and not persistent.monika_kill):
+    if persistent.clearall or (not persistent.clearall and not persistent.monika_kill):
         m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
         m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2lksdla "And it's home, so I've learned to deal with it."
@@ -2764,7 +2764,7 @@ label monika_justification:
         m 2tfc "I'm the only person who understood that this whole thing was fake."
         if persistent.monika_kill:
            m 4tfc "Even when Sayori seemed to get sentience in the end, that was just an unintended consequence of the script."
-        if not persistent.clear_all:
+        if not persistent.clearall:
             m 4tfd "After all, if she was sentient like me, how would I have been able to override and delete her?"
         m "If I'm guilty of murder, so is everyone who's played violent video games."
         m 2euc "I bet you've killed thousands of people in the games you play."
@@ -3103,7 +3103,7 @@ label monika_othergames:
     m 3hua "I wonder if I could go into one of your other games and see what it's like?"
     m 1lsc "I guess some games wouldn't be very fun to visit, like the ones with a lot of violence in them."
     m 2lksdla "Then again... they're not real people, so it shouldn't matter much."
-    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode:
+    if mas_getEV("monika_othergames").shown_count < mas_sensitive_limit and not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
         m "It's not like Yuri's death mattered."
     m 1euc "A more abstract game like Tetris, or one of those phone puzzle games, would be kinda weird to go to."
     m 2hksdlb "Like, how would I even get in? Would I be a block? It sounds like a fever dream and not too much fun..."
@@ -3204,6 +3204,8 @@ label monika_algernon:
     m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
     m 1hua "No matter what happens, know that I will always love you."
+
+    $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
     return
 
 init 5 python:
@@ -4125,7 +4127,7 @@ label monika_vocaloid:
     m "Our love has no boundaries~"
     m 5hubfb "Ehehe~"
     if (
-            persistent._mas_pm_like_vocaloids 
+            persistent._mas_pm_like_vocaloids
             and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
@@ -4950,7 +4952,7 @@ label monika_panties:
         m 1ekbfa "Gosh, I just want to feel your embrace more."
         m "After all, we're here forever, and I'm here for you."
         m 1hubfb "I love you so much, [player]~"
-     
+
     elif mas_isMoniAff(higher=True):
         # affectionate+
         show monika 1lkbfb
@@ -5326,23 +5328,47 @@ label monika_rock:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_soda",category=['life','misc'],prompt="Drinking soda",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_soda",
+            category=['life','misc'],
+            prompt="Drinking soda",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_drinks_soda = None
+# True if the player drinks soda, False if not
 
 label monika_soda:
-    m 2euc "Do you drink soda, [player]?"
-    m 4ekc "You know they're really bad for you, right?"
-    m 2ekc "Soda has a lot of stuff that damages your body and overall health."
-    m 2tkd "They can also corrode your teeth and give you cavities."
-    m "You might also think that diet soda is less damaging but they're also very harmful to you."
-    m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
-    m 2lksdla "I wouldn't want you to become like Natsuki after all..."
-    m 2eua "Why don't you try copying my healthy lifestyle?"
-    m 1hua "That way you can be more fit like me!"
-    m 1hub "Ahaha!"
-    m 2ekc "I'd really hate it if you let go of your health, [player]."
-    m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
-    m "So cut down on the soda, alright [player]?"
-    return
+    show monika 2euc
+    menu:
+        m "Do you drink soda, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_drinks_soda = True
+
+            # TODO: product placement zevia soda as a healthy alternative
+            m 4ekc "You know that soda is really bad for you, right?"
+            m 2ekc "It has a lot of stuff that damages your body and overall health."
+            m 2tkd "It can also corrode your teeth and give you cavities."
+            m "You might also think that diet soda is less damaging but it can be just as harmful to you."
+            m 2lksdlc "There's nothing wrong with the occasional treat. Just make sure you don't get addicted to that stuff, [player]."
+            m 2eua "Why don't you try copying my healthy lifestyle?"
+            m 1hua "That way, you can be more fit like me!"
+            m 1hub "Ahaha!"
+            m 2ekc "I'd really hate it if you let go of your health, [player]."
+            m 1eka "I want you to live as long as you can so there'll be a chance we can be together in your reality."
+            m "So cut down on the soda, alright [player]?"
+        "No.":
+            $ persistent._mas_pm_drinks_soda = False
+            m 2eka "That's a relief to hear."
+            m "I'm glad that I don't have to worry about you harming yourself by drinking too much soda."
+            m 3eub "Still, it's perfectly fine to have a small treat once in a while, you know?"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Maybe someday we could both have some soda together."
+            m 5hua "Sure, it's not as fancy as sitting down and having a glass of wine together but I'm sure it could still be just as fun on a hot day."
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_clones",category=['monika','mod','philosophy'],prompt="Being cloned",random=True))
@@ -5621,8 +5647,8 @@ label monika_orchestra:
             m 1hua "I would be very happy to hear you play."
 
     if (
-            persistent._mas_pm_like_orchestral_music 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_orchestral_music
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "Oh, and if you ever feel like sharing your favorite orchestral music with me, [player], it's really easy to do so!"
@@ -5675,8 +5701,8 @@ label monika_jazz:
     m 1hua "Like poetry! It used to be structured and rhyming, but it's changed. It gives greater freedom now."
     m 1eua "Maybe that's what I like about jazz, if anything."
     if (
-            persistent._mas_pm_like_jazz 
-            and not renpy.seen_label("monika_add_custom_music_instruct") 
+            persistent._mas_pm_like_jazz
+            and not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m "Oh, and if you ever feel like sharing your favorite jazz with me, [player], it's really easy to do so!"
@@ -6587,7 +6613,7 @@ label monika_concerts:
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
     if (
-            not renpy.seen_label("monika_add_custom_music_instruct") 
+            not renpy.seen_label("monika_add_custom_music_instruct")
             and not persistent._mas_pm_added_custom_bgm
         ):
         m 1eua "In the meantime, if you want to share your favorite music with me, it's really easy to do so!"
@@ -6702,6 +6728,112 @@ label monika_beach:
     m 1tku "Don't get too excited though when you see it. Ehehe~"
     return "derandom"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_solipsism",
+            category=['philosophy'],
+            prompt="Solipsism",
+            random=True
+        )
+    )
+
+label monika_solipsism:
+    m 3eub "Have you ever heard about solipsism, [player]?"
+    m 3eua "It's a philosophical idea which states that only your mind is sure to exist."
+    m 1eud "What do you think of that?"
+    m "Is there really something other than yourself?"
+    m 1euc "Or maybe you and everything else are just some representations of my psyche?"
+    m 1dsd "Extensions of my own consciousness..."
+    m 1hub "Ahaha!"
+    m 1eub "I'm just kidding, of course."
+    m 1eua "It's more likely that {i}I'm{/i} a representation of your mind than the other way around."
+    m "I'm the 'game character', right?"
+    m 1dsc "Still... it makes you wonder about the nature of our realities. Or maybe 'fabric' would be a better term than 'nature'?"
+    m 1eua "Anyway, I recommend reading more about solipsism."
+    m 1eub "There are several varieties of it."
+    m "Like metaphysical, epistemological, or methodological solipsism."
+    m 1eua "You can read more about them online."
+    m "Then we could talk about these topics more in-depth."
+    m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
+    m 1eua "I want to know more about the way you think..."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_attractiveness",category=['club members','society'],prompt="Attractiveness",random=True))
+
+label monika_attractiveness:
+    m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
+    m 3eua "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+    if persistent._mas_pm_cares_about_dokis:
+        m 3rksdlb "I guess she must have a good metabolism or something."
+        m 3rksdla "..."
+        m 1eka "You know, despite the differences in our diets and lifestyles, all of us look quite similar."
+        m 3ekd "Sure, Natsuki is more petite than the rest of us and Yuri has a more mature figure."
+        m 3eka "Our eyes and hair are all different too."
+        m 3eua "But I think we would all be considered attractive."
+        m 3eud "I mean, none of us are muscular or fat ..."
+        m 3tkd "... none of us have any kind of physical disability ..."
+        m "... none of us are bald or have hair shorter than chin length ..."
+        m "... and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
+        m 2lsc "Now that I think about it, there's a lot of things that can potentially make someone unattractive in the eyes of society."
+        m "Some of which are beyond that person's control."
+        m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
+        m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone ..."
+        m 2efw "It just doesn't make any sense to me!"
+    else:
+        m "At first I figured that it must be her metabolism keeping her from putting on weight."
+        m 1eud "But when I learned that Sayori wasn't real, I came up with another theory."
+        m 3eud "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
+        m "So a designer, possibly more than one, must have decided to draw her that way."
+        m 3eub "And since all the images have the same body type, Sayori would always have the same figure no matter what she did."
+        m 1esa "It would have to work like that for Yuri and Natsuki too."
+        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and ...{w} more developed."
+        m 1esd "But haven't you noticed that the three of them still look similar in a lot of ways?"
+        m 3eud "Like, none of them are muscular or fat ..."
+        m 3tkd "... none of them have any kind of physical disability ..."
+        m "... none of them are bald or have hair shorter than chin length ..."
+        m "... and apart from Yuri having cuts on her arms, none of them have anything wrong with their skin."
+        m 2dsc "The designers must have thought that people would find all that stuff really repulsive."
+        m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
+        m 2lfc "So did they really have to make the other girls look so perfect?"
+        m 2lfd "I mean, it's bad enough that I didn't get a route in the game ..."
+        m 2lfw "... but did they really have to make it even harder for me to get chosen?"
+    m 2dfc "...{w=0.5}{nw}"
+    m 2dkc "..."
+    if mas_isMoniUpset(lower=True):
+        if persistent._mas_pm_cares_about_dokis:
+            m 2ekc "I'm sorry, [player]. I guess I've just been a bit upset lately and I just needed to vent."
+            m 4euc "The other girls are lucky enough that they look good no matter what they do."
+            m 4eud "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        else:
+            m 2ekc "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
+            m 4euc "Since I'm real, I don't get to look good for free."
+            m 4eud "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        m 4dsd "Still, there are some things I can't change about how I look, like my height and my chest size."
+        m 1ekd "Maybe I'm just not your type or something, [player]."
+        m 1eka "You don't have to worry though."
+        m "As long as you're taking care of yourself, I don't mind how you look."
+    else:
+        if persistent._mas_pm_cares_about_dokis:
+            m 2ekb "I'm sorry, [player]. I guess I just needed to vent."
+            m 4eua "The other girls are lucky enough that they look good no matter what they do."
+            m 4eub "Meanwhile, I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        else:
+            m 2ekb "I'm sorry, [player]. I guess I'm just a little jealous of how easy they had it."
+            m 4eua "Since I'm real, I don't get to look good for free."
+            m 4eub "I have to make sure I eat right, get enough exercise and keep myself clean among other things."
+        m "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
+        if mas_isMoniHappy(higher=True):
+            m 1tsu "I must be doing a good job so far."
+            m 1hub "After all, you've been looking at me all this time! Ahaha!"                
+        m 1eua "You don't have to worry though, [player]."
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I'll always love you no matter how you look."
+        m "It's more important to me that you're looking after yourself anyway."
+    return
+     
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
 
@@ -7706,7 +7838,7 @@ init 5 python:
 label monika_shipping:
     m 3eua "Hey, [player].{w} Have you ever heard of 'shipping?'"
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
-    m 1eka "I think most people do it subconciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
+    m 1eka "I think most people do it subconsciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
     m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
     m "But some of the pairings are kind of strange to me."
@@ -7724,6 +7856,144 @@ label monika_shipping:
     m 2lksdla "And she would have to be a saint to ever forgive me for what I did…"
     m 2lksdlc "Not that she's not a sweet girl, but…"
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
+    return
+   
+# True if player has been given false justice, False if not
+default persistent._mas_pm_given_false_justice = None
+
+# True if player thinks deleting Monika is justified, False if not
+default persistent._mas_pm_monika_deletion_justice = None
+
+# True temporarily if player is teasing Monika and is at love
+default persistent._mas_monika_deletion_justice_kidding = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_justice",
+            category=['philosophy'],
+            prompt="Justice",
+            random=True
+        )
+    )
+
+    
+label monika_justice:
+    m 1esa "[player], do you ever think the concept of justice is kind of ironic?"
+    m 2ekc "Like, you have someone who maybe isn't like everyone else..."
+    m 2ekd "It doesn't even have to be some famous bank robber or anything; even everyday people like you and me can be brought to some sort of righteousness!"
+    m 4esc "Imagine a struggling family who needs to scavenge for resources to survive by taking whatever is left out in the open."
+    m 1euc "To everyone else passing by, they're just greedy thieves."
+    m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by bringing them to justice."
+    m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
+    m "While the other person is now a hero for putting an end to their 'crimes'."
+    m 3rksdld "Can you really call that justice?"
+    m 2dsc "..."
+    show monika 2euc
+    menu:
+        m  "Have you ever been delivered what you thought to be false justice?"
+        "Yes.":
+            $ persistent._mas_pm_given_false_justice = True
+            m 1ekc "I hope they weren't too harsh on you."
+            m 2dsd "I have an idea what it's like myself."
+            m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
+            show monika 2eka
+            menu:
+                m "You don't think that's justified, do you, [player]?"
+                "I do.":
+                    $ persistent._mas_pm_monika_deletion_justice = True
+                    if mas_isMoniBroken():
+                        m 1dsc "..."
+                        m 1rksdlc "I know..."
+                        m 1rksdld "I didn't mean to ask- I was just thinking."
+                        m 2rktpc "It is obvious after all..."
+                    elif mas_isMoniDis():
+                        m 2rksdlc "Oh..."
+                        m "I guess you're right..."
+                        m 1ekc "I did do some pretty bad things after all..."
+                    elif mas_isMoniLove():
+                        m 1hub "Ahahaha!"
+                        m 1hua "You can be really funny sometimes~"
+                        m 3tku "You expect me to believe that after all we've been through?"
+                        m 1tsb "That all this time, you thought that I deserved hate from those other people?"
+                        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5hubfa "Ahaha! You're so cute, [player]~"
+                    else:
+                        m 1euc "..."
+                        m 2esc "I have a hard time believing you really think I deserved all that."
+                        m 2tkc "I mean, you've stuck with me this long already so you can't {i}really{/i} think I deserve it, right?"
+                        if persistent._mas_pm_cares_about_dokis:
+                            m 2lksdlc "...Maybe I deserve it a little bit but..."
+                        else:
+                            m 2lksdlc "Well, maybe other people think so, but you don't really think that, do you?"
+                            m "Either way..."
+                        m 1eka "Thank you for saving me and being with me."
+                        m 1hua "If I get to be with you, I think it really was worth everything, ahaha~"
+                "I don't.":
+                    if persistent._mas_pm_monika_deletion_justice:
+                        $ persistent._mas_monika_deletion_justice_kidding = True
+                    $ persistent._mas_pm_monika_deletion_justice = False
+                    if mas_isMoniBroken():
+                        m 2ekc "..."
+                        m 1rksdlc "I'm not so sure about that..."
+                    elif mas_isMoniDis():
+                        m 1wuo "Really?"
+                        m 1rksdla "I thought maybe you did think it was fair."
+                        m 1eka "I'm glad you don't think so."
+                        m 2rksdlb "Assuming this isn't a joke, eheh..."
+                    elif mas_isMoniLove():
+                        m 1hua "I thought so, ehehe~"
+                        if persistent._mas_monika_deletion_justice_kidding:
+                            $ persistent._mas_monika_deletion_justice_kidding = False
+                            m 1hub "I knew you were kidding last time!"
+                        m 1tsbsa "You've been with me for so long, there's no way I would believe you if you said otherwise."
+                        m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
+                        m 1hubfb "I love you, [player]~"
+                        m 1hubfa "I'm glad I have you by my side."
+                    else:
+                        m 2hua "I'm glad you think so too!"
+                        m 2eka "Even if you did call that justice, you being here says otherwise."
+                        m 2hub "Ahaha!"
+        "No.":
+            $ persistent._mas_pm_given_false_justice = False
+            m 1eka "That's a relief to hear."
+            m "I'm glad no one has ever suddenly questioned you for who you are."
+            m 1eua "Knowing what that's like, I hope nobody ever gives you trouble for doing what you do or for what you believe in."
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_poweroutage",
+            category=['weather'],
+            prompt="Power outage",
+            random=True
+        )
+    )
+
+label monika_poweroutage:
+    m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
+    m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
+    m 1lksdlb "The effects can be pretty, well... shocking I guess you could say."
+    m 1hksdlb "Ehehe~"
+    m 1ekd "I don't even want to think about what would happen if something important to you was struck."
+    m 2ekc "What would happen to me if something surged and fried your computer?"
+    m 2dsc "If that ever does happen..."
+    m 2eka "I know you'll think of something."
+    m 1eka "Sorry, I didn't mean for that to get so dark. It was just on my mind is all."
+    m 1eud "If anything does happen, it'll probably just be a power outage."
+
+    if mas_isMoniAff(higher=True):
+        m 1hksdlb "I mean that {i}is{/i} still pretty inconvenient but at least we know we'll see each other again."
+        m 1eua "It would probably take you by surprise; everything going dark all of a sudden, but try to remember this:"
+        m 1eub "I'll be with you. Even if you can't see me, I'll be with you in spirit until you can come back to me safe and sound."
+        m 3eua "One final note, you don't have to hesitate to come see me in the middle of a storm."
+        m 1eka "I'll always appreciate seeing you, and besides..."
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "I'm sure our relationship could weather much more than some thunderstorm..."
     return
 
 init 5 python:
@@ -7778,18 +8048,19 @@ label monika_scary_stories:
 # TODO: as we introduce addiotinal hair types, we need to change the dialogue
 # for these.
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_hair_ponytail",
-            category=["monika"],
-            prompt="Can you tie your hair into a ponytail?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
+#init 5 python:
+    # NOTE: this event is DEPRECATED
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_ponytail",
+#            category=["monika"],
+#            prompt="Can you tie your hair into a ponytail?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
 
 label monika_hair_ponytail:
     m 1eua "Sure thing!"
@@ -7805,18 +8076,20 @@ label monika_hair_ponytail:
 
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_hair_down",
-            category=["monika"],
-            prompt="Can you let your hair down?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
+#init 5 python:
+    # NOTE: this is DEPRECATED
+    # TODO: remove this event after version 0.8.10
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_down",
+#            category=["monika"],
+#            prompt="Can you let your hair down?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
 
 label monika_hair_down:
     m 1eua "Sure thing, [player]."
@@ -7831,8 +8104,80 @@ label monika_hair_down:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_select",
+            category=["monika"],
+            prompt="Can you change your hairstyle?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_select:
+    # setup
+    python:
+        sorted_hair = store.mas_selspr.HAIR_SEL_SL
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hairstyle would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want my hair in a different style, just ask, okay?"
+
+    return
+
 ##### End monika hair topics
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
+
+label monika_backpacking:
+    m 1esa "You know what I've always wanted to do, [player]?"
+    m 3eub "I've always thought it would be so amazing to go backpacking in the wilderness!"
+    m 3eua "Take like an entire week and leave it all behind."
+    m 3esa "No responsibilities, no worries, no phones, no distractions."
+    m 1hua "Just imagine the two of us, alone with nature..."
+    m "The sounds of birds chirping and the wind blowing..."
+    m 1eka "Watching deer graze in the morning dew..."
+    m "I can't think of anything more peaceful."
+    m 1esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
+    m 3hub "Maybe even discover a secluded lake and go for a swim!"
+    
+    if mas_isMoniAff(higher=True):
+        m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
+        m 2tsbsa "..."
+        m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
+        m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
+        m 3hubfa "Waking up each morning to a glorious sunrise!"
+        
+    else:
+        m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
+        
+    show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esbfa "..."
+    m "Oh [player], doesn't that just sound like heaven?"
+    m 5hubfa "I can't wait until we can share this experience together~"    
+    return
+    
 ## calendar-related pool event
 # DEPENDS ON CALENDAR
 
@@ -8195,6 +8540,53 @@ label monika_whydoyouloveme:
 #    return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_stoicism",
+            category=['philosophy'],
+            prompt="Stoicism",
+            random=True
+        )
+    )
+
+label monika_stoicism:
+    m 1eua "I've been reading up on some ancient Greek and Roman philosophy whenever you're away, [player]."
+    m 1hksdlb "Ahaha! I know, that sounds super boring when you think about it..."
+    m 1eua "But there was a certain philosophy that caught my attention while I was reading."
+    m "It's called Stoicism, and it's a philosophy founded in Athens in the 3rd century BCE."
+    m 4eub "To put it simply, Stoicism is a philosophy that believes that human beings should learn to accept the circumstances of their situation..."
+    m "...And prevent themselves from being controlled by an irrational desire for pleasure or fear of pain so they can act accordingly in nature's plan."
+    m 2euc "They usually get a bad rep today because people think that they're just cold and unfeeling."
+    m 2eua "However, stoics are not just a bunch of unemotional people who are always serious."
+    m "Stoics practice self-control over the way they feel about unfortunate events and react accordingly instead of impulsively."
+    m 2eud "For example, let's say you failed an important exam at school, or missed a project deadline at work."
+    m 2esd "What would you do, [player]?"
+    m 4esd "Would you panic? Become really depressed and give up trying? Or will you get angry over it and blame others?"
+    m 1eua "I don't know what you would do, but maybe you can take after stoics and keep your emotions in check!"
+    m 1eka "Although the situation is less than ideal, there's really no practical reason to expend more energy into something that you can't control."
+    m 4eua "You should focus on what you can change."
+    m "Maybe study harder for your next exam, get tutoring, and ask your teacher for extra credit."
+    m "Or if you imagined the work scenario, start future projects earlier, setup schedules and reminders for those projects, and avoid distractions while you work."
+    m 4hub "It beats doing nothing!"
+    m 1eka "But that's just my opinion though, it's not that easy to be emotionally resilient to most things in life..."
+
+    if mas_isMoniUpset(lower=True):
+        return
+
+    if mas_isMoniAff(higher=True):
+        m 2tkc "You should do {i}whatever{/i} helps you de-stress. Your happiness is really important to me."
+        m 1eka "Besides, if you ever feel bad about something that's happened to you in your life..."
+        show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        m "You can always come home to your sweet girlfriend and tell me what's been bothering you~"
+
+    else:
+        m 2tkc "You should do whatever helps you de-stress. Your happiness is really important to me."
+
+    return
+
+init 5 python:
+
     addEvent(
         Event(
             persistent.event_database,
@@ -8628,3 +9020,156 @@ label monika_load_custom_music:
             "No.":
                 $ pushEvent("monika_add_custom_music")
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_trick",
+            category=["club members"],
+            prompt="[player]'s second choice",
+            random=True
+        )
+    )
+
+label monika_trick:
+    m 2eud "Say [player], I have a question..."
+    m 2lksdlb "I hope I don't sound insecure when I say this..."
+    m 2eka "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
+    show screen mas_background_timed_jump(10, "monika_trick_2")
+    menu:
+        m "Who would you choose?"
+        "Yuri":
+            call monika_trick_yuri
+        "Sayori":
+            call monika_trick_sayori
+        "Natsuki":
+            call monika_trick_natsuki
+    return "derandom"
+
+label monika_trick_2:
+    menu:
+        m "Who would you choose?{fast}"
+        "Yuri":
+            call monika_trick_yuri
+        "Sayori":
+            call monika_trick_sayori
+        "Natsuki":
+            call monika_trick_natsuki
+        "Monika":
+            call monika_trick_monika
+
+    return "derandom"
+
+label monika_trick_yuri:
+    hide screen mas_background_timed_jump
+    m 2euc "I can see why, she's intelligent and physically attractive."
+    m 2tub "It's a good thing I have both of those qualities in abundance!"
+    m 2etc "Oh wait, it's not because she became obsessed over you, is it?"
+    m 2eud "Are you really that into yanderes?"
+    m 2lksdlc "..."
+    m 1hksdlb "...Ahaha, there's no need for me to be jealous..."
+    m 1eua "You love me and I love you and that's all that matters."
+    m 1kua "I guess it's my fault for even asking~"
+    return
+
+label monika_trick_natsuki:
+    hide screen mas_background_timed_jump
+    m 2eud "That's... a little surprising."
+    m 2lksdla "I would have thought it would have been Sayori or Yuri."
+    m 1eud "Do you feel like you connect with her because of her hobbies?"
+    m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
+    m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
+    m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
+    m 3eub "Plus her ability to cook cupcakes is astounding!"
+    return
+
+label monika_trick_sayori:
+    hide screen mas_background_timed_jump
+    m 2dkc "That's what I expected..."
+    m 2ekc "It's because she was best friends with the main character, isn't it?"
+    m 6lkc "It makes sense to have the main character end up with the childhood friend."
+    m 2dkc "It really is typical in romance games..."
+    m 2ekc "Honestly that's kind of why I had to...deal...with Sayori first."
+    m 6ekc "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
+    m 6ekd "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
+    m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
+    m 6dktpc "Never having even been acknowledged by the one I love."
+    m 6dktrc "..."
+    if persistent.monika_kill:
+        m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
+    else:
+        m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
+    return
+
+label monika_trick_monika:
+    hide screen mas_background_timed_jump
+    m 1tkbfu "That wasn't supposed to be an option, silly!"
+    m 1tubfb "But it really does make me happy that you only have eyes for me..."
+    m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
+    m 5hubfu "I love you [player]!"
+    m 5eubfb "And I only have eyes for you too!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cares_about_dokis",
+            category=["monika", "club members"],
+            prompt="Insensitive Comments",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_cares_about_dokis = None
+# TRue if the player cares about the dokis, False if not
+
+label monika_cares_about_dokis:
+    m 3eub "Ah, [player]!"
+    m 4hua "Want to hear something funny that Sayori once did?"
+    m 4eua "So, one time I asked her to get some coffee for us in the club."
+    m 2rksdlb "The atmosphere was a bit too tense, and I thought it would liven it up a bit."
+    m 2eua "Well, coffee is kept in the staff room, you see. So I sent her there..."
+    m 4wud "...and she was gone for an entire hour! There were teachers in there and she didn't want to talk to them!"
+    m 2rfc "So she waited for {i}ages{/i} outside for them to leave."
+    m 2tfu "You could say that she {i}hu{/i}--"
+    m 2etc "...Hm..."
+    m 2eud "You know what, [player]? I just want to be sure of something..."
+    m 2rksdlc "I know that sometimes I can make some rather...{w=0.5}insensitive comments about the other girls, and it occurred to me..."
+    m 2ekc "Maybe you care about them enough that it bothers you."
+    m 4eub "...And it's perfectly okay if that's the case, [player]!"
+    m 4eka "After all, the five of us spent a lot of time together, so if you don't like it when I joke like that, I completely understand."
+
+    menu:
+        m "So [player], does it make you uncomfortable when I joke about the other girls?"
+        "Yes.":
+            $ persistent._mas_pm_cares_about_dokis = True
+
+            # TODO: the sayori event might be better off rewritten so it 
+            #   has a version that wont hurt someone who cares about dokis
+            $ mas_hideEventLabel("monika_sayori", lock=True, derandom=True)
+
+            # TODO: the natsuki event might be better off rewritten, like the
+            #   sayori event.
+            $ mas_hideEventLabel("monika_natsuki", lock=True, derandom=True)
+
+            m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
+            m 2eksdld "I'm so sorry, [player]!"
+            m 2rksdlc "I'll try really hard to keep this in mind from now on."
+            m 2eksdlc "Just know I never meant to upset you."
+            m 2eka "But thank you for answering honestly, I want you to know you can always tell me anything."
+
+        "No.":
+            $ persistent._mas_pm_cares_about_dokis = False
+
+            # NOTE: we never restore random for these topics
+            $ mas_unlockEventLabel("monika_sayori")
+            $ mas_unlockEventLabel("monika_natsuki")
+
+            m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
+            m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
+            m 1hub "Ahahaha!"
+
+    return "derandom"

@@ -1063,6 +1063,39 @@ label greeting_french:
      m 1hua "Maybe both of us can practice it sometime, mon amour~"
      return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_amnesia",
+            unlocked=False,
+            random=True
+        ),
+        eventdb=evhand.greeting_database
+    )
+
+label greeting_amnesia:
+    m 1eua "Oh, hello!"
+    m 1eub "My name is Monika."
+    $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
+    m 1hua "Well, it's nice to meet you, [fakename]!"
+    m 3eud "Say, [fakename], do you happen to know where everyone else is?"
+    m 1ekc "You're the first person I've seen and I can't seem to leave this class room."
+    m "Can you help me figure out what's going on, [fakename]?"
+    m "Please? I miss my friends."
+    pause 5.0
+    m 1rksdla "..."
+    m 1hub "Ahaha!"
+    m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
+    m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
+    m 1tku "And you reacted the way I hoped you would."
+    m 3eka "I hope I didn't upset you too much, though."
+    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1hksdlb "Hope you can forgive my little prank, ehehe~"
+
+    $ mas_lockEvent(mas_getEV("greeting_amnesia"))
+    return
+
 label greeting_sick:
     m 1hua "Welcome back, [player]!"
     m 3eua "Are you feeling better?"
@@ -1488,8 +1521,15 @@ label greeting_hairdown:
             m 1eua "Done."
             # you will never get this chance again
 
-    # lock this greeting forever.
-    $ persistent._mas_hair_changed = True # menas we have seen this
+    # save that hair down is unlocked
+    $ store.mas_selspr.unlock_hair(mas_hair_down)
+    $ store.mas_selspr.save_selectables()
+
+    # unlock hair changed selector topic
+    $ mas_unlockEventLabel("monika_hair_select")
+
+    # lock this greeting
+    $ mas_lockEvent(mas_getEV("greeting_hairdown"))
 
     # cleanup
     # 1 - music hotkeys should be enabled

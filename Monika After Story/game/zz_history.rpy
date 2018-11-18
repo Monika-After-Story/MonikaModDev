@@ -604,6 +604,8 @@ init -810 python:
     #   location - location-based stuff
     #   likes - likes/wants
     #   know - knowledge
+    #   exp - (experience) things that have been done to u
+    #   op - opinions on things
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -626,6 +628,7 @@ init -810 python:
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
+            "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
@@ -689,10 +692,20 @@ init -810 python:
             "_mas_pm_likes_panties": "pm.likes.clothes.panties",
             "_mas_pm_no_talk_panties": "pm.likes.clothes.panties.no_talk",
 
+            # likes / dokis
+            "_mas_pm_cares_about_dokis": "pm.likes.dokis.cares_about_them",
+
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
-            "_mas_pm_lang_jpn": "pm.know.lang.jpn"
+            "_mas_pm_lang_jpn": "pm.know.lang.jpn",
+
+            # exp (experience)
+            "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+
+            # op (opinions)
+            # op / monika
+            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified"
         },
         use_year_before=True,
         dont_reset=True

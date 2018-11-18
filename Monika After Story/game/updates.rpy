@@ -334,6 +334,14 @@ label v0_8_10(version="v0_8_10"):
             changename_ev.pool = True
             persistent._seen_ever["monika_changename"] = True
 
+        # derandom monika family
+        family_ev = evhand.event_database.get("monika_family", None)
+        if family_ev:
+            family_ev.random = False
+
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
+
     return
 
 # 0.8.9
@@ -877,6 +885,26 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_8_10:
+    python:
+        import store.mas_selspr as mas_selspr
+
+        # unlock hair 
+        if persistent._mas_hair_changed:
+            mas_selspr.unlock_hair(mas_hair_down)
+            unlockEventLabel("monika_hair_select")
+
+        # unlock the o31 seen costumes
+        if persistent._mas_o31_seen_costumes is not None:
+            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_marisa)
+
+            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_rin)
+
+    return
 
 label mas_lupd_v0_8_4:
     python:

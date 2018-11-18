@@ -546,7 +546,8 @@ init -1 python in evhand:
         "mas_crashed_start",
         "monika_affection_nickname",
         "mas_coffee_finished_brewing",
-        "mas_coffee_finished_drinking"
+        "mas_coffee_finished_drinking",
+        "monika_hair_select"
     ]
 
     # as well as special functions
@@ -798,6 +799,7 @@ init python:
             eventdb=evhand.event_database
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -813,14 +815,7 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        evhand._hideEventLabel(
-            eventlabel,
-            lock=lock,
-            derandom=derandom,
-            depool=depool,
-            decond=decond,
-            eventdb=eventdb
-        )
+        mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
 
     def hideEvent(
@@ -831,6 +826,7 @@ init python:
             decond=False
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -845,8 +841,32 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
+        mas_hideEvent(event, lock, derandom, depool, decond)
+
+
+    def mas_hideEvent(
+            ev,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hide an event by Falsing its unlocked/random/pool props
+
+        IN:
+            ev - event object we want to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+        """
         evhand._hideEvent(
-            event,
+            ev,
             lock=lock,
             derandom=derandom,
             depool=depool,
@@ -854,7 +874,119 @@ init python:
         )
 
 
+    def mas_hideEventLabel(
+            ev_label,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Hide an event label by Falsing its unlocked/random/pool props
+
+        IN:
+            ev_label - label of the event we wnat to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+            eventdb - event databsae ev_label is in
+                (Default: evhand.event_database)
+        """
+        evhand._hideEventLabel(
+            ev_label,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond,
+            eventdb=eventdb
+        )
+
+
+    def mas_showEvent(
+            ev,
+            unlock=False,
+            _random=False,
+            _pool=False
+        ):
+        """
+        Show an event by Truing its unlock/ranomd/pool props
+
+        IN:
+            ev - event to show
+            unlock - True if we want to unlock this event, False if not
+                (Default: False)
+            _random - True if we want to random this event, Flase otherwise
+                (Default: False)
+            _pool - True if we want to pool this event, False otherwise
+                (Default: False)
+        """
+        if ev:
+            
+            if unlock:
+                ev.unlocked = True
+
+            if _random:
+                ev.random = True
+
+            if _pool:
+                ev.pool = True
+
+
+    def mas_showEventLabel(
+            ev_label,
+            unlock=False,
+            _random=False,
+            _pool=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Shows an event label, by Truing the unlocked, random, and pool
+        properties.
+
+        IN:
+            ev_label - label of event to show
+            unlock - True if we want to unlock this event, False if not
+                (DEfault: False)
+            _random - True if we want to random this event, False if not
+                (Default: False)
+            _pool - True if we want to pool this event, False if not
+                (Default: False)
+            eventdb - eventdatabase this label belongs to
+                (Default: evhannd.event_database)
+        """
+        mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
+
+
     def lockEvent(ev):
+        """
+        NOTE: DEPRECATED
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        mas_lockEvent(ev)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_lockEventLabel(evlabel, eventdb)
+
+
+    def mas_lockEvent(ev):
         """
         Locks the given event object
 
@@ -864,7 +996,7 @@ init python:
         evhand._lockEvent(ev)
 
 
-    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_lockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Locks the given event label
 
@@ -906,6 +1038,29 @@ init python:
 
     def unlockEvent(ev):
         """
+        NOTE: DEPRECATED
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        mas_unlockEvent(ev)
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_unlockEventLabel(evlabel, eventdb)
+
+
+    def mas_unlockEvent(ev):
+        """
         Unlocks the given evnet object
 
         IN:
@@ -914,7 +1069,7 @@ init python:
         evhand._unlockEvent(ev)
 
 
-    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Unlocks the given event label
 
