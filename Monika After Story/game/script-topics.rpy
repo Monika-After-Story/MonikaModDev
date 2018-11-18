@@ -376,7 +376,7 @@ label monika_god:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True,key_words="death_1 dead_1 dying_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_death",category=['philosophy'],prompt="Death and dying",random=True,key_words="death_2 dead_1 dying_1"))
 
 label monika_death:
     m 1euc "[player], have you ever wondered what it feels like to die?"
@@ -454,7 +454,7 @@ init 5 python:
             category=['club members'],
             prompt="Sayori regrets",
             random=True,
-            key_words="sayori_1 regrets_1 regret_1"
+            key_words="sayori_2 regrets_1 regret_1"
         )
     )
 
@@ -544,7 +544,7 @@ label monika_japan:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_high_school",category=['advice','school'],prompt="High school",random=True,key_words="high school"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_high_school",category=['advice','school'],prompt="High school",random=True,key_words="high_1 school_2"))
 
 label monika_high_school:
     m 4eua "You know, high school is a really turbulent time in a lot of people's lives."
@@ -676,7 +676,7 @@ label monika_twitter:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True,key_words="yuri_1 book_1 portrait_1 markov_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_portraitof",category=['club members'],prompt="Yuri's book",random=True,key_words="yuri_1.5 book_1 portrait_1 markov_1"))
 
 label monika_portraitof:
     m 4eua "Hey, you know that book you were reading with Yuri?"
@@ -715,7 +715,7 @@ label monika_veggies:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_saved",category=['monika'],prompt="Saving Monika",random=True,key_words="save_1 saving_1 life_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_saved",category=['monika'],prompt="Saving Monika",random=True,key_words="save_2 saving_1 life_2"))
 
 label monika_saved:
     m 2eka "You know, I really do think you literally saved my life by being here with me, [player]."
@@ -1965,7 +1965,7 @@ label monika_mentalillness:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_read",category=['advice','literature'],prompt="Becoming a reader",random=True,key_words="becoming_1 reader_1 read_1 book_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_read",category=['advice','literature'],prompt="Becoming a reader",random=True,key_words="becoming_1 reader_1 read_1 book_1.5"))
 
 label monika_read:
     m 1eua "[player], how much do you read?"
@@ -2531,7 +2531,7 @@ label monika_4chan:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vidya",category=['games'],prompt="Do you like video games?",pool=True,key_words="video_1 games_1 game_1 vidya_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_vidya",category=['games'],prompt="Do you like video games?",pool=True,key_words="video_1 games_1 game_1.5 vidya_1"))
 
 label monika_vidya:
     m 1euc "I don't play a lot of video games, [player]."
@@ -2571,7 +2571,7 @@ label monika_favpoem:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_favbook",category=['literature','monika'],prompt="What's your favorite book?",pool=True,key_words="favorite_1 book_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_favbook",category=['literature','monika'],prompt="What's your favorite book?",pool=True,key_words="favorite_1.5 book_1"))
 
 label monika_favbook:
     m 1euc "My favorite book? There's a lot of books I like."
@@ -2591,7 +2591,7 @@ init 5 python:
             prompt="Natsuki's death",
             random=True,
             sensitive=True,
-            key_words="natsuki_1 death_1"
+            key_words="natsuki_2 death_1"
         )
     )
 
@@ -2611,7 +2611,7 @@ label monika_natsuki:
     return "derandom"
 
 init 5 python:
-        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True,key_words="love_5 loving_5 true_5 adore_5 adores_5"))
+        addEvent(Event(persistent.event_database,eventlabel="monika_love",category=['romance'],prompt="I love you!",pool=True,key_words="love_4.5 loving_5 true_5 adore_5 adores_5"))
 
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
@@ -6961,7 +6961,8 @@ init 5 python:
             eventlabel="monika_natsuki_letter",
             category=['club members'],
             prompt="Natsuki's letter",
-            random=True
+            random=True,
+            key_words="natsuki_2.1 letter_1"
         )
     )
 
@@ -7001,7 +7002,7 @@ default persistent._mas_timeconcern = 0
 default persistent._mas_timeconcerngraveyard = False
 default persistent._mas_timeconcernclose = True
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True,key_words="sleep_1 concern_1"))
+    addEvent(Event(persistent.event_database,eventlabel="monika_timeconcern",category=['advice'],prompt="Sleep concern",random=True,key_words="sleep_1.5 concern_1"))
 
 label monika_timeconcern:
     $ current_time = datetime.datetime.now().time().hour
@@ -8097,7 +8098,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     jump monika_dating_startdate_confirm.loopstart
 
 init 5 python:
-     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True,key_words="why_1 do_1 you_1 love_3 me_1"))
+     addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True,key_words="why_1 love_4 me_1"))
 
 label monika_whydoyouloveme:
 

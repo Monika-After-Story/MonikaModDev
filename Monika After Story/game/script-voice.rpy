@@ -24,7 +24,7 @@ init -1 python:
 init 5 python:
     if disable_voice_option == False:
         addEvent(Event(persistent.event_database,eventlabel='monika_hear_voice',
-                                                                prompt="I want to tell you something",
+                                                                prompt="Monika, listen to me",
                                                                 label=None,
                                                                 category=['voice'],
                                                                 random=False,
@@ -42,8 +42,8 @@ label monika_hear_voice:
     m 1eua "[player], would you like to tell me something?"
     menu:
         "Yes.":
-            m 1hub "It might lag game a little for time when i will try to hear your gently voice but don't worry about it"
-            m 1eua "I\'m all ears but please keep it to one sentance for now. I am still learning how to do it after all"
+            m 1hub "It might lag game a little for time when I will try to hear your gently voice"
+            m 1eua "I'm all ears but please keep it to one sentance for now. I am still learning how to do it after all"
             python:
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
@@ -52,8 +52,8 @@ label monika_hear_voice:
                     except WaitTimeoutError:
                         renpy.jump("cant_hear")
                     try:
-                        #player_input_text = r.recognize_sphinx(audio)
-                        player_input_text = r.recognize_google(audio)
+                        player_input_text = r.recognize_sphinx(audio)
+                        #player_input_text = r.recognize_google(audio)
                     except Exception:
                         renpy.jump("can_hear_but_cant_recognise")
                 player_input_text = player_input_text.lower()
@@ -66,7 +66,6 @@ label monika_hear_voice:
             return
 
 #Here we can write logic to catch key words which than would jump into correct topics or do other stuff
-#currently it check if what player said is contain in prompt of event. Probably need be other way around or add key words to event which we will catch in player text
 init -1 python:
     def return_topic(player_input_text):
         unlocked_events = []
@@ -80,14 +79,14 @@ init -1 python:
             currentMaxFitNumber = 0
             #exclusive words for filtering right event 
             #We add all events to the array (as each events have separate database dicts)
-            if "play" in player_input_text and ("chess" in player_input_text or "pong" in player_input_text or "Hangman" in player_input_text or "Piano" in player_input_text):
+            if "play" in player_input_text and ("chess" in player_input_text or "pong" in player_input_text or "hangman" in player_input_text or "piano" in player_input_text):
                 return preprocessing_games()   
             elif "change" in player_input_text and "music" in player_input_text:  
                 select_music()
                 return "ch30_loop"                
             elif "feel" in player_input_text:
                 unlocked_events.append(Event.filterEvents(mas_moods.mood_db, unlocked=True))
-            elif "bye" in player_input_text or "goodbye" in player_input_text or "goodnight" in player_input_text:
+            elif "bye" in player_input_text or "goodbye" in player_input_text or ("good" in player_input_text and "night" in player_input_text):
                 mostFitTopic = "random_farewell"
                 unlocked_events.append(Event.filterEvents(evhand.farewell_database, unlocked=True, pool=True))
             else:
@@ -108,7 +107,7 @@ init -1 python:
                             #If word is found add it's weight to the current topic weight
                             if len(keyWord) > 1:
                                 if keyWord[0] in player_input_text:
-                                    counterFitNumber += int(keyWord[1])
+                                    counterFitNumber += float(keyWord[1])
                     #Check if current topic weight is bigger than end Topic weight
                     if currentMaxFitNumber < counterFitNumber:
                         mostFitTopic = event[key].eventlabel
@@ -173,7 +172,7 @@ init -1 python:
                     grant_xp(xp.NEW_GAME)
                 return "game_hangman"
         if persistent.game_unlocks['piano']:
-            if "Piano" in player_input_text:
+            if "piano" in player_input_text:
                 if not renpy.seen_label("mas_piano_start"):
                     grant_xp(xp.NEW_GAME)
                 return "mas_piano_start"
@@ -195,56 +194,49 @@ label no_topic_found:
     return   
 
 #/////////////////////////////////ALWAYS LISTEN OPTION//////////////////////////////////////////////////////
-    
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_listen',
-                                                            prompt="Monika listen to me",
-                                                            label=None,
-                                                            category=['voice'],
-                                                            random=False,
-                                                            unlocked=False,
-                                                            pool=False,
-                                                            conditional=None,
-                                                            action=None,
-                                                            start_date=None,
-                                                            end_date=None,
-                                                            unlock_date=None
-                                                            ))
+#Spawning knew thread which will listen mic input all the time. Causing some issues for now, ewsspecially when you use both this and ask option. Both option add event so Monika repeat it.    
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel='monika_listen',
+#                                                            prompt="Monika listen to me",
+#                                                            label=None,
+#                                                            category=['voice'],
+#                                                            random=False,
+#                                                            unlocked=False,
+#                                                            pool=False,
+#                                                            conditional=None,
+#                                                            action=None,
+#                                                            start_date=None,
+#                                                            end_date=None,
+#                                                            unlock_date=None
+#                                                            ))
 
 label monika_listen:
-    python:
-        store.mas_o31_event.o31_cg_decoded = (store.mas_o31_event.decodeImage("o31mcg"))
-        #file = open('C:/Users/Bartosz/Desktop/renpy-6.99.12.4-sdk/test.jpg', 'w')
-        #file.write(store.mas_o31_event.o31_cg_decoded)
-        #file.close()
-#    m 1eua "[player], would you like me to listen to you all the time?"
-#    menu:
-#        "Yes.":
-#            m "Okay"
-#            python:
-#                r = sr.Recognizer()
-#                mic = sr.Microphone()
-#                Monika_is_listening = True
-#                with mic as source:
-#                    r.adjust_for_ambient_noise(source)
-#                stop_listening = r.listen_in_background(mic, callback)
-#            return
-#        "No.":
-#            m "Okay"
-#            python:
-#                Monika_is_listening = False
-#                if stop_listening is not None:
-#                    stop_listening(wait_for_stop=False)
-#            return
+    m 1eua "[player], would you like me to listen to you all the time?"
+    menu:
+        "Yes.":
+            m "Okay"
+            python:
+                r = sr.Recognizer()
+                mic = sr.Microphone()
+                Monika_is_listening = True
+                with mic as source:
+                    r.adjust_for_ambient_noise(source)
+                stop_listening = r.listen_in_background(mic, callback)
+            return
+        "No.":
+            m "Okay"
+            python:
+                Monika_is_listening = False
+                if stop_listening is not None:
+                    stop_listening(wait_for_stop=False)
+            return
 
 init -1 python:
     def callback(recognizer, audio):
         # received audio data, now we'll recognize it using Google Speech Recognition
         try:
-            # for testing purposes, we're just using the default API key
-            # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
-            # instead of `r.recognize_google(audio)`
-            player_voice = recognizer.recognize_google(audio)
+            #player_voice = recognizer.recognize_google(audio)
+            player_voice = recognizer.recognize_sphinx(audio)
             temp = return_topic(player_voice)
             if temp != "No_topic_found":
                 pushEvent(temp)

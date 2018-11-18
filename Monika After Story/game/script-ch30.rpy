@@ -1078,11 +1078,19 @@ label ch30_post_mid_loop_eval:
         if mas_randchat.rand_low == 0:
             # we are not repeating for now
             # we'll wait 60 seconds inbetween loops
-            $ renpy.pause(60, hard=True)
+            python:
+                for x in range(120):
+                    renpy.pause(0.5, hard=True)
+                    if len(persistent.event_list) > 0:
+                        renpy.jump("ch30_post_mid_loop_eval")
             jump post_pick_random_topic
 
         $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
-        $ renpy.pause(waittime, hard=True)
+        python:
+            for x in range(waittime*2):
+                renpy.pause(0.5, hard=True)
+                if len(persistent.event_list) > 0:
+                    renpy.jump("ch30_post_mid_loop_eval")
         window auto
 
 #        python:

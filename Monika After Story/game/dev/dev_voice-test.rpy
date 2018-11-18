@@ -189,14 +189,14 @@ init -1 python:
                             #If word is found add it's weight to the current topic weight
                             if len(keyWord) > 1:
                                 if keyWord[0] in player_input_text:
-                                    counterFitNumber += int(keyWord[1])
+                                    counterFitNumber += float(keyWord[1])
                     #Check if current topic weight is bigger than end Topic weight
                     if currentMaxFitNumber < counterFitNumber:
                         mostFitTopic = event[key].eventlabel
                         currentMaxFitNumber = counterFitNumber
             #Create and put to log what text from pocketsphyinx we got 
             file = open(base_path+"/log/what_Monika_heard.log", 'w')
-            file.write("This is player input - " + player_input_text + " / Most fitting topic based on player input: " + mostFitTopic)
+            file.write("This is player input: " + player_input_text + "\n Most fitting topic based on player input: " + mostFitTopic)
             file.close()
             #Return most fitting topic
             if mostFitTopic == "":
@@ -254,7 +254,7 @@ init -1 python:
                     grant_xp(xp.NEW_GAME)
                 return "game_hangman"
         if persistent.game_unlocks['piano']:
-            if "Piano" in player_input_text:
+            if "piano" in player_input_text:
                 if not renpy.seen_label("mas_piano_start"):
                     grant_xp(xp.NEW_GAME)
                 return "mas_piano_start"
