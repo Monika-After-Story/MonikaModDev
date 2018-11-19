@@ -4190,7 +4190,7 @@ label monika_morning:
             m 1tku "Except that it's {i}not{/i} morning, [player]!"
             m 2tub "Are you maybe losing track of time?"
             m "You better be careful! You might lose your entire day otherwise."
-            m 2hub "And then once the day has died then we'll be saying 'good mourning'!"
+            m 2hub "And then once the day has died we'll be saying 'good mourning'!"
             m "Ahaha!"
     else:
         m 2hksdlb "You are so silly, [player]"
