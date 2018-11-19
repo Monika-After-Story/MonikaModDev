@@ -265,6 +265,18 @@ label bye_prompt_to_class_late:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_to_work",
+            unlocked=True,
+            prompt="I'm going to work.",
+            pool=True
+        ),
+        eventdb=evhand.farewell_database
+    )
+
 label bye_prompt_to_work:
     $ mas_getsessionlength()
     $ session_time = mas_getsessionlength()
