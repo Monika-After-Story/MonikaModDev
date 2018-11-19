@@ -57,8 +57,8 @@ init -1 python in mas_affection:
         # start counter if None
         store.persistent._mas_affection_log_counter = 0
 
-    elif store.persistent._mas_affection_log_counter >= 100:
-        # if 100, do a logrotate
+    elif store.persistent._mas_affection_log_counter >= 500:
+        # if 500 sessions, do a logrotate
         mas_utils.logrotate(
             os.path.normcase(renpy.config.basedir + "/log/"),
             "aff_log.txt"
@@ -342,10 +342,11 @@ init 15 python in mas_affection:
                 evhand._unlockEventLabel("monika_rain_start")
             evhand._unlockEventLabel("monika_rain")
 
-        evhand._unlockEventLabel(
-            "i_greeting_monikaroom",
-            eventdb=evhand.greeting_database
-        )
+        if not store.mas_isO31():
+            evhand._unlockEventLabel(
+                "i_greeting_monikaroom",
+                eventdb=evhand.greeting_database
+            )
 
         if not persistent._mas_hair_changed:
             evhand._unlockEventLabel(
@@ -387,6 +388,8 @@ init 15 python in mas_affection:
         # unlock events
         if persistent._mas_likes_rain:
             evhand._unlockEventLabel("monika_rain_holdme")
+        
+        evhand._unlockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
@@ -398,6 +401,7 @@ init 15 python in mas_affection:
         """
         # lock events
         evhand._lockEventLabel("monika_rain_holdme")
+        evhand._lockEventLabel("monika_promisering")
 
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
@@ -489,12 +493,16 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_LOVE
+        store.unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
 
 
     def _loveToEnamored():
         """
         Runs when transitioning from love to enamored
         """
+        if store.seen_event("mas_compliment_thanks"):
+            store.lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
         return
 
 
@@ -769,11 +777,19 @@ init 15 python in mas_affection:
 
         ## LOVE quips
         quips = [
-            "Hey, what's up?",
+#            "Hey, what's up?",
             "What's on your mind?",
+            "What's on your mind, darling?",
             "Anything on your mind?",
-            "What's up, [player]?",
-            "What's up?",
+            "What's up, honey?",
+            "What's up, dear?",
+            "What's up, sweetie?",
+#            "What's up?",
+            "Yes, sweetheart?",
+            "Yes, honey?",
+            "Yes, dear?",
+            "^_^",
+            "<3",
             "Anything you'd like to talk about?",
             "We can talk about anything you like, [player]."
         ]
@@ -852,6 +868,9 @@ init 15 python in mas_affection:
 
         ## LOVE quips
         quips = [
+            "What would you like to play? <3",
+            "Choose anything you like, honey.",
+            "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",
             "I'd love to play with you!"
@@ -908,6 +927,9 @@ default persistent._mas_pctadeibe = None
 default persistent._mas_aff_backup = None
 
 init -10 python:
+    if persistent._mas_aff_mismatches is None:
+        persistent._mas_aff_mismatches = 0
+
     def _mas_AffSave():
         aff_value = _mas_getAffection()
         #inum, nnum, dnum = mas_utils._splitfloat(aff_value)
@@ -924,13 +946,14 @@ init -10 python:
         store.mas_affection.audit(aff_value, aff_value, ldsv="SAVE")
 
         # backup this value
-        store.mas_affection.raw_audit(
-            persistent._mas_aff_backup,
-            aff_value,
-            aff_value,
-            "SET BACKUP"
-        )
-        persistent._mas_aff_backup = aff_value
+        if persistent._mas_aff_backup != aff_value:
+            store.mas_affection.raw_audit(
+                persistent._mas_aff_backup,
+                aff_value,
+                aff_value,
+                "SET BACKUP"
+            )
+            persistent._mas_aff_backup = aff_value
 
 
     def _mas_AffLoad():
@@ -981,17 +1004,16 @@ init -10 python:
 
 
         else:
-            # TODO: for now we are just going to log any differences,
-            # if after a while we can see that there is an isue with value
-            # retrievval, then we can do something about this
+            # restore from backup if we have a mismatch
             if new_value != persistent._mas_aff_backup:
+                persistent._mas_aff_mismatches += 1
                 store.mas_affection.raw_audit(
                     new_value,
                     persistent._mas_aff_backup,
                     persistent._mas_aff_backup,
-                    "BACKUP DIFF?"
+                    "RESTORE"
                 )
-                # new_value = persistent._mas_aff_backup
+                new_value = persistent._mas_aff_backup
 
         # audit this change
         store.mas_affection.audit(new_value, new_value, ldsv="LOAD")
