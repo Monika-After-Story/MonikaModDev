@@ -293,6 +293,58 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.8.10
+label v0_8_10(version="v0_8_10"):
+    python:
+        import store.evhand as evhand
+        import store.mas_history as mas_history
+
+        # reset and unlock past anniversaries
+        if persistent.sessions is not None:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+                store.mas_anni.unlock_past_annis()
+
+        # correctly save the sbd persistent data since we renamed it
+        if (
+                persistent._mas_bday_sbd_aff_given is not None
+                and persistent._mas_bday_sbd_aff_given > 0
+            ):
+            persistent._mas_history_archives[2018][
+                "922.actions.surprise.aff_given"
+            ] = persistent._mas_bday_sbd_aff_given
+
+        # unlock the special greetings we accidentally locked
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
+        # move the changename topic to pool
+        changename_ev = evhand.event_database.get("monika_changename", None)
+        if changename_ev and renpy.seen_label("preferredname"):
+            changename_ev.unlocked = True
+            changename_ev.pool = True
+            persistent._seen_ever["monika_changename"] = True
+
+        # derandom monika family
+        family_ev = evhand.event_database.get("monika_family", None)
+        if family_ev:
+            family_ev.random = False
+
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.8.9
 label v0_8_9(version="v0_8_9"):
     python:
         import store.evhand as evhand
@@ -833,6 +885,26 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_8_10:
+    python:
+        import store.mas_selspr as mas_selspr
+
+        # unlock hair 
+        if persistent._mas_hair_changed:
+            mas_selspr.unlock_hair(mas_hair_down)
+            unlockEventLabel("monika_hair_select")
+
+        # unlock the o31 seen costumes
+        if persistent._mas_o31_seen_costumes is not None:
+            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_marisa)
+
+            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_rin)
+
+    return
 
 label mas_lupd_v0_8_4:
     python:

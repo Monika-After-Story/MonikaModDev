@@ -65,7 +65,7 @@ init 5 python:
             )
         )
 
-init 900 python in mas_delact:
+init -876 python in mas_delact:
     # this event requires a delayed aciton, since we cannot ensure that
     # the sprites for this were decoded correctly
 

@@ -158,12 +158,6 @@ label preferredname:
                 elif lowername == mas_monika_twitter_handle:
                     m 2esc "..."
                     # TODO: actaully have dialog here
-                elif len(lowername) >= 10:
-                    m 2hksdlb "[player]..."
-                    m "That name's a bit too long."
-                    if len(lowername) > 20:
-                        m "And I'm sure you're just being silly since names aren't that long, you know."
-                    m 1esa "Try again."
                 else:
                     # sayori name check
                     if tempname.lower() == "sayori":
@@ -198,11 +192,21 @@ label preferredname:
 
     #Unlock prompt to change name again
     $evhand.event_database["monika_changename"].unlocked = True
+    $ evhand.event_database["monika_changename"].pool = True
+    $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
     return
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_changename",category=['you','misc'],prompt="Can you change my name?",unlocked=False)) #This needs to be unlocked by the random name change event
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_changename",
+            category=['you','misc'],
+            prompt="Can you change my name?",
+            unlocked=False
+        )
+    ) #This needs to be unlocked by the random name change event
 
 label monika_changename:
     m 1eua "You want to change your name?"
@@ -232,15 +236,7 @@ label monika_changename:
                 elif lowername == mas_monika_twitter_handle:
                     m 2esc "..."
                     # TODO: actaully have dialog here
-                elif len(lowername) >= 10:
-                    m 2hksdlb "[player]..."
-                    m "That name's a bit too long."
-                    if len(lowername) > 20:
-                        m "And I'm sure you're just being silly since names aren't that long, you know."
-                    m 1esa "Try again."
-
                 else:
-
                     # sayori name check
                     if tempname.lower() == "sayori":
                         call sayori_name_scare from _call_sayori_name_scare_1
@@ -1035,7 +1031,7 @@ label mas_coffee_finished_drinking:
 
 ### birthday surprise party
 
-default persistent._mas_bday_sbd_aff_given = 0
+default persistent._mas_bday_sbp_aff_given = 0
 
 init 5 python:
     addEvent(
@@ -1049,6 +1045,33 @@ init 5 python:
         ),
         skipCalendar=True
     )
+
+
+init -876 python in mas_delact:
+
+    def _mas_bday_spent_time_with_reset_action(ev):
+        # updates conditional and action
+        next_bday_year = store.mas_getNextMonikaBirthday().year
+        ev.conditional = (
+            "datetime.date.today() < mas_monika_birthday and "
+            "mas_monika_birthday.day - datetime.date.today().day == 1"
+        )
+        ev.start_date = datetime.datetime(next_bday_year, 9, 22, 22)
+        ev.end_date = datetime.datetime(next_bday_year, 9, 22, 23, 59)
+        ev.action = store.EV_ACT_QUEUE
+        return True
+
+
+    def _mas_bday_spent_time_with_reset():
+        # creates delayed action for surprise party hint reset
+        return store.MASDelayedAction.makeWithLabel(
+            7,
+            "mas_bday_spent_time_with",
+            "True",
+            _mas_bday_spent_time_with_reset_action,
+            store.MAS_FC_INIT
+        )
+
 
 label mas_bday_spent_time_with:
     $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
@@ -1111,8 +1134,8 @@ label mas_bday_surprise_party_reaction:
         has_cake = store.mas_dockstat.surpriseBdayIsCake()
 
         def cap_gain_aff(amt):
-            persistent._mas_bday_sbd_aff_given += amt
-            if persistent._mas_bday_sbd_aff_given <= 70:
+            persistent._mas_bday_sbp_aff_given += amt
+            if persistent._mas_bday_sbp_aff_given <= 70:
                 mas_gainAffection(amt, bypass=True)
 
         if has_cake:
@@ -1197,6 +1220,35 @@ init 5 python:
         )
     )
 
+init -876 python in mas_delact:
+    # delayed action to reset the party hint
+
+    def _mas_bday_surprise_party_hint_reset_action(ev):
+        # updates conditional and action
+        threw_surprise_party = store.mas_HistVerify(
+            "922.actions.surprise.reacted",
+            True
+        )[0]
+        if not threw_surprise_party:
+            ev.conditional = (
+                "datetime.date.today() < mas_monika_birthday and "
+                "mas_monika_birthday.day - datetime.date.today().day == 1"
+            )
+            ev.action = store.EV_ACT_PUSH
+        return True
+
+
+    def _mas_bday_surprise_party_hint_reset():
+        # creates delayed action for surprise party hint reset
+        return store.MASDelayedAction.makeWithLabel(
+            6,
+            "mas_bday_surprise_party_hint",
+            "True",
+            _mas_bday_surprise_party_hint_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
 label mas_bday_surprise_party_hint:
     m 1eua "Say, [player]..."
     m 1eub "Have you ever been thrown a surprise party?"
@@ -1227,6 +1279,31 @@ init 5 python:
         )
     )
 
+
+init -876 python in mas_delact:
+    # delayed action to reset the conditional post bday
+
+    def _mas_bday_surprise_party_cleanup_reset_action(ev):
+        # updates conditional and action
+        ev.conditional = (
+            "persistent._mas_bday_sbp_reacted "
+            "and datetime.date.today().day > mas_monika_birthday.day"
+        )
+        ev.action = store.EV_ACT_PUSH
+        return True
+
+
+    def _mas_bday_surprise_party_cleanup_reset():
+        # creates delayed action for this event
+        return store.MASDelayedAction.makeWithLabel(
+            5,
+            "mas_bday_surprise_party_cleanup",
+            "True",
+            _mas_bday_surprise_party_cleanup_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
 label mas_bday_surprise_party_cleanup:
     # surprise party cleaning
     # mainly to delete files that exist
@@ -1238,7 +1315,9 @@ label mas_bday_surprise_party_cleanup:
 ### happy birthday pool topic
 
 default persistent._mas_bday_said_happybday = False
+
 default persistent._mas_bday_need_to_reset_bday = False
+# NOTE: DONT think we need to save this one
 
 init 5 python:
     # NOTE: instead of using start/end date, we use condition since we
@@ -1261,6 +1340,31 @@ init 5 python:
 
     # make sure this event is considered seen
     persistent._seen_ever["mas_bday_pool_happy_bday"] = True
+
+init -876 python in mas_delact:
+    # This greeting has a delayed action, which actually only occurs if
+    # the historical data save happens
+
+    def _mas_bday_pool_happy_bday_reset_action(ev):
+        # delayed action callback that updates conditional and action for 
+        # pool bday event
+        ev.conditional = (
+            "mas_isMonikaBirthday()"
+        )
+        ev.action = store.EV_ACT_UNLOCK
+        return True
+
+
+    def _mas_bday_pool_happy_bday_reset():
+        # generates DelayedAction for this bday pool event
+        return store.MASDelayedAction.makeWithLabel(
+            4,
+            "mas_bday_pool_happy_bday",
+            "True",
+            _mas_bday_pool_happy_bday_reset_action,
+            store.MAS_FC_INIT
+        )
+
 
 label mas_bday_pool_happy_bday:
     python:
@@ -1296,6 +1400,10 @@ label mas_bday_pool_happy_bday:
 
 ## no time spent
 default persistent._mas_bday_opened_game = False
+
+# TODO: these should actually default to True, then get changed if 
+#   the appropriate whatver happens
+# TODO: do the above in an update script when bday comes around again
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
@@ -1315,6 +1423,40 @@ init 5 python:
             action=EV_ACT_QUEUE
         )
     )
+
+
+init -876 python in mas_delact:
+    # This greeting has a delayed action, which actually only occurs if
+    # the historical data save happens
+
+    def _mas_bday_postbday_notimespent_reset_action(ev):
+        """
+        Callback for the action in MASDelayedAction.
+        This just updates the condtiional for this event so it can trigger
+        next year appropraitely
+
+        IN:
+            ev - event object for this label
+        """
+        ev.conditional = (
+            "mas_monika_birthday < datetime.date.today() <= "
+            "(mas_monika_birthday + datetime.timedelta(7)) "
+            "and not mas_recognizedBday()"
+        )
+        ev.action = store.EV_ACT_QUEUE
+        return True
+
+
+    def _mas_bday_postbday_notimespent_reset():
+        # generates DelayedAction for this postbday event
+        return store.MASDelayedAction.makeWithLabel(
+            3,
+            "mas_bday_postbday_notimespent",
+            "True",
+            _mas_bday_postbday_notimespent_reset_action,
+            store.MAS_FC_INIT
+        )
+
 
 label mas_bday_postbday_notimespent:
     # sanity check

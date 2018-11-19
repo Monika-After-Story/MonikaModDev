@@ -110,8 +110,6 @@ image monika_bg_highlight:
     "images/cg/monika/monika_bg_highlight.png"
     function monika_alpha
 image monika_scare = "images/cg/monika/monika_scare.png"
-image chara9 = "mod_assets/chara9.png"
-image chara_exception = "mod_assets/chara_exception.png"
 
 image monika_body_glitch1:
     "images/cg/monika/monika_glitch1.png"
@@ -147,19 +145,6 @@ image monika_body_glitch2:
     0.15
     "images/cg/monika/monika_glitch4.png"
 
-image ut_slash:
-    "mod_assets/spr_slice_o_0.png"
-    0.1
-    "mod_assets/spr_slice_o_1.png"
-    0.1
-    "mod_assets/spr_slice_o_2.png"
-    0.1
-    "mod_assets/spr_slice_o_3.png"
-    0.1
-    "mod_assets/spr_slice_o_4.png"
-    0.1
-    "mod_assets/spr_slice_o_5.png"
-    0.1
 
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
@@ -287,6 +272,20 @@ init python:
         Jumps to the pick a game workflow
         """
         renpy.jump('pick_a_game')
+
+
+    def mas_getuser():
+        """
+        Attempts to get the current user
+
+        RETURNS: current user if found, or None if not found
+        """
+        for name in ('LOGNAME', 'USER', 'LNAME', 'USERNAME'):
+            user = os.environ.get(name)
+            if user:
+                return user
+
+        return None
 
 
     def mas_enable_quitbox():
@@ -1218,62 +1217,34 @@ label ch30_reset:
 
 
     # reset hair / clothes
+    # the default options should always be available.
+    $ store.mas_selspr.unlock_hair(mas_hair_def)
+    $ store.mas_selspr.unlock_clothes(mas_clothes_def)
+
     python:
-        # setup hair / clothes
-        monika_chr.change_outfit(
-            store.mas_sprites.CLOTH_MAP[persistent._mas_monika_clothes],
-            store.mas_sprites.HAIR_MAP[persistent._mas_monika_hair]
-        )
+        # TODO: remove this when release 0.8.10
+        # first, unlock all hair / clothes events that could be reached
+        unlockEventLabel("monika_hair_ponytail")
 
-        if (
-                persistent._mas_hair_changed
-                and persistent._mas_likes_hairdown
-            ):
-            # hair adjustments only happen if the appropriate vent occured
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_hair_changed:
+            unlockEventLabel("monika_hair_down")
+            unlockEventLabel("monika_hair_select")
+            store.mas_selspr.unlock_hair(mas_hair_down)
 
-            # hair map
-            hair_map = {
-                "down": "monika_hair_down",
-                "def": "monika_hair_ponytail"
-                # "bun": "monika_hair_bun"
-            }
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_o31_seen_costumes is not None:
+            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_marisa)
 
-
-            for hair in hair_map:
-                # this is so we kind of automate the locking / unlocking prcoess
-                if hair == monika_chr.hair.name:
-                    lockEventLabel(hair_map[hair])
-                else:
-                    unlockEventLabel(hair_map[hair])
-
-        # currenly, the clothes part has noc hecks
-        # clothes map
-        # NOTE: unused
-        clothes_map = {
-#            "def": "monika_clothes_school"
-        }
+            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
+            if seen_costume:
+                mas_selspr.unlock_clothes(mas_clothes_rin)
 
 
-        for clothes in clothes_map:
-            if clothes == monika_chr.clothes.name:
-                lockEventLabel(clothes_map[clothes])
-            else:
-                unlockEventLabel(clothes_map[clothes])
-
-    # accessories rest
-    python:
-        for acs_name in persistent._mas_acs_pre_list:
-            monika_chr.wear_acs_pre(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_mid_list:
-            monika_chr.wear_acs_mid(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
-        for acs_name in persistent._mas_acs_pst_list:
-            monika_chr.wear_acs_pst(
-                store.mas_sprites.ACS_MAP[acs_name]
-            )
+    # monika hair/acs
+    $ monika_chr.load()
 
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
@@ -1346,22 +1317,22 @@ label ch30_reset:
     $ mas_startupPlushieLogic(4)
 
     ## should we reset birthday
-    python:
-        if (
-                persistent._mas_bday_need_to_reset_bday
-                and not mas_isMonikaBirthday()
-            ):
-            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
-            if bday_ev:
-                bday_ev.conditional="mas_isMonikaBirthday()"
-                bday_ev.action=EV_ACT_UNLOCK
-                persistent._mas_bday_need_to_reset_bday = False
+#    python:
+#        if (
+#                persistent._mas_bday_need_to_reset_bday
+#                and not mas_isMonikaBirthday()
+#            ):
+#            bday_ev = mas_getEV("mas_bday_pool_happy_bday")
+#            if bday_ev:
+#                bday_ev.conditional="mas_isMonikaBirthday()"
+#                bday_ev.action=EV_ACT_UNLOCK
+#                persistent._mas_bday_need_to_reset_bday = False
 
-            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
-            if bday_spent_ev:
-                bday_spent_ev.action = EV_ACT_QUEUE
-                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
-                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
+#            bday_spent_ev = mas_getEV("mas_bday_spent_time_with")
+#            if bday_spent_ev:
+#                bday_spent_ev.action = EV_ACT_QUEUE
+#                bday_spent_ev.start_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22)
+#                bday_spent_ev.end_date = datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59)
 
 
     ## o31 content

@@ -1136,7 +1136,7 @@ init -11 python in mas_dockstat:
         return True
 
 
-    def removeImages(dockstat, image_dict, selective=[]):
+    def removeImages(dockstat, image_dict, selective=[], log=False):
         """
         Removes the decoded images at the end of their lifecycle
 
@@ -1146,6 +1146,8 @@ init -11 python in mas_dockstat:
             selective - list of image keys to delete
                 If not passed in, we delete everything in the image dict
                 (Default: [])
+            log - should we log a delete failure?
+                (Default: False)
 
         AKA quitting
         """
@@ -1154,7 +1156,7 @@ init -11 python in mas_dockstat:
 
         for b64_name in selective:
             real_name, chksum = image_dict[b64_name]
-            mas_utils.trydel(dockstat._trackPackage(real_name), log=True)
+            mas_utils.trydel(dockstat._trackPackage(real_name), log=log)
 
 
 init python in mas_dockstat:
@@ -1978,15 +1980,15 @@ init 200 python in mas_dockstat:
             runtime
 
         IN:
-            _type - list of additoinal mas_greetings types to search on
+            _type - additional mas_greetings types to search on
 
         RETURNS:
             Event object representing the selected greeting
         """
         if _type is not None:
-            greeting_types = list(_type)
+            greeting_types = [_type]
         else:
-            greeting_types = list()
+            greeting_types = []
 
         # add the return home type
         greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
