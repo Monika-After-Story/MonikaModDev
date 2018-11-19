@@ -255,7 +255,7 @@ init python:
     #Define new functions
     def show_dialogue_box():
         """
-        Jumps to the topic promt menu
+        Jumps to the topic prompt menu
         """
         renpy.jump('prompt_menu')
 
