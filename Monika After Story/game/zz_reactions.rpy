@@ -49,7 +49,7 @@ init -1 python in mas_filereacts:
 
     # good gifts list
     good_gifts = list()
-    
+
     # bad gifts list
     bad_gifts = list()
 
@@ -474,7 +474,8 @@ init 5 python:
 label mas_reaction_gift_connector2:
     m 1hua "Ah, jeez, [player]..."
     m "You really enjoy spoiling me, don't you?"
-    m 1sublo "Well! I'm not going to complain about a little special treatment today."
+    if mas_isSpecialDay():
+        m 1sublo "Well! I'm not going to complain about a little special treatment today."
     m 1suo "And here we have..."
     return
 
@@ -636,11 +637,13 @@ label mas_reaction_quetzal_plush:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_promisering", "promisering", is_good=True)
+#This one is added later so the init pipeline can define the anni function
+init 11 python:
+    # only available after 6 months or if it's her birthday, may as well add valentine later
+    if mas_anni.pastSixMonths() or mas_isMonikaBirthday():
+        addReaction("mas_reaction_promisering", "promisering", is_good=True)
 
 label mas_reaction_promisering:
-    #TODO dialogue for getting the ring in an anni or another special date
     if not persistent._mas_acs_enable_promisering:
         $ mas_receivedGift("mas_reaction_promisering")
         if mas_isMoniEnamored(higher=True):
@@ -656,6 +659,9 @@ label mas_reaction_promisering:
             m 3lkbltpa "Know that I’ll cherish it."
             m 3dkbltpa "Always."
             m 1skbltpa "This makes me so happy!"
+            if mas_isSpecialDay():
+                #TODO maybe go more in detail for this
+                m "Even more that you gave it to me in this special day ..."
             m 1dkbltpa "Aha, sorry for crying, [player]..."
             m 1skbla "I’m just really, really happy right now."
             m 1dkbla "Thank you."
@@ -774,6 +780,8 @@ label mas_reaction_end:
     return
 
 init 5 python:
+    # TODO ideally we should comment on this gift in any date
+    # so it requires special dialogue, until we have that let's keep it O31 only
     if mas_isO31():
         addReaction("mas_reaction_candy", "candy", is_good=True)
 
@@ -840,6 +848,8 @@ label mas_reaction_candy:
     return
 
 init 5 python:
+    # TODO ideally we should comment on this gift in any date
+    # so it requires special dialogue, until we have that let's keep it O31 only
     if mas_isO31():
         addReaction("mas_reaction_candycorn", "candycorn", is_good=False)
 
