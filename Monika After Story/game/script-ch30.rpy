@@ -1212,17 +1212,8 @@ label ch30_reset:
         # TODO: remove this when release 0.8.10
         if persistent._mas_hair_changed:
             unlockEventLabel("monika_hair_down")
-<<<<<<< HEAD
             unlockEventLabel("monika_hair_select")
             store.mas_selspr.unlock_hair(mas_hair_down)
-=======
-
-        # setup hair / clothes
-        monika_chr.change_outfit(
-            store.mas_sprites.CLOTH_MAP[persistent._mas_monika_clothes],
-            store.mas_sprites.HAIR_MAP[persistent._mas_monika_hair]
-        )
->>>>>>> enabling gifts all the time
 
         # TODO: remove this when release 0.8.10
         if persistent._mas_o31_seen_costumes is not None:
