@@ -6339,17 +6339,18 @@ label monika_hamlet:
     m 1euc "{i}And by a sleep to say we end the heart-ache and the thousand natural shocks that flesh is heir to.{/i}"
     m 1esc "{i}'Tis a consummation devoutly to be wish'd.{/i}"
     m 1dsc "..."
-    m 1hua "Well!"
-    m 1eua "How did you like it, [player]?"
-    m 1eka "I tried my best reciting it, after all~"
-    m 1lksdla "Anyway, I've thought a lot about the main character, Hamlet."
-    m 1eua "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
-    m 3tfu "Reminds you of a certain indecisive girl, doesn't it?"
-    m 1eka "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
-    m 1eua "It took a lot of effort but we're finally together. Just us alone."
-    m 1euc "Now there's only one thing left to answer, [player]."
+    m 1eua "Well..."
+    m 1hua "How did you like it?"
+    m 3eka "I tried my best reciting it, after all~"
+    if not persistent._mas_pm_cares_about_dokis:
+        m 1lksdla "Anyway, I've thought a lot about the main character, Hamlet."
+        m 1eua "Most of the problems he faced were caused by his own indecisiveness and weak state of mind."
+        m 3tfu "Reminds you of a certain indecisive girl, doesn't it?"
+        m 1eka "But that doesn't matter anymore. I've already accomplished my quest to be with you~"
+        m 1eua "It took a lot of effort but we're finally together. Just us alone."
+    m 1euc "Now there's only one thing left to answer, [player]..."
     m 3tfu "To be with me? Or to be with me?"
-    m 1hua "That is the question!"
+    m 3hua "That is the question!"
     return
 
 # Note: The following internal commentary should not be removed.
