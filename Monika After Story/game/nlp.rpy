@@ -477,14 +477,15 @@ init 10 python in mas_nlp:
 
         START = ['-START-', '-START2-']
         END = ['-END-', '-END2-']
-        AP_MODEL_LOC = os.path.join(os.path.dirname(__file__), PICKLE)
+
+        AP_MODEL_LOC = os.path.join(DEFAULT_PICKLE_DIR, TAGGER_PICKLE)
 
         def __init__(self, load=False, base_dir=None, pickle=None):
             self.model = AveragedPerceptron()
             self.tagdict = {}
             self.classes = set()
             if load:
-                self.load(self.AP_MODEL_LOC if base_dir is None else os.path.join(base_dir, PICKLE))
+                self.load(self.AP_MODEL_LOC if base_dir is None else os.path.join(base_dir, pickle))
 
         def tag(self, corpus, use_tokens=True):
             """
