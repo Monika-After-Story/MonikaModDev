@@ -378,26 +378,41 @@ label unlock_piano:
 
 label random_limit_reached:
     $seen_random_limit=True
-    python:
-        limit_quips = [
-            "It seems I'm at a loss on what to say.",
-            "I'm not sure what else to say, but can you just be with me a little longer?",
-            "No point in trying to say everything right away...",
-            "I hope you've enjoyed listening to everything I was thinking about today...",
-            "Do you still enjoy spending this time with me?",
-            "I hope I didn't bore you too much."
-        ]
-        limit_quip=renpy.random.choice(limit_quips)
-    m 1eka "[limit_quip]"
-    if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
-        m 1ekc "I'm sure I'll have something to talk about after a little rest."
+    if chatted_randomly_this_session:
+        python:
+            limit_quips = [
+                "It seems I'm at a loss on what to say.",
+                "I'm not sure what else to say, but can you just be with me a little longer?",
+                "No point in trying to say everything right away...",
+                "I hope you've enjoyed listening to everything I was thinking about today...",
+                "Do you still enjoy spending this time with me?",
+                "I hope I didn't bore you too much."
+            ]
+            limit_quip=renpy.random.choice(limit_quips)
+        m 1eka "[limit_quip]"
+        if len(mas_rev_unseen)>0 or persistent._mas_enable_random_repeats:
+            m 1ekc "I'm sure I'll have something to talk about after a little rest."
+        else:
+            if not renpy.seen_label("mas_random_ask"):
+                call mas_random_ask from _mas_random_ask_call
+                if _return:
+                    m "Now let me think of something to talk about."
+                    return
+            m 1ekc "Hopefully I'll think of something fun to talk about soon."
     else:
-        if not renpy.seen_label("mas_random_ask"):
-            call mas_random_ask from _mas_random_ask_call
-            if _return:
-                m "Now let me think of something to talk about."
-                return
-        m 1ekc "Hopefully I'll think of something fun to talk about soon."
+        python:
+            from random import randint
+            next_dialog=randint(0, 2)
+        if next_dialog==0:
+            m 1eka "I'm not sure what to say, but can you just be with me a little longer?"
+        elif next_dialog==1:
+            m 1eka "I can't think of anything to say at the moment." 
+            m      "Maybe we can play a game?"
+        elif next_dialog==2:
+            m 1eka "I have nothing more to say for now..." 
+            m      "...but I would enjoy listening to you playing the piano~"
+            m      "Would you like to play for me, [player]?"
+        
     return
 
 label mas_random_ask:
@@ -1692,7 +1707,3 @@ label mas_bday_player_bday_select_select:
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
             
     return selected_date
-
-
-
-
