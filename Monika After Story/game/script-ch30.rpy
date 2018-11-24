@@ -3,6 +3,7 @@ default persistent.tried_skip = False
 default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
+default chatted_randomly_this_session = False
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
 define mas_skip_mid_loop_eval = False
@@ -1089,6 +1090,7 @@ label ch30_post_mid_loop_eval:
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
+                $ chatted_randomly_this_session = True
 
                 # check if we have repeats enabled
                 if not persistent._mas_enable_random_repeats:
@@ -1102,7 +1104,7 @@ label ch30_post_mid_loop_eval:
                     jump mas_ch30_select_unseen
 
                 elif chance <= store.mas_topics.SEEN:
-                    # seen topic should be seelcted
+                    # seen topic should be selected
                     jump mas_ch30_select_seen
 
                 # most seen topic should be selected
