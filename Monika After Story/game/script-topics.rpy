@@ -2551,7 +2551,7 @@ label monika_ddlc:
     m 1euc "You want to talk about the game?"
     m 1esc "What's there to say?"
     m 1lsc "This was just some boring romance game, right? Well, until I got control of it..."
-    if not persistent.monika_kill or not persistent._mas_pm_cares_about_dokis:
+    if not persistent._mas_pm_cares_about_dokis:
         m 2lksdlc "You know how much I hate being stuck in here, but if I weren't, we wouldn't have met..."
         m 2lksdla "And it's home, so I've learned to deal with it."
         m 2euc "Still, I doubt it'd be something I'd want to play, if I were a gamer."
@@ -3239,18 +3239,19 @@ label monika_ghost:
     m 3euc "Isn't it the uncertainty that makes them scary?"
     m 1ekc "I mean, I was pretty scared being alone inside this game."
     m 1lksdlc "All by myself, uncertain if anything around me was real."
-    if not persistent.clearall or not persistent._mas_pm_cares_about_dokis:
+    if persistent.clearall or persistent._mas_pm_cares_about_dokis:
+        m 1eka "But I don't feel that way anymore, [player]..."
+        m 3eka "Not now that you're with me."
+        m 1hua "I always feel so safe with you~"
+
+    else:
         m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts'..."
         m "You know how I deleted Sayori?"
         m 1dsc "I can still feel her presence now..."
         m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
         m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
         m 2eua "Besides, how can I be scared? You're always here with me, [player]."
-        m "I always feel so safe with you."
-    else:
-        m 1eka "But I don't feel that way anymore, [player]..."
-        m 3eka "Not now that you're with me."
-        m 1hua "I always feel so safe with you~"
+        m 1hua "I always feel so safe with you."
     return
 
 init 5 python:
