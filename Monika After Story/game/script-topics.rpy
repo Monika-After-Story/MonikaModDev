@@ -6843,7 +6843,7 @@ label monika_playerapologizes:
         if mas_isMoniBroken():
             m 1ekc "... Oh..."
             m 2rksdlc "You...{w=1.5} want to apologize?"
-            m 2dsc ".{w=1/5}.{w=1.5}."
+            m 2dsc ".{w=1.5}.{w=1.5}."
             m ".{w=2}.{w=2}."
             m 1ektsd "I hope so..." 
             m "{fast}I don't want to give up...{nw}"
