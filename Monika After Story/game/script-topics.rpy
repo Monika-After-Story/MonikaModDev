@@ -589,9 +589,9 @@ label monika_high_school:
     elif mas_isMoniDis():
         m 1euc "Lately I've been able to understand it better but don't worry..."
     elif mas_isMoniUpset():
-        m 1euc "I know it can be hard sometimes but there is always hope..."
-    else:
-        m 2eua "My love, in some ways you are blessed."
+        m 1euc "I know it can be hard sometimes, but there is always hope..."
+    elif mas_isMoniHappy(higher=True):
+        m 2eua "My love, in some ways you are blessed..."
     m 2eka "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
     m 2duu "But people do feel that way."
