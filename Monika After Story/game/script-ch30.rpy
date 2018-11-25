@@ -1222,6 +1222,12 @@ label ch30_reset:
             if seen_costume:
                 mas_selspr.unlock_clothes(mas_clothes_rin)
 
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_pm_cares_about_dokis:
+            mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
+            mas_unlockEventLabel("monika_sayori")
+            mas_unlockEventLabel("monika_natsuki")
+
 
     # monika hair/acs
     $ monika_chr.load()
