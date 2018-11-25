@@ -22,7 +22,7 @@ init:
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
                 self.PADDLE_HEIGHT = 79
-                self.PADDLE_RADIUS = 39.5                                       #self.PADDLE_HEIGHT / 2
+                self.PADDLE_RADIUS = self.PADDLE_HEIGHT / 2
                 self.BALL_WIDTH = 15
                 self.BALL_HEIGHT = 15
                 self.COURT_TOP = 124
@@ -33,9 +33,9 @@ init:
                 self.COURT_HEIGHT = 720
                 self.BALL_MAX_SPEED = 4000.0
                 self.PADDLE_X_PLAYER = 128                                      #self.COURT_WIDTH * 0.1
-                self.PADDLE_X_MONIKA = 1144                                     #self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
-                self.BALL_TOP = 131.5                                           #self.COURT_TOP + self.BALL_HEIGHT / 2
-                self.BALL_BOTTOM = 646.5                                        #self.COURT_BOTTOM - self.BALL_HEIGHT / 2
+                self.PADDLE_X_MONIKA = 1152 - self.PADDLE_WIDTH                 #self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
+                self.BALL_TOP = self.COURT_TOP + self.BALL_HEIGHT / 2
+                self.BALL_BOTTOM = self.COURT_BOTTOM - self.BALL_HEIGHT / 2
 
                 # The maximum possible reflection angle, achieved when the ball
                 # hits the corners of the paddle.
@@ -45,8 +45,8 @@ init:
                 self.stuck = True
 
                 # The positions of the two paddles.
-                self.playery = 227.5                                            #(self.COURT_BOTTOM - self.COURT_TOP) / 2
-                self.computery = 227.5                                          #(self.COURT_BOTTOM - self.COURT_TOP) / 2
+                self.playery = (self.COURT_BOTTOM - self.COURT_TOP) / 2
+                self.computery = (self.COURT_BOTTOM - self.COURT_TOP) / 2
 
                 # The computer should aim at somewhere along the paddle, but
                 # not always at the centre. This is the offset, measured from
@@ -62,8 +62,8 @@ init:
                 
                 # The position, dental-position, and the speed of the
                 # ball.
-                self.bx = 136.1                                                 #self.PADDLE_X_PLAYER + self.PADDLE_WIDTH + 0.1
-                self.by = 227.5                                                 #self.playery
+                self.bx = self.PADDLE_X_PLAYER + self.PADDLE_WIDTH + 0.1
+                self.by = self.playery
                 self.bdx = .5 * math.cos(init_angle)
                 self.bdy = .5 * math.sin(init_angle)
                 self.bspeed = 500.0
