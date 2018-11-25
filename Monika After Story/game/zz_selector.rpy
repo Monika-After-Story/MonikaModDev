@@ -1737,6 +1737,12 @@ init -1 python:
                 MOUSEMOTION + hover is over us
                 MOUSEDOWN + mouse is over us
             """
+            # window event means we need to re-render everything
+            if ev.type == pygame.WINDOWEVENT:
+                self.first_render = True
+                renpy.redraw(self, 0)
+                return
+
             if ev.type in self.MOUSE_EVENTS:
 
                 if ev.type == pygame.MOUSEMOTION:
