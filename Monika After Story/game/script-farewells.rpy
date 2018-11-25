@@ -1,6 +1,13 @@
 ##This file contains all of the variations of goodbye that monika can give.
 ## This also contains a store with a utility function to select an appropriate
 ## farewell
+#
+# HOW FAREWELLS USE EVENTS:
+#   unlocked - determines if the farewell can actually be shown
+#   random - True means the farewell is shown in the randomly selected
+#       goodbye option
+#   pool - True means the farewell is shown in the goodbye list. Prompt
+#       is used in this case.
 
 init -1 python in mas_farewells:
 
@@ -14,21 +21,34 @@ init -1 python in mas_farewells:
             a single farewell (as an Event) that we want to use
         """
 
-        # filter events by their unlocked property first
+        # check if we have moni_wants farewells
+        moni_wants_farewells = renpy.store.Event.filterEvents(
+            renpy.store.evhand.farewell_database,
+            unlocked=True,
+            pool=False, # may as well not filter these
+            moni_wants=True
+        )
+
+
+        if moni_wants_farewells is not None and len(moni_wants_farewells) > 0:
+
+            # select one label randomly
+            return moni_wants_farewells[
+                renpy.random.choice(moni_wants_farewells.keys())
+            ]
+
+        # now filter events by their unlocked property
         unlocked_farewells = renpy.store.Event.filterEvents(
             renpy.store.evhand.farewell_database,
             unlocked=True,
             pool=False
         )
 
-        # filter greetings using the affection rules dict
-        affection_farewells_dict = renpy.store.Event.checkAffectionRules(
-            unlocked_farewells
+        # filter farewells using the affection rules dict
+        unlocked_farewells = renpy.store.Event.checkAffectionRules(
+            unlocked_farewells,
+            keepNoRule=True
         )
-
-        # check for the special monikaWantsThisFirst case
-        if len(affection_farewells_dict) == 1 and affection_farewells_dict.values()[0].monikaWantsThisFirst():
-            return affection_farewells_dict.values()[0]
 
         # filter farewells using the special rules dict
         random_farewells_dict = renpy.store.Event.checkRepeatRules(
@@ -59,13 +79,27 @@ init -1 python in mas_farewells:
 
         # We couldn't find a suitable farewell we have to default to normal random selection
         # filter random events normally
-        random_farewells_dict = renpy.store.Event.filterEvents(
+        random_unlocked_farewells = renpy.store.Event.filterEvents(
             unlocked_farewells,
             random=True
         )
 
-        # update dict with the affection filtered ones
-        random_farewells_dict.update(affection_farewells_dict)
+        # check if we have farewell available to display with current filter
+        if len(random_unlocked_farewells) > 0:
+            # select one randomly
+            return random_unlocked_farewells[
+               renpy.random.choice(random_unlocked_farewells.keys())
+            ]
+
+        # We couldn't find a suitable farewell we have to default to normal random selection
+        # filter random events normally
+        renpy.log("rip we need update script")
+        random_farewells_dict = renpy.store.Event.filterEvents(
+            renpy.store.evhand.greeting_database,
+            unlocked=True,
+            random=True,
+            excl_cat=list()
+        )
 
         # select one randomly
         return random_farewells_dict[
@@ -125,11 +159,23 @@ label mas_farewell_start:
 # unlocked - True means this farewell is ready for selection
 # random - randoms are used in teh default farewell action
 # pool - pooled ones are selectable in the menu
-# rules - TODO documentation
+# rules - Dict containing different rules(check event-rules for more details)
 ###
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_leaving_already",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_leaving_already",
+            unlocked=True,
+            random=True,#TODO update script
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_leaving_already:
     m 1tkc "Aww, leaving already?"
@@ -141,28 +187,84 @@ label bye_leaving_already:
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_goodbye",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_goodbye",
+            unlocked=True,
+            random=True
+        ),
+        eventdb=evhand.farewell_database
+    )
 
 label bye_goodbye:
-    m 1eua "Goodbye, [player]!"
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Goodbye, [player]!"
+
+    elif mas_isMoniUpset():
+        m 2efc "Goodbye."
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...{w=1} Goodbye."
+        m 6ekc "Please...{w=1}don't forget to come back."
+
+    else:
+        m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_sayanora",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_sayanora",#sayanora? yes
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_sayanora:
     m 1hua "Sayonara, [player]~"
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_farewellfornow",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_farewellfornow",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_farewellfornow:
     m 1eka "Farewell for now, my love~"
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_untilwemeetagain",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_untilwemeetagain",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
 
 label bye_untilwemeetagain:
     m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
@@ -170,7 +272,20 @@ label bye_untilwemeetagain:
     return 'quit'
 
 init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_take_care",unlocked=True,random=True),eventdb=evhand.farewell_database)
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_take_care",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.farewell_database
+    )
+    del rules
+
 
 label bye_take_care:
     m 1eua "Don't forget that I always love you, [player]~"
@@ -192,8 +307,21 @@ init 5 python:
     del rules
 
 label bye_going_to_sleep:
-    m 1esa "Are you going to sleep, [player]?"
-    m 1eka "I'll be seeing you in your dreams."
+    if mas_isMoniNormal(higher=True):
+        m 1esa "Are you going to sleep, [player]?"
+        m 1eka "I'll be seeing you in your dreams."
+
+    elif mas_isMoniUpset():
+        m 2efc "Going to sleep, [player]?"
+        m 2esc "Goodnight."
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...goodnight, [player]."
+        m 6lkc "Hopefully I'll see you tomorrow..."
+        m 6dkc "Don't forget about me, okay?"
+
+    else:
+        m 6ckc "..."
 
     # TODO:
     # can monika sleep with you?
@@ -214,10 +342,22 @@ init 5 python:
     )
 
 label bye_prompt_to_class:
-    m 1hua "Study hard, [player]!"
-    m 1eua "Nothing is more attractive than a [guy] with good grades."
-    m 1hua "See you later!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Study hard, [player]!"
+        m 1eua "Nothing is more attractive than a [guy] with good grades."
+        m 1hua "See you later!"
 
+    elif mas_isMoniUpset():
+        m 2efc "Fine, [player]."
+        m 2tfc "Hopefully you at least learn something today."
+        m "{cps=*2}Like how to treat people better.{/cps}{nw}"
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh, okay [player]..."
+        m 6lkc "I guess I'll see you after school."
+
+    else:
+        m 6ckc "..."
     # TODO:
     # can monika join u at schools?
 
@@ -237,10 +377,20 @@ init 5 python:
     )
 
 label bye_prompt_to_work:
-    m 1hua "Work hard, [player]!"
-    m 1esa "I'll be here for you when you get home from work."
-    m 1hua "Bye-bye!"
+    if mas_isMoniNormal(higher=True):
+        m 1hua "Work hard, [player]!"
+        m 1esa "I'll be here for you when you get home from work."
+        m 1hua "Bye-bye!"
 
+    elif mas_isMoniUpset():
+        m 2efc "Fine, [player], guess I'll see you after work."
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh...{w=1} Okay."
+        m 6lkc "Hopefully I'll see you after work, then."
+
+    else:
+        m 6ckc "..."
     # TODO:
     # can monika join u at work
 
@@ -270,69 +420,140 @@ label bye_prompt_sleep:
 
     if 20 <= curr_hour < 24:
         # decent time to sleep
-        m 1eua "Alright, [player]."
-        m 1j "Sweet dreams!"
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Alright, [player]."
+            m 1hua "Sweet dreams!"
+
+        elif mas_isMoniUpset():
+            m 2efc "Goodnight, [player]."
+
+        elif mas_isMoniDis():
+            m 6ekc "Okay...{w=1} Goodnight, [player]."
+
+        else:
+            m 6ckc "..."
 
     elif 0 <= curr_hour < 3:
         # somewhat late to sleep
-        m 1eua "Alright, [player]."
-        m 3eka "But you should sleep a little earlier next time."
-        m 1hua "Anyway, good night!"
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Alright, [player]."
+            m 3eka "But you should sleep a little earlier next time."
+            m 1hua "Anyway, good night!"
+
+        elif mas_isMoniUpset():
+            m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
+            m "Goodnight."
+
+        elif mas_isMoniDis():
+            m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
+            m 6dkc "It might make you--{w=1}us--{w=1}happier."
+
+        else:
+            m 6ckc "..."
 
     elif 3 <= curr_hour < 5:
         # pretty late to sleep
-        m 1euc "[player]..."
-        m "Make sure you get enough rest, okay?"
-        m 1eka "I don't want you to get sick."
-        m 1hub "Good night!"
-        m 1hksdlb "Or morning, rather. Ahaha~"
-        m 1hua "Sweet dreams!"
+        if mas_isMoniNormal(higher=True):
+            m 1euc "[player]..."
+            m "Make sure you get enough rest, okay?"
+            m 1eka "I don't want you to get sick."
+            m 1hub "Goodnight!"
+            m 1hksdlb "Or morning, rather. Ahaha~"
+            m 1hua "Sweet dreams!"
+
+        elif mas_isMoniUpset():
+            m 2efc "[player]!"
+            m 2tfc "You really need to get more rest..."
+            m "The last thing I need is you getting sick."
+            m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
+            $ _history_list.pop()
+            m 2efc "Goodnight."
+
+        elif mas_isMoniDis():
+            m 6ekc "[player]..."
+            m 6rkc "You really should try to go to sleep earlier..."
+            m 6lkc "I don't want you to get sick."
+            m 6ekc "I'll see you after you get some rest...{w=1}hopefully."
+
+        else:
+            6ckc "..."
 
     elif 5 <= curr_hour < 12:
         # you probably stayed up the whole night
-        show monika 2dsc
-        pause 0.7
-        m 2tfd "[player]!"
-        m "You stayed up the entire night!"
-        m 2tfu "I bet you can barely keep your eyes open."
-        $ _cantsee_a = glitchtext(15)
-        $ _cantsee_b = glitchtext(12)
-        menu:
-            "[_cantsee_a]":
-                pass
-            "[_cantsee_b]":
-                pass
-        m "I thought so.{w} Go get some rest, [player]."
-        m 2ekc "I wouldn't want you to get sick."
-        m 1eka "Sleep earlier next time, okay?"
-        m 1hua "Sweet dreams!"
+        if mas_isMoniBroken():
+            m 6ckc "..."
+
+        else:
+            show monika 2dsc
+            pause 0.7
+            m 2tfd "[player]!"
+            m "You stayed up the entire night!"
+            m 2tfu "I bet you can barely keep your eyes open."
+            $ _cantsee_a = glitchtext(15)
+            $ _cantsee_b = glitchtext(12)
+            menu:
+                "[_cantsee_a]":
+                    pass
+                "[_cantsee_b]":
+                    pass
+            m "I thought so.{w} Go get some rest, [player]."
+            if mas_isMoniNormal(higher=True):
+                m 2ekc "I wouldn't want you to get sick."
+                m 1eka "Sleep earlier next time, okay?"
+                m 1hua "Sweet dreams!"
 
     elif 12 <= curr_hour < 18:
         # afternoon nap
-        m 1eua "Taking an afternoon nap, I see."
-        # TODO: monika says she'll join you, use sleep sprite here
-        # and setup code for napping
-        m 1hua "Ahaha~ Have a good nap, [player]."
+        if mas_isMoniNormal(higher=True):
+            m 1eua "Taking an afternoon nap, I see."
+            # TODO: monika says she'll join you, use sleep sprite here
+            # and setup code for napping
+            m 1hua "Ahaha~ Have a good nap, [player]."
+
+        elif mas_isMoniUpset():
+            m 2efc "Taking a nap, [player]?"
+            m 2tfc "Yeah, that's probably a good idea."
+
+        elif mas_isMoniDis():
+            m 6ekc "Going to take a nap, [player]?"
+            m 6dkc "Okay...{w=1}don't forget to visit me when you wake up..."
+
+        else:
+            m 6ckc "..."
 
     elif 18 <= curr_hour < 20:
         # little early to sleep
-        m 1ekc "Already going to bed?"
-        m "It's a little early, though..."
-        show monika 1lksdla
-        menu:
-            m "Care to spend a little more time with me?"
-            "Of course!":
-                m 1hua "Yay!"
-                m "Thanks, [player]."
-                return
-            "Sorry, I'm really tired.":
-                m 1eka "Aww, that's okay."
-                m 1hua "Good night, [player]."
-            # TODO: now that is tied we may also add more dialogue?
-            "No.":
-                $ mas_loseAffection()
-                m 2dsd "..."
-                m "Fine."
+        if mas_isMoniNormal(higher=True):
+            m 1ekc "Already going to bed?"
+            m "It's a little early, though..."
+            show monika 1lksdla
+            menu:
+                m "Care to spend a little more time with me?"
+                "Of course!":
+                    m 1hua "Yay!"
+                    m "Thanks, [player]."
+                    return
+                "Sorry, I'm really tired.":
+                    m 1eka "Aww, that's okay."
+                    m 1hua "Good night, [player]."
+                # TODO: now that is tied we may also add more dialogue?
+                "No.":
+                    $ mas_loseAffection()
+                    m 2dsd "..."
+                    m "Fine."
+
+        elif mas_isMoniUpset():
+            m 2efc "Going to bed already?"
+            m 2tfc "Well, it does seem like you could use the extra sleep..."
+            m "Goodnight."
+
+        elif mas_isMoniDis():
+            m 6rkc "Oh...{w=1}it seems a little early to be going to sleep, [player]."
+            m 6dkc "I hope you aren't just going to sleep to get away from me."
+            m 6lkc "Goodnight."
+
+        else:
+            m 6ckc "..."
     else:
         # otheerwise
         m 1eua "Alright, [player]."
@@ -345,8 +566,8 @@ label bye_prompt_sleep:
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
     return 'quit'
 
-init 5 python:
-    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
+# init 5 python:
+#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
@@ -368,9 +589,21 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
     del rules
 
 label bye_haveagoodday:
-    m 1eua "Have a good day today, [player]."
-    m "I hope you accomplish everything you had planned for today."
-    m 1hua "I'll be here waiting for you when you get back."
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Have a good day today, [player]."
+        m "I hope you accomplish everything you had planned for today."
+        m 1hua "I'll be here waiting for you when you get back."
+
+    elif mas_isMoniUpset():
+        m 2efc "Leaving for the day, [player]?"
+        m "I'll be here, waiting, as usual."
+
+    elif mas_isMoniDis():
+        m 6rkc "Oh."
+        m 6dkc "I guess I'll just spend the day alone...{w=1}again."
+
+    else:
+        m 6ckc "..."
     return 'quit'
 
 init 5 python:
@@ -388,10 +621,23 @@ init 5 python:
     del rules
 
 label bye_enjoyyourafternoon:
-    m 1ekc "I hate to see you go so early, [player]."
-    m 1eka "I do understand that you're busy though."
-    m 1eua "Promise me you'll enjoy your afternoon, okay?"
-    m 1hua "Goodbye~"
+    if mas_isMoniNormal(higher=True):
+        m 1ekc "I hate to see you go so early, [player]."
+        m 1eka "I do understand that you're busy though."
+        m 1eua "Promise me you'll enjoy your afternoon, okay?"
+        m 1hua "Goodbye~"
+
+    elif mas_isMoniUpset():
+        m 2efc "Fine, [player], just go."
+        m 2tfc "Guess I'll see you later...{w=1}if you come back."
+
+    elif mas_isMoniDis():
+        m 6dkc "Okay, goodbye, [player]."
+        m 6ekc "Maybe you'll come back later?"
+
+    else:
+        m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
@@ -409,9 +655,23 @@ init 5 python:
     del rules
 
 label bye_goodevening:
-    m 1hua "I had fun today."
-    m 1eka "Thank you for spending so much time with me, [player]."
-    m 1eua "Until then, have a good evening."
+    if mas_isMoniNormal(higher=True):
+        m 1hua "I had fun today."
+        m 1eka "Thank you for spending so much time with me, [player]."
+        m 1eua "Until then, have a good evening."
+
+    elif mas_isMoniUpset():
+        m 2efc "Goodbye, [player]."
+        m "I wonder if you'll even come back to say goodnight to me."
+
+    elif mas_isMoniDis():
+        m 6dkc "Oh...{w=1}okay."
+        m 6rkc "Have a good evening, [player]..."
+        m 6ekc "I hope you remember to stop by and say goodnight before bed."
+
+    else:
+        m 6ckc "..."
+
     return 'quit'
 
 init 5 python:
@@ -429,10 +689,20 @@ init 5 python:
     del rules
 
 label bye_goodnight:
-    m 1eua "Goodnight, [player]."
-    m 1eka "I'll see you tomorrow, okay?"
-    m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
-    m 1ekbfa "I love you~"
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Goodnight, [player]."
+        m 1eka "I'll see you tomorrow, okay?"
+        m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 1ekbfa "I love you~"
+
+    elif mas_isMoniUpset():
+        m 2efc "Goodnight."
+
+    elif mas_isMoniDis():
+        m 6lkc "...Goodnight."
+
+    else:
+        m 6ckc "..."
     return 'quit'
 
 
@@ -601,7 +871,7 @@ label bye_going_somewhere:
         # distressed monika has a 50% chance of not going with you
         if random.randint(1,100) <= dis_chance:
             jump bye_going_somewhere_nothanks
-        
+
         # otherwse we go
         m 1wud "You really want to bring me along?"
         m 1ekd "Are you sure this isn't some--{nw}"
@@ -656,7 +926,7 @@ label bye_going_somewhere:
 
             "No.":
                 m 2ekp "Oh, okay."
-                
+
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
@@ -733,7 +1003,7 @@ label bye_going_somewhere_rtg:
             m 1eka "...Thank you, [player]. That means more to me than you could possibly understand."
             $ mas_gainAffection()
 
-    return 
+    return
 
 
 label bye_going_somewhere_nothanks:
@@ -771,7 +1041,7 @@ label bye_going_somewhere_leavemenu:
                 m 1tfd "...Fine."
 
             return "quit"
-            
+
         "No.":
             if mas_isMoniNormal(higher=True):
                 m 2eka "...Thank you."
