@@ -22,7 +22,7 @@ init:
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
                 self.PADDLE_HEIGHT = 79
-                self.PADDLE_RADIUS = self.PADDLE_HEIGHT / 2
+                self.PADDLE_RADIUS = 39.5                                       #self.PADDLE_HEIGHT / 2
                 self.BALL_WIDTH = 15
                 self.BALL_HEIGHT = 15
                 self.COURT_TOP = 124
@@ -32,10 +32,10 @@ init:
                 self.COURT_WIDTH = 1280
                 self.COURT_HEIGHT = 720
                 self.BALL_MAX_SPEED = 4000.0
-                self.PADDLE_X_PLAYER = self.COURT_WIDTH * 0.1
-                self.PADDLE_X_MONIKA = self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
-                self.BALL_TOP = self.COURT_TOP + self.BALL_HEIGHT / 2
-                self.BALL_BOTTOM = self.COURT_BOTTOM - self.BALL_HEIGHT / 2
+                self.PADDLE_X_PLAYER = 128                                      #self.COURT_WIDTH * 0.1
+                self.PADDLE_X_MONIKA = 1144                                     #self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
+                self.BALL_TOP = 131.5                                           #self.COURT_TOP + self.BALL_HEIGHT / 2
+                self.BALL_BOTTOM = 646.5                                        #self.COURT_BOTTOM - self.BALL_HEIGHT / 2
 
                 # The maximum possible reflection angle, achieved when the ball
                 # hits the corners of the paddle.
@@ -45,8 +45,8 @@ init:
                 self.stuck = True
 
                 # The positions of the two paddles.
-                self.playery = (self.COURT_BOTTOM - self.COURT_TOP) / 2
-                self.computery = self.playery
+                self.playery = 227.5                                            #(self.COURT_BOTTOM - self.COURT_TOP) / 2
+                self.computery = 227.5                                          #(self.COURT_BOTTOM - self.COURT_TOP) / 2
 
                 # The computer should aim at somewhere along the paddle, but
                 # not always at the centre. This is the offset, measured from
@@ -62,8 +62,8 @@ init:
                 
                 # The position, dental-position, and the speed of the
                 # ball.
-                self.bx = self.COURT_WIDTH * 0.1 + self.PADDLE_WIDTH + 0.1
-                self.by = self.playery
+                self.bx = 136.1                                                 #self.PADDLE_X_PLAYER + self.PADDLE_WIDTH + 0.1
+                self.by = 227.5                                                 #self.playery
                 self.bdx = .5 * math.cos(init_angle)
                 self.bdy = .5 * math.sin(init_angle)
                 self.bspeed = 500.0
@@ -84,7 +84,6 @@ init:
                 return [ self.paddle, self.ball, self.player, self.monika, self.ctb ]
 
             def check_bounce_off_top(self):
-                
                 # The ball wants to leave the screen upwards.
                 if self.by < self.BALL_TOP and self.oldby - self.by != 0:
                     
@@ -272,12 +271,12 @@ init:
 
                 # Show the player names.
                 player = renpy.render(self.player, self.COURT_WIDTH, self.COURT_HEIGHT, st, at)
-                r.blit(player, (self.COURT_WIDTH * 0.1, 25))
+                r.blit(player, (self.PADDLE_X_PLAYER, 25))
 
                 # Show Monika's name.
                 monika = renpy.render(self.monika, self.COURT_WIDTH, self.COURT_HEIGHT, st, at)
                 ew, eh = monika.get_size()
-                r.blit(monika, (self.COURT_WIDTH * 0.9 - ew, 25))
+                r.blit(monika, (self.PADDLE_X_MONIKA - ew, 25))
 
                 # Show the "Click to Begin" label.
                 if self.stuck:
@@ -300,7 +299,7 @@ init:
 
                 # Ask that we be re-rendered ASAP, so we can show the next
                 # frame.
-                renpy.redraw(self, 0)
+                renpy.redraw(self, 0.0)
 
                 # Return the Render object.
                 return r
