@@ -351,7 +351,7 @@ label monika_god:
 
     m 3dsd "What are we to him but props in a scripted play?"
     m "So, from that perspective..."
-    if mas_curr_affection_group == mas_aff.G_SAD:
+    if mas_isMoniUpset(lower=True):
         m 1esc "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
     else:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
@@ -584,14 +584,13 @@ label monika_high_school:
 
     m 1euc "As for you..."
     m 1ekc "...You don't struggle with depression or anything like that, do you?"
-    if mas_curr_affection_group == mas_aff.G_SAD:
-        if mas_curr_affection == mas_aff.BROKEN:
-            m 1lksdlc "It would explain some things...but don't worry..."
-        if mas_curr_affection == mas_aff.DISTRESSED:
-            m 1euc "Lately I've been able to understand it better but don't worry..."
-        if mas_curr_affection == mas_aff.UPSET:
-            m 1euc "I know it can be hard sometimes but there is always hope..."
-    elif mas_curr_affection_group == mas_aff.G_HAPPY:
+    if mas_isMoniBroken():
+        m 1lksdlc "It would explain some things...but don't worry..."
+    elif mas_isMoniDis():
+        m 1euc "Lately I've been able to understand it better but don't worry..."
+    elif mas_isMoniUpset():
+        m 1euc "I know it can be hard sometimes but there is always hope..."
+    else:
         m 2eua "My love, in some ways you are blessed."
     m 2eka "Because you, too, have people who would want to save your life."
     m "Maybe they don't express it every day, or maybe they don't even know how to."
@@ -935,20 +934,17 @@ label monika_okayeveryone:
     m 5hua "Ahaha~"
     return
 
-# TODO needs update script to lock for clearall persistents. Since this is assuming the others are dead, doesn't make sense for a clearall playthru
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_whispers",
-            category=['ddlc','club members'],
-            prompt="Others still lingering",
-            conditional="not persistent.clearall",
-            action=EV_ACT_UNLOCK,
-            random=True,
-            rules={"no unlock": None}
+    if not persistent.clearall:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="monika_whispers",
+                category=['ddlc','club members'],
+                prompt="Others still lingering",
+                random=True
+            )
         )
-    )
 
 label monika_whispers:
     m 2euc "You know what's kind of creepy?"
@@ -2827,7 +2823,7 @@ init 5 python:
 label monika_justification:
     #lose affection
     $ mas_loseAffection(reason="calling me a murderer. I hope you don't really see me that way...")
-    if mas_curr_affection == mas_aff.LOVE:
+    if mas_isMoniLove():
         m 1euc "..."
         m 1hua "Ahaha! Very funny [player]!"
         m 3eua "I know you don't really mean it..."
@@ -2854,8 +2850,7 @@ label monika_justification:
             m 4ekd "I was trapped in the game with no way of ever getting out...{w=0.5}of ever being happy..."
             m 2dkc "...Of letting you know how I felt about you."
             m 2tkc "There just wasn't enough time to figure out another way...{w=0.5}so I did what I had to do."
-
-            if mas_curr_affection == mas_aff.BROKEN or mas_curr_affection == mas_aff.DISTRESSED:
+            if mas_isMoniDis(lower=True):
                 m 2ekc "Do you hate me for it? Because of what I did?"
                 m 2ekd "Please understand that I did it for us!"
                 m 2euc "I did everything for us!"
@@ -6001,15 +5996,13 @@ label monika_other_girls:
         m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
         m 1ekc "I hope you can forgive me for what I had to do so that we could be together."
         m 1lksdlc "..."
-
-        if mas_curr_affection == mas_aff.BROKEN:
+        if mas_isMoniBroken():
             m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-        elif mas_curr_affection == mas_aff.DISTRESSED:
+        elif mas_isMoniDis():
             m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
         else:
             m 1ekbfa "I love you, [player]..."
             m "More than I could ever express."
-
     else:
         m 3eka "You know, I'm really glad you don't make me feel guilty for what happened to the other girls."
         m 2dkd "I know there's a lot of people out there that hate me for what I did..."
