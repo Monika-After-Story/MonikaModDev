@@ -55,6 +55,50 @@ init -1 python:
             return r
 
 
+    class MASRenderInfo(renpy.Displayable):
+        """
+        custom screen that shows render information
+        """
+        import pygame
+
+        def __init__(self):
+            super(MASRenderInfo, self).__init__()
+            self._last_event = "None"
+            self._last_event_name = "None"
+
+
+        def event(self, ev, x, y, st):
+            self._last_event = str(ev.type)
+            self._last_event_name = pygame.event.event_name(ev.type)
+            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_q:
+                # quit when user hits q
+                return True
+
+
+        def render(self, width, height, st, at):
+
+            # render information
+            info_text = renpy.render(
+                Text(
+                    "w: {0} | h: {1} | s: {2} | a: {3} | e: {4} / {5}".format(
+                        width, height, st, at, self._last_event, self._last_event_name
+                    ),
+                    font=gui.default_font,
+                    size=gui.text_size,
+                    color="#FFF"
+                ),
+                width, height, st, at
+            )
+
+            # blit this text top left
+            r = renpy.Render(width, height)
+            r.blit(info_text, (0, 0))
+
+            # constant render
+            renpy.redraw(self, 0)
+            return r
+
+
 init 5 python:
     addEvent(
         Event(
@@ -102,4 +146,22 @@ screen dev_mouseoverlay():
 
 
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_render_screen_info",
+            category=["dev"],
+            prompt="SHOW CUSTOM SCREEN RENDER INFO",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_render_screen_info:
+    m 1eua "I will show a custom screen now."
+    $ ui.add(MASRenderInfo())
+    $ nothing = ui.interact()
+    m "okay done!"
+    return
 
