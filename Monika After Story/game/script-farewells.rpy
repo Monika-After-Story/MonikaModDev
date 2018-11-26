@@ -366,7 +366,7 @@ label bye_prompt_to_class:
             m 2ekc "Umm...you've been here with me for quite a while [player]."
             m 2ekd "Are you sure you've had enough rest for it?"
             m 2eka "Make sure you take it easy, okay?"
-            m "If you start feeling pretty bad, I'm sure {i}one day{/i} off won't hurt."
+            m "If you're not feeling too well, I'm sure {i}one day{/i} off won't hurt."
             m 1hka "I'll be waiting for you to come back. Stay safe."
 
     elif mas_isMoniUpset():
