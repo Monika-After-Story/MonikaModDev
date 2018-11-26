@@ -225,7 +225,7 @@ label mas_mood_sick:
             m 2eka "I think you should go and get some rest."
             m 1eka "I'll still be here when you get better."
             m 1hua "You'll always be in my thoughts, see you soon sweetie!"
-        if session_time > datetime.timedelta(hours=3):
+        elif session_time > datetime.timedelta(hours=3):
             m 2wuo "[player]!"
             m 2wkd "You haven't been ill this entire time, have you?"
             m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
