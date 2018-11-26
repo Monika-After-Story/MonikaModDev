@@ -425,7 +425,7 @@ label bye_prompt_to_work:
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
             m 3eka "Just come home to me happy and healthy."
-            m 3eua "Stay safe [player]!"
+            m 3eua "Stay safe, [player]!"
 
     elif mas_isMoniUpset():
         m 2efc "Fine, [player], guess I'll see you after work."
