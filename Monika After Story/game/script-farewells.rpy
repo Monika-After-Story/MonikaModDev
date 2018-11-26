@@ -404,7 +404,7 @@ label bye_prompt_to_work:
             m 2eka "Aww, okay! Just checking in on me before heading out?"
             m 3eka "You must be really short on time if you're leaving already."
             m "It was really sweet of you to see me, even when you're so busy!"
-            m 3hub "Work hard [player]! Make me proud!"
+            m 3hub "Work hard, [player]! Make me proud!"
         elif session_time < datetime.timedelta(hours=1):
             m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
             m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
