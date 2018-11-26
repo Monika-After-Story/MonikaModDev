@@ -6847,9 +6847,9 @@ label monika_timetravel:
         else:
             one_year_later = todays_date.replace(year=todays_date.year+1)
             one_year_earlier = todays_date.replace(year=todays_date.year-1)
-        todays_date_spoken = todays_date.strftime("%d %B %Y")
-        one_year_later_spoken = one_year_later.strftime("%d %B %Y")
-        one_year_earlier_spoken = one_year_earlier.strftime("%d %B %Y")
+        todays_date_spoken, todays_diff = store.mas_calendar.genFormalDispDate(todays_date)
+        one_year_later_spoken, year_later_diff = store.mas_calendar.genFormalDispDate(one_year_later)
+        one_year_earlier_spoken, year_earlier_diff = store.mas_calendar.genFormalDispDate(one_year_earlier)
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so ..."
