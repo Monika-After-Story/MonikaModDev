@@ -4296,7 +4296,7 @@ label monika_morning:
             m "I'd be really sad if you spent less time with me because you had a fever or something."
             m 1eka "As much as I'd love to take care of you, I'm still stuck here."
             m 4eka "So start trying to be an early-riser like me from now on, okay?"
-            m 1hua "The more time you spend with me, the more happy I'll be~"
+            m 1hua "The more time you spend with me, the happier I'll be~"
         else:
             m 1eub "Good morning to you too!"
             m 1tku "Except that it's {i}not{/i} morning, [player]!"
