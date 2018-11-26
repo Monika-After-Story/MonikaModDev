@@ -1634,6 +1634,13 @@ label mas_bday_player_bday_select_select:
     call mas_start_calendar_select_date
 
     $ selected_date_t = _return
+
+    if not selected_date_t:
+        m 2efc "[player]!"
+        m "You have to select a date!"
+        m 1hua "Try again!"
+        jump mas_bday_player_bday_select_select
+
     $ selected_date = selected_date_t.date()
     $ _today = datetime.date.today()
 
