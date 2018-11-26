@@ -413,7 +413,7 @@ label bye_prompt_to_work:
             m 1hua "I'll be here waiting for you to get back home from work!"
             m "Tell me all about it when you get back!"
         elif session_time < datetime.timedelta(hours=6):
-            m 2eua "Heading to work then [player]?"
+            m 2eua "Heading to work then, [player]?"
             m 2eka "The day may be good or bad...but if it becomes too much think of something nice!"
             m 4eka "Every day, no matter how badly it's going ends after all!"
             m 2tku "Maybe you can think of me if it becomes stressful..."
