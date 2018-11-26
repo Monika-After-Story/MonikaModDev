@@ -423,7 +423,7 @@ label bye_prompt_to_work:
             m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
             m 2rksdlc "I was hoping you'd rest before doing anything too big."
             m 2ekc "Try not to overexert yourself, okay?"
-            m 2ekd "If you need to take a breather, don't be afraid to do so!"
+            m 2ekd "Don't be afraid to take a breather if you need to!"
             m 3eka "Just come home to me happy and healthy."
             m 3eua "Stay safe [player]!"
 
