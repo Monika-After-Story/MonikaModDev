@@ -12,7 +12,6 @@
 init -1 python in mas_farewells:
 
     # custom farewell functions
-    def selectFarewell():
         """
         Selects a farewell to be used. This evaluates rules and stuff
         appropriately.
@@ -355,7 +354,7 @@ label bye_prompt_to_class:
         elif session_time < datetime.timedelta(hours=1):
             m 2eua "Alright, thanks for spending some time with me, [player]!"
             m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
-            m 2hua  "Nothing is more important than a good education."
+            m 2hua "Nothing is more important than a good education."
             m 3eub "Teach me something when you get back!"
             m "See you soon!"
         elif session_time < datetime.timedelta(hours=6):
