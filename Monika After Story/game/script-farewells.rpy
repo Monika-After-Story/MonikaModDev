@@ -363,7 +363,7 @@ label bye_prompt_to_class:
             m 1eua "Nothing is more attractive than a [guy] with good grades."
             m 1hua "See you later!"
         else:
-            m 2ekc "Umm...you've been here with me for quite a while [player]."
+            m 2ekc "Umm...you've been here with me for quite a while, [player]."
             m 2ekd "Are you sure you've had enough rest for it?"
             m 2eka "Make sure you take it easy, okay?"
             m "If you're not feeling too well, I'm sure {i}one day{/i} off won't hurt."
