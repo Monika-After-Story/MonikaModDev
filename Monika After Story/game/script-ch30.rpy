@@ -1180,7 +1180,7 @@ label ch30_reset:
         if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
             $ persistent.current_monikatopic = 0
 
-        if "monika_rpy_files" in persistent.event_list:
+        while "monika_rpy_files" in persistent.event_list:
             $ persistent.event_list.remove("monika_rpy_files")
         
     elif len(listRpy) != 0 and persistent._mas_pm_has_rpy is not True:
