@@ -12,6 +12,7 @@
 init -1 python in mas_farewells:
 
     # custom farewell functions
+    def selectFarewell():
         """
         Selects a farewell to be used. This evaluates rules and stuff
         appropriately.
