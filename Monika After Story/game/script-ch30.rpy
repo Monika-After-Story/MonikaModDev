@@ -819,25 +819,20 @@ label mas_ch30_post_holiday_check:
     # check persistent to see if player put Monika to sleep correctly
     elif persistent.closed_self:
 
-        # Sick mood special greeting flow
-        if persistent._mas_mood_sick:
-            $ selected_greeting = "greeting_sick"
+        python:
 
-        else:
-            python:
+            # we select a greeting depending on the type that we should select
+            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
 
-                # we select a greeting depending on the type that we should select
-                sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+            # reset the greeting type flag back to None
+            persistent._mas_greeting_type = None
 
-                # reset the greeting type flag back to None
-                persistent._mas_greeting_type = None
+            selected_greeting = sel_greeting_event.eventlabel
 
-                selected_greeting = sel_greeting_event.eventlabel
-
-                # store if we have to skip visuals ( used to prevent visual bugs)
-                mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                    event=sel_greeting_event
-                )
+            # store if we have to skip visuals ( used to prevent visual bugs)
+            mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                event=sel_greeting_event
+            )
 
     # crash check
     elif persistent._mas_game_crashed:
@@ -1224,6 +1219,12 @@ label ch30_reset:
             seen_costume = persistent._mas_o31_seen_costumes.get("rin")
             if seen_costume:
                 mas_selspr.unlock_clothes(mas_clothes_rin)
+
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_pm_cares_about_dokis:
+            mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
+            mas_unlockEventLabel("monika_sayori")
+            mas_unlockEventLabel("monika_natsuki")
 
 
     # monika hair/acs
