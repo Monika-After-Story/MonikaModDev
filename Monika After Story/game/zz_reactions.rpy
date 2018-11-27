@@ -400,6 +400,8 @@ init python:
         mas_filereacts.foundreact_map.clear()
         reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
         if len(reacts) > 0:
+            # need to reverse it now
+            reacts.reverse()
             for _react in reacts:
                 queueEvent(_react)
             persistent._mas_filereacts_just_reacted = True
@@ -494,7 +496,8 @@ label mas_reaction_gift_starter_generic:
 # TODO: if we need this to be multipled then we do it
 
 label mas_reaction_gift_starter_bday:
-    m 1sublo "T-{w=1}This is..."
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
     m "A gift? For me?"
     m 1hka "I..."
     m 1hua "I've often thought about getting presents from you on my birthday..."
@@ -504,7 +507,8 @@ label mas_reaction_gift_starter_bday:
     return
 
 label mas_reaction_gift_starter_neutral:
-    m 1sublo "T-{w=1}This is..."
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
     m "A gift? For me?"
     m 1sua "Now, let's see what's inside?"
     return
