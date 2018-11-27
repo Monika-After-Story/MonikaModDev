@@ -1232,16 +1232,6 @@ label ch30_reset:
             store.mas_selspr.unlock_hair(mas_hair_down)
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_o31_seen_costumes is not None:
-            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_marisa)
-
-            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_rin)
-
-        # TODO: remove this when release 0.8.10
         if persistent._mas_pm_cares_about_dokis:
             mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
             mas_unlockEventLabel("monika_sayori")
