@@ -1232,20 +1232,17 @@ label ch30_reset:
             store.mas_selspr.unlock_hair(mas_hair_down)
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_o31_seen_costumes is not None:
-            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_marisa)
-
-            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_rin)
-
-        # TODO: remove this when release 0.8.10
         if persistent._mas_pm_cares_about_dokis:
             mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
             mas_unlockEventLabel("monika_sayori")
             mas_unlockEventLabel("monika_natsuki")
+
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_o31_seen_costumes is not None:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            if persistent._mas_o31_seen_costumes.get("rin", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_rin)
 
 
     # monika hair/acs
@@ -1342,11 +1339,18 @@ label ch30_reset:
 
     ## o31 content
     python:
-        # reset clothes if its past o31
         if store.mas_o31_event.isMonikaInCostume(monika_chr):
             if persistent._mas_o31_in_o31_mode:
                 mas_lockHair()
-            else:
+
+            elif not mas_isMoniLove(higher=True):
+                # NOTE: if monika is love or above, we do NOT reset clothes
+                #   because of the wardrobe. 
+                # TODO: this seems really hacky, maybe we should have some
+                #   sort of way to determine if the clothes were picked
+                #   via the wardrobe, and just not change clothes unless
+                #   affection goes down (or we need to switch to other clothes
+                #   for an event)
                 monika_chr.reset_clothes()
 
     ## certain things may need to be reset if we took monika out
