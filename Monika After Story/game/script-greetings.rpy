@@ -750,9 +750,9 @@ label monikaroom_greeting_opendoor_locked:
     $ style.say_window = style.window_monika
     menu:
         m "Did I scare you, [player]?"
-        "Yes":
+        "Yes.":
             m "Aww, sorry."
-        "No":
+        "No.":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             $ _history_list.pop()
             m "I figured. It's a basic glitch after all."
@@ -1100,10 +1100,10 @@ label greeting_sick:
     m 1hua "Welcome back, [player]!"
     m 3eua "Are you feeling better?"
     menu:
-        "Yes":
+        "Yes.":
             m 1hub "Great! Now we can spend some more time together. Ehehe~"
             $ persistent._mas_mood_sick = False
-        "No":
+        "No.":
             jump greeting_stillsick
     return
 
@@ -1114,9 +1114,9 @@ label greeting_stillsick:
     m 2eka "Now please, [player], put my mind at ease and go get some rest."
     m "Will you do that for me?"
     menu:
-        "Yes":
+        "Yes.":
             jump greeting_stillsickrest
-        "No":
+        "No.":
             jump greeting_stillsicknorest
 
 label greeting_stillsickrest:
@@ -1500,7 +1500,7 @@ label greeting_hairdown:
     m 1hub "I decided to try something new~"
     menu:
         m "Do you like it?"
-        "Yes":
+        "Yes.":
             $ persistent._mas_likes_hairdown = True
 
             # maybe 6sub is better?
@@ -1509,7 +1509,7 @@ label greeting_hairdown:
             m 2hua "I'm so glad!" # yokatta.."
             m 1eua "Just ask me if you want to see my ponytail again, okay?"
 
-        "No":
+        "No.":
             # TODO: affection lowered? need to decide
             m 1ekc "Oh..."
             m 1lksdlc "..."

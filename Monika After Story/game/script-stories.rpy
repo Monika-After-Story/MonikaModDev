@@ -579,10 +579,10 @@ label mas_scary_story_kuchisake_onna:
         show screen mas_background_timed_jump(5, "mas_scary_story_kuchisake_onna.no")
         menu:
             "am I pretty?"
-            "Yes":
+            "Yes.":
                 hide screen mas_background_timed_jump
                 jump mas_scary_story_kuchisake_onna.clean
-            "No":
+            "No.":
                 jump mas_scary_story_kuchisake_onna.no
     else:
         jump mas_scary_story_kuchisake_onna.end

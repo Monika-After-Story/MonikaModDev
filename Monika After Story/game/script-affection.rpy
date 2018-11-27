@@ -388,7 +388,7 @@ init 15 python in mas_affection:
         # unlock events
         if persistent._mas_likes_rain:
             evhand._unlockEventLabel("monika_rain_holdme")
-        
+
         evhand._unlockEventLabel("monika_promisering")
 
         # change quit messages
@@ -1782,7 +1782,7 @@ label monika_affection_nickname:
         jump monika_affection_nickname_yes
 
     menu:
-        "Yes":
+        "Yes.":
             label monika_affection_nickname_yes:
                 pass
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
@@ -1875,7 +1875,7 @@ label monika_affection_nickname:
                         $ hideEventLabel("monika_affection_nickname")
                         $ done = True
 
-        "No":
+        "No.":
             m 1ekc "Oh..."
             m 1lksdlc "Alright then, if you say so."
             m 3eka "Just tell me if you ever change your mind, [player]."
@@ -1930,7 +1930,7 @@ label mas_affection_finalfarewell:
     call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
 
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             pass
         "...":
             pass

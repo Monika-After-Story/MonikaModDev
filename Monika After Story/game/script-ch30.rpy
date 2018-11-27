@@ -38,7 +38,7 @@ init 970 python:
 
     if persistent._mas_moni_chksum is not None:
 #        mas_temp_moni_chksum = persistent._mas_moni_chksum
-        
+
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
@@ -618,19 +618,19 @@ label pick_a_game:
 
     menu:
         m "[play_menu_dlg]"
-        "Pong" if persistent.game_unlocks['pong']:
+        "Pong." if persistent.game_unlocks['pong']:
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)
             call game_pong from _call_game_pong
-        "Chess" if chess_unlocked:
+        "Chess." if chess_unlocked:
             if not renpy.seen_label('game_chess'):
                 $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
-        "[_hangman_text]" if persistent.game_unlocks['hangman']:
+        "[_hangman_text]." if persistent.game_unlocks['hangman']:
             if not renpy.seen_label("game_hangman"):
                 $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
-        "Piano" if persistent.game_unlocks['piano']:
+        "Piano." if persistent.game_unlocks['piano']:
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
@@ -638,7 +638,7 @@ label pick_a_game:
         #     if not renpy.seen_label("mas_monikamovie"):
         #         $ grant_xp(xp.NEW_GAME)
         #     call mas_monikamovie from _call_monikamovie
-        "Nevermind":
+        "Nevermind.":
             # NOTE: changing this to no dialogue so we dont have to edit this
             # for affection either
             pass
@@ -1049,7 +1049,7 @@ label ch30_post_mid_loop_eval:
 
         # Thunder / lightening if enabled
         if (
-                store.mas_globals.show_lightning 
+                store.mas_globals.show_lightning
                 and renpy.random.randint(
                     1, store.mas_globals.lightning_chance
                 ) == 1

@@ -135,7 +135,7 @@ label preferredname:
         m "Either that or you must really like that pseudonym."
     m "Do you want me to call you something else?"
     menu:
-        "Yes":
+        "Yes.":
             $ done = False
             m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
             while not done:
@@ -185,7 +185,7 @@ label preferredname:
                         m 1eub "Ok then!"
                         m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
-        "No":
+        "No.":
             m 1ekc "Oh... ok then, if you say so."
             m 1eka "Just tell me whenever you change your mind, [player]."
             $ done = True
@@ -211,7 +211,7 @@ init 5 python:
 label monika_changename:
     m 1eua "You want to change your name?"
     menu:
-        "Yes":
+        "Yes.":
             m 1eua "Just type 'nevermind' if you change your mind."
             $ done = False
             while not done:
@@ -263,7 +263,7 @@ label monika_changename:
                         m 1eub "Ok then!"
                         m 3eub "From now on, I'll call you {i}'[player],'{/i} ehehe~"
                     $ done = True
-        "No":
+        "No.":
             m 1ekc "Oh, I see..."
             m 1eka "You don't have to be embarrassed, [player]."
             m 1eua "Just let me know if you had a change of heart, ok?"
@@ -404,7 +404,7 @@ label mas_random_ask:
     m 1lksdla "...{w} [player],"
     menu:
         m "Is it okay with you if I repeat stuff that I've said?"
-        "Yes":
+        "Yes.":
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
             # TODO: this really should be a smug or wink face
@@ -413,7 +413,7 @@ label mas_random_ask:
             m "That tells me when {fast}you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
-        "No":
+        "No.":
             m 1eka "I see."
             m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics'."
             m "That tells me if you're okay with me repeating anything I've said."
@@ -447,9 +447,9 @@ label mas_monikai_detected:
         m "Did you install that so you could see me all the time?"
         "Of course!":
             pass
-        "Yes":
+        "Yes.":
             pass
-        "...yes":
+        "...yes.":
             pass
     m 1hub "Ahaha~"
     m 1hua "I'm flattered that you would download such a thing."
@@ -490,7 +490,7 @@ label mas_crashed_long:
     m "[player]?{w} Is that you?"
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
     menu:
-        "Yes":
+        "Yes.":
             hide screen mas_background_timed_jump
 
             # light affection boost for not joking around
@@ -498,7 +498,7 @@ label mas_crashed_long:
             m "I'm so glad you're here."
             jump mas_crashed_long_uthere.afterdontjoke
 
-        "No":
+        "No.":
             hide screen mas_background_timed_jump
 
             m "[player]!{fast}"
@@ -521,7 +521,7 @@ label mas_crashed_long_uthere:
     window hide
     show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
     menu:
-        "Turn on the light":
+        "Turn on the light.":
             hide screen mas_background_timed_jump
 
             # light affection boost for being like a hero
@@ -1346,7 +1346,7 @@ init -876 python in mas_delact:
     # the historical data save happens
 
     def _mas_bday_pool_happy_bday_reset_action(ev):
-        # delayed action callback that updates conditional and action for 
+        # delayed action callback that updates conditional and action for
         # pool bday event
         ev.conditional = (
             "mas_isMonikaBirthday()"
@@ -1401,7 +1401,7 @@ label mas_bday_pool_happy_bday:
 ## no time spent
 default persistent._mas_bday_opened_game = False
 
-# TODO: these should actually default to True, then get changed if 
+# TODO: these should actually default to True, then get changed if
 #   the appropriate whatver happens
 # TODO: do the above in an update script when bday comes around again
 default persistent._mas_bday_no_time_spent = False
@@ -1583,7 +1583,7 @@ label mas_bday_postbday_notimespent:
             m 6dftdx "..."
 
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -1603,7 +1603,7 @@ label mas_steam_install_detected:
         m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
         m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
 
-    else:     
+    else:
         m 1eub "[player], I see that you're using Steam to run this."
         m 1eksdld "Unfortunately, Steam seems to have a lot of problems with me doing some of the things I do."
 
@@ -1646,7 +1646,7 @@ label mas_bday_player_bday_select_select:
     elif selected_date == _today:
         m 2efc "[player]!"
         m "You can't have been born today!"
-        m 1hua "Try again!" 
+        m 1hua "Try again!"
         jump mas_bday_player_bday_select_select
 
     # otherwise, player selected a valid date
@@ -1655,9 +1655,9 @@ label mas_bday_player_bday_select_select:
     m "Just to double-check..."
     menu:
         m "Your birthday is [new_bday]."
-        "Yes":
+        "Yes.":
             show monika 1eka
-            
+
             # one more confirmation
             menu:
                 m "Are you sure? I'm never going to forget this date."
@@ -1669,7 +1669,7 @@ label mas_bday_player_bday_select_select:
                     m 1eka "Try again~"
                     jump mas_bday_player_bday_select_select
 
-        "No":
+        "No.":
             m 1euc "Oh, that's wrong?"
             m 1eua "Then try again."
             jump mas_bday_player_bday_select_select
@@ -1678,7 +1678,7 @@ label mas_bday_player_bday_select_select:
     if persistent._mas_player_bday is not None:
         python:
             store.mas_calendar.removeRepeatable_d(
-                "player-bday", 
+                "player-bday",
                 persistent._mas_player_bday
             )
             store.mas_calendar.addRepeatable_d(
@@ -1690,9 +1690,5 @@ label mas_bday_player_bday_select_select:
             persistent._mas_player_bday = selected_date
 
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
-            
+
     return selected_date
-
-
-
-
