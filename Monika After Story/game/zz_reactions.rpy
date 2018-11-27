@@ -390,7 +390,7 @@ init python:
 
     def mas_checkReactions():
         """
-        Checks for reactions, then pushes them
+        Checks for reactions, then queues them
         """
         # only check if we didnt just react
         if persistent._mas_filereacts_just_reacted:
@@ -401,7 +401,7 @@ init python:
         reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
         if len(reacts) > 0:
             for _react in reacts:
-                pushEvent(_react)
+                queueEvent(_react)
             persistent._mas_filereacts_just_reacted = True
 
 
