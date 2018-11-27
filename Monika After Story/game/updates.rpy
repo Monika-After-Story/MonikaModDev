@@ -339,6 +339,13 @@ label v0_8_10(version="v0_8_10"):
         if family_ev:
             family_ev.random = False
 
+        # unlock selectables for unlocked clothes
+        if persistent._mas_o31_seen_costumes is not None:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            if persistent._mas_o31_seen_costumes.get("rin", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_rin)
+
         # Enable late update for this one
         persistent._mas_zz_lupd_ex_v.append(version)
 

@@ -769,6 +769,92 @@ init -10 python in mas_selspr:
         )
 
 
+    def _filter_sel_single(item, unlocked, group):
+        """
+        Checks if the given item matches the given criteria
+
+        IN:
+            item - selectable to check
+            unlocked - True means item matches if its unlocked
+            group - if not None, then item matches if the group matches
+
+        RETURNS:
+            True if the item matches the criteria, False otherwise
+        """
+        if unlocked and not item.unlocked:
+            return False
+
+        if group is not None and item.group != group:
+            return False
+
+        return True
+
+
+    def _filter_sel(select_list, unlocked, group=None):
+        """
+        Filters the selectable list based on criteria
+
+        IN:
+            select_list - list of Selectables to filter
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this
+                group. If None, we dont check group at all.
+                (Default: None)
+
+        RETURNS: list of selectables that match criteria
+        """
+        return [
+            item
+            for item in select_list
+            if _filter_sel_single(item, unlocked, group)
+        ]
+
+
+    def filter_acs(unlocked, group=None):
+        """
+        Filters the selectable acs based on criteria
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all.
+                (Default: None)
+
+        RETURNS: list of selectable acs that match criteria
+        """
+        return _filter_sel(ACS_SEL_SL, unlocked, group)
+
+
+    def filter_clothes(unlocked, group=None):
+        """
+        Filters the selectable clothes based on critera
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all
+                (Default: None)
+
+        RETURNS: list of selectable clothes that match criteria
+        """
+        return _filter_sel(CLOTH_SEL_SL, unlocked, group)
+
+
+    def filter_hair(unlocked, group=None):
+        """
+        Filters the selectable hair based on critera
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all
+                (Default: None)
+
+        RETURNS: list of selectable hair that match criteria
+        """
+        return _filter_sel(HAIR_SEL_SL, unlocked, group)
+
+
     def _get_sel(item, select_type):
         """
         Retreives the selectable for the given item.
