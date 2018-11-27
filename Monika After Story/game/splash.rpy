@@ -310,7 +310,9 @@ label autoload:
     # finally lets run actions that needed to be run
     $ mas_runDelayedActions(MAS_FC_START)
 
-    jump expression persistent.autoload
+    #jump expression persistent.autoload
+    # NOTE: we should always jump to ch30 instead
+    jump ch30_autoload
 
 label before_main_menu:
     $ config.main_menu_music = audio.t1
