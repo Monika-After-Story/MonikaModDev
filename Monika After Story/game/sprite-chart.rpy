@@ -1788,12 +1788,15 @@ init -2 python:
                 self.wear_acs_in(store.mas_sprites.ACS_MAP[acs_name], acs_type)
 
 
-        def _save_acs(self, acs_type):
+        def _save_acs(self, acs_type, force_acs=False):
             """
             Generates list of accessory names to save to persistent.
 
             IN:
                 acs_type - acs type to build acs names list
+                force_acs - True means to save acs even if stay_on_start is
+                    False
+                    (Default: False)
 
             RETURNS:
                 list of acs names to save to persistent
@@ -1801,7 +1804,7 @@ init -2 python:
             return [
                 acs.name
                 for acs in self.acs[acs_type]
-                if acs.stay_on_start
+                if force_acs or acs.stay_on_start
             ]
 
 
@@ -2014,20 +2017,49 @@ init -2 python:
             self.reset_hair()
 
 
-        def save(self):
+        def save(self, force_hair=False, force_clothes=False, force_acs=False):
             """
             Saves hair/clothes/acs to persistent
+
+            IN:
+                force_hair - True means we force hair saving even if 
+                    stay_on_start is False
+                    (Default: False)
+                force_clothes - True means we force clothes saving even if
+                    stay_on_start is False
+                    (Default: False)
+                force_acs - True means we force acs saving even if 
+                    stay_on_start is False
+                    (Default: False)
             """
             # hair and clothes
-            store.persistent._mas_monika_hair = self.hair.name
-            store.persistent._mas_monika_clothes = self.clothes.name
+            if force_hair or self.hair.stay_on_start:
+                store.persistent._mas_monika_hair = self.hair.name
+
+            if force_clothes or self.clothes.stay_on_start:
+                store.persistent._mas_monika_clothes = self.clothes.name
 
             # acs
-            store.persistent._mas_acs_pre_list = self._save_acs(self.PRE_ACS)
-            store.persistent._mas_acs_bbh_list = self._save_acs(self.BBH_ACS)
-            store.persistent._mas_acs_bfh_list = self._save_acs(self.BFH_ACS)
-            store.persistent._mas_acs_mid_list = self._save_acs(self.MID_ACS)
-            store.persistent._mas_acs_pst_list = self._save_acs(self.PST_ACS)
+            store.persistent._mas_acs_pre_list = self._save_acs(
+                self.PRE_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bbh_list = self._save_acs(
+                self.BBH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bfh_list = self._save_acs(
+                self.BFH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mid_list = self._save_acs(
+                self.MID_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_pst_list = self._save_acs(
+                self.PST_ACS,
+                force_acs
+            )
 
 
         def wear_acs_in(self, accessory, acs_type):
@@ -3051,7 +3083,8 @@ init -1 python:
         fallback=True,
         hair_map={
             "all": "custom"
-        }
+        },
+        stay_on_start=True
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(
@@ -3084,6 +3117,7 @@ init -1 python:
         hair_map={
             "all": "custom"
         },
+        stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_rin_entry,
         exit_pp=store.mas_sprites._clothes_rin_exit
     )
