@@ -644,6 +644,7 @@ label mas_reaction_quetzal_plush:
 #This one is added later so the init pipeline can define the anni function
 init 11 python:
     # only available after 6 months or if it's her birthday, may as well add valentine later
+    # TODO add dialogue for gift rejection in case the conditions below are not met 
     if mas_anni.pastSixMonths() or mas_isMonikaBirthday():
         addReaction("mas_reaction_promisering", "promisering", is_good=True)
 
