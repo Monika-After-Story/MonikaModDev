@@ -668,6 +668,9 @@ init -810 python:
             # actions / mas / opendoor
             "_mas_pm_will_change": "pm.actions.mas.opendoor.will_change",
 
+            # actions / mas / dev
+            "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
