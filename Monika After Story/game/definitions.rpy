@@ -2960,6 +2960,16 @@ init -1 python:
         return datetime.date.today() == mas_monika_birthday
 
 
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        #TODO keep adding special days as we add them
+        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
+
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
         if mas_monika_birthday < today:
