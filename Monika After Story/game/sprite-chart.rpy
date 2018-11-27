@@ -208,7 +208,7 @@ init -5 python in mas_sprites:
     KW_STOCK_ART = "def"
 
     ### other paths:
-    # H - hair 
+    # H - hair
     # C - clothing
     # T - sitting
     # S - standing
@@ -424,7 +424,7 @@ init -5 python in mas_sprites:
         Adds the appropriate accessory prefix dpenedong on lean
 
         IN:
-            sprite_list - list to add sprites to 
+            sprite_list - list to add sprites to
             lean - type of lean
         """
         if lean:
@@ -550,7 +550,7 @@ init -5 python in mas_sprites:
 
     def build_loc():
         """
-        RETURNS location string for the sprite 
+        RETURNS location string for the sprite
         """
         return "".join(("(", str(adjust_x), ",", str(adjust_y), ")"))
 
@@ -599,7 +599,7 @@ init -5 python in mas_sprites:
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
             # for this pose. Weird, but maybe it happens?
-            return 
+            return
 
         if issitting:
             acs_str = acs.img_sit
@@ -629,7 +629,7 @@ init -5 python in mas_sprites:
 
     def _ms_accessorylist(
             sprite_list,
-            pos_str, 
+            pos_str,
             acs_list,
             n_suffix,
             issitting,
@@ -832,7 +832,7 @@ init -5 python in mas_sprites:
             lean=None,
         ):
         """
-        Adds body string, with no hair 
+        Adds body string, with no hair
 
         IN:
             sprite_list - list to add sprite strings to
@@ -1163,7 +1163,7 @@ init -5 python in mas_sprites:
             n_suffix - night suffix to use
             f_prefix - face prefix to use
         """
-        # NOTE: if we never get a new nose, we can just optimize this to 
+        # NOTE: if we never get a new nose, we can just optimize this to
         #   a hardcoded string
         sprite_list.extend((
             LOC_Z,
@@ -1277,7 +1277,7 @@ init -5 python in mas_sprites:
 
         # night suffix?
         n_suffix = night_mode(isnight)
-        
+
         # initial portions of list
         sprite_str_list = [
             PRE_SPRITE_STR,
@@ -1389,7 +1389,7 @@ init -5 python in mas_sprites:
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
-            acs_mid_list, 
+            acs_mid_list,
             n_suffix,
             True,
             arms,
@@ -1420,7 +1420,7 @@ init -5 python in mas_sprites:
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
-            acs_pst_list, 
+            acs_pst_list,
             n_suffix,
             True,
             arms,
@@ -1704,10 +1704,10 @@ init -2 python:
         BFH_ACS = 4 # between Body and Front Hair accessory
 
 
-        def __init__(self, 
-                pre_acs=[], 
-                mid_acs=[], 
-                pst_acs=[], 
+        def __init__(self,
+                pre_acs=[],
+                mid_acs=[],
+                pst_acs=[],
                 bbh_acs=[],
                 bfh_acs=[]
             ):
@@ -7392,6 +7392,19 @@ image monika 2rkc = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2rka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11401,6 +11414,32 @@ image monika 6eua = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6ekc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6dkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
 image monika 6dua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11512,18 +11551,32 @@ image monika 6dksdla = DynamicDisplayable(
     sweat="def"
 )
 
-image monika 6ektpc = DynamicDisplayable(
+image monika 6dktdc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="knit",
-    eyes="normal",
+    eyes="closedsad",
     nose="def",
     mouth="smirk",
-    head="q",
+    head="a",
     left="1l",
     right="1r",
     arms="down",
-    tears="pooled"
+    tears="dried"
+)
+
+image monika 6dktsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="streaming"
 )
 
 image monika 6dktpc = DynamicDisplayable(
@@ -11537,6 +11590,20 @@ image monika 6dktpc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling",
+    tears="pooled"
+)
+
+image monika 6ektpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
     tears="pooled"
 )
 
@@ -11634,6 +11701,34 @@ image monika 6rktsc = DynamicDisplayable(
     right="1r",
     arms="down",
     tears="streaming"
+)
+
+image monika 6rktda = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
+)
+
+image monika 6rktdc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="dried"
 )
 
 image monika 6rksdlc = DynamicDisplayable(

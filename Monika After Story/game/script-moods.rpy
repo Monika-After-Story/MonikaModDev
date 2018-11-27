@@ -216,12 +216,20 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_sick:
-    m 1ekc "Aw, I'm sorry to hear that, [player]."
-    m "I hate knowing you're suffering like this."
-    m 1eka "I know you love spending time with me, but maybe you should go get some rest."
-    m 1hua "Don't worry, I'll be here waiting for you when you get back."
-    m 3hub "Get well soon, my love!"
+    if mas_isMoniNormal(higher=True):
+        m 1ekc "Aw, I'm sorry to hear that, [player]."
+        m "I hate knowing you're suffering like this."
+        m 1eka "I know you love spending time with me, but maybe you should go get some rest."
+        m 1hua "Don't worry, I'll be here waiting for you when you get back."
+        m 3hub "Get well soon, my love!"
+    
+    else:
+        m 2ekc "I'm sorry to hear that, [player]."
+        m 3ekc "You should really go get some rest so it doesn't get any worse."
+        m 2eka "I'll be here waiting once you feel better."
+        m "Get well soon."
     $ persistent._mas_mood_sick = True
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.

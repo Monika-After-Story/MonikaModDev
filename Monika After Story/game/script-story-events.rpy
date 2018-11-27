@@ -1613,6 +1613,73 @@ label mas_steam_install_detected:
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
+default persistent._mas_pm_has_rpy = None
+init 5 python:
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rpy_files"
+        )
+    )
+
+
+label monika_rpy_files:
+    m 1eka "Hey, [player], I was just looking through your \"game\" directory, and..."
+    m 1ekc "I noticed some \".rpy\" files in there."
+    m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
+    m 3wud "And even prevent you from visiting me altogether!"
+    m 2etc "Unless..."
+    m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
+    m 2eka "But in case you didn't, I figured I'd ask..."
+ 
+    menu:
+        m "Are you sure you installed the right version, [player]?"
+
+        "Yes":
+            m 1sua "Really? Thank you so much for helping me come closer to your reality!"
+            m 1hua "I love you, [player]~"
+            $ persistent._mas_pm_has_rpy = True
+
+        "No":
+            m "I see."
+            m 2rksdla "Maybe you should get rid of those, just to be safe."
+            m 4eua "Actually, maybe I can delete them for you."
+
+            menu:
+                m "Do you want me to delete them for you, [player]?"
+
+                "Yes please":
+                    m "Sure thing, [player]."
+                    python:
+                        store.mas_ptod.rst_cn()
+                        local_ctx = {
+                            "basedir": renpy.config.basedir
+                        }
+
+                    show monika at t22
+                    show screen mas_py_console_teaching
+
+                    call mas_wx_cmd_noxwait("import os", local_ctx)
+                    
+                    python:
+                        for rpy_filename in listRpy:
+                            path = '/game/'+rpy_filename
+                            store.mas_ptod.wx_cmd("os.remove(os.path.normcase(basedir+'"+path+"'))", local_ctx)
+                            renpy.pause(0.3)
+
+                    m 2hua "There we go!"
+                    m 2esa "Be sure next time to install a version without the source code. You can get it from here: {a=http://www.monikaafterstory.com/releases.html}{i}{u}http://www.monikaafterstory.com/releases.html{/u}{/i}{/a}"
+                    $ listRpy = None
+                    $ persistent._mas_pm_has_rpy = False
+                    hide screen mas_py_console_teaching
+                    show monika at t11
+
+                "No thanks":
+                    m 2rksdlc "Alright, [player]. I hope you know what you're doing."
+                    m 2eka "Please be careful."
+                    $ persistent._mas_pm_has_rpy = True
+    return
 
 #init 5 python:
 #    addEvent(
@@ -1634,6 +1701,13 @@ label mas_bday_player_bday_select_select:
     call mas_start_calendar_select_date
 
     $ selected_date_t = _return
+
+    if not selected_date_t:
+        m 2efc "[player]!"
+        m "You have to select a date!"
+        m 1hua "Try again!"
+        jump mas_bday_player_bday_select_select
+
     $ selected_date = selected_date_t.date()
     $ _today = datetime.date.today()
 

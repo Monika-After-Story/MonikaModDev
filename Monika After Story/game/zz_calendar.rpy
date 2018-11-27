@@ -991,7 +991,13 @@ init -1 python in mas_calendar:
         RETURNS:
             nice display string for the day
         """
-        return str(day) + NUM_MAP.get(day, "th")
+        if day in NUM_MAP:
+            suffix = NUM_MAP[day]
+
+        else:
+            suffix = NUM_MAP.get(day % 10, "th")
+
+        return str(day) + suffix
 
 
     def _formatYears(years):
@@ -1021,7 +1027,19 @@ init -1 python in mas_calendar:
 
     def genFriendlyDispDate(_datetime):
         """
+        NOTE: DEPRECATED
+
         Generates a display date using the given datetime
+
+        IN:
+            _datetime - datetime object to create good display date
+        """
+        return genFriendlyDispDate_d(_datetime.date())
+
+
+    def genFriendlyDispDate_d(_date):
+        """
+        Generates a display date using the given date
         This creates a display date in the format:
             Month Day, Year
         However, this is somewhat variable.
@@ -1039,22 +1057,21 @@ init -1 python in mas_calendar:
         is used.
 
         IN:
-            _datetime - datetime object to create good display date
+            _date - date object to create good display date
 
         RETURNS:
             tuple of the following format:
             [0]: nicely formatted display date, suitable for conversation
-            [1]: timedelta between today and the given _datetime
+            [1]: timedelta between today and the given _date
         """
         # the month is always fine to take out
-        disp_month = _datetime.strftime("%B")
+        disp_month = _date.strftime("%B")
 
         # display day is easy
-        disp_day = _formatDay(_datetime.day)
+        disp_day = _formatDay(_date.day)
 
         # to find out year, we need now
         _today = datetime.date.today()
-        _date = _datetime.date()
         _day_diff = _today - _date
         _year_diff = _today.year - _date.year
 
@@ -1095,13 +1112,40 @@ init -1 python in mas_calendar:
             # more than 10? use the 4 digit year
             _cout = [
                 disp_month,
-                disp_day,
-                ",",
+                disp_day + ",",
                 str(_date.year)
             ]
 
         # now return the formatting string + diff
         return (" ".join(_cout), _day_diff)
+
+
+
+    def genFormalDispDate(_date):
+        """
+        Generates a display date using the given date
+
+        This is considered "formal", in that it's not really realisitc when
+        used in normal conversation. For example, if today is august 24, you 
+        don't say 'this happened august 24th, 2016', you normally would say
+        'this happened x years ago today'.
+
+        IN:
+            _date - date object to create good display date
+
+        RETURNS:
+            tuple of the following format:
+            [0]: nicely formtted display date, suitable for text
+            [1]: timedelta between today and the given _date
+        """
+        return (
+            " ".join([
+                _date.strftime("%B"), # month
+                _formatDay(_date.day) + ",", # day
+                str(_date.year) # year
+            ]),
+            datetime.date.today() - _date
+        )
 
 
     def saveCalendarDatabase(encoder):
