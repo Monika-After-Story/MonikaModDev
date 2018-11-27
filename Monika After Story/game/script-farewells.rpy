@@ -342,10 +342,32 @@ init 5 python:
     )
 
 label bye_prompt_to_class:
+    $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
-        m 1hua "Study hard, [player]!"
-        m 1eua "Nothing is more attractive than a [guy] with good grades."
-        m 1hua "See you later!"
+        if session_time < datetime.timedelta(minutes=20):
+            m 1eub "Aww, going already?"
+            m 1efp "You havent even been here for 20 minutes!"
+            m 3hksdlb "I'm just kidding, [player]."
+            m 2eka "You're so sweet for seeing me even when you have so little time."
+            m 2hub "I just want you to know I really appreciate that!"
+            m 2eka "Study hard [player], I'm sure you'll do great!"
+            m 2hua "See you when you get back!"
+        elif session_time < datetime.timedelta(hours=1):
+            m 2eua "Alright, thanks for spending some time with me, [player]!"
+            m 2eka "I honestly wish it could have been longer...but you're a busy [guy]."
+            m 2hua "Nothing is more important than a good education."
+            m 3eub "Teach me something when you get back!"
+            m "See you soon!"
+        elif session_time < datetime.timedelta(hours=6):
+            m 1hua "Study hard, [player]!"
+            m 1eua "Nothing is more attractive than a [guy] with good grades."
+            m 1hua "See you later!"
+        else:
+            m 2ekc "Umm...you've been here with me for quite a while, [player]."
+            m 2ekd "Are you sure you've had enough rest for it?"
+            m 2eka "Make sure you take it easy, okay?"
+            m "If you're not feeling too well, I'm sure {i}one day{/i} off won't hurt."
+            m 1hka "I'll be waiting for you to come back. Stay safe."
 
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
@@ -360,7 +382,6 @@ label bye_prompt_to_class:
         m 6ckc "..."
     # TODO:
     # can monika join u at schools?
-
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
@@ -377,10 +398,34 @@ init 5 python:
     )
 
 label bye_prompt_to_work:
+    $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
-        m 1hua "Work hard, [player]!"
-        m 1esa "I'll be here for you when you get home from work."
-        m 1hua "Bye-bye!"
+        if session_time < datetime.timedelta(minutes=20):
+            m 2eka "Aww, okay! Just checking in on me before heading out?"
+            m 3eka "You must be really short on time if you're leaving already."
+            m "It was really sweet of you to see me, even when you're so busy!"
+            m 3hub "Work hard, [player]! Make me proud!"
+        elif session_time < datetime.timedelta(hours=1):
+            m 1hksdlb "Oh! Alright! I was starting to get really comfortable, ahaha."
+            m 1rusdlb "I was expecting us to be a here a bit longer, but you're a busy [guy]!"
+            m 1eka "It was great seeing you, even if it wasn't as long as I wanted..."
+            m 1kua "But then if it were up to me I'd have you all day!"
+            m 1hua "I'll be here waiting for you to get back home from work!"
+            m "Tell me all about it when you get back!"
+        elif session_time < datetime.timedelta(hours=6):
+            m 2eua "Heading to work then, [player]?"
+            m 2eka "The day may be good or bad...but if it becomes too much think of something nice!"
+            m 4eka "Every day, no matter how badly it's going ends after all!"
+            m 2tku "Maybe you can think of me if it becomes stressful..."
+            m 2esa "Just do your best! I'll see you when you get back!"
+            m 2eka "I know you'll do great!"
+        else:
+            m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
+            m 2rksdlc "I was hoping you'd rest before doing anything too big."
+            m 2ekc "Try not to overexert yourself, okay?"
+            m 2ekd "Don't be afraid to take a breather if you need to!"
+            m 3eka "Just come home to me happy and healthy."
+            m 3eua "Stay safe, [player]!"
 
     elif mas_isMoniUpset():
         m 2efc "Fine, [player], guess I'll see you after work."
@@ -393,7 +438,6 @@ label bye_prompt_to_work:
         m 6ckc "..."
     # TODO:
     # can monika join u at work
-
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_WORK
     return 'quit'
 
