@@ -13,6 +13,7 @@ default persistent._mas_o31_current_costume = None
 
 default persistent._mas_o31_seen_costumes = None
 # dict containing seen costumes for o31
+# NOTE: NOT saved historically since this just tracks what has been seen
 
 default persistent._mas_o31_costume_greeting_seen = False
 # set to true after seeing a costume greeting
@@ -58,6 +59,43 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
+#init -814 python in mas_history:
+    # o31 programming point
+#    def _o31_exit_pp(mhs):
+        ## just adds appropriate IDs to delayed action
+        # TODO
+#        return
+
+
+init -810 python:
+    # MASHistorySaver for o31
+    store.mas_history.addMHS(MASHistorySaver(
+        "o31",
+        datetime.datetime(2018, 11, 2),
+        {
+            "_mas_o31_current_costume": "o31.costume.was_worn",
+            "_mas_o31_costume_greeting_seen": "o31.costume.greeting.seen",
+            "_mas_o31_costumes_allowed": "o31.costume.allowed",
+
+            # this isn't very useful, but we need the reset
+            "_mas_o31_in_o31_mode": "o31.mode.o31",
+
+            "_mas_o31_dockstat_return": "o31.dockstat.returned_o31",
+            "_mas_o31_went_trick_or_treating_short": "o31.actions.tt.short",
+            "_mas_o31_went_trick_or_treating_mid": "o31.actions.tt.mid",
+            "_mas_o31_went_trick_or_treating_right": "o31.actions.tt.right",
+            "_mas_o31_went_trick_or_treating_long": "o31.actions.tt.long",
+            "_mas_o31_went_trick_or_treating_longlong": "o31.actions.tt.longlong",
+            "_mas_o31_went_trick_or_treating_abort": "o31.actions.tt.abort",
+            "_mas_o31_trick_or_treating_start_early": "o31.actions.tt.start.early",
+            "_mas_o31_trick_or_treating_start_normal": "o31.actions.tt.start.normal",
+            "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
+            "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
+
+        }
+#        exit_pp=store.mas_history._o31_exit_pp
+    ))
+
 init 101 python:
     # o31 setup
     if persistent._mas_o31_seen_costumes is None:
@@ -73,6 +111,19 @@ init 101 python:
         ):
         # disable o31 mode
         persistent._mas_o31_in_o31_mode = False
+
+        # unlock the special greetings if need be
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
 
 
 init -11 python in mas_o31_event:
@@ -127,11 +178,8 @@ init -11 python in mas_o31_event:
         RETURNS True if the persistent greeting type is the TT one
         """
         return (
-            store.persistent._mas_greeting_type is not None
-            and (
-                store.persistent._mas_greeting_type[0] 
-                == store.mas_greetings.TYPE_HOL_O31_TT
-            )
+            store.persistent._mas_greeting_type 
+            == store.mas_greetings.TYPE_HOL_O31_TT
         )
 
 
@@ -163,6 +211,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31mcg")
                 )
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
 
             else:
                 persistent._mas_o31_current_costume = "rin"
@@ -170,6 +219,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31rcg")
                 )
+                store.mas_selspr.unlock_clothes(mas_clothes_rin)
 
             persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
 
@@ -184,6 +234,9 @@ label mas_holiday_o31_autoload_check:
 
     # always disable the opendoro greeting on o31
     $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
+
+    # and the hairdown greeting as well
+    $ lockEventLabel("greeting_hairdown", store.evhand.greeting_database)
 
     # otherwise, jump back to the holiday check point
     jump mas_ch30_post_holiday_check
@@ -715,7 +768,7 @@ label bye_trick_or_treat_rtg:
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
         m 1hub "Let's go trick or treating!"
-        $ persistent._mas_greeting_type = [store.mas_greetings.TYPE_HOL_O31_TT]
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
         return "quit"
 
     # otherwise, failure in generation

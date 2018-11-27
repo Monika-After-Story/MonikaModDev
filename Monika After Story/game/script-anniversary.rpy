@@ -55,7 +55,7 @@ init -1 python in mas_anni:
 #        return mas_utils.am3(new_date + datetime.timedelta(days=1))
 # NOTE: doing am3 leads to calendar problems
 #   we'll just restrict this to midnight to midnight -1
-        return mas_utils.mdnt(new_date)
+        return mas_utils.mdnt(new_date + datetime.timedelta(days=1))
 
     def build_anni_end(years=0, months=0, weeks=0):
         """
@@ -286,6 +286,30 @@ init 10 python in mas_anni:
         else:
             return compare.year - firstSesh.year
 
+    def pastOneWeek():
+        """    
+        RETURNS:
+            True if current date is past the 1 week threshold 
+            False if below the 1 week threshold
+        """
+        return datetime.date.today() >= build_anni(weeks=1).date()
+
+    def pastOneMonth():
+        """    
+        RETURNS:
+            True if current date is past the 1 month threshold 
+            False if below the 1 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=1).date()
+
+    def pastThreeMonths():
+        """    
+        RETURNS:
+            True if current date is past the 3 month threshold 
+            False if below the 3 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=3).date()
+    
     def pastSixMonths():
         """    
         RETURNS:
