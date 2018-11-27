@@ -665,7 +665,7 @@ label mas_reaction_promisering:
             m 1skbltpa "This makes me so happy!"
             if mas_isSpecialDay():
                 #TODO maybe go more in detail for this
-                m "Even more that you gave it to me in this special day ..."
+                m "Even more that you gave it to me on this special day ..."
             m 1dkbltpa "Aha, sorry for crying, [player]..."
             m 1skbla "I’m just really, really happy right now."
             m 1dkbla "Thank you."
