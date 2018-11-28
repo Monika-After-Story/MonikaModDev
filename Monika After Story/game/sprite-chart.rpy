@@ -2908,6 +2908,22 @@ init -2 python in mas_sprites:
         """
         store.mas_acs_promisering.pose_map = temp_storage["clothes.rin"]
 
+
+    def _clothes_marisa_entry(_moni_chr):
+        """
+        Entry programming point for marisa clothes
+        """
+        temp_storage["clothes.marisa"] = store.persistent._mas_acs_enable_promisering
+        _moni_chr.remove_acs(store.mas_acs_promisering)
+
+
+    def _clothes_marisa_exit(_moni_chr):
+        """
+        Exit programming point for marisa clothes
+        """
+        if temp_storage.get("clothes.marisa", False):
+            _moni_chr.wear_acs_pst(store.mas_acs_promisering)
+
     ######### ACS ###########
 
 
@@ -3084,7 +3100,9 @@ init -1 python:
         hair_map={
             "all": "custom"
         },
-        stay_on_start=True
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_marisa_entry,
+        exit_pp=store.mas_sprites._clothes_marisa_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(

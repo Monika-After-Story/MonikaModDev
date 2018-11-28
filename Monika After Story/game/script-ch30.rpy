@@ -1251,6 +1251,7 @@ label ch30_reset:
     # this is likely to occur in crashes / reloads
     python:
         if persistent._mas_acs_enable_promisering:
+            # TODO: need to be able to add a different promise ring
             monika_chr.wear_acs_pst(mas_acs_promisering)
 
     ## random chatter frequency reset
@@ -1359,7 +1360,10 @@ label ch30_reset:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
-        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+#        if store.mas_o31_event.isMonikaInCostume(monika_chr):
+#            monika_chr.remove_acs(mas_acs_promisering)
+        if monika_chr.clothes.name == mas_clothes_marisa.name:
+            # TODO: need to be able to remove different rings
             monika_chr.remove_acs(mas_acs_promisering)
 
     return
