@@ -16,6 +16,9 @@ default persistent._mas_filereacts_stop_map = dict()
 default persistent._mas_filereacts_historic = dict()
 # historic database used to track when and how many gifts Monika has received
 
+default persistent._mas_filereacts_last_reacted_date = None
+# stores the last date gifts were received so we can clear _mas_filereacts_reacted_map
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
@@ -45,16 +48,10 @@ init -1 python in mas_filereacts:
     th_foundreact_map = dict()
 
     # good gifts list
-    # TODO: note this would probably be better handled by a property
-    # on the event
-    good_gifts = ["mas_reaction_gift_coffee","mas_reaction_quetzal_plush",
-        "mas_reaction_promisering", "mas_reaction_plush",
-        "mas_reaction_bday_cake","mas_reaction_cupcake"]
-    # bad gifts list
-    # TODO: note this would probably be better handled by a property
-    # on the event
-    bad_gifts = ["mas_reaction_knife"]
+    good_gifts = list()
 
+    # bad gifts list
+    bad_gifts = list()
 
     # connector quips
     connectors = None
@@ -64,7 +61,7 @@ init -1 python in mas_filereacts:
     starters = None
     gift_starters = None
 
-    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE):
+    def addReaction(ev_label, fname, _action=store.EV_ACT_QUEUE, is_good=None):
         """
         Adds a reaction to the file reactions database.
 
@@ -73,6 +70,8 @@ init -1 python in mas_filereacts:
             fname - filename to react to
             _action - the EV_ACT to do
                 (Default: EV_ACT_QUEUE)
+            is_good - if the gift is good(True), neutral(None) or bad(False)
+               (Default: None)
         """
         # lowercase the list in case
         if fname is not None:
@@ -90,6 +89,12 @@ init -1 python in mas_filereacts:
         # add it to the db and map
         filereact_db[ev_label] = ev
         filereact_map[fname] = ev
+
+        if is_good is not None:
+            if is_good:
+                good_gifts.append(ev_label)
+            else:
+                bad_gifts.append(ev_label)
 
 
     def _initConnectorQuips():
@@ -127,11 +132,17 @@ init -1 python in mas_filereacts:
         RETURNS:
             list of event labels in the order they should be shown
         """
+
         GIFT_EXT = ".gift"
         raw_gifts = store.mas_docking_station.getPackageList(GIFT_EXT)
 
         if len(raw_gifts) == 0:
             return []
+
+        # is it a new day?
+        if store.persistent._mas_filereacts_last_reacted_date is None or store.persistent._mas_filereacts_last_reacted_date != datetime.date.today():
+            store.persistent._mas_filereacts_last_reacted_date = datetime.date.today()
+            store.persistent._mas_filereacts_reacted_map = dict()
 
         # otherwise we found some potential gifts
         gifts_found = list()
@@ -194,7 +205,10 @@ init -1 python in mas_filereacts:
             generic_reacts.insert(0, "mas_reaction_end")
 
             # add the starter
-            generic_reacts.append("mas_reaction_gift_starter_bday")
+            if store.mas_isMonikaBirthday():
+                generic_reacts.append("mas_reaction_gift_starter_bday")
+            else:
+                generic_reacts.append("mas_reaction_gift_starter_neutral")
 #            generic_reacts.append(gift_starters.quip()[1])
 
         # now return the list
@@ -364,19 +378,19 @@ init -1 python in mas_filereacts:
 init python:
     import store.mas_filereacts as mas_filereacts
 
-    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE):
+    def addReaction(ev_label, fname_list, _action=EV_ACT_QUEUE, is_good=None):
         """
         Globalied version of the addReaction function in the mas_filereacts
         store.
 
         Refer to that function for more information
         """
-        mas_filereacts.addReaction(ev_label, fname_list, _action)
+        mas_filereacts.addReaction(ev_label, fname_list, _action, is_good)
 
 
     def mas_checkReactions():
         """
-        Checks for reactions, then pushes them
+        Checks for reactions, then queues them
         """
         # only check if we didnt just react
         if persistent._mas_filereacts_just_reacted:
@@ -386,8 +400,10 @@ init python:
         mas_filereacts.foundreact_map.clear()
         reacts = mas_filereacts.react_to_gifts(mas_filereacts.foundreact_map)
         if len(reacts) > 0:
+            # need to reverse it now
+            reacts.reverse()
             for _react in reacts:
-                pushEvent(_react)
+                queueEvent(_react)
             persistent._mas_filereacts_just_reacted = True
 
 
@@ -403,6 +419,26 @@ init python:
         Globalied version for gift stats tracking
         """
         return mas_filereacts.get_report_for_date(date)
+
+    def mas_getGiftStatsForDate(label,date=None):
+        """
+        Globalied version to get the stats for a specific gift
+        IN:
+            label - the gift label identifier.
+            date - the date to get the stats for, if None is given will check
+                today's date.
+                (Defaults to None)
+
+        RETURNS:
+            The number of times the gift has been given that date
+        """
+        if date is None:
+            date = datetime.date.today()
+        historic = persistent._mas_filereacts_historic.get(date,None)
+
+        if historic is None:
+            return 0
+        return historic.get(label,0)
 
 
 
@@ -440,7 +476,8 @@ init 5 python:
 label mas_reaction_gift_connector2:
     m 1hua "Ah, jeez, [player]..."
     m "You really enjoy spoiling me, don't you?"
-    m 1sublo "Well! I'm not going to complain about a little special treatment today."
+    if mas_isSpecialDay():
+        m 1sublo "Well! I'm not going to complain about a little special treatment today."
     m 1suo "And here we have..."
     return
 
@@ -459,13 +496,21 @@ label mas_reaction_gift_starter_generic:
 # TODO: if we need this to be multipled then we do it
 
 label mas_reaction_gift_starter_bday:
-    m 1sublo "T-{w=1}This is..."
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
     m "A gift? For me?"
     m 1hka "I..."
     m 1hua "I've often thought about getting presents from you on my birthday..."
     m "But actually getting one is like a dream come true..."
     m 1sua "Now, what's inside?"
     m 1suo "Oh, it's..."
+    return
+
+label mas_reaction_gift_starter_neutral:
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
+    m "A gift? For me?"
+    m 1sua "Now, let's see what's inside?"
     return
 
 
@@ -500,8 +545,8 @@ label mas_reaction_gift_generic:
     $ store.mas_filereacts.delete_file(None)
     return
 
-init 5 python:
-    addReaction("mas_reaction_gift_test1", "test1")
+#init 5 python:
+#    addReaction("mas_reaction_gift_test1", "test1")
 
 label mas_reaction_gift_test1:
     m "Thank you for gift test 1!"
@@ -510,8 +555,8 @@ label mas_reaction_gift_test1:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_gift_test2", "test2")
+#init 5 python:
+#    addReaction("mas_reaction_gift_test2", "test2")
 
 label mas_reaction_gift_test2:
     m "Thank you for gift test 2!"
@@ -526,11 +571,12 @@ label mas_reaction_gift_test2:
 # persistent._mas_coffee_brewing
 
 init 5 python:
-    addReaction("mas_reaction_gift_coffee", "coffee")
+    addReaction("mas_reaction_gift_coffee", "coffee", is_good=True)
 
 label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
+    $ store.mas_sprites.reset_zoom()
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
@@ -570,7 +616,7 @@ label mas_reaction_gift_coffee:
     return
 
 init 5 python:
-    addReaction("mas_reaction_quetzal_plush", "quetzalplushie")
+    addReaction("mas_reaction_quetzal_plush", "quetzalplushie", is_good=True)
 
 label mas_reaction_quetzal_plush:
     if not persistent._mas_acs_enable_quetzalplushie:
@@ -595,8 +641,12 @@ label mas_reaction_quetzal_plush:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_promisering", "promisering")
+#This one is added later so the init pipeline can define the anni function
+init 11 python:
+    # only available after 6 months or if it's her birthday, may as well add valentine later
+    # TODO add dialogue for gift rejection in case the conditions below are not met 
+    if mas_anni.pastSixMonths() or mas_isMonikaBirthday():
+        addReaction("mas_reaction_promisering", "promisering", is_good=True)
 
 label mas_reaction_promisering:
     if not persistent._mas_acs_enable_promisering:
@@ -614,6 +664,9 @@ label mas_reaction_promisering:
             m 3lkbltpa "Know that I’ll cherish it."
             m 3dkbltpa "Always."
             m 1skbltpa "This makes me so happy!"
+            if mas_isSpecialDay():
+                #TODO maybe go more in detail for this
+                m "Even more that you gave it to me on this special day ..."
             m 1dkbltpa "Aha, sorry for crying, [player]..."
             m 1skbla "I’m just really, really happy right now."
             m 1dkbla "Thank you."
@@ -651,7 +704,7 @@ label mas_reaction_promisering:
     return
 
 init 5 python:
-    addReaction("mas_reaction_plush", "plushie")
+    addReaction("mas_reaction_plush", "plushie", is_good=True)
 
 label mas_reaction_plush:
     m 1wud "What’s this, [player]?"
@@ -672,6 +725,7 @@ init 5 python:
 
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
+        $ mas_loseAffection(3)
         m 1rksdlb "Today is not my birthday, did you forget when it is, [player]?"
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
@@ -693,7 +747,7 @@ label mas_reaction_bday_cake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake")
+    addReaction("mas_reaction_cupcake", "cupcake", is_good=False)
 
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
@@ -709,7 +763,7 @@ label mas_reaction_cupcake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_knife", "knife")
+    addReaction("mas_reaction_knife", "knife", is_good=False)
 
 label mas_reaction_knife:
     m 1euc "...?"
@@ -728,4 +782,134 @@ label mas_reaction_knife:
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:
     $ persistent._mas_filereacts_just_reacted = False
+    return
+
+init 5 python:
+    # TODO ideally we should comment on this gift in any date
+    # so it requires special dialogue, until we have that let's keep it O31 only
+    if mas_isO31():
+        addReaction("mas_reaction_candy", "candy", is_good=True)
+
+label mas_reaction_candy:
+    $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candy")
+    if times_candy_given == 0:
+        $ mas_gainAffection(10,bypass=True)
+        m 1wua "Oh...{w=1}what's this?"
+        m 1sua "You got me candy, [player], yay!"
+        m 1eka "That's so {i}sweet{/i}..."
+        m 1hub "Ahaha!"
+        m 1eka "Kidding aside, that's really nice of you."
+        m 2lksdlc "I don't get to have much candy anymore, and it just wouldn't be Halloween without it..."
+        m 1eka "So thank you, [player]..."
+        m 1eka "You always know exactly what will make me happy~"
+        m 1hub "Now let's enjoy some of this delicious candy!"
+    elif times_candy_given == 1:
+        $ mas_gainAffection(5,bypass=True)
+        m 1wua "Aww, you got me more candy, [player]?"
+        m 1hub "Thank you!"
+        m 3tku "The first batch was {i}sooo{/i} good, I couldn't wait to have more."
+        m 1hua "You really do spoil me, [player]~"
+    elif times_candy_given == 2:
+        $ mas_gainAffection(3,bypass=True)
+        m 1wud "Wow, even {i}more{/i} candy, [player]?"
+        m 1eka "That's really nice of you..."
+        m 1lksdla "But I think this is enough."
+        m 1lksdlb "I'm already feeling jittery from all the sugar, ahaha!"
+        m 1ekbfa "The only sweetness I need now is you~"
+    elif times_candy_given == 3:
+        m 2wud "[player]...{w=1} you got me {i}even more{/i} candy?!"
+        m 2lksdla "I really do appreciate it, but I told you I've had enough for one day..."
+        m 2lksdlb "If I eat anymore I'm going to get sick, ahaha!"
+        m 1eka "And you wouldn't want that, right?"
+    elif times_candy_given == 4:
+        $ mas_loseAffection(5)
+        m 2wfd "[player]!"
+        m 2tfd "Are you not listening to me?"
+        m 2tfc "I told you I don't want anymore candy today!"
+        m 2ekc "So please, stop."
+        m 2rkc "It was really nice of you to get me all of this candy on Halloween, but enough is enough..."
+        m 2ekc "I can't eat all of this."
+    else:
+        $ mas_loseAffection(10)
+        m 2tfc "..."
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candy.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+    $ mas_receivedGift("mas_reaction_candy")
+    $ gift_ev = mas_getEV("mas_reaction_candy")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    return
+
+init 5 python:
+    # TODO ideally we should comment on this gift in any date
+    # so it requires special dialogue, until we have that let's keep it O31 only
+    if mas_isO31():
+        addReaction("mas_reaction_candycorn", "candycorn", is_good=False)
+
+label mas_reaction_candycorn:
+    $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
+    if times_candy_given == 0:
+        $ mas_gainAffection(3,bypass=True)
+        m 1wua "Oh...{w=1}what's this?"
+        m 1eka "Aww did you get me candy, [player]?"
+        m 1hua "Yay!"
+        m 3eub "Let's see what you got for me..."
+        m 4ekc "..."
+        m 2eka "Oh...{w=2}candy corn."
+        m 2eka "..."
+        m 2lksdla "That's really nice of you..."
+        m 2lksdla "But...{w=1}umm...{w=1}I don't actually like candy corn."
+        m 2hksdlb "Sorry, ahaha..."
+        m 4eka "I do appreciate you trying to give me candy on Halloween, though."
+        m 1hua "And if you could find a way to get some other candy for me, it'd make me really happy, [player]!"
+    elif times_candy_given == 1:
+        $ mas_loseAffection(5)
+        m 2esc "Oh."
+        m 2esc "More candy corn, [player]?"
+        m 4esc "I already told you I don't really like candy corn."
+        m 4ekc "So could you please try to find something else?"
+        m 1eka "I don't get sweets that often anymore..."
+        m 1ekbfa "Well...{w=1}besides you, [player]..."
+        m 1hubfa "Ehehe~"
+    elif times_candy_given == 2:
+        $ mas_loseAffection(10)
+        m 2wfw "[player]!"
+        m 2tfc "I really tried not to be rude about this, but..."
+        m 2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyways."
+        m 2rfc "It's starting to feel like you're just trying to mess with me at this point."
+        m 2tkc "So please, either find me some other kind of candy or just stop."
+    else:
+        $ mas_loseAffection(15) # should have seen it coming
+        m 2tfc "..."
+        python:
+            store.mas_ptod.rst_cn()
+            local_ctx = {
+                "basedir": renpy.config.basedir
+            }
+        show monika at t22
+        show screen mas_py_console_teaching
+
+        call mas_wx_cmd("import os", local_ctx, w_wait=1.0)
+        call mas_wx_cmd("os.remove(os.path.normcase(basedir+'/characters/candycorn.gift'))", local_ctx, w_wait=1.0, x_wait=1.0)
+        $ store.mas_ptod.ex_cn()
+        hide screen mas_py_console_teaching
+        show monika at t11
+
+    $ mas_receivedGift("mas_reaction_candycorn") # while technically she didn't accept this one counts
+    $ gift_ev = mas_getEV("mas_reaction_candycorn")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    #TODO check if this is a good way to allow multi gifts
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return

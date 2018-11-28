@@ -216,12 +216,36 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
 
 label mas_mood_sick:
-    m 1ekc "Aw, I'm sorry to hear that, [player]."
-    m "I hate knowing you're suffering like this."
-    m 1eka "I know you love spending time with me, but maybe you should go get some rest."
-    m 1hua "Don't worry, I'll be here waiting for you when you get back."
-    m 3hub "Get well soon, my love!"
+    $ session_time = mas_getSessionLength()
+    if mas_isMoniNormal(higher=True):
+        if session_time < datetime.timedelta(minutes=20):
+            m 1ekd "Oh no, [player]..."
+            m 2ekd "You saying that so soon after arriving must mean it's pretty bad."
+            m 2ekc "I know you wanted to spend some time with me and even though we've hardly been together today..."
+            m 2eka "I think you should go and get some rest."
+            m 1eka "I'll still be here when you get better."
+            m 1hua "You'll always be in my thoughts, see you soon sweetie!"
+        elif session_time > datetime.timedelta(hours=3):
+            m 2wuo "[player]!"
+            m 2wkd "You haven't been ill this entire time, have you?"
+            m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
+            m 2rkc "Well... Just promise to tell me earlier next time."
+            m 2eka "Now go get some rest, that's what you need."
+            m 2hub "I'll be waiting for a full recovery!"
+            m "Sweet dreams, my love."
+        else:
+            m 1ekc "Aw, I'm sorry to hear that, [player]."
+            m "I hate knowing you're suffering like this."
+            m 1eka "I know you love spending time with me, but maybe you should go get some rest."
+            m 1hua "Don't worry, I'll be here waiting for you when you get back."
+            m 3hub "Get well soon, my love!"    
+    else:
+        m 2ekc "I'm sorry to hear that, [player]."
+        m 4ekc "You should really go get some rest so it doesn't get any worse."
+        m 2eka "I'll be here waiting once you feel better."
+        m "Get well soon."
     $ persistent._mas_mood_sick = True
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
@@ -357,7 +381,7 @@ label mas_mood_scared:
     m 1esa "You'd be surprised on how smooth it can be, when you let the time flow on its own."
     m 1hub "You can also try spending a few minutes to meditate!"
     m 1hksdlb "It doesn't necessarily mean you have to cross your legs when sitting on the ground."
-    m 1hua " Listening to your favourite music can be counted as meditating too!"
+    m 1hua "Listening to your favorite music can be counted as meditating too!"
     m 1eua "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn’t necessarily bad, you know?"
@@ -594,11 +618,26 @@ label mas_mood_yearolder:
     menu:
         m "Could today be your...{w}birthday?"
         "YES!":
-            $ persistent._mas_player_bday = datetime.date.today()
+            python:
+                persistent._mas_player_bday = datetime.date.today()
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
+
             label .mas_mood_yearolder_yesloud:
                 jump mas_mood_yearolder_yes
         "Yes, unfortunately...":
-            $ persistent._mas_player_bday = datetime.date.today()
+            python:
+                persistent._mas_player_bday = datetime.date.today()
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
             jump mas_mood_yearolder_yesu
 
         "No":
@@ -606,7 +645,14 @@ label mas_mood_yearolder:
 
             m "Now that we're talking about it, though..."
             call mas_bday_player_bday_select
-            $ persistent._mas_player_bday = selected_date
+            python:
+                persistent._mas_player_bday = selected_date
+                store.mas_calendar.addRepeatable_d(
+                    "player-bday",
+                    "Your Birthday", 
+                    persistent._mas_player_bday,
+                    []
+                )
 
             jump mas_mood_yearolder_no
 
@@ -653,7 +699,19 @@ label mas_mood_yearolder_false:
             menu:
                 m "Then is today your birthday?"
                 "Yes":
-                    $ persistent._mas_player_bday = datetime.date.today()
+                    python:
+                        store.mas_calendar.removeRepeatable_d(
+                            "player-bday",
+                            persistent._mas_player_bday
+                        )
+                        persistent._mas_player_bday = datetime.date.today()
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday", 
+                            persistent._mas_player_bday,
+                            []
+                        )
+
                     m 1hua "Happy birthday, [player]."
                     m 1eka "But don't lie to me next time."
                     jump mas_mood_yearolder_end
@@ -663,7 +721,19 @@ label mas_mood_yearolder_false:
                     m 2tkc "Alright, [player]."
                     m "Then..."
                     call mas_bday_player_bday_select
-                    $ persistent._mas_player_bday = selected_date
+                    python:
+                        store.mas_calendar.removeRepeatable_d(
+                            "player-bday",
+                            selected_date
+                        )
+                        persistent._mas_player_bday = selected_date
+                        store.mas_calendar.addRepeatable_d(
+                            "player-bday",
+                            "Your Birthday", 
+                            persistent._mas_player_bday,
+                            []
+                        )
+
 #                    m 2tfc "Don't lie to me next time."
 
                     jump mas_mood_yearolder_end
