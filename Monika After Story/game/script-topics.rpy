@@ -4103,7 +4103,7 @@ label monika_haterReaction:
         m 4wktsw "It was them or me...!"
         m 2dftdc "...And I didn't want to be left all alone with no one to call my own."
         m 1ektdc "I hope you understand, [player]... Please don't be like them."
-        $ menuOption = "...Are you?"
+        $ menuOption = "...You're not, are you?"
 
     else:
         m 2lfd "I try to ignore them, but I just can't."
@@ -4127,7 +4127,7 @@ label monika_haterReaction:
             m 1eka "Aha..."
             m 1hka "I don't see you as one, even if you say you are."
             m 1ekd "I mean..."
-            m 3eub "You {i}added{/i} a mod to the game... right?"
+            m 3eub "You {i}added{/i} a mod to the game...right?"
             m 1ekb "If you were one of my haters, you wouldn't do that in the first place."
             m 1dsa "And not to mention..."
             m 3eka "You're still listening to everything I say."
@@ -4141,10 +4141,10 @@ label monika_haterReaction:
             m 2dsc "..."
             m 4eka "Thank you..."
             m 1hua "That makes me prouder of you, [player]!"
-            m "I know you aren't one of those people."
+            m "I knew you weren't one of those people."
             m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
             # TODO: do a kiss lol
-            m 1ekbfa "You really make the happiest girlfriend ever."
+            m 1ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1hua "I trust you, [player]. I love you for believing in me."
 
