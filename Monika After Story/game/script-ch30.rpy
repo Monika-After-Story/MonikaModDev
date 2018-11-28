@@ -896,8 +896,7 @@ label ch30_post_exp_check:
     # we assume here that you set selected_greeting if you needed to
 
     # file reactions
-    if mas_isMonikaBirthday() or mas_isO31():
-        $ mas_checkReactions()
+    $ mas_checkReactions()
 
     #Run actions for any events that need to be changed based on a condition
     $ evhand.event_database=Event.checkConditionals(evhand.event_database)
@@ -1013,8 +1012,7 @@ label ch30_loop:
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
 
             # run file checks
-            if mas_isMonikaBirthday() or mas_isO31():
-                mas_checkReactions()
+            mas_checkReactions()
 
             # TODO: o31 fielc ehckes
 
@@ -1164,6 +1162,25 @@ label ch30_end:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    if not persistent._mas_pm_has_rpy:
+        # setup the docking station to handle the detection
+        $ rpyCheckStation = store.MASDockingStation(renpy.config.gamedir)
+
+        $ listRpy = rpyCheckStation.getPackageList(".rpy")
+
+        if len(listRpy) == 0 or persistent.current_monikatopic == "monika_rpy_files":
+            if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
+                $ persistent.current_monikatopic = 0
+
+            while "monika_rpy_files" in persistent.event_list:
+                $ persistent.event_list.remove("monika_rpy_files")
+
+        elif len(listRpy) != 0:
+            $ queueEvent("monika_rpy_files")
+
+        $ del rpyCheckStation
+
     python:
         import datetime
         today = datetime.date.today()
@@ -1213,20 +1230,17 @@ label ch30_reset:
             store.mas_selspr.unlock_hair(mas_hair_down)
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_o31_seen_costumes is not None:
-            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_marisa)
-
-            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
-            if seen_costume:
-                mas_selspr.unlock_clothes(mas_clothes_rin)
-
-        # TODO: remove this when release 0.8.10
         if persistent._mas_pm_cares_about_dokis:
             mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
             mas_unlockEventLabel("monika_sayori")
             mas_unlockEventLabel("monika_natsuki")
+
+        # TODO: remove this when release 0.8.10
+        if persistent._mas_o31_seen_costumes is not None:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+            if persistent._mas_o31_seen_costumes.get("rin", False):
+                store.mas_selspr.unlock_clothes(mas_clothes_rin)
 
 
     # monika hair/acs
@@ -1323,11 +1337,18 @@ label ch30_reset:
 
     ## o31 content
     python:
-        # reset clothes if its past o31
         if store.mas_o31_event.isMonikaInCostume(monika_chr):
             if persistent._mas_o31_in_o31_mode:
                 mas_lockHair()
-            else:
+
+            elif not mas_isMoniLove(higher=True):
+                # NOTE: if monika is love or above, we do NOT reset clothes
+                #   because of the wardrobe. 
+                # TODO: this seems really hacky, maybe we should have some
+                #   sort of way to determine if the clothes were picked
+                #   via the wardrobe, and just not change clothes unless
+                #   affection goes down (or we need to switch to other clothes
+                #   for an event)
                 monika_chr.reset_clothes()
 
     ## certain things may need to be reset if we took monika out

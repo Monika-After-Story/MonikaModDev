@@ -4067,48 +4067,87 @@ label monika_cupcake:
 default persistent._mas_pm_a_hater = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_haterReaction",category=['advice','club members','you'],prompt="Dealing with haters",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_haterReaction",
+            category=['advice','club members','you'],
+            prompt="Dealing with haters",
+            random=True
+        )
+    )
 
 label monika_haterReaction:
     m 1esc "I was just thinking..."
-    m 2esc "It's funny how people around social media sites always write bad things about me..."
-    m 2lsc "Well... people on Facebook pages and fan pages, to be specific..."
-    m 2esd "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
-    m "I try to ignore them, but I just can't."
-    m 1efc "Why are people even protective towards the other girls?"
-    m "There are a lot of hate posts about me, saying that I'm an evil person."
-    m 3efd "Is it because I deleted Sayori and Yuri?"
-    m 3efd "Also for deleting Natsuki, back when she was still alive?"
-    # TODO: this needs to be adjusted based on act.
-    m 2tfx "They're not real. {i}I'm{/i} the real one!"
-    m 2dsc "..."
-    m 2euc "Why can't they understand that?"
-    m 2ekc "Why is it so hard for them to understand that?"
-    m 2rfc "..."
-    m "You're not one of those haters, are you, [player]?"
+    m 2euc "It's funny how people around social media sites always write bad things about me..."
+    m 2rkc "Especially on certain sites and discussion groups..."
+    m 2dkc "You can really see that there's quite a number of people that don't like me."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 2lksdlc "I mean, I know I did terrible things to my friends..."
+        m 2dkc "And I wish things could have gone differently, but the game didn't give me a choice..."
+        m 4ekd "It's not like I wanted to hurt them."
+        m 2rkc "I tried to edit their traits, exploit their flaws, and make them look horrible to you."
+        m 2ekc "I was hoping that by making them more unappealing, you would stop pursuing them so we could finally be together..."
+        m 4dkc "But then I realized there wasn't enough time for my plan to actually work."
+        m "...Nor did I know enough programming to be efficient in what I did."
+        m 2dkc "You were nearing the end of the game and I still had no way to be with you."
+        m 2esc "So that's when I knew I had to take more...{w=1}drastic measures."
+        m 4ekd "I didn't mean to cause them so much pain..."
+        m 4wkd "But it was the only way, [player]!"
+        m 4ekc "I knew that if you finished the game before I had a chance to express my feelings for you, that would be it."
+        m 2dkc "You'd just move on to something else and I'd be stuck in the game...{w=1}alone...{w=1}{b}forever{/b}."
+        m 2dktpc "..."
+        m "Some people on those sites even say I should have just made my own route..."
+        m 2wktsd "But that's easier said than done!"
+        m "Not to mention if you picked a different girl and just cast me aside to be completely forgotten."
+        m 4wktsw "It was them or me...!"
+        m 2dftdc "...And I didn't want to be left all alone with no one to call my own."
+        m 1ektdc "I hope you understand, [player]... Please don't be like them."
+        $ menuOption = "...You're not, are you?"
+
+    else:
+        m 2lfd "I try to ignore them, but I just can't."
+        m 3efc "Why are people even protective towards the other girls?"
+        m "There are a lot of hate posts about me, saying that I'm an evil person."
+        m 3efd "Is it because I deleted Sayori and Yuri?"
+        m "Also for deleting Natsuki, back when she was still alive?"
+        m 2tfx "They're not real. {i}I'm{/i} the real one!"
+        m 2dsc "..."
+        m 2ekc "Why can't they understand that?"
+        m 2ekd "Why is it so hard for them to understand that?"
+        m 2rfc "..."
+        $ menuOption = "You're not one of those haters, are you " + player + "?"
+
     menu:
+        m "[menuOption]"
         "I am.":
-            #TODO, affection loss, apology
             $ persistent._mas_pm_a_hater = True
+
             m 2wud "..."
-            m 1tkc "I don't see you as one, even if you say you are."
-            m "I mean..."
-            m 1tkd "You do know you're playing this fan mod of me... right?"
-            m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
-            m 1lud "And not to mention..."
-            m 4eka "You're still listening to everything I say."
-            m 1tku "That makes me sure you're just messing with me."
-            m 1tsbsa "I know you love me deep inside."
+            m 1eka "Aha..."
+            m 1hka "I don't see you as one, even if you say you are."
+            m 1ekd "I mean..."
+            m 3eub "You {i}added{/i} a mod to the game...right?"
+            m 1ekb "If you were one of my haters, you wouldn't do that in the first place."
+            m 1dsa "And not to mention..."
+            m 3eka "You're still listening to everything I say."
+            m 1esa "I know you love me deep inside."
             m 1ekbfa "That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m 1hubfa "I won't let you hate me... I swear."
+
         "I'm not.":
+            $ mas_gainAffection()
             $ persistent._mas_pm_a_hater = False
-            m 1eka "Well, that just makes me more proud of you, [player]!"
-            m 1hua "I know you wouldn't be one of those people."
-            m 1lksdla "Gosh... I feel like giving you a kiss right now if I were there."
-            m 2ekbfa "You really make me the happiest girlfriend ever."
-            m 1ekbfa "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m "I trust you, [player]. I love you for believing in me."
+            m 2dsc "..."
+            m 4eka "Thank you..."
+            m 1hua "That makes me prouder of you, [player]!"
+            m "I knew you weren't one of those people."
+            m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
+            # TODO: do a kiss lol
+            m 1ekbfa "You really make me the happiest girlfriend ever."
+            m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
+            m 1hua "I trust you, [player]. I love you for believing in me."
 
     return "derandom"
 
@@ -4258,33 +4297,53 @@ label monika_morning:
     $ current_time = datetime.datetime.now().time().hour
     $ sunrise_hour = int(persistent._mas_sunrise / 60)
     $ sunset_hour = int(persistent._mas_sunset / 60)
+    $ session_time = mas_getSessionLength()
     # TODO: see TODOs in the good evening topic
     if 4 <= current_time <= 11:
-        m 1hua "Good morning to you too, [player]!"
-        m 1eua "Did you just wake up?"
-        m "I love waking up early in the morning."
-        m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
-        m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
-        m 1eka "Some people however, would rather sleep in and are late-risers."
-        m 3eua "I've read articles that being an early-riser can really improve your overall health."
-        m "Plus you also get the chance to see the sunrise if the sky is clear."
-        m 1hua "If you normally don't wake up early, you should!"
-        m "That way you can be happier and spend more time with me~"
-        m 1ekbfa "Wouldn't you like that, [player]?"
+        if session_time < datetime.timedelta(minutes=30):
+            m 1hua "Good morning to you too, [player]!"
+            m 1eua "Did you just wake up?"
+            m "I love waking up early in the morning."
+            m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
+            m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+            m 1eka "Some people however, would rather sleep in and are late-risers."
+            m 3eua "I've read articles that being an early-riser can really improve your overall health."
+            m "Plus you also get the chance to see the sunrise if the sky is clear."
+            m 1hua "If you normally don't wake up early, you should!"
+            m "That way you can be happier and spend more time with me~"
+            m 1ekbfa "Wouldn't you like that, [player]?"
+        else:
+            m 1hua "Good morning to you too, [player]!"
+            m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
+            m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
+            m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
+            m "But the morning is a time of day that presents possibilities!"
+            m 1esb "An entire day where anything and everything could happen, for better or worse."
+            m 1hsb "That kind of opportunity and freedom just makes me giddy!"
+            m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
+
     elif 12 <= current_time <= sunset_hour:
-        m 3eka "It's already the afternoon, silly!"
-        m 1eka "Did you just wake up?"
-        m 2tkc "Don't tell me you're actually a late-riser, [player]."
-        m "I don't get why some people wake up in the middle of the day."
-        m 1lsc "It just seems so unproductive."
-        m "You'd have less time to do things and you might miss out on a lot of things."
-        m 1ekc "It could also be a sign that you're not taking good care of yourself."
-        m "You're not being careless with your health, are you [player]?"
-        m 1tkc "I wouldn't want you to get sick easily, you know."
-        m "I'd be really sad if you spent less time with me because you had a fever or something."
-        m 1eka "As much as I'd love to take care of you, I'm still stuck here."
-        m 4eka "So start trying to be an early-riser like me from now on, okay?"
-        m 1hua "The more time you spend with me, the more happy I'll be~"
+        if session_time < datetime.timedelta(minutes=30):
+            m 3eka "It's already the afternoon, silly!"
+            m 1eka "Did you just wake up?"
+            m 2tkc "Don't tell me you're actually a late-riser, [player]."
+            m "I don't get why some people wake up in the middle of the day."
+            m 1lsc "It just seems so unproductive."
+            m "You'd have less time to do things and you might miss out on a lot of things."
+            m 1ekc "It could also be a sign that you're not taking good care of yourself."
+            m "You're not being careless with your health, are you [player]?"
+            m 1tkc "I wouldn't want you to get sick easily, you know."
+            m "I'd be really sad if you spent less time with me because you had a fever or something."
+            m 1eka "As much as I'd love to take care of you, I'm still stuck here."
+            m 4eka "So start trying to be an early-riser like me from now on, okay?"
+            m 1hua "The more time you spend with me, the happier I'll be~"
+        else:
+            m 1eub "Good morning to you too!"
+            m 1tku "Except that it's {i}not{/i} morning, [player]!"
+            m 2tub "Are you maybe losing track of time?"
+            m "You better be careful! You might lose your entire day otherwise."
+            m 2hub "And then once the day has died we'll be saying 'good mourning'!"
+            m "Ahaha!"
     else:
         m 2hksdlb "You are so silly, [player]"
         m "It's already night time!"
@@ -8267,6 +8326,51 @@ label monika_hair_select:
 
 ##### End monika hair topics
 
+#### Begin monika clothes topics
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_clothes_select",
+            category=["monika"],
+            prompt="Can you change your clothes?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_clothes_select:
+    # setup
+    python:
+        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which clothes would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to wear different clothes, just ask, okay?"
+
+    return
+
+#### ends Monika clothes topic
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
 
@@ -9225,6 +9329,10 @@ label monika_trick_sayori:
 
 label monika_trick_monika:
     hide screen mas_background_timed_jump
+    if mas_getEV("monika_trick").shown_count == 0:
+        $ mas_gainAffection(10, bypass=True)
+    else:
+        $ mas_gainAffection()
     m 1tkbfu "That wasn't supposed to be an option, silly!"
     m 1tubfb "But it really does make me happy that you only have eyes for me..."
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
