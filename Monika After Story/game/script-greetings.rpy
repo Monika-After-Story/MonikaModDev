@@ -1417,6 +1417,7 @@ label monikaroom_greeting_opendoor_locked:
                 m "Aww, sorry."
             else:
                 m "Good."
+
         "No.":
             m "{cps=*2}Hmph, I'll get you next time.{/cps}{nw}"
             $ _history_list.pop()
