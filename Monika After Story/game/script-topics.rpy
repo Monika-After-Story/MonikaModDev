@@ -8396,7 +8396,7 @@ label monika_player_appearance:
                 "I have green eyes.":
                     $ persistent._mas_pm_eye_color = "green"
                     m 3sub "Hey, that’s my favorite color! And obviously, it’s another thing we have in common!"
-                    m 4hksdla "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
+                    m 4lksdla "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
                     m 1tsu "Except that maybe it’s another sign how compatible we are, ehehe~"
                     m 1kua "But, [player], just between you and me, it’s a fact that green eyes are the best, right?"
                     m 3hub "Ahaha! I’m just kidding."
