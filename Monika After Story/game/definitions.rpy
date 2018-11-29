@@ -1718,6 +1718,99 @@ python early:
             if self.raise_issues:
                 raise Exception(msg)
 
+
+# uncomment for syntax highlight on vim
+#init -1 python:
+
+    class MASMailbox(object):
+        """
+        Async communication between different objects.
+
+        NOTE: even though this is usable on its own, its highly recommended
+        that you extend this class to encapsulate message constants.
+
+        NOTE: this is NOT like notify, objects can only respond to messages
+            when they are active.
+
+        PROPERTIES:
+            box - the actual mailbox that contains messages
+        """
+        RETURN_KEY = "__mas_return"
+
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            self.box = {}
+
+
+        def get(self, headline):
+            """
+            Removes a message from the box, and returns it.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None.
+            """
+            if headline in self.box:
+                return self.box.pop(headline)
+
+            return None
+
+
+        def mas_get_return(self):
+            """
+            Removes and returns a MAS_RETURN message.
+
+            RETURNS:
+                the returned message, or None if no message data or if the
+                emssage was wasctually none
+            """
+            return self.get(self.RETURN_KEY)
+
+
+        def mas_send_return(self, msg):
+            """
+            Adds a MAS_RETURN message to the box.
+
+            IN:
+                msg - message to return
+            """
+            self.send(self.RETURN_KEY, msg)
+
+
+        def read(self, headline):
+            """
+            Reads a message from the box.
+            
+            NOTE: does NOT remove the message.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None
+            """
+            return self.box.get(headline, None)
+
+
+        def send(self, headline, msg):
+            """
+            Adds a message to the box.
+
+            IN:
+                headline - identifier for this message.
+                msg - message to send
+            """
+            self.box[headline] = msg
+
+
+
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
 
@@ -2859,11 +2952,23 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
+        
+    def mas_getSessionLength():
+        return datetime.datetime.now() - persistent.sessions['current_session_start']
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        #TODO keep adding special days as we add them
+        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
