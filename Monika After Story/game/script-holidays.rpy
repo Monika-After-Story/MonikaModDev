@@ -120,7 +120,7 @@ init 101 python:
 
         if not persistent._mas_hair_changed:
             unlockEventLabel(
-                "greeting_hairdown", 
+                "greeting_hairdown",
                 store.evhand.greeting_database
             )
 
@@ -178,7 +178,7 @@ init -11 python in mas_o31_event:
         RETURNS True if the persistent greeting type is the TT one
         """
         return (
-            store.persistent._mas_greeting_type 
+            store.persistent._mas_greeting_type
             == store.mas_greetings.TYPE_HOL_O31_TT
         )
 
@@ -522,7 +522,7 @@ label greeting_trick_or_treat_back:
             if persistent._mas_o31_trick_or_treating_aff_gain < 15:
                 persistent._mas_o31_trick_or_treating_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-                
+
 
     if time_out < five_minutes:
         $ mas_loseAffection()
@@ -544,7 +544,7 @@ label greeting_trick_or_treat_back:
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
         m 1eka "I really enjoyed trick or treating with you, [player]..."
-        
+
         if wearing_costume:
             m 2eka "Even if I couldn't see anything and no one else could see my costume..."
             m 2eub "Dressing up and going out was still really great!"
@@ -589,7 +589,7 @@ label greeting_trick_or_treat_back:
             m 2eub "Going out was still really great!"
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
-        
+
     return
 
 ### o31 farewells
@@ -630,11 +630,11 @@ label bye_trick_or_treat:
         show monika 2etc
         menu:
             m "Are you {i}sure{/i} you want to go right now?"
-            "Yes":
+            "Yes.":
                 $ persistent._mas_o31_trick_or_treating_start_early = True
                 m 2etc "Well...{w=1}okay then, [player]..."
 
-            "No":
+            "No.":
                 $ persistent._mas_o31_went_trick_or_treating_abort = True
                 m 2hub "Ahaha!"
                 m "Be a little patient, [player]~"

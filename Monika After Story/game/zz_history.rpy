@@ -604,6 +604,8 @@ init -810 python:
     #   location - location-based stuff
     #   likes - likes/wants
     #   know - knowledge
+    #   exp - (experience) things that have been done to u
+    #   op - opinions on things
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -663,6 +665,12 @@ init -810 python:
             "_mas_pm_zoomed_in": "pm.actions.mas.zoom.in",
             "_mas_pm_zoomed_in_max": "pm.actions.mas.zoom.in_max",
 
+            # actions / mas / opendoor
+            "_mas_pm_will_change": "pm.actions.mas.opendoor.will_change",
+
+            # actions / mas / dev
+            "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
@@ -696,7 +704,14 @@ init -810 python:
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
-            "_mas_pm_lang_jpn": "pm.know.lang.jpn"
+            "_mas_pm_lang_jpn": "pm.know.lang.jpn",
+
+            # exp (experience)
+            "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+
+            # op (opinions)
+            # op / monika
+            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified"
         },
         use_year_before=True,
         dont_reset=True

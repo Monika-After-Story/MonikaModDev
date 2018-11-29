@@ -2952,11 +2952,23 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
+        
+    def mas_getSessionLength():
+        return datetime.datetime.now() - persistent.sessions['current_session_start']
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        #TODO keep adding special days as we add them
+        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
