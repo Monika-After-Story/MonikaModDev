@@ -8111,6 +8111,19 @@ image monika 3tsbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 3rud = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="1l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3rkbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8897,6 +8910,20 @@ image monika 3tsd = DynamicDisplayable(
     left="2l",
     right="1r",
     arms="restleftpointright"
+)
+
+image monika 3ekbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
 )
 
 image monika 3subfb = DynamicDisplayable(
