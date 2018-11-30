@@ -1,3 +1,11 @@
+Quick addition to MAS with Voice recognition.
+With each MAS update it will needs to be updated as well as it is depended on some of the MAS core scripts so old version won't work with newer MAS release till I will update it.
+
+Link to package https://drive.google.com/file/d/1PO6r8BvYz4q6DwEGf_YOISCIfdO1Ni4d/view?usp=sharing
+
+Just copy all files into "game" folde of DDLC (MAS)
+
+
 ![Monika After Story](https://github.com/Backdash/MonikaModDev/blob/master/Monika%20After%20Story/game/mod_assets/menu_new.png?raw=True)
 
 # Monika After Story (MAS)
