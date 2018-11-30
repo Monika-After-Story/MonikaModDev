@@ -4,7 +4,7 @@ With each MAS update it will needs to be updated as well as it is depended on so
 Link to package https://drive.google.com/file/d/1PO6r8BvYz4q6DwEGf_YOISCIfdO1Ni4d/view?usp=sharing
 
 Just copy all files into "game" folde of DDLC (MAS)
-
+Let me know about bugs or how precies it recognize your voice.. It's neverending story with adjusting it.
 
 ![Monika After Story](https://github.com/Backdash/MonikaModDev/blob/master/Monika%20After%20Story/game/mod_assets/menu_new.png?raw=True)
 
