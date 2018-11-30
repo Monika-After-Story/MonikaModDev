@@ -548,7 +548,9 @@ init -1 python in evhand:
         "monika_affection_nickname",
         "mas_coffee_finished_brewing",
         "mas_coffee_finished_drinking",
-        "monika_hair_select"
+        "monikaroom_will_change",
+        "monika_hair_select",
+        "monika_clothes_select"
     ]
 
     # as well as special functions
