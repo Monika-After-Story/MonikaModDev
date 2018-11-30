@@ -1360,10 +1360,4 @@ label ch30_reset:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
-#        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-#            monika_chr.remove_acs(mas_acs_promisering)
-        if monika_chr.clothes.name == mas_clothes_marisa.name:
-            # TODO: need to be able to remove different rings
-            monika_chr.remove_acs(mas_acs_promisering)
-
     return
