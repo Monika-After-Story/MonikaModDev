@@ -6545,29 +6545,32 @@ label monika_yellowwp:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water conservation",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
 
 label monika_savingwater:
-    m 1euc "[player], Have you ever stopped and wondered how much water people use everyday?"
+    m 1euc "[player], have you ever thought about how much water people use everyday?"
     m 3euc "Maybe you take a drink of water every now and then."
-    m 3dsc "You go to the washroom... Wash you hands... Bathe..."
-    m 1euc "And some parts of the world can't even get a single drop of water."
-    m 1dsc "Kind of makes you wonder how much water you could save if you tried."
-    m 4eua "You could try being more efficient when washing your hands."
+    m 3dsc "You go to the washroom, wash your hands, bathe..."
+    m 1euc "All that and yet some parts of the world can't even get a single drop of water."
+    m 1rsc "Kind of makes you wonder how much water you could save if you wanted to."
+    m 4eua "I guess you could try being more efficient when washing your hands."
     m "Or when showering, you could turn off the water while you soap up and turn it back on when you're ready to rinse yourself down."
-    m "I hear some people even just turn on the water and leave it running to do other things, or get in and not actually bathe."
-    m 2lksdlc "Though, I'm not entirely sure why people do that."
-    m 2lksdla "They say the best ideas come to you in the shower so maybe some people find it to be a good time to think or be alone in one's mind."
-    m 2eka "Ultimately though..."
-    m "Most of the water that gets used is actually needed."
+    m 2eka "Ultimately though, most of the water that gets used is actually needed."
     m "Things like power generation and farming need to use more water than we could ever really use on our own."
-    m 1hksdlb "So I guess it's debatable if you want to sacrifice some of your comfort to make such a small contribution."
-    m 1dsc "Some days, you might just need to take a long, relaxing bath after a long day."
+    m 1hksdlb "So I guess you might not want to sacrifice some of your comfort to make such a small contribution."
+    m 1dkbfa "Some days, you might just need to take a long, relaxing bath after a long day."
     m 2hksdlb "I've definitely been there before, so I know how nice it can be if you need it."
-    m 5eua "When I'm in your reality, maybe we can save water by bathing together~"
-    m "Eheheh~"
-    m "It would be nice of you to prepare a nice, relaxing bath for us to share when I cross over."
-    m 1hub "I can't wait! Ahaha~"
+    if mas_isMoniEnamored(higher=True):
+        show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5tsbfu "When I'm in your reality, maybe we can save water by bathing together..."
+        m "Ehehe~"
+        m 5hubfu "It would be nice of you to prepare a nice, relaxing bath for us to share when I cross over."
+        show monika 1kubfu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 1kubfu "I'll be waiting for that day, [player], ehehe~"
+    else:
+        m 1ekbfa "It would be nice of you to prepare a nice, relaxing bath for me when I cross over."
+        if mas_isMoniAff():
+            m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
     return
 
 init 5 python:
