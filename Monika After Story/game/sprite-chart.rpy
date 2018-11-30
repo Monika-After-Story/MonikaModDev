@@ -2891,6 +2891,7 @@ init -2 python in mas_sprites:
         """
         Entry programming point for rin clothes
         """
+        # TODO: handle other promise ring types
         temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
@@ -2901,28 +2902,54 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        # hide hair down select
+        store.mas_lockEventLabel("monika_hair_select")
+
 
     def _clothes_rin_exit(_moni_chr):
         """
         Exit programming point for rin clothes
         """
-        store.mas_acs_promisering.pose_map = temp_storage["clothes.rin"]
+        rin_map = temp_storage.get("clothes.rin", None)
+        if rin_map is not None:
+            store.mas_acs_promisering.pose_map = rin_map
+
+        # unlock hair down select, if needed
+        if len(store.mas_selspr.filter_hair(True)) > 1:
+            store.mas_unlockEventLabel("monika_hair_select")
 
 
     def _clothes_marisa_entry(_moni_chr):
         """
         Entry programming point for marisa clothes
         """
-        temp_storage["clothes.marisa"] = store.persistent._mas_acs_enable_promisering
-        _moni_chr.remove_acs(store.mas_acs_promisering)
+        # TODO: handle other promise ring types
+        temp_storage["clothes.marisa"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2="6",
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+        # hide hair down select
+        store.mas_lockEventLabel("monika_hair_select")
 
 
     def _clothes_marisa_exit(_moni_chr):
         """
         Exit programming point for marisa clothes
         """
-        if temp_storage.get("clothes.marisa", False):
-            _moni_chr.wear_acs_pst(store.mas_acs_promisering)
+        marisa_map = temp_storage.get("clothes.marisa", None)
+        if marisa_map is not None:
+            store.mas_acs_promisering.pose_map = marisa_map
+
+        # unlock hair down select, if needed
+        if len(store.mas_selspr.filter_hair(True)) > 1:
+            store.mas_unlockEventLabel("monika_hair_select")
+
 
     ######### ACS ###########
 
