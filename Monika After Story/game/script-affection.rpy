@@ -496,6 +496,8 @@ init 15 python in mas_affection:
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
             store.mas_unlockEventLabel("monika_clothes_select")
+            #TODO: Amend monika_outfit if > 1 outfit available.
+            store.mas_lockEventLabel("monika_outfit")
 
 
     def _loveToEnamored():
