@@ -87,19 +87,20 @@ init 5 python:
     )
 
 label dev_acs_pose_test:
-    m "Hi there!"
-    m "I'm going to test the wonderful accessory system."
-    m "First, gonna clear current accessories"
+    m 1hua "Hello there!"
+    m 1eua "I'm going to test the wonderful accessory system."
+    m "First, I'll clear all current accessories."
     $ monika_chr.remove_all_acs()
-    m 6sub "Now going to put on the ring"
+    m 6sub "I'm going to put on the ring now~"
     $ monika_chr.wear_acs_pst(mas_acs_promisering)
-    m 1eua "OKAY THIS SHOULD BE VISIBLE NOW"
-    m 2eua "NOT VISIBLE"
-    m 3eua "VISIBLE"
-    m 4eua "VISIBLE"
-    m 5eua "NOT VISIBLE"
-    m 6sub "NOT VISIBLE"
-    m "time to remove accessories"
+    m 1eua "You should see it now!"
+    m 2eua "And it's gone."
+    m 3eua "Here it is!"
+    m 4eua "Still here~"
+    m 5eua "And it's gone."
+    m 6sub "Still gone..."
+    m "And let's take it all off now~"
     $ monika_chr.remove_all_acs()
-    m "Try this again at night/day so we get everything we need"
+    m "Please remember to try it at different times!"
+    m 1hua "We wouldn't want anything missing now, would we?"
     return

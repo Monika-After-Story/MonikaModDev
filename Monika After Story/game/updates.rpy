@@ -186,7 +186,7 @@ init python:
             updateTo = updates.version_updates[startVers]
 
             # we should only call update labels that we have
-            if renpy.has_label(updateTo):
+            if renpy.has_label(updateTo) and not renpy.seen_label(updateTo):
                 renpy.call_in_new_context(updateTo, updateTo)
             startVers = updates.version_updates[startVers]
 
@@ -199,27 +199,30 @@ init 10 python:
     # okay do we have a version number?
     if persistent.version_number is None:
         # here comes the logic train
-        if no_topics_list:
-            # we are in version 0.2.2 (the horror!)
-            updateGameFrom("v0_2_2")
 
-        elif (renpy.seen_label("monika_ribbon") or
-                "monika_ribbon" in persistent.monika_random_topics):
-            # we are in version 0.3.3
-            updateGameFrom("v0_3_3")
-
-        elif found_monika_ani:
-            # we are in version 0.3.2
-            updateGameFrom("v0_3_2")
-
-        elif (renpy.seen_label("monika_monika") or
-                "monika_monika" in persistent.monika_random_topics):
-            # we are in version 0.3.1
-            updateGameFrom("v0_3_1")
-
-        else:
-            # we are in version 0.3.0
-            updateGameFrom("v0_3_0")
+# NOTE: we are dropping this because of issues we are having with update
+#   scripts running when we least expect.
+#        if no_topics_list:
+#            # we are in version 0.2.2 (the horror!)
+#            updateGameFrom("v0_2_2")
+#
+#        elif (renpy.seen_label("monika_ribbon") or
+#                "monika_ribbon" in persistent.monika_random_topics):
+#            # we are in version 0.3.3
+#            updateGameFrom("v0_3_3")
+#
+#        elif found_monika_ani:
+#            # we are in version 0.3.2
+#            updateGameFrom("v0_3_2")
+#
+#        elif (renpy.seen_label("monika_monika") or
+#                "monika_monika" in persistent.monika_random_topics):
+#            # we are in version 0.3.1
+#            updateGameFrom("v0_3_1")
+#
+#        else:
+#            # we are in version 0.3.0
+#            updateGameFrom("v0_3_0")
 
         # set the version now
         persistent.version_number = config.version
@@ -241,6 +244,29 @@ init 10 python:
 
         # and clear update data
         clearUpdateStructs()
+
+
+    ### special function for resetting versions
+    def _mas_resetVersionUpdates():
+        """
+        Resets all version update script's seen status
+        """
+        late_updates = [
+            "v0_8_3",
+            "v0_8_4"
+        ]
+
+        renpy.call_in_new_context("vv_updates_topics")
+        ver_list = store.updates.version_updates.keys()
+
+        ver_list.extend(["mas_lupd_" + x for x in late_updates])
+        ver_list.append("v" + "_".join(
+            config.version[:config.version.index("-")].split(".")
+        ))
+
+        for _version in ver_list:
+            if _version in persistent._seen_ever:
+                persistent._seen_ever.pop(_version)
 
 
 # UPDATE SCRIPTS ==============================================================
@@ -268,16 +294,97 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.10
+label v0_8_10(version="v0_8_10"):
+    python:
+        import store.evhand as evhand
+        import store.mas_history as mas_history
+
+        # reset and unlock past anniversaries
+        if persistent.sessions is not None:
+            first_sesh = persistent.sessions.get("first_session", None)
+            if first_sesh:
+                store.mas_anni.reset_annis(first_sesh)
+                store.mas_anni.unlock_past_annis()
+
+        # correctly save the sbd persistent data since we renamed it
+        if (
+                persistent._mas_bday_sbd_aff_given is not None
+                and persistent._mas_bday_sbd_aff_given > 0
+            ):
+            persistent._mas_history_archives[2018][
+                "922.actions.surprise.aff_given"
+            ] = persistent._mas_bday_sbd_aff_given
+
+        # unlock the special greetings we accidentally locked
+        unlockEventLabel(
+            "i_greeting_monikaroom",
+            store.evhand.greeting_database
+        )
+        if not persistent._mas_hair_changed:
+            unlockEventLabel(
+                "greeting_hairdown", 
+                store.evhand.greeting_database
+            )
+
+        # move the changename topic to pool
+        changename_ev = evhand.event_database.get("monika_changename", None)
+        if changename_ev and renpy.seen_label("preferredname"):
+            changename_ev.unlocked = True
+            changename_ev.pool = True
+            persistent._seen_ever["monika_changename"] = True
+
+        # derandom monika family
+        family_ev = evhand.event_database.get("monika_family", None)
+        if family_ev:
+            family_ev.random = False
+
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
+
+    return
+
+# 0.8.9
+label v0_8_9(version="v0_8_9"):
+    python:
+        import store.evhand as evhand
+
+        # erase wedding ring topic data since the event is basiclly new'd
+        mas_eraseTopic("monika_weddingring", persistent.event_database)
+
+        # setup conditional for monika_horror
+        # TODO: post halloween we need to reset this to no conditional
+        horror_ev = evhand.event_database.get("monika_horror", None)
+        if horror_ev:
+            horror_ev.conditional = (
+                "datetime.date(2018, 10, 26) <= datetime.date.today() "
+                "<= datetime.date(2018, 10, 30)"
+            )
+            horror_ev.action = EV_ACT_QUEUE
+
+    return
+    
+
 # 0.8.6
 label v0_8_6(version="v0_8_6"):
     python:
         import store.evhand as evhand
+        import datetime
         
         # unlock gender redo if we have seen the other event
         genderredo_ev = evhand.event_database.get("gender_redo", None)
         if genderredo_ev and renpy.seen_label("gender"):
             genderredo_ev.unlocked = True
             genderredo_ev.pool = True
+            # this should be seen'd as it doesnt make sense to have it in
+            # unseen
+            persistent._seen_ever["gender_redo"] = True
+
+        # give the new character file event a conditoinal to push
+        new_char_ev = evhand.event_database.get("mas_new_character_file", None)
+        if new_char_ev and not renpy.seen_label("mas_new_character_file"):
+            new_char_ev.conditional = "True"
+            new_char_ev.action = EV_ACT_PUSH
 
     return
 
@@ -778,6 +885,26 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_8_10:
+    python:
+        import store.mas_selspr as mas_selspr
+
+        # unlock hair 
+        if persistent._mas_hair_changed:
+            mas_selspr.unlock_hair(mas_hair_down)
+            unlockEventLabel("monika_hair_select")
+
+        # unlock selectables for unlocked clothes
+        if persistent._mas_o31_seen_costumes is not None:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
+                mas_selspr.unlock_clothes(mas_clothes_marisa)
+            if persistent._mas_o31_seen_costumes.get("rin", False):
+                mas_selspr.unlock_clothes(mas_clothes_rin)
+
+        # save the selectables we just unlocked
+        mas_selspr.save_selectables()
+
+    return
 
 label mas_lupd_v0_8_4:
     python:
@@ -829,7 +956,7 @@ label mas_lupd_v0_8_3:
 init 999 python:
     for __temp_version in persistent._mas_zz_lupd_ex_v:
         __lupd_v = "mas_lupd_" + __temp_version
-        if renpy.has_label(__lupd_v):
+        if renpy.has_label(__lupd_v) and not renpy.seen_label(__lupd_v):
             renpy.call_in_new_context(__lupd_v)
 
     persistent._mas_zz_lupd_ex_v = list()

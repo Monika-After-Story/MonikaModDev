@@ -15,8 +15,8 @@ init 5 python:
 label dev_calendar_testing:
     $ import store.mas_calendar as mas_cal
     menu:
-        m "Which do you want to do?"
-        "View Calenar":
+        m "What would you like to do?"
+        "View Calendar":
             call mas_start_calendar_read_only
 
         "Select Date":
@@ -25,7 +25,7 @@ label dev_calendar_testing:
             $ sel_date = _return
 
             if not sel_date:
-                m "You did not select a date!"
+                m 1tfp "You did not select a date!"
 
             else:
                 $ sel_date_formal = sel_date.strftime("%B %d, %Y")
