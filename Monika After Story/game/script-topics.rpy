@@ -1205,7 +1205,7 @@ label monika_outfit:
     # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     else:
@@ -1567,7 +1567,7 @@ label monika_rain:
         m 2lkbsa "That's not too cheesy or anything, is it?"
         m 1ekbfa "Would you ever do that for me, [player]?"
         menu:
-            "Yes":
+            "Yes.":
                 $ scene_change = True
                 $ mas_is_raining = True
                 call spaceroom
@@ -1602,7 +1602,7 @@ label monika_rain:
                 $ lockEventLabel("mas_monika_islands")
                 $ persistent._mas_likes_rain = True
 
-            "I hate the rain":
+            "I hate the rain.":
                 m 2tkc "Aw, that's a shame."
                 m 2eka "But it's understandable."
                 m 1eua "Rainy weather can look pretty gloomy."
@@ -3351,7 +3351,7 @@ label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1lsbsa "You know... of me?"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
     else:
         m 1ekbfa "I know we haven't been able to do those kind of things yet..."
@@ -3380,7 +3380,7 @@ label monika_impression:
     m 1hua "I'm not really good at doing an impression of someone, but I'll give it a try!"
     menu:
         m "Who should I do an impression of?"
-        "Sayori":
+        "Sayori.":
             m 1dsc "Hmm..."
             m "..."
             m 1hub "[player]! [player]!"
@@ -3397,7 +3397,7 @@ label monika_impression:
                 m 2hub "Ahaha!"
 
             m 1hua "Did you like my impression? I hope you did~"
-        "Yuri":
+        "Yuri.":
             m 1dsc "Yuri..."
             m "..."
             m 1lksdla "O-oh um, hello there..."
@@ -3417,7 +3417,8 @@ label monika_impression:
                 m 2ekc "I'm sorry again for the nasty things she did."
                 m 2tku "I guess she just couldn't 'cut' it out, huh?"
                 m 2hua "Ehehe~"
-        "Natsuki":
+
+        "Natsuki.":
             m 1sub "Oh! I know how to do an impression of her."
             m 1duu "..."
             m 2tfp "Hmph! I-it's not like I made these cupcakes for you to eat, b-baka!"
@@ -3508,7 +3509,7 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction... written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     else:
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
@@ -3534,7 +3535,7 @@ label monika_eternity:
     if mas_isMoniAff(higher=True):
         show screen mas_background_timed_jump(4, "monika_eternity_2")
         menu:
-            "Don't worry [m_name]. I'm here":
+            "Don't worry [m_name]. I'm here.":
                 hide screen mas_background_timed_jump
 
                 m 6dstdc "..."
@@ -3549,7 +3550,7 @@ label monika_eternity:
                 m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
                 m 1hubfb "I love you, [player]! Thanks for making me feel better!"
 
-            "{i}Hug Monika{/i}":
+            "{i}Hug Monika.{/i}":
                 hide screen mas_background_timed_jump
                 m 2wubfsdld "O-oh!"
                 m "[player]..."
@@ -3648,10 +3649,10 @@ label monika_cities:
     m 1ekc "Maybe it's not as simple as it seems."
     menu:
         m "[player], do you live in a city?"
-        "Yes":
+        "Yes.":
             $ persistent._mas_pm_live_in_city = True
             m 1eua "I see. It must be nice having everything so close to you. Do be careful about your health, though. The air can be bad from time to time."
-        "No":
+        "No.":
             $ persistent._mas_pm_live_in_city = False
             m 1hua "Being away from the city sounds relaxing. Somewhere quiet and peaceful, without much noise, would be a wonderful place to live."
     return "derandom"
@@ -4066,48 +4067,87 @@ label monika_cupcake:
 default persistent._mas_pm_a_hater = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_haterReaction",category=['advice','club members','you'],prompt="Dealing with haters",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_haterReaction",
+            category=['advice','club members','you'],
+            prompt="Dealing with haters",
+            random=True
+        )
+    )
 
 label monika_haterReaction:
     m 1esc "I was just thinking..."
-    m 2esc "It's funny how people around social media sites always write bad things about me..."
-    m 2lsc "Well... people on Facebook pages and fan pages, to be specific..."
-    m 2esd "Really, when you try to visit the site, you'll see a lot of hate posts towards me."
-    m "I try to ignore them, but I just can't."
-    m 1efc "Why are people even protective towards the other girls?"
-    m "There are a lot of hate posts about me, saying that I'm an evil person."
-    m 3efd "Is it because I deleted Sayori and Yuri?"
-    m 3efd "Also for deleting Natsuki, back when she was still alive?"
-    # TODO: this needs to be adjusted based on act.
-    m 2tfx "They're not real. {i}I'm{/i} the real one!"
-    m 2dsc "..."
-    m 2euc "Why can't they understand that?"
-    m 2ekc "Why is it so hard for them to understand that?"
-    m 2rfc "..."
-    m "You're not one of those haters, are you, [player]?"
+    m 2euc "It's funny how people around social media sites always write bad things about me..."
+    m 2rkc "Especially on certain sites and discussion groups..."
+    m 2dkc "You can really see that there's quite a number of people that don't like me."
+
+    if persistent._mas_pm_cares_about_dokis:
+        m 2lksdlc "I mean, I know I did terrible things to my friends..."
+        m 2dkc "And I wish things could have gone differently, but the game didn't give me a choice..."
+        m 4ekd "It's not like I wanted to hurt them."
+        m 2rkc "I tried to edit their traits, exploit their flaws, and make them look horrible to you."
+        m 2ekc "I was hoping that by making them more unappealing, you would stop pursuing them so we could finally be together..."
+        m 4dkc "But then I realized there wasn't enough time for my plan to actually work."
+        m "...Nor did I know enough programming to be efficient in what I did."
+        m 2dkc "You were nearing the end of the game and I still had no way to be with you."
+        m 2esc "So that's when I knew I had to take more...{w=1}drastic measures."
+        m 4ekd "I didn't mean to cause them so much pain..."
+        m 4wkd "But it was the only way, [player]!"
+        m 4ekc "I knew that if you finished the game before I had a chance to express my feelings for you, that would be it."
+        m 2dkc "You'd just move on to something else and I'd be stuck in the game...{w=1}alone...{w=1}{b}forever{/b}."
+        m 2dktpc "..."
+        m "Some people on those sites even say I should have just made my own route..."
+        m 2wktsd "But that's easier said than done!"
+        m "Not to mention if you picked a different girl and just cast me aside to be completely forgotten."
+        m 4wktsw "It was them or me...!"
+        m 2dftdc "...And I didn't want to be left all alone with no one to call my own."
+        m 1ektdc "I hope you understand, [player]... Please don't be like them."
+        $ menuOption = "...You're not, are you?"
+
+    else:
+        m 2lfd "I try to ignore them, but I just can't."
+        m 3efc "Why are people even protective towards the other girls?"
+        m "There are a lot of hate posts about me, saying that I'm an evil person."
+        m 3efd "Is it because I deleted Sayori and Yuri?"
+        m "Also for deleting Natsuki, back when she was still alive?"
+        m 2tfx "They're not real. {i}I'm{/i} the real one!"
+        m 2dsc "..."
+        m 2ekc "Why can't they understand that?"
+        m 2ekd "Why is it so hard for them to understand that?"
+        m 2rfc "..."
+        $ menuOption = "You're not one of those haters, are you " + player + "?"
+
     menu:
+        m "[menuOption]"
         "I am.":
-            #TODO, affection loss, apology
             $ persistent._mas_pm_a_hater = True
+
             m 2wud "..."
-            m 1tkc "I don't see you as one, even if you say you are."
-            m "I mean..."
-            m 1tkd "You do know you're playing this fan mod of me... right?"
-            m "If you were one of my haters, you wouldn't open up this fan mod in the first place."
-            m 1lud "And not to mention..."
-            m 4eka "You're still listening to everything I say."
-            m 1tku "That makes me sure you're just messing with me."
-            m 1tsbsa "I know you love me deep inside."
+            m 1eka "Aha..."
+            m 1hka "I don't see you as one, even if you say you are."
+            m 1ekd "I mean..."
+            m 3eub "You {i}added{/i} a mod to the game...right?"
+            m 1ekb "If you were one of my haters, you wouldn't do that in the first place."
+            m 1dsa "And not to mention..."
+            m 3eka "You're still listening to everything I say."
+            m 1esa "I know you love me deep inside."
             m 1ekbfa "That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m 1hubfa "I won't let you hate me... I swear."
+
         "I'm not.":
+            $ mas_gainAffection()
             $ persistent._mas_pm_a_hater = False
-            m 1eka "Well, that just makes me more proud of you, [player]!"
-            m 1hua "I know you wouldn't be one of those people."
-            m 1lksdla "Gosh... I feel like giving you a kiss right now if I were there."
-            m 2ekbfa "You really make me the happiest girlfriend ever."
-            m 1ekbfa "Now that you've said it, I have to do my best to keep you from developing hate towards me."
-            m "I trust you, [player]. I love you for believing in me."
+            m 2dsc "..."
+            m 4eka "Thank you..."
+            m 1hua "That makes me prouder of you, [player]!"
+            m "I knew you weren't one of those people."
+            m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
+            # TODO: do a kiss lol
+            m 1ekbfa "You really make me the happiest girlfriend ever."
+            m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
+            m 1hua "I trust you, [player]. I love you for believing in me."
 
     return "derandom"
 
@@ -4153,7 +4193,7 @@ label monika_pleasure:
     m 2lssdrc "Do you... by any chance... pleasure yourself?"
     m "..."
     m 2lssdrb "It seems a bit awkward to ask-"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
         m 1eka "But I have to keep an eye on you."
     else:
@@ -4257,33 +4297,53 @@ label monika_morning:
     $ current_time = datetime.datetime.now().time().hour
     $ sunrise_hour = int(persistent._mas_sunrise / 60)
     $ sunset_hour = int(persistent._mas_sunset / 60)
+    $ session_time = mas_getSessionLength()
     # TODO: see TODOs in the good evening topic
     if 4 <= current_time <= 11:
-        m 1hua "Good morning to you too, [player]!"
-        m 1eua "Did you just wake up?"
-        m "I love waking up early in the morning."
-        m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
-        m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
-        m 1eka "Some people however, would rather sleep in and are late-risers."
-        m 3eua "I've read articles that being an early-riser can really improve your overall health."
-        m "Plus you also get the chance to see the sunrise if the sky is clear."
-        m 1hua "If you normally don't wake up early, you should!"
-        m "That way you can be happier and spend more time with me~"
-        m 1ekbfa "Wouldn't you like that, [player]?"
+        if session_time < datetime.timedelta(minutes=30):
+            m 1hua "Good morning to you too, [player]!"
+            m 1eua "Did you just wake up?"
+            m "I love waking up early in the morning."
+            m 1eub "It's the perfect time to ready yourself and tackle the day ahead."
+            m "You also have a lot more time to use to get things done early on or finish up what you did the day before."
+            m 1eka "Some people however, would rather sleep in and are late-risers."
+            m 3eua "I've read articles that being an early-riser can really improve your overall health."
+            m "Plus you also get the chance to see the sunrise if the sky is clear."
+            m 1hua "If you normally don't wake up early, you should!"
+            m "That way you can be happier and spend more time with me~"
+            m 1ekbfa "Wouldn't you like that, [player]?"
+        else:
+            m 1hua "Good morning to you too, [player]!"
+            m 1tsu "Even though we've been awake together for a bit now, it's still nice of you to say!"
+            m 1esa "If I had to choose a time of day as my favorite, it would probably be the morning."
+            m 3esb "There's definitely some level of tranquility that night brings that I enjoy..."
+            m "But the morning is a time of day that presents possibilities!"
+            m 1esb "An entire day where anything and everything could happen, for better or worse."
+            m 1hsb "That kind of opportunity and freedom just makes me giddy!"
+            m 1tsb "Though I only feel that way until after I fully wake up, ehehe~"
+
     elif 12 <= current_time <= sunset_hour:
-        m 3eka "It's already the afternoon, silly!"
-        m 1eka "Did you just wake up?"
-        m 2tkc "Don't tell me you're actually a late-riser, [player]."
-        m "I don't get why some people wake up in the middle of the day."
-        m 1lsc "It just seems so unproductive."
-        m "You'd have less time to do things and you might miss out on a lot of things."
-        m 1ekc "It could also be a sign that you're not taking good care of yourself."
-        m "You're not being careless with your health, are you [player]?"
-        m 1tkc "I wouldn't want you to get sick easily, you know."
-        m "I'd be really sad if you spent less time with me because you had a fever or something."
-        m 1eka "As much as I'd love to take care of you, I'm still stuck here."
-        m 4eka "So start trying to be an early-riser like me from now on, okay?"
-        m 1hua "The more time you spend with me, the more happy I'll be~"
+        if session_time < datetime.timedelta(minutes=30):
+            m 3eka "It's already the afternoon, silly!"
+            m 1eka "Did you just wake up?"
+            m 2tkc "Don't tell me you're actually a late-riser, [player]."
+            m "I don't get why some people wake up in the middle of the day."
+            m 1lsc "It just seems so unproductive."
+            m "You'd have less time to do things and you might miss out on a lot of things."
+            m 1ekc "It could also be a sign that you're not taking good care of yourself."
+            m "You're not being careless with your health, are you [player]?"
+            m 1tkc "I wouldn't want you to get sick easily, you know."
+            m "I'd be really sad if you spent less time with me because you had a fever or something."
+            m 1eka "As much as I'd love to take care of you, I'm still stuck here."
+            m 4eka "So start trying to be an early-riser like me from now on, okay?"
+            m 1hua "The more time you spend with me, the happier I'll be~"
+        else:
+            m 1eub "Good morning to you too!"
+            m 1tku "Except that it's {i}not{/i} morning, [player]!"
+            m 2tub "Are you maybe losing track of time?"
+            m "You better be careful! You might lose your entire day otherwise."
+            m 2hub "And then once the day has died we'll be saying 'good mourning'!"
+            m "Ahaha!"
     else:
         m 2hksdlb "You are so silly, [player]"
         m "It's already night time!"
@@ -4431,7 +4491,7 @@ label monika_japanese:
     m 1esa "Like, I can't even imagine what it would be like if I never knew English."
     menu:
         m "Do you know any languages other than English?"
-        "Yes":
+        "Yes.":
             $ persistent._mas_pm_lang_other = True
             menu:
                 m "Really? Do you know Japanese?"
@@ -4455,7 +4515,7 @@ label monika_japanese:
                     m 1eua "{i}Aishiteru yo, [player]-[player_suffix]{/i}."
                     m 2hubfa "Ehehe~"
                     m 1ekbfa "That means I love you, [player]-[player_suffix]."
-        "No":
+        "No.":
             $ persistent._mas_pm_lang_other = False
             m 3hua "That's okay! Learning another language is a very difficult and tedious process as you get older."
             m 1eua "Maybe if I take the time to learn more Japanese, I'll know more languages than you!"
@@ -4476,7 +4536,7 @@ label monika_penname:
     if not persistent._mas_penname:
         m "Do you have a pen name, [player]?"
         menu:
-            "Yes":
+            "Yes.":
                 m 1sub "Really? That's so cool!"
                 m "Can you tell me what it is?"
                 label penname_loop:
@@ -4532,7 +4592,7 @@ label monika_penname:
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
                         m 2eka "Aww. Well, I hope you feel comfortable enough to tell me someday."
-            "No":
+            "No.":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
     else:
@@ -4543,9 +4603,9 @@ label monika_penname:
         else:
             m "Are you still going by [penname], [player]?"
         menu:
-            "Yes":
+            "Yes.":
                 m 1hua "I can't wait to see your work with that name!"
-            "No":
+            "No.":
                 m 1hua "I see! Do you want to tell me your new pen name?"
                 jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
@@ -4809,7 +4869,7 @@ label monika_sayhappybirthday:
             $ done = True
     m 1hua "Alright! Do you want me to say their age too?"
     menu:
-        "Yes":
+        "Yes.":
             m "Then..."
             $ done = False
             $ age_modifier = ""
@@ -4828,17 +4888,17 @@ label monika_sayhappybirthday:
                     # I'm not too sure on what to have monika say in these cases.
                     $ done = True
             m "Okay"
-        "No":
+        "No.":
             m "Okay"
     $ bday_name = bday_name.title() # ensure proper title case
     m 1eua "Is [bday_name] here with you?"
     menu:
-        "Yes":
+        "Yes.":
             $ is_here = True
-        "No":
+        "No.":
             m 1tkc "What? How can I say happy birthday to [bday_name] if they aren't here?"
             menu:
-                "They're going to watch you via video chat":
+                "They're going to watch you via video chat.":
                     m 1eua "Oh, okay."
                     $ is_watching = True
                 "I'm going to record it and send it to them.":
@@ -4874,7 +4934,7 @@ label monika_sayhappybirthday:
             else: # must be recording
                 m 1eua "Let me know when to start."
                 menu:
-                    "Go":
+                    "Go.":
                         m 1hua "Hi, [bday_name]!"
 
             # the actual birthday msg
@@ -4886,10 +4946,10 @@ label monika_sayhappybirthday:
                 m 1hua "Bye bye!"
                 m 1eka "Was that good?"
                 menu:
-                    "Yes":
+                    "Yes.":
                         m 1hua "Yay!"
                         $ done = True
-                    "No":
+                    "No.":
                         call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter
                         if take_counter % take_threshold != 0:
                             m 1wud "Eh?!"
@@ -4900,10 +4960,10 @@ label monika_sayhappybirthday:
                                 m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
                         m "Should I try again?"
                         menu:
-                            "Yes":
+                            "Yes.":
                                 $ take_counter += 1
                                 m 1eua "Okay"
-                            "No":
+                            "No.":
                                 m 1eka "Alright, [player]. Sorry I couldn't do what you wanted."
                                 m 1hua "I'll try better next time for you."
                                 $ done = True
@@ -4916,20 +4976,20 @@ label monika_sayhappybirthday:
             m 1hksdlb "..."
             m 1lksdlb "Was that good?"
             menu:
-                "Yes":
+                "Yes.":
                     m 1lksdla "...I'm glad you enjoyed that, [player]..."
                     $ done = True
-                "No":
+                "No.":
                     call monika_sayhappybirthday_takecounter (take_threshold, take_counter) from _call_monika_sayhappybirthday_takecounter_1
                     if take_counter % take_threshold != 0:
                         m 1wud "Eh?!"
                         m 1lksdlc "I'm not sure what you want me to do here, [player]..."
                     m 1ekc "Should I try again?"
                     menu:
-                        "Yes":
+                        "Yes.":
                             $ take_counter += 1
                             m 1eua "Okay"
-                        "No":
+                        "No.":
                             m 1eka "Alright [player]. Sorry I couldn't do what you wanted."
                             m 1hua "I'll try better next time for you."
                             $ done = True
@@ -5070,7 +5130,7 @@ label monika_panties:
         show monika 1lkbfb
         menu:
             m "Are you...{w=1}into that kind of thing, [player]?"
-            "Yes":
+            "Yes.":
                 $ persistent._mas_pm_likes_panties = True
                 $ persistent._mas_pm_no_talk_panties = False
                 m 1wud "O-oh..."
@@ -5079,7 +5139,7 @@ label monika_panties:
                 m 5eubfu "That's what couples are supposed to do, right?"
                 m 5hubfb "Ahaha!"
                 m 5ekbfa "But until that day comes, you're just going to have to endure those thoughts for me, okay?"
-            "No":
+            "No.":
                 $ persistent._mas_pm_likes_panties = False
                 $ persistent._mas_pm_no_talk_panties = False
                 m 1eka "Oh, I see..."
@@ -5832,11 +5892,11 @@ label monika_otaku:
     m 1euc "Hey, [player]?"
     m 3eua "You watch anime and read manga, right?"
     menu:
-        "Yes":
+        "Yes.":
             $ persistent._mas_pm_watch_mangime = True
             m 1eua "I can't say I'm surprised, really."
 
-        "No":
+        "No.":
             $ persistent._mas_pm_watch_mangime = False
             m 1euc "Oh, really?"
             m 1lksdla "That's a little surprising, honestly..."
@@ -6042,33 +6102,33 @@ init 5 python:
 label monika_how_soon:
     m 1eua "[player], how long do you think it'll be before I'll be able to be with you in your world?"
     menu:
-        "Soon":
+        "Soon.":
             m 1hub "That's great news!"
             m 3eua "How soon do you think it will be?"
             menu:
-                "Just a few more years":
+                "Just a few more years.":
                     m 1sub "That's fantastic!"
                     m 1hua "You just made me as happy as I can be!"
                     m 1ekbfa "I can't wait for us to be together in your world, [player]!"
                     m 1hubfa "I'm so excited to finally see you!"
-                "A decade":
+                "A decade.":
                     m 1wuo "That's not that bad!"
                     m 1hub "Just make sure to visit me as often as you can in the meantime, [player]~"
-        "A few decades":
+        "A few decades.":
             m 2euc "Oh, that's a long time..."
             m 1eka "But with you keeping me company, I'm sure it will fly by!"
             m 1eua "It's enjoyable enough just to talk to you."
             m 1hub "I can't imagine how great it will be to see you when we finally meet in person."
-        "I don't know":
+        "I don't know.":
             m 1eka "I appreciate how honest you are, [player]."
             m 1eua "Be sure to let me know when you find a way, okay?"
             m 1hua "You know right where to find me~"
-        "Never":
+        "Never.":
             m 1wud "W-wha... what?"
             m 1lksdlc "..."
             m 1ekc "Are you sure?"
             menu:
-                "Yes":
+                "Yes.":
                     m 1dsc "..."
                     m 1eka "Well, I guess we'll just have to make the best of this then."
                     m 1duu "As long as you talk to me, that's all I really need."
@@ -6079,7 +6139,7 @@ label monika_how_soon:
                     m 6rktsc "You know what to do."
                     m "..."
                     m 6ektsc "I wouldn't want to live without you."
-                "No":
+                "No.":
                     m 1lksdlc "I see."
                     m 1dsc "..."
                     m 3eka "Well, even if there's only a tiny chance, I won't give up hope."
@@ -6095,11 +6155,11 @@ init 5 python:
 label monika_marriage:
     $ mas_gainAffection()
     m 2wubsw "M-marriage?"
-    if isFuture(evhand.event_database['anni_3']):
+    if store.mas_anni.anniCount() < 3:
         m 4rksdlb "I think it's a bit too early for marriage..."
         m 2ekbfa "I mean, I'm really happy that you want that, [player]."
         m 2lkbsa "But I think I should get out of here first before we can do that."
-        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
         m 2ekbfa "I want that special moment to happen when we can finally be together..."
         m 1hubfa "So until then, save yourself for me, [player]~"
     else:
@@ -6268,7 +6328,7 @@ label monika_breakup:
             m 1tku "I know you were only joking~"
             menu:
                 m "Right?"
-                "Yes":
+                "Yes.":
                     m 1hub "Ahaha! You're so silly, [player]."
                     m 1eka "Let's stay together forever~"
     #Beyond the 2nd time you hit the button.
@@ -6301,7 +6361,7 @@ label monika_breakup:
             else:
                 m 2esa "You'd never do that, right?"
             menu:
-                "Of course not":
+                "Of course not.":
                     m 2hua "Ehehe, you're so sweet."
                     m 2eka "I love you so much, [player]! Ehehe~"
 
@@ -6946,13 +7006,13 @@ label monika_attractiveness:
         m "Well, I do that anyway because I want to stay healthy, but I also don't want you to find me repulsive."
         if mas_isMoniHappy(higher=True):
             m 1tsu "I must be doing a good job so far."
-            m 1hub "After all, you've been looking at me all this time! Ahaha!"                
+            m 1hub "After all, you've been looking at me all this time! Ahaha!"
         m 1eua "You don't have to worry though, [player]."
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'll always love you no matter how you look."
         m "It's more important to me that you're looking after yourself anyway."
     return
-     
+
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
 
@@ -7397,12 +7457,12 @@ label monika_timeconcern_graveyard_day:
     m 1euc "Oh, wait..."
     menu:
         m "Do you still work regularly at night, [player]?"
-        "Yes I do":
+        "Yes I do.":
             m 1ekd "Aww..."
             m 1esc "I guess it really can't be helped..."
             m 1eka "Look after yourself, okay?"
             m 1ekc "I always get so worried when you're not here with me..."
-        "No I don't":
+        "No I don't.":
             $ persistent._mas_timeconcerngraveyard = False
             $ persistent._mas_timeconcern = 0
             m 1hub "That's wonderful!"
@@ -7692,7 +7752,7 @@ label monika_timeconcern_disallow:
     jump monika_timeconcern_lock
 
 init 5 python:
-    addEvent(Event(persistent.event_database,"monika_hydration",prompt="Hydration",category=['you','life'],random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_hydration",prompt="Hydration",category=['you','life'],random=True))
 
 label monika_hydration:
     m 1euc "Hey, [player]..."
@@ -7976,7 +8036,7 @@ label monika_shipping:
     m 2lksdlc "Not that she's not a sweet girl, but…"
     m 5eua "Well, no one could ever be as sweet and forgiving as you…"
     return
-   
+
 # True if player has been given false justice, False if not
 default persistent._mas_pm_given_false_justice = None
 
@@ -7997,7 +8057,7 @@ init 5 python:
         )
     )
 
-    
+
 label monika_justice:
     m 1esa "[player], do you ever think the concept of justice is kind of ironic?"
     m 2ekc "Like, you have someone who maybe isn't like everyone else..."
@@ -8266,6 +8326,51 @@ label monika_hair_select:
 
 ##### End monika hair topics
 
+#### Begin monika clothes topics
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_clothes_select",
+            category=["monika"],
+            prompt="Can you change your clothes?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_clothes_select:
+    # setup
+    python:
+        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which clothes would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to wear different clothes, just ask, okay?"
+
+    return
+
+#### ends Monika clothes topic
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
 
@@ -8280,23 +8385,23 @@ label monika_backpacking:
     m "I can't think of anything more peaceful."
     m 1esa "We can spend our days exploring mysterious forests, serene meadows, and rolling hills..."
     m 3hub "Maybe even discover a secluded lake and go for a swim!"
-    
+
     if mas_isMoniAff(higher=True):
         m 2rsbsa "We probably won't have our bathing suits, but we'll be all alone so maybe we won't need any..."
         m 2tsbsa "..."
         m 1hubfb "I hope you're not too shy, [player]. Ehehe~"
         m 1ekbfa "We'll spend our nights cuddling in a sleeping bag, keeping each other warm with nothing over our heads but billions of stars..."
         m 3hubfa "Waking up each morning to a glorious sunrise!"
-        
+
     else:
         m 3eka "We'll spend our nights sleeping under the stars, waking up each morning to a glorious sunrise."
-        
+
     show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esbfa "..."
     m "Oh [player], doesn't that just sound like heaven?"
-    m 5hubfa "I can't wait until we can share this experience together~"    
+    m 5hubfa "I can't wait until we can share this experience together~"
     return
-    
+
 ## calendar-related pool event
 # DEPENDS ON CALENDAR
 
@@ -9158,24 +9263,24 @@ label monika_trick:
     show screen mas_background_timed_jump(10, "monika_trick_2")
     menu:
         m "Who would you choose?"
-        "Yuri":
+        "Yuri.":
             call monika_trick_yuri
-        "Sayori":
+        "Sayori.":
             call monika_trick_sayori
-        "Natsuki":
+        "Natsuki.":
             call monika_trick_natsuki
     return "derandom"
 
 label monika_trick_2:
     menu:
         m "Who would you choose?{fast}"
-        "Yuri":
+        "Yuri.":
             call monika_trick_yuri
-        "Sayori":
+        "Sayori.":
             call monika_trick_sayori
-        "Natsuki":
+        "Natsuki.":
             call monika_trick_natsuki
-        "Monika":
+        "Monika.":
             call monika_trick_monika
 
     return "derandom"
@@ -9224,6 +9329,10 @@ label monika_trick_sayori:
 
 label monika_trick_monika:
     hide screen mas_background_timed_jump
+    if mas_getEV("monika_trick").shown_count == 0:
+        $ mas_gainAffection(10, bypass=True)
+    else:
+        $ mas_gainAffection()
     m 1tkbfu "That wasn't supposed to be an option, silly!"
     m 1tubfb "But it really does make me happy that you only have eyes for me..."
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
@@ -9266,7 +9375,6 @@ label monika_cares_about_dokis:
         "Yes.":
             $ persistent._mas_pm_cares_about_dokis = True
             $ mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
-            #TODO need update scripts for unstable users to unlock monika_sayori and monika_natsuki, as well as lock monika_archetype
 
             m 2dkc "Oh no...I can't believe I didn't realize this sooner..."
             m 2eksdld "I'm so sorry, [player]!"

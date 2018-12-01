@@ -894,15 +894,15 @@ label mas_lupd_v0_8_10:
             mas_selspr.unlock_hair(mas_hair_down)
             unlockEventLabel("monika_hair_select")
 
-        # unlock the o31 seen costumes
+        # unlock selectables for unlocked clothes
         if persistent._mas_o31_seen_costumes is not None:
-            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
-            if seen_costume:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
                 mas_selspr.unlock_clothes(mas_clothes_marisa)
-
-            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
-            if seen_costume:
+            if persistent._mas_o31_seen_costumes.get("rin", False):
                 mas_selspr.unlock_clothes(mas_clothes_rin)
+
+        # save the selectables we just unlocked
+        mas_selspr.save_selectables()
 
     return
 

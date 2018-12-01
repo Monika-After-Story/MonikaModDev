@@ -1788,12 +1788,15 @@ init -2 python:
                 self.wear_acs_in(store.mas_sprites.ACS_MAP[acs_name], acs_type)
 
 
-        def _save_acs(self, acs_type):
+        def _save_acs(self, acs_type, force_acs=False):
             """
             Generates list of accessory names to save to persistent.
 
             IN:
                 acs_type - acs type to build acs names list
+                force_acs - True means to save acs even if stay_on_start is
+                    False
+                    (Default: False)
 
             RETURNS:
                 list of acs names to save to persistent
@@ -1801,7 +1804,7 @@ init -2 python:
             return [
                 acs.name
                 for acs in self.acs[acs_type]
-                if acs.stay_on_start
+                if force_acs or acs.stay_on_start
             ]
 
 
@@ -2014,20 +2017,49 @@ init -2 python:
             self.reset_hair()
 
 
-        def save(self):
+        def save(self, force_hair=False, force_clothes=False, force_acs=False):
             """
             Saves hair/clothes/acs to persistent
+
+            IN:
+                force_hair - True means we force hair saving even if 
+                    stay_on_start is False
+                    (Default: False)
+                force_clothes - True means we force clothes saving even if
+                    stay_on_start is False
+                    (Default: False)
+                force_acs - True means we force acs saving even if 
+                    stay_on_start is False
+                    (Default: False)
             """
             # hair and clothes
-            store.persistent._mas_monika_hair = self.hair.name
-            store.persistent._mas_monika_clothes = self.clothes.name
+            if force_hair or self.hair.stay_on_start:
+                store.persistent._mas_monika_hair = self.hair.name
+
+            if force_clothes or self.clothes.stay_on_start:
+                store.persistent._mas_monika_clothes = self.clothes.name
 
             # acs
-            store.persistent._mas_acs_pre_list = self._save_acs(self.PRE_ACS)
-            store.persistent._mas_acs_bbh_list = self._save_acs(self.BBH_ACS)
-            store.persistent._mas_acs_bfh_list = self._save_acs(self.BFH_ACS)
-            store.persistent._mas_acs_mid_list = self._save_acs(self.MID_ACS)
-            store.persistent._mas_acs_pst_list = self._save_acs(self.PST_ACS)
+            store.persistent._mas_acs_pre_list = self._save_acs(
+                self.PRE_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bbh_list = self._save_acs(
+                self.BBH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_bfh_list = self._save_acs(
+                self.BFH_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_mid_list = self._save_acs(
+                self.MID_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_pst_list = self._save_acs(
+                self.PST_ACS,
+                force_acs
+            )
 
 
         def wear_acs_in(self, accessory, acs_type):
@@ -2859,6 +2891,7 @@ init -2 python in mas_sprites:
         """
         Entry programming point for rin clothes
         """
+        # TODO: handle other promise ring types
         temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
@@ -2869,12 +2902,54 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        # hide hair down select
+        store.mas_lockEventLabel("monika_hair_select")
+
 
     def _clothes_rin_exit(_moni_chr):
         """
         Exit programming point for rin clothes
         """
-        store.mas_acs_promisering.pose_map = temp_storage["clothes.rin"]
+        rin_map = temp_storage.get("clothes.rin", None)
+        if rin_map is not None:
+            store.mas_acs_promisering.pose_map = rin_map
+
+        # unlock hair down select, if needed
+        if len(store.mas_selspr.filter_hair(True)) > 1:
+            store.mas_unlockEventLabel("monika_hair_select")
+
+
+    def _clothes_marisa_entry(_moni_chr):
+        """
+        Entry programming point for marisa clothes
+        """
+        # TODO: handle other promise ring types
+        temp_storage["clothes.marisa"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2="6",
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+        # hide hair down select
+        store.mas_lockEventLabel("monika_hair_select")
+
+
+    def _clothes_marisa_exit(_moni_chr):
+        """
+        Exit programming point for marisa clothes
+        """
+        marisa_map = temp_storage.get("clothes.marisa", None)
+        if marisa_map is not None:
+            store.mas_acs_promisering.pose_map = marisa_map
+
+        # unlock hair down select, if needed
+        if len(store.mas_selspr.filter_hair(True)) > 1:
+            store.mas_unlockEventLabel("monika_hair_select")
+
 
     ######### ACS ###########
 
@@ -3051,7 +3126,10 @@ init -1 python:
         fallback=True,
         hair_map={
             "all": "custom"
-        }
+        },
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_marisa_entry,
+        exit_pp=store.mas_sprites._clothes_marisa_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(
@@ -3084,6 +3162,7 @@ init -1 python:
         hair_map={
             "all": "custom"
         },
+        stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_rin_entry,
         exit_pp=store.mas_sprites._clothes_rin_exit
     )
@@ -5244,6 +5323,19 @@ image monika 1dkbfa = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1ekb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="big",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1ekbfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5407,6 +5499,20 @@ image monika 1lkbsc = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="shade"
+)
+
+image monika 1lkbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="left",
+    nose="def",
+    mouth="smile",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
 )
 
 image monika 1lkbfb = DynamicDisplayable(
@@ -7163,6 +7269,20 @@ image monika 2dktuc = DynamicDisplayable(
     tears="up"
 )
 
+image monika 2dktpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="r",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="pooled"
+)
+
 image monika 2dkbfa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7364,6 +7484,20 @@ image monika 2wkd = DynamicDisplayable(
     left="1l",
     right="2r",
     arms="crossed"
+)
+
+image monika 2wktsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="small",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="streaming"
 )
 
 image monika 2etc = DynamicDisplayable(
@@ -10800,6 +10934,20 @@ image monika 4wkd = DynamicDisplayable(
     arms="pointright"
 )
 
+image monika 4wktsw = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="wide",
+    head="r",
+    left="2l",
+    right="2r",
+    arms="pointright",
+    tears="streaming"
+)
+
 image monika 5eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11589,7 +11737,7 @@ image monika 6dktpc = DynamicDisplayable(
     head="f",
     left="1l",
     right="1r",
-    arms="steepling",
+    arms="down",
     tears="pooled"
 )
 

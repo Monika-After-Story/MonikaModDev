@@ -1510,9 +1510,9 @@ label mas_chess_new_game_start:
     menu:
         m "What color would suit you?"
 
-        "White":
+        "White.":
             $ player_color = ChessDisplayable.COLOR_WHITE
-        "Black":
+        "Black.":
             $ player_color = ChessDisplayable.COLOR_BLACK
         "Let's draw lots!":
             $ choice = random.randint(0, 1) == 0
@@ -1604,9 +1604,9 @@ label mas_chess_game_start:
     if num_turns > 4:
         menu:
             m "Would you like to save this game?"
-            "Yes":
+            "Yes.":
                 jump mas_chess_savegame
-            "No":
+            "No.":
                 # TODO: should there be dialogue here?
                 pass
 
@@ -1614,9 +1614,9 @@ label mas_chess_playagain:
     menu:
         m "Do you want to play again?"
 
-        "Yes":
+        "Yes.":
             jump mas_chess_new_game_start
-        "No":
+        "No.":
             pass
 
 label mas_chess_end:
@@ -1779,9 +1779,9 @@ label mas_chess_savegame:
             m 1eka "We already have a game named '[save_name]'."
             menu:
                 m "Should I overwrite it?"
-                "Yes":
+                "Yes.":
                     pass
-                "No":
+                "No.":
                     jump mas_chess_savegame
 
     python:
@@ -1811,7 +1811,7 @@ label mas_chess_savegame:
                 m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
                 m 1eka "Right, [player]?"
                 menu:
-                    "Of course not":
+                    "Of course not.":
                         m 1hua "Yay~"
 
     if game_result == "*":
@@ -1976,7 +1976,7 @@ label mas_chess_dlg_qf_lost_ofcn_5:
 # 6th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_6:
     # TODO we need to have a separate version of this event if your affection
-    # is high enough. Basically you should only reach the bad end if 
+    # is high enough. Basically you should only reach the bad end if
     # you've been a dick for a while
     # TODO: this makes sense compared to the go_ham event since
     # its just throwing away stuff instead of cheating
@@ -2148,9 +2148,9 @@ label mas_chess_dlg_qf_edit:
     show monika 2ekc
     menu:
         m "Did you edit the save file?"
-        "Yes":
+        "Yes.":
             call mas_chess_dlg_qf_edit_y_start from _mas_chess_dlgqfeditystart
-        "No":
+        "No.":
             call mas_chess_dlg_qf_edit_n_start from _mas_chess_dlgqfeditnstart
 
     return _return
@@ -2186,10 +2186,10 @@ label mas_chess_dlg_qf_edit_y_1:
     # we want a timed menu here. Let's give the player 5 seconds to say sorry
     show screen mas_background_timed_jump(5, "mas_chess_dlg_qf_edit_y_1n")
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             hide screen mas_background_timed_jump
             # light affection boost for being honest
-            $ mas_gainAffection(modifier=0.5) 
+            $ mas_gainAffection(modifier=0.5)
             m 1hua "Apology accepted!"
             m 1eua "Luckily, I still remember a little bit of the last game, so we can continue it from there."
             return store.mas_chess.CHESS_GAME_BACKUP
@@ -2277,7 +2277,7 @@ label mas_chess_dlg_qf_edit_n_3:
     # THE ULTIMATE CHOICE
     show screen mas_background_timed_jump(3, "mas_chess_dlg_qf_edit_n_3n")
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             hide screen mas_background_timed_jump
             # light affection boost for apologizing
             $ mas_gainAffection(modifier=0.5)
@@ -2326,15 +2326,15 @@ label mas_chess_dlg_qf_edit_n_3_n:
         persistent.autoload = "mas_chess_go_ham_and_delete_everything"
 
     # TODO: similar to chess disable, we need 2 versions of this. With a certain
-    # amount of affection, you really should get a 2nd chance. 
-    # i think what we can do here is do a large subtract off affection 
+    # amount of affection, you really should get a 2nd chance.
+    # i think what we can do here is do a large subtract off affection
     # (maybe like -200/300 or something) and then if you are below a certain
-    # amount then you get the bad end, otherwise we jump to the 
+    # amount then you get the bad end, otherwise we jump to the
     # 3rd time no edit, sorry label.
     # TODO: actually i'm not 100% sure on this, lets leave it up to debate rn
     # TODO: actaully, we should change some of this dialogue to make it more
     # obvious that the player violated trust
-    # TODO: also we should like do something here where if the player 
+    # TODO: also we should like do something here where if the player
     #  qutis during this time, we delete or jump into some other flow
     m 6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"

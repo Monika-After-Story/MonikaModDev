@@ -167,8 +167,8 @@ init -1 python in mas_hangman:
     HARD_MODE = 2
 
     hm_words = {
-        EASY_MODE: list(), # easy 
-        NORM_MODE: list(), # normal 
+        EASY_MODE: list(), # easy
+        NORM_MODE: list(), # normal
         HARD_MODE: list() # hard
     }
 
@@ -210,7 +210,7 @@ init -1 python in mas_hangman:
         for word in MONI_WORDS:
             wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
-    
+
     # file names
     NORMAL_LIST = "mod_assets/MASpoemwords.txt"
     HARD_LIST = "mod_assets/1000poemwords.txt"
@@ -224,13 +224,13 @@ init -1 python in mas_hangman:
         Does a deepcopy of the words for the given mode.
 
         Sets the hm_words dict for that mode
-        
+
         NOTE: does a list clear, so old references will still work
 
         RETURNS: the copied list of words. This is the same reference as
             hm_words's list. (empty list if mode is invalid)
         """
-        if _mode not in all_hm_words:   
+        if _mode not in all_hm_words:
             return list()
 
         # otherwise valid mode
@@ -396,11 +396,11 @@ label mas_hangman_game_select_diff:
 
     menu:
         m "Choose a difficulty."
-        "Easy":
+        "Easy.":
             $ hangman_mode = mas_hmg.EASY_MODE
-        "Normal":
+        "Normal.":
             $ hangman_mode = mas_hmg.NORM_MODE
-        "Hard":
+        "Hard.":
             $ hangman_mode = mas_hmg.HARD_MODE
 
 label mas_hangman_game_preloop:
@@ -697,9 +697,9 @@ label mas_hangman_game_loop:
     # try again?
     menu:
         m "Would you like to play again?"
-        "Yes":
+        "Yes.":
             jump mas_hangman_game_loop
-        "No":
+        "No.":
             jump mas_hangman_game_end
 
     # RETURN AT END

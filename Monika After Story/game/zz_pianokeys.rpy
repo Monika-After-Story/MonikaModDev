@@ -125,7 +125,7 @@ label mas_piano_songchoice:
 
         menu:
             m "Did you want to play a song or play on your own, [player]?"
-            "Play a song":
+            "Play a song.":
                 m "Which song?"
                 show monika at t21
                 call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
@@ -154,10 +154,10 @@ label mas_piano_songchoice:
                 else:
                     jump mas_piano_songchoice
 
-            "On my own":
+            "On my own.":
                 pass
 
-            "Nevermind":
+            "Nevermind.":
                 jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
@@ -203,9 +203,9 @@ label mas_piano_setupstart:
         show monika 1eua
         menu:
             m "Would you like to play again?"
-            "Yes":
+            "Yes.":
                 jump mas_piano_loopstart
-            "No":
+            "No.":
                 pass
 
 label mas_piano_loopend:

@@ -270,6 +270,7 @@ init -1 python in mas_affection:
 init 15 python in mas_affection:
     import store # global
     import store.evhand as evhand
+    import store.mas_selspr as mas_selspr
     import store.mas_layout as mas_layout
     persistent = renpy.game.persistent
     layout = store.layout
@@ -488,15 +489,27 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_LOVE
-        store.unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
+        # unlock thanks compliement
+        store.mas_unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
+        # unlocks wardrobe if we have more than one clothes available
+        if len(mas_selspr.filter_clothes(True)) > 1:
+            store.mas_unlockEventLabel("monika_clothes_select")
+            #TODO: Amend monika_outfit if > 1 outfit available.
+            store.mas_lockEventLabel("monika_outfit")
 
 
     def _loveToEnamored():
         """
         Runs when transitioning from love to enamored
         """
+        # lock thanks compliment
         if store.seen_event("mas_compliment_thanks"):
-            store.lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+            store.mas_lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
+
+        # lock wardrobe
+        store.mas_lockEventLabel("monika_clothes_select")
 
         return
 
@@ -1777,7 +1790,7 @@ label monika_affection_nickname:
         jump monika_affection_nickname_yes
 
     menu:
-        "Yes":
+        "Yes.":
             label monika_affection_nickname_yes:
                 pass
             $ bad_nickname_search = re.compile('|'.join(bad_nickname_list), re.IGNORECASE)
@@ -1870,7 +1883,7 @@ label monika_affection_nickname:
                         $ hideEventLabel("monika_affection_nickname")
                         $ done = True
 
-        "No":
+        "No.":
             m 1ekc "Oh..."
             m 1lksdlc "Alright then, if you say so."
             m 3eka "Just tell me if you ever change your mind, [player]."
@@ -1925,7 +1938,7 @@ label mas_affection_finalfarewell:
     call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
 
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             pass
         "...":
             pass
