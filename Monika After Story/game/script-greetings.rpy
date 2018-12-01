@@ -1640,19 +1640,32 @@ label greeting_back_from_sleep:
      return
 
 init 5 python:
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_siat", unlocked=True, random=True),eventdb=evhand.greeting_database)
-
+    rules = dict()
+    rules.update(MASAffectionRule.create_rule(min=400,max=None))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel = "greeting_siat",
+            unlocked = True,
+            random = True,
+            rules = rules
+        ),
+        eventdb = evhand.greeting_database
+    )
+    del rules
+    
 label greeting_siat:
     m 1hub "{i}~[player] and Monika sittin' in a tree~{/i}"
     m 1hubfb "{i}~K-I-S-S-I-N-G~{/i}"
     m 3hubfb "{i}~First comes love~{/i}"
     m "{i}~Then comes marriage~{/i}"
     m "{i}~Then comes--{/i}"
-    m 4wubfsdld "W-wha?!"
+    m 3wubfsdld "W-wha?!"
     m "[player]! H-how long were you there?!"
     m 4rkbfb "I...{w=1} I didn't notice you come in...{w=1} I was just..."
-    m 3ekbfb "Ahaha! Nevermind."
-    m 1ekbfa "I love you, [player], I'm so happy that you're here now~"
+    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfb "Ahaha! Nevermind."
+    m 5ekbfa "I love you, [player], I'm so happy that you're here now~"
     return
 
 init 5 python:
