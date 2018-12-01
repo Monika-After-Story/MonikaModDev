@@ -1218,29 +1218,29 @@ label ch30_reset:
     $ store.mas_selspr.unlock_hair(mas_hair_def)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
 
-    python:
+#    python:
         # TODO: remove this when release 0.8.10
         # first, unlock all hair / clothes events that could be reached
-        unlockEventLabel("monika_hair_ponytail")
+#        unlockEventLabel("monika_hair_ponytail")
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_hair_changed:
-            unlockEventLabel("monika_hair_down")
-            unlockEventLabel("monika_hair_select")
-            store.mas_selspr.unlock_hair(mas_hair_down)
+#        if persistent._mas_hair_changed:
+#            unlockEventLabel("monika_hair_down")
+#            unlockEventLabel("monika_hair_select")
+#            store.mas_selspr.unlock_hair(mas_hair_down)
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_pm_cares_about_dokis:
-            mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
-            mas_unlockEventLabel("monika_sayori")
-            mas_unlockEventLabel("monika_natsuki")
+#        if persistent._mas_pm_cares_about_dokis:
+#            mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
+#            mas_unlockEventLabel("monika_sayori")
+#            mas_unlockEventLabel("monika_natsuki")
 
         # TODO: remove this when release 0.8.10
-        if persistent._mas_o31_seen_costumes is not None:
-            if persistent._mas_o31_seen_costumes.get("marisa", False):
-                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
-            if persistent._mas_o31_seen_costumes.get("rin", False):
-                store.mas_selspr.unlock_clothes(mas_clothes_rin)
+#        if persistent._mas_o31_seen_costumes is not None:
+#            if persistent._mas_o31_seen_costumes.get("marisa", False):
+#                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+#            if persistent._mas_o31_seen_costumes.get("rin", False):
+#                store.mas_selspr.unlock_clothes(mas_clothes_rin)
 
 
     # monika hair/acs
@@ -1251,6 +1251,7 @@ label ch30_reset:
     # this is likely to occur in crashes / reloads
     python:
         if persistent._mas_acs_enable_promisering:
+            # TODO: need to be able to add a different promise ring
             monika_chr.wear_acs_pst(mas_acs_promisering)
 
     ## random chatter frequency reset
@@ -1358,8 +1359,5 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
-
-        if store.mas_o31_event.isMonikaInCostume(monika_chr):
-            monika_chr.remove_acs(mas_acs_promisering)
 
     return

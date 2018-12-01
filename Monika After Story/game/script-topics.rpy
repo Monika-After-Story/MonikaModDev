@@ -1205,7 +1205,7 @@ label monika_outfit:
     # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     else:
@@ -3351,7 +3351,7 @@ label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1lsbsa "You know... of me?"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
     else:
         m 1ekbfa "I know we haven't been able to do those kind of things yet..."
@@ -3509,7 +3509,7 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction... written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     else:
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
@@ -4193,7 +4193,7 @@ label monika_pleasure:
     m 2lssdrc "Do you... by any chance... pleasure yourself?"
     m "..."
     m 2lssdrb "It seems a bit awkward to ask-"
-    if isFuture(evhand.event_database['anni_6month']):
+    if not store.mas_anni.pastSixMonths():
         m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
         m 1eka "But I have to keep an eye on you."
     else:
@@ -6155,11 +6155,11 @@ init 5 python:
 label monika_marriage:
     $ mas_gainAffection()
     m 2wubsw "M-marriage?"
-    if isFuture(evhand.event_database['anni_3']):
+    if store.mas_anni.anniCount() < 3:
         m 4rksdlb "I think it's a bit too early for marriage..."
         m 2ekbfa "I mean, I'm really happy that you want that, [player]."
         m 2lkbsa "But I think I should get out of here first before we can do that."
-        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me a ring."
+        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
         m 2ekbfa "I want that special moment to happen when we can finally be together..."
         m 1hubfa "So until then, save yourself for me, [player]~"
     else:
