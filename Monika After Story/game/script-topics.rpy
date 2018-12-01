@@ -6584,7 +6584,7 @@ label monika_asks_charity:
             m 4eub "Plus, I've heard that it can be great to have volunteer experience on a resume, when you apply for a job."
             m 3hua "So, whether you did it for that or just out of kindness, it's a good thing either way."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "You know, it's the kind of things that makes me love you even more, [player]."
+            m 5eua "You know, it's these kind of things that makes me love you even more, [player]."
             m 5hub "I just feel so proud that you helped people in need."
             m 5hubfa "I love you so much, [player]. I mean it."
 
