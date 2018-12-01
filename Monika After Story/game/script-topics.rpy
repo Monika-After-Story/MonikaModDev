@@ -8336,9 +8336,8 @@ default persistent._mas_pm_shaved_hair = None
 default persistent._mas_pm_no_hair_no_talk = None
 
 ## Height Vars
-## NOTE: to use these, you'll actually want to check what unit these are stored in
-default persistent._mas_pm_height_big = None
-default persistent._mas_pm_height_small = None
+## NOTE: This is stored in CENTIMETERS
+default persistent._mas_pm_height = None
 
 ##### We'll also get a default measurement unit for height
 default persistent._mas_pm_units_height = None
@@ -8447,7 +8446,7 @@ label monika_player_appearance:
             menu:
                 m "What unit of measurement do you use to take your height, [player]?"
 
-                "Meters and centimeters.":
+                "Centimeters.":
                     $ persistent._mas_pm_units_height = "metric"
                     m 2hua "Alright, thanks, [player]!"
 
@@ -8462,16 +8461,13 @@ label monika_player_appearance:
             m 1esb "So,{w=0.5} how tall are you, [player]?"
 
             if persistent._mas_pm_units_height == "metric":
-                $ hUnit1 = 'meters'
-                $ hUnit2 = 'centimeters'
+                $ persistent._mas_pm_height = int(renpy.input('How tall are you in centimeters?',allow=numbers_only,length=3).strip(' \t\n\r').lower())
             else:
-                $ hUnit1 = 'feet'
-                $ hUnit2 = 'inches'
+                $ height_one = int(renpy.input('How tall are you in feet?',allow=numbers_only,length=1).strip(' \t\n\r').lower())
+                $ height_two = int(renpy.input('[persistent._mas_pm_height] feet and how many inches?',allow=numbers_only,length=2).strip(' \t\n\r').lower())
+                $ persistent._mas_pm_height = ((height_one * 12) + height_two) * 2.54
 
-            $ persistent._mas_pm_height_big = int(renpy.input('How tall are you in [hUnit1]?',allow=numbers_only,length=1).strip(' \t\n\r').lower())
-            $ persistent._mas_pm_height_small = int(renpy.input('[persistent._mas_pm_height_big] [hUnit1] and how many [hUnit2]?',allow=numbers_only,length=2).strip(' \t\n\r').lower())
-
-            if ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 76) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 8)):
+            if persistent._mas_pm_height >= 176:
                 m 3eua "Wow, you're pretty tall [player]!" 
                 m 1eud "I can't say I've really met anybody who I’d consider to be tall."
                 m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
@@ -8479,13 +8475,13 @@ label monika_player_appearance:
                 if persistent._mas_pm_units_height == "imperial":
                     m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
                 else:
-                    m 2rksdlb "But if I had to guess, I’d say I’m about a meter and sixty-five centimeters tall?"
+                    m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
 
                 m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You’ll have to lean down to kiss me!"
 
-            elif ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 62) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 4)):
+            elif persistent._mas_pm_height >= 162:
                 m 1hub "Hey, I'm about that height too!"
                 m "..."
                 m 2hksdrb "Well, I don’t know my actual height to be fair..."
@@ -8493,7 +8489,7 @@ label monika_player_appearance:
                 if persistent._mas_pm_units_height == "imperial":
                     m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
                 else:
-                    m 2rksdlb "But if I had to guess, I’d say I’m about a meter and sixty-five centimeters tall?"
+                    m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
 
                 m 4rksdla "It’s just a guess--hopefully it’s not too far off."
                 m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel feel clumsy around you."
@@ -8662,23 +8658,23 @@ label monika_player_appearance:
 
             show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
             if persistent._mas_pm_player_hair =="bald":
-                if ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 76) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 8)):
+                if persistent._mas_pm_height >= 176:
                     m 5eubfu "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace..."
 
-                elif ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 62) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 4)):
+                elif persistent._mas_pm_height >= 162:
                     m 5eubfu "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace..."
 
                 else:
                     m 5eubfu "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace..."
 
             else:
-                if ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 76) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 8)):
+                if persistent._mas_pm_height >= 176:
                     if persistent._mas_pm_hair_length is not "average":
                         m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [persistent._mas_pm_hair_length] [persistent._mas_pm_hair_color] hair..."
                     else:
                         m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [persistent._mas_pm_hair_color] hair..."
 
-                elif ((persistent._mas_pm_units_height == "metric" and persistent._mas_pm_height_big >= 1 and persistent._mas_pm_height_small >= 62) or (persistent._mas_pm_units_height == "imperial" and persistent._mas_pm_height_big >= 5 and persistent._mas_pm_height_small >= 4)):
+                elif persistent._mas_pm_height >= 162:
                     if persistent._mas_pm_hair_length is not "average":
                         m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [persistent._mas_pm_hair_length] [persistent._mas_pm_hair_color] hair..."
                     else:
