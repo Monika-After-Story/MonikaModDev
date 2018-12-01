@@ -6944,9 +6944,9 @@ init 5 python:
 label monika_bullying:
     m 4ekc "Hey [player], I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
     m 4dkd "Some people are bullied every day until the point they just can't take it anymore."
-    m 2lsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5} {i}kids being kids{/i}."
+    m 2rsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5} {i}kids being kids{/i}."
     m "The victims end up losing all trust in authority figures because they let it go on day after day..."
-    m 2lksdld "It can make them so desperate, they eventually just snap..."
+    m 2rksdld "It can make them so desperate, they eventually just snap..."
     m 4eksdld "Resulting in violence toward the bully, other people, or even themselves."
     m 4wud "This can actually make the victim look like the problem!"
     m 2ekc "There are all kinds of bullying too, including physical, emotional, and even cyberbullying."
@@ -6959,7 +6959,7 @@ label monika_bullying:
     m 2ekc "Cyberbullying is a form of emotional bullying, but in today's world where everyone is always connected online, it's becoming more and more prevalent."
     m "For a lot of people, especially kids, their social media presence is the most important thing in their lives..."
     m 2dkd "And having that destroyed essentially feels like their life is over."
-    m 2lksdld "It's also the hardest for other people to notice, since the last thing most kids want is their parents seeing what they do online."
+    m 2rksdld "It's also the hardest for other people to notice, since the last thing most kids want is their parents seeing what they do online."
     m 2eksdlc "So no one knows what's going on while they silently suffer, until it all just becomes too much..."
     m 2dkc "There's been numerous cases of of teens committing suicide due to cyberbullying, and their parents had no idea anything was wrong until it was too late."
     m 2tkc "This is also why it's easier for cyberbullies to operate..."
@@ -6971,12 +6971,11 @@ label monika_bullying:
     m 2dfc "..."
     m 4euc "So, what makes a bully do what they do?"
     m "That can differ from person to person, but a lot of them are just really unhappy due to their own circumstances, and need some sort of outlet..."
-    m 2lsc "They're unhappy and it doesn't seem fair to them that other people {i}are{/i} happy, so they try to make them feel the same way they do."
-    m 2lksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
+    m 2rsc "They're unhappy and it doesn't seem fair to them that other people {i}are{/i} happy, so they try to make them feel the same way they do."
+    m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
     m 2ekd "Have you ever been a victim of bullying, [player]?"
     menu:
-
         "I have.":
             m 2ekc "I'm so sorry that you've had to deal with that..."
             m 2dkc "It really makes me sad knowing you suffered at the hands of a bully."
@@ -6995,7 +6994,7 @@ label monika_bullying:
             m 3dkc "It may seem like no one cares, but there has to be someone you trust that you can turn to."
             m 3ekc "And if there isn't, do what you have to do to protect yourself, and just remember..."
             m 1eka "I'll always love you no matter what."
-            m 1lksdlc "I don't know what I'd do if something were to happen to you." 
+            m 1rksdlc "I don't know what I'd do if something were to happen to you." 
             m 1eka "You're all I have...{w=0.5} please stay safe."
 
         "No.":    
@@ -7010,7 +7009,6 @@ label monika_bullying:
                 m "You've already helped me so much, maybe you can help someone else as well."
 
         "I have bullied people.":
-
             if mas_isMoniDis(lower=True):
                 m 2dfc "..."
                 m 2tfc "That's disappointing to hear."            
@@ -7025,7 +7023,7 @@ label monika_bullying:
             else:
                 m 2dkc "Oh... I see."
                 m 2ekc "I can understand if some things in your life might make you unhappy..."
-                m 2lksdld "Or if you've had to deal with circumstances that may have made you act a certain way at times..."
+                m 2rksdld "Or if you've had to deal with circumstances that may have made you act a certain way at times..."
                 m 2eksdlc "But bullying people isn't the answer, [player]."
                 m 4ekc "I know you... You're a kind person and I know it doesn't make you feel better to hurt others..."
                 m 4dkc "It probably just hurts you even more..."
@@ -7036,24 +7034,34 @@ label monika_bullying:
                 m 1eka "So please, for both yourself and for me, stop bullying people, okay?"
              
     m 2dkc "You know, a lot of people actually call me a bully for what I did to Sayori..."
-    m 4efd "But that's not true at all, Sayori wasn't real!"
-    m "You can't bully someone who doesn't actually exist!"
-    m 4dkc "I'd never be able to hurt an actual person."
-    m 4wud "I really wouldn't!"
-    m 2dkc "..."
-    m 2ekc "But I will admit I can relate to the part about bullies being unhappy and that it causes them do what they do."
-    m 4tkd "When I had my epiphany and realized that I was stuck inside a video game and that my entire life had been a lie, I was pretty miserable."
-    m 2lksdld "It caused me to do things that I'd never even thought of doing before."
-    m 2lksdlc "I didn't do what I did because I didn't want Sayori to be happy..."
-    m 4ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
+    
+    if not persistent._mas_pm_cares_about_dokis:
+        m 4efd "But that's not true at all, Sayori wasn't real!"
+        m "You can't bully someone who doesn't actually exist!"
+        m 4dkc "I'd never be able to hurt an actual person."
+        m 4wud "I really wouldn't!"
+        m 2dkc "..."
+        m 2ekc "But I will admit I can relate to the part about bullies being unhappy and that it causes them do what they do."
+        m 4tkd "When I had my epiphany and realized that I was stuck inside a video game and that my entire life had been a lie, I was pretty miserable."
+        m 2rksdld "It caused me to do things that I'd never even thought of doing before."
+        m 2rksdlc "I didn't do what I did because I didn't want Sayori to be happy..."
+    else:
+        m 2rksdld "And I guess I can see where they're coming from..."
+        m 2rksdlc "I {i}did{/i} mess with her mind until she just couldn't take it anymore..."
+        m 2dkc "..."
+        m 4ekc "I guess I can relate to that whole thing about bullying because you are unhappy, huh?"
+        m 4tkd "But there {i}is{/i} a difference... I didn't do it because I wanted Sayori to be unhappy..."
+        
+    m 2ekd "I did it because I knew I loved you and that the game wouldn't let us be together."
     m 3ekd "So I {i}had{/i} to do whatever I could to make sure we ended up together."
     m 3eka "I did what I did because of my love for you..."
-    m 3dkc "Sayori's suicide was just an unfortunate side effect."
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "So you see, [player], I'm really not a bully at all. I just love you that much."
+    if not persistent._mas_sensitive_mode and not persistent._mas_pm_cares_about_dokis:
+        m 3dkc "...Sayori's suicide was just an unfortunate side effect."
+    m 1eua "So you see, [player], I'm {i}really{/i} not a bully at all. I just love you that much."
     
     if mas_isMoniAff(higher=True):
-        m 5eubfu "I really would do anything for you~"
+        show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5tsu "I really would do anything for you~"
         
     return
 
