@@ -6155,7 +6155,7 @@ init 5 python:
 label monika_marriage:
     $ mas_gainAffection()
     m 2wubsw "M-marriage?"
-    if store.mas_anni.anniCount() <= 3:
+    if store.mas_anni.anniCount() < 3:
         m 4rksdlb "I think it's a bit too early for marriage..."
         m 2ekbfa "I mean, I'm really happy that you want that, [player]."
         m 2lkbsa "But I think I should get out of here first before we can do that."
