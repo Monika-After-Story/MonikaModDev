@@ -19,6 +19,11 @@ init:
                 self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
+                # Sounds used.
+                self.playsounds = True
+                self.soundboop = "mod_assets/pong_boop.wav"
+                self.soundbeep = "mod_assets/pong_beep.wav"
+
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
                 self.PADDLE_HEIGHT = 79
@@ -60,8 +65,7 @@ init:
                 # Get an initial angle for launching the ball.
                 init_angle = random.uniform(-self.MAX_REFLECT_ANGLE, self.MAX_REFLECT_ANGLE)
                 
-                # The position, dental-position, and the speed of the
-                # ball.
+                # The position, dental-position, and the speed of the ball.
                 self.bx = self.PADDLE_X_PLAYER + self.PADDLE_WIDTH + 0.1
                 self.by = self.playery
                 self.bdx = .5 * math.cos(init_angle)
@@ -106,7 +110,8 @@ init:
                         self.bdy = -self.bdy
                         
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
                 
                     return True             
                 return False
@@ -134,10 +139,37 @@ init:
                         self.bdy = -self.bdy
                         
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
                  
                     return True
                 return False
+                
+            def getCollisionY(self, hotside, is_computer):
+                # Checks whether the ball went through the player's paddle on the x-axis while moving left or monika's paddle while moving right.
+                # Returns the y collision-position and sets self.collidedonx
+                
+                self.collidedonx = is_computer and self.oldbx <= hotside <= self.bx or not is_computer and self.oldbx >= hotside >= self.bx;
+                
+                if self.collidedonx:
+                    
+                    # Checks whether a bounce happened before potentially colliding with the paddle.
+                    if self.oldbx <= self.bouncebx <= hotside <= self.bx or self.oldbx >= self.bouncebx >= hotside >= self.bx:
+                        startbx = self.bouncebx
+                        startby = self.bounceby
+                    else:
+                        startbx = self.oldbx
+                        startby = self.oldby
+                        
+                    # The y value at which the ball hits the paddle.
+                    if startbx - self.bx != 0:
+                        return startby + (self.by - startby) * ((startbx - hotside) / (startbx - self.bx))
+                    else:
+                        return startby
+                    
+                # The ball did not go through the paddle on the x-axis.
+                else:
+                    return self.oldby
                 
             # Recomputes the position of the ball, handles bounces, and
             # draws the screen.
@@ -168,10 +200,21 @@ init:
                 else:
                     self.bx += self.bdx * speed
                     self.by += self.bdy * speed
-                    
-                # Handles Monika's speed.
-                self.ctargety = self.by + self.ctargetoffset
 
+                # Bounces the ball up to one time, either up or down
+                if not self.check_bounce_off_top():
+                   self.check_bounce_off_bottom()
+                    
+                # Handles Monika's targeting and speed.
+                
+                # If the ball goes through Monika's paddle, aim for the collision-y, not ball-y.
+                # Avoids Monika overshooting her aim on lags.
+                collisionby = self.getCollisionY(self.PADDLE_X_MONIKA, True)
+                if self.collidedonx:
+                    self.ctargety = collisionby + self.ctargetoffset
+                else:
+                    self.ctargety = self.by + self.ctargetoffset
+            
                 # Moves Monika's paddle. It wants to go to self.by, but
                 # may be limited by it's speed limit.
                 cspeed = self.computerspeed * dtime
@@ -185,10 +228,6 @@ init:
                 # Set the position of Monika's paddle.
                 self.computery = max(self.computery, self.COURT_TOP)
                 self.computery = min(self.computery, self.COURT_BOTTOM)
-
-                # Bounces the ball up to one time, either up or down
-                if not self.check_bounce_off_top():
-                   self.check_bounce_off_bottom()
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside, is_computer):
@@ -204,38 +243,15 @@ init:
                     # blit to the Render we're making.
                     r.blit(pi, (int(px), int(py - self.PADDLE_RADIUS)))
                     
-                    # Calculates the start-position (startbx, startby) of the ball.
-                    # Default is its old position, changes if the ball collided with a wall.
                     
-                    collidedonx = False
-                    
-                    # Checks whether the ball went through the paddle on the x-axis while moving left or right.
-                    if self.oldbx <= hotside <= self.bx or self.oldbx >= hotside >= self.bx:
-                        collidedonx = True
-                        
-                        # Checks whether a bounce happened before potentially colliding with the paddle.
-                        if self.oldbx <= self.bouncebx <= hotside <= self.bx or self.oldbx >= self.bouncebx >= hotside >= self.bx:
-                            startbx = self.bouncebx
-                            startby = self.bounceby
-                        else:
-                            startbx = self.oldbx
-                            startby = self.oldby
-                            
-                        # The y value at which the ball hits the paddle.
-                        if startbx - self.bx != 0:
-                            collisionby = startby + (self.by - startby) * ((startbx - hotside) / (startbx - self.bx))
-                        else:
-                            collisionby = startby
-                        
-                    # The ball did not go through the paddle on the x-axis.
-                    else:
-                        collisionby = self.oldby
+                    # Checks whether the ball went through the paddle on the x-axis and gets the y-collision-posisiton.
+                    collisionby = self.getCollisionY(hotside, is_computer)
                         
                     # Checks whether the ball went through the paddle on the y-axis.
                     collidedony = py - self.PADDLE_RADIUS - self.BALL_HEIGHT / 2 <= collisionby <= py + self.PADDLE_RADIUS + self.BALL_HEIGHT / 2
                     
                     # Checks whether the ball collided with the paddle 
-                    if not self.stuck and collidedonx and collidedony:
+                    if not self.stuck and self.collidedonx and collidedony:
                         hit = True
                         if self.oldbx >= hotside >= self.bx:
                             self.bx = hotside + (hotside - self.bx)
@@ -254,8 +270,10 @@ init:
                             # Changes where the computer aims after a hit.
                             if is_computer:
                                 self.ctargetoffset = self.get_random_offset()
-
-                            renpy.sound.play("mod_assets/pong_boop.wav", channel=1)
+    
+                            if self.playsounds:
+                                renpy.sound.play(self.soundboop, channel=1)
+                                
                             self.bspeed += 250
                             if self.bspeed > self.BALL_MAX_SPEED:
                                 self.bspeed = self.BALL_MAX_SPEED
