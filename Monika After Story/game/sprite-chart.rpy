@@ -2953,6 +2953,21 @@ init -2 python in mas_sprites:
 
     ######### ACS ###########
 
+    def _acs_quetzalplushie_exit(_moni_chr):
+        """
+        Exit programming point for quetzal plushie acs
+        """
+        # remove the santa hat if we are removing the plushie
+        _moni_chr.remove_acs(store.mas_acs_quetzalplushie_santahat)
+
+
+    def _acs_quetzalplushie_santahat_entry(_moni_chr):
+        """
+        Entry programming point for quetzal plushie santa hat acs
+        """
+        # need to wear the quetzal plushie if we putting the santa hat on
+        _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
+
 
 init -1 python:
     # HAIR (IMG015)
@@ -3243,7 +3258,7 @@ init -1 python:
     store.mas_sprites.init_acs(mas_acs_promisering)
 
     ### QUETZAL PLUSHIE
-    ## qplushie
+    ## quetzalplushie
     # Quetzal plushie that sits on Monika's desk
     mas_acs_quetzalplushie = MASAccessory(
         "quetzalplushie",
@@ -3252,9 +3267,25 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
-        stay_on_start=False
+        stay_on_start=False,
+        exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
+
+    ### QUETZAL PLUSHIE SANTA HAT
+    ## quetzalplushie_santahat
+    # Santa hat for the Quetzal Plushie
+    mas_acs_quetzalplushie_santahat = MASAccessory(
+        "quetzalplushie_santahat",
+        "quetzalplushie_santahat",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False,
+        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
+    )
+
 
 #### ACCCESSORY VARIABLES (IMG025)
 # variables that accessories may need for enabling / disabling / whatever
