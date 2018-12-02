@@ -218,7 +218,6 @@ init:
             # Recomputes the position of the ball, handles bounces, and
             # draws the screen.
             def render(self, width, height, st, at):
-                self.player = Text(str(persistent.pong_difficulty) + ", " + str(abs(round(ball_paddle_bounces))), size=36)
                         
                 # The Render object we'll be drawing into.
                 r = renpy.Render(width, height)
