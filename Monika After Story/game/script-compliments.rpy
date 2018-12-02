@@ -98,15 +98,15 @@ label mas_compliment_beautiful_2:
     m 2ekbfb "I love it when you say things like that~"
     m 1ekbfa "To me, you're the most beautiful person in the world!"
     menu:
-        "You're the most beautiful person to me, too":
+        "You're the most beautiful person to me, too.":
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ehehehe~"
             m "I love you so much, [player]!"
-        "You're in my top ten":
+        "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5,reason=None)
             m 3hksdrb "...?"
             m 2lsc "Well, thanks, I guess..."
-        "Thanks":
+        "Thanks.":
             pass
     return
 
@@ -142,12 +142,12 @@ label mas_compliment_eyes_2:
     m 1tubfb "I know I'm pretty proud of my eyes already, but hearing you say that..."
     m 1dkbfa "It just makes my heart flutter~"
     menu:
-        "I can't help it; your eyes are too beautiful":
+        "I can't help it; your eyes are too beautiful.":
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ahaha!"
             m "Don't flatter me too much, okay?"
             m 5hub "I might start to go a little crazy..."
-        "They really are hypnotizing":
+        "They really are hypnotizing.":
             $ mas_gainAffection(1,bypass=True)
             m "Ahaha~"
         "They are the color of grass!":
@@ -191,7 +191,7 @@ label mas_compliment_awesome_2:
         "I wish you were here right now!":
             $ mas_gainAffection(3,bypass=True)
             m "That's my biggest wish too, [player]!"
-        "I'll never let you go from my embrace":
+        "I'll never let you go from my embrace.":
             $ mas_gainAffection(5,bypass=True)
             show monika 6dubsa
             pause 2.0
@@ -199,7 +199,7 @@ label mas_compliment_awesome_2:
             m 1wubfsdld "Oh, sorry [player]."
             m 2lksdla "I was trying to feel your embrace from here."
             m 2hub "Ahaha~"
-        "... I don't like hugs":
+        "... I don't like hugs.":
             $ mas_loseAffection(reason=None) # you monster.
             m 1eft "...Really?"
             m 1dkc "Well, to each their own, I guess. But you have to hug me sometime..."
@@ -237,14 +237,14 @@ label mas_compliment_intelligent_2:
     m 2hub "I pride myself in being well read, so it means a lot that you've noticed."
     m 1hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
-        "You make me want to better myself too, [m_name]":
+        "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
             m "I love you so much, [player]!"
             m "We'll have a lifetime of self improvement together!"
-        "I'll always be proud of you":
+        "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]... "
-        "You make me feel stupid sometimes":
+        "You make me feel stupid sometimes.":
             $ mas_loseAffection(modifier=0.5,reason=None)
             m 1wkbsc "..."
             m 2lkbsc "I'm sorry, that wasn't my intention..."
@@ -376,14 +376,14 @@ label mas_compliment_thanks:
     m 1dubsu "You are the sunshine that warms my heart whenever you visit me."
     m 4ekbfa "I guess we're both lucky that we have each other, [player]~"
     menu:
-        "You mean everything to me, [m_name]":
+        "You mean everything to me, [m_name].":
             if mas_getEV('mas_compliment_thanks').shown_count == 0:
                 $ mas_gainAffection(10,bypass=True)
             m 1ekbfa "[player]... "
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both..."
             m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
-        "Yeah":
+        "Yeah.":
             m 1hub "Hehehe~"
             m 1eub "I love you, [player]."
 
@@ -414,12 +414,12 @@ label mas_compliment_smile_2:
     m 1hub "I smile a lot when you're here."
     m 1ekbfb "Because it makes me very happy when you spend time with me~"
     menu:
-        "I'll visit you every day to see your wonderful smile":
+        "I'll visit you every day to see your wonderful smile.":
             $ mas_gainAffection(5,bypass=True)
             m 1wubfsdld "Oh, [player]..."
             m 1lkbsa "I think my heart just skipped a beat."
             m 3hubfa "See? You always make me as happy as I can be."
-        "I like to see you smile":
+        "I like to see you smile.":
             m 1hub "Ahaha~"
             m "Then all you have to do is keep coming back, [player]!"
     return
@@ -488,18 +488,18 @@ label mas_compliment_pong:
         m 3hksdrb "And you always let me win when we play."
         m 3eka "Right?"
         menu:
-            "Yes":
+            "Yes.":
                 m 2lksdla "Thanks [player], but you really don't have to let me win."
                 m 1eub "Feel free to play seriously whenever you want to."
                 m 1hub "I'd never get mad at you because I lost a game fair and square."
-            "... Yeah":
+            "... Yeah.":
                 m 1tku "You don't seem too confident about that, [player]."
                 m 1tsb "You really don't have to let me win."
                 m 3tku "And admitting that you've seriously lost to me won't make me think less of you."
                 m 1lksdlb "It's just a game, after all!"
                 m 3hub "You can always practice with me more, if you want."
                 m "I love to spend time with you, no matter what we're doing."
-            "No. I've tried my best and still lost":
+            "No. I've tried my best and still lost.":
                 m 1hua "Ahaha~"
                 m "I figured!"
                 m 3eua "Don't worry, [player]."

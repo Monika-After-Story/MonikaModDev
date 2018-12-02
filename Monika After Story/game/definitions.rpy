@@ -2952,11 +2952,22 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
+        
+    def mas_getSessionLength():
+        return datetime.datetime.now() - persistent.sessions['current_session_start']
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        #TODO keep adding special days as we add them
+        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -2993,9 +3004,84 @@ init -1 python:
         """
         Returns True if the given date is o31
 
-        IF None is passed in, we use today's date
+        IN:
+            _date - date to check
+                (Default: todays date)
+
+        RETURNS: True if given date is o31, False otherwise
         """
         return _date == mas_o31
+
+
+    def mas_isD25(_date=datetime.date.today()):
+        """
+        Returns True if the given date is d25
+
+        IN:
+            _date - date to check
+                (default: todays date)
+
+        RETURNS: True if given date is d25, False otherwise
+        """
+        return _date == mas_d25
+
+
+    def mas_isD25Eve(_date=datetime.date.today()):
+        """
+        Returns True if the given date is d25 eve
+
+        IN:
+            _date - date to check
+                (Default: todays date)
+
+        RETURNS: True if given date is d25 eve, False otherwise
+        """
+        return _date == mas_d25e
+
+
+    def mas_isD25Season(_date=datetime.date.today()):
+        """
+        Returns True if the given date is in d25 season. The season goes from
+        dec 1 to jan 5.
+
+        NOTE: because of the year rollover, we cannot check years
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in d25 season, False otherwise
+        """
+        return (
+            mas_d25c_start <= _date <= mas_nye
+            or mas_nyd <= _date <= mas_d25c_end
+        )
+
+
+    def mas_isNYE(_date=datetime.date.today()):
+        """
+        Returns True if the given date is new years eve
+
+        IN:
+            _date - date to check
+                (Default: Todays date)
+
+        RETURNS: True if given date is new years eve, False otherwise
+        """
+        return _date == mas_nye
+
+
+    def mas_isNYD(_date=datetime.date.today()):
+        """
+        RETURNS True if the given date is new years day
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is new years day, False otherwise
+        """
+        return _date == mas_nyd
 
 
     def mas_maxPlaytime():
@@ -4577,6 +4663,12 @@ define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
+define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
+define mas_d25e = mas_d25 - datetime.timedelta(days=1)
+define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
+define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 5)
+define mas_nye = datetime.date(datetime.date.today().year, 12, 31)
+define mas_nyd = datetime.date(datetime.date.today().year, 1, 1)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False

@@ -2,6 +2,8 @@
 #
 # TOC
 #   [HOL010] - O31
+#   [HOL020] - D25
+#   [HOL030] - NYE (new yeares eve, new years)
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -120,7 +122,7 @@ init 101 python:
 
         if not persistent._mas_hair_changed:
             unlockEventLabel(
-                "greeting_hairdown", 
+                "greeting_hairdown",
                 store.evhand.greeting_database
             )
 
@@ -178,7 +180,7 @@ init -11 python in mas_o31_event:
         RETURNS True if the persistent greeting type is the TT one
         """
         return (
-            store.persistent._mas_greeting_type 
+            store.persistent._mas_greeting_type
             == store.mas_greetings.TYPE_HOL_O31_TT
         )
 
@@ -522,7 +524,7 @@ label greeting_trick_or_treat_back:
             if persistent._mas_o31_trick_or_treating_aff_gain < 15:
                 persistent._mas_o31_trick_or_treating_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-                
+
 
     if time_out < five_minutes:
         $ mas_loseAffection()
@@ -544,7 +546,7 @@ label greeting_trick_or_treat_back:
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
         m 1eka "I really enjoyed trick or treating with you, [player]..."
-        
+
         if wearing_costume:
             m 2eka "Even if I couldn't see anything and no one else could see my costume..."
             m 2eub "Dressing up and going out was still really great!"
@@ -589,7 +591,7 @@ label greeting_trick_or_treat_back:
             m 2eub "Going out was still really great!"
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
-        
+
     return
 
 ### o31 farewells
@@ -630,11 +632,11 @@ label bye_trick_or_treat:
         show monika 2etc
         menu:
             m "Are you {i}sure{/i} you want to go right now?"
-            "Yes":
+            "Yes.":
                 $ persistent._mas_o31_trick_or_treating_start_early = True
                 m 2etc "Well...{w=1}okay then, [player]..."
 
-            "No":
+            "No.":
                 $ persistent._mas_o31_went_trick_or_treating_abort = True
                 m 2hub "Ahaha!"
                 m "Be a little patient, [player]~"
@@ -784,3 +786,21 @@ label bye_trick_or_treat_rtg:
     m 1ekc "Sorry, [player]..."
     m 3eka "Make sure to bring lots of candy for the both of us to enjoy, okay~?"
     return
+
+#################################### D25 ######################################
+# [HOL020]
+
+init -900 python:
+    # delete christmas files
+    store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpy")
+    store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
+
+default persistent._mas_d25_in_d25_mode = False
+# True if we should disable d25 decoration
+# This should only be True if:
+#   Monika is NOt being returned after the d25 season begins
+#   and season is d25.
+
+
+#################################### NYE ######################################
+# [HOL030]
