@@ -795,7 +795,11 @@ init -900 python:
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpy")
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
 
-#
+default persistent._mas_d25_in_d25_mode = False
+# True if we should disable d25 decoration
+# This should only be True if:
+#   Monika is NOt being returned after the d25 season begins
+#   and season is d25.
 
 
 #################################### NYE ######################################
