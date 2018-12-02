@@ -19,6 +19,11 @@ init:
                 self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
+                # Sounds used.
+                self.playsounds = True
+                self.soundboop = "mod_assets/pong_boop.wav"
+                self.soundbeep = "mod_assets/pong_beep.wav"
+
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
                 self.PADDLE_HEIGHT = 79
@@ -106,7 +111,8 @@ init:
                         self.bdy = -self.bdy
                         
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
                 
                     return True             
                 return False
@@ -134,7 +140,8 @@ init:
                         self.bdy = -self.bdy
                         
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
                  
                     return True
                 return False
@@ -254,8 +261,10 @@ init:
                             # Changes where the computer aims after a hit.
                             if is_computer:
                                 self.ctargetoffset = self.get_random_offset()
-
-                            renpy.sound.play("mod_assets/pong_boop.wav", channel=1)
+    
+                            if self.playsounds:
+                                renpy.sound.play(self.soundboop, channel=1)
+                                
                             self.bspeed += 250
                             if self.bspeed > self.BALL_MAX_SPEED:
                                 self.bspeed = self.BALL_MAX_SPEED
