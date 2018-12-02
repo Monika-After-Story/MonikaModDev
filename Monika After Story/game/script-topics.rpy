@@ -6535,6 +6535,92 @@ label monika_100k:
         m 1hua "Almost~"
     return
 
+
+default persistent._mas_pm_donate_charity = None
+# True if user donated
+
+default persistent._mas_pm_volunteer_charity = None
+# True if user has volunteered
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_asks_charity",
+            category=['you'],
+            prompt="Charity",
+            random=True
+        )
+    )
+
+label monika_asks_charity:
+    m 1esd "Say, [player]."
+    m 1esc "There's something that crossed my mind lately."
+    m 3esd "Since my world is fictional, there aren’t really any problems like world hunger or poverty."
+    m 2rkc "I know it exists, but I’ve never really witnessed it."
+    m 2ekc "However, I know it's not the same in your reality. There are lots of people who need help just to survive."
+    m 2esd "You must have at least seen a homeless person if you've been in a big city before."
+    m "So I was just wondering..."
+
+    show monika 1eua
+    menu:
+        m "Have you ever contributed to a charity?"
+
+        "I've donated.":
+            $ persistent._mas_pm_donate_charity = True
+            m 3hub "That's great!"
+            m 2eua "Though you could argue that volunteering is better, I think there's nothing wrong with donating."
+            m 2eka "It's better than nothing, and you are definitely contributing, even if you have a limited budget or little time to spend."
+            m 2ekc "It's sad to say, but charities will always need people giving money or other resources to help people."
+            m 3lksdlc "There are so many causes that need it, after all."
+            m 3ekc "Yet you don’t know if your donations are actually going to a good cause."
+            m 3ekd "It doesn’t help that some charities claim to support a cause, but take people’s donations for themselves."
+            m 2dsc "..."
+            m 2eka "I'm sorry, I didn't want things to get so dark."
+            m 1eua "I knew you would be kind enough to do such a thing."
+            m 1hub "That's the kind of thing I love about you, [player]."
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hub "You've always been so sweet."
+        
+        "I volunteered.":
+            $ persistent._mas_pm_volunteer_charity = True
+            m 1wub "Really?"
+            m 1hub "That's wonderful!"
+            m 3hua "While donating is a good way to help out, lending an extra hand is even better!"
+            m 3rksdla "Of course, money and resources are important, but usually, manpower is pretty scarce..."
+            m 2ekc "It's understandable; most working adults don't necessarily have time to spare."
+            m 2lud "So, most of the time, retired people do the organizing, and it can be a problem if they have to carry something heavy."
+            m 2eud "That's why they sometimes need help from the outside, particularly from teenagers or young adults, who are more physically able."
+            m 1eua "Anyway, I think it's great you tried making a difference by volunteering."
+            m 4eub "Plus, I've heard that it can be great to have volunteer experience on a resume, when you apply for a job."
+            m 3hua "So, whether you did it for that or just out of kindness, it's a good thing either way."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "You know, it's this kind of thing that makes me love you even more, [player]."
+            m 5hub "I just feel so proud that you helped people in need."
+            m 5hubfa "I love you so much, [player]. I mean it."
+
+        "No, I haven't.":
+            $ persistent._mas_pm_donate_charity = False
+            $ persistent._mas_pm_volunteer_charity = False
+            m 1euc "Oh, I see."
+            m 2esc "I can understand, actually."
+            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fradulent usage of funds, or discrimination in who the charities help."
+            m 2ekc "So, it can be hard to trust them in the first place."
+            m 3esa "That's why you should always do some research and find charities that are reputable."
+            m 2dkc "Seeing all those people suffering from hunger or poverty all the time..."
+            m 2ekd "And even the people that try to help them, struggling to change anything..."
+            m 2esc "It can be a bit deflating, if not depressing."
+            m 2eka "But, you know..."
+            m "Even if you can't do anything to contribute, it can be helpful to just smile at people."
+            m 2ekc "Being ignored by passer-bys can be tough for people who are struggling, or trying to contribute."
+            m 2rkc "It's as if they were seen as a nuisance by society, when they're just trying to get by."
+            m 2eua "Sometimes, a smile is all you need to make you go further."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Just like when I'm with you."
+            m 5hua "With just a smile, you make all my troubles go away."
+            m 5hubfb "I love you so much, [player]."
+    return "derandom"
+
 init 5 python:
     addEvent(
         Event(persistent.event_database,
