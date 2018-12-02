@@ -6537,10 +6537,21 @@ label monika_100k:
 
 
 default persistent._mas_pm_donate_charity = None
+# True if user donated
+
 default persistent._mas_pm_volunteer_charity = None
+# True if user has volunteered
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_asks_charity",category=['you'],prompt="Charity",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_asks_charity",
+            category=['you'],
+            prompt="Charity",
+            random=True
+        )
+    )
 
 label monika_asks_charity:
     m 1esd "Say, [player]."
@@ -6661,7 +6672,6 @@ default persistent._mas_pm_have_fam_mess_better = None
 
 # dont wanna talk about it
 default persistent._mas_pm_no_talk_fam = None
->>>>>>> content
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
