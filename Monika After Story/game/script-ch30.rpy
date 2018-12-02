@@ -514,6 +514,10 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
         $ store.mas_dockstat.surpriseBdayShowVisuals()
+
+    # d25 seasonal
+    if persistent._mas_d25_in_d25_mode:
+        $ store.mas_d25_event.showD25Visuals()
     return
 
 
@@ -777,6 +781,9 @@ label mas_ch30_post_retmoni_check:
 
     if mas_isO31():
         jump mas_holiday_o31_autoload_check
+
+    if mas_isD25Season():
+        jump mas_holiday_d25c_autoload_check
 
 
 label mas_ch30_post_holiday_check:

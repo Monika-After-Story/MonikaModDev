@@ -990,27 +990,31 @@ default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
 init 5 python:
-    rules = dict()
-    # why are we limiting this to certain day range?
-#    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
-    rules.update(
-        MASGreetingRule.create_rule(
-            skip_visual=True,
-            random_chance=opendoor.chance
+
+    # this greeting is disabled on certain days
+    if not mas_isO31() and not mas_isD25Season():
+
+        rules = dict()
+        # why are we limiting this to certain day range?
+    #    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
+        rules.update(
+            MASGreetingRule.create_rule(
+                skip_visual=True,
+                random_chance=opendoor.chance
+            )
         )
-    )
 
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="i_greeting_monikaroom",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="i_greeting_monikaroom",
+                unlocked=True,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
 
-    del rules
+        del rules
 
 label i_greeting_monikaroom:
 

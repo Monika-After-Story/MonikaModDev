@@ -802,5 +802,64 @@ default persistent._mas_d25_in_d25_mode = False
 #   and season is d25.
 
 
+#### d25 arts
+
+# window banners
+image mas_d25_banners = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/d25/windowdeco.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/d25/windowdeco-n.png"
+)
+
+# TODO: tree
+
+init -11 python in mas_d25_event:
+    
+    def showD25Visuals():
+        """
+        Shows d25 visuals.
+        """
+        renpy.show("mas_d25_banners", zorder=7)
+        # TODO: tree
+
+
+    def hideD25Visuals():
+        """
+        Hides d25 visuals
+        """
+        renpy.hide("mas_d25_banners")
+
+
+# auto load starter check
+label mas_holiday_d25c_autoload_check:
+    # ASSUMPTIONS:
+    #   monika is NOT returning home
+
+    python:
+        if not persistent._mas_d25_in_d25_mode:
+
+            # enable d25
+            persistent._mas_d25_in_d25_mode = True
+
+    # TODO:
+    #   holiday intro dialogue pushed, if not already pushed
+
+
+    # TODO: remove these
+    if mas_skip_visuals:
+        jump ch30_post_restartevent_check
+
+    # always disable the opendoro greeting on o31
+    $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
+
+    # and the hairdown greeting as well
+    $ lockEventLabel("greeting_hairdown", store.evhand.greeting_database)
+
+    # otherwise, jump back to the holiday check point
+    jump mas_ch30_post_holiday_check
+
+
+
 #################################### NYE ######################################
 # [HOL030]
