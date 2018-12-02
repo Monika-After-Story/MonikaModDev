@@ -1218,31 +1218,6 @@ label ch30_reset:
     $ store.mas_selspr.unlock_hair(mas_hair_def)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
 
-#    python:
-        # TODO: remove this when release 0.8.10
-        # first, unlock all hair / clothes events that could be reached
-#        unlockEventLabel("monika_hair_ponytail")
-
-        # TODO: remove this when release 0.8.10
-#        if persistent._mas_hair_changed:
-#            unlockEventLabel("monika_hair_down")
-#            unlockEventLabel("monika_hair_select")
-#            store.mas_selspr.unlock_hair(mas_hair_down)
-
-        # TODO: remove this when release 0.8.10
-#        if persistent._mas_pm_cares_about_dokis:
-#            mas_hideEventLabel("monika_archetype", lock=True, derandom=True)
-#            mas_unlockEventLabel("monika_sayori")
-#            mas_unlockEventLabel("monika_natsuki")
-
-        # TODO: remove this when release 0.8.10
-#        if persistent._mas_o31_seen_costumes is not None:
-#            if persistent._mas_o31_seen_costumes.get("marisa", False):
-#                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
-#            if persistent._mas_o31_seen_costumes.get("rin", False):
-#                store.mas_selspr.unlock_clothes(mas_clothes_rin)
-
-
     # monika hair/acs
     $ monika_chr.load()
 

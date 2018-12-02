@@ -2,6 +2,8 @@
 #
 # TOC
 #   [HOL010] - O31
+#   [HOL020] - D25
+#   [HOL030] - NYE (new yeares eve, new years)
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -784,3 +786,17 @@ label bye_trick_or_treat_rtg:
     m 1ekc "Sorry, [player]..."
     m 3eka "Make sure to bring lots of candy for the both of us to enjoy, okay~?"
     return
+
+#################################### D25 ######################################
+# [HOL020]
+
+init -900 python:
+    # delete christmas files
+    store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpy")
+    store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
+
+#
+
+
+#################################### NYE ######################################
+# [HOL030]
