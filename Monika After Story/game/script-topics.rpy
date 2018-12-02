@@ -1042,16 +1042,16 @@ label monika_favoritegame:
     return
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_smash",
-            category=['games'],
-            prompt="Super Smash"
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_smash",
+#            category=['games'],
+#            prompt="Super Smash"
 #            random=True
-        )
-    )
+#        )
+#    )
 
 label monika_smash:
     m 3hua "Hey, have you heard of a game called Super Sma--"
