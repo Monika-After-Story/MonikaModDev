@@ -644,6 +644,7 @@ init -810 python:
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -679,6 +680,9 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+
+            # likes/ d25
+            "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",

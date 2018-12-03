@@ -801,6 +801,25 @@ default persistent._mas_d25_in_d25_mode = False
 #   Monika is NOt being returned after the d25 season begins
 #   and season is d25.
 
+default persistent._mas_d25_spent_d25 = False
+# True if the user spent time with monika on d25
+# (basically they got the merry christmas dialogue)
+
+
+init -810 python:
+    # MASHistorySaver for d25
+    store.mas_history.addMHS(MASHistorySaver(
+        "d25",
+        datetime.datetime(2018, 12, 26),
+        {
+            # not very useful, but we need the reset
+            "_mas_d25_in_d25_mode": "d25.mode.25",
+
+            "_mas_d25_spent_d25": "d25.actions.spent_d25"
+        }
+        # TODO: programming points probably
+    ))
+
 
 #### d25 arts
 
@@ -860,6 +879,415 @@ label mas_holiday_d25c_autoload_check:
     jump mas_ch30_post_holiday_check
 
 
+# topics
+
+init 5 python:
+    # TODO: decide props for this
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+            # TODO: should appear once the holiday season begins
+        )
+    )
+
+label mas_d25_monika_holiday_intro:
+    m 1eub "Happy holidays!"
+    m 3eua "Do you like what I've done with the room?"
+    m 1hua "I must say that I'm pretty proud of it."
+    m "Christmas time has always been one of my favorite occasions of the year."
+    m 5eka "And I'm so glad that you're here to share it with me~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_christmas"
+            # TODO: props
+            # TODO: should only appear on d25
+        )
+    )
+
+label mas_d25_monika_christmas:
+    $ persistent._mas_d25_spent_d25 = True
+
+    m 1eub "[player]! Do you know what day it is?"
+    m 3hub "Of course you do. It's Christmas!"
+    m 3wub "Merry Christmas, [player]!"
+    m 1hub "Ahaha! I can't believe that it's finally here!"
+    m 3eka "I'm so, so happy that you decided to spend some of it with me."
+    m 1eud "Remember to go share the holiday cheer with your family and friends, though."
+    m 1eua "After all, they're very important, too."
+    m 1hua "And I'm sure that they would love to see you at this special time."
+    m 1rsc "But..."
+    m 2dsc "..."
+
+    # TODO: this topic definitely needs affection adjust
+    m 4ekbsa "[player], I love you."
+    m 1lkbsa "Maybe it's just the snow, or the decorations."
+    m "..or even the mistletoe getting to me."
+
+    # TODO: actually, we may want to do kissing so...
+    m 3hksdlb "Don't worry, I didn't hang one up."
+    m 1rksdla "...Maybe~{nw}"
+    $ _history_list.pop()
+    m 1rksdlb "Ehehe..."
+
+    m 1ekbsa "My heart's fluttering like crazy right now, [player]."
+    m "I couldn't imagine a better way to spend this special holiday..."
+    m 1eua "Don't get me wrong, I knew that you would."
+    m 3eka "Actually having you here with me on Christmas, just the two of us..."
+    m 1hub "Ahaha~"
+    m 5eka "It's every couple's dream in the holidays, [player]."
+    m "Snuggling with each other by a fireplace, watching the snow gently fall..."
+    m 5hua "I'm forever grateful I got this chance with you, [player]."
+    m "I love you. Forever and ever~"
+    m 5hub "Merry Christmas, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_hanukkah"
+            # TODO: props
+            # TODO: bewteen 12th and 20th I guess?
+        )
+    )
+
+label mas_d25_monika_hanukkah:
+    m 1dsd "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
+    m 1dsa "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
+    m 3esa "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
+    m 3eub "Eight nights worth of celebration!"
+    m 3eua "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
+    m "It's on the 25th of Kislev, meaning 'trust' or 'hope'."
+    m 1hua "A very appropriate meaning for such an occasion, don't you think?"
+
+    # NOTE: wtf is this
+    m 3eua "Anyway, have you ever had fried sufganiyot before?"
+
+    m "It's a special kind of donut made during this holiday."
+    m 3eub "It's filled in with something really sweet, deep friend, and rolled onto some sugar."
+    m 1wub "It's a really good pastry! I especially love the ones filled with strawberry filling~"
+    m 1hua "This time of year sure has a lot of wonderful holidays and traditions."
+    m 1eub "I don't know if you celebrate Hanukkah, but can we match a menorah lighting ceremony together, anyway?"
+    m 5hua "We can sing and dance the night away~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_kwanzaa"
+            # TODO: props
+            # TODO: between 26th and 30th I guess
+        )
+    )
+
+label mas_d25_monika_kwanzaa:
+    m 1eub "[player], have you ever heard of Kwanzaa?"
+    m 1eua "It's a week-long festival celebrating African American history that starts the day after Christmas."
+    m 3eua "The word 'Kwanzaa' comes from the Swahili praise 'matunda ya kwanza', which means 'first fruits'."
+    m "Even if Christmas is the main event for many, other holidays are always interesting to learn about."
+    m 1euc "Apparently, people celebrate the tradition by decorating their homes with bright adornments."
+    m "There's also music to enjoy, and a candleholder called the 'kinara' to light a new fire with each passing day."
+    m 1eua "Doesn't it remind you of some other holidays? The concepts certainly seem familiar."
+    m "In the end, having a day to celebrate is the most important part. Everyone has their own way to enjoy themselves."
+    m 1hua "We can celebrate Kwanzaa together, too, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_carolling"
+            # TODO: props
+            # TODO: between start of season and d25
+        )
+    )
+
+default persistent._mas_pm_likes_singing_d25_carols = None
+# does the user like singing christmas carols?
+
+label mas_d25_monika_carolling:
+    m 1euc "Hey, [player]..."
+    m 3eud "Have you ever gone carolling before?"
+    m 1euc "Going door to door in groups, singing to others during the holidays..."
+
+    # TODO: need to adjust for hemisphere
+    m 1eua "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
+
+    show monika 3eua
+    menu:
+        m "Do you like singing Christmas carols, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_likes_singing_d25_carols = True
+            m 1hua "I'm gload you feel the same way, [player]!"
+            m 3hub "My favorite song is definitely 'Jingle Bells!'"
+            m 1eua "It's just such an upbeat, happy tune!"
+            m 1eka "Maybe we can sing together someday."
+            m 1hua "Ehehe~"
+
+        "No.":
+            $ persistent._mas_pm_likes_singing_d25_carols = False
+            m 1euc "Oh...{w=1}really?"
+            m 1hksdlb "I see..."
+            m 1eua "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
+            m 3hua "Sing with me sometime, okay?"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_dreidel"
+            # TODO: props
+            # TODO: during hannkkau time
+        )
+    )
+
+label mas_d25_monika_dreidel:
+    # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
+    m 3eua "[player], did you know that each side of a dreidel actaully means something?"
+    m "Nun, Gimel, Hel, Shim."
+    m 1eub "These stand for Nes Gadol Hayah Sham - A Great Miracle Happened There."
+    m "It refers to the Hanukkah story of how one day's worth of oil lasted for eight days."
+    m 3eua "Over in Israel, they change the last word to 'poh', making it 'A Great Miracle Happened Here.'"
+
+    # TODO: oops, should have made this
+    m 1hua "Maybe next year, I'll have one to spin~"
+
+    m 1rksdla "I don't have one, unfortunately."
+    m 3hua "But for now, [player], do you have any gelt?"
+    m 3hub "The chocolate coin variety tastes really good."
+    m 1tku "Though money is always good, too, ehehe~"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro"
+        )
+    )
+
+
 
 #################################### NYE ######################################
 # [HOL030]
+
+default persistent._mas_nye_spent_nye = False
+# true if user spent new years eve with monika
+
+default persistent._mas_nye_spent_nyd = False
+# true if user spent new years day with monika
+
+init -810 python:
+    # MASHistorySaver for nye
+    store.mas_history.addMHS(MASHistorySaver(
+        "nye",
+        datetime.datetime(2019, 1, 6),
+        {
+            "_mas_nye_spent_nye": "nye.actions.spent_nye",
+            "_mas_nye_spent_nyd": "nye.actions.spent_nyd"
+        },
+        use_year_before=True
+        # TODO: programming points probably
+    ))
+
+# topics
+
+init 5 python:
+    # NOTE: new years eve
+    # NOTE: known as monika_newyear1
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_nye_monika_nye"
+            # TODO: props
+            # TODO: nye
+        )
+    )
+
+default persistent._mas_pm_has_new_years_res = None
+# does the user have new years resolutions?
+
+label mas_nye_monika_nye:
+    $ persistent._mas_nye_spent_nye = True
+
+    m 1eua "[player]! It's almost time, isn't it?"
+    m "It's incredible to think that the year is almost over."
+    m 1eka "Time flies by so quickly."
+    m 1ekbsa "Especially when I get to see you so often."
+
+    # TODO: probably shouldl actually check time before saying this
+    m 3hua "Well, there's still a bit of time left before midnight."
+    m 1eua "We might as well enjoy this year while it lasts."
+    m 1euc "Usually, I'd reprimand you for staying up late, but..."
+    m 1hua "Today is a special day."
+
+    # NOTE: probalby could have affection play here
+    #   low affection makes monika suggest that you have resolutions
+    #   somthing like that
+    show monika 3eua
+    menu:
+        m "Do you have any resolutions, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_has_new_years_res = True
+
+            m 1eub "It's always nice to set goals for yourself in the coming year."
+            m 3eka "Even if they can be hard to reach or maintain."
+            m 1hua "I'll be here to help you, if need be!"
+
+            # TODO: affection adjust
+            m 5hua "My resolution is to be an even better girlfriend for you, my love."
+
+        "No.":
+            $ persistent._mas_pm_has_new_years_res = False
+
+            # TODO: yeah affection adjust needed
+            m 1eud "Oh, is that so?"
+            m 1eua "You don't have to change. I think you're wonderful the way you are."
+            m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
+            m 1kua "Maybe you'll think of something that you want to do, [player]."
+
+    return
+
+
+init 5 python:
+    # NOTE: new years day
+    # also known as monika_newyear2
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_nye_monika_nyd"
+            # TODO: props
+            # TODO: nyd
+        )
+    )
+
+label mas_nye_monika_nyd:
+    $ persistent._mas_nye_spent_nyd = True
+    
+    m 1eub "[player]!"
+    m 1hua "We've been through a lot together this past year, huh?"
+    m 1eka "I'm so happy, knowing we can spend even more time together."
+    m 3hua "Let's make this year as wonderful as the last one, okay?"
+    m 5hubsa "I love you, [player]."
+    m "Happy new year~"
+    return
+
