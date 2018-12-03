@@ -16,15 +16,15 @@ init 5 python:
     )
     
     def _initOutOfLinesQuips():
-        story_event_quips = MASQuipList()
+        out_of_line_quips = MASQuipList()
 
         for _line in _monika_out_of_lines_line_quips:
-            story_event_quips.addLineQuip(_line)
+            out_of_line_quips.addLineQuip(_line)
 
         for _label in _monika_out_of_lines_label_quips:
-            story_event_quips.addLabelQuip(_label)
+            out_of_line_quips.addLabelQuip(_label)
         
-        return story_event_quips
+        return out_of_line_quips
         
 label monika_out_of_lines_quip_1:
     m 1eka "I'm not sure what to say, but can you just be with me a little longer?"
