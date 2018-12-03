@@ -104,6 +104,18 @@ python early:
     #       (Default: None)
     #   sensitive - True means this is a sensitve topic, False means it is not
     #       (Default: False)
+    #   aff_range - tuple of the following format:
+    #       [0]: - low limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no lower limit
+    #       [1]: - upper limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no uppwer limit
+    #       If None, then event is considered to be always available regardless
+    #       of affection level
+    #       NOTE: the tuple items should be AFFECTION STATES.
+    #           not using an affection state may break things
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -125,7 +137,8 @@ python early:
             "rules":14,
             "last_seen":15,
             "years":16,
-            "sensitive":17
+            "sensitive":17,
+            "aff_range":18
         }
 
         # name constants
@@ -169,7 +182,8 @@ python early:
                 rules=dict(),
                 last_seen=None,
                 years=None,
-                sensitive=False
+                sensitive=False,
+                aff_range=None
             ):
 
             # setting up defaults
@@ -189,6 +203,20 @@ python early:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+
+            # we'll simplify aff_range so we dont have to deal with extra
+            #   storage
+            if aff_range is not None:
+                low, high = aff_range
+                if low is None and high is None:
+                    aff_range = None
+
+            # and then check for valid affection states
+            # NOTE: we assume that the affection store is visible by now
+            if not store.mas_affection._isValidAffRange(aff_range):
+                raise Exception("{0} | bad aff range: {1}".format(
+                    eventlabel, str(aff_range)
+                ))
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -221,7 +249,8 @@ python early:
                 rules,
                 last_seen,
                 years,
-                sensitive
+                sensitive,
+                aff_range
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)

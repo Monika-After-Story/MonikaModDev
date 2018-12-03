@@ -46,8 +46,12 @@ init -500 python:
         False, # rules
         True, # last_seen
         False, # years
-        False # sensitive
+        False, # sensitive
+        False # aff_range
     )
+
+    # NOTE: aff_range is unlocked because making adjustments to topics would
+    #   become really difficult if we just kept this locked
 
     # set defaults
 #    if (
