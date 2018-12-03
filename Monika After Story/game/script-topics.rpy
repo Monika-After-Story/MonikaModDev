@@ -8340,7 +8340,7 @@ default persistent._mas_pm_no_hair_no_talk = None
 default persistent._mas_pm_height = None
 
 ##### We'll also get a default measurement unit for height
-default persistent._mas_pm_units_height = None
+default persistent._mas_pm_units_height_metric = None
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_player_appearance",category=['you'],prompt="[player]'s appearance",random=True))
@@ -8447,11 +8447,11 @@ label monika_player_appearance:
                 m "What unit of measurement do you use to take your height, [player]?"
 
                 "Centimeters.":
-                    $ persistent._mas_pm_units_height = "metric"
+                    $ persistent._mas_pm_units_height_metric = True
                     m 2hua "Alright, thanks, [player]!"
 
                 "Feet and inches.":
-                    $ persistent._mas_pm_units_height = "imperial"
+                    $ persistent._mas_pm_units_height_metric = False
                     m 2hua "Alright, [player]!"
 
             m 1rksdlb "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
@@ -8460,11 +8460,11 @@ label monika_player_appearance:
 
             m 1esb "So,{w=0.5} how tall are you, [player]?"
 
-            if persistent._mas_pm_units_height == "metric":
+            if persistent._mas_pm_units_height_metric:
                 $ persistent._mas_pm_height = int(renpy.input('How tall are you in centimeters?',allow=numbers_only,length=3).strip(' \t\n\r').lower())
             else:
                 $ height_one = int(renpy.input('How tall are you in feet?',allow=numbers_only,length=1).strip(' \t\n\r').lower())
-                $ height_two = int(renpy.input('[persistent._mas_pm_height] feet and how many inches?',allow=numbers_only,length=2).strip(' \t\n\r').lower())
+                $ height_two = int(renpy.input('[height_one] feet and how many inches?',allow=numbers_only,length=2).strip(' \t\n\r').lower())
                 $ persistent._mas_pm_height = ((height_one * 12) + height_two) * 2.54
 
             if persistent._mas_pm_height >= 176:
@@ -8472,7 +8472,7 @@ label monika_player_appearance:
                 m 1eud "I can't say I've really met anybody who I’d consider to be tall."
                 m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
 
-                if persistent._mas_pm_units_height == "imperial":
+                if not persistent._mas_pm_units_height_metric:
                     m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
                 else:
                     m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
@@ -8486,7 +8486,7 @@ label monika_player_appearance:
                 m "..."
                 m 2hksdrb "Well, I don’t know my actual height to be fair..."
 
-                if persistent._mas_pm_units_height == "imperial":
+                if not persistent._mas_pm_units_height_metric:
                     m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
                 else:
                     m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
