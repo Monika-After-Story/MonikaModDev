@@ -63,6 +63,9 @@ init -1 python:
     import store.songs as songs
     import store.evhand as evhand
 
+    mas_events_built = False
+    # set to True once we have built events
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -223,11 +226,15 @@ init -1 python:
 
         ASSUMES:
             evhand.event_database
+            mas_events_built
         """
+        global mas_events_built
+
         # retrieve all randoms
         all_random_topics = Event.filterEvents(
             evhand.event_database,
-            random=True
+            random=True,
+            aff=mas_curr_affection
         )
 
         # split randoms into unseen and sorted seen events
@@ -236,6 +243,7 @@ init -1 python:
         # split seen into regular seen and the most seen events
         seen, mostseen = mas_splitSeenEvents(sorted_seen)
 
+        mas_events_built = True
         return (unseen, seen, mostseen)
 
 
@@ -255,7 +263,8 @@ init -1 python:
         all_seen_topics = Event.filterEvents(
             evhand.event_database,
             random=True,
-            seen=True
+            seen=True,
+            aff=mas_curr_affection
         ).values()
 
         # clean the seen topics from early repeats
@@ -268,6 +277,19 @@ init -1 python:
         return mas_splitSeenEvents(cleaned_seen)
 
 
+    def mas_rebuildEventLists():
+        """
+        Rebuilds the unseen, seen and most seen event lists.
+
+        ASSUMES:
+            mas_rev_unseen - unseen list
+            mas_rev_seen - seen list
+            mas_rev_mostseen - most seen list
+        """
+        global mas_rev_unseen, mas_rev_seen, mas_rev_mostseen
+        mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -278,16 +300,13 @@ init -1 python:
 init 11 python:
 
     # sort out the seen / most seen / unseen
-    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+    mas_rev_unseen = []
+    mas_rev_seen = []
+    mas_rev_mostseen = []
+#    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
 #    monika_random_topics = all_random_topics
-
-    if len(mas_rev_unseen) == 0:
-        # you've seen everything?! here, higher session limit
-        # NOTE: 1000 is arbitrary. Basically, endless monika topics
-        # I think we'll deal with this better once we hve a sleeping sprite
-        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)

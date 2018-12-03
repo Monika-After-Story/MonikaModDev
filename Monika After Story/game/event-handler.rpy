@@ -88,7 +88,7 @@ init -500 python:
 init 850 python:
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
-    mas_all_ev_db = dict()
+    mas_all_ev_db = {}
     mas_all_ev_db.update(store.evhand.event_database)
     mas_all_ev_db.update(store.evhand.farewell_database)
     mas_all_ev_db.update(store.evhand.greeting_database)
@@ -1472,7 +1472,11 @@ label prompt_menu:
     $ mas_RaiseShield_dlg()
 
     python:
-        unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
+        unlocked_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
@@ -1480,7 +1484,12 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
-        repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
+        repeatable_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            pool=False,
+            aff=mas_curr_affection
+        )
     #Top level menu
     # NOTE: should we force this to a particualr exp considering that 
     # monika now rotates
@@ -1561,7 +1570,8 @@ label prompts_categories(pool=True):
 #            full_copy=True,
 #                category=[False,current_category],
             unlocked=True,
-            pool=pool
+            pool=pool,
+            aff=mas_curr_affection
         )
 
         # add all categories the master category list
@@ -1612,7 +1622,8 @@ label prompts_categories(pool=True):
 #                    full_copy=True,
                     category=(False,current_category),
                     unlocked=True,
-                    pool=pool
+                    pool=pool,
+                    aff=mas_curr_affection
                 )
 
                 # add deeper categories to a list

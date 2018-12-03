@@ -696,6 +696,9 @@ init 15 python in mas_affection:
                 if to_down is not None:
                     to_down()
 
+        # finally, rebuild the event lists
+        store.mas_rebuildEventLists()
+
 
     def runAffGPPs(start_affg, end_affg):
         """
