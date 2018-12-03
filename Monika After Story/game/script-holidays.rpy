@@ -880,16 +880,17 @@ label mas_holiday_d25c_autoload_check:
 
 
 # topics
+# TODO: dont forget to update script topics's seen properties
 
-init 5 python:
+#init 5 python:
     # TODO: decide props for this
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-            # TODO: should appear once the holiday season begins
-        )
-    )
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_holiday_intro"
+#            # TODO: should appear once the holiday season begins
+#        )
+#    )
 
 label mas_d25_monika_holiday_intro:
     m 1eub "Happy holidays!"
@@ -899,15 +900,15 @@ label mas_d25_monika_holiday_intro:
     m 5eka "And I'm so glad that you're here to share it with me~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_christmas"
-            # TODO: props
-            # TODO: should only appear on d25
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_christmas"
+#            # TODO: props
+#            # TODO: should only appear on d25
+#        )
+#    )
 
 label mas_d25_monika_christmas:
     $ persistent._mas_d25_spent_d25 = True
@@ -946,15 +947,15 @@ label mas_d25_monika_christmas:
     m 5hub "Merry Christmas, [player]~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_hanukkah"
-            # TODO: props
-            # TODO: bewteen 12th and 20th I guess?
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_hanukkah"
+#            # TODO: props
+#            # TODO: bewteen 12th and 20th I guess?
+#        )
+#    )
 
 label mas_d25_monika_hanukkah:
     m 1dsd "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
@@ -976,15 +977,15 @@ label mas_d25_monika_hanukkah:
     m 5hua "We can sing and dance the night away~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_kwanzaa"
-            # TODO: props
-            # TODO: between 26th and 30th I guess
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_kwanzaa"
+#            # TODO: props
+#            # TODO: between 26th and 30th I guess
+#        )
+#    )
 
 label mas_d25_monika_kwanzaa:
     m 1eub "[player], have you ever heard of Kwanzaa?"
@@ -998,15 +999,15 @@ label mas_d25_monika_kwanzaa:
     m 1hua "We can celebrate Kwanzaa together, too, [player]."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_carolling"
-            # TODO: props
-            # TODO: between start of season and d25
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_carolling"
+#            # TODO: props
+#            # TODO: between start of season and d25
+#        )
+#    )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
@@ -1039,15 +1040,15 @@ label mas_d25_monika_carolling:
 
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_dreidel"
-            # TODO: props
-            # TODO: during hannkkau time
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_dreidel"
+#            # TODO: props
+#            # TODO: during hannkkau time
+#        )
+#    )
 
 label mas_d25_monika_dreidel:
     # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
@@ -1067,125 +1068,67 @@ label mas_d25_monika_dreidel:
     return
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_mistletoe"
+#            # TODO: props
+#            # TODO: d25 season
+#        )
+#    )
 
+default persistent._mas_pm_d25_mistletoe_kiss = False
+# True if user and monika kissed under the mistletoe
 
+label mas_d25_monika_mistletoe:
+    m 1eua "Say, [player]."
+    m 1eub "You've heard about the mistletoe tradition, right?"
+    m 1tku "When lovers end up underneath it, they're expected to kiss."
+    m 1eua "It actually originated from Victorian England!"
+    m 1dsa "A man was allowed to kiss any woman standing underneath mistletoe..."
+    m "And any woman who refused the kiss was cursed with bad luck..."
+    m 1dsc "..."
+    m 3rksdlb "Come to think of it, that sounds more like taking advantage of someone."
+    m 1hksdlb "But I'm sure it's different now!"
+    # TODO: branch dialogu here:
+    #   if first time and beyond a certain amount of time + affection, than kiss!
+    #       on subsequent times, maybe suggest a kiss or something
+    #   if first time but past the time/affection, then keep existing dialogue
+    #
+    m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
+    m 1tku "...Maybe I can even add one in here!"
+    m 1hub "Ehehe~"
+    return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_monika_sleigh"
+#            # TODO: props
+#            # TODO: from season start to d26
+#        )
+#    )
 
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_holiday_intro"
-        )
-    )
-
-
+label mas_d25_monika_sleigh:
+    m 3eub "Hey [player], a pretty nice thought just crossed my mind..."
+    m 1eua "Have you ever heard of carriage rides?"
+    m 3hub "When I get out of this place, we should totally go on one!"
+    m "Oh, I bet it would be magical!"
+    m 1eua "Nothing but the clip-clop of the horse's hooves against the pavement..."
+    m 1eub "And the colorful array of Christmas lights shining in the night..."
+    m 3hub "Wouldn't that be so romantic, [player]?"
+    m 1eka "Maybe we could even take a soft, fleece blanket along to cuddle under."
+    m 1hkbla "Oooh~"
+    m 1rkbfb "I wouldn't be able to contain myself. My heart would burst!"
+    m 1ekbfa "The warmth of your body against mine, wrapped within the gentle cloth~"
+    m 1dkbfa "Fingers entwined..."
+    m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
+    m 1wka "I really want to do that when I get there, [player]."
+    m 1hua "Wouldn't that be so lovely?"
+    m 5hkbfa "An experience like that with you would be so breathtaking~"
+    return
 
 #################################### NYE ######################################
 # [HOL030]
@@ -1210,18 +1153,19 @@ init -810 python:
     ))
 
 # topics
+# TODO: dont forget to updaet script seen props
 
-init 5 python:
-    # NOTE: new years eve
-    # NOTE: known as monika_newyear1
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_nye_monika_nye"
-            # TODO: props
-            # TODO: nye
-        )
-    )
+#init 5 python:
+#    # NOTE: new years eve
+#    # NOTE: known as monika_newyear1
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_nye_monika_nye"
+#            # TODO: props
+#            # TODO: nye
+#        )
+#    )
 
 default persistent._mas_pm_has_new_years_res = None
 # does the user have new years resolutions?
@@ -1268,17 +1212,17 @@ label mas_nye_monika_nye:
     return
 
 
-init 5 python:
-    # NOTE: new years day
-    # also known as monika_newyear2
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_nye_monika_nyd"
-            # TODO: props
-            # TODO: nyd
-        )
-    )
+#init 5 python:
+#    # NOTE: new years day
+#    # also known as monika_newyear2
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_nye_monika_nyd"
+#            # TODO: props
+#            # TODO: nyd
+#        )
+#    )
 
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
