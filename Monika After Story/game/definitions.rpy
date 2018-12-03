@@ -517,11 +517,6 @@ python early:
             from collections import Counter
 
             # now lets filter
-
-            # check if event contains the monika wants this rule
-            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
-                return False
-
             if unlocked is not None and event.unlocked != unlocked:
                 return False
 
@@ -561,6 +556,10 @@ python early:
 
             # sensitivyt
             if sensitive is not None and event.sensitive != sensitive:
+                return False
+
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
                 return False
 
             # we've passed all the filtering rules somehow
