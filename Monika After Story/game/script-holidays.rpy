@@ -893,6 +893,7 @@ label mas_holiday_d25c_autoload_check:
 #    )
 
 #TODO: Upset+ topic
+#TODO: Have a modification of this topic if the player spent last Christmas w/ Monika
 label mas_d25_monika_holiday_intro:
     m 1eub "Happy holidays!"
     m 3eua "Do you like what I've done with the room?"
@@ -943,6 +944,7 @@ label mas_d25_monika_christmas:
     m 3eka "Actually having you here with me on Christmas, just the two of us..."
     m 1hub "Ahaha~"
     m 5eka "It's every couple's dream in the holidays, [player]."
+    #Hemisphere thing may have a bit of contradiction w/ this
     m "Snuggling with each other by a fireplace, watching the snow gently fall..."
     m 5hua "I'm forever grateful I got this chance with you, [player]."
     m "I love you. Forever and ever~"
@@ -1027,6 +1029,7 @@ label mas_d25_monika_carolling:
 
     show monika 3eua
     menu:
+        #TODO (maybe): If we could possibly get that song fix in, would be nice to have Monika sing carols to us
         m "Do you like singing Christmas carols, [player]?"
         "Yes.":
             $ persistent._mas_pm_likes_singing_d25_carols = True
@@ -1200,6 +1203,7 @@ label mas_nye_monika_nye:
     #   somthing like that
     show monika 3eua
     menu:
+        #Could possibly ask if player accomplished past resolutions too
         m "Do you have any resolutions, [player]?"
         "Yes.":
             $ persistent._mas_pm_has_new_years_res = True
@@ -1243,6 +1247,8 @@ label mas_nye_monika_nyd:
     m 1hua "We've been through a lot together this past year, huh?"
     #TODO: branch for affection here
     m 1eka "I'm so happy, knowing we can spend even more time together."
+    #This line could reference if player spent new years w/ Monika last year.
+    #Probably could make a small path w/ that.
     m 3hua "Let's make this year as wonderful as the last one, okay?"
     m 5hubsa "I love you, [player]."
     m "Happy new year~"
