@@ -892,6 +892,7 @@ label mas_holiday_d25c_autoload_check:
 #        )
 #    )
 
+#TODO: Upset+ topic
 label mas_d25_monika_holiday_intro:
     m 1eub "Happy holidays!"
     m 3eua "Do you like what I've done with the room?"
@@ -910,6 +911,7 @@ label mas_d25_monika_holiday_intro:
 #        )
 #    )
 
+#TODO: Upset+ topic
 label mas_d25_monika_christmas:
     $ persistent._mas_d25_spent_d25 = True
 
@@ -924,12 +926,12 @@ label mas_d25_monika_christmas:
     m 1rsc "But..."
     m 2dsc "..."
 
-    # TODO: this topic definitely needs affection adjust
+    # TODO: this topic definitely needs affection adjust - aff+ from here, need other paths for lower
     m 4ekbsa "[player], I love you."
     m 1lkbsa "Maybe it's just the snow, or the decorations."
     m "..or even the mistletoe getting to me."
 
-    # TODO: actually, we may want to do kissing so...
+    # TODO: actually, we may want to do kissing so...if we add kiss, probably enam+ for this bit
     m 3hksdlb "Don't worry, I didn't hang one up."
     m 1rksdla "...Maybe~{nw}"
     $ _history_list.pop()
@@ -957,6 +959,7 @@ label mas_d25_monika_christmas:
 #        )
 #    )
 
+#TODO: Upset+
 label mas_d25_monika_hanukkah:
     m 1dsd "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
     m 1dsa "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
@@ -987,6 +990,7 @@ label mas_d25_monika_hanukkah:
 #        )
 #    )
 
+#TODO: Upset+
 label mas_d25_monika_kwanzaa:
     m 1eub "[player], have you ever heard of Kwanzaa?"
     m 1eua "It's a week-long festival celebrating African American history that starts the day after Christmas."
@@ -1012,6 +1016,7 @@ label mas_d25_monika_kwanzaa:
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
 
+#TODO: Upset+
 label mas_d25_monika_carolling:
     m 1euc "Hey, [player]..."
     m 3eud "Have you ever gone carolling before?"
@@ -1050,6 +1055,7 @@ label mas_d25_monika_carolling:
 #        )
 #    )
 
+#TODO: Upset+
 label mas_d25_monika_dreidel:
     # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
     m 3eua "[player], did you know that each side of a dreidel actaully means something?"
@@ -1081,6 +1087,7 @@ label mas_d25_monika_dreidel:
 default persistent._mas_pm_d25_mistletoe_kiss = False
 # True if user and monika kissed under the mistletoe
 
+#TODO: Aff+
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
@@ -1111,6 +1118,7 @@ label mas_d25_monika_mistletoe:
 #        )
 #    )
 
+#TODO: Aff+
 label mas_d25_monika_sleigh:
     m 3eub "Hey [player], a pretty nice thought just crossed my mind..."
     m 1eua "Have you ever heard of carriage rides?"
@@ -1124,6 +1132,7 @@ label mas_d25_monika_sleigh:
     m 1rkbfb "I wouldn't be able to contain myself. My heart would burst!"
     m 1ekbfa "The warmth of your body against mine, wrapped within the gentle cloth~"
     m 1dkbfa "Fingers entwined..."
+    #TODO: Probably enam+ for this next line
     m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
     m 1wka "I really want to do that when I get there, [player]."
     m 1hua "Wouldn't that be so lovely?"
@@ -1170,12 +1179,14 @@ init -810 python:
 default persistent._mas_pm_has_new_years_res = None
 # does the user have new years resolutions?
 
+#TODO: Upset+
 label mas_nye_monika_nye:
     $ persistent._mas_nye_spent_nye = True
 
     m 1eua "[player]! It's almost time, isn't it?"
     m "It's incredible to think that the year is almost over."
     m 1eka "Time flies by so quickly."
+    #TODO: probably aff+ from here and possible based on past 1 month?
     m 1ekbsa "Especially when I get to see you so often."
 
     # TODO: probably shouldl actually check time before saying this
@@ -1224,11 +1235,13 @@ label mas_nye_monika_nye:
 #        )
 #    )
 
+#TODO: Upset+ and possible based on time spent so far, 1month, 3months?
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
     
     m 1eub "[player]!"
     m 1hua "We've been through a lot together this past year, huh?"
+    #TODO: branch for affection here
     m 1eka "I'm so happy, knowing we can spend even more time together."
     m 3hua "Let's make this year as wonderful as the last one, okay?"
     m 5hubsa "I love you, [player]."
