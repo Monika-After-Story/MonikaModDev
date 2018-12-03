@@ -431,16 +431,24 @@ init 15 python in mas_affection:
         # access global vars
         mas_is_raining = store.mas_is_raining
 
-        # unlock events
+        # NOTE: rain topics are unlock-dependent on if its currently raining
         if mas_is_raining:
+            store.mas_lockEventLabel("monika_rain")
+            store.mas_lockEventLabel("monika_rain_start")
             if persistent._mas_likes_rain:
-                evhand._unlockEventLabel("monika_rain_stop")
-
+                store.mas_unlockEventLabel("monika_rain_stop")
+            else:
+                store.mas_lockEventLabel("monika_rain_stop")
+                
         else:
+            store.mas_unlockEventLabel("monika_rain")
+            store.mas_lockEventLabel("monika_rain_stop")
             if persistent._mas_like_rain:
-                evhand._unlockEventLabel("monika_rain_start")
-            evhand._unlockEventLabel("monika_rain")
+                store.mas_unlockEventLabel("monika_rain_start")
+            else:
+                store.mas_lockEventLabel("monika_rain_start")
 
+        # greeting unlocks
         if not store.mas_isO31():
             evhand._unlockEventLabel(
                 "i_greeting_monikaroom",
@@ -461,11 +469,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from normal to upset
         """
-        # lock events
-        evhand._lockEventLabel("monika_rain_start")
-        evhand._lockEventLabel("monika_rain_stop")
-        evhand._lockEventLabel("monika_rain")
-
         evhand._lockEventLabel(
             "greeting_hairdown",
             eventdb=evhand.greeting_database
@@ -479,12 +482,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from noraml to happy
         """
-        # unlock events
-        if persistent._mas_likes_rain:
-            evhand._unlockEventLabel("monika_rain_holdme")
-
-        evhand._unlockEventLabel("monika_promisering")
-
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
@@ -493,10 +490,6 @@ init 15 python in mas_affection:
         """
         Runs when transitinong from happy to normal
         """
-        # lock events
-        evhand._lockEventLabel("monika_rain_holdme")
-        evhand._lockEventLabel("monika_promisering")
-
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
 
@@ -513,10 +506,6 @@ init 15 python in mas_affection:
             layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
         layout.QUIT = mas_layout.QUIT_AFF
 
-        # Unlock nickname event
-        if not persistent._mas_called_moni_a_bad_name:
-            store.unlockEventLabel("monika_affection_nickname")
-
 
     def _affToHappy():
         """
@@ -526,9 +515,6 @@ init 15 python in mas_affection:
         layout.QUIT_YES = mas_layout.QUIT_YES
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
         layout.QUIT = mas_layout.QUIT
-
-        # lock nickname event
-        store.lockEventLabel("monika_affection_nickname")
 
         # revert nickname
         # TODO: we should actually push an event where monika asks player not
@@ -562,9 +548,12 @@ init 15 python in mas_affection:
                 # failed to decode islandds, delay this action
                 store.mas_addDelayedAction(2)
 
+                # lock the island event since we failed to decode images
+                store.mas_lockEventLabel("mas_monika_islands")
+
             else:
                 # otherwise we can directly unlock this topic
-                store.unlockEventLabel("mas_monika_islands")
+                store.mas_unlockEventLabel("mas_monika_islands")
 
         return
 
@@ -574,8 +563,7 @@ init 15 python in mas_affection:
         Runs when transitioning from enamored to affectionate
         """
 
-        # lock islands event and remove the corresponding delayed actions
-        store.lockEventLabel("mas_monika_islands")
+        # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
 
         return
@@ -605,9 +593,6 @@ init 15 python in mas_affection:
         # lock thanks compliment
         if store.seen_event("mas_compliment_thanks"):
             store.mas_lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-
-        # lock wardrobe
-        store.mas_lockEventLabel("monika_clothes_select")
 
         return
 
@@ -1748,8 +1733,9 @@ init 5 python:
             category=['monika'],
             random=False,
             pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
+            unlocked=True,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
@@ -1888,10 +1874,6 @@ label monika_affection_nickname:
             "okasa"
         ]
 
-        # unlock this event
-        aff_nickname_ev = mas_getEV("monika_affection_nickname")
-        unlockEvent(aff_nickname_ev)
-
     if not persistent._mas_offered_nickname:
         m 1euc "I've been thinking, [player]..."
         m 3eud "You know how there are potentially infinite Monikas right?"
@@ -2002,7 +1984,7 @@ label monika_affection_nickname:
                             m 2dftdc "That really hurt, [player]."
                             m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
-                        $ hideEventLabel("monika_affection_nickname")
+                        $ mas_lockEventLabel("monika_affection_nickname")
                         $ done = True
 
         "No.":

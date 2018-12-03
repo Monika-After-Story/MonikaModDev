@@ -1570,7 +1570,16 @@ label monika_simulated:
 
 init 5 python:
     # only available if moni-affecition normal and above
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain",
+            category=["weather"],
+            prompt="Sounds of rain",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_rain:
     m 1hua "I really like the sound of rain~"
@@ -1650,7 +1659,8 @@ init 5 python:
             prompt="Can you stop the rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1694,7 +1704,8 @@ init 5 python:
             prompt="Can you make it rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1735,7 +1746,8 @@ init 5 python:
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -5612,9 +5624,10 @@ init 5 python:
             eventlabel="monika_promisering",
             category=['romance'],
             prompt="Promise Ring",
-            random=True
-            )
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
+    )
 
 label monika_promisering:
     m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
@@ -8442,7 +8455,8 @@ init 5 python:
             prompt="Can you change your clothes?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.LOVE, None)
         )
     )
 
