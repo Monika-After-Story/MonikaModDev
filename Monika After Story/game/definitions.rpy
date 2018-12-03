@@ -388,6 +388,25 @@ python early:
             )
 
 
+        def checkAffection(self, aff_level):
+            """
+            Checks if the given aff_level is within range of this event's
+            aff_range.
+
+            IN:
+                aff_level - aff_level to check
+
+            RETURNS: True if aff_level is within range of event's aff_range,
+                False otherwise
+            """
+            if self.aff_range is None:
+                return True
+
+            # otheerwise check the range
+            low, high = self.aff_range
+            return store.mas_affection._betweenAff(low, aff_level, high)
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -481,7 +500,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None,
             ):
             #
             # Filters the given event object accoridng to the given filters
@@ -497,6 +517,11 @@ python early:
             from collections import Counter
 
             # now lets filter
+
+            # check if event contains the monika wants this rule
+            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
+                return False
+
             if unlocked is not None and event.unlocked != unlocked:
                 return False
 
@@ -504,6 +529,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -535,10 +563,6 @@ python early:
             if sensitive is not None and event.sensitive != sensitive:
                 return False
 
-            # check if event contains the monika wants this rule
-            if moni_wants is not None and event.monikaWantsThisFirst() != moni_wants:
-                return False
-
             # we've passed all the filtering rules somehow
             return True
 
@@ -554,7 +578,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None
             ):
             #
             # Filters the given events dict according to the given filters.
@@ -600,6 +625,8 @@ python early:
             #           AKA: we only filter sensitve topics if sensitve mode is
             #           enabled.
             #       (Default: None)
+            #   aff - affection level to match aff_range
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -619,7 +646,8 @@ python early:
                     and seen is None
                     and excl_cat is None
                     and moni_wants is None
-                    and sensitive is None)):
+                    and sensitive is None
+                    and aff is None)):
                 return events
 
             # copy check
@@ -651,7 +679,7 @@ python early:
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
                         excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive):
+                        sensitive=sensitive, aff=aff):
 
                     filt_ev_dict[k] = v
 
