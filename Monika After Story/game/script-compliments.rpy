@@ -44,7 +44,7 @@ label mas_compliments_start:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-        Event.checkConditionals(mas_compliments.compliment_database)
+#        Event.checkConditionals(mas_compliments.compliment_database)
 
         # filter comps
         filtered_comps = Event.filterEvents(
