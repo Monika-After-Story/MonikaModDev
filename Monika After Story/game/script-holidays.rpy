@@ -831,7 +831,19 @@ image mas_d25_banners = ConditionSwitch(
     "mod_assets/location/spaceroom/d25/windowdeco-n.png"
 )
 
-# TODO: tree
+image mas_d25_tree = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/d25/tree.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/d25/tree-n.png"
+)
+
+image mas_d25_tree_sayori = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/location/spaceroom/d25/tree-sayori.png",
+    "not morning_flag",
+    "mod_assets/location/spaceroom/d25/tree-sayori-n.png"
+)
 
 init -11 python in mas_d25_event:
     

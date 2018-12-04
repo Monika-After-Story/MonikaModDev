@@ -3196,6 +3196,38 @@ init -1 python:
         ]
     )
 
+    ### SANTA MONIKA
+    ## santa
+    # Monika with Santa costume
+    mas_clothes_santa = MASClothes(
+        "santa",
+        "def",
+        MASPoseMap(
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
+        ),
+        fallback=True,
+        stay_on_start=True
+    )
+    store.mas_sprites.init_clothes(mas_clothes_santa)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_santa,
+        "Santa Costume",
+        "santa",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=None,
+        select_dlg=[
+            "Merry Christmas!",
+            "What kind of {i}presents{/i} do you want?",
+            "Happy holidays!"
+        ]
+    )
+
+
 init -1 python:
     # ACCESSORIES (IMG020)
     # Accessories are reprsentation of image objects with properties
