@@ -44,13 +44,19 @@ label mas_compliments_start:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-        Event.checkConditionals(mas_compliments.compliment_database)
+#        Event.checkConditionals(mas_compliments.compliment_database)
+
+        # filter comps
+        filtered_comps = Event.filterEvents(
+            mas_compliments.compliment_database,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
 
         # build menu list
         compliments_menu_items = [
             (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
-            for k in mas_compliments.compliment_database
-            if mas_compliments.compliment_database[k].unlocked
+            for k in filtered_comps
         ]
 
         # also sort this list
@@ -361,9 +367,8 @@ init 5 python:
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
             prompt="... Thanks for being there for me!",
-            unlocked=False,
-            conditional="mas_curr_affection == store.mas_affection.ENAMORED",
-            action=EV_ACT_UNLOCK
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
         ),
         eventdb=store.mas_compliments.compliment_database
     )

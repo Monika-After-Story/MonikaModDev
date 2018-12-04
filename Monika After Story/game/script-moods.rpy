@@ -83,11 +83,17 @@ label mas_mood_start:
     python:
         import store.mas_moods as mas_moods
 
+        # filter the moods first
+        filtered_moods = Event.filterEvents(
+            mas_moods.mood_db,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
+
         # build menu list
         mood_menu_items = [
             (mas_moods.mood_db[k].prompt, k, False, False)
-            for k in mas_moods.mood_db
-            if mas_moods.mood_db[k].unlocked
+            for k in filtered_moods
         ]
 
         # also sort this list

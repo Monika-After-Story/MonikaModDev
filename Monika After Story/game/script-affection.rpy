@@ -45,6 +45,221 @@ init python:
     mas_curr_affection = store.mas_affection.NORMAL
     mas_curr_affection_group = store.mas_affection.G_NORMAL
 
+init -900 python in mas_affection:
+    # this is very early because they are importnat constants
+    
+    # numerical constants of affection levels
+    BROKEN = 1
+    DISTRESSED = 2
+    UPSET = 3
+    NORMAL = 4
+    HAPPY = 5
+    AFFECTIONATE = 6
+    ENAMORED = 7
+    LOVE = 8
+
+    # natural order of affection levels
+    _aff_order = [
+        BROKEN,
+        DISTRESSED,
+        UPSET,
+        NORMAL,
+        HAPPY,
+        AFFECTIONATE,
+        ENAMORED,
+        LOVE
+    ]
+
+    # dict map of affection levels. This is purely for O(1) checking
+    _aff_level_map = {}
+    for _item in _aff_order:
+        _aff_level_map[_item] = _item
+
+    # cascade map of affection levels
+    # basically, given a level, which is the next level closet to NORMAL
+    _aff_cascade_map = {
+        BROKEN: DISTRESSED,
+        DISTRESSED: UPSET,
+        UPSET: NORMAL,
+        HAPPY: NORMAL,
+        AFFECTIONATE: HAPPY,
+        ENAMORED: AFFECTIONATE,
+        LOVE: ENAMORED
+    }
+
+
+    # numerical constants of affection groups
+    G_SAD = -1
+    G_HAPPY = -2
+    G_NORMAL = -3
+
+    # natural order of affection groups
+    _affg_order = [
+        G_SAD,
+        G_NORMAL,
+        G_HAPPY
+    ]
+
+    # cascade map of affection groups
+    # basically, given a group , which is the next group closet to Normal
+    _affg_cascade_map = {
+        G_SAD: G_NORMAL,
+        G_HAPPY: G_NORMAL
+    }
+
+    # compare functions for affection / group
+    def _compareAff(aff_1, aff_2):
+        """
+        See mas_compareAff for explanation
+        """
+        # it's pretty easy to tell if we have been given the same items
+        if aff_1 == aff_2:
+            return 0
+
+        # otherwise, need to check for aff existence to get index
+        if aff_1 not in _aff_order or aff_2 not in _aff_order:
+            return 0
+
+        # otherwise both proivded affections exist, lets index
+        if _aff_order.index(aff_1) < _aff_order.index(aff_2):
+            return -1
+
+        return 1
+
+
+    def _compareAffG(affg_1, affg_2):
+        """
+        See mas_compareAffG for explanation
+        """
+        # same stuff?
+        if affg_1 == affg_2:
+            return 0
+
+        # check for aff group exist
+        if affg_1 not in _affg_order or affg_2 not in _affg_order:
+            return 0
+
+        # otherwise, both groups exist, index
+        if _affg_order.index(affg_1) < _affg_order.index(affg_2):
+            return -1
+
+        return 1
+
+
+    def _betweenAff(aff_low, aff_check, aff_high):
+        """
+        checks if the given affection level is between the given low and high.
+        See mas_betweenAff for explanation
+        """
+        aff_check = _aff_level_map.get(aff_check, None)
+
+        # sanity checks
+        if aff_check is None:
+            # aff_check not a valid affection?
+            return False
+            
+        # clean the affection compares
+        aff_low = _aff_level_map.get(aff_low, None)
+        aff_high = _aff_level_map.get(aff_high, None)
+
+        if aff_low is None and aff_high is None:
+            # if both items are None, we basically assume that both bounds
+            # are set to unlimited.
+            return True
+
+        if aff_low is None:
+            # dont care about the lower bound, so check if lower than
+            # higher bound
+            return _compareAff(aff_check, aff_high) <= 0
+
+        if aff_high is None:
+            # dont care about the upper bound, so check if higher than lower
+            # bound
+            return _compareAff(aff_check, aff_low) >= 0
+
+        # otherwise, both low and high ranges are not None, so we
+        # can actually check between the 2
+        comp_low_high = _compareAff(aff_low, aff_high)
+        if comp_low_high > 0:
+            # low is actually greater than high. Therefore, the given
+            # affection cannot possible be between the 2, probably.
+            return False
+
+        if comp_low_high == 0:
+            # they are the same, just check for equivalence
+            return _compareAff(aff_low, aff_check) == 0
+
+        # otherwise, we legit need to check range
+        return (
+            _compareAff(aff_low, aff_check) <= 0
+            and _compareAff(aff_check, aff_high) <= 0
+        )
+
+
+    def _isValidAff(aff_check):
+        """
+        Returns true if the given affection is a valid affection state
+
+        NOTE: None is considered valid
+        """
+        if aff_check is None:
+            return True
+
+        return aff_check in _aff_level_map
+
+
+    def _isValidAffRange(aff_range):
+        """
+        Returns True if the given aff range is a valid aff range.
+
+        IN:
+            aff_range - tuple of the following format:
+                [0]: lower bound
+                [1]: upper bound
+            NOTE: Nones are considerd valid.
+        """
+        if aff_range is None:
+            return True
+
+        low, high = aff_range
+
+        if not _isValidAff(low):
+            return False
+
+        if not _isValidAff(high):
+            return False
+
+        if low is None and high is None:
+            return True
+
+        return _compareAff(low, high) <= 0
+
+
+    # thresholds values
+
+    # Affection experience changer thresholds
+    AFF_MAX_POS_TRESH = 100
+    AFF_MIN_POS_TRESH = 30
+    AFF_MIN_NEG_TRESH = -30
+    AFF_MAX_NEG_TRESH = -75
+
+    # Affection levels thresholds
+    AFF_BROKEN_MIN = -100
+    AFF_DISTRESSED_MIN = -75
+    AFF_UPSET_MIN = -30
+    AFF_HAPPY_MIN = 30
+    AFF_AFFECTIONATE_MIN = 100
+    AFF_ENAMORED_MIN = 400
+    AFF_LOVE_MIN = 1000
+
+    # Affection general mood threshold
+    AFF_MOOD_HAPPY_MIN = 30
+    AFF_MOOD_SAD_MIN = -30
+
+    # lower affection cap for time
+    AFF_TIME_CAP = -101
+
+
 init -1 python in mas_affection:
     import os
     import datetime
@@ -149,123 +364,6 @@ init -1 python in mas_affection:
         ))
 
 
-    # numerical constants of affection levels
-    BROKEN = 1
-    DISTRESSED = 2
-    UPSET = 3
-    NORMAL = 4
-    HAPPY = 5
-    AFFECTIONATE = 6
-    ENAMORED = 7
-    LOVE = 8
-
-    # natural order of affection levels
-    _aff_order = [
-        BROKEN,
-        DISTRESSED,
-        UPSET,
-        NORMAL,
-        HAPPY,
-        AFFECTIONATE,
-        ENAMORED,
-        LOVE
-    ]
-
-    # cascade map of affection levels
-    # basically, given a level, which is the next level closet to NORMAL
-    _aff_cascade_map = {
-        BROKEN: DISTRESSED,
-        DISTRESSED: UPSET,
-        UPSET: NORMAL,
-        HAPPY: NORMAL,
-        AFFECTIONATE: HAPPY,
-        ENAMORED: AFFECTIONATE,
-        LOVE: ENAMORED
-    }
-
-
-    # numerical constants of affection groups
-    G_SAD = -1
-    G_HAPPY = -2
-    G_NORMAL = -3
-
-    # natural order of affection groups
-    _affg_order = [
-        G_SAD,
-        G_NORMAL,
-        G_HAPPY
-    ]
-
-    # cascade map of affection groups
-    # basically, given a group , which is the next group closet to Normal
-    _affg_cascade_map = {
-        G_SAD: G_NORMAL,
-        G_HAPPY: G_NORMAL
-    }
-
-    # compare functions for affection / group
-    def _compareAff(aff_1, aff_2):
-        """
-        See mas_compareAff for explanation
-        """
-        # it's pretty easy to tell if we have been given the same items
-        if aff_1 == aff_2:
-            return 0
-
-        # otherwise, need to check for aff existence to get index
-        if aff_1 not in _aff_order or aff_2 not in _aff_order:
-            return 0
-
-        # otherwise both proivded affections exist, lets index
-        if _aff_order.index(aff_1) < _aff_order.index(aff_2):
-            return -1
-
-        return 1
-
-
-    def _compareAffG(affg_1, affg_2):
-        """
-        See mas_compareAffG for explanation
-        """
-        # same stuff?
-        if affg_1 == affg_2:
-            return 0
-
-        # check for aff group exist
-        if affg_1 not in _affg_order or affg_2 not in _affg_order:
-            return 0
-
-        # otherwise, both groups exist, index
-        if _affg_order.index(affg_1) < _affg_order.index(affg_2):
-            return -1
-
-        return 1
-
-
-    # thresholds values
-
-    # Affection experience changer thresholds
-    AFF_MAX_POS_TRESH = 100
-    AFF_MIN_POS_TRESH = 30
-    AFF_MIN_NEG_TRESH = -30
-    AFF_MAX_NEG_TRESH = -75
-
-    # Affection levels thresholds
-    AFF_BROKEN_MIN = -100
-    AFF_DISTRESSED_MIN = -75
-    AFF_UPSET_MIN = -30
-    AFF_HAPPY_MIN = 30
-    AFF_AFFECTIONATE_MIN = 100
-    AFF_ENAMORED_MIN = 400
-    AFF_LOVE_MIN = 1000
-
-    # Affection general mood threshold
-    AFF_MOOD_HAPPY_MIN = 30
-    AFF_MOOD_SAD_MIN = -30
-
-    # lower affection cap for time
-    AFF_TIME_CAP = -101
-
 # need these utility functiosn post event_handler
 init 15 python in mas_affection:
     import store # global
@@ -333,16 +431,24 @@ init 15 python in mas_affection:
         # access global vars
         mas_is_raining = store.mas_is_raining
 
-        # unlock events
+        # NOTE: rain topics are unlock-dependent on if its currently raining
         if mas_is_raining:
+            store.mas_lockEventLabel("monika_rain")
+            store.mas_lockEventLabel("monika_rain_start")
             if persistent._mas_likes_rain:
-                evhand._unlockEventLabel("monika_rain_stop")
-
+                store.mas_unlockEventLabel("monika_rain_stop")
+            else:
+                store.mas_lockEventLabel("monika_rain_stop")
+                
         else:
+            store.mas_unlockEventLabel("monika_rain")
+            store.mas_lockEventLabel("monika_rain_stop")
             if persistent._mas_like_rain:
-                evhand._unlockEventLabel("monika_rain_start")
-            evhand._unlockEventLabel("monika_rain")
+                store.mas_unlockEventLabel("monika_rain_start")
+            else:
+                store.mas_lockEventLabel("monika_rain_start")
 
+        # greeting unlocks
         if not store.mas_isO31():
             evhand._unlockEventLabel(
                 "i_greeting_monikaroom",
@@ -363,11 +469,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from normal to upset
         """
-        # lock events
-        evhand._lockEventLabel("monika_rain_start")
-        evhand._lockEventLabel("monika_rain_stop")
-        evhand._lockEventLabel("monika_rain")
-
         evhand._lockEventLabel(
             "greeting_hairdown",
             eventdb=evhand.greeting_database
@@ -381,12 +482,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from noraml to happy
         """
-        # unlock events
-        if persistent._mas_likes_rain:
-            evhand._unlockEventLabel("monika_rain_holdme")
-
-        evhand._unlockEventLabel("monika_promisering")
-
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
@@ -395,10 +490,6 @@ init 15 python in mas_affection:
         """
         Runs when transitinong from happy to normal
         """
-        # lock events
-        evhand._lockEventLabel("monika_rain_holdme")
-        evhand._lockEventLabel("monika_promisering")
-
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
 
@@ -415,10 +506,6 @@ init 15 python in mas_affection:
             layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
         layout.QUIT = mas_layout.QUIT_AFF
 
-        # Unlock nickname event
-        if not persistent._mas_called_moni_a_bad_name:
-            store.unlockEventLabel("monika_affection_nickname")
-
 
     def _affToHappy():
         """
@@ -428,9 +515,6 @@ init 15 python in mas_affection:
         layout.QUIT_YES = mas_layout.QUIT_YES
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
         layout.QUIT = mas_layout.QUIT
-
-        # lock nickname event
-        store.lockEventLabel("monika_affection_nickname")
 
         # revert nickname
         # TODO: we should actually push an event where monika asks player not
@@ -464,9 +548,12 @@ init 15 python in mas_affection:
                 # failed to decode islandds, delay this action
                 store.mas_addDelayedAction(2)
 
+                # lock the island event since we failed to decode images
+                store.mas_lockEventLabel("mas_monika_islands")
+
             else:
                 # otherwise we can directly unlock this topic
-                store.unlockEventLabel("mas_monika_islands")
+                store.mas_unlockEventLabel("mas_monika_islands")
 
         return
 
@@ -476,8 +563,7 @@ init 15 python in mas_affection:
         Runs when transitioning from enamored to affectionate
         """
 
-        # lock islands event and remove the corresponding delayed actions
-        store.lockEventLabel("mas_monika_islands")
+        # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
 
         return
@@ -507,9 +593,6 @@ init 15 python in mas_affection:
         # lock thanks compliment
         if store.seen_event("mas_compliment_thanks"):
             store.mas_lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-
-        # lock wardrobe
-        store.mas_lockEventLabel("monika_clothes_select")
 
         return
 
@@ -597,6 +680,9 @@ init 15 python in mas_affection:
                 to_up, to_down = _trans_pps[_aff_order[index]]
                 if to_down is not None:
                     to_down()
+
+        # finally, rebuild the event lists
+        store.mas_rebuildEventLists()
 
 
     def runAffGPPs(start_affg, end_affg):
@@ -1070,6 +1156,27 @@ init 20 python:
 
     ## affection comparison
     # [AFF020] Affection comparTos
+    def mas_betweenAff(aff_low, aff_check, aff_high):
+        """
+        Checks if the given affection is between the given affection levels.
+
+        If low is actually greater than high, then False is always returned
+
+        IN:
+            aff_low - the lower bound of affecton to check with (inclusive)
+                if None, then we assume no lower bound
+            aff_check - the affection to check
+            aff_high - the upper bound of affection to check with (inclusive)
+                If None, then we assume no upper bound
+
+        RETURNS:
+            True if the given aff check is within the bounds of the given
+            lower and upper affection limits, False otherwise.
+            If low is greater than high, False is returned.
+        """
+        return affection._betweenAff(aff_low, aff_check, aff_high)
+
+
     def mas_compareAff(aff_1, aff_2):
         """
         Runs compareTo logic on the given affection states
@@ -1626,8 +1733,9 @@ init 5 python:
             category=['monika'],
             random=False,
             pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
+            unlocked=True,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
@@ -1766,9 +1874,8 @@ label monika_affection_nickname:
             "okasa"
         ]
 
-        # unlock this event
+        # for later code
         aff_nickname_ev = mas_getEV("monika_affection_nickname")
-        unlockEvent(aff_nickname_ev)
 
     if not persistent._mas_offered_nickname:
         m 1euc "I've been thinking, [player]..."
@@ -1880,7 +1987,7 @@ label monika_affection_nickname:
                             m 2dftdc "That really hurt, [player]."
                             m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
-                        $ hideEventLabel("monika_affection_nickname")
+                        $ mas_lockEventLabel("monika_affection_nickname")
                         $ done = True
 
         "No.":
