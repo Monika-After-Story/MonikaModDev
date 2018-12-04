@@ -651,6 +651,7 @@ init python in mas_updater:
         """
         import time
         import os
+        import shutil
 
         curr_time = time.time()
 
@@ -665,27 +666,26 @@ init python in mas_updater:
         if last_updated > curr_time:
             last_updated = 0
 
-        #Make sure the update folder is where it should be
-        can_update = renpy.store.updater.can_update()
-        if not can_update:
-
+        # always move update folder if possible
+        game_update = os.path.normcase(renpy.config.basedir + "/game/update")
+        ddlc_update = os.path.normcase(renpy.config.basedir + "/update")
+        base_update = os.path.normcase(renpy.config.basedir)
+        if os.access(game_update, os.F_OK):
             try:
-                os.rename(
-                    os.path.normcase(renpy.config.basedir + "/game/update"),
-                    os.path.normcase(renpy.config.basedir + "/update")
-                )
+                if os.access(ddlc_update, os.F_OK):
+                    shutil.rmtree(ddlc_update)
+
+                shutil.move(game_update, base_update)
                 can_update = renpy.store.updater.can_update()
 
-                if not can_update:
-                    # still cant move the update folder. notify user
-                    renpy.game.persistent._mas_can_update = False
-
             except:
-                # we cant move the update folder. We should notify user
-                renpy.game.persistent._mas_can_update = False
+                can_update = False
 
         else:
-            renpy.game.persistent._mas_can_update = True
+            can_update = renpy.store.updater.can_update()
+
+        # notify user
+        renpy.game.persistent._mas_can_update = can_update
 
         if force:
             check_wait = 0
@@ -753,7 +753,7 @@ label mas_updater_steam_issue:
     m 1eub "[player]!{w} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on Github.{w} {a=https://github.com/Monika-After-Story/MonikaModDev/releases}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
