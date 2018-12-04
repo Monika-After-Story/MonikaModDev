@@ -2599,7 +2599,7 @@ label greeting_back_from_school:
                         m 2ekd "It can be another thing entirely when a person is the direct cause of your trouble."
                         m "I really hope this isn't a recurring event for you, [player]."
                         m 2lksdld "Recurring or not, maybe it would be best for attention to be brought to it..."
-                       m 1lksdlc "But then again, it might cause more problems in some cases..."
+                        m 1lksdlc "But then again, it might cause more problems in some cases..."
                         m 1eka "I trust that you'll do what's necessary."
                         m 1ekc "I hope it's not bothering you still."
                     "It was a general bad day.":
