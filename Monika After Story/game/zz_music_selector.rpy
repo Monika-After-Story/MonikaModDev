@@ -8,12 +8,15 @@
 # 3. Drop your music into that directory.
 # 4. Start the game
 
+default persistent._mas_pm_added_custom_bgm = False
+
 # music inits first, so the screen can be made well
 init -1 python in songs:
     import os
     import mutagen.mp3 as muta3
     import mutagen.oggopus as mutaopus
     import mutagen.oggvorbis as mutaogg
+    import store
 
     # MUSICAL CONSTANTS
     # SONG NAMES
@@ -26,6 +29,7 @@ init -1 python in songs:
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
+    SAYO_NARA_SENS = "Sayonara"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
     NO_SONG = "No Music"
@@ -157,7 +161,11 @@ init -1 python in songs:
             
 
         # sayori only allows this
-        music_choices.append((SAYO_NARA, FP_SAYO_NARA))
+        if store.persistent._mas_sensitive_mode:
+            sayonara_name = SAYO_NARA_SENS
+        else:
+            sayonara_name = SAYO_NARA
+        music_choices.append((sayonara_name, FP_SAYO_NARA))
 
         # grab custom music
         __scanCustomBGM(music_choices)
@@ -255,6 +263,9 @@ init -1 python in songs:
                     loop_prefix + custom_music_reldir + ogg_file
                 ))
 
+                # we added something!
+                store.persistent._mas_pm_added_custom_bgm = True
+
 
     def _getAudioFile(filepath):
         """
@@ -295,17 +306,17 @@ init -1 python in songs:
         RETURNS:
             The name of this Song (probably)
         """
-        if _ext == EXT_MP3:
-            disp_name = _getMP3Name(_audio_file)
+        disp_name = None
 
-        elif _ext == EXT_OGG:
-            disp_name = _getOggName(_audio_file)
+        if _audio_file.tags is not None:
+            if _ext == EXT_MP3:
+                disp_name = _getMP3Name(_audio_file)
 
-        elif _ext == EXT_OPUS:
-            disp_name = _getOggName(_audio_file)
+            elif _ext == EXT_OGG:
+                disp_name = _getOggName(_audio_file)
 
-        else:
-            disp_name = None
+            elif _ext == EXT_OPUS:
+                disp_name = _getOggName(_audio_file)
 
         if not disp_name:
             # let's just use filename minus extension at this point
@@ -326,6 +337,9 @@ init -1 python in songs:
         RETURNS:
             loop string, or and empty string if no loop string available
         """
+        if _audio_file.tags is None:
+            return ""
+
         if _ext == EXT_MP3:
             # NOTE: we do not support mp3 looping atm
             return ""
@@ -711,7 +725,10 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if persistent.playername.lower() == "sayori":
+    if (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        ):
         # sayori specific
 
         # init choices
@@ -934,7 +951,10 @@ init python:
         #   persistent.playername
 
         # sayori cannot make the volume quieter
-        if persistent.playername.lower() != "sayori":
+        if (
+                persistent.playername.lower() != "sayori"
+                or persistent._mas_sensitive_mode
+            ):
             songs.adjustVolume(up=False)
 
 
@@ -958,7 +978,10 @@ init python:
         # sayori cannot mute
         if (
                 curr_volume > 0.0 
-                and persistent.playername.lower() != "sayori"
+                and (
+                    persistent.playername.lower() != "sayori"
+                    or persistent._mas_sensitive_mode
+                )
                 and mute_enabled
             ):
             songs.music_volume = curr_volume
