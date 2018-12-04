@@ -658,6 +658,10 @@ init -810 python:
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
 
+            # actions / charity
+            "_mas_pm_donate_charity": "pm.actions.charity.donated",
+            "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
+
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
 

@@ -63,6 +63,9 @@ init -1 python:
     import store.songs as songs
     import store.evhand as evhand
 
+    mas_events_built = False
+    # set to True once we have built events
+
     def remove_seen_labels(pool):
         #
         # Removes seen labels from the given pool
@@ -223,11 +226,15 @@ init -1 python:
 
         ASSUMES:
             evhand.event_database
+            mas_events_built
         """
+        global mas_events_built
+
         # retrieve all randoms
         all_random_topics = Event.filterEvents(
             evhand.event_database,
-            random=True
+            random=True,
+            aff=mas_curr_affection
         )
 
         # split randoms into unseen and sorted seen events
@@ -236,6 +243,7 @@ init -1 python:
         # split seen into regular seen and the most seen events
         seen, mostseen = mas_splitSeenEvents(sorted_seen)
 
+        mas_events_built = True
         return (unseen, seen, mostseen)
 
 
@@ -255,7 +263,8 @@ init -1 python:
         all_seen_topics = Event.filterEvents(
             evhand.event_database,
             random=True,
-            seen=True
+            seen=True,
+            aff=mas_curr_affection
         ).values()
 
         # clean the seen topics from early repeats
@@ -268,6 +277,19 @@ init -1 python:
         return mas_splitSeenEvents(cleaned_seen)
 
 
+    def mas_rebuildEventLists():
+        """
+        Rebuilds the unseen, seen and most seen event lists.
+
+        ASSUMES:
+            mas_rev_unseen - unseen list
+            mas_rev_seen - seen list
+            mas_rev_mostseen - most seen list
+        """
+        global mas_rev_unseen, mas_rev_seen, mas_rev_mostseen
+        mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -278,16 +300,13 @@ init -1 python:
 init 11 python:
 
     # sort out the seen / most seen / unseen
-    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+    mas_rev_unseen = []
+    mas_rev_seen = []
+    mas_rev_mostseen = []
+#    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
 #    monika_random_topics = all_random_topics
-
-    if len(mas_rev_unseen) == 0:
-        # you've seen everything?! here, higher session limit
-        # NOTE: 1000 is arbitrary. Basically, endless monika topics
-        # I think we'll deal with this better once we hve a sleeping sprite
-        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
@@ -1551,7 +1570,16 @@ label monika_simulated:
 
 init 5 python:
     # only available if moni-affecition normal and above
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain",
+            category=["weather"],
+            prompt="Sounds of rain",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_rain:
     m 1hua "I really like the sound of rain~"
@@ -1631,7 +1659,8 @@ init 5 python:
             prompt="Can you stop the rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1675,7 +1704,8 @@ init 5 python:
             prompt="Can you make it rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1716,7 +1746,8 @@ init 5 python:
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -5593,9 +5624,10 @@ init 5 python:
             eventlabel="monika_promisering",
             category=['romance'],
             prompt="Promise Ring",
-            random=True
-            )
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
+    )
 
 label monika_promisering:
     m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
@@ -6534,6 +6566,92 @@ label monika_100k:
     else:
         m 1hua "Almost~"
     return
+
+
+default persistent._mas_pm_donate_charity = None
+# True if user donated
+
+default persistent._mas_pm_volunteer_charity = None
+# True if user has volunteered
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_asks_charity",
+            category=['you'],
+            prompt="Charity",
+            random=True
+        )
+    )
+
+label monika_asks_charity:
+    m 1esd "Say, [player]."
+    m 1esc "There's something that crossed my mind lately."
+    m 3esd "Since my world is fictional, there aren’t really any problems like world hunger or poverty."
+    m 2rkc "I know it exists, but I’ve never really witnessed it."
+    m 2ekc "However, I know it's not the same in your reality. There are lots of people who need help just to survive."
+    m 2esd "You must have at least seen a homeless person if you've been in a big city before."
+    m "So I was just wondering..."
+
+    show monika 1eua
+    menu:
+        m "Have you ever contributed to a charity?"
+
+        "I've donated.":
+            $ persistent._mas_pm_donate_charity = True
+            m 3hub "That's great!"
+            m 2eua "Though you could argue that volunteering is better, I think there's nothing wrong with donating."
+            m 2eka "It's better than nothing, and you are definitely contributing, even if you have a limited budget or little time to spend."
+            m 2ekc "It's sad to say, but charities will always need people giving money or other resources to help people."
+            m 3lksdlc "There are so many causes that need it, after all."
+            m 3ekc "Yet you don’t know if your donations are actually going to a good cause."
+            m 3ekd "It doesn’t help that some charities claim to support a cause, but take people’s donations for themselves."
+            m 2dsc "..."
+            m 2eka "I'm sorry, I didn't want things to get so dark."
+            m 1eua "I knew you would be kind enough to do such a thing."
+            m 1hub "That's the kind of thing I love about you, [player]."
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hub "You've always been so sweet."
+        
+        "I volunteered.":
+            $ persistent._mas_pm_volunteer_charity = True
+            m 1wub "Really?"
+            m 1hub "That's wonderful!"
+            m 3hua "While donating is a good way to help out, lending an extra hand is even better!"
+            m 3rksdla "Of course, money and resources are important, but usually, manpower is pretty scarce..."
+            m 2ekc "It's understandable; most working adults don't necessarily have time to spare."
+            m 2lud "So, most of the time, retired people do the organizing, and it can be a problem if they have to carry something heavy."
+            m 2eud "That's why they sometimes need help from the outside, particularly from teenagers or young adults, who are more physically able."
+            m 1eua "Anyway, I think it's great you tried making a difference by volunteering."
+            m 4eub "Plus, I've heard that it can be great to have volunteer experience on a resume, when you apply for a job."
+            m 3hua "So, whether you did it for that or just out of kindness, it's a good thing either way."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "You know, it's this kind of thing that makes me love you even more, [player]."
+            m 5hub "I just feel so proud that you helped people in need."
+            m 5hubfa "I love you so much, [player]. I mean it."
+
+        "No, I haven't.":
+            $ persistent._mas_pm_donate_charity = False
+            $ persistent._mas_pm_volunteer_charity = False
+            m 1euc "Oh, I see."
+            m 2esc "I can understand, actually."
+            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fradulent usage of funds, or discrimination in who the charities help."
+            m 2ekc "So, it can be hard to trust them in the first place."
+            m 3esa "That's why you should always do some research and find charities that are reputable."
+            m 2dkc "Seeing all those people suffering from hunger or poverty all the time..."
+            m 2ekd "And even the people that try to help them, struggling to change anything..."
+            m 2esc "It can be a bit deflating, if not depressing."
+            m 2eka "But, you know..."
+            m "Even if you can't do anything to contribute, it can be helpful to just smile at people."
+            m 2ekc "Being ignored by passer-bys can be tough for people who are struggling, or trying to contribute."
+            m 2rkc "It's as if they were seen as a nuisance by society, when they're just trying to get by."
+            m 2eua "Sometimes, a smile is all you need to make you go further."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Just like when I'm with you."
+            m 5hua "With just a smile, you make all my troubles go away."
+            m 5hubfb "I love you so much, [player]."
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -8337,7 +8455,8 @@ init 5 python:
             prompt="Can you change your clothes?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.LOVE, None)
         )
     )
 
@@ -9299,10 +9418,10 @@ label monika_trick_yuri:
 
 label monika_trick_natsuki:
     hide screen mas_background_timed_jump
-    m 2eud "That's... a little surprising."
+    m 2eud "That's...a little surprising."
     m 2lksdla "I would have thought it would have been Sayori or Yuri."
     m 1eud "Do you feel like you connect with her because of her hobbies?"
-    m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 3euc "Or perhaps you feel a bit of pity because of her home situation?"
     m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
     m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
     m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
@@ -9321,7 +9440,7 @@ label monika_trick_sayori:
     m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
     m 6dktpc "Never having even been acknowledged by the one I love."
     m 6dktrc "..."
-    if persistent.monika_kill:
+    if persistent._mas_pm_cares_about_dokis:
         m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
     else:
         m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."

@@ -104,6 +104,18 @@ python early:
     #       (Default: None)
     #   sensitive - True means this is a sensitve topic, False means it is not
     #       (Default: False)
+    #   aff_range - tuple of the following format:
+    #       [0]: - low limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no lower limit
+    #       [1]: - upper limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no uppwer limit
+    #       If None, then event is considered to be always available regardless
+    #       of affection level
+    #       NOTE: the tuple items should be AFFECTION STATES.
+    #           not using an affection state may break things
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -125,7 +137,8 @@ python early:
             "rules":14,
             "last_seen":15,
             "years":16,
-            "sensitive":17
+            "sensitive":17,
+            "aff_range":18
         }
 
         # name constants
@@ -169,7 +182,8 @@ python early:
                 rules=dict(),
                 last_seen=None,
                 years=None,
-                sensitive=False
+                sensitive=False,
+                aff_range=None
             ):
 
             # setting up defaults
@@ -189,6 +203,20 @@ python early:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+
+            # we'll simplify aff_range so we dont have to deal with extra
+            #   storage
+            if aff_range is not None:
+                low, high = aff_range
+                if low is None and high is None:
+                    aff_range = None
+
+            # and then check for valid affection states
+            # NOTE: we assume that the affection store is visible by now
+            if not store.mas_affection._isValidAffRange(aff_range):
+                raise Exception("{0} | bad aff range: {1}".format(
+                    eventlabel, str(aff_range)
+                ))
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -221,7 +249,8 @@ python early:
                 rules,
                 last_seen,
                 years,
-                sensitive
+                sensitive,
+                aff_range
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -359,6 +388,25 @@ python early:
             )
 
 
+        def checkAffection(self, aff_level):
+            """
+            Checks if the given aff_level is within range of this event's
+            aff_range.
+
+            IN:
+                aff_level - aff_level to check
+
+            RETURNS: True if aff_level is within range of event's aff_range,
+                False otherwise
+            """
+            if self.aff_range is None:
+                return True
+
+            # otheerwise check the range
+            low, high = self.aff_range
+            return store.mas_affection._betweenAff(low, aff_level, high)
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -452,7 +500,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None,
             ):
             #
             # Filters the given event object accoridng to the given filters
@@ -475,6 +524,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -525,7 +577,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None
             ):
             #
             # Filters the given events dict according to the given filters.
@@ -571,6 +624,8 @@ python early:
             #           AKA: we only filter sensitve topics if sensitve mode is
             #           enabled.
             #       (Default: None)
+            #   aff - affection level to match aff_range
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -590,7 +645,8 @@ python early:
                     and seen is None
                     and excl_cat is None
                     and moni_wants is None
-                    and sensitive is None)):
+                    and sensitive is None
+                    and aff is None)):
                 return events
 
             # copy check
@@ -622,7 +678,7 @@ python early:
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
                         excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive):
+                        sensitive=sensitive, aff=aff):
 
                     filt_ev_dict[k] = v
 

@@ -49,12 +49,14 @@ label mas_stories_start(scary=False):
         if scary:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
-                category=(True,[mas_stories.TYPE_SCARY])
+                category=(True,[mas_stories.TYPE_SCARY]),
+                aff=mas_curr_affection
             )
         else:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
-                excl_cat=list()
+                excl_cat=list(),
+                aff=mas_curr_affection
             )
 
         # build menu list
@@ -178,7 +180,8 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
-                category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                aff=mas_curr_affection
             )
 
             if len(stories) == 0:
@@ -188,7 +191,8 @@ label mas_story_unlock_random_cat(scary=False):
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
                     seen=False,
-                    category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                    category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                    aff=mas_curr_affection
                 )
 
                 if len(stories) == 0:
@@ -198,7 +202,8 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
-                        category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                        category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                        aff=mas_curr_affection
                     )
         else:
             # reset flag so we don't unlock another one
@@ -208,7 +213,8 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
-                excl_cat=list()
+                excl_cat=list(),
+                aff=mas_curr_affection
             )
 
             if len(stories) == 0:
@@ -218,7 +224,8 @@ label mas_story_unlock_random_cat(scary=False):
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
                     seen=False,
-                    excl_cat=list()
+                    excl_cat=list(),
+                    aff=mas_curr_affection
                 )
 
                 if len(stories) == 0:
@@ -228,7 +235,8 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
-                        excl_cat=list()
+                        excl_cat=list(),
+                        aff=mas_curr_affection
                     )
 
         # select one story randomly

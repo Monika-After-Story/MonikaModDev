@@ -1169,6 +1169,18 @@ label ch30_end:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+    
+    python:
+        # start by building event lists if they have not been built already
+        if not mas_events_built:
+            mas_rebuildEventLists()
+
+        # check if you've seen everything
+        if len(mas_rev_unseen) == 0:
+            # you've seen everything?! here, higher session limit
+            # NOTE: 1000 is arbitrary. Basically, endless monika topics
+            # I think we'll deal with this better once we hve a sleeping sprite
+            random_seen_limit = 1000
 
     if not persistent._mas_pm_has_rpy:
         # setup the docking station to handle the detection
