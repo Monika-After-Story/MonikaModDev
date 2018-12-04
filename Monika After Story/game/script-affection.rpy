@@ -1874,8 +1874,8 @@ label monika_affection_nickname:
             "okasa"
         ]
 
-    # for later code
-    aff_nickname_ev = mas_getEV("monika_affection_nickname")
+        # for later code
+        aff_nickname_ev = mas_getEV("monika_affection_nickname")
 
     if not persistent._mas_offered_nickname:
         m 1euc "I've been thinking, [player]..."
