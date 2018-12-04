@@ -9393,3 +9393,175 @@ label monika_cares_about_dokis:
             m 1hub "Ahahaha!"
 
     return "derandom"
+
+#### old christmas.rpyc topics
+# HOL020
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_snow",
+#            category=["cold","weather","snow"],
+#            prompt="Snow",
+#            random=True
+#        )
+#    )
+
+label monika_snow:
+    m 1euc "Does it ever snow where you live, [player]?"
+    m 1eua "I've always liked the peaceful aura it seems to give off."
+    m "It usually accompanies the holiday season in a lot of places, too."
+
+    # TODO: hmm not sure about monika having a seasonal preference.
+#    m 3hksdlb "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
+#    m 1rksdlb "It's just that I'd prefer a balmy and gentle heat more, ahaha."
+    m 1dsa "But snow is just so much more...tranquil and intimate, you know?"
+    m 1hua "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_snowballfight",
+#            category=["cold", "snow"]
+#        )
+#    )
+# TODO: this should be a pool topic
+
+label monika_snowballfight:
+    m 1euc "Snowball fighting?"
+    m 1eub "Having one with you sounds like a ton of fun, [player]!"
+    m 1dsc "Fair warning, though..."
+    m 2tfu "I've got quite the throwing arm."
+    m 2tfb "So I certainly won't be going easy on you!"
+
+    # TODO: shuld only be shown if you never won pong
+    m 4hua "Maybe you're better at snowball fights than pong~?"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_iceskating",
+#            category=["cold", "sports"],
+#            prompt="Ice skating",
+#            pool=True
+#        )
+#    )
+
+label monika_iceskating:
+    m 1eua "Hey, [player], do you know how to ice skate?"
+    m 1hua "It's a really cool thing to learn!"
+    m 1eua "Especially for those who can do a lot of athletic tricks."
+    m 3rksdlb "I mean, it's hard enough to keep your balance on ice in the first place."
+    m 3hksdlb "Being able to turn it into a performance is really impressive."
+    m 3eub "There's actually a lot of ways to ice skate."
+    m "Figure skating, speed skating, and even in theatrical performances!"
+    m 1euc "Though, while doing something like that sounds like a great time..."
+    m 1hua "But having you here with me is enough to keep me happy."
+    m 5eka "I love you so much, [player]~"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_snowman",
+#            category=["cold", "snow"],
+#            random=True
+#        )
+#    )
+
+# TODO: this topic is terrible. Either rewrite or remove.
+label monika_snowman:
+    m 2dsc "Hmm..."
+    m 4eud "[player], have you ever stopped to think about what the life of a snowman is like?"
+    m 2rsc "Like, I know they're not alive, but..."
+    m "Just standing there, all by themselves. It must get lonely, from time to time."
+    m 1dsc "..."
+
+    # this is out of place
+    m 1ekc "I know how that feels."
+    m 1rkc "Or I used to, anyway."
+    m 1wub "But then I found the love of my life!"
+    m 1hua "I bet it's not all bad, though."
+    m 1eua "You could watch the snow fall, or admire the stars."
+    m 1eub "Or see an aurora!"
+    m 1hub "Just imagine it!"
+
+    # TODO: yeah wtf this is weird
+    m 1hua "I'd be a happy, little snow lady."
+    m 1eua "What about you, [player]?"
+
+    show monika 3eub
+    menu:
+        m "What would you do, if you were made of snow?"
+        "I'd watch the scenery change as time passes.":
+            m 1eka "I feel the same way, too!"
+            m 3hua "Wouldn't it just be breathtaking?"
+            m 3eka "You better save a spot for me, though~"
+
+        "I'd melt for you.":
+            m 1hkb "Ahaha!"
+            m "That was so cheesy!"
+            m 1eka "And yet, so sweet."
+            m 1hua "Thank you, [player]~"
+
+        "I'd freeze up!":
+            m 1hub "Ahaha!"
+            m 3eka "Technically, it would be too late to worry about something like that."
+            m 1rksdla "Maybe being a snowman wouldn't be too great."
+            m 3hua "A warm fire with your loved one and a steaming cup of hot chocolate is much better, no?"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_sledding",
+#            # TODO: outdoor categories probably
+#            prompt="Sledding"
+#        )
+#    )
+
+label monika_sledding:
+    m 1eua "You know what I would love to do with you?"
+    m 3hub "Sledding!"
+    m 3eua "You might think it's only for kids, but I think it could be fun for us, too!"
+    m 3eub "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
+    m 1hua "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
+    m 1euc "The kicksled is a bit small, though."
+    m 1hub "Ahaha!"
+    m 1eka "I'd have to sit in your lap for that one."
+    m 1rksdla "And I'd still be at risk of tumbling off."
+    m 1hua "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+    m 1tku "That would probably be the best part."
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_snowcanvas",
+#            category=["cold", "snow"]
+#        )
+#    )
+
+label monika_snowcanvas:
+    m 3euc "Have you ever looked at snow and thought it resembles a blank canvas?"
+    m 1hksdlb "I know I'm not really good with art..."
+    m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
+    m 3hub "Just step outside and let your imagination run wild!"
+    m 1eua "Doesn't having so much space to paint sound wonderful?"
+    m 1hksdlb "Although...{w}don't draw anything indecent, okay?"
+    m 1eua "And make sure the snow is packed down tightly, too."
+    m 1eka "I'd love to do this with you someday."
+    m 3hua "Maybe you can paint something for me when that happens, [player]."
+    return
+    
+
+
+#### end christmas.rpyc topics
