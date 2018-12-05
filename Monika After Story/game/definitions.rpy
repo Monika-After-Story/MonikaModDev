@@ -2971,10 +2971,10 @@ init -1 python:
         """
         _date = _date.replace(datetime.date.today().year)
 
-        if persistent._mas_pm_live_north_hemisphere is not False:
-            return ((mas_spring_equinox <= _date) and (_date < mas_summer_solstice))
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_fall_equinox <= _date < mas_winter_solstice
         else:
-            return ((mas_fall_equinox <= _date) and (_date < mas_winter_solstice))
+            return mas_spring_equinox <= _date < mas_summer_solstice
 
     def mas_isSummer(_date=datetime.date.today()):
         """
@@ -2988,10 +2988,10 @@ init -1 python:
         """
         _date = _date.replace(datetime.date.today().year)
 
-        if persistent._mas_pm_live_north_hemisphere is not False:
-            return ((mas_summer_solstice <= _date) and (_date < mas_fall_equinox))
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_winter_solstice <= _date < mas_spring_equinox
         else:
-            return ((mas_winter_solstice <= _date) or (_date < mas_spring_equinox))
+            return mas_summer_solstice <= _date < mas_fall_equinox
 
     def mas_isFall(_date=datetime.date.today()):
         """
@@ -3005,10 +3005,10 @@ init -1 python:
         """
         _date = _date.replace(datetime.date.today().year)
 
-        if persistent._mas_pm_live_north_hemisphere is not False:
-            return ((mas_fall_equinox <= _date) and (_date < mas_winter_solstice))
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_spring_equinox <= _date < mas_summer_solstice
         else:
-            return ((mas_spring_equinox <= _date) and (_date < mas_summer_solstice))
+            return mas_fall_equinox <= _date < mas_winter_solstice
 
     def mas_isWinter(_date=datetime.date.today()):
         """
@@ -3022,10 +3022,10 @@ init -1 python:
         """
         _date = _date.replace(datetime.date.today().year)
 
-        if persistent._mas_pm_live_north_hemisphere is not False:
-            return ((mas_winter_solstice <= _date) or (_date < mas_spring_equinox))
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_summer_solstice <= _date < mas_fall_equinox
         else:
-            return ((mas_summer_solstice <= _date) and (_date < mas_fall_equinox))
+            return mas_winter_solstice <= _date < mas_spring_equinox
 
     def mas_isSpecialDay():
         """

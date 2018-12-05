@@ -9394,7 +9394,7 @@ label monika_cares_about_dokis:
 
     return "derandom"
 
-default persistent._mas_pm_live_north_hemisphere = None
+default persistent._mas_pm_live_south_hemisphere = None
 default persistnet._mas_pm_gets_snow = None
 
 init 5 python:
@@ -9421,18 +9421,18 @@ label monika_hemispheres:
         m "Which hemisphere do you live in, [player]?"
 
         "The Northern hemisphere.":
-            $ persistent._mas_pm_live_north_hemisphere = True
+            $ persistent._mas_pm_live_south_hemisphere = False
             m 2eka "I had a feeling..."
 
 
         "The Southern hemisphere.":
-            $ persistent._mas_pm_live_north_hemisphere = False
+            $ persistent._mas_pm_live_south_hemisphere = True
             m 1wuo "I wouldn't have thought!"
 
  
     m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
     m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
-    if persistent._mas_pm_live_north_hemisphere:
+    if not persistent._mas_pm_live_south_hemisphere:
         m 1eua "So I kind of figured you lived in the Northern hemisphere."
 
     else:
