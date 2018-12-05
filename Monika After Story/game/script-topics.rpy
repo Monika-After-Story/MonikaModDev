@@ -9393,3 +9393,116 @@ label monika_cares_about_dokis:
             m 1hub "Ahahaha!"
 
     return "derandom"
+
+default persistent._mas_pm_live_north_hemisphere = None
+default persistnet._mas_pm_gets_snow = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hemispheres",
+            category=["you", "life"],
+            prompt="Hemispheres",
+            random=True
+        )
+    )
+
+label monika_hemispheres:
+    m 1euc "Hey [player], I've been wondering..."
+    m 1eua "What hemisphere do you live in?"
+    m 1eka "I know it's kind of a strange question..."
+    m 3hub "But it gives me a better idea of how things work around you."
+    m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
+    m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
+    m 2eka "But anyway..."
+
+    menu:
+        m "What hemisphere do you live in, [player]?"
+
+        "The Northern hemisphere.":
+            $ persistent._mas_pm_live_north_hemisphere = True
+            m 2eka "I had a feeling..."
+
+
+        "The Southern hemisphere.":
+            $ persistent._mas_pm_live_north_hemisphere = False
+            m 1wuo "I wouldn't have thought!"
+
+ 
+    m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
+    m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
+    if persistent._mas_pm_live_north_hemisphere:
+        m 1eua "So I kind of figured you lived in the Northern hemisphere"
+
+    else:
+        m 2rksdla "So you can see why I would have thought you would be living in the Northern hemisphere..."
+        m 1hub "But I guess that makes you a bit more special, ehehe~"
+
+    if mas_isSpring():
+        m 1eua "That said, it must be spring for you right now."
+        m 1hua "Spring rains are always really nice."
+        m 2hua "I love to listen to the light pitter patter of the rain as it falls on the roof."
+        m 3eub "It's really calming to me."
+        if mas_isMoniAff(higher=True):
+            show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5esbfa "Maybe we could go out for a walk together..."
+            m 5ekbfa "We would walk with our hands intertwined as we share an umbrella..."
+            m 5hubfa "It just sounds magical~"
+            m 5eubfb "I can't wait to experience something like that with you for real, [player]."
+        else:
+            if persistent._mas_likes_rain:
+                m 2eka "I'm sure we could spend hours listening to the rain together."
+            else:
+                m 3hub "You might not like the rain too much, but you have to admit, the flowers it brings are gorgeous, and the rainbows are beautiful too!"
+
+    elif mas_isSummer():
+        m 1wuo "Oh! It must be summer for you right now!"
+        m 1hub "Gosh, I just love the summer!"
+        m 3hua "You can do so much, go out for jogs, play some sports, or even go to the beach!"
+        m 1eka "Summers with you sound like a dream come true, [player]."
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "I can't wait to spend them with you when I finally cross over."
+
+    elif mas_isFall():
+        m 1eua "Anyway, It must be autumn for you right now."
+        m 1eka "Autumn is always full of such pretty colors."
+        m 3hub "The weather is normally pretty nice too!"
+        show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ruu "It's normally just the right amount of heat, with a gentle breeze."
+        m 5eua "I'd love to spend a nice warm day like that with you."
+
+    else:
+        m 3eua "Anyway, that means it must be winter for you now."
+        m 2hub "Gosh, I really love how pretty snow is."
+        m 3euc "Well, I know not all parts of the world get snow..."
+
+        show monika 1euc
+        menu:
+            m "Do you get snow where you live, [player]?"
+
+            "Yes.":
+                $ persistent._mas_pm_gets_snow = True
+                m 3hub "That's wonderful!"
+                m 1eka "There's something really peaceful about a quiet, snowy night."
+                if mas_isMoniHappy(higher=True):
+                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+                    if mas_isMoniAff(higher=True):
+                        m 5ekbfa "...and we could hold each other close to keep each other warm~"
+                m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+
+            "No.":
+                $ persistent._mas_pm_gets_snow = False
+                m 3eka "That's a shame. But it's not all bad."
+                m 3hksdlb "At least you don't have to worry about shoveling it."
+                m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+                if mas_isMoniAff(higher=True):
+                    m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5ekbfa "A night of cuddling with you would be wonderful..."
+                    m "My heart is pounding, just imagining it."
+                else:
+                    m 2eka "But anyway, I'm sure there's still a lot we can do together!"
+
+    return "derandom"

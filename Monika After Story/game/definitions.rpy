@@ -2959,6 +2959,61 @@ init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+    def mas_isSpring():
+        """
+        Checks if it's spring right now
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's spring right now
+        """
+        if persistent._mas_pm_live_north_hemisphere is not False:
+            return ((datetime.date(datetime.date.today().year,3,21) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,6,21)))
+        else:
+            return ((datetime.date(datetime.date.today().year,9,23) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,12,21)))
+
+    def mas_isSummer():
+        """
+        Checks if it's summer right now
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's summer right now
+        """
+        if persistent._mas_pm_live_north_hemisphere is not False:
+            return ((datetime.date(datetime.date.today().year,6,21) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,9,23)))
+        else:
+            return ((datetime.date(datetime.date.today().year,12,21) <= datetime.date.today()) or (datetime.date.today() < datetime.date(datetime.date.today().year,3,21)))
+
+    def mas_isFall():
+        """
+        Checks if it's fall right now
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's fall right now
+        """
+        if persistent._mas_pm_live_north_hemisphere is not False:
+            return ((datetime.date(datetime.date.today().year,9,23) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,12,21)))
+        else:
+            return ((datetime.date(datetime.date.today().year,3,21) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,6,21)))
+
+    def mas_isWinter():
+        """
+        Checks if it's winter right now
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's winter right now
+        """
+        if persistent._mas_pm_live_north_hemisphere is not False:
+            return ((datetime.date(datetime.date.today().year,12,21) <= datetime.date.today()) or (datetime.date.today() < datetime.date(datetime.date.today().year,3,21)))
+        else:
+            return ((datetime.date(datetime.date.today().year,6,21) <= datetime.date.today()) and (datetime.date.today() < datetime.date(datetime.date.today().year,9,23)))
 
     def mas_isSpecialDay():
         """
