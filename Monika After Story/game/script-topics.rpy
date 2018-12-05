@@ -9402,7 +9402,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_hemispheres",
-            category=["you", "life"],
+            category=["you", "life", "location"],
             prompt="Hemispheres",
             random=True
         )
@@ -9410,7 +9410,7 @@ init 5 python:
 
 label monika_hemispheres:
     m 1euc "Hey [player], I've been wondering..."
-    m 1eua "What hemisphere do you live in?"
+    m 1eua "Which hemisphere do you live in?"
     m 1eka "I know it's kind of a strange question..."
     m 3hub "But it gives me a better idea of how things work around you."
     m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
@@ -9418,7 +9418,7 @@ label monika_hemispheres:
     m 2eka "But anyway..."
 
     menu:
-        m "What hemisphere do you live in, [player]?"
+        m "Which hemisphere do you live in, [player]?"
 
         "The Northern hemisphere.":
             $ persistent._mas_pm_live_north_hemisphere = True
@@ -9433,7 +9433,7 @@ label monika_hemispheres:
     m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
     m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
     if persistent._mas_pm_live_north_hemisphere:
-        m 1eua "So I kind of figured you lived in the Northern hemisphere"
+        m 1eua "So I kind of figured you lived in the Northern hemisphere."
 
     else:
         m 2rksdla "So you can see why I would have thought you would be living in the Northern hemisphere..."
@@ -9479,7 +9479,7 @@ label monika_hemispheres:
 
         show monika 1euc
         menu:
-            m "Do you get snow where you live, [player]?"
+            m "Does it snow where you live, [player]?"
 
             "Yes.":
                 $ persistent._mas_pm_gets_snow = True
