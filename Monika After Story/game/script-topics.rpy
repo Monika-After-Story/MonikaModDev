@@ -9681,6 +9681,152 @@ label monika_snowcanvas:
     m 3hua "Maybe you can paint something for me when that happens, [player]."
     return
     
+## the following topics will break because of hemisphere differences.
 
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+label monika_cozy:
+    m 3eua "Do you know the one thing I love about the cold weather, [player]?"
+    m 3eka "Anything warm feels really nice~"
+    m 1rksdla "Those who get cold hands really appreciate that feeling."
+    m 1eua "It's like feeling a loved one's embrace~"
+    # TODO: need to hemisphere so winter isnt wrong
+    m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
+    m 1hub "Finally able to whip out your winter fashion set is always a feeling."
+    m 3eua "But you know what the best way to warm yourself up is?"
+
+    # TODO: would need aff adjust
+    m 3eka "Cuddling with the one you love in front of the fireplace~"
+    m "Just sitting there under a warm blanket, sharing a hot beverage."
+    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
+
+    # TODO: unless you were upset and below lol
+    m 1eka "I'd never let you go once I got a hold of you, [player]~"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+label monika_winter:
+    m 1eud "Oh, [player]!"
+    m 3eua "What do you think about winter?"
+    m "All sorts of fun activites only come around during this time..."
+
+    # TODO: hemisphere
+    # TODO: also establshing if it snows whbere the player is
+    m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
+    m 3eua "Building a snowman, sledding, snowball fighting..."
+    m 3hub "Even staying indoors seems so much more comfortable when there's snow outside."
+    m 1eua "The festivities are lovely, too, of course."
+    m 3etd "I wonder if it's acceptable to start decorating..."
+    m 3eua "But I hope you're enjoying yourself during this merry season, [player]."
+    m "You can always spend some time with me, if you want to chill..."
+    m 1ttu "Or maybe you'd rather heat things up~?"
+    m 1hub "Ahaha! I'm only teasing you, [player]~"
+    m 1kua "Just do be sure to visit often, okay?"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+# TODO: this should  be a totally different label name
+# NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
+# NOTE: actually maybe update scripts wont be needed if its rewritten.
+label monika_whatiwant:
+    m 3hub "Oh, [player], isn't it lovely around the holidays?"
+    m 1eka "I hope you don't mind, but I have a little something special to say today."
+    m 1hka "Ehehe, I hope it's not too cheesy..."
+    m 3hua "Here goes."
+    m 1dsa "..."
+
+    # TODO: affection adjust clearly...
+    m 1eka "You really are the joy to my world, [player]."
+    m "A thousand glittering stars couldn't match your brilliance."
+    m 1dsa "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
+
+    # TODO: this makes monika sound like she's 80
+    m 1eua "Underneath the sprawling branches of yonder Christmas tree..."
+
+    m 1hua "You'll always be the only present I will ever need."
+    m 1dsa "..."
+    m 1hub "Ahaha! Sorry if that sounded too serious!"
+    m 3eua "Winter's a wonderful time to read some lengthy works."
+    m 1rsc "But..."
+    m 1eka "I wasn't lying, [player]."
+
+    # TODO: well, you should be able to give her stuff so...
+    m 3hua "Don't worry about getting me a present."
+    m 3ekb "After all, I have you. And that's all I want."
+    m 5hua "I love you with all my heart, [player]~"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+label monika_relax:
+    m 1hua "Isn't winter a beautiful time of year, [player]?"
+
+    # TODO: hemisphere
+    m "The glistening, white snow, the bright and colorful lights~"
+    m 3eka "I love it."
+    m 1rsc "..."
+    m 1rkc "There are a few dangers, though."
+    m 1dsd "Like blizzards, or icy roads..."
+    m 1ekc "And the cold, of course."
+    
+    m "If it gets bad, just stay home and stay safe, okay?"
+    m "After all, when the weather gets bad..."
+    m 1rkc "..."
+    m 3eka "So isn't it best to relax at home?"
+    m 1ekb "Wearing pajamas, drinking hot chocolate, reading a good book, and..."
+    m 1hua "Talking to me."
+    m 1hub "Ehehe~"
+    m 1ekc "But seriously, don't go outside if it gets too bad."
+    m 1hua "Please stay safe, [player]."
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+label monika_hypothermia:
+    m 1euc "Hey, [player]."
+    m "I know winter is a time to be cheery and carefree."
+    m 1ekc "But there's something I need to make sure you know."
+
+    # TODO: hemisphere
+    m 3ekc "Please remember to bundle up, okay?"
+    m 2dsd "All the snow laying about might look inviting..."
+    m 4ekd "But it might be dangerous if you expose yourself too much."
+    m 2ekc "I don't want you catching hypothermia, [player]."
+    m 4euc "So put on that coat, those gloves, and the warmest hat you can find."
+    m 1hua "And stay safe."
+    m "Your health means a lot to me, [player]."
+    m 1ekc "I hope you take my concerns seriously."
+    m 1hua "Okay, snowflake~?"
+    return
 
 #### end christmas.rpyc topics
+
+
+
