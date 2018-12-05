@@ -9,6 +9,7 @@ define mas_rev_seen = []
 define mas_rev_mostseen = []
 define testitem = 0
 define numbers_only = "0123456789"
+define lower_letters_only = "qwertyuiopasdfghjklzxcvbnm "
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
 define mas_sensitive_limit = 3
@@ -8342,10 +8343,35 @@ default persistent._mas_pm_height = None
 ##### We'll also get a default measurement unit for height
 default persistent._mas_pm_units_height_metric = None
 
+default persistent._mas_pm_shared_appearance = False
+# True if the user decided to share appearance with us
+#   NOTE: we default to False, and this can only get flipped to True
+#   in this toppic.
+
+# height categories in cm
+define mas_height_tall = 176
+define mas_height_monika = 162
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_player_appearance",category=['you'],prompt="[player]'s appearance",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_appearance",
+            category=['you'],
+            prompt="[player]'s appearance",
+            random=True
+        )
+    )
 
 label monika_player_appearance:
+    python:
+        def ask_color(msg, _allow=lower_letters_only, _length=15):
+            result = ""
+            while len(result) <= 0:
+                result = renpy.input(msg, allow=_allow, length=_length).strip()
+
+            return result
+
     m 2ekd "Hey, [player]."
     m 2eka "There’s a couple questions I’ve been meaning to ask you."
     m 2rksdlb "Well, more than a couple. It's been on my mind for a long time, actually."
@@ -8360,6 +8386,8 @@ label monika_player_appearance:
         m "Is that okay with you, [player]?"
 
         "Yes.":
+            $ persistent._mas_pm_shared_appearance = True
+
             m 1sub "Really? Great!"
             m 1hub "That was easier than I thought it would be."
             m 3eua "Now, be honest with me, okay [player]? I know sometimes it’s tempting to joke around, but I’m being serious here, and I need you to do the same."
@@ -8371,6 +8399,7 @@ label monika_player_appearance:
 
                 "I have blue eyes.":
                     $ persistent._mas_pm_eye_color = "blue"
+
                     m 3eub "Blue eyes? That’s wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
                     m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
                     m 4eua "Plus, blue is probably my second favorite color, just behind green. It’s just so full of depth and enchantment, you know?"
@@ -8382,6 +8411,7 @@ label monika_player_appearance:
 
                 "I have brown eyes.":
                     $ persistent._mas_pm_eye_color = "brown"
+
                     m 1eub "Ah! Great! I don’t think I said it before, but brown eyes are gorgeous!"
                     m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn’t disagree more!"
                     m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They’re so vibrant and depthless!"
@@ -8394,6 +8424,7 @@ label monika_player_appearance:
 
                 "I have green eyes.":
                     $ persistent._mas_pm_eye_color = "green"
+
                     m 3sub "Hey, that’s my favorite color! And obviously, it’s another thing we have in common!"
                     m 4lksdla "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
                     m 1tsu "Except that maybe it’s another sign how compatible we are, ehehe~"
@@ -8405,6 +8436,7 @@ label monika_player_appearance:
 
                 "I have hazel eyes.":
                     $ persistent._mas_pm_eye_color = "hazel"
+
                     m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
                     m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
                     m "I believe that hazel eyes are alluring because they’re lovely and simple."
@@ -8413,6 +8445,7 @@ label monika_player_appearance:
 
                 "I have gray eyes.":
                     $ persistent._mas_pm_eye_color = "gray"
+
                     m 1sub "That’s so cool!"
                     m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
                     m 1eud "In fact, scientists still aren’t certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
@@ -8423,6 +8456,7 @@ label monika_player_appearance:
 
                 "I have black eyes.":
                     $ persistent._mas_pm_eye_color = "black"
+
                     m 1esd "Black eyes are pretty uncommon, [player]."
                     m 4hksdlb "To tell you the truth, I’ve never actually seen anybody with black eyes, so I don’t really know what they look like..."
                     m 3eua "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
@@ -8434,7 +8468,8 @@ label monika_player_appearance:
                     m "Onto the next question--"
 
                 "My eyes are another color.":
-                    $ persistent._mas_pm_eye_color = renpy.input('What color are your eyes?',length=15).strip(' \t\n\r').lower()
+                    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+
                     m 3hub "Oh! That's a beautiful color, [player]!"
                     m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
                     m 3hua "Now, onto my next question--"
@@ -8460,36 +8495,70 @@ label monika_player_appearance:
 
             m 1esb "So,{w=0.5} how tall are you, [player]?"
 
-            if persistent._mas_pm_units_height_metric:
-                $ persistent._mas_pm_height = int(renpy.input('How tall are you in centimeters?',allow=numbers_only,length=3).strip(' \t\n\r').lower())
-            else:
-                $ height_one = int(renpy.input('How tall are you in feet?',allow=numbers_only,length=1).strip(' \t\n\r').lower())
-                $ height_two = int(renpy.input('[height_one] feet and how many inches?',allow=numbers_only,length=2).strip(' \t\n\r').lower())
-                $ persistent._mas_pm_height = ((height_one * 12) + height_two) * 2.54
+            python:
+                if persistent._mas_pm_units_height_metric:
 
-            if persistent._mas_pm_height >= 176:
+                    # loop till we get a valid cm 
+                    height = 0
+                    while height <= 0:
+                        height = store.mas_utils.tryparseint(
+                            renpy.input(
+                                'How tall are you in centimeters?',
+                                allow=numbers_only,
+                                length=3
+                            ).strip(),
+                            0
+                        )
+
+                else:
+
+                    # loop till valid feet
+                    height_feet = 0
+                    while height_feet <= 0:
+                        height_feet = store.mas_utils.tryparseint(
+                            renpy.input(
+                                'How tall are you in feet?',
+                                allow=numbers_only,
+                                length=1
+                            ).strip(),
+                            0
+                        )
+
+                    # loop till valid inch
+                    height_inch = -1
+                    while height_inch < 0 or height_inch > 11:
+                        height_inch = store.mas_utils.tryparseint(
+                            renpy.input(
+                                '[height_feet] feet and how many inches?',
+                                allow=numbers_only,
+                                length=2
+                            ).strip(),
+                            -1
+                        )
+
+                    # convert to cm
+                    height = ((height_feet * 12) + height_inch) * 2.54
+
+                # finally save this persistent
+                persistent._mas_pm_height = height
+
+            if persistent._mas_pm_height >= mas_height_tall:
                 m 3eua "Wow, you're pretty tall [player]!" 
                 m 1eud "I can't say I've really met anybody who I’d consider to be tall."
                 m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
 
-                if not persistent._mas_pm_units_height_metric:
-                    m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
-                else:
-                    m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+                call monika_player_appearance_monika_height
 
                 m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You’ll have to lean down to kiss me!"
 
-            elif persistent._mas_pm_height >= 162:
+            elif persistent._mas_pm_height >= mas_height_monika:
                 m 1hub "Hey, I'm about that height too!"
                 m "..."
                 m 2hksdrb "Well, I don’t know my actual height to be fair..."
 
-                if not persistent._mas_pm_units_height_metric:
-                    m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
-                else:
-                    m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+                call monika_player_appearance_monika_height
 
                 m 4rksdla "It’s just a guess--hopefully it’s not too far off."
                 m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel feel clumsy around you."
@@ -8515,19 +8584,23 @@ label monika_player_appearance:
 
                 "It's shorter.":
                     $ persistent._mas_pm_hair_length = "short"
+
                     m 3eub "That must be nice! Look, don’t get me wrong; I love my hair, and it’s always fun to experiment with it..."
-                    m 2eud "But to tell you the truth, sometimes I envied Natsuki's and Sayori's hair. It looked a lot easier totake care of."
+                    m 2eud "But to tell you the truth, sometimes I envied Natsuki's and Sayori's hair. It looked a lot easier to take care of."
 
                     if persistent.gender == "M":
                         m 4hksdlb "Although I guess if your hair was the same length as theirs, it'd be pretty long for a guy."
+                        
                     else:
                         m 4eub "You can just get up and go, without having to worry about styling it."
                         m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it’s an endless nightmare."
+
                     m 2eka "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
                     m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]! Ahaha~"
 
                 "It's average length.":
                     $ persistent._mas_pm_hair_length = "average"
+
                     m 1tku "Well, that can't be true..."
                     m 4hub "Because nothing about you is average."
                     m 4hksdlb "Ahaha! Sorry, [player]. I’m not trying to embarrass you. But I can’t help being cheesy sometimes, you know?"
@@ -8537,24 +8610,39 @@ label monika_player_appearance:
 
                 "It's long.":
                     $ persistent._mas_pm_hair_length = "long"
+
                     m 4hub "Yay, another thing we have in common!"
                     m 2eka "Long hair can be a pain sometimes, right?"
                     m 3eua "But the good thing is that there are so many things you can do with it. Though I usually prefer to tie mine up with a ribbon, I know that other people have different styles."
                     m "Yuri wore her hair down, and others enjoy braids, or putting it into pigtails..."
-                    m 3eub "And ever since I figured out how to mess around with the script and let my own hair down, who knows how many more styles I might try?"
+
+                    python:
+                        hair_down_unlocked = False
+                        try:
+                            hair_down_unlocked = store.mas_selspr.get_sel_hair(
+                                mas_hair_down
+                            ).unlocked
+                        except:
+                            pass
+
+                    if hair_down_unlocked:
+                        # TODO adjust this line to be more generic once we have additoinal hairstyles.
+                        m 3eub "And ever since I figured out how to mess around with the script and let my own hair down, who knows how many more styles I might try?"
+
                     m 1eua "It’s always nice to have options, you know?"
                     m 1eka "I hope that however you wear yours, you’re comfortable with it!"
 
                 "I don't have hair.":
                     $ persistent._mas_pm_hair_length = "bald"
 
-                    1euc m "Oh, that's interesting, [player]!"
+                    m 1euc "Oh, that's interesting, [player]!"
                     menu:
                         m "Do you shave your head or did you lose your hair, if you don't mind me asking?"
 
                         "I shave my head.":
                             $ persistent._mas_pm_shaves_hair = True
                             $ persistent._mas_pm_no_hair_no_talk = False
+
                             m 1hua "It must be so nice not ever having to worry about your hair..."
                             m 1eua "You can just get up and go, without having to worry about styling it..."
                             m 3eua "And if you wear a hat, you don't have to worry about hat hair when you take it off!"
@@ -8562,23 +8650,27 @@ label monika_player_appearance:
                         "I lost my hair.":
                             $ persistent._mas_pm_shaves_hair = False
                             $ persistent._mas_pm_no_hair_no_talk = False
+
                             m 1ekd "I'm sorry to hear that [player]..."
                             m 1eka "But just know that I don't care how much hair you have, you'll always look beautiful to me!"
                             m "And if you ever feel insecure or just want to talk about it, I’m always up for listening."
 
                         "I don't want to talk about it.":
                             $ persistent._mas_pm_no_hair_no_talk = True
+
                             m 1ekd "I understand, [player]"
                             m 1eka "I want you to know that I don't care how much hair you have, you'll always be beautiful to me."
                             m "If you ever feel insecure or feel like talking about it, I’m always here to listen."
 
-            m 1hua "Next question!"
-            if not persistent._mas_pm_hair_length == "bald":
+            if persistent._mas_pm_hair_length != "bald":
+                m 1hua "Next question!"
                 m 1eud "This one should be fairly obvious..."
+
                 menu:
                     m "What color is your hair?"
                     "It's brown.":
                         $ persistent._mas_pm_hair_color = "brown"
+
                         m 1hub "Yay, brown hair is the best!"
                         m 3eua "Just between us, [player], I really like my brown hair. I'm sure yours is even better!"
                         m 3rksdla "Though some people might disagree my hair is brown..."
@@ -8588,6 +8680,7 @@ label monika_player_appearance:
 
                     "It's blonde.":
                         $ persistent._mas_pm_hair_color = "blonde"
+
                         m 1eua "Really? Hey, did you know that having blonde hair puts you in a rare two percent of the population?"
                         m 3eub "Blonde hair is one of the rarest hair colors. Most people attribute this to the fact that it’s caused by a recurring genetic anomaly--"
                         m "Being just the body’s inability to produce normal amounts of the pigment eumelanin--that’s what causes darker hair colors, such as black and brown."
@@ -8597,6 +8690,7 @@ label monika_player_appearance:
 
                     "It's black.":
                         $ persistent._mas_pm_hair_color = "black"
+
                         m 2wuo "Black hair is so beautiful!"
                         m 3eub "You know, there’s this really irritating trope about people with black hair have a more prickly or ill-tempered personality than others..."
                         m 4hub "But you’ve obviously disproven that myth. Personally, I think black hair is very attractive."
@@ -8608,13 +8702,15 @@ label monika_player_appearance:
 
                     "It's red.":
                         $ persistent._mas_pm_hair_color = "red"
+
                         m 3hua "Yet another special thing about you, [player]~"
                         m 3eua "Red hair and blonde hair are the least common natural hair colors, did you know that?"
                         m 1eua "Red hair, however, is a little more rare, even if people call it by different names--auburn, ginger, and so on. It’s only found in about one percent of the population."
                         m 1hub "It’s a rare and wonderful trait to have--almost as wonderful as you!"
 
                     "It's another color.":
-                        $ persistent._mas_pm_hair_color = renpy.input('What color is your hair?',length=15).strip(' \t\n\r').lower()
+                        $ persistent._mas_pm_hair_color = ask_color("What color is your hair?")
+
                         m 3hub "Oh! That's a beautiful color, [player]!"
                         m 1eub "That reminds me of something I was thinking about earlier, when we were talking about the color of your eyes."
                         m 1eua "Even though the other girls had eye colors that literally didn’t exist in real life--not counting the existence of colored contacts, of course--"
@@ -8651,40 +8747,44 @@ label monika_player_appearance:
 
             if persistent._mas_pm_eye_color == "green" and persistent._mas_pm_hair_color == "brown":
                 m 2hua "It’s wonderful, because I didn’t imagine how similar we would look. It’s very interesting!"
+
             else:
                 m 2hua "It’s wonderful, because I didn’t imagine how different we would look. It’s very interesting!"
 
             m 1dsa "Now I'm imagining what it'll be like when we meet for real..."
 
             show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            if persistent._mas_pm_player_hair =="bald":
-                if persistent._mas_pm_height >= 176:
+
+            if persistent._mas_pm_hair_length == "bald":
+                if persistent._mas_pm_height >= mas_height_tall:
                     m 5eubfu "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace..."
 
-                elif persistent._mas_pm_height >= 162:
+                elif persistent._mas_pm_height >= mas_height_monika:
                     m 5eubfu "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace..."
 
                 else:
                     m 5eubfu "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace..."
 
             else:
-                if persistent._mas_pm_height >= 176:
-                    if persistent._mas_pm_hair_length is not "average":
-                        m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [persistent._mas_pm_hair_length] [persistent._mas_pm_hair_color] hair..."
-                    else:
-                        m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [persistent._mas_pm_hair_color] hair..."
+                python:
+                    hair_desc = persistent._mas_pm_hair_color
 
-                elif persistent._mas_pm_height >= 162:
-                    if persistent._mas_pm_hair_length is not "average":
-                        m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [persistent._mas_pm_hair_length] [persistent._mas_pm_hair_color] hair..."
-                    else:
-                        m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [persistent._mas_pm_hair_color] hair..."
+                    if persistent._mas_pm_hair_length != "average":
+                        hair_desc = (
+                            persistent._mas_pm_hair_length + " " + hair_desc
+                        )
+            
+                if persistent._mas_pm_height >= mas_height_tall:
+
+                    m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [hair_desc] hair..."
+
+                elif persistent._mas_pm_height >= mas_height_monika:
+
+                    m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [hair_desc] hair..."
 
                 else:
-                    if persistent._mas_pm_hair_length is not "average":
-                        m 5eubfu "When I run towards you, since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll run my hand through your [persistent._mas_pm_hair_length] [persistent._mas_pm_hair_color] hair..."
-                    else:
-                        m 5eubfu "When I run towards you, since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll run my hand through your [persistent._mas_pm_hair_color] hair..."
+
+                    m 5eubfu "When I run towards you, since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll run my hand through your [hair_desc] hair..."
 
 
             m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you’re real."
@@ -8692,6 +8792,7 @@ label monika_player_appearance:
             
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "I love you more than words could ever say."
+
         "No.":
              m 2dsc "..."
              m 2ekd "I understand, [player]."
@@ -8700,6 +8801,15 @@ label monika_player_appearance:
              m 2eka "But if you change your mind, let me know!"
 
     return "derandom"
+
+# quick label where monika tells you her height
+label monika_player_appearance_monika_height:
+    if not persistent._mas_pm_units_height_metric:
+        m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
+    else:
+        m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+    return
+
 
 #### Begin monika clothes topics
 
