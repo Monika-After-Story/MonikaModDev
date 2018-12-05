@@ -2989,7 +2989,7 @@ init -1 python:
         _date = _date.replace(datetime.date.today().year)
 
         if persistent._mas_pm_live_south_hemisphere:
-            return mas_winter_solstice <= _date < mas_spring_equinox
+            return mas_winter_solstice <= _date or _date < mas_spring_equinox
         else:
             return mas_summer_solstice <= _date < mas_fall_equinox
 
@@ -3025,7 +3025,7 @@ init -1 python:
         if persistent._mas_pm_live_south_hemisphere:
             return mas_summer_solstice <= _date < mas_fall_equinox
         else:
-            return mas_winter_solstice <= _date < mas_spring_equinox
+            return mas_winter_solstice <= _date or _date < mas_spring_equinox
 
     def mas_isSpecialDay():
         """
