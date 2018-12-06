@@ -9516,6 +9516,9 @@ label monika_cares_about_dokis:
 #### old christmas.rpyc topics
 # HOL020
 
+#NOTE: These categories (cold and snow) seem more like keywords for the old chatbox system
+#they're essentially branches of weather. Since it's an existing cat, just use weather probably.
+
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -9527,6 +9530,8 @@ label monika_cares_about_dokis:
 #        )
 #    )
 
+#NOTE: This topic is pretty much covered in the hemispheres topic as it is currently.
+#However, only provided it's winter at the time.
 label monika_snow:
     m 1euc "Does it ever snow where you live, [player]?"
     m 1eua "I've always liked the peaceful aura it seems to give off."
@@ -9538,6 +9543,8 @@ label monika_snow:
     m 1dsa "But snow is just so much more...tranquil and intimate, you know?"
     m 1hua "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
     return
+
+#Same regarding categories here
 
 #init 5 python:
 #    addEvent(
@@ -9560,6 +9567,8 @@ label monika_snowballfight:
     m 4hua "Maybe you're better at snowball fights than pong~?"
     return
 
+#Cats again
+
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -9571,6 +9580,7 @@ label monika_snowballfight:
 #        )
 #    )
 
+#TODO: hmm, this topic is kinda choppy. Needs a bit of reworking
 label monika_iceskating:
     m 1eua "Hey, [player], do you know how to ice skate?"
     m 1hua "It's a really cool thing to learn!"
@@ -9593,7 +9603,7 @@ label monika_iceskating:
 #            random=True
 #        )
 #    )
-
+# cats again
 # TODO: this topic is terrible. Either rewrite or remove.
 label monika_snowman:
     m 2dsc "Hmm..."
@@ -9623,7 +9633,7 @@ label monika_snowman:
             m 3hua "Wouldn't it just be breathtaking?"
             m 3eka "You better save a spot for me, though~"
 
-        "I'd melt for you.":
+        "I'd melt for you.": #probably gain aff here? (presuming we don't scrap this part in rewrite/removal)
             m 1hkb "Ahaha!"
             m "That was so cheesy!"
             m 1eka "And yet, so sweet."
@@ -9646,7 +9656,9 @@ label monika_snowman:
 #        )
 #    )
 
+#TODO: Needs a bit of aff pathing. Intro needs a little work too
 label monika_sledding:
+    #TODO: rephrase -> "Hey [player], you know what I'd love to do together?" (or something similar)
     m 1eua "You know what I would love to do with you?"
     m 3hub "Sledding!"
     m 3eua "You might think it's only for kids, but I think it could be fun for us, too!"
@@ -9656,9 +9668,12 @@ label monika_sledding:
     m 1hub "Ahaha!"
     m 1eka "I'd have to sit in your lap for that one."
     m 1rksdla "And I'd still be at risk of tumbling off."
+    #definitely some aff stuff here
     m 1hua "But I know you wouldn't let that happen. You'd hold me tight, right~?"
     m 1tku "That would probably be the best part."
     return
+
+#cats again
 
 #init 5 python:
 #    addEvent(
@@ -9668,15 +9683,18 @@ label monika_sledding:
 #            category=["cold", "snow"]
 #        )
 #    )
-
+#TODO: needs some reworking here and there to fix flow issues.
 label monika_snowcanvas:
     m 3euc "Have you ever looked at snow and thought it resembles a blank canvas?"
     m 1hksdlb "I know I'm not really good with art..."
     m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
     m 3hub "Just step outside and let your imagination run wild!"
     m 1eua "Doesn't having so much space to paint sound wonderful?"
+    #this line kinda comes out of nowhere...
     m 1hksdlb "Although...{w}don't draw anything indecent, okay?"
+    #line before also makes this line here seem like a random thought
     m 1eua "And make sure the snow is packed down tightly, too."
+    #TODO: replace 'this' with a specific
     m 1eka "I'd love to do this with you someday."
     m 3hua "Maybe you can paint something for me when that happens, [player]."
     return
@@ -9697,6 +9715,7 @@ label monika_cozy:
     m 1eua "It's like feeling a loved one's embrace~"
     # TODO: need to hemisphere so winter isnt wrong
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
+    #TODO: 'always a feeling'? could use a bit of rewording
     m 1hub "Finally able to whip out your winter fashion set is always a feeling."
     m 3eua "But you know what the best way to warm yourself up is?"
 
@@ -9724,11 +9743,13 @@ label monika_winter:
     # TODO: hemisphere
     # TODO: also establshing if it snows whbere the player is
     m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
+    #TODO: reword, snowball fighting is kinda bugging me, lol
     m 3eua "Building a snowman, sledding, snowball fighting..."
     m 3hub "Even staying indoors seems so much more comfortable when there's snow outside."
     m 1eua "The festivities are lovely, too, of course."
     m 3etd "I wonder if it's acceptable to start decorating..."
     m 3eua "But I hope you're enjoying yourself during this merry season, [player]."
+    #TODO: even for the pun, I'm not entirely sure Monika would say that
     m "You can always spend some time with me, if you want to chill..."
     m 1ttu "Or maybe you'd rather heat things up~?"
     m 1hub "Ahaha! I'm only teasing you, [player]~"
@@ -9753,8 +9774,10 @@ label monika_whatiwant:
     m 1dsa "..."
 
     # TODO: affection adjust clearly...
+    #TODO: reflects similarities to the 'surprise.txt' at love. Should probably be limited the same
     m 1eka "You really are the joy to my world, [player]."
     m "A thousand glittering stars couldn't match your brilliance."
+    #TODO: this line really needs to be redone, or removed
     m 1dsa "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
 
     # TODO: this makes monika sound like she's 80
@@ -9765,6 +9788,7 @@ label monika_whatiwant:
     m 1hub "Ahaha! Sorry if that sounded too serious!"
     m 3eua "Winter's a wonderful time to read some lengthy works."
     m 1rsc "But..."
+    #TODO: blush here methinks
     m 1eka "I wasn't lying, [player]."
 
     # TODO: well, you should be able to give her stuff so...
@@ -9783,7 +9807,7 @@ label monika_whatiwant:
 label monika_relax:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
 
-    # TODO: hemisphere
+    # TODO: hemisphere + do you get snow
     m "The glistening, white snow, the bright and colorful lights~"
     m 3eka "I love it."
     m 1rsc "..."
@@ -9794,10 +9818,13 @@ label monika_relax:
     m "If it gets bad, just stay home and stay safe, okay?"
     m "After all, when the weather gets bad..."
     m 1rkc "..."
+    #TODO: 'So' isn't lead in by the past lines
     m 3eka "So isn't it best to relax at home?"
     m 1ekb "Wearing pajamas, drinking hot chocolate, reading a good book, and..."
     m 1hua "Talking to me."
     m 1hub "Ehehe~"
+    #TODO: Ending could be more akin to:
+    #"What better way to spend a winter day? Keeps the tone more in the 'relax' bit."
     m 1ekc "But seriously, don't go outside if it gets too bad."
     m 1hua "Please stay safe, [player]."
     return
@@ -9822,7 +9849,9 @@ label monika_hypothermia:
     m 4euc "So put on that coat, those gloves, and the warmest hat you can find."
     m 1hua "And stay safe."
     m "Your health means a lot to me, [player]."
+    #TODO: little bit too formal
     m 1ekc "I hope you take my concerns seriously."
+    #TODO: aff on this.
     m 1hua "Okay, snowflake~?"
     return
 
