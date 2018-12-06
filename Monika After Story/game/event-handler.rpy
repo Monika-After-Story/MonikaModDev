@@ -106,8 +106,10 @@ init 6 python:
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
-    for _,ev_db in mas_all_ev_db_map.iteritems():
+    for code,ev_db in mas_all_ev_db_map.iteritems():
         mas_all_ev_db.update(ev_db)
+
+    del code, ev_db
 
     def mas_getEV(ev_label):
         """
