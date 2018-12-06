@@ -198,28 +198,28 @@ image snow_mask_night_left = Movie(
     play="mod_assets/window/spaceroom/window_7.webm",
     mask=None
 )
-image snow_mask_night_left_fb = "snow_mask_night_left" # TODO: get real fallback
+image snow_mask_night_left_fb = "mod_assets/window/spaceroom/window_7_fallback.png"
 
 image snow_mask_night_right = Movie(
     channel="window_8",
     play="mod_assets/window/spaceroom/window_8.webm",
     mask=None
 )
-image snow_mask_night_right_fb = "snow_mask_night_right" # TODO: fallback
+image snow_mask_night_right_fb = "mod_assets/window/spaceroom/window_8_fallback.png"
 
 image snow_mask_day_left = Movie(
     channel="window_9",
     play="mod_assets/window/spaceroom/window_9.webm",
     mask=None
 )
-image snow_mask_day_left_fb = "snow_mask_day_left" # TODO: fallback
+image snow_mask_day_left_fb = "mod_assets/window/spaceroom/window_9_fallback.png"
 
 image snow_mask_day_right = Movie(
     channel="window_10",
     play="mod_assets/window/spaceroom/window_10.webm",
     mask=None
 )
-image snow_mask_day_right_fb = "snow_mask_day_right" # TODO: fallback
+image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.png"
 
 # spaceroom window positions
 transform spaceroom_window_left:
