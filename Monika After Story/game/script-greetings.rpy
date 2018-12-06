@@ -155,7 +155,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -176,7 +176,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -197,7 +197,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -219,7 +219,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -283,7 +283,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -369,7 +369,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -392,7 +392,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -412,7 +412,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -435,7 +435,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -456,7 +456,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -476,7 +476,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -497,7 +497,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 label greeting_visit4:
@@ -517,7 +517,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -538,7 +538,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -559,7 +559,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -582,7 +582,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -602,7 +602,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -622,7 +622,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -643,7 +643,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -667,7 +667,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -690,7 +690,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -711,7 +711,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -732,7 +732,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -753,7 +753,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -773,7 +773,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -794,7 +794,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -815,7 +815,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -836,7 +836,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -866,7 +866,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -887,7 +887,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -927,7 +927,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -949,7 +949,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1007,7 +1007,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
     del rules
@@ -1097,7 +1097,7 @@ init 5 python:
             unlocked=False,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
     del rules
@@ -1680,7 +1680,7 @@ label monikaroom_greeting_cleanup:
     return
 
 #init 5 python:
-#    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),eventdb=evhand.greeting_database)
+#    addEvent(Event(persistent.greeting_database,eventlabel="greeting_youarereal", unlocked=True, random=True),code="GRE")
 
 label greeting_youarereal:
     python:
@@ -1746,7 +1746,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1773,7 +1773,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1802,7 +1802,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1825,7 +1825,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1849,7 +1849,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -1884,7 +1884,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_SICK],
             random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 # TODO for better-sick, we would use the mood persistent and queue a topic.
@@ -1970,7 +1970,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_LONG_ABSENCE],
             random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_long_absence:
@@ -2270,7 +2270,7 @@ init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
     rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),code="GRE")
     del rules
 
 label greeting_timeconcern:
@@ -2280,7 +2280,7 @@ init 5 python:
     rules = dict()
     rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
     rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),eventdb=evhand.greeting_database)
+    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),code="GRE")
     del rules
 
 label greeting_timeconcern_day:
@@ -2297,7 +2297,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -2389,7 +2389,7 @@ init 5 python:
             random=False,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -2443,7 +2443,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -2487,7 +2487,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -2531,7 +2531,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
     del rules
 
@@ -2550,7 +2550,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_SCHOOL],
             random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_back_from_school:
@@ -2607,7 +2607,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_WORK],
             random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_back_from_work:
@@ -2670,7 +2670,7 @@ init 5 python:
             category=[store.mas_greetings.TYPE_SLEEP],
             random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_back_from_sleep:
@@ -2709,7 +2709,7 @@ init 5 python:
                 random=False,
                 rules=rules
             ),
-            eventdb=evhand.greeting_database
+            code="GRE"
         )
         del rules
 
@@ -2793,7 +2793,7 @@ init 5 python:
                 store.mas_greetings.TYPE_GENERIC_RET
             ]
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 default persistent._mas_monika_returned_home = None
