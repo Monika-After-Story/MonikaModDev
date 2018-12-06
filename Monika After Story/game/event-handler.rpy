@@ -85,9 +85,9 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
-init 6 python:
-    # all event databsae built after events are built.
+init 4 python:
 
+    # the mapping is built here so events can use to build 
     # map databses to a code
     mas_all_ev_db_map = {
         "EVE": store.evhand.event_database,
@@ -99,6 +99,10 @@ init 6 python:
         "FLR": store.mas_filereacts.filereact_db
     }
 
+
+init 6 python:
+    # here we combine the data from teh databases so we can have easy lookups.
+    
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
@@ -173,7 +177,7 @@ init 6 python:
 
 
     def mas_showEVL(
-            ev_label
+            ev_label,
             code, 
             unlock=False, 
             _random=False,
@@ -854,18 +858,31 @@ init python:
     import store.evhand as evhand
     import datetime
 
-    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
+    def addEvent(
+            event, 
+            eventdb=None,
+            skipCalendar=False, 
+            code="EVE"
+        ):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
+        # NOTE: this MUST be ran after init level 4.
+        #
         # IN:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
-        #       (Default: evhand.event_database)
+        #       NOTE: DEPRECATED. Use code instead.
+        #       NOTE: this can still be used for custom adds.
+        #       (Default: None)
         #   skipCalendar - flag that marks wheter or not calendar check should
         #       be skipped
+        #   code - code of the event database to add to.
+        #       (Default: EVE) - event database
+        if eventdb is None:
+            eventdb = mas_all_ev_db_map.get(code, None)
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
