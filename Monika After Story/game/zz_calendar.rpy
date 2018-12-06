@@ -681,6 +681,20 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             return None
 
 
+        def _yearSanityChecks(self):
+            """
+            Checks that the current date is on the right interval, otherwise,
+            it will force it back
+            """
+            # so people don't break it
+            if self.selected_year < self.MIN_SELECTABLE_YEAR:
+                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+
+            if self.selected_year > self.MAX_SELECTABLE_YEAR:
+                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+
+
+
         def _changeYear(self, ascend=True):
             """
             Changes the currently selected year by incrementing or decrementing it by one
@@ -695,12 +709,7 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             else:
                 self.selected_year = self.selected_year - 1
 
-            # so people don't break it
-            if self.selected_year < self.MIN_SELECTABLE_YEAR:
-                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
-
-            if self.selected_year > self.MAX_SELECTABLE_YEAR:
-                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+            self._yearSanityChecks()
 
             self._setupDayButtons()
 
@@ -730,6 +739,9 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                 if self.selected_month <=0:
                     self.selected_month = 12
                     self.selected_year = self.selected_year - 1
+
+            self._yearSanityChecks()
+
             self._setupDayButtons()
 
 
@@ -979,7 +991,13 @@ init -1 python in mas_calendar:
         RETURNS:
             nice display string for the day
         """
-        return str(day) + NUM_MAP.get(day, "th")
+        if day in NUM_MAP:
+            suffix = NUM_MAP[day]
+
+        else:
+            suffix = NUM_MAP.get(day % 10, "th")
+
+        return str(day) + suffix
 
 
     def _formatYears(years):
@@ -1009,7 +1027,19 @@ init -1 python in mas_calendar:
 
     def genFriendlyDispDate(_datetime):
         """
+        NOTE: DEPRECATED
+
         Generates a display date using the given datetime
+
+        IN:
+            _datetime - datetime object to create good display date
+        """
+        return genFriendlyDispDate_d(_datetime.date())
+
+
+    def genFriendlyDispDate_d(_date):
+        """
+        Generates a display date using the given date
         This creates a display date in the format:
             Month Day, Year
         However, this is somewhat variable.
@@ -1027,22 +1057,21 @@ init -1 python in mas_calendar:
         is used.
 
         IN:
-            _datetime - datetime object to create good display date
+            _date - date object to create good display date
 
         RETURNS:
             tuple of the following format:
             [0]: nicely formatted display date, suitable for conversation
-            [1]: timedelta between today and the given _datetime
+            [1]: timedelta between today and the given _date
         """
         # the month is always fine to take out
-        disp_month = _datetime.strftime("%B")
+        disp_month = _date.strftime("%B")
 
         # display day is easy
-        disp_day = _formatDay(_datetime.day)
+        disp_day = _formatDay(_date.day)
 
         # to find out year, we need now
         _today = datetime.date.today()
-        _date = _datetime.date()
         _day_diff = _today - _date
         _year_diff = _today.year - _date.year
 
@@ -1083,13 +1112,40 @@ init -1 python in mas_calendar:
             # more than 10? use the 4 digit year
             _cout = [
                 disp_month,
-                disp_day,
-                ",",
+                disp_day + ",",
                 str(_date.year)
             ]
 
         # now return the formatting string + diff
         return (" ".join(_cout), _day_diff)
+
+
+
+    def genFormalDispDate(_date):
+        """
+        Generates a display date using the given date
+
+        This is considered "formal", in that it's not really realisitc when
+        used in normal conversation. For example, if today is august 24, you 
+        don't say 'this happened august 24th, 2016', you normally would say
+        'this happened x years ago today'.
+
+        IN:
+            _date - date object to create good display date
+
+        RETURNS:
+            tuple of the following format:
+            [0]: nicely formtted display date, suitable for text
+            [1]: timedelta between today and the given _date
+        """
+        return (
+            " ".join([
+                _date.strftime("%B"), # month
+                _formatDay(_date.day) + ",", # day
+                str(_date.year) # year
+            ]),
+            datetime.date.today() - _date
+        )
 
 
     def saveCalendarDatabase(encoder):
@@ -1117,7 +1173,7 @@ init -1 python in mas_calendar:
         try:
             with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
                 calendar_database = json.load(fp)
-        except IOError:
+        except (IOError, ValueError):
             pass
 
 
@@ -1665,6 +1721,7 @@ init -1 python in mas_calendar:
 init python:
 
     import store.mas_calendar as calendar
+    import datetime
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
@@ -1688,6 +1745,19 @@ init python:
             persistent.sessions["first_session"],
             year_param=[persistent.sessions["first_session"].year]
         )
+
+    # add birthday if we have one
+    if (
+            persistent._mas_player_bday is not None
+            and type(persistent._mas_player_bday) == datetime.date
+        ):
+        calendar.addRepeatable_d(
+            "player-bday",
+            "Your Birthday",
+            persistent._mas_player_bday,
+            []
+        )
+
 
 
 init 100 python:
@@ -1836,7 +1906,8 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 label _first_time_calendar_use:
-    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
+    $ mas_calRaiseOverlayShield()
+    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]."
     m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
     show monika 1eua
@@ -1847,10 +1918,11 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika 1
+    show monika idle
 
     $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
+    $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):
@@ -1917,7 +1989,7 @@ init python:
         """RUNTIME ONLY
         Hides the calendar overlay
         """
-        renpy.hide_screen("calendar_overlay")
+        renpy.hide_screen("calendar_overlay", layer="master")
 
 
     def mas_calIsVisible_ovl():
