@@ -173,7 +173,7 @@ init 5 python:
             random=True,#TODO update script
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -194,7 +194,7 @@ init 5 python:
             unlocked=True,
             random=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_goodbye:
@@ -224,7 +224,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -243,7 +243,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -262,7 +262,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -282,7 +282,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -302,7 +302,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -338,7 +338,7 @@ init 5 python:
             prompt="I'm going to class.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_to_class:
@@ -394,7 +394,7 @@ init 5 python:
             prompt="I'm going to work.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_to_work:
@@ -450,7 +450,7 @@ init 5 python:
             prompt="I'm going to sleep.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_sleep:
@@ -611,7 +611,7 @@ label bye_prompt_sleep:
     return 'quit'
 
 # init 5 python:
-#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
+#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),code="BYE")
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
@@ -628,7 +628,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -660,7 +660,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -694,7 +694,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -728,7 +728,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -761,7 +761,7 @@ init 5 python:
             prompt="I'll be going away for a while.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_long_absence:
@@ -886,7 +886,7 @@ init 5 python:
             prompt="I'm going to take you somewhere.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_going_somewhere:

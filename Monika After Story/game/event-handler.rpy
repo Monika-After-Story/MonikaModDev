@@ -85,17 +85,31 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
-init 850 python:
+init 4 python:
+
+    # the mapping is built here so events can use to build 
+    # map databses to a code
+    mas_all_ev_db_map = {
+        "EVE": store.evhand.event_database,
+        "BYE": store.evhand.farewell_database,
+        "GRE": store.evhand.greeting_database,
+        "MOO": store.mas_moods.mood_db,
+        "STY": store.mas_stories.story_database,
+        "CMP": store.mas_compliments.compliment_database,
+        "FLR": store.mas_filereacts.filereact_db
+    }
+
+
+init 6 python:
+    # here we combine the data from teh databases so we can have easy lookups.
+    
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
     mas_all_ev_db = {}
-    mas_all_ev_db.update(store.evhand.event_database)
-    mas_all_ev_db.update(store.evhand.farewell_database)
-    mas_all_ev_db.update(store.evhand.greeting_database)
-    mas_all_ev_db.update(store.mas_moods.mood_db)
-    mas_all_ev_db.update(store.mas_stories.story_database)
-    mas_all_ev_db.update(store.mas_compliments.compliment_database)
-    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
+    for code,ev_db in mas_all_ev_db_map.iteritems():
+        mas_all_ev_db.update(ev_db)
+
+    del code, ev_db
 
     def mas_getEV(ev_label):
         """
@@ -130,6 +144,89 @@ init 850 python:
             return "Unknown Event"
         else:
             return ev.label
+
+
+    def mas_hideEVL(
+            ev_label, 
+            code, 
+            lock=False, 
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hides an event given label and code.
+
+        IN:
+            ev_label - label of event to hide
+            code - string code of the db this ev_label belongs to
+            lock - True if we want to lock this event
+                (Default: False)
+            derandom - True if we want to de random this event
+                (Default: False)
+            depool - True if we want to de pool this event
+                (Default: False)
+            decond - True if we want to remove conditoinal for this event
+                (Default: False)
+        """
+        store.evhand._hideEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def mas_showEVL(
+            ev_label,
+            code, 
+            unlock=False, 
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        store.mas_showEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            unlock=unlock,
+            _random=_random,
+            _pool=_pool
+        )
+
+
+    def mas_lockEVL(ev_label, code):
+        """
+        Locks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_hideEVL(ev_label, code, lock=True)
+
+
+    def mas_unlockEVL(ev_label, code):
+        """
+        Unlocks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_showEVL(ev_label, code, unlock=True)
+
 
 python early:
     # FLOW CHECK CONSTANTS
@@ -763,18 +860,31 @@ init python:
     import store.evhand as evhand
     import datetime
 
-    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
+    def addEvent(
+            event, 
+            eventdb=None,
+            skipCalendar=False, 
+            code="EVE"
+        ):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
+        # NOTE: this MUST be ran after init level 4.
+        #
         # IN:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
-        #       (Default: evhand.event_database)
+        #       NOTE: DEPRECATED. Use code instead.
+        #       NOTE: this can still be used for custom adds.
+        #       (Default: None)
         #   skipCalendar - flag that marks wheter or not calendar check should
         #       be skipped
+        #   code - code of the event database to add to.
+        #       (Default: EVE) - event database
+        if eventdb is None:
+            eventdb = mas_all_ev_db_map.get(code, None)
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -892,6 +1002,8 @@ init python:
         """
         Hide an event label by Falsing its unlocked/random/pool props
 
+        NOTE: use this with custom eventdbs
+
         IN:
             ev_label - label of the event we wnat to hide
             lock - True if we want to lock this event, False if not
@@ -955,6 +1067,8 @@ init python:
         """
         Shows an event label, by Truing the unlocked, random, and pool
         properties.
+
+        NOTE: use this for custom event dbs
 
         IN:
             ev_label - label of event to show

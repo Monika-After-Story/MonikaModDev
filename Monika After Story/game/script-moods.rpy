@@ -121,7 +121,7 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
     m 3hub "If you're hungry, go get something to eat, silly."
@@ -145,7 +145,7 @@ label mas_mood_hungry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="sad",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="sad",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
@@ -179,7 +179,7 @@ label mas_mood_sad:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
@@ -210,7 +210,7 @@ label mas_mood_proud:
 return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
@@ -219,7 +219,7 @@ label mas_mood_happy:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_sick:
     $ session_time = mas_getSessionLength()
@@ -256,7 +256,7 @@ label mas_mood_sick:
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_tired:
     # TODO: should we adjust for suntime?
@@ -327,7 +327,7 @@ label mas_mood_tired:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="lonely",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="lonely",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
     m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
@@ -340,7 +340,7 @@ label mas_mood_lonely:
 #Looking forward to input from the writers and editors on this, had trouble deciding how to write this.
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="angry",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="angry",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_angry:
     m 1ekc "Gosh, I'm sorry that you feel that way, [player]."
@@ -365,7 +365,7 @@ label mas_mood_angry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
     m 1euc "[player], are you alright?"
@@ -397,7 +397,7 @@ label mas_mood_scared:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
     m 1ekc "..."
@@ -434,7 +434,7 @@ label mas_mood_inadequate:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
@@ -446,7 +446,7 @@ label mas_mood_lucky:
 
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_bored:
     if mas_isMoniAff(higher=True):
@@ -555,7 +555,7 @@ init 5 python:
                 category=[store.mas_moods.TYPE_NEUTRAL],
                 unlocked=True
             ),
-            eventdb=store.mas_moods.mood_db
+            code="MOO"
         )
 
 # some values i need for single session checking

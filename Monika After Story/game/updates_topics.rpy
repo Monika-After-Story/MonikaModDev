@@ -9,6 +9,34 @@ define updates.version_updates = None
 #   k:oldId -> v:newId
 define updates.topics = None
 
+init -1 python in mas_db_merging:
+    import store
+
+    def merge_db(source, dest):
+        """
+        Merges the given source database into the given destination db
+
+        IN:
+            source - source database to merge from
+            dest - destination database to merge into
+        """
+        dest.update(source)
+
+
+    def merge_post0810():
+        """
+        Runs a specific set of merges, particularly for the merge that
+        happend after version 0.8.10.
+        """
+
+        # compliments
+        if store.persistent._mas_compliments_database is not None:
+            merge_db(
+                store.persistent._mas_compliments_database,
+                store.persistent.event_database
+            )
+
+
 # preeerything
 init -1 python:
     def clearUpdateStructs():
