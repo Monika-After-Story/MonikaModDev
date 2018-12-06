@@ -754,7 +754,8 @@ init -10 python in mas_selspr:
             dest - data to save the loaded data into
         """
         for item_name, item_tuple in source.iteritems():
-            dest[item_name].fromTuple(item_tuple)
+            if item_name in dest:
+                dest[item_name].fromTuple(item_tuple)
 
 
     def load_selectables():

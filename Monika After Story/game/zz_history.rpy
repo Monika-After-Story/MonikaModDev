@@ -606,6 +606,7 @@ init -810 python:
     #   know - knowledge
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
+    #   looks - your physical apperance
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -719,7 +720,27 @@ init -810 python:
 
             # op (opinions)
             # op / monika
-            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified"
+            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
+
+            # looks
+            "_mas_pm_shared_appearance": "pm.looks.shared_looks",
+
+            # looks / eyes
+            "_mas_pm_eye_color": "pm.looks.eyes.color",
+
+            # looks / hair
+            "_mas_pm_hair_color": "pm.looks.hair.color",
+            "_mas_pm_hair_length": "pm.looks.hair.length",
+            "_mas_pm_shaved_hair": "pm.looks.hair.shaved",
+            "_mas_pm_no_hair_no_talk": "pm.looks.hair.no_talk",
+
+            # looks / skin
+            "_mas_pm_skin_tone": "pm.looks.skin.tone",
+
+            # looks / dims (dimensions)
+            "_mas_pm_height": "pm.looks.dims.height",
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+
         },
         use_year_before=True,
         dont_reset=True
