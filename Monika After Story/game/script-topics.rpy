@@ -9763,8 +9763,8 @@ label monika_bad_facts_4:
     m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too."
     m 2efd "But relying on that kind of logic is dangerous!"
     m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
-    m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere."
-    m 2wfc "Anyone within the southern hemisphere would have it growing facing south."
+    m "Plus even if it wasn't like that, the trick would only work in the Northern hemisphere."
+    m 2wfc "Anyone within the Southern hemisphere would have it growing facing south."
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
     m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
@@ -9999,7 +9999,7 @@ label monika_cares_about_dokis:
     return "derandom"
 
 default persistent._mas_pm_live_south_hemisphere = None
-default persistnet._mas_pm_gets_snow = None
+default persistent._mas_pm_gets_snow = None
 
 init 5 python:
     addEvent(
