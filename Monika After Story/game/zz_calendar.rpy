@@ -96,6 +96,110 @@ init -1 python:
             pygame.MOUSEBUTTONDOWN
         )
 
+        # Easter egg labels
+        EG_TEXTS_MIN_GLITCH = ["....ɐʞıuoɯ ʇsnɾ..\n...ɐʞıuoɯ ʇsnɾ.\n...\n..ɐʞıuoɯ ʇsnɾ..\n.ɐʞıuoɯ ʇsnɾ....",
+            "JJJJJJJ.\nUUUUUUU.\nSSSSSSS.\nTTTTTT.\n.\nMMMMM.\nOOOO.\nNNNN.\nIIII.\nKKKKKK.\nAAAAA.",
+            "J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́", "noʎ ǝʌol I", "nnnnnnnnnnn\noooooooooooo\nʎʎʎʎʎʎ ǝǝǝǝ\nǝǝǝǝǝʌʌʌʌʌʌʌʌʌ\nʌooolll III"
+        ]
+        EG_TEXTS_GLITCH = [
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘jhjhjhj
+        kjkjkjkjkjk̘̲͇͓͍
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍
+        """,
+        """
+M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔ẽ̢̘̘̲͇͓͍̘̲̘͉̹̻͍̲̗͚͉̳̱̭̪̋ͤ͟ͅw̧ͫͯ͊̈ͬͨ͌̓͟͏̠̝̫͚̱͈̣͓ā̷͔̫̣̞͖̲̦̤̟̗͓̦̭̫ͭ̿̋̔͜͟͡ͅs̵̨̛͍̭͙̩͈̳̠̮͙͎̠̺̗͕̪̎ͬ͛͐̾ͪ̋̂͋̔͌ͫ̀̓̃͠ ̃̇̃ͤ̀ͭ̆ͥ̈́̌͛ͣ͏̴҉̨̙̬̥͈h͕̺̪ͤ̾̔̔ͯ̌ͥ̍̀̉ͧ͗ͧ̄̒ͧ͆̀̚͟͞͞e̴̽ͭͫ̿ͨͮ̿̀ͪͩ̂̆̔̈̾ͤ̃̍́͜͢͏͇͎̻̞̠̯̪̯̩̼͎͕͇̥ͅr̫̼̰̺͉̆ͥͪ̃̿ͥ̔̂͟͢͞ȩ̶̢̇ͥ̃̊͒̒̇̐̈͐̅ͮ́͏̝̠͓̗͔
+        """,
+        """
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """,
+        """
+        J̋̅͗̉ɐʞıuoɯ ʇsnɾ̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠cfcfcfcfcx
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        ̹̘͍̭͉̜jjhj
+                """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        Gͩͯͯ̆̑̀ͦ**͍͉̫͉̰ͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅkjkw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍
+         ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+                ̹̘͍̭͉̜ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+
+        """,
+        """
+        ̊͑̅̆ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊̚kk**k͑̅̆ ̂ͭͬ̈ͨL̋ɐʞıuoɯ ʇsnɾ͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚** ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """,
+        """
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅkfcfuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+        ̹̘͍̭͉̜    in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ̹̘͍̭͉ bHkgb3VyIHdyZXRjaGVkIGJv in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ̹̘͍̭͉̜  mjmn  in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        ɐ̯͙̟̤͇͎ʞ̙ı̤̤̜̣̮͚ͅuo̺͔ɯ̬͇̣̻͚̝̪ ̣̙̰̫͚ʇ͇̫̹͚͙̭͕s͓nɾ͍̠̼
+
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅhjjjhjbbj
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̖́ ̥u ҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕̠̙͖
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡
+        J̖́kkk ̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜hjcfknjnkjjknjk ͅı͕̠̙͖
+        """,
+        """
+        J̖́ ̥u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̥́u҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo  ҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        J̖́ ̥u ҉͍̙̘ st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+̹̘͍̭͉̜        in̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕jkjnkj̠̙͖
+        """,
+        """
+        ghj    J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        ̹̘͍̭͉̜  J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        n̤̹͇̰͈̝ͅo̙̣ͅʎ͍̬̱̙͕̖͇ ǝ͓͈͖̯͚̗ʌ̼̬̫̼̗o̬̩l̖̜ ͅı͕̠̙͖        ̹̘͍̭͉̜    J̖̥́u҉͍̙̘st̼͍̰̬͢ͅ ̕Mo҉̬̳̻̻͍n̪i̶k̩͈̰̺̟̦a͔̰̖͎͡ͅ
+        ̹̘͍̭͉̜
+        """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        ̹̘͍̭͉̜
+                """,
+        """
+        J̋̅͗̉̄ů̆S̀̈͛͆̑̄Tͥͮ͂ͪ͆͛M̃̈̔̓ͨ̊ő̎̈́̎N̓ͯiͫ̍͐̃K͐͂͒̾͂̚ä́
+        G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍̫̺̮̘̻̜̥̬͍ͩͯͯ̆͜Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+        M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r͙̗͓͔e̘̘̲͇͓͍        ̹̘͍̭͉̜ G͍͉̫͉̰ͩͯͯ̆̑̀ͦͬ̌ͯ̏͂͑ͣͧͮ͗͗̉̕͜͟Ő̧͎͖͎̘̊̆ͩ͆̈͊͒̾͞ ̨̤͓̰̟͇̳͇͕̬̄ͧͣ̅̑͑͂̀̄̈͘ͅB͍̫̺̮̘̻̜̥̬͍̌̓̎ͤ͋͟͜͠Ä̶́ͦ̐ͩ̒̓͊̀ͬͫͨͯ͆ͫ̓ͯ̃̂ͤ͘҉͙̜̗͉̳͉̹͎̩̥̠̳C̢͎͙̜̭͉͓̠̣̰̹͈̻̮̋͒͆ͪ̏́̕͠K̶̷͕̰̱̭̪͕̪̮̥ͨͯͮ̊͠
+                ̹̘͍̭͉̜
+        """,
+        """
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        I̊͑̅̆̚ ̂ͭͬ̈ͨL̋͆̒oͫ̿Vͣ̃̂ͣ̌ͭ̈͢ẽ ͛̐́͂̾͋͝Y̷͊͑̊ͨ̿͊͑o͆̾ͦu̵ͤ̃̌ͥ!̓̌̃̇̓͏!̡̿̿ͭ̐!ͪͦ̂ͭ
+        """
+        ]
+
+        # Year thresholds
+        MIN_GLITCH_YEAR = 1700
+        MIN_SELECTABLE_YEAR = 200
+        MAX_GLITCH_YEAR = 2300
+        MAX_SELECTABLE_YEAR = 7000
+        MID_POINT_YEAR = 2000
+
         # pane constants
         EVENT_X = 800
         EVENT_Y = 40
@@ -347,8 +451,13 @@ init -1 python:
             self.const_buttons.append(self.button_year_decrease)
             self.const_buttons.append(self.button_year_increase)
 
+            # set up some quips
+            self._setupEasterEG()
+
             # call set up day buttons to fill up the calendar
             self._setupDayButtons()
+
+
 
 
         def _setupDayButtons(self):
@@ -406,7 +515,14 @@ init -1 python:
                 self.dates.append(first_day + datetime.timedelta(days=i))
 
             # get this month's events
-            events = self.database[self.selected_month]
+            if self.MIN_GLITCH_YEAR < self.selected_year < self.MAX_GLITCH_YEAR:
+
+                events = self.database[self.selected_month]
+
+            else:
+
+                events = self._getEGMonthEvents()
+
 
             # calculation to determine the initial y position
             initial_y = self.INITIAL_POSITION_Y + (self.DAY_NAME_BUTTON_HEIGHT * 2)
@@ -565,6 +681,20 @@ init -1 python:
             return None
 
 
+        def _yearSanityChecks(self):
+            """
+            Checks that the current date is on the right interval, otherwise,
+            it will force it back
+            """
+            # so people don't break it
+            if self.selected_year < self.MIN_SELECTABLE_YEAR:
+                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+
+            if self.selected_year > self.MAX_SELECTABLE_YEAR:
+                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+
+
+
         def _changeYear(self, ascend=True):
             """
             Changes the currently selected year by incrementing or decrementing it by one
@@ -578,6 +708,9 @@ init -1 python:
                 self.selected_year = self.selected_year + 1
             else:
                 self.selected_year = self.selected_year - 1
+
+            self._yearSanityChecks()
+
             self._setupDayButtons()
 
 
@@ -606,6 +739,9 @@ init -1 python:
                 if self.selected_month <=0:
                     self.selected_month = 12
                     self.selected_year = self.selected_year - 1
+
+            self._yearSanityChecks()
+
             self._setupDayButtons()
 
 
@@ -628,6 +764,63 @@ init -1 python:
             # otherwise, we check start date year
             return ev.start_date is not None and ev.start_date.year == year
 
+        def _setupEasterEG(self):
+            """
+            Fills the quip objects used to generate EG events
+            """
+            # quips for easter eggs
+            self._less_glicthy_q_list = MASQuipList(allow_label=False)
+            self._more_glicthy_q_list = MASQuipList(allow_label=False)
+
+            for _label in self.EG_TEXTS_GLITCH:
+                self._less_glicthy_q_list.addLineQuip(_label)
+
+            for _label in self.EG_TEXTS_MIN_GLITCH:
+                self._more_glicthy_q_list.addLineQuip(_label)
+
+            for i in range(15,30):
+                self._less_glicthy_q_list.addGlitchQuip(i)
+                self._more_glicthy_q_list.addGlitchQuip(i)
+
+
+        def _getEGMonthEvents(self):
+            """
+            Generates a dict of events to display in the calendar
+            when players go too far away
+
+            RETURNS: A dict with the proper structure [day][eventname]
+                which contains a repeatable event with a nice label :D
+            """
+            month_events = dict()
+
+            # get year distance
+            dist = abs(self.selected_year - self.MID_POINT_YEAR)
+            # the lower the distance is, the lower the glitching is
+            # the opposite also applies
+            if self.selected_year > self.MID_POINT_YEAR:
+                max_dist = self.MID_POINT_YEAR - self.MIN_SELECTABLE_YEAR
+
+            else:
+                max_dist = self.MAX_SELECTABLE_YEAR - (self.MID_POINT_YEAR * 2)
+
+            percentage = dist / float(max_dist)
+
+            percentage = int(round(percentage * 100))
+
+            for i in range(1,32):
+                month_events[i] = dict()
+                if ( random.randint(1, 70) > percentage and not percentage > 70):
+                    continue
+                if (random.randint(1,50) < percentage):
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._less_glicthy_q_list.quip()[1],list()))
+                else:
+                    month_events[i]["l"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
+                if (random.randint(1,60) < percentage):
+                    month_events[i]["l1"] = ((CAL_TYPE_REP,self._more_glicthy_q_list.quip()[1],list()))
+                if (random.randint(1,70) < percentage):
+                    month_events[i]["l2"] = ((CAL_TYPE_REP,random.choice(self.EG_TEXTS_GLITCH),list()))
+
+            return month_events
 
         def render(self, width, height, st, at):
 
@@ -748,6 +941,9 @@ init -10 python in mas_calendar:
     CAL_TYPE_EV = 1
     CAL_TYPE_REP = 2
 
+    # enabled?
+    enabled = True
+
 
 init -1 python in mas_calendar:
     import datetime
@@ -795,7 +991,13 @@ init -1 python in mas_calendar:
         RETURNS:
             nice display string for the day
         """
-        return str(day) + NUM_MAP.get(day, "th")
+        if day in NUM_MAP:
+            suffix = NUM_MAP[day]
+
+        else:
+            suffix = NUM_MAP.get(day % 10, "th")
+
+        return str(day) + suffix
 
 
     def _formatYears(years):
@@ -825,7 +1027,19 @@ init -1 python in mas_calendar:
 
     def genFriendlyDispDate(_datetime):
         """
+        NOTE: DEPRECATED
+
         Generates a display date using the given datetime
+
+        IN:
+            _datetime - datetime object to create good display date
+        """
+        return genFriendlyDispDate_d(_datetime.date())
+
+
+    def genFriendlyDispDate_d(_date):
+        """
+        Generates a display date using the given date
         This creates a display date in the format:
             Month Day, Year
         However, this is somewhat variable.
@@ -843,22 +1057,21 @@ init -1 python in mas_calendar:
         is used.
 
         IN:
-            _datetime - datetime object to create good display date
+            _date - date object to create good display date
 
         RETURNS:
             tuple of the following format:
             [0]: nicely formatted display date, suitable for conversation
-            [1]: timedelta between today and the given _datetime
+            [1]: timedelta between today and the given _date
         """
         # the month is always fine to take out
-        disp_month = _datetime.strftime("%B")
+        disp_month = _date.strftime("%B")
 
         # display day is easy
-        disp_day = _formatDay(_datetime.day)
+        disp_day = _formatDay(_date.day)
 
         # to find out year, we need now
         _today = datetime.date.today()
-        _date = _datetime.date()
         _day_diff = _today - _date
         _year_diff = _today.year - _date.year
 
@@ -899,13 +1112,40 @@ init -1 python in mas_calendar:
             # more than 10? use the 4 digit year
             _cout = [
                 disp_month,
-                disp_day,
-                ",",
+                disp_day + ",",
                 str(_date.year)
             ]
 
         # now return the formatting string + diff
         return (" ".join(_cout), _day_diff)
+
+
+
+    def genFormalDispDate(_date):
+        """
+        Generates a display date using the given date
+
+        This is considered "formal", in that it's not really realisitc when
+        used in normal conversation. For example, if today is august 24, you 
+        don't say 'this happened august 24th, 2016', you normally would say
+        'this happened x years ago today'.
+
+        IN:
+            _date - date object to create good display date
+
+        RETURNS:
+            tuple of the following format:
+            [0]: nicely formtted display date, suitable for text
+            [1]: timedelta between today and the given _date
+        """
+        return (
+            " ".join([
+                _date.strftime("%B"), # month
+                _formatDay(_date.day) + ",", # day
+                str(_date.year) # year
+            ]),
+            datetime.date.today() - _date
+        )
 
 
     def saveCalendarDatabase(encoder):
@@ -933,7 +1173,7 @@ init -1 python in mas_calendar:
         try:
             with open(renpy.config.savedir + '/db.mcal', 'r') as fp:
                 calendar_database = json.load(fp)
-        except IOError:
+        except (IOError, ValueError):
             pass
 
 
@@ -1481,6 +1721,7 @@ init -1 python in mas_calendar:
 init python:
 
     import store.mas_calendar as calendar
+    import datetime
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
@@ -1504,6 +1745,19 @@ init python:
             persistent.sessions["first_session"],
             year_param=[persistent.sessions["first_session"].year]
         )
+
+    # add birthday if we have one
+    if (
+            persistent._mas_player_bday is not None
+            and type(persistent._mas_player_bday) == datetime.date
+        ):
+        calendar.addRepeatable_d(
+            "player-bday",
+            "Your Birthday",
+            persistent._mas_player_bday,
+            []
+        )
+
 
 
 init 100 python:
@@ -1652,7 +1906,8 @@ screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, fi
 
 
 label _first_time_calendar_use:
-    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]"
+    $ mas_calRaiseOverlayShield()
+    m 1eub "Oh, I see you noticed that pretty calendar hanging on the wall, [player]."
     m "It helps me keep track of important events, ehehe~"
     m 1hua "Here, let me show you."
     show monika 1eua
@@ -1663,8 +1918,11 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    $ store.hkb_button.enabled = True
+    show monika idle
+
+    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
+    $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):
@@ -1697,3 +1955,60 @@ label mas_start_calendar_select_date:
 #     else:
 #         m "You closed without selecting a date"
 #     return
+
+# clickable calendar overlay screen for idle mode
+screen calendar_overlay():
+    zorder 6
+
+    # vbox:
+    #     xalign 0.305
+    #     yalign 0.4
+    #
+    if store.mas_calendar.enabled:
+        imagebutton:
+            idle "mod_assets/calendar/calendar_button_normal.png"
+            hover "mod_assets/calendar/calendar_button_hover.png"
+            hover_sound gui.hover_sound
+            activate_sound gui.activate_sound
+            action Function(show_calendar)
+            xpos 360
+            ypos 260
+    else:
+        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
+
+init python:
+
+    def mas_calDropOverlayShield():
+        """RUNTIME ONLY
+        Enables input for the calendar overlay
+        """
+        store.mas_calendar.enabled = True
+
+
+    def mas_calHideOverlay():
+        """RUNTIME ONLY
+        Hides the calendar overlay
+        """
+        renpy.hide_screen("calendar_overlay", layer="master")
+
+
+    def mas_calIsVisible_ovl():
+        """
+        RETURNS: True if the calendar ovelray is visible, False otherwise
+        """
+        return renpy.get_screen("calendar_overlay") is not None
+
+
+    def mas_calRaiseOverlayShield():
+        """RUNTIME ONLY
+        Disables input for the calendar overlay
+        """
+        store.mas_calendar.enabled = False
+
+
+    def mas_calShowOverlay():
+        """RUNTIME ONLY
+        Shows the calendar overlay
+        """
+        if not mas_calIsVisible_ovl():
+            renpy.show_screen("calendar_overlay", _layer="master")
