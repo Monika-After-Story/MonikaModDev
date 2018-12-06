@@ -151,42 +151,75 @@ image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
 image room_mask = Movie(
     channel="window_1",
-    play="mod_assets/window_1.webm",
+    play="mod_assets/window/spaceroom/window_1.webm",
     mask=None
 )
-image room_mask_fb = "mod_assets/window_1_fallback.png"
+image room_mask_fb = "mod_assets/window/spaceroom/window_1_fallback.png"
+
 image room_mask2 = Movie(
     channel="window_2",
-    play="mod_assets/window_2.webm",
+    play="mod_assets/window/spaceroom/window_2.webm",
     mask=None
 )
-image room_mask2_fb = "mod_assets/window_2_fallback.png"
+image room_mask2_fb = "mod_assets/window/spaceroom/window_2_fallback.png"
+
 image room_mask3 = Movie(
     channel="window_3",
-    play="mod_assets/window_3.webm",
+    play="mod_assets/window/spaceroom/window_3.webm",
     mask=None
 )
-image room_mask3_fb = "mod_assets/window_3_fallback.png"
+image room_mask3_fb = "mod_assets/window/spaceroom/window_3_fallback.png"
+
 image room_mask4 = Movie(
     channel="window_4",
-    play="mod_assets/window_4.webm",
+    play="mod_assets/window/spcaeroom/window_4.webm",
     mask=None
 )
-image room_mask4_fb = "mod_assets/window_4_fallback.png"
+image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
 
 # big thanks to sebastianN01 for the rain art!
 image rain_mask_left = Movie(
     channel="window_5",
-    play="mod_assets/window_5.webm",
+    play="mod_assets/window/spaceroom/window_5.webm",
     mask=None
 )
-image rain_mask_left_fb = "mod_assets/window_5_fallback.png"
+image rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_fallback.png"
+
 image rain_mask_right = Movie(
     channel="window_6",
-    play="mod_assets/window_6.webm",
+    play="mod_assets/window/spaceroom/window_6.webm",
     mask=None
 )
-image rain_mask_right_fb = "mod_assets/window_6_fallback.png"
+image rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_fallback.png"
+
+# big thanks to Zer0mniac for fixing the snow
+image snow_mask_night_left = Movie(
+    channel="window_7",
+    play="mod_assets/window/spaceroom/window_7.webm",
+    mask=None
+)
+image snow_mask_night_left_fb = "snow_mask_night_left" # TODO: get real fallback
+
+image snow_mask_night_right = Movie(
+    channel="window_8",
+    play="mod_assets/window/spaceroom/window_8.webm",
+    mask=None
+)
+image snow_mask_night_right_fb = "snow_mask_night_right" # TODO: fallback
+
+image snow_mask_day_left = Movie(
+    channel="window_9",
+    play="mod_assets/window/spaceroom/window_9.webm",
+    mask=None
+)
+image snow_mask_day_left_fb = "snow_mask_day_left" # TODO: fallback
+
+image snow_mask_day_right = Movie(
+    channel="window_10",
+    play="mod_assets/window/spaceroom/window_10.webm",
+    mask=None
+)
+image snow_mask_day_right_fb = "snow_mask_day_right" # TODO: fallback
 
 # spaceroom window positions
 transform spaceroom_window_left:
@@ -321,12 +354,23 @@ init python:
         ASSUMES:
             morning_flag
             mas_is_raining
+            mas_is_snowing
         """
         # hide the existing masks
         renpy.hide("rm")
         renpy.hide("rm2")
 
-        if mas_is_raining:
+        if mas_is_snowing:
+            # snowing takes even more priority
+            if morning_flag:
+                left_window = "snow_mask_day_left"
+                right_window = "snow_mask_day_right"
+
+            else:
+                left_window = "snow_mask_night_left"
+                right_window = "snow_mask_night_right"
+
+        elif mas_is_raining:
             # raining takes priority
             left_window = "rain_mask_left"
             right_window = "rain_mask_right"

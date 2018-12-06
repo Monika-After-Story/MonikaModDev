@@ -4673,6 +4673,9 @@ define MAS_RAIN_UPSET = 25
 define MAS_RAIN_DIS = 40
 define MAS_RAIN_BROKEN = 70
 
+# snow
+define mas_is_snowing = False
+
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
