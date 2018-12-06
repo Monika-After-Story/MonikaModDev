@@ -679,6 +679,8 @@ init -810 python:
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
+            "_mas_pm_live_south_hemisphere": "pm.location.south_hemi",
+            "_mas_pm_gets_snow": "pm.location.snows",
 
             # likes
             "_mas_pm_likes_horror": "pm.likes.horror",
