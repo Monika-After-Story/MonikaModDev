@@ -9,7 +9,7 @@ python early:
     mas_backup_copy_failed = False
     mas_backup_copy_filename = None
     mas_bad_backups = list()
-    
+
     def _mas_earlyCheck():
         """
         attempts to read in the persistent and load it. if an error occurs
@@ -73,7 +73,7 @@ python early:
                 if per_file is not None:
                     per_file.close()
 
-        
+
         # okay, now let's attempt to read the persistent.
         try:
             if tryper(per_dir + "/persistent"):
@@ -82,7 +82,7 @@ python early:
         except Exception as e:
             mas_corrupted_per = True
             trywrite(early_log_path, "persistent was corrupted!: " + repr(e))
-        
+
         # if we got here, we had an exception. Let's attempt to restore from
         # an eariler persistent backup.
 
@@ -171,7 +171,7 @@ python early:
 
         except Exception as e:
             trywrite(
-                early_log_path, 
+                early_log_path,
                 "Failed to rename existing persistent: " + repr(e)
             )
 
@@ -184,12 +184,12 @@ python early:
             mas_backup_copy_failed = True
             mas_backup_copy_filename = sel_back
             trywrite(
-                early_log_path, 
+                early_log_path,
                 "Failed to copy backup persistent: " + repr(e)
             )
-           
+
         # well, hopefully we were successful!
-    
+
     # now call this
     _mas_earlyCheck()
 
@@ -205,7 +205,7 @@ init -900 python:
     __mas__numnum = "{:02d}"
     __mas__latestnum = None
 
-    # needs to be pretty damn early, but we require savedir here so 
+    # needs to be pretty damn early, but we require savedir here so
     # we cant use python early
 
     def __mas__extractNumbers(partname, filelist):
@@ -359,7 +359,7 @@ init -900 python:
         except Exception as e:
             mas_utils.writelog("[ERROR]: {0}".format(str(e)))
 
-    
+
     # run the backup system if persistents arent screwd
     if not mas_corrupted_per and persistent._mas_moni_chksum is None:
         __mas__memoryBackup()
@@ -387,9 +387,9 @@ label mas_backups_you_have_corrupted_persistent:
 
         menu:
             "Do you have your own backups?"
-            "Yes":
+            "Yes.":
                 jump mas_backups_have_some
-            "No":
+            "No.":
                 jump mas_backups_have_none
 
     # otherwise we culd not copy
@@ -425,7 +425,7 @@ label mas_backups_have_none:
     "Good luck with Monika!"
     $ mas_corrupted_per = False
     return
-            
+
 
 label mas_backups_could_not_copy:
     show chibika smile
@@ -494,4 +494,3 @@ label mas_backups_dont_tell:
     "So keep quiet about me, and I'll make sure your Monika is safe and comfy!"
 
     return
-

@@ -104,6 +104,18 @@ python early:
     #       (Default: None)
     #   sensitive - True means this is a sensitve topic, False means it is not
     #       (Default: False)
+    #   aff_range - tuple of the following format:
+    #       [0]: - low limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no lower limit
+    #       [1]: - upper limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no uppwer limit
+    #       If None, then event is considered to be always available regardless
+    #       of affection level
+    #       NOTE: the tuple items should be AFFECTION STATES.
+    #           not using an affection state may break things
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -125,7 +137,8 @@ python early:
             "rules":14,
             "last_seen":15,
             "years":16,
-            "sensitive":17
+            "sensitive":17,
+            "aff_range":18
         }
 
         # name constants
@@ -169,7 +182,8 @@ python early:
                 rules=dict(),
                 last_seen=None,
                 years=None,
-                sensitive=False
+                sensitive=False,
+                aff_range=None
             ):
 
             # setting up defaults
@@ -189,6 +203,20 @@ python early:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+
+            # we'll simplify aff_range so we dont have to deal with extra
+            #   storage
+            if aff_range is not None:
+                low, high = aff_range
+                if low is None and high is None:
+                    aff_range = None
+
+            # and then check for valid affection states
+            # NOTE: we assume that the affection store is visible by now
+            if not store.mas_affection._isValidAffRange(aff_range):
+                raise Exception("{0} | bad aff range: {1}".format(
+                    eventlabel, str(aff_range)
+                ))
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -221,7 +249,8 @@ python early:
                 rules,
                 last_seen,
                 years,
-                sensitive
+                sensitive,
+                aff_range
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -359,6 +388,25 @@ python early:
             )
 
 
+        def checkAffection(self, aff_level):
+            """
+            Checks if the given aff_level is within range of this event's
+            aff_range.
+
+            IN:
+                aff_level - aff_level to check
+
+            RETURNS: True if aff_level is within range of event's aff_range,
+                False otherwise
+            """
+            if self.aff_range is None:
+                return True
+
+            # otheerwise check the range
+            low, high = self.aff_range
+            return store.mas_affection._betweenAff(low, aff_level, high)
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -452,7 +500,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None,
             ):
             #
             # Filters the given event object accoridng to the given filters
@@ -475,6 +524,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -525,7 +577,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None
             ):
             #
             # Filters the given events dict according to the given filters.
@@ -571,6 +624,8 @@ python early:
             #           AKA: we only filter sensitve topics if sensitve mode is
             #           enabled.
             #       (Default: None)
+            #   aff - affection level to match aff_range
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -590,7 +645,8 @@ python early:
                     and seen is None
                     and excl_cat is None
                     and moni_wants is None
-                    and sensitive is None)):
+                    and sensitive is None
+                    and aff is None)):
                 return events
 
             # copy check
@@ -622,7 +678,7 @@ python early:
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
                         excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive):
+                        sensitive=sensitive, aff=aff):
 
                     filt_ev_dict[k] = v
 
@@ -1717,6 +1773,99 @@ python early:
             """
             if self.raise_issues:
                 raise Exception(msg)
+
+
+# uncomment for syntax highlight on vim
+#init -1 python:
+
+    class MASMailbox(object):
+        """
+        Async communication between different objects.
+
+        NOTE: even though this is usable on its own, its highly recommended
+        that you extend this class to encapsulate message constants.
+
+        NOTE: this is NOT like notify, objects can only respond to messages
+            when they are active.
+
+        PROPERTIES:
+            box - the actual mailbox that contains messages
+        """
+        RETURN_KEY = "__mas_return"
+
+
+        def __init__(self):
+            """
+            Constructor
+            """
+            self.box = {}
+
+
+        def get(self, headline):
+            """
+            Removes a message from the box, and returns it.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None.
+            """
+            if headline in self.box:
+                return self.box.pop(headline)
+
+            return None
+
+
+        def mas_get_return(self):
+            """
+            Removes and returns a MAS_RETURN message.
+
+            RETURNS:
+                the returned message, or None if no message data or if the
+                emssage was wasctually none
+            """
+            return self.get(self.RETURN_KEY)
+
+
+        def mas_send_return(self, msg):
+            """
+            Adds a MAS_RETURN message to the box.
+
+            IN:
+                msg - message to return
+            """
+            self.send(self.RETURN_KEY, msg)
+
+
+        def read(self, headline):
+            """
+            Reads a message from the box.
+            
+            NOTE: does NOT remove the message.
+
+            IN:
+                headline - identifier for the message
+
+            RETURNS:
+                the message data stored, None if no message data or if the 
+                message was actually None
+            """
+            return self.box.get(headline, None)
+
+
+        def send(self, headline, msg):
+            """
+            Adds a message to the box.
+
+            IN:
+                headline - identifier for this message.
+                msg - message to send
+            """
+            self.box[headline] = msg
+
+
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
@@ -2859,11 +3008,90 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-
+        
+    def mas_getSessionLength():
+        return datetime.datetime.now() - persistent.sessions['current_session_start']
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
+    def mas_isSpring(_date=datetime.date.today()):
+        """
+        Checks if given date is during spring
+        iff none passed in, then we assume today
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's spring right now
+        """
+        _date = _date.replace(datetime.date.today().year)
+
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_fall_equinox <= _date < mas_winter_solstice
+        else:
+            return mas_spring_equinox <= _date < mas_summer_solstice
+
+    def mas_isSummer(_date=datetime.date.today()):
+        """
+        Checks if given date is during summer
+        iff none passed in, then we assume today
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's summer right now
+        """
+        _date = _date.replace(datetime.date.today().year)
+
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_winter_solstice <= _date or _date < mas_spring_equinox
+        else:
+            return mas_summer_solstice <= _date < mas_fall_equinox
+
+    def mas_isFall(_date=datetime.date.today()):
+        """
+        Checks if given date is during fall
+        iff none passed in, then we assume today
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's fall right now
+        """
+        _date = _date.replace(datetime.date.today().year)
+
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_spring_equinox <= _date < mas_summer_solstice
+        else:
+            return mas_fall_equinox <= _date < mas_winter_solstice
+
+    def mas_isWinter(_date=datetime.date.today()):
+        """
+        Checks if given date is during winter
+        iff none passed in, then we assume today
+
+        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
+
+        RETURNS:
+            boolean showing whether or not it's winter right now
+        """
+        _date = _date.replace(datetime.date.today().year)
+
+        if persistent._mas_pm_live_south_hemisphere:
+            return mas_summer_solstice <= _date < mas_fall_equinox
+        else:
+            return mas_winter_solstice <= _date or _date < mas_spring_equinox
+
+    def mas_isSpecialDay():
+        """
+        Checks if today is a special day(birthday, anniversary or holiday)
+
+        RETURNS:
+            boolean indicating if today is a special day.
+        """
+        #TODO keep adding special days as we add them
+        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -4484,6 +4712,10 @@ define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
+define mas_spring_equinox = datetime.date(datetime.date.today().year,3,21)
+define mas_summer_solstice = datetime.date(datetime.date.today().year,6,21)
+define mas_fall_equinox = datetime.date(datetime.date.today().year,9,23)
+define mas_winter_solstice = datetime.date(datetime.date.today().year,12,21)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False

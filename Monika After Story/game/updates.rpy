@@ -294,6 +294,32 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.8.11
+label v0_8_11(version="v0_8_11"):
+    python:
+        import store.mas_compliments as mas_comp
+        import store.evhand as evhand
+        
+        # change compliements event props
+        thanks_ev = mas_comp.compliment_database.get(
+            "mas_compliment_thanks",
+            None
+        )
+        if thanks_ev:
+            # remove conditional and action
+            thanks_ev.conditional = None
+            thanks_ev.action = None
+
+            # unlock only if you have not seen this
+            if not renpy.seen_label(thanks_ev.eventlabel):
+                thanks_ev.unlocked = True
+
+        # change monika nick name
+        if not persistent._mas_called_moni_a_bad_name:
+            mas_unlockEventLabel("monika_affection_nickname")
+
+    return
+
 # 0.8.10
 label v0_8_10(version="v0_8_10"):
     python:
@@ -333,6 +359,14 @@ label v0_8_10(version="v0_8_10"):
             changename_ev.unlocked = True
             changename_ev.pool = True
             persistent._seen_ever["monika_changename"] = True
+
+        # derandom monika family
+        family_ev = evhand.event_database.get("monika_family", None)
+        if family_ev:
+            family_ev.random = False
+
+        # Enable late update for this one
+        persistent._mas_zz_lupd_ex_v.append(version)
 
     return
 
@@ -877,6 +911,26 @@ label v0_3_0(version="v0_3_0"):
 #
 #   Please make sure your late update scripts are not required before a next
 #   version regular update script.
+label mas_lupd_v0_8_10:
+    python:
+        import store.mas_selspr as mas_selspr
+
+        # unlock hair 
+        if persistent._mas_hair_changed:
+            mas_selspr.unlock_hair(mas_hair_down)
+            unlockEventLabel("monika_hair_select")
+
+        # unlock selectables for unlocked clothes
+        if persistent._mas_o31_seen_costumes is not None:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
+                mas_selspr.unlock_clothes(mas_clothes_marisa)
+            if persistent._mas_o31_seen_costumes.get("rin", False):
+                mas_selspr.unlock_clothes(mas_clothes_rin)
+
+        # save the selectables we just unlocked
+        mas_selspr.save_selectables()
+
+    return
 
 label mas_lupd_v0_8_4:
     python:

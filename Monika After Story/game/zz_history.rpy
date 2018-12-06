@@ -604,6 +604,9 @@ init -810 python:
     #   location - location-based stuff
     #   likes - likes/wants
     #   know - knowledge
+    #   exp - (experience) things that have been done to u
+    #   op - opinions on things
+    #   looks - your physical apperance
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -626,6 +629,7 @@ init -810 python:
 
             # lifestyle / food
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
+            "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
@@ -654,6 +658,10 @@ init -810 python:
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
 
+            # actions / charity
+            "_mas_pm_donate_charity": "pm.actions.charity.donated",
+            "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
+
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
 
@@ -662,9 +670,17 @@ init -810 python:
             "_mas_pm_zoomed_in": "pm.actions.mas.zoom.in",
             "_mas_pm_zoomed_in_max": "pm.actions.mas.zoom.in_max",
 
+            # actions / mas / opendoor
+            "_mas_pm_will_change": "pm.actions.mas.opendoor.will_change",
+
+            # actions / mas / dev
+            "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
+            "_mas_pm_live_south_hemisphere": "pm.location.south_hemi",
+            "_mas_pm_gets_snow": "pm.location.snows",
 
             # likes
             "_mas_pm_likes_horror": "pm.likes.horror",
@@ -689,10 +705,40 @@ init -810 python:
             "_mas_pm_likes_panties": "pm.likes.clothes.panties",
             "_mas_pm_no_talk_panties": "pm.likes.clothes.panties.no_talk",
 
+            # likes / dokis
+            "_mas_pm_cares_about_dokis": "pm.likes.dokis.cares_about_them",
+
             # knowledge
             # knowledge / lang
             "_mas_pm_lang_other": "pm.know.lang.other",
-            "_mas_pm_lang_jpn": "pm.know.lang.jpn"
+            "_mas_pm_lang_jpn": "pm.know.lang.jpn",
+
+            # exp (experience)
+            "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+
+            # op (opinions)
+            # op / monika
+            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
+
+            # looks
+            "_mas_pm_shared_appearance": "pm.looks.shared_looks",
+
+            # looks / eyes
+            "_mas_pm_eye_color": "pm.looks.eyes.color",
+
+            # looks / hair
+            "_mas_pm_hair_color": "pm.looks.hair.color",
+            "_mas_pm_hair_length": "pm.looks.hair.length",
+            "_mas_pm_shaved_hair": "pm.looks.hair.shaved",
+            "_mas_pm_no_hair_no_talk": "pm.looks.hair.no_talk",
+
+            # looks / skin
+            "_mas_pm_skin_tone": "pm.looks.skin.tone",
+
+            # looks / dims (dimensions)
+            "_mas_pm_height": "pm.looks.dims.height",
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+
         },
         use_year_before=True,
         dont_reset=True

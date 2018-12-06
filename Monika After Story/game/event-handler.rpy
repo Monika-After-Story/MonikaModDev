@@ -46,8 +46,12 @@ init -500 python:
         False, # rules
         True, # last_seen
         False, # years
-        False # sensitive
+        False, # sensitive
+        False # aff_range
     )
+
+    # NOTE: aff_range is unlocked because making adjustments to topics would
+    #   become really difficult if we just kept this locked
 
     # set defaults
 #    if (
@@ -81,17 +85,31 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
-init 850 python:
+init 4 python:
+
+    # the mapping is built here so events can use to build 
+    # map databses to a code
+    mas_all_ev_db_map = {
+        "EVE": store.evhand.event_database,
+        "BYE": store.evhand.farewell_database,
+        "GRE": store.evhand.greeting_database,
+        "MOO": store.mas_moods.mood_db,
+        "STY": store.mas_stories.story_database,
+        "CMP": store.mas_compliments.compliment_database,
+        "FLR": store.mas_filereacts.filereact_db
+    }
+
+
+init 6 python:
+    # here we combine the data from teh databases so we can have easy lookups.
+    
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
-    mas_all_ev_db = dict()
-    mas_all_ev_db.update(store.evhand.event_database)
-    mas_all_ev_db.update(store.evhand.farewell_database)
-    mas_all_ev_db.update(store.evhand.greeting_database)
-    mas_all_ev_db.update(store.mas_moods.mood_db)
-    mas_all_ev_db.update(store.mas_stories.story_database)
-    mas_all_ev_db.update(store.mas_compliments.compliment_database)
-    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
+    mas_all_ev_db = {}
+    for code,ev_db in mas_all_ev_db_map.iteritems():
+        mas_all_ev_db.update(ev_db)
+
+    del code, ev_db
 
     def mas_getEV(ev_label):
         """
@@ -126,6 +144,89 @@ init 850 python:
             return "Unknown Event"
         else:
             return ev.label
+
+
+    def mas_hideEVL(
+            ev_label, 
+            code, 
+            lock=False, 
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hides an event given label and code.
+
+        IN:
+            ev_label - label of event to hide
+            code - string code of the db this ev_label belongs to
+            lock - True if we want to lock this event
+                (Default: False)
+            derandom - True if we want to de random this event
+                (Default: False)
+            depool - True if we want to de pool this event
+                (Default: False)
+            decond - True if we want to remove conditoinal for this event
+                (Default: False)
+        """
+        store.evhand._hideEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def mas_showEVL(
+            ev_label,
+            code, 
+            unlock=False, 
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        store.mas_showEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            unlock=unlock,
+            _random=_random,
+            _pool=_pool
+        )
+
+
+    def mas_lockEVL(ev_label, code):
+        """
+        Locks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_hideEVL(ev_label, code, lock=True)
+
+
+    def mas_unlockEVL(ev_label, code):
+        """
+        Unlocks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_showEVL(ev_label, code, unlock=True)
+
 
 python early:
     # FLOW CHECK CONSTANTS
@@ -443,6 +544,7 @@ init -880 python in mas_delact:
 
 init -875 python in mas_delact:
     # store containing a map for delayed action mapping
+    import datetime # for use in later functions
 
     # delayed action map:
     # key: ID of the delayed action
@@ -546,7 +648,10 @@ init -1 python in evhand:
         "mas_crashed_start",
         "monika_affection_nickname",
         "mas_coffee_finished_brewing",
-        "mas_coffee_finished_drinking"
+        "mas_coffee_finished_drinking",
+        "monikaroom_will_change",
+        "monika_hair_select",
+        "monika_clothes_select"
     ]
 
     # as well as special functions
@@ -755,18 +860,31 @@ init python:
     import store.evhand as evhand
     import datetime
 
-    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
+    def addEvent(
+            event, 
+            eventdb=None,
+            skipCalendar=False, 
+            code="EVE"
+        ):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
+        # NOTE: this MUST be ran after init level 4.
+        #
         # IN:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
-        #       (Default: evhand.event_database)
+        #       NOTE: DEPRECATED. Use code instead.
+        #       NOTE: this can still be used for custom adds.
+        #       (Default: None)
         #   skipCalendar - flag that marks wheter or not calendar check should
         #       be skipped
+        #   code - code of the event database to add to.
+        #       (Default: EVE) - event database
+        if eventdb is None:
+            eventdb = mas_all_ev_db_map.get(code, None)
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -798,6 +916,7 @@ init python:
             eventdb=evhand.event_database
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -813,14 +932,7 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        evhand._hideEventLabel(
-            eventlabel,
-            lock=lock,
-            derandom=derandom,
-            depool=depool,
-            decond=decond,
-            eventdb=eventdb
-        )
+        mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
 
     def hideEvent(
@@ -831,6 +943,7 @@ init python:
             decond=False
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -845,8 +958,32 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
+        mas_hideEvent(event, lock, derandom, depool, decond)
+
+
+    def mas_hideEvent(
+            ev,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hide an event by Falsing its unlocked/random/pool props
+
+        IN:
+            ev - event object we want to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+        """
         evhand._hideEvent(
-            event,
+            ev,
             lock=lock,
             derandom=derandom,
             depool=depool,
@@ -854,7 +991,123 @@ init python:
         )
 
 
+    def mas_hideEventLabel(
+            ev_label,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Hide an event label by Falsing its unlocked/random/pool props
+
+        NOTE: use this with custom eventdbs
+
+        IN:
+            ev_label - label of the event we wnat to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+            eventdb - event databsae ev_label is in
+                (Default: evhand.event_database)
+        """
+        evhand._hideEventLabel(
+            ev_label,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond,
+            eventdb=eventdb
+        )
+
+
+    def mas_showEvent(
+            ev,
+            unlock=False,
+            _random=False,
+            _pool=False
+        ):
+        """
+        Show an event by Truing its unlock/ranomd/pool props
+
+        IN:
+            ev - event to show
+            unlock - True if we want to unlock this event, False if not
+                (Default: False)
+            _random - True if we want to random this event, Flase otherwise
+                (Default: False)
+            _pool - True if we want to pool this event, False otherwise
+                (Default: False)
+        """
+        if ev:
+            
+            if unlock:
+                ev.unlocked = True
+
+            if _random:
+                ev.random = True
+
+            if _pool:
+                ev.pool = True
+
+
+    def mas_showEventLabel(
+            ev_label,
+            unlock=False,
+            _random=False,
+            _pool=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Shows an event label, by Truing the unlocked, random, and pool
+        properties.
+
+        NOTE: use this for custom event dbs
+
+        IN:
+            ev_label - label of event to show
+            unlock - True if we want to unlock this event, False if not
+                (DEfault: False)
+            _random - True if we want to random this event, False if not
+                (Default: False)
+            _pool - True if we want to pool this event, False if not
+                (Default: False)
+            eventdb - eventdatabase this label belongs to
+                (Default: evhannd.event_database)
+        """
+        mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
+
+
     def lockEvent(ev):
+        """
+        NOTE: DEPRECATED
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        mas_lockEvent(ev)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_lockEventLabel(evlabel, eventdb)
+
+
+    def mas_lockEvent(ev):
         """
         Locks the given event object
 
@@ -864,7 +1117,7 @@ init python:
         evhand._lockEvent(ev)
 
 
-    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_lockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Locks the given event label
 
@@ -906,6 +1159,29 @@ init python:
 
     def unlockEvent(ev):
         """
+        NOTE: DEPRECATED
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        mas_unlockEvent(ev)
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_unlockEventLabel(evlabel, eventdb)
+
+
+    def mas_unlockEvent(ev):
+        """
         Unlocks the given evnet object
 
         IN:
@@ -914,7 +1190,7 @@ init python:
         evhand._unlockEvent(ev)
 
 
-    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Unlocks the given event label
 
@@ -1311,7 +1587,11 @@ label prompt_menu:
     $ mas_RaiseShield_dlg()
 
     python:
-        unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
+        unlocked_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
@@ -1319,7 +1599,12 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
-        repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
+        repeatable_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            pool=False,
+            aff=mas_curr_affection
+        )
     #Top level menu
     # NOTE: should we force this to a particualr exp considering that 
     # monika now rotates
@@ -1400,7 +1685,8 @@ label prompts_categories(pool=True):
 #            full_copy=True,
 #                category=[False,current_category],
             unlocked=True,
-            pool=pool
+            pool=pool,
+            aff=mas_curr_affection
         )
 
         # add all categories the master category list
@@ -1451,7 +1737,8 @@ label prompts_categories(pool=True):
 #                    full_copy=True,
                     category=(False,current_category),
                     unlocked=True,
-                    pool=pool
+                    pool=pool,
+                    aff=mas_curr_affection
                 )
 
                 # add deeper categories to a list
