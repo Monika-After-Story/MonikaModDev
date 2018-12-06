@@ -9459,7 +9459,7 @@ label monika_hemispheres:
     elif mas_isSummer():
         m 1wuo "Oh! It must be summer for you right now!"
         m 1hub "Gosh, I just love the summer!"
-        m 3hua "You can do so much, go out for jogs, play some sports, or even go to the beach!"
+        m 3hua "You can do so much...go out for jogs, play some sports, or even go to the beach!"
         m 1eka "Summers with you sound like a dream come true, [player]."
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "I can't wait to spend them with you when I finally cross over."
