@@ -10000,35 +10000,52 @@ label monika_cares_about_dokis:
 
 #### old christmas.rpyc topics
 # HOL020
+#TODO: add these to seasonal program points
 
-#NOTE: These categories (cold and snow) seem more like keywords for the old chatbox system
-#they're essentially branches of weather. Since it's an existing cat, just use weather probably.
+# Essentially for people who don't get to answer the snow question in the hemisphere topic
 
 #init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_snow",
-#            category=["cold","weather","snow"],
-#            prompt="Snow",
-#            random=True
+#    if persistent._mas_pm_gets_snow == None:
+#        addEvent(
+#            Event(
+#                persistent.event_database,
+#                eventlabel="monika_snow",
+#                category=["winter","weather","you"],
+#                prompt="Snow",
+#                random=True
+#            )
 #        )
-#    )
 
-#NOTE: This topic is pretty much covered in the hemispheres topic as it is currently.
-#However, only provided it's winter at the time.
-#TODO: actually, we can probably use this. wrap it in a conditional if the snow PM is None
-#since hemispheres will probably get most users.
 label monika_snow:
-    m 1euc "Does it ever snow where you live, [player]?"
-    m 1eua "I've always liked the peaceful aura it seems to give off."
-    m "It usually accompanies the holiday season in a lot of places, too."
+    m 1eua "Hey, [player], now that it's winter, I was wondering..."
+    menu:
+        m "Does it ever snow where you live, [player]?"
 
-    # TODO: hmm not sure about monika having a seasonal preference.
-#    m 3hksdlb "After reading a bit about other seasons that come and go, I don't think I'd enjoy a sweltering summer very much..."
-#    m 1rksdlb "It's just that I'd prefer a balmy and gentle heat more, ahaha."
-    m 1dsa "But snow is just so much more...tranquil and intimate, you know?"
-    m 1hua "There's a quiet beauty in watching a soft, white blanket of ice tuck the world away to sleep."
+        "Yes":
+            $ persistent._mas_pm_gets_snow = True
+            m 1hub "That's wonderful!"
+            m 1eua "I've always liked the peaceful aura it seems to give off."
+            m 1dsa "It's just so tranquil and intimate, you know?"
+            m 1hua "There's a quiet beauty in watching a soft, white blanket of snow and ice tuck the world away to sleep."
+            if mas_isMoniHappy(higher=True):
+                show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+                if mas_isMoniAff(higher=True):
+                    m 5ekbfa "...and we could hold each other close to keep each other warm~"
+            m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+
+        "No":
+            $ persistent._mas_pm_gets_snow = False
+            m 3eka "That's a shame. But it's not all bad."
+            m 3hksdlb "At least you don't have to worry about shoveling it."
+            m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+            if mas_isMoniAff(higher=True):
+                m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbfa "A night of cuddling with you would be wonderful..."
+                m "My heart is pounding, just imagining it."
+            else:
+                m 2eka "But anyway, I'm sure there's still a lot we can do together!"
     return
 
 #Same regarding categories here
@@ -10091,7 +10108,7 @@ label monika_iceskating:
 #        )
 #    )
 # cats again
-# TODO: this topic is terrible. Either rewrite or remove.
+# TODO: this topic is terrible. Either rewrite or remove. recommend melt
 label monika_snowman:
     m 2dsc "Hmm..."
     m 4eud "[player], have you ever stopped to think about what the life of a snowman is like?"
@@ -10191,56 +10208,58 @@ label monika_snowcanvas:
 #init 5 python:
 #    addEvent(
 #        Event(
-#            persistent.event_database
+#            persistent.event_database,
+#            eventlabel="monika_cozy",
+#            category=["romance","winter"],
+#            prompt="Warming up"
+#            random=True,
+#            aff_range=(mas_aff.AFFECTIONATE,None)
 #        )
 #    )
 
 label monika_cozy:
     m 3eua "Do you know the one thing I love about the cold weather, [player]?"
     m 3eka "Anything warm feels really nice~"
-    m 1rksdla "Those who get cold hands really appreciate that feeling."
+    m 1rksdla "Those who get cold hands really appreciate that feeling..."
     m 1eua "It's like feeling a loved one's embrace~"
-    # TODO: need to hemisphere so winter isnt wrong
     m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
-    #TODO: 'always a feeling'? could use a bit of rewording
-    m 1hub "Finally able to whip out your winter fashion set is always a feeling."
+    m 1hub "Finally able to whip out your winter fashion set is always a nice feeling."
     m 3eua "But you know what the best way to warm yourself up is?"
-
-    # TODO: would need aff adjust
     m 3eka "Cuddling with the one you love in front of the fireplace~"
     m "Just sitting there under a warm blanket, sharing a hot beverage."
     m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
-
-    # TODO: unless you were upset and below lol
     m 1eka "I'd never let you go once I got a hold of you, [player]~"
     return
 
 #init 5 python:
 #    addEvent(
 #        Event(
-#            persistent.event_database
+#            persistent.event_database,
+#            eventlabel="monika_winter",
+#            category=["winter"],
+#            prompt="Winter activities"
+#            random=True
 #        )
 #    )
 
 label monika_winter:
     m 1eud "Oh, [player]!"
-    m 3eua "What do you think about winter?"
-    m "All sorts of fun activites only come around during this time..."
-
-    # TODO: hemisphere
-    # TODO: also establshing if it snows whbere the player is
-    m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
-    #TODO: reword, snowball fighting is kinda bugging me, lol
-    m 3eua "Building a snowman, sledding, snowball fighting..."
-    m 3hub "Even staying indoors seems so much more comfortable when there's snow outside."
-    m 1eua "The festivities are lovely, too, of course."
-    m 3etd "I wonder if it's acceptable to start decorating..."
-    m 3eua "But I hope you're enjoying yourself during this merry season, [player]."
-    #TODO: even for the pun, I'm not entirely sure Monika would say that
-    m "You can always spend some time with me, if you want to chill..."
-    m 1ttu "Or maybe you'd rather heat things up~?"
-    m 1hub "Ahaha! I'm only teasing you, [player]~"
-    m 1kua "Just do be sure to visit often, okay?"
+    m 1eua "What do you think about winter?"
+    m 3eua "All sorts of fun activites only come around during this time..."
+    if persistent._mas_pm_gets_snow:
+        m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
+    else:
+        m 3eka "I know you don't really get snow where you live, but many people do get to enjoy activities in the snow..."
+    m 3eua "Building a snowman, sledding, having snowball fights..."
+    m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor iceskating, pond hockey..."
+    m 3wud "And some actually go fishing...{w=1}{i}through the ice{/i}!"
+    m 1eka "For people who don't enjoy cold weather activities, staying indoors seems so much more comfortable when there's snow outside..."
+    m "Watching it gently fall while the moonlight relects off the fresh, white canvas...it's just beautiful."
+    if mas_isMoniAff(higher=True):
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "And to be honest, cuddling under a blanket, reading a book together with you is the very best winter activity I can think of~"
+    else:
+        m 1hua "Sitting by the window, reading a nice book while drinking a cup of coffee or hot chocolate is always a wonderful experience on a cold night, [player]."
     return
 
 #init 5 python:
@@ -10253,6 +10272,7 @@ label monika_winter:
 # TODO: this should  be a totally different label name
 # NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
 # NOTE: actually maybe update scripts wont be needed if its rewritten.
+# TODO: Make this special
 label monika_whatiwant:
     m 3hub "Oh, [player], isn't it lovely around the holidays?"
     m 1eka "I hope you don't mind, but I have a little something special to say today."
@@ -10284,6 +10304,45 @@ label monika_whatiwant:
     m 5hua "I love you with all my heart, [player]~"
     return
 
+#This combines _relax and _hypothermia into one topic
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_winter_dangers",
+#            category=["winter"],
+#            prompt="Winter dangers"
+#            random=True
+#        )
+#    )
+
+
+label monika_winter_dangers:
+    m 1hua "Isn't winter a beautiful time of year, [player]?"
+    m 3eka "The glistening, white snow, the bright and colorful lights~"
+    m 3hub "I just love it."
+    if not persistent._mas_pm_gets_snow:
+        m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate it's appeal..."
+        m 3hua "Maybe someday after I crossover we can even take a trip some place where they do have snow and enjoy it's beauty together!"
+    m 1eka "..."
+    m 3rkc "Although, as stunning as winter can be, there are a few dangers..."
+    m 3dsd "Like blizzards, or icy roads..."
+    m 1ekc "And the cold, of course..."
+    m 3rksdlc "The cold can be the most dangerous."
+    m 3eksdlc "It's really easy to get hypothermia or frostbite if you're not careful, [player]."
+    m 1ekd "So please remember to bundle up if you go outside..."
+    m 3euc "Put on your coat, your gloves, and the warmest hat you can find..."
+    m 1eka "And if it gets too bad, just stay inside where it's safe, okay?"
+    m 1ekb "What better way to spend a brutal winter day than wearing pajamas, drinking hot chocolate, reading a good book, and..."
+    m 1hua "Talking to me."
+    m 1hub "Ehehe~"
+    if mas_isMoni_Aff(higher=True):
+        show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfu "I'll always help keep you warm, [player]~"
+    return
+
+#These last 2 can go, replaced with _winter_dangers
 #init 5 python:
 #    addEvent(
 #        Event(
