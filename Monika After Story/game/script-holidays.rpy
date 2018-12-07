@@ -796,10 +796,11 @@ init -900 python:
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
 
 default persistent._mas_d25_in_d25_mode = False
-# True if we should disable d25 decoration
+# True if we should enable d25 decoration
 # This should only be True if:
 #   Monika is NOt being returned after the d25 season begins
 #   and season is d25.
+# NOTE: this is misnomer, it actually lasts until the nye point.
 
 default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
@@ -812,9 +813,6 @@ init -810 python:
         "d25",
         datetime.datetime(2018, 12, 26),
         {
-            # not very useful, but we need the reset
-            "_mas_d25_in_d25_mode": "d25.mode.25",
-
             "_mas_d25_spent_d25": "d25.actions.spent_d25"
         }
         # TODO: programming points probably
@@ -1169,6 +1167,11 @@ init -810 python:
         "nye",
         datetime.datetime(2019, 1, 6),
         {
+            # not very useful, but we need the reset
+            # NOTE: this is here because the d25 season actually ends in jan
+            #   we want the decorations to stop after the season ends.
+            "_mas_d25_in_d25_mode": "d25.mode.25",
+
             "_mas_nye_spent_nye": "nye.actions.spent_nye",
             "_mas_nye_spent_nyd": "nye.actions.spent_nyd"
         },
