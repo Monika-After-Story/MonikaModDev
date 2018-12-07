@@ -1355,7 +1355,7 @@ label mas_nye_monika_nyd:
             m 1eub "[player]!"
 
             if mas_isMoniAff(higher=True):
-                m 1ekbfa "I know we haven't been together for that long yet, but this past year went better than I ever could have hoped for..."
+                m 1ekbfa "I know we haven't been together for that long yet, but this past year went better than I ever could have hoped..."
             else:
                 m 1eka "I know we haven't been together that long yet, but this past year was so special to me..."
 
