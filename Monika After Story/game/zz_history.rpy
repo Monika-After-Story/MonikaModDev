@@ -99,6 +99,9 @@ init -860 python in mas_history:
     mhs_db = dict()
     # MASHistorySaver objects database
 
+    mhs_sorted_list = list()
+    # list of MASHistorySaver objects, sorted by trigger date
+
     ### CONSTANTS
 
     ## lookup constants
@@ -192,12 +195,17 @@ init -860 python in mas_history:
         """
         Loads persistent MASHistorySaver data into the mhs_db
 
+        Also adds MHS to the sorted list and sorts it.
+
         ASSUMES: the mhs database is already filled
         """
         for mhs_id, mhs_data in store.persistent._mas_history_mhs_data.iteritems():
             mhs = mhs_db.get(mhs_id, None)
             if mhs is not None:
                 mhs.fromTuple(mhs_data)
+                mhs_sorted_list.append(mhs)
+
+        mhs_sorted_list.sort(key=store.MASHistorySaver.getSortKey)
 
 
     def saveMHSData():
@@ -413,6 +421,19 @@ init -850 python:
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
 
+
+        @staticmethod
+        def getSortKey(_mhs):
+            """
+            Gets the sort key for this MASHistorySaver
+
+            IN: 
+                _mhs - MASHistorSaver to get sort key
+
+            RETURNS the sort key, which is trigger datetime
+            """
+            return _mhs.trigger
+
        
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -550,8 +571,10 @@ init -800 python in mas_history:
         # now we go through the mhs_db and run their save algs if their trigger
         # is past today.
         _now = datetime.datetime.now()
-        
-        for mhs in mhs_db.itervalues():
+        index = 0
+    
+#        for mhs in mhs_db.itervalues():
+        for mhs in mhs_sorted_list:
             # trigger rules:
             #   current date must be past trigger
             if mhs.trigger <= _now:
