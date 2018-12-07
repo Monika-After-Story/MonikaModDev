@@ -851,7 +851,8 @@ init -11 python in mas_d25_event:
         Shows d25 visuals.
         """
         renpy.show("mas_d25_banners", zorder=7)
-        # TODO: tree
+        renpy.show("mas_d25_tree", zorder=8)
+        # NOTE: we should only handle the sayori part if we can fit the chibika event
 
 
     def hideD25Visuals():
@@ -859,6 +860,7 @@ init -11 python in mas_d25_event:
         Hides d25 visuals
         """
         renpy.hide("mas_d25_banners")
+        renpy.hide("mas_d25_tree")
 
 
 # auto load starter check
@@ -875,23 +877,14 @@ label mas_holiday_d25c_autoload_check:
     # TODO:
     #   holiday intro dialogue pushed, if not already pushed
 
-
-    # TODO: remove these
-    if mas_skip_visuals:
-        jump ch30_post_restartevent_check
-
-    # always disable the opendoro greeting on o31
-    $ lockEventLabel("i_greeting_monikaroom", store.evhand.greeting_database)
-
-    # and the hairdown greeting as well
-    $ lockEventLabel("greeting_hairdown", store.evhand.greeting_database)
-
-    # otherwise, jump back to the holiday check point
+    # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
 
 # topics
 # TODO: dont forget to update script topics's seen properties
+
+# TODO: d25/nye greet/farewells
 
 #init 5 python:
     # TODO: decide props for this
@@ -906,6 +899,13 @@ label mas_holiday_d25c_autoload_check:
 #TODO: Upset+ topic
 #TODO: Have a modification of this topic if the player spent last Christmas w/ Monika
 label mas_d25_monika_holiday_intro:
+    # TODO: this should also have a dialogue flow where she sets up the
+    #   d25 decorations. This would be used if a return home occured on
+    #   the beginning of the d25 season.
+
+    # TODO: this should have the chibika thing in the background, but only
+    #   if you saw christmas last year.
+
     m 1eub "Happy holidays, [player]!"
     if renpy.seen_label('monika_christmas'):
         m 1hua "Can you believe it's already that time of year again?"

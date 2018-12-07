@@ -33,6 +33,7 @@ init -1 python in mas_greetings:
     # holiday specific
     TYPE_HOL_O31 = "o31"
     TYPE_HOL_O31_TT = "trick_or_treat"
+    TYPE_HOL_D25 = "d25"
 
     # custom greeting functions
     def selectGreeting(_type=None):
