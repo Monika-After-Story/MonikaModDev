@@ -1,5 +1,10 @@
 # dev related farewells
 
+init python:
+    if persistent._mas_fastbye is None:
+        persistent._mas_fastbye = config.developer
+        
+
 init 5 python:
     rules = dict()
     rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
@@ -44,19 +49,20 @@ label bye_dev:
 
 # Dev Fast farewell
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(
-        Event(
-            persistent.farewell_database,
-            eventlabel="bye_fast",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.farewell_database
-    )
-    del rules
+    if persistent._mas_fastbye:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.farewell_database,
+                eventlabel="bye_fast",
+                unlocked=True,
+                rules=rules
+            ),
+            eventdb=evhand.farewell_database
+        )
+        del rules
 
 label bye_fast:
     m "{fast}Bye!{nw}"
