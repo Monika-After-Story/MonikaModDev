@@ -30,6 +30,14 @@ init -1 python in mas_globals:
     lightning_s_chance = 10
     # lghtning chances
 
+    curr_season = 0
+    # set to integer based on season:
+    #   0 - no season
+    #   1 - spring
+    #   2 - summer
+    #   3 - fall
+    #   4 - winter
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -149,6 +157,7 @@ init -10 python:
             
 
     mas_idle_mailbox = MASIdleMailbox
+
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
@@ -559,8 +568,39 @@ init python:
         """
         Locks all hair topics
         """
-        lockEventLabel("monika_hair_down")
-        lockEventLabel("monika_hair_ponytail")
+        mas_lockEVL("monika_hair_select")
+
+
+    def mas_seasonalCheck():
+        """
+        Determines the current season and runs an appropriate programming
+        point.
+
+        If the global for season is currently None, then we instead set the
+        current season.
+
+        ASSUMES:
+            store.mas_globals.curr_season
+        """
+        def _pp_run(_s_pp, _s_tag):
+            if store.mas_globals.curr_season != _s_tag:
+                # executes programming point
+                _s_pp()
+
+                # sets global to given tag
+                store.mas_globals.curr_season = _s_tag
+
+        if mas_isSpring():
+            _pp_run(store.mas_seasons._pp_spring, 1)
+
+        elif mas_isSummer():
+            _pp_run(store.mas_seasons._pp_summer, 2)
+
+        elif mas_isFall():
+            _pp_run(store.mas_seasons._pp_fall, 3)
+
+        else: # must be winter
+            _pp_run(store.mas_seasons._pp_winter, 4)
 
 
 # IN:
@@ -1121,7 +1161,8 @@ label ch30_loop:
             # run file checks
             mas_checkReactions()
 
-            # TODO: o31 fielc ehckes
+            # run seasonal check
+            mas_seasonalCheck()
 
             #Update time
             calendar_last_checked=datetime.datetime.now()

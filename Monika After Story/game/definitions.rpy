@@ -3016,74 +3016,6 @@ init -1 python:
         return datetime.date.today() == mas_monika_birthday
 
 
-    def mas_isSpring(_date=datetime.date.today()):
-        """
-        Checks if given date is during spring
-        iff none passed in, then we assume today
-
-        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
-
-        RETURNS:
-            boolean showing whether or not it's spring right now
-        """
-        _date = _date.replace(datetime.date.today().year)
-
-        if persistent._mas_pm_live_south_hemisphere:
-            return mas_fall_equinox <= _date < mas_winter_solstice
-        else:
-            return mas_spring_equinox <= _date < mas_summer_solstice
-
-    def mas_isSummer(_date=datetime.date.today()):
-        """
-        Checks if given date is during summer
-        iff none passed in, then we assume today
-
-        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
-
-        RETURNS:
-            boolean showing whether or not it's summer right now
-        """
-        _date = _date.replace(datetime.date.today().year)
-
-        if persistent._mas_pm_live_south_hemisphere:
-            return mas_winter_solstice <= _date or _date < mas_spring_equinox
-        else:
-            return mas_summer_solstice <= _date < mas_fall_equinox
-
-    def mas_isFall(_date=datetime.date.today()):
-        """
-        Checks if given date is during fall
-        iff none passed in, then we assume today
-
-        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
-
-        RETURNS:
-            boolean showing whether or not it's fall right now
-        """
-        _date = _date.replace(datetime.date.today().year)
-
-        if persistent._mas_pm_live_south_hemisphere:
-            return mas_spring_equinox <= _date < mas_summer_solstice
-        else:
-            return mas_fall_equinox <= _date < mas_winter_solstice
-
-    def mas_isWinter(_date=datetime.date.today()):
-        """
-        Checks if given date is during winter
-        iff none passed in, then we assume today
-
-        Note: If persistent._mas_pm_live_north_hemisphere is none, we assume northern hemi
-
-        RETURNS:
-            boolean showing whether or not it's winter right now
-        """
-        _date = _date.replace(datetime.date.today().year)
-
-        if persistent._mas_pm_live_south_hemisphere:
-            return mas_summer_solstice <= _date < mas_fall_equinox
-        else:
-            return mas_winter_solstice <= _date or _date < mas_spring_equinox
-
     def mas_isSpecialDay():
         """
         Checks if today is a special day(birthday, anniversary or holiday)
@@ -4797,10 +4729,6 @@ define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 5)
 define mas_nye = datetime.date(datetime.date.today().year, 12, 31)
 define mas_nyd = datetime.date(datetime.date.today().year, 1, 1)
-define mas_spring_equinox = datetime.date(datetime.date.today().year,3,21)
-define mas_summer_solstice = datetime.date(datetime.date.today().year,6,21)
-define mas_fall_equinox = datetime.date(datetime.date.today().year,9,23)
-define mas_winter_solstice = datetime.date(datetime.date.today().year,12,21)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
