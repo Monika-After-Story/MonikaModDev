@@ -3332,6 +3332,7 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
+        priority=11,
         stay_on_start=False,
         entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
     )

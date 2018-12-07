@@ -3427,11 +3427,16 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have coffee enabled?
+        # do we even have plushe enabled?
         if not persistent._mas_acs_enable_quetzalplushie:
             return
         if renpy.random.randint(1,chance) == 1:
-            monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+            if mas_isD25Season():
+                # seasonal means we use the santa hat
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+
+            else:
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
         return
 
 
