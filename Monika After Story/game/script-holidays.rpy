@@ -926,7 +926,7 @@ label mas_d25_monika_holiday_intro:
     m "Christmas time has always been one of my favorite occasions of the year..."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     if renpy.seen_label('monika_christmas'):
-        m 5eka "And I'm so glad that you're here to share it with me, again~"
+        m 5eka "So I'm glad that you're here to share it with me again this year~"
     else:
         m 5eka "And I'm so glad that you're here to share it with me~"
     return
@@ -952,41 +952,46 @@ label mas_d25_monika_christmas:
     m 3eka "I'm so, so happy that you decided to spend some of it with me."
     m 1eud "Remember to go share the holiday cheer with your family and friends, though."
     m 1eua "After all, they're very important, too..."
-    m 1hua "And I'm sure that they would love to see you at this special time."
-    
+    m 1hua "And I'm sure that they would love to see you at this special time"
+
     if mas_isMoniAff(higher=True):
-        m 1rsc "But..."
+        m 2eka "But you being here today...{w=0.5}it just means everything to me..."
         m 2dsc "..."
         m 4ekbsa "[player], I love you."
 
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m 1lkbsa "Maybe it's just the snow, or the decorations..."
         else:
-            m "Maybe it's just all the decorations, or the festive atmosphere..."
+            m 1lkbsa "Maybe it's the decorations, or just the holiday season..."
 
         m "...or even the mistletoe getting to me."
 
         # TODO: actually, we may want to do kissing so...if we add kiss, probably enam+ for this bit
         m 3hksdlb "Don't worry, I didn't hang one up."
-        m 1rksdla "...Maybe~{nw}"
+        m 1rksdla "...{cps=*2}Maybe~{/cps}{nw}"
         $ _history_list.pop()
         m 1rksdlb "Ehehe..."
 
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
         m 1eua "Don't get me wrong, I knew that you would be here with me."
-        m 3eka "Actually having you here with me on Christmas, just the two of us..."
+        m 3eka "But actually having you here with me on Christmas, just the two of us..."
         m 1hub "Ahaha~"
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "It's every couple's dream for the holidays, [player]."
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m "Snuggling with each other by a fireplace, watching the snow gently fall..."
-        m 5hubfa "I'm forever grateful I got this chance with you, [player]."
+
+        if not renpy.seen_label('monika_christmas'):
+            m 5hubfa "I'm forever grateful I got this chance with you, [player]."
+        else:
+            m 5hubfa "I'm so glad I get to spend Christmas with you again, [player]."
+
         m "I love you. Forever and ever~"
         m 5hubfb "Merry Christmas, [player]~"
 
     elif mas_isMoniNormal(higher=True):
-        m 1eka "But you being here with me, well it means the world to me..."
+        m 1eka "But you being here today...{w=0.5}it just means everything to me..."
         m 3rksdla "...Not that I thought you'd leave me alone on this special day or anything..."
         m 3hua "But it just further proves that you really do love me, [player]."
         m 1ektpa "..."
@@ -1032,7 +1037,7 @@ label mas_d25_monika_hanukkah:
     m 1wub "It's a really good pastry! I especially love the ones filled with strawberry filling~"
     m 1hua "This time of year sure has a lot of wonderful holidays and traditions."
     m 1eub "I don't know if you celebrate Hanukkah, but can we match a menorah lighting ceremony together, anyway?"
-    m 5hua "We can sing and dance the night away~"
+    m 3hua "We can sing and dance the night away~"
     return
 
 #init 5 python:
@@ -1088,7 +1093,7 @@ label mas_d25_monika_carolling:
         m "Do you like singing Christmas carols, [player]?"
         "Yes.":
             $ persistent._mas_pm_likes_singing_d25_carols = True
-            m 1hua "I'm gload you feel the same way, [player]!"
+            m 1hua "I'm glad you feel the same way, [player]!"
             m 3hub "My favorite song is definitely 'Jingle Bells!'"
             m 1eua "It's just such an upbeat, happy tune!"
             m 1eka "Maybe we can sing together someday."
@@ -1114,6 +1119,7 @@ label mas_d25_monika_carolling:
 #    )
 
 #TODO: Upset+
+#TODO: Merge this into monika_hanukkah probably.
 label mas_d25_monika_dreidel:
     # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
     m 3eua "[player], did you know that each side of a dreidel actaully means something?"
@@ -1282,7 +1288,7 @@ label mas_nye_monika_nye:
                 m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
                 m 1kua "Maybe you'll think of something that you want to do, [player]."
             else:
-                m 2ekc "I was kind of hoping--"
+                m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
                 m 2rfc "You know what, nevermind..."
 
     if mas_isMoniAff(higher=True):
@@ -1318,10 +1324,10 @@ label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
 
     if store.mas_anni.pastOneMonth():
-        if persistent._mas_affection["affection"]>-30:
+        if persistent._mas_affection["affection"] >= 0:
             m 1eub "[player]!"
             if renpy.seen_label('monika_newyear2'):
-                m "Can you believe this is our {i}second{/i} New Years?"
+                m "Can you believe this is our {i}second{/i} New Years together?"
             if mas_isMoniAff(higher=True):
                 m 1hua "We sure have been through a lot together this past year, huh?"
             else:
@@ -1345,9 +1351,14 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
             return
     else:
-        if persistent._mas_affection["affection"]>-30:
+        if persistent._mas_affection["affection"] >= 0:
             m 1eub "[player]!"
-            m 1eka "I know we haven't been together that long yet, but this past year was so special to me..."
+
+            if mas_isMoniAff(higher=True):
+                m 1ekbfa "I know we haven't been together for that long yet, but this past year went better than I ever could have hoped for..."
+            else:
+                m 1eka "I know we haven't been together that long yet, but this past year was so special to me..."
+
             m 1hua "I will always remember it as the year I met you~"
             m 3hua "Let's build on our short time together and make this year even better!"
             m 1ekbfa "I love you, [player]."
@@ -1358,7 +1369,8 @@ label mas_nye_monika_nyd:
             m 2rksdlc "We haven't been together for very long, but the time we spent last year didn't go as well as I had hoped..."
             jump mas_nye_monika_nyd_fresh_start
             return
-    m "Happy new year~"
+    m "Happy New Year~"
+    return
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"

@@ -10017,6 +10017,8 @@ label monika_cares_about_dokis:
 
 #NOTE: This topic is pretty much covered in the hemispheres topic as it is currently.
 #However, only provided it's winter at the time.
+#TODO: actually, we can probably use this. wrap it in a conditional if the snow PM is None
+#since hemispheres will probably get most users.
 label monika_snow:
     m 1euc "Does it ever snow where you live, [player]?"
     m 1eua "I've always liked the peaceful aura it seems to give off."
