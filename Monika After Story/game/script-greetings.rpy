@@ -1854,6 +1854,8 @@ init 5 python:
     del rules
 
 label greeting_amnesia:
+    $ tempname = m_name
+    $ m_name = "Monika"
     m 1eua "Oh, hello!"
     m 1eub "My name is Monika."
     $ fakename = renpy.input('What is your name?',length=15).strip(' \t\n\r')
@@ -1863,6 +1865,7 @@ label greeting_amnesia:
     m "Can you help me figure out what's going on, [fakename]?"
     m "Please? I miss my friends."
     pause 5.0
+    $ m_name = tempname
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
