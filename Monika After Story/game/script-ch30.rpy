@@ -94,6 +94,62 @@ init 970 python:
             persistent._mas_o31_costumes_allowed = False
 
 
+init -10 python:
+    # create the idle mailbox
+    class MASIdleMailbox(store.MASMailbox):
+        """
+        Spaceroom idle extension of the mailbox
+
+        PROPERTIES:
+            (no additional)
+
+        See MASMailbox for properties
+        """
+
+        # NOTE: add keys here
+
+        # end keys
+       
+
+        def __init__(self):
+            """
+            Constructor for the idle mailbox
+            """
+            super(MASIdleMailbox, self).__init__()
+
+
+        def _get(self, headline):
+            """
+            calls super class's get
+
+            (for ease of use)
+            """
+            return super(MASIdleMailbox, self).get(headline)
+
+
+        def _read(self, headline):
+            """
+            Calls super class's read
+
+            (for ease of use)
+            """
+            return super(MASIdleMailbox, self).read(headline)
+
+
+        def _send(self, headline, msg):
+            """
+            Calls super class send
+
+            (for ease of use)
+            """
+            super(MASIdleMailbox, self).send(headline, msg)
+
+
+        # NOTE: add additoinal functions below when appropriate.
+            
+
+    mas_idle_mailbox = MASIdleMailbox
+
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
 image mas_island_day = "mod_assets/location/special/without_frame.png"
 image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
