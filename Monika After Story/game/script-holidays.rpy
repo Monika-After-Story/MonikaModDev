@@ -807,6 +807,8 @@ default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
 # (basically they got the merry christmas dialogue)
 
+default persistent._mas_d25_seen_santa_costume = False
+# True if user has seen santa costume this year.
 
 init -810 python:
     # MASHistorySaver for d25
@@ -814,7 +816,8 @@ init -810 python:
         "d25",
         datetime.datetime(2018, 12, 26),
         {
-            "_mas_d25_spent_d25": "d25.actions.spent_d25"
+            "_mas_d25_spent_d25": "d25.actions.spent_d25",
+            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         }
         # TODO: programming points probably
     ))
@@ -873,6 +876,11 @@ label mas_holiday_d25c_autoload_check:
 
             # enable d25
             persistent._mas_d25_in_d25_mode = True
+
+            # unlock and wear santa
+            store.mas_selspr.unlock_clothes(mas_clothes_santa)
+            monika_chr.change_clothes(mas_clothes_santa)
+            persistent._mas_d25_seen_santa_costume = True
 
     # TODO:
     #   holiday intro dialogue pushed, if not already pushed
