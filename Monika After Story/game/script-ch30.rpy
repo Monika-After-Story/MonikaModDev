@@ -237,7 +237,7 @@ image room_mask3_fb = "mod_assets/window/spaceroom/window_3_fallback.png"
 
 image room_mask4 = Movie(
     channel="window_4",
-    play="mod_assets/window/spcaeroom/window_4.webm",
+    play="mod_assets/window/spaceroom/window_4.webm",
     mask=None
 )
 image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
