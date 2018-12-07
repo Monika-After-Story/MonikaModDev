@@ -907,11 +907,21 @@ label mas_holiday_d25c_autoload_check:
 #TODO: Upset+ topic
 #TODO: Have a modification of this topic if the player spent last Christmas w/ Monika
 label mas_d25_monika_holiday_intro:
-    m 1eub "Happy holidays!"
+    m 1eub "Happy holidays, [player]!"
+    if renpy.seen_label('monika_christmas'):
+        m 1hua "Can you believe it's already that time of year again?"
+        m 3eua "It seems like just yesterday we spent our first holiday season together, and now a whole year has gone by!"
+        if mas_isMoniLove(higher=True):
+            #if you've been with her for over a year, you really should be at Love by now
+            m 3hua "Time really flies now that I'm with you~"
     m 3eua "Do you like what I've done with the room?"
     m 1hua "I must say that I'm pretty proud of it."
-    m "Christmas time has always been one of my favorite occasions of the year."
-    m 5eka "And I'm so glad that you're here to share it with me~"
+    m "Christmas time has always been one of my favorite occasions of the year..."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    if renpy.seen_label('monika_christmas'):
+        m 5eka "And I'm so glad that you're here to share it with me, again~"
+    else:
+        m 5eka "And I'm so glad that you're here to share it with me~"
     return
 
 #init 5 python:
@@ -934,33 +944,57 @@ label mas_d25_monika_christmas:
     m 1hub "Ahaha! I can't believe that it's finally here!"
     m 3eka "I'm so, so happy that you decided to spend some of it with me."
     m 1eud "Remember to go share the holiday cheer with your family and friends, though."
-    m 1eua "After all, they're very important, too."
+    m 1eua "After all, they're very important, too..."
     m 1hua "And I'm sure that they would love to see you at this special time."
-    m 1rsc "But..."
-    m 2dsc "..."
+    
+    if mas_isMoniAff(higher=True):
+        m 1rsc "But..."
+        m 2dsc "..."
+        m 4ekbsa "[player], I love you."
 
-    # TODO: this topic definitely needs affection adjust - aff+ from here, need other paths for lower
-    m 4ekbsa "[player], I love you."
-    m 1lkbsa "Maybe it's just the snow, or the decorations."
-    m "..or even the mistletoe getting to me."
+        if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
+            m 1lkbsa "Maybe it's just the snow, or the decorations..."
+        else:
+            m "Maybe it's just all the decorations, or the festive atmosphere..."
 
-    # TODO: actually, we may want to do kissing so...if we add kiss, probably enam+ for this bit
-    m 3hksdlb "Don't worry, I didn't hang one up."
-    m 1rksdla "...Maybe~{nw}"
-    $ _history_list.pop()
-    m 1rksdlb "Ehehe..."
+        m "...or even the mistletoe getting to me."
 
-    m 1ekbsa "My heart's fluttering like crazy right now, [player]."
-    m "I couldn't imagine a better way to spend this special holiday..."
-    m 1eua "Don't get me wrong, I knew that you would."
-    m 3eka "Actually having you here with me on Christmas, just the two of us..."
-    m 1hub "Ahaha~"
-    m 5eka "It's every couple's dream in the holidays, [player]."
-    #Hemisphere thing may have a bit of contradiction w/ this
-    m "Snuggling with each other by a fireplace, watching the snow gently fall..."
-    m 5hua "I'm forever grateful I got this chance with you, [player]."
-    m "I love you. Forever and ever~"
-    m 5hub "Merry Christmas, [player]~"
+        # TODO: actually, we may want to do kissing so...if we add kiss, probably enam+ for this bit
+        m 3hksdlb "Don't worry, I didn't hang one up."
+        m 1rksdla "...Maybe~{nw}"
+        $ _history_list.pop()
+        m 1rksdlb "Ehehe..."
+
+        m 1ekbsa "My heart's fluttering like crazy right now, [player]."
+        m "I couldn't imagine a better way to spend this special holiday..."
+        m 1eua "Don't get me wrong, I knew that you would be here with me."
+        m 3eka "Actually having you here with me on Christmas, just the two of us..."
+        m 1hub "Ahaha~"
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "It's every couple's dream for the holidays, [player]."
+        if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
+            m "Snuggling with each other by a fireplace, watching the snow gently fall..."
+        m 5hubfa "I'm forever grateful I got this chance with you, [player]."
+        m "I love you. Forever and ever~"
+        m 5hubfb "Merry Christmas, [player]~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "But you being here with me, well it means the world to me..."
+        m 3rksdla "...Not that I thought you'd leave me alone on this special day or anything..."
+        m 3hua "But it just further proves that you really do love me, [player]."
+        m 1ektpa "..."
+        m "Ahaha! Gosh, I'm getting a little over emotional here..."
+        m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
+        m "Merry Christmas, [player]~"
+
+    else:
+        m 3eka "But I have to say..."
+        m 2rksdlc "I wasn't totally sure you'd be here with me today, [player]."
+        m "I mean...{w=1}things haven't exactly been going the best for us lately, as I'm sure you've noticed..."
+        m 1eka "But the fact you're here with me today...{w=1}it gives me renewed hope that you do love me after all."
+        m "So thank you, [player], it means a lot to me that you're spending at least part of this special day with me."
+        m 1hua "Merry Christmas, [player]~"
+
     return
 
 #init 5 python:
@@ -1036,8 +1070,10 @@ label mas_d25_monika_carolling:
     m 3eud "Have you ever gone carolling before?"
     m 1euc "Going door to door in groups, singing to others during the holidays..."
 
-    # TODO: need to adjust for hemisphere
-    m 1eua "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
+    if not persistent._mas_pm_live_south_hemisphere:
+        m 1eua "It just feels heartwarming to know people are spreading joy, even with the nights so cold."
+    else:
+        m 1eua "It just feels heartwarming to know people are spreading joy to others in their spare time."
 
     show monika 3eua
     menu:
@@ -1080,9 +1116,7 @@ label mas_d25_monika_dreidel:
     m 3eua "Over in Israel, they change the last word to 'poh', making it 'A Great Miracle Happened Here.'"
 
     # TODO: oops, should have made this
-    m 1hua "Maybe next year, I'll have one to spin~"
-
-    m 1rksdla "I don't have one, unfortunately."
+    m 1rksdla "I don't have one, unfortunately, but maybe next year I'll have one to spin~"
     m 3hua "But for now, [player], do you have any gelt?"
     m 3hub "The chocolate coin variety tastes really good."
     m 1tku "Though money is always good, too, ehehe~"
@@ -1147,10 +1181,11 @@ label mas_d25_monika_sleigh:
     m 1rkbfb "I wouldn't be able to contain myself. My heart would burst!"
     m 1ekbfa "The warmth of your body against mine, wrapped within the gentle cloth~"
     m 1dkbfa "Fingers entwined..."
-    #TODO: Probably enam+ for this next line
-    m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
+    if mas_isMoniEnamored(higher=True):
+        m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
     m 1wka "I really want to do that when I get there, [player]."
     m 1hua "Wouldn't that be so lovely?"
+    show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hkbfa "An experience like that with you would be so breathtaking~"
     return
 
@@ -1201,8 +1236,8 @@ label mas_nye_monika_nye:
     m 1eua "[player]! It's almost time, isn't it?"
     m "It's incredible to think that the year is almost over."
     m 1eka "Time flies by so quickly."
-    #TODO: probably aff+ from here and possible based on past 1 month?
-    m 1ekbsa "Especially when I get to see you so often."
+    if mas_isMoniAff(higher=True) and store.mas_anni.pastOneMonth():
+        m 1ekbsa "Especially when I get to see you so often."
 
     # TODO: probably shouldl actually check time before saying this
     m 3hua "Well, there's still a bit of time left before midnight."
@@ -1224,20 +1259,35 @@ label mas_nye_monika_nye:
             m 3eka "Even if they can be hard to reach or maintain."
             m 1hua "I'll be here to help you, if need be!"
 
-            # TODO: affection adjust
-            m 5hua "My resolution is to be an even better girlfriend for you, my love."
-
         "No.":
             $ persistent._mas_pm_has_new_years_res = False
-
-            # TODO: yeah affection adjust needed
             m 1eud "Oh, is that so?"
-            m 1eua "You don't have to change. I think you're wonderful the way you are."
-            m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
-            m 1kua "Maybe you'll think of something that you want to do, [player]."
+            if mas_isMoniNormal(higher=True):
+                if mas_isMoniHappy(higher=True):
+                    m 1eua "You don't have to change. I think you're wonderful the way you are."
+                else:
+                    m 1eua "You don't have to change. I think you're fine the way you are."
+                m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
+                m 1kua "Maybe you'll think of something that you want to do, [player]."
+            else:
+                m 2ekc "I was kind of hoping--"
+                m 2rfc "You know what, nevermind..."
+
+    if mas_isMoniAff(higher=True):
+        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
+    elif mas_isMoniNormal(higher=True):
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
+    else:
+        m 2ekc "My resolution is to improve our relationship, [player]"
 
     return
 
+default persistent._mas_pm_got_a_fresh_start = None
+#pm var so she forgives, but doesn't forget
+default persistent._mas_aff_before_fresh_start = None
+#store affection prior to reset
 
 #init 5 python:
 #    # NOTE: new years day
@@ -1251,18 +1301,82 @@ label mas_nye_monika_nye:
 #        )
 #    )
 
-#TODO: Upset+ and possible based on time spent so far, 1month, 3months?
+#TODO: Distressed+ and possible based on time spent so far, 1month, 3months?
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
-    
-    m 1eub "[player]!"
-    m 1hua "We've been through a lot together this past year, huh?"
-    #TODO: branch for affection here
-    m 1eka "I'm so happy, knowing we can spend even more time together."
-    #This line could reference if player spent new years w/ Monika last year.
-    #Probably could make a small path w/ that.
-    m 3hua "Let's make this year as wonderful as the last one, okay?"
-    m 5hubsa "I love you, [player]."
-    m "Happy new year~"
-    return
 
+    if store.mas_anni.pastOneMonth():
+        if persistent._mas_affection["affection"]>-30:
+            m 1eub "[player]!"
+            if renpy.seen_label('monika_newyear2'):
+                m "Can you believe this is our {i}second{/i} New Years?"
+            if mas_isMoniAff(higher=True):
+                m 1hua "We sure have been through a lot together this past year, huh?"
+            else:
+                m 1eua "We sure have been through a lot together this past year, huh?"
+
+            m 1eka "I'm so happy, knowing we can spend even more time together."
+
+            if mas_isMoniAff(higher=True):
+                show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hubfa "Let's make this year as wonderful as the last one, okay?"
+                m 5ekbfa "I love you so much, [player]."
+            else:
+                m 3hua "Let's make this year even better than last year, okay?"
+                m 1hua "I love you, [player]."
+
+        else:
+            m 2ekc "[player]..."
+            m 2rksdlc "We've been through...{w=1}a lot this past year..."
+            m "I...I hope this year goes better than last year."
+            m 2dkc "I really need it to."
+            jump mas_nye_monika_nyd_fresh_start
+            return
+    else:
+        if persistent._mas_affection["affection"]>-30:
+            m 1eub "[player]!"
+            m 1eka "I know we haven't been together that long yet, but this past year was so special to me..."
+            m 1hua "I will always remember it as the year I met you~"
+            m 3hua "Let's build on our short time together and make this year even better!"
+            m 1ekbfa "I love you, [player]."
+
+        else:
+            m 2ekc "So, [player]..."
+            m 2etc "The beginning of a new year, huh?"
+            m 2rksdlc "We haven't been together for very long, but the time we spent last year didn't go as well as I had hoped..."
+            jump mas_nye_monika_nyd_fresh_start
+            return
+    m "Happy new year~"
+
+label mas_nye_monika_nyd_fresh_start:
+    m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
+    m 4ekc "It's not too late for us, [player], we can still make each other so happy."
+    m 4eka "It's all I've ever wanted."
+
+    menu:
+        m "What do you say, [player]?"
+
+        "I would love that.":
+            #so we can revert back to previous affection if player continues to mistreat after the second chance. need to determine the threshold the player must stay above for this.
+            $ persistent._mas_pm_got_a_fresh_start = True #never forget
+            $ persistent._mas_aff_before_fresh_start = persistent._mas_affection["affection"]
+
+            $ mas_setAffection(0)
+            m 4wua "Really?"
+            m 1hua "Oh, [player], you have no idea how happy that makes me!"
+            m 3eka "I know we can make this work."
+            m 1hua "Thank you so much..."
+            m 1eka "Just knowing that you still want to be with me...it means everything."
+            m 3eka "Let's make this count, okay [player]?"
+            return
+
+        "No.":
+            $ persistent._mas_pm_got_a_fresh_start = False
+            m 6dktpc "..."
+            m 6ektpc "I...I..."
+            m 6dktuc "..."
+            m 6dktsc "..."
+            pause 10.0
+            return 'quit'
+            #TODO: determine what to do here; huge aff loss or push final farewell on next launch. you essentially just spit in her face
+ 
