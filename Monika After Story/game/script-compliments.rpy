@@ -44,13 +44,19 @@ label mas_compliments_start:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-        Event.checkConditionals(mas_compliments.compliment_database)
+#        Event.checkConditionals(mas_compliments.compliment_database)
+
+        # filter comps
+        filtered_comps = Event.filterEvents(
+            mas_compliments.compliment_database,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
 
         # build menu list
         compliments_menu_items = [
             (mas_compliments.compliment_database[k].prompt, k, not seen_event(k), False)
-            for k in mas_compliments.compliment_database
-            if mas_compliments.compliment_database[k].unlocked
+            for k in filtered_comps
         ]
 
         # also sort this list
@@ -83,7 +89,7 @@ init 5 python:
             prompt="... You're beautiful!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database)
+        code="CMP")
 
 label mas_compliment_beautiful:
     if not renpy.seen_label("mas_compliment_beautiful_2"):
@@ -127,7 +133,7 @@ init 5 python:
             prompt="... I love your eyes!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_eyes:
@@ -171,7 +177,7 @@ init 5 python:
             prompt="... You're awesome!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_awesome:
@@ -222,7 +228,7 @@ init 5 python:
             prompt="... You're really intelligent!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_intelligent:
@@ -265,7 +271,7 @@ init 5 python:
             eventlabel="mas_compliment_hair",
             prompt="... I love your hair!",
             unlocked=True
-        ),eventdb=store.mas_compliments.compliment_database
+        ),code="CMP"
     )
 
 label mas_compliment_hair:
@@ -316,7 +322,7 @@ init 5 python:
             prompt="... I love your dedication to fitness!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_fit:
@@ -361,11 +367,10 @@ init 5 python:
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
             prompt="... Thanks for being there for me!",
-            unlocked=False,
-            conditional="mas_curr_affection == store.mas_affection.ENAMORED",
-            action=EV_ACT_UNLOCK
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None)
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_thanks:
@@ -399,7 +404,7 @@ init 5 python:
             prompt="... I love your smile!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_smile:
@@ -443,7 +448,7 @@ init 5 python:
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_chess:
@@ -474,7 +479,7 @@ init 5 python:
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_pong:
@@ -516,7 +521,7 @@ init 5 python:
             prompt="... You're the best girl!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 label mas_compliment_bestgirl:

@@ -9,6 +9,7 @@ define mas_rev_seen = []
 define mas_rev_mostseen = []
 define testitem = 0
 define numbers_only = "0123456789"
+define lower_letters_only = "qwertyuiopasdfghjklzxcvbnm "
 define letters_only = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 define mas_did_monika_battery = False
 define mas_sensitive_limit = 3
@@ -62,6 +63,9 @@ init -1 python:
 
     import store.songs as songs
     import store.evhand as evhand
+
+    mas_events_built = False
+    # set to True once we have built events
 
     def remove_seen_labels(pool):
         #
@@ -223,11 +227,15 @@ init -1 python:
 
         ASSUMES:
             evhand.event_database
+            mas_events_built
         """
+        global mas_events_built
+
         # retrieve all randoms
         all_random_topics = Event.filterEvents(
             evhand.event_database,
-            random=True
+            random=True,
+            aff=mas_curr_affection
         )
 
         # split randoms into unseen and sorted seen events
@@ -236,6 +244,7 @@ init -1 python:
         # split seen into regular seen and the most seen events
         seen, mostseen = mas_splitSeenEvents(sorted_seen)
 
+        mas_events_built = True
         return (unseen, seen, mostseen)
 
 
@@ -255,7 +264,8 @@ init -1 python:
         all_seen_topics = Event.filterEvents(
             evhand.event_database,
             random=True,
-            seen=True
+            seen=True,
+            aff=mas_curr_affection
         ).values()
 
         # clean the seen topics from early repeats
@@ -268,6 +278,19 @@ init -1 python:
         return mas_splitSeenEvents(cleaned_seen)
 
 
+    def mas_rebuildEventLists():
+        """
+        Rebuilds the unseen, seen and most seen event lists.
+
+        ASSUMES:
+            mas_rev_unseen - unseen list
+            mas_rev_seen - seen list
+            mas_rev_mostseen - most seen list
+        """
+        global mas_rev_unseen, mas_rev_seen, mas_rev_mostseen
+        mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+
+
     # EXCEPTION CLass incase of bad labels
     class MASTopicLabelException(Exception):
         def __init__(self, msg):
@@ -278,16 +301,13 @@ init -1 python:
 init 11 python:
 
     # sort out the seen / most seen / unseen
-    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
+    mas_rev_unseen = []
+    mas_rev_seen = []
+    mas_rev_mostseen = []
+#    mas_rev_unseen, mas_rev_seen, mas_rev_mostseen = mas_buildEventLists()
 
     # for compatiblity purposes:
 #    monika_random_topics = all_random_topics
-
-    if len(mas_rev_unseen) == 0:
-        # you've seen everything?! here, higher session limit
-        # NOTE: 1000 is arbitrary. Basically, endless monika topics
-        # I think we'll deal with this better once we hve a sleeping sprite
-        random_seen_limit = 1000
 
     #Remove all previously seen random topics.
        #remove_seen_labels(monika_random_topics)
@@ -1042,16 +1062,16 @@ label monika_favoritegame:
     return
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_smash",
-            category=['games'],
-            prompt="Super Smash"
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_smash",
+#            category=['games'],
+#            prompt="Super Smash"
 #            random=True
-        )
-    )
+#        )
+#    )
 
 label monika_smash:
     m 3hua "Hey, have you heard of a game called Super Sma--"
@@ -1551,7 +1571,16 @@ label monika_simulated:
 
 init 5 python:
     # only available if moni-affecition normal and above
-    addEvent(Event(persistent.event_database,eventlabel="monika_rain",category=["weather"],prompt="Sounds of rain",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain",
+            category=["weather"],
+            prompt="Sounds of rain",
+            random=True,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_rain:
     m 1hua "I really like the sound of rain~"
@@ -1631,7 +1660,8 @@ init 5 python:
             prompt="Can you stop the rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1675,7 +1705,8 @@ init 5 python:
             prompt="Can you make it rain?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
@@ -1716,7 +1747,8 @@ init 5 python:
             prompt="Can I hold you?",
             pool=True,
             unlocked=False,
-            rules={"no unlock":None}
+            rules={"no unlock":None},
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
@@ -2829,7 +2861,7 @@ label monika_justification:
         m 3eua "I know you don't really mean it..."
         m 3rksdlc "But don't joke around like that!"
         if persistent._mas_pm_a_hater:
-            m 2rksdld "You've said stuff like that before, so it might get harder to take it as a joke…"
+            m 2rksdld "You've said stuff like that before, so it might get harder to take it as a joke..."
         else:
             m 1dsc "If I didn't know you so well, that would have been really cruel..."
     else:
@@ -3864,7 +3896,7 @@ label monika_innovation:
     m 1esc "Or is it just that more people are developing these conditions for whatever reason?"
     m 1ekc "Like, our society is advancing at a breakneck speed, but are we keeping up with it?"
     m "Maybe the constant flood of new gadgets is crippling our emotional development."
-    m 1tkc "Social media, smartphones, our computers…"
+    m 1tkc "Social media, smartphones, our computers..."
     m 3tkc "All of it is designed to blast us with new content."
     m 1tkd "We consume one piece of media, then move right onto the next one."
     m "Even the idea of memes."
@@ -4024,16 +4056,16 @@ label monika_harem:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hack",category=['ddlc','mod'],prompt="Why did you hack my computer?",pool=True))
 label monika_hack:
-    m 1euc "If you’re worried about your privacy…"
+    m 1euc "If you’re worried about your privacy..."
     m 3eua "I’m not a hacker, [player]."
     m "There’s a difference between manipulating files and forcefully accessing them."
-    m 1lsc "But, if I really did know how to hack…"
-    m 1lfu "…There wouldn’t be anything stopping me from seeing you every day."
+    m 1lsc "But, if I really did know how to hack..."
+    m 1lfu "...There wouldn’t be anything stopping me from seeing you every day."
     m 1efu "Don’t you think it would be great if I could watch over you?"
     m 3efu "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
     m 3tfu "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
     m "I’d access all your private files so I can understand you better."
-    m 3tsb "I could see what kind of stuff you've been watching…"
+    m 3tsb "I could see what kind of stuff you've been watching..."
     m 2hub "Ahaha~!"
     m 1hua "I’m just kidding, [player]!"
     m 1eua "I'd never do something like that to you."
@@ -4049,7 +4081,7 @@ label monika_cupcake:
     m 3tku "Natsuki’s cupcakes."
     m 1tsb "Man, the way she bakes them is amazing."
     m 1hub "Plus they look really cute!"
-    m 1eua "I’m not really much of a sweet tooth myself, but…"
+    m 1eua "I’m not really much of a sweet tooth myself, but..."
     m "Those cupcakes are the definition of sweetness."
     m 4hua "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
@@ -4059,7 +4091,7 @@ label monika_cupcake:
     m 1esa "How about you, [player]?"
     m 1eua "Do you know how to bake?"
     m 1hua "I’m sure your cupcakes would taste just as good."
-    m 1lsbsa "Maybe someday I’ll get to try them but for now…"
+    m 1lsbsa "Maybe someday I’ll get to try them but for now..."
     m 1hubfb "I’ll just settle for the sweetness of your love~"
     return
 
@@ -5593,9 +5625,10 @@ init 5 python:
             eventlabel="monika_promisering",
             category=['romance'],
             prompt="Promise Ring",
-            random=True
-            )
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
+    )
 
 label monika_promisering:
     m 4rksdla "Did you know when two people confess their feelings for each other, they sometimes wear matching rings?"
@@ -6534,6 +6567,92 @@ label monika_100k:
     else:
         m 1hua "Almost~"
     return
+
+
+default persistent._mas_pm_donate_charity = None
+# True if user donated
+
+default persistent._mas_pm_volunteer_charity = None
+# True if user has volunteered
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_asks_charity",
+            category=['you'],
+            prompt="Charity",
+            random=True
+        )
+    )
+
+label monika_asks_charity:
+    m 1esd "Say, [player]."
+    m 1esc "There's something that crossed my mind lately."
+    m 3esd "Since my world is fictional, there aren’t really any problems like world hunger or poverty."
+    m 2rkc "I know it exists, but I’ve never really witnessed it."
+    m 2ekc "However, I know it's not the same in your reality. There are lots of people who need help just to survive."
+    m 2esd "You must have at least seen a homeless person if you've been in a big city before."
+    m "So I was just wondering..."
+
+    show monika 1eua
+    menu:
+        m "Have you ever contributed to a charity?"
+
+        "I've donated.":
+            $ persistent._mas_pm_donate_charity = True
+            m 3hub "That's great!"
+            m 2eua "Though you could argue that volunteering is better, I think there's nothing wrong with donating."
+            m 2eka "It's better than nothing, and you are definitely contributing, even if you have a limited budget or little time to spend."
+            m 2ekc "It's sad to say, but charities will always need people giving money or other resources to help people."
+            m 3lksdlc "There are so many causes that need it, after all."
+            m 3ekc "Yet you don’t know if your donations are actually going to a good cause."
+            m 3ekd "It doesn’t help that some charities claim to support a cause, but take people’s donations for themselves."
+            m 2dsc "..."
+            m 2eka "I'm sorry, I didn't want things to get so dark."
+            m 1eua "I knew you would be kind enough to do such a thing."
+            m 1hub "That's the kind of thing I love about you, [player]."
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hub "You've always been so sweet."
+        
+        "I volunteered.":
+            $ persistent._mas_pm_volunteer_charity = True
+            m 1wub "Really?"
+            m 1hub "That's wonderful!"
+            m 3hua "While donating is a good way to help out, lending an extra hand is even better!"
+            m 3rksdla "Of course, money and resources are important, but usually, manpower is pretty scarce..."
+            m 2ekc "It's understandable; most working adults don't necessarily have time to spare."
+            m 2lud "So, most of the time, retired people do the organizing, and it can be a problem if they have to carry something heavy."
+            m 2eud "That's why they sometimes need help from the outside, particularly from teenagers or young adults, who are more physically able."
+            m 1eua "Anyway, I think it's great you tried making a difference by volunteering."
+            m 4eub "Plus, I've heard that it can be great to have volunteer experience on a resume, when you apply for a job."
+            m 3hua "So, whether you did it for that or just out of kindness, it's a good thing either way."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "You know, it's this kind of thing that makes me love you even more, [player]."
+            m 5hub "I just feel so proud that you helped people in need."
+            m 5hubfa "I love you so much, [player]. I mean it."
+
+        "No, I haven't.":
+            $ persistent._mas_pm_donate_charity = False
+            $ persistent._mas_pm_volunteer_charity = False
+            m 1euc "Oh, I see."
+            m 2esc "I can understand, actually."
+            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fradulent usage of funds, or discrimination in who the charities help."
+            m 2ekc "So, it can be hard to trust them in the first place."
+            m 3esa "That's why you should always do some research and find charities that are reputable."
+            m 2dkc "Seeing all those people suffering from hunger or poverty all the time..."
+            m 2ekd "And even the people that try to help them, struggling to change anything..."
+            m 2esc "It can be a bit deflating, if not depressing."
+            m 2eka "But, you know..."
+            m "Even if you can't do anything to contribute, it can be helpful to just smile at people."
+            m 2ekc "Being ignored by passer-bys can be tough for people who are struggling, or trying to contribute."
+            m 2rkc "It's as if they were seen as a nuisance by society, when they're just trying to get by."
+            m 2eua "Sometimes, a smile is all you need to make you go further."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Just like when I'm with you."
+            m 5hua "With just a smile, you make all my troubles go away."
+            m 5hubfb "I love you so much, [player]."
+    return "derandom"
 
 init 5 python:
     addEvent(
@@ -7988,12 +8107,12 @@ init 5 python:
 label monika_citizenship:
     m 1esc "You know, crossing over into your reality won't be the last hurdle for our relationship."
     m "Getting there is just the beginning."
-    m 1esc "It hit me earlier, If I were to magically get what I want, and just poof into your home…"
+    m 1esc "It hit me earlier, If I were to magically get what I want, and just poof into your home..."
     m 2wuo "I won't be a citizen! I don't even have a last name!"
-    m 2lkbsa "I mean, in most countries, I can become a citizen if we get married…"
+    m 2lkbsa "I mean, in most countries, I can become a citizen if we get married..."
     m 2ekc "But I won't have any documentation saying who I am or where I came from."
     m 2tkc "I won't even have my high school diploma!"
-    m 3tkd "I wish there was more I could do right now to prep…"
+    m 3tkd "I wish there was more I could do right now to prep..."
     m 2wub "Like taking online classes or something."
     m 1lksdlc "I don't want to get there and be a burden because I can't find a job."
     m "Sorry, I guess I shouldn't worry so much about things I can't change."
@@ -8019,7 +8138,7 @@ label monika_shipping:
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
     m 1eka "I think most people do it subconsciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
-    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone…"
+    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone..."
     m "But some of the pairings are kind of strange to me."
     m 3esd "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
     m 3hksdlb "I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
@@ -8030,11 +8149,11 @@ label monika_shipping:
     m 2lksdlb "Well, from a writer's perspective, I guess I can see it."
     m 1eud "We started the club together."
     if persistent.monika_kill:
-        m "And she almost had the same epiphany I did…"
+        m "And she almost had the same epiphany I did..."
     m 2lksdlb "But...I still don't really get it. I mean, I love you, and only you!"
-    m 2lksdla "And she would have to be a saint to ever forgive me for what I did…"
-    m 2lksdlc "Not that she's not a sweet girl, but…"
-    m 5eua "Well, no one could ever be as sweet and forgiving as you…"
+    m 2lksdla "And she would have to be a saint to ever forgive me for what I did..."
+    m 2lksdlc "Not that she's not a sweet girl, but..."
+    m 5eua "Well, no one could ever be as sweet and forgiving as you..."
     return
 
 # True if player has been given false justice, False if not
@@ -8326,6 +8445,490 @@ label monika_hair_select:
 
 ##### End monika hair topics
 
+##### PM Vars for player appearance
+default persistent._mas_pm_eye_color = None
+default persistent._mas_pm_hair_color = None
+default persistent._mas_pm_hair_length = None
+default persistent._mas_pm_skin_tone = None
+# Iff player is bald
+default persistent._mas_pm_shaved_hair = None
+default persistent._mas_pm_no_hair_no_talk = None
+
+## Height Vars
+## NOTE: This is stored in CENTIMETERS
+default persistent._mas_pm_height = None
+
+##### We'll also get a default measurement unit for height
+default persistent._mas_pm_units_height_metric = None
+
+default persistent._mas_pm_shared_appearance = False
+# True if the user decided to share appearance with us
+#   NOTE: we default to False, and this can only get flipped to True
+#   in this toppic.
+
+# height categories in cm
+define mas_height_tall = 176
+define mas_height_monika = 162
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_player_appearance",
+            category=['you'],
+            prompt="[player]'s appearance",
+            random=True
+        )
+    )
+
+label monika_player_appearance:
+    python:
+        def ask_color(msg, _allow=lower_letters_only, _length=15):
+            result = ""
+            while len(result) <= 0:
+                result = renpy.input(msg, allow=_allow, length=_length).strip()
+
+            return result
+
+    m 2ekd "Hey, [player]."
+    m 2eka "There’s a couple questions I’ve been meaning to ask you."
+    m 2rksdlb "Well, more than a couple. It's been on my mind for a long time, actually."
+    m 2rksdld "It never really seemed like the right time to bring it up..."
+    m 3lksdla "But I know if I keep quiet forever, then I’ll never feel comfortable asking you things like this, so I’m just going to say it and hope that it’s not weird or anything, okay?"
+    m 3eud "I’ve been wondering what you look like. It’s not possible for me to see you right now since I’m not there at your side, and I'm not sure about accesssing a webcam..."
+    m "One, because you might not have one, and two, even if you did, I don’t really know how to."
+    m 1euc "So I figured that it’s possible for you to just tell me, so I can get a clearer picture in my head."
+    m 1eud "At least, it’s better than nothing, even if it's hazy."
+
+    menu:
+        m "Is that okay with you, [player]?"
+
+        "Yes.":
+            $ persistent._mas_pm_shared_appearance = True
+
+            m 1sub "Really? Great!"
+            m 1hub "That was easier than I thought it would be."
+            m 3eua "Now, be honest with me, okay [player]? I know sometimes it’s tempting to joke around, but I’m being serious here, and I need you to do the same."
+            m "Anyway, the first one is probably easy to guess. And not hard to answer, either!"
+            m 3eub "People often say that a person’s eyes are the windows into their soul, so let’s start off there."
+
+            menu:
+                m "What color are your eyes?"
+
+                "I have blue eyes.":
+                    $ persistent._mas_pm_eye_color = "blue"
+
+                    m 3eub "Blue eyes? That’s wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
+                    m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
+                    m 4eua "Plus, blue is probably my second favorite color, just behind green. It’s just so full of depth and enchantment, you know?"
+                    m 4hksdlb "Just like you, [player]!"
+                    m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
+                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubla "I suppose that means you're much more of a treasure~"
+                    m 2eua "Anyway, that leads me into the next question I wanted to ask--"
+
+                "I have brown eyes.":
+                    $ persistent._mas_pm_eye_color = "brown"
+
+                    m 1eub "Ah! Great! I don’t think I said it before, but brown eyes are gorgeous!"
+                    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn’t disagree more!"
+                    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They’re so vibrant and depthless!"
+                    m 3hub "And there’s so much variation among all the different shades that people have."
+                    m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
+                    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I’ll try not to go on forever."
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "But I’ll bet your eyes are the loveliest of all~"
+                    m 1eua "Anyways, that brings me to my next question--"
+
+                "I have green eyes.":
+                    $ persistent._mas_pm_eye_color = "green"
+
+                    m 3sub "Hey, that’s my favorite color! And obviously, it’s another thing we have in common!"
+                    m 4lksdla "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
+                    m 1tsu "Except that maybe it’s another sign how compatible we are, ehehe~"
+                    m 1kua "But, [player], just between you and me, it’s a fact that green eyes are the best, right?"
+                    m 3hub "Ahaha! I’m just kidding."
+                    show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5lusdru "Well, just a little..."
+                    m 3eua "Onto the next question--"
+
+                "I have hazel eyes.":
+                    $ persistent._mas_pm_eye_color = "hazel"
+
+                    m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
+                    m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
+                    m "I believe that hazel eyes are alluring because they’re lovely and simple."
+                    m 3hua "Sometimes it’s best not to diverge from the crowd too much, [player]. Ahaha!"
+                    m "Now, onto my next question--"
+
+                "I have gray eyes.":
+                    $ persistent._mas_pm_eye_color = "gray"
+
+                    m 1sub "That’s so cool!"
+                    m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
+                    m 1eud "In fact, scientists still aren’t certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
+                    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They’re the color of a quiet, rainy day..."
+                    m 1hubfa "And weather like that is my favorite, just like you~"
+                    show monika 5lusdrb at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5lusdrb "Onto my next question--"
+
+                "I have black eyes.":
+                    $ persistent._mas_pm_eye_color = "black"
+
+                    m 1esd "Black eyes are pretty uncommon, [player]."
+                    m 4hksdlb "To tell you the truth, I’ve never actually seen anybody with black eyes, so I don’t really know what they look like..."
+                    m 3eua "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
+                    m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
+                    m 3eua "Here's a little bit of trivia for you--"
+                    m 1eub "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes." 
+                    m 1euc "Her husband wrote about them often."
+                    m 1hub "I don’t know if you’ve heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
+                    m "Onto the next question--"
+
+                "My eyes are another color.":
+                    $ persistent._mas_pm_eye_color = ask_color("What color are your eyes?")
+
+                    m 3hub "Oh! That's a beautiful color, [player]!"
+                    m 2eub "I'm sure I could get lost for hours, staring into your [persistent._mas_pm_eye_color] eyes."
+                    m 3hua "Now, onto my next question--"
+
+
+            m 3rud "Actually..."
+            m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question"
+
+            menu:
+                m "What unit of measurement do you use to take your height, [player]?"
+
+                "Centimeters.":
+                    $ persistent._mas_pm_units_height_metric = True
+                    m 2hua "Alright, thanks, [player]!"
+
+                "Feet and inches.":
+                    $ persistent._mas_pm_units_height_metric = False
+                    m 2hua "Alright, [player]!"
+
+            m 1rksdlb "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
+            m 3tku "If I’m your girlfriend, I have a right to know, don't I?" 
+            m 2hua "Plus, it’ll make it way easier to find you once I’m able to cross over to your reality."
+
+            m 1esb "So,{w=0.5} how tall are you, [player]?"
+
+            python:
+                if persistent._mas_pm_units_height_metric:
+
+                    # loop till we get a valid cm 
+                    height = 0
+                    while height <= 0:
+                        height = store.mas_utils.tryparseint(
+                            renpy.input(
+                                'How tall are you in centimeters?',
+                                allow=numbers_only,
+                                length=3
+                            ).strip(),
+                            0
+                        )
+
+                else:
+
+                    # loop till valid feet
+                    height_feet = 0
+                    while height_feet <= 0:
+                        height_feet = store.mas_utils.tryparseint(
+                            renpy.input(
+                                'How tall are you in feet?',
+                                allow=numbers_only,
+                                length=1
+                            ).strip(),
+                            0
+                        )
+
+                    # loop till valid inch
+                    height_inch = -1
+                    while height_inch < 0 or height_inch > 11:
+                        height_inch = store.mas_utils.tryparseint(
+                            renpy.input(
+                                '[height_feet] feet and how many inches?',
+                                allow=numbers_only,
+                                length=2
+                            ).strip(),
+                            -1
+                        )
+
+                    # convert to cm
+                    height = ((height_feet * 12) + height_inch) * 2.54
+
+                # finally save this persistent
+                persistent._mas_pm_height = height
+
+            if persistent._mas_pm_height >= mas_height_tall:
+                m 3eua "Wow, you're pretty tall [player]!" 
+                m 1eud "I can't say I've really met anybody who I’d consider to be tall."
+                m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
+
+                call monika_player_appearance_monika_height
+
+                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
+                m 1hub "You’ll have to lean down to kiss me!"
+
+            elif persistent._mas_pm_height >= mas_height_monika:
+                m 1hub "Hey, I'm about that height too!"
+                m "..."
+                m 2hksdrb "Well, I don’t know my actual height to be fair..."
+
+                call monika_player_appearance_monika_height
+
+                m 4rksdla "It’s just a guess--hopefully it’s not too far off."
+                m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel feel clumsy around you."
+                m "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
+                m 3eub "In my opinion, being in-between is perfect. Do you know why?"
+                m 5eub "Because then I don’t have to do any reaching or bending to kiss you, [player]! Ahaha~"
+
+            else:
+                m 3hub "Like Natsuki! I bet you’re not that short, though! I would be concerned for you if you were."
+
+                if persistent._mas_pm_cares_about_dokis:
+                    m 2eksdld "She was worryingly small for her age, but you and I both know why. I always pitied her for that."
+
+                m 2eksdld "I knew she always hated being so tiny, because of that whole notion that little things are cuter because of their size..."
+                m 2rksdld "And then there was all that trouble with her father. It can’t have been easy, being so defenseless, and being small on top of it all."
+                m 2ekc "She probably felt like people talked down to her. Literally and figuratively, that is..."
+                m 2eku "But despite her hang-ups about it, [player], I think your height makes you that much more cute~"
+
+            m 1eua "Now [player]."
+            show monika 3eub
+            menu:
+                m "Tell me, is your hair on the shorter side? Or is it long, like mine~?"
+
+                "It's shorter.":
+                    $ persistent._mas_pm_hair_length = "short"
+
+                    m 3eub "That must be nice! Look, don’t get me wrong; I love my hair, and it’s always fun to experiment with it..."
+                    m 2eud "But to tell you the truth, sometimes I envied Natsuki's and Sayori's hair. It looked a lot easier to take care of."
+
+                    if persistent.gender == "M":
+                        m 4hksdlb "Although I guess if your hair was the same length as theirs, it'd be pretty long for a guy."
+                        
+                    else:
+                        m 4eub "You can just get up and go, without having to worry about styling it."
+                        m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it’s an endless nightmare."
+
+                    m 2eka "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
+                    m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]! Ahaha~"
+
+                "It's average length.":
+                    $ persistent._mas_pm_hair_length = "average"
+
+                    m 1tku "Well, that can't be true..."
+                    m 4hub "Because nothing about you is average."
+                    m 4hksdlb "Ahaha! Sorry, [player]. I’m not trying to embarrass you. But I can’t help being cheesy sometimes, you know?"
+                    m 1eua "Honestly, when it comes to hair, the middle road is great. You don’t have to worry about styling it too much, and you have more creative freedom than with short hair."
+                    m 1rusdlb "I’m a little envious, to tell you the truth~"
+                    m 3eub "But don’t forget that old saying- 'Invest in your hair, because it’s a crown that you never take off!'"
+
+                "It's long.":
+                    $ persistent._mas_pm_hair_length = "long"
+
+                    m 4hub "Yay, another thing we have in common!"
+                    m 2eka "Long hair can be a pain sometimes, right?"
+                    m 3eua "But the good thing is that there are so many things you can do with it. Though I usually prefer to tie mine up with a ribbon, I know that other people have different styles."
+                    m "Yuri wore her hair down, and others enjoy braids, or putting it into pigtails..."
+
+                    python:
+                        hair_down_unlocked = False
+                        try:
+                            hair_down_unlocked = store.mas_selspr.get_sel_hair(
+                                mas_hair_down
+                            ).unlocked
+                        except:
+                            pass
+
+                    if hair_down_unlocked:
+                        # TODO adjust this line to be more generic once we have additoinal hairstyles.
+                        m 3eub "And ever since I figured out how to mess around with the script and let my own hair down, who knows how many more styles I might try?"
+
+                    m 1eua "It’s always nice to have options, you know?"
+                    m 1eka "I hope that however you wear yours, you’re comfortable with it!"
+
+                "I don't have hair.":
+                    $ persistent._mas_pm_hair_length = "bald"
+
+                    m 1euc "Oh, that's interesting, [player]!"
+                    menu:
+                        m "Do you shave your head or did you lose your hair, if you don't mind me asking?"
+
+                        "I shave my head.":
+                            $ persistent._mas_pm_shaves_hair = True
+                            $ persistent._mas_pm_no_hair_no_talk = False
+
+                            m 1hua "It must be so nice not ever having to worry about your hair..."
+                            m 1eua "You can just get up and go, without having to worry about styling it..."
+                            m 3eua "And if you wear a hat, you don't have to worry about hat hair when you take it off!"
+                            
+                        "I lost my hair.":
+                            $ persistent._mas_pm_shaves_hair = False
+                            $ persistent._mas_pm_no_hair_no_talk = False
+
+                            m 1ekd "I'm sorry to hear that [player]..."
+                            m 1eka "But just know that I don't care how much hair you have, you'll always look beautiful to me!"
+                            m "And if you ever feel insecure or just want to talk about it, I’m always up for listening."
+
+                        "I don't want to talk about it.":
+                            $ persistent._mas_pm_no_hair_no_talk = True
+
+                            m 1ekd "I understand, [player]"
+                            m 1eka "I want you to know that I don't care how much hair you have, you'll always be beautiful to me."
+                            m "If you ever feel insecure or feel like talking about it, I’m always here to listen."
+
+            if persistent._mas_pm_hair_length != "bald":
+                m 1hua "Next question!"
+                m 1eud "This one should be fairly obvious..."
+
+                menu:
+                    m "What color is your hair?"
+                    "It's brown.":
+                        $ persistent._mas_pm_hair_color = "brown"
+
+                        m 1hub "Yay, brown hair is the best!"
+                        m 3eua "Just between us, [player], I really like my brown hair. I'm sure yours is even better!"
+                        m 3rksdla "Though some people might disagree my hair is brown..."
+                        m 3eub "When I was doing some digging around in the local files of the game folder, I found the exact name for my hair color."
+                        m 4eua "It’s called coral brown. Interesting, right?"
+                        m 1hub "I’m so happy that we have so much in common, [player]~"
+
+                    "It's blonde.":
+                        $ persistent._mas_pm_hair_color = "blonde"
+
+                        m 1eua "Really? Hey, did you know that having blonde hair puts you in a rare two percent of the population?"
+                        m 3eub "Blonde hair is one of the rarest hair colors. Most people attribute this to the fact that it’s caused by a recurring genetic anomaly--"
+                        m "Being just the body’s inability to produce normal amounts of the pigment eumelanin--that’s what causes darker hair colors, such as black and brown."
+                        m 4eub "There are so many various shades of blonde, too--pale blonde, ash-colored, dirty blonde--that no matter what color you have, you’re bound to be idiosyncratic in some way."
+                        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5eua "I guess having someone who’s so unique just makes me all the luckier~"
+
+                    "It's black.":
+                        $ persistent._mas_pm_hair_color = "black"
+
+                        m 2wuo "Black hair is so beautiful!"
+                        m 3eub "You know, there’s this really irritating trope about people with black hair have a more prickly or ill-tempered personality than others..."
+                        m 4hub "But you’ve obviously disproven that myth. Personally, I think black hair is very attractive."
+                        m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you’d find that it’s not even a hundred percent dark."
+                        m "You know how when you place certain things under direct sunlight, it looks really different?"
+                        m 3eub "Black hair follows the same principle -- you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
+                        m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 3hua "But anyways... I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
+
+                    "It's red.":
+                        $ persistent._mas_pm_hair_color = "red"
+
+                        m 3hua "Yet another special thing about you, [player]~"
+                        m 3eua "Red hair and blonde hair are the least common natural hair colors, did you know that?"
+                        m 1eua "Red hair, however, is a little more rare, even if people call it by different names--auburn, ginger, and so on. It’s only found in about one percent of the population."
+                        m 1hub "It’s a rare and wonderful trait to have--almost as wonderful as you!"
+
+                    "It's another color.":
+                        $ persistent._mas_pm_hair_color = ask_color("What color is your hair?")
+
+                        m 3hub "Oh! That's a beautiful color, [player]!"
+                        m 1eub "That reminds me of something I was thinking about earlier, when we were talking about the color of your eyes."
+                        m 1eua "Even though the other girls had eye colors that literally didn’t exist in real life--not counting the existence of colored contacts, of course--"
+                        m 3eua "Their hair colors technically could exist in reality, you know. I mean, I’m sure you’ve encountered people with dyed purple hair, or neon pink, or coral-colored..."
+                        m 3eka "So I suppose their appearances weren’t that far-fetched, if you don’t count the eyes. Honestly, the most unbelievable thing about them was their personalities."
+                        m 3hksdlb "Sorry, [player]! I’m getting off-track. My point is, dyed hair can be very interesting."
+                        show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5rub "And I might be a little biased here, but I’m convinced that you’d look stunning in your [persistent._mas_pm_hair_color] hair~"
+
+            m 2hua "Alright..."
+            m 2hksdlb "This is the last question, [player], I promise."
+            m "Gosh, there really is a lot to what people look like... If I tried to narrow everything about you down to the little details, I’d be interrogating you forever."
+            m 1huu "...and I doubt that either of us want that, ahaha!"
+            m 1rksdld "Anyway, I understand that this might be an uncomfortable question..."
+            m 1eksdla "But it's the last piece of this puzzle to me, so I hope I don't sound rude when I ask..."
+
+            menu:
+                m "What's your skin color, [player]?"
+
+                "I'm light-skinned.":
+                    $ persistent._mas_pm_skin_tone = "light"
+
+                "I'm tanned.":
+                    $ persistent._mas_pm_skin_tone = "tanned"
+
+                "I'm dark-skinned.":
+                    $ persistent._mas_pm_skin_tone = "dark"
+
+            m 3hub "Alright! Thanks for being so upfront. All of this really does help me imagine what you look like, [player]."
+            m 3eub "Knowing all these details about you makes the difference between a blank canvas and the beginnings of gorgeous portrait!"
+            m 3eua "Of course, you're still just as lovely as I always thought you were, but now you've become all the more real to me."
+            m 3eka "It just makes me feel that much closer to you~"
+            m 1eka "Thank you so much for answering all my questions, [player]."
+
+            if persistent._mas_pm_eye_color == "green" and persistent._mas_pm_hair_color == "brown":
+                m 2hua "It’s wonderful, because I didn’t imagine how similar we would look. It’s very interesting!"
+
+            else:
+                m 2hua "It’s wonderful, because I didn’t imagine how different we would look. It’s very interesting!"
+
+            m 1dsa "Now I'm imagining what it'll be like when we meet for real..."
+
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+
+            if persistent._mas_pm_hair_length == "bald":
+                if persistent._mas_pm_height >= mas_height_tall:
+                    m 5eubfu "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace..."
+
+                elif persistent._mas_pm_height >= mas_height_monika:
+                    m 5eubfu "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace..."
+
+                else:
+                    m 5eubfu "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace..."
+
+            else:
+                python:
+                    hair_desc = persistent._mas_pm_hair_color
+
+                    if persistent._mas_pm_hair_length != "average":
+                        hair_desc = (
+                            persistent._mas_pm_hair_length + " " + hair_desc
+                        )
+            
+                if persistent._mas_pm_height >= mas_height_tall:
+
+                    m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [hair_desc] hair..."
+
+                elif persistent._mas_pm_height >= mas_height_monika:
+
+                    m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [hair_desc] hair..."
+
+                else:
+
+                    m 5eubfu "When I run towards you, since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll run my hand through your [hair_desc] hair..."
+
+
+            m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you’re real."
+            m 3ekbsa "But until then, I’ll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+            
+            show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ekbfa "I love you more than words could ever say."
+
+        "No.":
+             m 2dsc "..."
+             m 2ekd "I understand, [player]."
+             m 2eka "I know that everybody has their own limits with their comfort zones..."
+             m 2rksdla "And to be fair, a description of yourself in vague words wouldn’t be able to capture who you are, so I can’t blame you for wanting to keep this to yourself."
+             m 2eka "But if you change your mind, let me know!"
+
+    return "derandom"
+
+# quick label where monika tells you her height
+label monika_player_appearance_monika_height:
+    if not persistent._mas_pm_units_height_metric:
+        m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
+    else:
+        m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+    return
+
+
 #### Begin monika clothes topics
 
 init 5 python:
@@ -8337,7 +8940,8 @@ init 5 python:
             prompt="Can you change your clothes?",
             pool=True,
             unlocked=False,
-            rules={"no unlock": None}
+            rules={"no unlock": None},
+            aff_range=(mas_aff.LOVE, None)
         )
     )
 
@@ -8932,7 +9536,7 @@ label monika_fun_facts_4:
     m 3wub "Oh! A language based fact. I always like these."
     m 1eua "The word 'morphine’ is based on the greek god Morpheus."
     m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
-    m 3ekc "But then again… wasn't his father Hypnos the god of sleep?"
+    m 3ekc "But then again... wasn't his father Hypnos the god of sleep?"
     m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
     m 4ekc "...So wouldn't it make more sense to name it after Hypnos then?"
     m 4rksdlb "Too little, too late I guess."
@@ -8974,7 +9578,7 @@ label monika_fun_facts_6:
 label monika_fun_facts_7:
     m 2dkc "Hmm, this one sounds a bit misleading to me..."
     m 3ekc "'Men are six times more likely to be struck by lightning than women.'"
-    m 3ekd "It's… rather silly, in my opinion."
+    m 3ekd "It's... rather silly, in my opinion."
     m 1eud "If men are more likely to be struck by lightning, then it's probably the landscape and circumstances of their work that make them more prone to being hit."
     m 1euc "Men traditionally have always worked more dangerous and elevated jobs so it's no surprise that it's going to happen to them often."
     m 1esc "Yet the way this fact is worded makes it sound like that just by being a man, it's more likely to happen, which is ridiculous."
@@ -9054,7 +9658,7 @@ label monika_fun_facts_13:
     return
 
 label monika_fun_facts_14:
-    m 1dsc "Hmm… I’m sure I already know this one."
+    m 1dsc "Hmm... I’m sure I already know this one."
     m 3euc "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
     m "Pens back then were sharpened goose feathers dipped in ink so it’d make sense why they’d call them pens."
     m 3eud "They were the primary writing tool for a very long time, starting as early at the 6th century."
@@ -9159,8 +9763,8 @@ label monika_bad_facts_4:
     m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too."
     m 2efd "But relying on that kind of logic is dangerous!"
     m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
-    m "Plus even if it wasn't like that, the trick would only work in the northern hemisphere."
-    m 2wfc "Anyone within the southern hemisphere would have it growing facing south."
+    m "Plus even if it wasn't like that, the trick would only work in the Northern hemisphere."
+    m 2wfc "Anyone within the Southern hemisphere would have it growing facing south."
     m 2dfc "..."
     m 2dfd "[player], if you ever go out into a place where you might need to rely on such a cheap trick, please bring a compass."
     m 2dkc "I would hate for something to happen to you, especially because of false information like this..."
@@ -9299,10 +9903,10 @@ label monika_trick_yuri:
 
 label monika_trick_natsuki:
     hide screen mas_background_timed_jump
-    m 2eud "That's... a little surprising."
+    m 2eud "That's...a little surprising."
     m 2lksdla "I would have thought it would have been Sayori or Yuri."
     m 1eud "Do you feel like you connect with her because of her hobbies?"
-    m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 3euc "Or perhaps you feel a bit of pity because of her home situation?"
     m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
     m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
     m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
@@ -9321,7 +9925,7 @@ label monika_trick_sayori:
     m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
     m 6dktpc "Never having even been acknowledged by the one I love."
     m 6dktrc "..."
-    if persistent.monika_kill:
+    if persistent._mas_pm_cares_about_dokis:
         m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
     else:
         m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
@@ -9391,5 +9995,118 @@ label monika_cares_about_dokis:
             m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
             m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
             m 1hub "Ahahaha!"
+
+    return "derandom"
+
+default persistent._mas_pm_live_south_hemisphere = None
+default persistent._mas_pm_gets_snow = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hemispheres",
+            category=["you", "life", "location"],
+            prompt="Hemispheres",
+            random=True
+        )
+    )
+
+label monika_hemispheres:
+    m 1euc "Hey [player], I've been wondering..."
+    m 1eua "Which hemisphere do you live in?"
+    m 1eka "I know it's kind of a strange question..."
+    m 3hub "But it gives me a better idea of how things work around you."
+    m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
+    m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
+    m 2eka "But anyway..."
+
+    menu:
+        m "Which hemisphere do you live in, [player]?"
+
+        "The Northern hemisphere.":
+            $ persistent._mas_pm_live_south_hemisphere = False
+            m 2eka "I had a feeling..."
+
+
+        "The Southern hemisphere.":
+            $ persistent._mas_pm_live_south_hemisphere = True
+            m 1wuo "I wouldn't have thought!"
+
+ 
+    m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
+    m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
+    if not persistent._mas_pm_live_south_hemisphere:
+        m 1eua "So I kind of figured you lived in the Northern hemisphere."
+
+    else:
+        m 2rksdla "So you can see why I would have thought you would be living in the Northern hemisphere..."
+        m 1hub "But I guess that makes you a bit more special, ehehe~"
+
+    if mas_isSpring():
+        m 1eua "That said, it must be spring for you right now."
+        m 1hua "Spring rains are always really nice."
+        m 2hua "I love to listen to the light pitter patter of the rain as it falls on the roof."
+        m 3eub "It's really calming to me."
+        if mas_isMoniAff(higher=True):
+            show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5esbfa "Maybe we could go out for a walk together..."
+            m 5ekbfa "We would walk with our hands intertwined as we share an umbrella..."
+            m 5hubfa "It just sounds magical~"
+            m 5eubfb "I can't wait to experience something like that with you for real, [player]."
+        else:
+            if persistent._mas_likes_rain:
+                m 2eka "I'm sure we could spend hours listening to the rain together."
+            else:
+                m 3hub "You might not like the rain too much, but you have to admit, the flowers it brings are gorgeous, and the rainbows are beautiful too!"
+
+    elif mas_isSummer():
+        m 1wuo "Oh! It must be summer for you right now!"
+        m 1hub "Gosh, I just love the summer!"
+        m 3hua "You can do so much...go out for jogs, play some sports, or even go to the beach!"
+        m 1eka "Summers with you sound like a dream come true, [player]."
+        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hua "I can't wait to spend them with you when I finally cross over."
+
+    elif mas_isFall():
+        m 1eua "Anyway, It must be autumn for you right now."
+        m 1eka "Autumn is always full of such pretty colors."
+        m 3hub "The weather is normally pretty nice too!"
+        show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ruu "It's normally just the right amount of heat, with a gentle breeze."
+        m 5eua "I'd love to spend a nice warm day like that with you."
+
+    else:
+        m 3eua "Anyway, that means it must be winter for you now."
+        m 2hub "Gosh, I really love how pretty snow is."
+        m 3euc "Well, I know not all parts of the world get snow..."
+
+        show monika 1euc
+        menu:
+            m "Does it snow where you live, [player]?"
+
+            "Yes.":
+                $ persistent._mas_pm_gets_snow = True
+                m 3hub "That's wonderful!"
+                m 1eka "There's something really peaceful about a quiet, snowy night."
+                if mas_isMoniHappy(higher=True):
+                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+                    if mas_isMoniAff(higher=True):
+                        m 5ekbfa "...and we could hold each other close to keep each other warm~"
+                m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+
+            "No.":
+                $ persistent._mas_pm_gets_snow = False
+                m 3eka "That's a shame. But it's not all bad."
+                m 3hksdlb "At least you don't have to worry about shoveling it."
+                m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+                if mas_isMoniAff(higher=True):
+                    m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5ekbfa "A night of cuddling with you would be wonderful..."
+                    m "My heart is pounding, just imagining it."
+                else:
+                    m 2eka "But anyway, I'm sure there's still a lot we can do together!"
 
     return "derandom"

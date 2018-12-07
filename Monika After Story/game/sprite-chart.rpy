@@ -2536,7 +2536,9 @@ init -2 python:
         Representations of hair items
 
         PROPERTIES:
-            split - True means the hair is split into 2 sprites, front and back
+            split - MASPoseMap object that determins if a pose has split hair
+                or not.
+                if a pose has True, it is split. False or None means no split.
 
         SEE MASSpriteFallbackBase for inherited properties
 
@@ -2553,7 +2555,7 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                split=True
+                split=None
             ):
             """
             MASHair constructor
@@ -2580,9 +2582,9 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                split - True means the hair is split into 2 sprites, front and
-                    back, False means not split.
-                    (Default: True)
+                split - MASPoseMap object saying which hair has splits or Not.
+                    If None, we assume hair has splits for everything.
+                    (Default: None)
             """
             super(MASHair, self).__init__(
                 name,
@@ -2594,6 +2596,9 @@ init -2 python:
                 entry_pp,
                 exit_pp
             )
+
+            if split is not None and type(split) != MASPoseMap:
+                raise Exception("split MUST be PoseMap")
 
             self.split = split
 
@@ -2801,11 +2806,24 @@ init -2 python:
             else:
                 hair = character.hair
 
+            # determine hair split
+            if hair.split is None:
+                # TODO: this should be True instead.
+                hair_split = False
+
+            elif lean:
+                # we assume split if lean not found
+                hair_split = hair.split.get(lean, True)
+
+            else:
+                # not leaning, still assume true if arms not found
+                hair_split = hair.split.get(arms, True)
+
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.name,
                 hair.name,
-                hair.split,
+                hair_split,
                 eyebrows,
                 eyes,
                 nose,
@@ -2994,10 +3012,10 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        ),
+        )
 #        entry_pp=store.mas_sprites._hair_def_entry,
 #        exit_pp=store.mas_sprites._hair_def_exit,
-        split=False
+#        split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
     store.mas_selspr.init_selectable_hair(
@@ -3020,10 +3038,10 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        ),
+        )
 #        entry_pp=store.mas_sprites._hair_down_entry,
 #        exit_pp=store.mas_sprites._hair_down_exit,
-        split=False
+#        split=False
     )
     store.mas_sprites.init_hair(mas_hair_down)
     store.mas_selspr.init_selectable_hair(
@@ -3045,8 +3063,8 @@ init -1 python:
         MASPoseMap(
             default=True,
             p5=None
-        ),
-        split=False
+        )
+#        split=False
     )
     store.mas_sprites.init_hair(mas_hair_bun)
 
@@ -3057,8 +3075,8 @@ init -1 python:
     mas_hair_custom = MASHair(
         "custom",
         "custom",
-        MASPoseMap(),
-        split=False
+        MASPoseMap()
+#        split=False
     )
     store.mas_sprites.init_hair(mas_hair_custom)
 
@@ -8298,6 +8316,19 @@ image monika 3tsbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 3rud = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="d",
+    left="1l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3rkbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9084,6 +9115,20 @@ image monika 3tsd = DynamicDisplayable(
     left="2l",
     right="1r",
     arms="restleftpointright"
+)
+
+image monika 3ekbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
 )
 
 image monika 3subfb = DynamicDisplayable(

@@ -606,6 +606,7 @@ init -810 python:
     #   know - knowledge
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
+    #   looks - your physical apperance
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -657,6 +658,10 @@ init -810 python:
             # actions / books
             "_mas_pm_read_yellow_wp": "pm.actions.books.read_yellow_wp",
 
+            # actions / charity
+            "_mas_pm_donate_charity": "pm.actions.charity.donated",
+            "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
+
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
 
@@ -674,6 +679,8 @@ init -810 python:
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
+            "_mas_pm_live_south_hemisphere": "pm.location.south_hemi",
+            "_mas_pm_gets_snow": "pm.location.snows",
 
             # likes
             "_mas_pm_likes_horror": "pm.likes.horror",
@@ -711,7 +718,27 @@ init -810 python:
 
             # op (opinions)
             # op / monika
-            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified"
+            "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
+
+            # looks
+            "_mas_pm_shared_appearance": "pm.looks.shared_looks",
+
+            # looks / eyes
+            "_mas_pm_eye_color": "pm.looks.eyes.color",
+
+            # looks / hair
+            "_mas_pm_hair_color": "pm.looks.hair.color",
+            "_mas_pm_hair_length": "pm.looks.hair.length",
+            "_mas_pm_shaved_hair": "pm.looks.hair.shaved",
+            "_mas_pm_no_hair_no_talk": "pm.looks.hair.no_talk",
+
+            # looks / skin
+            "_mas_pm_skin_tone": "pm.looks.skin.tone",
+
+            # looks / dims (dimensions)
+            "_mas_pm_height": "pm.looks.dims.height",
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+
         },
         use_year_before=True,
         dont_reset=True
