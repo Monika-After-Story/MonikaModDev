@@ -10048,53 +10048,49 @@ label monika_snow:
                 m 2eka "But anyway, I'm sure there's still a lot we can do together!"
     return
 
-#Same regarding categories here
 
 #init 5 python:
 #    addEvent(
 #        Event(
 #            persistent.event_database,
 #            eventlabel="monika_snowballfight",
-#            category=["cold", "snow"]
+#            category=["winter"],
+#            prompt="Have you had a snowball fight?"
+#            pool=True
 #        )
 #    )
-# TODO: this should be a pool topic
 
 label monika_snowballfight:
-    m 1euc "Snowball fighting?"
-    m 1eub "Having one with you sounds like a ton of fun, [player]!"
+    m 1euc "Snowball fights?"
+    m 1eub "I've been in a few before, they've always been fun!"
+    m 3eub "But having one with you sounds even better, [player]!"
     m 1dsc "Fair warning, though..."
     m 2tfu "I've got quite the throwing arm."
-    m 2tfb "So I certainly won't be going easy on you!"
-
-    # TODO: shuld only be shown if you never won pong
-    m 4hua "Maybe you're better at snowball fights than pong~?"
+    m 2tfb "So don't expect me to go easy on you!"
     return
 
-#Cats again
 
 #init 5 python:
 #    addEvent(
 #        Event(
 #            persistent.event_database,
 #            eventlabel="monika_iceskating",
-#            category=["cold", "sports"],
-#            prompt="Ice skating",
-#            pool=True
+#            category=["sports", "winter"],
+#            prompt="Ice skating"
 #        )
 #    )
 
-#TODO: hmm, this topic is kinda choppy. Needs a bit of reworking
 label monika_iceskating:
     m 1eua "Hey, [player], do you know how to ice skate?"
-    m 1hua "It's a really cool thing to learn!"
-    m 1eua "Especially for those who can do a lot of athletic tricks."
-    m 3rksdlb "I mean, it's hard enough to keep your balance on ice in the first place."
-    m 3hksdlb "Being able to turn it into a performance is really impressive."
+    m 1hua "It's a really fun sport to learn!"
+    m 3eua "Especially if you can do a lot of tricks."
+    m 3rksdlb "In the beginning, it's pretty difficult to keep your balance on ice..."
+    m 3hua "So eventually being able to turn it into a performance is really impressive!"
     m 3eub "There's actually a lot of ways to ice skate."
-    m "Figure skating, speed skating, and even in theatrical performances!"
+    m "There's figure skating, speed skating, and even theatrical performances!"
     m 1euc "Though, while doing something like that sounds like a great time..."
     m 1hua "But having you here with me is enough to keep me happy."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "I love you so much, [player]~"
     return
 
@@ -10108,7 +10104,7 @@ label monika_iceskating:
 #        )
 #    )
 # cats again
-# TODO: this topic is terrible. Either rewrite or remove. recommend melt
+# TODO: this topic is terrible. Either rewrite or remove. recommend melt. Flamethrowers please.
 label monika_snowman:
     m 2dsc "Hmm..."
     m 4eud "[player], have you ever stopped to think about what the life of a snowman is like?"
@@ -10155,51 +10151,61 @@ label monika_snowman:
 #        Event(
 #            persistent.event_database,
 #            eventlabel="monika_sledding",
-#            # TODO: outdoor categories probably
+#            category=["winter"]
 #            prompt="Sledding"
 #        )
 #    )
 
-#TODO: Needs a bit of aff pathing. Intro needs a little work too
 label monika_sledding:
-    #TODO: rephrase -> "Hey [player], you know what I'd love to do together?" (or something similar)
-    m 1eua "You know what I would love to do with you?"
+    m 1eua "Hey [player], do you know what would be fun to do together?"
     m 3hub "Sledding!"
+
+    if not persistent._mas_pm_gets_snow:
+        m 1eka "It may not snow where you live..."
+        m 3hub "But maybe we could go somewhere it does!"
+        m "Anyway..."
+
     m 3eua "You might think it's only for kids, but I think it could be fun for us, too!"
     m 3eub "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
     m 1hua "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
-    m 1euc "The kicksled is a bit small, though."
-    m 1hub "Ahaha!"
-    m 1eka "I'd have to sit in your lap for that one."
-    m 1rksdla "And I'd still be at risk of tumbling off."
-    #definitely some aff stuff here
-    m 1hua "But I know you wouldn't let that happen. You'd hold me tight, right~?"
-    m 1tku "That would probably be the best part."
+
+    if mas_isMoniAff(higher=True):
+        m 1euc "The kicksled is a bit small, though."
+        m 1hub "Ahaha!"
+        m 1eka "I'd have to sit in your lap for that one."
+        m 1rksdla "And I'd still be at risk of tumbling off."
+        m 1hua "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+        m 1tku "That would probably be the best part."
+    else:
+        m 1hub "Racing down a snow covered hill together with the wind rushing past us sounds like a blast!"
+        m 1eka "I hope we can go sledding together sometime, [player]."
     return
 
-#cats again
 
 #init 5 python:
 #    addEvent(
 #        Event(
 #            persistent.event_database,
 #            eventlabel="monika_snowcanvas",
-#            category=["cold", "snow"]
+#            category=["winter"],
+#            prompt="Snow canvas"
+#            random=True
 #        )
 #    )
 #TODO: needs some reworking here and there to fix flow issues.
 label monika_snowcanvas:
-    m 3euc "Have you ever looked at snow and thought it resembles a blank canvas?"
-    m 1hksdlb "I know I'm not really good with art..."
-    m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
-    m 3hub "Just step outside and let your imagination run wild!"
-    m 1eua "Doesn't having so much space to paint sound wonderful?"
-    #this line kinda comes out of nowhere...
-    m 1hksdlb "Although...{w}don't draw anything indecent, okay?"
-    #line before also makes this line here seem like a random thought
-    m 1eua "And make sure the snow is packed down tightly, too."
-    #TODO: replace 'this' with a specific
-    m 1eka "I'd love to do this with you someday."
+    if persistent._mas_pm_gets_snow is not False:
+        m 3euc "[player], have you ever looked at snow and thought it resembles a blank canvas?"
+        m 1hksdlb "I know I'm not really good with art..."
+        m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
+        m 3hub "We can just step outside and let our imaginations run wild!"
+    else:
+        m 3euc "You know [player], snow is kinda like a blank canvas."
+        m 3eub "Maybe someday if we went somewhere that it snows, we could bring some food coloring in spray bottles, just step outside and let our imaginations run wild!"
+
+    m 1eua "Having so much space to paint sounds wonderful!"
+    m 1hub "We just have to make sure the snow is packed down tightly, and then we can draw to our heart's content!"
+    m 1eka "I'd love to make some snow art with you someday."
     m 3hua "Maybe you can paint something for me when that happens, [player]."
     return
     
