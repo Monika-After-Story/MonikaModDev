@@ -1547,6 +1547,9 @@ label call_next_event:
             if "derandom" in _return:
                 $ ev.random = False
 
+            if "rebuild_ev" in _return:
+                $ mas_rebuildEventLists()
+
             if "quit" in _return:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
