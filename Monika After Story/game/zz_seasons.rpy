@@ -94,22 +94,22 @@ init 10 python in mas_seasons:
     #   season. You can also assume that the progrmming point runs when
     #   a season changes (but people don't)
     #
-    #   In theory, the programming points run in order, but you can NOT
-    #   assume that they will be. For example, if a user waits a season
-    #   before relaunching MAS, they will skip a programming point.
+    #   Season programming WILL run in order if a user skips several seasons
+    #   between sessions.
 
 
     def _pp_spring():
         """
         Programming point for spring
         """
-        mas_getEv('monika_snow').random = False
-        mas_getEv('monika_sledding').random = False
-        mas_getEv('monika_snowcanvas').random = False
-        mas_getEv('monika_cozy').random = False
-        mas_getEv('monika_winter').random = False
-        mas_getEv('monika_winter_dangers').random = False
-        return
+
+        # hide winter topics
+        store.mas_hideEVL("monika_snow", "EVE", derandom=True)
+        store.mas_hideEVL("monika_sledding", "EVE", derandom=True)
+        store.mas_hideEVL("monika_snowcanvas", "EVE", derandom=True)
+        store.mas_hideEVL("monika_cozy", "EVE", derandom=True)
+        store.mas_hideEVL("monika_winter", "EVE", derandom=True)
+        store.mas_hideEVL("monika_winter_dangers", "EVE", derandom=True)
 
 
     def _pp_summer():
@@ -130,14 +130,15 @@ init 10 python in mas_seasons:
         """
         Programming point for winter
         """
-        mas_getEv('monika_sledding').random = True
-        mas_getEv('monika_snowcanvas').random = True
-        mas_getEv('monika_cozy').random = True
-        mas_getEv('monika_winter').random = True
-        mas_getEv('monika_winter_dangers').random = True
-        if not persistent._seen_ever["monika_snow"]:
-            mas_getEv('monika_snow').random = True
-        return
+
+        # show winter topics
+        if not renpy.seen_label("monika_snow"):
+            store.mas_showEVL("monika_snow", "EVE", _random=True)
+        store.mas_showEVL("monika_sledding", "EVE", _random=True)
+        store.mas_showEVL("monika_snowcanvas", "EVE", _random=True)
+        store.mas_showEVL("monika_cozy", "EVE", _random=True)
+        store.mas_showEVL("monika_winter", "EVE", _random=True)
+        store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
 
     
     # seaonal pp id:
