@@ -81,12 +81,18 @@ init 10 python in mas_seasons:
     import store
     # NOTE: all functions here are guaranteed to run at 900, and runtime.
 
-    
+
     def _pp_spring():
         """
         Programming point for spring
         """
-        pass
+        mas_getEv('monika_snow').random = False
+        mas_getEv('monika_sledding').random = False
+        mas_getEv('monika_snowcanvas').random = False
+        mas_getEv('monika_cozy').random = False
+        mas_getEv('monika_winter').random = False
+        mas_getEv('monika_winter_dangers').random = False
+        return
 
 
     def _pp_summer():
@@ -102,12 +108,19 @@ init 10 python in mas_seasons:
         """
         pass
 
-    
+
     def _pp_winter():
         """
         Programming point for winter
         """
-        pass
+        mas_getEv('monika_sledding').random = True
+        mas_getEv('monika_snowcanvas').random = True
+        mas_getEv('monika_cozy').random = True
+        mas_getEv('monika_winter').random = True
+        mas_getEv('monika_winter_dangers').random = True
+        if not persistent._seen_ever["monika_snow"]:
+            mas_getEv('monika_snow').random = True
+        return
 
 
 init 900 python:

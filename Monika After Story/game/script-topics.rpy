@@ -10010,8 +10010,7 @@ label monika_cares_about_dokis:
 #            persistent.event_database,
 #            eventlabel="monika_snow",
 #            category=["winter","weather","you"],
-#            prompt="Snow",
-#            random=True
+#            prompt="Snow"
 #        )
 #    )
 
@@ -10152,8 +10151,7 @@ label monika_snowman:
 #            persistent.event_database,
 #            eventlabel="monika_sledding",
 #            category=["winter"],
-#            prompt="Sledding",
-#            random=True
+#            prompt="Sledding"
 #        )
 #    )
 
@@ -10189,8 +10187,7 @@ label monika_sledding:
 #            persistent.event_database,
 #            eventlabel="monika_snowcanvas",
 #            category=["winter"],
-#            prompt="Snow canvas",
-#            random=True
+#            prompt="Snow canvas"
 #        )
 #    )
 #TODO: needs some reworking here and there to fix flow issues.
@@ -10219,7 +10216,6 @@ label monika_snowcanvas:
 #            eventlabel="monika_cozy",
 #            category=["romance","winter"],
 #            prompt="Warming up",
-#            random=True,
 #            aff_range=(mas_aff.AFFECTIONATE,None)
 #        )
 #    )
@@ -10244,8 +10240,7 @@ label monika_cozy:
 #            persistent.event_database,
 #            eventlabel="monika_winter",
 #            category=["winter"],
-#            prompt="Winter activities",
-#            random=True
+#            prompt="Winter activities"
 #        )
 #    )
 
@@ -10277,8 +10272,7 @@ label monika_winter:
 #            persistent.event_database,
 #            eventlabel="monika_winter_dangers",
 #            category=["winter"],
-#            prompt="Winter dangers",
-#            random=True
+#            prompt="Winter dangers"
 #        )
 #    )
 
