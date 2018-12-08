@@ -3264,13 +3264,9 @@ init -1 python:
     # Accessories should be named like:
     #   acs-<acs identifier/name>-<pose id>-<night suffix>
     #
-    # Leaning:
-    #   acs-leaning-<leantype>-<acs identifier/name>-<pose id>-<night suffix>
-    #
     # acs name - name of the accessory (shoud be unique)
     # pose id - identifier to map this image to a pose (should be unique
     #       per accessory)
-    # leantype - leaning type, if appropriate
     #
     # NOTE: pleaes preface each accessory with the following commen template
     # this is to ensure we hvae an accurate description of what each accessory
