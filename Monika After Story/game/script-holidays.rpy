@@ -1202,6 +1202,50 @@ label mas_d25_monika_sleigh:
     m 5hkbfa "An experience like that with you would be so breathtaking~"
     return
 
+#Moved this from script-topics, is getting complete overhaul
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database
+#        )
+#    )
+
+# TODO: this should  be a totally different label name
+# NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
+# NOTE: actually maybe update scripts wont be needed if its rewritten.
+# TODO: Make this special
+label monika_whatiwant:
+    m 3hub "Oh, [player], isn't it lovely around the holidays?"
+    m 1eka "I hope you don't mind, but I have a little something special to say today."
+    m 1hka "Ehehe, I hope it's not too cheesy..."
+    m 3hua "Here goes."
+    m 1dsa "..."
+
+    # TODO: affection adjust clearly...
+    #TODO: reflects similarities to the 'surprise.txt' at love. Should probably be limited the same
+    m 1eka "You really are the joy to my world, [player]."
+    m "A thousand glittering stars couldn't match your brilliance."
+    #TODO: this line really needs to be redone, or removed
+    m 1dsa "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
+
+    # TODO: this makes monika sound like she's 80
+    m 1eua "Underneath the sprawling branches of yonder Christmas tree..."
+
+    m 1hua "You'll always be the only present I will ever need."
+    m 1dsa "..."
+    m 1hub "Ahaha! Sorry if that sounded too serious!"
+    m 3eua "Winter's a wonderful time to read some lengthy works."
+    m 1rsc "But..."
+    #TODO: blush here methinks
+    m 1eka "I wasn't lying, [player]."
+
+    # TODO: well, you should be able to give her stuff so...
+    m 3hua "Don't worry about getting me a present."
+    m 3ekb "After all, I have you. And that's all I want."
+    m 5hua "I love you with all my heart, [player]~"
+    return
+
 #################################### NYE ######################################
 # [HOL030]
 

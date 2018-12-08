@@ -10055,7 +10055,7 @@ label monika_snow:
 #            persistent.event_database,
 #            eventlabel="monika_snowballfight",
 #            category=["winter"],
-#            prompt="Have you had a snowball fight?"
+#            prompt="Have you had a snowball fight?",
 #            pool=True
 #        )
 #    )
@@ -10076,7 +10076,8 @@ label monika_snowballfight:
 #            persistent.event_database,
 #            eventlabel="monika_iceskating",
 #            category=["sports", "winter"],
-#            prompt="Ice skating"
+#            prompt="Ice skating",
+#            random=True
 #        )
 #    )
 
@@ -10089,7 +10090,7 @@ label monika_iceskating:
     m 3eub "There's actually a lot of ways to ice skate."
     m "There's figure skating, speed skating, and even theatrical performances!"
     m 1euc "Though, while doing something like that sounds like a great time..."
-    m 1hua "But having you here with me is enough to keep me happy."
+    m 1hua "Having you here with me is enough to keep me happy."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "I love you so much, [player]~"
     return
@@ -10151,8 +10152,9 @@ label monika_snowman:
 #        Event(
 #            persistent.event_database,
 #            eventlabel="monika_sledding",
-#            category=["winter"]
-#            prompt="Sledding"
+#            category=["winter"],
+#            prompt="Sledding",
+#            random=True
 #        )
 #    )
 
@@ -10188,7 +10190,7 @@ label monika_sledding:
 #            persistent.event_database,
 #            eventlabel="monika_snowcanvas",
 #            category=["winter"],
-#            prompt="Snow canvas"
+#            prompt="Snow canvas",
 #            random=True
 #        )
 #    )
@@ -10217,7 +10219,7 @@ label monika_snowcanvas:
 #            persistent.event_database,
 #            eventlabel="monika_cozy",
 #            category=["romance","winter"],
-#            prompt="Warming up"
+#            prompt="Warming up",
 #            random=True,
 #            aff_range=(mas_aff.AFFECTIONATE,None)
 #        )
@@ -10243,16 +10245,16 @@ label monika_cozy:
 #            persistent.event_database,
 #            eventlabel="monika_winter",
 #            category=["winter"],
-#            prompt="Winter activities"
+#            prompt="Winter activities",
 #            random=True
 #        )
 #    )
 
 label monika_winter:
-    m 1eud "Oh, [player]!"
+    m 1eud "Ah, [player]!"
     m 1eua "What do you think about winter?"
     m 3eua "All sorts of fun activites only come around during this time..."
-    if persistent._mas_pm_gets_snow:
+    if persistent._mas_pm_gets_snow is not False:
         m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
     else:
         m 3eka "I know you don't really get snow where you live, but many people do get to enjoy activities in the snow..."
@@ -10268,48 +10270,6 @@ label monika_winter:
         m 1hua "Sitting by the window, reading a nice book while drinking a cup of coffee or hot chocolate is always a wonderful experience on a cold night, [player]."
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database
-#        )
-#    )
-
-# TODO: this should  be a totally different label name
-# NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
-# NOTE: actually maybe update scripts wont be needed if its rewritten.
-# TODO: Make this special
-label monika_whatiwant:
-    m 3hub "Oh, [player], isn't it lovely around the holidays?"
-    m 1eka "I hope you don't mind, but I have a little something special to say today."
-    m 1hka "Ehehe, I hope it's not too cheesy..."
-    m 3hua "Here goes."
-    m 1dsa "..."
-
-    # TODO: affection adjust clearly...
-    #TODO: reflects similarities to the 'surprise.txt' at love. Should probably be limited the same
-    m 1eka "You really are the joy to my world, [player]."
-    m "A thousand glittering stars couldn't match your brilliance."
-    #TODO: this line really needs to be redone, or removed
-    m 1dsa "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
-
-    # TODO: this makes monika sound like she's 80
-    m 1eua "Underneath the sprawling branches of yonder Christmas tree..."
-
-    m 1hua "You'll always be the only present I will ever need."
-    m 1dsa "..."
-    m 1hub "Ahaha! Sorry if that sounded too serious!"
-    m 3eua "Winter's a wonderful time to read some lengthy works."
-    m 1rsc "But..."
-    #TODO: blush here methinks
-    m 1eka "I wasn't lying, [player]."
-
-    # TODO: well, you should be able to give her stuff so...
-    m 3hua "Don't worry about getting me a present."
-    m 3ekb "After all, I have you. And that's all I want."
-    m 5hua "I love you with all my heart, [player]~"
-    return
-
 #This combines _relax and _hypothermia into one topic
 
 #init 5 python:
@@ -10318,7 +10278,7 @@ label monika_whatiwant:
 #            persistent.event_database,
 #            eventlabel="monika_winter_dangers",
 #            category=["winter"],
-#            prompt="Winter dangers"
+#            prompt="Winter dangers",
 #            random=True
 #        )
 #    )
