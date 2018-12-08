@@ -581,7 +581,7 @@ label mas_reaction_gift_coffee:
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
     if persistent._mas_coffee_been_given:
-        $ mas_gainAffection(bypass=True)
+        $ mas_gainAffection(bypass=mas_isSpecialDay())
         m 1wuo "It's a flavor I've haven't had before, too."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
