@@ -10002,19 +10002,18 @@ label monika_cares_about_dokis:
 # HOL020
 #TODO: add these to seasonal program points
 
-# Essentially for people who don't get to answer the snow question in the hemisphere topic
+# this will now always available in winter, but derandomed once the snow question is answered in either topic
 
 #init 5 python:
-#    if persistent._mas_pm_gets_snow == None:
-#        addEvent(
-#            Event(
-#                persistent.event_database,
-#                eventlabel="monika_snow",
-#                category=["winter","weather","you"],
-#                prompt="Snow",
-#                random=True
-#            )
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_snow",
+#            category=["winter","weather","you"],
+#            prompt="Snow",
+#            random=True
 #        )
+#    )
 
 label monika_snow:
     m 1eua "Hey, [player], now that it's winter, I was wondering..."
@@ -10046,7 +10045,7 @@ label monika_snow:
                 m "My heart is pounding, just imagining it."
             else:
                 m 2eka "But anyway, I'm sure there's still a lot we can do together!"
-    return
+    return "derandom"
 
 
 #init 5 python:
@@ -10162,7 +10161,7 @@ label monika_sledding:
     m 1eua "Hey [player], do you know what would be fun to do together?"
     m 3hub "Sledding!"
 
-    if not persistent._mas_pm_gets_snow:
+    if persistent._mas_pm_gets_snow == False: #explicitly using False here so we don't grab None people who haven't answered the question yet
         m 1eka "It may not snow where you live..."
         m 3hub "But maybe we could go somewhere it does!"
         m "Anyway..."
@@ -10288,7 +10287,7 @@ label monika_winter_dangers:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
     m 3eka "The glistening, white snow, the bright and colorful lights~"
     m 3hub "I just love it."
-    if not persistent._mas_pm_gets_snow:
+    if persistent._mas_pm_gets_snow == False: #explicitly using False here so we don't grab None people who haven't answered the question yet
         m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate it's appeal..."
         m 3hua "Maybe someday after I crossover we can even take a trip some place where they do have snow and enjoy it's beauty together!"
     m 1eka "..."
@@ -10449,35 +10448,62 @@ label monika_hemispheres:
 
     else:
         m 3eua "Anyway, that means it must be winter for you now."
-        m 2hub "Gosh, I really love how pretty snow is."
-        m 3euc "Well, I know not all parts of the world get snow..."
+        if persistent._mas_pm_gets_snow == None
+            m 2hub "Gosh, I really love how pretty snow is."
+            m 3euc "Well, I know not all parts of the world get snow..."
 
-        show monika 1euc
-        menu:
-            m "Does it snow where you live, [player]?"
+            show monika 1euc
+            menu:
+                m "Does it snow where you live, [player]?"
 
-            "Yes.":
-                $ persistent._mas_pm_gets_snow = True
-                m 3hub "That's wonderful!"
-                m 1eka "There's something really peaceful about a quiet, snowy night."
-                if mas_isMoniHappy(higher=True):
-                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+                "Yes.":
+                    $ persistent._mas_pm_gets_snow = True
+                    #TODO: may want to update script this for unstable users who answered this before monika_snow was derandomed
+                    $ mas_getEV("monika_snow").random = False
+                    $ persistent._seen_ever["monika_snow"] = True
+                    m 3hub "That's wonderful!"
+                    m 1eka "There's something really peaceful about a quiet, snowy night."
+                    if mas_isMoniHappy(higher=True):
+                        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+                        if mas_isMoniAff(higher=True):
+                            m 5ekbfa "...and we could hold each other close to keep each other warm~"
+                    m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+
+                "No.":
+                    $ persistent._mas_pm_gets_snow = False
+                    #TODO: may want to update script this for unstable users who answered this before monika_snow was derandomed
+                    $ mas_getEV("monika_snow").random = False
+                    $ persistent._seen_ever["monika_snow"] = True
+                    m 3eka "That's a shame. But it's not all bad."
+                    m 3hksdlb "At least you don't have to worry about shoveling it."
+                    m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
                     if mas_isMoniAff(higher=True):
-                        m 5ekbfa "...and we could hold each other close to keep each other warm~"
-                m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
-
-            "No.":
-                $ persistent._mas_pm_gets_snow = False
-                m 3eka "That's a shame. But it's not all bad."
-                m 3hksdlb "At least you don't have to worry about shoveling it."
-                m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+                        m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+                        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5ekbfa "A night of cuddling with you would be wonderful..."
+                        m "My heart is pounding, just imagining it."
+                    else:
+                        m 2eka "But anyway, I'm sure there's still a lot we can do together!"
+        elif persistent._mas_pm_gets_snow:
+            m 2hub "Gosh, I really love how pretty snow is."
+            m 1eka "There's something really peaceful about a quiet, snowy night."
+            if mas_isMoniHappy(higher=True):
+                show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
                 if mas_isMoniAff(higher=True):
-                    m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
-                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5ekbfa "A night of cuddling with you would be wonderful..."
-                    m "My heart is pounding, just imagining it."
-                else:
-                    m 2eka "But anyway, I'm sure there's still a lot we can do together!"
-
+                    m 5ekbfa "...and we could hold each other close to keep each other warm~"
+            m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+        else:
+            m 3eka "I know you don't really get snow where you live..."
+            m 1eka "It must be nice not having to deal with all the hassles that come with it..."
+            m 3rksdld "Like the terrible travel conditions, having to shovel it..."
+            m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+            if mas_isMoniAff(higher=True):
+                m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ekbfa "A night of cuddling with you would be wonderful..."
+                m "My heart is pounding, just imagining it."
+            else:
+                m 2eka "But anyway, I'm sure there's still a lot we can do together!"
     return "derandom"
