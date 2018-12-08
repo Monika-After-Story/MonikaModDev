@@ -421,6 +421,8 @@ init -5 python in mas_sprites:
 
     def acs_lean_mode(sprite_list, lean):
         """
+        NOTE: DEPRECATED
+
         Adds the appropriate accessory prefix dpenedong on lean
 
         IN:
@@ -589,9 +591,10 @@ init -5 python in mas_sprites:
         if lean:
             poseid = acs.pose_map.l_map.get(lean, None)
 
-            if acs.pose_map.use_reg_for_l:
+            # NOTE: we dont care about leaning as a part of filename
+#            if acs.pose_map.use_reg_for_l:
                 # clear lean if dont want to use it for rendering
-                lean = None
+#                lean = None
 
         else:
             poseid = acs.pose_map.map.get(pose, None)
@@ -614,10 +617,11 @@ init -5 python in mas_sprites:
         sprite_list.extend((
             LOC_Z,
             ',"',
-            A_T_MAIN
-        ))
-        acs_lean_mode(sprite_list, lean)
-        sprite_list.extend((
+            A_T_MAIN,
+            PREFIX_ACS,
+#        ))
+#        acs_lean_mode(sprite_list, lean)
+#        sprite_list.extend((
             acs_str,
             ART_DLM,
             poseid,

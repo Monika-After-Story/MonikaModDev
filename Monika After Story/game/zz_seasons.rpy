@@ -153,7 +153,7 @@ init 10 python in mas_seasons:
 
     # progression map
     # maps season IDs to the next season ID, chronological order.
-    _progression_map =
+    _progression_map = {
         1: 2,
         2: 3,
         3: 4,
