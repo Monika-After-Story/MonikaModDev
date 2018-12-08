@@ -6,6 +6,14 @@ define mas_summer_solstice = datetime.date(datetime.date.today().year,6,21)
 define mas_fall_equinox = datetime.date(datetime.date.today().year,9,23)
 define mas_winter_solstice = datetime.date(datetime.date.today().year,12,21)
 
+default persistent._mas_current_season = 0
+# set to integer based on season:
+#   0 - no season
+#   1 - spring
+#   2 - summer
+#   3 - fall
+#   4 - winter
+
 init -1 python:
 
     def mas_isSpring(_date=datetime.date.today()):
@@ -81,6 +89,15 @@ init 10 python in mas_seasons:
     import store
     # NOTE: all functions here are guaranteed to run at 900, and runtime.
 
+    # NOTE: Methodology for seasonal programming points:
+    #   Assume all programming points always run on startup for a particular
+    #   season. You can also assume that the progrmming point runs when
+    #   a season changes (but people don't)
+    #
+    #   In theory, the programming points run in order, but you can NOT
+    #   assume that they will be. For example, if a user waits a season
+    #   before relaunching MAS, they will skip a programming point.
+
 
     def _pp_spring():
         """
@@ -122,9 +139,79 @@ init 10 python in mas_seasons:
             mas_getEv('monika_snow').random = True
         return
 
+    
+    # seaonal pp id:
+    # maps season IDs to the programming point
+    _season_pp_map = {
+        1: _pp_spring,
+        2: _pp_summer,
+        3: _pp_fall,
+        4: _pp_winter
+    }
+
+
+    # progression map
+    # maps season IDs to the next season ID, chronological order.
+    _progression_map =
+        1: 2,
+        2: 3,
+        3: 4,
+        4: 1
+    }
+
+
+    # seasonal logic map:
+    # maps season IDs to their logic function
+    _season_logic_map = {
+        1: store.mas_isSpring,
+        2: store.mas_isSummer,
+        3: store.mas_isFall,
+        4: store.mas_isWinter
+    }
+
+
+    def _currentSeason():
+        """
+        Determins the current season and returns appropriate season ID
+        """
+        for _id, logic in _season_logic_map:
+            if logic():
+                return _id
+
+        # we consier Fall to be default since that is when ddlc was released
+        return 3
+
+
+    def _seasonalCatchup(prev_season):
+        """
+        Runs through seasonal programming points from the given prevoius
+        season to now. Returns the ID of the current season.
+
+        IN:
+            prev_season - previously saved season
+
+        RETURNS: current season ID
+        """
+        curr_season = _currentSeason()
+
+        if prev_season == curr_season:
+            # if we are in the same season, just run the curr season point
+            _season_pp_map[curr_season]()
+            return curr_season
+
+        # otherwise, we need to step up
+        while prev_season != curr_season:
+            prev_season = _progression_map.get(prev_season, curr_season)
+            
+            if prev_season in _season_pp_map:
+                _season_pp_map[prev_season]()
+
+        return curr_season
+
 
 init 900 python:
     # run the init-time seasonal check
-    mas_seasonalCheck()
-        
+    persistent._mas_current_season = store.mas_seasons._seasonalCatchup(
+        persistent._mas_current_season
+    )
     

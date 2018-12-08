@@ -30,14 +30,6 @@ init -1 python in mas_globals:
     lightning_s_chance = 10
     # lghtning chances
 
-    curr_season = 0
-    # set to integer based on season:
-    #   0 - no season
-    #   1 - spring
-    #   2 - summer
-    #   3 - fall
-    #   4 - winter
-
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -579,28 +571,24 @@ init python:
         If the global for season is currently None, then we instead set the
         current season.
 
+        NOTE: this does NOT do progressive programming point execution.
+            This is intended for runtime usage only.
+
         ASSUMES:
-            store.mas_globals.curr_season
+            persistent._mas_current_season
         """
-        def _pp_run(_s_pp, _s_tag):
-            if store.mas_globals.curr_season != _s_tag:
+        _s_tag = store.mas_seasons._currentSeason()
+
+        if persistent._mas_current_season != _s_tag:
+
+            _s_pp = store.mas_seasons._season_pp_map.get(_s_tag, None)
+            if _s_pp is not None:
+
                 # executes programming point
                 _s_pp()
 
                 # sets global to given tag
-                store.mas_globals.curr_season = _s_tag
-
-        if mas_isSpring():
-            _pp_run(store.mas_seasons._pp_spring, 1)
-
-        elif mas_isSummer():
-            _pp_run(store.mas_seasons._pp_summer, 2)
-
-        elif mas_isFall():
-            _pp_run(store.mas_seasons._pp_fall, 3)
-
-        else: # must be winter
-            _pp_run(store.mas_seasons._pp_winter, 4)
+                persistent._mas_current_season = _s_tag
 
 
 # IN:
