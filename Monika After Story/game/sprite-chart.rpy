@@ -111,6 +111,12 @@ default persistent._mas_acs_pst_list = list()
 # zoom levels
 default persistent._mas_zoom_zoom_level = None
 
+default persistent._mas_force_clothes = False
+# Set to True if the user manually set clothes
+
+default persistent._mas_force_hair = False
+# Set to True if the user manually set hair
+
 image monika g1:
     "monika/g1.png"
     xoffset 35 yoffset 55

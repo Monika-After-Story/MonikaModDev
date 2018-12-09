@@ -100,6 +100,20 @@ init -810 python:
 #        exit_pp=store.mas_history._o31_exit_pp
     ))
 
+init -10 python:
+    def mas_isO31(_date=datetime.date.today()):
+        """
+        Returns True if the given date is o31
+
+        IN:
+            _date - date to check
+                (Default: todays date)
+
+        RETURNS: True if given date is o31, False otherwise
+        """
+        return _date == mas_o31
+
+
 init 101 python:
     # o31 setup
     if persistent._mas_o31_seen_costumes is None:
@@ -827,16 +841,22 @@ define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 # christmas eve
 
 define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
-# start of christmas season
+# start of christmas season (inclusive)
 
 define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 5)
-# end of christmas season
+# end of christmas season (inclusive)
 
 define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
-# start of gift = d25 gift
+# start of gift = d25 gift (inclusive)
 
 define mas_d25g_end = mas_d25
-# end of gift = d25 gift
+# end of gift = d25 gift (inclusive)
+
+define mas_d25cl_start = mas_d25c_start
+# start of when monika wears santa (inclusive)
+
+define mas_d25cl_end = datetime.date(datetime.date.today().year, 12, 25)
+# end of when monika wears santa (on her own) (inclusive)
 
 
 init -810 python:
@@ -855,6 +875,82 @@ init -810 python:
         }
         # TODO: programming points probably
     ))
+
+
+init -10 python:
+
+    def mas_isD25(_date=datetime.date.today()):
+        """
+        Returns True if the given date is d25
+
+        IN:
+            _date - date to check
+                (default: todays date)
+
+        RETURNS: True if given date is d25, False otherwise
+        """
+        return _date == mas_d25
+
+
+    def mas_isD25Eve(_date=datetime.date.today()):
+        """
+        Returns True if the given date is d25 eve
+
+        IN:
+            _date - date to check
+                (Default: todays date)
+
+        RETURNS: True if given date is d25 eve, False otherwise
+        """
+        return _date == mas_d25e
+
+
+    def mas_isD25Season(_date=datetime.date.today()):
+        """
+        Returns True if the given date is in d25 season. The season goes from
+        dec 1 to jan 5.
+
+        NOTE: because of the year rollover, we cannot check years
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in d25 season, False otherwise
+        """
+        return (
+            mas_d25c_start <= _date <= mas_nye
+            or mas_nyd <= _date <= mas_d25c_end
+        )
+
+
+    def mas_isD25Gift(_date=datetime.date.today()):
+        """
+        Returns True if the given date is in the range of days where a gift
+        is considered a christmas gift.
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in the d25 gift range, Falsee otherwise
+        """
+        return mas_d25g_start <= _date <= mas_d25g_end
+
+
+    def mas_isD25Outfit(_date=datetime.date.today()):
+        """
+        Returns True if the given date is tn the range of days where Monika
+        wears the santa outfit on start.
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in teh d25 santa outfit range, False
+            otherwise
+        """
+        return mas_d25cl_start <= _date <= mas_d25cl_end
 
 
 #### d25 arts
@@ -922,6 +1018,10 @@ label mas_holiday_d25c_autoload_check:
 
     # TODO:
     #   holiday intro dialogue pushed, if not already pushed
+
+    if mas_isD25():
+        # on d25, monika will wear santa on start, regardless of whatever
+        monika_chr.change_clothes(mas_clothes_santa)
 
     if mas_in_intro_flow:
         # intro will call us instead of jump
@@ -1317,6 +1417,34 @@ init -810 python:
         use_year_before=True
         # TODO: programming points probably
     ))
+
+
+init -10 python:
+    def mas_isNYE(_date=datetime.date.today()):
+        """
+        Returns True if the given date is new years eve
+
+        IN:
+            _date - date to check
+                (Default: Todays date)
+
+        RETURNS: True if given date is new years eve, False otherwise
+        """
+        return _date == mas_nye
+
+
+    def mas_isNYD(_date=datetime.date.today()):
+        """
+        RETURNS True if the given date is new years day
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is new years day, False otherwise
+        """
+        return _date == mas_nyd
+
 
 # topics
 # TODO: dont forget to updaet script seen props

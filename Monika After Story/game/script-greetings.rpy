@@ -34,6 +34,8 @@ init -1 python in mas_greetings:
     TYPE_HOL_O31 = "o31"
     TYPE_HOL_O31_TT = "trick_or_treat"
     TYPE_HOL_D25 = "d25"
+    TYPE_HOL_NYE = "nye"
+    TYPE_HOL_NYE_FW = "fireworks"
 
     # custom greeting functions
     def selectGreeting(_type=None):

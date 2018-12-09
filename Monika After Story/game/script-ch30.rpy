@@ -670,7 +670,7 @@ label ch30_main:
         $ store.mas_globals.show_vignette = True
         $ store.mas_globals.show_lightning = True
         $ mas_forceRain()
-        $ mas_lockHair()
+#        $ mas_lockHair()
 
     # d25 season? d25 season you are in
     if mas_isD25Season():
