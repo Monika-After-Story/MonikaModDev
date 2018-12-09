@@ -1382,7 +1382,7 @@ init -5 python in mas_sprites:
                 _ms_arms_nh(sprite_str_list, loc_str, clothing, arms, n_suffix)
 
         else:
-            # in thise case, 2,3,5,6,7 are skipped.
+            # in thise case, 2,6,7 are skipped.
 
             # 4. body
             _ms_body(
@@ -1393,6 +1393,28 @@ init -5 python in mas_sprites:
                 n_suffix,
                 lean=lean,
                 arms=arms
+            )
+
+            # 3. post back hair acs gets rendered right after body instead
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bbh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # 5. pre-front hair acs gets rendered before mid instead
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bfh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
             )
 
         # 8. between body and face acs
@@ -2499,6 +2521,7 @@ init -2 python:
             priority - render priority. Lower is rendered first
             no_lean - determins if the leaning versions are hte same as the
                 regular ones.
+            acs_type - an optional type to help organize acs
 
         SEE MASSpriteBase for inherited properties
         """
@@ -2514,7 +2537,8 @@ init -2 python:
                 no_lean=False,
                 stay_on_start=False,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                acs_type=None
             ):
             """
             MASAccessory constructor
@@ -2551,6 +2575,10 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
+                acs_type - type, for ease of organization of acs
+                    NOTE: not used by the sprite system. This purely for caller
+                    use.
+                    (Default: None)
             """
             super(MASAccessory, self).__init__(
                 name,
@@ -2564,6 +2592,7 @@ init -2 python:
             self.__rec_layer = rec_layer
             self.priority=priority
             self.no_lean = no_lean
+            self.acs_type = acs_type
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -3399,7 +3428,8 @@ init -1 python:
             p5="5",
             p6=None
         ),
-        stay_on_start=True
+        stay_on_start=True,
+        acs_type="ring"
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
 
@@ -3431,6 +3461,266 @@ init -1 python:
         priority=11,
         stay_on_start=False,
         entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
+    )
+
+    ### BLUE RIBBON
+    ## ribbon_blue
+    # Blue ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_blue = MASAccessory(
+        "ribbon_blue",
+        "ribbon_blue",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_blue)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_blue,
+        "Ribbon (Blue)",
+        "ribbon_blue",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (blue like the sky!)"
+        ]
+    )
+
+    ### DARK PURPLE RIBBON
+    ## ribbon_dark_purple
+    # Dark purple ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_darkpurple = MASAccessory(
+        "ribbon_dark_purple",
+        "ribbon_dark_purple",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_darkpurple)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_darkpurple,
+        "Ribbon (Dark Purple)",
+        "ribbon_dark_purple",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (purple like yuri!)"
+        ]
+    )
+
+    ### GRAY RIBBON
+    ## ribbon_gray
+    # Gray ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_gray = MASAccessory(
+        "ribbon_gray",
+        "ribbon_gray",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_gray)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_gray,
+        "Ribbon (Gray)",
+        "ribbon_gray",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (gray!)"
+        ]
+    )
+
+    ### GREEN RIBBON
+    ## ribbon_green
+    # Green ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_green = MASAccessory(
+        "ribbon_green",
+        "ribbon_green",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_green)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_green,
+        "Ribbon (Green)",
+        "ribbon_green",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (green like my eyes!)"
+        ]
+    )
+
+    ### LIGHT PURPLE RIBBON
+    ## ribbon_light_purple
+    # Light purple ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_lightpurple = MASAccessory(
+        "ribbon_light_purple",
+        "ribbon_light_purple",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_lightpurple)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_lightpurple,
+        "Ribbon (Light Purple)",
+        "ribbon_light_purple",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (light purple like light yuri)"
+        ]
+    )
+
+    ### PEACH RIBBON
+    ## ribbon_peach
+    # Peach ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_peach = MASAccessory(
+        "ribbon_peach",
+        "ribbon_peach",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_peach)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_peach,
+        "Ribbon (Peach)",
+        "ribbon_peach",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (peach like peach)"
+        ]
+    )
+
+    ### PINK RIBBON
+    ## ribbon_pink
+    # Pink ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_pink = MASAccessory(
+        "ribbon_pink",
+        "ribbon_pink",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_pink)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_pink,
+        "Ribbon (Pink)",
+        "ribbon_pink",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (pink like natsuki!)"
+        ]
+    )
+
+    ### RED RIBBON
+    ## ribbon_red
+    # Red ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_red = MASAccessory(
+        "ribbon_red",
+        "ribbon_red",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_red)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_red,
+        "Ribbon (Red)",
+        "ribbon_red",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (red like sayori's bow!)"
+        ]
+    )
+
+    ### TEAL RIBBON
+    ## ribbon_teal
+    # Teal ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_teal = MASAccessory(
+        "ribbon_teal",
+        "ribbon_teal",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_teal)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_teal,
+        "Ribbon (Teal)",
+        "ribbon_teal",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (teal like a meal!)"
+        ]
+    )
+
+    ### YELLOW RIBBON
+    ## ribbon_yellow
+    # Yellow ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_yellow = MASAccessory(
+        "ribbon_yellow",
+        "ribbon_yellow",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_yellow)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_yellow,
+        "Ribbon (Yellow)",
+        "ribbon_yellow",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (yellow like the soda!)"
+        ]
     )
 
 
