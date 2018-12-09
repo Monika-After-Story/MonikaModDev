@@ -707,7 +707,7 @@ label ch30_main:
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
-        mas_rebuildEventLists()
+        $ mas_rebuildEventLists()
 
     jump ch30_preloop
 

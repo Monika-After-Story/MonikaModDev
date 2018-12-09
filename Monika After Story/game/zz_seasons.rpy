@@ -175,7 +175,7 @@ init 10 python in mas_seasons:
         """
         Determins the current season and returns appropriate season ID
         """
-        for _id, logic in _season_logic_map:
+        for _id, logic in _season_logic_map.iteritems():
             if logic():
                 return _id
 

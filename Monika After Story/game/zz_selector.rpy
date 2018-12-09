@@ -567,8 +567,7 @@ init -10 python in mas_selspr:
 
             # then readd everything that was previous
             for item in add_map.itervalues():
-                acs = item.selectable.get_sprobj()
-                moni_chr.wear_acs_in(acs, acs.rec_layer)
+                moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
 

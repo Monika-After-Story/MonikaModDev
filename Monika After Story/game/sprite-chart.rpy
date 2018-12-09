@@ -2140,7 +2140,7 @@ init -2 python:
             IN:
                 acs - accessory to wear
             """
-            self.wear_acs_in(acs, acs.rec_layer)
+            self.wear_acs_in(acs, acs.get_rec_layer())
 
 
         def wear_acs_in(self, accessory, acs_type):
@@ -3723,6 +3723,31 @@ init -1 python:
         ]
     )
 
+    ### WHITE RIBBON
+    ## ribbon_def
+    # White ribbon (the default) for ponytail/bun hairstyles
+    mas_acs_ribbon_def = MASAccessory(
+        "ribbon_def",
+        "ribbon_def",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_def)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_def,
+        "Ribbon (White)",
+        "ribbon_def",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (my ribbon as it should be!)"
+        ]
+    )
 
 #### ACCCESSORY VARIABLES (IMG025)
 # variables that accessories may need for enabling / disabling / whatever
