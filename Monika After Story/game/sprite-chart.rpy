@@ -2066,6 +2066,17 @@ init -2 python:
             )
 
 
+        def wear_acs(self, acs):
+            """
+            Wears the given accessory in that accessory's recommended 
+            spot, as defined by the accessory.
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, acs.rec_layer)
+
+
         def wear_acs_in(self, accessory, acs_type):
             """
             Wears the given accessory
