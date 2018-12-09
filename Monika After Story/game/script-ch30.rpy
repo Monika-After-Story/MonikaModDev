@@ -661,6 +661,9 @@ label ch30_main:
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
 
+    # so other flows are aware that we are in intro
+    $ mas_in_intro_flow = True
+
     # o31? o31 mode you are in
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
@@ -669,8 +672,9 @@ label ch30_main:
         $ mas_forceRain()
         $ mas_lockHair()
 
-    # so other flows are aware that we are in intro
-    $ mas_in_intro_flow = True
+    # d25 season? d25 season you are in
+    if mas_isD25Season():
+        call mas_holiday_d25c_autoload_check
 
     # before we render visuals:
     # 1 - all core interactions should be disabeld
@@ -700,6 +704,10 @@ label ch30_main:
 
     # now we out of intro
     $ mas_in_intro_flow = False
+
+    # lastly, rebuild Event lists for new people if not built yet
+    if not mas_events_built:
+        mas_rebuildEventLists()
 
     jump ch30_preloop
 

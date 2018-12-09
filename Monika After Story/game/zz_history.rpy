@@ -794,3 +794,13 @@ init -810 python:
         exit_pp=store.mas_history._bday_exit_pp
     ))
 
+    # AFFection
+    store.mas_history.addMHS(MASHistorySaver(
+        "aff",
+        datetime.datetime(2019, 1, 2),
+        {
+            "_mas_aff_before_fresh_start": "aff.before_fresh_start"
+        },
+        use_year_before=True
+    ))
+

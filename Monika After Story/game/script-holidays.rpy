@@ -61,6 +61,8 @@ default persistent._mas_o31_trick_or_treating_aff_gain = 0
 define mas_o31_marisa_chance = 90
 define mas_o31_rin_chance = 10
 
+define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
+
 #init -814 python in mas_history:
     # o31 programming point
 #    def _o31_exit_pp(mhs):
@@ -810,6 +812,25 @@ default persistent._mas_d25_spent_d25 = False
 default persistent._mas_d25_seen_santa_costume = False
 # True if user has seen santa costume this year.
 
+define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
+# christmas
+
+define mas_d25e = mas_d25 - datetime.timedelta(days=1)
+# christmas eve
+
+define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
+# start of christmas season
+
+define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 5)
+# end of christmas season
+
+define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
+# start of gift = d25 gift
+
+define mas_d25g_end = mas_d25
+# end of gift = d25 gift
+
+
 init -810 python:
     # MASHistorySaver for d25
     store.mas_history.addMHS(MASHistorySaver(
@@ -866,10 +887,14 @@ init -11 python in mas_d25_event:
         renpy.hide("mas_d25_tree")
 
 
+
 # auto load starter check
 label mas_holiday_d25c_autoload_check:
     # ASSUMPTIONS:
     #   monika is NOT returning home
+    #
+    # NOTE: this is jumped to in startup ch30 flow.
+    # NOTE: this is called in introduction.
 
     python:
         if not persistent._mas_d25_in_d25_mode:
@@ -884,6 +909,10 @@ label mas_holiday_d25c_autoload_check:
 
     # TODO:
     #   holiday intro dialogue pushed, if not already pushed
+
+    if mas_in_intro_flow:
+        # intro will call us instead of jump
+        return
 
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
@@ -1255,6 +1284,9 @@ default persistent._mas_nye_spent_nye = False
 default persistent._mas_nye_spent_nyd = False
 # true if user spent new years day with monika
 
+define mas_nye = datetime.date(datetime.date.today().year, 12, 31)
+define mas_nyd = datetime.date(datetime.date.today().year, 1, 1)
+
 init -810 python:
     # MASHistorySaver for nye
     store.mas_history.addMHS(MASHistorySaver(
@@ -1368,7 +1400,7 @@ label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
 
     if store.mas_anni.pastOneMonth():
-        if persistent._mas_affection["affection"] >= 0:
+        if not mas_isBelowZero():
             m 1eub "[player]!"
             if renpy.seen_label('monika_newyear2'):
                 m "Can you believe this is our {i}second{/i} New Years together?"
@@ -1393,9 +1425,9 @@ label mas_nye_monika_nyd:
             m "I...I hope this year goes better than last year."
             m 2dkc "I really need it to."
             jump mas_nye_monika_nyd_fresh_start
-            return
+
     else:
-        if persistent._mas_affection["affection"] >= 0:
+        if not mas_isBelowZero():
             m 1eub "[player]!"
 
             if mas_isMoniAff(higher=True):
@@ -1412,7 +1444,7 @@ label mas_nye_monika_nyd:
             m 2etc "The beginning of a new year, huh?"
             m 2rksdlc "We haven't been together for very long, but the time we spent last year didn't go as well as I had hoped..."
             jump mas_nye_monika_nyd_fresh_start
-            return
+
     m "Happy New Year~"
     return
 
@@ -1427,7 +1459,7 @@ label mas_nye_monika_nyd_fresh_start:
         "I would love that.":
             #so we can revert back to previous affection if player continues to mistreat after the second chance. need to determine the threshold the player must stay above for this.
             $ persistent._mas_pm_got_a_fresh_start = True #never forget
-            $ persistent._mas_aff_before_fresh_start = persistent._mas_affection["affection"]
+            $ persistent._mas_aff_before_fresh_start = _mas_getAffection()
 
             $ mas_setAffection(0)
             m 4wua "Really?"

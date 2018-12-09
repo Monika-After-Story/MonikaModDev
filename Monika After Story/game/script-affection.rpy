@@ -1147,7 +1147,10 @@ init 20 python:
 
     # getter
     def _mas_getAffection():
-        return persistent._mas_affection["affection"]
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get("affection", 0)
+
+        return 0
 
     # numerical affection check
     def mas_isBelowZero():
