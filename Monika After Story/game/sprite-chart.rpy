@@ -3042,6 +3042,31 @@ init -2 python in mas_sprites:
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
 
+    def _clothes_santa_entry(_moni_chr):
+        """
+        Entry programming point for santa clothes
+        """
+        # TODO: handle other promise ring types
+        temp_storage["clothes.santa"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2="7",
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+
+    def _clothes_santa_exit(_moni_chr):
+        """
+        Exit programming point for santa clothes
+        """
+        santa_map = temp_storage.get("clothes.santa", None)
+        if santa_map is not None:
+            store.mas_acs_promisering.pose_map = santa_map
+
+
     ######### ACS ###########
 
     def _acs_quetzalplushie_exit(_moni_chr):
@@ -3301,7 +3326,9 @@ init -1 python:
             p6="down"
         ),
         fallback=True,
-        stay_on_start=True
+        stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_santa_entry,
+        exit_pp=store.mas_sprites._clothes_santa_exit
     )
     store.mas_sprites.init_clothes(mas_clothes_santa)
     store.mas_selspr.init_selectable_clothes(
