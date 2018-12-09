@@ -220,9 +220,6 @@ label mas_holiday_o31_autoload_check:
             persistent._mas_o31_in_o31_mode = True
             mas_skip_visuals = True
 
-            # no promise ring when wearing costumes
-            monika_chr.remove_acs(mas_acs_promisering)
-
             if random.randint(1,100) <= mas_o31_marisa_chance:
                 persistent._mas_o31_current_costume = "marisa"
                 selected_greeting = "greeting_o31_marisa"
@@ -314,7 +311,7 @@ label greeting_o31_marisa:
     # 5 - music is off (skip visual)
 
     # enable the marisa clothes
-    $ monika_chr.change_clothes(mas_clothes_marisa)
+    $ monika_chr.change_clothes(mas_clothes_marisa, False)
 
     # reset zoom
     $ store.mas_sprites.reset_zoom()
@@ -423,7 +420,7 @@ label greeting_o31_rin:
     # 5 - music is off (skip visual)
 
     # enable the rin clothes
-    $ monika_chr.change_clothes(mas_clothes_rin)
+    $ monika_chr.change_clothes(mas_clothes_rin, False)
 
     # reset zoom
     $ store.mas_sprites.reset_zoom()
@@ -924,6 +921,24 @@ init -10 python:
         )
 
 
+    def mas_isD25Post(_date=datetime.date.today()):
+        """
+        Returns True if the given date is after d25 but still in D25 season.
+        The season goes from dec 1 to jan 5.
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in d25 season but after d25, False
+            otherwise.
+        """
+        return (
+            mas_d25 + datetime.timedelta(days=1) <= _date <= mas_nye
+            or mas_nyd <= _date <= mas_d25c_end
+        )
+
+
     def mas_isD25Gift(_date=datetime.date.today()):
         """
         Returns True if the given date is in the range of days where a gift
@@ -1013,7 +1028,7 @@ label mas_holiday_d25c_autoload_check:
 
             # unlock and wear santa
             store.mas_selspr.unlock_clothes(mas_clothes_santa)
-            monika_chr.change_clothes(mas_clothes_santa)
+            monika_chr.change_clothes(mas_clothes_santa, False)
             persistent._mas_d25_seen_santa_costume = True
 
     # TODO:
@@ -1021,7 +1036,13 @@ label mas_holiday_d25c_autoload_check:
 
     if mas_isD25():
         # on d25, monika will wear santa on start, regardless of whatever
-        monika_chr.change_clothes(mas_clothes_santa)
+        $ monika_chr.change_clothes(mas_clothes_santa, False)
+
+    elif mas_isD25Post() and not persistent._mas_forced_clothes:
+        # after d25 (but still in season), monika will take off the santa
+        # outfit (deco will remain, though), unless you selected the santa
+        # outfit.
+        $ monika_chr.reset_clothes(False)
 
     if mas_in_intro_flow:
         # intro will call us instead of jump

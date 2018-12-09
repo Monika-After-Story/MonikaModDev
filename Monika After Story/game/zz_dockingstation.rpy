@@ -2329,7 +2329,7 @@ label mas_dockstat_different_monika:
     #   player - player's name
     #   m_name - monika's name
     $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
-    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+    $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
     show monika 1ekd zorder MAS_MONIKA_Z at t11

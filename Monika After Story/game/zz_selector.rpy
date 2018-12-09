@@ -1111,6 +1111,24 @@ init -10 python in mas_selspr:
 init -1 python:
     import random
 
+    # better more user-friendly sel functions
+    def mas_SELisUnlocked(_sprite_item, select_type):
+        """
+        Checks if the given sprite item is unlocked
+
+        IN:
+            _sprite_item - sprite object to check
+            select_type - type of this sprite object
+
+        RETURNS: True if the given sprite item is unlocked, false otherwise
+        """
+        _sel_item = store.mas_selspr._get_sel(_sprite_item, select_type)
+        if _sel_item is not None:
+            return _sel_item.unlocked
+
+        return False
+
+
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
         """
@@ -2237,6 +2255,10 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
 
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_hair = True
+
     return _return
 
 # CLOTH sidebar selector label
@@ -2248,5 +2270,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_clothes = True
 
     return _return

@@ -1470,18 +1470,12 @@ label ch30_reset:
     ## o31 content
     python:
         if store.mas_o31_event.isMonikaInCostume(monika_chr):
-            if persistent._mas_o31_in_o31_mode:
-                mas_lockHair()
+            # NOTE: we may add additional costume logic in here if needed
 
-            elif not mas_isMoniLove(higher=True):
-                # NOTE: if monika is love or above, we do NOT reset clothes
-                #   because of the wardrobe. 
-                # TODO: this seems really hacky, maybe we should have some
-                #   sort of way to determine if the clothes were picked
-                #   via the wardrobe, and just not change clothes unless
-                #   affection goes down (or we need to switch to other clothes
-                #   for an event)
-                monika_chr.reset_clothes()
+            if not persistent._mas_forced_clothes:
+                # NOTE if the costumes were picked by user, (aka forced),
+                # then we do NOt reset
+                monika_chr.reset_clothes(False)
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

@@ -1818,40 +1818,58 @@ init -2 python:
             ]
 
 
-        def change_clothes(self, new_cloth):
+        def change_clothes(self, new_cloth, by_user=None):
             """
-            Changes clothes to the given cloth
+            Changes clothes to the given cloth. also sets the persistent
+            force clothes var to by_user, if its not None
 
             IN:
                 new_cloth - new clothes to wear
+                by_user - True if this action was mandated by the user, False
+                    if not. If None, we do NOT set the forced clothes var
+                    (Default: None)
             """
             self.clothes.exit(self)
             self.clothes = new_cloth
             self.clothes.entry(self)
+            
+            if by_user is not None:
+                persistent._mas_force_clothes = bool(by_user)
 
 
-        def change_hair(self, new_hair):
+        def change_hair(self, new_hair, by_user=None):
             """
-            Changes hair to the given hair
+            Changes hair to the given hair. also sets the persistent force
+            hair var to by_user, if its not None
 
             IN:
                 new_hair - new hair to wear
+                by_user - True if this action was mandated by the user, False
+                    if not. If None, we do NOT set the forced hair var
+                    (Default: None)
             """
             self.hair.exit(self)
             self.hair = new_hair
             self.hair.entry(self)
+            
+            if by_user is not None:
+                persistent._mas_force_hair = bool(by_user)
 
 
-        def change_outfit(self, new_cloth, new_hair):
+        def change_outfit(self, new_cloth, new_hair, by_user=None):
             """
-            Changes both clothes and hair
+            Changes both clothes and hair. also sets the persisten forced vars
+            to by_user, if its not None
 
             IN:
                 new_cloth - new clothes to wear
                 new_hair - new hair to wear
+                by_user - True if this action ws mandated by user, False if not
+                    If None, we do NOT set the forced vars
+                    (Default: None)
             """
-            self.change_clothes(new_cloth)
-            self.change_hair(new_hair)
+            self.change_clothes(new_cloth, by_user=by_user)
+            self.change_hair(new_hair, by_user=by_user)
 
 
         def get_outfit(self):
@@ -1921,12 +1939,17 @@ init -2 python:
             self._load_acs(store.persistent._mas_acs_pst_list, self.PST_ACS)
 
 
-        def reset_all(self):
+        def reset_all(self, by_user=None):
             """
             Resets all of monika
+
+            IN:
+                by_user - True if this action was mandated by user, False if
+                    not. If None, we do NOT set force vars.
+                    (Default: None)
             """
-            self.reset_clothes()
-            self.reset_hair()
+            self.reset_clothes(by_user)
+            self.reset_hair(by_user)
             self.remove_all_acs()
 
 
@@ -2005,26 +2028,41 @@ init -2 python:
                 self.acs[acs_type] = list()
 
 
-        def reset_clothes(self):
+        def reset_clothes(self, by_user=None):
             """
             Resets clothing to default
+
+            IN:
+                by_user - True if this action was mandated by user, False if
+                    not. If None, then we do NOT set force clothed vars
+                    (Default: None)
             """
-            self.change_clothes(mas_clothes_def)
+            self.change_clothes(mas_clothes_def, by_user)
 
 
-        def reset_hair(self):
+        def reset_hair(self, by_user=None):
             """
             Resets hair to default
+
+            IN:
+                by_user - True if this action was mandated by user, False if
+                    not. If None, then we do NOT set forced hair vars
+                    (Default: None)
             """
-            self.change_hair(mas_hair_def)
+            self.change_hair(mas_hair_def, by_user)
 
 
-        def reset_outfit(self):
+        def reset_outfit(self, by_user=None):
             """
             Resetse clothing and hair to default
+
+            IN:
+                by_user - True if this action was mandated by user, False if
+                    not. If None, then we do NOT set forced vars
+                    (Default: None)
             """
-            self.reset_clothes()
-            self.reset_hair()
+            self.reset_clothes(by_user)
+            self.reset_hair(by_user)
 
 
         def save(self, force_hair=False, force_clothes=False, force_acs=False):
@@ -2942,7 +2980,10 @@ init -2 python in mas_sprites:
         )
 
         # hide hair down select
-        store.mas_lockEventLabel("monika_hair_select")
+        store.mas_lockEVL("monika_hair_select", "EVE")
+
+        # hide hairdown greeting
+#        store.mas_lockEVL("greeting_hairdown", "GRE")
 
 
     def _clothes_rin_exit(_moni_chr):
@@ -2955,7 +2996,11 @@ init -2 python in mas_sprites:
 
         # unlock hair down select, if needed
         if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEventLabel("monika_hair_select")
+            store.mas_unlockEVL("monika_hair_select", "EVE")
+
+        # unlock hair down greeting if not unlocked
+#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
+#            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
 
     def _clothes_marisa_entry(_moni_chr):
@@ -2974,7 +3019,10 @@ init -2 python in mas_sprites:
         )
 
         # hide hair down select
-        store.mas_lockEventLabel("monika_hair_select")
+        store.mas_lockEVL("monika_hair_select", "EVE")
+
+        # hide hairdown greeting
+#        store.mas_lockEVL("greeting_hairdown", "GRE")
 
 
     def _clothes_marisa_exit(_moni_chr):
@@ -2987,7 +3035,11 @@ init -2 python in mas_sprites:
 
         # unlock hair down select, if needed
         if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEventLabel("monika_hair_select")
+            store.mas_unlockEVL("monika_hair_select", "EVE")
+
+        # unlock hair down greeting if not unlocked
+#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
+#            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
 
     ######### ACS ###########

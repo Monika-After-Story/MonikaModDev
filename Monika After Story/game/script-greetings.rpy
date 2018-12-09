@@ -1034,12 +1034,6 @@ label i_greeting_monikaroom:
 
     scene black
 
-    # reset monika's hair stuff since we dont have hair down for standing
-    if persistent._mas_likes_hairdown:
-        $ monika_chr.reset_outfit()
-        $ lockEventLabel("monika_hair_ponytail")
-        $ unlockEventLabel("monika_hair_down")
-
     $ has_listened = False
 
     # FALL THROUGH
@@ -1493,6 +1487,10 @@ label monikaroom_greeting_opendoor_seen:
 
 label monikaroom_greeting_opendoor_seen_partone:
     $ is_sitting = False
+
+    # reset outfit since standing is stock
+    $ monika_chr.reset_outfit(False)
+
     # monika knows you are here
     $ mas_disable_quit()
 
@@ -1572,6 +1570,10 @@ label monikaroom_greeting_opendoor_post2:
 
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
+
+    # reset outfit since standing is stock
+    $ monika_chr.reset_outfit(False)
+
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder MAS_MONIKA_Z
@@ -2322,8 +2324,12 @@ label greeting_hairdown:
     # 4 - hotkey buttons are hidden (skip visual)
     # 5 - music is off (skip visual)
 
+    # reset clothes if not ones that work with hairdown
+    if monika_chr.clothes.name != "def" and monika_chr.clothes.name != "santa":
+        $ monika_chr.reset_clothes(False)
+
     # have monika's hair down
-    $ monika_chr.change_hair(mas_hair_down)
+    $ monika_chr.change_hair(mas_hair_down, by_user=False)
 
     call spaceroom
 
@@ -2348,7 +2354,7 @@ label greeting_hairdown:
             m 1lksdld "I'll put it back up for you, then."
             m 1dsc "..."
 
-            $ monika_chr.reset_hair()
+            $ monika_chr.reset_hair(False)
 
             m 1eua "Done."
             # you will never get this chance again
