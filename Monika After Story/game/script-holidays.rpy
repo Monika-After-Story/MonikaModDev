@@ -810,11 +810,9 @@ init -900 python:
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
 
 default persistent._mas_d25_in_d25_mode = False
-# True if we should enable d25 decoration
-# This should only be True if:
-#   Monika is NOt being returned after the d25 season begins
-#   and season is d25.
-# NOTE: this is misnomer, it actually lasts until the nye point.
+# True if we should consider ourselves in d25 mode.
+# TODO: double check older d25 spots to see if they should use the deco
+#   version
 
 default persistent._mas_d25_spent_d25 = False
 # True if the user spent time with monika on d25
@@ -830,6 +828,16 @@ default persistent._mas_d25_chibika_sayori = None
 
 default persistent._mas_d25_chibika_sayori_performed = False
 # Set to True if we do the chibika sayori thing
+
+default persistent._mas_d25_started_upset = False
+# True if we started the d25 season with upset and below monika
+
+default persistent._mas_d25_deco_active = False
+# True if d25 decorations are active
+# this also includes santa outfit
+# This should only be True if:
+#   Monika is NOt being returned after the d25 season begins
+#   and season is d25.
 
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
@@ -1032,7 +1040,14 @@ label mas_holiday_d25c_autoload_check:
             persistent._mas_d25_seen_santa_costume = True
 
     # TODO:
-    #   holiday intro dialogue pushed, if not already pushed
+    #   - holiday intro dialogue pushed, if not already pushed
+    #   - actually, no d25 deco and clothes unless normal+
+    #   - set a flag determining if you get d25 stuff or not
+    #   - all d25 stuff should start off locked, you unlock it if appropriate
+    #   - all d25 stuff should be normal+. 
+    #   - monika will deco and santa if you started d25 below normal but 
+    #       become normal by 24th/25th.
+    #   - post that, no deco still.
 
     if mas_isD25():
         # on d25, monika will wear santa on start, regardless of whatever
