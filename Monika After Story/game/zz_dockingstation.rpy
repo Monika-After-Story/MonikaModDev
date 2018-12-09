@@ -2251,8 +2251,12 @@ label mas_dockstat_empty_desk:
     $ store.mas_sprites.reset_zoom()
     show emptydesk zorder ed_zorder at i11
 
-    # show birthday visuals?
-    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    if mas_isD25Season() and persistent._mas_d25_in_d25_mode:
+        $ store.mas_d25_event.showD25Visuals()
+
+    else:
+        # show birthday visuals?
+        $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
 label mas_dockstat_empty_desk_preloop:
 

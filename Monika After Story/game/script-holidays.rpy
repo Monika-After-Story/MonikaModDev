@@ -812,6 +812,14 @@ default persistent._mas_d25_spent_d25 = False
 default persistent._mas_d25_seen_santa_costume = False
 # True if user has seen santa costume this year.
 
+default persistent._mas_d25_chibika_sayori = None
+# True if we need to perform the chibika sayori intro
+# False if we do NOT need to perform the chibka sayori intro
+# None means we have not checked for the chibika sayori intro
+
+default persistent._mas_d25_chibika_sayori_performed = False
+# Set to True if we do the chibika sayori thing
+
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
 
@@ -838,7 +846,12 @@ init -810 python:
         datetime.datetime(2018, 12, 26),
         {
             "_mas_d25_spent_d25": "d25.actions.spent_d25",
-            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
+            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa",
+
+            # related to chibiak sayori event
+            "_mas_d25_chibika_sayori": "d25.needed_to_do_chibika_sayori",
+            "_mas_d25_chibika_sayori_performed": "d25.did_chibika_sayori"
+
         }
         # TODO: programming points probably
     ))
