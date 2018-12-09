@@ -8679,7 +8679,7 @@ label monika_player_appearance:
                 call monika_player_appearance_monika_height
 
                 m 4rksdla "It’s just a guess--hopefully it’s not too far off."
-                m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel feel clumsy around you."
+                m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel clumsy around you."
                 m "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
                 m 3eub "In my opinion, being in-between is perfect. Do you know why?"
                 m 5eub "Because then I don’t have to do any reaching or bending to kiss you, [player]! Ahaha~"
