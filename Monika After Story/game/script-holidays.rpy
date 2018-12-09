@@ -1022,6 +1022,18 @@ init -11 python in mas_d25_event:
         renpy.hide("mas_d25_tree")
 
 
+    def redeemed():
+        """
+        RETURNS: True if the user started d25 season with an upset monika,
+            and now has a monika above upset.
+
+        If not started with upset monika, True is returned.
+        """
+        return (
+            not store.persistent._mas_d25_started_upset
+            or store.mas_isMoniNormal(higher=True)
+        )
+
 
 # auto load starter check
 label mas_holiday_d25c_autoload_check:
@@ -1037,10 +1049,19 @@ label mas_holiday_d25c_autoload_check:
             # enable d25
             persistent._mas_d25_in_d25_mode = True
 
-            # unlock and wear santa
-            store.mas_selspr.unlock_clothes(mas_clothes_santa)
-            monika_chr.change_clothes(mas_clothes_santa, False)
-            persistent._mas_d25_seen_santa_costume = True
+            # affection upset and below? no d25 for you
+            if mas_isMoniUpset(lower=True):
+                persistent._mas_d25_started_upset = True
+
+            else:
+
+                # unlock and wear santa
+                store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                monika_chr.change_clothes(mas_clothes_santa, False)
+                persistent._mas_d25_seen_santa_costume = True
+
+                # mark decorations and outfit as active
+                persistent._mas_d25_deco_active = True
 
     # TODO:
     #   - holiday intro dialogue pushed, if not already pushed
@@ -1052,7 +1073,7 @@ label mas_holiday_d25c_autoload_check:
     #       become normal by 24th/25th.
     #   - post that, no deco still.
 
-    if mas_isD25():
+    if mas_isD25() and persistent._mas_d25_deco_active:
         # on d25, monika will wear santa on start, regardless of whatever
         $ monika_chr.change_clothes(mas_clothes_santa, False)
 

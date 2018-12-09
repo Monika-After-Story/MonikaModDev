@@ -644,7 +644,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         $ store.mas_dockstat.surpriseBdayShowVisuals()
 
     # d25 seasonal
-    if persistent._mas_d25_in_d25_mode:
+    if persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
     return
 
