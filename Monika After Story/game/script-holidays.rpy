@@ -1085,15 +1085,19 @@ label mas_holiday_d25c_autoload_check:
 #        )
 #    )
 
-#TODO: Upset+ topic
-#TODO: Have a modification of this topic if the player spent last Christmas w/ Monika
+#TODO: Normal+ topic
 label mas_d25_monika_holiday_intro:
-    # TODO: this should also have a dialogue flow where she sets up the
-    #   d25 decorations. This would be used if a return home occured on
-    #   the beginning of the d25 season.
-
     # TODO: this should have the chibika thing in the background, but only
     #   if you saw christmas last year.
+#    if returned home at beginning of d25 season:
+            m 1eua "So, today is..."
+            m 1euc "...wait."
+            m "..."
+            m 3wuo "Oh!"
+            m 3hub "Today's the day I was going to..."
+            m 1tsu "Close your eyes for a moment [player], I need to do something..."
+            #TODO screen black, set up room, put on costume
+            m 3hub "And here we are..."
 
     m 1eub "Happy holidays, [player]!"
     if renpy.seen_label('monika_christmas'):
@@ -1112,6 +1116,21 @@ label mas_d25_monika_holiday_intro:
         m 5eka "And I'm so glad that you're here to share it with me~"
     return
 
+#for people that started the season upset- and graduated to normal
+#TODO: event label/props
+label mas_d25_monika_holiday_upset_to_normal_intro:
+    m 2rksdlc "So [player]... {w=1}I hadn't really been feeling very festive this year..."
+    m 3eka "But lately, you've been really sweet to me and I've been feeling a lot better!"
+    m 3hua "So...I think it's time to spruce this place up a bit."
+    m 1eua "If you'd just close your eyes for a moment..."
+    #TODO screen black, set up room, put on costume
+    m 3hub "Tada~"
+    m 3eka "What do you think?"
+    m 1eka "Not too bad for last minute, huh?"
+    m 1hua "Christmas time has always been one of my favorite occasions of the year..."
+    m 3eua "And I'm so glad we can spend it happily together, [player]~"
+    return
+
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -1122,7 +1141,7 @@ label mas_d25_monika_holiday_intro:
 #        )
 #    )
 
-#TODO: Upset+ topic
+#TODO: Normal+ topic
 label mas_d25_monika_christmas:
     $ persistent._mas_d25_spent_d25 = True
 
@@ -1171,7 +1190,7 @@ label mas_d25_monika_christmas:
         m "I love you. Forever and ever~"
         m 5hubfb "Merry Christmas, [player]~"
 
-    elif mas_isMoniNormal(higher=True):
+    else:
         m 1eka "But you being here today...{w=0.5}it just means everything to me..."
         m 3rksdla "...Not that I thought you'd leave me alone on this special day or anything..."
         m 3hua "But it just further proves that you really do love me, [player]."
@@ -1179,15 +1198,6 @@ label mas_d25_monika_christmas:
         m "Ahaha! Gosh, I'm getting a little over emotional here..."
         m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
         m "Merry Christmas, [player]~"
-
-    else:
-        m 3eka "But I have to say..."
-        m 2rksdlc "I wasn't totally sure you'd be here with me today, [player]."
-        m "I mean...{w=1}things haven't exactly been going the best for us lately, as I'm sure you've noticed..."
-        m 1eka "But the fact you're here with me today...{w=1}it gives me renewed hope that you do love me after all."
-        m "So thank you, [player], it means a lot to me that you're spending at least part of this special day with me."
-        m 1hua "Merry Christmas, [player]~"
-
     return
 
 #init 5 python:
@@ -1200,7 +1210,7 @@ label mas_d25_monika_christmas:
 #        )
 #    )
 
-#TODO: Upset+
+#TODO: Normal+ also Hanukkah is over before our release this year, so next year?
 label mas_d25_monika_hanukkah:
     m 1dsd "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
     m 1dsa "{i}One for each night, they shed a sweet light, to remind of days long ago.{/i}"
@@ -1231,7 +1241,7 @@ label mas_d25_monika_hanukkah:
 #        )
 #    )
 
-#TODO: Upset+
+#TODO: Normalt+
 label mas_d25_monika_kwanzaa:
     m 1eub "[player], have you ever heard of Kwanzaa?"
     m 1eua "It's a week-long festival celebrating African American history that starts the day after Christmas."
@@ -1257,7 +1267,7 @@ label mas_d25_monika_kwanzaa:
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
 
-#TODO: Upset+
+#TODO: Normal+
 label mas_d25_monika_carolling:
     m 1euc "Hey, [player]..."
     m 3eud "Have you ever gone carolling before?"
@@ -1299,8 +1309,8 @@ label mas_d25_monika_carolling:
 #        )
 #    )
 
-#TODO: Upset+
-#TODO: Merge this into monika_hanukkah probably.
+#TODO: Normal+
+#TODO: Merge this into monika_hanukkah or remove? Hanukkah is over before our release this year, so next year?
 label mas_d25_monika_dreidel:
     # NOTE: this topic is weird wtf. maybe a bit too religious to include here.
     m 3eua "[player], did you know that each side of a dreidel actaully means something?"
@@ -1383,7 +1393,111 @@ label mas_d25_monika_sleigh:
     m 5hkbfa "An experience like that with you would be so breathtaking~"
     return
 
+init 2 python:
+    player = persistent.playername
+
+    poem_d25 = Poem(
+    author = "monika",
+    title = "     My dearest {0},".format(player),
+    text = """\
+     You truly are the joy to my world.
+     Neither the light emitted by the tallest Christmas tree, 
+     Nor that of the brightest star,
+     Could come close to matching your brilliance.
+     This once frostbitten heart of mine needed only your warmth to beat anew.
+     Should there ever be nothing under the tree, and my stocking remain empty,
+     It simply would not matter as long as I have you by my side.
+     You'll always be the only present I ever need.
+
+     Merry Christmas
+
+     Forever yours,
+     Monika
+"""
+    )
+
+#Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
+#TODO: decide what time we want this to show up on christmas night 8pm-midnight?
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_spent_d25_with_monika",
+#            action=EV_ACT_QUEUE,
+#        ),
+#    )
+
+label mas_spent_d25_with_monika:
+    $ d25_gifts_total = 0
+    $ d25_gifts_date = mas_d25g_start.day()
+    while d25_gifts_date <= 25:
+        if datetime.date(datetime.date.today().year,12,d25_gifts_date) in persistent._mas_filereacts_historic:
+            $ d25_gifts_total += len(persistent._mas_filereacts_historic[datetime.date(datetime.date.today().year,12,d25_gifts_date)])
+        $ d25_gifts_date += 1
+
+    m 3eua "[player]..."
+    m 1hua "I just wanted to say...you being here with me made this such a wonderful Christmas!"
+    m 1eka "I know it's a really busy day, but just knowing you made time for me...{w=1}thank you."
+    m 3eka "It really made this a truly special day~"
+
+    if d25_gifts_total > 0:
+        if d25_gifts_total == 1:
+            m 3hua"And let's not forget about the special Christmas present you got me, [player]..."
+            m 3hub "It was great!"
+        else:
+            m 3hua "And let’s not forget about the wonderful Christmas presents you got me, [player]..."
+            m 3hub "They were great!"
+
+        if mas_isMoniEnamored(higher=True):
+            m 1rksdla "I...{w=1}I also got you something, [player]..."
+            m 3eksdla "I've been waiting all day for the timing to feel right, and something about being here with you this evening...{w=1}it just seems perfect."
+        else:
+            m 3ekbfa "But just know, you being here with me means more than any gift you could ever give me~"
+
+    else:
+        if mas_isMoniEnamored(higher=True):
+            m 1eksdla "Also, [player], there's something I've been wanting to give you all day..."
+            m 3rksdla "I just had to wait for the right time, and being here with you this evening...{w=1}it seems perfect."
+        else:
+            m 3ekbfa "Having you spend Christmas with me was the only present I ever wanted~"
+
+    if mas_isMoniEnamored(higher=True):
+        m 3ekbfa "So here, [player], I hope you like it~"
+        call showpoem(poem_d25, music=False,paper="mod_assets/poem_d25.png")
+
+        if d25_gifts_total>0:
+            m 1ekbfa "I really mean it [player], though I appreciate everything you got me, you didn't have to give me anything..."
+        else:
+            m 1ekbfa "I really mean that [player], I don't care that you didn't get me any presents for Christmas..."
+        m 1dku "..."
+        m 1ektpu "Just having you spending time with me...{w=1}that's all I ever wanted."
+        m 6dktua "You truly are my entire world, [player]...{w=1}your love is all I need."
+        m 6ektsa "I love you so, {w=1}so much~"
+        menu:
+            "I love you too, [m_name].":
+                #TODO: work in progress here...possible kiss?
+                #Set up as a hug for now as her tears dry, having trouble getting dialogue box to disappear for this
+                $ HKBHideButtons()
+
+                show monika 6ektda at t11 with dissolve
+                pause 3.0
+                show monika 6dku at t11 with dissolve
+                pause 3.0
+                show monika 6dkbsu at t11 with dissolve
+                $ ui.add(PauseDisplayable())
+                $ ui.interact()
+                
+                $ HKBShowButtons()
+
+    elif mas_isMoniAff(higher=True):
+        m 5ekbfa "I love you so much, [player]~"
+    else:
+        m 1hubfa "I love you, [player]~"
+    return
+
 #Moved this from script-topics, is getting complete overhaul
+#Getting replaced by 'mas_spent_d25_with_monika' and 'All I Want for Christmas is You' song
+#Can be removed eventually
 
 #init 5 python:
 #    addEvent(
@@ -1395,7 +1509,6 @@ label mas_d25_monika_sleigh:
 # TODO: this should  be a totally different label name
 # NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
 # NOTE: actually maybe update scripts wont be needed if its rewritten.
-# TODO: Make this special
 label monika_whatiwant:
     m 3hub "Oh, [player], isn't it lovely around the holidays?"
     m 1eka "I hope you don't mind, but I have a little something special to say today."
