@@ -832,6 +832,9 @@ default persistent._mas_d25_chibika_sayori_performed = False
 default persistent._mas_d25_started_upset = False
 # True if we started the d25 season with upset and below monika
 
+default persistent._mas_d25_second_chance_upset = False
+# True if we dipped below to upset again.
+
 default persistent._mas_d25_deco_active = False
 # True if d25 decorations are active
 # this also includes santa outfit
