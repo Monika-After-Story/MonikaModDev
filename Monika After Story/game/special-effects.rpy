@@ -98,7 +98,7 @@ image mas_lightning_s:
     parallel:
         easeout 2.8 alpha 0.0
     3.0
-    Null()    
+    Null()
 
 transform k_scare:
     tinstant(640)
@@ -108,3 +108,47 @@ transform otei_appear(a=0.70,time=1.0):
     i11
     alpha 0.0
     linear time alpha a
+
+
+init python:
+    def zoom_smoothly(trans, st, at):
+        if trans.y < _mas_current_kiss_y:
+            trans.y = 50
+        if trans.zoom < _mas_current_kiss_zoom:
+            trans.zoom = 50
+        return 0
+
+transform mas_kissing(_zoom, _y,time=2.0):
+    i11
+    xcenter 640 yoffset ((680 - mas_sprites.adjust_y)  * mas_sprites.value_zoom / 1.1)   yanchor 1.0
+    linear time ypos _y zoom _zoom
+
+
+transform test_kissing(_zoom,_y=360):
+    i11
+    xcenter 640 yoffset ((600 * mas_sprites.value_zoom / 1.1) - mas_sprites.adjust_y ) yanchor 1.0
+    linear 6.0 ypos _y zoom _zoom
+
+label monika_kissing_motion(duration=5.0):
+    # zoom_level
+    # value_zoom
+    # default_zoom_level
+    # adjust_zoom
+    # ajust_y
+    # default_y
+    python:
+        config.log = "perrito.txt"
+        renpy.log("I have no idea what's going on")
+        renpy.log("{}".format( 4.6))
+        renpy.log("{}".format(mas_sprites.value_zoom))
+        renpy.log("{}".format(4.6 - mas_sprites.value_zoom))
+    $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
+    $ renpy.log("{}".format(_mas_kiss_zoom))
+    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))# plus something if below  def zoom
+    #show monika at mas_kissing(store.mas_sprites.zoom_level, adjust_y)
+
+    #show monika at test_kissing(_mas_kiss_zoom)
+
+    show monika at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),duration)
+
+    return
