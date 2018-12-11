@@ -3723,6 +3723,32 @@ init -1 python:
         ]
     )
 
+    ### BLACK RIBBON
+    ## ribbon_black
+    # Black ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_black = MASAccessory(
+        "ribbon_black",
+        "ribbon_black",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black,
+        "Ribbon (Black)",
+        "ribbon_black",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (black like an edge!)"
+        ]
+    )
+
     ### WHITE RIBBON
     ## ribbon_def
     # White ribbon (the default) for ponytail/bun hairstyles
