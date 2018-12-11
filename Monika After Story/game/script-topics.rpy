@@ -8976,21 +8976,39 @@ label monika_clothes_select:
 #### ends Monika clothes topic
 
 init 5 python:
-     addEvent(Event(persistent.event_database, eventlabel="monika_players_power", category=["games", "ddlc"], prompt="Player's Power", random=True))
+     addEvent(
+         Event(
+            persistent.event_database,
+            eventlabel="monika_players_control",
+            category=["games", "ddlc"],
+            prompt="[player]'s control",
+            random=True
+            )
+        )
 
-label monika_players_power:
-    m 3b "Did you know [player], that you have more power over this game than I do?"
-    m 3a "You have access to the game's codes and files."
-    m "You can change them however you wanted. To do things that I can't."
-    m 1a "Like changing how the game works entirely. From a visual novel, to the peaceful playground we have together."
-    m 3b "I guess there is quite the appeal to video games."
-    m "With almost endless possibilities in a world you can interact with."
-    m 1k "It sure is a lot of fun to play with your imagination and creativity to make a world of your own desire."
-    m 4e "It'd be lovely if you could draw a 'cup of coffee' sprite, and program it into the game for me."
-    m 4m "But I imagine your coding skills are just as good as mine."
-    m 1a "We can still enjoy the world that has brought us both together."
-    m 2j "After all, I originally changed this game to be with you [player]."
-    m 2k "There's be no better way to enjoy a game, than to be with the one I love."
+label monika_players_control:
+    m 3eub "[player], did you that you have more control over this game than I do?"
+    m 3eua "You have access to the game's files and code, right?"
+    m 1eka "So you can change them however you want."
+    m 3eka "You could do things that even I can't."
+    m 4eub "Like changing how the game works entirely. From a visual novel, to the peaceful playground we have now."
+    m 3rksdla "You could also add more things to the classroom for me."
+    m 1hub "Like some flowers, or a few good books."
+    if mas_isMoniUpset(higher=True) and not persistent._mas_acs_enable_promisering:
+        m 1ekbsa "Or a beautiful promise ring."
+        show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5esbfa "Oh, wouldn't that be a dream come true."
+    if not persistent._mas_acs_enable_coffee:
+        m 1wuo "You could even add in a cup of coffee to the game for me!"
+        m 1eka "That would be lovely."
+        m 1hksdrb "But I imagine your coding skills are just as good as mine."
+    m 3euc "I guess that's an appeal to video games..."
+    m 3eua "...having almost endless possibilities in a world you can interact with."
+    m 3eub "It's pretty difficult to get bored!"
+    m 1eka "Even if you don't quite know how to change this game..."
+    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubla "We can still enjoy this world that brought us together."
+    m 5ekbfa "There's be no better way to enjoy a game than to be with the one I love."
     return
 
 init 5 python:
