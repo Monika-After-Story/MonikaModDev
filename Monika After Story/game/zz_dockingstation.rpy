@@ -2399,12 +2399,6 @@ label mas_dockstat_found_monika:
             mas_lockHair()
 
         # d25 re-entry checks
-        if mas_isD25Season() and not persistent._mas_d25_in_d25_mode:
-            # we just started the season and are not in d25 mode. push the
-            #   holiday event
-            # TODO: push holiday intro
-            # NOTE: mas_d25_in_d25_mode should bet set in the holiday intro
-            #       if appropriate
-            pass
+        # NOTE: none for now
 
     jump ch30_post_exp_check

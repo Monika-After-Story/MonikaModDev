@@ -842,6 +842,9 @@ default persistent._mas_d25_deco_active = False
 #   Monika is NOt being returned after the d25 season begins
 #   and season is d25.
 
+default persistent._mas_d25_intro_seen = False
+# True once a d25 intro has been seen
+
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
 
@@ -874,14 +877,33 @@ init -810 python:
         datetime.datetime(2018, 12, 26),
         {
             "_mas_d25_spent_d25": "d25.actions.spent_d25",
-            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa",
-
-            # related to chibiak sayori event
-            "_mas_d25_chibika_sayori": "d25.needed_to_do_chibika_sayori",
-            "_mas_d25_chibika_sayori_performed": "d25.did_chibika_sayori"
+            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
 
         }
         # TODO: programming points probably
+    ))
+
+    # we also need a history svaer for when the d25 season ends.
+    store.mas_history.addMHS(MASHistorySaver(
+        "d25s",
+        datetime.datetime(2019, 1, 6),
+        {
+            # not very useful, but we need the reset
+            # NOTE: this is here because the d25 season actually ends in jan
+            "_mas_d25_in_d25_mode": "d25s.mode.25",
+
+            # NOTE: this is here because the deco ends with the season
+            "_mas_d25_deco_active": "d25s.deco_active",
+
+            "_mas_d25_started_upset": "d25s.monika.started_season_upset",
+            "_mas_d25_second_chance_upset": "d25s.monika.upset_after_2ndchance",
+
+            # related to chibiak sayori event
+            "_mas_d25_chibika_sayori": "d25s.needed_to_do_chibika_sayori",
+            "_mas_d25_chibika_sayori_performed": "d25s.did_chibika_sayori",
+
+            "_mas_d25_intro_seen": "d25s.saw_an_intro"
+        }
     ))
 
 
@@ -1064,7 +1086,6 @@ label mas_holiday_d25c_autoload_check:
                 persistent._mas_d25_deco_active = True
 
     # TODO:
-    #   - holiday intro dialogue pushed, if not already pushed
     #   - actually, no d25 deco and clothes unless normal+
     #   - set a flag determining if you get d25 stuff or not
     #   - all d25 stuff should start off locked, you unlock it if appropriate
@@ -1072,6 +1093,8 @@ label mas_holiday_d25c_autoload_check:
     #   - monika will deco and santa if you started d25 below normal but 
     #       become normal by 24th/25th.
     #   - post that, no deco still.
+
+    # NOTE: holiday intro is handled with conditional
 
     if mas_isD25() and persistent._mas_d25_deco_active:
         # on d25, monika will wear santa on start, regardless of whatever
@@ -1096,60 +1119,179 @@ label mas_holiday_d25c_autoload_check:
 
 # TODO: d25/nye greet/farewells
 
-#init 5 python:
-    # TODO: decide props for this
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_holiday_intro"
-#            # TODO: should appear once the holiday season begins
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro",
+            conditional=(
+                "mas_isD25Season() "
+                "and not persistent._mas_d25_intro_seen "
+                "and not persistent._mas_d25_started_upset "
+                "and not mas_isD25Post()"
+            ),
+            action=EV_ACT_PUSH,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
-#TODO: Normal+ topic
+init -876 python in mas_delact:
+    # delayed action to reset holiday intro
+
+    def _mas_d25_holiday_intro_reset_action(ev):
+        # updates conditional and action
+        ev.conditional = (
+            "mas_isD25Season() "
+            "and not persistent._mas_d25_intro_seen "
+            "and not persistent._mas_d25_started_upset "
+            "and not mas_isD25Post()"
+        )
+        ev.action = store.EV_ACT_PUSH
+        return True
+
+
+    def _mas_d25_holiday_intro_reset():
+        # creates delayed action for holiday intro
+        return store.MASDelayedAction.makeWithLabel(
+            8,
+            "mas_d25_monika_holiday_intro",
+            "True",
+            _mas_d25_holiday_intro_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
 label mas_d25_monika_holiday_intro:
     # TODO: this should have the chibika thing in the background, but only
     #   if you saw christmas last year.
-#    if returned home at beginning of d25 season:
-            m 1eua "So, today is..."
-            m 1euc "...wait."
-            m "..."
-            m 3wuo "Oh!"
-            m 3hub "Today's the day I was going to..."
-            m 1tsu "Close your eyes for a moment [player], I need to do something..."
-            #TODO screen black, set up room, put on costume
-            m 3hub "And here we are..."
+
+    if not persistent._mas_d25_deco_active:
+        m 1eua "So, today is..."
+        m 1euc "...wait."
+        m "..."
+        m 3wuo "Oh!"
+        m 3hub "Today's the day I was going to..."
+
+        # hide overlays here
+        # NOTE: hide here because it prevents player from pausing 
+        # right before the scene change.
+        # also we want to completely kill interactions
+        $ mas_OVLHide()
+        $ mas_MUMURaiseShield()
+        $ disable_esc()
+
+        m 1tsu "Close your eyes for a moment [player], I need to do something...{w=2}{nw}"
+
+        call mas_d25_monika_holiday_intro_deco
+
+        m 3hub "And here we are..."
+
+        # now we can renable everything
+        $ enable_esc()
+        $ mas_MUMUDropShield()
+        $ mas_OVLShow()
 
     m 1eub "Happy holidays, [player]!"
+
+    # TODO: after this christmas, we change this to a history lookup
     if renpy.seen_label('monika_christmas'):
         m 1hua "Can you believe it's already that time of year again?"
         m 3eua "It seems like just yesterday we spent our first holiday season together, and now a whole year has gone by!"
+
         if mas_isMoniLove(higher=True):
             #if you've been with her for over a year, you really should be at Love by now
             m 3hua "Time really flies now that I'm with you~"
+
     m 3eua "Do you like what I've done with the room?"
     m 1hua "I must say that I'm pretty proud of it."
     m "Christmas time has always been one of my favorite occasions of the year..."
+
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+
+    # TODO: after this d25, we change this to a history lookup
     if renpy.seen_label('monika_christmas'):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
     else:
         m 5eka "And I'm so glad that you're here to share it with me~"
+
+    $ persistent._mas_d25_intro_seen = True
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_holiday_intro_upset",
+            conditional=(
+                "mas_isD25Season() "
+                "and not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+                "and not mas_isD25Post()"
+            ),
+            action=EV_ACT_PUSH,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 #for people that started the season upset- and graduated to normal
 #TODO: event label/props
-label mas_d25_monika_holiday_upset_to_normal_intro:
+label mas_d25_monika_holiday_intro_upset:
+    # NOTE: because of the async nature of this event, if 
+    # the user manages to trigger this event but drops below normal
+    # before viewing this, we will reset this event's conditional and
+    # delay action the reset for idle
+
     m 2rksdlc "So [player]... {w=1}I hadn't really been feeling very festive this year..."
     m 3eka "But lately, you've been really sweet to me and I've been feeling a lot better!"
     m 3hua "So...I think it's time to spruce this place up a bit."
+
+    # hide overlays here
+    # NOTE: hide here because it prevents player from pausing 
+    # right before the scene change.
+    # also we want to completely kill interactions
+    $ mas_OVLHide()
+    $ mas_MUMURaiseShield()
+    $ disable_esc()
+
     m 1eua "If you'd just close your eyes for a moment..."
-    #TODO screen black, set up room, put on costume
+
+    call mas_d25_monka_holiday_intro_deco
+
     m 3hub "Tada~"
     m 3eka "What do you think?"
     m 1eka "Not too bad for last minute, huh?"
+
     m 1hua "Christmas time has always been one of my favorite occasions of the year..."
     m 3eua "And I'm so glad we can spend it happily together, [player]~"
+
+    # now we can renable everything
+    $ enable_esc()
+    $ mas_MUMUDropShield()
+    $ mas_OVLShow()
+
+    $ persistent._mas_d25_intro_seen = True
+    return
+
+label mas_d25_monika_holiday_intro_deco:
+    # ASSUMES interactions are disaabled
+
+    # black scene
+    scene black
+
+    # we should consider ourselves in d25 mode now, if not already
+    $ persistent._mas_d25_in_d25_mode = True
+
+    # enable deco
+    $ persistent._mas_d25_deco_active = True
+
+    # unlock and wear santa
+    $ store.mas_selspr.unlock_clothes(mas_clothes_santa)
+    $ monika_chr.change_clothes(mas_clothes_santa, False)
+    $ persistent._mas_d25_seen_santa_costume = True
+
+    # now we can do spacroom call
+    call spaceroom
+
     return
 
 #init 5 python:
@@ -1579,11 +1721,6 @@ init -810 python:
         "nye",
         datetime.datetime(2019, 1, 6),
         {
-            # not very useful, but we need the reset
-            # NOTE: this is here because the d25 season actually ends in jan
-            #   we want the decorations to stop after the season ends.
-            "_mas_d25_in_d25_mode": "d25.mode.25",
-
             "_mas_nye_spent_nye": "nye.actions.spent_nye",
             "_mas_nye_spent_nyd": "nye.actions.spent_nyd"
         },

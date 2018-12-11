@@ -754,22 +754,41 @@ python early:
             if not events or len(events) == 0:
                 return None
 
-            # dict check
-            ev_list = events.keys() # python 2
+            _now = datetime.datetime.now()
 
-            # insertion sort
-            for ev in ev_list:
-                #Calendar events use a different function
-                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
-                if not date_based and events[ev].conditional is not None:
-                    if (
-                            eval(events[ev].conditional)
-                            and events[ev].action in Event.ACTION_MAP
-                        ):
-                        Event._performAction(events[ev], datetime.datetime.now())
+            for ev_label,ev in events.iteritems():
+                # TODO: honestly, we should index events with conditionals
+                #   so we only check what needs to be checked. Its a bit of an
+                #   annoyance to check all of these properties once per minute.
 
-                        #Clear the conditional
-                        events[ev].conditional = None
+                # NOTE: we only check events with:
+                #   - a conditional property
+                #   - current affection is within aff_range
+                #   - has None for date properties
+
+                if (
+                        # has conditional property
+                        ev.conditional is not None
+
+                        # within aff range
+                        and ev.checkAffection(mas_curr_affection)
+
+                        # no date props
+                        and ev.start_date is None
+                        and ev.end_date is None
+
+                        # check if the action is valid
+                        and ev.action in Event.ACTION_MAP
+
+                        # finally check if the conditional is true
+                        and eval(ev.conditional)
+                    ):
+
+                    # perform action
+                    Event._performAction(ev, _now)
+
+                    #Clear the conditional
+                    ev.conditional = None
 
             return events
 
