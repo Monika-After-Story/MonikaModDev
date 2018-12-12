@@ -743,11 +743,15 @@ python early:
             return eventlabels
 
         @staticmethod
-        def checkConditionals(events):
+        def checkConditionals(events, rebuild_ev=False):
             #
             # This checks the conditionals for all of the events in the event list
             # if any evaluate to true, run the desired action then clear the
             # conditional.
+            #
+            # IN:
+            #   rebulid_ev - pass in True to notify idle to rebuild events
+            #       if a random action occured.
             import datetime
 
             # sanity check
@@ -785,10 +789,15 @@ python early:
                     ):
 
                     # perform action
-                    Event._performAction(ev, _now)
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
 
                     #Clear the conditional
                     ev.conditional = None
+
 
             return events
 
@@ -3030,6 +3039,35 @@ init -1 python:
         
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
+
+
+    def mas_genDateRange(_start, _end):
+        """
+        Generates a list of datetime.date objects with the given range.
+
+        NOTE: inclusive:
+
+        IN:
+            _start - starting date of range
+            _end - ending date of range
+
+        RETURNS: list of datetime.date objects between the _start and _end,
+            inclusive. May be empty if invalid start and end dates are given
+        """
+        # sanity check
+        if _start > _end:
+            return []
+
+        _date_range = []
+        one_day = datetime.timedelta(days=1)
+        curr_date = _start
+
+        while curr_date <= _end:
+            _date_range.append(curr_date)
+            curr_date += one_day
+
+        return _date_range
+
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday

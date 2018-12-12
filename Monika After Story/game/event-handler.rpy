@@ -559,7 +559,9 @@ init -875 python in mas_delact:
         5: _mas_bday_surprise_party_cleanup_reset,
         6: _mas_bday_surprise_party_hint_reset,
         7: _mas_bday_spent_time_with_reset,
-        8: _mas_d25_holiday_intro_reset
+        8: _mas_d25_holiday_intro_reset,
+        9: _mas_d25_holiday_intro_upset_reset,
+        10: _mas_d25_monika_christmas_reset
     }
 
 
@@ -1446,6 +1448,7 @@ init 1 python in evhand:
     import store
     import datetime
 
+
     def actionPush(ev, **kwargs):
         """
         Runs Push Event action for the given event
@@ -1466,7 +1469,7 @@ init 1 python in evhand:
         store.queueEvent(ev.eventlabel)
 
 
-    def actionUnlock(ev, unlock_time, **kwargs):
+    def actionUnlock(ev, **kwargs):
         """
         Unlocks an event. Also setse the unlock_date to the given
             unlock time
@@ -1476,7 +1479,7 @@ init 1 python in evhand:
             unlock_time - time to set unlock_date to
         """
         ev.unlocked = True
-        ev.unlock_date = unlock_time
+        ev.unlock_date = kwargs.get("unlock_time", datetime.datetime.now())
 
 
     def actionRandom(ev, **kwargs):
@@ -1485,8 +1488,11 @@ init 1 python in evhand:
 
         IN:
             ev - event to random
+            rebuild_ev - True if we wish to notify idle to rebuild events
         """
         ev.random = True
+        if kwargs.get("rebuild_ev", False):
+            store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def actionPool(ev, **kwargs):

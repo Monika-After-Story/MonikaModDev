@@ -107,6 +107,7 @@ init -10 python:
         """
 
         # NOTE: add keys here
+        REBUILD_EV = 1
 
         # end keys
        
@@ -146,9 +147,21 @@ init -10 python:
 
 
         # NOTE: add additoinal functions below when appropriate.
+        def send_rebuild_msg(self):
+            """
+            Sends the rebuild message to the mailbox
+            """
+            self._send(self.REBUILD_EV, True)
+
+
+        def get_rebuild_msg(self):
+            """
+            Gets rebuild message
+            """
+            return self._get(self.REBUILD_EV)
             
 
-    mas_idle_mailbox = MASIdleMailbox
+    mas_idle_mailbox = MASIdleMailbox()
 
 
 image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
@@ -1042,10 +1055,10 @@ label ch30_post_exp_check:
     $ mas_checkReactions()
 
     #Run actions for any events that need to be changed based on a condition
-    $ evhand.event_database=Event.checkConditionals(evhand.event_database)
+    $ Event.checkConditionals(evhand.event_database)
 
     #Run actions for any events that are based on the clock
-    $ evhand.event_database=Event.checkCalendar(evhand.event_database)
+    $ Event.checkCalendar(evhand.event_database)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
@@ -1146,10 +1159,10 @@ label ch30_loop:
                 grant_xp(idle_xp)
 
             #Run actions for any events that need to be changed based on a condition
-            evhand.event_database=Event.checkConditionals(evhand.event_database)
+            Event.checkConditionals(evhand.event_database, rebuild_ev=True)
 
             #Run actions for any events that are based on the clock
-            evhand.event_database=Event.checkCalendar(evhand.event_database)
+            Event.checkCalendar(evhand.event_database)
 
             # Run delayed actions
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
@@ -1159,6 +1172,10 @@ label ch30_loop:
 
             # run seasonal check
             mas_seasonalCheck()
+
+            # check if we need to rebulid ev
+            if mas_idle_mailbox.get_rebuild_msg():
+                mas_rebuildEventLists()
 
             #Update time
             calendar_last_checked=datetime.datetime.now()
