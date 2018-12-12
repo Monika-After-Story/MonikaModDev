@@ -118,34 +118,46 @@ init python:
             trans.zoom = 50
         return 0
 
+# kissing animation transform
 transform mas_kissing(_zoom, _y,time=2.0):
     i11
-    xcenter 640 yoffset ((680 - mas_sprites.adjust_y)  * mas_sprites.value_zoom / 1.1)   yanchor 1.0
+    xcenter 640 yoffset ((680 - mas_sprites.adjust_y)  * mas_sprites.value_zoom / 1.1) yanchor 1.0
     linear time ypos _y zoom _zoom
 
 
-transform test_kissing(_zoom,_y=360):
-    i11
-    xcenter 640 yoffset ((600 * mas_sprites.value_zoom / 1.1) - mas_sprites.adjust_y ) yanchor 1.0
-    linear 6.0 ypos _y zoom _zoom
 
 label monika_kissing_motion(transition=5.0, duration=2.0):
+    # Note: the hardcoded constants work to give the focus on lips
+    # effect these were calculated based on max/min values of the zoom 
 
+    # hide everything
+    $ HKBHideButtons()
+    $ mas_RaiseShield_core()
+    # reset position to i11
     show monika 6dubfa at i11
-
+    # do the appropriate calculations
     $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
     $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
-
+    $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
+    # 380 #correct value for max
+    # start the kiss animation
     show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    # wait until we're done with the animation
     $ renpy.pause(transition)
+    # show black scene
     show black zorder 100
+    # wait half the time to play the sound effect
     $ renpy.pause(duration/2)
     play sound "mod_assets/sounds/effects/kissing.ogg"
     $ renpy.pause(duration/2)
+    # hide the black scene
     hide black
+    # trasition back to i11 in 3 secs which is the best time for non slow back off
     show monika 6esbfa:
-        linear 3.0 xcenter 640 yoffset (_mas_kiss_y) zoom 0.80
+        linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
     pause 3.0
     show monika 6esa at i11
-
+    $ HKBShowButtons()
+    $ mas_DropShield_core()
+    $ mas_RaiseShield_dlg()
     return
