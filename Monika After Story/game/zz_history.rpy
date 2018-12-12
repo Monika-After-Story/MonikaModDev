@@ -594,10 +594,12 @@ init -816 python in mas_delact:
     ## need a place to define DelayedAction callbacks? do it here I guess.
     nothing = "temp"
 
+init -816 python in mas_history:
+    from store.mas_delact import _MDA_safeadd
+    # mas history store has safeadd
 
 init -815 python in mas_history:
     ## Need a place define callbacks/programming points? Do it here I guess.
-    from store.mas_delact import _MDA_safeadd
 
     # BDAY
     def _bday_exit_pp(mhs):
@@ -669,6 +671,9 @@ init -810 python:
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
+
+            # actions / monika
+            "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",

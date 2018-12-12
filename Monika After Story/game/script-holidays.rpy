@@ -866,7 +866,7 @@ define mas_d25g_end = mas_d25
 define mas_d25cl_start = mas_d25c_start
 # start of when monika wears santa (inclusive)
 
-define mas_d25cl_end = datetime.date(datetime.date.today().year, 12, 25)
+define mas_d25cl_end = mas_d25
 # end of when monika wears santa (on her own) (inclusive)
 
 
@@ -903,7 +903,9 @@ init -810 python:
             "_mas_d25_chibika_sayori_performed": "d25s.did_chibika_sayori",
 
             "_mas_d25_intro_seen": "d25s.saw_an_intro"
-        }
+        },
+        use_year_before=True,
+        exit_pp=store.mas_history._d25s_exit_pp
     ))
 
 
@@ -1114,6 +1116,16 @@ label mas_holiday_d25c_autoload_check:
     jump mas_ch30_post_holiday_check
 
 
+init -815 python in mas_history:
+    
+    # d25
+
+    # d25 season
+    def _d25s_exit_pp(mhs):
+        # just add appropriate delayed action IDs
+        _MDA_safeadd(8, 9)
+
+
 # topics
 # TODO: dont forget to update script topics's seen properties
 
@@ -1217,6 +1229,7 @@ label mas_d25_monika_holiday_intro:
     $ persistent._mas_d25_intro_seen = True
     return
 
+
 init 5 python:
     addEvent(
         Event(
@@ -1233,13 +1246,42 @@ init 5 python:
         )
     )
 
+
+init -876 python in mas_delact:
+    # delayed action to reset holiday intro upset
+
+    def _mas_d25_holiday_intro_upset_reset_action(ev):
+        # updates conditional and action
+        ev.conditional = (
+            "mas_isD25Season() "
+            "and not persistent._mas_d25_intro_seen "
+            "and persistent._mas_d25_started_upset "
+            "and not mas_isD25Post()"
+        )
+        ev.action = EV_ACT_PUSH
+        return True
+
+
+    def _mas_d25_holiday_intro_upset_reset():
+        # creates delayed action for holiday intro
+        return store.MASDelayedAction.makeWithLabel(
+            9,
+            "mas_d25_monika_holiday_intro_upset",
+            "True",
+            _mas_d25_holiday_intro_upset_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
+
 #for people that started the season upset- and graduated to normal
-#TODO: event label/props
 label mas_d25_monika_holiday_intro_upset:
     # NOTE: because of the async nature of this event, if 
     # the user manages to trigger this event but drops below normal
     # before viewing this, we will reset this event's conditional and
     # delay action the reset for idle
+    if mas_isMoniUpset(lower=True):
+        $ mas_addDelayedAction(9)
+        return
 
     m 2rksdlc "So [player]... {w=1}I hadn't really been feeling very festive this year..."
     m 3eka "But lately, you've been really sweet to me and I've been feeling a lot better!"
@@ -1294,17 +1336,46 @@ label mas_d25_monika_holiday_intro_deco:
 
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_christmas"
-#            # TODO: props
-#            # TODO: should only appear on d25
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_christmas",
+#            category=["holidays"],
+#            prompt="Christmas",
+            conditional=(
+                "mas_isD25() "
+                "and persistent._mas_d25_in_d25_mode"
+            ),
+            ev.action=store.EV_ACT_PUSH,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
-#TODO: Normal+ topic
+init -876 python in mas_delact:
+    # delayed action to reset d25 event
+
+    def _mas_d25_monika_christmas_reset_action(ev):
+        # updates conditional and action
+        ev.conditional = (
+            "mas_isD25() "
+            "and persistent._mas_d25_in_d25_mode"
+        )
+        ev.action = store.EV_ACT_PUSH
+        return True
+
+
+    def _mas_d25_monika_christmas_reset():
+        # creates delayed action for holiday intro
+        return store.MASDelayedAction.makeWithLabel(
+            10,
+            "mas_d25_monika_christmas",
+            "True",
+            _mas_d25_monika_christmas_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
 label mas_d25_monika_christmas:
     $ persistent._mas_d25_spent_d25 = True
 
@@ -1324,6 +1395,7 @@ label mas_d25_monika_christmas:
 
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m 1lkbsa "Maybe it's just the snow, or the decorations..."
+
         else:
             m 1lkbsa "Maybe it's the decorations, or just the holiday season..."
 
@@ -1340,11 +1412,14 @@ label mas_d25_monika_christmas:
         m 1eua "Don't get me wrong, I knew that you would be here with me."
         m 3eka "But actually having you here with me on Christmas, just the two of us..."
         m 1hub "Ahaha~"
+
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "It's every couple's dream for the holidays, [player]."
+
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m "Snuggling with each other by a fireplace, watching the snow gently fall..."
 
+        # TODO: this should be chnaged to a history lookup after d25
         if not renpy.seen_label('monika_christmas'):
             m 5hubfa "I'm forever grateful I got this chance with you, [player]."
         else:
@@ -1361,6 +1436,7 @@ label mas_d25_monika_christmas:
         m "Ahaha! Gosh, I'm getting a little over emotional here..."
         m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
         m "Merry Christmas, [player]~"
+
     return
 
 #init 5 python:
@@ -1372,6 +1448,8 @@ label mas_d25_monika_christmas:
 #            # TODO: bewteen 12th and 20th I guess?
 #        )
 #    )
+
+# NOTE: we are shelfing hannukkah until we get better dialogue
 
 #TODO: Normal+ also Hanukkah is over before our release this year, so next year?
 label mas_d25_monika_hanukkah:
@@ -1404,6 +1482,8 @@ label mas_d25_monika_hanukkah:
 #        )
 #    )
 
+# shelving kwanzaa until we get better dialogue
+
 #TODO: Normalt+
 label mas_d25_monika_kwanzaa:
     m 1eub "[player], have you ever heard of Kwanzaa?"
@@ -1417,20 +1497,26 @@ label mas_d25_monika_kwanzaa:
     m 1hua "We can celebrate Kwanzaa together, too, [player]."
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_carolling"
-#            # TODO: props
-#            # TODO: between start of season and d25
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_carolling",
+            category=["holidays", "music"],
+            prompt="Carolling",
+            conditional=(
+                "mas_isD25Season() "
+                "and not mas_isD25Post() "
+                "and persistent._mas_d25_in_d25_mode"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
 
-#TODO: Normal+
 label mas_d25_monika_carolling:
     m 1euc "Hey, [player]..."
     m 3eud "Have you ever gone carolling before?"
@@ -1460,7 +1546,7 @@ label mas_d25_monika_carolling:
             m 1eua "Regardless, I'm sure you're also fond of that special cheer only Christmas songs can bring."
             m 3hua "Sing with me sometime, okay?"
 
-    return
+    return "derandom"
 
 #init 5 python:
 #    addEvent(
@@ -1471,6 +1557,8 @@ label mas_d25_monika_carolling:
 #            # TODO: during hannkkau time
 #        )
 #    )
+
+# NOTE: we are shelving until further notice
 
 #TODO: Normal+
 #TODO: Merge this into monika_hanukkah or remove? Hanukkah is over before our release this year, so next year?
@@ -1490,20 +1578,25 @@ label mas_d25_monika_dreidel:
     return
 
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_mistletoe"
-#            # TODO: props
-#            # TODO: d25 season
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_mistletoe",
+            category=["holidays"],
+            prompt="Mistletoe",
+            conditional=(
+                "mas_isD25Season() "
+                "and persistent._mas_d25_in_d25_mode"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
 
 default persistent._mas_pm_d25_mistletoe_kiss = False
 # True if user and monika kissed under the mistletoe
 
-#TODO: Aff+
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
@@ -1514,6 +1607,7 @@ label mas_d25_monika_mistletoe:
     m 1dsc "..."
     m 3rksdlb "Come to think of it, that sounds more like taking advantage of someone."
     m 1hksdlb "But I'm sure it's different now!"
+
     # TODO: branch dialogu here:
     #   if first time and beyond a certain amount of time + affection, than kiss!
     #       on subsequent times, maybe suggest a kiss or something
@@ -1524,17 +1618,23 @@ label mas_d25_monika_mistletoe:
     m 1hub "Ehehe~"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_monika_sleigh"
-#            # TODO: props
-#            # TODO: from season start to d26
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_sleigh"
+            category=["holidays"],
+            prompt="TODO",
+            conditional=(
+                "mas_isD25Season() "
+                "and not mas_isD25Post() "
+                "and persistent._mas_d25_in_d25_mode"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.AFFECTIONATE, None)
+        )
+    )
 
-#TODO: Aff+
 label mas_d25_monika_sleigh:
     m 3eub "Hey [player], a pretty nice thought just crossed my mind..."
     m 1eua "Have you ever heard of carriage rides?"
@@ -1548,20 +1648,21 @@ label mas_d25_monika_sleigh:
     m 1rkbfb "I wouldn't be able to contain myself. My heart would burst!"
     m 1ekbfa "The warmth of your body against mine, wrapped within the gentle cloth~"
     m 1dkbfa "Fingers entwined..."
+
     if mas_isMoniEnamored(higher=True):
         m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
     m 1wka "I really want to do that when I get there, [player]."
     m 1hua "Wouldn't that be so lovely?"
+
     show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hkbfa "An experience like that with you would be so breathtaking~"
     return
 
 init 2 python:
-    player = persistent.playername
 
     poem_d25 = Poem(
     author = "monika",
-    title = "     My dearest {0},".format(player),
+    title = "     My dearest {0},".format(persistent.playername),
     text = """\
      You truly are the joy to my world.
      Neither the light emitted by the tallest Christmas tree, 
@@ -1577,6 +1678,7 @@ init 2 python:
      Forever yours,
      Monika
 """
+    #" # I need this to keep syntax highlighting on vim
     )
 
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
@@ -1590,13 +1692,23 @@ init 2 python:
 #        ),
 #    )
 
-label mas_spent_d25_with_monika:
-    $ d25_gifts_total = 0
-    $ d25_gifts_date = mas_d25g_start.day()
-    while d25_gifts_date <= 25:
-        if datetime.date(datetime.date.today().year,12,d25_gifts_date) in persistent._mas_filereacts_historic:
-            $ d25_gifts_total += len(persistent._mas_filereacts_historic[datetime.date(datetime.date.today().year,12,d25_gifts_date)])
-        $ d25_gifts_date += 1
+label mas_d25_spent_time_monika:
+    python:
+        d25_gifts_total = 0
+        d25_gifts_good = 0
+        d25_gifts_neutral = 0
+        d25_gifts_bad = 0
+        d25_gift_range = mas_genDateRange(mas_d25g_start, mas_d25g_end)
+
+        # loop over gift days and check if were given any gifts
+        for d25_date in d25_gift_range:
+            gTotal, gGood, gNeut, gBad = store.mas_filereacts.get_report_for_date(d25_date)
+
+            d25_gifts_total += gTotal
+            d25_gifts_good += gGood
+            d25_gifts_neutral += gNeut
+            d25_gifts_bad += gBad
+
 
     m 3eua "[player]..."
     m 1hua "I just wanted to say...you being here with me made this such a wonderful Christmas!"
