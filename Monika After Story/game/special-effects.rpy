@@ -129,26 +129,23 @@ transform test_kissing(_zoom,_y=360):
     xcenter 640 yoffset ((600 * mas_sprites.value_zoom / 1.1) - mas_sprites.adjust_y ) yanchor 1.0
     linear 6.0 ypos _y zoom _zoom
 
-label monika_kissing_motion(duration=5.0):
-    # zoom_level
-    # value_zoom
-    # default_zoom_level
-    # adjust_zoom
-    # ajust_y
-    # default_y
-    python:
-        config.log = "perrito.txt"
-        renpy.log("I have no idea what's going on")
-        renpy.log("{}".format( 4.6))
-        renpy.log("{}".format(mas_sprites.value_zoom))
-        renpy.log("{}".format(4.6 - mas_sprites.value_zoom))
+label monika_kissing_motion(transition=5.0, duration=2.0):
+
+    show monika 6dubfa at i11
+
     $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
-    $ renpy.log("{}".format(_mas_kiss_zoom))
-    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))# plus something if below  def zoom
-    #show monika at mas_kissing(store.mas_sprites.zoom_level, adjust_y)
+    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
 
-    #show monika at test_kissing(_mas_kiss_zoom)
-
-    show monika at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),duration)
+    show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    $ renpy.pause(transition)
+    show black zorder 100
+    $ renpy.pause(duration/2)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    $ renpy.pause(duration/2)
+    hide black
+    show monika 6esbfa:
+        linear 3.0 xcenter 640 yoffset (_mas_kiss_y) zoom 0.80
+    pause 3.0
+    show monika 6esa at i11
 
     return
