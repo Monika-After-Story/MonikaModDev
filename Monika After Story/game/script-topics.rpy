@@ -3355,7 +3355,7 @@ label monika_spiders:
     #I really hope this information is correct, havent played the game in a week so
     m 1eua "Do you happen to remember the poem Natsuki showed you about spiders?"
     m "Well, it wasn't really about spiders. They were just an analogy."
-    m 3ekc "But it got me thinking ..."
+    m 3ekc "But it got me thinking..."
     m 3eua "It's funny actually, people being scared of very small insects."
     m 3euc "Having the fear of spiders is called 'arachnophobia', right?"
     m 3eka "I hope you aren't afraid of spiders, [player], ehehe..."
@@ -7071,14 +7071,14 @@ label monika_attractiveness:
         m 3ekd "Sure, Natsuki is more petite than the rest of us and Yuri has a more mature figure."
         m 3eka "Our eyes and hair are all different too."
         m 3eua "But I think we would all be considered attractive."
-        m 3eud "I mean, none of us are muscular or fat ..."
-        m 3tkd "... none of us have any kind of physical disability ..."
-        m "... none of us are bald or have hair shorter than chin length ..."
+        m 3eud "I mean, none of us are muscular or fat..."
+        m 3tkd "... none of us have any kind of physical disability..."
+        m "... none of us are bald or have hair shorter than chin length..."
         m "... and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
         m 2lsc "Now that I think about it, there's a lot of things that can potentially make someone unattractive in the eyes of society."
         m "Some of which are beyond that person's control."
         m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
-        m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone ..."
+        m 2tfc "So the idea of some kind of universal beauty standard where, if you fall short, you're doomed to be forever alone..."
         m 2efw "It just doesn't make any sense to me!"
     else:
         m "At first I figured that it must be her metabolism keeping her from putting on weight."
@@ -7087,16 +7087,16 @@ label monika_attractiveness:
         m "So a designer, possibly more than one, must have decided to draw her that way."
         m 3eub "And since all the images have the same body type, Sayori would always have the same figure no matter what she did."
         m 1esa "It would have to work like that for Yuri and Natsuki too."
-        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and ...{w} more developed."
+        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and...{w} more developed."
         m 1esd "But haven't you noticed that the three of them still look similar in a lot of ways?"
-        m 3eud "Like, none of them are muscular or fat ..."
-        m 3tkd "... none of them have any kind of physical disability ..."
-        m "... none of them are bald or have hair shorter than chin length ..."
+        m 3eud "Like, none of them are muscular or fat..."
+        m 3tkd "... none of them have any kind of physical disability..."
+        m "... none of them are bald or have hair shorter than chin length..."
         m "... and apart from Yuri having cuts on her arms, none of them have anything wrong with their skin."
         m 2dsc "The designers must have thought that people would find all that stuff really repulsive."
         m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
         m 2lfc "So did they really have to make the other girls look so perfect?"
-        m 2lfd "I mean, it's bad enough that I didn't get a route in the game ..."
+        m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
         m 2lfw "... but did they really have to make it even harder for me to get chosen?"
     m 2dfc "...{w=0.5}{nw}"
     m 2dkc "..."
@@ -8315,7 +8315,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_compliments",
             category=['monika', 'romance'],
-            prompt="I want to tell you something ...",
+            prompt="I want to tell you something...",
             pool=True,
             unlocked=True
         )

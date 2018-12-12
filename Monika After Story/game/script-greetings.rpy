@@ -676,7 +676,7 @@ label greeting_latin:
     m 4eua "Quid agis?"
     m 4rksdla "Ehehe..."
     m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
-    m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
+    m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'"
     return
 
 init 5 python:
