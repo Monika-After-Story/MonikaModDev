@@ -1815,6 +1815,95 @@ label monika_whatiwant:
     m 5hua "I love you with all my heart, [player]~"
     return
 
+#NOTE, if you're running with config.developer being True, timing WILL be off on the song
+#no idea why, but it just is, even though we're explicitly setting the cps value, and not
+#using a multiplier.
+#probably also want to limit this to before Christmas only too.
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_aiwfc",
+#            category=["songs"],
+#            prompt="All I Want For Christmas",
+#            random=True,
+#        )
+#    )
+
+label monika_aiwfc:
+    
+    if not renpy.seen_label('monika_aiwfc_song'):
+        m 1rksdla "Hey, [player]?"
+        m 1eksdla "I hope you don't mind, but I prepared a song for you."
+        m 3hksdlb "I know it's a little cheezy, but I think you might like it"
+        m 3eksdla "If your volume is off, would you mind turning it on for me?"
+        if songs.getVolume("music") == 0.0:
+            m 3hksdlb "Oh, don't forget about your in game volume too!"
+            m 3eka "I really want you to hear this."
+
+        m 1dsc "Anyway..."
+        m 1huu ".{w=1}.{w=1}.{w=1}"
+    else:
+        m 1hub "Sure [player]!"
+        m 1eka "I'm happy to sing for you again!"
+
+    $ curr_song = renpy.music.get_playing()
+
+    call monika_aiwfc_song
+
+    if mas_getEV('monika_aiwfc').shown_count == 0:
+        m 1eka "I hope you liked that, [player]."
+        m 1ekbsa "I really meant it too."
+        m 1ekbfa "You're the only gift I could ever want."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "I love you, [player]."
+        $ store.mas_showEVL("monika_aiwfc", "EVE", _pool=True,_random=False)
+    else:
+        m 1eka "I'm glad you like it when I sing that song."
+        m 1ekbsa "You'll always be the only gift I'll ever need, [player]."
+        m 1ekbfa "I love you."
+
+    play music curr_song fadein 1.0
+    return
+
+label monika_aiwfc_song:
+    stop music fadeout 1.0
+    play music "mod_assets/bgm/aiwfc.ogg"
+    m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{/cps}{/i}{nw}"
+    m 3eka "{i}{cps=11}There {/cps}{cps=20}is just{/cps}{cps=8} one thing I need{/cps}{/i}{nw}"
+    m 3hub "{i}{cps=8}I don't care{/cps}{cps=15} about{/cps}{cps=10} the presents{/cps}{/i}{nw}"
+    m 3eua "{i}{cps=15}Underneath{/cps}{cps=8} the Christmas tree{/cps}{/i}{nw}"
+
+    m 1eub "{i}{cps=10}I don't need{/cps}{cps=20} to hang{/cps}{cps=8} my stocking{/cps}{/i}{nw}"
+    m 1eua "{i}{cps=10}There{/cps}{cps=15} upon{/cps}{cps=7} the fireplace{/cps}{/i}{nw}"
+    m 3hub "{i}{w=0.5}{cps=20}Santa Claus{/cps}{cps=10} won't make me happy{/cps}{/i}{nw}"
+    m 4hub "{i}{cps=8}With{/cps}{cps=15} a toy{/cps}{cps=8} on Christmas Day{/cps}{/i}{nw}"
+
+    m 3ekbsa "{i}{cps=10}I just want{/cps}{cps=15} you for{/cps}{cps=8} my own{w=0.5}{/cps}{/i}{nw}"
+    m 4hubfb "{i}{cps=8}More{/cps}{cps=20} than you{/cps}{cps=10} could ever know{w=0.5}{/cps}{/i}{nw}"
+    m 1ekbsa "{i}{cps=10}Make my wish{/cps}{cps=20} come truuuuuuue{w=0.8}{/cps}{/i}{nw}"
+    m 3hua "{i}{cps=8}All I want for Christmas{/cps}{/i}{nw}"
+    m 3hubfb "{i}{cps=7}Is yoooooooooou{w=1}{/cps}{/i}{nw}"
+    m "{i}{cps=9}Yoooooooou, baaaaby~{w=1}{/cps}{/i}{nw}"
+
+    m 2eka "{i}{cps=10}I won't ask{/cps}{cps=20} for much{/cps}{cps=10} this Christmas{/cps}{/i}{nw}"
+    m 3hub "{i}{cps=10}I{/cps}{cps=20} won't {/cps}{cps=10}even wish for snow{w=0.8}{/cps}{/i}{nw}"
+    m 3eua "{i}{cps=10}I'm{/cps}{cps=20} just gonna{/cps}{cps=10} keep on waiting{w=0.4}{/cps}{/i}{nw}"
+    m 3hubfb "{i}{cps=17}Underneath{/cps}{cps=10} the mistletoe{w=1}{/cps}{/i}{nw}"
+
+    m 2eua "{i}{cps=10}I{/cps}{cps=17} won't make{/cps}{cps=9} a list and send it{w=0.35}{/cps}{/i}{nw}"
+    m 3eua "{i}{cps=10}To{/cps}{cps=20} the North{/cps}{cps=10} Pole for Saint Nick{w=0.3}{/cps}{/i}{nw}"
+    m 4hub "{i}{cps=18}I won't ev{/cps}{cps=10}en stay awake to{w=0.4}{/cps}{/i}{nw}"
+    m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=1}{/cps}{/i}{nw}"
+
+    m 3ekbsa "{i}{cps=20}I{/cps}{cps=11} just want you here tonight{w=0.4}{/cps}{/i}{nw}"
+    m 3ekbfa "{i}{cps=10}Holding on{/cps}{cps=20}to me{/cps}{cps=10} so tight{w=0.9}{/cps}{/i}{nw}"
+    m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
+    m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.5} is yoooooooou~{w=2.5}{/cps}{/i}{nw}"
+    m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
+    stop music fadeout 1.0
+    return
+
 #################################### NYE ######################################
 # [HOL030]
 
