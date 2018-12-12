@@ -3167,3 +3167,26 @@ label greeting_returned_home_bday_long_sub:
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
     return
+
+init 5 python:
+    rules = dict()
+    rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ghost",
+            unlocked=True,
+            random=True,
+            rules=rules
+        ),
+        eventdb=evhand.greeting_database
+    )
+    del rules
+
+label greeting_ghost:
+    #Prevent it from happening more than once.
+    $ mas_lockEvent(mas_getEV("greeting_ghost"))
+
+    #Call event in easter eggs.
+    call mas_ghost_monika
+    return

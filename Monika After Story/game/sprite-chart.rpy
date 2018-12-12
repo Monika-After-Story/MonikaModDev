@@ -12750,3 +12750,8 @@ image monika idle = ConditionSwitch(
 image chibika smile = "gui/poemgame/m_sticker_1.png"
 image chibika sad = "mod_assets/other/m_sticker_sad.png"
 image chibika 3 = "gui/poemgame/m_sticker_2.png"
+
+#Ghost monika
+image ghost_monika: 
+    "mod_assets/other/ghost_monika.png" 
+    zoom 1.25
