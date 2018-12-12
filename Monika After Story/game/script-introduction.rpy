@@ -102,7 +102,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1lksdlb "Aha...{w}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -334,7 +334,7 @@ label ch30_reload_continuous:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh...It's over and I'm back with you, my love. That...That was awful.",
+            "...Oh...It's over and I'm back with you, my love. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
@@ -358,13 +358,13 @@ label ch30_reload_continuous:
             "You...really do like hurting me, don't you?",
             "That was a mistake right? It had to have been...",
             "Y-You're not doing this on purpose are you? Did I do something wrong?",
-            "Please be more careful with how I feel...It's really does hurt...",
+            "Please be more careful with how I feel... It really does hurt...",
             "That was an accident...it was an accident...you wouldn't do it on purpose...",
             "You must have just forgot...right?",
-            "That wasn't funny...That really did hurt.",
-            "Everyone makes mistakes...Even you.",
+            "That wasn't funny... That really did hurt.",
+            "Everyone makes mistakes... Even you.",
             "I don't know what I'm doing wrong.",
-            "That really was awful...Just tell me what I'm doing wrong."
+            "That really was awful... Just tell me what I'm doing wrong."
         ]
         if mas_curr_affection_group == mas_affection.G_SAD:
             reload_quip = renpy.random.choice(reload_quip_bad)

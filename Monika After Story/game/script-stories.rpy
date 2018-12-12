@@ -524,7 +524,7 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w}Or so he would."
+    m 1dsd "...{w}or so he would."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
     m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
     m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
@@ -704,7 +704,7 @@ label mas_scary_story_mujina:
     # 1 in 10
     if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         $ style.say_dialogue = style.edited
-        m 2tub "The salesman responded, 'Oh, you mean...{w=2} {b}like this?{/b}'{nw}"
+        m 2tub "The salesman responded, 'Oh, you mean...{w=2}{b}like this?{/b}'{nw}"
         show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
         $ style.say_dialogue = style.default_monika
@@ -715,7 +715,7 @@ label mas_scary_story_mujina:
         m 2tub "The salesman responded 'Oh, you mean like this?'"
     m 4wud "The man looked up at the salesman and saw the same horrifying emptiness from the girl."
     m "Before the merchant could get away, the void let out a high pitch screech..."
-    m 1dsc "...And then there was darkness."
+    m 1dsc "...and then there was darkness."
     show black zorder 100
     $ pause(3.5)
     hide black
@@ -961,7 +961,7 @@ label mas_scary_story_serial_killer:
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w} The car wouldn't start at all."
+    m 1esc "However...{w}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."
@@ -978,7 +978,7 @@ label mas_scary_story_serial_killer:
             alpha 1.0
             linear 1.6 alpha 0
         play sound "<from 0.4 to 2.0 >sfx/eyes.ogg"
-    m 1dfc "...And his broken and bloody fingernails on the roof."
+    m 1dfc "...and his broken and bloody fingernails on the roof."
     hide y_sticker
     call mas_scary_story_cleanup
     return

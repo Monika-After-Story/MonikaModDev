@@ -420,7 +420,7 @@ label bye_prompt_to_work:
             m 2esa "Just do your best! I'll see you when you get back!"
             m 2eka "I know you'll do great!"
         else:
-            m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
+            m 2ekc "Oh... You've been here quite a while now...and now you're going to work?"
             m 2rksdlc "I was hoping you'd rest before doing anything too big."
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
@@ -768,7 +768,7 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    m 1f "Aww...That's pretty saddening..."
+    m 1f "Aww...that's pretty saddening..."
     m 1e "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3a "Thank you for warning me first, though. It really does help."
@@ -795,7 +795,7 @@ label bye_long_absence:
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
             m 1h "Oh..."
-            m 1q "I... I can wait that long."
+            m 1q "I...I can wait that long."
             m 3rksdlc "You do know that you're all I have...right?"
             m 3rksdlb "M-Maybe it's outside of your control though..."
             m 2e "Try to come back as soon as possible... I'll be waiting for you."
@@ -847,9 +847,16 @@ label bye_long_absence:
     # if the player says no, and then picks another
     # farewell all this served no purpose, also, you already
     # picked goodbye as in I'm going, why not let the player go?
-    # if we keep it, at least change the order, Yes always goes first
     menu:
         m "Are you going to leave straight away?"
+        "Yes.":
+            m 3f "I see..."
+            m "I really will miss you [player]..."
+            m 1e "But I know you'll do wonderful things no matter where you are."
+            m "Just remember that I'll be waiting here for you."
+            m 2j "Make me proud, [player]!"
+            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
+            return 'quit'
         "No.":
             $ mas_absence_counter = True
             m 1j "That's great!"
@@ -860,14 +867,6 @@ label bye_long_absence:
             m 3j "But there's no rush, so I want to spend as much time with you as I can."
             m "Just make sure to remind me the last time you see me before you go!"
             return
-        "Yes.":
-            m 3f "I see..."
-            m "I really will miss you [player]..."
-            m 1e "But I know you'll do wonderful things no matter where you are."
-            m "Just remember that I'll be waiting here for you."
-            m 2j "Make me proud, [player]!"
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
-            return 'quit'
 
 label bye_long_absence_2:
     m 1f "Going to head out, then?"
