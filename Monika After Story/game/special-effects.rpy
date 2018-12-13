@@ -109,6 +109,9 @@ transform otei_appear(a=0.70,time=1.0):
     alpha 0.0
     linear time alpha a
 
+transform fade_in(time=1.0):
+    alpha 0.0
+    ease time alpha 1.0
 
 init python:
     def zoom_smoothly(trans, st, at):
@@ -128,7 +131,7 @@ transform mas_kissing(_zoom, _y,time=2.0):
 
 label monika_kissing_motion(transition=5.0, duration=2.0):
     # Note: the hardcoded constants work to give the focus on lips
-    # effect these were calculated based on max/min values of the zoom 
+    # effect these were calculated based on max/min values of the zoom
 
     # hide everything
     $ HKBHideButtons()
@@ -145,7 +148,7 @@ label monika_kissing_motion(transition=5.0, duration=2.0):
     # wait until we're done with the animation
     $ renpy.pause(transition)
     # show black scene
-    show black zorder 100
+    show black zorder 100 at fade_in
     # wait half the time to play the sound effect
     $ renpy.pause(duration/2)
     play sound "mod_assets/sounds/effects/kissing.ogg"
