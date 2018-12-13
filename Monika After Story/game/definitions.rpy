@@ -407,6 +407,66 @@ python early:
             return store.mas_affection._betweenAff(low, aff_level, high)
 
 
+        def shouldRepeat(self):
+            """
+            Checks if this event should repeat
+
+            RETURNS: True if this event should repeat, False if not
+            """
+            return (
+                self.start_date is not None
+                and self.end_date is not None
+                and self.years is not None
+            )
+
+
+        def prepareRepeat(self):
+            """
+            Prepres this event's dates for a repeat.
+
+            RETURNS: True if this event was repeated, False if not
+            """
+            # sanity check
+            if not self.shouldRepeat():
+                return False
+
+            add_yr_fun = store.mas_utils.add_years
+
+            # if it's an empty list
+            if len(self.years) <= 0:
+
+                # get event ready for next year
+                self.start_date = add_yr_fun(self.start_date, 1)
+                self.end_date = add_yr_fun(self.end_date, 1)
+                return True
+
+            # if it's not empty, get all the years that are in the future
+            new_years = [
+                year 
+                for year in self.years 
+                if year > self.start_date.year
+            ]
+
+            # if we have possible new years
+            if len(new_years) > 0:
+                # sort them to ensure we get the nearest one
+                new_years.sort()
+
+                # pick it
+                new_year = new_years[0]
+
+                # get the difference
+                diff = new_year - self.start_date.year
+
+                # update event for the year it should repeat
+                self.start_date = add_yr_fun(self.start_date, diff)
+                self.end_date = add_yr_fun(self.end_date, diff)
+                return True
+
+            # no more new years, this event no longer repeats
+            return False
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -878,6 +938,69 @@ python early:
                     events[ev].conditional = "False"
 
             return events
+
+
+        @staticmethod
+        def _checkEvent(ev, curr_time):
+            """
+            Singular filter function for checkEvents
+
+            RETURNS: True if passes filter, False if not
+            """
+            # check aff
+            if not ev.checkAffection(mas_curr_affection):
+                return False
+
+            # check dates, if needed
+            if ev.start_date is not None and ev.start_date > curr_time:
+                return False
+
+            if ev.end_date is not None and ev.end_date <= curr_time:
+                return False
+
+            # now check conditional, if needed
+            if ev.conditional is not None and not eval(ev.conditional):
+                return False
+
+            # check if valid action
+            if ev.action not in Event.ACTION_MAP:
+                return False
+
+            # success
+            return True
+
+
+        @staticmethod
+        def checkEvents(ev_dict, rebuild_ev=True):
+            """
+            This acts as a combination of both checkConditoinal and
+            checkCalendar
+
+            does NOT return dict
+            """
+            if not ev_dict or len(ev_dict) == 0:
+                return
+
+            _now = datetime.datetime.now()
+
+            for ev_label,ev in ev_dict.iteritems():
+                # TODO: same TODO as in checkConditionals.
+                #   indexing would be smarter.
+              
+                if Event._checkEvent(ev, _now)
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
+
+                    # check if we should repeat
+                    if not ev.prepareRepeat():
+                        # no repeats
+                        ev.conditional = None
+
+            return
 
 
         @staticmethod

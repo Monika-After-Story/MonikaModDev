@@ -1054,11 +1054,8 @@ label ch30_post_exp_check:
     # file reactions
     $ mas_checkReactions()
 
-    #Run actions for any events that need to be changed based on a condition
-    $ Event.checkConditionals(evhand.event_database)
-
-    #Run actions for any events that are based on the clock
-    $ Event.checkCalendar(evhand.event_database)
+    # run actiosn for events that are based on conditional or clock
+    $ Event.checkEvents(evhand.event_database)
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
@@ -1158,11 +1155,8 @@ label ch30_loop:
 
                 grant_xp(idle_xp)
 
-            #Run actions for any events that need to be changed based on a condition
-            Event.checkConditionals(evhand.event_database, rebuild_ev=True)
-
-            #Run actions for any events that are based on the clock
-            Event.checkCalendar(evhand.event_database)
+            # runs actions for both conditionals and calendar-based events
+            Event.checkEvents(evhand.event_database, rebuild_ev=False)
 
             # Run delayed actions
             mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
