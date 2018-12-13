@@ -134,6 +134,7 @@ label monika_kissing_motion(transition=5.0, duration=2.0):
     # effect these were calculated based on max/min values of the zoom
 
     # hide everything
+    window hide
     $ HKBHideButtons()
     $ mas_RaiseShield_core()
     # reset position to i11
@@ -152,6 +153,9 @@ label monika_kissing_motion(transition=5.0, duration=2.0):
     # wait half the time to play the sound effect
     $ renpy.pause(duration/2)
     play sound "mod_assets/sounds/effects/kissing.ogg"
+    window auto
+    "chu~{fast}{w=1}{nw}"
+    window hide
     $ renpy.pause(duration/2)
     # hide the black scene
     hide black
@@ -163,4 +167,5 @@ label monika_kissing_motion(transition=5.0, duration=2.0):
     $ HKBShowButtons()
     $ mas_DropShield_core()
     $ mas_RaiseShield_dlg()
+    window auto
     return
