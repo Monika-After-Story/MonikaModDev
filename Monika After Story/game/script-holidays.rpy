@@ -851,23 +851,26 @@ define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 define mas_d25e = mas_d25 - datetime.timedelta(days=1)
 # christmas eve
 
+define mas_d25p = mas_d25 + datetime.timedelta(days=1)
+# day after christmas
+
 define mas_d25c_start = datetime.date(datetime.date.today().year, 12, 1)
 # start of christmas season (inclusive)
 
-define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 5)
-# end of christmas season (inclusive)
+define mas_d25c_end = datetime.date(datetime.date.today().year, 1, 6)
+# end of christmas season (exclusive)
 
 define mas_d25g_start = mas_d25 - datetime.timedelta(days=5)
 # start of gift = d25 gift (inclusive)
 
-define mas_d25g_end = mas_d25
-# end of gift = d25 gift (inclusive)
+define mas_d25g_end = mas_d25p
+# end of gift = d25 gift (exclusive)
 
 define mas_d25cl_start = mas_d25c_start
 # start of when monika wears santa (inclusive)
 
-define mas_d25cl_end = mas_d25
-# end of when monika wears santa (on her own) (inclusive)
+define mas_d25cl_end = mas_d25p
+# end of when monika wears santa (on her own) (exclusive)
 
 
 init -810 python:
@@ -952,7 +955,7 @@ init -10 python:
         """
         return (
             mas_d25c_start <= _date <= mas_nye
-            or mas_nyd <= _date <= mas_d25c_end
+            or mas_nyd <= _date < mas_d25c_end
         )
 
 
@@ -970,7 +973,7 @@ init -10 python:
         """
         return (
             mas_d25 + datetime.timedelta(days=1) <= _date <= mas_nye
-            or mas_nyd <= _date <= mas_d25c_end
+            or mas_nyd <= _date < mas_d25c_end
         )
 
 
@@ -985,7 +988,7 @@ init -10 python:
 
         RETURNS: True if given date is in the d25 gift range, Falsee otherwise
         """
-        return mas_d25g_start <= _date <= mas_d25g_end
+        return mas_d25g_start <= _date < mas_d25g_end
 
 
     def mas_isD25Outfit(_date=datetime.date.today()):
@@ -1000,7 +1003,7 @@ init -10 python:
         RETURNS: True if given date is in teh d25 santa outfit range, False
             otherwise
         """
-        return mas_d25cl_start <= _date <= mas_d25cl_end
+        return mas_d25cl_start <= _date < mas_d25cl_end
 
 
 #### d25 arts
@@ -1137,40 +1140,17 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro",
             conditional=(
-                "mas_isD25Season() "
-                "and not persistent._mas_d25_intro_seen "
+                "not persistent._mas_d25_intro_seen "
                 "and not persistent._mas_d25_started_upset "
-                "and not mas_isD25Post()"
             ),
             action=EV_ACT_PUSH,
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
+            years=[],
             aff_range=(mas_aff.NORMAL, None)
-        )
+        ),
+        skipCalendar=True
     )
-
-init -876 python in mas_delact:
-    # delayed action to reset holiday intro
-
-    def _mas_d25_holiday_intro_reset_action(ev):
-        # updates conditional and action
-        ev.conditional = (
-            "mas_isD25Season() "
-            "and not persistent._mas_d25_intro_seen "
-            "and not persistent._mas_d25_started_upset "
-            "and not mas_isD25Post()"
-        )
-        ev.action = store.EV_ACT_PUSH
-        return True
-
-
-    def _mas_d25_holiday_intro_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            8,
-            "mas_d25_monika_holiday_intro",
-            "True",
-            _mas_d25_holiday_intro_reset_action,
-            store.MAS_FC_INIT
-        )
 
 
 label mas_d25_monika_holiday_intro:
@@ -1236,36 +1216,41 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro_upset",
             conditional=(
-                "mas_isD25Season() "
-                "and not persistent._mas_d25_intro_seen "
+                "not persistent._mas_d25_intro_seen "
                 "and persistent._mas_d25_started_upset "
-                "and not mas_isD25Post()"
             ),
             action=EV_ACT_PUSH,
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
+            years=[],
             aff_range=(mas_aff.NORMAL, None)
-        )
+        ),
+        skipCalendar=True
     )
 
 
 init -876 python in mas_delact:
     # delayed action to reset holiday intro upset
+    # NOTE: we are using delayed action here because we might need to 
+    #   retrigger this event in case of an affection drop during runtime.
 
     def _mas_d25_holiday_intro_upset_reset_action(ev):
-        # updates conditional and action
+        # updates conditional and action, and dates
         ev.conditional = (
-            "mas_isD25Season() "
-            "and not persistent._mas_d25_intro_seen "
+            "not persistent._mas_d25_intro_seen "
             "and persistent._mas_d25_started_upset "
-            "and not mas_isD25Post()"
         )
-        ev.action = EV_ACT_PUSH
+        ev.action = store.EV_ACT_PUSH
+        ev.start_date = store.mas_d25c_start,
+        ev.end_date = store.mas_d25p
+        store.Event._verifyDatesEV(ev)
         return True
 
 
     def _mas_d25_holiday_intro_upset_reset():
         # creates delayed action for holiday intro
         return store.MASDelayedAction.makeWithLabel(
-            9,
+            8,
             "mas_d25_monika_holiday_intro_upset",
             "True",
             _mas_d25_holiday_intro_upset_reset_action,
@@ -1280,7 +1265,7 @@ label mas_d25_monika_holiday_intro_upset:
     # before viewing this, we will reset this event's conditional and
     # delay action the reset for idle
     if mas_isMoniUpset(lower=True):
-        $ mas_addDelayedAction(9)
+        $ mas_addDelayedAction(8)
         return
 
     m 2rksdlc "So [player]... {w=1}I hadn't really been feeling very festive this year..."
@@ -1344,36 +1329,16 @@ init 5 python:
 #            category=["holidays"],
 #            prompt="Christmas",
             conditional=(
-                "mas_isD25() "
-                "and persistent._mas_d25_in_d25_mode"
+                "persistent._mas_d25_in_d25_mode"
             ),
             ev.action=store.EV_ACT_PUSH,
+            start_date=mas_d25,
+            end_date=mas_d25p,
+            years=[],
             aff_range=(mas_aff.NORMAL, None)
-        )
+        ),
+        skipCalendar=True
     )
-
-init -876 python in mas_delact:
-    # delayed action to reset d25 event
-
-    def _mas_d25_monika_christmas_reset_action(ev):
-        # updates conditional and action
-        ev.conditional = (
-            "mas_isD25() "
-            "and persistent._mas_d25_in_d25_mode"
-        )
-        ev.action = store.EV_ACT_PUSH
-        return True
-
-
-    def _mas_d25_monika_christmas_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            10,
-            "mas_d25_monika_christmas",
-            "True",
-            _mas_d25_monika_christmas_reset_action,
-            store.MAS_FC_INIT
-        )
 
 
 label mas_d25_monika_christmas:
@@ -1624,7 +1589,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_sleigh"
             category=["holidays"],
-            prompt="TODO",
+            prompt="Carriage Ride",
             conditional=(
                 "mas_isD25Season() "
                 "and not mas_isD25Post() "
@@ -1683,14 +1648,19 @@ init 2 python:
 
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
 #TODO: decide what time we want this to show up on christmas night 8pm-midnight?
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_spent_d25_with_monika",
-#            action=EV_ACT_QUEUE,
-#        ),
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_spent_time_monika",
+            # TODO: properties
+#            conditional=(
+#                "mas_isD25() "
+#                "and persistent._mas_d25_in_d25_mode "
+#                ""
+            action=EV_ACT_QUEUE,
+        ),
+    )
 
 label mas_d25_spent_time_monika:
     python:
