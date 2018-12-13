@@ -127,11 +127,14 @@ transform mas_kissing(_zoom, _y,time=2.0):
     xcenter 640 yoffset ((680 - mas_sprites.adjust_y)  * mas_sprites.value_zoom / 1.1) yanchor 1.0
     linear time ypos _y zoom _zoom
 
-
+default persistent._mas_first_kiss = None
 
 label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
+
+    if persistent._mas_first_kiss is None:
+        $ persistent._mas_first_kiss = datetime.date.today() 
 
     # hide everything
     if hide_ui:
