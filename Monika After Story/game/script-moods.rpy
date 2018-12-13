@@ -235,7 +235,7 @@ label mas_mood_sick:
             m 2wuo "[player]!"
             m 2wkd "You haven't been ill this entire time, have you?"
             m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
-            m 2rkc "Well... Just promise to tell me earlier next time."
+            m 2rkc "Well...just promise to tell me earlier next time."
             m 2eka "Now go get some rest, that's what you need."
             m 2hub "I'll be waiting for a full recovery!"
             m "Sweet dreams, my love."

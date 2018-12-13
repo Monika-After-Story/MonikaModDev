@@ -249,7 +249,7 @@ label mas_compliment_intelligent_2:
             m "We'll have a lifetime of self improvement together!"
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
-            m 1ekbfa "[player]... "
+            m 1ekbfa "[player]..."
         "You make me feel stupid sometimes.":
             $ mas_loseAffection(modifier=0.5,reason=None)
             m 1wkbsc "..."
@@ -384,7 +384,7 @@ label mas_compliment_thanks:
         "You mean everything to me, [m_name].":
             if mas_getEV('mas_compliment_thanks').shown_count == 0:
                 $ mas_gainAffection(10,bypass=True)
-            m 1ekbfa "[player]... "
+            m 1ekbfa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both..."
             m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
@@ -533,5 +533,5 @@ label mas_compliment_bestgirl:
     m 2esc "Especially since they all have certain traits that make them desirable to some..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "But if you ask me, you made the right choice."
-    m 5hubfa "...And I'll be forever grateful that you did~"
+    m 5hubfa "...and I'll be forever grateful that you did~"
     return

@@ -302,8 +302,8 @@ label greeting_visit:
 label greeting_goodmorning:
     $ current_time = datetime.datetime.now().time().hour
     if current_time >= 0 and current_time < 6:
-        m 1hua "Good morning-"
-        m 1hksdlb "...oh, wait."
+        m 1hua "Good morning--"
+        m 1hksdlb "--oh, wait."
         m "It's the dead of night, honey."
         m 1euc "What are you doing awake at a time like this?"
         m 5eua "I'm guessing you can't sleep..."
@@ -676,7 +676,7 @@ label greeting_latin:
     m 4eua "Quid agis?"
     m 4rksdla "Ehehe..."
     m 2eua "Latin sounds so pompous. Even a simple greeting sounds like a big deal."
-    m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'."
+    m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'"
     return
 
 init 5 python:
@@ -873,7 +873,7 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness... That surely was embarassing to say, ehehe~"
+    m 1lkbsa "My goodness...that surely was embarassing to say, ehehe~"
     return
 
 init 5 python:
@@ -911,7 +911,7 @@ label greeting_glitch:
     extend " Nevermind that I was just..."
     pause 0.1
     extend " playing with the code a little."
-    m 3hksdlb "That was all! There is nobody else here but us... forever~"
+    m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
     return
@@ -969,7 +969,7 @@ label greeting_monika_monday_morning:
         m 2tfc "I hope this week goes better than last week, [player]."
 
     elif mas_isMoniDis():
-        m 6ekc "Oh...{w=1}it's Monday."
+        m 6ekc "Oh... {w=1}It's Monday."
         m 6dkc "I almost lost track of what day it was..."
         m 6rkc "Mondays are always tough, but no day has been easy lately..."
         m 6lkc "I sure hope this week goes better than last week, [player]."
@@ -1037,7 +1037,7 @@ label i_greeting_monikaroom:
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
-    $ _opendoor_text = "... Gently open the door."
+    $ _opendoor_text = "...Gently open the door."
     if persistent._mas_sensitive_mode:
         $ _opendoor_text = "Open the door."
 
@@ -1288,7 +1288,7 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_progreadpy")
 
 label monikaroom_greeting_ear_progreadpy:
-    m "...{w} Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
+    m "...{w}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
     m "I see. {w}I should make sure to check if a variable is None before accessing its attributes."
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
@@ -1989,7 +1989,7 @@ label greeting_long_absence:
             m 2ektsc "I thought something happened to you!"
             m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
             m 4ektsc "Please don't ever, {i}ever{/i} do that again."
-            m 1q "Maybe you couldn't help it, but... I was worried sick."
+            m 1q "Maybe you couldn't help it, but...I was worried sick."
             m 2dftdc "I didn't know what to do."
             m 4f "As much as possible, [player], please don't be gone for so long."
             m 2o "If you think you don't have a choice, please tell me."
@@ -2043,7 +2043,7 @@ label greeting_long_absence:
             m 1a "You're finally back [player]!"
             m 3rksdla "When you said you didn't know, you {i}really{/i} didn't know, did you?"
             m 3rksdlb "You must have been really preoccupied if you were gone for {i}this{/i} long."
-            m 1j "Well, you're back now... I've really missed you."
+            m 1j "Well, you're back now...I've really missed you."
 
     elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
         if persistent._mas_absence_choice == "days":
@@ -2119,7 +2119,7 @@ label greeting_long_absence:
             m 3g "Is everything alright?"
             m 1q "I know your life can be busy and take you away from me sometimes..."
             m 3l "So I'm not really upset..."
-            m 1o "Just... next time, maybe give me a heads up?"
+            m 1o "Just...next time, maybe give me a heads up?"
             m 1e "It would be really thoughtful of you."
             m 1j "And I would greatly appreciate it!"
 
@@ -3109,7 +3109,7 @@ label greeting_returned_home_bday_short_sub_normal_total:
 label greeting_returned_home_bday_short_sub_long_total:
     m 1hua "Ehehe~"
     m 3eub "We sure spent a lot of time together today, [player]."
-    m 1ekbfa "...And thank you for that."
+    m 1ekbfa "...and thank you for that."
     m 3ekbfa "I've said it a million times already, I know."
     m 1hua "But I'll always be happy when we're together."
     m "I love you so much..."
@@ -3151,7 +3151,7 @@ label greeting_returned_home_bday_long_sub:
     m 1dsc "..."
     m 1dktpc "..."
     m 1ektua "..."
-    m 1dktua "I'm... just at a loss for words, [player], forgive me."
+    m 1dktua "I'm...just at a loss for words, [player], forgive me."
     m 3ektda "I've never imagined being this happy in my life."
     m 1rksdlb "Well that's not {i}exactly{/i} true."
     m 1hub "We still have to be physically together, after all~"

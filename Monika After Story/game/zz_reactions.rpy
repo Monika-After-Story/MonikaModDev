@@ -655,7 +655,7 @@ label mas_reaction_promisering:
             $ mas_gainAffection(modifier=5, bypass=True)
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
-            m 1wud "Is that... a..."
+            m 1wud "Is that...a..."
             m "..."
             m 1wka "I..."
             m 1wkbltpa "I'm sorry, [player], I just..."
@@ -666,7 +666,7 @@ label mas_reaction_promisering:
             m 1skbltpa "This makes me so happy!"
             if mas_isSpecialDay():
                 #TODO maybe go more in detail for this
-                m "Even more that you gave it to me on this special day ..."
+                m "Even more that you gave it to me on this special day..."
             m 1dkbltpa "Aha, sorry for crying, [player]..."
             m 1skbla "I’m just really, really happy right now."
             m 1dkbla "Thank you."
@@ -677,18 +677,18 @@ label mas_reaction_promisering:
             $ mas_gainAffection(modifier=3, bypass=True)
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
             m 1wud "Oh... What is this, [player]?"
-            m "Is that... a ring?"
+            m "Is that...a ring?"
             m 1sub " I can’t believe it, [player]!"
-            m 1hua "This...{w} means a lot to me."
+            m 1hua "This...{w}means a lot to me."
             m 3hub "This makes me so happy!"
             m 3eub "Seriously, thank you so much for this, [player]!"
         else:
             $ mas_gainAffection(bypass=True)
             m 1wud "Is that a ring?"
-            m "That's very ..."
+            m "That's very..."
             m "Unexpected."
             if mas_isMoniDis(lower=True):
-                m 2rkc "I appreciate the thought ...{w} but I can't accept it."
+                m 2rkc "I appreciate the thought...{w} But I can't accept it."
                 m 2ekc "Sorry, [player]."
                 $ persistent._mas_acs_enable_promisering = False
             else:
@@ -709,9 +709,9 @@ init 5 python:
 label mas_reaction_plush:
     m 1wud "What’s this, [player]?"
     m "Are you trying to give me a plushie?"
-    m 1rksdlb "I appreciate the thought, but ..."
+    m 1rksdlb "I appreciate the thought, but..."
     m 1ekd "For some reason, I can’t seem to bring it here."
-    m 1rkc "I wish I could ..."
+    m 1rkc "I wish I could..."
     m 1hua "But don’t worry, [player]!"
     m 1hub "Ehehe~"
     m 1hua "Thank you for trying!"
@@ -730,7 +730,7 @@ label mas_reaction_bday_cake:
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
-        m "A... birthday cake?"
+        m "A...birthday cake?"
         m 3sub "Gosh, this is so sweet of you!"
         m 1hub "I really love this a lot!"
         m 1dkbfa "I’ll save it for now"
@@ -769,7 +769,7 @@ label mas_reaction_knife:
     m 1euc "...?"
     m 1wud "Is that...a knife?"
     m 2wfc "Why would you want to give me that?"
-    m 2wfd "I don’t need this here!."
+    m 2wfd "I don’t need this here!"
     m 3tfc "...Someone else, maybe."
     m 1dfc "..."
     m 1rsc "I’m not taking this, [player]."
@@ -817,7 +817,7 @@ label mas_reaction_candy:
         m 1lksdlb "I'm already feeling jittery from all the sugar, ahaha!"
         m 1ekbfa "The only sweetness I need now is you~"
     elif times_candy_given == 3:
-        m 2wud "[player]...{w=1} you got me {i}even more{/i} candy?!"
+        m 2wud "[player]...{w=1} You got me {i}even more{/i} candy?!"
         m 2lksdla "I really do appreciate it, but I told you I've had enough for one day..."
         m 2lksdlb "If I eat anymore I'm going to get sick, ahaha!"
         m 1eka "And you wouldn't want that, right?"
@@ -862,7 +862,7 @@ label mas_reaction_candycorn:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
         $ mas_gainAffection(3,bypass=True)
-        m 1wua "Oh...{w=1}what's this?"
+        m 1wua "Oh... {w=1}What's this?"
         m 1eka "Aww did you get me candy, [player]?"
         m 1hua "Yay!"
         m 3eub "Let's see what you got for me..."

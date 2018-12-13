@@ -812,7 +812,7 @@ init 15 python in mas_affection:
             "...Hm?",
             "We can try talking, I guess.",
             "I guess we can talk.",
-            "Oh...you want to talk?",
+            "Oh... You want to talk?",
             "If you want to talk, go ahead.",
             "We can talk if you really want to.",
             "Are you sure you want to talk to me?",
@@ -1944,7 +1944,7 @@ label monika_affection_nickname:
                         elif good_nickname is None:
                             m 1eud "Well, it's not exactly my favorite."
                             m 1eua "But I don't dislike it either."
-                            m 1rfu "[inputname]... yeah, I'm starting to like it a bit more."
+                            m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
                         else:
                             m 1wuo "Oh! That's a wonderful name!"
                             m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
@@ -1962,7 +1962,7 @@ label monika_affection_nickname:
                         if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
                             m 1wud "...!"
                             m 2wfw "I..."
-                            m "I... can't believe you just did that, [player]."
+                            m "I...can't believe you just did that, [player]."
                             m 2wfx "Are you really trying to give me her name?"
                             m 2dfd ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
                             m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
@@ -2000,7 +2000,7 @@ label monika_affection_nickname:
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.
 label mas_affection_upsetwarn:
     m 1dsc "Hey, [player]..."
-    m 1lksdlc "Recently, I've been feeling like my love and affection that I give is being... ignored."
+    m 1lksdlc "Recently, I've been feeling like my love and affection that I give is being...ignored."
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
