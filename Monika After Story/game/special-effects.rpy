@@ -129,14 +129,15 @@ transform mas_kissing(_zoom, _y,time=2.0):
 
 
 
-label monika_kissing_motion(transition=5.0, duration=2.0):
+label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
 
     # hide everything
-    window hide
-    $ HKBHideButtons()
-    $ mas_RaiseShield_core()
+    if hide_ui:
+        window hide
+        $ HKBHideButtons()
+        $ mas_RaiseShield_core()
     # reset position to i11
     show monika 6dubfa at i11
     # do the appropriate calculations
@@ -164,8 +165,11 @@ label monika_kissing_motion(transition=5.0, duration=2.0):
         linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
     pause 3.0
     show monika 6esa at i11 with dissolve
-    $ HKBShowButtons()
-    $ mas_DropShield_core()
-    $ mas_RaiseShield_dlg()
-    window auto
+    if hide_ui:
+        if store.mas_globals.dlg_workflow:
+            $ mas_MUMUDropShield()
+        else:
+            $ mas_DropShield_core()
+        $ HKBShowButtons()
+        window auto
     return
