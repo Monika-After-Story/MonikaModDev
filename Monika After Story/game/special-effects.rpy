@@ -124,7 +124,7 @@ init python:
 # kissing animation transform
 transform mas_kissing(_zoom, _y,time=2.0):
     i11
-    xcenter 640 yoffset ((680 - mas_sprites.adjust_y)  * mas_sprites.value_zoom / 1.1) yanchor 1.0
+    xcenter 640 yoffset 700 yanchor 1.0
     linear time ypos _y zoom _zoom
 
 default persistent._mas_first_kiss = None
