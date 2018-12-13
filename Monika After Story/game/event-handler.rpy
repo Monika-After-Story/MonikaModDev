@@ -559,9 +559,7 @@ init -875 python in mas_delact:
         5: _mas_bday_surprise_party_cleanup_reset,
         6: _mas_bday_surprise_party_hint_reset,
         7: _mas_bday_spent_time_with_reset,
-        8: _mas_d25_holiday_intro_reset,
-        9: _mas_d25_holiday_intro_upset_reset,
-        10: _mas_d25_monika_christmas_reset
+        8: _mas_d25_holiday_intro_upset_reset
     }
 
 

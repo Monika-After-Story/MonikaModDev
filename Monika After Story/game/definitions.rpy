@@ -76,8 +76,10 @@ python early:
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
     #   start_date - datetime for when this event is available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   end_date - datetime for when this event is no longer available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
@@ -203,6 +205,26 @@ python early:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+            if (
+                    start_date is not None 
+                    and type(start_date) is not datetime.datetime
+                    and type(start_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid start date.".format(eventlabel)
+                )
+            if (
+                    end_date is not None
+                    and type(end_date) is not datetime.datetime
+                    and type(end_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid end date.".format(eventlabel)
+                )
+            if years is not None and type(years) is not list:
+                raise Exception(
+                    "'{0}' - invalid years.".format(eventlabel)
+                )
 
             # we'll simplify aff_range so we dont have to deal with extra
             #   storage
@@ -228,6 +250,25 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
+
+            # convert dates to datetimes
+            if type(start_date) is datetime.date:
+                start_date = datetime.datetime.combine(
+                    start_date,
+                    datetime.time.min
+                )
+            if type(end_date) is datetime.date:
+                end_date = datetime.datetime.combine(
+                    end_date,
+                    datetime.time.min
+                )
+
+            # proprely setup repeats here if required.
+            start_date, end_date, was_changed = Event._verifyDates(
+                start_date,
+                end_date,
+                years
+            )
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -407,11 +448,11 @@ python early:
             return store.mas_affection._betweenAff(low, aff_level, high)
 
 
-        def shouldRepeat(self):
+        def canRepeat(self):
             """
-            Checks if this event should repeat
+            Checks if this event has the vars to enable repeat
 
-            RETURNS: True if this event should repeat, False if not
+            RETURNS: True if this event can repeat, False if not
             """
             return (
                 self.start_date is not None
@@ -424,47 +465,21 @@ python early:
             """
             Prepres this event's dates for a repeat.
 
+            NOTE: does not check if the event hasnt been reached this year.
+
             RETURNS: True if this event was repeated, False if not
             """
             # sanity check
-            if not self.shouldRepeat():
+            if not self.canRepeat():
                 return False
 
-            add_yr_fun = store.mas_utils.add_years
+            new_start, new_end, was_changed = Event._yearAdjustEV(self)
 
-            # if it's an empty list
-            if len(self.years) <= 0:
+            if was_changed:
+                self.start_date = new_start
+                self.end_date = new_end
 
-                # get event ready for next year
-                self.start_date = add_yr_fun(self.start_date, 1)
-                self.end_date = add_yr_fun(self.end_date, 1)
-                return True
-
-            # if it's not empty, get all the years that are in the future
-            new_years = [
-                year 
-                for year in self.years 
-                if year > self.start_date.year
-            ]
-
-            # if we have possible new years
-            if len(new_years) > 0:
-                # sort them to ensure we get the nearest one
-                new_years.sort()
-
-                # pick it
-                new_year = new_years[0]
-
-                # get the difference
-                diff = new_year - self.start_date.year
-
-                # update event for the year it should repeat
-                self.start_date = add_yr_fun(self.start_date, diff)
-                self.end_date = add_yr_fun(self.end_date, diff)
-                return True
-
-            # no more new years, this event no longer repeats
-            return False
+            return was_changed
 
 
         @staticmethod
@@ -547,6 +562,109 @@ python early:
             lock_entry = list(Event.INIT_LOCKDB[ev_label])
             lock_entry[property_dex] = value
             Event.INIT_LOCKDB[ev_label] = tuple(lock_entry)
+
+
+        @staticmethod
+        def _verifyDatesEV(ev):
+            """
+            _verifyDates, but for an Event object.
+
+            IN:
+                ev - event object to verify dates
+
+            RETURNS: See _verifyDates
+            """
+            return Event._verifyDates(ev.start_date, ev.end_date, ev.years)
+
+
+        @staticmethod
+        def _yearAdjustEV(ev):
+            """
+            _yearAdjust, but for an Event object
+
+            IN:
+                ev - evnet object to adjust years
+
+            RETURNS: See _verifyDates
+            """
+            return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+
+
+        @staticmethod
+        def _verifyDates(_start, _end, _years):
+            """
+            Given start/end/_yeras, figure out the appropriate start and end
+            dates. We use current datetime to figure this out.
+
+            NOTE: this is meant for Event use ONLY
+            NOTE: this is NOT meant to be used with an Event object. 
+                See _verifyDatesEV
+
+            IN:
+                _start - start datetime
+                _end - end datetime (exclusive)
+                _years - years list
+
+            RETURNS tuple of the following format:
+                [0]: start datetime to use
+                [1]: end datetime to use
+                [2]: True if there was and adjustment, False if not
+            """
+            # initial sanity check
+            if _start is None or _end is None or _years is None:
+                # if at least one item is None, this is not a repeatable.
+                return (_start, _end, False)
+
+            _now = datetime.datetime.now()
+
+            if _now < _end:
+                # if we havent reached end, then we also have not reached
+                # start and can assume that we are okay.
+                return (_start, _end, False)
+
+            # otherwise, we need to repeat
+            return Event._yearAdjust(_start, _end, _years)
+
+
+        @staticmethod
+        def _yearAdjust(_start, _end, _years):
+            """
+            Performs the year adjustment algorithm.
+
+            RETURNS: see _verifyDates
+            """
+            # otherwise, we need to repeat.
+            add_yr_fun = store.mas_utils.add_years
+
+            # if it's an empty list
+            if len(_years) <= 0:
+
+                # get event ready for next year
+                return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+
+            # if it's not empty, get all the years that are in the future
+            new_years = [
+                year 
+                for year in _years
+                if year > _start.year
+            ]
+
+            # if we have possible new years
+            if len(new_years) > 0:
+                # sort them to ensure we get the nearest one
+                new_years.sort()
+
+                # pick it
+                new_year = new_years[0]
+
+                # get the difference
+                diff = new_year - _start.year
+
+                # update event for the year it should repeat
+                return (add_yr_fun(_start, diff), add_yr_fun(_end, diff), True)
+
+            # no more years? then no repeats for this
+            return (_start, _end, False)
 
 
         @staticmethod
@@ -804,6 +922,7 @@ python early:
 
         @staticmethod
         def checkConditionals(events, rebuild_ev=False):
+            # NOTE: DEPRECATED
             #
             # This checks the conditionals for all of the events in the event list
             # if any evaluate to true, run the desired action then clear the
@@ -863,6 +982,7 @@ python early:
 
         @staticmethod
         def checkCalendar(events):
+            # NOTE: DEPRECATED
             #
             # This checks the date for all events to see if they are active.
             # If they are active, then it checks for a conditional, and evaluates
@@ -999,6 +1119,7 @@ python early:
                     if not ev.prepareRepeat():
                         # no repeats
                         ev.conditional = None
+                        ev.action = None
 
             return
 
@@ -2542,6 +2663,38 @@ init -100 python in mas_utils:
         )
 
 
+    def _EVgenY(_start, _end, current, for_start):
+        """
+        Generates/decides if a given start/end datetime/date should have its 
+        year incremented or not.
+
+        NOTE: specialized for Event creation datetime selection
+        NOTE: this only modifies year.
+
+        IN:
+            _start - datetime/date that begins this period
+            _end - datetime/date that ends this period
+            current - datetime/date to compare with (should be either today
+                or now)
+            for_start - True if we want the next valid start, False for end
+
+        RETURNS either next valid _start or next valid _end.
+        """
+        # keep track of which elem is important to us
+        if for_start:
+            _focus = _start
+        else:
+            _focus = _end
+
+        if current < _end:
+            # the range hasnt been reached yet, we are fine with this value.
+            # or if we are in the range
+            return _focus
+
+        # now is actually ahead of target, we should adjust year
+        return _focus.replace(year=current.year + 1)
+
+
     def randomblob(size, seed=None):
         """
         Generates a blob of StringIO data with the given size
@@ -3168,28 +3321,83 @@ init -1 python:
         """
         Generates a list of datetime.date objects with the given range.
 
-        NOTE: inclusive:
+        NOTE: exclusive:
 
         IN:
             _start - starting date of range
             _end - ending date of range
 
         RETURNS: list of datetime.date objects between the _start and _end,
-            inclusive. May be empty if invalid start and end dates are given
+            exclusive. May be empty if invalid start and end dates are given
         """
         # sanity check
-        if _start > _end:
+        if _start >= _end:
             return []
 
         _date_range = []
         one_day = datetime.timedelta(days=1)
         curr_date = _start
 
-        while curr_date <= _end:
+        while curr_date < _end:
             _date_range.append(curr_date)
             curr_date += one_day
 
         return _date_range
+
+
+    def mas_EVgenYDT(_start, _end, for_start):
+        """
+        Creates a valid start or end datetime for Event creation, given the
+        start and end datetimes.
+
+        NOTE: this only modifies year. Build a custom function for something
+        more precise.
+
+        IN:
+            _start - datetime that begins this period 
+            _end - datetime that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+
+        RETURNS: valid datetime for Event creation
+        """
+        return store.mas_utils._EVgenY(
+            _start,
+            _end, 
+            datetime.datetime.now(),
+            for_start
+        )
+
+
+    def mas_EVgenYD(
+            _start, 
+            _end, 
+            for_start, 
+            _time=datetime.time.min
+        ):
+        """
+        Variation of mas_EVgenYDT that accepts datetime.dates. This still
+        returns datetimes though.
+
+        IN:
+            _start - date that begins this period
+            _end - date that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+            _time - time to use with the dates. 
+                (Default: datetime.time.min)
+       
+        RETURNS: valid datetime for Event creation
+        """
+        return datetime.datetime.combine(
+            store.mas_utils._EVgenY(
+                _start,
+                _end,
+                datetime.date.today(),
+                for_start
+            ),
+            _time
+        )
 
 
     def mas_isMonikaBirthday():
