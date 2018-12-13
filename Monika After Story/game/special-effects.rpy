@@ -134,11 +134,11 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     # effect these were calculated based on max/min values of the zoom
 
     if persistent._mas_first_kiss is None:
-        $ persistent._mas_first_kiss = datetime.datetime.now()
+        $ persistent._mas_first_kiss = datetime.date.today()
 
-    # hide everything
+    window hide
     if hide_ui:
-        window hide
+        # hide everything
         $ HKBHideButtons()
         $ mas_RaiseShield_core()
     # reset position to i11
@@ -174,5 +174,5 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
         else:
             $ mas_DropShield_core()
         $ HKBShowButtons()
-        window auto
+    window auto
     return
