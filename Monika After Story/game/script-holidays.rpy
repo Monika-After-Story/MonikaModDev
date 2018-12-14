@@ -1783,7 +1783,7 @@ label mas_d25_spent_time_monika:
                 call monika_kissing_motion
                 show monika 6ekbfa at t11 with dissolve
                 m 6ekbfa "...I love you too~"
-                m 6dkbfa"..."
+                m 6dkbfa "..."
                 m "That was everything I had always dreamt it would be~"
                 m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment than just now, under the mistletoe."
                 m 6dkbsu "I will never forget this..."
