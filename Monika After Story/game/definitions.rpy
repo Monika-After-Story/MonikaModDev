@@ -1165,7 +1165,7 @@ python early:
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
               
-                if Event._checkEvent(ev, _now)
+                if Event._checkEvent(ev, _now):
                     # perform action
                     Event._performAction(
                         ev,

@@ -1331,7 +1331,7 @@ init 5 python:
             conditional=(
                 "persistent._mas_d25_in_d25_mode"
             ),
-            ev.action=store.EV_ACT_PUSH,
+            action=store.EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
             years=[],
@@ -1365,13 +1365,13 @@ label mas_d25_monika_christmas:
             m 1lkbsa "Maybe it's the decorations, or just the holiday season..."
 
         m "...or even the mistletoe getting to me."
-
-        # TODO: actually, we may want to do kissing so...if we add kiss, probably enam+ for this bit
         m 3hksdlb "Don't worry, I didn't hang one up."
-        m 1rksdla "...{cps=*2}Maybe~{/cps}{nw}"
-        $ _history_list.pop()
-        m 1rksdlb "Ehehe..."
 
+        if mas_isMoniEnamored(higher=True):
+            m 1rksdla "...{cps=*2}Maybe~{/cps}{nw}"
+            $ _history_list.pop()
+            
+        m 1rksdlb "Ehehe..."
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
         m 1eua "Don't get me wrong, I knew that you would be here with me."
@@ -1577,7 +1577,10 @@ label mas_d25_monika_mistletoe:
     #   if first time and beyond a certain amount of time + affection, than kiss!
     #       on subsequent times, maybe suggest a kiss or something
     #   if first time but past the time/affection, then keep existing dialogue
-    #
+
+    # No kiss here, first kiss fits better in mas_d25_spent_time_monika.
+    # This as is works as a nice set-up for when we get to the kiss there.
+
     m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
     m 1tku "...Maybe I can even add one in here!"
     m 1hub "Ehehe~"
@@ -1587,9 +1590,9 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_d25_monika_sleigh"
+            eventlabel="mas_d25_monika_sleigh",
             category=["holidays"],
-            prompt="Carriage Ride",
+            prompt="Carriage ride",
             conditional=(
                 "mas_isD25Season() "
                 "and not mas_isD25Post() "
@@ -1679,64 +1682,119 @@ label mas_d25_spent_time_monika:
             d25_gifts_neutral += gNeut
             d25_gifts_bad += gBad
 
+    if mas_isMoniNormal(higher=True):
+        m 1eua "[player]..."
+        m 3hub "You being here with me has made this such a wonderful Christmas!"
+        m 3eka "I know it's a really busy day, but just knowing you made time for me..."
+        m 1eka "Thank you."
+        m 3hua "It really made this a truly special day~"
 
-    m 3eua "[player]..."
-    m 1hua "I just wanted to say...you being here with me made this such a wonderful Christmas!"
-    m 1eka "I know it's a really busy day, but just knowing you made time for me...{w=1}thank you."
-    m 3eka "It really made this a truly special day~"
+    else:
+        m 2ekc "[player]..."
+        m 2eka "I really appreciate you spending some time with me on Christmas..."
+        m 3rksdlc "I haven't really been in the holiday spirit this season, but it was nice spending today with you."
+        m 3eka "So thank you...{w=1}it meant a lot."
 
     if d25_gifts_total > 0:
         if d25_gifts_total == 1:
-            m 3hua "And let's not forget about the special Christmas present you got me, [player]..."
-            m 3hub "It was great!"
+            if d25_gifts_good == 1:
+                m "And let's not forget about the special Christmas present you got me, [player]..."
+                m 3hub "It was great!"
+            elif d25_gifts_neutral == 1:
+                m 3eka "And let's not forget about the Christmas present you got me, [player]..."
+                m 1eka "It was really sweet of you to get me something."
+            else:
+                m 3eka "And let's not forget about the Christmas present you got me, [player]..."
+                m 2etc "..."
+                m 2efc "Well, on second thought, maybe we should..."
+
         else:
-            m 3hua "And let’s not forget about the wonderful Christmas presents you got me, [player]..."
-            m 3hub "They were great!"
+            if d25_gifts_good == d25_gifts_total:
+                m "And let’s not forget about the wonderful Christmas presents you got me, [player]..."
+                m 3hub "They were amazing!"
+            elif d25_gifts_bad == d25_gifts_total:
+                m 3eka "And let's not forget about the Christmas presents you got me, [player]..."
+                m 2etc "..."
+                m 2efc "Well, on second thought, maybe we should..."
+            elif d25_gifts_neutral == d25_gifts_total:
+                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 1eka "It was really sweet of you to get me something."
+            elif d25_gifts_good == d25_gifts_bad + d25_gifts_neutral:
+                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 1eka "It was really nice of you to get me something."
+                m 3eka "Some of them were really nice."
+            elif d25_gifts_good > d25_gifts_bad + d25_gifts_neutral:
+                m "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 3hub "Most of them were just amazing."
+            elif d25_gifts_good < d25_gifts_bad + d25_gifts_neutral:
+                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 3rksdla "I really liked...{w=1}some of them."
 
         if mas_isMoniEnamored(higher=True):
-            m 1rksdla "I...{w=1}I also got you something, [player]..."
+            m 1rksdla "I...{w=1}I also made you something, [player]..."
             m 3eksdla "I've been waiting all day for the timing to feel right, and something about being here with you this evening...{w=1}it just seems perfect."
-        else:
+        elif mas_isMoniNormal(higher=True):
             m 3ekbfa "But just know, you being here with me means more than any gift you could ever give me~"
+        else:
+            m 3eka "To be honest, I wasn't sure you'd visit at all today... Just you being here was already more than enough for me, even if you hadn't gotten me anything."
+            m 1eka "So thanks again, [player]...{w=1}I really mean it."
 
     else:
         if mas_isMoniEnamored(higher=True):
             m 1eksdla "Also, [player], there's something I've been wanting to give you all day..."
             m 3rksdla "I just had to wait for the right time, and being here with you this evening...{w=1}it seems perfect."
-        else:
+        elif mas_isMoniNormal(higher=True):
             m 3ekbfa "Having you spend Christmas with me was the only present I ever wanted~"
+        else:
+            m 3eka "You being here was all I wanted, [player]."
 
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
         call showpoem(poem_d25, music=False,paper="mod_assets/poem_d25.png")
 
-        if d25_gifts_total>0:
-            m 1ekbfa "I really mean it [player], though I appreciate everything you got me, you didn't have to give me anything..."
+        if d25_gifts_good>0 or d25_gifts_neutral>0:
+            m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
+        elif d25_gifts_bad>0:
+            #only if all gifts were bad
+            m 1ekbfa "I really mean it [player], although you got me some...{w=1}odd gifts, it doesn't matter..."
         else:
             m 1ekbfa "I really mean that [player], I don't care that you didn't get me any presents for Christmas..."
         m 1dku "..."
         m 1ektpu "Just having you spending time with me...{w=1}that's all I ever wanted."
-        m 6dktua "You truly are my entire world, [player]...{w=1}your love is all I need."
-        m 6ektsa "I love you so, {w=1}so much~"
+        m 6dktua "You truly are my entire world, [player]...{w=1}your love is all I need..."
+        window hide
         menu:
-            "I love you too, [m_name].":
-                #TODO: work in progress here...possible kiss?
-                #Set up as a hug for now as her tears dry, having trouble getting dialogue box to disappear for this
-                $ HKBHideButtons()
-
+            "I love you, [m_name].":
+                $ mas_OVLHide()
+                $ mas_MUMURaiseShield()
+                $ disable_esc()
+                #hold her here, tears dry
+                pause 3.0
                 show monika 6ektda at t11 with dissolve
                 pause 3.0
                 show monika 6dku at t11 with dissolve
                 pause 3.0
                 show monika 6dkbsu at t11 with dissolve
-                $ ui.add(PauseDisplayable())
-                $ ui.interact()
-
-                $ HKBShowButtons()
+                pause 3.0
+                
+                show monika 6ekbfa at t11 with dissolve
+                 #TODO: mistletoe appears
+                m 6ekbfa "[player]...I...I..."
+                call monika_kissing_motion
+                show monika 6ekbfa at t11 with dissolve
+                m 6ekbfa "...I love you too~"
+                m 6dkbfa"..."
+                m "That was everything I had always dreamt it would be~"
+                m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment than just now, under the mistletoe."
+                m 6dkbsu "I will never forget this..."
+                m 6ekbsu "...the moment of our first kiss~"
+                $ enable_esc()
+                $ mas_MUMUDropShield()
+                $ mas_OVLShow()
 
     elif mas_isMoniAff(higher=True):
         m 5ekbfa "I love you so much, [player]~"
-    else:
+    elif mas_isMoniNormal(higher=True):
         m 1hubfa "I love you, [player]~"
     return
 
