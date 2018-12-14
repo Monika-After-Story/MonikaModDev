@@ -2092,13 +2092,13 @@ init -2 python:
             Saves hair/clothes/acs to persistent
 
             IN:
-                force_hair - True means we force hair saving even if 
+                force_hair - True means we force hair saving even if
                     stay_on_start is False
                     (Default: False)
                 force_clothes - True means we force clothes saving even if
                     stay_on_start is False
                     (Default: False)
-                force_acs - True means we force acs saving even if 
+                force_acs - True means we force acs saving even if
                     stay_on_start is False
                     (Default: False)
             """
@@ -12108,6 +12108,19 @@ image monika 6eua = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6esa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
 image monika 6ekc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -12452,6 +12465,48 @@ image monika 6dsc = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6esbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
+)
+
+image monika 6dubfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
+)
+
+image monika 6dubfd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
+)
+
 image monika 6dstsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -12601,6 +12656,20 @@ image monika 6tst = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down"
+)
+
+image monika 6tkbfu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="full"
 )
 
 image monika 6wfw = DynamicDisplayable(
