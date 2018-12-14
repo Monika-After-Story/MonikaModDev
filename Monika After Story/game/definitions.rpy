@@ -263,12 +263,6 @@ python early:
                     datetime.time.min
                 )
 
-            # proprely setup repeats here if required.
-            start_date, end_date, was_changed = Event._verifyDates(
-                start_date,
-                end_date,
-                years
-            )
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -565,6 +559,21 @@ python early:
 
 
         @staticmethod
+        def _verifyAndSetDatesEV(ev):
+            """
+            Runs _verifyDatesEV and sets the event properties if change 
+            happens
+
+            IN:
+                ev - event object to verify and set
+            """
+            new_start, new_end, was_changed = Event._verifyDatesEV(ev)
+            if was_changed:
+                ev.start_date = new_start
+                ev.end_date = new_end
+
+
+        @staticmethod
         def _verifyDatesEV(ev):
             """
             _verifyDates, but for an Event object.
@@ -615,13 +624,6 @@ python early:
                 # if at least one item is None, this is not a repeatable.
                 return (_start, _end, False)
 
-            _now = datetime.datetime.now()
-
-            if _now < _end:
-                # if we havent reached end, then we also have not reached
-                # start and can assume that we are okay.
-                return (_start, _end, False)
-
             # otherwise, we need to repeat
             return Event._yearAdjust(_start, _end, _years)
 
@@ -633,38 +635,94 @@ python early:
 
             RETURNS: see _verifyDates
             """
+            _now = datetime.datetime.now()
+
+            # no changes necessary if we are currently in the zone
+            if _start <= _now < _end:
+                return (_start, _end, False)
+
             # otherwise, we need to repeat.
             add_yr_fun = store.mas_utils.add_years
 
-            # if it's an empty list
-            if len(_years) <= 0:
+            # NOTE this is wrong
 
-                # get event ready for next year
-                return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+            if len(_years) == 0:
+                # years is empty list, we are repeat yearly.
+                # we only need to check if current works, and if not, 
+                # move to one year ahead of current.
+                diff = _now.year - _start.year
+                new_end = add_yr_fun(_end, diff)
 
-            # if it's not empty, get all the years that are in the future
+                if new_end <= _now:
+                    # in this case, we should actually be +1 current year
+                    diff += 1
+                    new_end = add_yr_fun(_end, diff)
+
+                # now return the new start and the modified end
+                return (add_yr_fun(_start, diff), new_end, True)
+
+            # otherwise, we have a list of years, and shoudl determine next
             new_years = [
                 year 
                 for year in _years
-                if year > _start.year
+                if year >= _now.year
             ]
 
-            # if we have possible new years
-            if len(new_years) > 0:
-                # sort them to ensure we get the nearest one
-                new_years.sort()
+            if len(new_years) == 0:
+                # no repeat years, we have already reached the limit.
+                return (_start, _end, False)
 
-                # pick it
-                new_year = new_years[0]
+            new_years.sort()
 
-                # get the difference
-                diff = new_year - _start.year
+            # calc diff for the first year in this list
+            diff = _now.year - new_years[0]
+            new_end = add_yr_fun(_end, diff)
 
-                # update event for the year it should repeat
-                return (add_yr_fun(_start, diff), add_yr_fun(_end, diff), True)
+            if new_end <= _now:
+                if len(new_years) <= 1:
+                    # no more years, so we should just not change anything
+                    return (_start, _end, False)
 
-            # no more years? then no repeats for this
-            return (_start, _end, False)
+                # otherwise, we can get a valid setup by going 1 further.
+                diff = _now.year - new_years[1]
+                new_end = add_yr_fun(_end, diff)
+
+            return (add_yr_fun(_start, diff), new_end, True)
+
+
+        @staticmethod
+        def _getNextYear(_years, year_comp):
+            """
+            Retreieves the next possible year into the future from the given
+            years list.
+
+            NOTE: if empty list, we return current year.
+
+            IN:
+                _years - list of years
+                year_comp - year to start search from.
+
+            RETURNS next possible year into the future from the given years
+                list. If _years is empty, current year is returned.
+                If unable to find a next year, we return None.
+            """
+            # empty lits means repeat yearly
+            if len(_years) == 0:
+                return datetime.date.today().year
+
+            # non empty list means we should repeat on these years
+            new_years = [
+                year
+                for year in _years
+                if year > year_comp
+            ]
+
+            # no new years to repeat, no repeats needed
+            if len(new_years) == 0:
+                return None
+
+            # otherwise, return the next year in the list
+            return sorted(new_years)[0]
 
 
         @staticmethod
