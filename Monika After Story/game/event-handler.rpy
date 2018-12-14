@@ -904,6 +904,11 @@ init python:
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
             store.mas_calendar.addEvent(event)
+
+        # verify the event's dates
+        # NOTE: this covers time travel
+        Event._verifyAndSetDatesEV(event)
+
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 

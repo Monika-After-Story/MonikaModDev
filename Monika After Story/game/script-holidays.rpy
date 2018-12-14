@@ -1653,12 +1653,12 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_spent_time_monika",
-            # TODO: properties
-#            conditional=(
-#                "mas_isD25() "
-#                "and persistent._mas_d25_in_d25_mode "
-#                ""
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+            ),
             action=EV_ACT_QUEUE,
+            start_date=datetime.combine(mas_d25, datetime.time(hour=20)),
+            end_date=datetime.combine(mas_d25p, datetime.time(hour=1))
         ),
     )
 
