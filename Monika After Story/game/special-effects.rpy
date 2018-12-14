@@ -164,7 +164,7 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     # hide the black scene
     hide black
     # trasition back to i11 in 3 secs which is the best time for non slow back off
-    show monika 6tkbfu:
+    show monika 6tkbfu :
         linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
     pause 3.0
     show monika 6esa at i11 with dissolve

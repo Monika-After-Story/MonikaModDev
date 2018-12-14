@@ -1031,7 +1031,7 @@ image mas_d25_tree_sayori = ConditionSwitch(
 )
 
 init -11 python in mas_d25_event:
-    
+
     def showD25Visuals():
         """
         Shows d25 visuals.
@@ -1094,8 +1094,8 @@ label mas_holiday_d25c_autoload_check:
     #   - actually, no d25 deco and clothes unless normal+
     #   - set a flag determining if you get d25 stuff or not
     #   - all d25 stuff should start off locked, you unlock it if appropriate
-    #   - all d25 stuff should be normal+. 
-    #   - monika will deco and santa if you started d25 below normal but 
+    #   - all d25 stuff should be normal+.
+    #   - monika will deco and santa if you started d25 below normal but
     #       become normal by 24th/25th.
     #   - post that, no deco still.
 
@@ -1120,7 +1120,7 @@ label mas_holiday_d25c_autoload_check:
 
 
 init -815 python in mas_history:
-    
+
     # d25
 
     # d25 season
@@ -1165,7 +1165,7 @@ label mas_d25_monika_holiday_intro:
         m 3hub "Today's the day I was going to..."
 
         # hide overlays here
-        # NOTE: hide here because it prevents player from pausing 
+        # NOTE: hide here because it prevents player from pausing
         # right before the scene change.
         # also we want to completely kill interactions
         $ mas_OVLHide()
@@ -1231,7 +1231,7 @@ init 5 python:
 
 init -876 python in mas_delact:
     # delayed action to reset holiday intro upset
-    # NOTE: we are using delayed action here because we might need to 
+    # NOTE: we are using delayed action here because we might need to
     #   retrigger this event in case of an affection drop during runtime.
 
     def _mas_d25_holiday_intro_upset_reset_action(ev):
@@ -1260,7 +1260,7 @@ init -876 python in mas_delact:
 
 #for people that started the season upset- and graduated to normal
 label mas_d25_monika_holiday_intro_upset:
-    # NOTE: because of the async nature of this event, if 
+    # NOTE: because of the async nature of this event, if
     # the user manages to trigger this event but drops below normal
     # before viewing this, we will reset this event's conditional and
     # delay action the reset for idle
@@ -1273,7 +1273,7 @@ label mas_d25_monika_holiday_intro_upset:
     m 3hua "So...I think it's time to spruce this place up a bit."
 
     # hide overlays here
-    # NOTE: hide here because it prevents player from pausing 
+    # NOTE: hide here because it prevents player from pausing
     # right before the scene change.
     # also we want to completely kill interactions
     $ mas_OVLHide()
@@ -1630,7 +1630,7 @@ init 2 python:
     title = "     My dearest {0},".format(persistent.playername),
     text = """\
      You truly are the joy to my world.
-     Neither the light emitted by the tallest Christmas tree, 
+     Neither the light emitted by the tallest Christmas tree,
      Nor that of the brightest star,
      Could come close to matching your brilliance.
      This once frostbitten heart of mine needed only your warmth to beat anew.
@@ -1687,7 +1687,7 @@ label mas_d25_spent_time_monika:
 
     if d25_gifts_total > 0:
         if d25_gifts_total == 1:
-            m 3hua"And let's not forget about the special Christmas present you got me, [player]..."
+            m 3hua "And let's not forget about the special Christmas present you got me, [player]..."
             m 3hub "It was great!"
         else:
             m 3hua "And let’s not forget about the wonderful Christmas presents you got me, [player]..."
@@ -1731,7 +1731,7 @@ label mas_d25_spent_time_monika:
                 show monika 6dkbsu at t11 with dissolve
                 $ ui.add(PauseDisplayable())
                 $ ui.interact()
-                
+
                 $ HKBShowButtons()
 
     elif mas_isMoniAff(higher=True):
@@ -1801,7 +1801,7 @@ label monika_whatiwant:
 #    )
 
 label monika_aiwfc:
-    
+
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
@@ -2101,4 +2101,3 @@ label mas_nye_monika_nyd_fresh_start:
             pause 10.0
             return 'quit'
             #TODO: determine what to do here; huge aff loss or push final farewell on next launch. you essentially just spit in her face
- 
