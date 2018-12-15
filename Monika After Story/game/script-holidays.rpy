@@ -1849,7 +1849,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_aiwfc",
             category=["songs"],
-            prompt="All I Want For Christmas"
+            prompt="All I Want For Christmas",
             conditional=(
                 "mas_isD25Season() "
                 "and not mas_isD25() "
