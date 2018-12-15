@@ -882,8 +882,8 @@ init -810 python:
             "_mas_d25_spent_d25": "d25.actions.spent_d25",
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
 
-        }
-        # TODO: programming points probably
+        },
+        exit_pp=store.mas_history._d25_exit_pp
     ))
 
     # we also need a history svaer for when the d25 season ends.
@@ -1122,11 +1122,14 @@ label mas_holiday_d25c_autoload_check:
 init -815 python in mas_history:
 
     # d25
+    def _d25_exit_pp(mhs):
+        # just add approprpiate delayed actions
+        _MDA_safeadd(9)
 
     # d25 season
     def _d25s_exit_pp(mhs):
         # just add appropriate delayed action IDs
-        _MDA_safeadd(8, 9)
+        _MDA_safeadd(8)
 
 
 # topics
@@ -1304,6 +1307,7 @@ label mas_d25_monika_holiday_intro_deco:
 
     # black scene
     scene black
+    $ scene_change = True
 
     # we should consider ourselves in d25 mode now, if not already
     $ persistent._mas_d25_in_d25_mode = True
@@ -1479,10 +1483,39 @@ init 5 python:
         )
     )
 
+init -876 python in mas_delact:
+    # delayd action to reset the carolling topic
+    # NOTE: we need to do this to prevent the topic from triggering post
+    #   d25 when its not appropriate.
+
+    def _mas_d25_monika_carolling_reset_action(ev):
+        # updates conditional and action, and dates
+        if ev.shown_count <= 0:
+            ev.conditional = (
+                "mas_isD25Season() "
+                "and not mas_isD25Post() "
+                "and persistent._mas_d25_in_d25_mode"
+            )
+            ev.action = store.EV_ACT_RANDOM
+        return True
+
+
+    def _mas_d25_monika_carolling_reset():
+        # creates delayed action for holiday intro
+        return store.MASDelayedAction.makeWithLabel(
+            9,
+            "mas_d25_monika_carolling",
+            "True",
+            _mas_d25_monika_carolling_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
 
 label mas_d25_monika_carolling:
+
     m 1euc "Hey, [player]..."
     m 3eud "Have you ever gone carolling before?"
     m 1euc "Going door to door in groups, singing to others during the holidays..."
@@ -1554,17 +1587,14 @@ init 5 python:
                 "mas_isD25Season() "
                 "and persistent._mas_d25_in_d25_mode"
             ),
-            action=EV_ACT_RANDOM,
+            action=EV_ACT_PUSH,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
-default persistent._mas_pm_d25_mistletoe_kiss = False
-# True if user and monika kissed under the mistletoe
-#TODO: this var is pretty unnecessary, checking if persistent._mas_first_kiss is None from kiss label is sufficent to determine
-#if first kiss or not. Would have to keep track of this var and first_kiss var if we have both. Suggest deleting this var.
-
 label mas_d25_monika_mistletoe:
+    $ mas_unlockEVL("mas_d25_monika_mistletoe", "EVE")
+
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
     m 1tku "When lovers end up underneath it, they're expected to kiss."
@@ -1606,12 +1636,16 @@ init 5 python:
     )
 
 label mas_d25_monika_sleigh:
+
     m 3eub "Hey [player], a pretty nice thought just crossed my mind..."
     m 1eua "Have you ever heard of carriage rides?"
     m 3hub "When I get out of this place, we should totally go on one!"
     m "Oh, I bet it would be magical!"
     m 1eua "Nothing but the clip-clop of the horse's hooves against the pavement..."
-    m 1eub "And the colorful array of Christmas lights shining in the night..."
+
+    if mas_isD25Season():
+        m 1eub "And the colorful array of Christmas lights shining in the night..."
+
     m 3hub "Wouldn't that be so romantic, [player]?"
     m 1eka "Maybe we could even take a soft, fleece blanket along to cuddle under."
     m 1hkbla "Oooh~"
@@ -1665,6 +1699,13 @@ init 5 python:
             end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1))
         ),
     )
+
+
+default persistent._mas_pm_d25_mistletoe_kiss = False
+# True if user and monika kissed under the mistletoe
+# NOTE: this var determins if user and monika shared a mistletoe kiss. It will
+#   be only set in this topic. the other kissed var is for first kiss.
+
 
 label mas_d25_spent_time_monika:
     python:
@@ -1782,6 +1823,12 @@ label mas_d25_spent_time_monika:
                  #TODO: mistletoe appears
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion
+
+                $ persistent._mas_pm_d25_mistletoe_kiss = True
+
+                # no more mistletoe topic once youve done it
+                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+
                 show monika 6ekbfa at t11 with dissolve
                 m 6ekbfa "...I love you too~"
                 m 6dkbfa "..."
@@ -1803,17 +1850,23 @@ label mas_d25_spent_time_monika:
 #NOTE, if you're running with config.developer being True, timing WILL be off on the song
 #no idea why, but it just is, even though we're explicitly setting the cps value, and not
 #using a multiplier.
-#probably also want to limit this to before Christmas only too.
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_aiwfc",
-#            category=["songs"],
-#            prompt="All I Want For Christmas",
-#            random=True,
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_aiwfc",
+            category=["songs"],
+            prompt="All I Want For Christmas"
+            conditional=(
+                "mas_isD25Season() "
+                "and not mas_isD25() "
+                "and not mas_isD25Post() "
+                "and persistent._mas_d25_in_d25_mode"
+            ),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
 label monika_aiwfc:
 
@@ -1842,7 +1895,7 @@ label monika_aiwfc:
         m 1ekbfa "You're the only gift I could ever want."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "I love you, [player]."
-        $ store.mas_showEVL("monika_aiwfc", "EVE", _pool=True,_random=False)
+        $ mas_showEVL("monika_aiwfc", "EVE", _pool=True, unlock=True)
     else:
         m 1eka "I'm glad you like it when I sing that song."
         m 1ekbsa "You'll always be the only gift I'll ever need, [player]."
@@ -1852,6 +1905,8 @@ label monika_aiwfc:
     return
 
 label monika_aiwfc_song:
+    # TODO: consider doing something where we can use lyric bar and style 
+    #   like in piano
     stop music fadeout 1.0
     play music "mod_assets/bgm/aiwfc.ogg"
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{/cps}{/i}{nw}"
@@ -1945,22 +2000,24 @@ init -10 python:
 # topics
 # TODO: dont forget to updaet script seen props
 
-#init 5 python:
+init 5 python:
 #    # NOTE: new years eve
 #    # NOTE: known as monika_newyear1
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_nye_monika_nye"
-#            # TODO: props
-#            # TODO: nye
-#        )
-#    )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_nye_monika_nye",
+            action=EV_ACT_PUSH,
+            start_date=mas_nye,
+            end_date=mas_nyd,
+            years=[],
+            aff_range=(mas_aff.UPSET, None)
+        )
+    )
 
 default persistent._mas_pm_has_new_years_res = None
 # does the user have new years resolutions?
 
-#TODO: Upset+
 label mas_nye_monika_nye:
     $ persistent._mas_nye_spent_nye = True
 
@@ -2020,19 +2077,21 @@ default persistent._mas_pm_got_a_fresh_start = None
 default persistent._mas_aff_before_fresh_start = None
 #store affection prior to reset
 
-#init 5 python:
-#    # NOTE: new years day
-#    # also known as monika_newyear2
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_nye_monika_nyd"
-#            # TODO: props
-#            # TODO: nyd
-#        )
-#    )
+init 5 python:
+    # NOTE: new years day
+    # also known as monika_newyear2
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_nye_monika_nyd",
+            action=EV_ACT_QUEUE, # we queue this one so it after nye
+            start_date=mas_nyd,
+            end_date=mas_nyd + datetime.timedelta(days=1),
+            years=[],
+            aff_range=(mas_aff.DISTRESSED, None)
+        )
+    )
 
-#TODO: Distressed+ and possible based on time spent so far, 1month, 3months?
 label mas_nye_monika_nyd:
     $ persistent._mas_nye_spent_nyd = True
 
@@ -2098,7 +2157,11 @@ label mas_nye_monika_nyd_fresh_start:
             $ persistent._mas_pm_got_a_fresh_start = True #never forget
             $ persistent._mas_aff_before_fresh_start = _mas_getAffection()
 
+            # reset affection and save it
             $ mas_setAffection(0)
+            $ _mas_AffSave()
+            $ renpy.save_persistent()
+
             m 4wua "Really?"
             m 1hua "Oh, [player], you have no idea how happy that makes me!"
             m 3eka "I know we can make this work."
@@ -2109,10 +2172,16 @@ label mas_nye_monika_nyd_fresh_start:
 
         "No.":
             $ persistent._mas_pm_got_a_fresh_start = False
+
+            # set affection to broken
+            # TODO: consider making a function for easy affection level setting
+            $ mas_setAffection(store.mas_affection.AFF_BROKEN_MIN - 1)
+            $ _mas_AffSave()
+            $ renpy.save_persistent()
+
             m 6dktpc "..."
             m 6ektpc "I...I..."
             m 6dktuc "..."
             m 6dktsc "..."
             pause 10.0
             return 'quit'
-            #TODO: determine what to do here; huge aff loss or push final farewell on next launch. you essentially just spit in her face

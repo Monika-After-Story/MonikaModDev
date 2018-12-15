@@ -1617,19 +1617,21 @@ init 20 python:
     def mas_setAffection(
             amount=persistent._mas_affection["affection"]
         ):
-        frozen = (
-            persistent._mas_affection_badexp_freeze
-            or persistent._mas_affection_goodexp_freeze
-        )
+        # NOTE: never use this to add / lower affection unless its to
+        #   strictly set affection to a level for some reason.
+#        frozen = (
+#            persistent._mas_affection_badexp_freeze
+#            or persistent._mas_affection_goodexp_freeze
+#        )
 
         # audit the change (or attempt)
-        affection.audit(amount, amount, frozen)
+        affection.audit(amount, amount, False)
 
-        if not frozen:
-            # Otherwise, use the value passed in the argument.
-            persistent._mas_affection["affection"] = amount
-            # Updates the experience levels if necessary.
-            mas_updateAffectionExp()
+        # NOTE: we should NEVER freeze set affection. 
+        # Otherwise, use the value passed in the argument.
+        persistent._mas_affection["affection"] = amount
+        # Updates the experience levels if necessary.
+        mas_updateAffectionExp()
 
     def mas_setApologyReason(reason):
         """
