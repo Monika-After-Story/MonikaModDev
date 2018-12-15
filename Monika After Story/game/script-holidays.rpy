@@ -1090,19 +1090,11 @@ label mas_holiday_d25c_autoload_check:
                 # mark decorations and outfit as active
                 persistent._mas_d25_deco_active = True
 
-    # TODO:
-    #   - actually, no d25 deco and clothes unless normal+
-    #   - set a flag determining if you get d25 stuff or not
-    #   - all d25 stuff should start off locked, you unlock it if appropriate
-    #   - all d25 stuff should be normal+.
-    #   - monika will deco and santa if you started d25 below normal but
-    #       become normal by 24th/25th.
-    #   - post that, no deco still.
-
     # NOTE: holiday intro is handled with conditional
 
     if mas_isD25() and persistent._mas_d25_deco_active:
         # on d25, monika will wear santa on start, regardless of whatever
+        # (and if deco is active)
         $ monika_chr.change_clothes(mas_clothes_santa, False)
 
     elif mas_isD25Post() and not persistent._mas_forced_clothes:

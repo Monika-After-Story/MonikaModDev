@@ -4176,8 +4176,8 @@ label monika_haterReaction:
             m 4eka "Thank you..."
             m 1hua "That makes me prouder of you, [player]!"
             m "I knew you weren't one of those people."
-            m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
-            # TODO: add kiss for Enam+, probably only mention kiss if Enam+.
+            # NOTE: probably wont have the kissing line here ever
+            #m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
             m 1ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1hua "I trust you, [player]. I love you for believing in me."

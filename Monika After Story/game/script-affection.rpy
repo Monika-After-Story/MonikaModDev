@@ -394,6 +394,9 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
         layout.QUIT = mas_layout.QUIT
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _disToBroken():
         """
@@ -404,6 +407,9 @@ init 15 python in mas_affection:
         layout.QUIT_NO = mas_layout.QUIT_NO_BROKEN
         layout.QUIT = mas_layout.QUIT_BROKEN
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _disToUpset():
         """
@@ -411,6 +417,9 @@ init 15 python in mas_affection:
         """
         # change quit message
         layout.QUIT_YES = mas_layout.QUIT_YES
+
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _upsetToDis():
@@ -422,6 +431,9 @@ init 15 python in mas_affection:
         if persistent._mas_acs_enable_promisering:
             renpy.store.monika_chr.remove_acs(renpy.store.mas_acs_promisering)
             persistent._mas_acs_enable_promisering = False
+
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _upsetToNormal():
@@ -464,6 +476,9 @@ init 15 python in mas_affection:
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _normalToUpset():
         """
@@ -477,6 +492,9 @@ init 15 python in mas_affection:
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _normalToHappy():
         """
@@ -485,6 +503,9 @@ init 15 python in mas_affection:
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _happyToNormal():
         """
@@ -492,6 +513,9 @@ init 15 python in mas_affection:
         """
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
+
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _happyToAff():
@@ -505,6 +529,9 @@ init 15 python in mas_affection:
         else:
             layout.QUIT_NO = mas_layout.QUIT_NO_AFF_GL
         layout.QUIT = mas_layout.QUIT_AFF
+
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _affToHappy():
@@ -525,6 +552,9 @@ init 15 python in mas_affection:
         # event so player can ask what happened to the nickname
         persistent._mas_monika_nickname = "Monika"
         m_name = persistent._mas_monika_nickname
+
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _affToEnamored():
@@ -555,7 +585,8 @@ init 15 python in mas_affection:
                 # otherwise we can directly unlock this topic
                 store.mas_unlockEventLabel("mas_monika_islands")
 
-        return
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _enamoredToAff():
@@ -566,7 +597,8 @@ init 15 python in mas_affection:
         # remove island event delayed actions
         store.mas_removeDelayedActions(1, 2)
 
-        return
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _enamoredToLove():
@@ -585,6 +617,9 @@ init 15 python in mas_affection:
             #TODO: Amend monika_outfit if > 1 outfit available.
             store.mas_lockEventLabel("monika_outfit")
 
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
+
 
     def _loveToEnamored():
         """
@@ -594,7 +629,8 @@ init 15 python in mas_affection:
         if store.seen_event("mas_compliment_thanks"):
             store.mas_lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
 
-        return
+        # always rebuild randos
+        store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def _gSadToNormal():
