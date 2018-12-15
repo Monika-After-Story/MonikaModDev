@@ -128,6 +128,8 @@ transform mas_kissing(_zoom, _y,time=2.0):
     linear time ypos _y zoom _zoom
 
 default persistent._mas_first_kiss = None
+# contains datetime of users's first kiss with monika
+# NOTE: need to add this to calendar
 
 label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     # Note: the hardcoded constants work to give the focus on lips
