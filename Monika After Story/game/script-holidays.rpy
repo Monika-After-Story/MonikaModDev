@@ -1690,6 +1690,7 @@ init 5 python:
             start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=20)),
             end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1))
         ),
+        skipCalendar=True
     )
 
 
@@ -2004,7 +2005,8 @@ init 5 python:
             end_date=mas_nyd,
             years=[],
             aff_range=(mas_aff.UPSET, None)
-        )
+        ),
+        skipCalendar=True
     )
 
 default persistent._mas_pm_has_new_years_res = None
@@ -2081,7 +2083,8 @@ init 5 python:
             end_date=mas_nyd + datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.DISTRESSED, None)
-        )
+        ),
+        skipCalendar=True
     )
 
 label mas_nye_monika_nyd:
