@@ -169,7 +169,7 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     show monika 6tkbfu :
         linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
     pause 3.0
-    show monika 6esa at i11 with dissolve
+    show monika 6ekbfa at i11 with dissolve
     if hide_ui:
         if store.mas_globals.dlg_workflow:
             $ mas_MUMUDropShield()
