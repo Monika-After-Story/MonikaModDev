@@ -1660,8 +1660,8 @@ init 5 python:
                 "persistent._mas_d25_in_d25_mode "
             ),
             action=EV_ACT_QUEUE,
-            start_date=datetime.combine(mas_d25, datetime.time(hour=20)),
-            end_date=datetime.combine(mas_d25p, datetime.time(hour=1))
+            start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=20)),
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1))
         ),
     )
 

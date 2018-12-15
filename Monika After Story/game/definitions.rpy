@@ -1080,7 +1080,7 @@ python early:
 
                 if e.action in Event.ACTION_MAP:
                     # perform action
-                    Event._performAction(e, current_time)
+                    Event._performAction(e, unlock_time=current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -1407,7 +1407,7 @@ python early:
 
 
         @staticmethod
-        def _performAction(ev, _unlock_time):
+        def _performAction(ev, **kwargs):
             """
             Efficient / no checking action performing
 
@@ -1415,13 +1415,13 @@ python early:
 
             IN:
                 ev - event we are performing action on
-                _unlock_time - datetime to use for unlock_date
+                **kwargs - keyword args to pass to action
             """
-            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+            Event.ACTION_MAP[ev.action](ev, **kwargs)
 
 
         @staticmethod
-        def performAction(ev, _unlock_time=datetime.datetime.now()):
+        def performAction(ev, **kwargs):
             """
             Performs the action of the given event
 
@@ -1429,7 +1429,7 @@ python early:
                 ev - event we are perfrming action on
             """
             if ev.action in Event.ACTION_MAP:
-                Event._performAction(ev, _unlock_time)
+                Event._performAction(ev, **kwargs)
 
 
 # init -1 python:
