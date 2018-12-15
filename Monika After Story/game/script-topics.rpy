@@ -1385,7 +1385,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_kiss:
-    if mas_isMoniEnamored(higher=True):
+    if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         python:
             kiss_quips_after = [
                 "I love you, [player]~",
