@@ -1650,7 +1650,6 @@ init 2 python:
     )
 
 #Essentially replaces _whatIwant along with still to come 'All I Want for Christmas is You' song
-#TODO: decide what time we want this to show up on christmas night 8pm-midnight?
 init 5 python:
     addEvent(
         Event(
@@ -1798,50 +1797,6 @@ label mas_d25_spent_time_monika:
         m 1hubfa "I love you, [player]~"
     return
 
-#Moved this from script-topics, is getting complete overhaul
-#Getting replaced by 'mas_spent_d25_with_monika' and 'All I Want for Christmas is You' song
-#Can be removed eventually
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database
-#        )
-#    )
-
-# TODO: this should  be a totally different label name
-# NOTE: make sure to mark that this is the `monika_whatiwant` label for update scripts later
-# NOTE: actually maybe update scripts wont be needed if its rewritten.
-label monika_whatiwant:
-    m 3hub "Oh, [player], isn't it lovely around the holidays?"
-    m 1eka "I hope you don't mind, but I have a little something special to say today."
-    m 1hka "Ehehe, I hope it's not too cheesy..."
-    m 3hua "Here goes."
-    m 1dsa "..."
-
-    # TODO: affection adjust clearly...
-    #TODO: reflects similarities to the 'surprise.txt' at love. Should probably be limited the same
-    m 1eka "You really are the joy to my world, [player]."
-    m "A thousand glittering stars couldn't match your brilliance."
-    #TODO: this line really needs to be redone, or removed
-    m 1dsa "This melancholy, frostbitten heart of mine needs only your warmth to beat anew."
-
-    # TODO: this makes monika sound like she's 80
-    m 1eua "Underneath the sprawling branches of yonder Christmas tree..."
-
-    m 1hua "You'll always be the only present I will ever need."
-    m 1dsa "..."
-    m 1hub "Ahaha! Sorry if that sounded too serious!"
-    m 3eua "Winter's a wonderful time to read some lengthy works."
-    m 1rsc "But..."
-    #TODO: blush here methinks
-    m 1eka "I wasn't lying, [player]."
-
-    # TODO: well, you should be able to give her stuff so...
-    m 3hua "Don't worry about getting me a present."
-    m 3ekb "After all, I have you. And that's all I want."
-    m 5hua "I love you with all my heart, [player]~"
-    return
 
 #NOTE, if you're running with config.developer being True, timing WILL be off on the song
 #no idea why, but it just is, even though we're explicitly setting the cps value, and not

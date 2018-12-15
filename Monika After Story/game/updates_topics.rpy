@@ -146,7 +146,8 @@ label vv_updates_topics:
         updates.topics[vv0_8_11] = {
             "monika_snowman": None,
             "monika_relax": None,
-            "monika_hypothermia": None
+            "monika_hypothermia": None,
+            "monika_whatiwant": None
         }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
