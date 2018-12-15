@@ -15,7 +15,7 @@ init 998 python:
         persistent._mas_d25_started_upset = None
         persistent._mas_d25_second_chance_upset = None
         persistent._mas_d25_deco_active = None
-        persistent._mas_d25_intro_seen = NOne
+        persistent._mas_d25_intro_seen = None
 
         mas_remove_event(
             "mas_d25_monika_holiday_intro",
