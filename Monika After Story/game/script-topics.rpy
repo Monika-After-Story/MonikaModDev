@@ -1385,6 +1385,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True))
 
 label monika_kiss:
+    #TODO: path if player is Enam+ and has kissed before to allow kiss
     m 1wubsw "Eh? D-Did you say...k...kiss?"
     m 2lkbsa "This suddenly...it's a little embarrassing..."
     m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
@@ -4176,7 +4177,7 @@ label monika_haterReaction:
             m 1hua "That makes me prouder of you, [player]!"
             m "I knew you weren't one of those people."
             m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
-            # TODO: do a kiss lol
+            # TODO: add kiss for Enam+, probably only mention kiss if Enam+.
             m 1ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1hua "I trust you, [player]. I love you for believing in me."

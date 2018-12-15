@@ -1561,6 +1561,8 @@ init 5 python:
 
 default persistent._mas_pm_d25_mistletoe_kiss = False
 # True if user and monika kissed under the mistletoe
+#TODO: this var is pretty unnecessary, checking if persistent._mas_first_kiss is None from kiss label is sufficent to determine
+#if first kiss or not. Would have to keep track of this var and first_kiss var if we have both. Suggest deleting this var.
 
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
