@@ -830,7 +830,7 @@ label mas_ch30_post_holiday_check:
         python:
 
             # we select a greeting depending on the type that we should select
-            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+            sel_greeting_event = selectGreeting(persistent._mas_greeting_type)
 
             # reset the greeting type flag back to None
             persistent._mas_greeting_type = None
@@ -950,7 +950,7 @@ label ch30_preloop:
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
-
+    
     # Updates the visiting times
     $ persistent.last_visited_at = persistent.this_visit
     $ persistent.this_visit      = datetime.datetime.today()
