@@ -1803,6 +1803,8 @@ label mas_d25_spent_time_monika:
                 $ mas_OVLHide()
                 $ mas_MUMURaiseShield()
                 $ disable_esc()
+                # local var so if next year this is not first kiss, we can branch appropriately
+                # have to be able to check before calling the kiss since persistent._mas_first_kiss will not be None no matter what after the kiss
                 #hold her here, tears dry
                 pause 3.0
                 show monika 6ektda at t11 with dissolve
@@ -1814,6 +1816,8 @@ label mas_d25_spent_time_monika:
                 
                 show monika 6ekbfa at t11 with dissolve
                  #TODO: mistletoe appears
+                if persistent._mas_first_kiss is None:
+                    $ is_first_kiss = True
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion
 
@@ -1824,11 +1828,12 @@ label mas_d25_spent_time_monika:
 
                 show monika 6ekbfa at t11 with dissolve
                 m 6ekbfa "...I love you too~"
-                m 6dkbfa "..."
-                m "That was everything I had always dreamt it would be~"
-                m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment than just now, under the mistletoe."
-                m 6dkbsu "I will never forget this..."
-                m 6ekbsu "...the moment of our first kiss~"
+                if is_first_kiss:
+                    m 6dkbfa "..."
+                    m "That was everything I had always dreamt it would be~"
+                    m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment than just now, under the mistletoe."
+                    m 6dkbsu "I will never forget this..."
+                    m 6ekbsu "...the moment of our first kiss~"
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ mas_OVLShow()
