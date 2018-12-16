@@ -805,6 +805,7 @@ init -5 python in mas_sprites:
             lean - type of lean
                 (Default: None)
             arms - type of arms
+                # NOTE: DEPRECATED
                 (Default: "")
         """
         sprite_list.extend((
@@ -827,8 +828,8 @@ init -5 python in mas_sprites:
         else:
             # not leaning is a 2parter
             _ms_torso(sprite_list, clothing, hair, n_suffix),
-            sprite_list.append(",")
-            _ms_arms(sprite_list, clothing, arms, n_suffix)
+#            sprite_list.append(",")
+#            _ms_arms(sprite_list, clothing, arms, n_suffix)
 
         # add the rest of the parts
         sprite_list.append(")")
@@ -1416,6 +1417,15 @@ init -5 python in mas_sprites:
                 arms,
                 lean=lean
             )
+
+            # no lean means ARMS
+            if not lean:
+                # position setup
+                sprite_str_list.extend(loc_build_tup)
+
+                # 7. arms
+                _ms_arms_nh(sprite_str_list, loc_str, clothing, arms, n_suffix)
+
 
         # 8. between body and face acs
         _ms_accessorylist(
