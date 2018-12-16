@@ -179,7 +179,7 @@ init -11 python in mas_o31_event:
         """
         return (
             store.persistent._mas_greeting_type
-            == store.mas_greetings.TYPE_HOL_O31_TT
+            == TYPE_HOL_O31_TT
         )
 
 
@@ -274,7 +274,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_o31_marisa",
-            category=[store.mas_greetings.TYPE_HOL_O31]
+            category=[TYPE_HOL_O31]
         ),
         eventdb=evhand.greeting_database
     )
@@ -383,7 +383,7 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_o31_rin",
-            category=[store.mas_greetings.TYPE_HOL_O31]
+            category=[TYPE_HOL_O31]
         ),
         eventdb=evhand.greeting_database
     )
@@ -485,8 +485,8 @@ init 5 python:
             eventlabel="greeting_trick_or_treat_back",
             unlocked=True,
             category=[
-                store.mas_greetings.TYPE_GO_SOMEWHERE,
-                store.mas_greetings.TYPE_HOL_O31_TT
+                TYPE_GO_SOMEWHERE,
+                TYPE_HOL_O31_TT
             ]
         ),
         eventdb=evhand.greeting_database
@@ -768,7 +768,7 @@ label bye_trick_or_treat_rtg:
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
         m 1hub "Let's go trick or treating!"
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_HOL_O31_TT
+        $ persistent._mas_greeting_type = TYPE_HOL_O31_TT
         return "quit"
 
     # otherwise, failure in generation
