@@ -1208,7 +1208,6 @@ init 200 python in mas_dockstat:
     # lets use this store to handle generation of docking station files
     import store
     import store.mas_sprites as mas_sprites
-    import store.mas_greetings as mas_greetings
     import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
@@ -1996,7 +1995,7 @@ init 200 python in mas_dockstat:
             greeting_types = []
 
         # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        greeting_types.append(TYPE_GO_SOMEWHERE)
 
         # and now we need to find greetings that fit
         rethome_greetings = store.Event.filterEvents(
