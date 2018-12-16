@@ -1750,18 +1750,17 @@ label mas_d25_spent_time_monika:
             elif d25_gifts_bad == d25_gifts_total:
                 m 3eka "And let's not forget about the Christmas presents you got me, [player]..."
                 m 2etc "..."
-                m 2efc "Well, on second thought, maybe we should..."
-            elif d25_gifts_neutral == d25_gifts_total:
+                m 2rfc "Well, on second thought, maybe we should..."
+            elif d25_gifts_bad == 0:
+                m "And let's not forget about the Christmas presents you got me, [player]..."
+                m 3hub "They were really nice!"
+            elif d25_gifts_good + d25_gifts_neutral == d25_gifts_bad:
                 m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
-                m 1eka "It was really sweet of you to get me something."
-            elif d25_gifts_good == d25_gifts_bad + d25_gifts_neutral:
-                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
-                m 1eka "It was really nice of you to get me something."
-                m 3eka "Some of them were really nice."
-            elif d25_gifts_good > d25_gifts_bad + d25_gifts_neutral:
+                m 3rksdla "Some of them were really nice."
+            elif d25_gifts_good + d25_gifts_neutral > d25_gifts_bad:
                 m "And let’s not forget about the Christmas presents you got me, [player]..."
-                m 3hub "Most of them were just amazing."
-            elif d25_gifts_good < d25_gifts_bad + d25_gifts_neutral:
+                m 3hub "Most of them were really nice."
+            elif d25_gifts_good + d25_gifts_neutral < d25_gifts_bad:
                 m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
                 m 3rksdla "I really liked...{w=1}some of them."
 
