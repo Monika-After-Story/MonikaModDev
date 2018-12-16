@@ -3786,6 +3786,32 @@ init -1 python:
         ]
     )
 
+    ### WINE RIBBON
+    ## ribbon_wine
+    # Wine ribbon for ponytail/bun hairstyles. This matches the santa outfit
+    mas_acs_ribbon_wine = MASAccessory(
+        "ribbon_wine",
+        "ribbon_wine",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_wine)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_wine,
+        "Ribbon (Wine)",
+        "ribbon_wine",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (wine like a wine!)"
+        ]
+    )
+
     ### WHITE RIBBON
     ## ribbon_def
     # White ribbon (the default) for ponytail/bun hairstyles
