@@ -9,8 +9,8 @@
 #   pool - True means the farewell is shown in the goodbye list. Prompt
 #       is used in this case.
 
-init -1 python:
-
+init -1 python in mas_farewells:
+    
     # custom farewell functions
     def selectFarewell():
         """
@@ -52,7 +52,7 @@ init -1 python:
 
         # checks whether the player behaved in a way, that triggers a non-random response
         time_related_farewell = checkForTimeRelatedFarewell()
-        if time_related_farewell != Null:
+        if time_related_farewell != renpy.store.Null:
             event_label = unlocked_farewells.get(time_related_farewell, "")
             if event_label != "":
                 return event_label
@@ -115,7 +115,8 @@ init -1 python:
         
     # selects a farewell, if a certain time-criteria is matched.
     def checkForTimeRelatedFarewell():
-        minutes_spend_ingame = (datetime.datetime.today() - persistent.this_visit).total_seconds() // 60
+        import datetime
+        minutes_spend_ingame = (datetime.datetime.today() - renpy.store.persistent.this_visit).total_seconds() // 60
         if minutes_spend_ingame <= 5:
             return "left_in_less_than_5_minutes"
         return Null
@@ -161,7 +162,7 @@ label mas_farewell_start:
             return
 
     # otherwise, select a random farewell
-    $ farewell = selectFarewell()
+    $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
     # dont evalulate the mid loop checks since we are quitting
     $ mas_skip_mid_loop_eval = True
@@ -177,8 +178,7 @@ label mas_farewell_start:
 ###
 
 init 5 python:
-    my_event = Event(persistent.farewell_database,eventlabel="left_in_less_than_5_minutes",unlocked=True)
-    addEvent(my_event, eventdb=evhand.farewell_database)
+    addEvent(Event(persistent.farewell_database,eventlabel="left_in_less_than_5_minutes",unlocked=True), eventdb=evhand.farewell_database)
 
 label left_in_less_than_5_minutes:
     m 1ekc "I hate to see you go so soon, [player]."
