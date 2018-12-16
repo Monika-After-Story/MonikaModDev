@@ -150,7 +150,7 @@ init -1 python in mas_greetings:
             renpy.random.choice(random_greetings_dict.keys())
         ]
         
-    # selects a farewell, if a certain time-criteria is matched.
+    # selects a greeting, if a certain time-criteria is matched.
     def checkForTimeRelatedGreeting():
         if renpy.store.minutes_since_last_visit <= 5:
             return "visited_again_in_less_than_5_minutes"
