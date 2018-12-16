@@ -17,7 +17,7 @@ default persistent._mas_bday_date_affection_fix = False
 # Time-Related variables to be used for greetings and farewells.
 default persistent.last_visited_at = datetime.datetime.today()
 default persistent.this_visit      = datetime.datetime.today()
-define time_since_last_visit       = (persistent.this_visit - persistent.last_visited_at)
+define time_since_last_visit       = (datetime.datetime.today() - persistent.this_visit)
 define days_since_last_visit       = time_since_last_visit.days
 define hours_since_last_visit      = int(time_since_last_visit.total_seconds() // 3600)
 define minutes_since_last_visit    = int(time_since_last_visit.total_seconds() // 60)
