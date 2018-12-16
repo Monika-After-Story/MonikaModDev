@@ -318,6 +318,9 @@ label v0_8_11(version="v0_8_11"):
         if not persistent._mas_called_moni_a_bad_name:
             mas_unlockEventLabel("monika_affection_nickname")
 
+        # TODO: need to go through events and clear actions from all events
+        #   without conditionals and start_date
+
     return
 
 # 0.8.10

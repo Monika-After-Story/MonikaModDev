@@ -1125,6 +1125,10 @@ python early:
 
             RETURNS: True if passes filter, False if not
             """
+            # check if this event even has trigger points
+            if ev.start_date is None and ev.conditional is None:
+                return False
+
             # check aff
             if not ev.checkAffection(mas_curr_affection):
                 return False
