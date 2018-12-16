@@ -55,7 +55,7 @@ init -1 python:
         if time_related_farewell != Null:
             event_label = unlocked_farewells.get(time_related_farewell, "")
             if event_label != "":
-                return unlocked_farewells.get(time_related_farewell)
+                return event_label
 
         # filter farewells using the special rules dict
         random_farewells_dict = renpy.store.Event.checkRepeatRules(
