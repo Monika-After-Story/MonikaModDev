@@ -9,7 +9,7 @@
 #   pool - True means the farewell is shown in the goodbye list. Prompt
 #       is used in this case.
 
-init -1 python in mas_farewells:
+init -1 python:
 
     # custom farewell functions
     def selectFarewell():
@@ -49,6 +49,13 @@ init -1 python in mas_farewells:
             unlocked_farewells,
             keepNoRule=True
         )
+
+        # checks whether the player behaved in a way, that triggers a non-random response
+        time_related_farewell = checkForTimeRelatedFarewell()
+        if time_related_farewell != Null:
+            event_label = unlocked_farewells.get(time_related_farewell, "")
+            if event_label != "":
+                return unlocked_farewells.get(time_related_farewell)
 
         # filter farewells using the special rules dict
         random_farewells_dict = renpy.store.Event.checkRepeatRules(
@@ -105,6 +112,13 @@ init -1 python in mas_farewells:
         return random_farewells_dict[
             renpy.random.choice(random_farewells_dict.keys())
         ]
+        
+    # selects a farewell, if a certain time-criteria is matched.
+    def checkForTimeRelatedFarewell():
+        minutes_spend_ingame = (datetime.datetime.today() - persistent.this_visit).total_seconds() // 60
+        if minutes_spend_ingame <= 5:
+            return "left_in_less_than_5_minutes"
+        return Null
 
 # farewells selection label
 label mas_farewell_start:
@@ -147,7 +161,7 @@ label mas_farewell_start:
             return
 
     # otherwise, select a random farewell
-    $ farewell = store.mas_farewells.selectFarewell()
+    $ farewell = selectFarewell()
     $ pushEvent(farewell.eventlabel)
     # dont evalulate the mid loop checks since we are quitting
     $ mas_skip_mid_loop_eval = True
@@ -161,6 +175,16 @@ label mas_farewell_start:
 # pool - pooled ones are selectable in the menu
 # rules - Dict containing different rules(check event-rules for more details)
 ###
+
+init 5 python:
+    my_event = Event(persistent.farewell_database,eventlabel="left_in_less_than_5_minutes",unlocked=True)
+    addEvent(my_event, eventdb=evhand.farewell_database)
+
+label left_in_less_than_5_minutes:
+    m 1ekc "I hate to see you go so soon, [player]."
+    m 1eka "I do understand that you're busy though."
+    m 1hua "Goodbye~"
+    return 'quit'
 
 init 5 python:
     rules = dict()
