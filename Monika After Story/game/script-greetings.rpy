@@ -15,7 +15,7 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
-init -1 python in mas_greetings:
+init -1 python:
 
     # TYPES:
     TYPE_SCHOOL = "school"
@@ -84,6 +84,13 @@ init -1 python in mas_greetings:
             keepNoRule=True
         )
 
+        # checks whether the player behaved in a way, that triggers a non-random response
+        time_related_greeting = checkForTimeRelatedGreeting()
+        if time_related_greeting != Null:
+            event_label = unlocked_greetings.get(time_related_greeting, "")
+            if event_label != "":
+                return event_label
+
         # check for the special monikaWantsThisFirst case
         #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
         #    return affection_greetings_dict.values()[0]
@@ -142,6 +149,22 @@ init -1 python in mas_greetings:
         return random_greetings_dict[
             renpy.random.choice(random_greetings_dict.keys())
         ]
+        
+    # selects a farewell, if a certain time-criteria is matched.
+    def checkForTimeRelatedGreeting():
+        if minutes_since_last_visit <= 5:
+            return "visited_again_in_less_than_5_minutes"
+        return Null
+
+init 5 python:
+    my_event = Event(persistent.farewell_database,eventlabel="visited_again_in_less_than_5_minutes",unlocked=True)
+    addEvent(my_event, eventdb=evhand.greeting_database)
+
+label visited_again_in_less_than_5_minutes:
+    m 1eub "Welcome back, [player]."
+    m 5hub "I did not expect to see you again so soon."
+    m 1esb "Let's spend some more time together."
+    return
 
 
 init 5 python:
@@ -1884,7 +1907,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_sick",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_SICK],
+            category=[TYPE_SICK],
             random=True
         ),
         code="GRE"
@@ -1945,7 +1968,7 @@ label greeting_stillsickrest:
         m 4ekc "So I'm going to close the game for you."
         m 2ekc "Get well soon, [player]."
 
-    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
+    $ persistent._mas_greeting_type = TYPE_SICK
     return 'quit'
 
 label greeting_stillsicknorest:
@@ -1970,7 +1993,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_long_absence",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_LONG_ABSENCE],
+            category=[TYPE_LONG_ABSENCE],
             random=True
         ),
         code="GRE"
@@ -2550,7 +2573,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back_from_school",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_SCHOOL],
+            category=[TYPE_SCHOOL],
             random=True
         ),
         code="GRE"
@@ -2607,7 +2630,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back_from_work",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_WORK],
+            category=[TYPE_WORK],
             random=True
         ),
         code="GRE"
@@ -2670,7 +2693,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_back_from_sleep",
             unlocked=True,
-            category=[store.mas_greetings.TYPE_SLEEP],
+            category=[TYPE_SLEEP],
             random=True
         ),
         code="GRE"
@@ -2792,8 +2815,8 @@ init 5 python:
             eventlabel="greeting_returned_home",
             unlocked=True,
             category=[
-                store.mas_greetings.TYPE_GO_SOMEWHERE,
-                store.mas_greetings.TYPE_GENERIC_RET
+                TYPE_GO_SOMEWHERE,
+                TYPE_GENERIC_RET
             ]
         ),
         code="GRE"
