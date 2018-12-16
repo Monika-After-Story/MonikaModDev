@@ -10,7 +10,7 @@
 #       is used in this case.
 
 init -1 python in mas_farewells:
-    
+
     # custom farewell functions
     def selectFarewell():
         """
