@@ -952,7 +952,7 @@ label ch30_preloop:
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
 
     # Updates the visiting times
-    $ persistent.last_visited_at = persistent.this_visist
+    $ persistent.last_visited_at = persistent.this_visit
     $ persistent.this_visit      = datetime.datetime.today()
 
     # save here before we enter the loop
