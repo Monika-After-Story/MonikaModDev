@@ -119,7 +119,7 @@ init -1 python in mas_farewells:
         minutes_spend_ingame = (datetime.datetime.today() - renpy.store.persistent.this_visit).total_seconds() // 60
         if minutes_spend_ingame <= 5:
             return "left_in_less_than_5_minutes"
-        return Null
+        return renpy.store.Null
 
 # farewells selection label
 label mas_farewell_start:
