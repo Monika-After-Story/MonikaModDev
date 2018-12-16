@@ -154,7 +154,7 @@ init -1 python in mas_greetings:
     def checkForTimeRelatedGreeting():
         if renpy.store.minutes_since_last_visit <= 5:
             return "visited_again_in_less_than_5_minutes"
-        return Null
+        return renpy.store.Null
 
 init 5 python:
     addEvent(Event(persistent.farewell_database,eventlabel="visited_again_in_less_than_5_minutes",unlocked=True), eventdb=evhand.greeting_database)
