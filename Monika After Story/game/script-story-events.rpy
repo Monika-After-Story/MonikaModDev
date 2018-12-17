@@ -6,35 +6,24 @@
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
     
-    _monika_out_of_lines_line_quips = (
-    )
-
     _monika_out_of_lines_label_quips = (
         "monika_out_of_lines_quip_1",
         "monika_out_of_lines_quip_2",
         "monika_out_of_lines_quip_3",
         "monika_out_of_lines_quip_4",
         "monika_out_of_lines_quip_5",
-        "monika_out_of_lines_quip_6",
-        "monika_out_of_lines_quip_7"
+        "monika_out_of_lines_quip_6"
     )
-    
+        
     def _initOutOfLinesQuips():
         out_of_line_quips = MASQuipList()
 
-        for _line in _monika_out_of_lines_line_quips:
-            out_of_line_quips.addLineQuip(_line)
-
-        for _label in _monika_out_of_lines_label_quips:
-            out_of_line_quips.addLabelQuip(_label)
-        
+        #for _label in _monika_out_of_lines_label_quips:
+        #    out_of_line_quips.addLabelQuip(_label)
+        out_of_line_quips.addLabelQuip("monika_out_of_lines_quip_6")
         return out_of_line_quips
         
 label monika_out_of_lines_quip_1:
-    m 1eka "I'm not sure what to say, but can you just be with me a little longer?"
-    return
-        
-label monika_out_of_lines_quip_2:
     m 1ekc "I can't think of anything to say at the moment." 
     
     if persistent.game_unlocks['pong']:
@@ -42,14 +31,16 @@ label monika_out_of_lines_quip_2:
         m 3eub "...play a few rounds of pong?"
         menu:
             "OK":
-                    if not renpy.seen_label('game_pong'):
-                        $grant_xp(xp.NEW_GAME)
-                    call game_pong
+                m 1hub "Ok~"
+                m 4esb "Let's play then!"
+                if not renpy.seen_label('game_pong'):
+                    $ grant_xp(xp.NEW_GAME)
+                call game_pong
             "Maybe Later":
                 m 2hub "Alright, [player]."
     return
         
-label monika_out_of_lines_quip_3:
+label monika_out_of_lines_quip_2:
     m 1eka "I have nothing more to say for now..." 
     
     if persistent.game_unlocks['piano']:
@@ -57,6 +48,7 @@ label monika_out_of_lines_quip_3:
         m 1eub "Would you like to play for me, [player]?"
         menu:
             "OK":
+                m 1hubfb "Yay!"
                 if not renpy.seen_label("mas_piano_start"):
                     $ grant_xp(xp.NEW_GAME)
                 call mas_piano_start
@@ -64,8 +56,62 @@ label monika_out_of_lines_quip_3:
                 m 2hub "Alright, [player]."
     return
         
+label monika_out_of_lines_quip_3:
+    m 1eka "It seems I'm at a loss on what to say..."
+    
+    if persistent._mas_sensitive_mode:
+        $ game_name = "Word Guesser"
+    else:
+        $ game_name = "Hangman"
+        
+    if persistent.game_unlocks['hangman']:
+        m 3esa "If you like we can play a game of [game_name]."
+        menu:
+            "OK":
+                m 5hua "Great!"
+                if not renpy.seen_label("mas_piano_start"):
+                    $ grant_xp(xp.NEW_GAME)
+                call game_hangman
+            "Maybe Later":
+                m 2hub "Alright, [player]."
+    return
+        
 label monika_out_of_lines_quip_4:
-    m 1eka "It seems I'm at a loss on what to say."
+    m 1eka "I hope I don't bore you too much."
+        
+    python:
+        import datetime
+        _hour = datetime.timedelta(hours=1)
+        _now = datetime.datetime.now()
+                
+        chess_disabled = False
+
+        # chess has timed disabling
+        if persistent._mas_chess_timed_disable is not None:
+            if _now - persistent._mas_chess_timed_disable >= _hour:
+                persistent._mas_chess_timed_disable = None
+            else:
+                chess_disabled = True
+                
+        # single var for readibility
+        chess_unlocked = (
+            is_platform_good_for_chess()
+            and persistent.game_unlocks["chess"]
+            and not chess_disabled
+        )
+    
+    if chess_unlocked:
+        m 1esb "I'd like to play a game of chess with you if that's ok."
+        m 2esb "What do you say, [player]?"
+        menu:
+            "OK":
+                m 2sub "Awesome!"
+                m 5hub "I'm looking forward to see you play, [player]!"
+                if not renpy.seen_label("game_chess"):
+                    $ grant_xp(xp.NEW_GAME)
+                call game_chess
+            "Maybe Later":
+                m 2hub "Alright, [player]."
     return
         
 label monika_out_of_lines_quip_5:
@@ -74,10 +120,6 @@ label monika_out_of_lines_quip_5:
         
 label monika_out_of_lines_quip_6:
     m 1eka "Do you still enjoy spending this time with me?"
-    return
-        
-label monika_out_of_lines_quip_7:
-    m 1eka "I hope I don't bore you too much."
     return
     
 label gender:
