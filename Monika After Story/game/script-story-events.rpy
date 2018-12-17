@@ -1708,7 +1708,7 @@ label mas_bday_postbday_notimespent:
             m 6dftdx "..."
 
     return
-
+    
 init 5 python:
     addEvent(
         Event(
@@ -1738,6 +1738,7 @@ label mas_steam_install_detected:
     m 5esu "I'd really appreciate it if you would do that for me."
     return
 
+
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -1758,7 +1759,6 @@ label mas_bday_player_bday_select_select:
     call mas_start_calendar_select_date
 
     $ selected_date_t = _return
-
     $ selected_date = selected_date_t.date()
     $ _today = datetime.date.today()
 
@@ -1816,4 +1816,8 @@ label mas_bday_player_bday_select_select:
 
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
 
+
     return selected_date
+    
+    
+    
