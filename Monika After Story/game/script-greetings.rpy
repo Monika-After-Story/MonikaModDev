@@ -152,7 +152,8 @@ init -1 python in mas_greetings:
         
     # selects a greeting, if a certain time-criteria is matched.
     def checkForTimeRelatedGreeting():
-        if renpy.store.minutes_since_last_visit <= 5:
+        minutes_since_last_visit = renpy.store.persistent._mas_absence_time.total_seconds() // 60
+        if minutes_since_last_visit <= 5:
             return "visited_again_in_less_than_5_minutes"
         return renpy.store.Null
 
