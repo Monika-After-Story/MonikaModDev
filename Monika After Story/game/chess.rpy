@@ -1260,9 +1260,6 @@ label game_chess:
 
     hide screen keylistener
 
-    m 1eub "You want to play chess? Alright~"
-#   m 2a "Double click your king if you decide to surrender."
-#    m 1a "Get ready!"
     call demo_minigame_chess from _call_demo_minigame_chess
     return
 
