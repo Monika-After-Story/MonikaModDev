@@ -1815,9 +1815,5 @@ label mas_bday_player_bday_select_select:
             persistent._mas_player_bday = selected_date
 
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
-
+            
     return selected_date
-    
-    
-    
-    
