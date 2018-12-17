@@ -13,6 +13,10 @@ init 5 python:
         "monika_out_of_lines_quip_1",
         "monika_out_of_lines_quip_2",
         "monika_out_of_lines_quip_3",
+        "monika_out_of_lines_quip_4",
+        "monika_out_of_lines_quip_5",
+        "monika_out_of_lines_quip_6",
+        "monika_out_of_lines_quip_7"
     )
     
     def _initOutOfLinesQuips():
@@ -58,6 +62,22 @@ label monika_out_of_lines_quip_3:
                 call mas_piano_start
             "Maybe Later":
                 m 2hub "Alright, [player]."
+    return
+        
+label monika_out_of_lines_quip_4:
+    m 1eka "It seems I'm at a loss on what to say."
+    return
+        
+label monika_out_of_lines_quip_5:
+    m 1eka "I'm not sure what to say, but can you just be with me a little longer?"
+    return
+        
+label monika_out_of_lines_quip_6:
+    m 1eka "Do you still enjoy spending this time with me?"
+    return
+        
+label monika_out_of_lines_quip_7:
+    m 1eka "I hope I don't bore you too much."
     return
     
 label gender:
