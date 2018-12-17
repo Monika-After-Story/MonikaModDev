@@ -8858,7 +8858,7 @@ label monika_player_appearance:
                     $ persistent._mas_pm_skin_tone = "dark"
 
             m 3hub "Alright! Thanks for being so upfront. All of this really does help me imagine what you look like, [player]."
-            m 3eub "Knowing all these details about you makes the difference between a blank canvas and the beginnings of gorgeous portrait!"
+            m 3eub "Knowing all these details about you makes the difference between a blank canvas and the beginnings of a gorgeous portrait!"
             m 3eua "Of course, you're still just as lovely as I always thought you were, but now you've become all the more real to me."
             m 3eka "It just makes me feel that much closer to you~"
             m 1eka "Thank you so much for answering all my questions, [player]."
