@@ -622,18 +622,26 @@ label pick_a_game:
         "Pong" if persistent.game_unlocks['pong']:
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)
+            m 1eua "You wanna play a game of Pong? Okay!"
             call game_pong from _call_game_pong
         "Chess" if chess_unlocked:
             if not renpy.seen_label('game_chess'):
                 $grant_xp(xp.NEW_GAME)
+            m 1eub "You want to play chess? Alright~"
             call game_chess from _call_game_chess
         "[_hangman_text]" if persistent.game_unlocks['hangman']:
             if not renpy.seen_label("game_hangman"):
                 $ grant_xp(xp.NEW_GAME)
+            if persistent._mas_sensitive_mode:
+                $ game_name = "Word Guesser"
+            else:
+                $ game_name = "Hangman"
+            m 2eub "You want to play [game_name]? Okay!"
             call game_hangman from _call_game_hangman
         "Piano" if persistent.game_unlocks['piano']:
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
+            m 1hua "You want to play the piano?"
             call mas_piano_start from _call_play_piano
         # "Movie":
         #     if not renpy.seen_label("mas_monikamovie"):
