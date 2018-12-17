@@ -1817,3 +1817,7 @@ label mas_bday_player_bday_select_select:
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
             
     return selected_date
+    
+    
+    
+    
