@@ -582,9 +582,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
+                    new_hair = item.selectable.get_sprobj()
+
+                    if prev_hair == new_hair:
+                        # hair is the same? no point in changing
+                        return
 
                     try:
-                        moni_chr.change_hair(item.selectable.get_sprobj())
+                        moni_chr.change_hair(new_hair)
 
                     except Exception as e:
                         mas_utils.writelog("BAD HAIR: " + repr(e))
@@ -605,9 +610,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
+                    new_cloth = item.selectable.get_sprobj()
+
+                    if prev_cloth == new_cloth:
+                        # we are changing to the what we are wearing? no point
+                        return
 
                     try:
-                        moni_chr.change_clothes(item.selectable.get_sprobj())
+                        moni_chr.change_clothes(new_cloth)
 
                     except Exception as e:
                         mas_utils.writelog("BAD CLOTHES: " + repr(e))
@@ -2089,6 +2099,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 #        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
 #        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
+        # save state
+        prev_moni_state = monika_chr.save_state(True, True, True)
+
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
@@ -2193,16 +2206,23 @@ label mas_selector_sidebar_select_confirm:
                 monika_chr
             )
 
-            store.mas_selspr._adjust_monika(
-                monika_chr,
-                old_select_map,
-                select_map,
-                select_type,
-                True
-            )
+#            store.mas_selspr._adjust_monika(
+#                monika_chr,
+#                old_select_map,
+#                select_map,
+#                select_type,
+#                True
+#            )
 
-            monika_chr.save()
-            renpy.save_persistent()
+            # reload state
+            monika_chr.reset_outfit()
+            monika_chr.remove_all_acs()
+            monika_chr.load_state(prev_moni_state)
+
+
+        # always save confirming
+        monika_chr.save()
+        renpy.save_persistent()
 
     return True
 
@@ -2221,13 +2241,18 @@ label mas_selector_sidebar_select_cancel:
             monika_chr
         )
 
-        store.mas_selspr._adjust_monika(
-            monika_chr,
-            old_select_map,
-            select_map,
-            select_type,
-            True
-        )
+#        store.mas_selspr._adjust_monika(
+#            monika_chr,
+#            old_select_map,
+#            select_map,
+#            select_type,
+#            True
+#        )
+
+        # reload state
+        monika_chr.reset_outfit()
+        monika_chr.remove_all_acs()
+        monika_chr.load_state(prev_moni_state)
 
     return False
 

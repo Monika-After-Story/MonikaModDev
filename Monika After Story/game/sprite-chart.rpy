@@ -1827,6 +1827,43 @@ init -2 python:
             return self.acs.get(acs_type, None)
 
 
+        def _load(self, 
+                _clothes_name,
+                _hair_name,
+                _acs_pre_names,
+                _acs_bbh_names,
+                _acs_bfh_names,
+                _acs_mid_names,
+                _acs_pst_names
+            ):
+            """
+            INTERNAL
+
+            load function using names/IDs
+
+            IN:
+                _clothes_name - name of clothing to load
+                _hair_name - name of hair to load
+                _acs_pre_names - list of pre acs names to load
+                _acs_bbh_names - list of bbh acs names to load
+                _acs_bfh_names - list of bfh acs names to load
+                _acs_mid_names - list of mid acs names to load
+                _acs_pst_names - list of pst acs names to load
+            """
+            # clothes and hair
+            self.change_outfit(
+                store.mas_sprites.CLOTH_MAP[_clothes_name],
+                store.mas_sprites.HAIR_MAP[_hair_name]
+            )
+
+            # acs
+            self._load_acs(_acs_pre_names, self.PRE_ACS)
+            self._load_acs(_acs_bbh_names, self.BBH_ACS)
+            self._load_acs(_acs_bfh_names, self.BFH_ACS)
+            self._load_acs(_acs_mid_names, self.MID_ACS)
+            self._load_acs(_acs_pst_names, self.PST_ACS)
+
+
         def _load_acs(self, per_acs, acs_type):
             """
             Loads accessories from the given persistent into the given
@@ -1839,6 +1876,21 @@ init -2 python:
             for acs_name in per_acs:
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs:
+                    self.wear_acs_in(_acs, acs_type)
+
+
+        def _load_acs_obj(self, acs_objs, acs_type):
+            """
+            Loads accessories from a given list of accessory objects into
+            the given acs type
+
+            IN:
+                acs_objs - list of acs to load
+                acs_type - acs type to load acs into
+            """
+            for _acs in acs_objs:
+                # must verify sprite before loading
+                if _acs.name in store.mas_sprites.ACS_MAP:
                     self.wear_acs_in(_acs, acs_type)
 
 
@@ -1862,6 +1914,26 @@ init -2 python:
             ]
 
 
+        def _save_acs_obj(self, acs_type, force_acs=False):
+            """
+            Generaltes list of acs objects to save 
+
+            IN:
+                acs_type - acs type to buld acs list
+                force_acs - True means to save acs even if stay_on_start is
+                    False
+                    (Default: False)
+
+            RETURNS:
+                list of acs objects to save
+            """
+            return [
+                acs
+                for acs in self.acs[acs_type]
+                if force_acs or acs.stay_on_start
+            ]
+
+
         def change_clothes(self, new_cloth, by_user=None):
             """
             Changes clothes to the given cloth. also sets the persistent
@@ -1877,9 +1949,9 @@ init -2 python:
                 return
 
             prev_cloth = self.clothes
-            self.clothes.exit(self, new_cloth)
+            self.clothes.exit(self, new_clothes=new_cloth)
             self.clothes = new_cloth
-            self.clothes.entry(self, prev_cloth)
+            self.clothes.entry(self, prev_clothes=prev_cloth)
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
@@ -1900,9 +1972,9 @@ init -2 python:
                 return
            
             prev_hair = self.hair
-            self.hair.exit(self, new_hair)
+            self.hair.exit(self, new_hair=new_hair)
             self.hair = new_hair
-            self.hair.entry(self, prev_hair)
+            self.hair.entry(self, prev_hair=prev_hair)
 
             if by_user is not None:
                 persistent._mas_force_hair = bool(by_user)
@@ -2035,22 +2107,50 @@ init -2 python:
             """
             Loads hair/clothes/accessories from persistent.
             """
-            # clothes and hair
-            self.change_outfit(
-                store.mas_sprites.CLOTH_MAP[
-                    store.persistent._mas_monika_clothes
-                ],
-                store.mas_sprites.HAIR_MAP[
-                    store.persistent._mas_monika_hair
-                ]
+            self._load(
+                store.persistent._mas_monika_clothes,
+                store.persistent._mas_monika_hair,
+                store.persistent._mas_acs_pre_list,
+                store.persistent._mas_acs_bbh_list,
+                store.persistent._mas_acs_bfh_list,
+                store.persistent._mas_acs_mid_list,
+                store.persistent._mas_acs_pst_list
             )
 
+
+        def load_state(self, _data, as_prims=False):
+            """
+            Loads clothes/hair/acs from a tuple data format that was saved 
+            using the save_state function.
+
+            IN:
+                _data - data to load from. tuple of the following format:
+                    [0]: clothes data
+                    [1]: hair data
+                    [2]: pre acs data
+                    [3]: bbh acs data
+                    [4]: bfh acs data
+                    [5]: mid acs data
+                    [6]: pst acs data
+                as_prims - True if this data was saved as primitive data types,
+                    false if as objects
+                    (Default: False)
+            """
+            if as_prims:
+                # for prims, we can just call an existing function
+                self._load(*_data)
+                return
+
+            # otherwise, we need to set things ourselves
+            # clothes and hair
+            self.change_outfit(_data[0], _data[1])
+
             # acs
-            self._load_acs(store.persistent._mas_acs_pre_list, self.PRE_ACS)
-            self._load_acs(store.persistent._mas_acs_bbh_list, self.BBH_ACS)
-            self._load_acs(store.persistent._mas_acs_bfh_list, self.BFH_ACS)
-            self._load_acs(store.persistent._mas_acs_mid_list, self.MID_ACS)
-            self._load_acs(store.persistent._mas_acs_pst_list, self.PST_ACS)
+            self._load_acs_obj(_data[2], self.PRE_ACS)
+            self._load_acs_obj(_data[3], self.BBH_ACS)
+            self._load_acs_obj(_data[4], self.BFH_ACS)
+            self._load_acs_obj(_data[5], self.MID_ACS)
+            self._load_acs_obj(_data[6], self.PST_ACS)
 
 
         def reset_all(self, by_user=None):
@@ -2088,7 +2188,7 @@ init -2 python:
             IN:
                 mux_types - list of acs_types to remove from acs
             """
-            for acs_name in self.acs_list_map:
+            for acs_name in self.acs_list_map.keys():
                 _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
                 if _acs and _acs.acs_type in mux_types:
                     self.remove_acs_in(_acs, self.acs_list_map[acs_name])
@@ -2243,6 +2343,83 @@ init -2 python:
             )
 
 
+        def save_state(self,
+                force_hair=False,
+                force_clothes=False,
+                force_acs=False,
+                as_prims=False
+            ):
+            """
+            Saves hair/clothes/acs to a tuple data format that can be loaded
+            later using the load_state function.
+
+            IN:
+                force_hair - True means force hair saving even if stay_on_start
+                    is False. If False and stay_on_start is False, the default
+                    hair will be returned.
+                    (Default: False)
+                force_clothes - True meanas force clothes saving even if
+                    stay_on_start is False. If False and stay_on_start is
+                    False, the default clothes will be returned. 
+                    (Default: False)
+                force_acs - True means force acs saving even if stay_on_start
+                    is False. At minimum, this will be an empty list.
+                    (Default: False)
+                as_prims - True means to save the data as primitive types
+                    for persistent saving. False will save the data as
+                    objects.
+                    (Default: False)
+
+            RETURNS tuple of the following format:
+                [0]: clothes data (Default: mas_clothes_def)
+                [1]: hair data (Default: mas_hair_def)
+                [2]: pre acs data (Default: [])
+                [3]: bbh acs data (Default: [])
+                [4]: bfh acs data (Default: [])
+                [5]: mid acs data (Default: [])
+                [6]: pst acs data (Default: [])
+            """
+            # determine which clothes to save
+            if force_clothes or self.clothes.stay_on_start:
+                cloth_data = self.clothes
+            else:
+                cloth_data = mas_clothes_def
+
+            # determine which hair to save
+            if force_hair or self.hair.stay_on_start:
+                hair_data = self.hair
+            else:
+                hair_data = mas_hair_def
+
+            # determine acs to save as well as final data for hair and clothes
+            if as_prims:
+                cloth_data = cloth_data.name
+                hair_data = hair_data.name
+                pre_acs_data = self._save_acs(self.PRE_ACS, force_acs)
+                bbh_acs_data = self._save_acs(self.BBH_ACS, force_acs)
+                bfh_acs_data = self._save_acs(self.BFH_ACS, force_acs)
+                mid_acs_data = self._save_acs(self.MID_ACS, force_acs)
+                pst_acs_data = self._save_acs(self.PST_ACS, force_acs)
+
+            else:
+                pre_acs_data = self._save_acs_obj(self.PRE_ACS, force_acs)
+                bbh_acs_data = self._save_acs_obj(self.BBH_ACS, force_acs)
+                bfh_acs_data = self._save_acs_obj(self.BFH_ACS, force_acs)
+                mid_acs_data = self._save_acs_obj(self.MID_ACS, force_acs)
+                pst_acs_data = self._save_acs_obj(self.PST_ACS, force_acs)
+
+            # finally return results
+            return (
+                cloth_data,
+                hair_data,
+                pre_acs_data,
+                bbh_acs_data,
+                bfh_acs_data,
+                mid_acs_data,
+                pst_acs_data
+            )
+
+
         def wear_acs(self, acs):
             """
             Wears the given accessory in that accessory's recommended
@@ -2269,6 +2446,11 @@ init -2 python:
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory not in acs_list:
+                # run mutual exclusion for acs
+                if accessory.mux_type is not None:
+                    self.remove_acs_mux(accessory.mux_type)
+
+                # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
 
                 # add to mapping
@@ -2276,10 +2458,6 @@ init -2 python:
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
-
-                # run mutual exclusion for acs
-                if accessory.mux_type is not None:
-                    self.remove_acs_mux(accessory.mux_type)
 
                 # run programming point for acs
                 accessory.entry(self)
@@ -2515,26 +2693,48 @@ init -2 python:
                 raise Exception("PoseMap is REQUIRED")
 
 
-        def entry(self, _monika_chr):
+        def __eq__(self, other):
+            """
+            Equality override
+            """
+            if isinstance(other, MASSpriteBase):
+                return self.name == other.name
+
+            return NotImplemented
+
+
+        def __ne__(self, other):
+            """
+            Not equal override
+            """
+            result = self.__eq__(other)
+            if result is NotImplemented:
+                return result
+            return not result
+
+
+        def entry(self, _monika_chr, **kwargs):
             """
             Calls the entry programming point if it exists
 
             IN:
                 _monika_chr - the MASMonika object being changed
+                **kwargs - other keyword args to pass
             """
             if self.entry_pp is not None:
-                self.entry_pp(_monika_chr)
+                self.entry_pp(_monika_chr, **kwargs)
 
 
-        def exit(self, _monika_chr):
+        def exit(self, _monika_chr, **kwargs):
             """
             Calls the exit programming point if it exists
 
             IN:
                 _monika_chr - the MASMonika object being changed
+                **kwargs - other keyword args to pass
             """
             if self.exit_pp is not None:
-                self.exit_pp(_monika_chr)
+                self.exit_pp(_monika_chr, **kwargs)
 
 
     class MASSpriteFallbackBase(MASSpriteBase):
@@ -3088,7 +3288,13 @@ init -2 python in mas_sprites:
     # NOTE: this will NOT be maintained on a restart
 
     ######### HAIR ###########
-    def _hair_def_entry(_moni_chr, prev_hair):
+    # available kwargs:
+    #   entry:
+    #       prev_hair - previously worn hair
+    #   exit:
+    #       new_hair - hair that is to be worn
+
+    def _hair_def_entry(_moni_chr, **kwargs):
         """
         Entry programming point for ponytail
         """
@@ -3102,7 +3308,7 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(_last_ribbon)
 
 
-    def _hair_down_entry(_moni_chr, prev_hair):
+    def _hair_down_entry(_moni_chr, **kwargs):
         """
         Entry programming point for hair down
         """
@@ -3110,11 +3316,12 @@ init -2 python in mas_sprites:
         # NOTE: we save the ribbon in temp storage as a courtesy
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
         if prev_ribbon is not None:
-            temp_storage["hair.ribbon" ] = prev_ribbon
+            if prev_ribbon != store.mas_acs_ribbon_blank:
+                temp_storage["hair.ribbon" ] = prev_ribbon
             _moni_chr.remove_acs(prev_ribbon)
 
 
-    def _hair_bun_entry(_moni_chr, prev_hair):
+    def _hair_bun_entry(_moni_chr, **kwargs):
         """
         Entry programming point for hair bun
         """
@@ -3129,7 +3336,13 @@ init -2 python in mas_sprites:
 
 
     ######### CLOTHES ###########
-    def _clothes_rin_entry(_moni_chr, prev_clothes):
+    # available kwargs:
+    #   entry:
+    #       prev_clothes - prevoiusly worn clothes
+    #   exit:
+    #       new_clothes - clothes that are to be worn
+
+    def _clothes_rin_entry(_moni_chr, **kwargs):
         """
         Entry programming point for rin clothes
         """
@@ -3153,7 +3366,10 @@ init -2 python in mas_sprites:
         # wearing rin clothes means we wear custom blank ribbon if we are
         # wearing a ribbon
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
+        if (
+                prev_ribbon is not None 
+                and prev_ribbon != store.mas_acs_ribbon_blank
+            ):
             temp_storage["hair.ribbon"] = prev_ribbon
             _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
 
@@ -3161,7 +3377,7 @@ init -2 python in mas_sprites:
         _moni_chr.lock_hair = True
 
 
-    def _clothes_rin_exit(_moni_chr, new_clothes):
+    def _clothes_rin_exit(_moni_chr, **kwargs):
         """
         Exit programming point for rin clothes
         """
@@ -3192,7 +3408,7 @@ init -2 python in mas_sprites:
         _moni_chr.lock_hair = False
 
 
-    def _clothes_marisa_entry(_moni_chr, prev_clothes):
+    def _clothes_marisa_entry(_moni_chr, **kwargs):
         """
         Entry programming point for marisa clothes
         """
@@ -3216,7 +3432,10 @@ init -2 python in mas_sprites:
         # wearing marisa clothes means we wear custom blank ribbon if we are
         # wearing a ribbon
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
+        if (
+                prev_ribbon is not None 
+                and prev_ribbon != store.mas_acs_ribbon_blank
+            ):
             temp_storage["hair.ribbon"] = prev_ribbon
             _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
 
@@ -3224,7 +3443,7 @@ init -2 python in mas_sprites:
         _moni_chr.lock_hair = True
 
 
-    def _clothes_marisa_exit(_moni_chr, new_clothes):
+    def _clothes_marisa_exit(_moni_chr, **kwargs):
         """
         Exit programming point for marisa clothes
         """
@@ -3252,7 +3471,7 @@ init -2 python in mas_sprites:
         _moni_chr.lock_hair = False
 
 
-    def _clothes_santa_entry(_moni_chr, prev_clothes):
+    def _clothes_santa_entry(_moni_chr, **kwargs):
         """
         Entry programming point for santa clothes
         """
@@ -3268,12 +3487,14 @@ init -2 python in mas_sprites:
         )
 
         # wearing a ribbon? switch to the wine ribbon always
-        # NOTE: we dont save previous
-        if _moni_chr.is_wearing_acs_type("ribbon"):
+        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+        if prev_ribbon is not None:
+            if prev_ribbon != store.mas_acs_ribbon_blank:
+                temp_storage["hair.ribbon"] = prev_ribbon
             _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
 
 
-    def _clothes_santa_exit(_moni_chr, new_clothes):
+    def _clothes_santa_exit(_moni_chr, **kwargs):
         """
         Exit programming point for santa clothes
         """
@@ -3281,10 +3502,20 @@ init -2 python in mas_sprites:
         if santa_map is not None:
             store.mas_acs_promisering.pose_map = santa_map
 
+        # go back to previous ribbon if wearing wine ribbon
+        if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
+            _last_ribbon = temp_storage.get(
+                "hair.ribbon",
+                store.mas_acs_ribbon_def
+            )
+            _moni_chr.wear_acs(_last_ribbon)
+
 
     ######### ACS ###########
+    # available kwargs:
+    #   NONE
 
-    def _acs_quetzalplushie_exit(_moni_chr):
+    def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
         Exit programming point for quetzal plushie acs
         """
@@ -3295,7 +3526,7 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
 
-    def _acs_quetzalplushie_santahat_entry(_moni_chr):
+    def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
         Entry programming point for quetzal plushie santa hat acs
         """
@@ -3303,7 +3534,7 @@ init -2 python in mas_sprites:
         _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
 
 
-    def _acs_quetzalplushie_antlers_entry(_moni_chr):
+    def _acs_quetzalplushie_antlers_entry(_moni_chr, **kwargs):
         """
         Entry programming point for quetzal plushie antlers acs
         """
@@ -3352,7 +3583,7 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        )
+        ),
         entry_pp=store.mas_sprites._hair_def_entry
 #        split=False
     )
@@ -3377,7 +3608,7 @@ init -1 python:
         MASPoseMap(
             default=True,
             use_reg_for_l=True
-        )
+        ),
         entry_pp=store.mas_sprites._hair_down_entry
 #        exit_pp=store.mas_sprites._hair_down_exit,
 #        split=False
@@ -3546,13 +3777,17 @@ init -1 python:
         "santa",
         "def",
         MASPoseMap(
-            p1="steepling",
-            p2="crossed",
-            p3="restleftpointright",
-            p4="pointright",
-            p6="down"
+            default=True,
+            use_reg_for_l=True
         ),
-        fallback=True,
+#        MASPoseMap(
+#            p1="steepling",
+#            p2="crossed",
+#            p3="restleftpointright",
+#            p4="pointright",
+#            p6="down"
+#        ),
+#        fallback=True,
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit
@@ -4042,7 +4277,7 @@ init -1 python:
         mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
-    store.mas_sprites.init_acs(mas_acs_ribbon_def)
+    store.mas_sprites.init_acs(mas_acs_ribbon_blank)
 
 
 #### ACCCESSORY VARIABLES (IMG025)
