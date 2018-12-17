@@ -3487,6 +3487,7 @@ init -2 python in mas_sprites:
         )
 
         # handle hair down no leaning
+        # TODO: this should be fixed soon hopefully
         temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
         store.mas_hair_down.pose_map = store.MASPoseMap(
             default=True,
