@@ -690,7 +690,7 @@ init 5 python:
 
 label bye_enjoyyourafternoon:
     if mas_isMoniNormal(higher=True):
-        m 1ekc "I hate to see you goat such an early time, [player]."
+        m 1ekc "I hate to see you go at such an early time, [player]."
         m 1eka "I understand that you're busy though."
         m 1eua "Promise me you'll enjoy your afternoon, okay?"
         m 1hua "Goodbye~"
