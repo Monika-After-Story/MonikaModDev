@@ -2227,7 +2227,8 @@ label mas_nye_monika_nye:
     if mas_isMoniAff(higher=True):
         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
-    elif mas_isMoniNormal(higher=True):        
+    elif mas_isMoniNormal(higher=True):
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
     else:
         m 2ekc "My resolution is to improve our relationship, [player]"
