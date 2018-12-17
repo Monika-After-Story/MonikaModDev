@@ -232,8 +232,6 @@
 
 label game_pong:
     hide screen keylistener
-    m 1eua "You wanna play a game of Pong? Okay!"
-#    m 1b "I'll beat you for sure this time!" # this line is useless #Why's the line here then blyat
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
