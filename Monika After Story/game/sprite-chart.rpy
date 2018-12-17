@@ -3486,6 +3486,13 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        # handle hair down no leaning
+        temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
+        store.mas_hair_down.pose_map = store.MASPoseMap(
+            default=True,
+            p5=None
+        )
+
         # wearing a ribbon? switch to the wine ribbon always
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
         if prev_ribbon is not None:
@@ -3501,6 +3508,11 @@ init -2 python in mas_sprites:
         santa_map = temp_storage.get("clothes.santa", None)
         if santa_map is not None:
             store.mas_acs_promisering.pose_map = santa_map
+
+        # restore hair down leaning
+        hair_down_map = temp_storage.get("clothes.santa.down", None)
+        if hair_down_map is not None:
+            store.mas_hair_down.pose_map = hair_down_map
 
         # go back to previous ribbon if wearing wine ribbon
         if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
