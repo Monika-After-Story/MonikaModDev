@@ -116,7 +116,7 @@ init -1 python in mas_farewells:
     # selects a farewell, if a certain time-criteria is matched.
     def checkForTimeRelatedFarewell():
         import datetime
-        minutes_spend_ingame = (datetime.datetime.today() - renpy.store.persistent.this_visit).total_seconds() // 60
+        minutes_spend_ingame = (datetime.datetime.today() - renpy.store.persistent.sessions['current_session_start']).total_seconds() // 60
         if minutes_spend_ingame <= 5:
             return "left_in_less_than_5_minutes"
         return renpy.store.Null
@@ -690,8 +690,8 @@ init 5 python:
 
 label bye_enjoyyourafternoon:
     if mas_isMoniNormal(higher=True):
-        m 1ekc "I hate to see you go so early, [player]."
-        m 1eka "I do understand that you're busy though."
+        m 1ekc "I hate to see you goat such an early time, [player]."
+        m 1eka "I understand that you're busy though."
         m 1eua "Promise me you'll enjoy your afternoon, okay?"
         m 1hua "Goodbye~"
 
