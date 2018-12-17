@@ -1384,6 +1384,9 @@ label ch30_reset:
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
+    
+    # same with the def ribbon, should always be unlocked
+    $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     # monika hair/acs
     $ monika_chr.load()
