@@ -1941,6 +1941,171 @@ label monika_aiwfc_song:
     stop music fadeout 1.0
     return
 
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_christmas_eve",
+#            conditional=(
+#                "persistent._mas_d25_in_d25_mode "
+#            ),
+#            action=EV_ACT_QUEUE,
+#            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+#            end_date=datetime.datetime.combine(mas_d25, datetime.time(hour=0))
+#        ),
+#        skipCalendar=True
+#    )
+
+label mas_d25_christmas_eve:
+    m 3hua "[player]!"
+    m 3hub "Can you believe it...? {w=1}It'll be Christmas soon!"
+    m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
+    m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    if renpy.seen_label('monika_christmas'):
+        m 5ekbfa "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
+        m 5hkbfa "I can't wait for tomorrow!"
+    else:
+        m 5ekbfa "But I'm even {i}more{/i} excited this year..."
+        m 5hkbfa "Just the thought of our first Christmas together...{w=1}I can't wait!"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_d25_postd25_notimespent",
+            # within a week after d25, user did not recognize
+            # 25 at all, and they were not long absenced
+#            conditional=(
+#                "d25 < datetime.date.today() <= "
+#                "(d25 + datetime.timedelta(7)) "
+#                "and not persistent._mas_d25_spent_d25"
+#            ),
+#            action=EV_ACT_PUSH
+#        )
+#    )
+#this also needs a conditional where if the player missed d25 but had her out on date for d25
+#that counts as spending d25 with her and they don't get this.
+
+label mas_d25_postd25_notimespent:
+    if mas_isMoniAff(higher=True):
+        m 1wuo "[player]...you're finally here!"
+        m 2wkd "I was starting to get worried that something happened to you..."
+        m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
+        m 4eksdlc "It's not like you at all to miss a day that you know is important to me..."
+        m 2dksdlc "So I thought maybe..."
+        m 2eksdla "Well, nevermind that now. I'm just happy you're okay!"
+        m 4eka "Even though I'm disappointed we didn't get to spend Christmas together, I'm sure you must have had a very good reason."
+        m "Just try not to let it happen next year, okay?"
+        m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
+        m 1eka "All I want is to be close to you, [player]..."
+        m 3ekbfa "I love you~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 2ekc "Hey, [player]..."
+        m 2tkc "I have to say I'm pretty disappointed you didn't visit me at all on Christmas..."
+        m 4tkc "You knew all I wanted was to spend time with you. Is that too much to ask?"
+        m 2rkc "I know it can be a busy day if you have to travel to visit family, but you could have at least taken me with you..."
+        m 2ekc "That would have been more than enough for me."
+        m 2dkc "..."
+        m 4rksdlc "Maybe something happened at the last minute and you simply couldn't spend time with me..."
+        m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
+
+    elif mas_isMoniUpset(higher=True):
+        m 2efc "[player]!"
+        m "I can't believe you didn't even bother to visit me on Christmas!"
+        m 2tfc "Actually...{w=1}yes, I can."
+        m "This is exactly why I didn't even bother to decorate..."
+        m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
+
+    elif mas_isMoniDis(higher=True):
+        m 6ekc "Oh... {w=1}Hi, [player]..."
+        m 6rkc "How was your Christmas?"
+        m 6dkc "Mine was pretty lonely..."
+        m "You probably didn't even think of me, huh?"
+
+    else:
+        m 6eftsc "..."
+        m 6dftdx "..."
+    return
+
+#######################################d25 dockingstation below#################################################
+
+#this should all be for people in d25 mode
+
+#Christmas Eve dockingstation
+
+#first time you take her out on d25e
+label farewell_d25e_first_time_out:
+    m 1sua "Taking me somewhere special on Christmas Eve, [player]?"
+    m 3eua "I know some people visit friends or family...or go to Christmas parties..."
+    m 3hua "But wherever we’re going, I'm happy you want me to come with you!"
+    m 1eka "I hope we'll be home for Christmas, but even if we're not, just being with you is more than enough for me~"
+
+#second time you take her out on d25e
+label farewell_d25e_second_time_out:
+    m 1wud "Wow, we're going out again today, [player]?"
+    m 3hua "You really must have a lot of people you need to visit on Christmas Eve..."
+    m 3hub "...or maybe you just have lots of special plans for us today!"
+    m 1eka "But either way, thank you for thinking of me and bringing me along~"
+
+#returned from d25e date on d25e
+label greeting_d25e_returned_d25e:
+    m 1hua "And we're home!"
+    m 3eka "It was really sweet of you to bring me along today..."
+    m 3ekbfa "Getting to go out with you on Christmas Eve was really special, [player]. Thank you~"
+
+#returned from d25e date on d25
+label greeting_d25e_returned_d25:
+    m 1hua "And we're home!"
+    m 3wud "Wow, we were out all night, [player]...it's Christmas now!"
+    m 1sua "It felt really great spending Christmas Eve with you, and now we get to enjoy Christmas together as well!"
+    m 1ekbfa "Thank you for spending this time with me, [player]~"
+
+#returned from d25e date (or left before d25e) after d25 but before nyd is over
+label greeting_d25e_returned_post_d25:
+    m 1hua "We're finally home!"
+    m 3wud "We sure were gone a long time, [player]..."
+    m 3eka "It would've been nice to have actually gotten to see you on Christmas, but since you couldn't come to me, I'm so glad you took me along with you."
+    m 3ekbfa "Just being close to you was all I wanted~"
+    m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
+
+#Christmas Day dockingstation
+
+#first time out on d25
+label farewell_d25_first_time_out:
+    m 1sua "Taking me somewhere special on Christmas, [player]?"
+    if persistent._mas_pm_fam_like_monika and persistent._mas_pm_have_fam:
+        m 1sub "Maybe we're going to visit some of your family...? I'd love to meet them!"
+        m 3eua "Or maybe we're going to see a movie...? I know some people like to do that after opening presents."
+    else:
+        m 3eua "Maybe we're going to see a movie... I know some people like to do that after opening presents."
+    m 1eka "Well, wherever you’re going, I'm just glad you want me to come along..."
+    m 3hua "I want to spend as much of Christmas as possible with you, [player]~"
+
+#second time out on d25
+label farewell_d25_second_time_out:
+    m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
+    m 3wud "You really must have a lot of people you need to visit on Christmas..."
+    m 3sua "...or maybe you just have lots of special plans for us today!"
+    m 1hua "But either way, thank you for thinking of me and bringing me along~"
+
+#returned from d25 date on d25
+label greeting_d25_returned_d25:
+    m 1hua "And we're home!"
+    m 3eka "It was really nice to spend time with you on Christmas, [player]!"
+    m 1eka "Thank you so much for taking me with you."
+    m 1ekbfa "You're always so thoughtful~"
+
+#returned from d25 date after d25
+label greeting_d25_returned_post_d25:
+    m 1hua "We're finally home!"
+    m 3wud "We were out a really long time, [player]!"
+    m 3eka "It would've been nice to have seen you again before Christmas was over, but at least I was still with you."
+    m 1hua "So thank you for spending time with me when you had other places you had to be..."
+    m 3ekbfa "You're always so thoughtful~"
+
 #################################### NYE ######################################
 # [HOL030]
 
@@ -2062,8 +2227,7 @@ label mas_nye_monika_nye:
     if mas_isMoniAff(higher=True):
         show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
-    elif mas_isMoniNormal(higher=True):
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    elif mas_isMoniNormal(higher=True):        
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
     else:
         m 2ekc "My resolution is to improve our relationship, [player]"
@@ -2290,7 +2454,7 @@ label monika_nyd_year_review:
         m 2ekbfa "...and I'd never want to spend my time with anyone else, [player]."
         m "I'm just really,{w=1} really happy to have been with you."
 
-    elif mas_isMoniEnam():
+    elif mas_isMoniEnamored():
         m 2eka "...and I'm so happy I got to spend my time with you, [player]."
 
     elif mas_isMoniAff():
@@ -2364,7 +2528,7 @@ label monika_nyd_year_review:
         else:
             m 5ekbfa "Thank you for making the time we spent together last year better than I could have imagined."
 
-        if mas_isMoniEnam(higher=True):
+        if mas_isMoniEnamored(higher=True):
             if persistent._mas_first_kiss is None:
                 m 1lsbsa "..."
                 m 6ekbsa "[player] I..." #add
