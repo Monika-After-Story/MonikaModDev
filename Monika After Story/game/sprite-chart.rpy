@@ -1803,6 +1803,16 @@ init -2 python:
             # this will increase speed of removal and checking.
             self.acs_list_map = {}
 
+            # LOCK VARS
+            # True if we should block any changes to hair
+            self.lock_hair = False
+
+            # True if we should block any chnages to clothes
+            self.lock_clothes = False
+
+            # True if we should block any changes to cas
+            self.lock_acs = False
+
 
         def __get_acs(self, acs_type):
             """
@@ -1827,7 +1837,9 @@ init -2 python:
                 acs_type - acs type to load acs into
             """
             for acs_name in per_acs:
-                self.wear_acs_in(store.mas_sprites.ACS_MAP[acs_name], acs_type)
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs:
+                    self.wear_acs_in(_acs, acs_type)
 
 
         def _save_acs(self, acs_type, force_acs=False):
@@ -1861,9 +1873,13 @@ init -2 python:
                     if not. If None, we do NOT set the forced clothes var
                     (Default: None)
             """
-            self.clothes.exit(self)
+            if self.lock_clothes:
+                return
+
+            prev_cloth = self.clothes
+            self.clothes.exit(self, new_cloth)
             self.clothes = new_cloth
-            self.clothes.entry(self)
+            self.clothes.entry(self, prev_cloth)
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
@@ -1880,9 +1896,13 @@ init -2 python:
                     if not. If None, we do NOT set the forced hair var
                     (Default: None)
             """
-            self.hair.exit(self)
+            if self.lock_hair:
+                return
+           
+            prev_hair = self.hair
+            self.hair.exit(self, new_hair)
             self.hair = new_hair
-            self.hair.entry(self)
+            self.hair.entry(self, prev_hair)
 
             if by_user is not None:
                 persistent._mas_force_hair = bool(by_user)
@@ -1902,6 +1922,35 @@ init -2 python:
             """
             self.change_clothes(new_cloth, by_user=by_user)
             self.change_hair(new_hair, by_user=by_user)
+
+    
+        def get_acs_of_type(self, acs_type, get_all=False):
+            """
+            Gets the acs objects currently being worn of a given type.
+
+            IN:
+                acs_type - acs type to check for
+                get_all - True means we get all acs being worn of this type,
+                    False will just return the first one
+                    (Default: False)
+
+            RETURNS: single matchin acs or None if get_all is False. list of
+                matching acs or empty list if get_all is True.
+            """
+            if get_all:
+                acs_items = []
+            else:
+                acs_items = None
+
+            for acs_name in self.acs_list_map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.acs_type == acs_type:
+                    if get_all:
+                        acs_items.append(_acs)
+                    else:
+                        return _acs
+
+            return acs_items
 
 
         def get_outfit(self):
@@ -1927,6 +1976,39 @@ init -2 python:
                 True if wearing accessory, false if not
             """
             return accessory.name in self.acs_list_map
+
+
+        def is_wearing_acs_type(self, acs_type):
+            """
+            Checks if currently wearing any accessory with given type
+
+            IN:
+                acs_type - accessory type to check
+
+            RETURNS: True if wearing acccesroy, False if not
+            """
+            for acs_name in self.acs_list_map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.acs_type == acs_type:
+                    return True
+
+            return False
+
+
+        def is_wearing_acs_types(self, *acs_types):
+            """
+            multiple arg version of is_wearing_acs_type
+
+            IN:
+                *acs_types - any number of acs types to check
+
+            RETURNS: True if any the ACS types checks are True, False if not
+            """
+            for acs_type in acs_types:
+                if self.is_wearing_acs_type(acs_type):
+                    return True
+
+            return False
 
 
         def is_wearing_acs_in(self, accessory, acs_type):
@@ -1999,6 +2081,19 @@ init -2 python:
             )
 
 
+        def remove_acs_mux(self, mux_types):
+            """
+            Removes all ACS with a mux type in the given list.
+
+            IN:
+                mux_types - list of acs_types to remove from acs
+            """
+            for acs_name in self.acs_list_map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.acs_type in mux_types:
+                    self.remove_acs_in(_acs, self.acs_list_map[acs_name])
+
+
         def remove_acs_in(self, accessory, acs_type):
             """
             Removes the given accessory from the given accessory list type
@@ -2007,6 +2102,9 @@ init -2 python:
                 accessory - accessory to remove
                 acs_type - ACS type
             """
+            if self.lock_acs:
+                return
+
             acs_list = self.__get_acs(acs_type)
 
             if acs_list is not None and accessory in acs_list:
@@ -2043,6 +2141,9 @@ init -2 python:
             IN:
                 acs_type - ACS type to remove all
             """
+            if self.lock_acs:
+                return
+
             if acs_type in self.acs:
                 # need to clear blacklisted
                 for acs in self.acs[acs_type]:
@@ -2161,7 +2262,7 @@ init -2 python:
                 accessory - accessory to wear
                 acs_type - accessory type (location) to wear this accessory
             """
-            if accessory.name in self.acs_list_map:
+            if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
                 return
 
@@ -2175,6 +2276,10 @@ init -2 python:
 
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
+
+                # run mutual exclusion for acs
+                if accessory.mux_type is not None:
+                    self.remove_acs_mux(accessory.mux_type)
 
                 # run programming point for acs
                 accessory.entry(self)
@@ -2532,6 +2637,9 @@ init -2 python:
             no_lean - determins if the leaning versions are hte same as the
                 regular ones.
             acs_type - an optional type to help organize acs
+            mux_type - list of acs types that we shoudl treat
+                as mutally exclusive with this type. Basically if this acs is
+                worn, all acs with a type in this property are removed.
 
         SEE MASSpriteBase for inherited properties
         """
@@ -2548,7 +2656,8 @@ init -2 python:
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
-                acs_type=None
+                acs_type=None,
+                mux_type=None
             ):
             """
             MASAccessory constructor
@@ -2589,6 +2698,9 @@ init -2 python:
                     NOTE: not used by the sprite system. This purely for caller
                     use.
                     (Default: None)
+                mux_type - list of acs types that should be 
+                    mutually exclusive with this acs.
+                    (Default: None)
             """
             super(MASAccessory, self).__init__(
                 name,
@@ -2603,6 +2715,7 @@ init -2 python:
             self.priority=priority
             self.no_lean = no_lean
             self.acs_type = acs_type
+            self.mux_type = mux_type
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -2616,6 +2729,7 @@ init -2 python:
             This is for sorting
             """
             return acs.priority
+
 
         def get_rec_layer(self):
             """
@@ -2974,36 +3088,48 @@ init -2 python in mas_sprites:
     # NOTE: this will NOT be maintained on a restart
 
     ######### HAIR ###########
-    def _hair_def_entry(_moni_chr):
+    def _hair_def_entry(_moni_chr, prev_hair):
         """
         Entry programming point for ponytail
         """
-        store.lockEventLabel("monika_hair_ponytail")
+        # wear a ribbon, we do this always to enforce monika's ribbon as a
+        # separate acs.
+        if not _moni_chr.is_wearing_acs_type("ribbon"):
+            _last_ribbon = temp_storage.get(
+                "hair.ribbon",
+                store.mas_acs_ribbon_def
+            )
+            _moni_chr.wear_acs(_last_ribbon)
 
 
-    def _hair_def_exit(_moni_chr):
-        """
-        Exit programming point for ponytail
-        """
-        store.unlockEventLabel("monika_hair_ponytail")
-
-
-    def _hair_down_entry(_moni_chr):
+    def _hair_down_entry(_moni_chr, prev_hair):
         """
         Entry programming point for hair down
         """
-        store.lockEventLabel("monika_hair_down")
+        # if wearing a ribbon, take it off
+        # NOTE: we save the ribbon in temp storage as a courtesy
+        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+        if prev_ribbon is not None:
+            temp_storage["hair.ribbon" ] = prev_ribbon
+            _moni_chr.remove_acs(prev_ribbon)
 
 
-    def _hair_down_exit(_moni_chr):
+    def _hair_bun_entry(_moni_chr, prev_hair):
         """
-        Exit programming point for hair down
+        Entry programming point for hair bun
         """
-        store.unlockEventLabel("monika_hair_down")
+        # wear a ribbon, we do this always to enforce monika's ribbon as a
+        # separate acs.
+        if not _moni_chr.is_wearing_acs_type("ribbon"):
+            _last_ribbon = temp_storage.get(
+                "hair.ribbon",
+                store.mas_acs_ribbon_def
+            )
+            _moni_chr.wear_acs(_last_ribbon)
 
 
     ######### CLOTHES ###########
-    def _clothes_rin_entry(_moni_chr):
+    def _clothes_rin_entry(_moni_chr, prev_clothes):
         """
         Entry programming point for rin clothes
         """
@@ -3024,8 +3150,18 @@ init -2 python in mas_sprites:
         # hide hairdown greeting
 #        store.mas_lockEVL("greeting_hairdown", "GRE")
 
+        # wearing rin clothes means we wear custom blank ribbon if we are
+        # wearing a ribbon
+        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+        if prev_ribbon is not None:
+            temp_storage["hair.ribbon"] = prev_ribbon
+            _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
 
-    def _clothes_rin_exit(_moni_chr):
+        # lock hair so we dont get ribbon issues
+        _moni_chr.lock_hair = True
+
+
+    def _clothes_rin_exit(_moni_chr, new_clothes):
         """
         Exit programming point for rin clothes
         """
@@ -3040,9 +3176,23 @@ init -2 python in mas_sprites:
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
+        
+        # wear previous ribbon if we are wearing blank ribbon
+        # NOTE: we are gauanteed to be wearing blank ribbon when wearing
+        # these clothes. Regardless, we should always restore to what we
+        # have previously saved.
+        if _moni_chr.is_wearing_acs_type("ribbon"):
+            _last_ribbon = temp_storage.get(
+                "hair.ribbon",
+                store.mas_acs_ribbon_def
+            )
+            _moni_chr.wear_acs(_last_ribbon)
+
+        # unlock hair
+        _moni_chr.lock_hair = False
 
 
-    def _clothes_marisa_entry(_moni_chr):
+    def _clothes_marisa_entry(_moni_chr, prev_clothes):
         """
         Entry programming point for marisa clothes
         """
@@ -3063,8 +3213,18 @@ init -2 python in mas_sprites:
         # hide hairdown greeting
 #        store.mas_lockEVL("greeting_hairdown", "GRE")
 
+        # wearing marisa clothes means we wear custom blank ribbon if we are
+        # wearing a ribbon
+        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+        if prev_ribbon is not None:
+            temp_storage["hair.ribbon"] = prev_ribbon
+            _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
 
-    def _clothes_marisa_exit(_moni_chr):
+        # lock hair so we dont get ribbon issues
+        _moni_chr.lock_hair = True
+
+
+    def _clothes_marisa_exit(_moni_chr, new_clothes):
         """
         Exit programming point for marisa clothes
         """
@@ -3080,8 +3240,19 @@ init -2 python in mas_sprites:
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
+        # wear previous ribbon if we are wearing blank ribbon
+        if _moni_chr.is_wearing_acs_type("ribbon"):
+            _last_ribbon = temp_storage.get(
+                "hair.ribbon",
+                store.mas_acs_ribbon_def
+            )
+            _moni_chr.wear_acs(_last_ribbon)
 
-    def _clothes_santa_entry(_moni_chr):
+        # unlock hair
+        _moni_chr.lock_hair = False
+
+
+    def _clothes_santa_entry(_moni_chr, prev_clothes):
         """
         Entry programming point for santa clothes
         """
@@ -3096,8 +3267,13 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        # wearing a ribbon? switch to the wine ribbon always
+        # NOTE: we dont save previous
+        if _moni_chr.is_wearing_acs_type("ribbon"):
+            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
 
-    def _clothes_santa_exit(_moni_chr):
+
+    def _clothes_santa_exit(_moni_chr, new_clothes):
         """
         Exit programming point for santa clothes
         """
@@ -3177,8 +3353,7 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         )
-#        entry_pp=store.mas_sprites._hair_def_entry,
-#        exit_pp=store.mas_sprites._hair_def_exit,
+        entry_pp=store.mas_sprites._hair_def_entry
 #        split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
@@ -3203,7 +3378,7 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         )
-#        entry_pp=store.mas_sprites._hair_down_entry,
+        entry_pp=store.mas_sprites._hair_down_entry
 #        exit_pp=store.mas_sprites._hair_down_exit,
 #        split=False
     )
@@ -3227,7 +3402,8 @@ init -1 python:
         MASPoseMap(
             default=True,
             p5=None
-        )
+        ),
+        entry_pp=store.mas_sprites._hair_bun_entry
 #        split=False
     )
     store.mas_sprites.init_hair(mas_hair_bun)
@@ -3485,9 +3661,9 @@ init -1 python:
         entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
     )
 
-    ### QUETZAL PLUSHIE SANTA HAT
-    ## quetzalplushie_santahat
-    # Santa hat for the Quetzal Plushie
+    ### QUETZAL PLUSHIE ANTLERS
+    ## quetzalplushie_antlers
+    # Antlers for the Quetzal Plushie
     mas_acs_quetzalplushie_antlers = MASAccessory(
         "quetzalplushie_antlers",
         "quetzalplushie_antlers",
@@ -3495,7 +3671,7 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
-        priority=11,
+        priority=12,
         stay_on_start=False,
         entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
     )
@@ -3512,6 +3688,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_blue)
@@ -3538,6 +3715,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_darkpurple)
@@ -3564,6 +3742,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_gray)
@@ -3590,6 +3769,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_green)
@@ -3616,6 +3796,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_lightpurple)
@@ -3642,6 +3823,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_peach)
@@ -3668,6 +3850,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_pink)
@@ -3694,6 +3877,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_red)
@@ -3720,6 +3904,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_teal)
@@ -3746,6 +3931,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_yellow)
@@ -3772,6 +3958,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_black)
@@ -3798,6 +3985,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_wine)
@@ -3824,6 +4012,7 @@ init -1 python:
         ),
         stay_on_start=True,
         acs_type="ribbon",
+        mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
     store.mas_sprites.init_acs(mas_acs_ribbon_def)
@@ -3837,6 +4026,24 @@ init -1 python:
             "TODO: remove (my ribbon as it should be!)"
         ]
     )
+
+    ### BLANK RIBBON
+    ## ribbon_blank
+    # Blank ribbon for use in ponytail/bun with custom outfits
+    mas_acs_ribbon_blank = MASAccessory(
+        "ribbon_blank",
+        "ribbon_blank",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_def)
+
 
 #### ACCCESSORY VARIABLES (IMG025)
 # variables that accessories may need for enabling / disabling / whatever
