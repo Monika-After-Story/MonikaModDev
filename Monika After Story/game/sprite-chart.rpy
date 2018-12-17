@@ -3793,6 +3793,9 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
+        hair_map={
+            "bun": "def"
+        },
 #        MASPoseMap(
 #            p1="steepling",
 #            p2="crossed",
