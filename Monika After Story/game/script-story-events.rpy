@@ -18,9 +18,8 @@ init 5 python:
     def _initOutOfLinesQuips():
         out_of_line_quips = MASQuipList()
 
-        #for _label in _monika_out_of_lines_label_quips:
-        #    out_of_line_quips.addLabelQuip(_label)
-        out_of_line_quips.addLabelQuip("monika_out_of_lines_quip_6")
+        for _label in _monika_out_of_lines_label_quips:
+            out_of_line_quips.addLabelQuip(_label)
         return out_of_line_quips
         
 label monika_out_of_lines_quip_1:
