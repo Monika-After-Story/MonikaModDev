@@ -3487,12 +3487,12 @@ init -2 python in mas_sprites:
         )
 
         # handle hair down no leaning
-        # TODO: this should be fixed soon hopefully
-        temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
-        store.mas_hair_down.pose_map = store.MASPoseMap(
-            default=True,
-            p5=None
-        )
+        # TODO: remove this, it has been fixed
+#        temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
+#        store.mas_hair_down.pose_map = store.MASPoseMap(
+#            default=True,
+#            p5=None
+#        )
 
         # wearing a ribbon? switch to the wine ribbon always
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
@@ -3511,9 +3511,9 @@ init -2 python in mas_sprites:
             store.mas_acs_promisering.pose_map = santa_map
 
         # restore hair down leaning
-        hair_down_map = temp_storage.get("clothes.santa.down", None)
-        if hair_down_map is not None:
-            store.mas_hair_down.pose_map = hair_down_map
+#        hair_down_map = temp_storage.get("clothes.santa.down", None)
+#        if hair_down_map is not None:
+#            store.mas_hair_down.pose_map = hair_down_map
 
         # go back to previous ribbon if wearing wine ribbon
         if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
@@ -3859,9 +3859,27 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
-        stay_on_start=True
+        stay_on_start=True,
+        acs_type="mug",
+        mux_type=["mug"]
     )
     store.mas_sprites.init_acs(mas_acs_mug)
+
+    ### HOT CHOCOLATE MUG
+    ## hotchoc_mug
+    # Coffee mug that sits on Monika's desk
+    mas_acs_hotchoc_mug = MASAccessory(
+        "hotchoc_mug",
+        "hotchoc_mug",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="mug",
+        mux_type=["mug"]
+    )
+    store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
 
     ### PROMISE RING
     ## promisering
