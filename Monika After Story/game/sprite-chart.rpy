@@ -3915,6 +3915,21 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
 
+    ### QUETZAL PLUSHIE ANTLERS
+    ## quetzalplushie_antlers
+    # Antlers for the Quetzal Plushie
+    mas_acs_quetzalplushie_antlers = MASAccessory(
+        "quetzalplushie_antlers",
+        "quetzalplushie_antlers",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        priority=12,
+        stay_on_start=False,
+        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
+    )
+
     ### QUETZAL PLUSHIE SANTA HAT
     ## quetzalplushie_santahat
     # Santa hat for the Quetzal Plushie
@@ -3930,20 +3945,49 @@ init -1 python:
         entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
     )
 
-    ### QUETZAL PLUSHIE ANTLERS
-    ## quetzalplushie_antlers
-    # Antlers for the Quetzal Plushie
-    mas_acs_quetzalplushie_antlers = MASAccessory(
-        "quetzalplushie_antlers",
-        "quetzalplushie_antlers",
+    ### BLACK RIBBON
+    ## ribbon_black
+    # Black ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_black = MASAccessory(
+        "ribbon_black",
+        "ribbon_black",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_black)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_black,
+        "Ribbon (Black)",
+        "ribbon_black",
+        "ribbon",
+        hover_dlg=None,
+        select_dlg=[
+            "TODO: remove (black like an edge!)"
+        ]
+    )
+
+    ### BLANK RIBBON
+    ## ribbon_blank
+    # Blank ribbon for use in ponytail/bun with custom outfits
+    mas_acs_ribbon_blank = MASAccessory(
+        "ribbon_blank",
+        "ribbon_blank",
         MASPoseMap(
             default="0",
             use_reg_for_l=True
         ),
-        priority=12,
-        stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
     )
+    store.mas_sprites.init_acs(mas_acs_ribbon_blank)
 
     ### BLUE RIBBON
     ## ribbon_blue
@@ -4188,12 +4232,12 @@ init -1 python:
         ]
     )
 
-    ### YELLOW RIBBON
-    ## ribbon_yellow
-    # Yellow ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_yellow = MASAccessory(
-        "ribbon_yellow",
-        "ribbon_yellow",
+    ### WHITE RIBBON
+    ## ribbon_def
+    # White ribbon (the default) for ponytail/bun hairstyles
+    mas_acs_ribbon_def = MASAccessory(
+        "ribbon_def",
+        "ribbon_def",
         MASPoseMap(
             default="0",
             p5="5"
@@ -4203,42 +4247,15 @@ init -1 python:
         mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
-    store.mas_sprites.init_acs(mas_acs_ribbon_yellow)
+    store.mas_sprites.init_acs(mas_acs_ribbon_def)
     store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_yellow,
-        "Ribbon (Yellow)",
-        "ribbon_yellow",
+        mas_acs_ribbon_def,
+        "Ribbon (White)",
+        "ribbon_def",
         "ribbon",
         hover_dlg=None,
         select_dlg=[
-            "TODO: remove (yellow like the soda!)"
-        ]
-    )
-
-    ### BLACK RIBBON
-    ## ribbon_black
-    # Black ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_black = MASAccessory(
-        "ribbon_black",
-        "ribbon_black",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_black)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_black,
-        "Ribbon (Black)",
-        "ribbon_black",
-        "ribbon",
-        hover_dlg=None,
-        select_dlg=[
-            "TODO: remove (black like an edge!)"
+            "TODO: remove (my ribbon as it should be!)"
         ]
     )
 
@@ -4269,12 +4286,12 @@ init -1 python:
         ]
     )
 
-    ### WHITE RIBBON
-    ## ribbon_def
-    # White ribbon (the default) for ponytail/bun hairstyles
-    mas_acs_ribbon_def = MASAccessory(
-        "ribbon_def",
-        "ribbon_def",
+    ### YELLOW RIBBON
+    ## ribbon_yellow
+    # Yellow ribbon for ponytail/bun hairstyles
+    mas_acs_ribbon_yellow = MASAccessory(
+        "ribbon_yellow",
+        "ribbon_yellow",
         MASPoseMap(
             default="0",
             p5="5"
@@ -4284,34 +4301,17 @@ init -1 python:
         mux_type=["ribbon"],
         rec_layer=MASMonika.BBH_ACS
     )
-    store.mas_sprites.init_acs(mas_acs_ribbon_def)
+    store.mas_sprites.init_acs(mas_acs_ribbon_yellow)
     store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_def,
-        "Ribbon (White)",
-        "ribbon_def",
+        mas_acs_ribbon_yellow,
+        "Ribbon (Yellow)",
+        "ribbon_yellow",
         "ribbon",
         hover_dlg=None,
         select_dlg=[
-            "TODO: remove (my ribbon as it should be!)"
+            "TODO: remove (yellow like the soda!)"
         ]
     )
-
-    ### BLANK RIBBON
-    ## ribbon_blank
-    # Blank ribbon for use in ponytail/bun with custom outfits
-    mas_acs_ribbon_blank = MASAccessory(
-        "ribbon_blank",
-        "ribbon_blank",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_blank)
 
 
 #### ACCCESSORY VARIABLES (IMG025)
