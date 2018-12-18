@@ -3838,7 +3838,7 @@ init 2 python:
         brew_ev.conditional = (
             "persistent._mas_c_hotchoc_brew_time is not None "
             "and (datetime.datetime.now() - "
-            "persistent.mas_c_hotchoc_brew_time) "
+            "persistent._mas_c_hotchoc_brew_time) "
             "> datetime.timedelta(0, {0})"
         ).format(end_brew)
         brew_ev.action = EV_ACT_QUEUE

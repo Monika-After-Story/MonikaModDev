@@ -2484,7 +2484,7 @@ label monika_nyd_year_review:
         m 3ekbfa "You spent Valentine's Day with me..."
 
         #TODO: if gave Monika flowers: (not sure what the actual label is for this one)
-            m 4ekbfb "...you gave me such beautiful flowers too."
+#            m 4ekbfb "...you gave me such beautiful flowers too."
 
     if persistent._mas_bday_opened_game:
         m 2eka "You spent time with me on my birthday..."
@@ -2634,7 +2634,7 @@ label monika_nyd_year_review:
     m 1eka "Thanks for taking me with you, I really enjoyed that."
 
     #if not first time taking Monika out ever:
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
+#        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+#        m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
