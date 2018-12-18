@@ -1029,6 +1029,93 @@ label mas_coffee_finished_drinking:
     m 1eua "Okay, what else should we do today?"
     return
 
+
+### hot chocolate is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_c_hotchoc_finished_brewing"
+        )
+    )
+
+
+label mas_c_hotchoc_finished_brewing:
+
+    $ store.mas_sprites.reset_zoom()
+    m 1esd "Oh, hot chocolate is ready."
+
+    # this line is here so we dont it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statement so we ensure that monika is only shown once her
+    # coffee mug is ready
+    pause 1.0
+    $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+    $ persistent._mas_c_hotchoc_brew_time = None
+    $ mas_drinkHotChoc()
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### coffee drinking is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_c_hotchoc_finished_drinking"
+        )
+    )
+
+
+label mas_c_hotchoc_finished_drinking:
+
+    # monika only gets a new cup between 6am and noon
+    $ get_new_cup = mas_isHotChocTime()
+    $ store.mas_sprites.reset_zoom()
+    m 1esd "Oh, I've finished my hot chocolate."
+
+    if get_new_cup:
+        # its currently morning, monika should get another drink
+        m 1eua "I'm going to get another cup."
+
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    pause 1.0
+    # decide if new coffee
+    if not get_new_cup:
+        $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
+        $ persistent._mas_c_hotchoc_cup_done = None
+
+    else:
+        $ mas_drinkHotChoc()
+
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+
 ### birthday surprise party
 
 default persistent._mas_bday_sbp_aff_given = 0

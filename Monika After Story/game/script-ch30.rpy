@@ -1459,6 +1459,9 @@ label ch30_reset:
     ## should we drink coffee?
     $ _mas_startupCoffeeLogic()
 
+    ## shoujld we drink hot chocolate
+    $ _mas_startupHotChocLogic()
+
     # call plushie logic
     $ mas_startupPlushieLogic(4)
 

@@ -3784,6 +3784,228 @@ init 2 python:
 
         return
 
+
+    # NOTE: the hot choc logic is literally the same as coffee but with diff
+    # vars. We srs need to do consumable framework
+    # TODO: consumable framework before we do anymore related
+    def mas_isHotChocTime(_time=None):
+        """
+        Checks if its hot chocolate time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its hot chocolate time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return (
+            store.mas_coffee.HOTCHOC_TIME_START
+            <= _time.hour <
+            store.mas_coffee.HOTCHOC_TIME_END
+        )
+
+
+    def mas_brewHotChoc(_start_time=None):
+        """
+        Starts brewing hot chocolate aka sets up the hot chocolate finished
+        brewing event
+
+        IN:
+            _start_time - time to start brewing the hotchoc
+                If None, we assume now
+                (Default: None)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # start brew
+        persistent._mas_c_hotchoc_brew_time = _start_time
+
+        # calculate end brew time
+        end_brew = random.randint(
+            store.mas_coffee.BREW_LOW,
+            store.mas_coffee.BREW_HIGH
+        )
+
+        # setup the event conditional
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        brew_ev.conditional = (
+            "persistent._mas_c_hotchoc_brew_time is not None "
+            "and (datetime.datetime.now() - "
+            "persistent.mas_c_hotchoc_brew_time) "
+            "> datetime.timedelta(0, {0})"
+        ).format(end_brew)
+        brew_ev.action = EV_ACT_QUEUE
+
+
+    def mas_drinkHotChoc(_start_time=None):
+        """
+        Lets monika drink hot chocolate aka sets the time she should stop 
+        drinking hot chocolate (hot chocolate finished drinking event)
+
+        IN:
+            _start_time - time to start dirnking hot chocolate
+                If None, we use now
+                (Defualt: now)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # delta for drinking
+        # NOTE: between 10 minutes to 2 hours
+        drinking_time = datetime.timedelta(
+            0,
+            random.randint(
+                store.mas_coffee.DRINK_LOW,
+                store.mas_coffee.DRINK_HIGH
+            )
+        )
+
+        # setup the stop time for the cup
+        persistent._mas_c_hotchoc_cup_done = _start_time + drinking_time
+
+        # setup the event conditional
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        drink_ev.conditional = (
+            "persistent._mas_c_hotchoc_cup_done is not None "
+            "and datetime.datetime.now() > persistent._mas_c_hotchoc_cup_done"
+        )
+        drink_ev.action = EV_ACT_QUEUE
+
+        # increment cup count
+        persistent._mas_c_hotchoc_cups_drank += 1
+
+
+    def mas_resetHotChoc():
+        """
+        Completely resets all hot chocolate vars
+        NOTE: this only resets the hotchoc drinking vars, not the history
+        """
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        monika_chr.remove_acs(mas_acs_hotchoc_mug)
+        brew_ev.conditional = None
+        brew_ev.action = None
+        drink_ev.conditional = None
+        drink_ev.action = None
+        persistent._mas_c_hotchoc_brew_time = None
+        persistent._mas_c_hotchoc_cup_done = None
+        removeEventIfExist(brew_ev.eventlabel)
+        removeEventIfExist(drink_ev.eventlabel)
+
+
+    def _mas_startupHotChocLogic():
+        """
+        Runs startup logic regarding hotchocolate stuff.
+
+        It is assumed that this run prior to conditional checking.
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_hotchoc:
+            return
+
+        # setup some vars
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        _now = datetime.datetime.now()
+        _chance = random.randint(1, 100)
+        time_for_coffee = mas_isHotChocTime(_now)
+
+        # setup some functions
+        def still_brew(_time):
+            return (
+                _time is not None
+                and _time.date() == _now.date()
+                and mas_isHotChocTime(_time)
+            )
+
+        def still_drink(_time):
+            return _time is not None and _now < _time
+
+
+        # NOTE: assume everything below actually relates to hot choc
+        # should we even drink coffee right now?
+        if not time_for_coffee:
+
+            # if its not time for coffee, we can still be drinking coffee
+            # because of a couple reasons:
+            #   - monika started her brew before her cut off time
+            #   - monika's drink time hasn't been reached yet
+            if still_brew(persistent._mas_c_hotchoc_brew_time):
+                # monika's brew started before the cut off.
+                # if the brew is done, then skip to drinking.
+                # otherwise, the finished brewing event will trigger on its
+                # own
+                if brew_ev.conditional is not None and eval(brew_ev.conditional):
+                    # even though this in inaccurate, it works for the
+                    # immersive purposes, so whatever.
+                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
+
+                    if not still_drink(persistent._mas_c_hotchoc_cup_done):
+                        # monika should have finished this coffee already
+                        mas_resetHotChoc()
+
+                    else:
+                        # monika is currently drinking this coffee
+                        brew_ev.conditional = None
+                        brew_ev.action = None
+                        persistent._mas_c_hotchoc_brew_time = None
+                        monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+            elif still_drink(persistent._mas_c_hotchoc_cup_done):
+                # monika is still drinking coffee
+                # clear brew vars just in case
+                brew_ev.conditional = None
+                brew_ev.action = None
+                persistent._mas_c_hotchoc_brew_time = None
+                removeEventIfExist(brew_ev.eventlabel)
+
+                # make sure she has the cup, just in case
+                if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):
+                    monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+            else:
+                # otherwise, just reset coffee
+                mas_resetHotChoc()
+
+        else:
+            # its coffee time!
+            # if we are currently brewing or drinking, we don't need to do
+            # anything else
+            if (
+                    still_brew(persistent._mas_c_hotchoc_brew_time)
+                    or still_drink(persistent._mas_c_hotchoc_cup_done)
+                ):
+                return
+
+            # otherwise, lets checek if monika should be brewing or drinking
+            # coffee
+
+            # first clear vars so we start fresh
+            mas_resetHotChoc()
+
+            if (
+                    _now.hour < store.mas_coffee.HOTCHOC_BREW_DRINK_SPLIT
+                    and _chance <= store.mas_coffee.BREW_CHANCE
+                ):
+                # monika is brewing coffee
+                mas_brewHotChoc()
+
+            elif _chance <= store.mas_coffee.DRINK_CHANCE:
+                # monika is drinking coffee
+                mas_drinkHotChoc()
+                monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+        return
+
+
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.

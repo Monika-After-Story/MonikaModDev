@@ -111,6 +111,9 @@ init 10 python in mas_seasons:
         store.mas_hideEVL("monika_winter", "EVE", derandom=True)
         store.mas_hideEVL("monika_winter_dangers", "EVE", derandom=True)
 
+        # disbale hot choc
+        store.persistent._mas_acs_enable_hotchoc = False
+
 
     def _pp_summer():
         """
@@ -139,6 +142,10 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_cozy", "EVE", _random=True)
         store.mas_showEVL("monika_winter", "EVE", _random=True)
         store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
+
+        # enable hotchoc if it has been given
+        if store.persistent._mas_c_hotchoc_been_given:
+            store.persistent._mas_acs_enable_hotchoc = True
 
     
     # seaonal pp id:
