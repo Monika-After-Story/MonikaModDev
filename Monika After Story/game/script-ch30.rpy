@@ -108,6 +108,10 @@ init -10 python:
 
         # NOTE: add keys here
         REBUILD_EV = 1
+        # rebuilds the event list in idle
+
+        DOCKSTAT_GRE_TYPE = 2
+        # used by the bye_going_somewhere farewell as a type
 
         # end keys
        
@@ -119,46 +123,38 @@ init -10 python:
             super(MASIdleMailbox, self).__init__()
 
 
-        def _get(self, headline):
-            """
-            calls super class's get
-
-            (for ease of use)
-            """
-            return super(MASIdleMailbox, self).get(headline)
-
-
-        def _read(self, headline):
-            """
-            Calls super class's read
-
-            (for ease of use)
-            """
-            return super(MASIdleMailbox, self).read(headline)
-
-
-        def _send(self, headline, msg):
-            """
-            Calls super class send
-
-            (for ease of use)
-            """
-            super(MASIdleMailbox, self).send(headline, msg)
-
-
         # NOTE: add additoinal functions below when appropriate.
         def send_rebuild_msg(self):
             """
             Sends the rebuild message to the mailbox
             """
-            self._send(self.REBUILD_EV, True)
+            self.send(self.REBUILD_EV, True)
 
 
         def get_rebuild_msg(self):
             """
             Gets rebuild message
             """
-            return self._get(self.REBUILD_EV)
+            return self.get(self.REBUILD_EV)
+
+
+        def send_ds_gre_type(self, gre_type):
+            """
+            Sends greeting type to mailbox
+            """
+            self.send(self.DOCKSTAT_GRE_TYPE, gre_type)
+
+
+        def get_ds_gre_type(self, default=None):
+            """
+            Gets dockstat greeting type
+
+            RETURNS: None by default
+            """
+            result = self.get(self.DOCKSTAT_GRE_TYPE)
+            if result is None:
+                return default
+            return result
             
 
     mas_idle_mailbox = MASIdleMailbox()

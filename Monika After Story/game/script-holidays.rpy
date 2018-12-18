@@ -845,6 +845,12 @@ default persistent._mas_d25_deco_active = False
 default persistent._mas_d25_intro_seen = False
 # True once a d25 intro has been seen
 
+default persistent._mas_d25_went_out_d25e = 0
+# number of times user takes monika out on d25e
+
+default persistent._mas_d25_went_out_d25 = 0
+# number of time suser takes monika out on d25
+
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
 
@@ -905,7 +911,11 @@ init -810 python:
             "_mas_d25_chibika_sayori": "d25s.needed_to_do_chibika_sayori",
             "_mas_d25_chibika_sayori_performed": "d25s.did_chibika_sayori",
 
-            "_mas_d25_intro_seen": "d25s.saw_an_intro"
+            "_mas_d25_intro_seen": "d25s.saw_an_intro",
+
+            # d25 dates
+            "_mas_d25_went_out_d25e": "d25s.d25e.went_out_count",
+            "_mas_d25_went_out_d25": "d25s.d25.went_out_count"
         },
         use_year_before=True,
         exit_pp=store.mas_history._d25s_exit_pp
@@ -1126,8 +1136,6 @@ init -815 python in mas_history:
 
 # topics
 # TODO: dont forget to update script topics's seen properties
-
-# TODO: d25/nye greet/farewells
 
 init 5 python:
     addEvent(
@@ -1941,27 +1949,31 @@ label monika_aiwfc_song:
     stop music fadeout 1.0
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_christmas_eve",
-#            conditional=(
-#                "persistent._mas_d25_in_d25_mode "
-#            ),
-#            action=EV_ACT_QUEUE,
-#            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
-#            end_date=datetime.datetime.combine(mas_d25, datetime.time(hour=0))
-#        ),
-#        skipCalendar=True
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_monika_christmas_eve",
+            conditional=(
+                "persistent._mas_d25_in_d25_mode "
+            ),
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
+            end_date=mas_d25,
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
 
-label mas_d25_christmas_eve:
+label mas_d25_monika_christmas_eve:
     m 3hua "[player]!"
     m 3hub "Can you believe it...? {w=1}It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
     m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+
+    # TODO: change to historical data version
     if renpy.seen_label('monika_christmas'):
         m 5ekbfa "But I'm even {i}more{/i} excited now that I get to spend every Christmas with you..."
         m 5hkbfa "I can't wait for tomorrow!"
@@ -1987,6 +1999,7 @@ label mas_d25_christmas_eve:
 #    )
 #this also needs a conditional where if the player missed d25 but had her out on date for d25
 #that counts as spending d25 with her and they don't get this.
+# TODO
 
 label mas_d25_postd25_notimespent:
     if mas_isMoniAff(higher=True):
@@ -2030,25 +2043,85 @@ label mas_d25_postd25_notimespent:
         m 6dftdx "..."
     return
 
-#######################################d25 dockingstation below#################################################
-
-#this should all be for people in d25 mode
-
 #Christmas Eve dockingstation
+label bye_d25e_delegate:
+    # delegation label that determins what bye dialogue to show
+    if persistent._mas_d25_went_out_d25e > 0:
+        call bye_d25e_second_time_out
+
+    else:
+        call bye_d25e_first_time_out
+
+    # notifies bye going somewhere to use this gre type
+    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
+
+    # jump back to going somewhere file gen
+    jump bye_going_somewhere_iostart
 
 #first time you take her out on d25e
-label farewell_d25e_first_time_out:
+label bye_d25e_first_time_out:
     m 1sua "Taking me somewhere special on Christmas Eve, [player]?"
     m 3eua "I know some people visit friends or family...or go to Christmas parties..."
     m 3hua "But wherever we’re going, I'm happy you want me to come with you!"
     m 1eka "I hope we'll be home for Christmas, but even if we're not, just being with you is more than enough for me~"
+    return
 
 #second time you take her out on d25e
-label farewell_d25e_second_time_out:
+label bye_d25e_second_time_out:
     m 1wud "Wow, we're going out again today, [player]?"
     m 3hua "You really must have a lot of people you need to visit on Christmas Eve..."
     m 3hub "...or maybe you just have lots of special plans for us today!"
     m 1eka "But either way, thank you for thinking of me and bringing me along~"
+    return
+
+#Christmas Day dockingstation
+label bye_d25_delegate:
+    # delegation label that determins which bye dialogue to show
+    if persistent._mas_d25_went_out_d25 > 0:
+        call bye_d25_second_time_out
+
+    else:
+        call bye_d25_first_time_out
+
+    # notifies bye going somewhere to use this gre type
+    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
+
+    jump bye_going_somewhere_iostart
+
+#first time out on d25
+label bye_d25_first_time_out:
+    m 1sua "Taking me somewhere special on Christmas, [player]?"
+
+    if persistent._mas_pm_fam_like_monika and persistent._mas_pm_have_fam:
+        m 1sub "Maybe we're going to visit some of your family...? I'd love to meet them!"
+        m 3eua "Or maybe we're going to see a movie...? I know some people like to do that after opening presents."
+
+    else:
+        m 3eua "Maybe we're going to see a movie... I know some people like to do that after opening presents."
+
+    m 1eka "Well, wherever you’re going, I'm just glad you want me to come along..."
+    m 3hua "I want to spend as much of Christmas as possible with you, [player]~"
+    return
+
+#second time out on d25
+label bye_d25_second_time_out:
+    m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
+    m 3wud "You really must have a lot of people you need to visit on Christmas..."
+    m 3sua "...or maybe you just have lots of special plans for us today!"
+    m 1hua "But either way, thank you for thinking of me and bringing me along~"
+    return
+
+## d25 greetings
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database
+        ),
+        code="GRE"
+    )
+
+
 
 #returned from d25e date on d25e
 label greeting_d25e_returned_d25e:
@@ -2071,25 +2144,16 @@ label greeting_d25e_returned_post_d25:
     m 3ekbfa "Just being close to you was all I wanted~"
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
 
-#Christmas Day dockingstation
 
-#first time out on d25
-label farewell_d25_first_time_out:
-    m 1sua "Taking me somewhere special on Christmas, [player]?"
-    if persistent._mas_pm_fam_like_monika and persistent._mas_pm_have_fam:
-        m 1sub "Maybe we're going to visit some of your family...? I'd love to meet them!"
-        m 3eua "Or maybe we're going to see a movie...? I know some people like to do that after opening presents."
-    else:
-        m 3eua "Maybe we're going to see a movie... I know some people like to do that after opening presents."
-    m 1eka "Well, wherever you’re going, I'm just glad you want me to come along..."
-    m 3hua "I want to spend as much of Christmas as possible with you, [player]~"
 
-#second time out on d25
-label farewell_d25_second_time_out:
-    m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
-    m 3wud "You really must have a lot of people you need to visit on Christmas..."
-    m 3sua "...or maybe you just have lots of special plans for us today!"
-    m 1hua "But either way, thank you for thinking of me and bringing me along~"
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database
+        ),
+        code="GRE"
+    )
+
 
 #returned from d25 date on d25
 label greeting_d25_returned_d25:
