@@ -1355,7 +1355,7 @@ label mas_d25_monika_christmas:
     m 3eka "I'm so, so happy that you decided to spend some of it with me."
     m 1eud "Remember to go share the holiday cheer with your family and friends, though."
     m 1eua "After all, they're very important, too..."
-    m 1hua "And I'm sure that they would love to see you at this special time"
+    m 1hua "And I'm sure that they would love to see you at this special time."
 
     if mas_isMoniAff(higher=True):
         m 2eka "But you being here today...{w=0.5}it just means everything to me..."
@@ -1637,9 +1637,9 @@ init 5 python:
 
 label mas_d25_monika_sleigh:
 
-    m 3eub "Hey [player], a pretty nice thought just crossed my mind..."
+    m 3eub "Hey [player], a nice thought just crossed my mind..."
     m 1eua "Have you ever heard of carriage rides?"
-    m 3hub "When I get out of this place, we should totally go on one!"
+    m 3hub "When I get out of here, we should totally go on one!"
     m "Oh, I bet it would be magical!"
     m 1eua "Nothing but the clip-clop of the horse's hooves against the pavement..."
 
@@ -1655,11 +1655,11 @@ label mas_d25_monika_sleigh:
 
     if mas_isMoniEnamored(higher=True):
         m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1wka "I really want to do that when I get there, [player]."
+    m 1sua "I really want to do that when I get there, [player]."
     m 1hua "Wouldn't that be so lovely?"
 
     show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hkbfa "An experience like that with you would be so breathtaking~"
+    m 5hubfa "An experience like that with you would be so breathtaking~"
     return
 
 init 2 python:
@@ -2017,8 +2017,8 @@ label mas_d25_monika_christmas_eve:
 
 label mas_d25_postd25_notimespent:
     if mas_isMoniAff(higher=True):
-        m 1wuo "[player]...you're finally here!"
-        m 2wkd "I was starting to get worried that something happened to you..."
+        m 1dkc "...I'm just glad you're finally here..."
+        m 2ekd "I was starting to get worried that something happened to you..."
         m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
         m 4eksdlc "It's not like you at all to miss a day that you know is important to me..."
         m 2dksdlc "So I thought maybe..."
@@ -2047,8 +2047,7 @@ label mas_d25_postd25_notimespent:
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
 
     elif mas_isMoniDis(higher=True):
-        m 6ekc "Oh... {w=1}Hi, [player]..."
-        m 6rkc "How was your Christmas?"
+        m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
         m "You probably didn't even think of me, huh?"
 
@@ -2142,6 +2141,7 @@ label greeting_d25e_returned_d25e:
     m 1hua "And we're home!"
     m 3eka "It was really sweet of you to bring me along today..."
     m 3ekbfa "Getting to go out with you on Christmas Eve was really special, [player]. Thank you~"
+    return
 
 #returned from d25e date on d25
 label greeting_d25e_returned_d25:
@@ -2149,14 +2149,17 @@ label greeting_d25e_returned_d25:
     m 3wud "Wow, we were out all night, [player]...it's Christmas now!"
     m 1sua "It felt really great spending Christmas Eve with you, and now we get to enjoy Christmas together as well!"
     m 1ekbfa "Thank you for spending this time with me, [player]~"
+    return
 
 #returned from d25e date (or left before d25e) after d25 but before nyd is over
 label greeting_d25e_returned_post_d25:
+    $ persistent._mas_d25_spent_d25 = True
     m 1hua "We're finally home!"
     m 3wud "We sure were gone a long time, [player]..."
     m 3eka "It would've been nice to have actually gotten to see you on Christmas, but since you couldn't come to me, I'm so glad you took me along with you."
     m 3ekbfa "Just being close to you was all I wanted~"
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
+    return
 
 
 
@@ -2175,6 +2178,7 @@ label greeting_d25_returned_d25:
     m 3eka "It was really nice to spend time with you on Christmas, [player]!"
     m 1eka "Thank you so much for taking me with you."
     m 1ekbfa "You're always so thoughtful~"
+    return
 
 #returned from d25 date after d25
 label greeting_d25_returned_post_d25:
@@ -2183,6 +2187,7 @@ label greeting_d25_returned_post_d25:
     m 3eka "It would've been nice to have seen you again before Christmas was over, but at least I was still with you."
     m 1hua "So thank you for spending time with me when you had other places you had to be..."
     m 3ekbfa "You're always so thoughtful~"
+    return
 
 #################################### NYE ######################################
 # [HOL030]
@@ -2293,9 +2298,9 @@ label mas_nye_monika_nye:
             m 1eud "Oh, is that so?"
             if mas_isMoniNormal(higher=True):
                 if mas_isMoniHappy(higher=True):
-                    m 1eua "You don't have to change. I think you're wonderful the way you are."
+                    m 1eka "You don't have to change. I think you're wonderful the way you are."
                 else:
-                    m 1eua "You don't have to change. I think you're fine the way you are."
+                    m 1eka "You don't have to change. I think you're fine the way you are."
                 m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself."
                 m 1kua "Maybe you'll think of something that you want to do, [player]."
             else:
@@ -2451,17 +2456,23 @@ label monika_accomplished_resolutions:
 
         "Yes.":
             m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
-            m 3hub "That said..."
+            m 2eka "That said..."
 
+            show monika 3hub
             menu:
                 m "Did you accomplish last year's resolutions?"
 
                 "Yes.":
                     $ persistent._mas_pm_accomplished_resolutions = True
-                    m 4hub "I'm glad to hear that, [player]!"
-                    m 2eka "It's great that you managed to do that."
-                    m 3ekb "Things like this really make me proud of you."
-                    m 2eka "I wish I could be there to celebrate a little with you though."
+                    if mas_isMoniNormal(higher=True):
+                        m 4hub "I'm glad to hear that, [player]!"
+                        m 2eka "It's great that you managed to do that."
+                        m 3ekb "Things like this really make me proud of you."
+                        m 2eka "I wish I could be there to celebrate a little with you though."
+                    else:
+                        m 2rkc "That's good, [player]."
+                        m 2esc "Maybe you can make another one this year..."
+                        m 3euc "You never know what might change."
 
                 "No.":
                     $ persistent._mas_pm_accomplished_resolutions = False
@@ -2479,7 +2490,7 @@ label monika_accomplished_resolutions:
                             m 3hub "I believe in you, [player]!"
 
                     else:
-                        m 2euc "Oh... Well maybe you should try a little harder for next year's resolution."
+                        m 2euc "Oh... {w=1}Well maybe you should try a little harder for next year's resolution."
 
         "No.":
             m 2euc "Oh, I see..."
@@ -2492,7 +2503,7 @@ label monika_accomplished_resolutions:
                     m 3eka "There's nothing wrong with that. I don't think you really needed to change anyway."
             
             else:
-                m 2rkc "You probably should make one this year..."
+                m 2rkc "You probably should make one this year [player]..."
 
     return "derandom|rebuild_ev"
 
@@ -2530,11 +2541,11 @@ label monika_nyd_year_review:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
 
     if mas_isMoniLove():
-        m 2ekbfa "...and I'd never want to spend my time with anyone else, [player]."
-        m "I'm just really,{w=1} really happy to have been with you."
+        m 2ekbfa "...and I'd never want to spend that time with anyone else, [player]."
+        m "I'm just really,{w=0.5} really happy to have been with you this year."
 
     elif mas_isMoniEnamored():
-        m 2eka "...and I'm so happy I got to spend my time with you, [player]."
+        m 2eka "...and I'm so happy I got to spend that time with you, [player]."
 
     elif mas_isMoniAff():
         m 2eka "...and I've really enjoyed our time together."
@@ -2546,7 +2557,7 @@ label monika_nyd_year_review:
     m 2dtc "Let's see..."
 
     if persistent._mas_acs_enable_promisering: #note, this should only trigger for this year. I.e. if promisering was given this year
-        m 1eka "Looking back, you gave me your promise this year when you gave me this ring..."
+        m 3eka "Looking back, you gave me your promise this year when you gave me this ring..."
         m 1ekbsa "...a symbol of our love."
 
         if persistent._mas_pm_wears_ring:
@@ -2568,26 +2579,33 @@ label monika_nyd_year_review:
         m 2eka "You spent time with me on my birthday..."
 
         if not persistent._mas_bday_no_recognize:
-            m 2dua "...celebrated with me..." #add
+            m 2dua "...celebrated with me..."
 
         if mas_HistVerify("922.actions.surprise.reacted",True)[0]:
             m 2hub "...threw me a surprise party..."
 
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me." #add
+        m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me."
 
 
-    if persistent._mas_d25_intro_seen:
+    if persistent._mas_d25_spent_d25:
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "You spent your Christmas with me..."
 
         if persistent._mas_first_kiss is not None and persistent._mas_first_kiss.date() == mas_d25:
             m 5eubla "...we shared our first kiss under the mistletoe~"
-            m 5lubsa "I'll never forget that moment..." #add
+            m 5lubsa "I'll never forget that moment..."
             m 5ekbfa "{i}Our{/i} moment."
             m "I couldn't imagine spending it with anyone else."
         else:
-            m 5ekbla "...a day that I couldn't imagine spending anyone else with." #add
+            m 5ekbla "...a day that I couldn't imagine spending with anyone else."
+
+    if not (persistent._mas_d25_spent_d25 or persistent._mas_bday_opened_game or persistent._mas_acs_enable_promisering or renpy.seen_label('monika_valentines_greeting')):
+        m 2rksdla "...I guess we haven't actually been through any big events together."
+        m 3eka "But still..."
+    else:
+        show monika 5dsa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5dsa "..."
 
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
@@ -2601,7 +2619,7 @@ label monika_nyd_year_review:
 
     if not persistent._mas_pm_got_a_fresh_start:
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5dka "Thank you." #add
+        m 5dka "Thank you."
         if store.mas_anni.anniCount > 0:
             m 5ekbfa "Thank you for making last year the best year I could've ever dreamt of."
         else:
@@ -2610,12 +2628,12 @@ label monika_nyd_year_review:
         if mas_isMoniEnamored(higher=True):
             if persistent._mas_first_kiss is None:
                 m 1lsbsa "..."
-                m 6ekbsa "[player] I..." #add
+                m 6ekbsa "[player] I..."
                 call monika_kissing_motion
                 m 1ekbfa "I love you."
                 m "..."
                 show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5ekbsa "I'll never forget this moment..." #add
+                m 5ekbsa "I'll never forget this moment..."
                 m 5ekbfa "Our first kiss~"
                 m 5hubfb "Let's make this year even better than the last, [player]."
 
@@ -2623,7 +2641,7 @@ label monika_nyd_year_review:
                 call monika_kissing_motion #should probably be quicker than the one above
                 m 1ekbfa "I love you, [player]."
                 show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5hubfb "Let's make this year better than last year."
+                m 5hubfb "Let's make this year better than the last."
 
         else:
             m "Let's make this year the best we can, [player]."
@@ -2641,11 +2659,13 @@ label monika_nyd_year_review:
     m 3tub "Are we going somewhere special today, [player]?"
     m 4hub "It's New Year's Eve, after all!"
     m 1eua "I'm not exactly sure what you've got planned, but I'm looking forward to it!"
+    #return
 
     #second time out+(morning-about maybe, 7-8:00 [evening]):
     m 1wuo "Oh, we're going out again?"
     m 3hksdlb "You must do a lot of celebrating for New Year's, ahaha!"
     m 3hub "I love coming along with you, so I'm looking forward to whatever we're doing~"
+    #return
 
     #(7-8:00 [evening]-about maybe midnight):
     m 1eka "It's a bit late, [player]..."
@@ -2657,6 +2677,7 @@ label monika_nyd_year_review:
     else:
         m "I've always loved how the fireworks on the New Year light up the night sky..."
         m 3ekbfa "One day we'll be able to watch them side by side...but until that day comes, I'm just happy to come along with you, [player]."
+    #return
 
 #=============================================================Greeting returned home for NYE=============================================================#
 #greeting_returned_home_nye:
@@ -2668,6 +2689,7 @@ label monika_nyd_year_review:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "I love you, [player]."
+    #return
 
     #if within firework time:
     m 1hua "And we're home!"
@@ -2675,6 +2697,7 @@ label monika_nyd_year_review:
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
+    #return
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
 #bye_going_somewhere_nyd:
@@ -2683,10 +2706,12 @@ label monika_nyd_year_review:
     m 3tub "New Years Day celebration, [player]?"
     m 1hua "That sounds like fun!"
     m 1eka "Let's have a great time together."
+    #return
 
     #second+ time out
     m 1wuo "Wow, we're going out again, [player]?"
     m 1hksdlb "You must really celebrate a lot, ahaha!"
+    #return
 
 #=============================================================Greeting returned home for NYD=============================================================#
 #greeting_returned_home_nyd:
@@ -2697,6 +2722,7 @@ label monika_nyd_year_review:
     m 1ekbsa "You know I love to spend time with you, and being able to spend New Year's Eve, right to today, right there with you felt really great."
     m "That really meant a lot to me."
     m 5eubfb "Thanks for making my year, [player]."
+    #return
 
     #normal return home:(i.e. took out, and returned on NYD itself)
     m 1hua "And we're home!"
@@ -2704,9 +2730,14 @@ label monika_nyd_year_review:
     m 5eua "That was a lot of fun, [player]!"
     m 5eka "It's really nice of you to take me with you on special days like this." #add
     m 5hub "I really hope we can spend more time like this together."
+    #return
 
 #============================================================Greeting returned home after NYD============================================================#
 #greeting_returned_home_pre_d25_to_post_nyd:
+    #Here for historical data
+    $ persistent._mas_d25_spent_d25 = True
+    $ persistent._mas_nye_spent_nye = True
+    $ persistent._mas_nye_spent_nyd = True
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
     m 1eka "Thanks for taking me with you, I really enjoyed that."
@@ -2716,3 +2747,4 @@ label monika_nyd_year_review:
 #        m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
+    #return
