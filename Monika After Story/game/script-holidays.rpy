@@ -2508,7 +2508,10 @@ label monika_nyd_year_review:
         m 2eka "You know, [player], we really have been through a lot together."
         if store.mas_anni.anniCount() == 1:
             m 2wuo "We spent the entire year together!"
-        m 2eka "Time really flew by..."
+            m 2eka "Time really flew by..."
+
+        else:
+            2eka "This year really flew by..."
 
     elif store.mas_anni.pastSixMonths():
         m 2eka "You know, [player], we really have been through a lot over the time we spent together last year"
@@ -2556,13 +2559,13 @@ label monika_nyd_year_review:
         #TODO: if gave Monika flowers: (not sure what the actual label is for this one)
 #            m 4ekbfb "...you gave me such beautiful flowers too."
 
-    if persistent._mas_history_archives[datetime.date.today().year-1]['922.actions.opened_game']:
+    if mas_HistVerify("922.actions.opened_game",True,datetime.date.today().year)[0]:
         m 2eka "You spent time with me on my birthday..."
 
-        if not persistent._mas_bday_no_recognize:
+        if mas_HistVerify("922.actions.no_recognize",False,datetime.date.today().year)[0]:
             m 2dua "...celebrated with me..."
 
-        if mas_HistVerify("922.actions.surprise.reacted",True)[0]:
+        if mas_HistVerify("922.actions.surprise.reacted",True,datetime.date.today().year)[0]:
             m 2hub "...threw me a surprise party..."
 
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
@@ -2728,4 +2731,23 @@ label monika_nyd_year_review:
 #        m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
+    #return
+
+#============================================================Greeting returned home D25P NYD(P)============================================================#
+#greeting_returned_home_d25p_nyd:
+    $ persistent._mas_nye_spent_nye = True
+    m 1hua "And we're home!"
+    m 1eub "Thanks for taking me out, [player]."
+    m 1eka "That was a long trip, but it was a lot of fun!"
+    m 3hub "It's great to be back home now though, we can spend the new year together."
+    #return
+
+#greeting_returned_home_d25p_nydp:
+    $ persistent._mas_nye_spent_nye = True
+    $ persistent._mas_nye_spent_nyd = True
+    m 1hua "And we're home!"
+    m 1wuo "That was a long trip [player]!"
+    m 1eka "I'm a little sad we couldn't wish each other a happy new year, but I really enjoyed it."
+    m "I'm really happy you took me."
+    m 3hub "Happy New Year, [player]~"
     #return
