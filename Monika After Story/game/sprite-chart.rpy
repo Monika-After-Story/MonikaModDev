@@ -362,6 +362,16 @@ init -5 python in mas_sprites:
         adjust_zoom()
 
 
+    def zoom_out():
+        """
+        zooms out to the farthest zoom level
+        NOTE: also sets the persistent save for zoom
+        """
+        global zoom_level
+        zoom_level = 0
+        adjust_zoom()
+
+
     # tryparses for the hair and clothes
     # TODO: adjust this for docking station when ready
     def tryparsehair(_hair, default="def"):

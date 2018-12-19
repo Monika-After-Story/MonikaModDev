@@ -1800,8 +1800,8 @@ label mas_d25_spent_time_monika:
 
         # need to reset zoom here so we dont end up with issues
         $ pause(1)
-        hide monika
-        $ store.mas_sprites.reset_zoom()
+        hide monika with dissolve
+        $ store.mas_sprites.zoom_out()
         show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
         $ pause()
 
