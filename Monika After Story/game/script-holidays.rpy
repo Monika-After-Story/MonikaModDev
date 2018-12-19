@@ -1527,7 +1527,6 @@ label mas_d25_monika_carolling:
 
     show monika 3eua
     menu:
-        #TODO (maybe): If we could possibly get that song fix in, would be nice to have Monika sing carols to us
         m "Do you like singing Christmas carols, [player]?"
         "Yes.":
             $ persistent._mas_pm_likes_singing_d25_carols = True
@@ -1604,15 +1603,6 @@ label mas_d25_monika_mistletoe:
     m 1dsc "..."
     m 3rksdlb "Come to think of it, that sounds more like taking advantage of someone."
     m 1hksdlb "But I'm sure it's different now!"
-
-    # TODO: branch dialogu here:
-    #   if first time and beyond a certain amount of time + affection, than kiss!
-    #       on subsequent times, maybe suggest a kiss or something
-    #   if first time but past the time/affection, then keep existing dialogue
-
-    # No kiss here, first kiss fits better in mas_d25_spent_time_monika.
-    # This as is works as a nice set-up for when we get to the kiss there.
-
     m 3hua "Perhaps one day we'll be able to kiss under the mistletoe, [player]."
     m 1tku "...Maybe I can even add one in here!"
     m 1hub "Ehehe~"
@@ -2011,8 +2001,6 @@ label mas_d25_monika_christmas_eve:
 #            action=EV_ACT_PUSH
 #        )
 #    )
-#this also needs a conditional where if the player missed d25 but had her out on date for d25
-#that counts as spending d25 with her and they don't get this.
 # TODO
 
 label mas_d25_postd25_notimespent:
@@ -2244,6 +2232,7 @@ init -10 python:
 
 # topics
 # TODO: dont forget to updaet script seen props
+# TODO: event props have been updated so this topic only comes up between 7pm and 11pm on NYE, changed from PUSH to QUEUE, please review
 
 init 5 python:
 #    # NOTE: new years eve
@@ -2252,9 +2241,9 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_nye_monika_nye",
-            action=EV_ACT_PUSH,
-            start_date=mas_nye,
-            end_date=mas_nyd,
+            action=EV_ACT_QUEUE,
+            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
+            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
             years=[],
             aff_range=(mas_aff.UPSET, None)
         ),
@@ -2273,18 +2262,14 @@ label mas_nye_monika_nye:
     if mas_isMoniAff(higher=True) and store.mas_anni.pastOneMonth():
         m 1ekbsa "Especially when I get to see you so often."
 
-    # TODO: probably shouldl actually check time before saying this
+    # TODO: probably shouldl actually check time before saying this, new event props should take care of this
     m 3hua "Well, there's still a bit of time left before midnight."
     m 1eua "We might as well enjoy this year while it lasts."
     m 1euc "Usually, I'd reprimand you for staying up late, but..."
     m 1hua "Today is a special day."
 
-    # NOTE: probalby could have affection play here
-    #   low affection makes monika suggest that you have resolutions
-    #   somthing like that
     show monika 3eua
     menu:
-        #Could possibly ask if player accomplished past resolutions too
         m "Do you have any resolutions, [player]?"
         "Yes.":
             $ persistent._mas_pm_has_new_years_res = True
@@ -2520,7 +2505,6 @@ label monika_accomplished_resolutions:
 #    )
 #NYE only
 #normal+, i.e. !broken, since fresh starts
-#TODO: Add sprites (I've added some)
 label monika_nyd_year_review:
 
     if store.mas_anni.anniCount() >= 0:
