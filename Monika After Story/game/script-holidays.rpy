@@ -850,6 +850,7 @@ default persistent._mas_d25_went_out_d25e = 0
 
 default persistent._mas_d25_went_out_d25 = 0
 # number of time suser takes monika out on d25
+# this also includes if the day was partially or entirely spent out
 
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
 # christmas
@@ -2129,92 +2130,142 @@ label bye_d25_second_time_out:
 
 ## d25 greetings
 
-#init 5 python:
-#addEvent(
-#        Event(
-#            persistent.greeting_database
-#        ),
-#        code="GRE"
-#    )
-
-
-
 #returned from d25e date on d25e
 label greeting_d25e_returned_d25e:
+    $ persistent._mas_d25_went_out_d25e += 1
+
     m 1hua "And we're home!"
     m 3eka "It was really sweet of you to bring me along today..."
     m 3ekbfa "Getting to go out with you on Christmas Eve was really special, [player]. Thank you~"
+    return
 
 #returned from d25e date on d25
 label greeting_d25e_returned_d25:
+    $ persistent._mas_d25_went_out_d25e += 1
+    $ persistent._mas_d25_went_out_d25 += 1
+
     m 1hua "And we're home!"
     m 3wud "Wow, we were out all night, [player]...it's Christmas now!"
     m 1sua "It felt really great spending Christmas Eve with you, and now we get to enjoy Christmas together as well!"
     m 1ekbfa "Thank you for spending this time with me, [player]~"
+    return
 
 #returned from d25e date (or left before d25e) after d25 but before nyd is over
 label greeting_d25e_returned_post_d25:
+    $ persistent._mas_d25_went_out_d25e += 1
+    $ persistent._mas_d25_went_out_d25 += 1
+
     m 1hua "We're finally home!"
     m 3wud "We sure were gone a long time, [player]..."
     m 3eka "It would've been nice to have actually gotten to see you on Christmas, but since you couldn't come to me, I'm so glad you took me along with you."
     m 3ekbfa "Just being close to you was all I wanted~"
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
-
-
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.greeting_database
-#        ),
-#        code="GRE"
-#    )
+    return
 
 
 #returned from d25 date on d25
 label greeting_d25_returned_d25:
+    $ persistent._mas_d25_went_out_d25 += 1
+
     m 1hua "And we're home!"
     m 3eka "It was really nice to spend time with you on Christmas, [player]!"
     m 1eka "Thank you so much for taking me with you."
     m 1ekbfa "You're always so thoughtful~"
+    return
 
 #returned from d25 date after d25
 label greeting_d25_returned_post_d25:
+    $ persistent._mas_d25_went_out_d25 += 1
+
     m 1hua "We're finally home!"
     m 3wud "We were out a really long time, [player]!"
     m 3eka "It would've been nice to have seen you again before Christmas was over, but at least I was still with you."
     m 1hua "So thank you for spending time with me when you had other places you had to be..."
     m 3ekbfa "You're always so thoughtful~"
+    return
 
 ### NOTE: mega delegate label to handle both d25 and nye returns
 
 label greeting_d25_and_nye_delegate:
+    # ASSUMES:
+    #   - we are more than 5 minutes out
+    #   - we are in d25 mode
+    #   - affection normal+
 
     python:
         # lots of setup here
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+        post_nyd = False
+        pre_d25 = False
 
-        if len(persistent._mas_dockstat_checkin_log) > 0:
-            checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
-            sunrise_hour, sunrise_min = mas_cvToHM(persistent._mas_sunrise)
-            is_past_sunrise_post31 = (
-                datetime.datetime.now() > (
-                    datetime.datetime.combine(
-                        mas_o31,
-                        datetime.time(sunrise_hour, sunrise_min)
-                    )
-                    + datetime.timedelta(days=1)
-                )
-            )
+        if checkout_time is not None:
+            checkout_date = checkout_time.date()
+            left_pre_d25 = checkout_date < mas_d25
 
+        if checkin_time is not None;
+            checkin_date = checkin_time.date()
+            arr_post_nyd = checkin_date > mas_nyd
+
+        # TODO: move this to nye
         def cap_gain_aff(amt):
             if persistent._mas_o31_trick_or_treating_aff_gain < 15:
                 persistent._mas_o31_trick_or_treating_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
+
+
+    if mas_isD25Eve():
+        # We have returnd on d25 eve, only one greeting to get
+        call greeting_d25e_returned_d25e
+
+    elif mas_isD25():
+        # we have returnd on d25
+        # 2 cases:
+        if checkout_time is None or mas_isD25(checkout_date):
+            # no checkout or left on d25
+            call greeting_d25_returned_d25
+
+        elif mas_isD25Eve(checkout_date):
+            # left on d25e
+            call greeting_d25e_returned_d25
+
+        else:
+            # otherwise, the usual morethan5 mins 
+            jump greeting_returned_home_morethan5mins_normalplus_flow
+
+
+    elif mas_isNYE():
+        # we have returend on nye
+
+
+    elif mas_isD25Post():
+        # post d25 return
+        if checkout_time is None:
+            jump greeting_returned_home_morethan5mins_normalplus_flow
+
+        elif mas_isD25Eve(checkout_date):
+            # left on d25e
+            call greeting_d25e_returned_post_d25
+
+        elif mas_isD25(checkout_date):
+            # left on d25
+            call greeting_d25_returned_post_d25
+
+        elif mas_isNYE():
+            # its new years day
+
+        else:
+            # otherwise, the usual morethan 5 mins
+            jump greeting_returned_home_morethan5mins_normalplus_flow
+
+    else:
+        # the usual more than 5 mins
+        jump greeting_returned_home_morethan5mins
+
+
+    # NOTE: if you are here, then you called a regular greeting label
+    # and need to return to aff gain
+    jump greeting_returned_home_morethan5mins_normalplus_flow_aff
 
 
 #################################### NYE ######################################
@@ -2225,6 +2276,12 @@ default persistent._mas_nye_spent_nye = False
 
 default persistent._mas_nye_spent_nyd = False
 # true if user spent new years day with monika
+
+default persistent._mas_nye_went_out_nye = 0
+# number of times user took monika out for nye
+
+default persistent._mas_nye_went_out_nyd = 0
+# number of times user took monika out for nyd
 
 define mas_nye = datetime.date(datetime.date.today().year, 12, 31)
 define mas_nyd = datetime.date(datetime.date.today().year, 1, 1)
@@ -2461,7 +2518,6 @@ label mas_nye_monika_nyd_fresh_start:
             pause 10.0
             return 'quit'
 
-default persistent._mas_pm_accomplished_resolutions = None
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -2473,6 +2529,9 @@ default persistent._mas_pm_accomplished_resolutions = None
 #        ),
 #        aff_range=(mas_aff.UPSET,None)
 #    )
+
+default persistent._mas_pm_accomplished_resolutions = None
+# True if user has accomplished new years resolutions
 
 label monika_accomplished_resolutions:
     m 2eub "Hey [player]?"
@@ -2668,18 +2727,49 @@ label monika_nyd_year_review:
     return "derandom|rebuild_ev"
 
 #===========================================================Going to take you somewhere on NYE===========================================================#
-#bye_going_somewhere_nye:
 
+label bye_nye_delegate:
+    # need to determine current time
+    python:
+        _morning_time = datetime.time(5)
+        _eve_time = datetime.time(20)
+        _curr_time = datetime.datetime.now().time()
+
+    if _curr_time < _morning_time:
+        # if before morning, assume regular going out
+        jump bye_going_somewhere_normalplus_flow_aff_check
+
+    elif _curr_time < _eve_time:
+        # before evening but after morning
+        
+        if persistent._mas_nye_went_out_nye > 0:
+            call bye_nye_second_time_out
+
+        else:
+            call bye_nye_first_time_out
+
+    else:
+        # evening
+        call bye_nye_late_out
+
+    # finally jump back to iostart
+    jump bye_going_somewhere_iostart
+        
+label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
     m 3tub "Are we going somewhere special today, [player]?"
     m 4hub "It's New Year's Eve, after all!"
     m 1eua "I'm not exactly sure what you've got planned, but I'm looking forward to it!"
+    return
 
+label bye_nye_second_time_out:
     #second time out+(morning-about maybe, 7-8:00 [evening]):
     m 1wuo "Oh, we're going out again?"
     m 3hksdlb "You must do a lot of celebrating for New Year's, ahaha!"
     m 3hub "I love coming along with you, so I'm looking forward to whatever we're doing~"
+    return
 
+label bye_nye_late_out:
     #(7-8:00 [evening]-about maybe midnight):
     m 1eka "It's a bit late, [player]..."
     m 3eub "Are we going to see the fireworks?"
@@ -2690,10 +2780,15 @@ label monika_nyd_year_review:
     else:
         m "I've always loved how the fireworks on the New Year light up the night sky..."
         m 3ekbfa "One day we'll be able to watch them side by side...but until that day comes, I'm just happy to come along with you, [player]."
+    return
 
 #=============================================================Greeting returned home for NYE=============================================================#
 #greeting_returned_home_nye:
 
+label greeting_nye_delegate:
+
+
+label greeting_nye_prefw:
     #if before firework time (7-8:00-midnight):
     m 1hua "And we're home!"
     m 1eua "That was a lot of fun, [player]."
@@ -2701,25 +2796,40 @@ label monika_nyd_year_review:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "I love you, [player]."
+    return
 
+label greeting_nye_infw:
     #if within firework time:
     m 1hua "And we're home!"
     m 1eka "Thanks for taking me out today, [player]."
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
+    return
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
-#bye_going_somewhere_nyd:
 
+label bye_nyd_delegate:
+    if persistent._mas_nye_went_out_nyd > 0:
+        call bye_nyd_second_time_out
+
+    else:
+        call bye_nyd_first_time_out
+
+    jump bye_going_somewhere_iostart
+
+label bye_nyd_first_time_out:
     #first time out
     m 3tub "New Years Day celebration, [player]?"
     m 1hua "That sounds like fun!"
     m 1eka "Let's have a great time together."
+    return
 
+label bye_nyd_second_time_out:
     #second+ time out
     m 1wuo "Wow, we're going out again, [player]?"
     m 1hksdlb "You must really celebrate a lot, ahaha!"
+    return
 
 #=============================================================Greeting returned home for NYD=============================================================#
 #greeting_returned_home_nyd:

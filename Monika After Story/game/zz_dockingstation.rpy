@@ -9,6 +9,8 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+default persistent._mas_pm_taken_monika_out = False
+# True if the user has taken monika out of the spaceroom
 
 init -900 python in mas_ics:
     import os
@@ -2404,6 +2406,7 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
+    $ persistent._mas_pm_taken_monika_out = True
 
     # select the greeting we want
     python:

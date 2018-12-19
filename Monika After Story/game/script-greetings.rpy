@@ -2828,9 +2828,7 @@ label greeting_returned_home:
 
     # main dialogue
     if time_out > five_minutes:
-        if persistent._mas_d25_in_d25_mode:
-            # its d25 season time
-            jump greeting_d25_and_nye_delegate
+
 
         jump greeting_returned_home_morethan5mins
 
@@ -2850,17 +2848,14 @@ label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
 
         # TODO: d25 checks
-        call greeting_returned_home_morethan5mins_normalplus_dlg
+        if persistent._mas_d25_in_d25_mode:
+            # its d25 season time
+            jump greeting_d25_and_nye_delegate
 
-        $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
+        jump greeting_returned_home_morethan5mins_normalplus_flow
 
-    else:
-        call greeting_returned_home_morethan5mins_other_dlg
-
-        # changed the point structure for low aff, might be a good idea, might now ~ JW
-        # you gain 0.5 per hour, max 2.5, min 0.5
-        $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
-
+    # otherwise, go to other flow
+    jump greeting_returned_home_morethan5mins_other_flow
 
 label greeting_returned_home_morethan5mins_cleanup:
 
@@ -2869,6 +2864,23 @@ label greeting_returned_home_morethan5mins_cleanup:
     # jump to cleanup
     jump greeting_returned_home_cleanup
 
+label greeting_returned_home_morethan5mins_normalplus_flow:
+    call greeting_returned_home_morethan5mins_normalplus_dlg
+    # FALL THROUGH
+
+label greeting_returned_home_morethan5mins_normalplus_flow_aff:
+    $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
+    jump greeting_returned_home_morethan5mins_cleanup
+
+label greeting_returned_home_morethan5mins_other_flow:
+    call greeting_returned_home_morethan5mins_other_dlg
+    # FALL THROUGH
+
+label greeting_returned_home_morethan5mins_other_flow_aff:
+    # changed the point structure for low aff, might be a good idea, might now ~ JW
+    # you gain 0.5 per hour, max 2.5, min 0.5
+    $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
+    jump greeting_returned_home_morethan5mins_cleanup
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"

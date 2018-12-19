@@ -321,6 +321,12 @@ label v0_8_11(version="v0_8_11"):
         # TODO: need to go through events and clear actions from all events
         #   without conditionals and start_date
 
+        if (
+                not persistent._mas_pm_taken_monika_out 
+                and len(persistent._mas_dockstat_checkin_log) > 0
+            ):
+            persistent._mas_pm_taken_monika_out = True
+
     return
 
 # 0.8.10

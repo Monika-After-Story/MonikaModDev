@@ -671,9 +671,11 @@ init -810 python:
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
+            "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
 
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
+            "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
