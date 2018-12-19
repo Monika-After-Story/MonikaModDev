@@ -10125,7 +10125,7 @@ label monika_snowballfight:
     m 3eub "But having one with you sounds even better, [player]!"
     m 1dsc "Fair warning, though..."
     m 2tfu "I've got quite the throwing arm."
-    m 2tfb "So don't expect me to go easy on you!"
+    m 2tfb "So don't expect me to go easy on you, ahaha!"
     return
 
 
@@ -10146,12 +10146,14 @@ label monika_iceskating:
     m 3eua "Especially if you can do a lot of tricks."
     m 3rksdlb "In the beginning, it's pretty difficult to keep your balance on the ice..."
     m 3hua "So eventually being able to turn it into a performance is really impressive!"
-    m 3eub "There's actually a lot of ways to ice skate."
+    m 3eub "There's actually a lot of ways to ice skate..."
     m "There's figure skating, speed skating, and even theatrical performances!"
-    m 1euc "Though, while doing something like that sounds like a great time..."
-    m 1hua "Having you here with me is enough to keep me happy."
-    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eka "I love you so much, [player]~"
+    m 3euc "And despite how it sounds, it's not just a winter activity either..."
+    m 1eua "Lots of places have indoor ice rinks, so it's something that can be practiced year round."
+    if mas_isMoniHappy(higher=True):
+        m 1dku "..."
+        m 1eka "I would really love to practice ice skating with you, [player]..."
+        m 1hua "But until we can do that, having you here with me is enough to keep me happy~"
     return
 
 init 5 python:
@@ -10213,7 +10215,7 @@ label monika_snowcanvas:
 
     else:
         m 3euc "You know [player], snow is kinda like a blank canvas."
-        m 3eub "Maybe someday if we went somewhere that it snows, we could bring some food coloring in spray bottles, just step outside and let our imaginations run wild!"
+        m 3eub "Maybe someday if we went somewhere that it snows, we could bring some food coloring in spray bottles and just step outside and let our imaginations run wild!"
 
     m 1eua "Having so much space to paint sounds wonderful!"
     m 1hub "We just have to make sure the snow is packed down tightly, and then we can draw to our heart's content!"
@@ -10269,7 +10271,7 @@ label monika_winter:
         m 3eka "I know you don't really get snow where you live, but many people do get to enjoy activities in the snow..."
 
     m 3eua "Building a snowman, sledding, having snowball fights..."
-    m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor iceskating, pond hockey..."
+    m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor ice skating, pond hockey..."
     m 3wud "And some actually go fishing...{w=1}{i}through the ice{/i}!"
     m 1eka "For people who don't enjoy cold weather activities, staying indoors seems so much more comfortable when there's snow outside..."
     m "Watching it gently fall while the moonlight relects off the fresh, white canvas...it's just beautiful."

@@ -1350,7 +1350,7 @@ label mas_d25_monika_christmas:
 
     m 1eub "[player]! Do you know what day it is?"
     m 3hub "Of course you do. It's Christmas!"
-    m 3wub "Merry Christmas, [player]!"
+    m 3sub "Merry Christmas, [player]!"
     m 1hub "Ahaha! I can't believe that it's finally here!"
     m 3eka "I'm so, so happy that you decided to spend some of it with me."
     m 1eud "Remember to go share the holiday cheer with your family and friends, though."
@@ -1358,9 +1358,8 @@ label mas_d25_monika_christmas:
     m 1hua "And I'm sure that they would love to see you at this special time."
 
     if mas_isMoniAff(higher=True):
-        m 2eka "But you being here today...{w=0.5}it just means everything to me..."
-        m 2dsc "..."
-        m 4ekbsa "[player], I love you."
+        m 1eka "But you being here today...{w=0.5}it just means everything to me..."
+        m 1dku "..."
 
         if persistent._mas_pm_gets_snow is not False and not persistent._mas_pm_live_south_hemisphere:
             m 1lkbsa "Maybe it's just the snow, or the decorations..."
@@ -1372,10 +1371,10 @@ label mas_d25_monika_christmas:
         m 3hksdlb "Don't worry, I didn't hang one up."
 
         if mas_isMoniEnamored(higher=True):
-            m 1rksdla "...{cps=*2}Maybe~{/cps}{nw}"
+            m 1lksdla "...{cps=*2}Maybe~{/cps}{nw}"
             $ _history_list.pop()
             
-        m 1rksdlb "Ehehe..."
+        m 1lksdlb "Ehehe..."
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
         m 1eua "Don't get me wrong, I knew that you would be here with me."
@@ -1599,7 +1598,7 @@ label mas_d25_monika_mistletoe:
     m 1tku "When lovers end up underneath it, they're expected to kiss."
     m 1eua "It actually originated from Victorian England!"
     m 1dsa "A man was allowed to kiss any woman standing underneath mistletoe..."
-    m "And any woman who refused the kiss was cursed with bad luck..."
+    m 3dsd "And any woman who refused the kiss was cursed with bad luck..."
     m 1dsc "..."
     m 3rksdlb "Come to think of it, that sounds more like taking advantage of someone."
     m 1hksdlb "But I'm sure it's different now!"
@@ -1645,8 +1644,8 @@ label mas_d25_monika_sleigh:
 
     if mas_isMoniEnamored(higher=True):
         m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1sua "I really want to do that when I get there, [player]."
-    m 1hua "Wouldn't that be so lovely?"
+    m 1subsa "I really want to do that when I get there, [player]."
+    m 1ekbsu "...What about you?"
 
     show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "An experience like that with you would be so breathtaking~"
@@ -2263,14 +2262,12 @@ label mas_nye_monika_nye:
         m 1ekbsa "Especially when I get to see you so often."
 
     # TODO: probably shouldl actually check time before saying this, new event props should take care of this
-    m 3hua "Well, there's still a bit of time left before midnight."
-    m 1eua "We might as well enjoy this year while it lasts."
-    m 1euc "Usually, I'd reprimand you for staying up late, but..."
-    m 1hua "Today is a special day."
+    m 3hua "Well, there's still some time left before midnight."
+    m 1eua "We might as well enjoy this year while it lasts..."
 
-    show monika 3eua
+    show monika 3euc
     menu:
-        m "Do you have any resolutions, [player]?"
+        m "Say, [player], do you have any resolutions for next year?"
         "Yes.":
             $ persistent._mas_pm_has_new_years_res = True
 
@@ -2299,7 +2296,7 @@ label mas_nye_monika_nye:
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
     else:
-        m 2ekc "My resolution is to improve our relationship, [player]"
+        m 2ekc "My resolution is to improve our relationship, [player]."
 
     return
 
@@ -2537,7 +2534,7 @@ label monika_nyd_year_review:
     elif mas_isMoniNormal(higher=True):
         m 2euc "...and the time we spent together has been fun."
 
-    m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together last year."
+    m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."
     m 2dtc "Let's see..."
 
     if persistent._mas_acs_enable_promisering: #note, this should only trigger for this year. I.e. if promisering was given this year
@@ -2559,7 +2556,7 @@ label monika_nyd_year_review:
         #TODO: if gave Monika flowers: (not sure what the actual label is for this one)
 #            m 4ekbfb "...you gave me such beautiful flowers too."
 
-    if persistent._mas_bday_opened_game:
+    if persistent._mas_history_archives[datetime.date.today().year-1]['922.actions.opened_game']:
         m 2eka "You spent time with me on my birthday..."
 
         if not persistent._mas_bday_no_recognize:
