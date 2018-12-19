@@ -1792,7 +1792,22 @@ label mas_d25_spent_time_monika:
 
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
-        call showpoem(poem_d25, music=False,paper="mod_assets/poem_d25.png")
+
+        # generic poem show
+        window hide
+        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png") 
+        with Dissolve(1)
+
+        # need to reset zoom here so we dont end up with issues
+        $ pause(1)
+        hide monika
+        $ store.mas_sprites.reset_zoom()
+        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
+        $ pause()
+
+        hide screen mas_generic_poem
+        with Dissolve(0.5)
+        window auto
 
         if d25_gifts_good>0 or d25_gifts_neutral>0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
@@ -1807,8 +1822,8 @@ label mas_d25_spent_time_monika:
         window hide
         menu:
             "I love you, [m_name].":
-                $ mas_OVLHide()
-                $ mas_MUMURaiseShield()
+                $ HKBHideButtons()
+                $ mas_RaiseShield_core()
                 $ disable_esc()
                 # local var so if next year this is not first kiss, we can branch appropriately
                 # have to be able to check before calling the kiss since persistent._mas_first_kiss will not be None no matter what after the kiss
@@ -1823,10 +1838,9 @@ label mas_d25_spent_time_monika:
                 
                 show monika 6ekbfa at t11 with dissolve
                  #TODO: mistletoe appears
-                if persistent._mas_first_kiss is None:
-                    $ is_first_kiss = True
+                $ is_first_kiss = persistent._mas_first_kiss is None:
                 m 6ekbfa "[player]...I...I..."
-                call monika_kissing_motion
+                call monika_kissing_motion(hide_ui=False)
 
                 $ persistent._mas_pm_d25_mistletoe_kiss = True
 
@@ -1843,7 +1857,7 @@ label mas_d25_spent_time_monika:
                     m 6ekbsu "...the moment of our first kiss~"
                 $ enable_esc()
                 $ mas_MUMUDropShield()
-                $ mas_OVLShow()
+                $ HKBShowButtons()
 
     elif mas_isMoniAff(higher=True):
         m 5ekbfa "I love you so much, [player]~"
@@ -2113,13 +2127,13 @@ label bye_d25_second_time_out:
 
 ## d25 greetings
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#addEvent(
+#        Event(
+#            persistent.greeting_database
+#        ),
+#        code="GRE"
+#    )
 
 
 
@@ -2146,13 +2160,13 @@ label greeting_d25e_returned_post_d25:
 
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database
-        ),
-        code="GRE"
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database
+#        ),
+#        code="GRE"
+#    )
 
 
 #returned from d25 date on d25
