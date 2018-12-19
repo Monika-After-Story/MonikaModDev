@@ -2376,7 +2376,7 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         draggable True
         has vbox
         null height 40
-        text "[_poem.title]\n\n[_.text]" style _styletext
+        text "[_poem.title]\n\n[_poem.text]" style _styletext
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 

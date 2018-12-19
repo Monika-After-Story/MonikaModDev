@@ -1838,7 +1838,7 @@ label mas_d25_spent_time_monika:
                 
                 show monika 6ekbfa at t11 with dissolve
                  #TODO: mistletoe appears
-                $ is_first_kiss = persistent._mas_first_kiss is None:
+                $ is_first_kiss = persistent._mas_first_kiss is None
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
 
