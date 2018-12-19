@@ -2141,6 +2141,46 @@ init 200 python in mas_dockstat:
         return time_out
 
 
+    def _ds_aff_for_tout(
+            _time_out,
+            max_hour_out,
+            max_aff_gain,
+            min_aff_gain,
+            aff_mult=1
+            ):
+        """
+        Grants an amount of affection based on time out. This is designed for
+        use ONLY with the returned home greeting.
+
+        NOTE: this also sets the monika_returned_home persistent
+
+        IN:
+            _time_out - timedelta we want to treat as monika being out
+            max_hour_out - how many hours is considered max
+                (anthing OVER this will be maxxed)
+            max_aff_gain - amount of aff to be gained when max+
+            min_aff_gain - smallest amount of aff gain
+            aff_mult - multipler to hours to use as aff gain when between min
+                and max
+                (Default: 1)
+        """
+        if store.persistent._mas_monika_returned_home is None:
+            hours_out = int(_time_out.seconds / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > max_hour_out:
+                aff_gain = max_aff_gain
+            elif hours_out == 0:
+                aff_gain = min_aff_gain
+            else:
+                aff_gain = hours_out * aff_mult
+
+            store.mas_gainAffection(aff_gain, bypass=True)
+            store.persistent._mas_monika_returned_home = (
+                datetime.datetime.now()
+            )
+
+
 init 205 python in mas_dockstat:
     import store.mas_threading as mas_threading
     # thread classes for monika files

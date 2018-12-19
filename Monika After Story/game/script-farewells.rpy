@@ -942,13 +942,13 @@ label bye_going_somewhere:
 
         # NOTE: make sure that if you leave this flow, you either handle 
         #   docking station yourself or jump back to the iostart label
-#        if persistent._mas_d25_in_d25_mode:
-#            # check the d25 timed variants
-#            if mas_isD25Eve():
-#                jump bye_d25e_delegate
-#
-#            if mas_isD25():
-#                jump bye_d25_delegate
+        if persistent._mas_d25_in_d25_mode:
+            # check the d25 timed variants
+            if mas_isD25Eve():
+                jump bye_d25e_delegate
+
+            if mas_isD25():
+                jump bye_d25_delegate
 
         if mas_isMoniLove(higher=True):
             m 1hub "Oh, okay!"

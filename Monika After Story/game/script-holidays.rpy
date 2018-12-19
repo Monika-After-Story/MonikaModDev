@@ -2067,7 +2067,8 @@ label bye_d25e_delegate:
         call bye_d25e_first_time_out
 
     # notifies bye going somewhere to use this gre type
-    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
+    # NOTE: since we are using the generic return, we cant use this
+#    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25_EVE)
 
     # jump back to going somewhere file gen
     jump bye_going_somewhere_iostart
@@ -2098,7 +2099,8 @@ label bye_d25_delegate:
         call bye_d25_first_time_out
 
     # notifies bye going somewhere to use this gre type
-    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
+    # NOTE: generic return
+#    $ mas_idle_mailbox.send_ds_gre_type(store.mas_greetings.TYPE_HOL_D25)
 
     jump bye_going_somewhere_iostart
 
@@ -2183,6 +2185,37 @@ label greeting_d25_returned_post_d25:
     m 3eka "It would've been nice to have seen you again before Christmas was over, but at least I was still with you."
     m 1hua "So thank you for spending time with me when you had other places you had to be..."
     m 3ekbfa "You're always so thoughtful~"
+
+### NOTE: mega delegate label to handle both d25 and nye returns
+
+label greeting_d25_and_nye_delegate:
+
+    python:
+        # lots of setup here
+        five_minutes = datetime.timedelta(seconds=5*60)
+        one_hour = datetime.timedelta(seconds=3600)
+        three_hour = datetime.timedelta(seconds=3*3600)
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+
+        if len(persistent._mas_dockstat_checkin_log) > 0:
+            checkin_time = persistent._mas_dockstat_checkin_log[-1:][0][0]
+            sunrise_hour, sunrise_min = mas_cvToHM(persistent._mas_sunrise)
+            is_past_sunrise_post31 = (
+                datetime.datetime.now() > (
+                    datetime.datetime.combine(
+                        mas_o31,
+                        datetime.time(sunrise_hour, sunrise_min)
+                    )
+                    + datetime.timedelta(days=1)
+                )
+            )
+
+        def cap_gain_aff(amt):
+            if persistent._mas_o31_trick_or_treating_aff_gain < 15:
+                persistent._mas_o31_trick_or_treating_aff_gain += amt
+                mas_gainAffection(amt, bypass=True)
+
 
 #################################### NYE ######################################
 # [HOL030]

@@ -2828,60 +2828,63 @@ label greeting_returned_home:
 
     # main dialogue
     if time_out > five_minutes:
-        if mas_isMoniNormal(higher=True):
-            m 1hua "And we're home!"
-            m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
-            m 2eua "Well, it felt really great!"
-            m 5eub "Let's do this again soon, okay?"
-            if persistent._mas_monika_returned_home is None:
-                $ hours_out = int(time_out.seconds / 3600)
+        if persistent._mas_d25_in_d25_mode:
+            # its d25 season time
+            jump greeting_d25_and_nye_delegate
 
-                # you gain 1 per hour, max 5, min 1
-                if hours_out > 5:
-                    $ aff_gain = 5
-                elif hours_out == 0:
-                    $ aff_gain = 1
-                else:
-                    $ aff_gain = hours_out
-
-                $ mas_gainAffection(aff_gain, bypass=True)
-                $ persistent._mas_monika_returned_home = datetime.datetime.now()
-
-            $ grant_xp(xp.NEW_GAME)
-
-        else:
-            m 2esc "We're home..."
-            m 2eka "Thank you for taking me out today, [player]."
-            m 2rkc "To be honest, I wasn't completely sure I should go with you..."
-            m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
-            m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
-            m 2rka "We should really do this again sometime..."
-            m 2esc "If you want."
-            if persistent._mas_monika_returned_home is None:
-                $ hours_out = int(time_out.seconds / 3600)
-
-                # changed the point structure for low aff, might be a good idea, might now ~ JW
-                # you gain 0.5 per hour, max 2.5, min 0.5
-                if hours_out > 5:
-                    $ aff_gain = 2.5
-                elif hours_out == 0:
-                    $ aff_gain = 0.5
-                else:
-                    $ aff_gain = hours_out * 0.5
-
-                $ mas_gainAffection(aff_gain, bypass=True)
-                $ persistent._mas_monika_returned_home = datetime.datetime.now()
-
-            $ grant_xp(xp.NEW_GAME)
+        jump greeting_returned_home_morethan5mins
 
     else:
-
         $ mas_loseAffection()
         call greeting_returned_home_lessthan5mins
 
         if _return:
             return 'quit'
 
+# this just returns for now
+label greeting_returned_home_cleanup:
+    return
+
+
+label greeting_returned_home_morethan5mins:
+    if mas_isMoniNormal(higher=True):
+
+        # TODO: d25 checks
+        call greeting_returned_home_morethan5mins_normalplus_dlg
+
+        $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
+
+    else:
+        call greeting_returned_home_morethan5mins_other_dlg
+
+        # changed the point structure for low aff, might be a good idea, might now ~ JW
+        # you gain 0.5 per hour, max 2.5, min 0.5
+        $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
+
+
+label greeting_returned_home_morethan5mins_cleanup:
+
+    $ grant_xp(xp.NEW_GAME)
+    
+    # jump to cleanup
+    jump greeting_returned_home_cleanup
+
+
+label greeting_returned_home_morethan5mins_normalplus_dlg:
+    m 1hua "And we're home!"
+    m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+    m 2eua "Well, it felt really great!"
+    m 5eub "Let's do this again soon, okay?"
+    return
+
+label greeting_returned_home_morethan5mins_other_dlg:
+    m 2esc "We're home..."
+    m 2eka "Thank you for taking me out today, [player]."
+    m 2rkc "To be honest, I wasn't completely sure I should go with you..."
+    m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
+    m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
+    m 2rka "We should really do this again sometime..."
+    m 2esc "If you want."
     return
 
 label greeting_returned_home_lessthan5mins:
