@@ -119,14 +119,16 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
-        pass
+        # disbale hot choc
+        store.persistent._mas_acs_enable_hotchoc = False
 
 
     def _pp_fall():
         """
         Programming point for fall
         """
-        pass
+        # disbale hot choc
+        store.persistent._mas_acs_enable_hotchoc = False
 
 
     def _pp_winter():

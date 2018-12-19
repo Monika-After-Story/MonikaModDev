@@ -10054,7 +10054,7 @@ init 5 python:
             eventlabel="monika_snow",
             category=["winter","weather","you"],
             prompt="Snow",
-            random=True
+            random=mas_isWinter()
         )
     )
 
@@ -10161,7 +10161,7 @@ init 5 python:
             eventlabel="monika_sledding",
             category=["winter"],
             prompt="Sledding",
-            random=True
+            random=mas_isWinter()
         )
     )
 
@@ -10200,7 +10200,7 @@ init 5 python:
             eventlabel="monika_snowcanvas",
             category=["winter"],
             prompt="Snow canvas",
-            random=True
+            random=mas_isWinter()
         )
     )
 
@@ -10228,7 +10228,7 @@ init 5 python:
             eventlabel="monika_cozy",
             category=["romance","winter"],
             prompt="Warming up",
-            random=True,
+            random=mas_isWinter(),
             aff_range=(mas_aff.AFFECTIONATE,None)
         )
     )
@@ -10254,7 +10254,7 @@ init 5 python:
             eventlabel="monika_winter",
             category=["winter"],
             prompt="Winter activities",
-            random=True
+            random=mas_isWinter()
         )
     )
 
@@ -10288,7 +10288,7 @@ init 5 python:
             eventlabel="monika_winter_dangers",
             category=["winter"],
             prompt="Winter dangers",
-            random=True
+            random=mas_isWinter()
         )
     )
 
@@ -10316,7 +10316,7 @@ label monika_winter_dangers:
     m 1hua "Talking to me."
     m 1hub "Ehehe~"
 
-    if mas_isMoni_Aff(higher=True):
+    if mas_isMoniAff(higher=True):
         show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hubfu "I'll always help keep you warm, [player]~"
     return
