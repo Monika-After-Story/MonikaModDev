@@ -918,7 +918,7 @@ init -810 python:
 
             # d25 dates
             "_mas_d25_went_out_d25e": "d25s.d25e.went_out_count",
-            "_mas_d25_went_out_d25": "d25s.d25.went_out_count"
+            "_mas_d25_went_out_d25": "d25s.d25.went_out_count",
 
             "_mas_d25_spent_d25": "d25.actions.spent_d25",
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
@@ -2197,6 +2197,7 @@ label greeting_pd25e_returned_d25:
 #returned from d25 date on d25
 label greeting_d25_returned_d25:
     $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "And we're home!"
     m 3eka "It was really nice to spend time with you on Christmas, [player]!"
@@ -2207,6 +2208,7 @@ label greeting_d25_returned_d25:
 #returned from d25 date after d25
 label greeting_d25_returned_post_d25:
     $ persistent._mas_d25_went_out_d25 += 1
+    $ persistent._mas_d25_spent_d25 = True
 
     m 1hua "We're finally home!"
     m 3wud "We were out a really long time, [player]!"
@@ -2227,12 +2229,14 @@ label greeting_d25_and_nye_delegate:
         # lots of setup here
         time_out = store.mas_dockstat.diffCheckTimes()
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
-        post_nyd = False
-        pre_d25 = False
+        left_pre_d25e = False
+        arr_post_nyd = False
+        left_post_nyd = False
 
         if checkout_time is not None:
             checkout_date = checkout_time.date()
-            left_pre_d25 = checkout_date < mas_d25
+            left_pre_d25e = checkout_date < mas_d25e
+            left_post_nyd = checkout_date > mas_nyd
 
         if checkin_time is not None:
             checkin_date = checkin_time.date()
@@ -2246,12 +2250,19 @@ label greeting_d25_and_nye_delegate:
 
 
     if mas_isD25Eve():
-        # We have returnd on d25 eve, only one greeting to get
-        call greeting_d25e_returned_d25e
+        # returned on d25e
+
+        if left_pre_d25e:
+            # left before d25e, use regular greeting
+            jump greeting_returned_home_morethan5mins_normalplus_flow
+
+        else:
+            # otherwise, greeting 2
+            call greeting_d25e_returned_d25e
 
     elif mas_isD25():
         # we have returnd on d25
-        # 2 cases:
+            
         if checkout_time is None or mas_isD25(checkout_date):
             # no checkout or left on d25
             call greeting_d25_returned_d25
@@ -2261,40 +2272,75 @@ label greeting_d25_and_nye_delegate:
             call greeting_d25e_returned_d25
 
         else:
-            # otherwise, the usual morethan5 mins 
-            jump greeting_returned_home_morethan5mins_normalplus_flow
-
+            # otherwise assume pre d25 to d25
+            call greeting_pd25e_returned_d25
 
     elif mas_isNYE():
-        pass
         # we have returend on nye
+        if checkout_time is None or mas_isNYE(checkout_date):
+            # no checkout or left on nye
+            call greeting_nye_delegate
 
-
-    elif mas_isD25Post():
-        # post d25 return
-        if checkout_time is None:
-            jump greeting_returned_home_morethan5mins_normalplus_flow
-
-        elif mas_isD25Eve(checkout_date):
-            # left on d25e
+        elif left_pre_d25e or mas_isD25Eve(checkout_date):
+            # left before d25
             call greeting_d25e_returned_post_d25
 
         elif mas_isD25(checkout_date):
             # left on d25
             call greeting_d25_returned_post_d25
 
-        elif mas_isNYE():
-            pass
-            # its new years day
+        else:
+            # otheriwse usual more than 5 mins
+            jump greeting_returned_home_morethan5mins_normalplus_flow
+
+    elif mas_isNYD():
+        # we have returned on nyd
+
+        if checkout_time is None or mas_isNYD(checkout_date):
+            # no checkout or left on nyd
+            call greeting_nyd_returned_nyd
+
+        elif mas_isNYE(checkout_date):
+            # left on nye
+            call greeting_nye_returned_nyd
 
         else:
-            # otherwise, the usual morethan 5 mins
-            jump greeting_returned_home_morethan5mins_normalplus_flow
+            # all other cases should be as if leaving d25post
+            call greeting_d25p_returned_nyd
+
+    elif mas_isD25Post():
+
+        if arr_post_nyd:
+            # arrived after new years day
+            if checkout_time is None or mas_isNYD(checkout_date) or left_post_nyd:
+                # no checkout or left on nyd or after nyd
+                jump greeting_returned_home_morethan5mins_normalplus_flow
+
+            elif mas_isNYE(checkout_date) or mas_isD25Post(checkout_date):
+                # left on nye or just usual d25post
+                call greeting_d25p_returned_nydp
+
+            else:
+                # all other cases use pred25e post nydp
+                call greeting_pd25e_returned_nydp
+
+        else:
+            # arrived after d25, pre nye
+            if checkout_time is None or mas_isD25Post(checkout_date):
+                # no checkout or left during post
+                jump greeting_returned_home_morethan5mins_normalplus_flow
+
+            elif mas_isD25(checkout_date):
+                # left on christmas
+                call greeting_d25_returned_post_d25
+
+            else:
+                # otheriwse, use d25e returned post d25
+                call greeting_d25e_returned_post_d25
 
     else:
         # the usual more than 5 mins
-        jump greeting_returned_home_morethan5mins
-
+        jump greeting_returned_home_morethan5mins_normalplus_flow
 
     # NOTE: if you are here, then you called a regular greeting label
     # and need to return to aff gain
@@ -2835,7 +2881,19 @@ label bye_nye_late_out:
 #greeting_returned_home_nye:
 
 label greeting_nye_delegate:
+    python:
+        _eve_time = datetime.time(20)
+        _curr_time = datetime.datetime.now().time()
 
+    if _curr_time < _eve_time:
+        # before firewoprk time
+        call greeting_nye_prefw
+
+    # otherwise, assume in firework time
+    else:
+        call greeting_nye_infw
+
+    return
 
 label greeting_nye_prefw:
     #if before firework time (7-8:00-midnight):
@@ -2881,30 +2939,35 @@ label bye_nyd_second_time_out:
     return
 
 #=============================================================Greeting returned home for NYD=============================================================#
-#greeting_returned_home_nyd:
 
+label greeting_nye_returned_nyd:
     #if returning home from NYE:
     m 1hua "And we're home!"
     m 1eka "Thanks for taking me out yesterday, [player]."
     m 1ekbsa "You know I love to spend time with you, and being able to spend New Year's Eve, right to today, right there with you felt really great."
     m "That really meant a lot to me."
     m 5eubfb "Thanks for making my year, [player]."
-    #return
+    return
 
+label greeting_nyd_returned_nyd:
     #normal return home:(i.e. took out, and returned on NYD itself)
     m 1hua "And we're home!"
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That was a lot of fun, [player]!"
     m 5eka "It's really nice of you to take me with you on special days like this." #add
     m 5hub "I really hope we can spend more time like this together."
-    #return
+    return
 
 #============================================================Greeting returned home after NYD============================================================#
-#greeting_returned_home_pre_d25_to_post_nyd:
+
+label greeting_pd25e_returned_nydp:
     #Here for historical data
+    $ persistent._mas_d25_went_out_d25e += 1
+    $ persistent._mas_d25_went_out_d25 += 1
     $ persistent._mas_d25_spent_d25 = True
     $ persistent._mas_nye_spent_nye = True
     $ persistent._mas_nye_spent_nyd = True
+
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
     m 1eka "Thanks for taking me with you, I really enjoyed that."
@@ -2912,18 +2975,18 @@ label bye_nyd_second_time_out:
     m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
-    #return
+    return
 
 #============================================================Greeting returned home D25P NYD(P)============================================================#
-#greeting_returned_home_d25p_nyd:
+label greeting_d25p_returned_nyd:
     $ persistent._mas_nye_spent_nye = True
     m 1hua "And we're home!"
     m 1eub "Thanks for taking me out, [player]."
     m 1eka "That was a long trip, but it was a lot of fun!"
     m 3hub "It's great to be back home now though, we can spend the new year together."
-    #return
+    return
 
-#greeting_returned_home_d25p_nydp:
+label greeting_d25p_returned_nydp:
     $ persistent._mas_nye_spent_nye = True
     $ persistent._mas_nye_spent_nyd = True
     m 1hua "And we're home!"
@@ -2931,4 +2994,4 @@ label bye_nyd_second_time_out:
     m 1eka "I'm a little sad we couldn't wish each other a happy new year, but I really enjoyed it."
     m "I'm really happy you took me."
     m 3hub "Happy New Year, [player]~"
-    #return
+    return
