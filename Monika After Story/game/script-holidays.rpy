@@ -2232,7 +2232,7 @@ label greeting_d25_and_nye_delegate:
             checkout_date = checkout_time.date()
             left_pre_d25 = checkout_date < mas_d25
 
-        if checkin_time is not None;
+        if checkin_time is not None:
             checkin_date = checkin_time.date()
             arr_post_nyd = checkin_date > mas_nyd
 
@@ -2264,6 +2264,7 @@ label greeting_d25_and_nye_delegate:
 
 
     elif mas_isNYE():
+        pass
         # we have returend on nye
 
 
@@ -2281,6 +2282,7 @@ label greeting_d25_and_nye_delegate:
             call greeting_d25_returned_post_d25
 
         elif mas_isNYE():
+            pass
             # its new years day
 
         else:
