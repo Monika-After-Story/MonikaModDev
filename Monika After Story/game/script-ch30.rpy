@@ -1380,10 +1380,10 @@ label ch30_reset:
     python:
         mas_is_snowing = mas_isWinter()
         if mas_is_snowing:
-            mas_lockEVL("monika_rain_start")
-            mas_lockEVL("monika_rain_stop")
-            mas_lockEVL("mas_monika_islands")
-            mas_lockEVL("monika_rain")
+            mas_lockEVL("monika_rain_start", "EVE")
+            mas_lockEVL("monika_rain_stop", "EVE")
+            mas_lockEVL("mas_monika_islands", "EVE")
+            mas_lockEVL("monika_rain", "EVE")
             # TODO: need to lock the greeting if its snowing actually
 
     # reset hair / clothes

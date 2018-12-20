@@ -2835,6 +2835,7 @@ label bye_nye_delegate:
 
 label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
+    $ persistent._mas_nye_went_out_nye += 1
     m 3tub "Are we going somewhere special today, [player]?"
     m 4hub "It's New Year's Eve, after all!"
     m 1eua "I'm not exactly sure what you've got planned, but I'm looking forward to it!"
@@ -2842,6 +2843,7 @@ label bye_nye_first_time_out:
 
 label bye_nye_second_time_out:
     #second time out+(morning-about maybe, 7-8:00 [evening]):
+    $ persistent._mas_nye_went_out_nye += 1
     m 1wuo "Oh, we're going out again?"
     m 3hksdlb "You must do a lot of celebrating for New Year's, ahaha!"
     m 3hub "I love coming along with you, so I'm looking forward to whatever we're doing~"
@@ -2910,6 +2912,7 @@ label bye_nyd_delegate:
 
 label bye_nyd_first_time_out:
     #first time out
+    $ persistent._mas_nye_went_out_nyd += 1
     m 3tub "New Years Day celebration, [player]?"
     m 1hua "That sounds like fun!"
     m 1eka "Let's have a great time together."
@@ -2917,6 +2920,7 @@ label bye_nyd_first_time_out:
 
 label bye_nyd_second_time_out:
     #second+ time out
+    $ persistent._mas_nye_went_out_nyd += 1
     m 1wuo "Wow, we're going out again, [player]?"
     m 1hksdlb "You must really celebrate a lot, ahaha!"
     return
