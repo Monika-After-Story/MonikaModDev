@@ -1368,7 +1368,7 @@ label mas_d25_monika_christmas:
             m 1lkbsa "Maybe it's the decorations, or just the holiday season..."
 
         m "...or even the mistletoe getting to me."
-        m 3hksdlb "Don't worry, I didn't hang one up."
+        m 3hksdlb "Just kidding, I didn't hang one up."
 
         if mas_isMoniEnamored(higher=True):
             m 1lksdla "...{cps=*2}Maybe~{/cps}{nw}"
@@ -1691,7 +1691,7 @@ init 5 python:
     )
 
 
-default persistent._mas_pm_d25_mistletoe_kiss = False
+#default persistent._mas_pm_d25_mistletoe_kiss = False
 # True if user and monika kissed under the mistletoe
 # NOTE: this var determins if user and monika shared a mistletoe kiss. It will
 #   be only set in this topic. the other kissed var is for first kiss.
@@ -1781,22 +1781,25 @@ label mas_d25_spent_time_monika:
 
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
+        call showpoem(poem_d25, music=False,paper="mod_assets/poem_d25.png")
 
-        # generic poem show
-        window hide
-        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png") 
-        with Dissolve(1)
 
-        # need to reset zoom here so we dont end up with issues
-        $ pause(1)
-        hide monika with dissolve
-        $ store.mas_sprites.zoom_out()
-        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
-        $ pause()
+#        generic poem show
+#        window hide
+#        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png") 
+#        with Dissolve(1)
 
-        hide screen mas_generic_poem
-        with Dissolve(0.5)
-        window auto
+#        # need to reset zoom here so we dont end up with issues
+#        $ pause(1)
+#        hide monika with dissolve
+#        $ store.mas_sprites.zoom_out()
+#        show monika 1ekbfa at i11 zorder MAS_MONIKA_Z
+#        $ pause()
+
+#        hide screen mas_generic_poem
+#        with Dissolve(0.5)
+#        window auto
+#        TODO: We actually need mistletoe for this
 
         if d25_gifts_good>0 or d25_gifts_neutral>0:
             m 1ekbfa "I really mean it [player], though I appreciate the gifts you got me, you didn't have to give me anything..."
@@ -1824,24 +1827,24 @@ label mas_d25_spent_time_monika:
                 pause 3.0
                 show monika 6dkbsu at t11 with dissolve
                 pause 3.0
-                
+
                 show monika 6ekbfa at t11 with dissolve
-                 #TODO: mistletoe appears
+
                 $ is_first_kiss = persistent._mas_first_kiss is None
                 m 6ekbfa "[player]...I...I..."
                 call monika_kissing_motion(hide_ui=False)
 
-                $ persistent._mas_pm_d25_mistletoe_kiss = True
+                #$ persistent._mas_pm_d25_mistletoe_kiss = True
 
-                # no more mistletoe topic once youve done it
-                $ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
+                #no more mistletoe topic once youve done it
+                #$ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
 
                 show monika 6ekbfa at t11 with dissolve
                 m 6ekbfa "...I love you too~"
                 if is_first_kiss:
                     m 6dkbfa "..."
                     m "That was everything I had always dreamt it would be~"
-                    m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment than just now, under the mistletoe."
+                    m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment..."
                     m 6dkbsu "I will never forget this..."
                     m 6ekbsu "...the moment of our first kiss~"
                 $ enable_esc()
@@ -2556,8 +2559,13 @@ label monika_nyd_year_review:
         m 1wuo "Oh!"
         m 3ekbfa "You spent Valentine's Day with me..."
 
-        #TODO: if gave Monika flowers: (not sure what the actual label is for this one)
-#            m 4ekbfb "...you gave me such beautiful flowers too."
+        if renpy.seen_label('monika_valentines_start'):
+            m 4ekbfb "...you gave me such beautiful flowers too."
+
+        if renpy.seen_label('monika_white_day_start'):
+            m 3ekbsa "We also spent White Day together..."
+            if renpy.seen_label('monika_found'):
+                m 4ekbfa "That was the day I gave my first gift to you~"
 
     if mas_HistVerify("922.actions.opened_game",True,datetime.date.today().year)[0]:
         m 2eka "You spent time with me on my birthday..."
@@ -2577,7 +2585,7 @@ label monika_nyd_year_review:
         m 5hua "You spent your Christmas with me..."
 
         if persistent._mas_first_kiss is not None and persistent._mas_first_kiss.date() == mas_d25:
-            m 5eubla "...we shared our first kiss under the mistletoe~"
+            m 5eubla "...and we shared our first kiss together~"
             m 5lubsa "I'll never forget that moment..."
             m 5ekbfa "{i}Our{/i} moment."
             m "I couldn't imagine spending it with anyone else."
