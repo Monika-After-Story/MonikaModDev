@@ -882,16 +882,15 @@ define mas_d25cl_end = mas_d25p
 
 init -810 python:
     # MASHistorySaver for d25
-    store.mas_history.addMHS(MASHistorySaver(
-        "d25",
-        datetime.datetime(2018, 12, 26),
-        {
-            "_mas_d25_spent_d25": "d25.actions.spent_d25",
-            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
-
-        },
-        exit_pp=store.mas_history._d25_exit_pp
-    ))
+#    store.mas_history.addMHS(MASHistorySaver(
+#        "d25",
+#        datetime.datetime(2018, 12, 26),
+#        {
+#
+#
+#        },
+#        exit_pp=store.mas_history._d25_exit_pp
+#    ))
 
     # we also need a history svaer for when the d25 season ends.
     store.mas_history.addMHS(MASHistorySaver(
@@ -917,6 +916,9 @@ init -810 python:
             # d25 dates
             "_mas_d25_went_out_d25e": "d25s.d25e.went_out_count",
             "_mas_d25_went_out_d25": "d25s.d25.went_out_count"
+
+            "_mas_d25_spent_d25": "d25.actions.spent_d25",
+            "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
         exit_pp=store.mas_history._d25s_exit_pp
@@ -1132,7 +1134,7 @@ init -815 python in mas_history:
     # d25 season
     def _d25s_exit_pp(mhs):
         # just add appropriate delayed action IDs
-        _MDA_safeadd(8)
+        _MDA_safeadd(8, 9)
 
 
 # topics
@@ -2529,6 +2531,7 @@ label mas_nye_monika_nyd_fresh_start:
 #        ),
 #        aff_range=(mas_aff.UPSET,None)
 #    )
+# TODO: should this be limited to a certaintime period?
 
 default persistent._mas_pm_accomplished_resolutions = None
 # True if user has accomplished new years resolutions
