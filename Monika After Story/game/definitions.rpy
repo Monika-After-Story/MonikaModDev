@@ -206,7 +206,7 @@ python early:
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
             if (
-                    start_date is not None 
+                    start_date is not None
                     and type(start_date) is not datetime.datetime
                     and type(start_date) is not datetime.date
                 ):
@@ -561,7 +561,7 @@ python early:
         @staticmethod
         def _verifyAndSetDatesEV(ev):
             """
-            Runs _verifyDatesEV and sets the event properties if change 
+            Runs _verifyDatesEV and sets the event properties if change
             happens
 
             IN:
@@ -606,7 +606,7 @@ python early:
             dates. We use current datetime to figure this out.
 
             NOTE: this is meant for Event use ONLY
-            NOTE: this is NOT meant to be used with an Event object. 
+            NOTE: this is NOT meant to be used with an Event object.
                 See _verifyDatesEV
 
             IN:
@@ -648,7 +648,7 @@ python early:
 
             if len(_years) == 0:
                 # years is empty list, we are repeat yearly.
-                # we only need to check if current works, and if not, 
+                # we only need to check if current works, and if not,
                 # move to one year ahead of current.
                 diff = _now.year - _start.year
                 new_end = add_yr_fun(_end, diff)
@@ -663,7 +663,7 @@ python early:
 
             # otherwise, we have a list of years, and shoudl determine next
             new_years = [
-                year 
+                year
                 for year in _years
                 if year >= _now.year
             ]
@@ -1168,7 +1168,7 @@ python early:
             for ev_label,ev in ev_dict.iteritems():
                 # TODO: same TODO as in checkConditionals.
                 #   indexing would be smarter.
-              
+
                 if Event._checkEvent(ev, _now):
                     # perform action
                     Event._performAction(
@@ -2143,7 +2143,7 @@ python early:
                 headline - identifier for the message
 
             RETURNS:
-                the message data stored, None if no message data or if the 
+                the message data stored, None if no message data or if the
                 message was actually None.
             """
             if headline in self.box:
@@ -2176,14 +2176,14 @@ python early:
         def read(self, headline):
             """
             Reads a message from the box.
-            
+
             NOTE: does NOT remove the message.
 
             IN:
                 headline - identifier for the message
 
             RETURNS:
-                the message data stored, None if no message data or if the 
+                the message data stored, None if no message data or if the
                 message was actually None
             """
             return self.box.get(headline, None)
@@ -2727,7 +2727,7 @@ init -100 python in mas_utils:
 
     def _EVgenY(_start, _end, current, for_start):
         """
-        Generates/decides if a given start/end datetime/date should have its 
+        Generates/decides if a given start/end datetime/date should have its
         year incremented or not.
 
         NOTE: specialized for Event creation datetime selection
@@ -3374,7 +3374,7 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-        
+
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
 
@@ -3416,7 +3416,7 @@ init -1 python:
         more precise.
 
         IN:
-            _start - datetime that begins this period 
+            _start - datetime that begins this period
             _end - datetime that ends this period
             for_start - True if we want the next valid starting datetime
                 False if we want the next valid ending datetime
@@ -3425,16 +3425,16 @@ init -1 python:
         """
         return store.mas_utils._EVgenY(
             _start,
-            _end, 
+            _end,
             datetime.datetime.now(),
             for_start
         )
 
 
     def mas_EVgenYD(
-            _start, 
-            _end, 
-            for_start, 
+            _start,
+            _end,
+            for_start,
             _time=datetime.time.min
         ):
         """
@@ -3446,9 +3446,9 @@ init -1 python:
             _end - date that ends this period
             for_start - True if we want the next valid starting datetime
                 False if we want the next valid ending datetime
-            _time - time to use with the dates. 
+            _time - time to use with the dates.
                 (Default: datetime.time.min)
-       
+
         RETURNS: valid datetime for Event creation
         """
         return datetime.datetime.combine(
@@ -3473,8 +3473,10 @@ init -1 python:
         RETURNS:
             boolean indicating if today is a special day.
         """
-        #TODO keep adding special days as we add them
-        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
+        # TODO keep adding special days as we add them
+        # 2nd TODO: mas_anni methods are on init level 10 which makes them unusable
+        # in this method that is used on init 5 (when adding events)
+        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -3846,7 +3848,7 @@ init 2 python:
 
     def mas_drinkHotChoc(_start_time=None):
         """
-        Lets monika drink hot chocolate aka sets the time she should stop 
+        Lets monika drink hot chocolate aka sets the time she should stop
         drinking hot chocolate (hot chocolate finished drinking event)
 
         IN:
