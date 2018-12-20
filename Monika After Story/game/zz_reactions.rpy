@@ -1259,3 +1259,9 @@ label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
     m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
     return
+
+label mas_reaction_no_more_ribbons:
+    m 1rksdlb "[player]..."
+    m 1rusdlb "You already gave me many ribbons today."
+    m 1rusdlb "Let's keep that one for another occasion..."
+    return
