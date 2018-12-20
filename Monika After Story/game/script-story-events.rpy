@@ -1045,7 +1045,7 @@ init 5 python:
 label mas_c_hotchoc_finished_brewing:
 
     $ store.mas_sprites.reset_zoom()
-    m 1esd "Oh, hot chocolate is ready."
+    m 1esd "Oh, my hot chocolate is ready."
 
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
