@@ -2151,6 +2151,12 @@ label greeting_d25e_returned_post_d25:
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
     return
 
+#returned from pd25e date on d25
+label greeting_pd25e_returned_d25:
+    m 1hua "And we're home!"
+    m 3wud "Wow, we were gone quite a while, [player]...it's Christmas now!"
+    m 1sua "I'm so glad we made it home in time to spend this special day together~"
+    return
 
 
 #init 5 python:
