@@ -829,6 +829,9 @@ default persistent._mas_d25_chibika_sayori = None
 default persistent._mas_d25_chibika_sayori_performed = False
 # Set to True if we do the chibika sayori thing
 
+default persistent._mas_d25_chibika_sayori_done = False
+# Set to True when we no longer want to repeat the sayori thing
+
 default persistent._mas_d25_started_upset = False
 # True if we started the d25 season with upset and below monika
 
@@ -1160,6 +1163,16 @@ init 5 python:
 label mas_d25_monika_holiday_intro:
     # TODO: this should have the chibika thing in the background, but only
     #   if you saw christmas last year.
+    python:
+        # TODO gonezo this after this year
+        seen_d25_last_year = renpy.seen_label("monika_christmas")
+        if persistent._mas_d25_chibika_sayori is None:
+            persistent._mas_d25_chibika_sayori = (
+                not persistent._mas_sensitive_mode
+                and seen_d25_last_year
+                and not persistent._mas_d25_chibika_sayori_done
+                and not persistent._mas_d25_chibika_sayori_performed
+            )
 
     if not persistent._mas_d25_deco_active:
         m 1eua "So, today is..."
@@ -1190,7 +1203,7 @@ label mas_d25_monika_holiday_intro:
     m 1eub "Happy holidays, [player]!"
 
     # TODO: after this christmas, we change this to a history lookup
-    if renpy.seen_label('monika_christmas'):
+    if seen_d25_last_year:
         m 1hua "Can you believe it's already that time of year again?"
         m 3eua "It seems like just yesterday we spent our first holiday season together, and now a whole year has gone by!"
 
@@ -1198,12 +1211,20 @@ label mas_d25_monika_holiday_intro:
             #if you've been with her for over a year, you really should be at Love by now
             m 3hua "Time really flies now that I'm with you~"
 
+    # chibika start
+    if persistent._mas_d25_chibika_sayori:
+        # show chibika from right
+        pass
+
     m 3eua "Do you like what I've done with the room?"
+    # TODO: chibika moves to under the tree 
     m 1hua "I must say that I'm pretty proud of it."
+    # TODO: chibika jumps to sayori and pulls her down
     m "Christmas time has always been one of my favorite occasions of the year..."
 
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
 
+    # TODO: chibika runs off the side
     # TODO: after this d25, we change this to a history lookup
     if renpy.seen_label('monika_christmas'):
         m 5eka "So I'm glad that you're here to share it with me again this year~"
@@ -1289,10 +1310,18 @@ label mas_d25_monika_holiday_intro_upset:
     call mas_d25_monka_holiday_intro_deco
 
     m 3hub "Tada~"
+
+    # TODO: chibiika appears
+
     m 3eka "What do you think?"
+
+    # TODO: chibika moves under tree
     m 1eka "Not too bad for last minute, huh?"
+    # TODO: cibika jumps and rmeoves sayori
 
     m 1hua "Christmas time has always been one of my favorite occasions of the year..."
+    # TODO: chibika moves off screen
+
     m 3eua "And I'm so glad we can spend it happily together, [player]~"
 
     # now we can renable everything
