@@ -2739,10 +2739,8 @@ label monika_nyd_year_review:
     m 1hua "And we're home!"
     m 1hub "We were out for a while, but that was a really nice trip, [player]."
     m 1eka "Thanks for taking me with you, I really enjoyed that."
-
-    #if not first time taking Monika out ever:
-#        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-#        m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
     #return
