@@ -1376,6 +1376,15 @@ label ch30_reset:
             # monika affection above normal?
             unlockEventLabel("monika_rain")
 
+    # enabel snowing if its winter
+    python:
+        mas_is_snowing = mas_isWinter()
+        if mas_is_snowing:
+            mas_lockEVL("monika_rain_start")
+            mas_lockEVL("monika_rain_stop")
+            mas_lockEVL("mas_monika_islands")
+            mas_lockEVL("monika_rain")
+            # TODO: need to lock the greeting if its snowing actually
 
     # reset hair / clothes
     # the default options should always be available.
