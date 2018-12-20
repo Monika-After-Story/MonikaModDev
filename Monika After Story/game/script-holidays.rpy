@@ -852,7 +852,7 @@ default persistent._mas_d25_went_out_d25e = 0
 # number of times user takes monika out on d25e
 
 default persistent._mas_d25_went_out_d25 = 0
-# number of time suser takes monika out on d25
+# number of times user takes monika out on d25
 # this also includes if the day was partially or entirely spent out
 
 define mas_d25 = datetime.date(datetime.date.today().year, 12, 25)
@@ -1219,7 +1219,7 @@ label mas_d25_monika_holiday_intro:
         pass
 
     m 3eua "Do you like what I've done with the room?"
-    # TODO: chibika moves to under the tree 
+    # TODO: chibika moves to under the tree
     m 1hua "I must say that I'm pretty proud of it."
     # TODO: chibika jumps to sayori and pulls her down
     m "Christmas time has always been one of my favorite occasions of the year..."
@@ -1405,7 +1405,7 @@ label mas_d25_monika_christmas:
         if mas_isMoniEnamored(higher=True):
             m 1lksdla "...{cps=*2}Maybe~{/cps}{nw}"
             $ _history_list.pop()
-            
+
         m 1lksdlb "Ehehe..."
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
@@ -1818,7 +1818,7 @@ label mas_d25_spent_time_monika:
 
 #        generic poem show
 #        window hide
-#        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png") 
+#        show screen mas_generic_poem(poem_d25, paper="mod_assets/poem_d25.png")
 #        with Dissolve(1)
 
 #        # need to reset zoom here so we dont end up with issues
@@ -1948,7 +1948,7 @@ label monika_aiwfc:
     return
 
 label monika_aiwfc_song:
-    # TODO: consider doing something where we can use lyric bar and style 
+    # TODO: consider doing something where we can use lyric bar and style
     #   like in piano
     stop music fadeout 1.0
     play music "mod_assets/bgm/aiwfc.ogg"
@@ -2659,7 +2659,7 @@ label monika_accomplished_resolutions:
                     m 3hub "I think you're wonderful, just the way you are."
                 else:
                     m 3eka "There's nothing wrong with that. I don't think you really needed to change anyway."
-            
+
             else:
                 m 2rkc "You probably should make one this year [player]..."
 
@@ -2674,7 +2674,7 @@ label monika_accomplished_resolutions:
 #            category=["misc","you","monika"],
 #            random=True
 #        ),
-#       
+#
 #    )
 #NYE only
 #normal+, i.e. !broken, since fresh starts
@@ -2832,7 +2832,7 @@ label bye_nye_delegate:
 
     elif _curr_time < _eve_time:
         # before evening but after morning
-        
+
         if persistent._mas_nye_went_out_nye > 0:
             call bye_nye_second_time_out
 
@@ -2845,7 +2845,7 @@ label bye_nye_delegate:
 
     # finally jump back to iostart
     jump bye_going_somewhere_iostart
-        
+
 label bye_nye_first_time_out:
     #first time out (morning-about maybe, 7-8:00 [evening]):
     m 3tub "Are we going somewhere special today, [player]?"
