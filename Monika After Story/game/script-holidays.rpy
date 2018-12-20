@@ -1104,6 +1104,10 @@ label mas_holiday_d25c_autoload_check:
                 # mark decorations and outfit as active
                 persistent._mas_d25_deco_active = True
 
+        if persistent._mas_d25_in_d25_mode:
+            # snow
+            mas_is_snowing = True
+
     # NOTE: holiday intro is handled with conditional
 
     if mas_isD25() and persistent._mas_d25_deco_active:

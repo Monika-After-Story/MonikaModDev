@@ -551,9 +551,10 @@ init python:
         """
         Sets rain variables and locks appropriate rain events
         """
-        global scene_change, mas_is_raining
+        global scene_change, mas_is_raining, mas_is_snowing
         scene_change = True
         mas_is_raining = True
+        mas_is_snowing = False
         renpy.music.play(
             audio.rain,
             channel="background",
