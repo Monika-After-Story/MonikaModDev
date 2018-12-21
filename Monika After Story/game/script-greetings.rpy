@@ -773,6 +773,30 @@ label greeting_latin:
     m 3eua "If you're wondering about what I said, it's simply 'We meet again! How are you?'"
     return
 
+#TODO needs additional dialogue so can be used for all aff
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_esperanto",
+            unlocked=True,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+)
+
+label greeting_esperanto:
+#    m "Mia kusenveturilo estas plena je angiloj."  # execute obligatory monty.py
+    m 1eub "Saluton, mia kara [player]."
+    m 5eub "Kiel vi fartas?"
+    m 2efb "Ĉu estas vi preta por la tago?"
+    m "Are you ready to seize the day?"
+    m 4hub "That was just a bit of Esperanto. It's a language that was created artificially instead of having evolved naturally."
+    m 3dfd "Even if it's artificial, that doesn't make it any lesser!"
+    m 2tub "Whether you've heard about it or not, you might not have expected something like that coming from me, huh?" # nobody expects the mon-inquisition
+    m 1eft "Then again, since you are a member of the literature club, you should already know to expect the unexpected."
+    return
+
 init 5 python:
     addEvent(
         Event(
