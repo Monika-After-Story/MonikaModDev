@@ -111,7 +111,7 @@ init -10 python:
 
         RETURNS: True if given date is o31, False otherwise
         """
-        return _date == mas_o31
+        return _date == mas_o31.replace(year=_date.year)
 
 
 init 101 python:
@@ -969,12 +969,9 @@ init -10 python:
 
         RETURNS: True if given date is in d25 season, False otherwise
         """
-        _year = _date.year
         return (
-            mas_d25c_start.replace(year=_year) <= _date 
-                <= mas_nye.replace(year=_year)
-            or mas_nyd.replace(year=_year) <= _date 
-                < mas_d25c_end.replace(year=_year)
+            mas_isInDateRange(_date, mas_d25c_start, mas_nye, True, True)
+            or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
@@ -990,12 +987,9 @@ init -10 python:
         RETURNS: True if given date is in d25 season but after d25, False
             otherwise.
         """
-        _year = _date.year
         return (
-            (mas_d25.replace(year=_year) + datetime.timedelta(days=1)) 
-                <= _date <= mas_nye.replace(year=_year)
-            or mas_nyd.replace(year=_year) <= _date 
-                < mas_d25c_end.replace(year=_year)
+            mas_isInDateRange(_date, mas_d25p, mas_nye, True, True)
+            or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
@@ -1010,7 +1004,7 @@ init -10 python:
         RETURNSL True if given date is in d25 season but before nye, False
             otherwise
         """
-        return mas_d25c_start <= _date < mas_nye
+        return mas_isInDateRange(_date, mas_d25c_start, mas_nye)
 
 
     def mas_isD25PostNYD(_date=datetime.date.today()):
@@ -1024,7 +1018,7 @@ init -10 python:
         RETURNS: True if given date is in d25 season but after nyd, False 
             otherwise
         """
-        return mas_nyd < _date < mas_d25c_end
+        return mas_isInDateRange(_date, mas_nyd, mas_d25c_end, False)
 
 
     def mas_isD25Gift(_date=datetime.date.today()):
@@ -1038,7 +1032,7 @@ init -10 python:
 
         RETURNS: True if given date is in the d25 gift range, Falsee otherwise
         """
-        return mas_d25g_start <= _date < mas_d25g_end
+        return mas_isInDateRange(_date, mas_d25g_start, mas_d25g_end)
 
 
     def mas_isD25Outfit(_date=datetime.date.today()):
@@ -1053,7 +1047,7 @@ init -10 python:
         RETURNS: True if given date is in teh d25 santa outfit range, False
             otherwise
         """
-        return mas_d25cl_start <= _date < mas_d25cl_end
+        return mas_isInDateRange(_date, mas_d25cl_start, mas_d25cl_end)
 
 
 #### d25 arts
@@ -2363,8 +2357,6 @@ label greeting_d25_and_nye_delegate:
                 ):
                 # no checkout or left on nyd or after nyd
                 jump greeting_returned_home_morethan5mins_normalplus_flow
-
-                # TODO: CORE problem: needing to compare only months and days in a date object
 
             elif mas_isNYE(checkout_date) or mas_isD25Post(checkout_date):
                 # left on nye or just usual d25post
