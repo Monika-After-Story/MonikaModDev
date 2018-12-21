@@ -9029,7 +9029,7 @@ init 5 python:
             category=["monika"],
             prompt="Can you change your ribbon?",
             pool=True,
-            unlocked=True
+            unlocked=False
         )
     )
 

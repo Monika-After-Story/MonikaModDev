@@ -1189,7 +1189,7 @@ init 5 python:
             ),
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
-            end_date=mas_d25p,
+            end_date=mas_d25,
             years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
@@ -1401,7 +1401,8 @@ init 5 python:
 #            category=["holidays"],
 #            prompt="Christmas",
             conditional=(
-                "persistent._mas_d25_in_d25_mode"
+                "persistent._mas_d25_in_d25_mode "
+                "and not renpy.seen_label('mas_d25_monika_christmas')"
             ),
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
@@ -2189,9 +2190,7 @@ label greeting_d25e_returned_d25:
     $ persistent._mas_d25_went_out_d25 += 1
 
     m 1hua "And we're home!"
-    m 3wud "Wow, we were out all night, [player]...it's Christmas now!"
-    m 1sua "It felt really great spending Christmas Eve with you, and now we get to enjoy Christmas together as well!"
-    m 1ekbfa "Thank you for spending this time with me, [player]~"
+    m 3wud "Wow, we were out all night..."
     return
 
 #returned from d25e date (or left before d25e) after d25 but before nyd is over
@@ -2210,8 +2209,7 @@ label greeting_d25e_returned_post_d25:
 #returned from pd25e date on d25
 label greeting_pd25e_returned_d25:
     m 1hua "And we're home!"
-    m 3wud "Wow, we were gone quite a while, [player]...it's Christmas now!"
-    m 1sua "I'm so glad we made it home in time to spend this special day together~"
+    m 3wud "Wow, we were gone quite a while..."
     return
 
 #returned from d25 date on d25
