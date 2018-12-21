@@ -1127,7 +1127,7 @@ label mas_holiday_d25c_autoload_check:
             else:
 
                 # we want to be wearing ponytail hair
-                monika_chr.change_hair(mas_hair_def)
+                monika_chr.change_hair(mas_hair_def, False)
 
                 # unlock and wear santa/wine ribbon
                 store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
@@ -1377,7 +1377,7 @@ label mas_d25_monika_holiday_intro_deco:
     $ persistent._mas_d25_in_d25_mode = True
 
     # we want to be wearing ponytail hair
-    $ monika_chr.change_hair(mas_hair_def)
+    $ monika_chr.change_hair(mas_hair_def, False)
 
     # unlock and wear santa
     $ store.mas_selspr.unlock_clothes(mas_clothes_santa)
