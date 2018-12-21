@@ -3334,6 +3334,9 @@ init -2 python in mas_sprites:
                 temp_storage["hair.ribbon" ] = prev_ribbon
             _moni_chr.remove_acs(prev_ribbon)
 
+        # lock ribbon select
+        store.mas_lockEVL("monika_ribbon_select", "EVE")
+
 
     def _hair_bun_entry(_moni_chr, **kwargs):
         """
@@ -3394,6 +3397,9 @@ init -2 python in mas_sprites:
         # lock hair so we dont get ribbon issues
         _moni_chr.lock_hair = True
 
+        # lock ribbon select
+        store.mas_lockEVL("monika_ribbon_select", "EVE")
+
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
         """
@@ -3424,6 +3430,10 @@ init -2 python in mas_sprites:
 
         # unlock hair
         _moni_chr.lock_hair = False
+
+        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
+            store.mas_unlockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -3460,6 +3470,9 @@ init -2 python in mas_sprites:
         # lock hair so we dont get ribbon issues
         _moni_chr.lock_hair = True
 
+        # lock ribbon select
+        store.mas_lockEVL("monika_ribbon_select", "EVE")
+
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
         """
@@ -3487,6 +3500,10 @@ init -2 python in mas_sprites:
 
         # unlock hair
         _moni_chr.lock_hair = False
+
+        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
+            store.mas_unlockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
