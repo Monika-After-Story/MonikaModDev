@@ -958,9 +958,10 @@ init 5 python:
 
 label mas_coffee_finished_brewing:
 
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, coffee's done."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
     m 1eua "Hold on a moment."
@@ -998,9 +999,10 @@ label mas_coffee_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, I've finished my coffee."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     if get_new_cup:
         # its currently morning, monika should get another drink
         m 1eua "I'm going to get another cup."
@@ -1044,9 +1046,10 @@ init 5 python:
 
 label mas_c_hotchoc_finished_brewing:
 
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, my hot chocolate is ready."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
     m 1eua "Hold on a moment."
@@ -1084,9 +1087,10 @@ label mas_c_hotchoc_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, I've finished my hot chocolate."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     if get_new_cup:
         # its currently morning, monika should get another drink
         m 1eua "I'm going to get another cup."

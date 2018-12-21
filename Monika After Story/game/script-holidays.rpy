@@ -1495,6 +1495,7 @@ label mas_d25_monika_christmas:
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
+                window hide
                 show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
@@ -1510,6 +1511,7 @@ label mas_d25_monika_christmas:
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
+                window hide
                 show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
@@ -1697,7 +1699,7 @@ init 5 python:
                 "mas_isD25Season() "
                 "and persistent._mas_d25_in_d25_mode"
             ),
-            action=EV_ACT_PUSH,
+            random=True,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
@@ -2211,7 +2213,7 @@ label bye_d25_first_time_out:
 #second time out on d25
 label bye_d25_second_time_out:
     m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
-    m 3wud "You really must have a lot of people you need to visit on Christmas..."
+    m 3wud "You really must have a lot of people you need to visit..."
     m 3sua "...or maybe you just have lots of special plans for us today!"
     m 1hua "But either way, thank you for thinking of me and bringing me along~"
     return
@@ -2674,9 +2676,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_resolutions",
-            prompt="[player]'s resolutions",
-            category=["you"],
-            random=True,
+            action=EV_ACT_QUEUE, #queuing it so it shows on the right day
             start_date=mas_nye,
             end_date=mas_nyd,
             years=[],
@@ -2782,7 +2782,7 @@ label monika_resolutions:
     else:
         m 2ekc "My resolution is to improve our relationship, [player]."
 
-    return "derandom"
+    return
 
 
 init 5 python:
@@ -2811,7 +2811,7 @@ label monika_nye_year_review:
             m 2eka "Time really flew by..."
 
         else:
-            2eka "This year really flew by..."
+            m 2eka "This year really flew by..."
 
     elif store.mas_anni.pastSixMonths():
         m 2eka "You know, [player], we really have been through a lot over the time we spent together last year"
