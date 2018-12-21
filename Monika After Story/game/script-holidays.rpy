@@ -953,7 +953,7 @@ init -10 python:
 
         RETURNS: True if given date is d25 eve, False otherwise
         """
-        return _date == mas_d25e.replace(year=_date)
+        return _date == mas_d25e.replace(year=_date.year)
 
 
     def mas_isD25Season(_date=datetime.date.today()):
@@ -1375,7 +1375,7 @@ label mas_d25_monika_holiday_intro_deco:
 
     # unlock and wear santa
     $ store.mas_selspr.unlock_clothes(mas_clothes_santa)
-    $ monika_chr.wear_acs(mas_acs_ribbon_wine)
+#    $ monika_chr.wear_acs(mas_acs_ribbon_wine)
     $ monika_chr.change_clothes(mas_clothes_santa, False)
     $ persistent._mas_d25_seen_santa_costume = True
 
