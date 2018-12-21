@@ -3538,8 +3538,27 @@ init -1 python:
 
         RETURNS: True if the given subject is within date range, False if not
         """
-        # TODO
-        pass
+        real_start = _start.replace(year=subject.year)
+        real_end = _end.replace(year=subject.year)
+
+        if start_inclusive:
+            if real_start > subject:
+                return False
+
+        else:
+            if real_start >= subject:
+                return False
+
+        if end_inclusive:
+            if subject > real_end:
+                return False
+
+        else:
+            if subject >= real_end:
+                return False
+
+        # otherwise we passed the cases
+        return True
 
 
     def get_pos(channel='music'):
