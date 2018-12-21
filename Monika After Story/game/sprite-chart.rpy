@@ -3317,6 +3317,10 @@ init -2 python in mas_sprites:
             )
             _moni_chr.wear_acs(_last_ribbon)
 
+        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
+            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+
 
     def _hair_down_entry(_moni_chr, **kwargs):
         """
@@ -3343,6 +3347,10 @@ init -2 python in mas_sprites:
                 store.mas_acs_ribbon_def
             )
             _moni_chr.wear_acs(_last_ribbon)
+
+        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
+            store.mas_unlockEVL("monika_ribbon_select", "EVE")
 
 
     ######### CLOTHES ###########
@@ -3495,10 +3503,6 @@ init -2 python in mas_sprites:
             p5="5",
             p6=None
         )
-
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len([ribb for ribb in store.mas_selspr.ACS_SEL_SL if ribb.unlocked]) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
 
         # handle hair down no leaning
         # TODO: remove this, it has been fixed
