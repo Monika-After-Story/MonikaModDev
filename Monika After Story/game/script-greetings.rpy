@@ -2851,6 +2851,10 @@ label greeting_returned_home_morethan5mins:
             # its d25 season time
             jump greeting_d25_and_nye_delegate
 
+        elif mas_isD25():
+            # its d25 and we are not in d25 mode
+            jump mas_d25_monika_holiday_intro_rh
+
         jump greeting_returned_home_morethan5mins_normalplus_flow
 
     # otherwise, go to other flow
@@ -2883,24 +2887,6 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
-
-    if mas_isD25() and not persistent._mas_d25_in_d25_mode:
-        m 1euc "Wait..."
-        m 3etc "...is it?"
-        m 3hub "It is!"
-        m 1tsu "...Close your eyes, I need to do something..."
-        $ mas_OVLHide()
-        $ mas_MUMURaiseShield()
-        $ disable_esc()
-
-        call mas_d25_monika_holiday_intro_deco
-
-        $ enable_esc()
-        $ mas_MUMUDropShield()
-        $ mas_OVLShow()
-
-        jump mas_d25_monika_christmas
-
     m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"

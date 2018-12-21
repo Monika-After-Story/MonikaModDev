@@ -1393,6 +1393,33 @@ label mas_d25_monika_holiday_intro_deco:
 
     return
 
+label mas_d25_monika_holiday_intro_rh:
+    # special label to cover a holiday case when returned home
+    m 1hua "And we're home!"
+
+    # NOTE: since we hijacked returned home, we hvae to cover for this
+    #   affection gain.
+    $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
+
+    m 1euc "Wait..."
+    m 3etc "...is it?"
+    m 3hub "It is!"
+    m 1tsu "...Close your eyes, I need to do something..."
+    $ mas_OVLHide()
+    $ mas_MUMURaiseShield()
+    $ disable_esc()
+
+    call mas_d25_monika_holiday_intro_deco
+
+    $ enable_esc()
+    $ mas_MUMUDropShield()
+    $ mas_OVLShow()
+
+    # NOTE this counts as seeing the intro
+    $ persistent._mas_d25_intro_seen = True
+
+    jump mas_d25_monika_christmas
+
 init 5 python:
     addEvent(
         Event(
@@ -1402,7 +1429,7 @@ init 5 python:
 #            prompt="Christmas",
             conditional=(
                 "persistent._mas_d25_in_d25_mode "
-                "and not renpy.seen_label('mas_d25_monika_christmas')"
+                "and not persistent._mas_d25_spent_d25"
             ),
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
