@@ -1962,7 +1962,7 @@ label monika_aiwfc:
     if not renpy.seen_label('monika_aiwfc_song'):
         m 1rksdla "Hey, [player]?"
         m 1eksdla "I hope you don't mind, but I prepared a song for you."
-        m 3hksdlb "I know it's a little cheezy, but I think you might like it"
+        m 3hksdlb "I know it's a little cheesy, but I think you might like it"
         m 3eksdla "If your volume is off, would you mind turning it on for me?"
         if songs.getVolume("music") == 0.0:
             m 3hksdlb "Oh, don't forget about your in game volume too!"

@@ -3496,6 +3496,10 @@ init -2 python in mas_sprites:
             p6=None
         )
 
+        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+        if len([ribb for ribb in store.mas_selspr.ACS_SEL_SL if ribb.unlocked]) > 1:
+            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+
         # handle hair down no leaning
         # TODO: remove this, it has been fixed
 #        temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
