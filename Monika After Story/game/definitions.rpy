@@ -3513,6 +3513,35 @@ init -1 python:
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
 
 
+    def mas_isInDateRange(
+            subject, 
+            _start, 
+            _end, 
+            start_inclusive=True,
+            end_inclusive=False
+        ):
+        """
+        Checks if the given subject date is within  range of the given start
+        end dates.
+
+        NOTE: this does year normalization, so we only compare months and days
+        NOTE: we do NOT compare years
+
+        IN:
+            subject - subject date to compare
+            _start - starting date of the range
+            _end - ending date of the range
+            start_inclusive - True if start date should be inclusive
+                (Derfault: True)
+            end_inclusive - True if end date should be inclusive
+                (Default: False)
+
+        RETURNS: True if the given subject is within date range, False if not
+        """
+        # TODO
+        pass
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos

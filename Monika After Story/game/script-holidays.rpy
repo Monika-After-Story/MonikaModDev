@@ -940,7 +940,7 @@ init -10 python:
 
         RETURNS: True if given date is d25, False otherwise
         """
-        return _date == mas_d25
+        return _date == mas_d25.replace(year=_date.year)
 
 
     def mas_isD25Eve(_date=datetime.date.today()):
@@ -953,7 +953,7 @@ init -10 python:
 
         RETURNS: True if given date is d25 eve, False otherwise
         """
-        return _date == mas_d25e
+        return _date == mas_d25e.replace(year=_date)
 
 
     def mas_isD25Season(_date=datetime.date.today()):
@@ -969,9 +969,12 @@ init -10 python:
 
         RETURNS: True if given date is in d25 season, False otherwise
         """
+        _year = _date.year
         return (
-            mas_d25c_start <= _date <= mas_nye
-            or mas_nyd <= _date < mas_d25c_end
+            mas_d25c_start.replace(year=_year) <= _date 
+                <= mas_nye.replace(year=_year)
+            or mas_nyd.replace(year=_year) <= _date 
+                < mas_d25c_end.replace(year=_year)
         )
 
 
@@ -987,10 +990,41 @@ init -10 python:
         RETURNS: True if given date is in d25 season but after d25, False
             otherwise.
         """
+        _year = _date.year
         return (
-            mas_d25 + datetime.timedelta(days=1) <= _date <= mas_nye
-            or mas_nyd <= _date < mas_d25c_end
+            (mas_d25.replace(year=_year) + datetime.timedelta(days=1)) 
+                <= _date <= mas_nye.replace(year=_year)
+            or mas_nyd.replace(year=_year) <= _date 
+                < mas_d25c_end.replace(year=_year)
         )
+
+
+    def mas_isD25PreNYE(_date=datetime.date.today()):
+        """
+        Returns True if the given date is in d25 season and before nye.
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNSL True if given date is in d25 season but before nye, False
+            otherwise
+        """
+        return mas_d25c_start <= _date < mas_nye
+
+
+    def mas_isD25PostNYD(_date=datetime.date.today()):
+        """
+        Returns True if the given date is in d25 season and after nyd
+
+        IN:
+            _date - date to check
+                (Default: Today's date)
+
+        RETURNS: True if given date is in d25 season but after nyd, False 
+            otherwise
+        """
+        return mas_nyd < _date < mas_d25c_end
 
 
     def mas_isD25Gift(_date=datetime.date.today()):
@@ -2216,17 +2250,13 @@ label greeting_d25_and_nye_delegate:
         time_out = store.mas_dockstat.diffCheckTimes()
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         left_pre_d25e = False
-        arr_post_nyd = False
-        left_post_nyd = False
 
         if checkout_time is not None:
             checkout_date = checkout_time.date()
             left_pre_d25e = checkout_date < mas_d25e
-            left_post_nyd = checkout_date > mas_nyd
 
         if checkin_time is not None:
             checkin_date = checkin_time.date()
-            arr_post_nyd = checkin_date > mas_nyd
 
         # TODO: move this to nye
         def cap_gain_aff(amt):
@@ -2281,6 +2311,7 @@ label greeting_d25_and_nye_delegate:
 
     elif mas_isNYD():
         # we have returned on nyd
+        # NOTE: we cannot use left_pre_d25, so dont use it.
 
         if checkout_time is None or mas_isNYD(checkout_date):
             # no checkout or left on nyd
@@ -2296,11 +2327,19 @@ label greeting_d25_and_nye_delegate:
 
     elif mas_isD25Post():
 
-        if arr_post_nyd:
+        if mas_isD25PostNYD():
             # arrived after new years day
-            if checkout_time is None or mas_isNYD(checkout_date) or left_post_nyd:
+            # NOTE: we cannot use left_pre_d25, so dnot use it
+
+            if (
+                    checkout_time is None 
+                    or mas_isNYD(checkout_date) 
+                    or mas_isD25PostNYD(checkout_date)
+                ):
                 # no checkout or left on nyd or after nyd
                 jump greeting_returned_home_morethan5mins_normalplus_flow
+
+                # TODO: CORE problem: needing to compare only months and days in a date object
 
             elif mas_isNYE(checkout_date) or mas_isD25Post(checkout_date):
                 # left on nye or just usual d25post
