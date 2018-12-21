@@ -2432,7 +2432,7 @@ init -10 python:
 
         RETURNS: True if given date is new years eve, False otherwise
         """
-        return _date == mas_nye
+        return _date == mas_nye.replace(year=_date.year)
 
 
     def mas_isNYD(_date=datetime.date.today()):
@@ -2445,7 +2445,7 @@ init -10 python:
 
         RETURNS: True if given date is new years day, False otherwise
         """
-        return _date == mas_nyd
+        return _date == mas_nyd.replace(year=_date.year)
 
 
 # topics
