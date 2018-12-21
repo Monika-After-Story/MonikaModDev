@@ -9748,7 +9748,7 @@ label monika_bad_facts_2:
 label monika_bad_facts_3:
     m 2dsc "{i}*inhales*{/i}"
     m 2dsd "{i}*exhales*{/i}"
-    m 2esc "'Vaccines cause austim...'"
+    m 2esc "'Vaccines cause autism...'"
     m "Just wow."
     m "That's not even funny, and if they're serious, it's long since been disproven."
     m 2dsc "I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."

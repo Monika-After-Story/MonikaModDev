@@ -777,7 +777,7 @@ label bye_long_absence:
     m 1o "Or maybe you just got bored of me..."
     m 1e "So tell me, my love..."
     menu:
-        m "How long do you be expect to be gone for?"
+        m "How long do you expect to be gone for?"
         "A few days.":
             $ persistent._mas_absence_choice = "days"
             m 1b "Oh!"
