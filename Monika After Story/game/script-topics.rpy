@@ -9029,7 +9029,8 @@ init 5 python:
             category=["monika"],
             prompt="Can you change your ribbon?",
             pool=True,
-            unlocked=False
+            unlocked=False,
+            rules={"no unlock": None}
         )
     )
 
@@ -10154,7 +10155,9 @@ init 5 python:
             eventlabel="monika_snowballfight",
             category=["winter"],
             prompt="Have you had a snowball fight?",
-            pool=True
+            pool=True,
+            unlocked=mas_isWinter(),
+            rules={"no_unlock":None}
         )
     )
 

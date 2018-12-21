@@ -144,6 +144,7 @@ init 10 python in mas_seasons:
         store.mas_showEVL("monika_cozy", "EVE", _random=True)
         store.mas_showEVL("monika_winter", "EVE", _random=True)
         store.mas_showEVL("monika_winter_dangers", "EVE", _random=True)
+        store.mas_unlockEVL("monika_snowballfight", "EVE")
 
         # enable hotchoc if it has been given
         if store.persistent._mas_c_hotchoc_been_given:

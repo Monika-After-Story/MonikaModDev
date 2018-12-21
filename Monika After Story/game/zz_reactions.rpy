@@ -1243,6 +1243,8 @@ label _mas_reaction_ribbon_helper(label):
         call mas_reaction_new_ribbon
         # add it to our counter
         $ persistent._mas_current_gifted_ribbons += 1
+        #unlock the ribbon selector
+        $ store.mas_unlockEVL("monika_ribbon_select", "EVE")
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
