@@ -2468,21 +2468,21 @@ init -10 python:
 # TODO: dont forget to updaet script seen props
 # TODO: event props have been updated so this topic only comes up between 7pm and 11pm on NYE, changed from PUSH to QUEUE, please review
 
-init 5 python:
-#    # NOTE: new years eve
-#    # NOTE: known as monika_newyear1
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_nye_monika_nye",
-            action=EV_ACT_QUEUE,
-            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
-            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
-            years=[],
-            aff_range=(mas_aff.UPSET, None)
-        ),
-        skipCalendar=True
-    )
+#init 5 python:
+##    # NOTE: new years eve
+##    # NOTE: known as monika_newyear1
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_nye_monika_nye",
+#            action=EV_ACT_QUEUE,
+#            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
+#            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
+#            years=[],
+#            aff_range=(mas_aff.UPSET, None)
+#        ),
+#        skipCalendar=True
+#    )
 
 default persistent._mas_pm_has_new_years_res = None
 # does the user have new years resolutions?
@@ -2650,18 +2650,17 @@ label mas_nye_monika_nyd_fresh_start:
             pause 10.0
             return 'quit'
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_accomplished_resolutions",
-#            prompt="[player]'s last year's resolutions",
-#            category=["you"],
-#            random=True
-#        ),
-#        aff_range=(mas_aff.UPSET,None)
-#    )
-# TODO: should this be limited to a certaintime period?
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_accomplished_resolutions",
+            prompt="[player]'s last year's resolutions",
+            category=["you"],
+            random=True
+        ),
+        aff_range=(mas_aff.UPSET,None)
+    )
 
 default persistent._mas_pm_accomplished_resolutions = None
 # True if user has accomplished new years resolutions
@@ -2725,23 +2724,27 @@ label monika_accomplished_resolutions:
             else:
                 m 2rkc "You probably should make one this year [player]..."
 
-    return "derandom|rebuild_ev"
+    return "derandom"
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_nyd_year_review",
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_nye_year_review",
 #            prompt="Last year...",
 #            category=["misc","you","monika"],
-#            random=True
-#        ),
-#
-#    )
-#NYE only
-#normal+, i.e. !broken, since fresh starts
-label monika_nyd_year_review:
+            action=store.EV_ACT_PUSH,
+            start_date=datetime.datetime.combine(mas_nye, datetime.time(hour=19)),
+            end_date=datetime.datetime.combine(mas_nye, datetime.time(hour=23)),
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
 
+label monika_nye_year_review:
+
+    # starting with an overview based on time
     if store.mas_anni.anniCount() >= 0:
         m 2eka "You know, [player], we really have been through a lot together."
         if store.mas_anni.anniCount() == 1:
@@ -2762,6 +2765,8 @@ label monika_nyd_year_review:
     else:
         m 2eka "[player], even though we haven't been through a lot together, yet..."
 
+
+    # then a bit based on affection
     if mas_isMoniLove():
         m 2ekbfa "...and I'd never want to spend that time with anyone else, [player]."
         m "I'm just really,{w=0.5} really happy to have been with you this year."
@@ -2775,9 +2780,11 @@ label monika_nyd_year_review:
     elif mas_isMoniNormal(higher=True):
         m 2euc "...and the time we spent together has been fun."
 
+
     m 3eua "Anyway, I think it would be nice to just reflect on all that we've been through together this past year."
     m 2dtc "Let's see..."
 
+    # promisering related stuff
     if persistent._mas_acs_enable_promisering: #note, this should only trigger for this year. I.e. if promisering was given this year
         m 3eka "Looking back, you gave me your promise this year when you gave me this ring..."
         m 1ekbsa "...a symbol of our love."
@@ -2790,6 +2797,8 @@ label monika_nyd_year_review:
             else:
                 m 1ekbfa "To show your commitment to me."
 
+    # TODO: change to history
+    # bit based on vday
     if renpy.seen_label('monika_valentines_greeting'):
         m 1wuo "Oh!"
         m 3ekbfa "You spent Valentine's Day with me..."
@@ -2802,6 +2811,7 @@ label monika_nyd_year_review:
             if renpy.seen_label('monika_found'):
                 m 4ekbfa "That was the day I gave my first gift to you~"
 
+    # bit based on 922
     if mas_HistVerify("922.actions.opened_game",True,datetime.date.today().year)[0]:
         m 2eka "You spent time with me on my birthday..."
 
@@ -2814,12 +2824,12 @@ label monika_nyd_year_review:
         show monika 5ekbla at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbla "...and it really made me feel loved. I can't thank you enough for doing that for me."
 
-
+    # bit on christmas
     if persistent._mas_d25_spent_d25:
         show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "You spent your Christmas with me..."
 
-        if persistent._mas_first_kiss is not None and persistent._mas_first_kiss.date() == mas_d25:
+        if persistent._mas_first_kiss is not None and mas_isD25(persistent._mas_first_kiss.date()):
             m 5eubla "...and we shared our first kiss together~"
             m 5lubsa "I'll never forget that moment..."
             m 5ekbfa "{i}Our{/i} moment."
@@ -2827,6 +2837,10 @@ label monika_nyd_year_review:
         else:
             m 5ekbla "...a day that I couldn't imagine spending with anyone else."
 
+    # TODO history
+    # smaller filler if nothing good happend
+    # TODO: consider setting a flag to True if a big event occured rather than
+    #   rechecking all of these
     if not (persistent._mas_d25_spent_d25 or persistent._mas_bday_opened_game or persistent._mas_acs_enable_promisering or renpy.seen_label('monika_valentines_greeting')):
         m 2rksdla "...I guess we haven't actually been through any big events together."
         m 3eka "But still..."
@@ -2834,6 +2848,7 @@ label monika_nyd_year_review:
         show monika 5dsa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dsa "..."
 
+    # lookback based on time
     if store.mas_anni.pastThreeMonths():
         if mas_isMoniHappy(higher=True):
             show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
@@ -2844,6 +2859,7 @@ label monika_nyd_year_review:
         show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eka "I can't wait to see just how much will change in the future for us..."
 
+    # frestart commentary
     if not persistent._mas_pm_got_a_fresh_start:
         show monika 5dka at t11 zorder MAS_MONIKA_Z with dissolve
         m 5dka "Thank you."
@@ -2877,7 +2893,8 @@ label monika_nyd_year_review:
         m 1eka "I think if we just try, we can make this work, [player]."
         m "Let's make this year great for each other."
         m 1ekbfa "I love you."
-    return "derandom|rebuild_ev"
+
+    return "derandom"
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
