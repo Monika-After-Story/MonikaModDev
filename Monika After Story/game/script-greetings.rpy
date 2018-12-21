@@ -2888,7 +2888,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
         m 1euc "Wait..."
         m 3etc "...is it?"
         m 3hub "It is!"
-        m 1tus "...Close your eyes, I need to do something..."
+        m 1tsu "...Close your eyes, I need to do something..."
         $ mas_OVLHide()
         $ mas_MUMURaiseShield()
         $ disable_esc()
