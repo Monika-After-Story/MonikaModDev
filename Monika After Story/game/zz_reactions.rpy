@@ -556,7 +556,7 @@ label mas_reaction_gift_starter_d25:
     m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
-    if mas_getGiftStatsRange(mas_d25g_start,mas_d25)[0] == 0:
+    if mas_getGiftStatsRange(mas_d25g_start,mas_d25+datetime.timedelta(days=1))[0] == 0:
         m 1eka "You really didn't have to get me anything for Christmas..."
         m 3hua "But I'm so happy that you did!"
     else:
@@ -1079,16 +1079,30 @@ init 5 python:
         addReaction("mas_reaction_candycane", "candycane", is_good=True)
 
 label mas_reaction_candycane:
+    $ times_cane_given = mas_getGiftStatsForDate("mas_reaction_candycane")
     $ mas_gainAffection()
-    m 3eua "A candy cane!"
-    if store.seen_event("monika_icecream"):
-        m 1hub "You know how much I love mint!"
+
+    if times_cane_given == 0:
+        m 3eua "A candy cane!"
+        if store.seen_event("monika_icecream"):
+            m 1hub "You know how much I love mint!"
+        else:
+            m 1hub "I just love the flavor of mint!"
+            m 1eua "Thanks, [player]."
+            $ mas_receivedGift("mas_reaction_candycane")
+    
+    elif times_cane_given == 1:
+        m 3hua "Another candy cane!"
+        m 3hub "Thanks [player]!"
+    
     else:
-        m 1hub "I just love the flavor of mint!"
-        m 1eua "Thanks, [player]."
-        $ mas_receivedGift("mas_reaction_candycane")
+        m 1eksdla "[player], I think I have enough candy canes for now."
+        m 1eka "You can save them for later, alright?"
+
     $ gift_ev = mas_getEV("mas_reaction_candycane")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    #weird not to have her see the gift file that's in the characters folder.
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
 
 # ribbon logic specific
@@ -1233,8 +1247,10 @@ label _mas_reaction_ribbon_helper(label):
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    #we have dlg for repeating ribbons, may as well have it used
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
-
+    #IMPORTANT TODO: We actually need to get the selector going for the ribbons, and not just be the dev one
 
 label mas_reaction_new_ribbon:
     if persistent._mas_current_gifted_ribbons == 0:

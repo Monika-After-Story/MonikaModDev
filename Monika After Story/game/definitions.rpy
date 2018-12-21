@@ -4021,8 +4021,8 @@ init 2 python:
         if not persistent._mas_acs_enable_quetzalplushie:
             return
         if renpy.random.randint(1,chance) == 1:
-            if mas_isD25Season():
-                # seasonal means we use the santa hat
+            if persistent._mas_d25_deco_active:
+                #if in d25 mode, it's seasonal, and also norm+
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
 
             else:

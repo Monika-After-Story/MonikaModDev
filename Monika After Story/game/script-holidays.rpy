@@ -1098,7 +1098,8 @@ label mas_holiday_d25c_autoload_check:
 
             else:
 
-                # unlock and wear santa
+                # unlock and wear santa/wine ribbon
+                store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
                 store.mas_selspr.unlock_clothes(mas_clothes_santa)
                 monika_chr.change_clothes(mas_clothes_santa, False)
                 persistent._mas_d25_seen_santa_costume = True
@@ -1309,7 +1310,7 @@ label mas_d25_monika_holiday_intro_upset:
 
     m 1eua "If you'd just close your eyes for a moment..."
 
-    call mas_d25_monka_holiday_intro_deco
+    call mas_d25_monika_holiday_intro_deco
 
     m 3hub "Tada~"
 
@@ -1344,13 +1345,14 @@ label mas_d25_monika_holiday_intro_deco:
     # we should consider ourselves in d25 mode now, if not already
     $ persistent._mas_d25_in_d25_mode = True
 
-    # enable deco
-    $ persistent._mas_d25_deco_active = True
-
     # unlock and wear santa
     $ store.mas_selspr.unlock_clothes(mas_clothes_santa)
+    $ monika_chr.wear_acs(mas_acs_ribbon_wine)
     $ monika_chr.change_clothes(mas_clothes_santa, False)
     $ persistent._mas_d25_seen_santa_costume = True
+
+    # enable deco
+    $ persistent._mas_d25_deco_active = True
 
     # now we can do spacroom call
     call spaceroom
@@ -1716,6 +1718,7 @@ init 5 python:
                 "persistent._mas_d25_in_d25_mode "
             ),
             action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL,None),
             start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=20)),
             end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1))
         ),
@@ -1731,7 +1734,7 @@ init 5 python:
 
 label mas_d25_spent_time_monika:
 
-    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25g_end)
+    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25g_end + datetime.timedelta(days=1))
 
     if mas_isMoniNormal(higher=True):
         m 1eua "[player]..."

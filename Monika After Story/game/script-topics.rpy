@@ -9020,6 +9020,45 @@ label monika_clothes_select:
 
 #### ends Monika clothes topic
 
+#### Monika ribbons topic
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ribbon_select",
+            category=["monika"],
+            prompt="Can you change your ribbon?",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_ribbon_select:
+    python:
+        use_acs = []
+        for item in store.mas_selspr.ACS_SEL_SL:
+            if item.group == "ribbon" and item.unlocked:
+                use_acs.append(item)
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+    if monika_chr.hair.name != mas_hair_def.name:
+        m "But im going to change my clothes and hair back to normal."
+        $ monika_chr.reset_outfit(False)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    m 1eka "If you want me to change my ribbon, just ask, okay?"
+
+    return
+#### End Ribbon change topic
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
 
