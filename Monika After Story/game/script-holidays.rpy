@@ -1697,9 +1697,10 @@ init 5 python:
             prompt="Mistletoe",
             conditional=(
                 "mas_isD25Season() "
+                "and not mas_isD25Post() "
                 "and persistent._mas_d25_in_d25_mode"
             ),
-            random=True,
+            action=EV_ACT_RANDOM,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
