@@ -9,6 +9,34 @@ define updates.version_updates = None
 #   k:oldId -> v:newId
 define updates.topics = None
 
+init -1 python in mas_db_merging:
+    import store
+
+    def merge_db(source, dest):
+        """
+        Merges the given source database into the given destination db
+
+        IN:
+            source - source database to merge from
+            dest - destination database to merge into
+        """
+        dest.update(source)
+
+
+    def merge_post0810():
+        """
+        Runs a specific set of merges, particularly for the merge that
+        happend after version 0.8.10.
+        """
+
+        # compliments
+        if store.persistent._mas_compliments_database is not None:
+            merge_db(
+                store.persistent._mas_compliments_database,
+                store.persistent.event_database
+            )
+
+
 # preeerything
 init -1 python:
     def clearUpdateStructs():
@@ -40,6 +68,7 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_8_11 = "v0_8_11"
         vv0_8_10 = "v0_8_10"
         vv0_8_9 = "v0_8_9"
         vv0_8_8 = "v0_8_8"
@@ -72,6 +101,7 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        updates.version_updates[vv0_8_10] = vv0_8_11
         updates.version_updates[vv0_8_9] = vv0_8_10
         updates.version_updates[vv0_8_8] = vv0_8_9
         updates.version_updates[vv0_8_7] = vv0_8_9
@@ -111,6 +141,14 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.8.4 - 0.8.10) -> 0.8.11
+        updates.topics[vv0_8_11] = {
+            "monika_snowman": None,
+            "monika_relax": None,
+            "monika_hypothermia": None,
+            "monika_whatiwant": None
+        }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
         updates.topics[vv0_8_4] = {

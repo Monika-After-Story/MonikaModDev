@@ -76,8 +76,10 @@ python early:
     #       conditional is True (See EV_ACTIONS and EV_ACT_...)
     #       (Default: None)
     #   start_date - datetime for when this event is available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   end_date - datetime for when this event is no longer available
+    #       NOTE: date can be provided, this will be converted to datetime
     #       (Default: None)
     #   unlock_date - datetime for when this event is unlocked
     #       (Default: None)
@@ -104,6 +106,18 @@ python early:
     #       (Default: None)
     #   sensitive - True means this is a sensitve topic, False means it is not
     #       (Default: False)
+    #   aff_range - tuple of the following format:
+    #       [0]: - low limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no lower limit
+    #       [1]: - upper limit of affection where this event is available
+    #           (inclusive)
+    #           If None, assumed to be no uppwer limit
+    #       If None, then event is considered to be always available regardless
+    #       of affection level
+    #       NOTE: the tuple items should be AFFECTION STATES.
+    #           not using an affection state may break things
+    #       (Default: None)
     class Event(object):
 
         # tuple constants
@@ -125,7 +139,8 @@ python early:
             "rules":14,
             "last_seen":15,
             "years":16,
-            "sensitive":17
+            "sensitive":17,
+            "aff_range":18
         }
 
         # name constants
@@ -169,7 +184,8 @@ python early:
                 rules=dict(),
                 last_seen=None,
                 years=None,
-                sensitive=False
+                sensitive=False,
+                aff_range=None
             ):
 
             # setting up defaults
@@ -189,6 +205,40 @@ python early:
                 raise Exception(
                     "'{0}' - rules property cannot be None".format(eventlabel)
                 )
+            if (
+                    start_date is not None
+                    and type(start_date) is not datetime.datetime
+                    and type(start_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid start date.".format(eventlabel)
+                )
+            if (
+                    end_date is not None
+                    and type(end_date) is not datetime.datetime
+                    and type(end_date) is not datetime.date
+                ):
+                raise Exception(
+                    "'{0}' - invalid end date.".format(eventlabel)
+                )
+            if years is not None and type(years) is not list:
+                raise Exception(
+                    "'{0}' - invalid years.".format(eventlabel)
+                )
+
+            # we'll simplify aff_range so we dont have to deal with extra
+            #   storage
+            if aff_range is not None:
+                low, high = aff_range
+                if low is None and high is None:
+                    aff_range = None
+
+            # and then check for valid affection states
+            # NOTE: we assume that the affection store is visible by now
+            if not store.mas_affection._isValidAffRange(aff_range):
+                raise Exception("{0} | bad aff range: {1}".format(
+                    eventlabel, str(aff_range)
+                ))
 
             self.eventlabel = eventlabel
             self.per_eventdb = per_eventdb
@@ -200,6 +250,19 @@ python early:
             # default label is a prompt
             if not label:
                 label = prompt
+
+            # convert dates to datetimes
+            if type(start_date) is datetime.date:
+                start_date = datetime.datetime.combine(
+                    start_date,
+                    datetime.time.min
+                )
+            if type(end_date) is datetime.date:
+                end_date = datetime.datetime.combine(
+                    end_date,
+                    datetime.time.min
+                )
+
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -221,7 +284,8 @@ python early:
                 rules,
                 last_seen,
                 years,
-                sensitive
+                sensitive,
+                aff_range
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -359,6 +423,59 @@ python early:
             )
 
 
+        def checkAffection(self, aff_level):
+            """
+            Checks if the given aff_level is within range of this event's
+            aff_range.
+
+            IN:
+                aff_level - aff_level to check
+
+            RETURNS: True if aff_level is within range of event's aff_range,
+                False otherwise
+            """
+            if self.aff_range is None:
+                return True
+
+            # otheerwise check the range
+            low, high = self.aff_range
+            return store.mas_affection._betweenAff(low, aff_level, high)
+
+
+        def canRepeat(self):
+            """
+            Checks if this event has the vars to enable repeat
+
+            RETURNS: True if this event can repeat, False if not
+            """
+            return (
+                self.start_date is not None
+                and self.end_date is not None
+                and self.years is not None
+            )
+
+
+        def prepareRepeat(self):
+            """
+            Prepres this event's dates for a repeat.
+
+            NOTE: does not check if the event hasnt been reached this year.
+
+            RETURNS: True if this event was repeated, False if not
+            """
+            # sanity check
+            if not self.canRepeat():
+                return False
+
+            new_start, new_end, was_changed = Event._yearAdjustEV(self)
+
+            if was_changed:
+                self.start_date = new_start
+                self.end_date = new_end
+
+            return was_changed
+
+
         @staticmethod
         def getSortPrompt(ev):
             #
@@ -442,6 +559,173 @@ python early:
 
 
         @staticmethod
+        def _verifyAndSetDatesEV(ev):
+            """
+            Runs _verifyDatesEV and sets the event properties if change
+            happens
+
+            IN:
+                ev - event object to verify and set
+            """
+            new_start, new_end, was_changed = Event._verifyDatesEV(ev)
+            if was_changed:
+                ev.start_date = new_start
+                ev.end_date = new_end
+
+
+        @staticmethod
+        def _verifyDatesEV(ev):
+            """
+            _verifyDates, but for an Event object.
+
+            IN:
+                ev - event object to verify dates
+
+            RETURNS: See _verifyDates
+            """
+            return Event._verifyDates(ev.start_date, ev.end_date, ev.years)
+
+
+        @staticmethod
+        def _yearAdjustEV(ev):
+            """
+            _yearAdjust, but for an Event object
+
+            IN:
+                ev - evnet object to adjust years
+
+            RETURNS: See _verifyDates
+            """
+            return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+
+
+        @staticmethod
+        def _verifyDates(_start, _end, _years):
+            """
+            Given start/end/_yeras, figure out the appropriate start and end
+            dates. We use current datetime to figure this out.
+
+            NOTE: this is meant for Event use ONLY
+            NOTE: this is NOT meant to be used with an Event object.
+                See _verifyDatesEV
+
+            IN:
+                _start - start datetime
+                _end - end datetime (exclusive)
+                _years - years list
+
+            RETURNS tuple of the following format:
+                [0]: start datetime to use
+                [1]: end datetime to use
+                [2]: True if there was and adjustment, False if not
+            """
+            # initial sanity check
+            if _start is None or _end is None or _years is None:
+                # if at least one item is None, this is not a repeatable.
+                return (_start, _end, False)
+
+            # otherwise, we need to repeat
+            return Event._yearAdjust(_start, _end, _years)
+
+
+        @staticmethod
+        def _yearAdjust(_start, _end, _years):
+            """
+            Performs the year adjustment algorithm.
+
+            RETURNS: see _verifyDates
+            """
+            _now = datetime.datetime.now()
+
+            # no changes necessary if we are currently in the zone
+            if _start <= _now < _end:
+                return (_start, _end, False)
+
+            # otherwise, we need to repeat.
+            add_yr_fun = store.mas_utils.add_years
+
+            # NOTE this is wrong
+
+            if len(_years) == 0:
+                # years is empty list, we are repeat yearly.
+                # we only need to check if current works, and if not,
+                # move to one year ahead of current.
+                diff = _now.year - _start.year
+                new_end = add_yr_fun(_end, diff)
+
+                if new_end <= _now:
+                    # in this case, we should actually be +1 current year
+                    diff += 1
+                    new_end = add_yr_fun(_end, diff)
+
+                # now return the new start and the modified end
+                return (add_yr_fun(_start, diff), new_end, True)
+
+            # otherwise, we have a list of years, and shoudl determine next
+            new_years = [
+                year
+                for year in _years
+                if year >= _now.year
+            ]
+
+            if len(new_years) == 0:
+                # no repeat years, we have already reached the limit.
+                return (_start, _end, False)
+
+            new_years.sort()
+
+            # calc diff for the first year in this list
+            diff = _now.year - new_years[0]
+            new_end = add_yr_fun(_end, diff)
+
+            if new_end <= _now:
+                if len(new_years) <= 1:
+                    # no more years, so we should just not change anything
+                    return (_start, _end, False)
+
+                # otherwise, we can get a valid setup by going 1 further.
+                diff = _now.year - new_years[1]
+                new_end = add_yr_fun(_end, diff)
+
+            return (add_yr_fun(_start, diff), new_end, True)
+
+
+        @staticmethod
+        def _getNextYear(_years, year_comp):
+            """
+            Retreieves the next possible year into the future from the given
+            years list.
+
+            NOTE: if empty list, we return current year.
+
+            IN:
+                _years - list of years
+                year_comp - year to start search from.
+
+            RETURNS next possible year into the future from the given years
+                list. If _years is empty, current year is returned.
+                If unable to find a next year, we return None.
+            """
+            # empty lits means repeat yearly
+            if len(_years) == 0:
+                return datetime.date.today().year
+
+            # non empty list means we should repeat on these years
+            new_years = [
+                year
+                for year in _years
+                if year > year_comp
+            ]
+
+            # no new years to repeat, no repeats needed
+            if len(new_years) == 0:
+                return None
+
+            # otherwise, return the next year in the list
+            return sorted(new_years)[0]
+
+
+        @staticmethod
         def _filterEvent(
                 event,
                 category=None,
@@ -452,7 +736,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None,
             ):
             #
             # Filters the given event object accoridng to the given filters
@@ -475,6 +760,9 @@ python early:
                 return False
 
             if pool is not None and event.pool != pool:
+                return False
+
+            if aff is not None and not event.checkAffection(aff):
                 return False
 
             if seen is not None and renpy.seen_label(event.eventlabel) != seen:
@@ -525,7 +813,8 @@ python early:
                 seen=None,
                 excl_cat=None,
                 moni_wants=None,
-                sensitive=None
+                sensitive=None,
+                aff=None
             ):
             #
             # Filters the given events dict according to the given filters.
@@ -571,6 +860,8 @@ python early:
             #           AKA: we only filter sensitve topics if sensitve mode is
             #           enabled.
             #       (Default: None)
+            #   aff - affection level to match aff_range
+            #       (Default: None)
             #
             # RETURNS:
             #   if full_copy is True, we return a completely separate copy of
@@ -590,7 +881,8 @@ python early:
                     and seen is None
                     and excl_cat is None
                     and moni_wants is None
-                    and sensitive is None)):
+                    and sensitive is None
+                    and aff is None)):
                 return events
 
             # copy check
@@ -622,7 +914,7 @@ python early:
                 if Event._filterEvent(v,category=category, unlocked=unlocked,
                         random=random, pool=pool, action=action, seen=seen,
                         excl_cat=excl_cat,moni_wants=moni_wants,
-                        sensitive=sensitive):
+                        sensitive=sensitive, aff=aff):
 
                     filt_ev_dict[k] = v
 
@@ -687,38 +979,68 @@ python early:
             return eventlabels
 
         @staticmethod
-        def checkConditionals(events):
+        def checkConditionals(events, rebuild_ev=False):
+            # NOTE: DEPRECATED
             #
             # This checks the conditionals for all of the events in the event list
             # if any evaluate to true, run the desired action then clear the
             # conditional.
+            #
+            # IN:
+            #   rebulid_ev - pass in True to notify idle to rebuild events
+            #       if a random action occured.
             import datetime
 
             # sanity check
             if not events or len(events) == 0:
                 return None
 
-            # dict check
-            ev_list = events.keys() # python 2
+            _now = datetime.datetime.now()
 
-            # insertion sort
-            for ev in ev_list:
-                #Calendar events use a different function
-                date_based = (events[ev].start_date is not None) or (events[ev].end_date is not None)
-                if not date_based and events[ev].conditional is not None:
-                    if (
-                            eval(events[ev].conditional)
-                            and events[ev].action in Event.ACTION_MAP
-                        ):
-                        Event._performAction(events[ev], datetime.datetime.now())
+            for ev_label,ev in events.iteritems():
+                # TODO: honestly, we should index events with conditionals
+                #   so we only check what needs to be checked. Its a bit of an
+                #   annoyance to check all of these properties once per minute.
 
-                        #Clear the conditional
-                        events[ev].conditional = None
+                # NOTE: we only check events with:
+                #   - a conditional property
+                #   - current affection is within aff_range
+                #   - has None for date properties
+
+                if (
+                        # has conditional property
+                        ev.conditional is not None
+
+                        # within aff range
+                        and ev.checkAffection(mas_curr_affection)
+
+                        # no date props
+                        and ev.start_date is None
+                        and ev.end_date is None
+
+                        # check if the action is valid
+                        and ev.action in Event.ACTION_MAP
+
+                        # finally check if the conditional is true
+                        and eval(ev.conditional)
+                    ):
+
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
+
+                    #Clear the conditional
+                    ev.conditional = None
+
 
             return events
 
         @staticmethod
         def checkCalendar(events):
+            # NOTE: DEPRECATED
             #
             # This checks the date for all events to see if they are active.
             # If they are active, then it checks for a conditional, and evaluates
@@ -758,7 +1080,7 @@ python early:
 
                 if e.action in Event.ACTION_MAP:
                     # perform action
-                    Event._performAction(e, current_time)
+                    Event._performAction(e, unlock_time=current_time)
 
                     # Check if we have a years property
                     if e.years is not None:
@@ -794,6 +1116,74 @@ python early:
                     events[ev].conditional = "False"
 
             return events
+
+
+        @staticmethod
+        def _checkEvent(ev, curr_time):
+            """
+            Singular filter function for checkEvents
+
+            RETURNS: True if passes filter, False if not
+            """
+            # check if this event even has trigger points
+            if ev.start_date is None and ev.conditional is None:
+                return False
+
+            # check aff
+            if not ev.checkAffection(mas_curr_affection):
+                return False
+
+            # check dates, if needed
+            if ev.start_date is not None and ev.start_date > curr_time:
+                return False
+
+            if ev.end_date is not None and ev.end_date <= curr_time:
+                return False
+
+            # now check conditional, if needed
+            if ev.conditional is not None and not eval(ev.conditional):
+                return False
+
+            # check if valid action
+            if ev.action not in Event.ACTION_MAP:
+                return False
+
+            # success
+            return True
+
+
+        @staticmethod
+        def checkEvents(ev_dict, rebuild_ev=True):
+            """
+            This acts as a combination of both checkConditoinal and
+            checkCalendar
+
+            does NOT return dict
+            """
+            if not ev_dict or len(ev_dict) == 0:
+                return
+
+            _now = datetime.datetime.now()
+
+            for ev_label,ev in ev_dict.iteritems():
+                # TODO: same TODO as in checkConditionals.
+                #   indexing would be smarter.
+
+                if Event._checkEvent(ev, _now):
+                    # perform action
+                    Event._performAction(
+                        ev,
+                        unlock_time=_now,
+                        rebuild_ev=rebuild_ev
+                    )
+
+                    # check if we should repeat
+                    if not ev.prepareRepeat():
+                        # no repeats
+                        ev.conditional = None
+                        ev.action = None
+
+            return
 
 
         @staticmethod
@@ -1021,7 +1411,7 @@ python early:
 
 
         @staticmethod
-        def _performAction(ev, _unlock_time):
+        def _performAction(ev, **kwargs):
             """
             Efficient / no checking action performing
 
@@ -1029,13 +1419,13 @@ python early:
 
             IN:
                 ev - event we are performing action on
-                _unlock_time - datetime to use for unlock_date
+                **kwargs - keyword args to pass to action
             """
-            Event.ACTION_MAP[ev.action](ev, unlock_time=_unlock_time)
+            Event.ACTION_MAP[ev.action](ev, **kwargs)
 
 
         @staticmethod
-        def performAction(ev, _unlock_time=datetime.datetime.now()):
+        def performAction(ev, **kwargs):
             """
             Performs the action of the given event
 
@@ -1043,7 +1433,7 @@ python early:
                 ev - event we are perfrming action on
             """
             if ev.action in Event.ACTION_MAP:
-                Event._performAction(ev, _unlock_time)
+                Event._performAction(ev, **kwargs)
 
 
 # init -1 python:
@@ -1753,7 +2143,7 @@ python early:
                 headline - identifier for the message
 
             RETURNS:
-                the message data stored, None if no message data or if the 
+                the message data stored, None if no message data or if the
                 message was actually None.
             """
             if headline in self.box:
@@ -1786,14 +2176,14 @@ python early:
         def read(self, headline):
             """
             Reads a message from the box.
-            
+
             NOTE: does NOT remove the message.
 
             IN:
                 headline - identifier for the message
 
             RETURNS:
-                the message data stored, None if no message data or if the 
+                the message data stored, None if no message data or if the
                 message was actually None
             """
             return self.box.get(headline, None)
@@ -2333,6 +2723,38 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
+
+
+    def _EVgenY(_start, _end, current, for_start):
+        """
+        Generates/decides if a given start/end datetime/date should have its
+        year incremented or not.
+
+        NOTE: specialized for Event creation datetime selection
+        NOTE: this only modifies year.
+
+        IN:
+            _start - datetime/date that begins this period
+            _end - datetime/date that ends this period
+            current - datetime/date to compare with (should be either today
+                or now)
+            for_start - True if we want the next valid start, False for end
+
+        RETURNS either next valid _start or next valid _end.
+        """
+        # keep track of which elem is important to us
+        if for_start:
+            _focus = _start
+        else:
+            _focus = _end
+
+        if current < _end:
+            # the range hasnt been reached yet, we are fine with this value.
+            # or if we are in the range
+            return _focus
+
+        # now is actually ahead of target, we should adjust year
+        return _focus.replace(year=current.year + 1)
 
 
     def randomblob(size, seed=None):
@@ -2952,9 +3374,93 @@ init -1 python:
         """
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
-        
+
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
+
+
+    def mas_genDateRange(_start, _end):
+        """
+        Generates a list of datetime.date objects with the given range.
+
+        NOTE: exclusive:
+
+        IN:
+            _start - starting date of range
+            _end - ending date of range
+
+        RETURNS: list of datetime.date objects between the _start and _end,
+            exclusive. May be empty if invalid start and end dates are given
+        """
+        # sanity check
+        if _start >= _end:
+            return []
+
+        _date_range = []
+        one_day = datetime.timedelta(days=1)
+        curr_date = _start
+
+        while curr_date < _end:
+            _date_range.append(curr_date)
+            curr_date += one_day
+
+        return _date_range
+
+
+    def mas_EVgenYDT(_start, _end, for_start):
+        """
+        Creates a valid start or end datetime for Event creation, given the
+        start and end datetimes.
+
+        NOTE: this only modifies year. Build a custom function for something
+        more precise.
+
+        IN:
+            _start - datetime that begins this period
+            _end - datetime that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+
+        RETURNS: valid datetime for Event creation
+        """
+        return store.mas_utils._EVgenY(
+            _start,
+            _end,
+            datetime.datetime.now(),
+            for_start
+        )
+
+
+    def mas_EVgenYD(
+            _start,
+            _end,
+            for_start,
+            _time=datetime.time.min
+        ):
+        """
+        Variation of mas_EVgenYDT that accepts datetime.dates. This still
+        returns datetimes though.
+
+        IN:
+            _start - date that begins this period
+            _end - date that ends this period
+            for_start - True if we want the next valid starting datetime
+                False if we want the next valid ending datetime
+            _time - time to use with the dates.
+                (Default: datetime.time.min)
+
+        RETURNS: valid datetime for Event creation
+        """
+        return datetime.datetime.combine(
+            store.mas_utils._EVgenY(
+                _start,
+                _end,
+                datetime.date.today(),
+                for_start
+            ),
+            _time
+        )
+
 
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
@@ -2967,8 +3473,10 @@ init -1 python:
         RETURNS:
             boolean indicating if today is a special day.
         """
-        #TODO keep adding special days as we add them
-        return mas_anni.isAnni() or mas_anni.isAnniSixMonth() or mas_isMonikaBirthday() or mas_isO31()
+        # TODO keep adding special days as we add them
+        # 2nd TODO: mas_anni methods are on init level 10 which makes them unusable
+        # in this method that is used on init 5 (when adding events)
+        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -3001,17 +3509,56 @@ init -1 python:
         )
 
 
-    def mas_isO31(_date=datetime.date.today()):
-        """
-        Returns True if the given date is o31
-
-        IF None is passed in, we use today's date
-        """
-        return _date == mas_o31
-
-
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
+
+
+    def mas_isInDateRange(
+            subject, 
+            _start, 
+            _end, 
+            start_inclusive=True,
+            end_inclusive=False
+        ):
+        """
+        Checks if the given subject date is within  range of the given start
+        end dates.
+
+        NOTE: this does year normalization, so we only compare months and days
+        NOTE: we do NOT compare years
+
+        IN:
+            subject - subject date to compare
+            _start - starting date of the range
+            _end - ending date of the range
+            start_inclusive - True if start date should be inclusive
+                (Derfault: True)
+            end_inclusive - True if end date should be inclusive
+                (Default: False)
+
+        RETURNS: True if the given subject is within date range, False if not
+        """
+        real_start = _start.replace(year=subject.year)
+        real_end = _end.replace(year=subject.year)
+
+        if start_inclusive:
+            if real_start > subject:
+                return False
+
+        else:
+            if real_start >= subject:
+                return False
+
+        if end_inclusive:
+            if subject > real_end:
+                return False
+
+        else:
+            if subject >= real_end:
+                return False
+
+        # otherwise we passed the cases
+        return True
 
 
     def get_pos(channel='music'):
@@ -3287,6 +3834,228 @@ init 2 python:
 
         return
 
+
+    # NOTE: the hot choc logic is literally the same as coffee but with diff
+    # vars. We srs need to do consumable framework
+    # TODO: consumable framework before we do anymore related
+    def mas_isHotChocTime(_time=None):
+        """
+        Checks if its hot chocolate time for monika
+
+        IN:
+            _time - time to check
+                If None, we use current time
+                (Defualt: None)
+
+        RETURNS:
+            true if its hot chocolate time, false if not
+        """
+        if _time is None:
+            _time = datetime.datetime.now()
+
+        # monika drinks coffee between 6 am and noon
+        return (
+            store.mas_coffee.HOTCHOC_TIME_START
+            <= _time.hour <
+            store.mas_coffee.HOTCHOC_TIME_END
+        )
+
+
+    def mas_brewHotChoc(_start_time=None):
+        """
+        Starts brewing hot chocolate aka sets up the hot chocolate finished
+        brewing event
+
+        IN:
+            _start_time - time to start brewing the hotchoc
+                If None, we assume now
+                (Default: None)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # start brew
+        persistent._mas_c_hotchoc_brew_time = _start_time
+
+        # calculate end brew time
+        end_brew = random.randint(
+            store.mas_coffee.BREW_LOW,
+            store.mas_coffee.BREW_HIGH
+        )
+
+        # setup the event conditional
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        brew_ev.conditional = (
+            "persistent._mas_c_hotchoc_brew_time is not None "
+            "and (datetime.datetime.now() - "
+            "persistent._mas_c_hotchoc_brew_time) "
+            "> datetime.timedelta(0, {0})"
+        ).format(end_brew)
+        brew_ev.action = EV_ACT_QUEUE
+
+
+    def mas_drinkHotChoc(_start_time=None):
+        """
+        Lets monika drink hot chocolate aka sets the time she should stop
+        drinking hot chocolate (hot chocolate finished drinking event)
+
+        IN:
+            _start_time - time to start dirnking hot chocolate
+                If None, we use now
+                (Defualt: now)
+        """
+        if _start_time is None:
+            _start_time = datetime.datetime.now()
+
+        # delta for drinking
+        # NOTE: between 10 minutes to 2 hours
+        drinking_time = datetime.timedelta(
+            0,
+            random.randint(
+                store.mas_coffee.DRINK_LOW,
+                store.mas_coffee.DRINK_HIGH
+            )
+        )
+
+        # setup the stop time for the cup
+        persistent._mas_c_hotchoc_cup_done = _start_time + drinking_time
+
+        # setup the event conditional
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        drink_ev.conditional = (
+            "persistent._mas_c_hotchoc_cup_done is not None "
+            "and datetime.datetime.now() > persistent._mas_c_hotchoc_cup_done"
+        )
+        drink_ev.action = EV_ACT_QUEUE
+
+        # increment cup count
+        persistent._mas_c_hotchoc_cups_drank += 1
+
+
+    def mas_resetHotChoc():
+        """
+        Completely resets all hot chocolate vars
+        NOTE: this only resets the hotchoc drinking vars, not the history
+        """
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        monika_chr.remove_acs(mas_acs_hotchoc_mug)
+        brew_ev.conditional = None
+        brew_ev.action = None
+        drink_ev.conditional = None
+        drink_ev.action = None
+        persistent._mas_c_hotchoc_brew_time = None
+        persistent._mas_c_hotchoc_cup_done = None
+        removeEventIfExist(brew_ev.eventlabel)
+        removeEventIfExist(drink_ev.eventlabel)
+
+
+    def _mas_startupHotChocLogic():
+        """
+        Runs startup logic regarding hotchocolate stuff.
+
+        It is assumed that this run prior to conditional checking.
+        """
+        # do we even have coffee enabled?
+        if not persistent._mas_acs_enable_hotchoc:
+            return
+
+        # setup some vars
+        brew_ev = mas_getEV("mas_c_hotchoc_finished_brewing")
+        drink_ev = mas_getEV("mas_c_hotchoc_finished_drinking")
+        _now = datetime.datetime.now()
+        _chance = random.randint(1, 100)
+        time_for_coffee = mas_isHotChocTime(_now)
+
+        # setup some functions
+        def still_brew(_time):
+            return (
+                _time is not None
+                and _time.date() == _now.date()
+                and mas_isHotChocTime(_time)
+            )
+
+        def still_drink(_time):
+            return _time is not None and _now < _time
+
+
+        # NOTE: assume everything below actually relates to hot choc
+        # should we even drink coffee right now?
+        if not time_for_coffee:
+
+            # if its not time for coffee, we can still be drinking coffee
+            # because of a couple reasons:
+            #   - monika started her brew before her cut off time
+            #   - monika's drink time hasn't been reached yet
+            if still_brew(persistent._mas_c_hotchoc_brew_time):
+                # monika's brew started before the cut off.
+                # if the brew is done, then skip to drinking.
+                # otherwise, the finished brewing event will trigger on its
+                # own
+                if brew_ev.conditional is not None and eval(brew_ev.conditional):
+                    # even though this in inaccurate, it works for the
+                    # immersive purposes, so whatever.
+                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
+
+                    if not still_drink(persistent._mas_c_hotchoc_cup_done):
+                        # monika should have finished this coffee already
+                        mas_resetHotChoc()
+
+                    else:
+                        # monika is currently drinking this coffee
+                        brew_ev.conditional = None
+                        brew_ev.action = None
+                        persistent._mas_c_hotchoc_brew_time = None
+                        monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+            elif still_drink(persistent._mas_c_hotchoc_cup_done):
+                # monika is still drinking coffee
+                # clear brew vars just in case
+                brew_ev.conditional = None
+                brew_ev.action = None
+                persistent._mas_c_hotchoc_brew_time = None
+                removeEventIfExist(brew_ev.eventlabel)
+
+                # make sure she has the cup, just in case
+                if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):
+                    monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+            else:
+                # otherwise, just reset coffee
+                mas_resetHotChoc()
+
+        else:
+            # its coffee time!
+            # if we are currently brewing or drinking, we don't need to do
+            # anything else
+            if (
+                    still_brew(persistent._mas_c_hotchoc_brew_time)
+                    or still_drink(persistent._mas_c_hotchoc_cup_done)
+                ):
+                return
+
+            # otherwise, lets checek if monika should be brewing or drinking
+            # coffee
+
+            # first clear vars so we start fresh
+            mas_resetHotChoc()
+
+            if (
+                    _now.hour < store.mas_coffee.HOTCHOC_BREW_DRINK_SPLIT
+                    and _chance <= store.mas_coffee.BREW_CHANCE
+                ):
+                # monika is brewing coffee
+                mas_brewHotChoc()
+
+            elif _chance <= store.mas_coffee.DRINK_CHANCE:
+                # monika is drinking coffee
+                mas_drinkHotChoc()
+                monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+
+        return
+
+
     def mas_startupPlushieLogic(chance=4):
         """
         Runs a simple random check for the quetzal plushie.
@@ -3296,11 +4065,16 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have coffee enabled?
+        # do we even have plushe enabled?
         if not persistent._mas_acs_enable_quetzalplushie:
             return
         if renpy.random.randint(1,chance) == 1:
-            monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+            if persistent._mas_d25_deco_active:
+                #if in d25 mode, it's seasonal, and also norm+
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie_santahat)
+
+            else:
+                monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
         return
 
 
@@ -4543,6 +5317,9 @@ define MAS_RAIN_UPSET = 25
 define MAS_RAIN_DIS = 40
 define MAS_RAIN_BROKEN = 70
 
+# snow
+define mas_is_snowing = False
+
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
@@ -4588,7 +5365,6 @@ define mas_skip_visuals = False # renaming the variable since it's no longer lim
 define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
-define mas_o31 = datetime.date(datetime.date.today().year, 10, 31)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False

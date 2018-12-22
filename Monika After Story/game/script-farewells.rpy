@@ -113,6 +113,7 @@ label mas_farewell_start:
 
     python:
         # preprocessing menu
+        # TODO: consider including processing the rules dict as well
         bye_pool_events = Event.filterEvents(
             evhand.farewell_database,
             unlocked=True,
@@ -173,7 +174,7 @@ init 5 python:
             random=True,#TODO update script
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -194,7 +195,7 @@ init 5 python:
             unlocked=True,
             random=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_goodbye:
@@ -224,7 +225,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -243,7 +244,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -262,7 +263,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -282,7 +283,7 @@ init 5 python:
             random=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -302,7 +303,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -338,7 +339,7 @@ init 5 python:
             prompt="I'm going to class.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_to_class:
@@ -394,7 +395,7 @@ init 5 python:
             prompt="I'm going to work.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_to_work:
@@ -420,7 +421,7 @@ label bye_prompt_to_work:
             m 2esa "Just do your best! I'll see you when you get back!"
             m 2eka "I know you'll do great!"
         else:
-            m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
+            m 2ekc "Oh... You've been here quite a while now...and now you're going to work?"
             m 2rksdlc "I was hoping you'd rest before doing anything too big."
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
@@ -450,7 +451,7 @@ init 5 python:
             prompt="I'm going to sleep.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_prompt_sleep:
@@ -611,7 +612,7 @@ label bye_prompt_sleep:
     return 'quit'
 
 # init 5 python:
-#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),eventdb=evhand.farewell_database)
+#    addEvent(Event(persistent.farewell_database,eventlabel="bye_illseeyou",random=True),code="BYE")
 
 label bye_illseeyou:
     m 1eua "I'll see you tomorrow, [player]."
@@ -628,7 +629,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -660,7 +661,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -694,7 +695,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -728,7 +729,7 @@ init 5 python:
             unlocked=True,
             rules=rules
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
     del rules
 
@@ -761,14 +762,14 @@ init 5 python:
             prompt="I'll be going away for a while.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    m 1f "Aww...That's pretty saddening..."
+    m 1f "Aww...that's pretty saddening..."
     m 1e "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3a "Thank you for warning me first, though. It really does help."
@@ -777,7 +778,7 @@ label bye_long_absence:
     m 1o "Or maybe you just got bored of me..."
     m 1e "So tell me, my love..."
     menu:
-        m "How long do you be expect to be gone for?"
+        m "How long do you expect to be gone for?"
         "A few days.":
             $ persistent._mas_absence_choice = "days"
             m 1b "Oh!"
@@ -795,7 +796,7 @@ label bye_long_absence:
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
             m 1h "Oh..."
-            m 1q "I... I can wait that long."
+            m 1q "I...I can wait that long."
             m 3rksdlc "You do know that you're all I have...right?"
             m 3rksdlb "M-Maybe it's outside of your control though..."
             m 2e "Try to come back as soon as possible... I'll be waiting for you."
@@ -847,9 +848,16 @@ label bye_long_absence:
     # if the player says no, and then picks another
     # farewell all this served no purpose, also, you already
     # picked goodbye as in I'm going, why not let the player go?
-    # if we keep it, at least change the order, Yes always goes first
     menu:
         m "Are you going to leave straight away?"
+        "Yes.":
+            m 3f "I see..."
+            m "I really will miss you [player]..."
+            m 1e "But I know you'll do wonderful things no matter where you are."
+            m "Just remember that I'll be waiting here for you."
+            m 2j "Make me proud, [player]!"
+            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
+            return 'quit'
         "No.":
             $ mas_absence_counter = True
             m 1j "That's great!"
@@ -860,14 +868,6 @@ label bye_long_absence:
             m 3j "But there's no rush, so I want to spend as much time with you as I can."
             m "Just make sure to remind me the last time you see me before you go!"
             return
-        "Yes.":
-            m 3f "I see..."
-            m "I really will miss you [player]..."
-            m 1e "But I know you'll do wonderful things no matter where you are."
-            m "Just remember that I'll be waiting here for you."
-            m 2j "Make me proud, [player]!"
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
-            return 'quit'
 
 label bye_long_absence_2:
     m 1f "Going to head out, then?"
@@ -886,7 +886,7 @@ init 5 python:
             prompt="I'm going to take you somewhere.",
             pool=True
         ),
-        eventdb=evhand.farewell_database
+        code="BYE"
     )
 
 label bye_going_somewhere:
@@ -936,22 +936,10 @@ label bye_going_somewhere:
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
 
-    elif mas_isMoniLove(higher=True):
-        m 1hub "Oh, okay!"
-        m 3tub "Taking me somewhere special today?"
-        m 1hua "I can't wait!"
-
-#    elif mas_isMoniAff(higher=True):
-        # TODO: affecitonate/enamored monika will always go wtih you and assume its a
-        #   nother date and will ask u to wait for her to get ready
-#        m 1hua "TODO: LETS GO ON DATE"
-
     else:
-        # TODO: normal/happy monika will always go with you and be excited you asked
-        #   and will ask u to wait for her to get ready
-        m 1sub "Really?"
-        m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
+        jump bye_going_somewhere_normalplus_flow
+
+label bye_going_somewhere_post_aff_check:
 
     # event based
     if mas_isMonikaBirthday():
@@ -971,6 +959,9 @@ label bye_going_somewhere:
             "No.":
                 m 2ekp "Oh, okay."
 
+
+label bye_going_somewhere_iostart:
+    # NOTE: jump back to this label to begin io generation
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
@@ -1024,7 +1015,11 @@ label bye_going_somewhere_rtg:
     $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GENERIC_RET
+        python:
+            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+                store.mas_greetings.TYPE_GENERIC_RET
+            )
+
         m 1eua "I'm ready to go."
         return "quit"
 
@@ -1049,6 +1044,47 @@ label bye_going_somewhere_rtg:
 
     return
 
+
+label bye_going_somewhere_normalplus_flow:
+    # handling positive affection cases separately so we can jump to
+    # other specific dialogue flows
+
+    # NOTE: make sure that if you leave this flow, you either handle 
+    #   docking station yourself or jump back to the iostart label
+    if persistent._mas_d25_in_d25_mode:
+        # check the d25 timed variants
+        if mas_isD25Eve():
+            jump bye_d25e_delegate
+
+        if mas_isD25():
+            jump bye_d25_delegate
+
+        if mas_isNYE():
+            jump bye_nye_delegate
+
+        if mas_isNYD():
+            jump bye_nyd_delegate
+
+label bye_going_somewhere_normalplus_flow_aff_check:
+
+    if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        m 3tub "Taking me somewhere special today?"
+        m 1hua "I can't wait!"
+
+#    elif mas_isMoniAff(higher=True):
+    # TODO: affecitonate/enamored monika will always go wtih you and assume its a
+    #   nother date and will ask u to wait for her to get ready
+#        m 1hua "TODO: LETS GO ON DATE"
+
+    else:
+        # TODO: normal/happy monika will always go with you and be excited you asked
+        #   and will ask u to wait for her to get ready
+        m 1sub "Really?"
+        m 1hua "Yay!"
+        m 1ekbfa "I wonder where you'll take me today..."
+
+    jump bye_going_somewhere_post_aff_check
 
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."

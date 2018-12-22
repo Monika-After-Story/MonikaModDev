@@ -567,8 +567,7 @@ init -10 python in mas_selspr:
 
             # then readd everything that was previous
             for item in add_map.itervalues():
-                acs = item.selectable.get_sprobj()
-                moni_chr.wear_acs_in(acs, acs.rec_layer)
+                moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
 
@@ -583,9 +582,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
+                    new_hair = item.selectable.get_sprobj()
+
+                    if prev_hair == new_hair:
+                        # hair is the same? no point in changing
+                        return
 
                     try:
-                        moni_chr.change_hair(item.selectable.get_sprobj())
+                        moni_chr.change_hair(new_hair)
 
                     except Exception as e:
                         mas_utils.writelog("BAD HAIR: " + repr(e))
@@ -606,9 +610,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
+                    new_cloth = item.selectable.get_sprobj()
+
+                    if prev_cloth == new_cloth:
+                        # we are changing to the what we are wearing? no point
+                        return
 
                     try:
-                        moni_chr.change_clothes(item.selectable.get_sprobj())
+                        moni_chr.change_clothes(new_cloth)
 
                     except Exception as e:
                         mas_utils.writelog("BAD CLOTHES: " + repr(e))
@@ -754,7 +763,8 @@ init -10 python in mas_selspr:
             dest - data to save the loaded data into
         """
         for item_name, item_tuple in source.iteritems():
-            dest[item_name].fromTuple(item_tuple)
+            if item_name in dest:
+                dest[item_name].fromTuple(item_tuple)
 
 
     def load_selectables():
@@ -1109,6 +1119,24 @@ init -10 python in mas_selspr:
 
 init -1 python:
     import random
+
+    # better more user-friendly sel functions
+    def mas_SELisUnlocked(_sprite_item, select_type):
+        """
+        Checks if the given sprite item is unlocked
+
+        IN:
+            _sprite_item - sprite object to check
+            select_type - type of this sprite object
+
+        RETURNS: True if the given sprite item is unlocked, false otherwise
+        """
+        _sel_item = store.mas_selspr._get_sel(_sprite_item, select_type)
+        if _sel_item is not None:
+            return _sel_item.unlocked
+
+        return False
+
 
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
@@ -2071,6 +2099,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 #        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
 #        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
+        # save state
+        prev_moni_state = monika_chr.save_state(True, True, True)
+
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
@@ -2175,16 +2206,23 @@ label mas_selector_sidebar_select_confirm:
                 monika_chr
             )
 
-            store.mas_selspr._adjust_monika(
-                monika_chr,
-                old_select_map,
-                select_map,
-                select_type,
-                True
-            )
+#            store.mas_selspr._adjust_monika(
+#                monika_chr,
+#                old_select_map,
+#                select_map,
+#                select_type,
+#                True
+#            )
 
-            monika_chr.save()
-            renpy.save_persistent()
+            # reload state
+            monika_chr.reset_outfit()
+            monika_chr.remove_all_acs()
+            monika_chr.load_state(prev_moni_state)
+
+
+        # always save confirming
+        monika_chr.save()
+        renpy.save_persistent()
 
     return True
 
@@ -2203,13 +2241,18 @@ label mas_selector_sidebar_select_cancel:
             monika_chr
         )
 
-        store.mas_selspr._adjust_monika(
-            monika_chr,
-            old_select_map,
-            select_map,
-            select_type,
-            True
-        )
+#        store.mas_selspr._adjust_monika(
+#            monika_chr,
+#            old_select_map,
+#            select_map,
+#            select_type,
+#            True
+#        )
+
+        # reload state
+        monika_chr.reset_outfit()
+        monika_chr.remove_all_acs()
+        monika_chr.load_state(prev_moni_state)
 
     return False
 
@@ -2236,6 +2279,10 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
 
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_hair = True
+
     return _return
 
 # CLOTH sidebar selector label
@@ -2247,5 +2294,9 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
 
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_clothes = True
 
     return _return

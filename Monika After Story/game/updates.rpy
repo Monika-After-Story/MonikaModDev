@@ -294,6 +294,42 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# TODO: need to go through events and clear actions from all events
+#   without conditionals and start_date
+#   We will save this for versiojn 0812 or 9
+
+# 0.8.11
+label v0_8_11(version="v0_8_11"):
+    python:
+        import store.mas_compliments as mas_comp
+        import store.evhand as evhand
+        
+        # change compliements event props
+        thanks_ev = mas_comp.compliment_database.get(
+            "mas_compliment_thanks",
+            None
+        )
+        if thanks_ev:
+            # remove conditional and action
+            thanks_ev.conditional = None
+            thanks_ev.action = None
+
+            # unlock only if you have not seen this
+            if not renpy.seen_label(thanks_ev.eventlabel):
+                thanks_ev.unlocked = True
+
+        # change monika nick name
+        if not persistent._mas_called_moni_a_bad_name:
+            mas_unlockEventLabel("monika_affection_nickname")
+
+        if (
+                not persistent._mas_pm_taken_monika_out 
+                and len(persistent._mas_dockstat_checkin_log) > 0
+            ):
+            persistent._mas_pm_taken_monika_out = True
+
+    return
+
 # 0.8.10
 label v0_8_10(version="v0_8_10"):
     python:
