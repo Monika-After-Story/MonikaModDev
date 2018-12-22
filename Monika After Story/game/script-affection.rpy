@@ -1850,7 +1850,7 @@ label monika_affection_nickname:
             "milf",
             "murder",
             "moron",
-            "Murder",
+            "murder",
             "murderer",
             "narcissist",
             "nasty",
