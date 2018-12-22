@@ -99,6 +99,9 @@ init -860 python in mas_history:
     mhs_db = dict()
     # MASHistorySaver objects database
 
+    mhs_sorted_list = list()
+    # list of MASHistorySaver objects, sorted by trigger date
+
     ### CONSTANTS
 
     ## lookup constants
@@ -192,12 +195,17 @@ init -860 python in mas_history:
         """
         Loads persistent MASHistorySaver data into the mhs_db
 
+        Also adds MHS to the sorted list and sorts it.
+
         ASSUMES: the mhs database is already filled
         """
         for mhs_id, mhs_data in store.persistent._mas_history_mhs_data.iteritems():
             mhs = mhs_db.get(mhs_id, None)
             if mhs is not None:
                 mhs.fromTuple(mhs_data)
+                mhs_sorted_list.append(mhs)
+
+        mhs_sorted_list.sort(key=store.MASHistorySaver.getSortKey)
 
 
     def saveMHSData():
@@ -413,6 +421,19 @@ init -850 python:
             self.exit_pp = exit_pp
             self.trigger_pp = trigger_pp
 
+
+        @staticmethod
+        def getSortKey(_mhs):
+            """
+            Gets the sort key for this MASHistorySaver
+
+            IN: 
+                _mhs - MASHistorSaver to get sort key
+
+            RETURNS the sort key, which is trigger datetime
+            """
+            return _mhs.trigger
+
        
         @staticmethod
         def correctTriggerYear(_trigger):
@@ -550,8 +571,10 @@ init -800 python in mas_history:
         # now we go through the mhs_db and run their save algs if their trigger
         # is past today.
         _now = datetime.datetime.now()
-        
-        for mhs in mhs_db.itervalues():
+        index = 0
+    
+#        for mhs in mhs_db.itervalues():
+        for mhs in mhs_sorted_list:
             # trigger rules:
             #   current date must be past trigger
             if mhs.trigger <= _now:
@@ -571,10 +594,12 @@ init -816 python in mas_delact:
     ## need a place to define DelayedAction callbacks? do it here I guess.
     nothing = "temp"
 
+init -816 python in mas_history:
+    from store.mas_delact import _MDA_safeadd
+    # mas history store has safeadd
 
 init -815 python in mas_history:
     ## Need a place define callbacks/programming points? Do it here I guess.
-    from store.mas_delact import _MDA_safeadd
 
     # BDAY
     def _bday_exit_pp(mhs):
@@ -645,6 +670,12 @@ init -810 python:
 
             # actions
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
+            "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
+            "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
+
+            # actions / monika
+            "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
+            "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -686,6 +717,9 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+
+            # likes/ d25
+            "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
@@ -765,5 +799,15 @@ init -810 python:
             "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
         },
         exit_pp=store.mas_history._bday_exit_pp
+    ))
+
+    # AFFection
+    store.mas_history.addMHS(MASHistorySaver(
+        "aff",
+        datetime.datetime(2019, 1, 2),
+        {
+            "_mas_aff_before_fresh_start": "aff.before_fresh_start"
+        },
+        use_year_before=True
     ))
 
