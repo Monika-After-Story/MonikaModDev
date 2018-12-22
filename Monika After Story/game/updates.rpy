@@ -294,6 +294,10 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# TODO: need to go through events and clear actions from all events
+#   without conditionals and start_date
+#   We will save this for versiojn 0812 or 9
+
 # 0.8.11
 label v0_8_11(version="v0_8_11"):
     python:
@@ -317,9 +321,6 @@ label v0_8_11(version="v0_8_11"):
         # change monika nick name
         if not persistent._mas_called_moni_a_bad_name:
             mas_unlockEventLabel("monika_affection_nickname")
-
-        # TODO: need to go through events and clear actions from all events
-        #   without conditionals and start_date
 
         if (
                 not persistent._mas_pm_taken_monika_out 
