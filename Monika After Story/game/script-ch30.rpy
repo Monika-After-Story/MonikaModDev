@@ -1384,7 +1384,7 @@ label ch30_reset:
             mas_lockEVL("monika_rain_stop", "EVE")
             mas_lockEVL("mas_monika_islands", "EVE")
             mas_lockEVL("monika_rain", "EVE")
-            # TODO: need to lock the greeting if its snowing actually
+            mas_lockEVL("greeting_ourreality", "GRE")
 
     # reset hair / clothes
     # the default options should always be available.
