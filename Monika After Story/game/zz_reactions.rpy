@@ -980,7 +980,6 @@ label mas_reaction_hotchocolate:
         m "Thank you so much, [player]!"
 
     else:
-        show emptydesk at i11 zorder 9
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
         m 2rksdla "...Especially on those cold, winter nights."
@@ -994,12 +993,15 @@ label mas_reaction_hotchocolate:
             m 3eua "I'll be sure to have some later!"
         else:
             $ store.mas_sprites.reset_zoom()
+            show emptydesk at i11 zorder 9
             m 3eua "In fact, I think I'll make some right now!"
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
             $ mas_brewHotChoc()
+
+            m 1hua "There, it'll be ready in a few minutes."
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
