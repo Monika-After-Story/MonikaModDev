@@ -1274,8 +1274,8 @@ label mas_reaction_new_ribbon:
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
         m 3eua "In fact, I'll put it on right now..."
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
-        $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.change_hair(mas_hair_def)
+        $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         m 1hua "Oh it's wonderful, [player]!"
 
         if mas_isMoniAff(higher=True):
@@ -1294,8 +1294,8 @@ label mas_reaction_new_ribbon:
 
         m 3eua "I’ll put this on right now..."
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
-        $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.change_hair(mas_hair_def)
+        $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         m 3hua "Thank you so much [player], I just love it!"
     return
 
