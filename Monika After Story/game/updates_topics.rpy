@@ -101,7 +101,7 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
-#        updates.version_updates[vv0_8_10] = vv0_8_11
+        updates.version_updates[vv0_8_10] = vv0_8_11
         updates.version_updates[vv0_8_9] = vv0_8_10
         updates.version_updates[vv0_8_8] = vv0_8_9
         updates.version_updates[vv0_8_7] = vv0_8_9
@@ -141,6 +141,14 @@ label vv_updates_topics:
         # do NOT use this to update the IDs
         # All conflicts should be handled in an individual script block in
         # updates.rpy. (SEE updates.rpy)
+
+        # (0.8.4 - 0.8.10) -> 0.8.11
+        updates.topics[vv0_8_11] = {
+            "monika_snowman": None,
+            "monika_relax": None,
+            "monika_hypothermia": None,
+            "monika_whatiwant": None
+        }
 
         # (0.8.1 - 0.8.3) -> 0.8.4
         updates.topics[vv0_8_4] = {

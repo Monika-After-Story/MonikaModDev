@@ -98,7 +98,7 @@ image mas_lightning_s:
     parallel:
         easeout 2.8 alpha 0.0
     3.0
-    Null()    
+    Null()
 
 transform k_scare:
     tinstant(640)
@@ -108,3 +108,73 @@ transform otei_appear(a=0.70,time=1.0):
     i11
     alpha 0.0
     linear time alpha a
+
+transform fade_in(time=1.0):
+    alpha 0.0
+    ease time alpha 1.0
+
+init python:
+    def zoom_smoothly(trans, st, at):
+        if trans.y < _mas_current_kiss_y:
+            trans.y = 50
+        if trans.zoom < _mas_current_kiss_zoom:
+            trans.zoom = 50
+        return 0
+
+# kissing animation transform
+transform mas_kissing(_zoom, _y,time=2.0):
+    i11
+    xcenter 640 yoffset 700 yanchor 1.0
+    linear time ypos _y zoom _zoom
+
+default persistent._mas_first_kiss = None
+# contains datetime of users's first kiss with monika
+# NOTE: need to add this to calendar
+
+label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
+    # Note: the hardcoded constants work to give the focus on lips
+    # effect these were calculated based on max/min values of the zoom
+
+    if persistent._mas_first_kiss is None:
+        $ persistent._mas_first_kiss = datetime.datetime.now()
+
+    window hide
+    if hide_ui:
+        # hide everything
+        $ HKBHideButtons()
+        $ mas_RaiseShield_core()
+    # reset position to i11
+    show monika 6dubfa at i11
+    # do the appropriate calculations
+    $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
+    $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
+    $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
+    # 380 #correct value for max
+    # start the kiss animation
+    show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    # wait until we're done with the animation
+    $ renpy.pause(transition)
+    # show black scene
+    show black zorder 100 at fade_in
+    # wait half the time to play the sound effect
+    $ renpy.pause(duration/2)
+    play sound "mod_assets/sounds/effects/kissing.ogg"
+    window auto
+    "chu~{fast}{w=1}{nw}"
+    window hide
+    $ renpy.pause(duration/2)
+    # hide the black scene
+    hide black
+    # trasition back to i11 in 3 secs which is the best time for non slow back off
+    show monika 6tkbfu :
+        linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
+    pause 3.0
+    show monika 6ekbfa at i11 with dissolve
+    if hide_ui:
+        if store.mas_globals.dlg_workflow:
+            $ mas_MUMUDropShield()
+        else:
+            $ mas_DropShield_core()
+        $ HKBShowButtons()
+    window auto
+    return

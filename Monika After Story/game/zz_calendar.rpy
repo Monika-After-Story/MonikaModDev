@@ -1758,6 +1758,7 @@ init python:
             []
         )
 
+    # TODO: add first kiss here
 
 
 init 100 python:
