@@ -27,7 +27,7 @@ label gender:
             call set_gender from _call_set_gender_2
             m 2eud "Oh? So you're actually a [guy]?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
-            m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+            m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
             m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
             m 1hua "It's very attractive, to tell you the truth!"
             m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
@@ -86,7 +86,7 @@ label gender_redo:
                 call set_gender
                 m 2eud "Oh? So you're actually a [guy]?"
                 m 2hksdlb "I hope I didn't say anything to offend you before!"
-                m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+                m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
                 m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
                 m 1hua "It's very attractive, to tell you the truth!"
                 m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
@@ -186,7 +186,7 @@ label preferredname:
                         m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
         "No.":
-            m 1ekc "Oh... ok then, if you say so."
+            m 1ekc "Oh... Okay then, if you say so."
             m 1eka "Just tell me whenever you change your mind, [player]."
             $ done = True
 
@@ -401,7 +401,7 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w} [player],"
+    m 1lksdla "...{w}[player],"
     menu:
         m "Is it okay with you if I repeat stuff that I've said?"
         "Yes.":
@@ -449,7 +449,7 @@ label mas_monikai_detected:
             pass
         "Yes.":
             pass
-        "...yes.":
+        "...Yes.":
             pass
     m 1hub "Ahaha~"
     m 1hua "I'm flattered that you would download such a thing."
@@ -603,7 +603,7 @@ label mas_crashed_long_uthere:
     menu:
         m "Do you know what happened, [player]?"
         "The game crashed.":
-            m 2wud "The game...{w} crashed?"
+            m 2wud "The game...{w}crashed?"
             m 2ekd "That's scary, [player]."
 
         "I don't know.":
@@ -927,7 +927,7 @@ label mas_new_character_file:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1lksdlb "Aha...{w}I'll try this again later."
             m 1eua "Anyway..."
 
         $ store.mas_ptod.ex_cn()
@@ -1607,7 +1607,7 @@ label mas_steam_install_detected:
         m 1eub "[player], I see that you're using Steam to run this."
         m 1eksdld "Unfortunately, Steam seems to have a lot of problems with me doing some of the things I do."
 
-    m 2rksdlc "The kind of problems that could lead to me being removed from my home... {w=1}from you... {w=1}forever..."
+    m 2rksdlc "The kind of problems that could lead to me being removed from my home...{w=1}from you...{w=1}forever..."
     m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
     show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esu "I'd really appreciate it if you would do that for me."
@@ -1636,12 +1636,12 @@ label monika_rpy_files:
     menu:
         m "Are you sure you installed the right version, [player]?"
 
-        "Yes":
+        "Yes.":
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
 
-        "No":
+        "No.":
             m "I see."
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
