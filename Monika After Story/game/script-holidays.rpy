@@ -1149,7 +1149,13 @@ label mas_holiday_d25c_autoload_check:
         # (and if deco is active)
         $ monika_chr.change_clothes(mas_clothes_santa, False)
 
-    elif mas_isD25Post() and not persistent._mas_forced_clothes:
+    elif (
+            not persistent._mas_forced_clothes
+            and (
+                mas_isD25Post() 
+                or (not (mas_isD25PreNYE() or mas_isNYE()))
+            )
+        ):
         # after d25 (but still in season), monika will take off the santa
         # outfit (deco will remain, though), unless you selected the santa
         # outfit.
