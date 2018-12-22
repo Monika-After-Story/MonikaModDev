@@ -2293,7 +2293,7 @@ label mas_dockstat_empty_desk:
     $ store.mas_sprites.reset_zoom()
     show emptydesk zorder ed_zorder at i11
 
-    if mas_isD25Season() and persistent._mas_d25_in_d25_mode:
+    if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
 
     else:
