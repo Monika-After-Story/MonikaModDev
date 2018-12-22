@@ -113,6 +113,7 @@ label mas_farewell_start:
 
     python:
         # preprocessing menu
+        # TODO: consider including processing the rules dict as well
         bye_pool_events = Event.filterEvents(
             evhand.farewell_database,
             unlocked=True,
@@ -935,22 +936,10 @@ label bye_going_somewhere:
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
 
-    elif mas_isMoniLove(higher=True):
-        m 1hub "Oh, okay!"
-        m 3tub "Taking me somewhere special today?"
-        m 1hua "I can't wait!"
-
-#    elif mas_isMoniAff(higher=True):
-        # TODO: affecitonate/enamored monika will always go wtih you and assume its a
-        #   nother date and will ask u to wait for her to get ready
-#        m 1hua "TODO: LETS GO ON DATE"
-
     else:
-        # TODO: normal/happy monika will always go with you and be excited you asked
-        #   and will ask u to wait for her to get ready
-        m 1sub "Really?"
-        m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
+        jump bye_going_somewhere_normalplus_flow
+
+label bye_going_somewhere_post_aff_check:
 
     # event based
     if mas_isMonikaBirthday():
@@ -970,6 +959,9 @@ label bye_going_somewhere:
             "No.":
                 m 2ekp "Oh, okay."
 
+
+label bye_going_somewhere_iostart:
+    # NOTE: jump back to this label to begin io generation
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
@@ -1023,7 +1015,11 @@ label bye_going_somewhere_rtg:
     $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GENERIC_RET
+        python:
+            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+                store.mas_greetings.TYPE_GENERIC_RET
+            )
+
         m 1eua "I'm ready to go."
         return "quit"
 
@@ -1048,6 +1044,47 @@ label bye_going_somewhere_rtg:
 
     return
 
+
+label bye_going_somewhere_normalplus_flow:
+    # handling positive affection cases separately so we can jump to
+    # other specific dialogue flows
+
+    # NOTE: make sure that if you leave this flow, you either handle 
+    #   docking station yourself or jump back to the iostart label
+    if persistent._mas_d25_in_d25_mode:
+        # check the d25 timed variants
+        if mas_isD25Eve():
+            jump bye_d25e_delegate
+
+        if mas_isD25():
+            jump bye_d25_delegate
+
+        if mas_isNYE():
+            jump bye_nye_delegate
+
+        if mas_isNYD():
+            jump bye_nyd_delegate
+
+label bye_going_somewhere_normalplus_flow_aff_check:
+
+    if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        m 3tub "Taking me somewhere special today?"
+        m 1hua "I can't wait!"
+
+#    elif mas_isMoniAff(higher=True):
+    # TODO: affecitonate/enamored monika will always go wtih you and assume its a
+    #   nother date and will ask u to wait for her to get ready
+#        m 1hua "TODO: LETS GO ON DATE"
+
+    else:
+        # TODO: normal/happy monika will always go with you and be excited you asked
+        #   and will ask u to wait for her to get ready
+        m 1sub "Really?"
+        m 1hua "Yay!"
+        m 1ekbfa "I wonder where you'll take me today..."
+
+    jump bye_going_somewhere_post_aff_check
 
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."

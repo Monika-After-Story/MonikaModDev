@@ -1382,19 +1382,64 @@ label monika_date:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_kiss",category=['romance'],prompt="Kiss me",pool=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_kiss:
-    m 1wubsw "Eh? D-Did you say...k...kiss?"
-    m 2lkbsa "This suddenly...it's a little embarrassing..."
-    m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
-    m 2hksdlb "...Ahahaha! Wow, sorry..."
-    m 1eka "I really couldn't keep a straight face there."
-    m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
-    m 1tku "Don't lie if it turned you on a little bit."
-    m 1hub "Ahaha! I'm kidding."
-    m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
-    m 5lubfu "But that'll be our secret~"
+    if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
+        python:
+            kiss_quips_after = [
+                "I love you, [player]~",
+                "I love you so much, [player]~",
+                "I love you more than you'll ever know, [player]~",
+                "I love you so much, [player]. You mean everything to me~"
+            ]
+
+            kiss_quip = renpy.random.choice(kiss_quips_after)
+
+        if renpy.random.randint(1,50) == 1:
+            call monika_kiss_tease
+
+        else:
+            show monika 6ekbfa
+            pause 2.0
+
+        call monika_kissing_motion
+
+        show monika 6ekbfa
+        $ renpy.say(m, kiss_quip)
+
+        menu:
+            "I love you too, [m_name]~":
+                hide window
+                show monika 6ekbfa
+                pause 2.0
+
+    else:
+        m 1wubsw "Eh? D-Did you say...k...kiss?"
+        m 2lkbsa "This suddenly...it's a little embarrassing..."
+        m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
+        m 2hksdlb "...Ahahaha! Wow, sorry..."
+        m 1eka "I really couldn't keep a straight face there."
+        m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
+        m 1tku "Don't lie if it turned you on a little bit."
+        m 1hub "Ahaha! I'm kidding."
+        m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
+        m 5lubfu "But that'll be our secret~"
+    return
+
+label monika_kiss_tease:
+    m 2ekc "A kiss?"
+    m 2tfc "With you?"
+    m 2rfc "Sorry [player], but there's no way."
+    show monika 2dfc
+    pause 5.0
+    show monika 2dfu
+    pause 2.0
+    show monika 2tfu
+    pause 2.0
+    m 2tfb "Ahaha!"
+    m 2efu "I had you going for a second there, didn't I?"
+    m 2ekbfa "Of course you can kiss me, [player]!"
     return
 
 init 5 python:
@@ -4175,8 +4220,8 @@ label monika_haterReaction:
             m 4eka "Thank you..."
             m 1hua "That makes me prouder of you, [player]!"
             m "I knew you weren't one of those people."
-            m 1lkbfa "Gosh...I feel like giving you a kiss right now if I were there."
-            # TODO: do a kiss lol
+            # NOTE: probably wont have the kissing line here ever
+            #m 1lkbfa "Gosh... I feel like giving you a kiss right now if I were there."
             m 1ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1hua "I trust you, [player]. I love you for believing in me."
@@ -8975,6 +9020,43 @@ label monika_clothes_select:
 
 #### ends Monika clothes topic
 
+#### Monika ribbons topic
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ribbon_select",
+            category=["monika"],
+            prompt="Can you change your ribbon?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_ribbon_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+#    if monika_chr.hair.name != mas_hair_def.name:
+#        m "But im going to change my clothes and hair back to normal."
+#        $ monika_chr.reset_outfit(False)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    m 1eka "If you want me to change my ribbon, just ask, okay?"
+
+    return
+#### End Ribbon change topic
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_backpacking",category=['misc','nature'],prompt="Backpacking",random=True))
 
@@ -9996,7 +10078,291 @@ label monika_cares_about_dokis:
             m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
             m 1hub "Ahahaha!"
 
+    return "derandom|rebuild_ev"
+
+#### old christmas.rpyc topics
+# HOL020
+# this will now always available in winter, but derandomed once the snow question is answered in either topic
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_snow",
+            category=["winter","weather","you"],
+            prompt="Snow",
+            random=mas_isWinter()
+        )
+    )
+
+label monika_snow:
+    m 1eua "Hey, [player], now that it's winter, I was wondering..."
+    menu:
+        m "Does it ever snow where you live?"
+
+        "Yes":
+            $ persistent._mas_pm_gets_snow = True
+
+            m 1hub "That's wonderful!"
+            m 1eua "I've always liked the peaceful aura it seems to give off."
+            m 1dsa "It's just so tranquil and intimate, you know?"
+            m 1hua "There's a quiet beauty in watching a soft, white blanket of snow and ice tuck the world away to sleep."
+            call monika_snow_gets_snow
+
+        "No":
+            $ persistent._mas_pm_gets_snow = False
+
+            call monika_hemispheres_nogets_snow
+
     return "derandom"
+
+
+# player has snow, snow version
+label monika_snow_gets_snow:
+    if mas_isMoniHappy(higher=True):
+        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
+
+        if mas_isMoniAff(higher=True):
+            m 5ekbfa "...and we could hold each other close to keep each other warm~"
+
+    m 5eubfb "I can't wait to experience a winter night like that with you, [player]."   
+    return
+
+# player no snow, snow version
+label monika_snow_nogets_snow:
+    m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
+
+    if mas_isMoniAff(higher=True):
+        m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "A night of cuddling with you would be wonderful..."
+        m "My heart is pounding, just imagining it."
+
+    else:
+        m 2eka "But anyway, I'm sure there's still a lot we can do together!"
+
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_snowballfight",
+            category=["winter"],
+            prompt="Have you had a snowball fight?",
+            pool=True,
+            unlocked=mas_isWinter(),
+            rules={"no_unlock":None}
+        )
+    )
+
+label monika_snowballfight:
+    m 1euc "Snowball fights?"
+    m 1eub "I've been in a few before, they've always been fun!"
+    m 3eub "But having one with you sounds even better, [player]!"
+    m 1dsc "Fair warning, though..."
+    m 2tfu "I've got quite the throwing arm."
+    m 2tfb "So don't expect me to go easy on you, ahaha!"
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_iceskating",
+            category=["sports", "winter"],
+            prompt="Ice skating",
+            random=True
+        )
+    )
+
+label monika_iceskating:
+    m 1eua "Hey, [player], do you know how to ice skate?"
+    m 1hua "It's a really fun sport to learn!"
+    m 3eua "Especially if you can do a lot of tricks."
+    m 3rksdlb "In the beginning, it's pretty difficult to keep your balance on the ice..."
+    m 3hua "So eventually being able to turn it into a performance is really impressive!"
+    m 3eub "There's actually a lot of ways to ice skate..."
+    m "There's figure skating, speed skating, and even theatrical performances!"
+    m 3euc "And despite how it sounds, it's not just a winter activity either..."
+    m 1eua "Lots of places have indoor ice rinks, so it's something that can be practiced year round."
+    if mas_isMoniHappy(higher=True):
+        m 1dku "..."
+        m 1eka "I would really love to practice ice skating with you, [player]..."
+        m 1hua "But until we can do that, having you here with me is enough to keep me happy~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sledding",
+            category=["winter"],
+            prompt="Sledding",
+            random=mas_isWinter()
+        )
+    )
+
+label monika_sledding:
+    m 1eua "Hey [player], do you know what would be fun to do together?"
+    m 3hub "Sledding!"
+
+    if persistent._mas_pm_gets_snow is False: 
+        #explicitly using False here so we don't grab None people who haven't 
+        # answered the question yet
+        m 1eka "It may not snow where you live..."
+        m 3hub "But maybe we could go somewhere it does!"
+        m "Anyway..."
+
+    m 3eua "You might think it's only for kids, but I think it could be fun for us, too!"
+    m 3eub "We could try using an inner tube, a kicksled, a saucer, or even a traditional toboggan."
+    m 1hua "I've heard each one gives a different experience. Plus, both of us could easily fit on a toboggan."
+
+    if mas_isMoniAff(higher=True):
+        m 1euc "The kicksled is a bit small, though."
+        m 1hub "Ahaha!"
+        m 1eka "I'd have to sit in your lap for that one."
+        m 1rksdla "And I'd still be at risk of tumbling off."
+        m 1hubfa "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+        m 1tkbfu "That would probably be the best part."
+    else:
+        m 1hub "Racing down a snow covered hill together with the wind rushing past us sounds like a blast!"
+        m 1eka "I hope we can go sledding together sometime, [player]."
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_snowcanvas",
+            category=["winter"],
+            prompt="Snow canvas",
+            random=mas_isWinter()
+        )
+    )
+
+label monika_snowcanvas:
+    if persistent._mas_pm_gets_snow is not False:
+        m 3euc "[player], have you ever looked at snow and thought it resembles a blank canvas?"
+        m 1hksdlb "I know I'm not really good with art..."
+        m 3eua "But packing a few spray bottles with water and food coloring could make for a fun day!"
+        m 3hub "We can just step outside and let our imaginations run wild!"
+
+    else:
+        m 3euc "You know [player], snow is kinda like a blank canvas."
+        m 3eub "Maybe someday if we went somewhere that it snows, we could bring some food coloring in spray bottles and just step outside and let our imaginations run wild!"
+
+    m 1eua "Having so much space to paint sounds wonderful!"
+    m 1hub "We just have to make sure the snow is packed down tightly, and then we can draw to our heart's content!"
+    m 1eka "I'd love to make some snow art with you someday."
+    m 3hua "Maybe you can paint something for me when that happens, [player]."
+    return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_cozy",
+            category=["romance","winter"],
+            prompt="Warming up",
+            random=mas_isWinter(),
+            aff_range=(mas_aff.AFFECTIONATE,None)
+        )
+    )
+
+label monika_cozy:
+    m 3eua "Do you know the one thing I love about the cold weather, [player]?"
+    m 3eka "Anything warm feels really nice~"
+    m 1rksdla "Those who get cold hands really appreciate that feeling..."
+    m 1eua "It's like feeling a loved one's embrace~"
+    m 3eub "You also get to wear your winter clothes that have been stuck in your closet."
+    m 1hub "Finally able to whip out your winter fashion set is always a nice feeling."
+    m 3eua "But you know what the best way to warm yourself up is?"
+    m 3eka "Cuddling with the one you love in front of the fireplace~"
+    m "Just sitting there under a warm blanket, sharing a hot beverage."
+    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
+    m 1eka "I'd never let you go once I got a hold of you, [player]~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_winter",
+            category=["winter"],
+            prompt="Winter activities",
+            random=mas_isWinter()
+        )
+    )
+
+label monika_winter:
+    m 1eud "Ah, [player]!"
+    m 1eua "What do you think about winter?"
+    m 3eua "All sorts of fun activites only come around during this time..."
+    if persistent._mas_pm_gets_snow is not False:
+        m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
+
+    else:
+        m 3eka "I know you don't really get snow where you live, but many people do get to enjoy activities in the snow..."
+
+    m 3eua "Building a snowman, sledding, having snowball fights..."
+    m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor ice skating, pond hockey..."
+    m 3wud "And some actually go fishing...{w=1}{i}through the ice{/i}!"
+    m 1eka "For people who don't enjoy cold weather activities, staying indoors seems so much more comfortable when there's snow outside..."
+    m "Watching it gently fall while the moonlight relects off the fresh, white canvas...it's just beautiful."
+    if mas_isMoniAff(higher=True):
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "And to be honest, cuddling under a blanket, reading a book together with you is the best winter activity I can think of~"
+    else:
+        m 1hua "Sitting by the window, reading a nice book while drinking a cup of coffee or hot chocolate is always a wonderful experience on a cold night, [player]."
+    return
+
+#This combines _relax and _hypothermia into one topic
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_winter_dangers",
+            category=["winter"],
+            prompt="Winter dangers",
+            random=mas_isWinter()
+        )
+    )
+
+
+label monika_winter_dangers:
+    m 1hua "Isn't winter a beautiful time of year, [player]?"
+    m 3eka "The glistening, white snow, the bright and colorful lights~"
+    m 3hub "I just love it."
+    if persistent._mas_pm_gets_snow is False: 
+        #explicitly using False here so we don't grab None people who haven't 
+        # answered the question yet
+        m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate it's appeal..."
+        m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy it's beauty together!"
+
+    m 1eka "..."
+    m 3rkc "Although, as stunning as winter can be, there are a few dangers..."
+    m 3dsd "Like blizzards, or icy roads..."
+    m 1ekc "And the cold, of course..."
+    m 3rksdlc "The cold can be the most dangerous."
+    m 3eksdlc "It's really easy to get hypothermia or frostbite if you're not careful, [player]."
+    m 1ekd "So please remember to bundle up if you go outside..."
+    m 3euc "Put on your coat, your gloves, and the warmest hat you can find..."
+    m 1eka "And if it gets too bad, just stay inside where it's safe, okay?"
+    m 1ekb "What better way to spend a brutal winter day than wearing pajamas, drinking hot chocolate, reading a good book, and..."
+    m 1hua "Talking to me."
+    m 1hub "Ehehe~"
+
+    if mas_isMoniAff(higher=True):
+        show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfu "I'll always help keep you warm, [player]~"
+    return
+
+#### end christmas.rpyc topics
 
 default persistent._mas_pm_live_south_hemisphere = None
 default persistent._mas_pm_gets_snow = None
@@ -10078,35 +10444,57 @@ label monika_hemispheres:
 
     else:
         m 3eua "Anyway, that means it must be winter for you now."
-        m 2hub "Gosh, I really love how pretty snow is."
-        m 3euc "Well, I know not all parts of the world get snow..."
+        if persistent._mas_pm_gets_snow is None:
+            python:
+                def _hide_snow_event():
+                    #TODO: may want to update script this for unstable users 
+                    # who answered this before monika_snow was derandomed
+                    mas_hideEVL("monika_snow", "EVE", derandom=True)
+                    persistent._seen_ever["monika_snow"] = True
 
-        show monika 1euc
-        menu:
-            m "Does it snow where you live, [player]?"
+            m 2hub "Gosh, I really love how pretty snow is."
+            m 3euc "Well, I know not all parts of the world get snow..."
 
-            "Yes.":
-                $ persistent._mas_pm_gets_snow = True
-                m 3hub "That's wonderful!"
-                m 1eka "There's something really peaceful about a quiet, snowy night."
-                if mas_isMoniHappy(higher=True):
-                    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5eubla "Maybe someday when I cross over, we could go out for a walk together..."
-                    if mas_isMoniAff(higher=True):
-                        m 5ekbfa "...and we could hold each other close to keep each other warm~"
-                m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
+            show monika 1euc
+            menu:
+                m "Does it snow where you live, [player]?"
 
-            "No.":
-                $ persistent._mas_pm_gets_snow = False
-                m 3eka "That's a shame. But it's not all bad."
-                m 3hksdlb "At least you don't have to worry about shoveling it."
-                m 2tkc "Sometimes it can get so heavy it becomes a real problem for your back..."
-                if mas_isMoniAff(higher=True):
-                    m 1eksdla "Anyway, at least colder weather makes great cuddle weather."
-                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5ekbfa "A night of cuddling with you would be wonderful..."
-                    m "My heart is pounding, just imagining it."
-                else:
-                    m 2eka "But anyway, I'm sure there's still a lot we can do together!"
+                "Yes.":
+                    $ persistent._mas_pm_gets_snow = True
+                    $ _hide_snow_event()
 
-    return "derandom"
+                    m 3hub "That's wonderful!"
+                    call monika_hemispheres_gets_snow
+
+                "No.":
+                    $ persistent._mas_pm_gets_snow = False
+                    $ _hide_snow_event()
+
+                    call monika_hemispheres_nogets_snow
+
+        elif persistent._mas_pm_gets_snow:
+            m 2hub "Gosh, I really love how pretty snow is."
+            call monika_hemispheres_gets_snow
+
+        else:
+            m 3eka "I know you don't really get snow where you live..."
+            m 1eka "It must be nice not having to deal with all the hassles that come with it..."
+            m 3rksdld "Like the terrible travel conditions, having to shovel it..."
+            call monika_snow_nogets_snow
+
+    return "derandom|rebuild_ev"
+
+# player has snow, hemisphere version
+label monika_hemispheres_gets_snow:
+    m 1eka "There's something really peaceful about a quiet, snowy night."
+    call monika_snow_gets_snow
+    return
+
+# player no snow, hemisphere version
+label monika_hemispheres_nogets_snow:
+    m 3eka "That's a shame. But it's not all bad."
+    m 3hksdlb "At least you don't have to worry about shoveling it."
+    call monika_snow_nogets_snow
+    return
+   
+>>>>>>> content

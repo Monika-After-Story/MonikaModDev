@@ -178,3 +178,51 @@ label dev_selector_clothes_test:
         m 1eka "You canceled my clothes..."
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_selector_acs_ribbons_test",
+            category=["dev"],
+            prompt="TEST SELECTOR (ribbons acs)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_selector_acs_ribbons_test:
+    python:
+        unlock_map = {}
+        sorted_acs = store.mas_selspr.ACS_SEL_SL
+        use_acs = []
+        for item in sorted_acs:
+            if item.group == "ribbon":
+                unlock_map[item.name] = item.unlocked
+                item.unlocked = True
+                use_acs.append(item)
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Pick ribbon:")
+        sel_map = {}
+
+    m 1eua "Hi! Lets change my ribbon!"
+
+    if monika_chr.hair.name != mas_hair_def.name:
+        m "But im going to change my clothes and hair back to default."
+        $ monika_chr.reset_outfit(False)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    # undo the unlocks 
+    python:
+        for item in use_acs:
+            item.unlocked = unlock_map[item.name]
+
+    if _return:
+        m 1eub "You confirmed my ribbon!"
+
+    else:
+        m 1eka "You canceled my ribbon..."
+
+    return
+

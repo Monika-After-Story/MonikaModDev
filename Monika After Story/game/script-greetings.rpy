@@ -33,6 +33,10 @@ init -1 python in mas_greetings:
     # holiday specific
     TYPE_HOL_O31 = "o31"
     TYPE_HOL_O31_TT = "trick_or_treat"
+    TYPE_HOL_D25 = "d25"
+    TYPE_HOL_D25_EVE = "d25e"
+    TYPE_HOL_NYE = "nye"
+    TYPE_HOL_NYE_FW = "fireworks"
 
     # custom greeting functions
     def selectGreeting(_type=None):
@@ -990,27 +994,31 @@ default persistent.opendoor_opencount = 0
 default persistent.opendoor_knockyes = False
 
 init 5 python:
-    rules = dict()
-    # why are we limiting this to certain day range?
-#    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
-    rules.update(
-        MASGreetingRule.create_rule(
-            skip_visual=True,
-            random_chance=opendoor.chance
+
+    # this greeting is disabled on certain days
+    if not mas_isO31() and not mas_isD25Season():
+
+        rules = dict()
+        # why are we limiting this to certain day range?
+    #    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
+        rules.update(
+            MASGreetingRule.create_rule(
+                skip_visual=True,
+                random_chance=opendoor.chance
+            )
         )
-    )
 
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="i_greeting_monikaroom",
-            unlocked=True,
-            rules=rules
-        ),
-        code="GRE"
-    )
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="i_greeting_monikaroom",
+                unlocked=True,
+                rules=rules
+            ),
+            code="GRE"
+        )
 
-    del rules
+        del rules
 
 label i_greeting_monikaroom:
 
@@ -1026,12 +1034,6 @@ label i_greeting_monikaroom:
     # 5 - music is off (skip visual)
 
     scene black
-
-    # reset monika's hair stuff since we dont have hair down for standing
-    if persistent._mas_likes_hairdown:
-        $ monika_chr.reset_outfit()
-        $ lockEventLabel("monika_hair_ponytail")
-        $ unlockEventLabel("monika_hair_down")
 
     $ has_listened = False
 
@@ -1486,6 +1488,10 @@ label monikaroom_greeting_opendoor_seen:
 
 label monikaroom_greeting_opendoor_seen_partone:
     $ is_sitting = False
+
+    # reset outfit since standing is stock
+    $ monika_chr.reset_outfit(False)
+
     # monika knows you are here
     $ mas_disable_quit()
 
@@ -1565,6 +1571,10 @@ label monikaroom_greeting_opendoor_post2:
 
 label monikaroom_greeting_opendoor:
     $ is_sitting = False # monika standing up for this
+
+    # reset outfit since standing is stock
+    $ monika_chr.reset_outfit(False)
+
     call spaceroom(start_bg="bedroom",hide_monika=True) from _call_spaceroom_5
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder MAS_MONIKA_Z
@@ -2318,8 +2328,12 @@ label greeting_hairdown:
     # 4 - hotkey buttons are hidden (skip visual)
     # 5 - music is off (skip visual)
 
+    # reset clothes if not ones that work with hairdown
+    if monika_chr.clothes.name != "def" and monika_chr.clothes.name != "santa":
+        $ monika_chr.reset_clothes(False)
+
     # have monika's hair down
-    $ monika_chr.change_hair(mas_hair_down)
+    $ monika_chr.change_hair(mas_hair_down, by_user=False)
 
     call spaceroom
 
@@ -2344,7 +2358,7 @@ label greeting_hairdown:
             m 1lksdld "I'll put it back up for you, then."
             m 1dsc "..."
 
-            $ monika_chr.reset_hair()
+            $ monika_chr.reset_hair(False)
 
             m 1eua "Done."
             # you will never get this chance again
@@ -2817,60 +2831,78 @@ label greeting_returned_home:
 
     # main dialogue
     if time_out > five_minutes:
-        if mas_isMoniNormal(higher=True):
-            m 1hua "And we're home!"
-            m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
-            m 2eua "Well, it felt really great!"
-            m 5eub "Let's do this again soon, okay?"
-            if persistent._mas_monika_returned_home is None:
-                $ hours_out = int(time_out.seconds / 3600)
 
-                # you gain 1 per hour, max 5, min 1
-                if hours_out > 5:
-                    $ aff_gain = 5
-                elif hours_out == 0:
-                    $ aff_gain = 1
-                else:
-                    $ aff_gain = hours_out
 
-                $ mas_gainAffection(aff_gain, bypass=True)
-                $ persistent._mas_monika_returned_home = datetime.datetime.now()
-
-            $ grant_xp(xp.NEW_GAME)
-
-        else:
-            m 2esc "We're home..."
-            m 2eka "Thank you for taking me out today, [player]."
-            m 2rkc "To be honest, I wasn't completely sure I should go with you..."
-            m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
-            m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
-            m 2rka "We should really do this again sometime..."
-            m 2esc "If you want."
-            if persistent._mas_monika_returned_home is None:
-                $ hours_out = int(time_out.seconds / 3600)
-
-                # changed the point structure for low aff, might be a good idea, might now ~ JW
-                # you gain 0.5 per hour, max 2.5, min 0.5
-                if hours_out > 5:
-                    $ aff_gain = 2.5
-                elif hours_out == 0:
-                    $ aff_gain = 0.5
-                else:
-                    $ aff_gain = hours_out * 0.5
-
-                $ mas_gainAffection(aff_gain, bypass=True)
-                $ persistent._mas_monika_returned_home = datetime.datetime.now()
-
-            $ grant_xp(xp.NEW_GAME)
+        jump greeting_returned_home_morethan5mins
 
     else:
-
         $ mas_loseAffection()
         call greeting_returned_home_lessthan5mins
 
         if _return:
             return 'quit'
 
+# this just returns for now
+label greeting_returned_home_cleanup:
+    return
+
+
+label greeting_returned_home_morethan5mins:
+    if mas_isMoniNormal(higher=True):
+
+        if persistent._mas_d25_in_d25_mode:
+            # its d25 season time
+            jump greeting_d25_and_nye_delegate
+
+        elif mas_isD25():
+            # its d25 and we are not in d25 mode
+            jump mas_d25_monika_holiday_intro_rh
+
+        jump greeting_returned_home_morethan5mins_normalplus_flow
+
+    # otherwise, go to other flow
+    jump greeting_returned_home_morethan5mins_other_flow
+
+label greeting_returned_home_morethan5mins_cleanup:
+
+    $ grant_xp(xp.NEW_GAME)
+    
+    # jump to cleanup
+    jump greeting_returned_home_cleanup
+
+label greeting_returned_home_morethan5mins_normalplus_flow:
+    call greeting_returned_home_morethan5mins_normalplus_dlg
+    # FALL THROUGH
+
+label greeting_returned_home_morethan5mins_normalplus_flow_aff:
+    $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
+    jump greeting_returned_home_morethan5mins_cleanup
+
+label greeting_returned_home_morethan5mins_other_flow:
+    call greeting_returned_home_morethan5mins_other_dlg
+    # FALL THROUGH
+
+label greeting_returned_home_morethan5mins_other_flow_aff:
+    # changed the point structure for low aff, might be a good idea, might now ~ JW
+    # you gain 0.5 per hour, max 2.5, min 0.5
+    $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 2.5, 0.5, 0.5)
+    jump greeting_returned_home_morethan5mins_cleanup
+
+label greeting_returned_home_morethan5mins_normalplus_dlg:
+    m 1hua "And we're home!"
+    m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+    m 2eua "Well, it felt really great!"
+    m 5eub "Let's do this again soon, okay?"
+    return
+
+label greeting_returned_home_morethan5mins_other_dlg:
+    m 2esc "We're home..."
+    m 2eka "Thank you for taking me out today, [player]."
+    m 2rkc "To be honest, I wasn't completely sure I should go with you..."
+    m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
+    m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
+    m 2rka "We should really do this again sometime..."
+    m 2esc "If you want."
     return
 
 label greeting_returned_home_lessthan5mins:

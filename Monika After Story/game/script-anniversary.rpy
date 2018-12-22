@@ -65,7 +65,7 @@ init -1 python in mas_anni:
         """
         return build_anni(years, months, weeks, False)
 
-
+# TODO What's the reason to make this one init 10?
 init 10 python in mas_anni:
 
     # we are going to store all anniversaries in antther db as well so we
@@ -220,7 +220,7 @@ init 10 python in mas_anni:
                     1m|Checks if today is a 1 month anniversary
                     3m|Checks if today is a 3 month anniversary
                     6m|Checks if today is a 6 month anniversary
-                    
+
         RETURNS:
             True if datetime.date.today() is an anniversary date
             False if today is not an anniversary date
@@ -237,7 +237,7 @@ init 10 python in mas_anni:
 
         if milestone == '1w':
             compare = build_anni(weeks=1)
-                
+
         elif milestone == '1m':
             compare = build_anni(months=1)
 
@@ -256,7 +256,7 @@ init 10 python in mas_anni:
 
     def isAnniWeek():
         return isAnni('1w')
-    
+
     def isAnniOneMonth():
         return isAnni('1m')
 
@@ -265,9 +265,9 @@ init 10 python in mas_anni:
 
     def isAnniSixMonth():
         return isAnni('6m')
-        
+
     def anniCount():
-        """    
+        """
         RETURNS:
             Integer value representing how many years the player has been with Monika
         """
@@ -287,33 +287,33 @@ init 10 python in mas_anni:
             return compare.year - firstSesh.year
 
     def pastOneWeek():
-        """    
+        """
         RETURNS:
-            True if current date is past the 1 week threshold 
+            True if current date is past the 1 week threshold
             False if below the 1 week threshold
         """
         return datetime.date.today() >= build_anni(weeks=1).date()
 
     def pastOneMonth():
-        """    
+        """
         RETURNS:
-            True if current date is past the 1 month threshold 
+            True if current date is past the 1 month threshold
             False if below the 1 month threshold
         """
         return datetime.date.today() >= build_anni(months=1).date()
 
     def pastThreeMonths():
-        """    
+        """
         RETURNS:
-            True if current date is past the 3 month threshold 
+            True if current date is past the 3 month threshold
             False if below the 3 month threshold
         """
         return datetime.date.today() >= build_anni(months=3).date()
-    
+
     def pastSixMonths():
-        """    
+        """
         RETURNS:
-            True if current date is past the 6 month threshold 
+            True if current date is past the 6 month threshold
             False if below the 6 month threshold
         """
         return datetime.date.today() >= build_anni(months=6).date()
