@@ -1792,7 +1792,7 @@ label monika_affection_nickname:
             "lezbian",
             "loser",
             "milf",
-            "Murder",
+            "murder",
             "nasty",
             "Natsuki",
             "nefarious",
