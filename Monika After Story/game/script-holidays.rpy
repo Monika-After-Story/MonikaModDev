@@ -1140,7 +1140,11 @@ label mas_holiday_d25c_autoload_check:
 
     # NOTE: holiday intro is handled with conditional
 
-    if mas_isD25() and persistent._mas_d25_deco_active:
+    if (
+            mas_isD25() 
+            and persistent._mas_d25_deco_active
+            and monika_chr.clothes != mas_clothes_santa
+        ):
         # on d25, monika will wear santa on start, regardless of whatever
         # (and if deco is active)
         $ monika_chr.change_clothes(mas_clothes_santa, False)
