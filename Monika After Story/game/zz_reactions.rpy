@@ -971,7 +971,6 @@ init 5 python:
 label mas_reaction_hotchocolate:
     m 3hub "Hot chocolate!"
     m 3hua "Thank you, [player]!"
-    $ store.mas_sprites.reset_zoom()
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
     if persistent._mas_c_hotchoc_been_given:
@@ -981,7 +980,6 @@ label mas_reaction_hotchocolate:
         m "Thank you so much, [player]!"
 
     else:
-        show emptydesk at i11 zorder 9
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1hua "You know I love my coffee, but hot chocolate is always really nice, too!"
         m 2rksdla "...Especially on those cold, winter nights."
@@ -994,12 +992,16 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            m 3eua "In fact, I think I'll have some right now!"
+            $ store.mas_sprites.reset_zoom()
+            show emptydesk at i11 zorder 9
+            m 3eua "In fact, I think I'll make some right now!"
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
             $ mas_brewHotChoc()
+
+            m 1hua "There, it'll be ready in a few minutes."
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
@@ -1088,8 +1090,7 @@ label mas_reaction_candycane:
             m 1hub "You know how much I love mint!"
         else:
             m 1hub "I just love the flavor of mint!"
-            m 1eua "Thanks, [player]."
-            $ mas_receivedGift("mas_reaction_candycane")
+        m 1eua "Thanks, [player]."
     
     elif times_cane_given == 1:
         m 3hua "Another candy cane!"
@@ -1099,6 +1100,7 @@ label mas_reaction_candycane:
         m 1eksdla "[player], I think I have enough candy canes for now."
         m 1eka "You can save them for later, alright?"
 
+    $ mas_receivedGift("mas_reaction_candycane")
     $ gift_ev = mas_getEV("mas_reaction_candycane")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     #weird not to have her see the gift file that's in the characters folder.
@@ -1273,6 +1275,8 @@ label mas_reaction_new_ribbon:
         m 3rksdlc "I really don't have a lot of choices here when it comes to fashion..."
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
         m 3eua "In fact, I'll put it on right now..."
+        show monika 1dsc
+        pause 1.0
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.change_hair(mas_hair_def)
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1293,6 +1297,8 @@ label mas_reaction_new_ribbon:
             m 1tub "...Just like my eyes!"
 
         m 3eua "I’ll put this on right now..."
+        show monika 1dsc
+        pause 1.0
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.change_hair(mas_hair_def)
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)

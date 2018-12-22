@@ -1474,7 +1474,7 @@ label mas_d25_monika_christmas:
         m 1ekbsa "My heart's fluttering like crazy right now, [player]."
         m "I couldn't imagine a better way to spend this special holiday..."
         m 1eua "Don't get me wrong, I knew that you would be here with me."
-        m 3eka "But actually having you here with me on Christmas, just the two of us..."
+        m 3eka "But now that we're actually together on Christmas, just the two of us..."
         m 1hub "Ahaha~"
 
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
@@ -1485,12 +1485,19 @@ label mas_d25_monika_christmas:
 
         # TODO: this should be chnaged to a history lookup after d25
         if not renpy.seen_label('monika_christmas'):
-            m 5hubfa "I'm forever grateful I got this chance with you, [player]."
+            m 5hubfa "I'm forever grateful I got this chance with you."
         else:
-            m 5hubfa "I'm so glad I get to spend Christmas with you again, [player]."
+            m 5hubfa "I'm so glad I get to spend Christmas with you again."
 
         m "I love you. Forever and ever~"
         m 5hubfb "Merry Christmas, [player]~"
+        show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+        menu:
+            "Merry Christmas, [m_name].":
+                hide screen mas_background_timed_jump
+                window hide
+                show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 2.0
 
     else:
         m 1eka "But you being here today...{w=0.5}it just means everything to me..."
@@ -1500,7 +1507,18 @@ label mas_d25_monika_christmas:
         m "Ahaha! Gosh, I'm getting a little over emotional here..."
         m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
         m "Merry Christmas, [player]~"
+        show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+        menu:
+            "Merry Christmas, [m_name].":
+                hide screen mas_background_timed_jump
+                window hide
+                show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 2.0
 
+    return
+
+label mas_d25_monika_christmas_no_wish:
+    hide screen mas_background_timed_jump
     return
 
 #init 5 python:
@@ -1679,9 +1697,10 @@ init 5 python:
             prompt="Mistletoe",
             conditional=(
                 "mas_isD25Season() "
+                "and not mas_isD25Post() "
                 "and persistent._mas_d25_in_d25_mode"
             ),
-            action=EV_ACT_PUSH,
+            action=EV_ACT_RANDOM,
             aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
@@ -2072,25 +2091,31 @@ label mas_d25_monika_christmas_eve:
         m 5hkbfa "Just the thought of our first Christmas together...{w=1}I can't wait!"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_postd25_notimespent",
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_postd25_notimespent",
             # within a week after d25, user did not recognize
-            # 25 at all, and they were not long absenced
-#            conditional=(
-#                "d25 < datetime.date.today() <= "
-#                "(d25 + datetime.timedelta(7)) "
-#                "and not persistent._mas_d25_spent_d25"
-#            ),
-#            action=EV_ACT_PUSH
-#        )
-#    )
-# TODO
+            # d25 at all, and they were not long absenced or had her on a date
+            conditional=(
+                "mas_d25 < datetime.date.today() <= "
+                "(mas_d25 + datetime.timedelta(7)) "
+                "and not persistent._mas_d25_spent_d25"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+    #TODO: History stuff/delayed reaction?
 
 label mas_d25_postd25_notimespent:
+    #sanity check
+    if persistent._mas_d25_spent_d25:
+        return
+        
     if mas_isMoniAff(higher=True):
+        $ mas_loseAffection(15, reason="missing Christmas.")
         m 1dkc "...I'm just glad you're finally here..."
         m 2ekd "I was starting to get worried that something happened to you..."
         m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
@@ -2104,6 +2129,7 @@ label mas_d25_postd25_notimespent:
         m 3ekbfa "I love you~"
 
     elif mas_isMoniNormal(higher=True):
+        $ mas_loseAffection(5, reason="missing Christmas.")
         m 2ekc "Hey, [player]..."
         m 2tkc "I have to say I'm pretty disappointed you didn't visit me at all on Christmas..."
         m 4tkc "You knew all I wanted was to spend time with you. Is that too much to ask?"
@@ -2114,6 +2140,7 @@ label mas_d25_postd25_notimespent:
         m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
 
     elif mas_isMoniUpset(higher=True):
+        $ mas_loseAffection(reason="missing Christmas.")
         m 2efc "[player]!"
         m "I can't believe you didn't even bother to visit me on Christmas!"
         m 2tfc "Actually...{w=1}yes, I can."
@@ -2121,13 +2148,14 @@ label mas_d25_postd25_notimespent:
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
 
     elif mas_isMoniDis(higher=True):
+        $ mas_loseAffection(10, reason="missing Christmas.")
         m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
         m "You probably didn't even think of me, huh?"
 
     else:
-        m 6eftsc "..."
-        m 6dftdx "..."
+        $ mas_loseAffection(150)
+        m 6ckc "..."
     return
 
 #Christmas Eve dockingstation
@@ -2195,7 +2223,7 @@ label bye_d25_first_time_out:
 #second time out on d25
 label bye_d25_second_time_out:
     m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
-    m 3wud "You really must have a lot of people you need to visit on Christmas..."
+    m 3wud "You really must have a lot of people you need to visit..."
     m 3sua "...or maybe you just have lots of special plans for us today!"
     m 1hua "But either way, thank you for thinking of me and bringing me along~"
     return
@@ -2468,6 +2496,10 @@ init -10 python:
 # TODO: dont forget to updaet script seen props
 # TODO: event props have been updated so this topic only comes up between 7pm and 11pm on NYE, changed from PUSH to QUEUE, please review
 
+#########################
+#NOTE: THIS TOPIC WAS MERGED WITH 'accomplished_resolutions' AND IS NOW CALLED 'monika_resolutions'
+#########################
+
 #init 5 python:
 ##    # NOTE: new years eve
 ##    # NOTE: known as monika_newyear1
@@ -2484,7 +2516,6 @@ init -10 python:
 #        skipCalendar=True
 #    )
 
-default persistent._mas_pm_has_new_years_res = None
 # does the user have new years resolutions?
 
 label mas_nye_monika_nye:
@@ -2654,18 +2685,22 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_accomplished_resolutions",
-            prompt="[player]'s last year's resolutions",
-            category=["you"],
-            random=True
+            eventlabel="monika_resolutions",
+            action=EV_ACT_QUEUE, #queuing it so it shows on the right day
+            start_date=mas_nye,
+            end_date=mas_nyd,
+            years=[],
+            aff_range=(mas_aff.UPSET,None)
         ),
-        aff_range=(mas_aff.UPSET,None)
     )
 
 default persistent._mas_pm_accomplished_resolutions = None
-# True if user has accomplished new years resolutions
+#True if user has accomplished new years resolutions
+default persistent._mas_pm_has_new_years_res = None
+#True if user has resolutuons
 
-label monika_accomplished_resolutions:
+label monika_resolutions:
+    $ persistent._mas_nye_spent_nye = True
     m 2eub "Hey [player]?"
     m 2eka "I was wondering..."
 
@@ -2723,8 +2758,43 @@ label monika_accomplished_resolutions:
 
             else:
                 m 2rkc "You probably should make one this year [player]..."
+    menu:
+        m "Do you have any resolutions for next year?"
+        "Yes.":
+            $ persistent._mas_pm_has_new_years_res = True
 
-    return "derandom"
+            m 1eub "That's great!"
+            m 3eka "Even if they can be hard to reach or maintain..."
+            m 1hua "I'll be here to help you, if need be!"
+
+        "No.":
+            $ persistent._mas_pm_has_new_years_res = False
+            m 1eud "Oh, is that so?"
+            if mas_isMoniNormal(higher=True):
+                if persistent._mas_pm_accomplished_resolutions:
+                    if mas_isMoniHappy(higher=True):
+                        m 1eka "You don't have to change. I think you're wonderful the way you are."
+                    else:
+                        m 1eka "You don't have to change. I think you're fine the way you are."
+                    m 3euc "But if anything does come to mind before the clock strikes twelve, do write it down for yourself..."
+                else:
+                    m "Well, if anything comes to mind before the clock strikes twelve, do write it down for yourself..."
+                m 1kua "Maybe you'll think of something that you want to do, [player]."
+            else:
+                m 2ekc "{cps=*2}I was kind of hoping--{/cps}{nw}"
+                m 2rfc "You know what, nevermind..."
+
+    if mas_isMoniAff(higher=True):
+        show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hubfa "My resolution is to be an even better girlfriend for you, my love."
+    elif mas_isMoniNormal(higher=True):
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "My resolution is to be an even better girlfriend for you, [player]."
+    else:
+        m 2ekc "My resolution is to improve our relationship, [player]."
+
+    return
+
 
 init 5 python:
     addEvent(
@@ -2743,6 +2813,7 @@ init 5 python:
     )
 
 label monika_nye_year_review:
+    $ persistent._mas_nye_spent_nye = True
 
     # starting with an overview based on time
     if store.mas_anni.anniCount() >= 0:
@@ -2752,7 +2823,7 @@ label monika_nye_year_review:
             m 2eka "Time really flew by..."
 
         else:
-            2eka "This year really flew by..."
+            m 2eka "This year really flew by..."
 
     elif store.mas_anni.pastSixMonths():
         m 2eka "You know, [player], we really have been through a lot over the time we spent together last year"
