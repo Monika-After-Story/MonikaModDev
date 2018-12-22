@@ -2690,6 +2690,7 @@ init 5 python:
             years=[],
             aff_range=(mas_aff.UPSET,None)
         ),
+        skipCalendar=True
     )
 
 default persistent._mas_pm_accomplished_resolutions = None
