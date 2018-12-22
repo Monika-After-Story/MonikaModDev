@@ -2103,15 +2103,15 @@ init 5 python:
             # within a week after d25, user did not recognize
             # d25 at all, and they were not long absenced or had her on a date
             conditional=(
-                "mas_d25 < datetime.date.today() <= "
-                "(mas_d25 + datetime.timedelta(7)) "
-                "and not persistent._mas_d25_spent_d25"
+                "not persistent._mas_d25_spent_d25"
             ),
+            start_date=mas_d25p,
+            end_date=mas_d25p + datetime.timedelta(days=7),
+            years=[],
             action=EV_ACT_PUSH
-        )
+        ),
+        skipCalendar=True
     )
-
-    #TODO: History stuff/delayed reaction?
 
 label mas_d25_postd25_notimespent:
     #sanity check
@@ -2692,7 +2692,7 @@ init 5 python:
             eventlabel="monika_resolutions",
             action=EV_ACT_QUEUE, #queuing it so it shows on the right day
             start_date=mas_nye,
-            end_date=mas_nyd,
+            end_date=mas_nye + datetime.timedelta(days=1),
             years=[],
             aff_range=(mas_aff.UPSET,None)
         ),
