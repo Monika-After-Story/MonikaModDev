@@ -10497,4 +10497,3 @@ label monika_hemispheres_nogets_snow:
     call monika_snow_nogets_snow
     return
    
->>>>>>> content
