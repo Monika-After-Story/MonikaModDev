@@ -8968,9 +8968,15 @@ label monika_player_appearance:
 # quick label where monika tells you her height
 label monika_player_appearance_monika_height:
     if not persistent._mas_pm_units_height_metric:
-        m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
+        if seen_event("monika_immortal"):
+            m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, but that doesn't really sound right to me..."
+            m 2rksdla "Maybe it was changed? It was only the concept height after all."
+        m 2rksdlb "If I had to guess, I’d say I’m maybe around five-foot-five?"
     else:
-        m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+        if seen_event("monika_immortal"):
+            m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, which is around one hundred and sixty centimetres but that doesn't really sound right to me..."
+            m 2rksdla "Maybe it was changed? It was only the concept height after all."
+        m 2rksdlb "If I had to guess, I’d say I’m maybe about one hundred and sixty-five centimeters tall?"
     return
 
 
