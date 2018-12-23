@@ -3474,9 +3474,7 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        # 2nd TODO: mas_anni methods are on init level 10 which makes them unusable
-        # in this method that is used on init 5 (when adding events)
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25()
+        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or mas_anni.isAnni()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
