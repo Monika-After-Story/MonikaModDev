@@ -10316,7 +10316,7 @@ label monika_winter:
     m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor ice skating, pond hockey..."
     m 3wud "And some actually go fishing...{w=1}{i}through the ice{/i}!"
     m 1eka "For people who don't enjoy cold weather activities, staying indoors seems so much more comfortable when there's snow outside..."
-    m "Watching it gently fall while the moonlight relects off the fresh, white canvas...it's just beautiful."
+    m "Watching it gently fall while the moonlight reflects off the fresh, white canvas...it's just beautiful."
     if mas_isMoniAff(higher=True):
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "And to be honest, cuddling under a blanket, reading a book together with you is the best winter activity I can think of~"
