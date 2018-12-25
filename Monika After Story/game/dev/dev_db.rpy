@@ -130,16 +130,16 @@ init python:
         return report
 
 
-    def mas_check_event_types(per_db, str_rep=True, str_buffer=None):
+    def mas_check_event_types(per_db, str_buffer=None, str_rep=True):
         """
         Goes through given persistent database for events and double checks 
         types. Returns a string report.
 
         IN:
             per_db - persistent db of events to check types of
-            str_rep - UNUSED
             str_buffer - the string buffer we should write to.
                 If None, we do NO reporting.
+            str_rep - UNUSED
 
         RETURNS:
             string report int he given buffer
