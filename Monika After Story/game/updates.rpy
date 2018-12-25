@@ -298,6 +298,23 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# 0.8.12
+label v0_8_12(version="v0_8_12"):
+    python:
+        hiu_ev = store.evhand.event_database.get(
+            "mas_d25_monika_holiday_intro_upset",
+            None
+        )
+
+        if hiu_ev is not None:
+            if isinstance(hiu_ev.start_date, tuple):
+                # tuple start date means this was bad data
+                hiu_ev.start_date = mas_d25c_start
+                hiu_ev.end_date = mas_d25p
+                Event._verifyAndSetDatesEV(ev)
+
+    return
+
 # 0.8.11
 label v0_8_11(version="v0_8_11"):
     python:
