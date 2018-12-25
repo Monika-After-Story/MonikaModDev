@@ -1732,21 +1732,8 @@ init 5 python:
 
 
 label mas_d25_spent_time_monika:
-    python:
-        d25_gifts_total = 0
-        d25_gifts_good = 0
-        d25_gifts_neutral = 0
-        d25_gifts_bad = 0
-        d25_gift_range = mas_genDateRange(mas_d25g_start, mas_d25g_end)
 
-        # loop over gift days and check if were given any gifts
-        for d25_date in d25_gift_range:
-            gTotal, gGood, gNeut, gBad = store.mas_filereacts.get_report_for_date(d25_date)
-
-            d25_gifts_total += gTotal
-            d25_gifts_good += gGood
-            d25_gifts_neutral += gNeut
-            d25_gifts_bad += gBad
+    $ d25_gifts_total, d25_gifts_good, d25_gifts_neutral, d25_gifts_bad = mas_getGiftStatsRange(mas_d25g_start, mas_d25g_end)
 
     if mas_isMoniNormal(higher=True):
         m 1eua "[player]..."

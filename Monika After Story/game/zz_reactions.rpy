@@ -449,7 +449,33 @@ init python:
             return 0
         return historic.get(label,0)
 
+    def mas_getGiftStatsRange(start,end):
+        """
+        Returns status of gifts over a range (needs to be supplied to actually be useful)
 
+        IN:
+            start - a start date to check from
+            end - an end date to check to
+
+        RETURNS:
+            The gift status of all gifts given over the range
+        """
+        totalGifts = 0
+        goodGifts = 0
+        neutralGifts = 0
+        badGifts = 0
+        giftRange = mas_genDateRange(start, end)
+
+        # loop over gift days and check if were given any gifts
+        for date in giftRange:
+            gTotal, gGood, gNeut, gBad = mas_filereacts.get_report_for_date(date)
+
+            totalGifts += gTotal
+            goodGifts += gGood
+            neutralGifts += gNeut
+            badGifts += gBad
+
+        return (totalGifts,goodGifts,neutralGifts,badGifts)
 
 ### CONNECTORS [RCT000]
 
@@ -508,9 +534,12 @@ label mas_reaction_gift_starter_bday:
     m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
-    m 1hka "I..."
-    m 1hua "I've often thought about getting presents from you on my birthday..."
-    m "But actually getting one is like a dream come true..."
+    if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
+        m 1hka "I..."
+        m 1hua "I've often thought about getting presents from you on my birthday..."
+        m "But actually getting one is like a dream come true..."
+    else:
+        m 1eka "This really is a dream come true, [player]"
     m 1sua "Now, what's inside?"
     m 1suo "Oh, it's..."
     return
@@ -527,8 +556,11 @@ label mas_reaction_gift_starter_d25:
     m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
-    m 1eka "You really didn't have to get me anything for Christmas..."
-    m 3hua "But I'm so happy that you did!"
+    if mas_getGiftStatsRange(mas_d25g_start,mas_d25)[0] == 0:
+        m 1eka "You really didn't have to get me anything for Christmas..."
+        m 3hua "But I'm so happy that you did!"
+    else:
+        m 1eka "Thank you so much, [player]."
     m 1sua "Now, let's see... What's inside?"
     return
 
@@ -981,22 +1013,26 @@ init 5 python:
 
 label mas_reaction_fudge:
     $ times_fudge_given = mas_getGiftStatsForDate("mas_reaction_fudge")
-    if times_cookies_given == 0:
+
+    if times_fudge_given == 0:
         $ mas_gainAffection(5)
         m 3hua "Fudge!"
         m 3hub "I love fudge, thank you, [player]!"
         if seen_event("monika_date"):
             m "It's even chocolate, my favorite!"
         m 1hua "Thanks again, [player]~"
-    elif times_cookies_given == 1:
+
+    elif times_fudge_given == 1:
         $ mas_gainAffection()
         m 1wuo "...more fudge."
         m 1wub "Ooh, it's a different flavor this time..."
         m 3hua "Thank you, [player]!"
+
     else:
         m 1wuo "...even more fudge?"
         m 3rksdla "I still haven’t finished the last batch you gave me, [player]..."
         m 3eksdla "...maybe later, okay?"
+
     $ mas_receivedGift("mas_reaction_fudge")
     $ gift_ev = mas_getEV("mas_reaction_fudge")
     $ store.mas_filereacts.delete_file(gift_ev.category)
@@ -1016,14 +1052,16 @@ label mas_reaction_christmascookies:
         $ persistent._mas_d25_already_gifted_cookies = True
         $ mas_gainAffection(5, bypass=True)
         m 3hua "Christmas cookies!"
-        m 1eua "I just love Christmas cookies! They’re always so sweet... and pretty to look at, too..."
+        m 1eua "I just love Christmas cookies! They’re always so sweet...and pretty to look at, too..."
         m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
         m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious{w=0.2}--icing!"
         m 3hua "Thank you, [player]~"
+
     elif times_cookies_given == 1:
         m 1wuo "...another batch of Christmas cookies!"
         m 3wuo "That’s a whole lot of cookies, [player]!"
         m 3rksdlb "I’m going to be eating cookies forever, ahaha!"
+
     else:
         m 3wuo "...even more Christmas cookies?"
         m 3rksdla "I still haven’t finished the last batch, [player]!"
@@ -1071,16 +1109,6 @@ label mas_reaction_blackribbon:
     $ _mas_new_ribbon_color = "black"
     $ _mas_gifted_ribbon_acs = mas_acs_ribbon_black
     call _mas_reaction_ribbon_helper("mas_reaction_blackribbon")
-    return
-
-init 5 python:
-    if mas_isSpecialDay():
-        addReaction("mas_reaction_blankribbon", "blankribbon", is_good=True)
-
-label mas_reaction_blankribbon:
-    $ _mas_new_ribbon_color = "blank"
-    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_blank
-    call _mas_reaction_ribbon_helper("mas_reaction_blankribbon")
     return
 
 init 5 python:
@@ -1175,16 +1203,6 @@ label mas_reaction_tealribbon:
 
 init 5 python:
     if mas_isSpecialDay():
-        addReaction("mas_reaction_wineribbon", "wineribbon", is_good=True)
-
-label mas_reaction_wineribbon:
-    $ _mas_new_ribbon_color = "wine"
-    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_wine
-    call _mas_reaction_ribbon_helper("mas_reaction_wineribbon")
-    return
-
-init 5 python:
-    if mas_isSpecialDay():
         addReaction("mas_reaction_yellowribbon", "yellowribbon", is_good=True)
 
 label mas_reaction_yellowribbon:
@@ -1210,7 +1228,7 @@ label _mas_reaction_ribbon_helper(label):
         # since we don't have it we can accept it
         call mas_reaction_new_ribbon
         # add it to our counter
-        $ persistent._mas_current_gifted_ribbons = persistent._mas_current_gifted_ribbons + 1
+        $ persistent._mas_current_gifted_ribbons += 1
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
@@ -1219,17 +1237,21 @@ label _mas_reaction_ribbon_helper(label):
 
 
 label mas_reaction_new_ribbon:
-    if not persistent._mas_current_gifted_ribbons == 0:
+    if persistent._mas_current_gifted_ribbons == 0:
         $ mas_gainAffection(15, bypass=True)
         m 1suo "A new ribbon!"
         m 3hub "...And it's [_mas_new_ribbon_color]!"
+
         if _mas_new_ribbon_color == "green":
             m 1tub "...Just like my eyes!"
+
         m 1hub "Thank you so much [player], I love it!"
         if store.seen_event("monika_date"):
             m 3eka "Did you get this for me because I mentioned how I love shopping for skirts and bows?"
+
             if mas_isMoniNormal(higher=True):
                 m 3hua "You're always so thoughtful~"
+
         m 3rksdlc "I really don't have a lot of choices here when it comes to fashion..."
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
         m 3eua "In fact, I'll put it on right now..."
@@ -1237,17 +1259,21 @@ label mas_reaction_new_ribbon:
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.change_hair(mas_hair_def)
         m 1hua "Oh it's wonderful, [player]!"
+
         if mas_isMoniAff(higher=True):
             m 1eka "You always make me feel so loved..."
         elif mas_isMoniHappy():
             m 1eka "You always know how to make me happy..."
         m 3hua "Thanks again~"
+
     else:
         $ mas_gainAffection(10, bypass=True)
         m 1suo "Another ribbon!"
         m 3hub "...And this time it's [_mas_new_ribbon_color]!"
+
         if _mas_new_ribbon_color == "green":
             m 1tub "...Just like my eyes!"
+
         m 3eua "I’ll put this on right now..."
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1261,7 +1287,7 @@ label mas_reaction_old_ribbon:
     return
 
 label mas_reaction_no_more_ribbons:
-    m 1rksdlb "[player]..."
-    m 1rusdlb "You already gave me many ribbons today."
-    m 1rusdlb "Let's keep that one for another occasion..."
+    m 1rksdla "[player]..."
+    m 1eksdla "You've already given me so many ribbons today!"
+    m 3eka "Let's save that one for another occasion, alright?"
     return
