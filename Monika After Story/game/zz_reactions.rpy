@@ -86,6 +86,8 @@ init -1 python in mas_filereacts:
             action=_action
         )
 
+        # TODO: should ovewrite category and action always
+
         # add it to the db and map
         filereact_db[ev_label] = ev
         filereact_map[fname] = ev
