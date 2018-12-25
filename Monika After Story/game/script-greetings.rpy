@@ -2847,7 +2847,6 @@ label greeting_returned_home_cleanup:
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
 
-        # TODO: d25 checks
         if persistent._mas_d25_in_d25_mode:
             # its d25 season time
             jump greeting_d25_and_nye_delegate
