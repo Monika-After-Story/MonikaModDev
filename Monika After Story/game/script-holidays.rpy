@@ -1298,9 +1298,9 @@ init -876 python in mas_delact:
             "and persistent._mas_d25_started_upset "
         )
         ev.action = store.EV_ACT_PUSH
-        ev.start_date = store.mas_d25c_start,
+        ev.start_date = store.mas_d25c_start
         ev.end_date = store.mas_d25p
-        store.Event._verifyDatesEV(ev)
+        store.Event._verifyAndSetDatesEV(ev)
         return True
 
 
