@@ -22,6 +22,41 @@ image monika_waiting_img:
 transform prompt_monika:
     tcommon(950,z=0.8)
 
+
+init -900 python in mas_ev_data_ver:
+    # special store dedicated to verification of Event-based data
+    import datetime
+
+
+    def _verify_bool(val, allow_none=True):
+        return _verify_item(val, bool, allow_none)
+
+
+    def _verify_dict(val, allow_none=True):
+        return _verify_item(val, dict, allow_none)
+
+
+    def _verify_item(val, _type, allow_none=True):
+        """
+        Verifies the given value has the given type/instance
+
+        IN:
+            val - value to verify
+            _type - type to check
+            allow_none - If True, None should be considered good value,
+                false means bad value
+                (Default: True)
+
+        RETURNS: True if the given value has the given type/instance,
+            false otherwise
+        """
+        if val is None:
+            return allow_none
+
+        # otherwise check item
+        return isinstance(val, _type)
+
+
 init -500 python:
     # initalies the locks db
 
