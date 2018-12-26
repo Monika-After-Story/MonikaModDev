@@ -180,6 +180,9 @@ init -900 python in mas_ev_data_ver:
         IN:
             per_db - persistent database to verify
         """
+        if per_db is None:
+            return
+
         for ev_label in per_db.keys():
             # pull out the data
             ev_line = per_db[ev_label]
