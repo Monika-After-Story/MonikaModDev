@@ -54,7 +54,10 @@ init -900 python in mas_ev_data_ver:
 
 
     def _verify_str(val, allow_none=True):
-        return _verify_item(val, str, allow_none)
+        if val is None:
+            return allow_none
+
+        return isinstance(val, str) or isinstance(val, unicode)
 
 
     def _verify_tuli(val, allow_none=True):
@@ -183,6 +186,9 @@ init -900 python in mas_ev_data_ver:
 
             if not _verify_data_line(ev_line):
                 # verification failed! pop this element
+                store.mas_utils.writelog(
+                    "bad data found in {0}\n".format(ev_label)
+                )
                 per_db.pop(ev_label)
 
 
