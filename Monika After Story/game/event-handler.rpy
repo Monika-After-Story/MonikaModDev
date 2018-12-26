@@ -188,13 +188,11 @@ init -900 python in mas_ev_data_ver:
 
     # verify some databases
     verify_event_data(store.persistent.event_database)
-
-    # TODO: must check if the reports reveal bad shit about these databases
-#    verify_event_data(store.persistent._mas_compliments_database)
-#    verify_event_data(store.persistent.farewell_database)
-#    verify_event_data(store.persistent.greeting_database)
-#    verify_event_data(store.persistent._mas_mood_database)
-#    verify_event_data(store.persistent._mas_story_database)
+    verify_event_data(store.persistent._mas_compliments_database)
+    verify_event_data(store.persistent.farewell_database)
+    verify_event_data(store.persistent.greeting_database)
+    verify_event_data(store.persistent._mas_mood_database)
+    verify_event_data(store.persistent._mas_story_database)
 
 
 init -500 python:
