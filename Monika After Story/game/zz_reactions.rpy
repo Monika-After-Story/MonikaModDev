@@ -695,7 +695,7 @@ label mas_reaction_quetzal_plush:
 init 5 python:
     addReaction("mas_reaction_promisering", "promisering", is_good=True)
 
-default persistent._mas_pm_tried_gift_ring = False
+default persistent._mas_tried_gift_ring = False
 label mas_reaction_promisering:
     if not persistent._mas_acs_enable_promisering:
         # only available if enam+
@@ -704,7 +704,7 @@ label mas_reaction_promisering:
             $ mas_gainAffection(modifier=5, bypass=True)
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
-            if not persistent._mas_pm_tried_gift_ring:
+            if not persistent._mas_tried_gift_ring:
                 m 1wud "Is that...a..."
                 m "..."
                 m 1wka "I..."
@@ -745,7 +745,7 @@ label mas_reaction_promisering:
                 m 3skbltda "It's just this is one of the happiest days of my life."
                 m 1skbltda "I love you so much, [player]~"
         else:  
-            if not persistent._mas_pm_tried_gift_ring:
+            if not persistent._mas_tried_gift_ring:
                 if mas_isMoniNormal(higher=True):
                     m 1wud "[player]...is that a ring?"
                     m 2rksdlb "That's such a sweet gesture, and I really appreciate it..."
@@ -766,7 +766,7 @@ label mas_reaction_promisering:
                     m "While I appreciate the thought...{w}I can't accept it right now."
                     m 2ekc "Sorry, [player]."
 
-                $ persistent._mas_pm_tried_gift_ring = True
+                $ persistent._mas_tried_gift_ring = True
             else:
                 m 2rsc "Oh...the ring..."
                 m 2rkc "I'm sorry, but I still can't accept this yet..."
@@ -777,7 +777,6 @@ label mas_reaction_promisering:
     else:
         m 1rksdlb "[player]..."
         m 1rusdlb "You already gave me a ring!"
-    
 
     $ gift_ev = mas_getEV("mas_reaction_promisering")
     $ store.mas_filereacts.delete_file(gift_ev.category)
