@@ -2111,9 +2111,9 @@ label mas_d25_postd25_notimespent:
     #sanity checks
     if persistent._mas_d25_spent_d25:
         return
-    if persistent.sessions is None:
-        return
-    if persistent.sessions['first_session'].date() > mas_d25: #need to make sure people who just started post d25 don't lose aff
+
+    #need to make sure people who just started post d25 don't lose aff
+    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_d25:
         return
 
 

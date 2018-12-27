@@ -704,7 +704,7 @@ label mas_reaction_promisering:
             $ mas_gainAffection(modifier=5, bypass=True)
             $ monika_chr.wear_acs_pst(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
-            if persistent._mas_pm_tried_gift_ring:
+            if not persistent._mas_pm_tried_gift_ring:
                 m 1wud "Is that...a..."
                 m "..."
                 m 1wka "I..."
