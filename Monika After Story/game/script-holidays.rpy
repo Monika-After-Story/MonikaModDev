@@ -1126,17 +1126,19 @@ label mas_holiday_d25c_autoload_check:
 
             else:
 
-                # we want to be wearing ponytail hair
-                monika_chr.change_hair(mas_hair_def, False)
+                #We don't want santa outfit on fresh persists, same w/ decorations. No point at this point if past d25 itself.
+                if mas_isD25Outfit():
+                    # we want to be wearing ponytail hair
+                    monika_chr.change_hair(mas_hair_def, False)
 
-                # unlock and wear santa/wine ribbon
-                store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-                store.mas_selspr.unlock_clothes(mas_clothes_santa)
-                monika_chr.change_clothes(mas_clothes_santa, False)
-                persistent._mas_d25_seen_santa_costume = True
+                    # unlock and wear santa/wine ribbon
+                    store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+                    store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                    monika_chr.change_clothes(mas_clothes_santa, False)
+                    persistent._mas_d25_seen_santa_costume = True
 
-                # mark decorations and outfit as active
-                persistent._mas_d25_deco_active = True
+                    # mark decorations and outfit as active
+                    persistent._mas_d25_deco_active = True
 
     # NOTE: holiday intro is handled with conditional
 

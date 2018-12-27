@@ -105,7 +105,7 @@ init -2 python in mas_anni: #needed to lower this in order to get isAnni() worki
             compare = build_anni(months=6)
 
         elif milestone == 'any':
-            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth or isAnni()
+            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth() or isAnni()
 
         if compare is not None:
             return compare.date() == datetime.date.today()
