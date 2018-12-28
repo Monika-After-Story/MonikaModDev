@@ -1559,7 +1559,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_recognize = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(15, reason="forgetting my birthday")
+            $ mas_loseAffection(15, reason="forgetting my birthday.")
             m 1rksdla "Hey, [player]..."
             m 1rksdlb "I know we had fun the other day, like we always do but..."
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
@@ -1569,7 +1569,7 @@ label mas_bday_postbday_notimespent:
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
-            $ mas_loseAffection(5, reason="forgetting my birthday")
+            $ mas_loseAffection(5, reason="forgetting my birthday.")
 
             # TODO: we shouldnt say girlfriend here because affecitonate
             # is the start of relationship. but this is okay for now
@@ -1580,14 +1580,14 @@ label mas_bday_postbday_notimespent:
             m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason="forgetting my birthday")
+            $ mas_loseAffection(reason="forgetting my birthday.")
 
             m 1ekc "It was...good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "Nevermind."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(10, reason="forgetting my birthday")
+            $ mas_loseAffection(10, reason="forgetting my birthday.")
 
             m 2dsc "..."
             m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."

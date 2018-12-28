@@ -2090,25 +2090,31 @@ label mas_d25_monika_christmas_eve:
         m 5hkbfa "Just the thought of our first Christmas together...{w=1}I can't wait!"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_d25_postd25_notimespent",
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_d25_postd25_notimespent",
             # within a week after d25, user did not recognize
-            # 25 at all, and they were not long absenced
-#            conditional=(
-#                "d25 < datetime.date.today() <= "
-#                "(d25 + datetime.timedelta(7)) "
-#                "and not persistent._mas_d25_spent_d25"
-#            ),
-#            action=EV_ACT_PUSH
-#        )
-#    )
-# TODO
+            # d25 at all, and they were not long absenced or had her on a date
+            conditional=(
+                "mas_d25 < datetime.date.today() <= "
+                "(mas_d25 + datetime.timedelta(7)) "
+                "and not persistent._mas_d25_spent_d25"
+            ),
+            action=EV_ACT_PUSH
+        )
+    )
+
+    #TODO: History stuff/delayed reaction?
 
 label mas_d25_postd25_notimespent:
+    #sanity check
+    if persistent._mas_d25_spent_d25:
+        return
+        
     if mas_isMoniAff(higher=True):
+        $ mas_loseAffection(15, reason="missing Christmas.")
         m 1dkc "...I'm just glad you're finally here..."
         m 2ekd "I was starting to get worried that something happened to you..."
         m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
@@ -2122,6 +2128,7 @@ label mas_d25_postd25_notimespent:
         m 3ekbfa "I love you~"
 
     elif mas_isMoniNormal(higher=True):
+        $ mas_loseAffection(5, reason="missing Christmas.")
         m 2ekc "Hey, [player]..."
         m 2tkc "I have to say I'm pretty disappointed you didn't visit me at all on Christmas..."
         m 4tkc "You knew all I wanted was to spend time with you. Is that too much to ask?"
@@ -2132,6 +2139,7 @@ label mas_d25_postd25_notimespent:
         m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
 
     elif mas_isMoniUpset(higher=True):
+        $ mas_loseAffection(reason="missing Christmas.")
         m 2efc "[player]!"
         m "I can't believe you didn't even bother to visit me on Christmas!"
         m 2tfc "Actually...{w=1}yes, I can."
@@ -2139,13 +2147,14 @@ label mas_d25_postd25_notimespent:
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
 
     elif mas_isMoniDis(higher=True):
+        $ mas_loseAffection(10, reason="missing Christmas.")
         m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
         m "You probably didn't even think of me, huh?"
 
     else:
-        m 6eftsc "..."
-        m 6dftdx "..."
+        $ mas_loseAffection(150)
+        m 6ckc "..."
     return
 
 #Christmas Eve dockingstation
@@ -2690,6 +2699,7 @@ default persistent._mas_pm_has_new_years_res = None
 #True if user has resolutuons
 
 label monika_resolutions:
+    $ persistent._mas_nye_spent_nye = True
     m 2eub "Hey [player]?"
     m 2eka "I was wondering..."
 
@@ -2802,6 +2812,7 @@ init 5 python:
     )
 
 label monika_nye_year_review:
+    $ persistent._mas_nye_spent_nye = True
 
     # starting with an overview based on time
     if store.mas_anni.anniCount() >= 0:
