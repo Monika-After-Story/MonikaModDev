@@ -1496,10 +1496,10 @@ label mas_d25_monika_christmas:
         m "I love you. Forever and ever~"
         m 5hubfb "Merry Christmas, [player]~"
         show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+        window hide
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
-                window hide
                 show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
@@ -1512,10 +1512,10 @@ label mas_d25_monika_christmas:
         m 1ektda "Just know that I love you too and I'll be forever grateful I got this chance with you."
         m "Merry Christmas, [player]~"
         show screen mas_background_timed_jump(5, "mas_d25_monika_christmas_no_wish")
+        window hide
         menu:
             "Merry Christmas, [m_name].":
                 hide screen mas_background_timed_jump
-                window hide
                 show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 2.0
 
