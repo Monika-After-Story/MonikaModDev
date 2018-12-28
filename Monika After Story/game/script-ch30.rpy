@@ -1496,7 +1496,7 @@ label ch30_reset:
             # NOTE: we may add additional costume logic in here if needed
             # TODO: this is bad for o31 rests actually
 
-            if not persistent._mas_forced_clothes:
+            if not persistent._mas_force_clothes:
                 # NOTE if the costumes were picked by user, (aka forced),
                 # then we do NOt reset
                 monika_chr.reset_clothes(False)
@@ -1506,7 +1506,7 @@ label ch30_reset:
         if (
                 mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE())
                 and monika_chr.clothes == mas_clothes_santa
-                and not persistent._mas_forced_clothes
+                and not persistent._mas_force_clothes
             ):
             # monika takes off santa outfit after d25
             monika_chr.reset_clothes(False)
