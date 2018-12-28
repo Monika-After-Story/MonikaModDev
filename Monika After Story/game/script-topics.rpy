@@ -5671,7 +5671,7 @@ init 5 python:
             category=['romance'],
             prompt="Promise Ring",
             random=True,
-            aff_range=(mas_aff.HAPPY, None)
+            aff_range=(mas_aff.ENAMORED, None)
         )
     )
 

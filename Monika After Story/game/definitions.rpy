@@ -3483,7 +3483,7 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or mas_anni.isAnni()
+        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek()) or mas_isNYE()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()

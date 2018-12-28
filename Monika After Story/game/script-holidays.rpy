@@ -1162,17 +1162,19 @@ label mas_holiday_d25c_autoload_check:
 
             else:
 
-                # we want to be wearing ponytail hair
-                monika_chr.change_hair(mas_hair_def, False)
+                #We don't want santa outfit on fresh persists, same w/ decorations. No point at this point if past d25 itself.
+                if mas_isD25Outfit():
+                    # we want to be wearing ponytail hair
+                    monika_chr.change_hair(mas_hair_def, False)
 
-                # unlock and wear santa/wine ribbon
-                store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-                store.mas_selspr.unlock_clothes(mas_clothes_santa)
-                monika_chr.change_clothes(mas_clothes_santa, False)
-                persistent._mas_d25_seen_santa_costume = True
+                    # unlock and wear santa/wine ribbon
+                    store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+                    store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                    monika_chr.change_clothes(mas_clothes_santa, False)
+                    persistent._mas_d25_seen_santa_costume = True
 
-                # mark decorations and outfit as active
-                persistent._mas_d25_deco_active = True
+                    # mark decorations and outfit as active
+                    persistent._mas_d25_deco_active = True
 
     # NOTE: holiday intro is handled with conditional
 
@@ -2144,10 +2146,15 @@ init 5 python:
     )
 
 label mas_d25_postd25_notimespent:
-    #sanity check
+    #sanity checks
     if persistent._mas_d25_spent_d25:
         return
-        
+
+    #need to make sure people who just started post d25 don't lose aff
+    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_d25:
+        return
+
+
     if mas_isMoniAff(higher=True):
         $ mas_loseAffection(15, reason="missing Christmas.")
         m 1dkc "...I'm just glad you're finally here..."
