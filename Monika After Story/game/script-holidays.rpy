@@ -101,16 +101,20 @@ init -810 python:
     ))
 
 init -10 python:
-    def mas_isO31(_date=datetime.date.today()):
+    def mas_isO31(_date=None):
         """
         Returns True if the given date is o31
 
         IN:
-            _date - date to check
-                (Default: todays date)
+            _date - date to check.
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is o31, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_o31.replace(year=_date.year)
 
 
@@ -930,33 +934,41 @@ init -810 python:
 
 init -10 python:
 
-    def mas_isD25(_date=datetime.date.today()):
+    def mas_isD25(_date=None):
         """
         Returns True if the given date is d25
 
         IN:
             _date - date to check
-                (default: todays date)
+                If None, we use today's date
+                (default: None)
 
         RETURNS: True if given date is d25, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_d25.replace(year=_date.year)
 
 
-    def mas_isD25Eve(_date=datetime.date.today()):
+    def mas_isD25Eve(_date=None):
         """
         Returns True if the given date is d25 eve
 
         IN:
             _date - date to check
-                (Default: todays date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is d25 eve, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_d25e.replace(year=_date.year)
 
 
-    def mas_isD25Season(_date=datetime.date.today()):
+    def mas_isD25Season(_date=None):
         """
         Returns True if the given date is in d25 season. The season goes from
         dec 1 to jan 5.
@@ -965,88 +977,112 @@ init -10 python:
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return (
             mas_isInDateRange(_date, mas_d25c_start, mas_nye, True, True)
             or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
-    def mas_isD25Post(_date=datetime.date.today()):
+    def mas_isD25Post(_date=None):
         """
         Returns True if the given date is after d25 but still in D25 season.
         The season goes from dec 1 to jan 5.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season but after d25, False
             otherwise.
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return (
             mas_isInDateRange(_date, mas_d25p, mas_nye, True, True)
             or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
-    def mas_isD25PreNYE(_date=datetime.date.today()):
+    def mas_isD25PreNYE(_date=None):
         """
         Returns True if the given date is in d25 season and before nye.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNSL True if given date is in d25 season but before nye, False
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25c_start, mas_nye)
 
 
-    def mas_isD25PostNYD(_date=datetime.date.today()):
+    def mas_isD25PostNYD(_date=None):
         """
         Returns True if the given date is in d25 season and after nyd
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season but after nyd, False 
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_nyd, mas_d25c_end, False)
 
 
-    def mas_isD25Gift(_date=datetime.date.today()):
+    def mas_isD25Gift(_date=None):
         """
         Returns True if the given date is in the range of days where a gift
         is considered a christmas gift.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in the d25 gift range, Falsee otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25g_start, mas_d25g_end)
 
 
-    def mas_isD25Outfit(_date=datetime.date.today()):
+    def mas_isD25Outfit(_date=None):
         """
         Returns True if the given date is tn the range of days where Monika
         wears the santa outfit on start.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in teh d25 santa outfit range, False
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25cl_start, mas_d25cl_end)
 
 
@@ -2464,29 +2500,37 @@ init -810 python:
 
 
 init -10 python:
-    def mas_isNYE(_date=datetime.date.today()):
+    def mas_isNYE(_date=None):
         """
         Returns True if the given date is new years eve
 
         IN:
             _date - date to check
-                (Default: Todays date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is new years eve, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_nye.replace(year=_date.year)
 
 
-    def mas_isNYD(_date=datetime.date.today()):
+    def mas_isNYD(_date=None):
         """
         RETURNS True if the given date is new years day
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is new years day, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_nyd.replace(year=_date.year)
 
 
