@@ -8713,9 +8713,11 @@ label monika_player_appearance:
                 call monika_player_appearance_monika_height
 
                 if persistent._mas_pm_units_height_metric:
-                    m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few centimeters taller than me, I don’t consider that much of a height advantage at all!"
+                    $ height_desc = "centimeters"
                 else:
-                    m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
+                    $ height_desc = "inches"
+
+                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You’ll have to lean down to kiss me!"
 
