@@ -377,6 +377,15 @@ python early:
                             self.eventlabel + " not found in eventdb"
                         )
 
+                    # if we are dealing with start/end dates, we need to
+                    #   ensure that they are datetimes
+                    if name == "start_date" or name == "end_date":
+                        if isinstance(value, datetime.date):
+                            value = datetime.datetime.combine(
+                                value,
+                                datetime.time.min
+                            )
+
                     # otherwise, repack the tuples
                     data_row = list(data_row)
                     data_row[attr_loc] = value

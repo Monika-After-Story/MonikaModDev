@@ -22,6 +22,188 @@ image monika_waiting_img:
 transform prompt_monika:
     tcommon(950,z=0.8)
 
+
+init -900 python in mas_ev_data_ver:
+    # special store dedicated to verification of Event-based data
+    import datetime
+    import store
+
+    ## verification type functions
+    ## most of these lead into verify_item
+    def _verify_bool(val, allow_none=True):
+        return _verify_item(val, bool, allow_none)
+
+
+    def _verify_dict(val, allow_none=True):
+        return _verify_item(val, dict, allow_none)
+
+
+    def _verify_dt(val, allow_none=True):
+        return _verify_item(val, datetime.datetime, allow_none)
+
+
+    def _verify_evact(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return val in store.EV_ACTIONS
+
+
+    def _verify_int(val, allow_none=True):
+        return _verify_item(val, int, allow_none)
+
+
+    def _verify_str(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, str) or isinstance(val, unicode)
+
+
+    def _verify_tuli(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, list) or isinstance(val, tuple)
+
+
+    def _verify_tuli_aff(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, tuple) and len(val) == 2
+
+
+    def _verify_item(val, _type, allow_none=True):
+        """
+        Verifies the given value has the given type/instance
+
+        IN:
+            val - value to verify
+            _type - type to check
+            allow_none - If True, None should be considered good value,
+                false means bad value
+                (Default: True)
+
+        RETURNS: True if the given value has the given type/instance,
+            false otherwise
+        """
+        if val is None:
+            return allow_none
+
+        # otherwise check item
+        return isinstance(val, _type)
+
+
+    class MASCurriedVerify(object):
+        """
+        Allows for currying of a verification function
+        """
+
+        def __init__(self, verifier, allow_none):
+            """
+            Constructor
+
+            IN:
+                verifier - the verification function we want to use
+                allow_none - True if we should pass True for allow_none,
+                    false for False
+            """
+            self.verifier = verifier
+            self.allow_none = allow_none
+
+
+        def __call__(self, value):
+            """
+            Callable override
+
+            IN:
+                value - the value we want to verify
+
+            RETURNS: True if the value passes verification, False otherwise
+            """
+            return self.verifier(value, self.allow_none)
+
+
+    # map data to tuples
+    _verify_map = {
+        0: MASCurriedVerify(_verify_str, False), # eventlabel
+        1: MASCurriedVerify(_verify_str, True), # prompt
+        2: MASCurriedVerify(_verify_str, True), # label
+        # TODO: because of reactions, we cannot verify category yet
+#        3: MASCurriedVerify(_verify_tuli, True), # category
+        4: MASCurriedVerify(_verify_bool, True), # unlocked
+        5: MASCurriedVerify(_verify_bool, True), # random
+        6: MASCurriedVerify(_verify_bool, True), # pool
+        7: MASCurriedVerify(_verify_str, True), # conditional
+        8: MASCurriedVerify(_verify_evact, True), # action
+        9: MASCurriedVerify(_verify_dt, True), # start_date
+        10: MASCurriedVerify(_verify_dt, True), # end_date
+        11: MASCurriedVerify(_verify_dt, True), # unlock_date
+        12: MASCurriedVerify(_verify_int, False), # shown_count
+        13: MASCurriedVerify(_verify_str, True), # diary_entry
+        14: MASCurriedVerify(_verify_dict, False), # rules
+        15: MASCurriedVerify(_verify_dt, True), # last_seen
+        16: MASCurriedVerify(_verify_tuli, True), # years
+        17: MASCurriedVerify(_verify_bool, True), # sensitive
+        18: MASCurriedVerify(_verify_tuli_aff, True) # aff_range
+    }
+
+
+    def _verify_data_line(ev_line):
+        """
+        Verifies event data for a single tuple of data.
+
+        IN:
+            ev_line - single line of data to verify
+
+        RETURNS:
+            True if passed verification, False if not
+        """
+        # we only want to check what exists in this data
+        for index in range(len(ev_line)):
+            # go through verification map and verify
+            verify = _verify_map.get(index, None)
+            if verify is not None and not verify(ev_line[index]):
+                # verification failed! 
+                return False
+
+        return True
+
+
+    def verify_event_data(per_db):
+        """
+        Verifies event data of the given persistent data. Entries that are 
+        invalid are removed. We only check the bits of data that we have, so
+        data lines with smaller sizes are only validated for what they have.
+
+        IN:
+            per_db - persistent database to verify
+        """
+        if per_db is None:
+            return
+
+        for ev_label in per_db.keys():
+            # pull out the data
+            ev_line = per_db[ev_label]
+
+            if not _verify_data_line(ev_line):
+                # verification failed! pop this element
+                store.mas_utils.writelog(
+                    "bad data found in {0}\n".format(ev_label)
+                )
+                per_db.pop(ev_label)
+
+
+    # verify some databases
+    verify_event_data(store.persistent.event_database)
+    verify_event_data(store.persistent._mas_compliments_database)
+    verify_event_data(store.persistent.farewell_database)
+    verify_event_data(store.persistent.greeting_database)
+    verify_event_data(store.persistent._mas_mood_database)
+    verify_event_data(store.persistent._mas_story_database)
+
+
 init -500 python:
     # initalies the locks db
 
