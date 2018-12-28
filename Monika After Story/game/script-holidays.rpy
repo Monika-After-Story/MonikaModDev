@@ -813,6 +813,10 @@ init -900 python:
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpy")
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
 
+    # deletge delact files for fixing purposes
+    store.mas_utils.trydel(renpy.config.gamedir + "/zz_delactfix.rpyc")
+    store.mas_utils.trydel(renpy.config.gamedir + "/zz_delactfix.rpy")
+
 default persistent._mas_d25_in_d25_mode = False
 # True if we should consider ourselves in d25 mode.
 # TODO: double check older d25 spots to see if they should use the deco
