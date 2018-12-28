@@ -635,7 +635,7 @@ label mas_reaction_gift_coffee:
 
     if persistent._mas_coffee_been_given:
         $ mas_gainAffection(bypass=mas_isSpecialDay())
-        m 1wuo "It's a flavor I've haven't had before, too."
+        m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
 
@@ -694,8 +694,7 @@ label mas_reaction_quetzal_plush:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-#This one is added later so the init pipeline can define the anni function
-init 11 python:
+init 5 python:
     # only available after 6 months or if it's her birthday, may as well add valentine later
     # TODO add dialogue for gift rejection in case the conditions below are not met
     if mas_anni.pastSixMonths() or mas_isMonikaBirthday():
@@ -977,7 +976,7 @@ label mas_reaction_hotchocolate:
 
     if persistent._mas_c_hotchoc_been_given:
         $ mas_gainAffection(bypass=True)
-        m 1wuo "It's a flavor I've haven't had before, too."
+        m 1wuo "It's a flavor I haven't had before."
         m 1hua "I can't wait to try it!"
         m "Thank you so much, [player]!"
 
