@@ -9036,19 +9036,16 @@ init 5 python:
 
 label monika_ribbon_select:
     python:
-        use_acs = []
-        for item in store.mas_selspr.ACS_SEL_SL:
-            if item.group == "ribbon" and item.unlocked:
-                use_acs.append(item)
+        use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
         sel_map = {}
 
     m 1eua "Sure [player]!"
 
-    if monika_chr.hair.name != mas_hair_def.name:
-        m "But im going to change my clothes and hair back to normal."
-        $ monika_chr.reset_outfit(False)
+#    if monika_chr.hair.name != mas_hair_def.name:
+#        m "But im going to change my clothes and hair back to normal."
+#        $ monika_chr.reset_outfit(False)
 
     call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
 

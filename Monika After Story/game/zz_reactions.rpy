@@ -1254,7 +1254,6 @@ label _mas_reaction_ribbon_helper(label):
     #we have dlg for repeating ribbons, may as well have it used
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     return
-    #IMPORTANT TODO: We actually need to get the selector going for the ribbons, and not just be the dev one
 
 label mas_reaction_new_ribbon:
     if persistent._mas_current_gifted_ribbons == 0:
