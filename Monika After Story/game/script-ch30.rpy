@@ -30,6 +30,11 @@ init -1 python in mas_globals:
     lightning_s_chance = 10
     # lghtning chances
 
+    show_s_light = False
+    # set to True to show s easter egg.
+    # NOTE: set to True during o31, and also during sayori easter egg
+    # TODO: need to this
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -355,39 +360,17 @@ init python:
         renpy.hide("rm")
         renpy.hide("rm2")
 
-        if mas_is_snowing:
-            # snowing takes even more priority
-            if morning_flag:
-                left_window = "snow_mask_day_left"
-                right_window = "snow_mask_day_right"
-
-            else:
-                left_window = "snow_mask_night_left"
-                right_window = "snow_mask_night_right"
-
-        elif mas_is_raining:
-            # raining takes priority
-            left_window = "rain_mask_left"
-            right_window = "rain_mask_right"
-
-        elif morning_flag:
-            # morning time!
-            left_window = "room_mask3"
-            right_window = "room_mask4"
-
-        else:
-            # night time
-            left_window = "room_mask"
-            right_window = "room_mask2"
+        # get current weather masks
+        left_w, right_w = mas_current_weather.sp_window(morning_flag)
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
-            left_window += "_fb"
-            right_window += "_fb"
+            left_w += "_fb"
+            right_w += "_fb"
 
         # now show the masks
-        renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
-        renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
+        renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
+        renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
 
 
     def show_calendar():
@@ -1142,6 +1125,7 @@ label ch30_post_mid_loop_eval:
             ):
             if (
                     not persistent._mas_sensitive_mode
+                    and store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1

@@ -124,6 +124,46 @@ init -20 python in mas_weather:
             store.mas_unlockEVL("mas_monika_islands", "EVE")
 
 
+    def _weather_snow_entry():
+        """
+        Snow entry programming point
+        """
+        # set global flag
+        store.mas_is_snowing = True
+
+        # TODO
+
+
+    def _weather_snow_exit():
+        """
+        Snow exit programming point
+        """
+        # set globla flag
+        store.mas_is_snowing = False
+
+
+    def _weather_thunder_entry():
+        """
+        Thunder entry programming point
+        """
+        # run rain programming points
+        _weather_rain_entry()
+
+        # set global flag
+        store.mas_globals.show_lightning = True
+
+
+    def _weather_thunder_exit():
+        """
+        Thunder exit programming point
+        """
+        # set global flag
+        store.mas_globals.show_lightning = False
+
+        # run rain progframming points
+        _weather_rain_exit()
+
+
 init -10 python:
 
     # weather class
@@ -218,6 +258,23 @@ init -10 python:
                 self.exit_pp()
 
 
+        def sp_window(self, day):
+            """
+            Returns spaceroom masks for window
+
+            IN:
+                day - True if we want day time masks
+
+            RETURNS tuple of following format:
+                [0]: left window mask
+                [1]: right window mask
+            """
+            if day:
+                return (self.sp_left_day, self.sp_right_day)
+
+            return (self.sp_left_night, self.sp_right_night)
+
+
 ### define weather objects here
 
 init -1 python:
@@ -246,8 +303,19 @@ init -1 python:
         "snow_mask_day_left",
         "snow_mask_day_right",
         "snow_mask_night_left",
-        "snow_mask_night_right"
-        # TODO: progarmming poin ts
+        "snow_mask_night_right",
+        entry_pp=store.mas_weather._weather_snow_entry,
+        exit_pp=store.mas_weather._weather_snow_exit
+    )
+
+    # thunder/lightning
+    mas_weather_thunder = MASWeather(
+        "thunder",
+        "rain_mask_left",
+        "rain_mask_right"
+        # TODO: progarmming points
+#        entry_pp=store.mas_weather._weather_rain_entry,
+#        exit_pp=store.mas_weather._weather_rain_exit
     )
 
 ### end defining weather objects
