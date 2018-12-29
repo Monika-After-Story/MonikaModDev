@@ -1447,11 +1447,11 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_kiss_aftermath", 
-            category=["romance"],
+            category=["romance", "monika"],
             prompt="Do you ever think about our first kiss?",
             aff_range=(mas_aff.ENAMORED, None),
-			conditional="persistent._mas_first_kiss is not None",
-			action=EV_ACT_POOL
+	    conditional="persistent._mas_first_kiss is not None",
+	    action=EV_ACT_POOL
         )
     )
 
@@ -1469,9 +1469,9 @@ label monika_kiss_aftermath:
     m 5tsa "I've never felt closer to you. I can't wait until our next kiss, or better yet..."
     m 5wub "Our first real one. And our first real hug, and the first time our hands touch..."
     m 5hfb "Ahhh! I have to stop! All these fantasies are making me feel so giddy, ahaha!"
-    m 1eka "I should really be more patient. Unfortunately, it will be a while before we'll be able to do anything like that."
+    m 1eka "I should really be more patient. Unfortunately, it'll be a while before we'll be able to do anything like that."
     m 1eua "Until then, we can indulge in the phantom sensations we share from across our worlds."
-    m 1tsa "If you ever want a taste...I'd be happy to oblige."
+    m 1tsa "If you ever want to share that feeling again...you only have to ask~."
     m 1tsa "These crazy sensations that you make me feel...I never want them to stop."
     m 1eka "I love you so much, [player]."
     return
