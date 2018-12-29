@@ -1258,6 +1258,33 @@ label _mas_reaction_ribbon_helper(label):
     return
 
 label mas_reaction_new_ribbon:
+    python:
+        def _ribbon_prepare_hair():
+            # TODO: need to identifiy what outfits work with ponytail
+            # and what do not
+            if (
+                    monika_chr.clothes == mas_clothes_marisa
+                    or monika_chr.clothes == mas_clothes_rin
+                ):
+                if mas_isD25Outfit():
+                    monika_chr.change_outfit(
+                        mas_clothes_santa,
+                        mas_hair_def,
+                        False
+                    )
+
+                else:
+                    monika_chr.change_outfit(
+                        mas_clothes_def,
+                        mas_hair_def,
+                        False
+                    )
+
+            else:
+                # otherwise, just change hair
+                monika_chr.change_hair(mas_hair_def, False)
+                
+
     if persistent._mas_current_gifted_ribbons == 0:
 
         if mas_isSpecialDay():
@@ -1284,7 +1311,7 @@ label mas_reaction_new_ribbon:
         show monika 1dsc
         pause 1.0
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
-        $ monika_chr.change_hair(mas_hair_def)
+        $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         m 1hua "Oh it's wonderful, [player]!"
 
@@ -1310,7 +1337,7 @@ label mas_reaction_new_ribbon:
         show monika 1dsc
         pause 1.0
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
-        $ monika_chr.change_hair(mas_hair_def)
+        $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
         m 3hua "Thank you so much [player], I just love it!"
     return
