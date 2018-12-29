@@ -2666,7 +2666,8 @@ init -2 python:
                 img_stand="",
                 stay_on_start=False,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                ex_props={}
             ):
             """
             MASSpriteBase constructor
@@ -2690,6 +2691,9 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
+                ex_props - dict of additional properties to apply to this 
+                    sprite object.
+                    (Default: empty dict)
             """
             self.name = name
             self.img_sit = img_sit
@@ -2698,6 +2702,7 @@ init -2 python:
             self.pose_map = pose_map
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
+            self.ex_props = ex_props
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
@@ -2721,6 +2726,16 @@ init -2 python:
             if result is NotImplemented:
                 return result
             return not result
+
+
+        def addprop(self, prop):
+            """
+            Adds the given prop to the ex_props list
+
+            IN:
+                prop - prop to add
+            """
+            self.ex_props[prop] = True
 
 
         def entry(self, _monika_chr, **kwargs):
@@ -2747,6 +2762,34 @@ init -2 python:
                 self.exit_pp(_monika_chr, **kwargs)
 
 
+        def hasprop(self, prop):
+            """
+            Checks if this sprite object has the given prop
+
+            IN:
+                prop - prop in ex_props to look for
+
+            RETURNS: True if this sprite object has the ex_prop, False if not
+            """
+            return prop in self.ex_prop
+
+
+        def rmprop(self, prop):
+            """
+            Removes the prop from this sprite's ex_props, if it exists
+
+            IN:
+                prop - prop to remove
+
+            RETURNS: True if the prop was found and removed, False otherwise
+            """
+            if prop in self.ex_props:
+                self.ex_props.pop(prop)
+                return True
+
+            return False
+
+
     class MASSpriteFallbackBase(MASSpriteBase):
         """
         MAS sprites that can use pose maps as fallback maps.
@@ -2767,7 +2810,8 @@ init -2 python:
                 stay_on_start=False,
                 fallback=False,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                ex_props={}
             ):
             """
             MASSpriteFallbackBase constructor
@@ -2795,6 +2839,9 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
+                ex_props - dict of additional properties to apply to this 
+                    sprite object.
+                    (Default: empty dict)
             """
             super(MASSpriteFallbackBase, self).__init__(
                 name,
@@ -2803,7 +2850,8 @@ init -2 python:
                 img_stand,
                 stay_on_start,
                 entry_pp,
-                exit_pp
+                exit_pp,
+                ex_props
             )
             self.fallback = fallback
 
@@ -2867,7 +2915,8 @@ init -2 python:
                 entry_pp=None,
                 exit_pp=None,
                 acs_type=None,
-                mux_type=None
+                mux_type=None,
+                ex_props={}
             ):
             """
             MASAccessory constructor
@@ -2911,6 +2960,10 @@ init -2 python:
                 mux_type - list of acs types that should be 
                     mutually exclusive with this acs.
                     (Default: None)
+                ex_props - dict of additional properties to apply to this 
+                    sprite object.
+                    (Default: empty dict)
+
             """
             super(MASAccessory, self).__init__(
                 name,
@@ -2919,7 +2972,8 @@ init -2 python:
                 img_stand,
                 stay_on_start,
                 entry_pp,
-                exit_pp
+                exit_pp,
+                ex_props
             )
             self.__rec_layer = rec_layer
             self.priority=priority
@@ -2977,7 +3031,8 @@ init -2 python:
                 fallback=False,
                 entry_pp=None,
                 exit_pp=None,
-                split=None
+                split=None,
+                ex_props={}
             ):
             """
             MASHair constructor
@@ -3007,6 +3062,9 @@ init -2 python:
                 split - MASPoseMap object saying which hair has splits or Not.
                     If None, we assume hair has splits for everything.
                     (Default: None)
+                ex_props - dict of additional properties to apply to this 
+                    sprite object.
+                    (Default: empty dict)
             """
             super(MASHair, self).__init__(
                 name,
@@ -3016,7 +3074,8 @@ init -2 python:
                 stay_on_start,
                 fallback,
                 entry_pp,
-                exit_pp
+                exit_pp,
+                ex_props
             )
 
             if split is not None and type(split) != MASPoseMap:
@@ -3052,7 +3111,8 @@ init -2 python:
                 fallback=False,
                 hair_map={},
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                ex_props={}
             ):
             """
             MASClothes constructor
@@ -3085,6 +3145,9 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
+                ex_props - dict of additional properties to apply to this 
+                    sprite object.
+                    (Default: empty dict)
             """
             super(MASClothes, self).__init__(
                 name,
@@ -3094,7 +3157,8 @@ init -2 python:
                 stay_on_start,
                 fallback,
                 entry_pp,
-                exit_pp
+                exit_pp,
+                ex_props
             )
 
             self.hair_map = hair_map
@@ -3632,7 +3696,10 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        entry_pp=store.mas_sprites._hair_def_entry
+        entry_pp=store.mas_sprites._hair_def_entry,
+        ex_props={
+            "ribbon": True
+        }
 #        split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
@@ -3682,7 +3749,10 @@ init -1 python:
             default=True,
             p5=None
         ),
-        entry_pp=store.mas_sprites._hair_bun_entry
+        entry_pp=store.mas_sprites._hair_bun_entry,
+        ex_props={
+            "ribbon": True
+        }
 #        split=False
     )
     store.mas_sprites.init_hair(mas_hair_bun)
@@ -3766,7 +3836,10 @@ init -1 python:
         },
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_marisa_entry,
-        exit_pp=store.mas_sprites._clothes_marisa_exit
+        exit_pp=store.mas_sprites._clothes_marisa_exit,
+        ex_props={
+            "forced hair": True
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
     store.mas_selspr.init_selectable_clothes(
@@ -3801,7 +3874,10 @@ init -1 python:
         },
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_rin_entry,
-        exit_pp=store.mas_sprites._clothes_rin_exit
+        exit_pp=store.mas_sprites._clothes_rin_exit,
+        ex_props={
+            "forced hair": True
+        }
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)
     store.mas_selspr.init_selectable_clothes(
@@ -3932,7 +4008,10 @@ init -1 python:
             p6=None
         ),
         stay_on_start=True,
-        acs_type="ring"
+        acs_type="ring",
+        ex_props={
+            "bare hands": True
+        }
     )
     store.mas_sprites.init_acs(mas_acs_promisering)
 
