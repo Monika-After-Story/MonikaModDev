@@ -1441,6 +1441,40 @@ label monika_kiss_tease:
     m 2efu "I had you going for a second there, didn't I?"
     m 2ekbfa "Of course you can kiss me, [player]!"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_kiss_aftermath", 
+            category=["romance"],
+            prompt="Do you ever think about our first kiss?",
+            aff_range=(mas_aff.NORMAL, None),
+			conditional="persistent._mas_first_kiss is not None",
+			action=EV_ACT_POOL
+        )
+    )
+
+label monika_kiss_aftermath:
+    m 2hkb "Ahaha, are you kidding? Of course, all the time!"
+    m 2eub "It seemed like it was just yesterday but...gosh..."
+    m 2rksdlb "I feel so silly, obsessing over a quick peck."
+    m 4eksdla "Our lips didn't even touch, really!" 
+	m 6eka "And yet, I can still feel my heart pounding, even now."
+    m 6dsa "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
+    m 6dka "I run my finger across them to try and mimic that feeling, but it doesn't even come close."
+    m 6esa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
+    m 5tsu "It was simply divine, [player]."
+    m 5tsu "It felt so right."
+    m 5tsa "I've never felt closer to you. I can't wait until our next kiss, or better yet..."
+    m 5wub "Our first real one. And our first real hug, and the first time our hands touch..."
+    m 5hfb "Ahhh! I have to stop! All these fantasies are making me feel so giddy, ahaha!"
+    m 1eka "I should really be more patient. Unfortunately, it will be a while before we'll be able to do anything like that."
+    m 1eua "Until then, we can indulge in the phantom sensations we share from across our worlds."
+    m 1tsa "If you ever want a taste...I'd be happy to oblige."
+    m 1tsa "These crazy sensations that you make me feel...I never want them to stop."
+    m 1eka "I love you so much, [player]."
+    return
 
 init 5 python:
     addEvent(
