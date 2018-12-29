@@ -5671,7 +5671,7 @@ init 5 python:
             category=['romance'],
             prompt="Promise Ring",
             random=True,
-            aff_range=(mas_aff.HAPPY, None)
+            aff_range=(mas_aff.ENAMORED, None)
         )
     )
 
@@ -8712,7 +8712,12 @@ label monika_player_appearance:
 
                 call monika_player_appearance_monika_height
 
-                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few inches taller than me, I don’t consider that much of a height advantage at all!"
+                if persistent._mas_pm_units_height_metric:
+                    $ height_desc = "centimeters"
+                else:
+                    $ height_desc = "inches"
+
+                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You’ll have to lean down to kiss me!"
 
@@ -10313,7 +10318,7 @@ label monika_winter:
     m 3eud "Some people even live where it's cold enough for lakes and ponds to freeze and are able to enjoy things like outdoor ice skating, pond hockey..."
     m 3wud "And some actually go fishing...{w=1}{i}through the ice{/i}!"
     m 1eka "For people who don't enjoy cold weather activities, staying indoors seems so much more comfortable when there's snow outside..."
-    m "Watching it gently fall while the moonlight relects off the fresh, white canvas...it's just beautiful."
+    m "Watching it gently fall while the moonlight reflects off the fresh, white canvas...it's just beautiful."
     if mas_isMoniAff(higher=True):
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "And to be honest, cuddling under a blanket, reading a book together with you is the best winter activity I can think of~"
@@ -10341,8 +10346,8 @@ label monika_winter_dangers:
     if persistent._mas_pm_gets_snow is False: 
         #explicitly using False here so we don't grab None people who haven't 
         # answered the question yet
-        m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate it's appeal..."
-        m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy it's beauty together!"
+        m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate its appeal..."
+        m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy its beauty together!"
 
     m 1eka "..."
     m 3rkc "Although, as stunning as winter can be, there are a few dangers..."

@@ -377,6 +377,15 @@ python early:
                             self.eventlabel + " not found in eventdb"
                         )
 
+                    # if we are dealing with start/end dates, we need to
+                    #   ensure that they are datetimes
+                    if name == "start_date" or name == "end_date":
+                        if isinstance(value, datetime.date):
+                            value = datetime.datetime.combine(
+                                value,
+                                datetime.time.min
+                            )
+
                     # otherwise, repack the tuples
                     data_row = list(data_row)
                     data_row[attr_loc] = value
@@ -3474,9 +3483,7 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        # 2nd TODO: mas_anni methods are on init level 10 which makes them unusable
-        # in this method that is used on init 5 (when adding events)
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25()
+        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek()) or mas_isNYE()
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()

@@ -68,6 +68,7 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_8_12 = "v0_8_12"
         vv0_8_11 = "v0_8_11"
         vv0_8_10 = "v0_8_10"
         vv0_8_9 = "v0_8_9"

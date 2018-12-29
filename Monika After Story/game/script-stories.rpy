@@ -108,7 +108,7 @@ label mas_stories_start(scary=False):
         # check if we have seen it already
         if seen_event(story):
             m 1ekc "Sorry [player]. That's the only story I can tell you right now."
-            m 3hksdlb "Don't worry! I'll think of a story to tell you next time"
+            m 3hksdlb "Don't worry! I'll think of a story to tell you next time."
             return
 
         # increment event's shown count and update last seen
