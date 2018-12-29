@@ -1460,7 +1460,7 @@ label monika_kiss_aftermath:
     m 2eub "It seemed like it was just yesterday but...gosh..."
     m 2rksdlb "I feel so silly, obsessing over a quick peck."
     m 4eksdla "Our lips didn't even touch, really!" 
-	m 6eka "And yet, I can still feel my heart pounding, even now."
+    m 6eka "And yet, I can still feel my heart pounding, even now."
     m 6dsa "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
     m 6dka "I run my finger across them to try and mimic that feeling, but it doesn't even come close."
     m 6esa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
