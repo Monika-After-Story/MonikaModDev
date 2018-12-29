@@ -82,12 +82,50 @@ image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.p
 ## end living room weather art
 
 init -20 python in mas_weather:
+    import store
 
     WEATHER_MAP = {}
 
     ## weather programming points here
 
+    def _weather_rain_entry():
+        """
+        Rain start programming point
+        """
+        # set global flag
+        store.mas_is_raining = True
+
+        # play rain sound
+        renpy.music.play(
+            store.audio.rain
+            channel="background",
+            loop=True,
+            fadein=1.0
+        )
+
+        # lock rain start/rain/islands
+        store.mas_lockEVL("monika_rain", "EVE")
+        store.mas_lockEVL("mas_monika_islands", "EVE")
+
+
+    def _weather_rain_exit():
+        """
+        RAIN stop programming point
+        """
+        # set gklobal flag
+        store.mas_is_raining = False
+
+        # stop rain sound
+        renpy.music.stop(channel="background", fadeout=1.0)
+
+        # unlock rain/islands
+        store.mas_unlockEVL("monika_rain", "EVE")
+        if store.seen_event("mas_monika_islands"):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+
 init -10 python:
+
     # weather class
     class MASWeather(object)
         """
@@ -197,8 +235,9 @@ init -1 python:
     mas_weather_rain = MASWeather(
         "rain",
         "rain_mask_left",
-        "rain_mask_right"
-        # TODO: programming points
+        "rain_mask_right",
+        entry_pp=store.mas_weather._weather_rain_entry,
+        exit_pp=store.mas_weather._weather_rain_exit
     )
 
     # snow weather
@@ -211,16 +250,62 @@ init -1 python:
         # TODO: progarmming poin ts
     )
 
-
 ### end defining weather objects
+
+# sets up weather
+init 800 python:
+
+    def mas_setWeather(_weather):
+        """
+        Sets the initial weather.
+        This is meant for startup/ch30_reset
+
+        NOTE: this does NOt call exit programming points
+
+        IN:
+            _weather - weather to set to. 
+        """
+        global mas_current_weather
+        mas_current_weather = _weather
+        mas_current_weather.entry()
+
+
+    def mas_changeWeather(new_weather):
+        """
+        Changes weather without doing scene changes
+
+        NOTE: this does NOT do scene change/spaceroom
+
+        IN:
+            new_weather - weather to change to
+        """
+        mas_current_weather.exit()
+        mas_setWeather(new_weather)
+
+
+    # set weather to default
+    mas_current_weather = None
+    mas_setWeather(mas_weather_def)
 
 
 ## Changes weather if given a proper weather object
+# NOTE: we always scene change here
+# NOTE: if you need to change weather without chanign scene, use the
+#   set 
 #
 # IN:
 #   new_weather - weather object to change to
-label mas_change_weather(new_weather, sc_change=True):
+label mas_change_weather(new_weather):
 
-    
+    # call exit programming points
+    $ mas_current_weather.exit()
+
+    # set new weather and force change
+    $ mas_current_weather = new_weather
+    $ scene_change = True
+    call spaceroom
+
+    # call entry programming point
+    $ mas_current_weather.entry()
 
     return
