@@ -101,16 +101,20 @@ init -810 python:
     ))
 
 init -10 python:
-    def mas_isO31(_date=datetime.date.today()):
+    def mas_isO31(_date=None):
         """
         Returns True if the given date is o31
 
         IN:
-            _date - date to check
-                (Default: todays date)
+            _date - date to check.
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is o31, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_o31.replace(year=_date.year)
 
 
@@ -809,6 +813,10 @@ init -900 python:
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpy")
     store.mas_utils.trydel(renpy.config.gamedir + "/christmas.rpyc")
 
+    # deletge delact files for fixing purposes
+    store.mas_utils.trydel(renpy.config.gamedir + "/zz_delactfix.rpyc")
+    store.mas_utils.trydel(renpy.config.gamedir + "/zz_delactfix.rpy")
+
 default persistent._mas_d25_in_d25_mode = False
 # True if we should consider ourselves in d25 mode.
 # TODO: double check older d25 spots to see if they should use the deco
@@ -930,33 +938,41 @@ init -810 python:
 
 init -10 python:
 
-    def mas_isD25(_date=datetime.date.today()):
+    def mas_isD25(_date=None):
         """
         Returns True if the given date is d25
 
         IN:
             _date - date to check
-                (default: todays date)
+                If None, we use today's date
+                (default: None)
 
         RETURNS: True if given date is d25, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_d25.replace(year=_date.year)
 
 
-    def mas_isD25Eve(_date=datetime.date.today()):
+    def mas_isD25Eve(_date=None):
         """
         Returns True if the given date is d25 eve
 
         IN:
             _date - date to check
-                (Default: todays date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is d25 eve, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_d25e.replace(year=_date.year)
 
 
-    def mas_isD25Season(_date=datetime.date.today()):
+    def mas_isD25Season(_date=None):
         """
         Returns True if the given date is in d25 season. The season goes from
         dec 1 to jan 5.
@@ -965,88 +981,112 @@ init -10 python:
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return (
             mas_isInDateRange(_date, mas_d25c_start, mas_nye, True, True)
             or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
-    def mas_isD25Post(_date=datetime.date.today()):
+    def mas_isD25Post(_date=None):
         """
         Returns True if the given date is after d25 but still in D25 season.
         The season goes from dec 1 to jan 5.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season but after d25, False
             otherwise.
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return (
             mas_isInDateRange(_date, mas_d25p, mas_nye, True, True)
             or mas_isInDateRange(_date, mas_nyd, mas_d25c_end)
         )
 
 
-    def mas_isD25PreNYE(_date=datetime.date.today()):
+    def mas_isD25PreNYE(_date=None):
         """
         Returns True if the given date is in d25 season and before nye.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNSL True if given date is in d25 season but before nye, False
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25c_start, mas_nye)
 
 
-    def mas_isD25PostNYD(_date=datetime.date.today()):
+    def mas_isD25PostNYD(_date=None):
         """
         Returns True if the given date is in d25 season and after nyd
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in d25 season but after nyd, False 
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_nyd, mas_d25c_end, False)
 
 
-    def mas_isD25Gift(_date=datetime.date.today()):
+    def mas_isD25Gift(_date=None):
         """
         Returns True if the given date is in the range of days where a gift
         is considered a christmas gift.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in the d25 gift range, Falsee otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25g_start, mas_d25g_end)
 
 
-    def mas_isD25Outfit(_date=datetime.date.today()):
+    def mas_isD25Outfit(_date=None):
         """
         Returns True if the given date is tn the range of days where Monika
         wears the santa outfit on start.
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is in teh d25 santa outfit range, False
             otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return mas_isInDateRange(_date, mas_d25cl_start, mas_d25cl_end)
 
 
@@ -1126,17 +1166,19 @@ label mas_holiday_d25c_autoload_check:
 
             else:
 
-                # we want to be wearing ponytail hair
-                monika_chr.change_hair(mas_hair_def, False)
+                #We don't want santa outfit on fresh persists, same w/ decorations. No point at this point if past d25 itself.
+                if mas_isD25Outfit():
+                    # we want to be wearing ponytail hair
+                    monika_chr.change_hair(mas_hair_def, False)
 
-                # unlock and wear santa/wine ribbon
-                store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
-                store.mas_selspr.unlock_clothes(mas_clothes_santa)
-                monika_chr.change_clothes(mas_clothes_santa, False)
-                persistent._mas_d25_seen_santa_costume = True
+                    # unlock and wear santa/wine ribbon
+                    store.mas_selspr.unlock_acs(mas_acs_ribbon_wine)
+                    store.mas_selspr.unlock_clothes(mas_clothes_santa)
+                    monika_chr.change_clothes(mas_clothes_santa, False)
+                    persistent._mas_d25_seen_santa_costume = True
 
-                # mark decorations and outfit as active
-                persistent._mas_d25_deco_active = True
+                    # mark decorations and outfit as active
+                    persistent._mas_d25_deco_active = True
 
     # NOTE: holiday intro is handled with conditional
 
@@ -1298,9 +1340,9 @@ init -876 python in mas_delact:
             "and persistent._mas_d25_started_upset "
         )
         ev.action = store.EV_ACT_PUSH
-        ev.start_date = store.mas_d25c_start,
+        ev.start_date = store.mas_d25c_start
         ev.end_date = store.mas_d25p
-        store.Event._verifyDatesEV(ev)
+        store.Event._verifyAndSetDatesEV(ev)
         return True
 
 
@@ -2108,10 +2150,15 @@ init 5 python:
     )
 
 label mas_d25_postd25_notimespent:
-    #sanity check
+    #sanity checks
     if persistent._mas_d25_spent_d25:
         return
-        
+
+    #need to make sure people who just started post d25 don't lose aff
+    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_d25:
+        return
+
+
     if mas_isMoniAff(higher=True):
         $ mas_loseAffection(15, reason="missing Christmas.")
         m 1dkc "...I'm just glad you're finally here..."
@@ -2464,29 +2511,37 @@ init -810 python:
 
 
 init -10 python:
-    def mas_isNYE(_date=datetime.date.today()):
+    def mas_isNYE(_date=None):
         """
         Returns True if the given date is new years eve
 
         IN:
             _date - date to check
-                (Default: Todays date)
+                If None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is new years eve, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_nye.replace(year=_date.year)
 
 
-    def mas_isNYD(_date=datetime.date.today()):
+    def mas_isNYD(_date=None):
         """
         RETURNS True if the given date is new years day
 
         IN:
             _date - date to check
-                (Default: Today's date)
+                if None, we use today's date
+                (Default: None)
 
         RETURNS: True if given date is new years day, False otherwise
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         return _date == mas_nyd.replace(year=_date.year)
 
 
@@ -2690,6 +2745,7 @@ init 5 python:
             years=[],
             aff_range=(mas_aff.UPSET,None)
         ),
+        skipCalendar=True
     )
 
 default persistent._mas_pm_accomplished_resolutions = None
