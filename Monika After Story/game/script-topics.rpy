@@ -1451,7 +1451,7 @@ init 5 python:
             prompt="Do you ever think about our first kiss?",
             aff_range=(mas_aff.ENAMORED, None),
             conditional="persistent._mas_first_kiss is not None",
-	    action=EV_ACT_POOL
+            action=EV_ACT_POOL
         )
     )
 
