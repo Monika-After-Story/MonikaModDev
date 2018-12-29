@@ -1471,7 +1471,7 @@ label monika_kiss_aftermath:
     m 5hfb "Ahhh! I have to stop! All these fantasies are making me feel so giddy, ahaha!"
     m 1eka "I should really be more patient. Unfortunately, it'll be a while before we'll be able to do anything like that."
     m 1eua "Until then, we can indulge in the phantom sensations we share from across our worlds."
-    m 1tsa "If you ever want to share that feeling again...you only have to ask~."
+    m 1tsa "If you'd ever like another kiss, you only have to ask~"
     m 1tsa "These crazy sensations that you make me feel...I never want them to stop."
     m 1eka "I love you so much, [player]."
     return
