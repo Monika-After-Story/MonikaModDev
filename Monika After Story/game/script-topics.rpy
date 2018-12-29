@@ -1855,6 +1855,7 @@ label monika_rain_holdme:
 
     return
 
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True))
 
