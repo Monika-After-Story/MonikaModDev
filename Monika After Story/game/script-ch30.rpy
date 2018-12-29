@@ -1504,7 +1504,7 @@ label ch30_reset:
     ## d25 content
     python:
         if (
-                mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE())
+                (mas_isD25Post() or not (mas_isD25PreNYE() or mas_isNYE()))
                 and monika_chr.clothes == mas_clothes_santa
                 and not persistent._mas_force_clothes
             ):
