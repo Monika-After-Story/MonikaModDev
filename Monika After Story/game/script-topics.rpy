@@ -1449,7 +1449,7 @@ init 5 python:
             eventlabel="monika_kiss_aftermath", 
             category=["romance"],
             prompt="Do you ever think about our first kiss?",
-            aff_range=(mas_aff.NORMAL, None),
+            aff_range=(mas_aff.ENAMORED, None),
 			conditional="persistent._mas_first_kiss is not None",
 			action=EV_ACT_POOL
         )
