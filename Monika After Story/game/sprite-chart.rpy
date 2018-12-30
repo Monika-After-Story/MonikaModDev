@@ -2771,7 +2771,7 @@ init -2 python:
 
             RETURNS: True if this sprite object has the ex_prop, False if not
             """
-            return prop in self.ex_prop
+            return prop in self.ex_props
 
 
         def rmprop(self, prop):
