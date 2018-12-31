@@ -380,11 +380,15 @@ python early:
                     # if we are dealing with start/end dates, we need to
                     #   ensure that they are datetimes
                     if name == "start_date" or name == "end_date":
-                        if isinstance(value, datetime.date):
+                        if type(value) is datetime.date:
                             value = datetime.datetime.combine(
                                 value,
                                 datetime.time.min
                             )
+
+                        # nullify bad date types
+                        if type(value) is not datetime.datetime:
+                            value = None
 
                     # otherwise, repack the tuples
                     data_row = list(data_row)
