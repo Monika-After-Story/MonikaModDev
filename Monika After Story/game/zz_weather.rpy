@@ -86,6 +86,13 @@ init -20 python in mas_weather:
 
     WEATHER_MAP = {}
 
+    
+    def canChangeWeather():
+        """
+        Returns true if the user can change weather
+        """
+
+
     ## weather programming points here
 
     def _weather_rain_entry():
@@ -377,3 +384,19 @@ label mas_change_weather(new_weather):
     $ mas_current_weather.entry()
 
     return
+
+init 5 python:
+    # available only if moni affection is normal+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_change_weather",
+            category=["weather"],
+            prompt="Can you change the weather?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
