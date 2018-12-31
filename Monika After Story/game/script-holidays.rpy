@@ -76,6 +76,8 @@ init -810 python:
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
         datetime.datetime(2018, 11, 2),
+        # change trigger to better date
+#        datetime.datetime(2020, 1, 6),
         {
             "_mas_o31_current_costume": "o31.costume.was_worn",
             "_mas_o31_costume_greeting_seen": "o31.costume.greeting.seen",
