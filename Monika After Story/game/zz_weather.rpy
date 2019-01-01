@@ -592,7 +592,7 @@ label monika_change_weather_loop:
 
         elif not persistent._mas_likes_rain:
             m 1eka "I thought you didn't like rain."
-            m 1eta "Maybe you changed your mind?"
+            m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
             $ skip_leadin = True
             
