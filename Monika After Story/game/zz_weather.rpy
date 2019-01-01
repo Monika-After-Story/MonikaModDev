@@ -81,13 +81,21 @@ image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.p
 
 ## end living room weather art
 
+# NOTE: might not use these
 default persistent._mas_weather_snow_happened = False
 default persistent._mas_weather_rain_happened = False
+
+default persistent._mas_weather_MWdata = {}
+# stores locked/unlocked status for weather
 
 init -20 python in mas_weather:
     import store
 
     WEATHER_MAP = {}
+
+    # weather constants
+    # NOTE: just reference MOOD's numbers
+    WEAT_RETURN = "Nevermind"
 
     
     def canChangeWeather():
@@ -102,6 +110,29 @@ init -20 python in mas_weather:
         )
 
 
+    def loadMWData():
+        """
+        Loads persistent MASWeather data into the weather map
+
+        ASSUMES: weather map is already filled
+        """
+        if store.persistent._mas_weather_MWdata is None:
+            return
+
+        for mw_id, mw_data in store.persistent._mas_weather_MWdata.iteritems():
+            mw_obj = WEATHER_MAP.get(mw_id, None)
+            if mw_obj is not None:
+                mw_obj.fromTuple(mw_data)
+
+
+    def saveMWData():
+        """
+        Saves MASWeather data from weather map into persistent
+        """
+        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+            store.persistent._mas_weather_MWdata[mw_id] = mw_obj.toTuple()
+
+
     ## weather programming points here
 
     def _weather_rain_entry():
@@ -113,7 +144,7 @@ init -20 python in mas_weather:
 
         # play rain sound
         renpy.music.play(
-            store.audio.rain
+            store.audio.rain,
             channel="background",
             loop=True,
             fadein=1.0
@@ -122,6 +153,7 @@ init -20 python in mas_weather:
         # lock rain start/rain/islands
         store.mas_lockEVL("monika_rain", "EVE")
         store.mas_lockEVL("mas_monika_islands", "EVE")
+#        store.mas_lockEVL("greeting_ourreality", "GRE")
 
 
     def _weather_rain_exit():
@@ -136,8 +168,18 @@ init -20 python in mas_weather:
 
         # unlock rain/islands
         store.mas_unlockEVL("monika_rain", "EVE")
-        if store.seen_event("mas_monika_islands"):
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+                and islands_ev.checkAffection(store.mas_curr_affection)
+            ):
             store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+#        else:
+#            store.mas_unlockEVL("greeting_ourreality", "GRE")
+
+        # TODO: unlock islands greeting as well
 
 
     def _weather_snow_entry():
@@ -147,7 +189,10 @@ init -20 python in mas_weather:
         # set global flag
         store.mas_is_snowing = True
 
-        # TODO
+        # lock islands
+        store.mas_lockEVL("mas_monika_islands", "EVE")
+
+        # TODO: lock islands greeting as well
 
 
     def _weather_snow_exit():
@@ -156,6 +201,17 @@ init -20 python in mas_weather:
         """
         # set globla flag
         store.mas_is_snowing = False
+
+        # unlock islands
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+                and islands_ev.checkAffection(store.mas_curr_affection)
+            ):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+        # TODO: unlock islands greeting as well
 
 
     def _weather_thunder_entry():
@@ -183,12 +239,14 @@ init -20 python in mas_weather:
 init -10 python:
 
     # weather class
-    class MASWeather(object)
+    class MASWeather(object):
         """
         Weather class to determine some props for weather
 
         PROPERTIES:
             weather_id - Id that defines this weather object
+            prompt - button label for this weater
+            unlocked - determines if this weather is unlocked/selectable
             sp_left_day - image tag for spaceroom's left window in day time
             sp_right_day - image tag for spaceroom's right window in day time
             sp_left_night - image tag for spaceroom's left window in nighttime
@@ -205,8 +263,10 @@ init -10 python:
         def __init__(
                 self, 
                 weather_id,
+                prompt,
                 sp_left_day,
                 sp_right_day,
+                unlocked=False,
                 sp_left_night=None,
                 sp_right_night=None,
                 entry_pp=None,
@@ -218,8 +278,12 @@ init -10 python:
             IN:
                 weather_id - id that defines this weather object
                     NOTE: must be unique
+                prompt - button label for this weathe robject
                 sp_left_day - image tag for spaceroom's left window in daytime
                 sp_right_day - image tag for spaceroom's right window in daytime
+                unlocked - True if this weather object starts unlocked,
+                    False otherwise
+                    (Default: False)
                 sp_left_night - image tag for spaceroom's left window in night
                     If None, we use left_day for this
                     (Default: None)
@@ -238,8 +302,10 @@ init -10 python:
                 raise Exception("duplicate weather ID")
 
             self.weather_id = weather_id
+            self.prompt = prompt
             self.sp_left_day = sp_left_day
             self.sp_right_day = sp_right_day
+            self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
 
@@ -258,6 +324,19 @@ init -10 python:
             self.mas_weather.WEATHER_MAP[weather_id] = self
 
 
+        def __eq__(self, other):
+            if isinstance(other, MASWeather):
+                return self.weather_id == other.weather_id
+            return NotImplemented
+
+
+        def __ne__(self, other):
+            result = self.__eq__(other)
+            if result is NotImplemented:
+                return result
+            return not result
+
+        
         def entry(self):
             """
             Runs entry programming point
@@ -270,8 +349,19 @@ init -10 python:
             """
             Runs exit programming point
             """
-            if self.exit_pp is not None;
+            if self.exit_pp is not None:
                 self.exit_pp()
+
+
+        def fromTuple(self, data_tuple):
+            """
+            Loads data from tuple
+
+            IN:
+                data_tuple - tuple of the following format:
+                    [0]: unlocked property
+            """
+            self.unlocked = data_tuple[0]
 
 
         def sp_window(self, day):
@@ -291,6 +381,16 @@ init -10 python:
             return (self.sp_left_night, self.sp_right_night)
 
 
+        def toTuple(self):
+            """
+            Converts this MASWeather object into a tuple
+
+            RETURNS: tuple of the following format:
+                [0]: unlocked property
+            """
+            return (self.unlocked,)
+
+
 ### define weather objects here
 
 init -1 python:
@@ -298,6 +398,7 @@ init -1 python:
     # default weather (day + night)
     mas_weather_def = MASWeather(
         "def",
+        "Default",
         "room_mask3",
         "room_mask4",
         "room_mask",
@@ -307,6 +408,7 @@ init -1 python:
     # rain weather
     mas_weather_rain = MASWeather(
         "rain",
+        "Rain",
         "rain_mask_left",
         "rain_mask_right",
         entry_pp=store.mas_weather._weather_rain_entry,
@@ -316,6 +418,7 @@ init -1 python:
     # snow weather
     mas_weather_snow = MASWeather(
         "snow",
+        "Snow",
         "snow_mask_day_left",
         "snow_mask_day_right",
         "snow_mask_night_left",
@@ -327,14 +430,17 @@ init -1 python:
     # thunder/lightning
     mas_weather_thunder = MASWeather(
         "thunder",
+        "Thunder/Lightning",
         "rain_mask_left",
-        "rain_mask_right"
-        # TODO: progarmming points
-#        entry_pp=store.mas_weather._weather_rain_entry,
-#        exit_pp=store.mas_weather._weather_rain_exit
+        "rain_mask_right",
+        entry_pp=store.mas_weather._weather_thunder_entry,
+        exit_pp=store.mas_weather._weather_thunder_exit
     )
 
 ### end defining weather objects
+
+    # loads weather objects
+    store.mas_weather.loadMWData()
 
 # sets up weather
 init 800 python:
@@ -410,5 +516,49 @@ init 5 python:
     )
 
 label monika_change_weather:
-    
+    show monika at t21
 
+    python:
+        # build menu list
+        import store.mas_weather as mas_weather
+        import store.mas_moods as mas_moods
+
+        # we assume that we will always have more than 1
+        # default should always be at the top
+        weathers = [(mas_weather_def.prompt, mas_weather_def, False, False)]
+
+        # build other weather list
+        other_weathers = [
+            (mw_obj.prompt, mw_obj, False, False)
+            for mw_id, mw_obj in mas_weather.WEATHER_MAP.iteritems()
+            if mw_id != "def" and mw_obj.unlocked
+        ]
+
+        # sort other weather list
+        other_weathers.sort()
+
+        # build full list
+        weathers.extend(other_weathers)
+
+        # now add final quit item
+        final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
+
+    # call scrollable pane
+    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
+
+    # return value False? then return
+    if _return is False or mas_current_weather == _return:
+        return
+
+    # otherwise, we can change the weather now
+    # NOTE: here is where youc an react to a weather change
+    # TODO: react to changing weather to rain if you like/nolike
+    # TODO: react to thunder in the same vein as rain
+    # TODO: maybe react to snow?
+
+    # finally change the weather
+    call mas_change_weather(_return)
+
+    m "If you want to change the weather again, just ask me, okay?"
+
+    return
