@@ -1683,8 +1683,8 @@ label monika_rain:
                 $ persistent._mas_likes_rain = False
 
                 # lock weather topic if we can only select 1
-                if store.mas_weather.unlockedWeathers() < 2:
-                    $ mas_lockEVL("monika_change_weather", "EVE")
+#                if store.mas_weather.unlockedWeathers() < 2:
+#                    $ mas_lockEVL("monika_change_weather", "EVE")
 
                 m 2tkc "Aw, that's a shame."
                 if mas_is_raining:
