@@ -10559,9 +10559,9 @@ label monika_children:
                             $ persistent._mas_pm_wants_boy = True
                             m 6hubla "A boy would be wonderful." 
                             m 6hubla "Just imagine it."
-                                if persistent.gender == "M":
-                                    m 4eubla "He starts taking after you a bit."  
-                                    m 4eubld "Tries on all of your clothes." 
+                            if persistent.gender == "M":
+                                m 4eubla "He starts taking after you a bit."  
+                                m 4eubld "Tries on all of your clothes." 
                         "Girl": 
                             $ persistent._mas_pm_wants_girl = True
                             m 6hubla "A girl would be wonderful." 
