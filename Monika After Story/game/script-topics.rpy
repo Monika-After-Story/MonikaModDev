@@ -10645,14 +10645,14 @@ label monika_children:
             m 3eubfa "Besides, if I do get out here I'd probably be using some sort of android body, so it's probably not possible anyway."
             show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
             m 5esc "So I guess it really is for the best that we don't." 
-  else:
-      show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
-      m 5esc "Have you ever seen a couple with a child [player]?"
-      m 4esc "Must be a lot of work." 
-      m 4esd "Like..." 
-      m 4essdld "At what point do you consider yourself comfortable enough with your partner to have a child?"
-      show monika 5esa at t11 zorder MAS_MONIKA_Z with dissolve
-      m 5esa "I don't know, it was always something I thought about..." 
-      return "derandom"
+    else:
+    show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esc "Have you ever seen a couple with a child [player]?"
+    m 4esc "Must be a lot of work." 
+    m 4esd "Like..." 
+    m 4essdld "At what point do you consider yourself comfortable enough with your partner to have a child?"
+    show monika 5esa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5esa "I don't know, it was always something I thought about..." 
+    return "derandom"
    
    
