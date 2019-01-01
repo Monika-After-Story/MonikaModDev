@@ -585,6 +585,7 @@ label ch30_main:
         if persistent._mas_likes_rain:
             $ mas_weather_thunder.unlocked = True
             $ store.mas_weather.saveMWData()
+            $ mas_unlockEVL("monika_change_weather", "EVE")
         $ mas_changeWeather(mas_weather_thunder)
 
     # d25 season? d25 season you are in
@@ -1279,6 +1280,9 @@ label ch30_reset:
             if not mas_weather_snow.unlocked:
                 mas_weather_snow.unlocked = True
                 store.mas_weather.saveMWData()
+                
+                mas_unlockEVL("monika_change_weather", "EVE")
+                renpy.save_persistent()
 #        mas_is_snowing = mas_isWinter()
 #        if mas_is_snowing:
 #            

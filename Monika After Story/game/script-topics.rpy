@@ -1652,6 +1652,7 @@ label monika_rain:
                         mas_weather_thunder.unlocked = True
 
                     store.mas_weather.saveMWData()
+                    mas_unlockEVL("monika_change_weather", "EVE")
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
@@ -1683,6 +1684,10 @@ label monika_rain:
                 $ mas_weather_rain.unlocked = False
                 $ mas_weather_thunder.unlocked = False
                 $ store.mas_weather.saveMWData()
+
+                # lock weather topic if we can only select 1
+                if store.mas_weather.unlockedWeathers() < 2:
+                    $ mas_lockEVL("monika_change_weather", "EVE")
 
                 m 2tkc "Aw, that's a shame."
                 if mas_is_raining:
