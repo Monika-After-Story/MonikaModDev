@@ -971,7 +971,6 @@ init 5 python:
 label mas_reaction_hotchocolate:
     m 3hub "Hot chocolate!"
     m 3hua "Thank you, [player]!"
-    $ store.mas_sprites.reset_zoom()
     $ mas_receivedGift("mas_reaction_hotchocolate")
 
     if persistent._mas_c_hotchoc_been_given:
@@ -994,7 +993,8 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            m 3eua "In fact, I think I'll have some right now!"
+            $ store.mas_sprites.reset_zoom()
+            m 3eua "In fact, I think I'll make some right now!"
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
@@ -1088,7 +1088,7 @@ label mas_reaction_candycane:
             m 1hub "You know how much I love mint!"
         else:
             m 1hub "I just love the flavor of mint!"
-            m 1eua "Thanks, [player]."
+        m 1eua "Thanks, [player]."
             $ mas_receivedGift("mas_reaction_candycane")
     
     elif times_cane_given == 1:
