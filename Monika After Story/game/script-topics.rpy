@@ -10519,10 +10519,7 @@ label monika_hemispheres_nogets_snow:
     
     default persistent._mas_pm_wants_many_children = None
     # do you want many children?
-    
-    default persistent._mas_pm_wants_children = None
-    # do you not want children?
-    
+      
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="Children",category=['romance','monika','life'],prompt="Having Children",random=True))
 
