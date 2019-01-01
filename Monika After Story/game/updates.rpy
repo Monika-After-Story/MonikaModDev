@@ -298,10 +298,15 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# 0.8.14
+label v0_8_14(version="v0_8_14"):
+    python:
+        pass
+    return
+
 # 0.8.13
 label v0_8_13(version="v0_8_13"):
     python:
-        # TODO: redo start/end dates for all affected events
 
         ## start date and end date fixes
         d25_sp_tm = mas_getEV("mas_d25_spent_time_monika")
