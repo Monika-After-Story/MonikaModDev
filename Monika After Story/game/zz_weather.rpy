@@ -580,19 +580,33 @@ label monika_change_weather_loop:
         m "Try again~" 
         jump monika_change_weather_loop
 
+    $ skip_outro = False
+    $ skip_leadin = False
+
     # otherwise, we can change the weather now
     # NOTE: here is where youc an react to a weather change
-    # TODO: react to changing weather to rain if you like/nolike
-    # TODO: react to thunder in the same vein as rain
+    if _return == mas_weather_rain or _return == mas_weather_thunder:
+        if not renpy.seen_label("monika_rain"):
+            $ pushEvent("monika_rain")
+            $ skip_outro = True
+
+        elif not persistent._mas_likes_rain:
+            m 1eka "I thought you didn't like rain."
+            m 1eta "Maybe you changed your mind?"
+            m 1dsc "..."
+            $ skip_leadin = True
+            
     # TODO: maybe react to snow?
 
-    m 1eua "Alright!"
-    m 1dsc "Just give me a second..."
+    if not skip_leadin:
+        m 1eua "Alright!"
+        m 1dsc "Just give me a second..."
 
     # finally change the weather
     call mas_change_weather(_return)
 
-    m 1eua "There we go!"
-    m "If you want to change the weather again, just ask me, okay?"
+    if not skip_outro:
+        m 1eua "There we go!"
+        m "If you want to change the weather again, just ask me, okay?"
 
     return
