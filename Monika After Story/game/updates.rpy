@@ -301,7 +301,9 @@ label v0_3_1(version=version): # 0.3.1
 # 0.8.14
 label v0_8_14(version="v0_8_14"):
     python:
+#        persistent._mas_weather_rain_happened = persistent._mas_likes_rain
         pass
+
     return
 
 # 0.8.13
