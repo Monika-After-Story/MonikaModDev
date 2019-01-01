@@ -1702,7 +1702,9 @@ label monika_rain:
                 m 1hua "I think you'll come to enjoy it."
 
     # unrandom this event if its currently random topic
-    return "derandom"
+    # NOTE: we force event rebuild because this can be pushed by weather
+    #   selection topic
+    return "derandom|rebuild_ev"
 
 
 #init 5 python:
