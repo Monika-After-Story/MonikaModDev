@@ -10524,7 +10524,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="Children",category=['romance','monika','life'],prompt="Having Children",random=True))
 
 label monika_children:
-    if mas_isMoniLOVE(higher=True):
+    if mas_isMoniLOVE():
     m 3rkc "Hey, [player]..."
     m 3rkbsd "Did you know when couples are close enough they start talking about having children?"
     m 3rkbfsdlc "O-Of course you knew that, Ahaha~" 
@@ -10535,23 +10535,26 @@ label monika_children:
     m 2dsbfc "..." 
     m 3hubfsdlb "Ahaha. I thought this would be easier to talk about with you..." 
     m 4etbfc "I guess I'll get to the point."
+    show monika 2esbfsdlc
     menu:
-        m 2esbfsdlc "When I make it out there to your reality, would you like to have children with me?"
+        m "When I make it out there to your reality, would you like to have children with me?"
         "Yes.":
             $ persistent._mas_pm_wants_children = True
             m 6sublo "REALLY?!"
             m 1subltdb "Oh, [player]! You don't know how happy that makes me, my love!"
+            show monika 3hua
             menu:
-                m 3hua "How many kids do you want:"
-                "Just one." 
+                m "How many kids do you want:"
+                "Just one.": 
                     $ persistent._mas_pm_wants_1_child = True
                     m 4esa "Yeah, that sounds about right." 
                     m 6wub "Can you imagine it, [player]?"
                     m 6hubsa "Just the three of us..." 
                     m 6hubsa "Living life together." 
                     m 6hubsa "Helping them grow up."
+                    show monika 3eua
                     menu:
-                        m 3eua "What do you think, sweetie? A boy or a girl?"
+                        m "What do you think, sweetie? A boy or a girl?"
                         "Boy": 
                             $ persistent._mas_pm_wants_boy = True
                             m 6hubla "A boy would be wonderful." 
@@ -10563,34 +10566,34 @@ label monika_children:
                             $ persistent._mas_pm_wants_girl = True
                             m 6hubla "A girl would be wonderful." 
                             m 6hubla "Just imagine it."
-                                if persistent.gender == "F":
-                                    m 4eubla "She starts taking after us a bit." 
-                                    m 4eubld "Tries on all of us clothes." 
-                                else: 
-                                    m 4eubla "She starts taking after me a bit." 
-                                    m 4eubld "Tries on all of my clothes." 
-                                m 4suo "We could get them into sports or music!"
-                                m 2hua "Take them to his first day of school." 
-                                m 3rksdlc "Feel a deep sense of sadness as they grow up, thinking we lost them." 
-                                m 3rksdlb "Feeling proud at the same time that we're doing our job." 
-                                m 4esa "We could give them pointers on dating and worry about who they take interest in." 
-                                m 4rssdla "Watch them graduate high school." 
-                                m 6dsc "..." 
-                                m 6dkc "Sit and cry together when they finally moves out..." 
-                                m 6ekc "It'd hurt..." 
-                                m 6ekd "It'd hurt so much..." 
-                                m 4eka "But then we'd look at each other and realize that we did our job." 
-                                m 4ekb "And they'd still come back and visit us." 
-                                m 4wub "Maybe one day with children of their own." 
-                                m 6hub "Our family having expanded." 
-                                m 6hubsa "And we could sit back on the porch hand in hand, happily watching our grand kids." 
-                                m 6sub "Doesn't it sound wonderful, [player]?" 
-                                m 4eua "Nothing would make me happier than living this dream with you, my love." 
-                                m 6eubfb "God, I just want to feel your embrace even more now!" 
-                                m 4rksdlc "Oh well, one day we'll be able to make it a reality." 
-                                m 2hua "So start thinking of names till then! Okay, [player]?"
+                            if persistent.gender == "F":
+                                m 4eubla "She starts taking after us a bit." 
+                                m 4eubld "Tries on all of us clothes." 
+                            else: 
+                                m 4eubla "She starts taking after me a bit." 
+                                m 4eubld "Tries on all of my clothes." 
+                        m 4suo "We could get them into sports or music!"
+                        m 2hua "Take them to his first day of school." 
+                        m 3rksdlc "Feel a deep sense of sadness as they grow up, thinking we lost them." 
+                        m 3rksdlb "Feeling proud at the same time that we're doing our job." 
+                        m 4esa "We could give them pointers on dating and worry about who they take interest in." 
+                        m 4rssdla "Watch them graduate high school." 
+                        m 6dsc "..." 
+                        m 6dkc "Sit and cry together when they finally moves out..." 
+                        m 6ekc "It'd hurt..." 
+                        m 6ekd "It'd hurt so much..." 
+                        m 4eka "But then we'd look at each other and realize that we did our job." 
+                        m 4ekb "And they'd still come back and visit us." 
+                        m 4wub "Maybe one day with children of their own." 
+                        m 6hub "Our family having expanded." 
+                        m 6hubsa "And we could sit back on the porch hand in hand, happily watching our grand kids." 
+                        m 6sub "Doesn't it sound wonderful, [player]?" 
+                        m 4eua "Nothing would make me happier than living this dream with you, my love." 
+                        m 6eubfb "God, I just want to feel your embrace even more now!" 
+                        m 4rksdlc "Oh well, one day we'll be able to make it a reality." 
+                        m 2hua "So start thinking of names till then! Okay, [player]?"
 
-                "Two to three." 
+                "Two to three.": 
                     $ persistent._mas_pm_wants_2_to_3_children = True
                     m 4tsa "Yeah, that seems like a good number." 
                     m 2sua "Imagine it..."
@@ -10610,7 +10613,7 @@ label monika_children:
                     m 1esbsa "Just imagining the reaction you had to that must have been so precious." 
                     m 1hubsa "God I love you, [player]." 
                     m 1hubsb "You're the best partner I could ever ask for." 
-                "A lot!" 
+                "A lot!": 
                     $ persistent._mas_pm_wants_many_children = True
                     show monika 5wubfo at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5wubfo "O-Oh." 
@@ -10651,6 +10654,6 @@ label monika_children:
       m 4essdld "At what point do you consider yourself comfortable enough with your partner to have a child?"
       show monika 5esa at t11 zorder MAS_MONIKA_Z with dissolve
       m 5esa "I don't know, it was always something I thought about..." 
-      return
+      return "derandom"
    
    
