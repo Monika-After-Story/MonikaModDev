@@ -81,6 +81,9 @@ image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.p
 
 ## end living room weather art
 
+default persistent._mas_weather_snow_happened = False
+default persistent._mas_weather_rain_happened = False
+
 init -20 python in mas_weather:
     import store
 
@@ -90,7 +93,13 @@ init -20 python in mas_weather:
     def canChangeWeather():
         """
         Returns true if the user can change weather
+
+        NOTE: this does not check affection.
         """
+        return (
+            store.persistent._mas_weather_rain_happened 
+            or store.persistent._mas_weather_snow_happened
+        )
 
 
     ## weather programming points here
@@ -399,4 +408,7 @@ init 5 python:
             aff_range=(mas_aff.NORMAL, None)
         )
     )
+
+label monika_change_weather:
+    
 

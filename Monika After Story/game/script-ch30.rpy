@@ -1298,6 +1298,7 @@ label ch30_reset:
             mas_lockEVL("mas_monika_islands", "EVE")
             mas_lockEVL("monika_rain", "EVE")
             mas_lockEVL("greeting_ourreality", "GRE")
+            persistent._mas_weather_snow_happened = True
 
     # reset hair / clothes
     # the default options should always be available.
