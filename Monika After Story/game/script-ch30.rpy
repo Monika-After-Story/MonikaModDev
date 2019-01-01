@@ -440,42 +440,23 @@ init python:
         Rolls some chances to see if we should make it rain
 
         RETURNS:
-            True if it should rain now, false otherwise
+            rain weather to use, or None if we dont want to change weather
         """
         if mas_isMoniNormal(higher=True):
-            return False
+            return None
 
         # Upset and lower means we need to roll
         chance = random.randint(1,100)
         if mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
-            return True
+            return mas_weather_rain
 
         elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
-            return True
+            return mas_weather_rain
 
         elif mas_isMoniBroken() and chance <= MAS_RAIN_BROKEN:
-            return True
+            return mas_weather_thunder
 
-        return False
-
-
-    def mas_forceRain():
-        """
-        Sets rain variables and locks appropriate rain events
-        """
-        global scene_change, mas_is_raining, mas_is_snowing
-        scene_change = True
-        mas_is_raining = True
-        mas_is_snowing = False
-        renpy.music.play(
-            audio.rain,
-            channel="background",
-            loop=True,
-            fadein=1.0
-        )
-        lockEventLabel("monika_rain_start")
-        lockEventLabel("monika_rain_stop")
-        lockEventLabel("monika_rain")
+        return None
 
 
     def mas_lockHair():
@@ -599,9 +580,12 @@ label ch30_main:
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
         $ store.mas_globals.show_vignette = True
-        $ store.mas_globals.show_lightning = True
-        $ mas_forceRain()
-#        $ mas_lockHair()
+        
+        # setup thunder
+        if persistent._mas_likes_rain:
+            $ mas_weather_thunder.unlocked = True
+            $ store.mas_weather.saveMWData()
+        $ mas_changeWeather(mas_weather_thunder)
 
     # d25 season? d25 season you are in
     if mas_isD25Season():
@@ -1001,8 +985,9 @@ label ch30_post_exp_check:
         $ mas_startup_song()
 
         # rain check
-        if mas_shouldRain():
-            $ mas_forceRain()
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH TO PRELOOP
 
@@ -1285,32 +1270,23 @@ label ch30_reset:
             if mood_ev:
                 mood_ev.unlocked = True
 
-    # reset raining stuff
-    python:
-        mas_is_raining = False
-        if persistent._mas_likes_rain:
-            unlockEventLabel("monika_rain_start")
-            lockEventLabel("monika_rain_stop")
-            # unlock islands event if seen already
-            if store.seen_event("mas_monika_islands"):
-                # we can unlock the topic
-                store.unlockEventLabel("mas_monika_islands")
-#            lockEventLabel("monika_rain_holdme")
-
-        if mas_isMoniNormal(higher=True):
-            # monika affection above normal?
-            unlockEventLabel("monika_rain")
-
     # enabel snowing if its winter
     python:
-        mas_is_snowing = mas_isWinter()
-        if mas_is_snowing:
-            mas_lockEVL("monika_rain_start", "EVE")
-            mas_lockEVL("monika_rain_stop", "EVE")
-            mas_lockEVL("mas_monika_islands", "EVE")
-            mas_lockEVL("monika_rain", "EVE")
-            mas_lockEVL("greeting_ourreality", "GRE")
-            persistent._mas_weather_snow_happened = True
+        # TODO: snowing should also be controlled if you like it or not
+        if mas_isWinter():
+            mas_changeWeather(mas_weather_snow)
+
+            if not mas_weather_snow.unlocked:
+                mas_weather_snow.unlocked = True
+                store.mas_weather.saveMWData()
+#        mas_is_snowing = mas_isWinter()
+#        if mas_is_snowing:
+#            
+#            mas_lockEVL("monika_rain_start", "EVE")
+#            mas_lockEVL("monika_rain_stop", "EVE")
+#            mas_lockEVL("mas_monika_islands", "EVE")
+#            mas_lockEVL("monika_rain", "EVE")
+#            mas_lockEVL("greeting_ourreality", "GRE")
 
     # reset hair / clothes
     # the default options should always be available.

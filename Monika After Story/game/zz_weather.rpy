@@ -151,7 +151,7 @@ init -20 python in mas_weather:
         )
 
         # lock rain start/rain/islands
-        store.mas_lockEVL("monika_rain", "EVE")
+#        store.mas_lockEVL("monika_rain", "EVE")
         store.mas_lockEVL("mas_monika_islands", "EVE")
 #        store.mas_lockEVL("greeting_ourreality", "GRE")
 
@@ -167,7 +167,7 @@ init -20 python in mas_weather:
         renpy.music.stop(channel="background", fadeout=1.0)
 
         # unlock rain/islands
-        store.mas_unlockEVL("monika_rain", "EVE")
+#        store.mas_unlockEVL("monika_rain", "EVE")
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (
                 islands_ev is not None
@@ -266,11 +266,11 @@ init -10 python:
                 prompt,
                 sp_left_day,
                 sp_right_day,
-                unlocked=False,
                 sp_left_night=None,
                 sp_right_night=None,
                 entry_pp=None,
-                exit_pp=None
+                exit_pp=None,
+                unlocked=False
             ):
             """
             Constructor for a MASWeather object
@@ -402,7 +402,8 @@ init -1 python:
         "room_mask3",
         "room_mask4",
         "room_mask",
-        "room_mask2"
+        "room_mask2",
+        unlocked=True
     )
 
     # rain weather
@@ -412,7 +413,8 @@ init -1 python:
         "rain_mask_left",
         "rain_mask_right",
         entry_pp=store.mas_weather._weather_rain_entry,
-        exit_pp=store.mas_weather._weather_rain_exit
+        exit_pp=store.mas_weather._weather_rain_exit,
+        unlocked=True,
     )
 
     # snow weather

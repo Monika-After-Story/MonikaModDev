@@ -2437,9 +2437,12 @@ label mas_dockstat_found_monika:
         # o31 re-entry checks
         if mas_isO31() and persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
-            store.mas_globals.show_lightning = True
-            mas_forceRain()
-            mas_lockHair()
+
+            # setup thunder
+            if persistent._mas_likes_rain:
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+            mas_changeWeather(mas_weather_thunder)
 
         # d25 re-entry checks
         if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
