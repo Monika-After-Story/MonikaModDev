@@ -277,6 +277,7 @@ label mas_holiday_o31_autoload_check:
             if persistent._mas_likes_rain:
                 mas_weather_thunder.unlocked = True
                 store.mas_weather.saveMWData()
+                mas_unlockEVL("monika_change_weather", "EVE")
             mas_changeWeather(mas_weather_thunder)
 
     if mas_skip_visuals:

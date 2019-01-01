@@ -82,8 +82,8 @@ image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.p
 ## end living room weather art
 
 # NOTE: might not use these
-default persistent._mas_weather_snow_happened = False
-default persistent._mas_weather_rain_happened = False
+#default persistent._mas_weather_snow_happened = False
+#default persistent._mas_weather_rain_happened = False
 
 default persistent._mas_weather_MWdata = {}
 # stores locked/unlocked status for weather
@@ -98,16 +98,16 @@ init -20 python in mas_weather:
     WEAT_RETURN = "Nevermind"
 
     
-    def canChangeWeather():
-        """
-        Returns true if the user can change weather
-
-        NOTE: this does not check affection.
-        """
-        return (
-            store.persistent._mas_weather_rain_happened 
-            or store.persistent._mas_weather_snow_happened
-        )
+#    def canChangeWeather():
+#        """
+#        Returns true if the user can change weather
+#
+#        NOTE: this does not check affection.
+#        """
+#        return (
+#            store.persistent._mas_weather_rain_happened 
+#            or store.persistent._mas_weather_snow_happened
+#        )
 
 
     def loadMWData():
@@ -131,6 +131,18 @@ init -20 python in mas_weather:
         """
         for mw_id, mw_obj in WEATHER_MAP.iteritems():
             store.persistent._mas_weather_MWdata[mw_id] = mw_obj.toTuple()
+
+
+    def unlockedWeathers():
+        """
+        Returns number of unlocked weather items
+        """
+        count = 0
+        for mw_id, mw_obj in WEATHER_MAP.iteritems():
+            if mw_obj.unlocked:
+                count += 1
+
+        return count
 
 
     ## weather programming points here
@@ -518,7 +530,14 @@ init 5 python:
     )
 
 label monika_change_weather:
-    show monika at t21
+
+    m 1hua "Sure!"
+
+label monika_change_weather_loop:
+
+    show monika 1eua at t21
+
+    $ renpy.say(m, "What kind of weather would you like?", interact=False)
 
     python:
         # build menu list
@@ -548,9 +567,18 @@ label monika_change_weather:
     # call scrollable pane
     call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
 
+    show monika at t11
+
     # return value False? then return
-    if _return is False or mas_current_weather == _return:
+    if _return is False:
+        m 1eka "Oh, alright."
+        m "If you want to change the weather, just ask, okay?"
         return
+
+    if _return == mas_current_weather:
+        m 1hua "That's the current weather, silly."
+        m "Try again~" 
+        jump monika_change_weather_loop
 
     # otherwise, we can change the weather now
     # NOTE: here is where youc an react to a weather change
@@ -558,9 +586,13 @@ label monika_change_weather:
     # TODO: react to thunder in the same vein as rain
     # TODO: maybe react to snow?
 
+    m 1eua "Alright!"
+    m 1dsc "Just give me a second..."
+
     # finally change the weather
     call mas_change_weather(_return)
 
+    m 1eua "There we go!"
     m "If you want to change the weather again, just ask me, okay?"
 
     return
