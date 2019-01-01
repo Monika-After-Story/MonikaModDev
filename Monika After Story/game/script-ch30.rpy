@@ -1225,6 +1225,11 @@ label ch30_end:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    python:
+        # name eggs
+        if persistent.playername.lower() == "sayori":
+            store.mas_globals.show_s_light = True
     
     python:
         # start by building event lists if they have not been built already
