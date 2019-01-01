@@ -2866,9 +2866,18 @@ label monika_love:
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"
     #prevents spamming to increase counter.
-    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
-        $ persistent._mas_monika_lovecounter += 1
+
+    #OLD LOGIC - aff gain only if you said it 3 mins later
+    #if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+    #    $ persistent._mas_monika_lovecounter += 1
+    #    $ mas_gainAffection()
+
+    #NEW LOGIC - aff gain only on first ily for the day
+    #Check if new day (midnight reset)
+    if persistent._mas_monika_lovecountertime is None or datetime.date.today() > persistent._mas_monika_lovecountertime.date():
         $ mas_gainAffection()
+
+    $ persistent._mas_monika_lovecounter += 1 #move this out because dlg changes based on this, plus you did say it
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
