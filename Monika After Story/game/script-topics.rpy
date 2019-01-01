@@ -1681,9 +1681,6 @@ label monika_rain:
 
             "I hate the rain.":
                 $ persistent._mas_likes_rain = False
-                $ mas_weather_rain.unlocked = False
-                $ mas_weather_thunder.unlocked = False
-                $ store.mas_weather.saveMWData()
 
                 # lock weather topic if we can only select 1
                 if store.mas_weather.unlockedWeathers() < 2:
