@@ -523,7 +523,7 @@ init 5 python:
             category=["weather"],
             prompt="Can you change the weather?",
             pool=True,
-            unlocked=False,
+            unlocked=True,
             rules={"no unlock": None},
             aff_range=(mas_aff.NORMAL, None)
         )
