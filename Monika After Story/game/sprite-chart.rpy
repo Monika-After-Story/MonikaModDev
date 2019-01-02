@@ -102,11 +102,12 @@
 define is_sitting = True
 
 # accessories list
-default persistent._mas_acs_pre_list = list()
-default persistent._mas_acs_bbh_list = list()
-default persistent._mas_acs_bfh_list = list()
-default persistent._mas_acs_mid_list = list()
-default persistent._mas_acs_pst_list = list()
+default persistent._mas_acs_pre_list = []
+default persistent._mas_acs_bbh_list = []
+default persistent._mas_acs_bfh_list = []
+default persistent._mas_acs_afh_list = []
+default persistent._mas_acs_mid_list = []
+default persistent._mas_acs_pst_list = []
 
 # zoom levels
 default persistent._mas_zoom_zoom_level = None
@@ -1238,6 +1239,7 @@ init -5 python in mas_sprites:
             acs_pre_list,
             acs_bbh_list,
             acs_bfh_list,
+            acs_afh_list,
             acs_mid_list,
             acs_pst_list,
             lean=None,
@@ -1265,6 +1267,8 @@ init -5 python in mas_sprites:
                 hair and body
             acs_bfh_list - sorted list of MASAccessories to draw between body
                 and front hair
+            acs_afh_list - sorted list of MASAccessories to draw between front
+                hair and arms
             acs_mid_list - sorted list of MASAccessories to draw between body
                 and face
             acs_pst_list - sorted list of MASAccessories to draw after face
@@ -1312,18 +1316,18 @@ init -5 python in mas_sprites:
         #       before body (split mode)
         #   4. body - the actual body (does not include arms in split mode)
         #   5. pre-front-hair-acs - acs that should render after body, but
-        #       before front hair (split mode
+        #       before front hair (split mode)
         #   6. front-hair - front portion of hair (split mode)
+        #   7. front-hair-arms acs - acs that should render after front hair
+        #       but before arms (split mode)
         #   7. arms - arms (split mode, lean mode)
         #   8. mid - acs that render between body and face
         #   9. face - face expressions
         #   10. post-acs - acs that should render after basically everything
 
-        # NOTE: if you have acs in the split hair locations, please note that
-        #   THEY WILL NOT SHOW if hair_split is True.
-        #   If you use a single layer hair system, use the prog points to
-        #   remove offending acs. This should only be an issue while we still
-        #   have sprites with torso-hair baked pieces.
+        # NOTE: acs in split hair locations end up being rendered at mid
+        #   if current split is False
+
 
         # 1. pre accessories
         _ms_accessorylist(
@@ -1384,6 +1388,10 @@ init -5 python in mas_sprites:
             # 6. front-hair
             _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
 
+            # TODO: lean should have support for seperate arms
+
+            # TODO: acs between front hair and arms
+
             # no lean means we can ARMS
             if not lean:
                 # position setup
@@ -1427,6 +1435,10 @@ init -5 python in mas_sprites:
                 arms,
                 lean=lean
             )
+
+            # TODO: arms separaet for leaning
+
+            # also teh acs
 
             # no lean means ARMS
             if not lean:
@@ -1754,22 +1766,12 @@ init -2 python:
         PST_ACS = 2 # post accessory (after face)
         BBH_ACS = 3 # betweeen Body and Back Hair accessory
         BFH_ACS = 4 # between Body and Front Hair accessory
+        AFH_ACS = 5 # between arms and front hair accessory
 
 
-        def __init__(self,
-                pre_acs=[],
-                mid_acs=[],
-                pst_acs=[],
-                bbh_acs=[],
-                bfh_acs=[]
-            ):
+        def __init__(self):
             """
-            IN:
-                pre_acs - list of pre accessories to load with
-                mid_acs - list of mid accessories to load with
-                pst_acs - list of pst accessories to load with
-                bbh_acs - list of bbh accessories to load with
-                bfh_acs - list of bfh accessories to load with
+            Constructor
             """
             self.name="Monika"
             self.haircut="default"
@@ -1792,6 +1794,9 @@ init -2 python:
             # accessories to be rendered after body, before front hair
             self.acs_bfh = []
 
+            # accessories to be rendered after fornt hair, before arms
+            self.acs_afh = []
+
             # accessories to be rendreed between body and face expressions
             self.acs_mid = []
 
@@ -1806,7 +1811,8 @@ init -2 python:
                 self.MID_ACS: self.acs_mid,
                 self.PST_ACS: self.acs_pst,
                 self.BBH_ACS: self.acs_bbh,
-                self.BFH_ACS: self.acs_bfh
+                self.BFH_ACS: self.acs_bfh,
+                self.AFH_ACS: self.acs_afh
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -1843,8 +1849,9 @@ init -2 python:
                 _acs_pre_names,
                 _acs_bbh_names,
                 _acs_bfh_names,
+                _acs_afh_names
                 _acs_mid_names,
-                _acs_pst_names
+                _acs_pst_names,
             ):
             """
             INTERNAL
@@ -1857,6 +1864,7 @@ init -2 python:
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
                 _acs_bfh_names - list of bfh acs names to load
+                _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
                 _acs_pst_names - list of pst acs names to load
             """
@@ -1870,6 +1878,7 @@ init -2 python:
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
             self._load_acs(_acs_bfh_names, self.BFH_ACS)
+            self._load_acs(_acs_afh_names, self.AFH_ACS)
             self._load_acs(_acs_mid_names, self.MID_ACS)
             self._load_acs(_acs_pst_names, self.PST_ACS)
 
@@ -2123,6 +2132,7 @@ init -2 python:
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
                 store.persistent._mas_acs_bfh_list,
+                store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
                 store.persistent._mas_acs_pst_list
             )
@@ -2140,8 +2150,9 @@ init -2 python:
                     [2]: pre acs data
                     [3]: bbh acs data
                     [4]: bfh acs data
-                    [5]: mid acs data
-                    [6]: pst acs data
+                    [5]: afh acs data
+                    [6]: mid acs data
+                    [7]: pst acs data
                 as_prims - True if this data was saved as primitive data types,
                     false if as objects
                     (Default: False)
@@ -2159,8 +2170,9 @@ init -2 python:
             self._load_acs_obj(_data[2], self.PRE_ACS)
             self._load_acs_obj(_data[3], self.BBH_ACS)
             self._load_acs_obj(_data[4], self.BFH_ACS)
-            self._load_acs_obj(_data[5], self.MID_ACS)
-            self._load_acs_obj(_data[6], self.PST_ACS)
+            self._load_acs_obj(_data[5], self.AFH_ACS)
+            self._load_acs_obj(_data[6], self.MID_ACS)
+            self._load_acs_obj(_data[7], self.PST_ACS)
 
 
         def reset_all(self, by_user=None):
@@ -2240,6 +2252,7 @@ init -2 python:
             self.remove_all_acs_in(self.PRE_ACS)
             self.remove_all_acs_in(self.BBH_ACS)
             self.remove_all_acs_in(self.BFH_ACS)
+            self.remove_all_acs_in(self.AFH_ACS)
             self.remove_all_acs_in(self.MID_ACS)
             self.remove_all_acs_in(self.PST_ACS)
 
@@ -2343,6 +2356,10 @@ init -2 python:
                 self.BFH_ACS,
                 force_acs
             )
+            store.persistent._mas_acs_afh_list = self._save_acs(
+                self.AFH_ACS,
+                force_acs
+            )
             store.persistent._mas_acs_mid_list = self._save_acs(
                 self.MID_ACS,
                 force_acs
@@ -2386,8 +2403,9 @@ init -2 python:
                 [2]: pre acs data (Default: [])
                 [3]: bbh acs data (Default: [])
                 [4]: bfh acs data (Default: [])
-                [5]: mid acs data (Default: [])
-                [6]: pst acs data (Default: [])
+                [5]: afh acs data (Default: [])
+                [6]: mid acs data (Default: [])
+                [7]: pst acs data (Default: [])
             """
             # determine which clothes to save
             if force_clothes or self.clothes.stay_on_start:
@@ -2408,6 +2426,7 @@ init -2 python:
                 pre_acs_data = self._save_acs(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs(self.BBH_ACS, force_acs)
                 bfh_acs_data = self._save_acs(self.BFH_ACS, force_acs)
+                afh_acs_data = self._save_acs(self.AFH_ACS, force_acs)
                 mid_acs_data = self._save_acs(self.MID_ACS, force_acs)
                 pst_acs_data = self._save_acs(self.PST_ACS, force_acs)
 
@@ -2415,6 +2434,7 @@ init -2 python:
                 pre_acs_data = self._save_acs_obj(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs_obj(self.BBH_ACS, force_acs)
                 bfh_acs_data = self._save_acs_obj(self.BFH_ACS, force_acs)
+                afh_acs_data = self._save_acs_obj(self.AFH_ACS, force_acs)
                 mid_acs_data = self._save_acs_obj(self.MID_ACS, force_acs)
                 pst_acs_data = self._save_acs_obj(self.PST_ACS, force_acs)
 
@@ -2425,6 +2445,7 @@ init -2 python:
                 pre_acs_data,
                 bbh_acs_data,
                 bfh_acs_data,
+                afh_acs_data,
                 mid_acs_data,
                 pst_acs_data
             )
@@ -2501,6 +2522,17 @@ init -2 python:
                 acs - accessory to wear
             """
             self.wear_acs_in(acs, self.BFH_ACS)
+
+
+        def wear_acs_afh(self, acs):
+            """
+            Wears the given accessory in the between front hair and arms
+            acs log
+
+            IN:
+                acs - accessory to wear
+            """
+            self.wear_acs_in(acs, self.AFH_ACS)
 
 
         def wear_acs_mid(self, acs):
@@ -3265,6 +3297,7 @@ init -2 python:
         acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
         acs_bbh_list = character.acs.get(MASMonika.BBH_ACS, [])
         acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
+        acs_afh_list = character.acs.get(MASMonika.AFH_ACS, [])
         acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
         acs_pst_list = character.acs.get(MASMonika.PST_ACS, [])
 
@@ -3318,6 +3351,7 @@ init -2 python:
                 acs_pre_list,
                 acs_bbh_list,
                 acs_bfh_list,
+                acs_afh_list,
                 acs_mid_list,
                 acs_pst_list,
                 lean=lean,
