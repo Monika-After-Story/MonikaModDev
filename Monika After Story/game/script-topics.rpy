@@ -10529,12 +10529,10 @@ label monika_children:
         m 3rkbsa "Did you know when couples are close enough, they start talking about having children?"
         m 1lksdla "O-Of course you knew that, Ahaha~" 
         m 2dkbfc "..." 
-        m 4rsbfsdla "Just a thought I had, you know..." 
-        show monika 5rsbfsdld at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5rsbfsdld "I was wondering if-" 
-        show monika 2dsbso at t11 zorder MAS_MONIKA_Z with dissolve
+        m 2rksdlc "Just a thought I had, you know..." 
+        m 4rksdlc "I was wondering if-" 
         m 2dsbso "..." 
-        m 3hubfsdlb "Ahaha. I thought this would be easier to talk about with you..." 
+        m 2rksdlc "Ahaha. I thought this would be easier to talk about with you..." 
         m 4ekbfa "I guess I'll get to the point."
         show monika 2hubfb
         menu:
