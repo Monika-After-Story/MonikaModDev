@@ -10502,157 +10502,178 @@ label monika_hemispheres_nogets_snow:
     call monika_snow_nogets_snow
     return
     
+    # do you want children?    
     default persistent._mas_pm_wants_children = None
-    # do you want children?
     
-    default persistent._mas_pm_wants_1_child = None
     # do you want one child?
+    default persistent._mas_pm_wants_1_child = None
     
-    default persistent._mas_pm_wants_boy = None
     # do you want a boy?
+    default persistent._mas_pm_wants_boy = None
     
-    default persistent._mas_pm_wants_girl = None
     # do you want a girl?
+    default persistent._mas_pm_wants_girl = None
     
-    default persistent._mas_pm_wants_2_to_3_children = None
     # do you want two to three children?
+    default persistent._mas_pm_wants_2_to_3_children = None
     
-    default persistent._mas_pm_wants_many_children = None
     # do you want many children?
+    default persistent._mas_pm_wants_many_children = None
       
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="Children",category=['romance','monika','life'],prompt="Having Children",random=True))
 
 label monika_children:
-    if mas_isMoniLOVE():
-    m 3rkc "Hey, [player]..."
-    m 3rkbsd "Did you know when couples are close enough they start talking about having children?"
-    m 3rkbfsdlc "O-Of course you knew that, Ahaha~" 
-    m 2dkbfc "..." 
-    m 4rsbfsdla "Just a thought I had, you know..." 
-    show monika 5rsbfsdld at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5rsbfsdld "I was wondering if-" 
-    m 2dsbfc "..." 
-    m 3hubfsdlb "Ahaha. I thought this would be easier to talk about with you..." 
-    m 4etbfc "I guess I'll get to the point."
-    show monika 2esbfsdlc
-    menu:
-        m "When I make it out there to your reality, would you like to have children with me?"
-        "Yes.":
-            $ persistent._mas_pm_wants_children = True
-            m 6sublo "REALLY?!"
-            m 1subltdb "Oh, [player]! You don't know how happy that makes me, my love!"
-            show monika 3hua
-            menu:
-                m "How many kids do you want:"
-                "Just one.": 
-                    $ persistent._mas_pm_wants_1_child = True
-                    m 4esa "Yeah, that sounds about right." 
-                    m 6wub "Can you imagine it, [player]?"
-                    m 6hubsa "Just the three of us..." 
-                    m 6hubsa "Living life together." 
-                    m 6hubsa "Helping them grow up."
-                    show monika 3eua
-                    menu:
-                        m "What do you think, sweetie? A boy or a girl?"
-                        "Boy": 
-                            $ persistent._mas_pm_wants_boy = True
-                            m 6hubla "A boy would be wonderful." 
-                            m 6hubla "Just imagine it."
-                            if persistent.gender == "M":
-                                m 4eubla "He starts taking after you a bit."  
-                                m 4eubld "Tries on all of your clothes." 
-                        "Girl": 
-                            $ persistent._mas_pm_wants_girl = True
-                            m 6hubla "A girl would be wonderful." 
-                            m 6hubla "Just imagine it."
-                            if persistent.gender == "F":
-                                m 4eubla "She starts taking after us a bit." 
-                                m 4eubld "Tries on all of us clothes." 
-                            else: 
-                                m 4eubla "She starts taking after me a bit." 
-                                m 4eubld "Tries on all of my clothes." 
-                    m 4suo "We could get them into sports or music!"
-                    m 2hua "Take them to his first day of school." 
-                    m 3rksdlc "Feel a deep sense of sadness as they grow up, thinking we lost them." 
-                    m 4esa "We could give them pointers on dating and worry about who they take interest in." 
-                    m 4rssdla "Watch them graduate high school." 
-                    m 6dsc "..." 
-                    m 6dkc "Sit and cry together when they finally moves out..." 
-                    m 6ekc "It'd hurt..." 
-                    m 6ekd "It'd hurt so much..." 
-                    m 4eka "But then we'd look at each other and realize that we did our job." 
-                    m 4ekb "And they'd still come back and visit us." 
-                    m 4wub "Maybe one day with children of their own." 
-                    m 6hub "Our family having expanded." 
-                    m 6hubsa "And we could sit back on the porch hand in hand, happily watching our grand kids." 
-                    m 6sub "Doesn't it sound wonderful, [player]?" 
-                    m 4eua "Nothing would make me happier than living this dream with you, my love." 
-                    m 6eubfb "God, I just want to feel your embrace even more now!" 
-                    m 4rksdlc "Oh well, one day we'll be able to make it a reality." 
-                    m 2hua "So start thinking of names till then! Okay, [player]?"
-
-                "Two to three.": 
-                    $ persistent._mas_pm_wants_2_to_3_children = True
-                    m 4tsa "Yeah, that seems like a good number." 
-                    m 2sua "Imagine it..."
-                    m 2sub "All of us together." 
-                    m 4sua "Teaching the kids how to get along." 
-                    m 4sub "Going on extravagant family trips!" 
-                    m 4aubla "Wearing matching clothes." 
-                    m 4aubla "Teaching our kids how important family is and that they should look after each other." 
-                    m 6wublw "Family game nights!" 
-                    m 2rksdla "It'd be really exhausting." 
-                    m 2hub "But in the end it would definitely be worth it." 
-                    m 4husdlb "And it would definitely make the time we have together all the more worth while." 
-                    m 2tubsa "And trust me, [player], I'd be using every bit of that time I could get on you." 
-                    m 2tubsb "Oh?"
-                    m 2hubsb "Did I make you blush?"
-                    m 4hub "Ahaha~ You're so adorable when you're flustered." 
-                    m 1esbsa "Just imagining the reaction you had to that must have been so precious." 
-                    m 1hubsa "God I love you, [player]." 
-                    m 1hubsb "You're the best partner I could ever ask for." 
-                "A lot!": 
-                    $ persistent._mas_pm_wants_many_children = True
-                    show monika 5wubfo at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5wubfo "O-Oh." 
-                    m 5rsbfsdla "Wow." 
-                    m 3rsbfsdla "I wasn't expecting that answer." 
-                    m 1hua "Not that I'm complaining at all!" 
-                    m 1hua "I'd love to have plenty of children with you too, [player]"
-                    m 3eua "Watching all of our offspring run around the house." 
-                    m 3eub "Playing games together and having big family dinners." 
-                    m 3rksdlc "We'd probably have to get a big house for that though." 
-                    m 6sub "OH! I know! What about a farm? Or some place in the forest?"
-                    m 4rtc "Plenty of open space for all of us." 
-                    m 6hub "And maybe a pet too!" 
-                    m 2sua "It'd be absolutely amazing!" 
-                    m 6tkbfu "But you know, we'd have to get pretty busy for us to have that many kids." 
-                    m 6hublb "Oh, [player]!"
-                    m 2eubla "Just thinking about it all makes my heart flutter!" 
-                    m 6eublb "I just can't wait till I'm in the same room as you." 
-                    m 4rksdlc "But it'll probably be some time till that happens." 
-                    m 4hub "Till then, I guess we'll just have to use the thought of more children to keep us going." 
-        "No.":
-            $ persistent._mas_pm_wants_children = False
-            show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5esc "Oh." 
-            m 3esc "I suppose it's better that way." 
-            m 3rssdlc "After all, if we had a kid that would take time away from just the two of us." 
-            m 1subfa "Just the two of us." 
-            m 1subfb "Growing old together and watching the world go by." 
-            m 1subfa "I want nothing more than to have that with you, [player]." 
-            m 3eubfa "Besides, if I do get out here I'd probably be using some sort of android body, so it's probably not possible anyway."
-            show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5esc "So I guess it really is for the best that we don't." 
+    if mas_isMoniLOVE()and store.mas_anni.anniCount() >= 1:
+        m 3rkc "Hey, [player]..."
+        m 3rkbsa "Did you know when couples are close enough, they start talking about having children?"
+        m 1lksdla "O-Of course you knew that, Ahaha~" 
+        m 2dkbfc "..." 
+        m 4rsbfsdla "Just a thought I had, you know..." 
+        show monika 5rsbfsdld at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5rsbfsdld "I was wondering if-" 
+        show monika 2dsbso at t11 zorder MAS_MONIKA_Z with dissolve
+        m 2dsbso "..." 
+        m 3hubfsdlb "Ahaha. I thought this would be easier to talk about with you..." 
+        m 4ekbfa "I guess I'll get to the point."
+        show monika 2hubfb
+        menu:
+            m "When I make it out there to your reality, would you like to have children with me?"
+            "Yes.":
+                $ persistent._mas_pm_wants_children = True
+                m 1sublo "Really?"
+                m 1skbltda "Oh, [player]! You don't know how happy that makes me, my love!"
+                show monika 3hua
+                menu:
+                    m "How many kids do you want:"
+                    "Just one.": 
+                        $ persistent._mas_pm_wants_1_child = True
+                        $ persistent._mas_pm_wants_many_children = False
+                        $ persistent._mas_pm_wants_2_to_3_children = False
+                        m 4esa "Yeah, that sounds about right." 
+                        m 6wub "Can you imagine it, [player]?"
+                        m 6hubfa "Just the three of us..." 
+                        m "Living life together..." 
+                        m "Helping them grow up..."
+                        show monika 3eua
+                        menu:
+                            m "What do you think, sweetie? Do you want a boy or a girl?"
+                            "Boy.": 
+                                $ persistent._mas_pm_wants_boy = True
+                                $ persistent._mas_pm_wants_girl = False
+                                m 6hubfa "A boy would be wonderful." 
+                                m "Just imagine it."
+                                if persistent.gender == "M":
+                                    m 4hubfa "He starts taking after you a bit."  
+                                    m 4hubfb "Tries on all of your clothes." 
+                            "Girl.": 
+                                $ persistent._mas_pm_wants_girl = True
+                                $ persistent._mas_pm_wants_boy = False
+                                m 6hubfa "A girl would be wonderful." 
+                                m "Just imagine it."
+                                if persistent.gender == "F":
+                                    m 4hubfa "She starts taking after us a bit." 
+                                    m 4hubfb "Tries on all of our clothes." 
+                                else: 
+                                    m 4eubla "She starts taking after me a bit." 
+                                    m 4eubld "Tries on all of my clothes." 
+                        m 4sub "We could get them into sports or music!"
+                        m 2hua "Take them to their first day of school." 
+                        m 3rksdlc "Feel a deep sense of sadness as they grow up, thinking we lost them." 
+                        m 4esa "We could give them pointers on dating and worry about who they take interest in." 
+                        m 4rssdrb "Watch them graduate high school." 
+                        m 6dsc "..." 
+                        m 6dkc "Sit and cry together when they finally moves out..." 
+                        m "It'd hurt..." 
+                        m 6ekd "It'd hurt so much..." 
+                        m 4eka "But then we'd look at each other and realize that we did our job." 
+                        m 4ekc "And they'd still come back and visit us." 
+                        m 4wub "Maybe one day with children of their own." 
+                        m 6hub "Our family having expanded." 
+                        m 6hubfa "And we could sit back on the porch hand in hand, happily watching our grand kids." 
+                        m 6sub "Doesn't it sound wonderful, [player]?" 
+                        m 4eua "Nothing would make me happier than living this dream with you, my love~" 
+                        m 6esbfa "God, I just want to feel your embrace even more now!" 
+                        m 4rksdlc "Oh well, one day we'll be able to make it a reality." 
+                        m 2hua "So start thinking of names till then! Okay, [player]?"
+                    "Two to three.": 
+                        $ persistent._mas_pm_wants_1_child = Flase
+                        $ persistent._mas_pm_wants_many_children = False
+                        $ persistent._mas_pm_wants_2_to_3_children = True
+                        $ persistent._mas_pm_wants_girl = False
+                        $ persistent._mas_pm_wants_boy = False
+                        m 4tsb "Yeah, that seems like a good number." 
+                        m 2sub "Imagine it..."
+                        m "All of us together." 
+                        m 4sub "Teaching the kids how to get along." 
+                        m "Going on extravagant family trips!" 
+                        m 4hubfb "Wearing matching clothes." 
+                        m "Teaching our kids how important family is and that they should look after each other." 
+                        m 4subfb "Family game nights!" 
+                        m 2rksdla "It'd be really exhausting." 
+                        m 2hub "But in the end, it would definitely be worth it." 
+                        m 4rksdla "And it would definitely make the time we have together all the more worth while." 
+                        m 2tubbfb "And trust me, [player], I'd be using every bit of that time I could get on you." 
+                        m "Oh?"
+                        m "Did I make you blush?"
+                        m 4hub "Ahaha~ You're so adorable when you're flustered." 
+                        m 1hubfa "Just imagining the reaction you had to that must have been so precious." 
+                        m 1subfb "God I love you, [player]." 
+                        m "You're the best partner I could ever ask for." 
+                    "A lot!": 
+                        $ persistent._mas_pm_wants_1_child = Flase
+                        $ persistent._mas_pm_wants_many_children = True
+                        $ persistent._mas_pm_wants_2_to_3_children = False
+                        $ persistent._mas_pm_wants_girl = False
+                        $ persistent._mas_pm_wants_boy = False
+                        show monika 5wubfw at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 5wubfw "O-Oh." 
+                        m 5rubfsdrb "Wow." 
+                        m 5rubfsdrb "I wasn't expecting that answer." 
+                        show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
+                        m 1hua "Not that I'm complaining at all!" 
+                        m "I'd love to have plenty of children with you too, [player]!"
+                        m 3eua "Watching all of our offspring run around the house." 
+                        m 3eub "Playing games together and having big family dinners." 
+                        m 3rksdlc "We'd probably have to get a big house for that though." 
+                        m 6sub "OH! I know! What about a farm? Or some place in the forest?"
+                        m 4rsc "Plenty of open space for all of us." 
+                        m 6hub "And maybe a pet too!" 
+                        m 2sub "It'd be absolutely amazing!" 
+                        m 6tkbfu "But you know, we'd have to get pretty busy to have that many kids." 
+                        m 6hublb "Oh, [player]!"
+                        m 2eubla "Just thinking about it all makes my heart flutter!" 
+                        m 6hubfa "I just can't wait until I'm in the same room as you." 
+                        m 4rksdlc "But it'll probably be some time till that happens." 
+                        m 4hub "Until then, I guess we'll just have to use the thought of more children to keep us going." 
+            "No.":
+                $ persistent._mas_pm_wants_children = False
+                $ persistent._mas_pm_wants_1_child = Flase
+                $ persistent._mas_pm_wants_many_children = False
+                $ persistent._mas_pm_wants_2_to_3_children = False
+                $ persistent._mas_pm_wants_children = False
+                $ persistent._mas_pm_wants_girl = False
+                $ persistent._mas_pm_wants_boy = False
+                show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5rsc "Oh." 
+                show monika 3esc at t11 zorder MAS_MONIKA_Z with dissolve
+                m 3esc "I suppose it's better that way." 
+                m 3rssdlc "After all, if we had a kid that would take time away from just the two of us." 
+                m 1subfb "Just the two of us." 
+                m "Growing old together and watching the world go by." 
+                m "I want nothing more than to have that with you, [player]." 
+                m 3ekbfa "Besides, if I do get out here I'd probably be using some sort of android body, so it's probably not possible anyway."
+                show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5rsc "So I guess it really is for the best that we don't." 
     else:
-    show monika 5esc at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5esc "Have you ever seen a couple with a child [player]?"
-    m 4esc "Must be a lot of work." 
-    m 4esd "Like..." 
-    m 4essdld "At what point do you consider yourself comfortable enough with your partner to have a child?"
-    show monika 5esa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5esa "I don't know, it was always something I thought about..." 
+        show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5rsc "Have you ever seen a couple with a child [player]?"
+        show monika 4esc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 4esc "Must be a lot of work." 
+        m 4esd "Like..." 
+        m 1lksdla "At what point do you consider yourself comfortable enough with your partner to have a child?"
+        show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5esu "I don't know, it was always something I thought about..." 
     return "derandom"
    
    
