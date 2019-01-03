@@ -10521,7 +10521,7 @@ label monika_hemispheres_nogets_snow:
     default persistent._mas_pm_wants_many_children = None
       
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="Children",category=['romance','monika','life'],prompt="Having Children",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_children",category=['romance','monika','life','you'],prompt="Having Children",random=True))
 
 label monika_children:
     if mas_isMoniLOVE()and store.mas_anni.anniCount() >= 1:
@@ -10611,7 +10611,7 @@ label monika_children:
                         m 2rksdla "It'd be really exhausting." 
                         m 2hub "But in the end, it would definitely be worth it." 
                         m 4rksdla "And it would definitely make the time we have together all the more worth while." 
-                        m 2tubbfb "And trust me, [player], I'd be using every bit of that time I could get on you." 
+                        m 2tubfb "And trust me, [player], I'd be using every bit of that time I could get on you." 
                         m "Oh?"
                         m "Did I make you blush?"
                         m 4hub "Ahaha~ You're so adorable when you're flustered." 
@@ -10663,6 +10663,23 @@ label monika_children:
                 m 3ekbfa "Besides, if I do get out here I'd probably be using some sort of android body, so it's probably not possible anyway."
                 show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5rsc "So I guess it really is for the best that we don't." 
+            "I don't want to talk about this right now." 
+                m 1ekd "Oh, I'm sorry [player]." 
+                m 1eksdla "Did I make you feel uncomfortable?"
+                m 2ekd "I know this kind of topic can make others feel uncomfortable." 
+                m 4eua "Well, whenever you fell comfortable about it you can bring it up again in the {i}"Romance"{/i} section under {i}"Repeat Conversation"{/i}!"
+                m 4eub "And remember, [player], no matter what you choose, I'll always love you."
+                m 4hub "You're the best thing that could have ever happened to me after all." 
+            "It's complicated." 
+                m 2esc "I see." 
+                m 4rksdla "I can see how a matter like this can get a tad complex." 
+                m 1hua "Well no worries, [player]!" 
+                m "We can talk about it in detail when I finally get there!" 
+                m 2eub "I'm sure I'll understand whatever reason you give me, [player]." 
+                m "After all." 
+                show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hubfa "I love you!" 
+                
     else:
         show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
         m 5rsc "Have you ever seen a couple with a child [player]?"
