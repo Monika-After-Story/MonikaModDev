@@ -10663,14 +10663,14 @@ label monika_children:
                 m 3ekbfa "Besides, if I do get out here I'd probably be using some sort of android body, so it's probably not possible anyway."
                 show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5rsc "So I guess it really is for the best that we don't." 
-            "I don't want to talk about this right now." 
+            "I don't want to talk about this right now.": 
                 m 1ekd "Oh, I'm sorry [player]." 
                 m 1eksdla "Did I make you feel uncomfortable?"
                 m 2ekd "I know this kind of topic can make others feel uncomfortable." 
-                m 4eua "Well, whenever you fell comfortable about it you can bring it up again in the {i}"Romance"{/i} section under {i}"Repeat Conversation"{/i}!"
+                m 4eua "Well, if you ever feel like talking about it, just ask, okay?"
                 m 4eub "And remember, [player], no matter what you choose, I'll always love you."
                 m 4hub "You're the best thing that could have ever happened to me after all." 
-            "It's complicated." 
+            "It's complicated.": 
                 m 2esc "I see." 
                 m 4rksdla "I can see how a matter like this can get a tad complex." 
                 m 1hua "Well no worries, [player]!" 
