@@ -430,9 +430,11 @@ init -5 python in mas_sprites:
     ]
 
     ## lean poses
+    # NOTE: these should be like:
+    #   lean|arms
     # NOTE: do NOT include regular poses in here
     L_POSES = [
-        "def"
+        "def|def"
     ]
 
 
@@ -1387,6 +1389,17 @@ init -5 python in mas_sprites:
 
             # 6. front-hair
             _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
+
+            # 7. post-front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
 
             # TODO: lean should have support for seperate arms
 
@@ -2634,7 +2647,7 @@ init -2 python:
                 p4 - pose id to use for pose 4
                     - pointright
                 p5 - pose id to use for pose 5
-                    - LEAN: def
+                    - LEAN: def|def
                 p6 - pose id to use for pose 6
                     - down
             """
@@ -3619,14 +3632,6 @@ init -2 python in mas_sprites:
             p6=None
         )
 
-        # handle hair down no leaning
-        # TODO: remove this, it has been fixed
-#        temp_storage["clothes.santa.down"] = store.mas_hair_down.pose_map
-#        store.mas_hair_down.pose_map = store.MASPoseMap(
-#            default=True,
-#            p5=None
-#        )
-
         # wearing a ribbon? switch to the wine ribbon always
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
         if prev_ribbon is not None:
@@ -3642,11 +3647,6 @@ init -2 python in mas_sprites:
         santa_map = temp_storage.get("clothes.santa", None)
         if santa_map is not None:
             store.mas_acs_promisering.pose_map = santa_map
-
-        # restore hair down leaning
-#        hair_down_map = temp_storage.get("clothes.santa.down", None)
-#        if hair_down_map is not None:
-#            store.mas_hair_down.pose_map = hair_down_map
 
         # go back to previous ribbon if wearing wine ribbon
         if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
@@ -4617,15 +4617,17 @@ default persistent._mas_acs_enable_promisering = False
 #   face-{face part type}-{face part name}{-n}.png
 #   (ie: face-mouth-big.png / face-mouth-big-n.png)
 # leaning filenames:
-#   face-leaning-{face part type}-{face part name}{-n}.png
+#   face-leaning-{lean type}-{face part type}-{face part name}{-n}.png
 #   (ie: face-leaning-eyes-sparkle.png / face-leaning-eyes-sparkle-n.png)
 #
 ## BODY / POSE:
 # NEW
 # Non leaning:
 #   body-def{-n}.png
+#   arms-{arms name}{-n}.png
 # Leaning:
 #   body-leaning-{lean type}{-n}.png
+#   arms-leaning-{lean type}-{arms pose}{-n}.png
 #
 # OLD:
 # Non leaning filenames / parts:
