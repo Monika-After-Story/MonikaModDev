@@ -64,8 +64,8 @@ init -900 python in mas_ics:
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
         "dwof": ("without_frame.png", islands_dwof),
-        "rwf": ("rain_with_frame.png", islands_rwf),
-        "rwof": ("rain_without_frame.png", islands_rwof)
+#        "rwf": ("rain_with_frame.png", islands_rwf),
+#        "rwof": ("rain_without_frame.png", islands_rwof)
     }
 
     ########################## SURPRISE BDAY PARTY ############################
