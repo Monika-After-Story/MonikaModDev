@@ -340,16 +340,20 @@ label mas_island_bookshelf2:
     return
 
 screen mas_islands_background:
-    if morning_flag:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/without_frame.png"
-        else:
-            add "mod_assets/location/special/with_frame.png"
-    else:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/night_without_frame.png"
-        else:
-            add "mod_assets/location/special/night_with_frame.png"
+
+    # NOTE: we will ALWAYS show the islands firs time without any weather options
+    add mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#    if morning_flag:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/without_frame.png"
+#        else:
+#            add "mod_assets/location/special/with_frame.png"
+#    else:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/night_without_frame.png"
+#        else:
+#            add "mod_assets/location/special/night_with_frame.png"
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
@@ -360,16 +364,24 @@ screen mas_islands_background:
 screen mas_show_islands():
     style_prefix "island"
     imagemap:
-        if morning_flag:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/without_frame.png"
-            else:
-                ground "mod_assets/location/special/with_frame.png"
-        else:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/night_without_frame.png"
-            else:
-                ground "mod_assets/location/special/night_with_frame.png"
+
+        ground mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#        if mas_is_raining:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/rain_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/rain_with_frame.png"
+#        elif morning_flag:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/with_frame.png"
+#        else:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/night_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/night_with_frame.png"
 
 
         hotspot (11, 13, 314, 270) action Return("mas_monika_upsidedownisland") # island upside down

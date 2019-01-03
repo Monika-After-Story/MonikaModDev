@@ -164,7 +164,7 @@ init -20 python in mas_weather:
 
         # lock rain start/rain/islands
 #        store.mas_lockEVL("monika_rain", "EVE")
-        store.mas_lockEVL("mas_monika_islands", "EVE")
+        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
 #        store.mas_lockEVL("greeting_ourreality", "GRE")
 
 
@@ -180,6 +180,8 @@ init -20 python in mas_weather:
 
         # unlock rain/islands
 #        store.mas_unlockEVL("monika_rain", "EVE")
+
+        # TODO: island rain art
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (
                 islands_ev is not None
@@ -263,6 +265,10 @@ init -10 python:
             sp_right_day - image tag for spaceroom's right window in day time
             sp_left_night - image tag for spaceroom's left window in nighttime
             sp_right_night - image tag for spaceroom's right window in night
+            isbg_wf_day - image PATH for islands bg daytime with frame
+            isbg_wof_day = image PATH for islands bg daytime without frame
+            isbg_wf_night - image PATH for island bg nighttime with frame
+            isbg_wof_night - image PATH for island bg nighttime without framme
 
             entry_pp - programming point to execute when switching to this 
                 weather
@@ -280,6 +286,10 @@ init -10 python:
                 sp_right_day,
                 sp_left_night=None,
                 sp_right_night=None,
+                isbg_wf_day=None,
+                isbg_wof_day=None,
+                isbg_wf_night=None,
+                isbg_wof_night=None,
                 entry_pp=None,
                 exit_pp=None,
                 unlocked=False
@@ -303,6 +313,17 @@ init -10 python:
                     night
                     If None, we use right_day for this
                     (Default: None)
+                isbg_wf_day - image PATH for islands bg daytime with frame
+                    (Default: None)
+                isbg_wof_day = image PATH for islands bg daytime without frame
+                    (Default: None)
+                isbg_wf_night - image PATH for island bg nighttime with frame
+                    If None, we use isbg_wf_day
+                    (Default: None)
+                isbg_wof_night - image PATH for island bg nighttime without 
+                    framme
+                    If None, we use isbg_wof_day
+                    (Default: None)
                 entry_pp - programming point to execute after switching to 
                     this weather
                     (Default: None)
@@ -317,6 +338,12 @@ init -10 python:
             self.prompt = prompt
             self.sp_left_day = sp_left_day
             self.sp_right_day = sp_right_day
+            self.sp_left_night = sp_left_night
+            self.sp_right_night = sp_right_night
+            self.isbg_wf_day = isbg_wf_day
+            self.isbg_wof_day = isbg_wof_day
+            self.isbg_wf_night = isbg_wf_night
+            self.isbg_wof_night = isbg_wof_night
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
@@ -324,13 +351,16 @@ init -10 python:
             # clean day/night
             if sp_left_night is None:
                 self.sp_left_night = sp_left_day
-            else:
-                self.sp_left_night = sp_left_night
 
             if sp_right_night is None:
                 self.sp_right_night = sp_right_day
-            else:
-                self.sp_right_night = sp_right_night
+
+            # clean islands
+            if isbg_wf_night is None:
+                self.isbg_wf_night = isbg_wf_day
+
+            if isbg_wof_night is None:
+                self.isbg_wof_night = isbg_wof_day
 
             # add to weather map
             self.mas_weather.WEATHER_MAP[weather_id] = self
@@ -393,6 +423,27 @@ init -10 python:
             return (self.sp_left_night, self.sp_right_night)
 
 
+        def isbg_window(self, day, no_frame):
+            """
+            Returns islands bg PATH for window
+
+            IN:
+                day - True if we want daytime bg
+                no_frame - True if we want no frame
+            """
+            if day:
+                if no_frame:
+                    return self.isbg_wof_day
+
+                return self.isbg_wf_day
+
+            # else night
+            if no_frame:
+                return self.isbg_wof_night
+
+            return self.isbg_wf_night
+
+
         def toTuple(self):
             """
             Converts this MASWeather object into a tuple
@@ -411,10 +462,23 @@ init -1 python:
     mas_weather_def = MASWeather(
         "def",
         "Default",
+
+        # sp day
         "room_mask3",
         "room_mask4",
+
+        # sp night
         "room_mask",
         "room_mask2",
+
+        # islands bg day
+        "mod_assets/location/special/with_frame.png",
+        "mod_assets/location/special/without_frame.png",
+
+        # islands bg night
+        "mod_assets/location/special/night_with_frame.png",
+        "mod_assets/location/special/night_without_frame.png",
+
         unlocked=True
     )
 
@@ -422,8 +486,15 @@ init -1 python:
     mas_weather_rain = MASWeather(
         "rain",
         "Rain",
+
+        # sp day and night
         "rain_mask_left",
         "rain_mask_right",
+
+        # islands bg day and night
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
         entry_pp=store.mas_weather._weather_rain_entry,
         exit_pp=store.mas_weather._weather_rain_exit,
         unlocked=True,
@@ -433,10 +504,15 @@ init -1 python:
     mas_weather_snow = MASWeather(
         "snow",
         "Snow",
+
+        # sp day
         "snow_mask_day_left",
         "snow_mask_day_right",
+
+        # sp night
         "snow_mask_night_left",
         "snow_mask_night_right",
+
         entry_pp=store.mas_weather._weather_snow_entry,
         exit_pp=store.mas_weather._weather_snow_exit
     )
@@ -445,8 +521,15 @@ init -1 python:
     mas_weather_thunder = MASWeather(
         "thunder",
         "Thunder/Lightning",
+
+        # sp day and night
         "rain_mask_left",
         "rain_mask_right",
+
+        # islands bg day and night
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit
     )
