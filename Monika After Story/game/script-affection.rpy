@@ -578,7 +578,7 @@ init 15 python in mas_affection:
         if (
                 store.seen_event("mas_monika_islands")
                 and not store.mas_is_snowing
-                and not store.mas_is_raining # TODO: add tri's rain islands
+                and not store.mas_is_raining # TODO: rain versions
             ):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
