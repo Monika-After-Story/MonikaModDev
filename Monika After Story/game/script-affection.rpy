@@ -1949,6 +1949,7 @@ label monika_affection_nickname:
             "okasan",
             "okaasan",
             "kaasan",
+            "kasan",
         ]
 
         # for later code
