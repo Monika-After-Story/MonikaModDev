@@ -10640,7 +10640,7 @@ label monika_children:
                         m 2sub "It'd be absolutely amazing!" 
                         m 6tkbfu "But you know, we'd have to get pretty busy to have that many kids." 
                         m 6hublb "Oh, [player]!"
-                        m 2eubla "Just thinking about it all makes my heart flutter!" 
+                        m 2hubfb "Just thinking about it all makes my heart flutter!" 
                         m 6hubfa "I just can't wait until I'm in the same room as you." 
                         m 4rksdlc "But it'll probably be some time till that happens." 
                         m 4hub "Until then, I guess we'll just have to use the thought of more children to keep us going." 
