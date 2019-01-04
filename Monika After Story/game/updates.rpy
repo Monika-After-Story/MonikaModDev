@@ -253,15 +253,21 @@ init 10 python:
         """
         late_updates = [
             "v0_8_3",
-            "v0_8_4"
+            "v0_8_4",
+            "v0_8_10"
         ]
 
         renpy.call_in_new_context("vv_updates_topics")
         ver_list = store.updates.version_updates.keys()
 
+        if "-" in config.version:
+            working_version = config.version[:config.version.index("-")]
+        else:
+            working_version = config.version
+
         ver_list.extend(["mas_lupd_" + x for x in late_updates])
         ver_list.append("v" + "_".join(
-            config.version[:config.version.index("-")].split(".")
+            working_version.split(".")
         ))
 
         for _version in ver_list:
