@@ -8974,7 +8974,7 @@ label monika_player_appearance_monika_height:
         m 3etd "If I had to guess, I’d say I’m maybe around five-foot-five?"
     else:
         if seen_event("monika_immortal"):
-            m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, which is around one hundred and sixty centimetres but that doesn't really sound right to me..."
+            m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, which is around one hundred and sixty centimeters but that doesn't really sound right to me..."
             m 2etc "Maybe it was changed? It was only the concept height after all."
         m 3etd "If I had to guess, I’d say I’m maybe about one hundred and sixty-five centimeters tall?"
     return
