@@ -165,12 +165,6 @@ init -10 python:
     mas_idle_mailbox = MASIdleMailbox()
 
 
-#image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
-#image mas_island_day = "mod_assets/location/special/without_frame.png"
-#image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
-#image mas_island_night = "mod_assets/location/special/night_without_frame.png"
-#image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
-#image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"

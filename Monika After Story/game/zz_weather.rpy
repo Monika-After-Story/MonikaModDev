@@ -81,6 +81,17 @@ image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.p
 
 ## end living room weather art
 
+## start island bg weather art
+
+image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
+image mas_island_day = "mod_assets/location/special/without_frame.png"
+image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
+image mas_island_night = "mod_assets/location/special/night_without_frame.png"
+#image mas_island_frame_rain = "mod_assets/location/special/rain_with_frame.png"
+#image mas_island_rain = "mod_assets/location/special/rain_without_frame.png"
+
+## end island bg weather art
+
 # NOTE: might not use these
 #default persistent._mas_weather_snow_happened = False
 #default persistent._mas_weather_rain_happened = False
@@ -146,49 +157,56 @@ init -20 python in mas_weather:
 
 
     ## weather programming points here
+    # NOTE: all points should expect the weather object they are either
+    #   replacing or being replaced by
 
-    def _weather_rain_entry():
+    def _weather_rain_entry(_old):
         """
         Rain start programming point
         """
-        # set global flag
-        store.mas_is_raining = True
 
-        # play rain sound
-        renpy.music.play(
-            store.audio.rain,
-            channel="background",
-            loop=True,
-            fadein=1.0
-        )
+        # dont need to change anything if we are switching from thunder
+        if _old != store.mas_weather_thunder:
 
-        # lock rain start/rain/islands
-#        store.mas_lockEVL("monika_rain", "EVE")
-        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
-#        store.mas_lockEVL("greeting_ourreality", "GRE")
+            # set global flag
+            store.mas_is_raining = True
+
+            # play rain sound
+            renpy.music.play(
+                store.audio.rain,
+                channel="background",
+                loop=True,
+                fadein=1.0
+            )
+
+            # lock rain start/rain/islands
+            store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art
 
 
-    def _weather_rain_exit():
+    def _weather_rain_exit(_new):
         """
         RAIN stop programming point
         """
-        # set gklobal flag
-        store.mas_is_raining = False
 
-        # stop rain sound
-        renpy.music.stop(channel="background", fadeout=1.0)
+        # dont change any flags if we are switching to thunder
+        if _new != store.mas_weather_thunder:
+            # set gklobal flag
+            store.mas_is_raining = False
+
+            # stop rain sound
+            renpy.music.stop(channel="background", fadeout=1.0)
 
         # unlock rain/islands
 #        store.mas_unlockEVL("monika_rain", "EVE")
 
-        # TODO: island rain art
-        islands_ev = store.mas_getEV("mas_monika_islands")
-        if (
-                islands_ev is not None
-                and islands_ev.shown_count > 0
-                and islands_ev.checkAffection(store.mas_curr_affection)
-            ):
-            store.mas_unlockEVL("mas_monika_islands", "EVE")
+            # TODO: island rain art
+            islands_ev = store.mas_getEV("mas_monika_islands")
+            if (
+                    islands_ev is not None
+                    and islands_ev.shown_count > 0
+                    and islands_ev.checkAffection(store.mas_curr_affection)
+                ):
+                store.mas_unlockEVL("mas_monika_islands", "EVE")
 
 #        else:
 #            store.mas_unlockEVL("greeting_ourreality", "GRE")
@@ -196,7 +214,7 @@ init -20 python in mas_weather:
         # TODO: unlock islands greeting as well
 
 
-    def _weather_snow_entry():
+    def _weather_snow_entry(_old):
         """
         Snow entry programming point
         """
@@ -209,7 +227,7 @@ init -20 python in mas_weather:
         # TODO: lock islands greeting as well
 
 
-    def _weather_snow_exit():
+    def _weather_snow_exit(_new):
         """
         Snow exit programming point
         """
@@ -228,18 +246,21 @@ init -20 python in mas_weather:
         # TODO: unlock islands greeting as well
 
 
-    def _weather_thunder_entry():
+    def _weather_thunder_entry(_old):
         """
         Thunder entry programming point
         """
+
+        # dont run rain if swtiching from it
         # run rain programming points
-        _weather_rain_entry()
+        if _old != store.mas_weather_rain:
+            _weather_rain_entry()
 
         # set global flag
         store.mas_globals.show_lightning = True
 
 
-    def _weather_thunder_exit():
+    def _weather_thunder_exit(_new):
         """
         Thunder exit programming point
         """
@@ -247,7 +268,9 @@ init -20 python in mas_weather:
         store.mas_globals.show_lightning = False
 
         # run rain progframming points
-        _weather_rain_exit()
+        # NOTE: dont change anything if swithing to rain
+        if _new != store.mas_weather_rain:
+            _weather_rain_exit()
 
 
 init -10 python:
@@ -379,20 +402,20 @@ init -10 python:
             return not result
 
         
-        def entry(self):
+        def entry(self, old_weather):
             """
             Runs entry programming point
             """
             if self.entry_pp is not None:
-                self.entry_pp()
+                self.entry_pp(old_weather)
 
 
-        def exit(self):
+        def exit(self, new_weather):
             """
             Runs exit programming point
             """
             if self.exit_pp is not None:
-                self.exit_pp()
+                self.exit_pp(new_weather)
 
 
         def fromTuple(self, data_tuple):
@@ -553,8 +576,9 @@ init 800 python:
             _weather - weather to set to. 
         """
         global mas_current_weather
+        old_weather = mas_current_weather
         mas_current_weather = _weather
-        mas_current_weather.entry()
+        mas_current_weather.entry(old_weather)
 
 
     def mas_changeWeather(new_weather):
@@ -566,7 +590,7 @@ init 800 python:
         IN:
             new_weather - weather to change to
         """
-        mas_current_weather.exit()
+        mas_current_weather.exit(new_weather)
         mas_setWeather(new_weather)
 
 
@@ -585,15 +609,16 @@ init 800 python:
 label mas_change_weather(new_weather):
 
     # call exit programming points
-    $ mas_current_weather.exit()
+    $ mas_current_weather.exit(new_weather)
 
     # set new weather and force change
+    $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
     $ scene_change = True
     call spaceroom
 
     # call entry programming point
-    $ mas_current_weather.entry()
+    $ mas_current_weather.entry(old_weather)
 
     return
 
@@ -673,7 +698,7 @@ label monika_change_weather_loop:
             $ pushEvent("monika_rain")
             $ skip_outro = True
 
-        elif not persistent._mas_likes_rain:
+        elif persistent._mas_likes_rain is False:
             m 1eka "I thought you didn't like rain."
             m 2etc "Maybe you changed your mind?"
             m 1dsc "..."
@@ -684,6 +709,8 @@ label monika_change_weather_loop:
     if not skip_leadin:
         m 1eua "Alright!"
         m 1dsc "Just give me a second..."
+
+    pause 1.0
 
     # finally change the weather
     call mas_change_weather(_return)
