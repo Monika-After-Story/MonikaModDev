@@ -8719,11 +8719,11 @@ label monika_player_appearance:
             elif persistent._mas_pm_height >= mas_height_monika:
                 m 1hub "Hey, I'm about that height too!"
                 m "..."
-                m 2hksdrb "Well, I don’t know my actual height to be fair..."
+                m 2hksdlb "Well, I don’t know my actual height to be fair..."
 
                 call monika_player_appearance_monika_height
 
-                m 4rksdla "It’s just a guess--hopefully it’s not too far off."
+                m 3rkc "It’s just a guess--hopefully it’s not too far off."
                 m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel clumsy around you."
                 m "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
                 m 3eub "In my opinion, being in-between is perfect. Do you know why?"
@@ -8970,13 +8970,13 @@ label monika_player_appearance_monika_height:
     if not persistent._mas_pm_units_height_metric:
         if seen_event("monika_immortal"):
             m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, but that doesn't really sound right to me..."
-            m 2rksdla "Maybe it was changed? It was only the concept height after all."
-        m 2rksdlb "If I had to guess, I’d say I’m maybe around five-foot-five?"
+            m 2etc "Maybe it was changed? It was only the concept height after all."
+        m 3etd "If I had to guess, I’d say I’m maybe around five-foot-five?"
     else:
         if seen_event("monika_immortal"):
             m 2eud "The wiki I mentioned before said that my concept height was five-foot-three, which is around one hundred and sixty centimetres but that doesn't really sound right to me..."
-            m 2rksdla "Maybe it was changed? It was only the concept height after all."
-        m 2rksdlb "If I had to guess, I’d say I’m maybe about one hundred and sixty-five centimeters tall?"
+            m 2etc "Maybe it was changed? It was only the concept height after all."
+        m 3etd "If I had to guess, I’d say I’m maybe about one hundred and sixty-five centimeters tall?"
     return
 
 
