@@ -254,7 +254,7 @@ init -20 python in mas_weather:
         # dont run rain if swtiching from it
         # run rain programming points
         if _old != store.mas_weather_rain:
-            _weather_rain_entry()
+            _weather_rain_entry(_old)
 
         # set global flag
         store.mas_globals.show_lightning = True
@@ -270,7 +270,7 @@ init -20 python in mas_weather:
         # run rain progframming points
         # NOTE: dont change anything if swithing to rain
         if _new != store.mas_weather_rain:
-            _weather_rain_exit()
+            _weather_rain_exit(_new)
 
 
 init -10 python:
