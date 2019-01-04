@@ -285,6 +285,7 @@ init -5 python in mas_sprites:
     PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_TORSO_LEAN = "torso-leaning" + ART_DLM
     PREFIX_BODY_LEAN = "body-leaning" + ART_DLM
+    PREFIX_ARMS_LEAN = "arms-leaning" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
     PREFIX_ACS = "acs" + ART_DLM
@@ -557,14 +558,6 @@ init -5 python in mas_sprites:
             # monika is wearing a blacklisted accessory
             return True
 
-        if not character.hair.pose_map.l_map.get(lean, False):
-            # blacklisted hair
-            return True
-
-        if not character.clothes.pose_map.l_map.get(lean, False):
-            # blacklisted clothes
-            return True
-
         # otherwise, this is good
         return False
 
@@ -608,7 +601,7 @@ init -5 python in mas_sprites:
         # Since None means we dont show, we are going to assume that the
         # accessory should be shown if the pose key is missing.
         if lean:
-            poseid = acs.pose_map.l_map.get(lean, None)
+            poseid = acs.pose_map.l_map.get(lean + "|" + pose, None)
 
             # NOTE: we dont care about leaning as a part of filename
 #            if acs.pose_map.use_reg_for_l:
@@ -701,11 +694,12 @@ init -5 python in mas_sprites:
         # pop the last comman
         temp_acs_list.pop()
 
-        if lean:
-            loc_str = LOC_LEAN
-
-        else:
-            loc_str = LOC_REG
+        # NOTE: there is currently no diff between reg and lean
+#        if lean:
+#            loc_str = LOC_LEAN
+#
+#        else:
+#            loc_str = LOC_REG
 
         # add the sprites to the list
         sprite_list.extend((
@@ -714,7 +708,8 @@ init -5 python in mas_sprites:
             ",",
             L_COMP,
             "(",
-            loc_str,
+            LOC_REG,
+#            loc_str,
             ","
         ))
         sprite_list.extend(temp_acs_list)
@@ -745,7 +740,39 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_arms_nh(sprite_list, loc_str, clothing, arms, n_suffix):
+    def _ms_arms_nh(sprite_list, loc_str, clothing, lean, arms, n_suffix):
+        """
+        Adds arms string, no hair
+        delegate.
+
+        IN:
+            sprite_list - lits to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            lean - lean type
+            arms - arms type
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            L_COMP,
+            "(",
+            loc_str,
+            ",",
+            LOC_Z,
+            ',"'
+        ))
+
+        if lean:
+            _ms_arms_nh_leaning(sprite_list, clothing, lean, arms, n_suffix)
+
+        else:
+            _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix)
+
+        # add final part
+        sprite_list.append(")")
+
+
+    def _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix):
         """
         Adds arms string
 
@@ -756,12 +783,6 @@ init -5 python in mas_sprites:
             n_suffix - night suffix to use
         """
         sprite_list.extend((
-            L_COMP,
-            "(",
-            loc_str,
-            ",",
-            LOC_Z,
-            ',"',
             C_MAIN,
             clothing,
             "/",
@@ -769,9 +790,39 @@ init -5 python in mas_sprites:
             arms,
             n_suffix,
             FILE_EXT,
-            '")'
+            '"'
         ))
 
+
+    def _ms_arms_nh_leaning(
+            sprite_list,
+            clothing,
+            lean,
+            arms,
+            n_suffix
+        ):
+        """
+        Adds arms string (leaning
+
+        IN:
+            sprite_list - list to add sprite strings to
+            clothing - type of clothing
+            lean - lean type
+            arms - type of arms
+            n_suffix - night suffix to use
+        """
+        sprite_list.extend((
+            C_MAIN,
+            clothing,
+            "/",
+            PREFIX_ARMS_LEAN,
+            lean,
+            ART_DLM,
+            arms,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
 
 
     def _ms_blush(sprite_list, blush, n_suffix, f_prefix):
@@ -882,7 +933,7 @@ init -5 python in mas_sprites:
             )
 
         else:
-            _ms_torso_nh(sprite_list, clothing, n_suffix),
+            _ms_torso_nh(sprite_list, clothing, n_suffix)
 
         # add the rest of the parts
         sprite_list.append(")")
@@ -1292,11 +1343,13 @@ init -5 python in mas_sprites:
         RETURNS:
             sitting stirng
         """
-        if lean:
-            loc_str = LOC_LEAN
-
-        else:
-            loc_str = LOC_REG
+#        if lean:
+#            loc_str = LOC_LEAN
+#
+#        else:
+#            loc_str = LOC_REG
+        # NOTE: these are the same now
+        loc_str = LOC_REG
 
         # location string from build loc
         loc_build_str = build_loc()
@@ -1401,17 +1454,17 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # TODO: lean should have support for seperate arms
+            sprite_str_list.extend(loc_build_tup)
 
-            # TODO: acs between front hair and arms
-
-            # no lean means we can ARMS
-            if not lean:
-                # position setup
-                sprite_str_list.extend(loc_build_tup)
-
-                # 7. arms
-                _ms_arms_nh(sprite_str_list, loc_str, clothing, arms, n_suffix)
+            # 8. arms
+            _ms_arms_nh(
+                sprite_str_list,
+                loc_str,
+                clothing,
+                lean,
+                arms,
+                n_suffix
+            )
 
         else:
             # in thise case, 2,6,7 are skipped.
@@ -1438,7 +1491,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 5. pre-front hair acs gets rendered before mid instead
+            # 5. pre-front hair acs gets rendered before arms instead
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1449,20 +1502,37 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # TODO: arms separaet for leaning
-
-            # also teh acs
+            # 7. post-front hair acs gets rendered before arms instead
+            # NOTE: we MUST skip 7 because it would conflict with
+            #   old-style leaning
+#            _ms_accessorylist(
+#                sprite_str_list,
+#                loc_build_str,
+#                acs_afh_list,
+#                n_suffix,
+#                True,
+#                arms,
+#                lean=lean
+#            )
 
             # no lean means ARMS
             if not lean:
                 # position setup
                 sprite_str_list.extend(loc_build_tup)
 
-                # 7. arms
-                _ms_arms_nh(sprite_str_list, loc_str, clothing, arms, n_suffix)
+                # 8. arms
+                #   NOTE: force no lean here
+                _ms_arms_nh(
+                    sprite_str_list,
+                    loc_str,
+                    clothing,
+                    None,
+                    arms,
+                    n_suffix
+                )
 
 
-        # 8. between body and face acs
+        # 9. between body and face acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1476,7 +1546,7 @@ init -5 python in mas_sprites:
         # position setup
         sprite_str_list.extend(loc_build_tup)
 
-        # 9. face
+        # 10. face
         _ms_face(
             sprite_str_list,
             loc_str,
@@ -1493,7 +1563,7 @@ init -5 python in mas_sprites:
             emote=emote
         )
 
-        # 10. after face acs
+        # 11. after face acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1862,9 +1932,9 @@ init -2 python:
                 _acs_pre_names,
                 _acs_bbh_names,
                 _acs_bfh_names,
-                _acs_afh_names
+                _acs_afh_names,
                 _acs_mid_names,
-                _acs_pst_names,
+                _acs_pst_names
             ):
             """
             INTERNAL
@@ -2923,7 +2993,18 @@ init -2 python:
             # now check for fallbacks
             if lean is not None:
                 # we have a lean, check for fallbacks
-                return ("steepling", self.pose_map.l_map.get(lean, None))
+                fb_lean = self.pose_map.l_map.get(lean + "|" + pose, None)
+
+                # no fallback? assume steepling
+                if fb_lean is None:
+                    return ("steepling", None)
+
+                # a pipe means we are dealing with a lean fallback
+                if "|" in fb_lean:
+                    return fb_lean.split("|")
+
+                # otherwise we can assume its an arms fall back
+                return (fb_lean, None)
 
             # otherwise check the pose
             return (self.pose_map.map.get(pose, "steepling"), None)
@@ -3345,7 +3426,7 @@ init -2 python:
 
             elif lean:
                 # we assume split if lean not found
-                hair_split = hair.split.get(lean, True)
+                hair_split = hair.split.get(lean + "|" + arms, True)
 
             else:
                 # not leaning, still assume true if arms not found
@@ -3705,8 +3786,7 @@ init -1 python:
     # NOTE: the fallback system:
     #   by setting fallback to True, you can use the fallback system to
     #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
-    #   fallback to a lean type. Lean types can only fallback to other lean
-    #   types OR steepling.
+    #   fallback to a lean type. Lean types can fallback to anything.
     #
     #   When using the fallback system, map poses to the pose/lean types
     #   that you want to fallback on.
@@ -12557,6 +12637,7 @@ image monika 5eua = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3a"
 )
@@ -12571,6 +12652,7 @@ image monika 5euc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12585,6 +12667,7 @@ image monika 5esu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3a"
 )
@@ -12599,6 +12682,7 @@ image monika 5eka = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3e"
 )
@@ -12612,6 +12696,7 @@ image monika 5tsu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3a"
 )
@@ -12626,6 +12711,7 @@ image monika 5hubfa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12641,6 +12727,7 @@ image monika 5hkbfb = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12656,6 +12743,7 @@ image monika 5hkbfa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12671,6 +12759,7 @@ image monika 5hubfb = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12686,6 +12775,7 @@ image monika 5hubfu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12701,6 +12791,7 @@ image monika 5hub = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12715,6 +12806,7 @@ image monika 5hua = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12729,6 +12821,7 @@ image monika 5efa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12743,6 +12836,7 @@ image monika 5esbfa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12758,6 +12852,7 @@ image monika 5ekbfa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="full",
     single="3b"
@@ -12773,6 +12868,7 @@ image monika 5ekbla = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="lines",
     single="3b"
@@ -12788,6 +12884,7 @@ image monika 5ekbsa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="shade",
     single="3b"
@@ -12803,6 +12900,7 @@ image monika 5eubla = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     blush="lines",
     single="3b"
@@ -12819,6 +12917,7 @@ image monika 5wubfw = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12833,6 +12932,7 @@ image monika 5wuw = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12848,6 +12948,7 @@ image monika 5eubfb = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12864,6 +12965,7 @@ image monika 5rubfsdrb = DynamicDisplayable(
     right="",
     blush="full",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12880,6 +12982,7 @@ image monika 5rubfsdru = DynamicDisplayable(
     right="",
     blush="full",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12895,6 +12998,7 @@ image monika 5rubfb = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12910,6 +13014,7 @@ image monika 5rubfu = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12925,6 +13030,7 @@ image monika 5rusdrb = DynamicDisplayable(
     left="",
     right="",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12940,6 +13046,7 @@ image monika 5rusdru = DynamicDisplayable(
     left="",
     right="",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12955,6 +13062,7 @@ image monika 5rub = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12969,6 +13077,7 @@ image monika 5ruu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12984,6 +13093,7 @@ image monika 5eubfu = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -12998,6 +13108,7 @@ image monika 5eub = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13012,6 +13123,7 @@ image monika 5rsc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13026,6 +13138,7 @@ image monika 5rkc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13040,6 +13153,7 @@ image monika 5rfc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13054,6 +13168,7 @@ image monika 5lfc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13068,6 +13183,7 @@ image monika 5lkc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13082,6 +13198,7 @@ image monika 5lsc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13097,6 +13214,7 @@ image monika 5lubfb = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13112,6 +13230,7 @@ image monika 5lubfu = DynamicDisplayable(
     left="",
     right="",
     blush="full",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13126,6 +13245,7 @@ image monika 5luu = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13142,6 +13262,7 @@ image monika 5lubfsdrb = DynamicDisplayable(
     right="",
     blush="full",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13158,6 +13279,7 @@ image monika 5lubfsdru = DynamicDisplayable(
     right="",
     blush="full",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13173,6 +13295,7 @@ image monika 5lusdrb = DynamicDisplayable(
     left="",
     right="",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13188,6 +13311,7 @@ image monika 5lusdru = DynamicDisplayable(
     left="",
     right="",
     sweat="right",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13203,6 +13327,7 @@ image monika 5tsc = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13218,6 +13343,7 @@ image monika 5lubsa = DynamicDisplayable(
     left="",
     right="",
     blush="shade",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13232,6 +13358,7 @@ image monika 5dka = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
@@ -13246,6 +13373,7 @@ image monika 5dsa = DynamicDisplayable(
     head="",
     left="",
     right="",
+    arms="def",
     lean="def",
     single="3b"
 )
