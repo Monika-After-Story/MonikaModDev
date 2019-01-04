@@ -538,13 +538,14 @@ init -5 python in mas_sprites:
         return ""
 
 
-    def should_disable_lean(lean, character):
+    def should_disable_lean(lean, arms, character):
         """
         Figures out if we need to disable the lean or not based on current
         character settings
 
         IN:
             lean - lean type we want to do
+            arms - arms type involved with lean
             character - MASMonika object
 
         RETURNS:
@@ -556,6 +557,14 @@ init -5 python in mas_sprites:
         # otherwise check blacklist elements
         if len(character.lean_acs_blacklist) > 0:
             # monika is wearing a blacklisted accessory
+            return True
+
+        larms = lean + "|" + arms
+
+        if not character.hair.pose_map.l_map.get(larms, False):
+            return True
+
+        if not character.clothes.pose_map.l_map.get(larms, False):
             return True
 
         # otherwise, this is good
@@ -3398,9 +3407,10 @@ init -2 python:
         # are we sitting or not
         if is_sitting:
 
-            if store.mas_sprites.should_disable_lean(lean, character):
+            if store.mas_sprites.should_disable_lean(lean, arms, character):
                 # set lean to None if its on the blacklist
                 lean = None
+                arms = "steepling"
 
             # fallback adjustments:
             if character.hair.fallback:
