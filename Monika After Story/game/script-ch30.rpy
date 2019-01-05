@@ -113,6 +113,8 @@ init -10 python:
         DOCKSTAT_GRE_TYPE = 2
         # used by the bye_going_somewhere farewell as a type
 
+
+
         # end keys
        
 
