@@ -651,7 +651,7 @@ label mas_crashed_long_whq:
             m "Well..."
             m "I'd really appreciate it if you could look into it."
             m "It's scary to be suddenly thrown into the darkness like that."
-            jump .end
+            jump mas_crashed_long_whq.end
 
     # ask player to do something about this
     menu:
