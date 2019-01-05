@@ -440,14 +440,16 @@ label mas_story_immortal_love:
 # Scary stories start here
 label mas_scary_story_setup:
     show monika 1dsc
-    $ mas_temp_r_flag = mas_is_raining
+    $ mas_temp_r_flag = mas_current_weather
     $ scene_change = True
     $ mas_is_raining = True
     #TODO persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
     $ mas_temp_m_flag = morning_flag
+
     $ store.mas_sprites.reset_zoom()
+    $ mas_changeWeather(mas_weather_rain)
     call spaceroom(start_bg="monika_gloomy_room")
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
@@ -488,12 +490,13 @@ label mas_scary_story_cleanup:
         stop background fadeout 1.0
     show monika 1dsc
     $ scene_change = True
-    $ mas_is_raining = mas_temp_r_flag
     pause 1.0
     hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
     if not mas_isO31():
         hide vignette
+
+    $ mas_changeWeather(mas_temp_r_flag)
     call spaceroom
 #    $ store.songs.enabled = True
     $ play_song(songs.current_track)
