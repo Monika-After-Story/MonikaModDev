@@ -146,7 +146,8 @@ init -900 python in mas_ev_data_ver:
         15: MASCurriedVerify(_verify_dt, True), # last_seen
         16: MASCurriedVerify(_verify_tuli, True), # years
         17: MASCurriedVerify(_verify_bool, True), # sensitive
-        18: MASCurriedVerify(_verify_tuli_aff, True) # aff_range
+        18: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
+        19: MASCurriedVerify(_verify_bool, True), # show_in_idle
     }
 
 
@@ -230,7 +231,7 @@ init -500 python:
         False, # years
         False, # sensitive
         False, # aff_range
-        False # show_in_idle
+        False, # show_in_idle
     )
 
     # NOTE: aff_range is unlocked because making adjustments to topics would

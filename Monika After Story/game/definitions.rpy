@@ -144,7 +144,7 @@ python early:
             "years":16,
             "sensitive":17,
             "aff_range":18,
-            "show_in_idle":19
+            "show_in_idle":19,
         }
 
         # name constants
