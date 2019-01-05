@@ -15,6 +15,11 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+default persistent._mas_idle_mode_was_crashed = None
+# this gets to set to True if the user crashed during idle mode
+# or False if the user quit during idle mode.
+# in your idle greetings, you can assume that it will NEVER be None
+
 init -1 python in mas_greetings:
 
     # TYPES:
@@ -42,7 +47,7 @@ init -1 python in mas_greetings:
     # these are meant if you had a game crash/quit during idle mode
 
     # custom greeting functions
-    def selectGreeting(_type=None):
+    def selectGreeting(gre_type=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
@@ -66,13 +71,13 @@ init -1 python in mas_greetings:
 
 
         # check first if we have to select from a special type
-        if _type is not None:
+        if gre_type is not None:
 
             # filter them using the type as filter
             unlocked_greetings = renpy.store.Event.filterEvents(
                 renpy.store.evhand.greeting_database,
                 unlocked=True,
-                category=(True,[_type])
+                category=(True,[gre_type])
             )
 
         else:
@@ -154,6 +159,7 @@ init -1 python in mas_greetings:
 label mas_idle_mode_greeting_cleanup:
     $ persistent._mas_in_idle_mode = False
     $ persistent._mas_greeting_type = None
+    $ persistent._mas_idle_mode_was_crashed = None
     return
 
 

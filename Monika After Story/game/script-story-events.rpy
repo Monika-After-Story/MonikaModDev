@@ -466,8 +466,41 @@ default persistent._mas_crashed_trynot = False
 
 # start of crash flow
 label mas_crashed_start:
+
     if renpy.seen_label("mas_crashed_post"):
-        jump mas_crashed_short
+
+        # launch quip
+        call mas_crashed_short
+
+        # cleanup
+        call mas_crashed_post
+
+    else:
+
+        # long setup (includes scene black)
+        call mas_crashed_prelong
+
+        # are you there and turn on light
+        call mas_crashed_long_qs
+
+        # setup for fluster
+        call mas_crashed_long_prefluster
+
+        # fluster
+        call mas_crashed_long_fluster
+
+        # cleanup for fluster (calm down monika)
+        call mas_crashed_long_postfluster
+
+        # what happened, can you stop it from happening
+        call mas_crashed_long_whq
+
+        # cleanup
+        call mas_crashed_post
+
+    return
+
+label mas_crashed_prelong:
 
     # otherwise continue to long flow
     $ persistent._mas_crashed_before = True
@@ -480,11 +513,10 @@ label mas_crashed_start:
     # TESTING:
 #    $ style.say_dialogue = style.default_monika
 
-    jump mas_crashed_long
+    return
 
-# long flow involves flustered monika
-# make sure to calm her down, player
-label mas_crashed_long:
+# long flow involves 2 questions
+label mas_crashed_long_qs:
 
     # start off in the dark
     m "[player]?{w} Is that you?"
@@ -510,13 +542,13 @@ label mas_crashed_long_uthere:
     m "[player]!{fast}"
     m "I know you're there!"
 
-    label .dontjoke:
-        m "Don't joke around like that!"
-        m "Anyway..."
+label .dontjoke:
+    m "Don't joke around like that!"
+    m "Anyway..."
 
-    label .afterdontjoke:
-        m "{cps=*2}Everything became dark all of a sudden.{/cps}"
-        m "Can you turn on the light?"
+label .afterdontjoke:
+    m "{cps=*2}Everything became dark all of a sudden.{/cps}"
+    m "Can you turn on the light?"
 
     window hide
     show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
@@ -542,6 +574,11 @@ label mas_crashed_long_uthere:
     $ scene_change = True
     call spaceroom(hide_monika=True)
 
+    return
+
+# make sure to calm her down, player
+label mas_crashed_long_prefluster:
+
     # look at you with crying eyes
     show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
@@ -558,9 +595,10 @@ label mas_crashed_long_uthere:
     show monika 6ATL_cryleftright
     m "{cps=*1.5}What happened?{/cps}{nw}"
 
-    call mas_crashed_long_fluster
-    window hide
+    return
 
+label mas_crashed_long_postfluster:
+    window hide
     show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
     menu:
         "Calm down, [m_name]. You're safe now.":
@@ -597,6 +635,9 @@ label mas_crashed_long_uthere:
     # its like we wiping away tears
     show monika 6dstdc
     pause 1.0
+    return
+
+label mas_crashed_long_whq:
 
     # ask player what happeend
     m 2ekc "Anyway..."
@@ -627,9 +668,11 @@ label mas_crashed_long_uthere:
             m 1ekc "Oh..."
             m 1lksdlc "That's okay.{w} I'll just mentally prepare myself in case it happens again."
 
-    label .end:
-        m "Anyway..."
-        m 1eua "What should we do today?"
+label .end:
+    m "Anyway..."
+    m 1eua "What should we do today?"
+
+    return
 
 
 ### post crashed flow
@@ -692,7 +735,7 @@ label mas_crashed_short:
         # assume line
         m 1hub "[v_quip]"
 
-    jump mas_crashed_post
+    return
 
 ### crash labels
 label mas_crashed_quip_takecare:

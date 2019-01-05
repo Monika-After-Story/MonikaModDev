@@ -636,6 +636,7 @@ init python:
         mas_in_idle_mode = False
         persistent._mas_in_idle_mode = False
         persistent._mas_greeting_type = None
+        persistent._mas_idle_mode_was_crashed = None
         mas_idle_mailbox.get_idle_cb()
 
 
@@ -1007,9 +1008,44 @@ label mas_ch30_post_holiday_check:
         ):
         call yuri_name_scare from _call_yuri_name_scare
 
+    elif persistent._mas_in_idle_mode:
+        # NOTE: because of a conflict with monika wants this first, we need
+        #   idle greetings to be filtered separately from regular greetings
+        python:
+            sel_greeting_evs = Event.filterEvents(
+                store.evhand.greeting_database,
+                unlocked=True,
+                category=(True, [persistent._mas_greeting_type])
+            )
+
+            if len(sel_greeting_evs) > 0:
+                sel_greeting_ev = sel_greeting_evs[renpy.random.choice(
+                    sel_greeting_evs.keys()
+                )]
+
+                selected_greeting = sel_greeting_ev.eventlabel
+
+                # NOTE: reset of greeting type is handled post greeting
+
+                # store if we have to skip visuals ( used to prevent visual 
+                #   bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_ev
+                )
+
+                # determine if you crashed or not
+                persistent._mas_idle_mode_was_crashed = bool(
+                     persistent._mas_game_crashed
+                )
+
+            else:
+                # just abort reset if we dont have a greeting
+                mas_resetIdleMode()
+
+
     # check persistent to see if player put Monika to sleep correctly
     # or was in idle mode
-    elif persistent.closed_self or persistent._mas_in_idle_mode:
+    elif persistent.closed_self:
 
         python:
 

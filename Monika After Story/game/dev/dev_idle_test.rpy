@@ -52,9 +52,14 @@ init 5 python:
 label greeting_dev_idle_test:
     m "welcome back!"
 
-    if persistent._mas_game_crashed:
+    if persistent._mas_idle_mode_was_crashed:
         # crashed
         m 1hua "i THINK you CRASHSED"
+
+        # NOTE: when first crashed, you might want to launch a slightly custom
+        #   version of the existing first crash dialogue.
+        #   See the mas_crashed_start label in script-story-events for labels
+        #   you can call to trigger certain bits of the starting crash setup
 
     else:
         # quit
