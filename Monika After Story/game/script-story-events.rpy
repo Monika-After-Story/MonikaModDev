@@ -951,36 +951,52 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_coffee_finished_brewing"
+            eventlabel="mas_coffee_finished_brewing",
+            show_in_idle=True,
         )
     )
 
 
 label mas_coffee_finished_brewing:
 
-    m 1esd "Oh, coffee's done."
+    if not mas_in_idle_mode:
+        m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
+
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if mas_in_idle_mode:
+        # idle pauses 
+        m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
-    pause 1.0
+    $ store.mas_sprites.zoom_level = curr_zoom
+    $ store.mas_sprites.adjust_zoom()
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    if mas_in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
     return
 
 ### coffee drinking is done
@@ -990,7 +1006,8 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_coffee_finished_drinking"
+            eventlabel="mas_coffee_finished_drinking",
+            show_in_idle=True,
         )
     )
 
@@ -999,22 +1016,32 @@ label mas_coffee_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
-    m 1esd "Oh, I've finished my coffee."
+
+    if not mas_in_idle_mode:
+        m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
-    if get_new_cup:
-        # its currently morning, monika should get another drink
-        m 1eua "I'm going to get another cup."
 
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if mas_in_idle_mode:
+        if get_new_cup:
+            # its currently morning, monika should get another drink
+            m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
+    
+    else:
+        if get_new_cup:
+            m 1eua "I'm going to get another cup."
+
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statemetns so we can properly add / remove the mug
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     # decide if new coffee
     if not get_new_cup:
         $ monika_chr.remove_acs(mas_acs_mug)
@@ -1023,12 +1050,19 @@ label mas_coffee_finished_drinking:
     else:
         $ mas_drinkCoffee()
 
-    pause 1.0
+    $ store.mas_sprites.zoom_level = curr_zoom
+    $ store.mas_sprites.adjust_zoom()
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    if mas_in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 
@@ -1039,36 +1073,52 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_brewing"
+            eventlabel="mas_c_hotchoc_finished_brewing",
+            show_in_idle=True,
         )
     )
 
 
 label mas_c_hotchoc_finished_brewing:
 
-    m 1esd "Oh, my hot chocolate is ready."
+    if not mas_in_idle_mode:
+        m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
+
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if mas_in_idle_mode:
+        m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
-    pause 1.0
+    $ store.mas_sprites.zoom_level = curr_zoom
+    $ store.mas_sprites.adjust_zoom()
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    if mas_in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 ### coffee drinking is done
@@ -1078,7 +1128,8 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_drinking"
+            eventlabel="mas_c_hotchoc_finished_drinking",
+            show_in_idle=True,
         )
     )
 
@@ -1087,22 +1138,33 @@ label mas_c_hotchoc_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
-    m 1esd "Oh, I've finished my hot chocolate."
+
+    if not mas_in_idle_mode:
+        m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
+    $ curr_zoom = store.mas_sprites.zoom_level
     $ store.mas_sprites.reset_zoom()
-    if get_new_cup:
-        # its currently morning, monika should get another drink
-        m 1eua "I'm going to get another cup."
 
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if mas_in_idle_mode:
+        if get_new_cup:
+            # its currently morning, monika should get another drink
+            m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
+
+    else:
+        if get_new_cup:
+            m 1eua "I'm going to get another cup."
+
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statemetns so we can properly add / remove the mug
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
+
     # decide if new coffee
     if not get_new_cup:
         $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
@@ -1111,12 +1173,20 @@ label mas_c_hotchoc_finished_drinking:
     else:
         $ mas_drinkHotChoc()
 
-    pause 1.0
+    $ store.mas_sprites.zoom_level = curr_zoom
+    $ store.mas_sprites.adjust_zoom()
+
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    if mas_in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 
