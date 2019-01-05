@@ -150,6 +150,12 @@ init -1 python in mas_greetings:
             renpy.random.choice(random_greetings_dict.keys())
         ]
 
+# NOTE: this is auto pushed to be shown after an idle mode greeting
+label mas_idle_mode_greeting_cleanup:
+    $ persistent._mas_in_idle_mode = False
+    $ persistent._mas_greeting_type = None
+    return
+
 
 init 5 python:
     rules = dict()

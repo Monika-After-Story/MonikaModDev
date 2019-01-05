@@ -1765,6 +1765,7 @@ label call_next_event:
 
             if "idle" in _return:
                 $ mas_in_idle_mode = True
+                $ persistent._mas_in_idle_mode = True
 
             if "quit" in _return:
                 $persistent.closed_self = True #Monika happily closes herself
@@ -1834,6 +1835,7 @@ label prompt_menu:
         $ store.mas_hotkeys.music_enabled = True
 
         $ persistent._mas_greeting_type = None
+        $ persistent._mas_in_idle_mode = False
 
         # if we have events, jump to idle before call_next_event to start
         # the usual setup

@@ -625,6 +625,20 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
+    def mas_resetIdleMode():
+        """
+        Resets specific idle mode vars.
+
+        This is meant to basically clear idle mode for holidays or other
+        things that hijack main flow
+        """
+        global mas_in_idle_mode
+        mas_in_idle_mode = False
+        persistent._mas_in_idle_mode = False
+        persistent._mas_greeting_type = None
+        mas_idle_mailbox.get_idle_cb()
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -994,7 +1008,8 @@ label mas_ch30_post_holiday_check:
         call yuri_name_scare from _call_yuri_name_scare
 
     # check persistent to see if player put Monika to sleep correctly
-    elif persistent.closed_self:
+    # or was in idle mode
+    elif persistent.closed_self or persistent._mas_in_idle_mode:
 
         python:
 
@@ -1087,6 +1102,10 @@ label ch30_post_exp_check:
 
     # push greeting if we have one
     if selected_greeting:
+        # before greeting, we should push idle clean if in idle mode
+        if persistent._mas_in_idle_mode:
+            $ pushEvent("mas_idle_mode_greeting_cleanup")
+
         $ pushEvent(selected_greeting)
 
     # if not persistent.tried_skip:
