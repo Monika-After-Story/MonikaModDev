@@ -1455,6 +1455,25 @@ init python:
 
         if len(persistent.event_list) == 0:
             return None
+
+        if mas_in_idle_mode:
+            # idle requires us to loop over the list and find the first
+            # event available in idle
+            ev_found = None
+
+            for ev_label in persistent.event_list:
+                ev_found = mas_getEV(ev_label)
+                if ev_found is not None and ev_found.show_in_idle:
+
+                    if remove:
+                        persistent.event_list.remove(ev_label)
+
+                    persistent.current_monikatopic = ev_label
+                    return ev_label
+
+            # we did not find an idle event
+            return None
+
         elif remove:
             event_label = persistent.event_list.pop()
             persistent.current_monikatopic = event_label
@@ -1744,6 +1763,9 @@ label call_next_event:
             if "rebuild_ev" in _return:
                 $ mas_rebuildEventLists()
 
+            if "idle" in _return:
+                $ mas_in_idle_mode = True
+
             if "quit" in _return:
                 $persistent.closed_self = True #Monika happily closes herself
                 jump _quit
@@ -1755,7 +1777,10 @@ label call_next_event:
         # return to normal pose
         show monika idle at t11 zorder MAS_MONIKA_Z
 
-        $ mas_DropShield_dlg()
+
+    if mas_in_idle_mode:
+        # idle mode should transition shields
+        $ mas_dlgToIdleShield()
 
     else:
         $ mas_DropShield_dlg()
@@ -1781,7 +1806,26 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+
     $ mas_RaiseShield_dlg()
+
+    if mas_in_idle_mode:
+        # if talk is hit here, then we retrieve label from mailbox and 
+        # call it.
+        # after the event is over, we drop shields return to idle flow
+        $ cb_label = mas_idle_mailbox.get_idle_cb()
+
+        # only call label if it exists
+        if cb_label is not None:
+            call expression cb_label
+
+        # clean up idle stuff
+        $ mas_in_idle_mode = False
+        #$ mas_DropShield_idle()
+        $ persistent._mas_greeting_type = None
+        # TODO decide if we should call next event or do somethin gelse
+
+
 
     python:
         unlocked_events = Event.filterEvents(
@@ -1845,6 +1889,8 @@ label prompt_menu:
 
     else: #nevermind
         $_return = None
+
+label prompt_menu_end:
 
     show monika idle at t11
     $ mas_DropShield_dlg()

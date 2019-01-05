@@ -113,7 +113,8 @@ init -10 python:
         DOCKSTAT_GRE_TYPE = 2
         # used by the bye_going_somewhere farewell as a type
 
-
+        IDLE_MODE_CB_LABEL = 3
+        # label to call when returning from idle mode
 
         # end keys
        
@@ -157,6 +158,20 @@ init -10 python:
             if result is None:
                 return default
             return result
+
+
+        def send_idle_cb(self, cb_label):
+            """
+            Sends idle callback label to mailbox
+            """
+            self.send(self.IDLE_MODE_CB_LABEL, cb_label)
+
+
+        def get_idle_cb(self):
+            """
+            Gets idle callback label
+            """
+            return self.get(self.IDLE_MODE_CB_LABEL)
             
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -1232,6 +1247,9 @@ label ch30_post_mid_loop_eval:
 #                    and battery.get_level() < 20
 #                ):
 #                pushEvent("monika_battery")
+
+        if mas_in_idle_mode:
+            jump post_pick_random_topic
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:

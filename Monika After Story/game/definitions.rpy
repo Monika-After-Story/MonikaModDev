@@ -5340,6 +5340,9 @@ define MAS_RAIN_BROKEN = 70
 # snow
 define mas_is_snowing = False
 
+# idle
+define mas_in_idle_mode = False
+
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
 
