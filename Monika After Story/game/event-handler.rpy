@@ -229,7 +229,8 @@ init -500 python:
         True, # last_seen
         False, # years
         False, # sensitive
-        False # aff_range
+        False, # aff_range
+        False # show_in_idle
     )
 
     # NOTE: aff_range is unlocked because making adjustments to topics would
