@@ -489,7 +489,14 @@ init python:
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
 
-        mas_HKBDropShield()
+        if mas_in_idle_mode:
+            # IDLe only enables talk extra and music
+            store.hkb_button.talk_enabled = True
+            store.hkb_button.extra_enabled = True
+            store.hkb_button.music_enabled = True
+
+        else:
+            mas_HKBDropShield()
 
 
     dismiss_keys = config.keymap['dismiss']

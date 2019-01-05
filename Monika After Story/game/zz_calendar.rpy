@@ -1921,7 +1921,15 @@ label _first_time_calendar_use:
 
     show monika idle
 
-    $ mas_HKBDropShield()
+    if mas_in_idle_mode:
+        # IDLe only enables talk extra and music
+        $ store.hkb_button.talk_enabled = True
+        $ store.hkb_button.extra_enabled = True
+        $ store.hkb_button.music_enabled = True
+
+    else:
+        $ mas_HKBDropShield()
+
     $ persistent._mas_first_calendar_check = True
     $ mas_calDropOverlayShield()
     return
