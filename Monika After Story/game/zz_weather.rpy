@@ -675,15 +675,17 @@ label monika_change_weather_loop:
     # call scrollable pane
     call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
 
+    $ sel_weather = _return
+
     show monika at t11
 
     # return value False? then return
-    if _return is False:
+    if sel_weather is False:
         m 1eka "Oh, alright."
         m "If you want to change the weather, just ask, okay?"
         return
 
-    if _return == mas_current_weather:
+    if sel_weather == mas_current_weather:
         m 1hua "That's the current weather, silly."
         m "Try again~" 
         jump monika_change_weather_loop
@@ -693,7 +695,7 @@ label monika_change_weather_loop:
 
     # otherwise, we can change the weather now
     # NOTE: here is where youc an react to a weather change
-    if _return == mas_weather_rain or _return == mas_weather_thunder:
+    if sel_weather == mas_weather_rain or sel_weather == mas_weather_thunder:
         if not renpy.seen_label("monika_rain"):
             $ pushEvent("monika_rain")
             $ skip_outro = True
@@ -713,7 +715,7 @@ label monika_change_weather_loop:
     pause 1.0
 
     # finally change the weather
-    call mas_change_weather(_return)
+    call mas_change_weather(sel_weather)
 
     if not skip_outro:
         m 1eua "There we go!"
