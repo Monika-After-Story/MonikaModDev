@@ -10501,4 +10501,5 @@ label monika_hemispheres_nogets_snow:
     m 3hksdlb "At least you don't have to worry about shoveling it."
     call monika_snow_nogets_snow
     return
-   
+  
+

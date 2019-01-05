@@ -40,7 +40,6 @@ init -1 python in mas_greetings:
 
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
-    TYPE_IDLE_RET_TEST = "idle_test"
 
     # custom greeting functions
     def selectGreeting(_type=None):
