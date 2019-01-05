@@ -1815,16 +1815,33 @@ label prompt_menu:
         # after the event is over, we drop shields return to idle flow
         $ cb_label = mas_idle_mailbox.get_idle_cb()
 
+        # NOTE: we call the label directly instead of pushing to event stack
+        #   so that if the user quits during the event, we get the appropriate
+        #   greeting instead of the regular reload greeting.
+        #
+        #   This also prevents the end-of-idle label from being saved and
+        #   restored on a relaunch, which would make no sense lol.
+
         # only call label if it exists
         if cb_label is not None:
             call expression cb_label
 
         # clean up idle stuff
         $ mas_in_idle_mode = False
-        #$ mas_DropShield_idle()
-        $ persistent._mas_greeting_type = None
-        # TODO decide if we should call next event or do somethin gelse
 
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
+
+        $ persistent._mas_greeting_type = None
+
+        # if we have events, jump to idle before call_next_event to start
+        # the usual setup
+        if len(persistent.event_list) > 0:
+            jump ch30_post_mid_loop_eval
+
+        # otherwise, return regular spaceroom idle
+        jump prompt_menu_end
 
 
     python:
