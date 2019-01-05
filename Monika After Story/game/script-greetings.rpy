@@ -1047,7 +1047,7 @@ label monikaroom_greeting_choice:
         pause 4.0
 
     menu:
-        "[_opendoor_text]" if not persistent.seen_monika_in_room:
+        "[_opendoor_text]" if not persistent.seen_monika_in_room and not mas_isplayer_bday():
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
             if mas_isMoniUpset(lower=True):
@@ -1056,6 +1056,10 @@ label monikaroom_greeting_choice:
             else:
                 jump monikaroom_greeting_opendoor
         "Open the door." if persistent.seen_monika_in_room:
+            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and not persistent._mas_opened_door_bday:
+                jump mas_player_bday_opendoor
+            elif mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and persistent._mas_opened_door_bday:
+                jump mas_player_bday_opendoor_listened
             if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
@@ -1069,12 +1073,20 @@ label monikaroom_greeting_choice:
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
-            jump monikaroom_greeting_knock
+            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and has_listened:
+                jump mas_player_bday_knock_listened
+            elif mas_isplayer_bday() and not persistent._mas_seen_bday_surprise:
+                jump mas_player_bday_knock_no_listen
+            else:
+                jump monikaroom_greeting_knock
         "Listen." if not has_listened and not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
-            $ mroom_greet = renpy.random.choice(gmr.eardoor)
-#            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
-            jump expression mroom_greet
+            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise:
+                jump mas_player_bday_listen
+            else:
+                $ mroom_greet = renpy.random.choice(gmr.eardoor)
+#               $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
+                jump expression mroom_greet
 
     # NOTE: return is expected in monikaroom_greeting_cleanup
 

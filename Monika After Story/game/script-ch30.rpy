@@ -656,6 +656,15 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     # d25 seasonal
     if persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+
+    if persistent._mas_player_bday_in_player_bday_mode:
+        if mas_isplayer_bday():
+            $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+            $ renpy.show("mas_bday_banners", zorder=7)
+            $ renpy.show("mas_bday_balloons", zorder=8)
+        else:
+            $ persistent._mas_player_bday_in_player_bday_mode = False
+            $ persistent._mas_seen_bday_surprise = False
     return
 
 
@@ -930,6 +939,9 @@ label mas_ch30_post_retmoni_check:
 
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
+
+    if mas_isplayer_bday():
+        jump mas_player_bday_autoload_check
 
 
 label mas_ch30_post_holiday_check:
