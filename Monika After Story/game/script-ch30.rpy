@@ -1027,13 +1027,14 @@ label mas_ch30_post_holiday_check:
 
                 # NOTE: reset of greeting type is handled post greeting
 
-                # we always skip visuals because of first crash potential
-                mas_skip_visuals = True
-
                 # determine if you crashed or not
                 persistent._mas_idle_mode_was_crashed = bool(
                      persistent._mas_game_crashed
                 )
+
+                # crash menas we do certain things
+                if persistent._mas_idle_mode_was_crashed:
+                    mas_skip_visuals = True
 
             else:
                 # just abort reset if we dont have a greeting
