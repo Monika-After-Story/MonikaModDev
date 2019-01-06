@@ -1464,6 +1464,7 @@ label monika_kiss_aftermath:
     m 6dsa "My lips start to go tingly and numb, just by imagining the feeling of your soft lips."
     m 6dka "I run my finger across them to try and mimic that feeling, but it doesn't even come close."
     m 6esa "I keep replaying that moment over and over again in my mind and I get goosebumps each time."
+    show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5tsu "It was simply divine, [player]."
     m 5tsu "It felt so right."
     m 5tsa "I've never felt closer to you. I can't wait until our next kiss, or better yet..."
