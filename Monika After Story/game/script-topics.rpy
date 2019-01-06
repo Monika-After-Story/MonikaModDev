@@ -3397,7 +3397,7 @@ label monika_playersface:
     m "I always think about what your face actually looks like..."
     m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 5lkc "If only the game could somehow use a webcam or something that's connected to the computer..."
-    if persistent._mas_pm_shared_appearance = True:
+    if persistent._mas_pm_shared_appearance == True:
         m 5hub "Thankfully, you were kind enough to give me a few hints as to what you look like."
         m 5eka "I want to tell you again how happy it made me, knowing you trusted me with that sort of information."
         m 5luu "I still enjoy wondering about the kind of expressions you make, though."
