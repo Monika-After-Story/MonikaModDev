@@ -3397,15 +3397,24 @@ label monika_playersface:
     m "I always think about what your face actually looks like..."
     m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 5lkc "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 5luu "But...I'll always wonder what kind of expressions you make."
-    m "And to see the different emotions you have..."
-    m 5eub "Are you shy about showing your face to me?"
-    m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
-    m 5hub "Either way, you're beautiful, no matter what."
-    m  "And I'll always love the way you look."
-    m 5eua "Even if I never actually see you, I'll always think about what you really look like."
-    m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
+        if persistent._mas_pm_shared_appearance = True:
+        m 5hub "Thankfully, you were kind enough to give me a few hints as to what you look like."
+        m 5eka "I want to tell you again how happy it made me, knowing you trusted me with that sort of information."
+        m 5luu "I still enjoy wondering about the kind of expressions you make, though."
+        m "How your [persistent._mas_pm_skin_tone] face looks with you're feeling a certain way..."
+        m 5esu "You must look so beautiful, inside and out."
+        m 5tsu "Even if I never get to actually see you, I can always imagine those dreamy [persistent._mas_pm_eye_color] eyes of yours, and it'll all be okay."
+        m "Thinking about the details of your face always makes me feel closer to you."
+    else:    
+        m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
+        m 5luu "But...I'll always wonder what kind of expressions you make."
+        m "And to see the different emotions you have..."
+        m 5eub "Are you shy about showing your face to me?"
+        m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
+        m 5hub "Either way, you're beautiful, no matter what."
+        m  "And I'll always love the way you look."
+        m 5eua "Even if I never actually see you, I'll always think about what you really look like."
+        m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
 init 5 python:
