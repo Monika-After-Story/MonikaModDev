@@ -1634,7 +1634,6 @@ label monika_rain:
     m 1duu "It's very calming to me."
     m "Yeah..."
 
-
     if mas_isMoniHappy(higher=True):
         # need to be happy or above to get the hold me segway
 
@@ -1643,21 +1642,11 @@ label monika_rain:
         m 1ekbfa "Would you ever do that for me, [player]?"
         menu:
             "Yes.":
-                $ persistent._mas_likes_rain = True
-
-                python:
-                    # unlock rain weathers
-                    mas_weather_rain.unlocked = True
-                    if store.mas_o31_event.spentO31():
-                        mas_weather_thunder.unlocked = True
-
-                    store.mas_weather.saveMWData()
-                    mas_unlockEVL("monika_change_weather", "EVE")
-
-                if not mas_is_raining:
-                    call mas_change_weather(mas_weather_rain)
-
+                $ scene_change = True
+                $ mas_is_raining = True
+                call spaceroom
                 stop music fadeout 1.0
+                play background audio.rain fadein 1.0 loop
 
                 # clear selected track
                 $ songs.current_track = songs.FP_NO_SONG
@@ -1679,50 +1668,48 @@ label monika_rain:
 
                 m 1eua "If you want the rain to stop, just ask me, okay?"
 
+                # lock / unlock the appropriate labels
+                $ unlockEventLabel("monika_rain_stop")
+                $ unlockEventLabel("monika_rain_holdme")
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain")
+                $ lockEventLabel("mas_monika_islands")
+                $ persistent._mas_likes_rain = True
+
             "I hate the rain.":
-                $ persistent._mas_likes_rain = False
-
-                # lock weather topic if we can only select 1
-#                if store.mas_weather.unlockedWeathers() < 2:
-#                    $ mas_lockEVL("monika_change_weather", "EVE")
-
                 m 2tkc "Aw, that's a shame."
-                if mas_is_raining:
-                    if mas_isWinter():
-                        # TODO: also check if user liks snow
-                        call mas_change_weather(mas_weather_snow)
-
-                    else:
-                        call mas_change_weather(mas_weather_def)
-
                 m 2eka "But it's understandable."
                 m 1eua "Rainy weather can look pretty gloomy."
                 m 3rksdlb "Not to mention pretty cold!"
                 m 1eua "But if you focus on the sounds raindrops make..."
                 m 1hua "I think you'll come to enjoy it."
 
+                # lock / unlock the appropraite labels
+                $ lockEventLabel("monika_rain_start")
+                $ lockEventLabel("monika_rain_stop")
+                $ lockEventLabel("monika_rain_holdme")
+                $ unlockEventLabel("monika_rain")
+                $ persistent._mas_likes_rain = False
+
     # unrandom this event if its currently random topic
-    # NOTE: we force event rebuild because this can be pushed by weather
-    #   selection topic
-    return "derandom|rebuild_ev"
+    return "derandom"
 
 
-#init 5 python:
-#    # available only if moni affection is normal+
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_rain_stop",
-#            category=["weather"],
-#            prompt="Can you stop the rain?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None},
-#            aff_range=(mas_aff.NORMAL, None)
-#        )
-#    )
+init 5 python:
+    # available only if moni affection is normal+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_stop",
+            category=["weather"],
+            prompt="Can you stop the rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
-# NOTE: this has been replaced with change weather
 label monika_rain_stop:
     # NOTE: the label is here because its related to monika_rain
     if mas_isMoniNormal(higher=True):
@@ -1753,22 +1740,21 @@ label monika_rain_stop:
 
     return
 
-#init 5 python:
+init 5 python:
     # available only if moni affection is normal+
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_rain_start",
-#            category=["weather"],
-#            prompt="Can you make it rain?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock":None},
-#            aff_range=(mas_aff.NORMAL, None)
-#        )
-#    )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_rain_start",
+            category=["weather"],
+            prompt="Can you make it rain?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock":None},
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
 
-# NOTE: this has been replaced with change weather
 label monika_rain_start:
 
     if mas_isMoniNormal(higher=True):
@@ -1868,7 +1854,6 @@ label monika_rain_holdme:
         $ lockEventLabel("monika_rain_holdme")
 
     return
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True))
@@ -3397,15 +3382,24 @@ label monika_playersface:
     m "I always think about what your face actually looks like..."
     m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 5lkc "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 5luu "But...I'll always wonder what kind of expressions you make."
-    m "And to see the different emotions you have..."
-    m 5eub "Are you shy about showing your face to me?"
-    m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
-    m 5hub "Either way, you're beautiful, no matter what."
-    m  "And I'll always love the way you look."
-    m 5eua "Even if I never actually see you, I'll always think about what you really look like."
-    m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
+    if persistent._mas_pm_shared_appearance = True:
+        m 5hub "Thankfully, you were kind enough to give me a few hints as to what you look like."
+        m 5eka "I want to tell you again how happy it made me, knowing you trusted me with that sort of information."
+        m 5luu "I still enjoy wondering about the kind of expressions you make, though."
+        m "How your [persistent._mas_pm_skin_tone] face looks with you're feeling a certain way..."
+        m 5esu "You must look so beautiful, inside and out."
+        m 5tsu "Even if I never get to actually see you, I can always imagine those dreamy [persistent._mas_pm_eye_color] eyes of yours, and it'll all be okay."
+        m "Thinking about the details of your face always makes me feel closer to you."
+    else:    
+        m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
+        m 5luu "But...I'll always wonder what kind of expressions you make."
+        m "And to see the different emotions you have..."
+        m 5eub "Are you shy about showing your face to me?"
+        m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
+        m 5hub "Either way, you're beautiful, no matter what."
+        m  "And I'll always love the way you look."
+        m 5eua "Even if I never actually see you, I'll always think about what you really look like."
+        m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
 init 5 python:
