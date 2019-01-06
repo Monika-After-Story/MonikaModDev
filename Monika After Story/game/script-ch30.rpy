@@ -1035,6 +1035,7 @@ label mas_ch30_post_holiday_check:
                 # crash menas we do certain things
                 if persistent._mas_idle_mode_was_crashed:
                     mas_skip_visuals = True
+                    persistent.closed_self = True
 
             else:
                 # just abort reset if we dont have a greeting
