@@ -4098,6 +4098,13 @@ init 2 python:
         return
 
 
+    def mas_incMoniReload():
+        """
+        Increments the monika reload counter unless its at max
+        """
+        if persistent.monika_reload < 4:
+            persistent.monika_reload += 1
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)

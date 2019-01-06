@@ -1767,6 +1767,7 @@ label call_next_event:
             if "idle" in _return:
                 $ mas_in_idle_mode = True
                 $ persistent._mas_in_idle_mode = True
+                $ renpy.save_persistent()
 
             if "quit" in _return:
                 $persistent.closed_self = True #Monika happily closes herself
