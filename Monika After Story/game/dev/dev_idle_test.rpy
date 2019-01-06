@@ -62,7 +62,7 @@ label greeting_dev_idle_test:
             # crashed
 
             # this restores visuals and other things
-            call mas_crashed_preshort:
+            call mas_crashed_preshort
 
             m 1hua "i THINK you CRASHSED"
 
