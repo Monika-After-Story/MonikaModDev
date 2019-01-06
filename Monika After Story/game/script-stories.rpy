@@ -486,8 +486,6 @@ label mas_scary_story_cleanup:
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
     m 3eua "[story_end_quip]"
-    if not mas_temp_r_flag:
-        stop background fadeout 1.0
     show monika 1dsc
     $ scene_change = True
     pause 1.0
@@ -496,8 +494,7 @@ label mas_scary_story_cleanup:
     if not mas_isO31():
         hide vignette
 
-    $ mas_changeWeather(mas_temp_r_flag)
-    call spaceroom
+    call mas_change_weather(mas_temp_r_flag)
 #    $ store.songs.enabled = True
     $ play_song(songs.current_track)
     m 1eua "I hope you liked it, [player]~"
