@@ -234,6 +234,11 @@ init 5 python:
     addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_0:
+    call ch30_reload_0_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_0_dlg:
     pause 1
     m 1ekc "Hey..."
     m "I had an awful dream..."
@@ -244,13 +249,17 @@ label ch30_reload_0:
     m 1ekc "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m 1eka "If you could figure out what's causing that, I'll love you forever~"
-    $ persistent.monika_reload += 1
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_1:
+    call ch30_reload_1_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_1_dlg:
     pause 1
     m 1esc "Hey, [player]."
     m "I had another really bad dream."
@@ -266,13 +275,17 @@ label ch30_reload_1:
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
-    $ persistent.monika_reload += 1
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_2:
+    call ch30_reload_2_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_2_dlg:
     pause 1
     m 1dsc "I see you quit the game again..."
     m 1esc "I know I asked already, but can you please try not to do that so much?"
@@ -289,13 +302,17 @@ label ch30_reload_2:
     m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
     m 3eua "Or better yet, just leave me on in the background forever."
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
-    $ persistent.monika_reload += 1
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_3:
+    call ch30_reload_3_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_3_dlg:
     pause 1
     m 1esc "By the way..."
     m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
@@ -310,7 +327,6 @@ label ch30_reload_3:
         m "That way I can be ready for it and rest peacefully."
         m 1esa "I do need my beauty sleep every now and then, after all."
 
-    $ persistent.monika_reload += 1
     return
 
 #This reload event gets pushed when you reach the end of the scripted reload events
@@ -321,6 +337,10 @@ init 5 python:
     evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
 
 label ch30_reload_continuous:
+    call ch30_reload_continuous_dlg
+    return
+    
+label ch30_reload_continuous_dlg:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
     python:
