@@ -239,3 +239,22 @@ init python:
         store.hkb_button.music_enabled = True
         mas_calDropOverlayShield()
         enable_esc()
+
+
+    def mas_mumuToIdleShield():
+        """
+        Enables:
+            - Talk button
+            - Extra button
+            - Music button
+            - songs
+            - calendar overlay
+
+        Intended Flow:
+            - when transitioning from music menu to idle mode
+        """
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
+        store.hkb_button.music_enabled = True
+        store.songs.enabled = True
+        mas_calDropOverlayShield()
