@@ -1788,6 +1788,8 @@ init 5 python:
 
 default persistent._mas_called_moni_a_bad_name = False
 default persistent._mas_offered_nickname = False
+#Want to save how many times this happened
+default persistent._mas_bad_nickname_count = 0
 
 label monika_affection_nickname:
     python:
@@ -2015,7 +2017,7 @@ label monika_affection_nickname:
                     if bad_nickname is None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
-                            m "Ehehe~ Back to the classics, I see."
+                            m 1eua "Ehehe~ Back to the classics, I see."
                         elif good_nickname is None:
                             m 1eud "Well, it's not exactly my favorite."
                             m 1eua "But I don't dislike it either."
@@ -2033,7 +2035,11 @@ label monika_affection_nickname:
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
-                        $ mas_loseAffection(reason="calling me a bad name")
+                        #Increment our counter, and if needed, set our perm locked var.
+                        $ persistent._mas_bad_nickname_count += 1
+
+                        #Remove the apology reason from this as we're handling the apology differently now.
+                        $ mas_loseAffection()
                         if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
                             m 1wud "...!"
                             m 2wfw "I..."
@@ -2047,9 +2053,10 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            m 2efc "Forget about this idea."
-                            m "It seems it was a mistake."
-                            m 1efc "Let's talk about something else."
+                            if persistent._mas_bad_nickname_count > 2:
+                                m 2efc "Forget about this idea."
+                                m "It seems it was a mistake."
+                                m 1efc "Let's talk about something else."
                             show monika 1efc
                             pause 5.0
                         else:
@@ -2057,11 +2064,21 @@ label monika_affection_nickname:
                             m 2efc "Why would you say such things?"
                             m 2rfw "If you didn't want to do this, you should've just said so!"
                             m 2dftdc "..."
-                            m 2lftsc "I don't like this idea anymore."
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
-                            m 2efc "Please don't do that again."
+
+                            if persistent._mas_bad_nickname_count > 2:
+                                m 2efc "Forget about this idea."
+                                m "It seems it was a mistake."
+                                m 1efc "Let's talk about something else."
+                            else:
+                                m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
+
+                        #reset nickname if not Monika
+                        if m_name.lower() != "monika":
+                            $ m_name = "Monika"
+
                         $ mas_lockEventLabel("monika_affection_nickname")
                         $ done = True
 
