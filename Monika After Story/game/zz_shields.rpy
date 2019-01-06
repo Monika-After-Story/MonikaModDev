@@ -221,3 +221,21 @@ init python:
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
 
+    
+    def mas_coreToIdleShield():
+        """
+        Enables:
+            - Talk button
+            - Extra button
+            - Music button
+            - Calendar overlay
+            - Escape key
+
+        Intended flow:
+            - when transitiong from core sheilds to idle shields
+        """
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
+        store.hkb_button.music_enabled = True
+        mas_calDropOverlayShield()
+        enable_esc()
