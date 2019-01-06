@@ -1027,11 +1027,8 @@ label mas_ch30_post_holiday_check:
 
                 # NOTE: reset of greeting type is handled post greeting
 
-                # store if we have to skip visuals ( used to prevent visual 
-                #   bugs)
-                mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                    event=sel_greeting_ev
-                )
+                # we always skip visuals because of first crash potential
+                mas_skip_visuals = True
 
                 # determine if you crashed or not
                 persistent._mas_idle_mode_was_crashed = bool(

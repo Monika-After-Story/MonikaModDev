@@ -467,7 +467,10 @@ default persistent._mas_crashed_trynot = False
 # start of crash flow
 label mas_crashed_start:
 
-    if renpy.seen_label("mas_crashed_post"):
+    if persistent._mas_crashed_before:
+
+        # preshort setup
+        call mas_crashed_preshort
 
         # launch quip
         call mas_crashed_short
@@ -684,15 +687,15 @@ label mas_crashed_post:
         HKBShowButtons()
         set_keymaps()
 
-    label .self:
-        python:
-            _confirm_quit = True
-            persistent.closed_self = False
+label .self:
+    python:
+        _confirm_quit = True
+        persistent.closed_self = False
 
-            if persistent.current_track is not None:
-                play_song(persistent.current_track)
-            else:
-                play_song(songs.current_track) # default
+        if persistent.current_track is not None:
+            play_song(persistent.current_track)
+        else:
+            play_song(songs.current_track) # default
 
     return
 
@@ -709,10 +712,13 @@ label mas_crashed_long_fluster:
     return
 
 
-label mas_crashed_short:
+label mas_crashed_preshort:
     # we can call spaceroom appropriately here
     $ scene_change = True
     call spaceroom
+    return
+
+label mas_crashed_short:
 
     python:
         # generate a quiplist
