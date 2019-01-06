@@ -565,7 +565,6 @@ init 15 python in mas_affection:
         # If the greeting hasn't been seen yet, push the islands greeting
         if (
                 not store.seen_event("greeting_ourreality")
-                and not store.mas_is_snowing
             ):
             if store.mas_cannot_decode_islands:
                 # failed to decode the islands, lets delay this action
@@ -579,6 +578,7 @@ init 15 python in mas_affection:
         if (
                 store.seen_event("mas_monika_islands")
                 and not store.mas_is_snowing
+                and not store.mas_is_raining # TODO: rain versions
             ):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
