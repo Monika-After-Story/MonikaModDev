@@ -931,7 +931,7 @@ label bye_going_somewhere:
         # otherwise we go
         m 1wud "You really want to bring me along?"
         m 1eka "..."
-        m 1hua "Well, I suposed it can't hurt to join you."
+        m 1hua "Well, I suppose it can't hurt to join you."
         m 2dsc "Just...please."
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
