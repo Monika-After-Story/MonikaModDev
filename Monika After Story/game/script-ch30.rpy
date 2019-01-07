@@ -1042,7 +1042,7 @@ label ch30_post_restartevent_check:
 
         else:
             # Grant bad exp for closing the game incorrectly.
-            mas_loseAffection(modifier=2, reason="closing the game on me")
+            mas_loseAffection(modifier=2, reason=4)
 
 label ch30_post_exp_check:
     # this label skips greeting selection as well as exp checks for game close

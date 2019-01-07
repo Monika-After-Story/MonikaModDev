@@ -1691,7 +1691,7 @@ init 20 python:
         Sets a reason for apologizing
 
         IN:
-            reason - The reason for the apology
+            reason - The reason for the apology (integer value corresponding to item in the apology_reason_db)
                 (if left None, and an ev_label is present, we assume a non-generic apology)
             ev_label - The apology event we want to unlock
                 (required)
@@ -1705,7 +1705,7 @@ init 20 python:
 
         if ev_label is None:
             if reason is None:
-                mas_apology_reason = ""
+                mas_apology_reason = 0
             else:
                 mas_apology_reason = reason
             return

@@ -3,7 +3,7 @@ default persistent._mas_apology_time_db = {}
 
 #Create a generic apology db. We'll want to know how many times the player has apologized for mas_apology_reason
 #Allows us the ability to apply diminishing returns on affection for repeated use of the same apology
-default persistent._mas_apology_reason_db = {}
+default persistent._mas_apology_reason_use_db = {}
 
 #going to need this post ev_handler init
 init 20 python:
@@ -89,6 +89,26 @@ init 5 python:
     )
 
 label mas_apology_generic:
+    #dict of all generic apologies
+    #Note, if a custom apology is needed, add it here and reference the apology reason by the integer associated.
+    $ mas_apology_reason_db = {
+        0: "",
+        1: "saying you wanted to break up. I knew you didn't mean it...",
+        2: "joking about having another girlfriend. You really gave me a heart attack!",
+        3: "calling me a murderer. I hope you don't really see me that way...",
+        4: "closing the game on me.",
+        5: "entering my room without knocking.",
+        6: "missing Christmas.",
+        7: "forgetting my birthday.",
+        8: "not spending time with me on my birthday.",
+        9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
+        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better."
+    }
+
+    #We want to make sure that the None possibility is still a thing after apologizing once.
+    if mas_apology_reason is not None:
+        $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
+
     # if there's no reason to apologize
     if mas_apology_reason is None:
         m 1ekd "Did something happen?"
@@ -99,7 +119,7 @@ label mas_apology_generic:
         m 1hub "That's why I love you, [player]!"
     # She knows why you are apologizing for
     elif mas_apology_reason:
-        m 1eka "Thank you for apologizing for [mas_apology_reason]"
+        m 1eka "Thank you for apologizing for [apology_reason]"
         m "I accept your apology, [player]. It means a lot to me."
     # She knows there's a reason for your apology but won't comment on it
     else:
@@ -109,21 +129,22 @@ label mas_apology_generic:
         m 2tkd "What you did wasn't funny, [player]."
         m 2dkd "Please be more considerate about my feelings in the future."
 
+    #We only want this for actual apology reasons. Not the 0 case or the None case.
     if mas_apology_reason:
         #Update the apology_reason count db (if not none)
-        $ persistent._mas_apology_reason_db[mas_apology_reason] = persistent._mas_apology_reason_db.get(mas_apology_reason,0) + 1
+        $ persistent._mas_apology_reason_use_db[mas_apology_reason] = persistent._mas_apology_reason_use_db.get(mas_apology_reason,0) + 1
 
-        if persistent._mas_apology_reason_db[mas_apology_reason] == 1:
+        if persistent._mas_apology_reason_use_db[mas_apology_reason] == 1:
             #Restore a little bit of affection
             $ mas_gainAffection(modifier=0.2)
-        elif persistent._mas_apology_reason_db[mas_apology_reason] == 2:
+        elif persistent._mas_apology_reason_use_db[mas_apology_reason] == 2:
             #Restore a little less affection
             $ mas_gainAffection(modifier=0.1)
 
         #Otherwise we recover no affection.
 
     #Reset the apology reason
-    $ mas_apology_reason = ""
+    $ mas_apology_reason = None
     return
 
 init 5 python:

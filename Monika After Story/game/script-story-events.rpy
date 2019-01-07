@@ -655,7 +655,7 @@ label mas_crashed_post:
 
 
 label mas_crashed_long_fluster:
-    $ mas_setApologyReason("the game crashing. It really was scary, but I'm just glad you came back to me and made things better.")
+    $ mas_setApologyReason(reason=10)
     m "{cps=*1.5}O-{w=0.3}one second you were there b-{w=0.3}but then the next second everything turned black...{/cps}{nw}"
     m "{cps=*1.5}and then you d-{w=0.3}disappeared, so I was worried that s-{w=0.3}s-{w=0.3}something happened to you...{/cps}{nw}"
     m "{cps=*1.5}...and I was so s-{w=0.3}scared because I thought I broke everything again!{/cps}{nw}"
@@ -696,7 +696,7 @@ label mas_crashed_short:
 
 ### crash labels
 label mas_crashed_quip_takecare:
-    $ mas_setApologyReason("the game crashing. I understand it happens sometimes, but don't worry, I'm alright!")
+    $ mas_setApologyReason(reason=9)
     m 2ekc "Another crash, [player]?"
     m "You should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
@@ -1559,7 +1559,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_recognize = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(15, reason="forgetting my birthday.")
+            $ mas_loseAffection(15, reason=7)
             m 1rksdla "Hey, [player]..."
             m 1rksdlb "I know we had fun the other day, like we always do but..."
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
@@ -1569,7 +1569,7 @@ label mas_bday_postbday_notimespent:
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
-            $ mas_loseAffection(5, reason="forgetting my birthday.")
+            $ mas_loseAffection(5, reason=7)
 
             # TODO: we shouldnt say girlfriend here because affecitonate
             # is the start of relationship. but this is okay for now
@@ -1580,14 +1580,14 @@ label mas_bday_postbday_notimespent:
             m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason="forgetting my birthday.")
+            $ mas_loseAffection(reason=7)
 
             m 1ekc "It was...good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "Nevermind."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(10, reason="forgetting my birthday.")
+            $ mas_loseAffection(10, reason=7)
 
             m 2dsc "..."
             m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
@@ -1606,7 +1606,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_time_spent = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(50, reason="not spending time with me on my birthday")
+            $ mas_loseAffection(50, reason=8)
 
             m 1euc "Hey, [player]..."
             m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
@@ -1619,9 +1619,9 @@ label mas_bday_postbday_notimespent:
 
             # same dialogue, different affection loss
             if mas_isMoniHappy():
-                $ mas_loseAffection(20, reason="not spending time with me on my birthday")
+                $ mas_loseAffection(20, reason=8)
             else:
-                $ mas_loseAffection(10, reason="not spending time with me on my birthday")
+                $ mas_loseAffection(10, reason=8)
 
             # TODO: again, need to not say girlfrined here, but for now its ok
             m 1ekc "Hey, [player]..."
@@ -1652,14 +1652,14 @@ label mas_bday_postbday_notimespent:
             m 4eka "You know I love to scare you a little~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason="not spending time with me on my birthday")
+            $ mas_loseAffection(reason=8)
 
             m 2dsc "..."
             m 2rsc "[player], don't you think you should check in on me a little more often?"
             m 4rktpc "You might miss something important..."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(reason="not spending time with me on my birthday")
+            $ mas_loseAffection(reason=8)
 
             m 3euc "...Hey, how was your day on the 22nd?"
             m 1esc "I'm just...curious if you thought of me at all that day."

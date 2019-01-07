@@ -2899,7 +2899,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection(reason="calling me a murderer. I hope you don't really see me that way...")
+    $ mas_loseAffection(reason=3)
     if mas_isMoniLove():
         m 1euc "..."
         m 1hua "Ahaha! Very funny [player]!"
@@ -3089,7 +3089,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection(reason="joking about having another girlfriend. You really gave me a heart attack!")
+    $ mas_loseAffection(reason=2)
     m 1euc "I thought we established already that I was your girlfriend?"
     m 1tkc "There's no way you already have one in your reality, right?"
     m 4tfx "If you do, then you've got to break up with her right now!"
@@ -6342,7 +6342,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
-    $ mas_loseAffection(reason=None)
+    $ mas_loseAffection()
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3eka "So...I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -6385,7 +6385,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(reason="saying you wanted to break up. I knew you didn't mean it...")
+    $ mas_loseAffection(reason=1)
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
@@ -6397,7 +6397,7 @@ label monika_breakup:
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -6413,7 +6413,7 @@ label monika_breakup:
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1ekc "..." # TODO review
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 1hua "Ehehe~"
 
@@ -6427,7 +6427,7 @@ label monika_breakup:
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."

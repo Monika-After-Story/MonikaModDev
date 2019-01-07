@@ -109,7 +109,7 @@ label mas_compliment_beautiful_2:
             m 1hub "Ehehehe~"
             m "I love you so much, [player]!"
         "You're in my top ten.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
             m 2lsc "Well, thanks, I guess..."
         "Thanks.":
@@ -206,7 +206,7 @@ label mas_compliment_awesome_2:
             m 2lksdla "I was trying to feel your embrace from here."
             m 2hub "Ahaha~"
         "... I don't like hugs.":
-            $ mas_loseAffection(reason=None) # you monster.
+            $ mas_loseAffection() # you monster.
             m 1eft "...Really?"
             m 1dkc "Well, to each their own, I guess. But you have to hug me sometime..."
     return
@@ -251,7 +251,7 @@ label mas_compliment_intelligent_2:
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
         "You make me feel stupid sometimes.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 1wkbsc "..."
             m 2lkbsc "I'm sorry, that wasn't my intention..."
     return
@@ -299,7 +299,7 @@ label mas_compliment_hair_2:
             m 1hubfb "You always make me feel special!"
             m "Thank you!"
         "You'd be even cuter with short hair.":
-            $ mas_loseAffection(modifier=0.3,reason=None)
+            $ mas_loseAffection(modifier=0.3)
             m "Well, I can't exactly go to the salon from here..."
             m 1lksdlc "I...appreciate your input."
             pass
