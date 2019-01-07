@@ -4437,7 +4437,7 @@ label monika_morning:
             m 2hub "And then once the day has died we'll be saying 'good mourning'!"
             m "Ahaha!"
     else:
-        m 2hksdlb "You are so silly, [player]"
+        m 2hksdlb "You are so silly, [player]."
         m "It's already night time!"
         m 2lksdla "Are you trying to be funny?"
         m 2lksdlb "Don't you think it's a little bit 'late' for that?"
@@ -5293,7 +5293,7 @@ label monika_piggybank:
     m 1esc "Sometimes you have to break the piggy bank to get the coins..."
     m 3rksdlc "So you might end up losing money buying a new bank."
     m 4eua "Fortunately, most piggy banks don't do that anymore."
-    m 1eua "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside"
+    m 1eua "They usually have a rubber stopper that you can pull out, or a panel that comes off the backside."
     m 3eua "Maybe if you save up enough coins you can buy me a really nice gift."
     m 1hua "I would do the same for you, [player]!"
     return
