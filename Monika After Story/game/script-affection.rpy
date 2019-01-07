@@ -1629,10 +1629,14 @@ init 20 python:
     # DEFAULTS reason to an Empty String mostly because when this one is called
     # is intended to be used for something the player can apologize for, but it's
     # not totally necessary.
+    #NEW BITS:
+    #prompt: the prompt shown in the menu for apologizing
+    #expirydatetime: 
+    #generic: do we want this to be persistent? or not
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
             modifier=1,
-            reason=""
+            reason="",
         ):
 
         #set apology flag
@@ -1675,19 +1679,47 @@ init 20 python:
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
-    def mas_setApologyReason(reason):
+    def mas_setApologyReason(
+        reason=None,
+        ev_label=None,
+        expiry_time_spent=datetime.timedelta(hours=3),
+        curr_time_spent=persistent.sessions['total_playtime']
+        ):
         """
         Sets a reason for apologizing
 
         IN:
             reason - The reason for the apology
+                (if left None, and an ev_label is present, we assume a non-generic apology)
+            ev_label - The apology event we want to unlock
                 (required)
+            expiry_time_spent - The amount of time spent after the apology was added that it expires
+                (we assume: 3 hours)
+            curr_time_spent - the current amount of time spent with Monika, will be used to calculate the
+            time spent value at which the apology expires
 
         """
         global mas_apology_reason
 
-        mas_apology_reason = reason
+        if reason is None and ev_label is None:
+            raise Exception("Either reason or ev_label must be supplied")
 
+        if ev_label is None:
+            mas_apology_reason = reason
+            return
+
+        if mas_getEV(ev_label) is None:
+            raise Exception("A valid ev_label must be present")
+
+        if reason is None:
+            #Unlock the apology ev label
+            unlockEventLabel(ev_label)
+
+            #Calculate the current total playtime
+            current_total_playtime = curr_time_spent + (datetime.datetime.now() - persistent.sessions['current_session_start'])
+            #Now we set up our apology dict to keep track of this so we can relock it if you didn't apologize in time
+            persistent._mas_apology_time_db[ev_label] = ((current_total_playtime + expiry_time_spent))
+            return
 
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():

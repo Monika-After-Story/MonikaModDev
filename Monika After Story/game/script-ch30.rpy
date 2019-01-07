@@ -1057,6 +1057,9 @@ label ch30_post_exp_check:
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
 
+    #Check to see if apologies should expire
+    $ mas_checkApologies()
+
     # corruption check
     if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
         $ pushEvent("mas_corrupted_persistent")
@@ -1140,6 +1143,9 @@ label ch30_loop:
             #Checks to see if affection levels have met the criteria to push an event or not.
             mas_checkAffection()
 
+            #Check if we should expire apologies
+
+            mas_checkApologies()
             # limit xp gathering to when we are not maxed
             # and once per minute
             if (persistent.idlexp_total < xp.IDLE_XP_MAX):

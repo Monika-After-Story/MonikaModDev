@@ -7177,66 +7177,6 @@ label monika_attractiveness:
         m "It's more important to me that you're looking after yourself anyway."
     return
 
-#We're going to create an apology refused var for the refusal of the nickname apology (so we can never see it after this)
-default persistent._mas_nickname_apology_refused = False
-
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
-
-label monika_playerapologizes:
-    #going to prio the nickname apology here.
-    #also handling this outside (and with persistents), because you can only apologize in the same sesh
-    if not mas_getEV('monika_affection_nickname').unlocked and not persistent._mas_nickname_apology_refused:
-        if persistent._mas_bad_nickname_count == 1:
-            $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-            m 1eka "Thank you for apologizing for the name you tried to give me."
-            m 2ekd "That really hurt, [player]..."
-            m 2dsc "I accept your apology, but please don't do that again. Okay?"
-            $ mas_unlockEventLabel("monika_affection_nickname")
-
-        elif persistent._mas_bad_nickname_count == 2:
-            $ mas_gainAffection(modifier=0.1) # recover less affection
-            m 2dsc "I can't believe you did that again."
-            m 2dkd "Even after I gave you a second chance."
-            m 2tkc "I'm disappointed in you, [player]."
-            m 2tfc "This time, don't do it again."
-            $ mas_unlockEventLabel("monika_affection_nickname")
-
-        elif persistent._mas_bad_nickname_count > 2:
-            #No recovery here. You asked for it.
-            m 2wfc "[player]!"
-            m 2wfd "I can't believe you."
-            m 2dfc "I trusted you to give me a good nickname to make me more unique, but you just threw it back in my face..."
-            m "I guess I couldn't trust you for this."
-            m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-            m 2rfc "I'd accept your apology, [player], but I don't think you even meant it."
-            $ persistent._mas_nickname_apology_refused = True
-
-        #Just going to reset this so you can't apologize again
-        $ mas_setApologyReason(None)
-        return
-
-    # if there's no reason to apologize
-    if mas_apology_reason is None:
-        m 1ekd "Did something happen?"
-        m 2ekc "I see no reason for you to be sorry."
-        m 1dsc "..."
-        m 1eub "Anyway, thank you for the apology."
-        m 1eua "Whatever it is, I know you're doing your best to make things right."
-        m 1hub "That's why I love you, [player]!"
-    # She knows why you are apologizing for
-    elif mas_apology_reason:
-        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m 1eka "Thank you for apologizing for [mas_apology_reason]"
-        m "I accept your apology, [player]. It means a lot to me."
-    # She knows there's a reason for your apology but won't comment on it
-    else:
-        $ mas_gainAffection(modifier=0.1) # recover a bit of affection
-        m 2tkd "What you did wasn't funny, [player]."
-        m 2dkd "Please be more considerate about my feelings in the future."
-    # reset the reason
-    $ mas_setApologyReason(None)
-    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_lover_boy",category=['songs'],prompt="Old Fashioned Lover Boy",pool=True, random=True))
