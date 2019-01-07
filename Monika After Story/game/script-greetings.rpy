@@ -1073,7 +1073,7 @@ label monikaroom_greeting_choice:
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
-            if mas_isplayer_bday() and not not persistent._mas_player_bday_in_player_bday_mode and has_listened:
+            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and has_listened:
                 jump mas_player_bday_knock_listened
             if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and not has_listened:
                 jump mas_player_bday_knock_no_listen

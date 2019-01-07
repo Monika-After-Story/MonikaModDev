@@ -553,7 +553,6 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             $ renpy.show("mas_bday_balloons", zorder=8)
         else:
             $ persistent._mas_player_bday_in_player_bday_mode = False
-            $ persistent._mas_bday_listened = False
     return
 
 label ch30_main:

@@ -269,6 +269,75 @@ label monika_changename:
             m 1eua "Just let me know if you had a change of heart, ok?"
     return
 
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=8 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
+
+label birthdate:
+    python:
+        bday_str = (
+            persistent._mas_player_bday.strftime("%B") + " " +
+            str(persistent._mas_player_bday.day) + ", " + 
+            str(persistent._mas_player_bday.year)
+        )
+    $ correct_bday = None
+
+    m 1euc "Hey [player], I've been thinking..."
+    if persistent._mas_player_bday is not None:
+        m 3eksdlc "I know you told told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday.{/i}"
+        menu:
+            m "So just to make sure, is your birthdate [bday_str]?"
+            "Yes":
+                $ correct_bday = True
+                m 1hua "Ah, great [player], thank you."
+                m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
+            "No":
+                $ correct_bday = False
+                m 3rksdlc "Oh! Okay then..."
+                m 1eksdld "Then when {i}is{/i} your birthdate, [player]?"
+                call mas_bday_player_bday_select_select
+
+    else:
+        m 3wud "I don't actually know when your birthdate is!"
+        m 3hub "That's something I should probably know, ahaha!"
+        m 1euc "So, when were you born, [player]?"
+        call mas_bday_player_bday_select_select
+
+    $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+
+    if mas_isplayer_bday():
+        if correct_bday:
+            m 3hub "Ahaha! So today {i}is{/i} your birthday!"
+            m 1tsu "I'm glad I was prepared, ehehe..."
+            m 3eka "Hold on just one moment, [player]..."
+            show monika 1dsc
+            pause 2.0
+        else:
+            m 1wuo "Oh...Oh!"
+            m 3sub "Today's your birthday, [player]!"
+            m 3rksdlb "Hold on a minute, [player], I think I have something around here..."
+            show monika 1dsc
+            pause 5.0
+        jump mas_player_bday_when_confirmed
+
+    if mas_monika_birthday == mas_player_bday_curr:
+        if correct_bday:
+            m 3sua "So your birthday {i}is{/i} the same day as mine!"
+        else:
+            m 1wuo "Oh...Oh!"
+            m 3sua "We share the same birthday!"
+        jump share_same_bday
+
+    if persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
+        m 3wud "Oh! You were born on leap day, that's really neat!"
+        m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
+    return
+
+label share_same_bday:
+    m 3sub "That's {i}so{/i} cool, [player]!"
+    m 1tsu "I guess we really are meant to be together, ehehe."
+    m 3hua "We'll have to make that an extra special day~"
+    return
+
 ## Game unlock events
 ## These events handle unlocking new games
 init 5 python:
@@ -1814,12 +1883,32 @@ label mas_bday_player_bday_select_select:
         m 1hua "Try again!"
         jump mas_bday_player_bday_select_select
 
+    elif  _today.year - selected_date.year < 5:
+        m 2efc "[player]!"
+        m "There's no way you're {i}that{/i} young!"
+        m 1hua "Try again!"
+        jump mas_bday_player_bday_select_select
+
     # otherwise, player selected a valid date
-    $ new_bday, diff = store.mas_calendar.genFriendlyDispDate(selected_date_t)
-    m 1eua "Alright, [player]."
-    m "Just to double-check..."
+    python:
+        new_bday_str = (
+            selected_date.strftime("%B") + " " +
+            str(selected_date.day) + ", " + 
+            str(selected_date.year)
+        )
+
+    if _today.year - selected_date.year < 13:
+        m 2eksdlc "[player]..."
+        m 2rksdlc "You know I'm asking for your exact date of birth, right?"
+        m 2hksdlb "It's just I'm having a hard time believing you're {i}that{/i} young."
+ 
+    else:
+        m 1eua "Alright, [player]."
+
+    m 1eua "Just to double-check..."
+
     menu:
-        m "Your birthday is [new_bday]."
+        m "Your birthdate is [new_bday_str]?"
         "Yes.":
             show monika 1eka
 
