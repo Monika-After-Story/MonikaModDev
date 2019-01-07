@@ -1144,8 +1144,8 @@ label ch30_loop:
             mas_checkAffection()
 
             #Check if we should expire apologies
-
             mas_checkApologies()
+
             # limit xp gathering to when we are not maxed
             # and once per minute
             if (persistent.idlexp_total < xp.IDLE_XP_MAX):

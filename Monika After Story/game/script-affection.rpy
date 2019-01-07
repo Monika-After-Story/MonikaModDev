@@ -1703,17 +1703,19 @@ init 20 python:
         """
         global mas_apology_reason
 
-        if (reason is None) and ev_label is None:
-            mas_apology_reason = ""
-
         if ev_label is None:
-            mas_apology_reason = reason
+            if reason is None:
+                mas_apology_reason = ""
+            else:
+                mas_apology_reason = reason
+            return
+        elif mas_getEV(ev_label) is None:
+            store.mas_utils.writelog(
+                "[ERROR]: ev_label does not exist: {0}\n".format(repr(ev_label))
+            )
             return
 
-        if mas_getEV(ev_label) is None:
-            raise Exception("A valid ev_label must be present")
-
-        if reason is None or reason == "" and not ev_label in persistent._mas_apology_time_db:
+        if ev_label not in persistent._mas_apology_time_db:
             #Unlock the apology ev label
             unlockEventLabel(ev_label)
 
