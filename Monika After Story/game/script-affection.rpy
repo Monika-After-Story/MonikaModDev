@@ -1637,10 +1637,12 @@ init 20 python:
             amount=persistent._mas_affection["badexp"],
             modifier=1,
             reason="",
+            ev_label=None,
+            apology_expiry=datetime.timedelta(hours=3)
         ):
 
         #set apology flag
-        mas_setApologyReason(reason)
+        mas_setApologyReason(reason=reason,ev_label=ev_label,expiry_time_spent=apology_expiry)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
@@ -1701,8 +1703,8 @@ init 20 python:
         """
         global mas_apology_reason
 
-        if reason is None and ev_label is None:
-            raise Exception("Either reason or ev_label must be supplied")
+        if (reason is None) and ev_label is None:
+            mas_apology_reason = ""
 
         if ev_label is None:
             mas_apology_reason = reason
@@ -1711,7 +1713,7 @@ init 20 python:
         if mas_getEV(ev_label) is None:
             raise Exception("A valid ev_label must be present")
 
-        if reason is None:
+        if reason is None or reason == "" and not ev_label in persistent._mas_apology_time_db:
             #Unlock the apology ev label
             unlockEventLabel(ev_label)
 
@@ -1820,8 +1822,6 @@ init 5 python:
 
 default persistent._mas_called_moni_a_bad_name = False
 default persistent._mas_offered_nickname = False
-#Want to save how many times this happened
-default persistent._mas_bad_nickname_count = 0
 
 label monika_affection_nickname:
     python:
@@ -2067,11 +2067,8 @@ label monika_affection_nickname:
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
-                        #Increment our counter, and if needed, set our perm locked var.
-                        $ persistent._mas_bad_nickname_count += 1
-
                         #Remove the apology reason from this as we're handling the apology differently now.
-                        $ mas_loseAffection()
+                        $ mas_loseAffection(ev_label="mas_apology_bad_nickname")
                         if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
                             m 1wud "...!"
                             m 2wfw "I..."
@@ -2085,7 +2082,7 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            if persistent._mas_bad_nickname_count > 2:
+                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
                                 m 2efc "Forget about this idea."
                                 m "It seems it was a mistake."
                                 m 1efc "Let's talk about something else."
@@ -2099,7 +2096,7 @@ label monika_affection_nickname:
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
 
-                            if persistent._mas_bad_nickname_count > 2:
+                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
                                 m 2efc "Forget about this idea."
                                 m "It seems it was a mistake."
                                 m 1efc "Let's talk about something else."

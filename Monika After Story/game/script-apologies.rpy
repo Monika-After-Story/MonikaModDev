@@ -36,20 +36,23 @@ init 5 python:
 label monika_playerapologizes:
     #Run through our apology db and find what's unlocked
     python:
-        apologylist = [(mas_getEV(ev).prompt,ev,False,False) for ev in persistent.apology_database if mas_getEV(ev).unlocked]
+        apologylist = [
+            (mas_getEV(ev).prompt,ev,False,False)
+            for ev in persistent.apology_database
+            if mas_getEV(ev).unlocked
+        ]
 
         #The back button
         return_prompt_back = ("Nevermind", False, False, False, 20)
-
-        #renpy.say(m, "What are you apologizing for?", interact=False)
 
     #Display our scrollable
     show monika at t21
     call screen mas_gen_scrollable_menu(apologylist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
 
+    $ apology =_return
     #Handle backing out
-    if not _return:
+    if not apology:
         if mas_apology_reason is not None or persistent._mas_apology_time_db != {}:
             m 2rkc "Oh..."
         else:
@@ -58,13 +61,17 @@ label monika_playerapologizes:
 
 
     #Call our apology label
-    call _return
+    $ renpy.call(apology)
 
-    #Lock the apology label again
-    $ lockEventLabel(_return)
+    #Increment the shown count
+    $ mas_getEV(apology).shown_count += 1
+
+    #Lock the apology label if it's not the generic
+    if not apology == "mas_apology_generic":
+        $ lockEventLabel(apology)
     #Pop that apology from the timedb
-    if _return in persistent._mas_apology_time_db: #sanity check
-        $ persistent._mas_apology_time_db.pop(_return)
+    if apology in persistent._mas_apology_time_db: #sanity check
+        $ persistent._mas_apology_time_db.pop(apology)
     return
 
 init 5 python:
@@ -98,7 +105,7 @@ label mas_apology_generic:
         m 2dkd "Please be more considerate about my feelings in the future."
 
     #Reset the apology reason
-    $ mas_setApologyReason(None)
+    $ mas_apology_reason = ""
     return
 
 init 5 python:
