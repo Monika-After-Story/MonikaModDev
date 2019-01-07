@@ -260,7 +260,7 @@ label mas_monika_night2:
     m "Have you ever gone stargazing, [player]?"
     m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
     m "It's surprisingly relaxing, you know?"
-    m "I’ve found that it can really relieve stress and clear your head..."
+    m "I've found that it can really relieve stress and clear your head..."
     m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
     m "Of course, it really makes you realize just how small we are in the universe."
     m "Ahaha..."
