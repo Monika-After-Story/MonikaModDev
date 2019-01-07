@@ -175,10 +175,12 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
 # Used to transition from any valid zoom value to another valid
 # zoom valid zoom value in a smooth way
 # IN:
-#     new_zoom - the new zoom level to move to
+#     new_zoom - the new zoom value to move to
 #     transition - the time in seconds used to transition to the new zoom level
 #         (Default: 5.0)
-label monika_zoom_transition(new_zoom,transition=3.0):
+label monika_zoom_value_transition(new_zoom,transition=3.0):
+    if new_zoom == mas_sprites.value_zoom:
+        return
     # Sanity checks
     if new_zoom > 2.1:
         $ new_zoom = 2.1
@@ -202,7 +204,55 @@ label monika_zoom_transition(new_zoom,transition=3.0):
 
     # calculate and store the differences between new and old values
     $ _mas_zoom_diff = _mas_new_zoom - _mas_old_zoom
-    $ _mas_zoom_level_diff = new_zoom - _mas_old_zoom_value
+    $ _mas_zoom_value_diff = new_zoom - _mas_old_zoom_value
+    $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
+    # do the transition and pause so it force waits for the transition to end
+    show monika at mas_smooth_transition
+    pause transition
+    return
+
+# Zoom Transition label #2
+# Used to transition from any valid zoom value to another valid
+# zoom valid zoom value in a smooth way
+# IN:
+#     new_zoom - the new zoom level to move to
+#     transition - the time in seconds used to transition to the new zoom level
+#         (Default: 5.0)
+label monika_zoom_transition(new_zoom,transition=3.0):
+    # Sanity checks
+    if new_zoom == mas_sprites.zoom_level:
+        return
+    if new_zoom > 20:
+        $ new_zoom = 20
+    elif new_zoom < 0:
+        $ new_zoom = 0
+    # store the time the transition will take
+    $ _mas_transition_time = transition
+
+    # store the old values
+    $ _mas_old_zoom = mas_sprites.zoom_level
+    $ _mas_old_zoom_value = mas_sprites.value_zoom
+    $ _mas_old_y = mas_sprites.adjust_y
+
+    # calculate and store the new values
+    if new_zoom > mas_sprites.default_zoom_level:
+        $ _mas_new_y = mas_sprites.default_y + (
+            (new_zoom - mas_sprites.default_zoom_level) * mas_sprites.y_step
+        )
+        $ _mas_new_zoom_value = mas_sprites.default_value_zoom + (
+            (new_zoom - mas_sprites.default_zoom_level) * mas_sprites.zoom_step
+        )
+    else:
+        $ _mas_new_y = mas_sprites.default_y
+        if new_zoom == mas_sprites.default_zoom_level:
+            $ _mas_new_zoom_value = mas_sprites.default_value_zoom
+        else:
+            $ _mas_new_zoom_value = mas_sprites.default_value_zoom - (
+                (mas_sprites.default_zoom_level - new_zoom) * mas_sprites.zoom_step
+            )
+    # calculate and store the differences between new and old values
+    $ _mas_zoom_diff = new_zoom - _mas_old_zoom
+    $ _mas_zoom_value_diff = _mas_new_zoom_value - _mas_old_zoom_value
     $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
@@ -219,8 +269,8 @@ init python:
             _mas_old_zoom - containing the old zoom
             _mas_old_zoom_value - containing the old zoom value
             _mas_old_y - containing the old y value
-            _mas_zoom_diff - containing the difference between the old and new zoom
-            _mas_zoom_level_diff - containing the difference between the old and new zoom levels
+            _mas_zoom_diff - containing the difference between the old and new zoom levels
+            _mas_zoom_value_diff - containing the difference between the old and new zoom values
             _mas_zoom_y_diff - containing the difference between the old and new y values
         """
         # check if the transition time is lower than the elapsed time
@@ -228,7 +278,7 @@ init python:
             # do some calcs
             step = st / _mas_transition_time
             mas_sprites.zoom_level = _mas_old_zoom + (step * _mas_zoom_diff)
-            mas_sprites.value_zoom = _mas_old_zoom_value + (step * _mas_zoom_level_diff)
+            mas_sprites.value_zoom = _mas_old_zoom_value + (step * _mas_zoom_value_diff)
             mas_sprites.adjust_y = int(_mas_old_y + (step * _mas_zoom_y_diff))
             if mas_sprites.adjust_y < mas_sprites.default_y:
                 mas_sprites.adjust_y = mas_sprites.default_y
