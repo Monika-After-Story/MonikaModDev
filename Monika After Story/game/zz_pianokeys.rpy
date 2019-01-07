@@ -248,7 +248,7 @@ label mas_piano_def_fc:
 
 # default practice
 label mas_piano_def_prac:
-    m 1eua "That was nice, [player]!."
+    m 1eua "That was nice, [player]!"
     m 1eka "Make sure to practice often!"
     return
 
