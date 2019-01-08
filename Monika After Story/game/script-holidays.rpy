@@ -3264,7 +3264,7 @@ label greeting_d25p_returned_nydp:
     m 3hub "Happy New Year, [player]~"
     return
 
-############################### player_bday ###########################################
+########################################################### player_bday ########################################################################
 # [HOL040]
 
 # date of current year bday, accounting for leap years
@@ -3290,7 +3290,7 @@ init -10 python:
         return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
 init -810 python:
-    # MASHistorySaver for o31
+    # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
         datetime.datetime(2020, 1, 6),
@@ -3471,6 +3471,8 @@ label mas_player_bday_cake:
     m 6ekbfa "I love you so much [player], let's enjoy your special day~"
     return
 
+# event for if the player leaves the game open starting before player_bday and doesn't restart
+# moni eventually gives up on the surprise
 init 5 python:
     addEvent(
         Event(
@@ -3493,6 +3495,7 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
+    #sanity checks
     if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_no_decor or not mas_isplayer_bday():
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
@@ -3513,6 +3516,7 @@ label mas_player_bday_no_restart:
     call mas_player_bday_cake
     return
 
+# event for if the player confirms their birthday on their actual birthday, provided they are normal+
 label mas_player_bday_when_confirmed:
     $ renpy.show("mas_bday_banners", zorder=7)
     $ renpy.show("mas_bday_balloons", zorder=8)
@@ -3527,6 +3531,7 @@ label mas_player_bday_when_confirmed:
     call mas_player_bday_cake
     return
 
+# event for upset- players, no decorations, just a quick happy birthday
 init 5 python:
     addEvent(
         Event(
@@ -3541,20 +3546,26 @@ init 5 python:
             start_date=mas_player_bday_curr,
             end_date=mas_player_bday_curr + datetime.timedelta(days=1),
             years=[],
-            aff_range=(mas_aff.DISTRESSED, mas_aff.UPSET)
+            aff_range=(None, mas_aff.UPSET)
         ),
         skipCalendar=True
     )
 
 label mas_player_bday_upset_minus:
+    #sanity checks
     if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_no_decor:
         return
     else:
         $ persistent._mas_player_bday_no_decor = True
-        m 2eka "Hey [player], I just wanted to wish you a Happy Birthday."
+        if mas_isMoniBroken():
+            # no dialogue for broken, just need the var set
+            return
+        m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
         m "I hope you have a good day."
         return
 
+# event for if the player's bday is also on a holiday
+# TODO update this as we add other holidays (f14) also figure out what to do if player bday is 9/22
 init 5 python:
     addEvent(
         Event(
@@ -3578,6 +3589,7 @@ init 5 python:
     )
 
 label mas_player_bday_other_holiday:
+    # sanity checks
     if not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_no_decor:
         return
     if mas_isO31():
@@ -3602,11 +3614,19 @@ label mas_player_bday_other_holiday:
     call mas_player_bday_cake
     return
 
+# moni singing happy birthday
+label mas_player_bday_moni_sings:
+    m 6dsc ". {w=0.2}. {w=0.2}.{w=0.2}"
+    m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    return
+#################################################player_bday dock stat farewell##################################################
 label bye_player_bday:
     $  persistent._mas_player_bday_date += 1
     if persistent._mas_player_bday_date == 1:
-        m 1sua "You want to go out for your birthday?"
-        m 3hub "Okay!"
+        m 1sua "You want to go out for your birthday? Okay!"
         m 1skbla "It sounds really romantic...I can't wait~"
     elif persistent._mas_player_bday_date == 2:
         m 1sua "Taking me out again on your birthday, [player]?"
@@ -3619,6 +3639,7 @@ label bye_player_bday:
     $ persistent._mas_player_bday_left_on_bday = True
     jump bye_going_somewhere_post_aff_check
 
+#################################################player_bday dock stat greets##################################################
 label greeting_returned_home_player_bday:
     python:
         five_minutes = datetime.timedelta(seconds=5*60)
@@ -3660,19 +3681,11 @@ label greeting_returned_home_player_bday:
         hide mas_bday_balloons
         m 3eua "There we go!"
         m 1hua "Now, let's enjoy the day together, [player]!"
-        $ persistent._mas_player_bday_in_player_bday_mode = False
 
     $ persistent._mas_player_bday_left_on_bday = False
     return
 
-label mas_player_bday_moni_sings:
-    m 6dsc ". {w=0.2}. {w=0.2}.{w=0.2}"
-    m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
-    m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
-    return
-
+# birthday card/poem for player
 init 2 python:
     poem_pbday = Poem(
     author = "monika",

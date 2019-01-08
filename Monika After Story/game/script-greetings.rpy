@@ -1036,6 +1036,8 @@ label i_greeting_monikaroom:
     scene black
 
     $ has_listened = False
+    # var helping assure people who shouldn't get the bday greet don't get it
+    $ player_bday_greet_active = mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
@@ -1056,9 +1058,9 @@ label monikaroom_greeting_choice:
             else:
                 jump monikaroom_greeting_opendoor
         "Open the door." if persistent.seen_monika_in_room or (mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode):
-            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and has_listened:
+            if player_bday_greet_active and has_listened:
                 jump mas_player_bday_opendoor_listened
-            elif mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode:
+            if player_bday_greet_active and not has_listened:
                 jump mas_player_bday_opendoor
             if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
@@ -1073,15 +1075,15 @@ label monikaroom_greeting_choice:
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
-            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and has_listened:
+            if player_bday_greet_active and has_listened:
                 jump mas_player_bday_knock_listened
-            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and not has_listened:
+            if player_bday_greet_active and not has_listened:
                 jump mas_player_bday_knock_no_listen
-            else:
-                jump monikaroom_greeting_knock
+
+            jump monikaroom_greeting_knock
         "Listen." if not has_listened and not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
-            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise:
+            if player_bday_greet_active:
                 jump mas_player_bday_listen
             else:
                 $ mroom_greet = renpy.random.choice(gmr.eardoor)

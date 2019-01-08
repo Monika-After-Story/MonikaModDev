@@ -287,8 +287,9 @@ label birthdate:
         menu:
             m "So just to make sure, is your birthdate [bday_str]?"
             "Yes":
-                m 1hua "Ah, great [player], thank you."
-                m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
+                if not mas_isplayer_bday():
+                    m 1hua "Ah, great [player], thank you."
+                    m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
             "No":
                 m 3rksdlc "Oh! Okay then..."
                 m 1eksdld "Then when {i}is{/i} your birthdate, [player]?"
@@ -300,7 +301,9 @@ label birthdate:
         m 1euc "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
 
+    # update this var from its definition
     $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+    # need to change any events that have player dependent start/end times here
     $ mas_getEV('mas_player_bday_no_restart').start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
     $ mas_getEV('mas_player_bday_no_restart').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
     $ mas_getEV('mas_player_bday_upset_minus').start_date = mas_player_bday_curr
@@ -310,22 +313,34 @@ label birthdate:
 
     if mas_isplayer_bday():
         if old_bday.replace(year=mas_player_bday_curr.year) == mas_player_bday_curr:
-            m 3hub "Ahaha! So today {i}is{/i} your birthday!"
-            m 1tsu "I'm glad I was prepared, ehehe..."
-            m 3eka "Hold on just one moment, [player]..."
-            show monika 1dsc
-            pause 2.0
-            jump mas_player_bday_when_confirmed
+            if mas_isMoniUpset(lower=True):
+                $ persistent._mas_player_bday_no_decor = True
+                m 2eka "Ah, so today {i}is{/i} your birthday..."
+                m "Happy Birthday, [player]."
+                m 4eka "I hope you have a good day."
+                return
+            else:
+                m 3hub "Ahaha! So today {i}is{/i} your birthday!"
+                m 1tsu "I'm glad I was prepared, ehehe..."
+                m 3eka "Hold on just one moment, [player]..."
+                show monika 1dsc
+                pause 2.0
+                jump mas_player_bday_when_confirmed
         else:
             $ persistent._mas_player_bday_no_decor = True
-            m 1wuo "Oh...{w=1}Oh!"
-            m 3sub "Today's your birthday!"
-            m 3hub "Happy Birthday, [player]!"
-            m 1rksdla "I wish I had known earlier so I could've prepared something."
-            m 1eka "But I can at least do this..."
-            call mas_player_bday_moni_sings
-            m 1hub "Ahaha! It's not much but it's something!"
-            m 3hua "I promise next year we'll do something extra special, [player]!"
+            if mas_isMoniUpset(lower=True):
+                m 2eka "Oh, so today's your birthday..."
+                m "Happy Birthday, [player]."
+                m 4eka "I hope you have a good day."
+            else:
+                m 1wuo "Oh...{w=1}Oh!"
+                m 3sub "Today's your birthday!"
+                m 3hub "Happy Birthday, [player]!"
+                m 1rksdla "I wish I had known earlier so I could've prepared something."
+                m 1eka "But I can at least do this..."
+                call mas_player_bday_moni_sings
+                m 1hub "Ahaha! It's not much but it's something!"
+                m 3hua "I promise next year we'll do something extra special, [player]!"
             return
 
     if mas_monika_birthday == mas_player_bday_curr:
