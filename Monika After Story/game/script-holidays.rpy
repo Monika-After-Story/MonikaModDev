@@ -3267,11 +3267,19 @@ label greeting_d25p_returned_nydp:
 ############################### player_bday ###########################################
 # [HOL040]
 
+# date of current year bday, accounting for leap years
 define mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+# so we know we are in player b_day mode
 default persistent._mas_player_bday_in_player_bday_mode = False
-default persistent._mas_opened_door_bday = False
+# so we know if you ruined the surprise
+default persistent._mas_player_bday_opened_door = False
+# for various reason, no decorations
+default persistent._mas_player_bday_no_decor = False
+# number of bday dates
 default persistent._mas_player_bday_date = 0
+# so we know if returning home post bday it was a bday date
 default persistent._mas_player_bday_left_on_bday = False
+# affection gained on bday dates
 default persistent._mas_player_bday_date_aff_gain = 0
 
 init -10 python:
@@ -3281,18 +3289,38 @@ init -10 python:
 
         return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
+init -810 python:
+    # MASHistorySaver for o31
+    store.mas_history.addMHS(MASHistorySaver(
+        "player_bday",
+        datetime.datetime(2020, 1, 6),
+        {
+            "_mas_player_bday_in_player_bday_mode": "player_bday.player_bday_mode",
+            "_mas_player_bday_opened_door": "player_bday.opened_door",
+            "_mas_player_bday_no_decor": "player_bday.no_decor",
+            "_mas_player_bday_date": "player_bday.date",
+            "_mas_player_bday_left_on_bday": "player_bday.left_on_bday",
+            "_mas_player_bday_date_aff_gain": "player.bday.date_aff_gain"
+        }
+    ))
+
 label mas_player_bday_autoload_check:
-    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=30:
+    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor:
+        # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
+        # need this so we don't get any strange force quit dlg after the greet
         $ persistent.closed_self = True
         jump ch30_post_restartevent_check
     else:
         jump mas_ch30_post_holiday_check
     return
 
+# closed door greet option for opening door without listening
 label mas_player_bday_opendoor:
-    $ persistent._mas_opened_door_bday = True
+    $ persistent._mas_player_bday_opened_door = True
+    $ persistent._mas_player_bday_no_deco
+    $ persistent._mas_
     $ scene_change = True
     call spaceroom(hide_monika=True)
     $ mas_disable_quit()
@@ -3300,13 +3328,9 @@ label mas_player_bday_opendoor:
     m 2tfc "You didn't knock!"
     m 2tfd "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
     m 2dkc "..."
-    m 2ekd "Well, I guess the surprise is ruined now, but let me finish up anyway..."
-    show monika 1dsc
-    pause 2.0
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    m 2ekd "Well...{w=1}the surprise is ruined now, but..."
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
-    m 4hub "Happy Birthday, [player]!"
+    m 4eua "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
     m 4hksdlb "Oh...your cake!"
     window hide
@@ -3317,6 +3341,7 @@ label mas_player_bday_opendoor:
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
+# closed door greet option for knocking without listening
 label mas_player_bday_knock_no_listen:
     m "Who is it?"
     menu:
@@ -3328,6 +3353,7 @@ label mas_player_bday_knock_no_listen:
             m "Alright, come on in, [player]..."
             jump mas_player_bday_surprise
 
+# closed door greet surprise flow
 label mas_player_bday_surprise:
     $ scene_change = True
     call spaceroom(hide_monika=False)
@@ -3361,6 +3387,7 @@ label mas_player_bday_surprise:
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
+# closed door greet option for opening door for listening
 label mas_player_bday_listen:
     m "...I'll just put this here..."
     m "...hmm that looks pretty good...{w=1}but something's missing..."
@@ -3369,16 +3396,19 @@ label mas_player_bday_listen:
     window hide
     jump monikaroom_greeting_choice
 
+# closed door greet option for knocking after listening
 label mas_player_bday_knock_listened:
     window hide
     pause 5.0
     menu:
         "Open the door":
             $ mas_disable_quit()
+            pause 5.0
             jump mas_player_bday_surprise
 
+# closed door greet option for opening door after listening
 label mas_player_bday_opendoor_listened:
-    $ persistent._mas_opened_door_bday = True
+    $ persistent._mas_player_bday_opened_door = True
     $ scene_change = True
     call spaceroom(hide_monika=True)
     $ renpy.show("mas_bday_banners", zorder=7)
@@ -3399,7 +3429,7 @@ label mas_player_bday_opendoor_listened:
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
-
+# all paths lead here
 label mas_player_bday_cake:
     $ persistent._mas_player_bday_in_player_bday_mode = True
     m 6eua "Let me just light the candles for you..."
@@ -3412,11 +3442,7 @@ label mas_player_bday_cake:
     m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you--"
     m 6eua "--You should still make a wish though, it just might come true someday..."
     m 6hua "But first..."
-    m 6dsc ".{w=0.2}.{w=0.2}."
-    m 6hub "{i}~Happy Birthday to you~{/i}"
-    m "{i}~Happy Birthday to you~{/i}"
-    m 6sub "{i}~Happy Birthday dear [player]~{/i}"
-    m "{i}~Happy Birthday to you~{/i}"
+    call mas_player_bday_moni_sings
     m 6hua "Make a wish, [player]!"
     window hide
     pause 1.5
@@ -3453,7 +3479,7 @@ init 5 python:
             conditional=(
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not renpy.seen_label('mas_player_bday_upset_minus') "
+                "and not persistent._mas_player_bday_no_decor "
                 "and not mas_isO31() "
                 "and not mas_isD25()"
             ),
@@ -3467,8 +3493,7 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
-    if persistent._mas_player_bday_in_player_bday_mode or renpy.seen_label('mas_player_bday_upset_minus'):
-        m "error"
+    if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_no_decor or not mas_isplayer_bday():
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
@@ -3493,7 +3518,7 @@ label mas_player_bday_when_confirmed:
     $ renpy.show("mas_bday_balloons", zorder=8)
     m 3hub "Happy Birthday, [player]!"
     m 1hub "Ahaha! I'm so happy I get to be with you on your birthday!"
-    m 3sub "Oh...{w=0.5}we need a cake!"
+    m 3sub "Oh...{w=0.5}your cake!"
     window hide
     show monika 6dsc
     pause 5.0
@@ -3509,6 +3534,7 @@ init 5 python:
             eventlabel="mas_player_bday_upset_minus",
             conditional=(
                 "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_no_decor "
                 "and not persistent._mas_player_bday_in_player_bday_mode"
             ),
             action=store.EV_ACT_QUEUE,
@@ -3521,10 +3547,10 @@ init 5 python:
     )
 
 label mas_player_bday_upset_minus:
-    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday():
-        m "upset error"
+    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_no_decor:
         return
     else:
+        $ persistent._mas_player_bday_no_decor = True
         m 2eka "Hey [player], I just wanted to wish you a Happy Birthday."
         m "I hope you have a good day."
         return
@@ -3537,7 +3563,7 @@ init 5 python:
             conditional=(
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not renpy.seen_label('mas_player_bday_upset_minus') "
+                "and not persistent._mas_player_bday_no_decor "
                 "and "
                 "mas_isO31() or mas_isD25()"
 
@@ -3552,7 +3578,7 @@ init 5 python:
     )
 
 label mas_player_bday_other_holiday:
-    if renpy.seen_label('mas_player_bday_upset_minus'):
+    if not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_no_decor:
         return
     if mas_isO31():
         $ holiday_var = "Halloween"
@@ -3637,6 +3663,14 @@ label greeting_returned_home_player_bday:
         $ persistent._mas_player_bday_in_player_bday_mode = False
 
     $ persistent._mas_player_bday_left_on_bday = False
+    return
+
+label mas_player_bday_moni_sings:
+    m 6dsc ". {w=0.2}. {w=0.2}.{w=0.2}"
+    m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     return
 
 init 2 python:
