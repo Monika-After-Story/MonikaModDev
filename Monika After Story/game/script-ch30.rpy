@@ -1211,6 +1211,21 @@ label ch30_end:
 label ch30_reset:
 
     python:
+        # NOTE: unstable code
+        # TODO: remove all of this
+        if persistent._mas_unstable_mode:
+
+            # unlock rain event
+            rain_ev = mas_getEV("monika_rain")
+            if rain_ev is not None:
+                rain_ev.unlocked = True
+
+            # unlock thunder if o31
+            if store.mas_o31_event.spentO31():
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+
+    python:
         # name eggs
         if persistent.playername.lower() == "sayori":
             store.mas_globals.show_s_light = True
