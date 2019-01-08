@@ -1516,6 +1516,11 @@ init python:
         if not topic_label:
             return True
 
+        global mas_afk_already
+        if mas_afk_already:
+            if topic_label.startswith("greeting_") or topic_label.startswith("bye"):
+                return False
+
         if topic_label.startswith("greeting_"):
             return True
 
