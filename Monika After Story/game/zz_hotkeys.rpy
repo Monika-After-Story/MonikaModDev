@@ -305,7 +305,7 @@ init 5 python:
         )
     )
 
-label dev_inactivity_detection:
+label mas_inactivity_detection:
 #TODO: I'm terrible at making dialogues, can someone please check if this is actually alright?
     m "Are you still there?"
     m "You are back, [player]!"
