@@ -546,16 +546,15 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     if persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
 
+    # player bday
     if persistent._mas_player_bday_in_player_bday_mode:
         if mas_isplayer_bday():
-            $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
             $ renpy.show("mas_bday_banners", zorder=7)
             $ renpy.show("mas_bday_balloons", zorder=8)
         else:
             $ persistent._mas_player_bday_in_player_bday_mode = False
-            $ persistent._mas_seen_bday_surprise = False
+            $ persistent._mas_bday_listened = False
     return
-
 
 label ch30_main:
     $ mas_skip_visuals = False

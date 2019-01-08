@@ -1047,7 +1047,7 @@ label monikaroom_greeting_choice:
         pause 4.0
 
     menu:
-        "[_opendoor_text]" if not persistent.seen_monika_in_room and not mas_isplayer_bday():
+        "[_opendoor_text]" if not persistent.seen_monika_in_room and (not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode):
             #Lose affection for not knocking before entering.
             $ mas_loseAffection(reason="entering my room without knocking")
             if mas_isMoniUpset(lower=True):
@@ -1055,11 +1055,11 @@ label monikaroom_greeting_choice:
                 jump monikaroom_greeting_opendoor_locked
             else:
                 jump monikaroom_greeting_opendoor
-        "Open the door." if persistent.seen_monika_in_room:
-            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and not persistent._mas_opened_door_bday:
-                jump mas_player_bday_opendoor
-            elif mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and persistent._mas_opened_door_bday:
+        "Open the door." if persistent.seen_monika_in_room or (mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode):
+            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and has_listened:
                 jump mas_player_bday_opendoor_listened
+            elif mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode:
+                jump mas_player_bday_opendoor
             if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
@@ -1073,9 +1073,9 @@ label monikaroom_greeting_choice:
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
-            if mas_isplayer_bday() and not persistent._mas_seen_bday_surprise and has_listened:
+            if mas_isplayer_bday() and not not persistent._mas_player_bday_in_player_bday_mode and has_listened:
                 jump mas_player_bday_knock_listened
-            elif mas_isplayer_bday() and not persistent._mas_seen_bday_surprise:
+            if mas_isplayer_bday() and not persistent._mas_player_bday_in_player_bday_mode and not has_listened:
                 jump mas_player_bday_knock_no_listen
             else:
                 jump monikaroom_greeting_knock
