@@ -1946,7 +1946,10 @@ label monika_affection_nickname:
             "momika",
             "mama",
             "mommy",
-            "okasa"
+            "okasan",
+            "okaasan",
+            "kaasan",
+            "kasan",
         ]
 
         # for later code
