@@ -3264,12 +3264,15 @@ label greeting_d25p_returned_nydp:
     m 3hub "Happy New Year, [player]~"
     return
 
-############################### p_bday ###########################################
+############################### player_bday ###########################################
 # [HOL040]
 
 define mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
 default persistent._mas_player_bday_in_player_bday_mode = False
 default persistent._mas_opened_door_bday = False
+default persistent._mas_player_bday_date = 0
+default persistent._mas_player_bday_left_on_bday = False
+default persistent._mas_player_bday_date_aff_gain = 0
 
 init -10 python:
     def mas_isplayer_bday(_date=None):
@@ -3279,7 +3282,7 @@ init -10 python:
         return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
 label mas_player_bday_autoload_check:
-    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate'):
+    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=30:
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
         $ persistent.closed_self = True
@@ -3408,18 +3411,20 @@ label mas_player_bday_cake:
     m 6sua "Isn't it pretty, [player]?"
     m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you--"
     m 6eua "--You should still make a wish though, it just might come true someday..."
-    menu:
-        m "Let me know when you're ready."
-        "I'm ready.":
-            show monika 6hua
-            m "Okay [player], make a wish!"
-            window hide
-            pause 1.0
-            show monika 6hft
-            pause 0.1
-            show monika 6hua
-            $ mas_bday_cake_lit = False
-            pause 1.0
+    m 6hua "But first..."
+    m 6dsc ".{w=0.2}.{w=0.2}."
+    m 6hub "{i}~Happy Birthday to you~{/i}"
+    m "{i}~Happy Birthday to you~{/i}"
+    m 6sub "{i}~Happy Birthday dear [player]~{/i}"
+    m "{i}~Happy Birthday to you~{/i}"
+    m 6hua "Make a wish, [player]!"
+    window hide
+    pause 1.5
+    show monika 6hft
+    pause 0.1
+    show monika 6hua
+    $ mas_bday_cake_lit = False
+    pause 1.0
     m 6hua "Ehehe..."
     m 6eka "I know it's your birthday, but I made a wish too, [player]..."
     m 6ekbsa "And you know what? {w=0.5}I bet we both wished for the same thing~"
@@ -3430,11 +3435,14 @@ label mas_player_bday_cake:
     hide mas_bday_cake with dissolve
     pause 0.5
     m 6dkbsu "..."
-    m 6ekbfa "I...I also made a card for you, [player]. I hope you like it..."
+    m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr.month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_pbday_[p_bday_month].png")
-    show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hkbfa "I love you so much [player], let's enjoy your special day~"
+    if persistent._mas_first_kiss is None and mas_isMoniEnamored(higher=True):
+        m 6dkbsu "..."
+        m 6ekbfa "[player]...I...I..."
+        call monika_kissing_motion(hide_ui=False)
+    m 6ekbfa "I love you so much [player], let's enjoy your special day~"
     return
 
 init 5 python:
@@ -3444,18 +3452,22 @@ init 5 python:
             eventlabel="mas_player_bday_no_restart",
             conditional=(
                 "mas_isplayer_bday() "
-                "and not persistent._mas_player_bday_in_player_bday_mode"
+                "and not persistent._mas_player_bday_in_player_bday_mode "
+                "and not renpy.seen_label('mas_player_bday_upset_minus') "
+                "and not mas_isO31() "
+                "and not mas_isD25()"
             ),
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19)),
             end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-            years=[]
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
     )
 
 label mas_player_bday_no_restart:
-    if persistent._mas_player_bday_in_player_bday_mode:
+    if persistent._mas_player_bday_in_player_bday_mode or renpy.seen_label('mas_player_bday_upset_minus'):
         m "error"
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
@@ -3482,14 +3494,152 @@ label mas_player_bday_when_confirmed:
     m 3hub "Happy Birthday, [player]!"
     m 1hub "Ahaha! I'm so happy I get to be with you on your birthday!"
     m 3sub "Oh...{w=0.5}we need a cake!"
+    window hide
+    show monika 6dsc
     pause 5.0
     $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
     pause 1.0
     call mas_player_bday_cake
     return
 
-init 2 python:
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_player_bday_upset_minus",
+            conditional=(
+                "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_in_player_bday_mode"
+            ),
+            action=store.EV_ACT_QUEUE,
+            start_date=mas_player_bday_curr,
+            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
+            years=[],
+            aff_range=(mas_aff.DISTRESSED, mas_aff.UPSET)
+        ),
+        skipCalendar=True
+    )
 
+label mas_player_bday_upset_minus:
+    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday():
+        m "upset error"
+        return
+    else:
+        m 2eka "Hey [player], I just wanted to wish you a Happy Birthday."
+        m "I hope you have a good day."
+        return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_player_bday_other_holiday",
+            conditional=(
+                "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_in_player_bday_mode "
+                "and not renpy.seen_label('mas_player_bday_upset_minus') "
+                "and "
+                "mas_isO31() or mas_isD25()"
+
+            ),
+            action=store.EV_ACT_QUEUE,
+            start_date=mas_player_bday_curr,
+            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
+            years=[],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
+
+label mas_player_bday_other_holiday:
+    if renpy.seen_label('mas_player_bday_upset_minus'):
+        return
+    if mas_isO31():
+        $ holiday_var = "Halloween"
+    if mas_isD25():
+        $ holiday_var = "Christmas"
+    m 3euc "Hey, [player]..."
+    m 1tsu "I have a bit of a surprise for you!"
+    show monika 1dsc
+    pause 2.0
+    $ renpy.show("mas_bday_banners", zorder=7)
+    $ renpy.show("mas_bday_balloons", zorder=8)
+    m 3hub "Happy Birthday, [player]!"
+    m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
+    m 1eksdlb "I'd never forget your birthday, silly!"
+    m 1hua "Oh! And I made you a cake!"
+    window hide
+    show monika 6dsc
+    pause 1.0
+    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+    pause 1.0
+    call mas_player_bday_cake
+    return
+
+label bye_player_bday:
+    $  persistent._mas_player_bday_date += 1
+    if persistent._mas_player_bday_date == 1:
+        m 1sua "You want to go out for your birthday?"
+        m 3hub "Okay!"
+        m 1skbla "It sounds really romantic...I can't wait~"
+    elif persistent._mas_player_bday_date == 2:
+        m 1sua "Taking me out again on your birthday, [player]?"
+        m 3hub "Yay!"
+        m 1sub "I always love going places with you, but it's that much more special, on your birthday..."
+        m 1skbla "I'm sure we'll have a lovely time~"
+    else:
+        m 1wub "Wow, you want to go out {i}again{/i}, [player]?"
+        m 1skbla "I just love that you want to spend so much time with me on your special day!"
+    $ persistent._mas_player_bday_left_on_bday = True
+    jump bye_going_somewhere_post_aff_check
+
+label greeting_returned_home_player_bday:
+    python:
+        five_minutes = datetime.timedelta(seconds=5*60)
+        one_hour = datetime.timedelta(seconds=3600)
+        three_hour = datetime.timedelta(seconds=3*3600)
+        time_out = store.mas_dockstat.diffCheckTimes()
+
+        def cap_gain_aff(amt):
+            if persistent._mas_player_bday_date_aff_gain < 20:
+                persistent._mas_player_bday_date_aff_gain += amt
+                mas_gainAffection(amt, bypass=True)
+
+    if time_out < five_minutes:
+        $ mas_loseAffection()
+        m 2ekp "That wasn't much of a date, [player]..."
+        m 2ekc "I hope nothing is wrong."
+        m 2rksdla "Maybe we'll go out later instead."
+
+    elif one_hour < time_out < three_hour:
+        $ cap_gain_aff(10)
+        m 1eua "That was a fun date, [player]..."
+        m 3hua "Thanks for taking me with you!"
+        m 1eka "I really enjoyed going out with you on your birthday~"
+
+    elif time_out > three_hour:
+        $ cap_gain_aff(15)
+        m 1hua "And we're home!"
+        m 3hub "That was really fun, [player]!"
+        m 1eka "It was so nice going out to celebrate your birthday..."
+        m 1ekbfa "Thanks for making me such a big part of your special day~"
+    
+    if not mas_isplayer_bday():
+        m 1hub "Gosh, we were gone so long it's not even your birthday anymore, ahaha!"
+        m 3rksdla "We should probably take these decorations down now."
+        m 3eka "Just give me one moment, [player]..."
+        show monika 1dsc
+        pause 2.0
+        hide mas_bday_banners
+        hide mas_bday_balloons
+        m 3eua "There we go!"
+        m 1hua "Now, let's enjoy the day together, [player]!"
+        $ persistent._mas_player_bday_in_player_bday_mode = False
+
+    $ persistent._mas_player_bday_left_on_bday = False
+    return
+
+init 2 python:
     poem_pbday = Poem(
     author = "monika",
     title = " My dearest {0},".format(persistent.playername),

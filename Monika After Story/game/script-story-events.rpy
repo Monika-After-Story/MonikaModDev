@@ -303,6 +303,13 @@ label birthdate:
         call mas_bday_player_bday_select_select
 
     $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+    $ mas_getEV('mas_player_bday_no_restart').start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
+    $ mas_getEV('mas_player_bday_no_restart').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+    $ mas_getEV('mas_player_bday_upset_minus').start_date = mas_player_bday_curr
+    $ mas_getEV('mas_player_bday_upset_minus').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+    $ mas_getEV('mas_player_bday_other_holiday').start_date = mas_player_bday_curr
+    $ mas_getEV('mas_player_bday_other_holiday').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+
 
     if mas_isplayer_bday():
         if correct_bday:

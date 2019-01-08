@@ -2845,6 +2845,9 @@ label greeting_returned_home:
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    if (mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode) or persistent._mas_player_bday_left_on_bday:
+        jump greeting_returned_home_player_bday
+
     # main dialogue
     if time_out > five_minutes:
 

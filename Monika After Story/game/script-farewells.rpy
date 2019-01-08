@@ -1065,6 +1065,9 @@ label bye_going_somewhere_normalplus_flow:
         if mas_isNYD():
             jump bye_nyd_delegate
 
+    if persistent._mas_player_bday_in_player_bday_mode:
+        jump bye_player_bday
+
 label bye_going_somewhere_normalplus_flow_aff_check:
 
     if mas_isMoniLove(higher=True):

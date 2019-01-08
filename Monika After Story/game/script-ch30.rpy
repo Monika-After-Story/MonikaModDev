@@ -548,7 +548,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     # player bday
     if persistent._mas_player_bday_in_player_bday_mode:
-        if mas_isplayer_bday():
+        if mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday:
             $ renpy.show("mas_bday_banners", zorder=7)
             $ renpy.show("mas_bday_balloons", zorder=8)
         else:
@@ -1401,7 +1401,7 @@ label ch30_reset:
             # NOTE: we may add additional costume logic in here if needed
             # TODO: this is bad for o31 rests actually
 
-            if not persistent._mas_force_clothes:
+            if not persistent._mas_force_clothes and not persistent._mas_o31_in_o31_mode:
                 # NOTE if the costumes were picked by user, (aka forced),
                 # then we do NOt reset
                 monika_chr.reset_clothes(False)
