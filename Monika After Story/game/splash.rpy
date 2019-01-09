@@ -341,6 +341,9 @@ label quit:
         # save current hair / clothes / acs
         monika_chr.save()
 
+        # save weather options
+        store.mas_weather.saveMWData()
+
         # remove special images
         store.mas_island_event.removeImages()
         store.mas_o31_event.removeImages()

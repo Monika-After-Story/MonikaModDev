@@ -565,7 +565,6 @@ init 15 python in mas_affection:
         # If the greeting hasn't been seen yet, push the islands greeting
         if (
                 not store.seen_event("greeting_ourreality")
-                and not store.mas_is_snowing
             ):
             if store.mas_cannot_decode_islands:
                 # failed to decode the islands, lets delay this action
@@ -579,6 +578,7 @@ init 15 python in mas_affection:
         if (
                 store.seen_event("mas_monika_islands")
                 and not store.mas_is_snowing
+                and not store.mas_is_raining # TODO: rain versions
             ):
             if store.mas_cannot_decode_islands:
                 # failed to decode islandds, delay this action
@@ -1814,8 +1814,10 @@ label monika_affection_nickname:
             "crap",
             "creepy",
             "criminal",
+            "cruel",
             "cunt",
             "damn",
+            "demon",
             "dick",
             "dirt",
             "disgusting",
@@ -1834,17 +1836,19 @@ label monika_affection_nickname:
             "gross",
             "gruesome",
             "hate",
+            "heartless",
             "hideous",
             "^ho$",
             "^hoe$",
             "hore",
             "horrible",
             "horrid",
+            "hypocrite",
             "immoral",
             "irritating",
+            "jerk",
             "junk",
             "kill",
-            "killer",
             "kunt",
             "lesbo",
             "lesbian",
@@ -1854,10 +1858,9 @@ label monika_affection_nickname:
             "loser",
             "maniac",
             "milf",
-            "murder",
+            "monster",
             "moron",
             "murder",
-            "murderer",
             "narcissist",
             "nasty",
             "Natsuki",
@@ -1867,24 +1870,28 @@ label monika_affection_nickname:
             "pad",
             "pantsu",
             "panti",
-            "panties",
             "panty",
             "pedo",
             "penis",
+            "plaything",
             "poison",
             "porn",
             "pretentious",
-            "psychopath",
+            "psycho",
+            "puppet",
             "pussy",
             "rape",
             "repulsive",
             "retard",
             "rump",
+            "sadist",
             "Sayori",
             "scum",
             "selfish",
             "shit",
-            "slaughter"
+            "sick",
+            "slaughter",
+            "slave",
             "slut",
             "sociopath",
             "soil",
@@ -1897,6 +1904,9 @@ label monika_affection_nickname:
             "^tit$",
             "tits",
             "titt",
+            "tool",
+            "torment",
+            "torture",
             "toy",
             "trap",
             "trash",
@@ -1946,7 +1956,10 @@ label monika_affection_nickname:
             "momika",
             "mama",
             "mommy",
-            "okasa"
+            "okasan",
+            "okaasan",
+            "kaasan",
+            "kasan",
         ]
 
         # for later code

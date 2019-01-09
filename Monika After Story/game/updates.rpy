@@ -253,15 +253,21 @@ init 10 python:
         """
         late_updates = [
             "v0_8_3",
-            "v0_8_4"
+            "v0_8_4",
+            "v0_8_10"
         ]
 
         renpy.call_in_new_context("vv_updates_topics")
         ver_list = store.updates.version_updates.keys()
 
+        if "-" in config.version:
+            working_version = config.version[:config.version.index("-")]
+        else:
+            working_version = config.version
+
         ver_list.extend(["mas_lupd_" + x for x in late_updates])
         ver_list.append("v" + "_".join(
-            config.version[:config.version.index("-")].split(".")
+            working_version.split(".")
         ))
 
         for _version in ver_list:
@@ -298,10 +304,24 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# 0.8.14
+label v0_8_14(version="v0_8_14"):
+    python:
+        # unlock monika_rain if it is no longer random
+        rain_ev = mas_getEV("monika_rain")
+        if rain_ev is not None and not rain_ev.random:
+            rain_ev.unlocked = True
+
+        # unlock thunder if you spent time on o31
+        if store.mas_o31_event.spentO31():
+            mas_weather_thunder.unlocked = True
+            store.mas_weather.saveMWData()
+
+    return
+
 # 0.8.13
 label v0_8_13(version="v0_8_13"):
     python:
-        # TODO: redo start/end dates for all affected events
 
         ## start date and end date fixes
         d25_sp_tm = mas_getEV("mas_d25_spent_time_monika")
