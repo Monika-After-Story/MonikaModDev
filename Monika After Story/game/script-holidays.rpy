@@ -3299,7 +3299,6 @@ init -810 python:
             "_mas_player_bday_opened_door": "player_bday.opened_door",
             "_mas_player_bday_no_decor": "player_bday.no_decor",
             "_mas_player_bday_date": "player_bday.date",
-            "_mas_player_bday_left_on_bday": "player_bday.left_on_bday",
             "_mas_player_bday_date_aff_gain": "player.bday.date_aff_gain"
         }
     ))
