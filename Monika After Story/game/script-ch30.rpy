@@ -548,7 +548,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
 
     # player bday
     if persistent._mas_player_bday_in_player_bday_mode:
-        if (mas_isplayer_bday() and not persistent._mas_player_bday_no_decor) or persistent._mas_player_bday_left_on_bday:
+        if (mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday) and not persistent._mas_player_bday_no_decor:
             $ renpy.show("mas_bday_banners", zorder=7)
             $ renpy.show("mas_bday_balloons", zorder=8)
     return

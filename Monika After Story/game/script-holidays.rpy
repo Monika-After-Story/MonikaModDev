@@ -3319,8 +3319,7 @@ label mas_player_bday_autoload_check:
 # closed door greet option for opening door without listening
 label mas_player_bday_opendoor:
     $ persistent._mas_player_bday_opened_door = True
-    $ persistent._mas_player_bday_no_deco
-    $ persistent._mas_
+    $ persistent._mas_player_bday_no_decor = True
     $ scene_change = True
     call spaceroom(hide_monika=True)
     $ mas_disable_quit()
