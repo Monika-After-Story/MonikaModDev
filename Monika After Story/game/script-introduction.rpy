@@ -236,7 +236,7 @@ label chara_monika_scare:
 
     show screen mas_py_console_teaching
     pause 1.0
-    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=2.0)
+    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=3.0)
     $ renpy.pause(2.0, hard=True)
     call mas_w_cmd("bye!")
     pause 1.0
