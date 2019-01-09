@@ -54,17 +54,39 @@ label monika_playerapologizes:
     call screen mas_gen_scrollable_menu(apologylist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
 
+    #Make sure we don't lose this value
     $ apology =_return
-    #Handle backing out TODO: add some aff path'd dlg here, temp dlg is temp
+
+    #Handle backing out
     if not apology:
         if mas_apology_reason is not None or persistent._mas_apology_time_db != {}:
-            m 2rkc "Oh..."
+            if mas_isMoniAff(higher=True):
+                m 1ekd "[player], if you're feeling guilty about what happened..."
+                m 1eka "You don't have to be afraid of apologizing, we all make mistakes after all."
+                m 3eka "We just have to accept what happened, learn from our mistakes, and move on, together. Okay?"
+            elif mas_isMoniNormal(higher=True):
+                m 1eka "[player]..."
+                m "I know you want to apologise, it'd mean a lot to me if you did."
+            elif mas_isMoniUpset():
+                m 2rkc "Oh..."
+                m 2rkd "I was kind of--"
+                $ _history_list.pop()
+                m 2dkc "Nevermind."
+            elif mas_isMoniDis():
+                m 6rkc "...?"
+            else:
+                m 6ckc "..."
         else:
-            m 1eka "I'm not sure what you wanted to apologize for, but I'm sure that it was nothing."
+            if mas_isMoniAff(higher=True):
+                m 1hua "Ehehe, you don't have anything to be sorry about silly~"
+            elif mas_isMoniNormal(higher=True):
+                m 1eka "I'm not sure what you wanted to apologize for, but I'm sure that it was nothing."
+
         return
 
 
     #Call our apology label
+    #NOTE: mas_setApologyReason() ensures that this label exists
     $ renpy.call(apology)
 
     #Increment the shown count
@@ -73,7 +95,8 @@ label monika_playerapologizes:
     #Lock the apology label if it's not the generic
     if not apology == "mas_apology_generic":
         $ lockEventLabel(apology)
-    #Pop that apology from the timedb
+
+    #Pop that apology from the time db
     if apology in persistent._mas_apology_time_db: #sanity check
         $ persistent._mas_apology_time_db.pop(apology)
     return
@@ -109,21 +132,28 @@ label mas_apology_generic:
     if mas_apology_reason is not None:
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 
-    # if there's no reason to apologize
-    if mas_apology_reason is None:
+    #If there's no reason to apologize
+    if mas_apology_reason is None and persistent._mas_apology_time_db == {}:
         m 1ekd "Did something happen?"
         m 2ekc "I see no reason for you to be sorry."
         m 1dsc "..."
         m 1eub "Anyway, thank you for the apology."
         m 1eua "Whatever it is, I know you're doing your best to make things right."
         m 1hub "That's why I love you, [player]!"
-    # She knows why you are apologizing for
+
+    #She knows what you are apologizing for
     elif mas_apology_reason:
         m 1eka "Thank you for apologizing for [apology_reason]"
         m "I accept your apology, [player]. It means a lot to me."
-    # She knows there's a reason for your apology but won't comment on it
+
+    #She knows that you've got something else to apologize for, and wants you to own up
+    elif persistent._mas_apology_time_db != {}:
+        m 2tfc "[player], if you have something to apologize for, please just say it."
+        m 2rfc "It means a lot more if you'd just admit what you did."
+
+    #She knows there's a reason for your apology but won't comment on it
     else:
-        #Since this 'reason' technically varies, we don't really have a choice as we can't add "" to the db
+        #Since this 'reason' technically varies, we don't really have a choice as we therefore can't add 0 to the db
         #So recover a tiny bit of affection
         $ mas_gainAffection(modifier=0.1)
         m 2tkd "What you did wasn't funny, [player]."
