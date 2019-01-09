@@ -3268,7 +3268,15 @@ label greeting_d25p_returned_nydp:
 # [HOL040]
 
 # date of current year bday, accounting for leap years
-define mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+init 5 python:
+    global mas_player_bday_curr
+
+    if persistent._mas_player_bday is None:
+        mas_player_bday_curr = None
+
+    else:
+        mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+
 # so we know we are in player b_day mode
 default persistent._mas_player_bday_in_player_bday_mode = False
 # so we know if you ruined the surprise
@@ -3287,7 +3295,10 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
+        if persistent._mas_player_bday is None:
+            return False
+        else:
+            return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
 init -810 python:
     # MASHistorySaver for player_bday
@@ -3476,17 +3487,17 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_no_restart",
-            conditional=(
-                "mas_isplayer_bday() "
-                "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_no_decor "
-                "and not mas_isO31() "
-                "and not mas_isD25()"
-            ),
-            action=EV_ACT_QUEUE,
-            start_date=datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19)),
-            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-            years=[],
+#            conditional=(
+#                "mas_isplayer_bday() "
+#                "and not persistent._mas_player_bday_in_player_bday_mode "
+#                "and not persistent._mas_player_bday_no_decor "
+#                "and not mas_isO31() "
+#                "and not mas_isD25()"
+#            ),
+#            action=EV_ACT_QUEUE,
+#            start_date=datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19)),
+#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
+#            years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
@@ -3535,15 +3546,15 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_upset_minus",
-            conditional=(
-                "mas_isplayer_bday() "
-                "and not persistent._mas_player_bday_no_decor "
-                "and not persistent._mas_player_bday_in_player_bday_mode"
-            ),
-            action=store.EV_ACT_QUEUE,
-            start_date=mas_player_bday_curr,
-            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-            years=[],
+#            conditional=(
+#                "mas_isplayer_bday() "
+#                "and not persistent._mas_player_bday_no_decor "
+#                "and not persistent._mas_player_bday_in_player_bday_mode"
+#            ),
+#            action=store.EV_ACT_QUEUE,
+#            start_date=mas_player_bday_curr,
+#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
+#            years=[],
             aff_range=(None, mas_aff.UPSET)
         ),
         skipCalendar=True
@@ -3569,18 +3580,17 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_other_holiday",
-            conditional=(
-                "mas_isplayer_bday() "
-                "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_no_decor "
-                "and "
-                "mas_isO31() or mas_isD25()"
-
-            ),
-            action=store.EV_ACT_QUEUE,
-            start_date=mas_player_bday_curr,
-            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-            years=[],
+#            conditional=(
+#                "mas_isplayer_bday() "
+#                "and not persistent._mas_player_bday_in_player_bday_mode "
+#                "and not persistent._mas_player_bday_no_decor "
+#                "and "
+#                "mas_isO31() or mas_isD25()"
+#            ),
+#            action=store.EV_ACT_QUEUE,
+#            start_date=mas_player_bday_curr,
+#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
+#            years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True

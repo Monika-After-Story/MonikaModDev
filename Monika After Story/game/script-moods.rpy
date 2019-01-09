@@ -564,9 +564,6 @@ default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
 
-# player birthday
-# datetime.date
-default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime

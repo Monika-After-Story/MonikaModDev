@@ -269,16 +269,19 @@ label monika_changename:
             m 1eua "Just let me know if you had a change of heart, ok?"
     return
 
+default persistent._mas_player_bday = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=8 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
 
 label birthdate:
-    python:
-        bday_str = (
-            persistent._mas_player_bday.strftime("%B") + " " +
-            str(persistent._mas_player_bday.day) + ", " + 
-            str(persistent._mas_player_bday.year)
-        )
+    if persistent._mas_player_bday is not None:
+        python:
+            bday_str = (
+                persistent._mas_player_bday.strftime("%B") + " " +
+                str(persistent._mas_player_bday.day) + ", " + 
+                str(persistent._mas_player_bday.year)
+            )
     $ old_bday = persistent._mas_player_bday
 
     m 1euc "Hey [player], I've been thinking..."
@@ -301,15 +304,51 @@ label birthdate:
         m 1euc "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
 
-    # update this var from its definition
-    $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+    python:
+        bday_upset_ev = mas_getEV('mas_player_bday_upset_minus')
+        if bday_upset_ev is not None:
+            bday_upset_ev.start_date = mas_player_bday_curr
+            bday_upset_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+            bday_upset_ev.years = []
+            bday_upset_ev.conditional = (
+                "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_no_decor "
+                "and not persistent._mas_player_bday_in_player_bday_mode")
+            bday_upset_ev.action = EV_ACT_QUEUE
+
+        bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
+        if bday_no_restart_ev is not None:
+            bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
+            bday_no_restart_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+            bday_no_restart_ev.years = []
+            bday_no_restart_ev.conditional = (
+                "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_in_player_bday_mode "
+                "and not persistent._mas_player_bday_no_decor "
+                "and not mas_isO31() "
+                "and not mas_isD25()")
+            bday_no_restart_ev.action = EV_ACT_QUEUE
+
+        bday_holiday_ev = mas_getEV('mas_player_bday_no_restart')
+        if bday_holiday_ev is not None:
+            bday_holiday_ev.start_date = mas_player_bday_curr
+            bday_holiday_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+            bday_holiday_ev.years = []
+            bday_holiday_ev.conditional = (
+                "mas_isplayer_bday() "
+                "and not persistent._mas_player_bday_in_player_bday_mode "
+                "and not persistent._mas_player_bday_no_decor "
+                "and "
+                "mas_isO31() or mas_isD25()")
+            bday_holiday_ev.action = EV_ACT_QUEUE
+
     # need to change any events that have player dependent start/end times here
-    $ mas_getEV('mas_player_bday_no_restart').start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
-    $ mas_getEV('mas_player_bday_no_restart').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-    $ mas_getEV('mas_player_bday_upset_minus').start_date = mas_player_bday_curr
-    $ mas_getEV('mas_player_bday_upset_minus').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-    $ mas_getEV('mas_player_bday_other_holiday').start_date = mas_player_bday_curr
-    $ mas_getEV('mas_player_bday_other_holiday').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+#    $ mas_getEV('mas_player_bday_no_restart').start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
+#    $ mas_getEV('mas_player_bday_no_restart').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+#    $ mas_getEV('mas_player_bday_upset_minus').start_date = mas_player_bday_curr
+#    $ mas_getEV('mas_player_bday_upset_minus').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
+#    $ mas_getEV('mas_player_bday_other_holiday').start_date = mas_player_bday_curr
+#    $ mas_getEV('mas_player_bday_other_holiday').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
 
     if mas_isplayer_bday():
         if old_bday.replace(year=mas_player_bday_curr.year) == mas_player_bday_curr:
@@ -1965,8 +2004,20 @@ label mas_bday_player_bday_select_select:
                 selected_date,
                 []
             )
-            persistent._mas_player_bday = selected_date
+ 
+    else:
+        python:
+            store.mas_calendar.addRepeatable_d(
+                "player-bday",
+                "Your Birthday",
+                selected_date,
+                []
+            )
+
+    $ persistent._mas_player_bday = selected_date
+    $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
+
 
     # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
 
-    return selected_date
+    return
