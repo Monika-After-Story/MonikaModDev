@@ -177,7 +177,7 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
 # IN:
 #     new_zoom - the new zoom value to move to
 #     transition - the time in seconds used to transition to the new zoom level
-#         (Default: 5.0)
+#         (Default: 3.0)
 label monika_zoom_value_transition(new_zoom,transition=3.0):
     if new_zoom == mas_sprites.value_zoom:
         return
@@ -217,8 +217,8 @@ label monika_zoom_value_transition(new_zoom,transition=3.0):
 # IN:
 #     new_zoom - the new zoom level to move to
 #     transition - the time in seconds used to transition to the new zoom level
-#         (Default: 5.0)
-label monika_zoom_transition(new_zoom,transition=3.0):
+#         (Default: 3.0)
+label monika_zoom_fixed_duration_transition(new_zoom,transition=3.0):
     # Sanity checks
     if new_zoom == mas_sprites.zoom_level:
         return
@@ -257,6 +257,59 @@ label monika_zoom_transition(new_zoom,transition=3.0):
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
     pause transition
+    return
+
+# Zoom Transition label #3
+# Used to transition from any valid zoom value to another valid
+# zoom valid zoom value in a smooth way
+# IN:
+#     new_zoom - the new zoom level to move to
+#     transition - the time in seconds used to transition from the maximum to the
+#         minimum zoom level, this works in a way that the time used in the
+#         transition is lower the nearer the current zoom level is to the
+#         new zoom level (Default: 3.0)
+label monika_zoom_transition(new_zoom,transition=3.0):
+    # Sanity checks
+    if new_zoom == mas_sprites.zoom_level:
+        return
+    if new_zoom > 20:
+        $ new_zoom = 20
+    elif new_zoom < 0:
+        $ new_zoom = 0
+
+    # store the old values
+    $ _mas_old_zoom = mas_sprites.zoom_level
+    $ _mas_old_zoom_value = mas_sprites.value_zoom
+    $ _mas_old_y = mas_sprites.adjust_y
+
+    # calculate and store the new values
+    if new_zoom > mas_sprites.default_zoom_level:
+        $ _mas_new_y = mas_sprites.default_y + (
+            (new_zoom - mas_sprites.default_zoom_level) * mas_sprites.y_step
+        )
+        $ _mas_new_zoom_value = mas_sprites.default_value_zoom + (
+            (new_zoom - mas_sprites.default_zoom_level) * mas_sprites.zoom_step
+        )
+    else:
+        $ _mas_new_y = mas_sprites.default_y
+        if new_zoom == mas_sprites.default_zoom_level:
+            $ _mas_new_zoom_value = mas_sprites.default_value_zoom
+        else:
+            $ _mas_new_zoom_value = mas_sprites.default_value_zoom - (
+                (mas_sprites.default_zoom_level - new_zoom) * mas_sprites.zoom_step
+            )
+
+    # calculate and store the differences between new and old values
+    $ _mas_zoom_diff = new_zoom - _mas_old_zoom
+    $ _mas_zoom_value_diff = _mas_new_zoom_value - _mas_old_zoom_value
+    $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
+
+    # store the time the transition will take
+    $ _mas_transition_time = abs(_mas_zoom_value_diff) * transition
+
+    # do the transition and pause so it force waits for the transition to end
+    show monika at mas_smooth_transition
+    pause _mas_transition_time
     return
 
 init python:
