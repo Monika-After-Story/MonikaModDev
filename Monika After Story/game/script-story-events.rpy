@@ -283,6 +283,7 @@ label birthdate:
                 str(persistent._mas_player_bday.year)
             )
     $ old_bday = persistent._mas_player_bday
+    $ old_bday_not_none = None
 
     m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
@@ -350,8 +351,11 @@ label birthdate:
 #    $ mas_getEV('mas_player_bday_other_holiday').start_date = mas_player_bday_curr
 #    $ mas_getEV('mas_player_bday_other_holiday').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
 
+    if old_bday is not None:
+        $ old_bday_not_none = old_bday.replace(year=mas_player_bday_curr.year)
+
     if mas_isplayer_bday():
-        if old_bday.replace(year=mas_player_bday_curr.year) == mas_player_bday_curr:
+        if old_bday_not_none == mas_player_bday_curr:
             if mas_isMoniUpset(lower=True):
                 $ persistent._mas_player_bday_no_decor = True
                 m 2eka "Ah, so today {i}is{/i} your birthday..."
@@ -383,7 +387,7 @@ label birthdate:
             return
 
     if mas_monika_birthday == mas_player_bday_curr:
-        if old_bday.replace(year=mas_player_bday_curr.year) == mas_player_bday_curr:
+        if old_bday_not_none == mas_player_bday_curr:
             m 3sua "So your birthday {i}is{/i} the same day as mine!"
         else:
             m 1wuo "Oh...{w=1}Oh!"

@@ -3387,7 +3387,7 @@ label mas_player_bday_surprise:
                 m 2tsb"{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                 $ _history_list.pop()
             m 2hua "Ehehe."
-    m 3wub "Oh! {w=0.5}I also made you a cake!"
+    m 3wub "Oh! {w=0.5}I made you a cake!"
     window hide
     show monika 6dsc
     pause 1.0
@@ -3613,7 +3613,7 @@ label mas_player_bday_other_holiday:
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
     m 1eksdlb "I'd never forget your birthday, silly!"
-    m 1hua "Oh! And I made you a cake!"
+    m 1hua "Oh! I made you a cake!"
     window hide
     show monika 6dsc
     pause 1.0
