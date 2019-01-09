@@ -69,7 +69,7 @@ label monika_playerapologizes:
                 m "I know you want to apologise, it'd mean a lot to me if you did."
             elif mas_isMoniUpset():
                 m 2rkc "Oh..."
-                m 2rkd "I was kind of--"
+                m "I was kind of--"
                 $ _history_list.pop()
                 m 2dkc "Nevermind."
             elif mas_isMoniDis():
