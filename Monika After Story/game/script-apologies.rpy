@@ -5,6 +5,10 @@ default persistent._mas_apology_time_db = {}
 #Allows us the ability to apply diminishing returns on affection for repeated use of the same apology
 default persistent._mas_apology_reason_use_db = {}
 
+init -10 python in mas_apology:
+    apology_db = {]
+
+
 #going to need this post ev_handler init
 init 20 python:
     def mas_checkApologies():
@@ -137,7 +141,8 @@ init 5 python:
             prompt="...for something else.",
             eventlabel="mas_apology_generic",
             unlocked=True,
-        )
+        ),
+        code="APL"
     )
 
 label mas_apology_generic:
@@ -213,7 +218,8 @@ init 5 python:
             eventlabel="mas_apology_bad_nickname",
             prompt="...for calling you a bad name.",
             unlocked=False
-        )
+        ),
+        code="APL"
     )
 
 label mas_apology_bad_nickname:
