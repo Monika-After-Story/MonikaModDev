@@ -6,7 +6,7 @@ default persistent._mas_apology_time_db = {}
 default persistent._mas_apology_reason_use_db = {}
 
 init -10 python in mas_apology:
-    apology_db = {]
+    apology_db = {}
 
 
 #going to need this post ev_handler init
@@ -23,7 +23,7 @@ init 20 python:
         for ev, td in persistent._mas_apology_time_db.items():
             if current_total_playtime >= td:
                 #Pop the ev_label from the time db and lock the event label. You just lost your chance
-                lockEventLabel(ev)
+                store.mas_hideEVL(ev,'APL',lock=True)
                 del persistent._mas_apology_time_db[ev]
 
         return
@@ -75,7 +75,7 @@ label monika_playerapologizes:
     python:
         apologylist = [
             (mas_getEV(ev).prompt,ev,False,False)
-            for ev in persistent.apology_database
+            for ev in store.mas_apology.apology_db
             if mas_getEV(ev).unlocked
         ]
 
@@ -127,7 +127,7 @@ label monika_playerapologizes:
 
     #Lock the apology label if it's not the generic
     if not apology == "mas_apology_generic":
-        $ lockEventLabel(apology)
+        $ store.mas_hideEVL(apology,'APL',lock=True)
 
     #Pop that apology from the time db
     if apology in persistent._mas_apology_time_db: #sanity check

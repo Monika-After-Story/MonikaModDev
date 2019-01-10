@@ -1714,7 +1714,7 @@ init 20 python:
 
         if ev_label not in persistent._mas_apology_time_db:
             #Unlock the apology ev label
-            unlockEventLabel(ev_label)
+            store.mas_showEVL(ev_label, 'APL',unlock=True)
 
             #Calculate the current total playtime
             current_total_playtime = persistent.sessions['total_playtime'] + (datetime.datetime.now() - persistent.sessions['current_session_start'])
