@@ -1684,8 +1684,7 @@ init 20 python:
     def mas_setApologyReason(
         reason=None,
         ev_label=None,
-        expiry_time_spent=datetime.timedelta(hours=3),
-        curr_time_spent=persistent.sessions['total_playtime']
+        expiry_time_spent=datetime.timedelta(hours=3)
         ):
         """
         Sets a reason for apologizing
@@ -1697,8 +1696,6 @@ init 20 python:
                 (required)
             expiry_time_spent - The amount of time spent after the apology was added that it expires
                 (we assume: 3 hours)
-            curr_time_spent - the current amount of time spent with Monika, will be used to calculate the
-            time spent value at which the apology expires
 
         """
         global mas_apology_reason
@@ -1720,7 +1717,7 @@ init 20 python:
             unlockEventLabel(ev_label)
 
             #Calculate the current total playtime
-            current_total_playtime = curr_time_spent + (datetime.datetime.now() - persistent.sessions['current_session_start'])
+            current_total_playtime = persistent.sessions['total_playtime'] + (datetime.datetime.now() - persistent.sessions['current_session_start'])
             #Now we set up our apology dict to keep track of this so we can relock it if you didn't apologize in time
             persistent._mas_apology_time_db[ev_label] = ((current_total_playtime + expiry_time_spent))
             return
