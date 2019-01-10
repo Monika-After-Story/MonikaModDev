@@ -366,7 +366,7 @@ label v0_8_15(version="v0_8_15"):
                 datetime.time(hour=1)
             )
             d25_stm_ev.years = []
-            Event._verifyAndSetDates(d25_stm_ev)
+            Event._verifyAndSetDatesEV(d25_stm_ev)
 
         # nye
         nye_yr_ev = mas_getEV("monika_nye_year_review")
