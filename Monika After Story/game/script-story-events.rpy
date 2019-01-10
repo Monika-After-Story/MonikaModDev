@@ -273,7 +273,7 @@ default persistent._mas_player_bday = None
 
 #TODO: determing appropriate xp level for this
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=8 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
+    addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=4 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
 
 label birthdate:
     if persistent._mas_player_bday is not None:
@@ -311,7 +311,6 @@ label birthdate:
         if bday_upset_ev is not None:
             bday_upset_ev.start_date = mas_player_bday_curr
             bday_upset_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-            bday_upset_ev.years = []
             bday_upset_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_no_decor "
@@ -323,7 +322,6 @@ label birthdate:
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
             bday_no_restart_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-            bday_no_restart_ev.years = []
             bday_no_restart_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
@@ -337,7 +335,6 @@ label birthdate:
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr
             bday_holiday_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-            bday_holiday_ev.years = []
             bday_holiday_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "

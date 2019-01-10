@@ -3381,7 +3381,7 @@ label mas_player_bday_surprise:
             if renpy.seen_label("monikaroom_greeting_ear_narration") and renpy.seen_label("mas_player_bday_listen"):
                 m 2tsb "...or maybe you were listening through the door again..."
             elif renpy.seen_label("mas_player_bday_listen"):
-                m 2tsb"{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
+                m 2tsb "{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                 $ _history_list.pop()
             m 2hua "Ehehe."
     m 3wub "Oh! {w=0.5}I made you a cake!"
@@ -3480,6 +3480,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_no_restart",
+            years = [],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
@@ -3518,6 +3519,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_upset_minus",
+            years = [],
             aff_range=(None, mas_aff.UPSET)
         ),
         skipCalendar=True
@@ -3544,6 +3546,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_other_holiday",
+            years = [],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
