@@ -3316,7 +3316,7 @@ init -810 python:
     ))
 
 label mas_player_bday_autoload_check:
-    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor or not mas_isD25() or not mas_isO31():
+    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor:
         # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"

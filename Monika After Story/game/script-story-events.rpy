@@ -317,7 +317,8 @@ label birthdate:
                 "and not persistent._mas_player_bday_no_decor "
                 "and not persistent._mas_player_bday_in_player_bday_mode")
             bday_upset_ev.action = EV_ACT_QUEUE
-
+            Event._verifyAndSetDatesEV(bday_upset_ev)
+            
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
@@ -330,7 +331,8 @@ label birthdate:
                 "and not mas_isO31() "
                 "and not mas_isD25()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
-
+            Event._verifyAndSetDatesEV(bday_no_restart_ev)
+    
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr
@@ -343,7 +345,8 @@ label birthdate:
                 "and "
                 "mas_isO31() or mas_isD25()")
             bday_holiday_ev.action = EV_ACT_QUEUE
-
+            Event._verifyAndSetDatesEV(bday_holiday_ev)
+  
     if old_bday is not None:
         $ old_bday_not_none = old_bday.replace(year=mas_player_bday_curr.year)
 
