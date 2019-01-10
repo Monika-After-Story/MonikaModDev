@@ -8,6 +8,14 @@
 #       NOTE: certain greetings use their own random chance via MASGreetingRule
 #   pool - UNUSED
 
+# PRIORITY RULES:
+#   Special, moni wants/debug greetings should have negative priority.
+#   special event greetings should have priority 10-50
+#   non-special event, but somewhat special compared to regular greets should
+#       be 50-100
+#   random/everyday greetings should be 100 or larger. The default prority
+#   will be 500
+
 # persistents that greetings use
 default persistent._mas_you_chr = False
 
@@ -15,7 +23,13 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+# TODO: add priority verification for all gretings.
+#   greetings MUST have a priority, even special ones.
+
 init -1 python in mas_greetings:
+    import store
+    import datetime
+    import random
 
     # TYPES:
     TYPE_SCHOOL = "school"
@@ -38,6 +52,72 @@ init -1 python in mas_greetings:
     TYPE_HOL_NYE = "nye"
     TYPE_HOL_NYE_FW = "fireworks"
 
+
+
+    def _filterGreeting(
+            ev,
+            curr_pri,
+            aff,
+            check_time,
+            _type_list=None
+        ):
+        """
+        Filters a greeting for the given type, among other things.
+
+        IN:
+            ev - ev to filter
+            curr_pri - current loweset priority to compare to
+            aff - affection to use in aff_range comparisons
+            check_time - datetime to check against timed rules
+            _type_list - lits of types to check
+                if None, we don't check type.
+                Otherwise, this is assumed to be a list
+                We only do OR checking
+            (Default: None)
+
+        RETURNS:
+            True if this ev passes the filter, False otherwise
+        """
+        # NOTE: new rules:
+        #   eval in this order:
+        #   1. priority (lower or same is True)
+        #   2. type/non-0type
+        #   3. unlocked
+        #   4. aff_ramnge
+        #   5. all rules
+
+        # priority check, required
+        # NOTE: all greetings MUST have a priority
+        if MASPriorityRule.get_priority(ev) > curr_pri:
+            return False
+
+        # type check, optional
+        if (
+                _type_list is not None
+                and ev.category is not None
+                and len(set(_type_list).intersection(set(ev.category))) == 0
+            ):
+            return False
+
+        # unlocked check, required
+        if not ev.unlocked:
+            return False
+
+        # aff range check, required
+        if not ev.checkAffection(aff):
+            return False
+
+        # rule checks
+        if not (
+                Event._checkRepeatRule(ev, check_time, True)
+                and Event._checkGreetingRule(ev, True)
+            ):
+            return False
+
+        # otherwise, we passed all tests
+        return True
+
+
     # custom greeting functions
     def selectGreeting(_type=None):
         """
@@ -47,105 +127,158 @@ init -1 python in mas_greetings:
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+        
+        # local reference of the gre database
+        gre_db = store.evhand.greeting_database
 
-        # check if we have moni_wants greetings
-        moni_wants_greetings = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            moni_wants=True
-        )
-        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+        # setup some initial values
+        gre_pool = []
+        curr_priority = 1000
+        check_time = datetime.datetime.now()
+        aff = store.mas_curr_affection
 
-            # select one label randomly
-            return moni_wants_greetings[
-                renpy.random.choice(moni_wants_greetings.keys())
-            ]
-
-
-        # check first if we have to select from a special type
+        # type check
         if _type is not None:
-
-            # filter them using the type as filter
-            unlocked_greetings = renpy.store.Event.filterEvents(
-                renpy.store.evhand.greeting_database,
-                unlocked=True,
-                category=(True,[_type])
-            )
+            type_list = [_type]
 
         else:
+            type_list = None
 
-            # filter events by their unlocked property only and
-            # that don't have a category
-            unlocked_greetings = renpy.store.Event.filterEvents(
-                renpy.store.evhand.greeting_database,
-                unlocked=True,
-                excl_cat=list()
-            )
+        # now filter
+        for ev_label, ev in gre_db.iteritems():
+            if _filterGreeting(
+                    ev,
+                    curr_priority,
+                    aff,
+                    check_time,
+                    type_list
+                ):
 
-        # filter greetings using the affection rules dict
-        unlocked_greetings = renpy.store.Event.checkAffectionRules(
-            unlocked_greetings,
-            keepNoRule=True
-        )
+                # change priority levels and stuff if needed
+                ev_priority = store.MASPriorityRule.get_priority(ev)
+                if ev_priority < curr_priority:
+                    curr_priority = ev_priority
+                    gre_pool = []
 
-        # check for the special monikaWantsThisFirst case
-        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
-        #    return affection_greetings_dict.values()[0]
+                # add to pool
+                gre_pool.append(ev)
 
-        # filter greetings using the special rules dict
-        random_greetings_dict = renpy.store.Event.checkRepeatRules(
-            unlocked_greetings
-        )
+        # not having a greeting to show means no greeting.
+        if len(gre_pool) == 0:
+            return None
 
-        # check if we have a greeting that actually should be shown now
-        if len(random_greetings_dict) > 0:
+        return random.choice(gre_pool)
 
-            # select one label randomly
-            return random_greetings_dict[
-                renpy.random.choice(random_greetings_dict.keys())
-            ]
 
-        # since we don't have special greetings for this time we now check for special random chance
-        # pick a greeting filtering by special random chance rule
-        random_greetings_dict = renpy.store.Event.checkGreetingRules(
-            unlocked_greetings
-        )
-
-        # check if we have a greeting that actually should be shown now
-        if len(random_greetings_dict) > 0:
-
-            # select on label randomly
-            return random_greetings_dict[
-                renpy.random.choice(random_greetings_dict.keys())
-            ]
-
-        # filter to get only random ones
-        random_unlocked_greetings = renpy.store.Event.filterEvents(
-            unlocked_greetings,
-            random=True
-        )
-
-        # check if we have greetings available to display with current filter
-        if len(random_unlocked_greetings) > 0:
-
-            # select one randomly if we have at least one
-            return random_unlocked_greetings[
-                renpy.random.choice(random_unlocked_greetings.keys())
-            ]
-
-        # We couldn't find a suitable greeting we have to default to normal random selection
-        # filter random events normally
-        random_greetings_dict = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            random=True,
-            excl_cat=list()
-        )
-
-        # select one randomly
-        return random_greetings_dict[
-            renpy.random.choice(random_greetings_dict.keys())
-        ]
+#    def selectGreeting_noType():
+#        """
+#        Selects a greeting without checking for Type
+#
+#        RETURNS:
+#            a single greeting (as an Event) that we want to use
+#        """
+#
+#        # NOTE: new rules:
+#        #   1. check for events that
+#
+#        # check if we have moni_wants greetings
+#        moni_wants_greetings = renpy.store.Event.filterEvents(
+#            renpy.store.evhand.greeting_database,
+#            unlocked=True,
+#            moni_wants=True
+#        )
+#        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+#
+#            # select one label randomly
+#            return moni_wants_greetings[
+#                renpy.random.choice(moni_wants_greetings.keys())
+#            ]
+#
+#
+#        # check first if we have to select from a special type
+#        if _type is not None:
+#
+#            # filter them using the type as filter
+#            unlocked_greetings = renpy.store.Event.filterEvents(
+#                renpy.store.evhand.greeting_database,
+#                unlocked=True,
+#                category=(True,[_type])
+#            )
+#
+#        else:
+#
+#            # filter events by their unlocked property only and
+#            # that don't have a category
+#            unlocked_greetings = renpy.store.Event.filterEvents(
+#                renpy.store.evhand.greeting_database,
+#                unlocked=True,
+#                excl_cat=list()
+#            )
+#
+#        # filter greetings using the affection rules dict
+#        unlocked_greetings = renpy.store.Event.checkAffectionRules(
+#            unlocked_greetings,
+#            keepNoRule=True
+#        )
+#
+#        # check for the special monikaWantsThisFirst case
+#        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
+#        #    return affection_greetings_dict.values()[0]
+#
+#        # filter greetings using the special rules dict
+#        random_greetings_dict = renpy.store.Event.checkRepeatRules(
+#            unlocked_greetings
+#        )
+#
+#        # check if we have a greeting that actually should be shown now
+#        if len(random_greetings_dict) > 0:
+#
+#            # select one label randomly
+#            return random_greetings_dict[
+#                renpy.random.choice(random_greetings_dict.keys())
+#            ]
+#
+#        # since we don't have special greetings for this time we now check for special random chance
+#        # pick a greeting filtering by special random chance rule
+#        random_greetings_dict = renpy.store.Event.checkGreetingRules(
+#            unlocked_greetings
+#        )
+#
+#        # check if we have a greeting that actually should be shown now
+#        if len(random_greetings_dict) > 0:
+#
+#            # select on label randomly
+#            return random_greetings_dict[
+#                renpy.random.choice(random_greetings_dict.keys())
+#            ]
+#
+#        # filter to get only random ones
+#        random_unlocked_greetings = renpy.store.Event.filterEvents(
+#            unlocked_greetings,
+#            random=True
+#        )
+#
+#        # check if we have greetings available to display with current filter
+#        if len(random_unlocked_greetings) > 0:
+#
+#            # select one randomly if we have at least one
+#            return random_unlocked_greetings[
+#                renpy.random.choice(random_unlocked_greetings.keys())
+#            ]
+#
+#        # We couldn't find a suitable greeting we have to default to normal random selection
+#        # filter random events normally
+#        random_greetings_dict = renpy.store.Event.filterEvents(
+#            renpy.store.evhand.greeting_database,
+#            unlocked=True,
+#            random=True,
+#            excl_cat=list()
+#        )
+#
+#        # select one randomly
+#        return random_greetings_dict[
+#            renpy.random.choice(random_greetings_dict.keys())
+#        ]
 
 
 init 5 python:

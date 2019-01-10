@@ -1200,7 +1200,7 @@ python early:
 
 
         @staticmethod
-        def _checkRepeatRule(ev, check_time):
+        def _checkRepeatRule(ev, check_time, defval=True):
             """
             Checks a single event against its repeat rules, which are evaled
             to a time.
@@ -1209,18 +1209,24 @@ python early:
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
+                defval - defval to pass into the rules
+                    (Default: True)
 
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
             # check if the event contains a MASSelectiveRepeatRule and
             # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+            if MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+            if MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             return False
@@ -1267,17 +1273,19 @@ python early:
 
 
         @staticmethod
-        def _checkGreetingRule(ev):
+        def _checkGreetingRule(ev, defval=True):
             """
             Checks the given event against its own greeting specific rule.
 
             IN:
                 ev - event to check
+                defval - value to pass into defval for rules
+                    (Default: True)
 
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
-            return MASGreetingRule.evaluate_rule(ev)
+            return MASGreetingRule.evaluate_rule(ev, defval=defval)
 
 
         @staticmethod

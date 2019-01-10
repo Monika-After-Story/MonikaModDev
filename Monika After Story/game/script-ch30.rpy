@@ -854,6 +854,8 @@ label mas_ch30_post_holiday_check:
             call spaceroom
             jump mas_affection_apologydeleted
 
+    # post greeting callback
+    $ gre_cb_label = None
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
@@ -868,17 +870,23 @@ label mas_ch30_post_holiday_check:
         python:
 
             # we select a greeting depending on the type that we should select
-            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+            sel_greeting_ev = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
 
             # reset the greeting type flag back to None
             persistent._mas_greeting_type = None
 
-            selected_greeting = sel_greeting_event.eventlabel
+            if sel_greeting_ev is not None:
+                selected_greeting = sel_greeting_ev.eventlabel
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_ev
+                )
+
+                # see if we need to do a label
+                setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
+                if setup_label is not None and renpy.has_label(setup_label):
+                    gre_cb_label = setup_label
 
     # crash check
     elif persistent._mas_game_crashed:
