@@ -1874,7 +1874,8 @@ init 5 python:
             action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL,None),
             start_date=datetime.datetime.combine(mas_d25, datetime.time(hour=20)),
-            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1))
+            end_date=datetime.datetime.combine(mas_d25p, datetime.time(hour=1)),
+            years=[]
         ),
         skipCalendar=True
     )

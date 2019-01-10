@@ -304,6 +304,76 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# 0.8.15
+label v0_8_15(version="v0_8_15"):
+    python:
+        # because of a fucking dumb mistake, need to update script a ton 
+        # of events taht got fooked. UGH
+
+        # bday events
+
+        # d25
+        d25e_ev = mas_getEV("mas_d25_monika_christmas_eve")
+        if d25e_ev is not None:
+            d25e_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25e_ev.action = EV_ACT_QUEUE
+
+        d25_hi_ev = mas_getEV("mas_d25_monika_holiday_intro")
+        if d25_hi_ev is not None:
+            d25_hi_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and not persistent._mas_d25_started_upset "
+            )
+            d25_hi_ev.action = EV_ACT_PUSH
+
+        d25_ev = mas_getEV("mas_d25_monika_christmas")
+        if d25_ev is not None:
+            d25_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+                "and not persistent._mas_d25_spent_d25"
+            )
+            d25_ev.action = EV_ACT_PUSH
+
+        d25p_nts = mas_getEV("mas_d25_postd25_notimespent")
+        if d25p_nts is not None:
+            d25p_nts.conditional = (
+                "not persistent._mas_d25_spent_d25"
+            )
+            d25p_nts.action = EV_ACT_PUSH
+
+        d25_hiu_ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
+        if d25_hiu_ev is not None:
+            d25_hiu_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+            )
+            d25_hiu_ev.action = EV_ACT_PUSH
+
+        d25_stm_ev = mas_getEV("mas_d25_spent_time_monika")
+        if d25_stm_ev is not None:
+            d25_stm_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25_stm_ev.action = EV_ACT_QUEUE
+            d25_stm_ev.years = []
+
+        # nye
+        nye_yr_ev = mas_getEV("monika_nye_year_review")
+        if nye_yr_ev is not None:
+            nye_yr_ev.action = EV_ACT_PUSH
+
+        nyd_ev = mas_getEV("mas_nye_monika_nyd")
+        if nyd_ev is not None:
+            nyd_ev.action = EV_ACT_QUEUE
+
+        res_ev = mas_getEV("monika_resolutions")
+        if res_ev is not None:
+            res_ev.action = EV_ACT_QUEUE 
+
+    return
+
 # 0.8.14
 label v0_8_14(version="v0_8_14"):
     python:

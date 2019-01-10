@@ -1276,6 +1276,7 @@ init -876 python in mas_delact:
     def _mas_bday_spent_time_with_reset_action(ev):
         # updates conditional and action
         next_bday_year = store.mas_getNextMonikaBirthday().year
+        # TODO: what the fuck is this? I dont know if this bit should be here.
         ev.conditional = (
             "datetime.date.today() < mas_monika_birthday and "
             "mas_monika_birthday.day - datetime.date.today().day == 1"
