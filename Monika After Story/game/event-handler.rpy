@@ -1579,7 +1579,7 @@ init python:
         """
         import datetime
         now = datetime.datetime.now()
-        cleaned_list = list();
+        cleaned_list = list()
 
         for ev in ev_list:
             if ev.last_seen is not None:

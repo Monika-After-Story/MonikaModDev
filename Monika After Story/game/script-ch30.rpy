@@ -30,6 +30,11 @@ init -1 python in mas_globals:
     lightning_s_chance = 10
     # lghtning chances
 
+    show_s_light = False
+    # set to True to show s easter egg.
+    # NOTE: set to True during o31, and also during sayori easter egg
+    # TODO: need to this
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -160,10 +165,6 @@ init -10 python:
     mas_idle_mailbox = MASIdleMailbox()
 
 
-image mas_island_frame_day = "mod_assets/location/special/with_frame.png"
-image mas_island_day = "mod_assets/location/special/without_frame.png"
-image mas_island_frame_night = "mod_assets/location/special/night_with_frame.png"
-image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room = "images/cg/monika/monika_room.png"
 image monika_day_room = "mod_assets/monika_day_room.png"
@@ -215,77 +216,6 @@ image monika_body_glitch2:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-image room_mask = Movie(
-    channel="window_1",
-    play="mod_assets/window/spaceroom/window_1.webm",
-    mask=None
-)
-image room_mask_fb = "mod_assets/window/spaceroom/window_1_fallback.png"
-
-image room_mask2 = Movie(
-    channel="window_2",
-    play="mod_assets/window/spaceroom/window_2.webm",
-    mask=None
-)
-image room_mask2_fb = "mod_assets/window/spaceroom/window_2_fallback.png"
-
-image room_mask3 = Movie(
-    channel="window_3",
-    play="mod_assets/window/spaceroom/window_3.webm",
-    mask=None
-)
-image room_mask3_fb = "mod_assets/window/spaceroom/window_3_fallback.png"
-
-image room_mask4 = Movie(
-    channel="window_4",
-    play="mod_assets/window/spaceroom/window_4.webm",
-    mask=None
-)
-image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
-
-# big thanks to sebastianN01 for the rain art!
-image rain_mask_left = Movie(
-    channel="window_5",
-    play="mod_assets/window/spaceroom/window_5.webm",
-    mask=None
-)
-image rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_fallback.png"
-
-image rain_mask_right = Movie(
-    channel="window_6",
-    play="mod_assets/window/spaceroom/window_6.webm",
-    mask=None
-)
-image rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_fallback.png"
-
-# big thanks to Zer0mniac for fixing the snow
-image snow_mask_night_left = Movie(
-    channel="window_7",
-    play="mod_assets/window/spaceroom/window_7.webm",
-    mask=None
-)
-image snow_mask_night_left_fb = "mod_assets/window/spaceroom/window_7_fallback.png"
-
-image snow_mask_night_right = Movie(
-    channel="window_8",
-    play="mod_assets/window/spaceroom/window_8.webm",
-    mask=None
-)
-image snow_mask_night_right_fb = "mod_assets/window/spaceroom/window_8_fallback.png"
-
-image snow_mask_day_left = Movie(
-    channel="window_9",
-    play="mod_assets/window/spaceroom/window_9.webm",
-    mask=None
-)
-image snow_mask_day_left_fb = "mod_assets/window/spaceroom/window_9_fallback.png"
-
-image snow_mask_day_right = Movie(
-    channel="window_10",
-    play="mod_assets/window/spaceroom/window_10.webm",
-    mask=None
-)
-image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.png"
 
 # spaceroom window positions
 transform spaceroom_window_left:
@@ -426,39 +356,17 @@ init python:
         renpy.hide("rm")
         renpy.hide("rm2")
 
-        if mas_is_snowing:
-            # snowing takes even more priority
-            if morning_flag:
-                left_window = "snow_mask_day_left"
-                right_window = "snow_mask_day_right"
-
-            else:
-                left_window = "snow_mask_night_left"
-                right_window = "snow_mask_night_right"
-
-        elif mas_is_raining:
-            # raining takes priority
-            left_window = "rain_mask_left"
-            right_window = "rain_mask_right"
-
-        elif morning_flag:
-            # morning time!
-            left_window = "room_mask3"
-            right_window = "room_mask4"
-
-        else:
-            # night time
-            left_window = "room_mask"
-            right_window = "room_mask2"
+        # get current weather masks
+        left_w, right_w = mas_current_weather.sp_window(morning_flag)
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
-            left_window += "_fb"
-            right_window += "_fb"
+            left_w += "_fb"
+            right_w += "_fb"
 
         # now show the masks
-        renpy.show(left_window, at_list=[spaceroom_window_left], tag="rm")
-        renpy.show(right_window, at_list=[spaceroom_window_right], tag="rm2")
+        renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
+        renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
 
 
     def show_calendar():
@@ -528,42 +436,23 @@ init python:
         Rolls some chances to see if we should make it rain
 
         RETURNS:
-            True if it should rain now, false otherwise
+            rain weather to use, or None if we dont want to change weather
         """
         if mas_isMoniNormal(higher=True):
-            return False
+            return None
 
         # Upset and lower means we need to roll
         chance = random.randint(1,100)
         if mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
-            return True
+            return mas_weather_rain
 
         elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
-            return True
+            return mas_weather_rain
 
         elif mas_isMoniBroken() and chance <= MAS_RAIN_BROKEN:
-            return True
+            return mas_weather_thunder
 
-        return False
-
-
-    def mas_forceRain():
-        """
-        Sets rain variables and locks appropriate rain events
-        """
-        global scene_change, mas_is_raining, mas_is_snowing
-        scene_change = True
-        mas_is_raining = True
-        mas_is_snowing = False
-        renpy.music.play(
-            audio.rain,
-            channel="background",
-            loop=True,
-            fadein=1.0
-        )
-        lockEventLabel("monika_rain_start")
-        lockEventLabel("monika_rain_stop")
-        lockEventLabel("monika_rain")
+        return None
 
 
     def mas_lockHair():
@@ -678,9 +567,13 @@ label ch30_main:
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
         $ store.mas_globals.show_vignette = True
-        $ store.mas_globals.show_lightning = True
-        $ mas_forceRain()
-#        $ mas_lockHair()
+        
+        # setup thunder
+        if persistent._mas_likes_rain:
+            $ mas_weather_thunder.unlocked = True
+            $ store.mas_weather.saveMWData()
+            $ mas_unlockEVL("monika_change_weather", "EVE")
+        $ mas_changeWeather(mas_weather_thunder)
 
     # d25 season? d25 season you are in
     if mas_isD25Season():
@@ -1080,8 +973,9 @@ label ch30_post_exp_check:
         $ mas_startup_song()
 
         # rain check
-        if mas_shouldRain():
-            $ mas_forceRain()
+        $ set_to_weather = mas_shouldRain()
+        if set_to_weather is not None:
+            $ mas_changeWeather(set_to_weather)
 
     # FALL THROUGH TO PRELOOP
 
@@ -1207,6 +1101,7 @@ label ch30_post_mid_loop_eval:
             ):
             if (
                     not persistent._mas_sensitive_mode
+                    and store.mas_globals.show_s_light
                     and renpy.random.randint(
                         1, store.mas_globals.lightning_s_chance
                     ) == 1
@@ -1320,6 +1215,11 @@ label ch30_end:
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
+
+    python:
+        # name eggs
+        if persistent.playername.lower() == "sayori":
+            store.mas_globals.show_s_light = True
     
     python:
         # start by building event lists if they have not been built already
@@ -1366,31 +1266,26 @@ label ch30_reset:
             if mood_ev:
                 mood_ev.unlocked = True
 
-    # reset raining stuff
-    python:
-        mas_is_raining = False
-        if persistent._mas_likes_rain:
-            unlockEventLabel("monika_rain_start")
-            lockEventLabel("monika_rain_stop")
-            # unlock islands event if seen already
-            if store.seen_event("mas_monika_islands"):
-                # we can unlock the topic
-                store.unlockEventLabel("mas_monika_islands")
-#            lockEventLabel("monika_rain_holdme")
-
-        if mas_isMoniNormal(higher=True):
-            # monika affection above normal?
-            unlockEventLabel("monika_rain")
-
     # enabel snowing if its winter
     python:
-        mas_is_snowing = mas_isWinter()
-        if mas_is_snowing:
-            mas_lockEVL("monika_rain_start", "EVE")
-            mas_lockEVL("monika_rain_stop", "EVE")
-            mas_lockEVL("mas_monika_islands", "EVE")
-            mas_lockEVL("monika_rain", "EVE")
-            mas_lockEVL("greeting_ourreality", "GRE")
+        # TODO: snowing should also be controlled if you like it or not
+        if mas_isWinter():
+            mas_changeWeather(mas_weather_snow)
+
+            if not mas_weather_snow.unlocked:
+                mas_weather_snow.unlocked = True
+                store.mas_weather.saveMWData()
+                
+                mas_unlockEVL("monika_change_weather", "EVE")
+                renpy.save_persistent()
+#        mas_is_snowing = mas_isWinter()
+#        if mas_is_snowing:
+#            
+#            mas_lockEVL("monika_rain_start", "EVE")
+#            mas_lockEVL("monika_rain_stop", "EVE")
+#            mas_lockEVL("mas_monika_islands", "EVE")
+#            mas_lockEVL("monika_rain", "EVE")
+#            mas_lockEVL("greeting_ourreality", "GRE")
 
     # reset hair / clothes
     # the default options should always be available.

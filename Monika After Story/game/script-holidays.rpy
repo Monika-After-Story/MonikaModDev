@@ -79,6 +79,8 @@ init -810 python:
         # change trigger to better date
 #        datetime.datetime(2020, 1, 6),
         {
+            # TODO: we should have a spent time var here
+
             "_mas_o31_current_costume": "o31.costume.was_worn",
             "_mas_o31_costume_greeting_seen": "o31.costume.greeting.seen",
             "_mas_o31_costumes_allowed": "o31.costume.allowed",
@@ -154,6 +156,7 @@ init -11 python in mas_o31_event:
     import store
     import store.mas_dockstat as mds
     import store.mas_ics as mis
+    import datetime
 
     # setup the docking station for o31
     o31_cg_station = store.MASDockingStation(mis.o31_cg_folder)
@@ -207,6 +210,29 @@ init -11 python in mas_o31_event:
         )
 
 
+    def spentO31():
+        """
+        RETURNS True if the user spent o31 with monika.
+        Currently we determine that by checking historical value for current
+        costume for a non None value
+        # TODO: this should be changed to a spent var one day
+        """
+        years_list = range(2017, datetime.date.today().year + 1)
+
+        _data_found = store.mas_HistLookup_otl(
+            "o31.costume.was_worn",
+            years_list
+        )
+
+        for year, data_tuple in _data_found.iteritems():
+            l_const, _data = data_tuple
+
+            # 0 means data found constant
+            if l_const == 0 and _data is not None:
+                return True
+
+        return False
+
 # auto load starter check
 label mas_holiday_o31_autoload_check:
     # ASSUMPTIONS:
@@ -246,10 +272,13 @@ label mas_holiday_o31_autoload_check:
 
         if persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
-            store.mas_globals.show_lightning = True
-            mas_forceRain()
-#            mas_lockHair()
-            # NOTE: technically, programming points for clothes handle hair now
+
+            # setup thunder
+            if persistent._mas_likes_rain:
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+                mas_unlockEVL("monika_change_weather", "EVE")
+            mas_changeWeather(mas_weather_thunder)
 
     if mas_skip_visuals:
         jump ch30_post_restartevent_check
