@@ -474,7 +474,7 @@ python early:
 
             NOTE: does not check if the event hasnt been reached this year.
 
-            RETURNS: True if this event was repeated, False if not
+            RETURNS: True if this event can repeat, False if not
             """
             # sanity check
             if not self.canRepeat():
@@ -486,7 +486,7 @@ python early:
                 self.start_date = new_start
                 self.end_date = new_end
 
-            return was_changed
+            return True
 
 
         @staticmethod
