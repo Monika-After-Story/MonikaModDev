@@ -357,7 +357,16 @@ label v0_8_15(version="v0_8_15"):
                 "persistent._mas_d25_in_d25_mode "
             )
             d25_stm_ev.action = EV_ACT_QUEUE
+            d25_stm_ev.start_date = datetime.datetime.combine(
+                mas_d25, 
+                datetime.time(hour=20)
+            )
+            d25_stm_ev.end_date = datetime.datetime.combine(
+                mas_d25p,
+                datetime.time(hour=1)
+            )
             d25_stm_ev.years = []
+            Event._verifyAndSetDates(d25_stm_ev)
 
         # nye
         nye_yr_ev = mas_getEV("monika_nye_year_review")
