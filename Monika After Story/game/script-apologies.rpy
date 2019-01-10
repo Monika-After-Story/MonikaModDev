@@ -38,7 +38,36 @@ init 5 python:
     )
 
 label monika_playerapologizes:
-    #Run through our apology db and find what's unlocked
+
+    #Firstly, let's check if there's an apology reason for the prompt
+    #NOTE: When adding more apology reasons, add a reason the player would say sorry for here (corresponding to the same #as the apology reason)
+    $ player_apology_reasons = {
+        0: "something else.", #since we shouldn't actually be able to get this, we use this as our fallback
+        1: "saying I wanted to break up.",
+        2: "joking about having another girlfriend.",
+        3: "calling you a murderer.",
+        4: "closing the game on you.",
+        5: "entering your room without knocking.",
+        6: "missing Christmas.",
+        7: "forgetting your birthday.",
+        8: "not spending time with you on your birthday.",
+        9: "the game crashing.",
+        10: "the game crashing." #easiest way to handle this w/o overrides
+    }
+
+    #Set the prompt for this...
+    if persistent._mas_apology_time_db != {}:
+        #If there's a non-generic apology reason pending we use "for something else."
+        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
+    else:
+        #Otherwise we just use "for something."
+        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
+
+    #Then we delete this since we're not going to need it again until we come back here, where it's created again.
+    #No need to store excess memory
+    $ del player_apology_reasons
+
+    #Now we run through our apology db and find what's unlocked
     python:
         apologylist = [
             (mas_getEV(ev).prompt,ev,False,False)
@@ -66,7 +95,7 @@ label monika_playerapologizes:
                 m 3eka "We just have to accept what happened, learn from our mistakes, and move on, together. Okay?"
             elif mas_isMoniNormal(higher=True):
                 m 1eka "[player]..."
-                m "I know you want to apologise, it'd mean a lot to me if you did."
+                m "If you want to apologize, go ahead. It'd mean a lot to me if you did."
             elif mas_isMoniUpset():
                 m 2rkc "Oh..."
                 m "I was kind of--"
@@ -182,7 +211,7 @@ init 5 python:
         Event(
             persistent.apology_database,
             eventlabel="mas_apology_bad_nickname",
-            prompt="...calling you a bad name",
+            prompt="...for calling you a bad name.",
             unlocked=False
         )
     )
