@@ -271,6 +271,7 @@ label monika_changename:
 
 default persistent._mas_player_bday = None
 
+#TODO: determing appropriate xp level for this
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=8 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
 
@@ -287,7 +288,7 @@ label birthdate:
 
     m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
-        m 3eksdlc "I know you told told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday.{/i}"
+        m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
         menu:
             m "So just to make sure, is your birthdate [bday_str]?"
             "Yes":
@@ -330,7 +331,7 @@ label birthdate:
                 "and not mas_isD25()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
 
-        bday_holiday_ev = mas_getEV('mas_player_bday_no_restart')
+        bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr
             bday_holiday_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
@@ -342,14 +343,6 @@ label birthdate:
                 "and "
                 "mas_isO31() or mas_isD25()")
             bday_holiday_ev.action = EV_ACT_QUEUE
-
-    # need to change any events that have player dependent start/end times here
-#    $ mas_getEV('mas_player_bday_no_restart').start_date = datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19))
-#    $ mas_getEV('mas_player_bday_no_restart').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-#    $ mas_getEV('mas_player_bday_upset_minus').start_date = mas_player_bday_curr
-#    $ mas_getEV('mas_player_bday_upset_minus').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
-#    $ mas_getEV('mas_player_bday_other_holiday').start_date = mas_player_bday_curr
-#    $ mas_getEV('mas_player_bday_other_holiday').end_date = mas_player_bday_curr + datetime.timedelta(days=1)
 
     if old_bday is not None:
         $ old_bday_not_none = old_bday.replace(year=mas_player_bday_curr.year)
@@ -376,6 +369,7 @@ label birthdate:
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
             else:
+                $ persistent._mas_player_bday_in_player_bday_mode = True
                 m 1wuo "Oh...{w=1}Oh!"
                 m 3sub "Today's your birthday!"
                 m 3hub "Happy Birthday, [player]!"
@@ -401,7 +395,7 @@ label birthdate:
 
 label share_same_bday:
     m 3sub "That's {i}so{/i} cool, [player]!"
-    m 1tsu "I guess we really are meant to be together, ehehe."
+    m 1tsu "I guess we really are meant to be together, ehehe..."
     m 3hua "We'll have to make that an extra special day~"
     return
 

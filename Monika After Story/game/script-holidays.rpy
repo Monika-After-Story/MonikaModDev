@@ -1226,7 +1226,8 @@ label mas_holiday_d25c_autoload_check:
     if mas_in_intro_flow:
         # intro will call us instead of jump
         return
-
+    if mas_isplayer_bday() and not mas_isD25():
+        jump mas_player_bday_autoload_check
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
@@ -3315,7 +3316,7 @@ init -810 python:
     ))
 
 label mas_player_bday_autoload_check:
-    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor:
+    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor or not mas_isD25() or not mas_isO31():
         # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
@@ -3342,11 +3343,6 @@ label mas_player_bday_opendoor:
     m 4eua "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
     m 4hksdlb "Oh...your cake!"
-    window hide
-    show monika 6dsc
-    pause 1.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 0.5
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3388,11 +3384,6 @@ label mas_player_bday_surprise:
                 $ _history_list.pop()
             m 2hua "Ehehe."
     m 3wub "Oh! {w=0.5}I made you a cake!"
-    window hide
-    show monika 6dsc
-    pause 1.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 0.5
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3430,20 +3421,21 @@ label mas_player_bday_opendoor_listened:
     m 4hub "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
     m 2hksdlb "Oh...your cake!"
-    window hide
-    show monika 6dsc
-    pause 1.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 0.5
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
 # all paths lead here
 label mas_player_bday_cake:
+    window hide
+    show monika 6dsc
+    pause 1.0
+    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+    show monika 6dsa
+    pause 0.5
     $ persistent._mas_player_bday_in_player_bday_mode = True
     m 6eua "Let me just light the candles for you..."
     window hide
-    show monika 6dsc
+    show monika 6dsa
     pause 1.0
     $ mas_bday_cake_lit = True
     pause 0.5
@@ -3461,7 +3453,7 @@ label mas_player_bday_cake:
     $ mas_bday_cake_lit = False
     pause 1.0
     m 6hua "Ehehe..."
-    m 6eka "I know it's your birthday, but I made a wish too, [player]..."
+    m 6eka "I know it's your birthday, but I made a wish too..."
     m 6ekbsa "And you know what? {w=0.5}I bet we both wished for the same thing~"
     m 6hkbsu "..."
     m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
@@ -3487,17 +3479,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_no_restart",
-#            conditional=(
-#                "mas_isplayer_bday() "
-#                "and not persistent._mas_player_bday_in_player_bday_mode "
-#                "and not persistent._mas_player_bday_no_decor "
-#                "and not mas_isO31() "
-#                "and not mas_isD25()"
-#            ),
-#            action=EV_ACT_QUEUE,
-#            start_date=datetime.datetime.combine(mas_player_bday_curr, datetime.time(hour=19)),
-#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-#            years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
@@ -3517,11 +3498,6 @@ label mas_player_bday_no_restart:
     m 3eksdlc "Gosh, I just hope you weren't starting to think I forgot your birthday. I'm really sorry if you did..."
     m 1rksdla "I guess I probably shouldn't have waited so long, ehehe."
     m 1hua "Oh! I made you a cake!"
-    window hide
-    show monika 6dsc
-    pause 1.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 1.0
     call mas_player_bday_cake
     return
 
@@ -3532,11 +3508,6 @@ label mas_player_bday_when_confirmed:
     m 3hub "Happy Birthday, [player]!"
     m 1hub "Ahaha! I'm so happy I get to be with you on your birthday!"
     m 3sub "Oh...{w=0.5}your cake!"
-    window hide
-    show monika 6dsc
-    pause 5.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 1.0
     call mas_player_bday_cake
     return
 
@@ -3546,15 +3517,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_upset_minus",
-#            conditional=(
-#                "mas_isplayer_bday() "
-#                "and not persistent._mas_player_bday_no_decor "
-#                "and not persistent._mas_player_bday_in_player_bday_mode"
-#            ),
-#            action=store.EV_ACT_QUEUE,
-#            start_date=mas_player_bday_curr,
-#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-#            years=[],
             aff_range=(None, mas_aff.UPSET)
         ),
         skipCalendar=True
@@ -3575,22 +3537,12 @@ label mas_player_bday_upset_minus:
 
 # event for if the player's bday is also on a holiday
 # TODO update this as we add other holidays (f14) also figure out what to do if player bday is 9/22
+# condtions located in story-events 'birthdate'
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="mas_player_bday_other_holiday",
-#            conditional=(
-#                "mas_isplayer_bday() "
-#                "and not persistent._mas_player_bday_in_player_bday_mode "
-#                "and not persistent._mas_player_bday_no_decor "
-#                "and "
-#                "mas_isO31() or mas_isD25()"
-#            ),
-#            action=store.EV_ACT_QUEUE,
-#            start_date=mas_player_bday_curr,
-#            end_date=mas_player_bday_curr + datetime.timedelta(days=1),
-#            years=[],
             aff_range=(mas_aff.NORMAL, None)
         ),
         skipCalendar=True
@@ -3613,12 +3565,8 @@ label mas_player_bday_other_holiday:
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
     m 1eksdlb "I'd never forget your birthday, silly!"
-    m 1hua "Oh! I made you a cake!"
-    window hide
-    show monika 6dsc
-    pause 1.0
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    pause 1.0
+    m 1eub "Ahaha!"
+    m 3hua "Oh! I made you a cake!"
     call mas_player_bday_cake
     return
 
@@ -3679,7 +3627,7 @@ label greeting_returned_home_player_bday:
         m 1eka "It was so nice going out to celebrate your birthday..."
         m 1ekbfa "Thanks for making me such a big part of your special day~"
     
-    if not mas_isplayer_bday():
+    if not mas_isplayer_bday() and not persistent._mas_player_bday_no_decor:
         m 1hub "Gosh, we were gone so long it's not even your birthday anymore, ahaha!"
         m 3rksdla "We should probably take these decorations down now."
         m 3eka "Just give me one moment, [player]..."
@@ -3688,7 +3636,7 @@ label greeting_returned_home_player_bday:
         hide mas_bday_banners
         hide mas_bday_balloons
         m 3eua "There we go!"
-        m 1hua "Now, let's enjoy the day together, [player]!"
+        m 1hua "Now, let's enjoy the day together, [player]~"
 
     $ persistent._mas_player_bday_left_on_bday = False
     return
