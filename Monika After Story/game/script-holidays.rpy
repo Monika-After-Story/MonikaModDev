@@ -3345,6 +3345,7 @@ init -11 python in mas_player_bday_event:
         renpy.hide("mas_bday_balloons", zorder=8)
 
 label mas_player_bday_autoload_check:
+    # making sure we are already not in bay mode, have confirmed birthday, have normal+ affection and have not gotten bday event from confirm topic
     if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_found:
         # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
@@ -3529,7 +3530,7 @@ init 5 python:
 
 label mas_player_bday_no_restart:
     #sanity checks
-    if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor or not mas_isplayer_bday():
+    if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor or not mas_isplayer_bday() or persistent._mas_player_bday_when_found:
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
@@ -3568,7 +3569,7 @@ init 5 python:
 
 label mas_player_bday_upset_minus:
     #sanity checks
-    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_decor or persistent._mas_player_bday_when_found:
         return
     else:
         m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
@@ -3591,7 +3592,7 @@ init 5 python:
 
 label mas_player_bday_other_holiday:
     # sanity checks
-    if not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor:
+    if not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor or persistent._mas_player_bday_when_found:
         return
     if mas_isO31():
         $ holiday_var = "Halloween"

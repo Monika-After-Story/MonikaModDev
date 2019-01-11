@@ -315,7 +315,8 @@ label birthdate_set:
             bday_upset_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_decor "
-                "and not persistent._mas_player_bday_in_player_bday_mode")
+                "and not persistent._mas_player_bday_in_player_bday_mode "
+                "and not persistent._mas_player_bday_when_found")
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
             
@@ -327,6 +328,7 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
                 "and not persistent._mas_player_bday_decor "
+                "and not persistent._mas_player_bday_when_found "
                 "and not mas_isO31() "
                 "and not mas_isD25()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
@@ -340,6 +342,7 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
                 "and not persistent._mas_player_bday_decor "
+                "and not persistent._mas_player_bday_when_found "
                 "and "
                 "mas_isO31() or mas_isD25()")
             bday_holiday_ev.action = EV_ACT_QUEUE
@@ -368,8 +371,8 @@ label birthdate_set:
                 m 4eka "I hope you have a good day."
             return
         else:
+            $ persistent._mas_player_bday_when_found = True
             if mas_isMoniNormal(higher=True):
-                $ persistent._mas_player_bday_when_found = True
                 $ mas_unlockEVL("bye_player_bday", "BYE")
                 m 1wuo "Oh...{w=1}Oh!"
                 m 3sub "Today's your birthday!"
