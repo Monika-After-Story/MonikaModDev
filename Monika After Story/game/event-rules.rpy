@@ -378,7 +378,12 @@ init -1 python:
         """
 
         @staticmethod
-        def create_rule(ev=None, skip_visual=False, random_chance=0):
+        def create_rule(
+                ev=None,
+                skip_visual=False,
+                random_chance=0,
+                setup_label=None
+            ):
             """
             IN:
                 ev - Event to create rule for, if passed in
@@ -392,7 +397,6 @@ init -1 python:
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
                     (Default: None)
-
 
             RETURNS:
                 a dict containing the specified rules

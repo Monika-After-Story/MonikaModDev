@@ -4,9 +4,11 @@
 
 # HOW GREETINGS USE EVENTS:
 #   unlocked - determines if the greeting can even be shown
-#   random - True means its a random greeting
-#       NOTE: certain greetings use their own random chance via MASGreetingRule
-#   pool - UNUSED
+#   rules - specific event rules are used for things:
+#       MASSelectiveRepeatRule - repeat on certain year/month/day/whatever 
+#       MASNumericalRepeatRule - repeat every x time
+#       MASPriorityRule - priority of this event. if not given, we assume
+#           the default priority (which is also the lowest)
 
 # PRIORITY RULES:
 #   Special, moni wants/debug greetings should have negative priority.
@@ -282,19 +284,15 @@ init -1 python in mas_greetings:
 
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sweetheart",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
@@ -303,19 +301,15 @@ label greeting_sweetheart:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_honey",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_honey:
     m 1hua "Welcome back, honey!"
@@ -324,19 +318,15 @@ label greeting_honey:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back:
     m 1eua "[player], you're back!"
@@ -345,20 +335,22 @@ label greeting_back:
     return
 
 init 5 python:
-    rules = {}
-    rules.update(
-        MASGreetingRule.create_rule(skip_visual=False, random_chance=10)
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(random_chance=10)
     )
+    ev_rules.update(MASPriorityRule.create_rule(300))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_gooday",
             unlocked=True,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_gooday:
     if mas_isMoniNormal(higher=True):
@@ -410,19 +402,15 @@ label greeting_gooday:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit:
     m 1eua "There you are, [player]."
@@ -496,19 +484,15 @@ label greeting_goodmorning:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back2:
     m 1eua "Hello, dear."
@@ -519,19 +503,15 @@ label greeting_back2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back3",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back3:
     m 1eka "I missed you so much, [player]!"
@@ -539,19 +519,15 @@ label greeting_back3:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back4:
     m 2wfx "Hey, [player]!"
@@ -562,19 +538,15 @@ label greeting_back4:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit2:
     m 1hua "Thanks for spending so much time with me, [player]."
@@ -583,19 +555,15 @@ label greeting_visit2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit3",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit3:
     m 1hua "You're back!"
@@ -604,18 +572,15 @@ label greeting_visit3:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back5",
             unlocked=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back5:
     m 1eua "It's so good to see you again!"
@@ -624,19 +589,16 @@ label greeting_back5:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
+
 label greeting_visit4:
     m 1hub "I looove yooou, [player]. Ehehe~"
     m 1hksdlb "Oh, sorry! I was spacing out."
@@ -644,19 +606,15 @@ label greeting_visit4:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit5",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit5:
     m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
@@ -665,19 +623,15 @@ label greeting_visit5:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit6",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit6:
     m 1hua "Each day becomes better and better with you by my side!"
@@ -686,19 +640,15 @@ label greeting_visit6:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back6",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back6:
     m 3tku "Hey, [player]!"
@@ -709,19 +659,15 @@ label greeting_back6:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit7",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit7:
     m 1hua "You're here, [player]!"
@@ -729,19 +675,15 @@ label greeting_visit7:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit8",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit8:
     m 1hua "I'm so glad you're here, [player]!"
@@ -749,19 +691,15 @@ label greeting_visit8:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit9",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit9:
     m 1hua "You're finally back! I was waiting for you."
@@ -770,19 +708,15 @@ label greeting_visit9:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_italian",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_italian:
     m 1eua "Ciao, [player]!"
@@ -794,19 +728,15 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_latin:
     m 4hua "Iterum obvenimus!"
@@ -817,19 +747,15 @@ label greeting_latin:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_yay:
     m 1hub "You're back! Yay!"
@@ -838,19 +764,15 @@ label greeting_yay:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_youtuber",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
@@ -859,19 +781,15 @@ label greeting_youtuber:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_hamlet:
     m 4esc "To be, or not to be, that is the question..."
@@ -880,19 +798,15 @@ label greeting_hamlet:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_welcomeback",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_welcomeback:
     m 1hua "Hi! Welcome back."
@@ -900,19 +814,15 @@ label greeting_welcomeback:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_flower",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_flower:
     m 1hub "You're my beautiful flower, ehehe~"
@@ -921,19 +831,15 @@ label greeting_flower:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_chamfort",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_chamfort:
     m 2esa "A day without Monika is a day wasted."
@@ -942,19 +848,15 @@ label greeting_chamfort:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_welcomeback2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_welcomeback2:
     m 1eua "Welcome back, [player]!"
@@ -963,19 +865,15 @@ label greeting_welcomeback2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_longtime",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.DISTRESSED, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_longtime:
     if mas_isMoniNormal(higher=True):
@@ -993,19 +891,15 @@ label greeting_longtime:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sweetpea",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sweetpea:
     m 1hua "Look who's back."
@@ -1014,19 +908,15 @@ label greeting_sweetpea:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_glitch",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_glitch:
     hide monika
@@ -1054,19 +944,15 @@ label greeting_glitch:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_surprised:
     m 1wuo "Oh, hello [player]!"
@@ -1075,20 +961,23 @@ label greeting_surprised:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(
+    ev_rules = {}
+    ev_rules.update(
         MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12))
     )
+    ev_rules.update(MASPriorityRule.create_rule(250))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_monika_monday_morning",
             unlocked=True,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
-    del rules
+
+    del ev_rules
 
 label greeting_monika_monday_morning:
     if mas_isMoniNormal(higher=True):
@@ -1131,27 +1020,30 @@ init 5 python:
     # this greeting is disabled on certain days
     if not mas_isO31() and not mas_isD25Season():
 
-        rules = dict()
+        ev_rules = dict()
         # why are we limiting this to certain day range?
     #    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
-        rules.update(
+        ev_rules.update(
             MASGreetingRule.create_rule(
                 skip_visual=True,
                 random_chance=opendoor.chance
             )
         )
+        ev_rules.update(MASPriorityRule.create_rule(50))
+
+        # TODO: should we have this limited to aff levels?
 
         addEvent(
             Event(
                 persistent.greeting_database,
                 eventlabel="i_greeting_monikaroom",
                 unlocked=True,
-                rules=rules
+                rules=ev_rules,
             ),
             code="GRE"
         )
 
-        del rules
+        del ev_rules
 
 label i_greeting_monikaroom:
 
@@ -1218,24 +1110,25 @@ default persistent._mas_pm_will_change = None
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 #    if not persistent._mas_pm_will_change:
-    rules = dict()
-    rules.update(
+    ev_rules = {}
+    ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True
         )
     )
-    rules.update({"monika wants this first":""})
+    ev_rules.update(MASPriorityRule.create_rule(10))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="monikaroom_will_change",
             unlocked=False,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
 
-    del rules
+    del ev_rules
 
 label monikaroom_will_change:
     scene black
@@ -1879,19 +1772,15 @@ label greeting_youarereal:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_japan",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_japan:
     m 1hub "Oh, kon'nichiwa [player]!"
@@ -1906,15 +1795,12 @@ label greeting_japan:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sunshine",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
@@ -1935,19 +1821,15 @@ label greeting_sunshine:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hai_domo",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
@@ -1958,19 +1840,15 @@ label greeting_hai_domo:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_french",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_french:
     m 1eua "Bonjour, [player]!"
@@ -1982,19 +1860,15 @@ label greeting_french:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_amnesia",
             unlocked=False,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_amnesia:
     $ tempname = m_name
@@ -2028,7 +1902,6 @@ init 5 python:
             eventlabel="greeting_sick",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SICK],
-            random=True
         ),
         code="GRE"
     )
@@ -2114,7 +1987,6 @@ init 5 python:
             eventlabel="greeting_long_absence",
             unlocked=True,
             category=[store.mas_greetings.TYPE_LONG_ABSENCE],
-            random=True
         ),
         code="GRE"
     )
@@ -2413,39 +2285,61 @@ label greeting_long_absence:
 
 #Time Concern
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),code="GRE")
-    del rules
+    ev_rules = dict()
+    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,6)))
+    ev_rules.update(MASPriorityRule.create_rule(70))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_timeconcern",
+            unlocked=False,
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_timeconcern:
     jump monika_timeconcern
 
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),code="GRE")
-    del rules
+    ev_rules = {}
+    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
+    ev_rules.update(MASPriorityRule.create_rule(70))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_timeconcern_day",
+            unlocked=False,
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_timeconcern_day:
     jump monika_timeconcern_day
 
 init 5 python:
-    rules = dict()
-    rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(skip_visual=True, random_chance=5)
+    )
+    ev_rules.update(MASPriorityRule.create_rule(45))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hairdown",
             unlocked=True,
-            random=True,
-            rules=rules
+            rules=ev_rules,
+            aff_range=(mas_aff.HAPPY, None),
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_hairdown:
 
@@ -2528,20 +2422,20 @@ label greeting_hairdown:
 
 
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
+    ev_rules = {}
+    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+    ev_rules.update(MASPriorityRule.create_rule(15))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_tears",
             unlocked=False,
-            random=False,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_tears:
     m 1q "...[player]."
@@ -2582,16 +2476,19 @@ label greeting_tears:
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-74,max=-29))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
+    # TODO
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(skip_visual=False, random_chance=2)
+    )
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_upset",
             unlocked=True,
-            random=True,
-            rules=rules
+            rules=ev_rules,
+            aff_range=(mas_aff.DISTRESSED, mas_aff.UPSET),
         ),
         code="GRE"
     )
@@ -2626,6 +2523,7 @@ label greeting_upset:
     return
 
 init 5 python:
+    # TODO
     rules = dict()
     rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
     rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
@@ -2671,19 +2569,15 @@ label greeting_distressed:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=None,max=-99))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_broken",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(None, mas_aff.BROKEN),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_broken:
     m 6ckc "..."
@@ -2698,7 +2592,6 @@ init 5 python:
             eventlabel="greeting_back_from_school",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SCHOOL],
-            random=True
         ),
         code="GRE"
     )
@@ -2755,7 +2648,6 @@ init 5 python:
             eventlabel="greeting_back_from_work",
             unlocked=True,
             category=[store.mas_greetings.TYPE_WORK],
-            random=True
         ),
         code="GRE"
     )
@@ -2818,7 +2710,6 @@ init 5 python:
             eventlabel="greeting_back_from_sleep",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SLEEP],
-            random=True
         ),
         code="GRE"
     )
@@ -2848,16 +2739,17 @@ label greeting_back_from_sleep:
 
 init 5 python:
     if not mas_cannot_decode_islands:
-        rules = dict()
-        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-        rules.update({"monika wants this first":""})
+        ev_rules = {}
+        ev_rules.update(MASPriorityRule.create_rule(40))
+
+        # TODO: update script
         addEvent(
             Event(
                 persistent.greeting_database,
                 eventlabel="greeting_ourreality",
-                unlocked=False,
-                random=False,
-                rules=rules
+                unlocked=True,
+                rules=rules,
+                mas_aff.
             ),
             code="GRE"
         )

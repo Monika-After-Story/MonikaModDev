@@ -304,6 +304,10 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# TODO: need to add update scripts for all greetings tht were changed in
+#   this commit
+
+
 # 0.8.14
 label v0_8_14(version="v0_8_14"):
     python:
