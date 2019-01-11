@@ -1721,7 +1721,7 @@ init 20 python:
             store.mas_unlockEVL(ev_label, 'APL')
 
             #Calculate the current total playtime
-            current_total_playtime = persistent.sessions['total_playtime'] + (datetime.datetime.now() - persistent.sessions['current_session_start'])
+            current_total_playtime = persistent.sessions['total_playtime'] + mas_getSessionLength()
 
             #Now we set up our apology dict to keep track of this so we can relock it if you didn't apologize in time
             persistent._mas_apology_time_db[ev_label] = (current_total_playtime + apology_active_expiry,datetime.date.today() + apology_overall_expiry)
@@ -2100,9 +2100,8 @@ label monika_affection_nickname:
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
                             if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
-                                m 2efc "Forget about this idea."
-                                m "It seems it was a mistake."
-                                m 1efc "Let's talk about something else."
+                                call monika_affection_nickname_bad_lock
+
                             show monika 1efc
                             pause 5.0
                         else:
@@ -2114,9 +2113,7 @@ label monika_affection_nickname:
                             m 2dftdc "That really hurt, [player]."
 
                             if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
-                                m 2efc "Forget about this idea."
-                                m "It seems it was a mistake."
-                                m 1efc "Let's talk about something else."
+                                call monika_affection_nickname_bad_lock
                             else:
                                 m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
@@ -2124,6 +2121,7 @@ label monika_affection_nickname:
                         #reset nickname if not Monika
                         if m_name.lower() != "monika":
                             $ m_name = "Monika"
+                            $ persistent._mas_monika_nickname = "Monika"
 
                         $ mas_lockEventLabel("monika_affection_nickname")
                         $ done = True
@@ -2133,6 +2131,12 @@ label monika_affection_nickname:
             m 1lksdlc "Alright then, if you say so."
             m 3eka "Just tell me if you ever change your mind, [player]."
             $ done = True
+    return
+
+label monika_affection_nickname_bad_lock:
+    m 2efc "Forget about this idea."
+    m "It seems it was a mistake."
+    m 1efc "Let's talk about something else."
     return
 
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.

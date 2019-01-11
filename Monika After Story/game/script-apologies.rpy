@@ -1,8 +1,13 @@
 #Create an apology db for storing our times
+#Stores the event label as a key, its corresponding data is a tuple where:
+#   [0] -> timedelta defined by: current total playtime + apology_active_expiry time
+#   [1] -> datetime.date defined by the date the apology was added + apology_overall_expiry time
 default persistent._mas_apology_time_db = {}
 
 #Create a generic apology db. We'll want to know how many times the player has apologized for mas_apology_reason
 #Allows us the ability to apply diminishing returns on affection for repeated use of the same apology
+#This db here simply stores the integer corresponding to apology reason as a key,
+#corresponding int value is the amt of times it was used
 default persistent._mas_apology_reason_use_db = {}
 
 init -10 python in mas_apology:
@@ -11,21 +16,21 @@ init -10 python in mas_apology:
 
 
 #going to need this post ev_handler init
-init 20 python:
+init python:
     def mas_checkApologies():
         #Let's not do extra work
         if len(persistent._mas_apology_time_db) == 0:
             return
 
         #Calculate the current total playtime to compare...
-        current_total_playtime = persistent.sessions['total_playtime'] + (datetime.datetime.now() - persistent.sessions['current_session_start'])
+        current_total_playtime = persistent.sessions['total_playtime'] + mas_getSessionLength()
 
         #Iter thru the stuffs in the apology time tb
-        for ev, td in persistent._mas_apology_time_db.items():
-            if current_total_playtime >= td[0] or datetime.date.today() >= td[1]:
+        for ev in persistent._mas_apology_time_db.keys():
+            if current_total_playtime >= persistent._mas_apology_time_db[ev][0] or datetime.date.today() >= persistent._mas_apology_time_db[ev][1]:
                 #Pop the ev_label from the time db and lock the event label. You just lost your chance
-                store.mas_hideEVL(ev,'APL',lock=True)
-                del persistent._mas_apology_time_db[ev]
+                store.mas_lockEVL(ev,'APL')
+                persistent._mas_apology_time_db.pop(ev)
 
         return
 
@@ -75,9 +80,9 @@ label monika_playerapologizes:
     #Now we run through our apology db and find what's unlocked
     python:
         apologylist = [
-            (mas_getEV(ev).prompt,ev,False,False)
-            for ev in store.mas_apology.apology_db
-            if mas_getEV(ev).unlocked
+            (ev.prompt, ev.eventlabel, False, False)
+            for ev_label, ev in store.mas_apology.apology_db.iteritems()
+            if ev.unlocked
         ]
 
         #The back button
@@ -115,7 +120,10 @@ label monika_playerapologizes:
                 m 1hua "Ehehe, you don't have anything to be sorry about silly~"
             elif mas_isMoniNormal(higher=True):
                 m 1eka "I'm not sure what you wanted to apologize for, but I'm sure that it was nothing."
-
+            elif mas_isMoniDis(higher=True):
+                m 1rkc "Did you have something to say, [player]?"
+            else:
+                m "..."
         return
 
 
@@ -138,7 +146,7 @@ label monika_playerapologizes:
 init 5 python:
     addEvent(
         Event(
-            persistent.apology_database,
+            persistent._mas_apology_database,
             prompt="...for something else.",
             eventlabel="mas_apology_generic",
             unlocked=True,
@@ -197,7 +205,7 @@ label mas_apology_generic:
     #We only want this for actual apology reasons. Not the 0 case or the None case.
     if mas_apology_reason:
         #Update the apology_reason count db (if not none)
-        $ persistent._mas_apology_reason_use_db[mas_apology_reason] += 1
+        $ persistent._mas_apology_reason_use_db[mas_apology_reason] = persistent._mas_apology_reason_use_db.get(mas_apology_reason,0) + 1
 
         if persistent._mas_apology_reason_use_db[mas_apology_reason] == 1:
             #Restore a little bit of affection
@@ -215,7 +223,7 @@ label mas_apology_generic:
 init 5 python:
     addEvent(
         Event(
-            persistent.apology_database,
+            persistent._mas_apology_database,
             eventlabel="mas_apology_bad_nickname",
             prompt="...for calling you a bad name.",
             unlocked=False
@@ -224,28 +232,29 @@ init 5 python:
     )
 
 label mas_apology_bad_nickname:
-        if mas_getEV('mas_apology_bad_nickname').shown_count == 0:
-            $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-            m 1eka "Thank you for apologizing for the name you tried to give me."
-            m 2ekd "That really hurt, [player]..."
-            m 2dsc "I accept your apology, but please don't do that again. Okay?"
-            $ mas_unlockEVL("monika_affection_nickname", "EVE")
+    $ ev = mas_getEV('mas_apology_bad_nickname')
+    if ev.shown_count == 0:
+        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
+        m 1eka "Thank you for apologizing for the name you tried to give me."
+        m 2ekd "That really hurt, [player]..."
+        m 2dsc "I accept your apology, but please don't do that again. Okay?"
+        $ mas_unlockEVL("monika_affection_nickname", "EVE")
 
-        elif mas_getEV('mas_apology_bad_nickname').shown_count == 1:
-            $ mas_gainAffection(modifier=0.1) # recover less affection
-            m 2dsc "I can't believe you did that {i}again{/i}."
-            m 2dkd "Even after I gave you a second chance."
-            m 2tkc "I'm disappointed in you, [player]."
-            m 2tfc "Don't ever do that again."
-            $ mas_unlockEVL("monika_affection_nickname", "EVE")
+    elif ev.shown_count == 1:
+        $ mas_gainAffection(modifier=0.1) # recover less affection
+        m 2dsc "I can't believe you did that {i}again{/i}."
+        m 2dkd "Even after I gave you a second chance."
+        m 2tkc "I'm disappointed in you, [player]."
+        m 2tfc "Don't ever do that again."
+        $ mas_unlockEVL("monika_affection_nickname", "EVE")
 
-        else:
-            #No recovery here. You asked for it.
-            m 2wfc "[player]!"
-            m 2wfd "I can't believe you."
-            m 2dfc "I trusted you to give me a good nickname to make me more unique, but you just threw it back in my face..."
-            m "I guess I couldn't trust you for this."
-            m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-            m 2rfc "I'd accept your apology, [player], but I don't think you even mean it."
-            #No unlock of nickname topic either.
-        return
+    else:
+        #No recovery here. You asked for it.
+        m 2wfc "[player]!"
+        m 2wfd "I can't believe you."
+        m 2dfc "I trusted you to give me a good nickname to make me more unique, but you just threw it back in my face..."
+        m "I guess I couldn't trust you for this."
+        m ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+        m 2rfc "I'd accept your apology, [player], but I don't think you even mean it."
+        #No unlock of nickname topic either.
+    return
