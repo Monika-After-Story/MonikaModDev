@@ -364,6 +364,8 @@ label birthdate:
                 m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
+            else:
+                $ persistent._mas_player_bday_no_decor = True
             return
         else:
             $ persistent._mas_player_bday_no_decor = True
@@ -375,7 +377,7 @@ label birthdate:
                 m 1rksdla "I wish I had known earlier so I could've prepared something."
                 m 1eka "But I can at least do this..."
                 call mas_player_bday_moni_sings
-            elif mas_isMoniDis(higher=True):                
+            elif mas_isMoniDis(higher=True):
                 m 1hub "Ahaha! It's not much but it's something!"
                 m 3hua "I promise next year we'll do something extra special, [player]!"
                 m 2eka "Oh, so today's your birthday..."
