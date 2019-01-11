@@ -352,26 +352,22 @@ label birthdate:
 
     if mas_isplayer_bday():
         if old_bday_not_none == mas_player_bday_curr:
-            if mas_isMoniUpset(lower=True):
-                $ persistent._mas_player_bday_no_decor = True
-                m 2eka "Ah, so today {i}is{/i} your birthday..."
-                m "Happy Birthday, [player]."
-                m 4eka "I hope you have a good day."
-                return
-            else:
+            if mas_isMoniNormal(higher=True):
                 m 3hub "Ahaha! So today {i}is{/i} your birthday!"
                 m 1tsu "I'm glad I was prepared, ehehe..."
                 m 3eka "Hold on just one moment, [player]..."
                 show monika 1dsc
                 pause 2.0
                 jump mas_player_bday_when_confirmed
-        else:
-            $ persistent._mas_player_bday_no_decor = True
-            if mas_isMoniUpset(lower=True):
-                m 2eka "Oh, so today's your birthday..."
+            elif mas_isMoniDis(higher=True):
+                $ persistent._mas_player_bday_no_decor = True
+                m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
-            else:
+            return
+        else:
+            $ persistent._mas_player_bday_no_decor = True
+            if mas_isMoniNormal(higher=True):
                 $ persistent._mas_player_bday_in_player_bday_mode = True
                 m 1wuo "Oh...{w=1}Oh!"
                 m 3sub "Today's your birthday!"
@@ -379,8 +375,12 @@ label birthdate:
                 m 1rksdla "I wish I had known earlier so I could've prepared something."
                 m 1eka "But I can at least do this..."
                 call mas_player_bday_moni_sings
+            elif mas_isMoniDis(higher=True):                
                 m 1hub "Ahaha! It's not much but it's something!"
                 m 3hua "I promise next year we'll do something extra special, [player]!"
+                m 2eka "Oh, so today's your birthday..."
+                m "Happy Birthday, [player]."
+                m 4eka "I hope you have a good day."
             return
 
     # have to use the raw data here to properly compare in the rare even that the player bday and first sesh are on 2/29
