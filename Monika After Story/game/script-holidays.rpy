@@ -3288,6 +3288,8 @@ default persistent._mas_player_bday_date = 0
 default persistent._mas_player_bday_left_on_bday = False
 # affection gained on bday dates
 default persistent._mas_player_bday_date_aff_gain = 0
+# set to True if Moni first learns of your bday on your bday
+default persistent._mas_player_bday_when_found = False
 
 init -10 python:
     def mas_isplayer_bday(_date=None):
@@ -3318,9 +3320,10 @@ init -810 python:
         {
             "_mas_player_bday_in_player_bday_mode": "player_bday.player_bday_mode",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
-            "_mas_player_bday_no_decor": "player_bday.no_decor",
+            "_mas_player_bday_decor": "player_bday.decor",
             "_mas_player_bday_date": "player_bday.date",
-            "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain"
+            "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
+            "_mas_player_bday_when_found": "player_bday.when_found"
         },
         use_year_before=True,
     ))
@@ -3342,15 +3345,24 @@ init -11 python in mas_player_bday_event:
         renpy.show("mas_bday_balloons", zorder=8)
 
 label mas_player_bday_autoload_check:
-    if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_decor:
+    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_found:
         # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
         # need this so we don't get any strange force quit dlg after the greet
         $ persistent.closed_self = True
         jump ch30_post_restartevent_check
-    else:
-        jump mas_ch30_post_holiday_check
+    if persistent._mas_player_bday_in_player_bday_mode:
+        # if in bday mode, do we want decorations?
+        if mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday:
+            # if still bday or we left on bday, still want decorations
+            $ persistent._mas_player_bday_decor = True
+        else:
+            # no longer want to be in bday mode
+            $ persistent._mas_player_bday_decor = False
+            $ persistent._mas_player_bday_in_player_bday_mode = False
+            $ mas_lockEVL("bye_player_bday", "BYE")
+    jump mas_ch30_post_holiday_check
     return
 
 # closed door greet option for opening door without listening
@@ -3451,14 +3463,14 @@ label mas_player_bday_opendoor_listened:
 
 # all paths lead here
 label mas_player_bday_cake:
+    $ persistent._mas_player_bday_in_player_bday_mode = True
+    $ mas_unlockEVL("bye_player_bday", "BYE")
     window hide
     show monika 6dsc
     pause 1.0
     $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
     show monika 6dsa
     pause 0.5
-    $ persistent._mas_player_bday_in_player_bday_mode = True
-    $ mas_unlockEVL("bye_player_bday", "BYE")
     m 6eua "Let me just light the candles for you..."
     window hide
     show monika 6dsa
@@ -3545,7 +3557,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_player_bday_upset_minus",
             years = [],
-            aff_range=(None, mas_aff.UPSET)
+            aff_range=(mas_aff.DISTRESSED, mas_aff.UPSET)
         ),
         skipCalendar=True
     )
@@ -3555,10 +3567,6 @@ label mas_player_bday_upset_minus:
     if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_decor:
         return
     else:
-        $ persistent._mas_player_bday_decor = False
-        if mas_isMoniBroken():
-            # no dialogue for broken, just need the var set
-            return
         m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
         m "I hope you have a good day."
         return
@@ -3677,6 +3685,7 @@ label greeting_returned_home_player_bday:
         pause 2.0
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
         $ persistent._mas_player_bday_decor = False
+        $ mas_lockEVL("bye_player_bday", "BYE")
         m 3eua "There we go!"
         m 1hua "Now, let's enjoy the day together, [player]~"
 

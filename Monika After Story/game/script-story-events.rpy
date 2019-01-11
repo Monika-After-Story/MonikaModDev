@@ -363,26 +363,23 @@ label birthdate_set:
                 pause 2.0
                 jump mas_player_bday_when_confirmed
             elif mas_isMoniDis(higher=True):
-                $ persistent._mas_player_bday_decor = False
-                m 2eka "Ah, so today {i}is{/i} your birthday..."
+                 m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
-            else:
-                $ persistent._mas_player_bday_decor = False
             return
         else:
-            $ persistent._mas_player_bday_decor = False
             if mas_isMoniNormal(higher=True):
-                $ persistent._mas_player_bday_in_player_bday_mode = True
+                $ persistent._mas_player_bday_when_found = True
+                $ mas_unlockEVL("bye_player_bday", "BYE")
                 m 1wuo "Oh...{w=1}Oh!"
                 m 3sub "Today's your birthday!"
                 m 3hub "Happy Birthday, [player]!"
                 m 1rksdla "I wish I had known earlier so I could've prepared something."
                 m 1eka "But I can at least do this..."
                 call mas_player_bday_moni_sings
-            elif mas_isMoniDis(higher=True):
                 m 1hub "Ahaha! It's not much but it's something!"
                 m 3hua "I promise next year we'll do something extra special, [player]!"
+            elif mas_isMoniDis(higher=True):
                 m 2eka "Oh, so today's your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."

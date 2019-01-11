@@ -547,11 +547,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         $ store.mas_d25_event.showD25Visuals()
 
     # player bday
-    if persistent._mas_player_bday_in_player_bday_mode:
-        if (mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday) and persistent._mas_player_bday_decor:
-            $ store.mas_player_bday_event.show_player_bday_Visuals()
-        if not mas_isplayer_bday():
-            $ mas_lockEVL("bye_player_bday", "BYE")
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
     return
 
 label ch30_main:
@@ -830,7 +828,7 @@ label mas_ch30_post_retmoni_check:
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
-    if mas_isplayer_bday():
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
 
