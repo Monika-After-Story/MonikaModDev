@@ -363,7 +363,7 @@ label birthdate_set:
                 pause 2.0
                 jump mas_player_bday_when_confirmed
             elif mas_isMoniDis(higher=True):
-                 m 2eka "Ah, so today {i}is{/i} your birthday..."
+                m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
             return
