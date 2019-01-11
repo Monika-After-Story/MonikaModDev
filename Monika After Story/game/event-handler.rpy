@@ -1516,11 +1516,6 @@ init python:
         if not topic_label:
             return True
 
-        global mas_afk_already
-        if mas_afk_already:
-            if topic_label.startswith("greeting_") or topic_label.startswith("bye"):
-                return False
-
         if topic_label.startswith("greeting_"):
             return True
 
@@ -1628,6 +1623,69 @@ init python:
         # otherwise we didnt unlock anything because nothing available
         return False
 
+###TODO:Need to block talk, extra and play from being pressed while eventlabel inactivity_detection is being called/jumped to.
+init 10 python:
+    import time
+    global mas_afk_time
+    global mas_afk_duration
+    # How much time in seconds should pass, before it's considered that player is afk.
+    mas_afk_duration = 20
+    mas_afk_time = time.time() + mas_afk_duration
+    config.overlay_screens.append("inactivity_detection_screen")
+    class MASInactivity(renpy.Displayable):
+        
+        import pygame
+
+        def __init__(self):
+            super(MASInactivity, self).__init__()
+
+        def event(self, ev, x, y, st):
+            global mas_afk_time
+            global mas_afk_duration
+            # Constant checking for player activity - mouse movement, keystrokes and mouse button clicks
+            if ev.type == pygame.MOUSEMOTION or ev.type == pygame.KEYDOWN or ev.type == pygame.MOUSEBUTTONDOWN:
+                mas_afk_time = time.time() + mas_afk_duration
+            if mas_afk_time < time.time():
+                mas_afk_time = time.time() + 10000000000
+                # Checking if event can be restarted.
+                if persistent.current_monikatopic == ("inactivity_detection"):
+                    renpy.redraw(self, 0)
+                if not mas_isRstBlk(persistent.current_monikatopic):
+                    pushEvent(persistent.current_monikatopic)
+                    pushEvent('continue_event')
+                    persistent.current_monikatopic = 0
+                    #if can be restarted jump to afk dialogue.
+                    renpy.jump("inactivity_detection")
+                else:
+                #if can't be restarted simply call afk dialogue.
+                    renpy.call("inactivity_detection")
+            renpy.redraw(self, 0)
+
+        def render(self, width, height, st, at):
+            return renpy.Render(0, 0)
+
+screen inactivity_detection_screen():
+    add MASInactivity()
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="inactivity_detection",
+            category=["dev"],
+            prompt="INACTIVITY DETECTION (ACTUALLY NO NEED TO PRESS THAT)",
+            pool=False,
+            unlocked=False
+        )
+    )
+
+label inactivity_detection:
+    #TODO: I'm terrible at making dialogues, can someone please check if this is actually alright?
+    m "Are you still there?"
+    m "You are back, [player]!"
+    return
+
+return
 
 init 1 python in evhand:
     # mainly to contain action-based functions and fill an appropriate action
