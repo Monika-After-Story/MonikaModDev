@@ -551,6 +551,8 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
         if (mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday) and not persistent._mas_player_bday_no_decor:
             $ renpy.show("mas_bday_banners", zorder=7)
             $ renpy.show("mas_bday_balloons", zorder=8)
+        if not mas_isplayer_bday():
+            $ mas_lockEVL("bye_player_bday", "BYE")
     return
 
 label ch30_main:

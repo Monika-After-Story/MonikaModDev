@@ -283,7 +283,7 @@ label birthdate:
                 str(persistent._mas_player_bday.day) + ", " + 
                 str(persistent._mas_player_bday.year)
             )
-    $ old_bday = persistent._mas_player_bday
+    $ old_bday = mas_player_bday_curr
     $ old_bday_not_none = None
 
     m 1euc "Hey [player], I've been thinking..."
@@ -297,13 +297,13 @@ label birthdate:
                     m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
             "No":
                 m 3rksdlc "Oh! Okay then..."
-                m 1eksdld "Then when {i}is{/i} your birthdate, [player]?"
+                m 1eksdld "When {i}is{/i} your birthdate, [player]?"
                 call mas_bday_player_bday_select_select
 
     else:
         m 3wud "I don't actually know when your birthdate is!"
         m 3hub "That's something I should probably know, ahaha!"
-        m 1euc "So, when were you born, [player]?"
+        m 1eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
 
     python:
@@ -347,6 +347,9 @@ label birthdate:
     if old_bday is not None:
         $ old_bday_not_none = old_bday.replace(year=mas_player_bday_curr.year)
 
+    if not mas_isplayer_bday() and old_bday_not_none == mas_player_bday_curr:
+        return
+
     if mas_isplayer_bday():
         if old_bday_not_none == mas_player_bday_curr:
             if mas_isMoniUpset(lower=True):
@@ -380,23 +383,53 @@ label birthdate:
                 m 3hua "I promise next year we'll do something extra special, [player]!"
             return
 
-    if mas_monika_birthday == mas_player_bday_curr:
-        if old_bday_not_none == mas_player_bday_curr:
-            m 3sua "So your birthday {i}is{/i} the same day as mine!"
-        else:
-            m 1wuo "Oh...{w=1}Oh!"
-            m 3sua "We share the same birthday!"
-        jump share_same_bday
+    # have to use the raw data here to properly compare in the rare even that the player bday and first sesh are on 2/29
+    if persistent._mas_player_bday.month == persistent.sessions.get("first_session",None).month and persistent._mas_player_bday.day == persistent.sessions.get("first_session",None).day:
+        m 1sua "Oh! Your birthday is the same date as our anniversary, [player]?"
+        m 3hub "That's amazing!"
+        m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
+        if mas_player_bday_curr == mas_o31 or mas_player_bday_curr == mas_d25 or mas_player_bday_curr == mas_monika_birthday:
+            #TODO: add more holidays here (f14)
+            if mas_player_bday_curr == mas_o31:
+                $ hol_str = "Halloween"
+            if mas_player_bday_curr == mas_d25:
+                $ hol_str = "Christmas"
+            if mas_player_bday_curr == mas_monika_birthday:
+                $ hol_str = "my birthday"
+            m "And with it also being [hol_str]..."
+        m 3hua "It just sounds magical~"
+        return
+
+    if mas_player_bday_curr == mas_monika_birthday:
+        m 1wuo "Oh...{w=1}Oh!"
+        m 3sua "We share the same birthday!"
+        m 3sub "That's {i}so{/i} cool, [player]!"
+        m 1tsu "I guess we really are meant to be together, ehehe..."
+        m 3hua "We'll have to make that an extra special day~"
+        return
+
+    if mas_player_bday_curr == mas_o31:
+        m 3eua "Oh! That's pretty neat that you were born on Halloween, [player]!"
+        m 1hua "Birthday cake, candy, and you..."
+        m 3hub "That's a lot of sweets for one day, ahaha!"
+        return
+
+    if mas_player_bday_curr == mas_d25:
+        m 1hua "Oh! That's amazing that you were born on Christmas, [player]!"
+        m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
+        m 3hub "It still must make it an extra special day!"
+        return
+
+#TODO: activate this once mas_f14 exists
+#    if mas_player_bday_curr == mas_f14:
+#        m 1sua "Oh! Your birthday is on Valentine's Day..."
+#        m 3hua "How romantic!"
+#        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+#        return
 
     if persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
-    return
-
-label share_same_bday:
-    m 3sub "That's {i}so{/i} cool, [player]!"
-    m 1tsu "I guess we really are meant to be together, ehehe..."
-    m 3hua "We'll have to make that an extra special day~"
     return
 
 ## Game unlock events
@@ -2015,8 +2048,5 @@ label mas_bday_player_bday_select_select:
 
     $ persistent._mas_player_bday = selected_date
     $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
-
-
-    # TODO: react if your birthday is on a special day (holiday, sep 22, etc)
-
+    $ renpy.save_persistent()
     return

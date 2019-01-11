@@ -3434,6 +3434,7 @@ label mas_player_bday_cake:
     show monika 6dsa
     pause 0.5
     $ persistent._mas_player_bday_in_player_bday_mode = True
+    $ mas_unlockEVL("bye_player_bday", "BYE")
     m 6eua "Let me just light the candles for you..."
     window hide
     show monika 6dsa
@@ -3583,6 +3584,19 @@ label mas_player_bday_moni_sings:
     m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     return
 #################################################player_bday dock stat farewell##################################################
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_player_bday",
+            unlocked=False,
+            prompt="Let's go out for my birthday!",
+            pool=True,
+            rules={"no unlock": None}
+        ),
+        code="BYE"
+    )
+
 label bye_player_bday:
     $  persistent._mas_player_bday_date += 1
     if persistent._mas_player_bday_date == 1:
