@@ -2130,7 +2130,7 @@ label mas_affection_finalfarewell:
         ui.add(MASFinalNoteDisplayable())
         scratch_var = ui.interact()
 
-    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_finalfarewell.png")
+    call showpoem(poem_finalfarewell, music=False,paper="mod_assets/poem_assets/poem_finalfarewell.png")
 
     menu:
         "I'm sorry.":

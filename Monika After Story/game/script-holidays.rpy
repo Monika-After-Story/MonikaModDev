@@ -1958,8 +1958,7 @@ label mas_d25_spent_time_monika:
 
     if mas_isMoniEnamored(higher=True):
         m 3ekbfa "So here, [player], I hope you like it~"
-        call showpoem(poem_d25, music=False,paper="mod_assets/poem_d25.png")
-
+        call showpoem(poem_d25, music=False,paper="mod_assets/poem_assets/poem_d25.png")
 
 #        generic poem show
 #        window hide
@@ -3490,7 +3489,7 @@ label mas_player_bday_cake:
     m 6dkbsu "..."
     m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr.month
-    call showpoem(poem_pbday, music=False,paper="mod_assets/poem_pbday_[p_bday_month].png")
+    call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
     if persistent._mas_first_kiss is None and mas_isMoniEnamored(higher=True):
         m 6dkbsu "..."
         m 6ekbfa "[player]...I...I..."
