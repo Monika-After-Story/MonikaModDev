@@ -1629,7 +1629,7 @@ init 10 python:
     global mas_afk_time
     global mas_afk_duration
     # How much time in seconds should pass, before it's considered that player is afk.
-    mas_afk_duration = 20
+    mas_afk_duration = 600
     mas_afk_time = time.time() + mas_afk_duration
     config.overlay_screens.append("inactivity_detection_screen")
     class MASInactivity(renpy.Displayable):
