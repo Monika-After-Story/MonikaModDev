@@ -2914,6 +2914,9 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
+    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
+        call return_home_post_player_bday 
     return
 
 label greeting_returned_home_morethan5mins_other_dlg:
