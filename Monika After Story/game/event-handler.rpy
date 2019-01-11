@@ -1623,13 +1623,15 @@ init python:
         # otherwise we didnt unlock anything because nothing available
         return False
 
-###TODO:Need to block talk, extra and play from being pressed while eventlabel inactivity_detection is being called/jumped to.
+#TODO:Need to block talk, extra and play from being pressed while eventlabel inactivity_detection is being called/jumped to.
 init 10 python:
     import time
     global mas_afk_time
     global mas_afk_duration
+    global mas_afk_already
+    mas_afk_already = False
     # How much time in seconds should pass, before it's considered that player is afk.
-    mas_afk_duration = 600
+    mas_afk_duration = 10
     mas_afk_time = time.time() + mas_afk_duration
     config.overlay_screens.append("inactivity_detection_screen")
     class MASInactivity(renpy.Displayable):
@@ -1648,8 +1650,6 @@ init 10 python:
             if mas_afk_time < time.time():
                 mas_afk_time = time.time() + 10000000000
                 # Checking if event can be restarted.
-                if persistent.current_monikatopic == ("inactivity_detection"):
-                    renpy.redraw(self, 0)
                 if not mas_isRstBlk(persistent.current_monikatopic):
                     pushEvent(persistent.current_monikatopic)
                     pushEvent('continue_event')
@@ -1681,8 +1681,17 @@ init 5 python:
 
 label inactivity_detection:
     #TODO: I'm terrible at making dialogues, can someone please check if this is actually alright?
-    m "Are you still there?"
-    m "You are back, [player]!"
+    $ global mas_afk_already
+    if not mas_afk_already:
+        $ mas_afk_already = True
+        m "Are you still there?"
+        m "You are back, [player]!"
+        $ mas_afk_already = False
+    else:
+        #Only repeating first line, because call to inactivity for the second time detection skipped it. 
+        #This is going to be a lot harder if there will be more lines than 2. But I already know how to fix it.
+        m "Are you still there?"
+        $ mas_afk_already = False
     return
 
 return
