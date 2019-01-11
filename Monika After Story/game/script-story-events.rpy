@@ -270,10 +270,12 @@ label monika_changename:
     return
 
 default persistent._mas_player_bday = None
+# check to see if we've already confirmed birthday in any way
+default persistent._mas_player_confirmed_bday = False
 
 #TODO: determing appropriate xp level for this
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="get_level()>=4 and not seen_event('birthdate')",action=EV_ACT_QUEUE))
+    addEvent(Event(persistent.event_database,eventlabel="birthdate",conditional="datetime.date.today()>persistent.sessions.get('first_session',None).date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label birthdate:
     if persistent._mas_player_bday is not None:
@@ -283,8 +285,6 @@ label birthdate:
                 str(persistent._mas_player_bday.day) + ", " + 
                 str(persistent._mas_player_bday.year)
             )
-    $ old_bday = mas_player_bday_curr
-    $ old_bday_not_none = None
 
     m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
@@ -306,6 +306,7 @@ label birthdate:
         m 1eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
 
+label birthdate_set:
     python:
         bday_upset_ev = mas_getEV('mas_player_bday_upset_minus')
         if bday_upset_ev is not None:
@@ -313,7 +314,7 @@ label birthdate:
             bday_upset_ev.end_date = mas_player_bday_curr + datetime.timedelta(days=1)
             bday_upset_ev.conditional = (
                 "mas_isplayer_bday() "
-                "and not persistent._mas_player_bday_no_decor "
+                "and not persistent._mas_player_bday_decor "
                 "and not persistent._mas_player_bday_in_player_bday_mode")
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
@@ -325,7 +326,7 @@ label birthdate:
             bday_no_restart_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_no_decor "
+                "and not persistent._mas_player_bday_decor "
                 "and not mas_isO31() "
                 "and not mas_isD25()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
@@ -338,12 +339,14 @@ label birthdate:
             bday_holiday_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_no_decor "
+                "and not persistent._mas_player_bday_decor "
                 "and "
                 "mas_isO31() or mas_isD25()")
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
-  
+
+        persistent._mas_player_confirmed_bday = True
+
     if old_bday is not None:
         $ old_bday_not_none = old_bday.replace(year=mas_player_bday_curr.year)
 
@@ -360,15 +363,15 @@ label birthdate:
                 pause 2.0
                 jump mas_player_bday_when_confirmed
             elif mas_isMoniDis(higher=True):
-                $ persistent._mas_player_bday_no_decor = True
+                $ persistent._mas_player_bday_decor = False
                 m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
             else:
-                $ persistent._mas_player_bday_no_decor = True
+                $ persistent._mas_player_bday_decor = False
             return
         else:
-            $ persistent._mas_player_bday_no_decor = True
+            $ persistent._mas_player_bday_decor = False
             if mas_isMoniNormal(higher=True):
                 $ persistent._mas_player_bday_in_player_bday_mode = True
                 m 1wuo "Oh...{w=1}Oh!"
@@ -432,6 +435,19 @@ label birthdate:
     if persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="calendar_birthdate",conditional="renpy.seen_label('_first_time_calendar_use') and persistent._mas_player_bday is None",action=EV_ACT_PUSH))
+
+label calendar_birthdate:
+    m 1lksdla "Hey [player]..."
+    m 3eksdla "You may have noticed that my calendar was pretty empty..."
+    m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
+    m 3hub "Your birthday, ahaha!"
+    m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
+    m 1eud "So [player], when were you born?"
+    call mas_bday_player_bday_select_select
     return
 
 ## Game unlock events
@@ -1955,6 +1971,8 @@ label mas_bday_player_bday_select:
     m 1eua "When is your birthdate?"
 
 label mas_bday_player_bday_select_select:
+    $ old_bday = mas_player_bday_curr
+    $ old_bday_not_none = None
     call mas_start_calendar_select_date
 
     $ selected_date_t = _return
@@ -2051,4 +2069,4 @@ label mas_bday_player_bday_select_select:
     $ persistent._mas_player_bday = selected_date
     $ mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
     $ renpy.save_persistent()
-    return
+    call birthdate_set
