@@ -1638,11 +1638,12 @@ init 20 python:
             modifier=1,
             reason="",
             ev_label=None,
-            apology_expiry=datetime.timedelta(hours=3)
+            apology_active_expiry=datetime.timedelta(hours=3),
+            apology_overall_expiry=datetime.timedelta(weeks=1)
         ):
 
         #set apology flag
-        mas_setApologyReason(reason=reason,ev_label=ev_label,apology_expiry=apology_expiry)
+        mas_setApologyReason(reason=reason,ev_label=ev_label,apology_active_expiry=apology_active_expiry,apology_overall_expiry=apology_overall_expiry)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
@@ -1684,7 +1685,8 @@ init 20 python:
     def mas_setApologyReason(
         reason=None,
         ev_label=None,
-        apology_expiry=datetime.timedelta(hours=3)
+        apology_active_expiry=datetime.timedelta(hours=3),
+        apology_overall_expiry=datetime.timedelta(weeks=1)
         ):
         """
         Sets a reason for apologizing
@@ -1694,10 +1696,12 @@ init 20 python:
                 (if left None, and an ev_label is present, we assume a non-generic apology)
             ev_label - The apology event we want to unlock
                 (required)
-            apology_expiry - The amount of time spent after the apology was added that it expires
-                (we assume: 3 hours)
-
+            apology_active_expiry - The amount of session time after which, the apology that was added expires
+                defaults to 3 hours active time
+            apology_overall_expiry - The amount of overall time after which, the apology that was added expires
+                defaults to 7 days
         """
+
         global mas_apology_reason
 
         if ev_label is None:
@@ -1718,8 +1722,9 @@ init 20 python:
 
             #Calculate the current total playtime
             current_total_playtime = persistent.sessions['total_playtime'] + (datetime.datetime.now() - persistent.sessions['current_session_start'])
+
             #Now we set up our apology dict to keep track of this so we can relock it if you didn't apologize in time
-            persistent._mas_apology_time_db[ev_label] = ((current_total_playtime + apology_expiry))
+            persistent._mas_apology_time_db[ev_label] = (current_total_playtime + apology_active_expiry,datetime.date.today() + apology_overall_expiry)
             return
 
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.

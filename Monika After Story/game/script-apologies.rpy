@@ -21,7 +21,7 @@ init 20 python:
 
         #Iter thru the stuffs in the apology time tb
         for ev, td in persistent._mas_apology_time_db.items():
-            if current_total_playtime >= td:
+            if current_total_playtime >= td[0] or datetime.date.today() >= td[1]:
                 #Pop the ev_label from the time db and lock the event label. You just lost your chance
                 store.mas_hideEVL(ev,'APL',lock=True)
                 del persistent._mas_apology_time_db[ev]
