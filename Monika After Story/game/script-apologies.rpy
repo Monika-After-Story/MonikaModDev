@@ -7,13 +7,14 @@ default persistent._mas_apology_reason_use_db = {}
 
 init -10 python in mas_apology:
     apology_db = {}
+    # Event database for apologies
 
 
 #going to need this post ev_handler init
 init 20 python:
     def mas_checkApologies():
         #Let's not do extra work
-        if persistent._mas_apology_time_db == {}:
+        if len(persistent._mas_apology_time_db) == 0:
             return
 
         #Calculate the current total playtime to compare...
@@ -60,7 +61,7 @@ label monika_playerapologizes:
     }
 
     #Set the prompt for this...
-    if persistent._mas_apology_time_db != {}:
+    if len(persistent._mas_apology_time_db) > 0:
         #If there's a non-generic apology reason pending we use "for something else."
         $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
     else:
@@ -92,7 +93,7 @@ label monika_playerapologizes:
 
     #Handle backing out
     if not apology:
-        if mas_apology_reason is not None or persistent._mas_apology_time_db != {}:
+        if mas_apology_reason is not None or len(persistent._mas_apology_time_db) > 0:
             if mas_isMoniAff(higher=True):
                 m 1ekd "[player], if you're feeling guilty about what happened..."
                 m 1eka "You don't have to be afraid of apologizing, we all make mistakes after all."
@@ -120,14 +121,14 @@ label monika_playerapologizes:
 
     #Call our apology label
     #NOTE: mas_setApologyReason() ensures that this label exists
-    $ renpy.call(apology)
+    call expression apology
 
     #Increment the shown count
     $ mas_getEV(apology).shown_count += 1
 
     #Lock the apology label if it's not the generic
-    if not apology == "mas_apology_generic":
-        $ store.mas_hideEVL(apology,'APL',lock=True)
+    if apology != "mas_apology_generic":
+        $ store.mas_lockEVL(apology, 'APL')
 
     #Pop that apology from the time db
     if apology in persistent._mas_apology_time_db: #sanity check
@@ -167,7 +168,7 @@ label mas_apology_generic:
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 
     #If there's no reason to apologize
-    if mas_apology_reason is None and persistent._mas_apology_time_db == {}:
+    if mas_apology_reason is None and len(persistent._mas_apology_time_db) == 0:
         m 1ekd "Did something happen?"
         m 2ekc "I see no reason for you to be sorry."
         m 1dsc "..."
@@ -181,7 +182,7 @@ label mas_apology_generic:
         m "I accept your apology, [player]. It means a lot to me."
 
     #She knows that you've got something else to apologize for, and wants you to own up
-    elif persistent._mas_apology_time_db != {}:
+    elif len(persistent._mas_apology_time_db) > 0:
         m 2tfc "[player], if you have something to apologize for, please just say it."
         m 2rfc "It means a lot more if you'd just admit what you did."
 
@@ -196,7 +197,7 @@ label mas_apology_generic:
     #We only want this for actual apology reasons. Not the 0 case or the None case.
     if mas_apology_reason:
         #Update the apology_reason count db (if not none)
-        $ persistent._mas_apology_reason_use_db[mas_apology_reason] = persistent._mas_apology_reason_use_db.get(mas_apology_reason,0) + 1
+        $ persistent._mas_apology_reason_use_db[mas_apology_reason] += 1
 
         if persistent._mas_apology_reason_use_db[mas_apology_reason] == 1:
             #Restore a little bit of affection
@@ -228,7 +229,7 @@ label mas_apology_bad_nickname:
             m 1eka "Thank you for apologizing for the name you tried to give me."
             m 2ekd "That really hurt, [player]..."
             m 2dsc "I accept your apology, but please don't do that again. Okay?"
-            $ mas_unlockEventLabel("monika_affection_nickname")
+            $ mas_unlockEVL("monika_affection_nickname", "EVE")
 
         elif mas_getEV('mas_apology_bad_nickname').shown_count == 1:
             $ mas_gainAffection(modifier=0.1) # recover less affection
@@ -236,9 +237,9 @@ label mas_apology_bad_nickname:
             m 2dkd "Even after I gave you a second chance."
             m 2tkc "I'm disappointed in you, [player]."
             m 2tfc "Don't ever do that again."
-            $ mas_unlockEventLabel("monika_affection_nickname")
+            $ mas_unlockEVL("monika_affection_nickname", "EVE")
 
-        elif mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+        else:
             #No recovery here. You asked for it.
             m 2wfc "[player]!"
             m 2wfd "I can't believe you."
