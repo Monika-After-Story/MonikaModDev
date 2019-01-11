@@ -3332,7 +3332,7 @@ init -11 python in mas_player_bday_event:
 
     def show_player_bday_Visuals():
         """
-        Shows player_bday visuals.
+        Shows player_bday visuals
         """
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
@@ -3341,8 +3341,8 @@ init -11 python in mas_player_bday_event:
         """
         Hides player_bday visuals
         """
-        renpy.show("mas_bday_banners", zorder=7)
-        renpy.show("mas_bday_balloons", zorder=8)
+        renpy.hide("mas_bday_banners", zorder=7)
+        renpy.hide("mas_bday_balloons", zorder=8)
 
 label mas_player_bday_autoload_check:
     if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_found:
@@ -3376,6 +3376,10 @@ label mas_player_bday_opendoor:
     m 2tfd "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
     m 2dkc "..."
     m 2ekd "Well...{w=1}the surprise is ruined now, but..."
+    pause 1.0
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ persistent._mas_player_bday_decor = True
+    pause 1.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4eua "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
@@ -3678,14 +3682,15 @@ label greeting_returned_home_player_bday:
         m 1ekbfa "Thanks for making me such a big part of your special day~"
     
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+        $ persistent._mas_player_bday_in_player_bday_mode = False
+        $ persistent._mas_player_bday_decor = False
+        $ mas_lockEVL("bye_player_bday", "BYE")
         m 1hub "Gosh, we were gone so long it's not even your birthday anymore, ahaha!"
         m 3rksdla "We should probably take these decorations down now."
         m 3eka "Just give me one moment, [player]..."
         show monika 1dsc
         pause 2.0
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
-        $ persistent._mas_player_bday_decor = False
-        $ mas_lockEVL("bye_player_bday", "BYE")
         m 3eua "There we go!"
         m 1hua "Now, let's enjoy the day together, [player]~"
 
