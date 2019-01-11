@@ -190,14 +190,14 @@ image mas_bday_banners = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
 image mas_bday_balloons = ConditionSwitch(
-    "persistent._mas_sensitive_mode and morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
-    "persistent._mas_sensitive_mode and not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png",
     "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png"
+#    "morning_flag",
+#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+#    "not morning_flag",
+#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:
