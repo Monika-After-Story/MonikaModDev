@@ -15,7 +15,6 @@ init -10 python in mas_apology:
     # Event database for apologies
 
 
-#going to need this post ev_handler init
 init python:
     def mas_checkApologies():
         #Let's not do extra work
@@ -25,12 +24,13 @@ init python:
         #Calculate the current total playtime to compare...
         current_total_playtime = persistent.sessions['total_playtime'] + mas_getSessionLength()
 
+        $ _today = datetime.date.today()
         #Iter thru the stuffs in the apology time tb
-        for ev in persistent._mas_apology_time_db.keys():
-            if current_total_playtime >= persistent._mas_apology_time_db[ev][0] or datetime.date.today() >= persistent._mas_apology_time_db[ev][1]:
+        for ev_label in persistent._mas_apology_time_db.keys():
+            if current_total_playtime >= persistent._mas_apology_time_db[ev_label][0] or _today >= persistent._mas_apology_time_db[ev_label][1]:
                 #Pop the ev_label from the time db and lock the event label. You just lost your chance
-                store.mas_lockEVL(ev,'APL')
-                persistent._mas_apology_time_db.pop(ev)
+                store.mas_lockEVL(ev_label,'APL')
+                persistent._mas_apology_time_db.pop(ev_label)
 
         return
 
@@ -171,10 +171,6 @@ label mas_apology_generic:
         10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better."
     }
 
-    #We want to make sure that the None possibility is still a thing after apologizing once.
-    if mas_apology_reason is not None:
-        $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
-
     #If there's no reason to apologize
     if mas_apology_reason is None and len(persistent._mas_apology_time_db) == 0:
         m 1ekd "Did something happen?"
@@ -186,6 +182,9 @@ label mas_apology_generic:
 
     #She knows what you are apologizing for
     elif mas_apology_reason:
+        #Set apology_reason
+        $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
+
         m 1eka "Thank you for apologizing for [apology_reason]"
         m "I accept your apology, [player]. It means a lot to me."
 
