@@ -1490,7 +1490,7 @@ init python:
             return False
 
 
-    def restartEvent():
+    def restartEvent(mas_afk_already=False):
         #
         # This checks if there is a persistent topic, and if there was push it
         # back on the stack with a little comment.
@@ -1499,9 +1499,17 @@ init python:
         #
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
-            pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event')
-            persistent.current_monikatopic = 0
+            if mas_afk_already:
+                if not persistent.current_monikatopic.startswith("inactivity_detection"):
+                    pushEvent(persistent.current_monikatopic)
+                    pushEvent('continue_event')
+                    renpy.jump("inactivity_detection_blank")
+            else:
+                pushEvent(persistent.current_monikatopic)
+                pushEvent('continue_event')
+                persistent.current_monikatopic = 0
+        elif mas_afk_already:
+            renpy.call("inactivity_detection_blank")
         return
 
 
@@ -1515,6 +1523,9 @@ init python:
         """
         if not topic_label:
             return True
+
+        if topic_label.startswith("inactivity_detection"):
+            return False
 
         if topic_label.startswith("greeting_"):
             return True
@@ -1628,10 +1639,8 @@ init 10 python:
     import time
     global mas_afk_time
     global mas_afk_duration
-    global mas_afk_already
-    mas_afk_already = False
     # How much time in seconds should pass, before it's considered that player is afk.
-    mas_afk_duration = 600
+    mas_afk_duration = 20
     mas_afk_time = time.time() + mas_afk_duration
     config.overlay_screens.append("inactivity_detection_screen")
     class MASInactivity(renpy.Displayable):
@@ -1649,16 +1658,7 @@ init 10 python:
                 mas_afk_time = time.time() + mas_afk_duration
             if mas_afk_time < time.time():
                 mas_afk_time = time.time() + 10000000000
-                # Checking if event can be restarted.
-                if not mas_isRstBlk(persistent.current_monikatopic):
-                    pushEvent(persistent.current_monikatopic)
-                    pushEvent('continue_event')
-                    persistent.current_monikatopic = 0
-                    #if can be restarted jump to afk dialogue.
-                    renpy.jump("inactivity_detection")
-                else:
-                #if can't be restarted simply call afk dialogue.
-                    renpy.call("inactivity_detection")
+                restartEvent(True)
             renpy.redraw(self, 0)
 
         def render(self, width, height, st, at):
@@ -1681,20 +1681,13 @@ init 5 python:
 
 label inactivity_detection:
     #TODO: I'm terrible at making dialogues, can someone please check if this is actually alright?
-    $ global mas_afk_already
-    if not mas_afk_already:
-        $ mas_afk_already = True
-        m "Are you still there?"
-        m "You are back, [player]!"
-        $ mas_afk_already = False
-    else:
-        #Only repeating first line, because call to inactivity for the second time detection skipped it. 
-        #This is going to be a lot harder if there will be more lines than 2. But I already know how to fix it.
-        m "Are you still there?"
-        $ mas_afk_already = False
+    m "Are you still there?"
+    m "You are back, [player]!"
     return
 
-return
+label inactivity_detection_blank:
+    $ pushEvent("inactivity_detection")
+    return
 
 init 1 python in evhand:
     # mainly to contain action-based functions and fill an appropriate action
