@@ -996,7 +996,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not mas_isO31() and not mas_isD25Season() and not mas_isplayer_bday():
+    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday()):
 
         rules = dict()
         # why are we limiting this to certain day range?
