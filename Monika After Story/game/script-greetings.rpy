@@ -1061,7 +1061,7 @@ label monikaroom_greeting_choice:
                     jump mas_player_bday_opendoor_listened
                 else:
                     jump mas_player_bday_opendoor
-            if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
+            elif persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
                 jump monikaroom_greeting_opendoor_locked
