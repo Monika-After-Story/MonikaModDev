@@ -10595,7 +10595,7 @@ label monika_children:
                         m 4rksdlc "Oh well, one day we'll be able to make it a reality." 
                         m 2hua "So start thinking of names till then! Okay, [player]?"
                     "Two to three.": 
-                        $ persistent._mas_pm_wants_1_child = Flase
+                        $ persistent._mas_pm_wants_1_child = False
                         $ persistent._mas_pm_wants_many_children = False
                         $ persistent._mas_pm_wants_2_to_3_children = True
                         $ persistent._mas_pm_wants_girl = False
@@ -10619,7 +10619,7 @@ label monika_children:
                         m 1subfb "God I love you, [player]." 
                         m "You're the best partner I could ever ask for." 
                     "A lot!": 
-                        $ persistent._mas_pm_wants_1_child = Flase
+                        $ persistent._mas_pm_wants_1_child = False
                         $ persistent._mas_pm_wants_many_children = True
                         $ persistent._mas_pm_wants_2_to_3_children = False
                         $ persistent._mas_pm_wants_girl = False
@@ -10646,7 +10646,7 @@ label monika_children:
                         m 4hub "Until then, I guess we'll just have to use the thought of more children to keep us going." 
             "No.":
                 $ persistent._mas_pm_wants_children = False
-                $ persistent._mas_pm_wants_1_child = Flase
+                $ persistent._mas_pm_wants_1_child = False
                 $ persistent._mas_pm_wants_many_children = False
                 $ persistent._mas_pm_wants_2_to_3_children = False
                 $ persistent._mas_pm_wants_children = False
