@@ -644,7 +644,6 @@ label greeting_trick_or_treat_back:
 
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
         # if we are returning from a non-birthday date post o31 birthday
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
         
     return
@@ -1231,7 +1230,7 @@ label mas_holiday_d25c_autoload_check:
     if mas_in_intro_flow:
         # intro will call us instead of jump
         return
-    if mas_isplayer_bday() and not mas_isD25():
+    elif mas_isplayer_bday() and not mas_isD25():
         jump mas_player_bday_autoload_check
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
@@ -2330,7 +2329,6 @@ label greeting_d25e_returned_d25:
     m 1hua "And we're home!"
     m 3wud "Wow, we were out all night..."
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -2346,7 +2344,6 @@ label greeting_d25e_returned_post_d25:
     m 3ekbfa "Just being close to you was all I wanted~"
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -2355,7 +2352,6 @@ label greeting_pd25e_returned_d25:
     m 1hua "And we're home!"
     m 3wud "Wow, we were gone quite a while..."
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -2381,7 +2377,6 @@ label greeting_d25_returned_post_d25:
     m 1hua "So thank you for spending time with me when you had other places you had to be..."
     m 3ekbfa "You're always so thoughtful~"
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -3225,7 +3220,6 @@ label greeting_nye_returned_nyd:
     m "That really meant a lot to me."
     m 5eubfb "Thanks for making my year, [player]."
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -3259,7 +3253,6 @@ label greeting_pd25e_returned_nydp:
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -3274,7 +3267,6 @@ label greeting_d25p_returned_nyd:
     m 1eka "That was a long trip, but it was a lot of fun!"
     m 3hub "It's great to be back home now though, we can spend the new year together."
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
@@ -3290,20 +3282,11 @@ label greeting_d25p_returned_nydp:
     m "I'm really happy you took me."
     m 3hub "Happy New Year, [player]~"
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        m 3rksdla "Oh...we should probably take these decorations down now. Ahaha!"
         call return_home_post_player_bday
     return
 
 ########################################################### player_bday ########################################################################
 # [HOL040]
-
-# date of current year bday, accounting for leap years
-init -1 python:
-    if persistent._mas_player_bday is None:
-        mas_player_bday_curr = None
-
-    else:
-        mas_player_bday_curr = store.mas_utils.add_years(persistent._mas_player_bday,datetime.date.today().year-persistent._mas_player_bday.year)
 
 # so we know we are in player b_day mode
 default persistent._mas_player_bday_in_player_bday_mode = False
@@ -3317,8 +3300,8 @@ default persistent._mas_player_bday_date = 0
 default persistent._mas_player_bday_left_on_bday = False
 # affection gained on bday dates
 default persistent._mas_player_bday_date_aff_gain = 0
-# set to True if Moni first learns of your bday on your bday
-default persistent._mas_player_bday_when_found = False
+# set to True if Moni confirms your bday on your bday
+default persistent._mas_player_bday_when_confirmed = False
 # set to true once low affection birthday event is seen
 default persistent._mas_player_bday_low_aff = False
 
@@ -3341,7 +3324,28 @@ init -10 python:
         if persistent._mas_player_bday is None:
             return False
         else:
-            return _date == store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
+            return _date == mas_player_bday_curr()
+
+    def strip_mas_birthdate():
+        """
+        strips mas_birthdate of its conditional and action to prevent double birthday sets
+        """
+        mas_birthdate_ev = mas_getEV('mas_birthday')
+        if mas_birthdate_ev is not None:
+            mas_birthdate_ev.conditional = None
+            mas_birthdate_ev.conditional.action = None
+
+init -11 python:
+    def mas_player_bday_curr(_date=None):
+        """
+        sets date of current year bday, accounting for leap years
+        """
+        if _date is None:
+            _date = datetime.date.today()
+        if persistent._mas_player_bday is None:
+            return None
+        else:
+            return store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
 init -810 python:
     # MASHistorySaver for player_bday
@@ -3354,7 +3358,7 @@ init -810 python:
             "_mas_player_bday_decor": "player_bday.decor",
             "_mas_player_bday_date": "player_bday.date",
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
-            "_mas_player_bday_when_found": "player_bday.when_found",
+            "_mas_player_bday_when_confirmed": "player_bday.when_confirmed",
             "_mas_player_bday_low_aff": "player_bday.low_aff"
         },
         use_year_before=True,
@@ -3378,14 +3382,14 @@ init -11 python in mas_player_bday_event:
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bay mode, have confirmed birthday, have normal+ affection and have not gotten bday event from confirm topic
-    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_found and not persistent._mas_player_bday_low_aff:
+    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_confirmed and not persistent._mas_player_bday_low_aff:
         # starting player b_day off with a closed door greet, provided normal+
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
         # need this so we don't get any strange force quit dlg after the greet
         $ persistent.closed_self = True
         jump ch30_post_restartevent_check
-    if persistent._mas_player_bday_in_player_bday_mode:
+    elif persistent._mas_player_bday_in_player_bday_mode:
         # if in bday mode, do we want decorations?
         if mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday:
             # if still bday or we left on bday, still want decorations
@@ -3435,27 +3439,27 @@ label mas_player_bday_knock_no_listen:
 # closed door greet surprise flow
 label mas_player_bday_surprise:
     $ scene_change = True
+    $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=False)
     show monika 1hub at t11
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
-    $ persistent._mas_player_bday_decor = True
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
     menu:
         m "Did I surprise you?"
-        "Yes":
+        "Yes.":
             m 1hub "Yay!"
             m 3hua "I always love pulling off a good surprise!"
             m 1tsu "I wish I could've seen the look on your face, ehehe."
 
-        "No":
+        "No.":
             m 2lfp "Hmph. Well that's okay."
             m 2tsu "You're probably just saying that because you don't want to admit I caught you off guard..."
-            if renpy.seen_label("monikaroom_greeting_ear_narration") and renpy.seen_label("mas_player_bday_listen"):
-                m 2tsb "...or maybe you were listening through the door again..."
-            elif renpy.seen_label("mas_player_bday_listen"):
-                m 2tsb "{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
-                $ _history_list.pop()
+            if renpy.seen_label("mas_player_bday_listen"):
+                if renpy.seen_label("monikaroom_greeting_ear_narration"):
+                    m 2tsb "...or maybe you were listening through the door again..."
+                else:
+                    m 2tsb "{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
+                    $ _history_list.pop()
             m 2hua "Ehehe."
     m 3wub "Oh! {w=0.5}I made you a cake!"
     call mas_player_bday_cake
@@ -3484,9 +3488,8 @@ label mas_player_bday_knock_listened:
 label mas_player_bday_opendoor_listened:
     $ persistent._mas_player_bday_opened_door = True
     $ scene_change = True
-    call spaceroom(hide_monika=True)
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
     $ persistent._mas_player_bday_decor = True
+    call spaceroom(hide_monika=True)
     $ mas_disable_quit()
     m "[player]!"
     m "You didn't knock!"
@@ -3538,13 +3541,16 @@ label mas_player_bday_cake:
     pause 0.5
     m 6dkbsu "..."
     m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
-    $ p_bday_month = mas_player_bday_curr.month
+    $ p_bday_month = mas_player_bday_curr().month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
+    #TODO: add kiss here for people who have kissed before once we figure out shorter kiss
     if persistent._mas_first_kiss is None and mas_isMoniEnamored(higher=True):
         m 6dkbsu "..."
         m 6ekbfa "[player]...I...I..."
         call monika_kissing_motion(hide_ui=False)
     m 6ekbfa "I love you so much [player], let's enjoy your special day~"
+    if "mas_player_bday_no_restart" in persistent.event_list:
+        $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
 
 # event for if the player leaves the game open starting before player_bday and doesn't restart
@@ -3561,9 +3567,6 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
-    #sanity checks
-    if persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor or not mas_isplayer_bday() or persistent._mas_player_bday_when_found or persistent._mas_player_bday_low_aff:
-        return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
     pause 2.0
@@ -3600,14 +3603,10 @@ init 5 python:
     )
 
 label mas_player_bday_upset_minus:
-    #sanity checks
-    if persistent._mas_player_bday_in_player_bday_mode or not mas_isplayer_bday() or persistent._mas_player_bday_decor or persistent._mas_player_bday_when_found or persistent._mas_player_bday_low_aff:
-        return
-    else:
-        $ persistent._mas_player_bday_low_aff = True
-        m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
-        m "I hope you have a good day."
-        return
+    $ persistent._mas_player_bday_low_aff = True
+    m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
+    m "I hope you have a good day."
+    return
 
 # event for if the player's bday is also on a holiday
 # TODO update this as we add other holidays (f14) also figure out what to do if player bday is 9/22
@@ -3624,9 +3623,6 @@ init 5 python:
     )
 
 label mas_player_bday_other_holiday:
-    # sanity checks
-    if not mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode or persistent._mas_player_bday_decor or persistent._mas_player_bday_when_found or persistent._mas_player_bday_low_aff:
-        return
     if mas_isO31():
         $ holiday_var = "Halloween"
     if mas_isD25():
@@ -3716,21 +3712,20 @@ label greeting_returned_home_player_bday:
         m 1ekbfa "Thanks for making me such a big part of your special day~"
     
     if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
-        $ persistent._mas_player_bday_in_player_bday_mode = False
-        $ persistent._mas_player_bday_decor = False
-        $ mas_lockEVL("bye_player_bday", "BYE")
-        m 1hub "Gosh, we were gone so long it's not even your birthday anymore, ahaha!"
-        m 3rksdla "We should probably take these decorations down now."
         call return_home_post_player_bday
     $ persistent._mas_player_bday_left_on_bday = False
     return
 
 label return_home_post_player_bday:
+    $ persistent._mas_player_bday_in_player_bday_mode = False
+    $ persistent._mas_player_bday_decor = False
+    $ mas_lockEVL("bye_player_bday", "BYE")
+    m 1hub "Oh...it's not your birthday anymore..."
+    m 3rksdla "We should probably take these decorations down now, ahaha!"
     m 3eka "Just give me one moment, [player]..."
     show monika 1dsc
     pause 2.0
     $ store.mas_player_bday_event.hide_player_bday_Visuals()
-    $ persistent._mas_player_bday_decor = False
     m 3eua "There we go!"
     m 1hua "Now, let's enjoy the day together, [player]~"
     $ persistent._mas_player_bday_left_on_bday = False
