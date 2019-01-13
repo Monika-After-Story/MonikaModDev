@@ -2310,6 +2310,9 @@ label mas_dockstat_empty_desk:
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
 
+    if not persistent._mas_player_bday_no_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
     else:
         # show birthday visuals?
         $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)

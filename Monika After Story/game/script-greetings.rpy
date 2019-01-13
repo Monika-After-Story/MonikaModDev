@@ -1056,10 +1056,11 @@ label monikaroom_greeting_choice:
             else:
                 jump monikaroom_greeting_opendoor
         "Open the door." if persistent.seen_monika_in_room or mas_isplayer_bday():
-            if mas_isplayer_bday() and has_listened:
-                jump mas_player_bday_opendoor_listened
-            if mas_isplayer_bday() and not has_listened:
-                jump mas_player_bday_opendoor
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_opendoor_listened
+                else:
+                    jump mas_player_bday_opendoor
             if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
                 $ mas_loseAffection(reason="entering my room without knocking")
@@ -1073,10 +1074,11 @@ label monikaroom_greeting_choice:
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
-            if mas_isplayer_bday() and has_listened:
-                jump mas_player_bday_knock_listened
-            if mas_isplayer_bday() and not has_listened:
-                jump mas_player_bday_knock_no_listen
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_knock_listened
+                else:
+                    jump mas_player_bday_knock_no_listen
 
             jump monikaroom_greeting_knock
         "Listen." if not has_listened and not mas_isMoniBroken():

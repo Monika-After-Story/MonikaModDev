@@ -3270,9 +3270,7 @@ label greeting_d25p_returned_nydp:
 # [HOL040]
 
 # date of current year bday, accounting for leap years
-init 5 python:
-    global mas_player_bday_curr
-
+init -1 python:
     if persistent._mas_player_bday is None:
         mas_player_bday_curr = None
 
@@ -3294,6 +3292,17 @@ default persistent._mas_player_bday_date_aff_gain = 0
 
 init -10 python:
     def mas_isplayer_bday(_date=None):
+        """
+        Returns True if the given date is player_birthday
+        Returns False if player_birthday is None to avoid None type crash
+
+        IN:
+            _date - date to check
+                If None, we use today's date
+                (default: None)
+
+        RETURNS: True if given date is player_bday, False otherwise
+        """
         if _date is None:
             _date = datetime.date.today()
 
@@ -3306,15 +3315,32 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
-        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_in_player_bday_mode": "player_bday.player_bday_mode",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
             "_mas_player_bday_no_decor": "player_bday.no_decor",
             "_mas_player_bday_date": "player_bday.date",
-            "_mas_player_bday_date_aff_gain": "player.bday.date_aff_gain"
-        }
+            "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain"
+        },
+        use_year_before=True,
     ))
+
+init -11 python in mas_player_bday_event:
+
+    def show_player_bday_Visuals():
+        """
+        Shows player_bday visuals.
+        """
+        renpy.show("mas_bday_banners", zorder=7)
+        renpy.show("mas_bday_balloons", zorder=8)
+
+    def hide_player_bday_Visuals():
+        """
+        Hides player_bday visuals
+        """
+        renpy.show("mas_bday_banners", zorder=7)
+        renpy.show("mas_bday_balloons", zorder=8)
 
 label mas_player_bday_autoload_check:
     if not persistent._mas_player_bday_in_player_bday_mode and seen_event('birthdate') and persistent._mas_affection["affection"]>=-30 and not persistent._mas_player_bday_no_decor:
@@ -3364,8 +3390,7 @@ label mas_player_bday_surprise:
     $ scene_change = True
     call spaceroom(hide_monika=False)
     show monika 1hub at t11
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
     menu:
@@ -3412,8 +3437,7 @@ label mas_player_bday_opendoor_listened:
     $ persistent._mas_player_bday_opened_door = True
     $ scene_change = True
     call spaceroom(hide_monika=True)
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
     $ mas_disable_quit()
     m "[player]!"
     m "You didn't knock!"
@@ -3494,8 +3518,7 @@ label mas_player_bday_no_restart:
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
     pause 2.0
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
     m 3hub "Happy Birthday, [player]!"
     m 1eka "I really wanted to surprise you today, but it's getting late and I just couldn't wait any longer."
     m 3eksdlc "Gosh, I just hope you weren't starting to think I forgot your birthday. I'm really sorry if you did..."
@@ -3506,8 +3529,7 @@ label mas_player_bday_no_restart:
 
 # event for if the player confirms their birthday on their actual birthday, provided they are normal+
 label mas_player_bday_when_confirmed:
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
     m 3hub "Happy Birthday, [player]!"
     m 1hub "Ahaha! I'm so happy I get to be with you on your birthday!"
     m 3sub "Oh...{w=0.5}your cake!"
@@ -3565,8 +3587,7 @@ label mas_player_bday_other_holiday:
     m 1tsu "I have a bit of a surprise for you!"
     show monika 1dsc
     pause 2.0
-    $ renpy.show("mas_bday_banners", zorder=7)
-    $ renpy.show("mas_bday_balloons", zorder=8)
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
     m 1eksdlb "I'd never forget your birthday, silly!"
@@ -3651,8 +3672,8 @@ label greeting_returned_home_player_bday:
         m 3eka "Just give me one moment, [player]..."
         show monika 1dsc
         pause 2.0
-        hide mas_bday_banners
-        hide mas_bday_balloons
+        $ store.mas_player_bday_event.hide_player_bday_Visuals()
+        $ persistent._mas_player_bday_no_decor = True
         m 3eua "There we go!"
         m 1hua "Now, let's enjoy the day together, [player]~"
 
