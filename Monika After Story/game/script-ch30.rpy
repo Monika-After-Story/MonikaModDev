@@ -1072,7 +1072,7 @@ label ch30_loop:
             renpy.save_persistent()
 
 label ch30_post_mid_loop_eval:
-    
+
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
