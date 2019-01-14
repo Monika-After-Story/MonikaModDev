@@ -3572,6 +3572,23 @@ init -1 python:
         return True
 
 
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        if (
+                persistent.sessions is not None
+                and "first_session" in persistent.sessions
+                and type(persistent.sessions["first_session"]) 
+                    == datetime.datetime
+            ):
+            return persistent.sessions["first_session"]
+
+        return datetime.datetime.now()
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
