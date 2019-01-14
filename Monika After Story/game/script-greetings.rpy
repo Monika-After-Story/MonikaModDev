@@ -964,6 +964,7 @@ label greeting_monika_monday_morning:
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
         m "I love you so much, [player]~"
+        $ persistent._mas_monika_love_reaction_event = 1
 
     elif mas_isMoniUpset():
         m 2tfc "Another Monday morning."
