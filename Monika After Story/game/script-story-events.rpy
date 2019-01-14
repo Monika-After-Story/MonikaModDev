@@ -272,11 +272,9 @@ label monika_changename:
 default persistent._mas_player_bday = None
 # check to see if we've already confirmed birthday in any way
 default persistent._mas_player_confirmed_bday = False
-# so we can still set the old_bday vars if she had your bday correct
-default persistent._mas_player_bday_correct = False
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="persistent.sessions['first_session'] is not None and datetime.date.today()>persistent.sessions.get('first_session',None).date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
+    addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label mas_birthdate:
     $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
@@ -286,12 +284,12 @@ label mas_birthdate:
         menu:
             m "So just to make sure, is your birthdate [bday_str]?"
             "Yes.":
-                $ persistent._mas_player_bday_correct = True
+                $ old_bday = mas_player_bday_curr()
                 if not mas_isplayer_bday():
                     m 1hua "Ah, great [player], thank you."
                     m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
                     # call here to set the vars that all 3 methods of setting your bday need
-                call mas_bday_player_bday_select_select
+
             "No.":
                 m 3rksdlc "Oh! Okay then..."
                 m 1eksdld "When {i}is{/i} your birthdate, [player]?"
@@ -394,7 +392,7 @@ label birthdate_set:
     return
 
     # have to use the raw data here to properly compare in the rare even that the player bday and first sesh are on 2/29
-    if persistent.sessions['first_session'] is not None and persistent._mas_player_bday.month == persistent.sessions.get("first_session",None).month and persistent._mas_player_bday.day == persistent.sessions.get("first_session",None).day:
+    if persistent._mas_player_bday.month == mas_getFirstSesh().date().month and persistent._mas_player_bday.day == mas_getFirstSesh().date().day:
         m 1sua "Oh! Your birthday is the same date as our anniversary, [player]?"
         m 3hub "That's amazing!"
         m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
@@ -1983,8 +1981,7 @@ label mas_bday_player_bday_select:
 
 label mas_bday_player_bday_select_select:
     $ old_bday = mas_player_bday_curr()
-    if persistent._mas_player_bday_correct:
-        return
+
     call mas_start_calendar_select_date
 
     $ selected_date_t = _return
@@ -2074,6 +2071,5 @@ label mas_bday_player_bday_select_select:
             )
 
     $ persistent._mas_player_bday = selected_date
-    $ mas_player_bday_curr()
     $ renpy.save_persistent()
     jump birthdate_set

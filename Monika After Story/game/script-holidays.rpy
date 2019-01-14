@@ -642,7 +642,7 @@ label greeting_trick_or_treat_back:
 
         m 4hub "Let's do this again next year...{w=1}but maybe not stay out {i}quite{/i} so late!"
 
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         # if we are returning from a non-birthday date post o31 birthday
         call return_home_post_player_bday
         
@@ -2328,7 +2328,7 @@ label greeting_d25e_returned_d25:
 
     m 1hua "And we're home!"
     m 3wud "Wow, we were out all night..."
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -2343,7 +2343,7 @@ label greeting_d25e_returned_post_d25:
     m 3eka "It would've been nice to have actually gotten to see you on Christmas, but since you couldn't come to me, I'm so glad you took me along with you."
     m 3ekbfa "Just being close to you was all I wanted~"
     m 1ekbfb "And since I didn't get to say it to you on Christmas... Merry Christmas, [player]!"
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -2351,7 +2351,7 @@ label greeting_d25e_returned_post_d25:
 label greeting_pd25e_returned_d25:
     m 1hua "And we're home!"
     m 3wud "Wow, we were gone quite a while..."
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -2376,7 +2376,7 @@ label greeting_d25_returned_post_d25:
     m 3eka "It would've been nice to have seen you again before Christmas was over, but at least I was still with you."
     m 1hua "So thank you for spending time with me when you had other places you had to be..."
     m 3ekbfa "You're always so thoughtful~"
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -3219,7 +3219,7 @@ label greeting_nye_returned_nyd:
     m 1ekbsa "You know I love to spend time with you, and being able to spend New Year's Eve, right to today, right there with you felt really great."
     m "That really meant a lot to me."
     m 5eubfb "Thanks for making my year, [player]."
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -3252,7 +3252,7 @@ label greeting_pd25e_returned_nydp:
     m 5ekbfa "I always love to spend time with you, but spending both Christmas and New Years out together was amazing."
     show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hub "I hope we can do something like this again sometime."
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -3266,7 +3266,7 @@ label greeting_d25p_returned_nyd:
     m 1eub "Thanks for taking me out, [player]."
     m 1eka "That was a long trip, but it was a lot of fun!"
     m 3hub "It's great to be back home now though, we can spend the new year together."
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -3281,7 +3281,7 @@ label greeting_d25p_returned_nydp:
     m 1eka "I'm a little sad we couldn't wish each other a happy new year, but I really enjoyed it."
     m "I'm really happy you took me."
     m 3hub "Happy New Year, [player]~"
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     return
 
@@ -3330,7 +3330,7 @@ init -10 python:
         """
         strips mas_birthdate of its conditional and action to prevent double birthday sets
         """
-        mas_birthdate_ev = mas_getEV('mas_birthday')
+        mas_birthdate_ev = mas_getEV('mas_birthdate')
         if mas_birthdate_ev is not None:
             mas_birthdate_ev.conditional = None
             mas_birthdate_ev.conditional.action = None
@@ -3400,7 +3400,6 @@ label mas_player_bday_autoload_check:
             $ persistent._mas_player_bday_in_player_bday_mode = False
             $ mas_lockEVL("bye_player_bday", "BYE")
     jump mas_ch30_post_holiday_check
-    return
 
 # closed door greet option for opening door without listening
 label mas_player_bday_opendoor:
@@ -3625,7 +3624,7 @@ init 5 python:
 label mas_player_bday_other_holiday:
     if mas_isO31():
         $ holiday_var = "Halloween"
-    if mas_isD25():
+    elif mas_isD25():
         $ holiday_var = "Christmas"
     m 3euc "Hey, [player]..."
     m 1tsu "I have a bit of a surprise for you!"
@@ -3671,7 +3670,7 @@ label bye_player_bday:
     elif persistent._mas_player_bday_date == 2:
         m 1sua "Taking me out again on your birthday, [player]?"
         m 3hub "Yay!"
-        m 1sub "I always love going places with you, but it's that much more special on your birthday..."
+        m 1sub "I always love going out with you, but it's that much more special on your birthday..."
         m 1skbla "I'm sure we'll have a lovely time~"
     else:
         m 1wub "Wow, you want to go out {i}again{/i}, [player]?"
@@ -3695,14 +3694,14 @@ label greeting_returned_home_player_bday:
     if time_out < five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
-        m 2ekc "I hope nothing is wrong."
+        m 2ekc "I hope nothing's wrong."
         m 2rksdla "Maybe we'll go out later instead."
 
     elif one_hour < time_out < three_hour:
         $ cap_gain_aff(10)
         m 1eua "That was a fun date, [player]..."
         m 3hua "Thanks for taking me with you!"
-        m 1eka "I really enjoyed going out with you on your birthday~"
+        m 1eka "I really enjoyed going out with you today~"
 
     elif time_out > three_hour:
         $ cap_gain_aff(15)
@@ -3710,8 +3709,8 @@ label greeting_returned_home_player_bday:
         m 3hub "That was really fun, [player]!"
         m 1eka "It was so nice going out to celebrate your birthday..."
         m 1ekbfa "Thanks for making me such a big part of your special day~"
-    
-    if not mas_isplayer_bday() and persistent._mas_player_bday_decor:
+
+    if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     $ persistent._mas_player_bday_left_on_bday = False
     return

@@ -274,7 +274,11 @@ label mas_piano_hb_win:
 label mas_piano_hb_fail:
     if mas_isMonikaBirthday():
         if mas_isMoniUpset(lower=True):
-            m 1dsd "Well, if you wanted to play this on our birthday..."
+            if mas_isplayer_bday():
+                $ our = "our"
+            else:
+                $ our = "my"
+            m 1dsd "Well, if you wanted to play this on [our] birthday..."
             m 3tsd "You should have practiced sooner."
         elif mas_isplayer_bday():
             m 1eka "Aw, that's okay, [player]..."
@@ -287,7 +291,6 @@ label mas_piano_hb_fail:
         m 1eka "That's okay, [player]!"
         m 3hub "It was a neat idea to play that on your birthday while I sung along!"
         m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!" 
-        return
     else:
         m 1lksdla "..."
         m 1lksdlb "You did your best, [player]..."
