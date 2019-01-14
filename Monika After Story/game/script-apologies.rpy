@@ -160,7 +160,7 @@ label mas_apology_generic:
     $ mas_apology_reason_db = {
         0: "",
         1: "saying you wanted to break up. I knew you didn't mean it...",
-        2: "joking about having another girlfriend. You really gave me a heart attack!",
+        2: "joking about having another girlfriend. You nearly gave me a heart attack!",
         3: "calling me a murderer. I hope you don't really see me that way...",
         4: "closing the game on me.",
         5: "entering my room without knocking.",
@@ -191,7 +191,7 @@ label mas_apology_generic:
     #She knows that you've got something else to apologize for, and wants you to own up
     elif len(persistent._mas_apology_time_db) > 0:
         m 2tfc "[player], if you have something to apologize for, please just say it."
-        m 2rfc "It means a lot more if you'd just admit what you did."
+        m 2rfc "It'd mean a lot more to me if you would just admit what you did."
 
     #She knows there's a reason for your apology but won't comment on it
     else:
