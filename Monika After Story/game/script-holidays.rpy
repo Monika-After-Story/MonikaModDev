@@ -3333,7 +3333,7 @@ init -10 python:
         mas_birthdate_ev = mas_getEV('mas_birthdate')
         if mas_birthdate_ev is not None:
             mas_birthdate_ev.conditional = None
-            mas_birthdate_ev.conditional.action = None
+            mas_birthdate_ev.action = None
 
 init -11 python:
     def mas_player_bday_curr(_date=None):

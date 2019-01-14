@@ -288,7 +288,6 @@ label mas_birthdate:
                 if not mas_isplayer_bday():
                     m 1hua "Ah, great [player], thank you."
                     m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
-                    # call here to set the vars that all 3 methods of setting your bday need
 
             "No.":
                 m 3rksdlc "Oh! Okay then..."
@@ -387,12 +386,9 @@ label birthdate_set:
                 m 2eka "Oh, so today's your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
-    # this needs to be at end if player bday is today so this is set after persistent._mas_player_bday_low_aff
-    $ persistent._mas_player_confirmed_bday = True
-    return
 
     # have to use the raw data here to properly compare in the rare even that the player bday and first sesh are on 2/29
-    if persistent._mas_player_bday.month == mas_getFirstSesh().date().month and persistent._mas_player_bday.day == mas_getFirstSesh().date().day:
+    elif persistent._mas_player_bday.month == mas_getFirstSesh().date().month and persistent._mas_player_bday.day == mas_getFirstSesh().date().day:
         m 1sua "Oh! Your birthday is the same date as our anniversary, [player]?"
         m 3hub "That's amazing!"
         m 1sua "I can't imagine a more special day than celebrating your birthday and our love on the same day..."
@@ -408,47 +404,44 @@ label birthdate_set:
         if hol_str is not None:
             m "And with it also being [hol_str]..."
         m 3hua "It just sounds magical~"
-        return
 
-    if mas_player_bday_curr() == mas_monika_birthday:
+    elif mas_player_bday_curr() == mas_monika_birthday:
         m 1wuo "Oh...{w=1}Oh!"
         m 3sua "We share the same birthday!"
         m 3sub "That's {i}so{/i} cool, [player]!"
         m 1tsu "I guess we really are meant to be together, ehehe..."
         m 3hua "We'll have to make that an extra special day~"
-        return
 
-    if mas_player_bday_curr() == mas_o31:
+    elif mas_player_bday_curr() == mas_o31:
         m 3eua "Oh! That's pretty neat that you were born on Halloween, [player]!"
         m 1hua "Birthday cake, candy, and you..."
         m 3hub "That's a lot of sweets for one day, ahaha!"
-        return
 
-    if mas_player_bday_curr() == mas_d25:
+    elif mas_player_bday_curr() == mas_d25:
         m 1hua "Oh! That's amazing that you were born on Christmas, [player]!"
         m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
         m 3hub "It still must make it an extra special day!"
         return
 
 #TODO: activate this once mas_f14 exists
-#    if mas_player_bday_curr() == mas_f14:
+#    elif mas_player_bday_curr() == mas_f14:
 #        m 1sua "Oh! Your birthday is on Valentine's Day..."
 #        m 3hua "How romantic!"
 #        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
-#        return
 
-    if persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
+    elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
+
+    $ persistent._mas_player_confirmed_bday = True
+    if "calendar_birthdate" in persistent.event_list:
+        $ persistent.event_list.remove("calendar_birthdate")
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="calendar_birthdate",conditional="renpy.seen_label('_first_time_calendar_use') and persistent._mas_player_bday is None",action=EV_ACT_PUSH))
 
 label calendar_birthdate:
-    # sanity check
-    if persistent._mas_player_confirmed_bday:
-        return
     m 1lksdla "Hey [player]..."
     m 3eksdla "You may have noticed that my calendar was pretty empty..."
     m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
@@ -457,6 +450,8 @@ label calendar_birthdate:
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
     $ strip_mas_birthdate()
+    if "mas_birthdate" in persistent.event_list:
+        $ persistent.event_list.remove("mas_birthdate")
     return
 
 ## Game unlock events
