@@ -1636,7 +1636,7 @@ init 20 python:
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
             modifier=1,
-            reason="",
+            reason=None,
             ev_label=None,
             apology_active_expiry=datetime.timedelta(hours=3),
             apology_overall_expiry=datetime.timedelta(weeks=1)
