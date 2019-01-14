@@ -2790,6 +2790,12 @@ label monika_love:
         $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
         return
 
+    #Event for when Monika tells the player she loves him.
+    #Triggered if the player immediatelly reacts with "I love you".
+    elif persistent._mas_monika_love_reaction_event != 0:
+        call monika_love_reaction_event
+        return
+
     #After I love you has been received positively 5/10/15 etc times.
     elif persistent._mas_monika_lovecounter== 5:
         m 1hubfb "I love you so much, [player]!"
@@ -2885,6 +2891,15 @@ label monika_love:
         $ persistent._mas_monika_lovecounter += 1
         $ mas_gainAffection()
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+    return
+
+label monika_love_reaction_event:
+    #Another Monday morning, eh, [player]?  ->  I love you so much, [player]~
+    if persistent._mas_monika_love_reaction_event == 1:
+        m 1hubfb "I am so happy you feel the same way!"
+        m 4eub "Let's make this day as nice as any other day of the week!"
+        
+    $ persistent._mas_monika_love_reaction_event = 0
     return
 
 init 5 python:
@@ -10516,4 +10531,3 @@ label monika_hemispheres_nogets_snow:
     m 3hksdlb "At least you don't have to worry about shoveling it."
     call monika_snow_nogets_snow
     return
-   
