@@ -1072,7 +1072,7 @@ label ch30_loop:
             renpy.save_persistent()
 
 label ch30_post_mid_loop_eval:
-
+    
     #Call the next event in the list
     call call_next_event from _call_call_next_event_1
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
@@ -1126,6 +1126,9 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
+        # Resets Monika's I love you reaction to its default
+        $ persistent._mas_monika_love_reaction_event = 0
+    
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
             label pick_random_topic:
