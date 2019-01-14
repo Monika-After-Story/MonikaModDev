@@ -1127,7 +1127,7 @@ label ch30_post_mid_loop_eval:
 #                pushEvent("monika_battery")
 
         # Resets Monika's I love you reaction to its default
-        $ persistent._mas_monika_love_reaction_event = 0
+        $ _mas_monika_love_reaction_event = 0
     
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
