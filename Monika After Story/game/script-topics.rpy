@@ -2792,7 +2792,7 @@ label monika_love:
 
     #Event for when Monika tells the player she loves him.
     #Triggered if the player immediatelly reacts with "I love you".
-    elif persistent._mas_monika_love_reaction_event != 0:
+    elif _mas_monika_love_reaction_event != 0:
         call monika_love_reaction_event
         return
 
@@ -2895,11 +2895,11 @@ label monika_love:
 
 label monika_love_reaction_event:
     #Another Monday morning, eh, [player]?  ->  I love you so much, [player]~
-    if persistent._mas_monika_love_reaction_event == 1:
+    if _mas_monika_love_reaction_event == 1:
         m 1hubfb "I am so happy you feel the same way!"
         m 4eub "Let's make this day as nice as any other day of the week!"
         
-    $ persistent._mas_monika_love_reaction_event = 0
+    $ _mas_monika_love_reaction_event = 0
     return
 
 init 5 python:
