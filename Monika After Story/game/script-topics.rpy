@@ -10544,7 +10544,7 @@ label monika_dream:
         m 1lsbssdrb "I know this is embarrassing to ask, but..."
         menu:
             m "Did we…had fun?"
-
+            
             "Yes."
                 m 1lssdrc "..."
                 m 1lssdrb "I... guess that make sense".
