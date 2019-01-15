@@ -3586,7 +3586,7 @@ init -1 python:
             ):
             return persistent.sessions["first_session"]
 
-        return datetime.datetime.now() - datetime.timedelta(days=1)
+        return datetime.datetime.now()
 
 
     def get_pos(channel='music'):

@@ -439,7 +439,14 @@ label birthdate_set:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="calendar_birthdate",conditional="renpy.seen_label('_first_time_calendar_use') and persistent._mas_player_bday is None",action=EV_ACT_PUSH))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="calendar_birthdate",
+#            conditional="renpy.seen_label('_first_time_calendar_use') and persistent._mas_player_bday is None",
+#            action=EV_ACT_PUSH
+        )
+    )
 
 label calendar_birthdate:
     m 1lksdla "Hey [player]..."

@@ -310,8 +310,6 @@ label v0_8_15(version="v0_8_15"):
         # because of a fucking dumb mistake, need to update script a ton 
         # of events taht got fooked. UGH
 
-        # bday events
-
         # d25
         d25e_ev = mas_getEV("mas_d25_monika_christmas_eve")
         if d25e_ev is not None:
@@ -380,6 +378,13 @@ label v0_8_15(version="v0_8_15"):
         res_ev = mas_getEV("monika_resolutions")
         if res_ev is not None:
             res_ev.action = EV_ACT_QUEUE 
+
+        # push mas birthdate event for users a non None birthday
+        if persistent._mas_player_bday is not None:
+            mas_bd_ev = mas_getEV("mas_birthdate")
+            if mas_bd_ev is not None:
+                mas_bd_ev.conditional = "True"
+                mas_bd_ev.action = EV_ACT_QUEUE
 
     return
 
