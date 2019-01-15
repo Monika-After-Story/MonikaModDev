@@ -10545,7 +10545,7 @@ label monika_dream:
         menu:
             m "Did we…had fun?"
 
-            "Yes".
+            "Yes."
                 m 1lssdrc "..."
                 m 1lssdrb "I... guess that make sense".
                 m 1hksdrb "Well I can’t really blame you for this."
