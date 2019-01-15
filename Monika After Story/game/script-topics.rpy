@@ -10547,7 +10547,7 @@ label monika_dream:
             
             "Yes.":
                 m 1lssdrc "..."
-                m 1lssdrb "I... guess that make sense".
+                m 1lssdrb "I... guess that make sense."
                 m 1hksdrb "Well I can’t really blame you for this."
                 m 1ekbfa "If it helps you feeling close to me and save yourself for me."
                 m 1hubfb "Then you have my benediction [player]."
