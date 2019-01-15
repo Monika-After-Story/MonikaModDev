@@ -10543,7 +10543,7 @@ label monika_dream:
         m 1rud “And…”
         m 1lsbssdrb “I know this is embarrassing to ask, but…”
         menu:
-            m “Did we…had fun?"
+            m “Did we…had fun?”
 
             “Yes”:
                 m 1lssdrc “…”
