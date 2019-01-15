@@ -127,11 +127,38 @@ transform mas_kissing(_zoom, _y,time=2.0):
     xcenter 640 yoffset 700 yanchor 1.0
     linear time ypos _y zoom _zoom
 
+transform mas_back_from_kissing(time, y):
+    linear time xcenter 640 yoffset (y) zoom 0.80
+
+
 default persistent._mas_first_kiss = None
 # contains datetime of users's first kiss with monika
 # NOTE: need to add this to calendar
 
-label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
+# mas_kissing_motion_base label
+# Used to do the kiss motion, it takes care of setting persistent._mas_first_kiss
+#
+# IN:
+#     transition - time in seconds used to transition to the actual kiss and then
+#         used for going back to the inital state
+#         (Default: 4.0)
+#     duration -  time in seconds that the screen stays black
+#         (Default: 3.0)
+#     hide_ui - boolean indicating if we shoudl hide the ui
+#         (Default: True)
+#     initial_exp - string indicating the expression Monika will have at the beginning
+#         of the animation
+#         (Default: 6dubfd)
+#     mid_exp - string indicating the expression Monika will have at the middle
+#         of the animation, when moving back to the original postion
+#         (Default: 6tkbfu)
+#     final_exp - string indicating the expression Monika will have at the end
+#         of the animation, when she's done getting back to the original position
+#         (Default: 6tkbfu)
+#     fade_duration - time in seconds spent fading the screen into black
+#         (Default: 1.0)
+label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
+        initial_exp="6dubfd", mid_exp="6tkbfu", final_exp="6ekbfa", fade_duration=1.0):
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
 
@@ -144,18 +171,19 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
         $ HKBHideButtons()
         $ mas_RaiseShield_core()
     # reset position to i11
-    show monika 6dubfa at i11
+    show monika at i11
     # do the appropriate calculations
     $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
     $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
     $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
     # 380 #correct value for max
     # start the kiss animation
-    show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    $ renpy.show("monika {}".format(initial_exp), [mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)])
+    # show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
     # wait until we're done with the animation
     $ renpy.pause(transition)
     # show black scene
-    show black zorder 100 at fade_in
+    show black zorder 100 at fade_in(fade_duration)
     # wait half the time to play the sound effect
     $ renpy.pause(duration/2)
     play sound "mod_assets/sounds/effects/kissing.ogg"
@@ -165,11 +193,11 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     $ renpy.pause(duration/2)
     # hide the black scene
     hide black
-    # trasition back to i11 in 3 secs which is the best time for non slow back off
-    show monika 6tkbfu :
-        linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
-    pause 3.0
-    show monika 6ekbfa at i11 with dissolve
+    # trasition back which is the best time for non slow back off
+    $ renpy.show("monika {}".format(mid_exp),[mas_back_from_kissing(transition,_mas_kiss_y2)])
+    pause transition
+    $ renpy.show("monika {}".format(final_exp),[i11()])
+    show monika with dissolve
     if hide_ui:
         if store.mas_globals.dlg_workflow:
             $ mas_MUMUDropShield()
