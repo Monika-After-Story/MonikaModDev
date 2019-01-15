@@ -10523,7 +10523,7 @@ init 5 python:
 
 label monika_dream:
     m 1sub “Really?!”
-    m wub “That’s amazing [player].”
+    m 1wub “That’s amazing [player].”
     m 1eub “I hope that it was an agreeable dream.”
     menu:
         m “Did you manage to come and see me or did I appear in front of you?”
