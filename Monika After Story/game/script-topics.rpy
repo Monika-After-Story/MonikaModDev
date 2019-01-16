@@ -10525,6 +10525,24 @@ label monika_dream:
     m 1sub "Really?!"
     m 1wub "That's amazing [player]."
     m 1eub "I hope that it was an agreeable dream."
+    if seen_event("monika_dreaming"):
+        m "Oh, that reminds me!"
+        m "Remember when I talked to you about lucid dreams?"
+        menu:
+            m "Well, did you manage to have a lucid dream, [player]?"
+            
+            "Yes":
+                m "Waouh, I'm impressed by it!"
+                m "I know becoming lucid is not an easy thing to manage."
+                m "I didn't know that you were an oneironauts [player]."
+                m "It sure must me fun to do what you want in a world created just for that."
+            "No":
+                m "I understand, it's really difficul to become lucid."
+                m "But if you want to have more control over what's going on in your dreams..."
+                m "You should definitely read the book by Stephen LaBerge, '{i}Exploring the World of Lucid Dreaming{/i}'."
+                m "As I've told you before, he develop a method to become lucid in a dream."
+        m "Having said all that..."
+        m "Tell me more about the details of your dream."
     menu:
         m "Did you manage to come and see me or did I appear in front of you?"
 
