@@ -3355,7 +3355,6 @@ init -810 python:
         {
             "_mas_player_bday_in_player_bday_mode": "player_bday.player_bday_mode",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
-            "_mas_player_bday_decor": "player_bday.decor",
             "_mas_player_bday_date": "player_bday.date",
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
             "_mas_player_bday_when_confirmed": "player_bday.when_confirmed",

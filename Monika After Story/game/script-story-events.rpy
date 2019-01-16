@@ -421,7 +421,6 @@ label birthdate_set:
         m 1hua "Oh! That's amazing that you were born on Christmas, [player]!"
         m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
         m 3hub "It still must make it an extra special day!"
-        return
 
 #TODO: activate this once mas_f14 exists
 #    elif mas_player_bday_curr() == mas_f14:
