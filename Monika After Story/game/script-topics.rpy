@@ -8994,7 +8994,7 @@ label monika_players_control:
     m 4eub "Like changing how the game works entirely. From a visual novel, to the peaceful playground we have now."
     m 3rksdla "You could also add more things to the classroom for me."
     m 1hub "Like some flowers, or a few good books."
-    if mas_isMoniUpset(higher=True) and not persistent._mas_acs_enable_promisering:
+    if mas_isMoniEnamored(higher=True) and not persistent._mas_acs_enable_promisering:
         m 1ekbsa "Or a beautiful promise ring."
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "Oh, wouldn't that be a dream come true."
