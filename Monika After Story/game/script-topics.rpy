@@ -10552,7 +10552,7 @@ label monika_dream:
         m "Did you manage to come and see me or did I appear in front of you?"
 
         "You just appeared before me.":
-            m 1hua "Ehehe~".
+            m 1hua "Ehehe~."
             m 1eub "If my love for you is able to break a barrier between my reality and yours, then I'm sure that we'll be together someday."
             m 1tfu "I just need to try hard enough for that to happen."
 
