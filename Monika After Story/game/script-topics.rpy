@@ -10545,7 +10545,7 @@ label monika_dream:
                 m "I understand."
                 m "It's really difficul to become lucid."
                 m "But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
-                m "As I've told you before, he developep a method to become lucid in a dream."
+                m "As I've told you before, he developed a method to become lucid in a dream."
         m "Having said all that..."
     m "Tell me more about the details of your dream."
     menu:
@@ -10560,7 +10560,7 @@ label monika_dream:
             m 1wud "..."
             m 1lkbsa "That's so thoughtful of you, sweetheart."
             m 2ekbfb "Your love is so overwhelming that you created a whole new world just to see me."
-            m 2ekbfa "You have no idea how much this mean to me [player]."
+            m 2ekbfa "You have no idea how much this mean to me, [player]."
     m "By the way."
     m "I haven't even ask you what your dream was about."
     m "So what about it [player]?"
