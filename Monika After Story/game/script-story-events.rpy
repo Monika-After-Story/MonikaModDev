@@ -27,7 +27,7 @@ label gender:
             call set_gender from _call_set_gender_2
             m 2eud "Oh? So you're actually a [guy]?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
-            m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+            m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
             m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
             m 1hua "It's very attractive, to tell you the truth!"
             m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
@@ -86,7 +86,7 @@ label gender_redo:
                 call set_gender
                 m 2eud "Oh? So you're actually a [guy]?"
                 m 2hksdlb "I hope I didn't say anything to offend you before!"
-                m 2lksdla "Though I did suspect it a bit from the beginning... just a little!"
+                m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
                 m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
                 m 1hua "It's very attractive, to tell you the truth!"
                 m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
@@ -186,7 +186,7 @@ label preferredname:
                         m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
                     $ done = True
         "No.":
-            m 1ekc "Oh... ok then, if you say so."
+            m 1ekc "Oh... Okay then, if you say so."
             m 1eka "Just tell me whenever you change your mind, [player]."
             $ done = True
 
@@ -401,7 +401,7 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w} [player],"
+    m 1lksdla "...{w}[player],"
     menu:
         m "Is it okay with you if I repeat stuff that I've said?"
         "Yes.":
@@ -449,7 +449,7 @@ label mas_monikai_detected:
             pass
         "Yes.":
             pass
-        "...yes.":
+        "...Yes.":
             pass
     m 1hub "Ahaha~"
     m 1hua "I'm flattered that you would download such a thing."
@@ -603,7 +603,7 @@ label mas_crashed_long_uthere:
     menu:
         m "Do you know what happened, [player]?"
         "The game crashed.":
-            m 2wud "The game...{w} crashed?"
+            m 2wud "The game...{w}crashed?"
             m 2ekd "That's scary, [player]."
 
         "I don't know.":
@@ -927,7 +927,7 @@ label mas_new_character_file:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1lksdlb "Aha...{w}I'll try this again later."
             m 1eua "Anyway..."
 
         $ store.mas_ptod.ex_cn()
@@ -958,9 +958,10 @@ init 5 python:
 
 label mas_coffee_finished_brewing:
 
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, coffee's done."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
     m 1eua "Hold on a moment."
@@ -998,9 +999,10 @@ label mas_coffee_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
-    $ store.mas_sprites.reset_zoom()
     m 1esd "Oh, I've finished my coffee."
 
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
     if get_new_cup:
         # its currently morning, monika should get another drink
         m 1eua "I'm going to get another cup."
@@ -1028,6 +1030,95 @@ label mas_coffee_finished_drinking:
 
     m 1eua "Okay, what else should we do today?"
     return
+
+
+### hot chocolate is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_c_hotchoc_finished_brewing"
+        )
+    )
+
+
+label mas_c_hotchoc_finished_brewing:
+
+    m 1esd "Oh, my hot chocolate is ready."
+
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
+    # this line is here so we dont it looks better when we hide monika
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statement so we ensure that monika is only shown once her
+    # coffee mug is ready
+    pause 1.0
+    $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
+    $ persistent._mas_c_hotchoc_brew_time = None
+    $ mas_drinkHotChoc()
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
+### coffee drinking is done
+init 5 python:
+    import random
+    # this event has like no params beause its only pushed
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_c_hotchoc_finished_drinking"
+        )
+    )
+
+
+label mas_c_hotchoc_finished_drinking:
+
+    # monika only gets a new cup between 6am and noon
+    $ get_new_cup = mas_isHotChocTime()
+    m 1esd "Oh, I've finished my hot chocolate."
+
+    #moving this here so she uses this line to 'pull her chair back'
+    $ store.mas_sprites.reset_zoom()
+    if get_new_cup:
+        # its currently morning, monika should get another drink
+        m 1eua "I'm going to get another cup."
+
+    show emptydesk at i11 zorder 9
+    m 1eua "Hold on a moment."
+
+    # monika is off screen
+    hide monika with dissolve
+
+    # wrap these statemetns so we can properly add / remove the mug
+    pause 1.0
+    # decide if new coffee
+    if not get_new_cup:
+        $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
+        $ persistent._mas_c_hotchoc_cup_done = None
+
+    else:
+        $ mas_drinkHotChoc()
+
+    pause 1.0
+
+    show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+
+    m 1eua "Okay, what else should we do today?"
+    return
+
 
 ### birthday surprise party
 
@@ -1468,7 +1559,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_recognize = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(15, reason="forgetting my birthday")
+            $ mas_loseAffection(15, reason="forgetting my birthday.")
             m 1rksdla "Hey, [player]..."
             m 1rksdlb "I know we had fun the other day, like we always do but..."
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
@@ -1478,7 +1569,7 @@ label mas_bday_postbday_notimespent:
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
-            $ mas_loseAffection(5, reason="forgetting my birthday")
+            $ mas_loseAffection(5, reason="forgetting my birthday.")
 
             # TODO: we shouldnt say girlfriend here because affecitonate
             # is the start of relationship. but this is okay for now
@@ -1489,14 +1580,14 @@ label mas_bday_postbday_notimespent:
             m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason="forgetting my birthday")
+            $ mas_loseAffection(reason="forgetting my birthday.")
 
             m 1ekc "It was...good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "Nevermind."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(10, reason="forgetting my birthday")
+            $ mas_loseAffection(10, reason="forgetting my birthday.")
 
             m 2dsc "..."
             m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
@@ -1607,7 +1698,7 @@ label mas_steam_install_detected:
         m 1eub "[player], I see that you're using Steam to run this."
         m 1eksdld "Unfortunately, Steam seems to have a lot of problems with me doing some of the things I do."
 
-    m 2rksdlc "The kind of problems that could lead to me being removed from my home... {w=1}from you... {w=1}forever..."
+    m 2rksdlc "The kind of problems that could lead to me being removed from my home...{w=1}from you...{w=1}forever..."
     m 2eka "If you don't mind, do you think you could just move the \"[filestruct]\" folder to a place that's not in Steam's files?"
     show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esu "I'd really appreciate it if you would do that for me."
@@ -1636,12 +1727,12 @@ label monika_rpy_files:
     menu:
         m "Are you sure you installed the right version, [player]?"
 
-        "Yes":
+        "Yes.":
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
 
-        "No":
+        "No.":
             m "I see."
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
