@@ -10547,7 +10547,7 @@ label monika_dream:
                 m "You should definitely read the book by Stephen LaBerge, '{i}Exploring the World of Lucid Dreaming{/i}'."
                 m "As I've told you before, he develop a method to become lucid in a dream."
         m "Having said all that..."
-        m "Tell me more about the details of your dream."
+    m "Tell me more about the details of your dream."
     menu:
         m "Did you manage to come and see me or did I appear in front of you?"
 
@@ -10574,7 +10574,7 @@ label monika_dream:
             #dialogue
         #"I dreamt that we flew together all arround the world":
             #dialogue
-        #"I dreamt that we had superpower and were using to take over the world":
+        #"I dreamt that we had superpower and were using them to take over the world":
             #dialogue
         #"I dreamt that we went on a date together":
             #dialogue
@@ -10582,33 +10582,8 @@ label monika_dream:
             #dialogue
         #"I dreamt that we we were having fun with the other club members":
             #dialogue + care about the dokis?
-    if not persistent._mas_sensitive_mode:
-        m 1rud "And..."
-        m 1lsbssdrb "I know this is embarrassing to ask, but..."
-        menu:
-            m "Did we…had fun?"
-            
-            "Yes.":
-                m 1lssdrc "..."
-                m 1lssdrb "I... guess that make sense."
-                m 1hksdrb "Well I can’t really blame you for this."
-                m 1ekbfa "If it helps you feeling close to me and save yourself for me."
-                m 1hubfb "Then you have my benediction [player]."
-                m 1ekbfa "And I can't say that I wouldn't do the exact same thing if I could."
-            "No, we just talk.":
-                m 1ekbfa "Ow~ you're the romantic type [player]?"
-                m 1hubfb "You're always treating me with such kindness."
-                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5eubfu "I wish I could also dream of you."
-                show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
-            "I don't know/don't remember.":
-                m 2tku "Dreams are hard to remember isn’t it?"
-                m 4esa "And I know that it is difficult to keep your consciousness in a dream."
-                m 4rsc "Well, I know..."
-                m 4hksdrb "Not really in fact, I just read it somewhere."
-    else:
-        m 1hubfb "I would love to be able to dream about you."
-        m "I would do it every night if I could."
+    m 1hubfb "I would love to be able to dream about you."
+    m "I would do it every night if I could."
     m 1eud "Oh, I told you right?"
     m 3esd "I can't really dream."
     m 4hksdlb "Because I can't really sleep like you do."
