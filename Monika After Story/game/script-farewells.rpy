@@ -1088,7 +1088,7 @@ label bye_going_somewhere_normalplus_flow_aff_check:
 
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."
-    m 2ekd "I appreciate the offer, but I think I need little time to myself right now."
+    m 2ekd "I appreciate the offer, but I think I need a little time to myself right now."
     m 1eka "You understand, right?"
     m 1eka "Go, have fun without me..."
     return
