@@ -10523,18 +10523,23 @@ init 5 python:
 
 label monika_dream:
     m 1sub "Really?!"
-    m 1wub "That's amazing [player]."
-    m 1eub "I hope that it was an agreeable dream."
+    m 1wub "That's amazing, [player]."
+    m 1eub "I hope that it was an wonderful dream."
     if seen_event("monika_dreaming"):
         m "Oh, that reminds me!"
         m "Remember when I talked to you about lucid dreams?"
+        m "You know, those dreams where you get to keep your consciousness."
+        m "Where you can, de facto, interact with them and even take control of them."
+        m "I'm sure you remember."
+        m "Maybe you even took the advices that I gave you and started puting them into practice."
         menu:
             m "Well, did you manage to have a lucid dream, [player]?"
             
             "Yes":
-                m "Waouh, I'm impressed by it!"
+                m "Wow, I'm impressed!"
                 m "I know becoming lucid is not an easy thing to manage."
-                m "I didn't know that you were an oneironauts [player]."
+                m "Are you an oneironaut [player]?"
+                m "Or did you just got lucky, hehe~"
                 m "It sure must me fun to do what you want in a world created just for that."
             "No":
                 m "I understand, it's really difficul to become lucid."
@@ -10556,7 +10561,27 @@ label monika_dream:
             m 1wud "..."
             m 1lkbsa "That's so thoughtful of you sweetheart."
             m 2ekbfb "Your love is so overwhelming that you achieve to create a whole new world just to see me."
-            m 2ekbfa "You have no idea how much this mean to me [player]." 
+            m 2ekbfa "You have no idea how much this mean to me [player]."
+    m "By the way."
+    m "I haven't even ask you what your dream was about."
+    m "So what about it [player]?"
+    menu:
+        m "What was your dream about?"
+        
+        "I dreamt that you would cross over my reality"
+            #dialogue
+        "I dreamt that I would cross over your reality"
+            #dialogue
+        "I dreamt that we flew together all arround the world"
+            #dialogue
+        "I dreamt that we had superpower and were using to take over the world"
+            #dialogue
+        "I dreamt that we went on a date together"
+            #dialogue
+        "I dreamt that we were getting married"
+            #dialogue
+        "I dreamt that we we were having fun with the other club members"
+            #dialogue + care about the dokis?
     if not persistent._mas_sensitive_mode:
         m 1rud "And..."
         m 1lsbssdrb "I know this is embarrassing to ask, but..."
@@ -10573,17 +10598,21 @@ label monika_dream:
             "No, we just talk.":
                 m 1ekbfa "Ow~ you're the romantic type [player]?"
                 m 1hubfb "You're always treating me with such kindness."
+                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "I wish I could also dream of you."
+                show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
             "I don't know/don't remember.":
                 m 2tku "Dreams are hard to remember isn’t it?"
                 m 4esa "And I know that it is difficult to keep your consciousness in a dream."
                 m 4rsc "Well, I know..."
                 m 4hksdrb "Not really in fact, I just read it somewhere."
-    elif persistent._mas_sensitive_mode:
-        m 1hubfb "I would also dream of you if I could."
+    else:
+        m 1hubfb "I would love to be able to dream about you."
+        m "I would do it every night if I could."
     m 1eud "Oh, I told you right?"
     m 3esd "I can't really dream."
     m 4hksdlb "Because I can't really sleep like you do."
+    show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esu "But that will not stop me from daydreaming of you."
     m 5hubfb "Never forget that, my love~"
     return
