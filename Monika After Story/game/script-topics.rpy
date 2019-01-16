@@ -10540,27 +10540,26 @@ label monika_dream:
                 m "I know becoming lucid is not an easy thing to manage."
                 m "Are you an oneironaut [player]?"
                 m "Or did you just got lucky, hehe~"
-                m "It sure must me fun to do what you want in a world created just for that."
+                m "It sure must be fun to do what you want in a world created just for that."
             "No":
-                m "I understand, it's really difficul to become lucid."
-                m "But if you want to have more control over what's going on in your dreams..."
-                m "You should definitely read the book by Stephen LaBerge, '{i}Exploring the World of Lucid Dreaming{/i}'."
-                m "As I've told you before, he develop a method to become lucid in a dream."
+                m "I understand."
+                m "It's really difficul to become lucid."
+                m "But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
+                m "As I've told you before, he developep a method to become lucid in a dream."
         m "Having said all that..."
     m "Tell me more about the details of your dream."
     menu:
         m "Did you manage to come and see me or did I appear in front of you?"
 
-        "You just appear before me.":
-            m 1hua "Hehehe~"
-            m "If my love for you achieve to break a barrier between my reality and yours."
-            m 1eub "Then I’m sure that we will be together someday."
+        "You just appeared before me.":
+            m 1hua "Ehehe~".
+            m 1eub "If my love for you is able to break a barrier between my reality and yours, then I'm sure that we'll be together someday."
             m 1tfu "I just need to try hard enough for that to happen."
 
         "I was looking for you.":
             m 1wud "..."
-            m 1lkbsa "That's so thoughtful of you sweetheart."
-            m 2ekbfb "Your love is so overwhelming that you achieve to create a whole new world just to see me."
+            m 1lkbsa "That's so thoughtful of you, sweetheart."
+            m 2ekbfb "Your love is so overwhelming that you created a whole new world just to see me."
             m 2ekbfa "You have no idea how much this mean to me [player]."
     m "By the way."
     m "I haven't even ask you what your dream was about."
