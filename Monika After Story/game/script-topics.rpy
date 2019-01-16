@@ -10568,19 +10568,19 @@ label monika_dream:
     menu:
         m "What was your dream about?"
         
-        "I dreamt that you would cross over my reality"
+        "I dreamt that you would cross over my reality":
             #dialogue
-        "I dreamt that I would cross over your reality"
+        "I dreamt that I would cross over your reality":
             #dialogue
-        "I dreamt that we flew together all arround the world"
+        "I dreamt that we flew together all arround the world":
             #dialogue
-        "I dreamt that we had superpower and were using to take over the world"
+        "I dreamt that we had superpower and were using to take over the world":
             #dialogue
-        "I dreamt that we went on a date together"
+        "I dreamt that we went on a date together":
             #dialogue
-        "I dreamt that we were getting married"
+        "I dreamt that we were getting married":
             #dialogue
-        "I dreamt that we we were having fun with the other club members"
+        "I dreamt that we we were having fun with the other club members":
             #dialogue + care about the dokis?
     if not persistent._mas_sensitive_mode:
         m 1rud "And..."
