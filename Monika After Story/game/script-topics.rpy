@@ -10544,7 +10544,7 @@ label monika_dream:
             "No":
                 m 1eka "I understand."
                 m 1ekb "It's really difficul to become lucid."
-                m 3eub"But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
+                m 3eub "But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
                 m "As I've told you before, he developed a method to become lucid in a dream."
         m 1dsd "Having said all that..."
     m 1tsu "Tell me more about the details of your dream."
