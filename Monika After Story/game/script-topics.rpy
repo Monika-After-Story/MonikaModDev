@@ -10564,8 +10564,8 @@ label monika_dream:
     m 1eud "By the way."
     m 1hksdrb "I haven't even ask you what your dream was about."
     m 1esa "So what about it [player]?"
-    #menu:
-        #m "What was your dream about?"
+    menu:
+        m "What was your dream about?"
         
         #"I dreamt that you would cross over my reality":
             #dialogue
