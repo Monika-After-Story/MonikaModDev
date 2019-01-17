@@ -475,8 +475,7 @@ python early:
             NOTE: does not check if the event hasnt been reached this year.
 
             IN:
-                force - If True, we force year adjustment even if event is
-                    currently ongoing
+                force - If True, we force the years to change
                     (Default: False)
 
             RETURNS: True if this event can repeat, False if not
@@ -611,21 +610,16 @@ python early:
 
             IN:
                 ev - evnet object to adjust years
-                force - If True, we force year adjustment even if event is
-                    ongoing
+                force - if True, we force years to update
                     (Default: False)
 
             RETURNS: See _verifyDates
             """
-            if not force:
-                # check not force because this is more likely
-                return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
-
-            # otherwise, use forced version
-            return Event._yearAdjustForced(
+            return Event._yearAdjust(
                 ev.start_date,
                 ev.end_date,
-                ev.years
+                ev.years,
+                force
             )
 
 
@@ -659,40 +653,32 @@ python early:
 
 
         @staticmethod
-        def _yearAdjust(_start, _end, _years):
+        def _yearAdjust(_start, _end, _years, force=False):
             """
             Performs the year adjustment algorithm.
+
+            IN:
+                force - If True, we force year to update
+                    (Default: False)
 
             RETURNS: see _verifyDates
             """
             _now = datetime.datetime.now()
 
             # no changes necessary if we are currently in the zone
-            if _start <= _now < _end:
+            if (_start <= _now < _end) and not force:
                 return (_start, _end, False)
-
-            # otherwise, we need to repeat
-            return Event._yearAdjustForced(_start, _end, _years, _now)
-
-
-        @staticmethod
-        def _yearAdjustForced(_start, _end, _years, _now=None):
-            """
-            Performs year adjust algorithm, with no sanity check for if the
-            event is ongoing
-
-            RETURN: see _verifyDates
-            """
-            if _now is None:
-                _now = datetime.datetime.now()
 
             # otherwise, we need to repeat.
             add_yr_fun = store.mas_utils.add_years
 
-            # NOTE this is wrong
-
             if len(_years) == 0:
                 # years is empty list, we are repeat yearly.
+
+                if force:
+                    # force mode means we always update year
+                    return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+
                 # we only need to check if current works, and if not,
                 # move to one year ahead of current.
                 diff = _now.year - _start.year
@@ -707,11 +693,21 @@ python early:
                 return (add_yr_fun(_start, diff), new_end, True)
 
             # otherwise, we have a list of years, and shoudl determine next
-            new_years = [
-                year
-                for year in _years
-                if year >= _now.year
-            ]
+            if force:
+                # forcing means we should look forward from teh current
+                # year
+                new_years = [
+                    year
+                    for year in _years
+                    if year > _now.year
+                ]
+
+            else:
+                new_years = [
+                    year
+                    for year in _years
+                    if year >= _now.year
+                ]
 
             if len(new_years) == 0:
                 # no repeat years, we have already reached the limit.
@@ -722,6 +718,10 @@ python early:
             # calc diff for the first year in this list
             diff = _now.year - new_years[0]
             new_end = add_yr_fun(_end, diff)
+
+            if force:
+                # force means we should just use this diff right away
+                return (add_yr_fun(_start, diff), new_end, True)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
