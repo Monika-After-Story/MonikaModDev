@@ -3516,7 +3516,7 @@ label mas_player_bday_cake:
     $ mas_bday_cake_lit = True
     pause 0.5
     m 6sua "Isn't it pretty, [player]?"
-    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you--"
+    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you--{nw}"
     m 6eua "--You should still make a wish though, it just might come true someday..."
     m 6hua "But first..."
     call mas_player_bday_moni_sings
@@ -3665,11 +3665,11 @@ label bye_player_bday:
     $  persistent._mas_player_bday_date += 1
     if persistent._mas_player_bday_date == 1:
         m 1sua "You want to go out for your birthday? {w=1}Okay!"
-        m 1skbla "It sounds really romantic...I can't wait~"
+        m 1skbla "That sounds really romantic...I can't wait~"
     elif persistent._mas_player_bday_date == 2:
         m 1sua "Taking me out again on your birthday, [player]?"
         m 3hub "Yay!"
-        m 1sub "I always love going out with you, but it's that much more special on your birthday..."
+        m 1sub "I always love going out with you, but it's so much more special going out on your birthday..."
         m 1skbla "I'm sure we'll have a lovely time~"
     else:
         m 1wub "Wow, you want to go out {i}again{/i}, [player]?"
@@ -3684,6 +3684,14 @@ label greeting_returned_home_player_bday:
         one_hour = datetime.timedelta(seconds=3600)
         three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
+        left_year = mas_dockstat.getCheckTimes()[0].year
+        ret_year = mas_dockstat.getCheckTimes()[1].year
+        left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+        add_points = False
+        ret_diff_year = ret_year>left_year
+
+        if ret_diff_year and left_year_aff is not None:
+            add_points = left_year_aff<20
 
         def cap_gain_aff(amt):
             if persistent._mas_player_bday_date_aff_gain < 20:
@@ -3697,13 +3705,21 @@ label greeting_returned_home_player_bday:
         m 2rksdla "Maybe we'll go out later instead."
 
     elif one_hour < time_out < three_hour:
-        $ cap_gain_aff(10)
+        if not ret_diff_year:
+            $ cap_gain_aff(10)
+        elif ret_diff_year and add_points:
+            $ mas_gainAffection(10,bypass=True)
+            $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 10
         m 1eua "That was a fun date, [player]..."
         m 3hua "Thanks for taking me with you!"
         m 1eka "I really enjoyed going out with you today~"
 
     elif time_out > three_hour:
-        $ cap_gain_aff(15)
+        if not ret_diff_year:
+            $ cap_gain_aff(15)
+        elif ret_diff_year and add_points:
+            $ mas_gainAffection(15,bypass=True)
+            $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 15
         m 1hua "And we're home!"
         m 3hub "That was really fun, [player]!"
         m 1eka "It was so nice going out to celebrate your birthday..."
@@ -3718,9 +3734,9 @@ label return_home_post_player_bday:
     $ persistent._mas_player_bday_in_player_bday_mode = False
     $ persistent._mas_player_bday_decor = False
     $ mas_lockEVL("bye_player_bday", "BYE")
-    m 1hub "Oh...it's not your birthday anymore..."
-    m 3rksdla "We should probably take these decorations down now, ahaha!"
-    m 3eka "Just give me one moment, [player]..."
+    m 3rksdla "Oh...it's not your birthday anymore..."
+    m 3hksdlb "We should probably take these decorations down now, ahaha!"
+    m 3eka "Just give me one second..."
     show monika 1dsc
     pause 2.0
     $ store.mas_player_bday_event.hide_player_bday_Visuals()
