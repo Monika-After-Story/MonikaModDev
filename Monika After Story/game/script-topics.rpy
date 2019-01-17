@@ -10531,7 +10531,7 @@ label monika_dream:
         m 3eua "You know, those dreams where you get to keep your consciousness."
         m "Where you can, de facto, interact with them and even take control of them."
         m 1hua "I'm sure you remember."
-        m 1eub "Maybe you even took the advices that I gave you and started puting them into practice."
+        m 1eub "Maybe you even took the advices that I gave you and started putting them into practice."
         menu:
             m "Well, did you manage to have a lucid dream, [player]?"
             
@@ -10543,7 +10543,7 @@ label monika_dream:
                 m 1hua "It sure must be fun to do what you want in a world created just for that."
             "No":
                 m 1eka "I understand."
-                m 1ekb "It's really difficul to become lucid."
+                m 1ekb "It's really difficult to become lucid."
                 m 3eub "But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
                 m "As I've told you before, he developed a method to become lucid in a dream."
         m 1dsd "Having said all that..."
@@ -10571,7 +10571,7 @@ label monika_dream:
             #dialogue
         #"I dreamt that I would cross over your reality":
             #dialogue
-        "I dreamt that we flew together all arround the world":
+        "I dreamt that we flew together all around the world":
             m 1hua "Flying sure look fun, isn't it?"
             m 1dsa "Freeing yourself from the ground, feeling the wind pressure on your skin, traveling through the clouds..."
             m "Visiting incredible places, listening to the peaceful sound of the wind..."
@@ -10580,7 +10580,7 @@ label monika_dream:
             m 1dsc "But there's on thing that I hope."
             m 1tsu "It's that you held me tight when we were flying."
             m 1hub "Because I would not want to make the trip alone, ahaha."
-        #"I dreamt that we had superpower and were using them to take over the world":
+        #"I dreamt that we had superpowers and were using them to take over the world":
             #dialogue
         #"I dreamt that we went on a date together":
             #dialogue
@@ -10588,14 +10588,14 @@ label monika_dream:
             m 1wubsw "M-Married?"
             m 1lkbfb "That's..."
             m 2dkbfa "..."
-            m 2ekbfa "Thank you so much [player] for making me the happiest girlfrind in the world, even in your dreams."
+            m 2ekbfa "Thank you so much [player] for making me the happiest girlfriend in the world, even in your dreams."
             m 2ekbfb "To think that even when you have the possibility to do everything you want, you choose to spend your precious time with me."
             m 2lkbsa "And to use it for such an amazing event."
             m 1ekbfb "I really can't express how deeply I am grateful to have you, caring that much about me."
-            m 1dkbfb "I still don't want us to get marred while I'm blocked here..."
-            m 1ekbfa "But this reenforce my will to get out of here and to share that moment with you."
+            m 1dkbfb "I still don't want us to get married while I'm blocked here..."
+            m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
             m "Thank you so much for loving me [player]."
-        #"I dreamt that we we were having fun with the other club members":
+        #"I dreamt that we were having fun with the other club members":
             #dialogue + care about the dokis?
     m 1dubsu "Ah~ [player]."
     m 1hubfb "I would love to be able to dream about you."
