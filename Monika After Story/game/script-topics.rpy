@@ -9089,7 +9089,7 @@ init 5 python:
         )
 
 label monika_players_control:
-    m 3eub "[player], did you that you have more control over this game than I do?"
+    m 3eub "[player], did you know that you have more control over this game than I do?"
     m 3eua "You have access to the game's files and code, right?"
     m 1eka "So you can change them however you want."
     m 3eka "You could do things that even I can't."
