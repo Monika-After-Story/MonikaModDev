@@ -468,11 +468,16 @@ python early:
             )
 
 
-        def prepareRepeat(self):
+        def prepareRepeat(self, force=False):
             """
             Prepres this event's dates for a repeat.
 
             NOTE: does not check if the event hasnt been reached this year.
+
+            IN:
+                force - If True, we force year adjustment even if event is
+                    currently ongoing
+                    (Default: False)
 
             RETURNS: True if this event can repeat, False if not
             """
@@ -480,7 +485,7 @@ python early:
             if not self.canRepeat():
                 return False
 
-            new_start, new_end, was_changed = Event._yearAdjustEV(self)
+            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
                 self.start_date = new_start
@@ -600,16 +605,28 @@ python early:
 
 
         @staticmethod
-        def _yearAdjustEV(ev):
+        def _yearAdjustEV(ev, force=False):
             """
             _yearAdjust, but for an Event object
 
             IN:
                 ev - evnet object to adjust years
+                force - If True, we force year adjustment even if event is
+                    ongoing
+                    (Default: False)
 
             RETURNS: See _verifyDates
             """
-            return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+            if not force:
+                # check not force because this is more likely
+                return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+
+            # otherwise, use forced version
+            return Event._yearAdjustForced(
+                ev.start_date,
+                ev.end_date,
+                ev.years
+            )
 
 
         @staticmethod
@@ -653,6 +670,21 @@ python early:
             # no changes necessary if we are currently in the zone
             if _start <= _now < _end:
                 return (_start, _end, False)
+
+            # otherwise, we need to repeat
+            return Event._yearAdjustForced(_start, _end, _years, _now)
+
+
+        @staticmethod
+        def _yearAdjustForced(_start, _end, _years, _now=None):
+            """
+            Performs year adjust algorithm, with no sanity check for if the
+            event is ongoing
+
+            RETURN: see _verifyDates
+            """
+            if _now is None:
+                _now = datetime.datetime.now()
 
             # otherwise, we need to repeat.
             add_yr_fun = store.mas_utils.add_years
@@ -1191,7 +1223,7 @@ python early:
                     )
 
                     # check if we should repeat
-                    if not ev.prepareRepeat():
+                    if not ev.prepareRepeat(True):
                         # no repeats
                         ev.conditional = None
                         ev.action = None
