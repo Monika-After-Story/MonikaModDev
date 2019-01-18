@@ -8384,7 +8384,15 @@ label monika_savingwater:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_pygmalion",category=['literature'],prompt="Pygmalion",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_pygmalion",
+            category=['literature'],
+            prompt="Pygmalion",
+            random=True
+        )
+    )
 
 label monika_pygmalion:
     m 1eua "Hey [player] have you ever read The Metamorphoses?"
@@ -8407,7 +8415,7 @@ label monika_pygmalion:
     m 1hua "Just teasing you, [player], ehehe~"
     m 1ekbfa "But... if you really wanted to do that..."
     m "I guess I wouldn't mind~"
-    show monika 5eua at t11 zorder 2 with dissolve
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "Truth be told, I really can’t wait for the day when I can finally kiss you back and be with you forever."
     m "For me, that would definitely be a dream come true"
     m "It's just a guess, but I'm guessing you'd like that too?"
