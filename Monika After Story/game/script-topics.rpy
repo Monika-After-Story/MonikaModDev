@@ -8433,6 +8433,8 @@ label monika_gotomonika:
             m 5eua "I can't wait to finally be able to share both the good times and the bad by your side."
 
         "...":
+            $ persistent._mas_pm_would_come_to_spaceroom = None
+
             m 2eka "I'll always appreciate and treasure the moments we spend together, even like this."
             m "So please [player], don't go making rash decisions like that."
             m 2ekc "I don't even know how you could come here with current technology today..."
