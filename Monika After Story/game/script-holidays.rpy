@@ -3456,7 +3456,7 @@ label mas_player_bday_surprise:
                 if renpy.seen_label("monikaroom_greeting_ear_narration"):
                     m 2tsb "...or maybe you were listening through the door again..."
                 else:
-                    m 2tsb "{cps=2}...or maybe you were eavesdropping on me.{/cps}{nw}"
+                    m 2tsb "{cps=*2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                     $ _history_list.pop()
             m 2hua "Ehehe."
     m 3wub "Oh! {w=0.5}I made you a cake!"
