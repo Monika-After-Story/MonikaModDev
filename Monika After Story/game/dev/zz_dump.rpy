@@ -1,6 +1,6 @@
 # emergency dumping file
 
-init 3000 python:
+init 999 python:
     # outfiles
     outtext = (
         "mrt: {0}\nmerr: {1}\nmmrh: {2}\nrs: {3}\n"
