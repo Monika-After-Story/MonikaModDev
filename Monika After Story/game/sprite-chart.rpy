@@ -5479,6 +5479,20 @@ image monika 1kua = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1kubfu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="winkleft",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1sua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -12696,6 +12710,7 @@ image monika 5eka = DynamicDisplayable(
     lean="def",
     single="3e"
 )
+
 image monika 5tsu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -12708,6 +12723,22 @@ image monika 5tsu = DynamicDisplayable(
     right="",
     arms="def",
     lean="def",
+    single="3a"
+)
+
+image monika 5tsbfu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="",
+    left="",
+    right="",
+    arms="def",
+    lean="def",
+    blush="full",
     single="3a"
 )
 
