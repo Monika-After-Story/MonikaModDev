@@ -1,6 +1,6 @@
 ## here we run some test cases
 
-init 2017 python:
+init 999 python:
     import store.mas_pong as mas_pong
 
     for dlg_label in mas_pong.DLG_BLOCKS:
