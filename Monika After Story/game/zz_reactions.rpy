@@ -566,6 +566,17 @@ label mas_reaction_gift_starter_d25:
     m 1sua "Now, let's see... What's inside?"
     return
 
+#f14
+label mas_reaction_gift_starter_f14:
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
+    m "A gift? For me?"
+    if mas_getGiftStatsForDate(mas_f14) == 0:
+        m 1eka "You're so sweet, getting something for me on Valentine's day..."
+    else:
+        m 1eka "Thank you so much, [player]."
+    m 1sua "Now, let's see... What's inside?"
+    return
 
 ### REACTIONS [RCT100]
 
@@ -828,7 +839,9 @@ label mas_reaction_bday_cake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake", is_good=False)
+    addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
+    #Not sure why this was a bad gift. Dialogue doesn't reflect it being bad
+    #plus, Monika said she wants either Natsuki's cupcakes or the player's
 
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
@@ -1346,4 +1359,113 @@ label mas_reaction_new_ribbon:
 label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
     m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    return
+
+init 5 python:
+    addReaction("mas_reaction_gift_roses", "roses", is_good=True)
+
+default persistent._date_last_given_roses = None
+
+label mas_reaction_gift_roses:
+    $ gift_ev = mas_getEV("mas_reaction_gift_roses")
+    #show roses at t11 zorder 5 TODO: swap to acs
+    if not persistent._date_last_given_roses:
+        m 1eka "[player]... I-I don't know what to say..."
+        m 1ekbsa "I never would've thought that you'd get something like this for me!"
+        m 1wka "I'm so happy right now."
+        if mas_isF14():
+            m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
+
+        m 1ektpa "..."
+        m "Ahaha..."
+        m 4eua "Hold on."
+        m 1esc "..."
+        #show ear_rose at t11 zorder 5 TODO: also needs to be acs
+        m 1hub "Ehehe, there! Doesn't it look pretty on me?"
+        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+
+    else:
+        if datetime.date.today() > persistent._date_last_given_roses:
+            m 1wuo "Oh!"
+            m 1ekbsa "Thanks [player]."
+            m "I always love getting roses from you."
+            if mas_isF14():
+                m 1dsbfa "Especially on a day like today."
+                m 1eka "It's really sweet of you to get these for me."
+                m 1ekbfa "I love you so much."
+                m "Happy Valentine's Day, [player]~"
+            else:
+                m 1ekbfa "You're always so sweet."
+            #Pop from reacted map
+            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+
+        else:
+            m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
+            if store.seen_event("monika_clones"):
+                m 1ekbfa "You'll always be my special rose after all, ehehe~"
+            else:
+                m 1ekbfa "A single rose from you is already more than I could have ever asked for."
+            #We don't pop from reacted map here.
+
+    $ persistent._date_last_given_roses = datetime.date.today()
+    #hide roses TODO: move to an acs system.
+
+    # normal gift processing
+    $ mas_receivedGift("mas_reaction_gift_roses")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    #hide ear_rose | not this year. Come on, it's pretty cute. TODO: get leaning vers of this
+    return
+
+#I'm really iffy on this lol. Needs a lot of review tbh.
+#Not that great at writing gift dlg lol
+init 5 python:
+    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True)
+
+default persistent._given_chocolates_before = False
+
+label mas_reaction_gift_chocolates:
+    $ gift_ev = mas_getEV("mas_reaction_gift_chocolates")
+
+    if not persistent._given_chocolates_before:
+        m 1tsu "That's so {i}sweet{/i} of you, ehehe~"
+        if renpy.seen_label('monika_date'):
+            m 3rka "I know I mentioned visiting a chocolate store together someday..."
+            m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
+            m 1ekc "I really wish we could share them though..."
+        else:
+            m 3hub "I love chocolates!"
+            m 1eka "And getting some from you means a lot to me."
+            m 1hub "Thanks, [player]!"
+
+        #pop from reacted map here
+        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+        $ persistent._given_chocolates_before = True
+
+    else:
+        $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
+        if times_chocs_given == 0:
+            m 1wuo "Oh!"
+            m 1hua "Thanks for the chocolates, [player]!"
+            m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
+
+            #pop from reacted map
+            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+        elif times_chocs_given == 1:
+            m 1eka "More chocolates, [player]?"
+            m 3tku "You really love to spoil me don't you, ahaha!"
+            m 1rksdla "I still haven't finished the first box you gave me..."
+            m 1hub "...but I'm not complaining!"
+
+            #pop from reacted map
+            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+        else:
+            m 1ekd "[player]..."
+            m 3eka "I think you've given me enough chocolates today."
+            m 1rksdlb "Three boxes is too much, and I haven't even finished the first one yet!"
+            m 1eka "Save them for another time, okay?"
+            #We don't pop from reacted map here
+
+    # normal gift processing
+    $ mas_receivedGift("mas_reaction_gift_chocolates")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
     return
