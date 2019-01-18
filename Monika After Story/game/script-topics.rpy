@@ -9505,7 +9505,7 @@ init 5 python:
             eventlabel="monika_anime_art",
             category=["misc"],
             prompt="Anime art style",
-            random=Tru
+            random=True
         )
     )
 
