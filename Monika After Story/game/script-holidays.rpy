@@ -3684,27 +3684,42 @@ label greeting_returned_home_player_bday:
         one_hour = datetime.timedelta(seconds=3600)
         three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
-        left_year = mas_dockstat.getCheckTimes()[0].year
-        ret_year = mas_dockstat.getCheckTimes()[1].year
-        left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+        if checkout_time is not None and checkin_time is not None:
+            left_year = checkout_time.year
+            ret_year = checkin_time.year
+            left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+        else:
+            left_year = None
+            ret_year = None
+            left_year_aff = None
         add_points = False
-        ret_diff_year = ret_year>left_year
+        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
-            add_points = left_year_aff<20
+            add_points = left_year_aff < 25
 
         def cap_gain_aff(amt):
-            if persistent._mas_player_bday_date_aff_gain < 20:
+            if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
 
     if time_out < five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
-        m 2ekc "I hope nothing's wrong."
+        m 2eksdlc "I hope nothing's wrong."
         m 2rksdla "Maybe we'll go out later instead."
 
-    elif one_hour < time_out < three_hour:
+    elif time_out < one_hour:
+        if not ret_diff_year:
+            $ cap_gain_aff(5)
+        elif ret_diff_year and add_points:
+            $ mas_gainAffection(5,bypass=True)
+            $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 5
+        m 1eka "That was a fun date while it lasted, [player]..."
+        m 3hua "Thanks for making some time for me on your special day."
+
+    elif time_out < three_hour:
         if not ret_diff_year:
             $ cap_gain_aff(10)
         elif ret_diff_year and add_points:
@@ -3714,7 +3729,8 @@ label greeting_returned_home_player_bday:
         m 3hua "Thanks for taking me with you!"
         m 1eka "I really enjoyed going out with you today~"
 
-    elif time_out > three_hour:
+    else:
+        # more than 3 hours
         if not ret_diff_year:
             $ cap_gain_aff(15)
         elif ret_diff_year and add_points:
