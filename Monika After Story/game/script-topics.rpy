@@ -10567,24 +10567,13 @@ label monika_dream:
     menu:
         m "What was your dream about?"
         
-        #"I dreamt that you would cross over my reality":
+        #"I dreamed that you would cross over my reality":
             #dialogue
-        #"I dreamt that I would cross over your reality":
+        #"I dreamed that I would cross over your reality":
             #dialogue
-        "I dreamt that we flew together all around the world":
-            m 1hua "Flying sure look fun, isn't it?"
-            m 1dsa "Freeing yourself from the ground, feeling the wind pressure on your skin, traveling through the clouds..."
-            m "Visiting incredible places, listening to the peaceful sound of the wind..."
-            m 2dsc "And most importantly..."
-            m 2eku "Being with you."
-            m 1dsc "But there's on thing that I hope."
-            m 1tsu "It's that you held me tight when we were flying."
-            m 1hub "Because I would not want to make the trip alone, ahaha."
-        #"I dreamt that we had superpowers and were using them to take over the world":
+        #"I dreamed that we went on a date together":
             #dialogue
-        #"I dreamt that we went on a date together":
-            #dialogue
-        "I dreamt that we were getting married":
+        "I dreamed that we were getting married":
             m 1wubsw "M-Married?"
             m 1lkbfb "That's..."
             m 2dkbfa "..."
@@ -10595,7 +10584,7 @@ label monika_dream:
             m 1dkbfb "I still don't want us to get married while I'm blocked here..."
             m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
             m "Thank you so much for loving me [player]."
-        #"I dreamt that we were having fun with the other club members":
+        #"I dreamed that we were having fun with the other club members":
             #dialogue + care about the dokis?
     m 1dubsu "Ah~ [player]."
     m 1hubfb "I would love to be able to dream about you."
