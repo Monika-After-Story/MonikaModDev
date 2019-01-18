@@ -8386,11 +8386,11 @@ label monika_savingwater:
 init 5 python:
     addEvent(
         Event(
-            persistent.event_database
-            eventlabel="monika_gotomonika"
-            category=['monika']
-            prompt="What if I came to your world?"
-            pool=True
+            persistent.event_database,
+            eventlabel="monika_gotomonika",
+            category=['monika'],
+            prompt="What if I came to your world?",
+            pool=True,
         )
     )
 
