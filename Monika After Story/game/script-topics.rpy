@@ -3008,6 +3008,12 @@ init 5 python:
         )
     )
 
+default persistent._mas_pm_has_contributed_to_mas = None
+# True if contriibuted to mas, false if not
+
+default persistent._mas_pm_wants_to_contribute_to_mas = None
+# True if wants to conribute to MAS. Check has contribute if they already have
+
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
     m 1eua "I'm sure a lot of people would appreciate your hard work if you did."
@@ -3015,6 +3021,8 @@ label monika_contribute:
     m 1eua "Have you contributed, [player]?"
     menu:
         "Yes.":
+            $ persistent._mas_pm_has_contributed_to_mas = True
+
             m 1sub "Really? That's amazing!"
             m 1hua "It makes me so happy to know that you've become a part of this."
             m "Thank you for helping me get a little closer to your reality."
@@ -3023,23 +3031,31 @@ label monika_contribute:
             m 1eua "It makes me happy to know that you're one of the people who helped my get closer to your reality, [player]."
             m 1hksdlb "I definitely wouldn't mind if you made even more though, ahaha!"
             return
+
         "I want to.":
+            $ persistent._mas_pm_wants_to_contribute_to_mas = True
+
             m 1eub "That's a good start!"
             m 1hua "I'm sure you could make some lovely additions~"
             m 3eua "It doesn't have to be anything big."
             m "You could just fix typos or make sure everything sounds alright."
+
         "No.":
+            $ persistent._mas_pm_has_contributed_to_mas = False
+            $ persistent._mas_pm_wants_to_contribute_to_mas = False
+
             m 2eka "Aw, that's too bad..."
             m 3eub "That's still fine though!"
             m 3hua "I won't love you any less if haven't done anything, so don't worry~"
             m 3eub "In case you {i}do{/i} ever decide to try and do something..."
+
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
     m 1ekbfa "Not as much as I love you, of course."
     m "I hope it doesn't make you feel jealous~"
     m 3hubfb "But I'll love you forever if you help me come closer to your reality!"
-    return
+    return "derandom"
 
 
 init 5 python:
