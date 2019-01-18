@@ -713,6 +713,9 @@ init -810 python:
             "_mas_pm_eat_fast_food": "pm.lifestyle.food.eats_fast_food",
             "_mas_pm_drinks_soda": "pm.lifestyle.food.drinks_soda",
 
+            # lifestyle / alcohol
+            "_mas_pm_player_drinks": "pm.lifestyle.alcohol.drinks",
+
             # emotions
             "_mas_pm_love_yourself": "pm.emotions.love_self",
 
@@ -769,6 +772,10 @@ init -810 python:
             "_mas_pm_live_near_beach": "pm.location.live_near_beach",
             "_mas_pm_live_south_hemisphere": "pm.location.south_hemi",
             "_mas_pm_gets_snow": "pm.location.snows",
+
+            # location / rules
+            "_mas_pm_player_can_drink": "pm.location.rules.player_can_drink",
+            "_mas_pm_monika_can_drink": "pm.location.rules.monika_can_drink",
 
             # likes
             "_mas_pm_likes_horror": "pm.likes.horror",

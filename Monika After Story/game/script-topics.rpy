@@ -1339,7 +1339,24 @@ label monika_rap:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_wine",
+            category=['club members'],
+            prompt="Yuri's wine",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_player_drinks = None
+# True if the player drinks alchol, False if not
+
+default persistent._mas_pm_player_can_drink = None
+# True if the player is legally allowed to drink, False if not
+
+default persistent._mas_pm_monika_can_drink = None
+# True if Monika can legally drink where the player is, False if not
 
 label monika_wine:
     m 1hua "Ehehe. Yuri did something really funny once."
@@ -1359,9 +1376,14 @@ label monika_wine:
     m "I don't condone underage drinking!"
     m 2eua "I mean, I've never drank or anything, so...yeah."
     m 3eua "Speaking of which, I hear different parts of the world have different minimum drinking ages."
-    m "Would we both be able to have a drink where you're from?"
+
     menu:
+        m "Would we both be able to have a drink where you're from?"
         "Yes.":
+            $ persistent._mas_pm_player_drinks = True
+            $ persistent._mas_pm_player_can_drink = True
+            $ persistent._mas_pm_monika_can_drink = True
+
             m 1hua "That's great!"
             m 1hub "Another thing to look forward to when we can finally be together!"
             m 1hubfa "Sitting together, having a drink as we both ponder about life..."
@@ -1373,13 +1395,23 @@ label monika_wine:
             show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
             m 1hua "You better have a good bottle to share!"
             m 1hub "Ahaha~"
+
         "No.":
+            # don't really know if the player likes to drink or not
+            $ persistent._mas_pm_player_can_drink = False
+            $ persistent._mas_pm_monika_can_drink = False
+
             m 1eua "At least I don't have to be jealous about you being able to drink while I'm stuck here."
             m 1lksdla "If that's still the case when I can finally be with you, maybe we could try a little anyway?"
             m 1lksdlb "Just a little."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I mean we'll have eachother to stop one another from having too much, right?"
+
         "You can, but I can't.":
+            # dont really know if the player likes to drink or not
+            $ persistent._mas_pm_player_can_drink = False
+            $ persistent._mas_pm_monika_can_drink = True
+
             m 2hua "Maybe then I'll be able to have something you can't!"
             m "Just like how you can drink coffee in your world."
             m 2hub "Ahaha~"
@@ -1387,7 +1419,13 @@ label monika_wine:
             m 2eka "By all means, I'd happily wait for you if you were worried about feeling left out."
             m 3hksdlb "But if you {i}really{/i} wanted to try some, I guess I could give you one little sip."
             m "No more than that though!"
+
         "I can, but you can't.":
+            # player probably likes to drink if they say this
+            $ persistent._mas_pm_player_drinks = True
+            $ persistent._mas_pm_player_can_drink = True
+            $ persistent._mas_pm_monika_can_drink = False
+
             m 1lksdla "Oh... That only just makes me a little bit jealous."
             m 1hksdlb "Knowing you can drink coffee {i}and{/i} wine without me."
             m "Maybe you could let me try a sip sometime?"
@@ -1397,7 +1435,13 @@ label monika_wine:
             m 5eua "I really wouldn't want you to get in trouble."
             show monika 1lksdla at t11 zorder MAS_MONIKA_Z with dissolve
             m 1lksdla "Ok, maybe I was only half kidding, but you don't have to share if it could get you in trouble."
+
         "I don't drink.":
+            # if they say this, they probably are legally allowed to drink
+            # but dont want to anyway.
+            $ persistent._mas_pm_player_drinks = False
+            $ persistent._mas_pm_player_can_drink = False
+
             m 2ekd "Oh!"
             m 2lksdld "Sorry, I didn't realize."
             m 2lksdla "But I guess knowing that can put me at ease."
@@ -1405,7 +1449,8 @@ label monika_wine:
             m 3eua "I respect your decision so I won't have any if you won't either."
             m 1hua "At least there'll always be coffee we can share."
             m 1hub "Ahaha!"
-    return
+
+    return "derandom"
 
 
 init 5 python:
