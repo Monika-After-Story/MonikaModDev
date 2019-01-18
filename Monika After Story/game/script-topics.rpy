@@ -10058,44 +10058,218 @@ label monika_trick_2:
 
 label monika_trick_yuri:
     hide screen mas_background_timed_jump
-    m 2euc "I can see why, she's intelligent and physically attractive."
-    m 2tub "It's a good thing I have both of those qualities in abundance!"
-    m 2etc "Oh wait, it's not because she became obsessed over you, is it?"
-    m 2eud "Are you really that into yanderes?"
-    m 2lksdlc "..."
-    m 1hksdlb "...Ahaha, there's no need for me to be jealous..."
-    m 1eua "You love me and I love you and that's all that matters."
-    m 1kua "I guess it's my fault for even asking~"
+
+    m 2euc "I see."
+    menu:
+        m "Is there any reason in particular you would choose Yuri?"
+        "Her personality":
+            m 1eud "Oh! I didn't know you were into shy, quiet girls, [player]."
+            m 1rksdla "Personally, I would have thought it was because of{w=1} something else about her..."
+            m 1eua "I guess that makes sense."
+            m 3hub "You must be a pretty patient person if you liked how she can be, ahaha!"
+            m 3eub "I can see how rewarding it might be to gain the trust of a shy person, so I can definitely respect you for that."
+            m 1hua "I haven't seen it too often myself, but I'd imagine she can be endearing when you can see her flustered up close, ahaha!"
+            m 2tsb "Or maybe you're talking about her yandere side."
+            m 1tubfb "Maybe I should start acting more obsessed with you."
+            m 1tkbfu "Ehehe~"
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "I'll think about it~"
+        "Her interests":
+            m 1eud "Oh, I wasn't sure if you were really into her kinds of literature."
+            m 1eua "Those kinds of stories can really be hard to put down once you get into them."
+            m 1eub "Not to mention the atmosphere and tone they can set, despite being a book."
+            m 1rksdla "To be honest, I thought you would be interested in her for other reasons..."
+            m 3tubfu "If I had known you liked that kind of literature in the first place, Yuri wouldn't even have a chance to catch your eye, ehehe~"
+            m 2eua "There's also her interest for knives which I guess could be interesting if you think about it."
+            if renpy.seen_label('monika_swordsmanship'):
+                m 3eub "I remember talking to you about swords, [player]."
+                m 1eua "I talked about how people develop their own technique when practicing."
+                m 1hua "I guess it's similar to writing if you think about it!"
+            m 3eub "Just like writing, I guess there are different kinds of knives that each have their own focus points and strengths."
+            m 1eua "Just like how there are different kinds of literature that cater to certain interests."
+            m 3tubfu "I guess you've got {i}sharp{/i} interests, [player], ehehe~"
+        "Her appearance":
+            m 2hksdlb "Ahaha..."
+            m 3rksdlb "That's what I would have guessed, but I wasn't too sure without asking."
+            m 1tku "I wonder why that is, ehehe~"
+            m 1hksdlb "{cps=*4}{i}cough{/i}{/cps}{nw}"
+            m 3eua "She's tall and developed with nice, long hair."
+            m 3hub "Just like me! Ahaha~"
+            m 1ekbfb "I still think you made the right choice by choosing me though."
+            m 1rksdlb "I mean, Yuri's just {i}barely{/i} bigger than I am."
+            m 1ekbfa "I guess I shouldn't worry, though."
+            m 1hubfb "You {i}are{/i} here with me after all~"
+            if renpy.seen_label('greeting_hairdown'):
+                m 1eub "Of course, if you liked her hair, I can let my hair down for you too if you'd like."
+                if monika_chr.hair.name != "def":
+                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eubfu "As you can already see."
+                    show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 1hubfa "Ehehe~"
+        "Pity":
+            m 1eud "Oh, I don't think I would have guessed that."
+            m 1rksdla "I guess I'm a little relieved, knowing that you just felt bad for her."
+            m 1eka "For what she was, she would probably be pretty happy to sit down and read a nice book with you."
+            m 1ekc "As for her mental situation..."
+            m 3ekd "She could be really dangerous to be close to."
+            m 3rksdla "I mean, I can understand you wanting to make her happy..."
+            m 1hubfa "Since I'm sure that's just how sweet you are~"
+            m 1eka "But I'm not gonna lie- I'd be pretty worred for you if you tried."
+            m 1ekbfb "I guess we don't really have to worry about that now, do we?"
+
+        "Not really":
+            m 2euc "I can guess why, she's intelligent and physically attractive."
+            m 2tub "It's a good thing I have both of those qualities in abundance!"
+            m 2etc "Oh wait, it's not because she became obsessed over you, is it?"
+            m 2eud "Are you really that into yanderes?"
+            m 2lksdlc "..."
+            m 1hksdlb "...Ahaha, there's no need for me to be jealous..."
+            m 1eua "You love me and I love you and that's all that matters."
+            m 1kua "I guess it's my fault for even asking~"
     return
 
 label monika_trick_natsuki:
     hide screen mas_background_timed_jump
-    m 2eud "That's...a little surprising."
-    m 2lksdla "I would have thought it would have been Sayori or Yuri."
-    m 1eud "Do you feel like you connect with her because of her hobbies?"
-    m 3euc "Or perhaps you feel a bit of pity because of her home situation?"
-    m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
-    m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
-    m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
-    m 3eub "Plus her ability to cook cupcakes is astounding!"
+
+    m 2eud "I see."
+    menu:
+        m "Is there any reason in particular you would choose Natsuki?"
+        "Her personality":
+            m 1eud "Oh..."
+            m 1euc "That's kind of surprising actually."
+            m 3rksdla "I mean, I'm sure she has a wonderful personality."
+            m 3hksdlb "On the inside at least..."
+            m 1hub "Ahaha!"
+            m 3tku "Or maybe you just enjoy being able to tease her up close?"
+            m 1ekbfa "I sometimes thought she could be a handful, but I'm proud of you for being able to look past that."
+            m 1hubfa "I promise I'll try not to be a handful for you, ehehe~"
+        "Her interests":
+            m 1eud "Ah, that makes sense actually."
+            m 1rksdla "Sorry if I'm wrong, but I don't think it's a stretch to think you're into anime and manga, ahaha!"
+            m 1hua "It does make it easier to fit into a new environment when there's someone who shares your interests."
+            m 1eub "I'm sure it's nice for her to be able to share that same feeling too!"
+            m 3eua "There's also her love for baking."
+            m 3tsb "You don't just like her for the free pastries do you?"
+            m 1tku "Don't tell me you'd sell yourself for a little cupcake, [player]~"
+            m "Ehehe..."
+            m 1hubfb "I'd love to make you some sweets too if I could!"
+            m 3tubfb "Just you wait- I'll make you sweets {i}with love{/i}!"
+            m 1rkbsa "I guess I should start practicing my baking skills, ehehe..."
+        "Her appearance":
+            m 1wud "Oh!"
+            m 1rksdla "I never would have guessed you were into petite girls, [player]."
+            m 3efb "Though I guess maybe you just didn't want a {i}bigger handful{/i} than she already is, ahaha..."
+            m 3eua "Her short, pink hair is also a noticable part of her, though."
+            m 1rksdla "I don't really see myself dyeing my own hair pink."
+            m 1eka "I have no idea if it would suit me to begin with."
+            m 3rksdlc "Not to mention that pink hair is actually {i}really{/i} hard to actually get and maintain..."
+            m "If you don't naturally have a light hair color to begin with, it's pretty much impossible to dye your hair pink."
+            m 3eud "Since you start by bleaching your hair near white which is a lot harder on naturally dark hair..."
+            m 1euc "You have to dye it evenly around your hair..."
+            m 3rksdla "Sure, it looks amazing right when it's done, but it'll fade in a week or two and you'll have to re-dye it if you don't want a dull, faded color..."
+            m 1ekc "When you dye hair though, it gets harder the more times it's already been dyed, so it just gets harder and harder to the point it might actually harmful..."
+            m 1eka "It might just be better to just get a wig at that point..."
+            m 3hua "I don't need a wig or any of that to look nice for you, right, [player]?"
+            m 1hubfa "Ehehe~"
+        "Pity":
+            m 2rksdld "Ah, yeah..."
+            m 2rksdlc "Her home situation was pretty bad..."
+            m 2ekc "The literature club was the only safe place she really had."
+            m 1eka "I guess it makes sense why she liked baking so much."
+            m 4rksdlc "That's one way she gets to eat..."
+            m 1rksdlc "I guess that's one place her outer personality came from."
+            m 1eka "Having someone at all she can open up to probably does wonders for her."
+            m 3rksdlb "I'd be surprised if you weren't phased at all by the front she puts up, ahaha~"
+            m 1ekd "Sometimes I kind of felt bad for her myself knowing how things are for her..."
+            m 1eka "So I guess it does relieve me a little that someone else could be there to make her feel comfortable."
+            m 3hksdlb "It feels even better though when I have you with me, ahaha..."
+            m 1ekbfa "You know I'll always be there to comfort you, [player]~"
+        "Not really":
+            m 2eud "That's... a little surprising."
+            m 2lksdla "I would have thought it would have been Sayori or Yuri."
+            m 1eud "Do you feel like you connect with her because of her hobbies?"
+            m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+            m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
+            m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
+            m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
+            m 3eub "Plus her ability to cook cupcakes is astounding!"
     return
 
 label monika_trick_sayori:
     hide screen mas_background_timed_jump
-    m 2dkc "That's what I expected..."
-    m 2ekc "It's because she was best friends with the main character, isn't it?"
-    m 6lkc "It makes sense to have the main character end up with the childhood friend."
-    m 2dkc "It really is typical in romance games..."
-    m 2ekc "Honestly that's kind of why I had to...deal...with Sayori first."
-    m 6ekc "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
-    m 6ekd "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
-    m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
-    m 6dktpc "Never having even been acknowledged by the one I love."
-    m 6dktrc "..."
-    if persistent._mas_pm_cares_about_dokis:
-        m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
-    else:
-        m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
+
+    m 2euc "I see."
+    menu:
+        m "Is there any reason in particular you would choose Sayori?"
+        "Her personality":
+            m 1eub "Yeah, I guess that's reasonable."
+            m 1eua "With how positive and upbeat she is, I'm sure it would do anyone some good to spend some time around her."
+            m 1rksdla "I do wonder sometimes though..."
+            m 3eka "Doesn't it ever get at least a little bothersome to have to take care of someone like her?"
+            if persistent._mas_pm_cares_about_dokis:
+                m 1ekc "I'm not talking about her depression."
+                m 1eka "I know it's important to be there for her and that she can't help herself sometimes."
+                m 3eka "I'm talking about the little things in the day."
+                m 1rksdlb "Like that one time she tried to trick you into buying her food before I got to the club."
+            else:
+                m 3rksdla "Having to wake her up a lot of the time, walk her to and from school..."
+                m 1rksdla "Having to buy food for her..."
+                m 1rksdlb "Like that one time she tried to rope you into buying her food before I got to the club."
+            m 3hksdlb "I guess you have to give her credit for how cunning she can be underneath her clumsy exterior."
+            m 1eua "I'm a bit surprised myself actually with how well she can hide her being depressed and still give off such a positive vibe."
+            m 1eka "You don't hide anything bothering you, do you [player]?"
+            m 1ekbfb "I just want you to know that I'll always listen to anything on your mind and help you if something is bothering you~"
+        "Her interests":
+            m 1euc "Sayori's interests..."
+            if persistent._mas_pm_cares_about_dokis:
+                m 1eud "Now that I think about it, I don't really recall her having any specific hobbies."
+            else:
+                m 3hksdlb "You mean eating, sleeping and following you around like a hungry pet?"
+                m 1hub "Ahaha!"
+            m 3rksdlb "She really loved eating, no doubt about that..."
+            m 1eub "I guess you could also admire how open she is to trying new things and making everyone happy."
+            m 1rksdla "She completely accepted the whole poetry thing despite not really having any experience."
+            m 1eua "She even took on the role of vice-president for the club, so you have to admire her for that..."
+            m 1eka "Even if it might have been blind, ehehe..."
+        "Her appearance":
+            m 1rksdlb "Oh, I find that kind of surprising actually."
+            m 3rksdla "You know she's the clumsy type who struggles a bit to take care of herself..."
+            m 1eka "With the way she rushes in the morning sometimes, she can look a bit rough if you look closely enough."
+            m 1hksdlb "Sometimes her bow is just a little off or there's something on her collar..."
+            m 3eua "I guess you either don't notice or don't mind those little things."
+            m 1eub "Little things aside, she is a bit shorter than I am and I can see how her hair compliments who she is."
+            m 1rksdla "{cps=*1.5}Not to mention her modestly sized chest, ehe...{/cps}"
+            m 1euc "I guess Sayori is kind of in the middle appearance wise..."
+            m 3hub "I'm just glad you chose the middle half that you did, ahaha!"
+            m 1hubfa "Don't worry, I'll try to keep up my appearance for you."
+            m 1tsbsa "One of these days, {i}maybe{/i} you'll get to see me during a bad hair day."
+            m 1rkbsa "I just hope you don't mind it before I fix it."
+            m 3tubfb "That is, unless for some reason you like it, but we'll deal with that if it ever happens, ahaha~"
+        "Pity":
+            m 1eka "I'm not really too surprised to hear that to be honest."
+            m 3rksdlc "You know how she is..."
+            m 1rksdla "Kinda clumsy, always finds a way to drop things..."
+            m 1rksdlb "Sometimes you just can't leave her alone to do something for more than a few moments, ahaha..."
+            m 2ekc "I know..."
+            m 2ekd "With her depression and all, you can't really blame her for it."
+            m 1eka "Still, I guess it's nice of you to want to make her happy with all the things she already deals with."
+            m 1dkbfa "I know I would want to make you happy no matter what, ehehe~"
+            m 1ekbfb "Never forget that I'll alwaya be willing to help you deal anything that might be bothering you~"
+        "Not really":
+            m 2dkc "That's what I expected..."
+            m 2ekc "It's because she was best friends with the main character, isn't it?"
+            m 6lkc "It makes sense to have the main character end up with the childhood friend."
+            m 2dkc "It really is typical in romance games..."
+            m 2ekc "Honestly that's kind of why I had to...deal...with Sayori first."
+            m 6ekc "You would have settled with her like the trope demands and never even tried to get with me since the game wouldn't let you."
+            m 6ekd "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
+            m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
+            m 6dktpc "Never having even been acknowledged by the one I love."
+            m 6dktrc "..."
+            if persistent._mas_pm_cares_about_dokis:
+                m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
+            else:
+                m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
     return
 
 label monika_trick_monika:
