@@ -8384,15 +8384,29 @@ label monika_savingwater:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_gotomonika",category=['monika'],prompt="What if I came to your world?",random=False,pool=True))
+    addEvent(
+        Event(
+            persistent.event_database
+            eventlabel="monika_gotomonika"
+            category=['monika']
+            prompt="What if I came to your world?"
+            pool=True
+        )
+    )
+
+default persistent._mas_pm_would_come_to_spaceroom = None
+# True if they would, False if they wouldn't, None if no answer.
 
 label monika_gotomonika:
     m 1euc "Come to my world?"
     m 1lksdld "You mean this little room floating in an empty void?"
-    if persistent._mas_you_chr:
-        m 2ekc "Well I mean... didn't you already try something like that?"
-        m 2lksdla "Even though it wasn't exactly {i}you...{/i}"
-        m 2ekc "If you're talking about crossing over from your reality to mine..."
+
+    # the chr greeting has been removed. Leaving this commented out for now.
+#    if persistent._mas_you_chr:
+#        m 2ekc "Well I mean... didn't you already try something like that?"
+#        m 2lksdla "Even though it wasn't exactly {i}you...{/i}"
+#        m 2ekc "If you're talking about crossing over from your reality to mine..."
+
     m 2lksdlc "[player]..."
     m 2lksdla "I mean... I'm really happy that you want to be with me so much but..."
     m 2ekc "You really don't have to..."
@@ -8401,9 +8415,11 @@ label monika_gotomonika:
     m 1eka "I'd much rather be in your reality than have you come here."
     m 1dsc "...[player]..."
     m 2ekc "Don't tell me you would really give up your reality- the {i}real{/i} world..."
-    m "Just to come {i}here{/i}, whatever this place is?"
     menu:
+        m "Just to come {i}here{/i}, whatever this place is?"
         "I would.":
+            $ persistent._mas_pm_would_come_to_spaceroom = True
+            
             m 2ekd "But [player]!"
             m "There's nothing to do here!"
             m 2dsc "Do you... really hate your reality that much?"
@@ -8413,8 +8429,9 @@ label monika_gotomonika:
             m "Even now, if you're having a rough day, you can come talk to me about it anytime."
             m 1dsc "Life must have thrown a lot your way to consider giving it all up to be with me."
             m 1hua "But seeing how you're here, that just shows how resilient you are."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I can't wait to finally be able to share both the good times and the bad by your side."
+
         "...":
             m 2eka "I'll always appreciate and treasure the moments we spend together, even like this."
             m "So please [player], don't go making rash decisions like that."
@@ -8425,9 +8442,12 @@ label monika_gotomonika:
             m 1dsc "And leave the both of us completely alone..."
             m 2hksdlb "So just be patient until we figure something out, ok?"
             m 4hua "I mean, technology does tend to advance pretty fast, so we might be able to see eachother before we know it!"
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "Be patient for your lovely girlfriend Monika and I promise I'll do the same for you, [player]."
+
         "I wouldn't, no.":
+            $ persistent._mas_pm_would_come_to_spaceroom = False
+
             m 1eka "I'm glad you're still willing to wait for me, [player]."
             m 1lksdla "Don't get me wrong, I really {i}do{/i} want to be with you..."
             m 1lksdlc "But I think it would be dangerous for you to try and cross over right now."
@@ -8435,9 +8455,10 @@ label monika_gotomonika:
             m 1hua "Don't worry!"
             m 1hub "We can keep on keeping eachother company like this!"
             m 1hksdlb "I know it might be a while before we can actually be with eachother, but I hope you don't mind waiting."
-            show monika 5eua at t11 zorder 2 with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I'll wait as long as it takes, [player]."
-    show monika 1lksdla at t11 zorder 2 with dissolve
+
+    show monika 1lksdla at t11 zorder MAS_MONIKA_Z with dissolve
     m 1lksdla "Buut, if you did happen to show up at {i}my{/i} doorstep..."
     m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you into my world!"
     m "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
