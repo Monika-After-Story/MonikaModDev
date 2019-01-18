@@ -512,6 +512,9 @@ init -1 python:
 
     class MASAffectionRule(object):
         """
+        NOTE: DEPRECATED
+        Use the aff_range property for Events instead
+
         Static Class used to create affection specific rules in tuple form.
         That tuple is then stored in a dict containing this rule name constant.
         Each rule is defined by a min and a max determining a range of affection

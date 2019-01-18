@@ -35,7 +35,7 @@
 #       at the end.
 #       NOTE: optional
 #       (Default: 0)
-#   NOTE: all labels would need to be defined in rpy source, so atm, custom 
+#   NOTE: all labels would need to be defined in rpy source, so atm, custom
 #       songs  will ALWAYS use default labels
 #
 # PianoNoteMatch objects:
@@ -55,11 +55,11 @@
 #       - like "1eua"
 #       NOTE: optional
 #       (Default: 1eua)
-#   ev_timeout: (float) number of seconds to use as grace period for user to 
+#   ev_timeout: (float) number of seconds to use as grace period for user to
 #       begin this note match.
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
-#   vis_timeout: (float) number of seconds to wait after the match before 
+#   vis_timeout: (float) number of seconds to wait after the match before
 #       cleaning visual expressions
 #       NOTE: optional
 #       (Default: None / actual default varies on hardcoded value)
@@ -125,7 +125,7 @@ label mas_piano_songchoice:
 
         menu:
             m "Did you want to play a song or play on your own, [player]?"
-            "Play a song":
+            "Play a song.":
                 m "Which song?"
                 show monika at t21
                 call screen mas_gen_scrollable_menu(song_list, mas_piano_keys.MENU_AREA, mas_piano_keys.MENU_XALIGN, final_item)
@@ -154,10 +154,10 @@ label mas_piano_songchoice:
                 else:
                     jump mas_piano_songchoice
 
-            "On my own":
+            "On my own.":
                 pass
 
-            "Nevermind":
+            "Nevermind.":
                 jump mas_piano_loopend
 
     # otherwise, we default to freestyle mode
@@ -203,9 +203,9 @@ label mas_piano_setupstart:
         show monika 1eua
         menu:
             m "Would you like to play again?"
-            "Yes":
+            "Yes.":
                 jump mas_piano_loopstart
-            "No":
+            "No.":
                 pass
 
 label mas_piano_loopend:
@@ -230,14 +230,14 @@ label mas_piano_result_none:
 # TODO all of these default labels
 # default win
 label mas_piano_def_win:
-    m 1a "Wow! You almost got it!"
-    m 2b "Good job, [player]."
+    m 1eua "Wow! You almost got it!"
+    m 2eub "Good job, [player]."
     return
 
 # default fail
 label mas_piano_def_fail:
-    m 1m "..."
-    m 1n "You did your best, [player]..."
+    m 1lksdla "..."
+    m 1lksdlb "You did your best, [player]..."
     return
 
 # defualt fc
@@ -248,7 +248,7 @@ label mas_piano_def_fc:
 
 # default practice
 label mas_piano_def_prac:
-    m 1eua "That was nice, [player]!."
+    m 1eua "That was nice, [player]!"
     m 1eka "Make sure to practice often!"
     return
 
@@ -256,25 +256,51 @@ label mas_piano_def_prac:
 
 label mas_piano_hb_win:
     $ mas_gainAffection()
-    m 1a "Wow! You almost got it!"
-    m 2b "Good job, [player]."
+    m 1eua "Wow! You almost got it!"
+    if mas_isMonikaBirthday():
+        m 1hua "Thanks for playing that for me on my birthday, [player]."
+        m 1hubfb "I'm so happy we can spend this special day sharing our love of music!"
+        m 3eub "Keep it up. I'm sure you'll play it perfectly next time."
+        return
+    m 2eub "Good job, [player]."
     return
 
 label mas_piano_hb_fail:
-    m 1m "..."
-    m 1n "You did your best, [player]..."
+    if mas_isMonikaBirthday():
+        if mas_isMoniUpset(lower=True):
+            m 1dsd "Well, if you wanted to play this on my birthday..."
+            m 3tsd "You should have practiced sooner."
+            return
+        m 1lksdla "I appreciate the thought [player]."
+        m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
+        return
+    m 1lksdla "..."
+    m 1lksdlb "You did your best, [player]..."
     m "Even a simple song takes time to learn."
     return
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
-    m 1a "Hehe, great job!"
-    m 2b "I know that's an easy one, but you did great."
-    m 1k "Are you going to play that for me on my Birthday?"
+    if mas_isMonikaBirthday():
+        m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
+        m 1hub "But you did such a great job playing it!"
+        m 1ekbfa "You must have practiced really hard for me..."
+        m 1hub "I'm happy that I got to enjoy this with you~"
+        m 1hubfb "Thanks for this gift, [player]!"
+        if mas_isMoniAff(higher=True):
+            m 1ekbfa "You always make me feel special~"
+        return
+    m 1eua "Hehe, great job!"
+    m 2eub "I know that's an easy one, but you did great."
+    m 1hub "Are you going to play that for me on my Birthday?"
     return
 
 label mas_piano_hb_prac:
-    m 1a "You're practing the Birthday Song?"
+    if mas_isMonikaBirthday():
+        m 1eua "Thanks for trying to play this one on my birthday!"
+        m 1hub "I appreciate your effort!"
+        return
+    m 1eua "You're practing the Birthday Song?"
     m "I know you can do it, [player]!"
     return
 
@@ -320,7 +346,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("pnm")
+    log = renpy.renpy.log.open("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
@@ -373,7 +399,7 @@ init -3 python in mas_piano_keys:
     PNM_LOAD_FAILED = "PNM '{0}' load failed."
 
     JSON_LOAD_FAILED = "Failed to load json at '{0}'."
-    FILE_LOAD_FAILED = "Failed to load file at '{0}'."
+    FILE_LOAD_FAILED = "Failed to load file at '{0}'. | {1}\n"
 
 
     MSG_INFO = "[info]: {0}\n"
@@ -874,7 +900,7 @@ init -3 python in mas_piano_keys:
     #       False if not
     #
     class PianoNoteMatch(object):
-        
+
         # constants
         REQ_ARG = [
             "text",
@@ -1043,7 +1069,7 @@ init -3 python in mas_piano_keys:
             self.passes = 0
             self.matched = False
 
-        
+
         @staticmethod
         def fromJSON(jobj):
             """
@@ -1062,7 +1088,7 @@ init -3 python in mas_piano_keys:
                 [1]: List of warning strings
                     Or error message string if fatal error occurs
             """
-            # inital check to make sure the required items are in 
+            # inital check to make sure the required items are in
             for required in PianoNoteMatch.REQ_ARG:
                 if required not in jobj:
                     return (None, MISS_KEY.format(required))
@@ -1104,7 +1130,7 @@ init -3 python in mas_piano_keys:
             if len(jobj) > 0:
                 for extra in jobj:
                     _warn.append(EXTRA_BAD.format(extra))
-                    
+
             return (PianoNoteMatch(**_params), _warn)
 
 
@@ -1237,7 +1263,7 @@ init -3 python in mas_piano_keys:
         @staticmethod
         def fromJSON(jobj):
             """
-            Creats a PianoNoteMatchList from a given JSON object (which is 
+            Creats a PianoNoteMatchList from a given JSON object (which is
             just a dict)
 
             May add warnings to logg file
@@ -1252,7 +1278,7 @@ init -3 python in mas_piano_keys:
             islogopen = log.open()
             log.raw_write = True
 
-            # inital check to make sure the required items are in 
+            # inital check to make sure the required items are in
             for required in PianoNoteMatchList.REQ_ARG:
                 if required not in jobj:
                     if islogopen:
@@ -1441,7 +1467,7 @@ init 790 python in mas_piano_keys:
 
         # otherwise we need to check for files
         json_files = [
-            j_file 
+            j_file
             for j_file in os.listdir(pnml_basedir)
             if j_file.endswith(".json")
         ]
@@ -1454,8 +1480,12 @@ init 790 python in mas_piano_keys:
             j_path = pnml_basedir + j_song
             try:
                 addSong(j_path, True)
-            except:
-                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(j_path)))
+            except Exception as e:
+                log.write(
+                    MSG_ERR.format(
+                        FILE_LOAD_FAILED.format(j_path, repr(e))
+                    )
+                )
 
 
     def addStockSongs():
@@ -1473,7 +1503,7 @@ init 790 python in mas_piano_keys:
             try:
                 addSong(song_path)
             except:
-                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path)))
+                log.write(MSG_ERR.format(FILE_LOAD_FAILED.format(song_path, "")))
 
 
 ### END =======================================================================
@@ -1931,7 +1961,7 @@ init 810 python:
             mas_piano_keys.pnml_bk_db
         """
         persistent._mas_pnml_data = [
-            mas_piano_keys.pnml_bk_db[k]._saveTuple() 
+            mas_piano_keys.pnml_bk_db[k]._saveTuple()
             for k in mas_piano_keys.pnml_bk_db
         ]
 
