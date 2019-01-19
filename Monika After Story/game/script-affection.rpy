@@ -563,16 +563,18 @@ init 15 python in mas_affection:
         """
 
         # If the greeting hasn't been seen yet, push the islands greeting
-        if (
-                not store.seen_event("greeting_ourreality")
-            ):
-            if store.mas_cannot_decode_islands:
-                # failed to decode the islands, lets delay this action
-                store.mas_addDelayedAction(1)
-
-            else:
-                # otherwise we can directly unlock this greeting
-                store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
+        # NOTE: commenting out greeting code since it can be handled via 
+        #   aff range now
+#        if (
+#                not store.seen_event("greeting_ourreality")
+#            ):
+#            if store.mas_cannot_decode_islands:
+#                # failed to decode the islands, lets delay this action
+#                store.mas_addDelayedAction(1)
+#
+#            else:
+#                # otherwise we can directly unlock this greeting
+#                store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
 
         # unlock islands event if seen already
         if (

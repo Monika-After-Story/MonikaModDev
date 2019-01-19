@@ -734,7 +734,9 @@ init -875 python in mas_delact:
     #   NOTE: this function MUST be runnable at init level 995.
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
-        1: _greeting_ourreality_unlock,
+        # NOTE: commented IDs have been retired
+#        1: _greeting_ourreality_unlock,
+
         2: _mas_monika_islands_unlock,
         3: _mas_bday_postbday_notimespent_reset,
         4: _mas_bday_pool_happy_bday_reset,
