@@ -1629,14 +1629,21 @@ init 20 python:
     # DEFAULTS reason to an Empty String mostly because when this one is called
     # is intended to be used for something the player can apologize for, but it's
     # not totally necessary.
+    #NEW BITS:
+    #prompt: the prompt shown in the menu for apologizing
+    #expirydatetime: 
+    #generic: do we want this to be persistent? or not
     def mas_loseAffection(
             amount=persistent._mas_affection["badexp"],
             modifier=1,
-            reason=""
+            reason=None,
+            ev_label=None,
+            apology_active_expiry=datetime.timedelta(hours=3),
+            apology_overall_expiry=datetime.timedelta(weeks=1)
         ):
 
         #set apology flag
-        mas_setApologyReason(reason)
+        mas_setApologyReason(reason=reason,ev_label=ev_label,apology_active_expiry=apology_active_expiry,apology_overall_expiry=apology_overall_expiry)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
@@ -1675,19 +1682,50 @@ init 20 python:
         # Updates the experience levels if necessary.
         mas_updateAffectionExp()
 
-    def mas_setApologyReason(reason):
+    def mas_setApologyReason(
+        reason=None,
+        ev_label=None,
+        apology_active_expiry=datetime.timedelta(hours=3),
+        apology_overall_expiry=datetime.timedelta(weeks=1)
+        ):
         """
         Sets a reason for apologizing
 
         IN:
-            reason - The reason for the apology
+            reason - The reason for the apology (integer value corresponding to item in the apology_reason_db)
+                (if left None, and an ev_label is present, we assume a non-generic apology)
+            ev_label - The apology event we want to unlock
                 (required)
-
+            apology_active_expiry - The amount of session time after which, the apology that was added expires
+                defaults to 3 hours active time
+            apology_overall_expiry - The amount of overall time after which, the apology that was added expires
+                defaults to 7 days
         """
+
         global mas_apology_reason
 
-        mas_apology_reason = reason
+        if ev_label is None:
+            if reason is None:
+                mas_apology_reason = 0
+            else:
+                mas_apology_reason = reason
+            return
+        elif mas_getEV(ev_label) is None:
+            store.mas_utils.writelog(
+                "[ERROR]: ev_label does not exist: {0}\n".format(repr(ev_label))
+            )
+            return
 
+        if ev_label not in persistent._mas_apology_time_db:
+            #Unlock the apology ev label
+            store.mas_unlockEVL(ev_label, 'APL')
+
+            #Calculate the current total playtime
+            current_total_playtime = persistent.sessions['total_playtime'] + mas_getSessionLength()
+
+            #Now we set up our apology dict to keep track of this so we can relock it if you didn't apologize in time
+            persistent._mas_apology_time_db[ev_label] = (current_total_playtime + apology_active_expiry,datetime.date.today() + apology_overall_expiry)
+            return
 
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():
@@ -2028,7 +2066,7 @@ label monika_affection_nickname:
                     if bad_nickname is None:
                         $ good_nickname = good_nickname_search.search(inputname)
                         if inputname == "Monika":
-                            m "Ehehe~ Back to the classics, I see."
+                            m 1eua "Ehehe~ Back to the classics, I see."
                         elif good_nickname is None:
                             m 1eud "Well, it's not exactly my favorite."
                             m 1eua "But I don't dislike it either."
@@ -2046,7 +2084,8 @@ label monika_affection_nickname:
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
-                        $ mas_loseAffection(reason="calling me a bad name")
+                        #Remove the apology reason from this as we're handling the apology differently now.
+                        $ mas_loseAffection(ev_label="mas_apology_bad_nickname")
                         if lowername == "yuri" or lowername == "sayori" or lowername == "natsuki":
                             m 1wud "...!"
                             m 2wfw "I..."
@@ -2060,9 +2099,9 @@ label monika_affection_nickname:
                             m 2dfc "..."
                             m 2lfc "That really hurt."
                             m "A lot more than what you can imagine."
-                            m 2efc "Forget about this idea."
-                            m "It seems it was a mistake."
-                            m 1efc "Let's talk about something else."
+                            if mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                                call monika_affection_nickname_bad_lock
+
                             show monika 1efc
                             pause 5.0
                         else:
@@ -2070,11 +2109,20 @@ label monika_affection_nickname:
                             m 2efc "Why would you say such things?"
                             m 2rfw "If you didn't want to do this, you should've just said so!"
                             m 2dftdc "..."
-                            m 2lftsc "I don't like this idea anymore."
                             m 2ektsc "...You didn't have to be so mean."
                             m 2dftdc "That really hurt, [player]."
-                            m 2efc "Please don't do that again."
+
+                            if  mas_getEV('mas_apology_bad_nickname').shown_count == 2:
+                                call monika_affection_nickname_bad_lock
+                            else:
+                                m 2efc "Please don't do that again."
                         $ persistent._mas_called_moni_a_bad_name = True
+
+                        #reset nickname if not Monika
+                        if m_name.lower() != "monika":
+                            $ m_name = "Monika"
+                            $ persistent._mas_monika_nickname = "Monika"
+
                         $ mas_lockEventLabel("monika_affection_nickname")
                         $ done = True
 
@@ -2083,6 +2131,12 @@ label monika_affection_nickname:
             m 1lksdlc "Alright then, if you say so."
             m 3eka "Just tell me if you ever change your mind, [player]."
             $ done = True
+    return
+
+label monika_affection_nickname_bad_lock:
+    m 2efc "Forget about this idea."
+    m "It seems it was a mistake."
+    m 1efc "Let's talk about something else."
     return
 
 # Event to warn player that Monika feels like she's not receiving the affection she deserves.

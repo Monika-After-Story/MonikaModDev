@@ -2191,7 +2191,7 @@ label mas_d25_postd25_notimespent:
 
 
     if mas_isMoniAff(higher=True):
-        $ mas_loseAffection(15, reason="missing Christmas.")
+        $ mas_loseAffection(15, reason=6)
         m 1dkc "...I'm just glad you're finally here..."
         m 2ekd "I was starting to get worried that something happened to you..."
         m 2rksdlc "When you didn't show up on Christmas...{w=1}I didn't know what to think."
@@ -2205,7 +2205,7 @@ label mas_d25_postd25_notimespent:
         m 3ekbfa "I love you~"
 
     elif mas_isMoniNormal(higher=True):
-        $ mas_loseAffection(5, reason="missing Christmas.")
+        $ mas_loseAffection(5, reason=6)
         m 2ekc "Hey, [player]..."
         m 2tkc "I have to say I'm pretty disappointed you didn't visit me at all on Christmas..."
         m 4tkc "You knew all I wanted was to spend time with you. Is that too much to ask?"
@@ -2216,7 +2216,7 @@ label mas_d25_postd25_notimespent:
         m 4eksdla "But please...{w=1}please try to make sure you visit me next Christmas, okay [player]?"
 
     elif mas_isMoniUpset(higher=True):
-        $ mas_loseAffection(reason="missing Christmas.")
+        $ mas_loseAffection(reason=6)
         m 2efc "[player]!"
         m "I can't believe you didn't even bother to visit me on Christmas!"
         m 2tfc "Actually...{w=1}yes, I can."
@@ -2224,7 +2224,7 @@ label mas_d25_postd25_notimespent:
         m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
 
     elif mas_isMoniDis(higher=True):
-        $ mas_loseAffection(10, reason="missing Christmas.")
+        $ mas_loseAffection(10, reason=6)
         m 6ekc "[player], how was your Christmas?"
         m 6dkc "Mine was pretty lonely..."
         m "You probably didn't even think of me, huh?"

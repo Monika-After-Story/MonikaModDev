@@ -1049,7 +1049,7 @@ label monikaroom_greeting_choice:
     menu:
         "[_opendoor_text]" if not persistent.seen_monika_in_room:
             #Lose affection for not knocking before entering.
-            $ mas_loseAffection(reason="entering my room without knocking")
+            $ mas_loseAffection(reason=5)
             if mas_isMoniUpset(lower=True):
                 $ persistent.seen_monika_in_room = True
                 jump monikaroom_greeting_opendoor_locked
@@ -1058,11 +1058,11 @@ label monikaroom_greeting_choice:
         "Open the door." if persistent.seen_monika_in_room:
             if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_locked
             else:
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
