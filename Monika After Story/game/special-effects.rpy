@@ -206,3 +206,7 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
         $ HKBShowButtons()
     window auto
     return
+
+label monika_kissing_motion_short:
+    call monika_kissing_motion(duration=0.5, initial_exp="6hua", fade_duration=0.5)
+    return
