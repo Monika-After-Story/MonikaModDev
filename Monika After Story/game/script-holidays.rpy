@@ -281,6 +281,9 @@ label mas_holiday_o31_autoload_check:
                 mas_unlockEVL("monika_change_weather", "EVE")
             mas_changeWeather(mas_weather_thunder)
 
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        call mas_player_bday_autoload_check
+
     if mas_skip_visuals:
         jump ch30_post_restartevent_check
 
@@ -1230,8 +1233,10 @@ label mas_holiday_d25c_autoload_check:
     if mas_in_intro_flow:
         # intro will call us instead of jump
         return
-    elif mas_isplayer_bday() and not mas_isD25():
+
+    elif mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
+        
     # finally, return to holiday check point
     jump mas_ch30_post_holiday_check
 
@@ -3377,7 +3382,14 @@ init -11 python in mas_player_bday_event:
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
-    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_spent_time:
+    if (
+            not persistent._mas_player_bday_in_player_bday_mode 
+            and persistent._mas_player_confirmed_bday 
+            and mas_isMoniNormal(higher=True) 
+            and not persistent._mas_player_bday_spent_time 
+            and not mas_isD25() 
+            and not mas_isO31()
+        ):
         # starting player b_day off with a closed door greet
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
@@ -3389,7 +3401,10 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_player_bday_decor = False
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
-    jump mas_ch30_post_holiday_check
+    if mas_isO31():
+        return
+    else:
+        jump mas_ch30_post_holiday_check
 
 # closed door greet option for opening door without listening
 label mas_player_bday_opendoor:
@@ -3397,11 +3412,11 @@ label mas_player_bday_opendoor:
     $ scene_change = True
     call spaceroom(hide_monika=True)
     $ mas_disable_quit()
-    m 2wud "[player]!"
-    m 2tfc "You didn't knock!"
-    m 2tfd "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
-    m 2dkc "..."
-    m 2ekd "Well...{w=1}the surprise is ruined now, but..."
+    m "[player]!"
+    m "You didn't knock!"
+    m "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
+    m "..."
+    m "Well...{w=1}the surprise is ruined now, but..."
     pause 1.0
     $ store.mas_player_bday_event.show_player_bday_Visuals()
     $ persistent._mas_player_bday_decor = True
