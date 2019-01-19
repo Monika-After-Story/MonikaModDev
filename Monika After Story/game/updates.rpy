@@ -304,6 +304,17 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+# 0.8.15
+label v0_8_15(version="v0_8_15"):
+    python:
+        # unlock nickname topic if called bad name
+        if persistent._mas_called_moni_a_bad_name:
+            nickname_ev = mas_getEV("monika_affection_nickname")
+            if nickname_ev is not None:
+                nickname_ev.unlocked = True
+
+    return
+
 # 0.8.14
 label v0_8_14(version="v0_8_14"):
     python:
