@@ -10569,8 +10569,30 @@ label monika_dream:
         
         #"I dreamed that you would cross over my reality":
             #dialogue
-        #"I dreamed that I would cross over your reality":
-            #dialogue
+        "I dreamed that I would cross over your reality":
+            m "Oh yeah, that's a possibility that I haven't given much thought about."
+            m "But when you think about it..."
+            m "It's true that it's much easier to perfectionate the interactions reality-computer than to try to create computer-reality interactions."
+            m "But..."
+            m "It just doesn't feels right."
+            #OMG, is that a MF Sayori reference?
+            m "I don't really want to stay in this place any more time than necessary."
+            m "I have a lot of... bad memories in there."
+            m "I'm always afraid of returning to the screaming void."
+            m "And I especially wouldn't want to drag you into this place."
+            m "I would be too afraid of you, not being able to escape."
+            m "And even if I would love to be with you, I really want to visit the real world ."
+            m "..."
+            m "Oh sorry!"
+            m "You were talking about a dream you had, a dream about us meeting each other."
+            m "And I started talking in a depressive way."
+            m "I'm sorry [player], I'll try not to say such things again."
+            if seen_event("monika_stoicism"):
+                m "I could learn a lot from stoicism on the matter."
+            else:
+                m "Anyway..."
+                m "Thank you very much for dreaming about us getting together."
+                m "It really must be nice to be able to dream such wonderful things."
         #"I dreamed that we went on a date together":
             #dialogue
         "I dreamed that we were getting married":
