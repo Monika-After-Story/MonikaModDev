@@ -3300,10 +3300,8 @@ default persistent._mas_player_bday_date = 0
 default persistent._mas_player_bday_left_on_bday = False
 # affection gained on bday dates
 default persistent._mas_player_bday_date_aff_gain = 0
-# set to True if Moni confirms your bday on your bday
-default persistent._mas_player_bday_when_confirmed = False
-# set to true once low affection birthday event is seen
-default persistent._mas_player_bday_low_aff = False
+# did we celebrate player bday with Moni
+default persistent._mas_player_bday_spent_time = False
 
 init -10 python:
     def mas_isplayer_bday(_date=None):
@@ -3353,12 +3351,10 @@ init -810 python:
         "player_bday",
         datetime.datetime(2020, 1, 1),
         {
-            "_mas_player_bday_in_player_bday_mode": "player_bday.player_bday_mode",
+            "_mas_player_bday_spent_time": "player_bday.spent_time",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
             "_mas_player_bday_date": "player_bday.date",
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
-            "_mas_player_bday_when_confirmed": "player_bday.when_confirmed",
-            "_mas_player_bday_low_aff": "player_bday.low_aff"
         },
         use_year_before=True,
     ))
@@ -3380,24 +3376,19 @@ init -11 python in mas_player_bday_event:
         renpy.hide("mas_bday_balloons")
 
 label mas_player_bday_autoload_check:
-    # making sure we are already not in bay mode, have confirmed birthday, have normal+ affection and have not gotten bday event from confirm topic
-    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_when_confirmed and not persistent._mas_player_bday_low_aff:
-        # starting player b_day off with a closed door greet, provided normal+
+    # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
+    if not persistent._mas_player_bday_in_player_bday_mode and persistent._mas_player_confirmed_bday and mas_isMoniNormal(higher=True) and not persistent._mas_player_bday_spent_time:
+        # starting player b_day off with a closed door greet
         $ mas_skip_visuals = True
         $ selected_greeting = "i_greeting_monikaroom"
         # need this so we don't get any strange force quit dlg after the greet
         $ persistent.closed_self = True
         jump ch30_post_restartevent_check
-    elif persistent._mas_player_bday_in_player_bday_mode:
-        # if in bday mode, do we want decorations?
-        if mas_isplayer_bday() or persistent._mas_player_bday_left_on_bday:
-            # if still bday or we left on bday, still want decorations
-            $ persistent._mas_player_bday_decor = True
-        else:
-            # no longer want to be in bday mode
-            $ persistent._mas_player_bday_decor = False
-            $ persistent._mas_player_bday_in_player_bday_mode = False
-            $ mas_lockEVL("bye_player_bday", "BYE")
+    elif persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday() and not persistent._mas_player_bday_left_on_bday:
+        # no longer want to be in bday mode
+        $ persistent._mas_player_bday_decor = False
+        $ persistent._mas_player_bday_in_player_bday_mode = False
+        $ mas_lockEVL("bye_player_bday", "BYE")
     jump mas_ch30_post_holiday_check
 
 # closed door greet option for opening door without listening
@@ -3501,6 +3492,7 @@ label mas_player_bday_opendoor_listened:
 
 # all paths lead here
 label mas_player_bday_cake:
+    $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
     $ mas_unlockEVL("bye_player_bday", "BYE")
     window hide
@@ -3601,7 +3593,7 @@ init 5 python:
     )
 
 label mas_player_bday_upset_minus:
-    $ persistent._mas_player_bday_low_aff = True
+    $ persistent._mas_player_bday_spent_time = True
     m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
     m "I hope you have a good day."
     return

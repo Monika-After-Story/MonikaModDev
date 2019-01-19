@@ -309,10 +309,7 @@ label birthdate_set:
             bday_upset_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
-                "and not persistent._mas_player_bday_decor "
-                "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_low_aff "
-                "and not persistent._mas_player_bday_when_confirmed")
+                "and not persistent._mas_player_bday_spent_time")
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
             
@@ -323,10 +320,7 @@ label birthdate_set:
             bday_no_restart_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
-                "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_decor "
-                "and not persistent._mas_player_bday_when_confirmed "
-                "and not persistent._mas_player_bday_low_aff "
+                "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isO31() "
                 "and not mas_isD25()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
@@ -339,10 +333,7 @@ label birthdate_set:
             bday_holiday_ev.conditional = (
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
-                "and not persistent._mas_player_bday_in_player_bday_mode "
-                "and not persistent._mas_player_bday_decor "
-                "and not persistent._mas_player_bday_when_confirmed "
-                "and not persistent._mas_player_bday_low_aff "
+                "and not persistent._mas_player_bday_spent_time "
                 "and (mas_isO31() or mas_isD25())")
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
@@ -355,7 +346,7 @@ label birthdate_set:
         return
 
     if mas_isplayer_bday():
-        $ persistent._mas_player_bday_when_confirmed = True
+        $ persistent._mas_player_bday_spent_time = True
         if old_bday == mas_player_bday_curr():
             if mas_isMoniNormal(higher=True):
                 m 3hub "Ahaha! So today {i}is{/i} your birthday!"
@@ -366,12 +357,12 @@ label birthdate_set:
                 $ persistent._mas_player_confirmed_bday = True
                 jump mas_player_bday_when_confirmed
             elif mas_isMoniDis(higher=True):
-                $ persistent._mas_player_bday_low_aff = True
                 m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
         else:
             if mas_isMoniNormal(higher=True):
+                $ persistent._mas_player_bday_in_player_bday_mode = True
                 $ mas_unlockEVL("bye_player_bday", "BYE")
                 m 1wuo "Oh...{w=1}Oh!"
                 m 3sub "Today's your birthday!"
@@ -382,7 +373,6 @@ label birthdate_set:
                 m 1hub "Ahaha! It's not much but it's something!"
                 m 3hua "I promise next year we'll do something extra special, [player]!"
             elif mas_isMoniDis(higher=True):
-                $ persistent._mas_player_bday_low_aff = True
                 m 2eka "Oh, so today's your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
