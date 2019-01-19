@@ -312,7 +312,24 @@ label birthdate_set:
                 "and not persistent._mas_player_bday_spent_time")
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
-            
+
+        bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
+        if bday_ret_bday_ev is not None:
+            bday_ret_bday_ev.start_date = mas_player_bday_curr()
+            bday_ret_bday_ev.end_date = mas_player_bday_curr() + datetime.timedelta(days=1)
+            bday_ret_bday_ev.conditional = (
+                "mas_isplayer_bday() "
+                #getCheckTimes function not defined at time these conditions are checked on a reload
+                "and len(store.persistent._mas_dockstat_checkin_log) > 0 "
+                "and store.persistent._mas_dockstat_checkin_log[-1][0] is not None "
+                "and store.persistent._mas_dockstat_checkin_log[-1][0].date() == mas_player_bday_curr() "
+                "and not persistent._mas_player_bday_spent_time "
+                "and persistent._mas_player_confirmed_bday "
+                "and not mas_isO31() "
+                "and not mas_isD25()")
+            bday_ret_bday_ev.action = EV_ACT_QUEUE
+            Event._verifyAndSetDatesEV(bday_ret_bday_ev)
+
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))

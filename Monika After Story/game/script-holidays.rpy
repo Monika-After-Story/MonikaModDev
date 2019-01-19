@@ -3523,8 +3523,8 @@ label mas_player_bday_cake:
     $ mas_bday_cake_lit = True
     pause 0.5
     m 6sua "Isn't it pretty, [player]?"
-    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you--{nw}"
-    m 6eua "--You should still make a wish though, it just might come true someday..."
+    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you..."
+    m 6eua "...You should still make a wish though, it just might come true someday..."
     m 6hua "But first..."
     call mas_player_bday_moni_sings
     m 6hua "Make a wish, [player]!"
@@ -3558,6 +3558,36 @@ label mas_player_bday_cake:
         $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_player_bday_ret_on_bday",
+            years = [],
+            aff_range=(mas_aff.NORMAL, None)
+        ),
+        skipCalendar=True
+    )
+
+label mas_player_bday_ret_on_bday:
+    m 1eua "So, today is..."
+    m 1euc "...wait."
+    m "..."
+    m 2wuo "Oh!"
+    m 2wuw "Oh my gosh!"
+    m 2tsu "Just give me a moment, [player]..."
+    show monika 1dsc
+    pause 2.0
+    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ persistent._mas_player_bday_decor = True
+    m 3eub "Happy Birthday, [player]!"
+    m 3hub "Ahaha!"
+    m 1rksdla "I really wanted to surprise you but I never got the chance to set it up..."
+    m 3etc "Why do I feel like I'm forgetting something..."
+    m 3hua "Oh! Your cake!"
+    call mas_player_bday_cake
+    return
+
 # event for if the player leaves the game open starting before player_bday and doesn't restart
 # moni eventually gives up on the surprise
 init 5 python:
@@ -3572,6 +3602,9 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
+    if "mas_player_bday_ret_on_bday" in persistent.event_list:
+        #TODO: priority rules should be set-up here
+        return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
     pause 2.0
