@@ -1489,21 +1489,22 @@ init python:
         else:
             return False
 
-
     def restartEvent():
-        #
-        # This checks if there is a persistent topic, and if there was push it
-        # back on the stack with a little comment.
-        #
-        # IN:
-        #
-        if not mas_isRstBlk(persistent.current_monikatopic):
-            #don't push greetings back on the stack
-            pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event')
-            persistent.current_monikatopic = 0
-        return
-
+            #
+            # This checks if there is a persistent topic, and if there was push it
+            # back on the stack with a little comment.
+            #
+            # IN:
+            #
+            if not mas_isRstBlk(persistent.current_monikatopic):
+                if persistent.current_monikatopic.startswith("inactivity_detection"):
+                    return
+                else:
+                    #don't push greetings back on the stack
+                    pushEvent(persistent.current_monikatopic)
+                    pushEvent('continue_event')
+                    persistent.current_monikatopic = 0
+            return
 
     def mas_isRstBlk(topic_label):
         """
@@ -1515,11 +1516,6 @@ init python:
         """
         if not topic_label:
             return True
-
-        global mas_afk_already
-        if mas_afk_already:
-            if topic_label.startswith("greeting_") or topic_label.startswith("bye"):
-                return False
 
         if topic_label.startswith("greeting_"):
             return True

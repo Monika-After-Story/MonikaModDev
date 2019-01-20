@@ -2380,3 +2380,76 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+init 10 python:
+    import time
+    global mas_afk_time
+    global mas_afk_duration
+    global mas_afk_already
+    # How much time in seconds should pass, before it's considered that player is afk.
+    mas_afk_duration = 10
+    mas_afk_already = False
+    mas_afk_time = time.time() + mas_afk_duration
+    config.overlay_screens.append("afk_detection")
+    class MASInactivity(renpy.Displayable):
+        
+        import pygame
+
+        def __init__(self):
+            super(MASInactivity, self).__init__()
+
+        def event(self, ev, x, y, st):
+            global mas_afk_time
+            global mas_afk_duration
+            global mas_afk_already
+            # Constant checking for player activity - mouse movement, keystrokes and mouse button clicks
+            if ev.type == pygame.MOUSEMOTION or ev.type == pygame.KEYDOWN or ev.type == pygame.MOUSEBUTTONDOWN:
+                mas_afk_time = time.time() + mas_afk_duration
+            if mas_afk_time < time.time():
+                #checking if already afk
+                if mas_afk_already:
+                    mas_afk_time = time.time() + mas_afk_duration
+                elif not mas_isRstBlk(persistent.current_monikatopic):
+                    #if not already afk and not blacklisted topic, we can skip current topic to start it over again.
+                    mas_afk_already = True
+                    pushEvent(persistent.current_monikatopic)
+                    pushEvent('continue_event')
+                    persistent.current_monikatopic = 0
+                    pushEvent('inactivity_detection')
+                    renpy.jump("inactivity_detection_blank")
+                else:
+                    mas_afk_already = True
+                    #If we can't skip current topic, we will start inactivity dialogue after curent topic has been finished.
+                    persistent.current_monikatopic = 0
+                    pushEvent('inactivity_detection')
+            renpy.redraw(self, 0)
+
+        def render(self, width, height, st, at):
+            return renpy.Render(0, 0)
+
+screen afk_detection():
+    add MASInactivity()
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="inactivity_detection",
+            category=["dev"],
+            prompt="INACTIVITY DETECTION (ACTUALLY NO NEED TO PRESS THAT)",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label inactivity_detection:
+    $ global mas_afk_already
+    #TODO: Actual dialogue.
+    m "Are you still there?"
+    m "You are back, [player]!"
+    $ mas_afk_already = False
+    return
+
+label inactivity_detection_blank:
+    return
+return
