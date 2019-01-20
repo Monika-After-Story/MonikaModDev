@@ -2386,7 +2386,7 @@ init 10 python:
     global mas_afk_duration
     global mas_afk_already
     # How much time in seconds should pass, before it's considered that player is afk.
-    mas_afk_duration = 10
+    mas_afk_duration = 600
     mas_afk_already = False
     mas_afk_time = time.time() + mas_afk_duration
     config.overlay_screens.append("afk_detection")
