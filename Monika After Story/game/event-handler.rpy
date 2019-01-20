@@ -142,7 +142,10 @@ init -900 python in mas_ev_data_ver:
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
         13: MASCurriedVerify(_verify_str, True), # diary_entry
-        14: MASCurriedVerify(_verify_dict, False), # rules
+
+        # NOTE: Rules are no longer saved in persistent (0.8.15+)
+#        14: MASCurriedVerify(_verify_dict, False), # rules
+
         15: MASCurriedVerify(_verify_dt, True), # last_seen
         16: MASCurriedVerify(_verify_tuli, True), # years
         17: MASCurriedVerify(_verify_bool, True), # sensitive

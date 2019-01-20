@@ -94,6 +94,7 @@ python early:
     #       NOTE: treat diary entries as single paragraphs
     #       (Default: None)
     #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: this does not get svaed to persistent
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
@@ -136,7 +137,7 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14,
+#            "rules":14,
             "last_seen":15,
             "years":16,
             "sensitive":17,
@@ -144,7 +145,7 @@ python early:
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
 
         # other constants
         DIARY_LIMIT = 500
@@ -263,6 +264,8 @@ python early:
                     datetime.time.min
                 )
 
+            self.rules = rules
+
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -281,7 +284,7 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules,
+                None, # rules, #NOTE: this is no longer stored in persistent
                 last_seen,
                 years,
                 sensitive,
@@ -331,7 +334,7 @@ python early:
                     self.prompt = prompt
                     self.category = category
                     self.diary_entry = diary_entry
-                    self.rules = rules
+#                    self.rules = rules
                     self.years = years
 
             # new items are added appropriately

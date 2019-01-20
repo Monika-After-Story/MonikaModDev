@@ -447,7 +447,7 @@ init -1 python:
                 return defval
 
             # unpack the tuple for easy access
-            skip_visual, random_chance = rule
+            random_chance = rule[1]
 
             # check if random_chance is less or equal to 0 return False
             if random_chance <= 0:
@@ -659,14 +659,14 @@ init -1 python:
                     (Default: None)
             """
             if priority is None:
-                priority = self.DEF_PRIORITY
+                priority = MASPriorityRule.DEF_PRIORITY
 
             if type(priority) is not int:
                 raise Exception(
                     "'{0}' is not a valid in priority".format(priority)
                 )
 
-            rule = {EV_RULE_PRIORITY: priority)
+            rule = {EV_RULE_PRIORITY: priority}
 
             if ev:
                 ev.rules.update(rule)
@@ -685,6 +685,6 @@ init -1 python:
             RETURNS the priority of the given event, or def if no priorityrule
                 is found
             """
-            return ev.rules.get(EV_RULE_PRIORITY, self.DEF_PRIORITY)
+            return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
 
 

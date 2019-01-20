@@ -90,7 +90,7 @@ init -1 python in mas_greetings:
 
         # priority check, required
         # NOTE: all greetings MUST have a priority
-        if MASPriorityRule.get_priority(ev) > curr_pri:
+        if store.MASPriorityRule.get_priority(ev) > curr_pri:
             return False
 
         # type check, optional
@@ -111,8 +111,11 @@ init -1 python in mas_greetings:
 
         # rule checks
         if not (
-                Event._checkRepeatRule(ev, check_time, True)
-                and Event._checkGreetingRule(ev, True)
+                store.MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=True)
+                and store.MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=True)
+                and store.Event._checkGreetingRule(ev, True)
             ):
             return False
 
@@ -1834,7 +1837,6 @@ init 5 python:
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sunshine:
     m 1hua "{i}You are my sunshine, my only sunshine.{/i}"

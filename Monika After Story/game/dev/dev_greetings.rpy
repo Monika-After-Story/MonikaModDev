@@ -8,8 +8,8 @@ init python:
         persistent._mas_fastgreeting = config.developer
 
 init 5 python:
-    rules = dict()
-    rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
+    ev_rules = {}
+    ev_rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
     addEvent(
         Event(
             persistent.greeting_database,
@@ -17,12 +17,12 @@ init 5 python:
             start_date=datetime.datetime(2017, 3, 17),
             end_date=datetime.datetime(2017, 3, 18),
             unlocked=True,
-            rules=rules
+            rules=ev_rules
         ),
         eventdb=evhand.greeting_database,
         skipCalendar=True
     )
-    del rules
+    del ev_rules
 
 label greeting_st_patrick:
     m "Oh, hello [player]!"
@@ -46,18 +46,15 @@ label greeting_st_patrick:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=None,max=-20))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_dev_no_hate",
             unlocked=True,
-            rules=rules
+            aff_range=(None, mas_aff.UPSET)
         ),
         eventdb=evhand.greeting_database
     )
-    del rules
 
 
 label greeting_dev_no_hate:
@@ -68,18 +65,15 @@ label greeting_dev_no_hate:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-14,max=14))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_dev_neutral",
             unlocked=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, mas_aff.NORMAL)
         ),
         eventdb=evhand.greeting_database
     )
-    del rules
 
 label greeting_dev_neutral:
     m "Hello there [player]!"
@@ -90,18 +84,15 @@ label greeting_dev_neutral:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=20,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_dev_love",
             unlocked=True,
-            rules=rules
+            aff_range=(mas_aff.HAPPY, None)
         ),
         eventdb=evhand.greeting_database
     )
-    del rules
 
 label greeting_dev_love:
     m 1b "Welcome back, honey!"
@@ -114,20 +105,89 @@ label greeting_dev_love:
 # Dev Fast greeting
 init 5 python:
     if persistent._mas_fastgreeting:
-        rules = dict()
-        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-        rules.update({"monika wants this first":""})
+        ev_rules = {}
+        ev_rules.update(MASPriorityRule.create_rule(-100))
         addEvent(
             Event(
                 persistent.greeting_database,
                 eventlabel="greeting_fast",
                 unlocked=True,
-                rules=rules
+                rules=ev_rules
             ),
-            eventdb=evhand.greeting_database
+            code="GRE"
         )
-        del rules
 
 label greeting_fast:
     m "{fast}Hello!{nw}"
     return
+
+# greeting testing label
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_gre_sampler",
+            category=["dev"],
+            prompt="SAMPLE GRE",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_gre_sampler:
+    m 1eua "Let's sample greeting algs."
+    m "Make sure to unlock special ones if you want"
+
+    python:
+        dev_gres = [
+            "greeting_st_patrick",
+            "greeting_dev_no_hate",
+            "greeting_dev_netural",
+            "greeting_dev_love",
+            "greeting_fast",
+        ]
+        
+
+    menu:
+        m "do you want to include dev?"
+        "Yes":
+            pass
+        "No":
+            python:
+                # remove dev items 
+                for d_gre in dev_gres:
+                    if d_gre in store.evhand.greeting_database:
+                        store.evhand.greeting_database.pop(d_gre)
+
+
+    m 1eua "sample size please"
+    $ sample_size = renpy.input("enter sample size", allow="0123456789")
+    $ sample_size = store.mas_utils.tryparseint(sample_size, 10000)
+    $ str_sample_size = str(sample_size)
+
+    m 1eua "using sample size of [str_sample_size]"
+
+    python:
+        # prepare data
+        results = {}
+
+        # loop over sample size, run select greeting test
+        for count in range(sample_size):
+            gre_ev = store.mas_greetings.selectGreeting()
+
+            if gre_ev.eventlabel in results:
+                results[gre_ev.eventlabel] += 1
+
+            else:
+                results[gre_ev.eventlabel] = 0
+
+
+        # done with sampling, output results
+        with open(renpy.config.basedir + "/gre_sample", "w") as outdata:
+            for ev_label, count in results.iteritems():
+                outdata.write("{0} | {1}\n".format(count, ev_label))
+
+
+    m "check files for 'gre_sample' for more info."
+    return
+
