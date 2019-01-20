@@ -142,7 +142,7 @@ label dev_gre_sampler:
         dev_gres = [
             "greeting_st_patrick",
             "greeting_dev_no_hate",
-            "greeting_dev_netural",
+            "greeting_dev_neutral",
             "greeting_dev_love",
             "greeting_fast",
             "greeting_dev_idle_test",
