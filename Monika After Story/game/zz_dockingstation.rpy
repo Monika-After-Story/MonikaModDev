@@ -2295,6 +2295,7 @@ label mas_dockstat_abort_gen:
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
 
+    # we are not leaving on player_bday and need to reset these
     if persistent._mas_player_bday_left_on_bday:
         $ persistent._mas_player_bday_left_on_bday = False
         $ persistent._mas_player_bday_date -= 1
