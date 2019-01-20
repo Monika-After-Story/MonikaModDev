@@ -10529,7 +10529,7 @@ label monika_dream:
         m 1eud "Oh, that reminds me!"
         m 3eub "Remember when I talked to you about lucid dreams?"
         m 3eua "You know, those dreams where you get to keep your consciousness."
-        m "Where you can, de facto, interact with them and even take control of them."
+        m "Where you can, in fact, interact with them and even take control of them."
         m 1hua "I'm sure you remember."
         m 1eub "Maybe you even took the advices that I gave you and started putting them into practice."
         menu:
