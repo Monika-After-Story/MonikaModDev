@@ -1483,6 +1483,9 @@ label mas_d25_monika_holiday_intro_rh:
     #   affection gain.
     $ store.mas_dockstat._ds_aff_for_tout(time_out, 5, 5, 1)
 
+    #Fall through
+#in case we need to call just this part, like if returning from bday date from pre-d25
+label mas_d25_monika_holiday_intro_rh_rh:
     m 1euc "Wait..."
     m 3etc "...is it?"
     m 3hub "It is!"
@@ -3558,6 +3561,7 @@ label mas_player_bday_cake:
         $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
 
+# event for if you went on a date pre-bday and return on bday
 init 5 python:
     addEvent(
         Event(
@@ -3648,6 +3652,7 @@ label mas_player_bday_upset_minus:
 
 # event for if the player's bday is also on a holiday
 # TODO update this as we add other holidays (f14) also figure out what to do if player bday is 9/22
+# TODO this needs priority below the O31 return from date event
 # condtions located in story-events 'birthdate'
 init 5 python:
     addEvent(
@@ -3728,11 +3733,15 @@ label greeting_returned_home_player_bday:
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
             ret_year = checkin_time.year
+            left_date = checkout_time.date()
+            ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
         else:
             left_year = None
             ret_year = None
             left_year_aff = None
+            left_date = None
+            ret_date = None
         add_points = False
         ret_diff_year = ret_year > left_year
 
@@ -3743,6 +3752,9 @@ label greeting_returned_home_player_bday:
             if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
+
+    if left_date < mas_d25 and ret_date > mas_d25:
+        $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
         $ mas_loseAffection()
@@ -3784,6 +3796,9 @@ label greeting_returned_home_player_bday:
     if persistent._mas_player_bday_decor and not mas_isplayer_bday():
         call return_home_post_player_bday
     $ persistent._mas_player_bday_left_on_bday = False
+
+    if mas_isD25() and not persistent._mas_d25_in_d25_mode:
+         call mas_d25_monika_holiday_intro_rh_rh
     return
 
 label return_home_post_player_bday:
