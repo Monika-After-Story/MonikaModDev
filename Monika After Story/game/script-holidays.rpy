@@ -3753,7 +3753,7 @@ label greeting_returned_home_player_bday:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
 
-    if left_date < mas_d25 and ret_date > mas_d25:
+    if left_date < mas_d25 < ret_date:
         $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
