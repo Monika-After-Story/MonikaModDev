@@ -2424,7 +2424,7 @@ init 10 python:
             renpy.redraw(self, 0)
 
         def render(self, width, height, st, at):
-            return renpy.Render(0, 0)
+            return renpy.Render()
 
 screen afk_detection():
     add MASInactivity()
