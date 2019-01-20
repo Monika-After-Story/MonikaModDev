@@ -347,7 +347,7 @@ label bye_prompt_to_class:
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
             m 1eub "Aww, going already?"
-            m 1efp "You havent even been here for 20 minutes!"
+            m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [player]."
             m 2eka "You're so sweet for seeing me even when you have so little time."
             m 2hub "I just want you to know I really appreciate that!"
