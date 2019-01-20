@@ -1400,10 +1400,10 @@ label monika_kiss:
             call monika_kiss_tease
 
         else:
-            show monika 6ekbfa
+            show monika 2eka
             pause 2.0
 
-        call monika_kissing_motion
+        call monika_kissing_motion_short
 
         show monika 6ekbfa
         $ renpy.say(m, kiss_quip)
@@ -1439,7 +1439,7 @@ label monika_kiss_tease:
     pause 2.0
     m 2tfb "Ahaha!"
     m 2efu "I had you going for a second there, didn't I?"
-    m 2ekbfa "Of course you can kiss me, [player]!"
+    m 2eka "Of course you can kiss me, [player]!"
     return
 
 init 5 python:
