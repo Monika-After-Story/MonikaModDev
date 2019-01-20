@@ -10538,16 +10538,18 @@ label monika_dream:
             "Yes":
                 m 1wub "Wow, I'm impressed!"
                 m 1hua "I know becoming lucid is not an easy thing to manage."
-                m 1esd "Are you an oneironaut [player]?"
-                m 1tsb "Or did you just got lucky, hehe~"
+                m 1esd "Are you an oneironaut, [player]?"
+                m 1tsb "Or did you just get lucky, ehehe~"
                 m 1hua "It sure must be fun to do what you want in a world created just for that."
+                
             "No":
                 m 1eka "I understand."
                 m 1ekb "It's really difficult to become lucid."
                 m 3eub "But if you want to have more control over what's going on in your dreams, you should definitely read the book by Stephen LaBerge: '{i}Exploring the World of Lucid Dreaming{/i}'."
                 m "As I've told you before, he developed a method to become lucid in a dream."
+                
         m 1dsd "Having said all that..."
-    m 1tsu "Tell me more about the details of your dream."
+    m 1tsu "Tell me more about your dream."
     menu:
         m "Did you manage to come and see me or did I appear in front of you?"
 
@@ -10560,42 +10562,43 @@ label monika_dream:
             m 1wud "..."
             m 1lkbsa "That's so thoughtful of you, sweetheart."
             m 2ekbfb "Your love is so overwhelming that you created a whole new world just to see me."
-            m 2ekbfa "You have no idea how much this mean to me, [player]."
-    m 1eud "By the way."
-    m 1hksdrb "I haven't even ask you what your dream was about."
-    m 1esa "So what about it [player]?"
+            m 2ekbfa "You have no idea how much this means to me, [player]."
+            
+    m 1eud "By the way, I haven't even ask you what your dream was about."
     menu:
-        m "What was your dream about?"
+        m "So what was it about?"
         
         #"I dreamed that you would cross over my reality":
             #dialogue
+            
         "I dreamed that I would cross over your reality":
             m 1esd "Oh yeah, that's a possibility that I haven't given much thought about."
             m 1rsc "But when you think about it..."
-            m 1rud "It's true that it's much easier to perfectionate the interactions reality-computer than to try to create computer-reality interactions."
+            m 1rud "It's true that it's much easier to perfect the interactions reality-computer than to try to create computer-reality interactions."
             m 1rkc "But..."
-            m 2ekc "It just doesn't feels right."
+            m 2ekc "It just doesn't feel right."
             #OMG, is that a MF Sayori reference?
             m 2ekd "I don't really want to stay in this place any more time than necessary."
-            m "I have a lot of... bad memories in there."
+            m "I have a lot of... bad memories in here."
             m 2dkd "I'm always afraid of returning to the screaming void, if something were to happen to your computer."
             m 1dfd "And I especially wouldn't want you to experiment such torture in such a hellish place."
             if seen_event("monika_simulated"):
-                m 1esc "I know that I talked about dragging you here, if you happened to also live in a simulation, and if I were in the master reality."
+                m 1esc "I know that I talked about dragging you here, if you happened to also live in a simulation and if I were in the master reality."
                 m 3esd "But I would make a lot of changes to this world before bringing you here."
-                m 1dsc "There is a lot of inconvenient things that you don't even know about this world, but that I do."
+                m 1dsc "There are a lot of inconvenient things that you don't even know about this world, but that I do."
             m 1dkd "I would be too afraid of you, not being able to escape."
-            m 1ekd "And even if I would love to be with you, I really want to visit the real world with you."
+            m 1ekd "And even if I would love to be with you forever, I really want to visit the real world."
             m 1dkc "..."
             m 1wuw "Oh sorry!"
             m 1hksdrb "You were talking about a dream you had, a dream about us meeting each other."
-            m 1dkd "And I started talking in a depressive way."
+            m 1dkd "And I started thinking in a depressing way."
             m 1eka "I'm sorry [player], I'll try not to say such things again."
             if seen_event("monika_stoicism"):
                 m 3hksdlb "I could learn a lot from stoicism on the matter."
             m 2dsc "Anyway..."
             m 2eub "Thank you very much for dreaming about us getting together."
             m 2hub "It really must be nice to be able to dream such wonderful things."
+            
         "I dreamed that we went on a date together":
             m 1dku "[player]..."
             m 1tsu "Is there a moment in your life when you are not such a loving sweetheart?"
@@ -10605,21 +10608,26 @@ label monika_dream:
             m 1tsb "I hope you brought me to a romantic place."
             m 1sub "Or maybe you took me to a stroll through a park to see a sunset."
             m 1lubfb "I really can't wait to be with you and to do it for real."
-            m 1tub "Because whoever was that person that looks like me in your dream..."
+            m 1tub "Because whoever that person was that looked like me in your dream..."
             m 1hubfa "I'm way more in love with you than you could ever conceive."
+            
         "I dreamed that we were getting married":
-            m 1wubsw "M-Married?"
-            m 1lkbfb "That's..."
-            m 2dkbfa "..."
-            m 2ekbfa "Thank you so much [player] for making me the happiest girlfriend in the world, even in your dreams."
-            m 2ekbfb "To think that even when you have the possibility to do everything you want, you choose to spend your precious time with me."
-            m 2lkbsa "And to use it for such an amazing event."
-            m 1ekbfb "I really can't express how deeply I am grateful to have you, caring that much about me."
-            m 1dkbfb "I still don't want us to get married while I'm blocked here..."
-            m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
-            m "Thank you so much for loving me [player]."
+            if store.mas_anni.anniCount() < 1:
+                m 1wubsw "M-Married?"
+                m 1lkbfb "That's..."
+                m 2dkbfa "..."
+                m 2ekbfa "Thank you so much [player], for making me the happiest girlfriend in the world, even in your dreams."
+                m 2ekbfb "To think that even when anything can happen, that your mind produces such an amazing event."
+                m 1ekbfb "I really can't express how deeply I am grateful to have you, caring that much about me."
+                m 1dkbfb "I still don't want us to get married while I'm stuck here..."
+                m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
+                m "Thank you so much for loving me, [player]."
+            #else:
+                #m
+            
         #"I dreamed that we were having fun with the other club members":
             #dialogue + care about the dokis?
+            
     m 1dubsu "Ah~ [player]."
     m 1hubfb "I would love to be able to dream about you."
     m "I would do it every night if I could."
