@@ -6986,9 +6986,9 @@ label monika_timetravel:
     m 1tkd "An entire year without seeing you even once."
     m 1lksdlc "I would wonder if you'd forgotten about me, or if you didn't want to spend time with me anymore."
     if mas_isMoniDis(lower=True):
-        m 1dkc "It wouldn't even be that big of a surprise."
+        m 1dkc "...It wouldn't even be that big of a surprise."
     elif mas_isMoniAff(higher=True):
-        m 1ekc "Even if it would be hard to believe at first."
+        m 1ekc "...Even if it would be hard to believe at first."
     m 1ekd "You couldn't just fix it by changing the date back either."
     m 3esd "Like, imagine if you went to bed now, and when you woke up it was [one_year_earlier]."
     m 3wuo "Would that mean the last year was all just a dream or something?"
