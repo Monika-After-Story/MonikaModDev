@@ -1095,8 +1095,6 @@ label bye_going_somewhere_nothanks:
 
 
 label bye_going_somewhere_leavemenu:
-    $ persistent._mas_player_bday_left_on_bday = False
-
     if mas_isMoniDis(lower=True):
         m 1tkc "..."
         m 1tkd "I knew it.{nw}"
