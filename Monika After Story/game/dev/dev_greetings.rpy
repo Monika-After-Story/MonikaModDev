@@ -170,7 +170,7 @@ label dev_gre_sampler:
         #   greeting_back_from_work - TYPE_WORK
         #   greeting_back_from_sleep - TYPE_SLEEP
         #   greeting_returned_home - TYPE_GO_SOMEWHERE / TYPE_GENERIC_RET
-        #   greeting_trick_or_treat_back - TYPE_GO_SOMEWHERE / TYPE_HOL_O31_TT
+        #   greeting_trick_or_treat_back - TYPE_HOL_O31_TT
 
         # aff based
         #   greeting_upset - UPSET ONLY / rand chance 2
