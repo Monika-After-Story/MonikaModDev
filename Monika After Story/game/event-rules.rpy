@@ -393,6 +393,7 @@ init -1 python:
                     (Default: False)
                 random_chance - An int used to determine 1 in random_chance
                     special chance for this greeting to appear
+                    If 0, we ignore this property
                     (Default: 0)
                 setup_label - label to call right after this greeting is
                     selected. This happens before post_greeting_check.
@@ -449,7 +450,11 @@ init -1 python:
             # unpack the tuple for easy access
             random_chance = rule[1]
 
-            # check if random_chance is less or equal to 0 return False
+            if random_chance == 0:
+                # 0 chance, return default
+                return defval
+
+            # check if random_chance is less than 0 return False
             if random_chance <= 0:
                 return False
 

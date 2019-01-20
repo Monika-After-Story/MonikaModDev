@@ -145,7 +145,39 @@ label dev_gre_sampler:
             "greeting_dev_netural",
             "greeting_dev_love",
             "greeting_fast",
+            "greeting_dev_idle_test",
         ]
+
+        spec_gre = [
+            "i_greeting_monikaroom",
+            "greeting_hairdown",
+        ]
+
+        # potentially special:
+        #   monikaroom_will_change - priority of 10
+        #   greeting_time_concern - midnight - 6am
+        #   greeting_time_concern_day - 6am to midnight
+
+        # type based
+        #   greeting_sick - TYPE_SICK
+        #   greeting_long_absence - TYPE_LONG_ABSENCE
+        #   greeting_back_from_school - TYPE_SCHOOL
+        #   greeting_back_from_work - TYPE_WORK
+        #   greeting_back_from_sleep - TYPE_SLEEP
+        #   greeting_returned_home - TYPE_GO_SOMEWHERE / TYPE_GENERIC_RET
+        #   greeting_trick_or_treat_back - TYPE_GO_SOMEWHERE / TYPE_HOL_O31_TT
+
+        # aff based
+        #   greeting_upset - UPSET ONLY / rand chance 2
+        #   greeting_distressed - DISTRESSED ONLY / rand chance 2
+        #   greeting_broken - BROKEN and below
+        #   greeting_ourreality - ENAMORED and above (high priority)
+
+        # forced with evs
+        #   greeting_o31_rin - TYPE_HOL_O31
+        #   greeting_o31_marisa - TYPE_HOL_O31
+
+        locked_gre = []
         
 
     menu:
@@ -160,33 +192,64 @@ label dev_gre_sampler:
                         store.evhand.greeting_database.pop(d_gre)
 
 
+    menu:
+        m "Do you want to unlock special greetings?"
+        "Yes":
+            python:
+                for s_gre in spec_gre:
+                    s_gre_ev = mas_getEV(s_gre)
+                    if s_gre_ev is not None:
+                        if not s_gre_ev.unlocked:
+                            locked_gre.append(s_gre_ev)
+                        s_gre_ev.unlocked = True
+            
+        "No":
+            pass
+
+
     m 1eua "sample size please"
     $ sample_size = renpy.input("enter sample size", allow="0123456789")
     $ sample_size = store.mas_utils.tryparseint(sample_size, 10000)
+    if sample_size > 10000:
+        $ sample_size = 10000 # anyhting longer takes too long
     $ str_sample_size = str(sample_size)
 
     m 1eua "using sample size of [str_sample_size]"
+    
+    $ use_type = None
+
+    m 1eua "If you want to use a type, please set 'use_type' to an appropriate greeting type right now."
+
+    m 1hua "Advance dialogue to begin sample"
 
     python:
         # prepare data
-        results = {}
+        results = {
+            "no greeting": 0
+        }
 
         # loop over sample size, run select greeting test
         for count in range(sample_size):
-            gre_ev = store.mas_greetings.selectGreeting()
+            gre_ev = store.mas_greetings.selectGreeting(use_type)
 
-            if gre_ev.eventlabel in results:
+            if gre_ev is None:
+                results["no greeting"] += 1
+
+            elif gre_ev.eventlabel in results:
                 results[gre_ev.eventlabel] += 1
 
             else:
-                results[gre_ev.eventlabel] = 0
+                results[gre_ev.eventlabel] = 1
 
 
         # done with sampling, output results
         with open(renpy.config.basedir + "/gre_sample", "w") as outdata:
             for ev_label, count in results.iteritems():
-                outdata.write("{0} | {1}\n".format(count, ev_label))
+                outdata.write("{0},{1}\n".format(ev_label, count))
 
+        # relock locked gres
+        for l_gre_ev in locked_gre:
+            l_gre_ev.unlocked = False
 
     m "check files for 'gre_sample' for more info."
     return

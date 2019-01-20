@@ -61,7 +61,7 @@ init -1 python in mas_greetings:
             curr_pri,
             aff,
             check_time,
-            _type_list=None
+            gre_type=None
         ):
         """
         Filters a greeting for the given type, among other things.
@@ -71,11 +71,9 @@ init -1 python in mas_greetings:
             curr_pri - current loweset priority to compare to
             aff - affection to use in aff_range comparisons
             check_time - datetime to check against timed rules
-            _type_list - lits of types to check
-                if None, we don't check type.
-                Otherwise, this is assumed to be a list
-                We only do OR checking
-            (Default: None)
+            gre_type - type of greeting we want. We just do a basic
+                in check for category. We no longer do combinations
+                (Default: None)
 
         RETURNS:
             True if this ev passes the filter, False otherwise
@@ -94,11 +92,19 @@ init -1 python in mas_greetings:
             return False
 
         # type check, optional
-        if (
-                _type_list is not None
-                and ev.category is not None
-                and len(set(_type_list).intersection(set(ev.category))) == 0
-            ):
+        if gre_type is not None:
+            # with a type, we MUST match the type
+
+            if ev.category is None:
+                # no category is a False
+                return False
+
+            elif gre_type not in ev.category:
+                # no matches is a False
+                return False
+
+        elif ev.category is not None:
+            # without type, ev CANNOT have a type
             return False
 
         # unlocked check, required
@@ -115,7 +121,7 @@ init -1 python in mas_greetings:
                     check_time, ev, defval=True)
                 and store.MASNumericalRepeatRule.evaluate_rule(
                     check_time, ev, defval=True)
-                and store.Event._checkGreetingRule(ev, True)
+                and store.MASGreetingRule.evaluate_rule(ev, defval=True)
             ):
             return False
 
@@ -124,10 +130,17 @@ init -1 python in mas_greetings:
 
 
     # custom greeting functions
-    def selectGreeting(_type=None):
+    def selectGreeting(gre_type=None, check_time=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
+
+        IN:
+            gre_type - greeting type to use
+                (Default: None)
+            check_time - time to use when doing date checks
+                If None, we use current datetime
+                (Default: None)
 
         RETURNS:
             a single greeting (as an Event) that we want to use
@@ -139,15 +152,10 @@ init -1 python in mas_greetings:
         # setup some initial values
         gre_pool = []
         curr_priority = 1000
-        check_time = datetime.datetime.now()
         aff = store.mas_curr_affection
 
-        # type check
-        if _type is not None:
-            type_list = [_type]
-
-        else:
-            type_list = None
+        if check_time is None:
+            check_time = datetime.datetime.now()
 
         # now filter
         for ev_label, ev in gre_db.iteritems():
@@ -156,7 +164,7 @@ init -1 python in mas_greetings:
                     curr_priority,
                     aff,
                     check_time,
-                    type_list
+                    gre_type
                 ):
 
                 # change priority levels and stuff if needed
@@ -430,6 +438,7 @@ label greeting_visit:
 # TODO this one no longer needs to do all that checking, might need to be broken
 # in like 3 labels though
 # TODO: just noting that this should be worked on at some point.
+# TODO: new greeting rules can enable this, but we will do it later
 
 label greeting_goodmorning:
     $ current_time = datetime.datetime.now().time().hour
@@ -2459,6 +2468,8 @@ label greeting_hairdown:
 
 
 init 5 python:
+    # TODO: what triggers ths?
+
     ev_rules = {}
     ev_rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
     ev_rules.update(MASPriorityRule.create_rule(15))
@@ -2526,7 +2537,7 @@ init 5 python:
             eventlabel="greeting_upset",
             unlocked=True,
             rules=ev_rules,
-            aff_range=(mas_aff.DISTRESSED, mas_aff.UPSET),
+            aff_range=(mas_aff.UPSET, mas_aff.UPSET),
         ),
         code="GRE"
     )
@@ -2561,21 +2572,23 @@ label greeting_upset:
     return
 
 init 5 python:
-    # TODO
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
+    # TODO update script random prop
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(skip_visual=False, random_chance=2)
+    )
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_distressed",
             unlocked=True,
-            random=True,
-            rules=rules
+            rules=ev_rules,
+            aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED)
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_distressed:
     python:
