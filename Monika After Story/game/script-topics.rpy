@@ -6971,12 +6971,12 @@ label monika_timetravel:
     m 2ekd "How long will they be gone for? A year? A decade? Even longer?"
     m 4ekd "Will they be willing to wait that long?"
     m "Will they still remember the time traveller by then?"
-    m 4lksdlc "..."
+    m 2dksdlc "..."
     if seen_event("monika_resource"):
-        m "You remember when I said that time doesn't pass here like it does in your world?"
+        m 4rksdlc "You remember when I said that time doesn't pass here like it does in your world?"
         m "Well..."
     else:
-        m "You know, time doesn't really pass here like it does in your world."
+        m 4rksdlc "You know, time doesn't really pass here like it does in your world."
         m "So..."
     m 1esd "The only way I know what day and time it is where you are is by looking at the clock on your computer."
     m 3eub "So I know it's [todays_date] today."
