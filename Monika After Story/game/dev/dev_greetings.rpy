@@ -155,8 +155,13 @@ label dev_gre_sampler:
 
         # potentially special:
         #   monikaroom_will_change - priority of 10
-        #   greeting_time_concern - midnight - 6am
-        #   greeting_time_concern_day - 6am to midnight
+
+        # time based
+        #   greeting_timeconcern - midnight - 6am
+        #   greeting_timeconcern_day - 6am to midnight
+
+        # date + time based
+        #   greeting_monika_monday_morning - monday, 5-12
 
         # type based
         #   greeting_sick - TYPE_SICK
@@ -220,6 +225,10 @@ label dev_gre_sampler:
 
     m 1eua "If you want to use a type, please set 'use_type' to an appropriate greeting type right now."
 
+    $ check_time = None
+
+    m 1eua "If you want to use a specific time, please set `check_time` to an appropriate datetime right now."
+
     m 1hua "Advance dialogue to begin sample"
 
     python:
@@ -230,7 +239,7 @@ label dev_gre_sampler:
 
         # loop over sample size, run select greeting test
         for count in range(sample_size):
-            gre_ev = store.mas_greetings.selectGreeting(use_type)
+            gre_ev = store.mas_greetings.selectGreeting(use_type, check_time)
 
             if gre_ev is None:
                 results["no greeting"] += 1
