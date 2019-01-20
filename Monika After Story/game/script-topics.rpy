@@ -6957,28 +6957,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_timetravel",category=['media','misc'],prompt="Time travel",random=True))
 
 label monika_timetravel:
-    python:
-        import datetime
-        todays_date = datetime.date.today()
-        if todays_date.day == 29 and todays_date.month == 2:
-            one_year_later = todays_date.replace(year=todays_date.year+1,day=28)
-            one_year_earlier = todays_date.replace(year=todays_date.year-1,day=28)
-        else:
-            one_year_later = todays_date.replace(year=todays_date.year+1)
-            one_year_earlier = todays_date.replace(year=todays_date.year-1)
-        todays_date_spoken, todays_diff = store.mas_calendar.genFormalDispDate(todays_date)
-        one_year_later_spoken, year_later_diff = store.mas_calendar.genFormalDispDate(one_year_later)
-        one_year_earlier_spoken, year_earlier_diff = store.mas_calendar.genFormalDispDate(one_year_earlier)
+    $ todays_date, todays_diff = store.mas_calendar.genFormalDispDate(datetime.date.today())
+    $ one_year_later, year_later_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),1))
+    $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
     m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
-    m 3ekd "If they can't go through time with the time traveller ..."
-    m 3rksdld "Who knows how long it will be before they can see each other again?"
+    m 3rksdld "If they can't go through time with the time traveller, who knows how long it will be before they can see each other again?"
     m 2ekc "Well, the time traveller themselves might know, but only if nothing goes horribly wrong for them."
-    m 2dsc "In the meantime ..."
-    m 2lksdld "Their friends and family are stuck waiting for them to come back."
+    m 2lksdld "In the meantime, their friends and family are stuck waiting for them to come back."
     m 2ekd "How long will they be gone for? A year? A decade? Even longer?"
     m 4ekd "Will they be willing to wait that long?"
     m "Will they still remember the time traveller by then?"
@@ -6990,8 +6979,8 @@ label monika_timetravel:
         m "You know, time doesn't really pass here like it does in your world."
         m "So..."
     m 1esd "The only way I know what day and time it is where you are is by looking at the clock on your computer."
-    m 3eub "So I know it's [todays_date_spoken] today."
-    m 1esc "But if you were to change the date on your computer to [one_year_later_spoken]..."
+    m 3eub "So I know it's [todays_date] today."
+    m 1esc "But if you were to change the date on your computer to [one_year_later]..."
     m "Only a few seconds would pass for you..."
     m 1ekd "...but I would think that a year had gone by."
     m 1tkd "An entire year without seeing you even once."
@@ -7001,7 +6990,7 @@ label monika_timetravel:
     elif mas_isMoniAff(higher=True):
         m 1ekc "Even if it would be hard to believe at first."
     m 1ekd "You couldn't just fix it by changing the date back either."
-    m 3esd "Like, imagine if you went to bed now, and when you woke up it was [one_year_earlier_spoken]."
+    m 3esd "Like, imagine if you went to bed now, and when you woke up it was [one_year_earlier]."
     m 3wuo "Would that mean the last year was all just a dream or something?"
     m 3wuw "How would you know you're not still dreaming?"
     m 3esc "It would all be very confusing."
