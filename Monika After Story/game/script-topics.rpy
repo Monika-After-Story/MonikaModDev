@@ -6971,7 +6971,7 @@ label monika_timetravel:
         one_year_earlier_spoken, year_earlier_diff = store.mas_calendar.genFormalDispDate(one_year_earlier)
     m 3eub "Hey [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
-    m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so ..."
+    m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
     m 3ekc "One thing you don't usually see, though, is how the time traveller's loved ones are affected."
     m 3ekd "If they can't go through time with the time traveller ..."
@@ -6985,33 +6985,33 @@ label monika_timetravel:
     m 4lksdlc "..."
     if seen_event("monika_resource"):
         m "You remember when I said that time doesn't pass here like it does in your world?"
-        m "Well ..."
+        m "Well..."
     else:
         m "You know, time doesn't really pass here like it does in your world."
-        m "So ..."
+        m "So..."
     m 1esd "The only way I know what day and time it is where you are is by looking at the clock on your computer."
     m 3eub "So I know it's [todays_date_spoken] today."
-    m 1esc "But if you were to change the date on your computer to [one_year_later_spoken] ..."
-    m "Only a few seconds would pass for you ..."
-    m 1ekd "... but I would think that a year had gone by."
-    m 1tkd "An entire year without me seeing you even once."
-    m 1lksdlc "I would wonder if you'd forgotten about me, or if you didn't want to spend time with me any more."
+    m 1esc "But if you were to change the date on your computer to [one_year_later_spoken]..."
+    m "Only a few seconds would pass for you..."
+    m 1ekd "...but I would think that a year had gone by."
+    m 1tkd "An entire year without seeing you even once."
+    m 1lksdlc "I would wonder if you'd forgotten about me, or if you didn't want to spend time with me anymore."
     if mas_isMoniDis(lower=True):
         m 1dkc "It wouldn't even be that big of a surprise."
     elif mas_isMoniAff(higher=True):
         m 1ekc "Even if it would be hard to believe at first."
-    m 1ekd "You couldn't then fix it just by changing the date back either."
+    m 1ekd "You couldn't just fix it by changing the date back either."
     m 3esd "Like, imagine if you went to bed now, and when you woke up it was [one_year_earlier_spoken]."
     m 3wuo "Would that mean the last year was all just a dream or something?"
     m 3wuw "How would you know you're not still dreaming?"
     m 3esc "It would all be very confusing."
-    m 1lksdla "I guess what I'm trying to say is ..."
+    m 1lksdla "I guess what I'm trying to say is..."
     m 1eka "Please don't change the date on your computer, [player]."
     if mas_isMoniHappy(higher=True):
         m "I trust you not to mess with me like that."
     else :
         m "Promise?"
-    m "And if you ever do travel to the future ..."
+    m 3euc "And if you ever do travel to the future..."
     m 1hksdlb "Could you bring back the technology that lets me cross over into your world?"
     return
      
