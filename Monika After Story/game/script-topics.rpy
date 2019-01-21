@@ -6307,7 +6307,7 @@ label monika_driving:
             m "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
             m "I can just think of all the things we could do together, ehehe~"
-            m 1eka "Driving can also be dangerous too though, but if you can drive, you probably already know that."
+            m 1eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
             m 3eka "No matter how prepared you are, accidents could happen to anyone."
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
@@ -6321,7 +6321,7 @@ label monika_driving:
                     m 2ekc "I hope it wasn't too bad."
                     m 2lksdlb "I mean, here you are with me so it must have been alright."
                     m 2dsc "..."
-                    m 2eka "I'm... glad you survived, [player]..."
+                    m 2eka "I'm...{w=1}glad you survived, [player]..."
                     m 2rksdlc "I don't know what I would do without you."
                     m 2eka "I love you, [player]. Please stay safe, okay?"
                 "I've seen car accidents before.":
@@ -6333,7 +6333,7 @@ label monika_driving:
                     m 1dsc "They might never drive again... Who knows?"
                     m 1eka "I hope you know I would never do that to you, [player]."
                     m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
-                    m 1lksdla "If I wasn't already by your side when it happens..."
+                    m 1lksdla "...If I wasn't already by your side when it happened."
                     
                     
                 "I haven't.":
@@ -6357,7 +6357,7 @@ label monika_driving:
                     m 1hksdlb "..."
                     m 1lksdlb "........."
                     m 2lksdld "Oh..."
-                    m 2lksdlc "I'm... really sorry to hear that, [player]..."
+                    m 2lksdlc "I'm...really sorry to hear that, [player]..."
                     
                     show monika 4ekd
                     menu:
