@@ -3027,7 +3027,7 @@ label monika_contribute:
             m 1eub "That's a good start!"
             m 1hua "I'm sure you could make some lovely additions~"
             m 3eua "It doesn't even have to be anything big."
-            m "You could just fix typos or make sure everything sounds alright."
+            m 3rksdla "You could just fix typos or make sure everything sounds alright."
         "No.":
             $ persistent._mas_pm_has_contributed_to_mas = False
             $ persistent._mas_pm_wants_to_contribute_to_mas = False
