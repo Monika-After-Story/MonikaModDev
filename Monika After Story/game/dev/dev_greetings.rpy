@@ -2,6 +2,11 @@
 
 # TODO Delete this *Insert Monika with a handgun*
 # Seriously this is for testing only
+
+init python:
+    if persistent._mas_fastgreeting is None:
+        persistent._mas_fastgreeting = config.developer
+
 init 5 python:
     rules = dict()
     rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))
@@ -108,19 +113,20 @@ label greeting_dev_love:
 
 # Dev Fast greeting
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_fast",
-            unlocked=True,
-            rules=rules
-        ),
-        eventdb=evhand.greeting_database
-    )
-    del rules
+    if persistent._mas_fastgreeting:
+        rules = dict()
+        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
+        rules.update({"monika wants this first":""})
+        addEvent(
+            Event(
+                persistent.greeting_database,
+                eventlabel="greeting_fast",
+                unlocked=True,
+                rules=rules
+            ),
+            eventdb=evhand.greeting_database
+        )
+        del rules
 
 label greeting_fast:
     m "{fast}Hello!{nw}"

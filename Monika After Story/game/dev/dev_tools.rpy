@@ -1,6 +1,6 @@
 # basic dev tool stuff
 
-init 2018 python:
+init 800 python:
     
     def mas_remove_event(*labels):
         """
@@ -26,5 +26,5 @@ init 2018 python:
            
         persistent.closed_self = True
         persistent._mas_game_crashed = False
-        renpy.persistent.save()
+        renpy.save_persistent()
         renpy.jump("_quit")

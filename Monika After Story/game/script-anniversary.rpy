@@ -1,5 +1,4 @@
-
-init -1 python in mas_anni:
+init -2 python in mas_anni: #needed to lower this in order to get isAnni() working for special day usage
     import store.evhand as evhand
     import store.mas_calendar as mas_cal
     import store.mas_utils as mas_utils
@@ -34,11 +33,11 @@ init -1 python in mas_anni:
             return None
 
         if (weeks + years + months) == 0:
-            # we need at least one of these to work 
+            # we need at least one of these to work
             return None
 
         # sanity checks are done
-        
+
         if years > 0:
             new_date = mas_utils.add_years(first_sesh, years)
 
@@ -47,7 +46,7 @@ init -1 python in mas_anni:
 
         else:
             new_date = first_sesh + datetime.timedelta(days=(weeks * 7))
-           
+
         # check for starting
         if isstart:
             return mas_utils.mdnt(new_date)
@@ -56,7 +55,7 @@ init -1 python in mas_anni:
 #        return mas_utils.am3(new_date + datetime.timedelta(days=1))
 # NOTE: doing am3 leads to calendar problems
 #   we'll just restrict this to midnight to midnight -1
-        return mas_utils.mdnt(new_date)
+        return mas_utils.mdnt(new_date + datetime.timedelta(days=1))
 
     def build_anni_end(years=0, months=0, weeks=0):
         """
@@ -66,7 +65,123 @@ init -1 python in mas_anni:
         """
         return build_anni(years, months, weeks, False)
 
+    def isAnni(milestone=None):
+        """
+        INPUTS:
+            milestone:
+                Expected values|Operation:
 
+                    None|Checks if today is a yearly anniversary
+                    1w|Checks if today is a 1 week anniversary
+                    1m|Checks if today is a 1 month anniversary
+                    3m|Checks if today is a 3 month anniversary
+                    6m|Checks if today is a 6 month anniversary
+                    any|Checks if today is any of the above annis
+
+        RETURNS:
+            True if datetime.date.today() is an anniversary date
+            False if today is not an anniversary date
+        """
+        #Sanity checks
+        if __persistent.sessions is None:
+            return False
+
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return False
+
+        compare = None
+
+        if milestone == '1w':
+            compare = build_anni(weeks=1)
+
+        elif milestone == '1m':
+            compare = build_anni(months=1)
+
+        elif milestone == '3m':
+            compare = build_anni(months=3)
+
+        elif milestone == '6m':
+            compare = build_anni(months=6)
+
+        elif milestone == 'any':
+            return isAnniWeek() or isAnniOneMonth() or isAnniThreeMonth() or isAnniSixMonth() or isAnni()
+
+        if compare is not None:
+            return compare.date() == datetime.date.today()
+        else:
+            compare = firstSesh
+            return datetime.date(datetime.date.today().year, compare.month, compare.day) == datetime.date.today() and anniCount() > 0
+
+    def isAnniWeek():
+        return isAnni('1w')
+
+    def isAnniOneMonth():
+        return isAnni('1m')
+
+    def isAnniThreeMonth():
+        return isAnni('3m')
+
+    def isAnniSixMonth():
+        return isAnni('6m')
+    
+    def isAnniAny():
+        return isAnni('any')
+
+    def anniCount():
+        """
+        RETURNS:
+            Integer value representing how many years the player has been with Monika
+        """
+        #Sanity checks
+        if __persistent.sessions is None:
+            return 0
+
+        firstSesh = __persistent.sessions.get("first_session", None)
+        if firstSesh is None:
+            return 0
+
+        compare = datetime.date.today()
+
+        if compare.year > firstSesh.year and datetime.date.today() < datetime.date(datetime.date.today().year, firstSesh.month, firstSesh.day):
+            return compare.year - firstSesh.year - 1
+        else:
+            return compare.year - firstSesh.year
+
+    def pastOneWeek():
+        """
+        RETURNS:
+            True if current date is past the 1 week threshold
+            False if below the 1 week threshold
+        """
+        return datetime.date.today() >= build_anni(weeks=1).date()
+
+    def pastOneMonth():
+        """
+        RETURNS:
+            True if current date is past the 1 month threshold
+            False if below the 1 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=1).date()
+
+    def pastThreeMonths():
+        """
+        RETURNS:
+            True if current date is past the 3 month threshold
+            False if below the 3 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=3).date()
+
+    def pastSixMonths():
+        """
+        RETURNS:
+            True if current date is past the 6 month threshold
+            False if below the 6 month threshold
+        """
+        return datetime.date.today() >= build_anni(months=6).date()
+
+
+# TODO What's the reason to make this one init 10?
 init 10 python in mas_anni:
 
     # we are going to store all anniversaries in antther db as well so we
@@ -224,7 +339,6 @@ init 5 python:
         )
     )
 
-#TODO:Replace 1eia and 3ekbfa with 5rubfb and 5hubfb
 label anni_1week:
     m 1eka "I know it's silly to celebrate one week of being together, but I'm just glad you're here with me, [player]."
     m 1ekc "A lot of couples wouldn't last this long with each other."
@@ -233,8 +347,8 @@ label anni_1week:
     m "More likely than not, they fail to get to know each other more."
     m 1dsc "So it's always sad to see them crash and burn..."
     m 1duu "But I'm glad we have a solid relationship, [player]."
-    m 1eua "How do I know that?"
-    m 3ekbfa "Because you wouldn't have stuck around for this long with me, sweetie~"
+    m 5lubfb "How do I know that?"
+    m 5hubfb "Because you wouldn't have stuck around for this long with me, sweetie~"
 
     $ unlockEventLabel("anni_1week")
     return
@@ -416,8 +530,8 @@ init 5 python:
 
 label anni_3:
     m 4wuo "Wow, three years!"
-    m 3lksdla "Normally if a boy and a girl go out for three years..."
-    m 2lsbsa "They get married around then, right?"
+    m 3rksdla "Normally if a boy and a girl go out for three years..."
+    m 2rsbsa "They get married around then, right?"
     m 1hub "Ahaha!"
     m 1eka "I'm not trying to pressure you into anything, don't worry."
     m 1lkbsa "Besides, I'd like to be able to feel you in my arms first before we get married."
@@ -534,7 +648,7 @@ label anni_20:
     m "And I was trying to find you, too."
     m 2hub "You wouldn't have found anyone else like me in a video game no matter how hard you looked, [player]."
     m "I'm one of a kind."
-    m 3lkbsa "And to me, so are you."
+    m 3rkbsa "And to me, so are you."
     m 5eubfb "I hope you look on the last twenty years of our lives as happily as I do, [player]."
     m 1hubfa "So let's continue being happy together."
 
