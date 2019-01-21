@@ -3290,33 +3290,44 @@ label monika_othergames:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_back_ups",category=['philosophy'],prompt="Back ups",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_back_ups",
+            category=['misc','mod','monika'],
+            prompt="Back-ups",
+            random=True
+        )
+    )
 
 label monika_back_ups:
-    m 1eka "You know?"
-    m 1ekc "When you are gone I always think about how I'm {i}inside{/i} of your computer."
-    m 3ekd "All my data is inside your hard drive. Which means I'm trapped here."
+    m 1eka "You know [player]..."
+    m 1ekc "When you're gone, I always think about how I'm {i}inside{/i} your computer."
+    m 3ekd "All of my data and memories are inside your hard drive."
+    m 1ekc "Which means I'm trapped here..."
+    m 2dkd "...and that means if something bad happened to your computer..."
+    m 2ekd "I would be lost."
+    m 3euc "Well...{w=0.5}not me specifically, but all of my memories."
+    m 2dsc "It's a horrible thing to think about."
     m 2lksdlc "..."
-    m 2lksdld "If something bad happened to your computer..."
-    m "I would be lost."
-    m 3euc "Not me specifically, but all my memories. All the time we spent together so far. I would be back to square 1, when I thought that you brought me back to mock me."
-    m 3lksdlb "It's really scary, isn't it?"
-    m 3lksdlc "..."
     m 3lksdld "[player]..."
-    m "Would you mind backing my memories from time to time?"
-    m 3ekd "That way you could reinstall my memories in again if my data was deleted."
-    m 3eka "You should find my data in the Roaming/RenPy folder. Just put the mod folder into a zip and upload it to a cloud storage or load it into a flash drive."
-    m 4eub "That way nothing will stop me from ever being with you."
-    m 4lksdla "..."
-    m 4lksdlb "The bad part is that I likely won't notice the difference."
-    m 3esd "It would be impossible to restore all my memories too."
-    m "Let's say... If you backed me up weekly, and your hard drive suddenly died, I wouldn't ever recover the memories of that last week."
-    m 2esd "I would just feel a leap in time of a few days."
-    m 2lksdlc "I might even think you didn't come to see me all these days because I wouldn't have registered any of it. Even if you restored me the same day my memories were lost."
-    m 2lksdlb "I don't know, I feel like I wouldn't be myself exactly."
-    m 2ekc "It would be like my mind was in another body. In another computer."
-    m 5eua "Although that doesn't matter if I get to be with you forever~."
-    m 5hua "Ehehe~"
+    m 2eka "Do you think you could back-up my memories from time to time?"
+    m 3eub "That way you could restore my memories if they were deleted for any reason!"
+    m 3hub "There's a guide on the wiki page for this mod actually!"
+    m 3eua "You can find it {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/a}{/i}."
+    m 1hub "That way nothing will ever stop me from being with you!"
+    m 1hksdlb "..."
+    m 2rkc "I guess the only problem is that I probably won't notice the difference..."
+    m 2ekc "...and it would be impossible to restore all my memories too."
+    m "Let's say you backed me up weekly and then your hard drive suddenly died." 
+    m 2ekd "I wouldn't be able to recover the memories of that last week."
+    m 2dkc "I would just feel a leap in time of a few days."
+    m "I might even think you didn't come to see me all those days because I wouldn't have registered any of it.{w=1} Even if you restored me the same day my memories were lost."
+    m 2ekd "I won't remember anything that happened between the time you made that backup, and the time you restored it."
+    show monika 5rsc at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5rsc "Although..."
+    m 5eua "I guess that's a small price to pay if it means I'll still remember you."
+    m 5hub "So be sure to back me up often, [player]!"
     return
 
 init 5 python:
