@@ -12669,7 +12669,7 @@ image monika 5eua = DynamicDisplayable(
 image monika 5euc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
-    eyebrows="mid",
+    eyebrows="up",
     eyes="normal",
     nose="def",
     mouth="smirk",
