@@ -371,14 +371,19 @@ label birthdate_set:
                 m 3eka "Hold on just one moment, [player]..."
                 show monika 1dsc
                 pause 2.0
-                $ persistent._mas_player_confirmed_bday = True
-                jump mas_player_bday_when_confirmed
+                $ store.mas_player_bday_event.show_player_bday_Visuals()
+                $ persistent._mas_player_bday_decor = True
+                m 3hub "Happy Birthday, [player]!"
+                m 1hub "I'm so happy I get to be with you on your birthday!"
+                m 3sub "Oh...{w=0.5}your cake!"
+                call mas_player_bday_cake
             elif mas_isMoniDis(higher=True):
                 m 2eka "Ah, so today {i}is{/i} your birthday..."
                 m "Happy Birthday, [player]."
                 m 4eka "I hope you have a good day."
         else:
             if mas_isMoniNormal(higher=True):
+                $ mas_gainAffection(5,bypass=True)
                 $ persistent._mas_player_bday_in_player_bday_mode = True
                 $ mas_unlockEVL("bye_player_bday", "BYE")
                 m 1wuo "Oh...{w=1}Oh!"

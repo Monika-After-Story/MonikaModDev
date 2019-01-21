@@ -3411,6 +3411,7 @@ label mas_player_bday_autoload_check:
 
 # closed door greet option for opening door without listening
 label mas_player_bday_opendoor:
+    $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     $ scene_change = True
     call spaceroom(hide_monika=True)
@@ -3493,6 +3494,7 @@ label mas_player_bday_knock_listened:
 
 # closed door greet option for opening door after listening
 label mas_player_bday_opendoor_listened:
+    $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
     $ scene_change = True
     $ persistent._mas_player_bday_decor = True
@@ -3510,6 +3512,7 @@ label mas_player_bday_opendoor_listened:
 
 # all paths lead here
 label mas_player_bday_cake:
+    $ mas_gainAffection(5,bypass=True)
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
     $ mas_unlockEVL("bye_player_bday", "BYE")
@@ -3619,16 +3622,6 @@ label mas_player_bday_no_restart:
     m 3eksdlc "Gosh, I just hope you weren't starting to think I forgot your birthday. I'm really sorry if you did..."
     m 1rksdla "I guess I probably shouldn't have waited so long, ehehe."
     m 1hua "Oh! I made you a cake!"
-    call mas_player_bday_cake
-    return
-
-# event for if the player confirms their birthday on their actual birthday, provided they are normal+
-label mas_player_bday_when_confirmed:
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
-    $ persistent._mas_player_bday_decor = True
-    m 3hub "Happy Birthday, [player]!"
-    m 1hub "Ahaha! I'm so happy I get to be with you on your birthday!"
-    m 3sub "Oh...{w=0.5}your cake!"
     call mas_player_bday_cake
     return
 
