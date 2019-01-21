@@ -4903,33 +4903,35 @@ init 5 python:
 
 label monika_sports:
     m 1eua "I've been thinking about stuff we can do together."
-    m "You know, when I finally find a way into your reality."
-    m 1hub "Sports are always fun!"
+    m 3eua "...You know, when I finally find a way into your reality."
+    m 3hub "Sports are always fun!"
     m 1eub "It can be a great way to get exercise and stay fit."
-    m "Soccer and tennis are nice examples."
+    m 1euc "Soccer and tennis are nice examples."
     m 3eua "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
-    m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
-    m 1lksdla "... Though the long rallies can be a little tiring, ehehe~"
-    m 3eua "Plus, tennis is a great sport for two people. Do you play, [player]?"
+    m 3eud "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
+    m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
+    m 3eua "Plus, it's a great sport for two people!"
     menu:
+        m "Do you play tennis, [player]?"
         "Yes.":
-            $ persistent._mas_pm_like_playing_sports = True  
+            $ persistent._mas_pm_like_playing_sports = True
             m 3eub "Really? That's great!"
-            m 4hub "There are usually tennis courts at public parks. We can play all the time!"
-            m 4eub "Maybe we can even team up for doubles matches!"
+            m 3hub "There are usually tennis courts at public parks. We can play all the time!"
+            m "Maybe we can even team up for doubles matches!"
             m 2tfu "If you're good enough, that is..."
             m 2tfc "I play to win."
+            m "..."
             m 4hub "Ahaha! I'm only joking..."
-            m 3eka "Just playing with you as my partner is more than enough for me, [player]~"
+            m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
         "No, but if it were with you...":
             $ persistent._mas_pm_like_playing_sports = True
             m 1eka "Aww, that's really sweet~"
-            m 3eua "I'll teach you how to play when I get there. Or if you just can't wait, you can take lessons!"
+            m 3eua "I'll teach you how to play when I get there...{w=0.5}or if you just can't wait, you can take lessons!"
             m 3eub "Then we can start playing in doubles matches!"
-            m 4eua "I can't imagine anything more fun than winning a match with you as my partner..."
-            m 4hub "We'll be unstoppable together!"
+            m 1eua "I can't imagine anything more fun than winning a match with you as my partner..."
+            m 3hub "We'll be unstoppable together!"
         "No, I prefer other sports.":
-            $ persistent._mas_pm_like_playing_sports = True    
+            $ persistent._mas_pm_like_playing_sports = True
             m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
             m 3eua "If it's a sport I haven't played before, you could teach me!"
             m 1tku "Watch out though, I'm a fast learner..."
@@ -4938,8 +4940,8 @@ label monika_sports:
             $ persistent._mas_pm_like_playing_sports = False
             m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m 1ekc "I would hate to see you get sick because of something like that."
-            m 1eka "It's just hard for me not to worry about you when I love you so much~"
-
+            if mas_isMoniAff(higher=True):
+                m 1eka "It's just hard for me not to worry about you when I love you so much~"
     return "derandom"
 
 # do you meditate
