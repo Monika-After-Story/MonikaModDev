@@ -349,22 +349,14 @@ label greeting_back:
     return
 
 init 5 python:
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(random_chance=10)
-    )
-    ev_rules.update(MASPriorityRule.create_rule(300))
-
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_gooday",
             unlocked=True,
-            rules=ev_rules,
         ),
         code="GRE"
     )
-    del ev_rules
 
 label greeting_gooday:
     if mas_isMoniNormal(higher=True):
@@ -1005,7 +997,6 @@ init 5 python:
     ev_rules.update(
         MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12))
     )
-    ev_rules.update(MASPriorityRule.create_rule(250))
 
     addEvent(
         Event(
@@ -2525,23 +2516,16 @@ label greeting_tears:
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
 init 5 python:
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(skip_visual=False, random_chance=2)
-    )
-
     # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_upset",
             unlocked=True,
-            rules=ev_rules,
             aff_range=(mas_aff.UPSET, mas_aff.UPSET),
         ),
         code="GRE"
     )
-    del ev_rules
 
 label greeting_upset:
     python:
@@ -2573,22 +2557,15 @@ label greeting_upset:
 
 init 5 python:
     # TODO update script random prop
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(skip_visual=False, random_chance=2)
-    )
-
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_distressed",
             unlocked=True,
-            rules=ev_rules,
             aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED)
         ),
         code="GRE"
     )
-    del ev_rules
 
 label greeting_distressed:
     python:
