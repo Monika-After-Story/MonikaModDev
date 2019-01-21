@@ -10573,7 +10573,7 @@ label monika_dream:
             m 1hub "That's so sweet of you, you want it so badly that you started dreaming about it."
             m 1eud "I wonder in which manner will I make the transition from one world to another."
             m 1rud "Will it be in some kind of huge pod connected to a computer, that will produce white smoke when I came out?"
-            m 2lud"Or will it be in an android that downloaded my mind?"
+            m 2lud "Or will it be in an android that downloaded my mind?"
             m 3eub "Or something more fanciful, like breaking through a computer screen."
             m 3hksdrb "That last one is highly improbable, but you never know."
             m 1esb "Anyway, no matter how I'll make the transition, I'm sure you will be there to hug me when the moment come."
