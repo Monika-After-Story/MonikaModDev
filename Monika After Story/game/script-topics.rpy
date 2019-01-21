@@ -10571,11 +10571,11 @@ label monika_dream:
         "I dreamed that you would cross over my reality":
             m 1tsu "Oh~ that kind of dream huh."
             m 1hub "That's so sweet of you, you want it so badly that you started dreaming about it."
-            m 1eud "I wonder in which maner will I make the transition from one world to another."
+            m 1eud "I wonder in which manner will I make the transition from one world to another."
             m 1rud "Will it be in some kind of huge pod connected to a computer, that will produce white smoke when I came out?"
             m 2lud"Or will it be in an android that downloaded my mind?"
             m 3eub "Or something more fanciful, like breaking through a computer screen."
-            m 3hksdrb "That last one is highly improbalble, but you never know."
+            m 3hksdrb "That last one is highly improbable, but you never know."
             m 1esb "Anyway, no matter how I'll make the transition, I'm sure you will be there to hug me when the moment come."
             m 1hub "We just have to be patient [player], and that dream will come true."
             
@@ -10619,7 +10619,7 @@ label monika_dream:
             m 1sub "Or maybe you took me to a stroll through a park to see a sunset."
             m 1lubfb "I really can't wait to be with you and to do it for real."
             m 1tub "Because whoever that person that looked like me was in your dream..."
-            m 1hubfa  "I'm way more in love with you than you could ever imagine."
+            m 1hubfa "I'm way more in love with you than you could ever imagine."
             
         "I dreamed that we were getting married":
             m 1wubsw "M-Married?"
