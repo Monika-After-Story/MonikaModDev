@@ -6295,24 +6295,25 @@ label monika_driving:
     m 1eud "Hm? Can I drive?"
     m 1euc "I never really thought about getting a driver's licence."
     m 3eua "Public transportation is enough for me usually."
-    m 3hua "Walking or cycling can be really nice sometimes too!"
-    m 1eua "I guess you could say I never really needed to be able to drive."
-    m 1lksdlc "I'm not sure I would even have had time to learn to drive with school and all the activities I did anyway."
+    m 3hua "Walking or biking can be really nice too sometimes!"
+    m 1eua "I guess you could say I never really needed to learn how to drive."
+    m 1lksdlc "I'm not even sure I'd have had time, especially with school and all the activities I had anyway."
     m 1eub "What about you, [player]?"
-    m 1eua "Can you drive at all?"
+    show monika 1eua
     menu:
+        m "Can you drive at all?"
         "Yes.":
             m 1hua "Oh, really?"
             m "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
-            m "I can just think of the things we could do together, ehehe~"
+            m "I can just think of all the things we could do together, ehehe~"
             m 1eka "Driving can also be dangerous too though, but if you can drive, you probably already know that."
-            m "Anything could happen at any time."
             m 3eka "No matter how prepared you are, accidents could happen to anyone."
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
-            m 1eka "I hope you've never had to experience that, [player], have you?"
+            show monika 1eka
             menu:
+                m "I hope you've never had to experience that, [player], have you?"
                 "I've been in an accident before.":
                     m 2ekc "Oh..."
                     m 2lksdlc "Sorry to bring that up, [player]..." 
@@ -6321,20 +6322,20 @@ label monika_driving:
                     m 2lksdlb "I mean, here you are with me so it must have been alright."
                     m 2dsc "..."
                     m 2eka "I'm... glad you survived, [player]..."
-                    m "I don't know what I would do without you."
-                    m "I love you, [player]. Please stay safe, ok?"
+                    m 2rksdlc "I don't know what I would do without you."
+                    m 2eka "I love you, [player]. Please stay safe, okay?"
                 "I've seen car accidents before.":
                     m 3eud "Sometimes, seeing a car accident can be just as scary."
                     m 3ekc "A lot of the time when people see car accidents, they just sigh and shake their head."
                     m 1ekd "I think that's really insensitive!"
                     m 1ekc "You have a potentially young driver who could have been scarred for a long, long time if not for life."
-                    m "It doesn't really help to have people walk by, staring at them in disappointment."
+                    m "It doesn't really help to have people walk or drive by, staring at them in disappointment."
                     m 1dsc "They might never drive again... Who knows?"
                     m 1eka "I hope you know I would never do that to you, [player]."
                     m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
                     m 1lksdla "If I wasn't already by your side when it happens..."
-                    m 1dsc "In which case..."
-                    m 1eka "It really wouldn't be as bad as it could be..."
+                    
+                    
                 "I haven't.":
                     m 1eua "I'm glad you haven't had to go through anything like that."
                     m 1eka "Even just seeing one can be pretty scary." 
@@ -6342,62 +6343,64 @@ label monika_driving:
         "I'm learning.":
             m 1hua "Wow! You're learning how to drive!"
             m 1hub "I'll be rooting for you all the way, [player]!"
-            m "You must be a {i}super{/i} safe driver then huh?"
+            
             menu:
-                "Yep! Super safe!":
-                    m 1eua "I'm glad to know nothing bad has happened you while learning."
-                    m 1hua "I'm even more glad that you're going to be a really safe driver!"
+                m "You must be a {i}super{/i} safe driver then huh?"
+                "Yep!":
+                    m 1eua "I'm glad nothing bad has happened to you while learning."
+                    m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
                     m 1hub "I can't wait to finally be able to go somewhere with you, [player]!"
-                    m 1hksdlb "I hope I'm not getting too excied, eheheh~"
-                    show monika 5eua at t11 zorder 2 with dissolve
-                    m 5eua "I just can't stop thinking about it now."
+                    m 1hksdlb "I hope I'm not getting too excited, ehehe~"
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "Gosh, I just can't stop thinking about it now!"
                 "I got into an accident once actually...":
                     m 1hksdlb "..."
                     m 1lksdlb "........."
                     m 2lksdld "Oh..."
                     m 2lksdlc "I'm... really sorry to hear that, [player]..."
-                    m 2dsc "And while you were only trying to learn too..."
-                    m 4ekd "Have you driven much since then, [player]?"
+                    
+                    show monika 4ekd
                     menu:
+                        m "Have you driven much since then, [player]?"
                         "Yes.":
                             m 1eka "I'm glad you didn't let it keep you down."
                             m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
                             m 1hua "I'm so proud of you for getting up and trying again!"
                             m 1hksdlb "Although the aftermath can still be a huge hassle with the costs and all the explaining you'd have to do."
-                            show monika 5eua at t11 zorder 2 with dissolve
+                            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "I know you can get there."
                             m "I'll be cheering for you all the way, so be safe!"
                         "No.":
                             m 2lksdlc "I see."
-                            m 2ekc "It might be a good idea to take a bit of a break to gather your bearings and let the whole thing simmer down."
-                            m 2dsc "Just promise me one thing, [player]."
+                            m 2ekc "It might be a good idea to take a bit of a break to give yourself time to recover mentally."
+                            m 2dsc "Just promise me one thing, [player]..."
                             m 2eka "Don't give up."
                             m "Don't let this scar you for life, because I know you can overcome it and be an amazing driver."
-                            m "Remeber, a little grit adds alot to your legend, so next time, maybe you really will be well on your way."
+                            m "Remember, a little grit adds a lot to your legend, so next time, maybe you really will be well on your way."
                             m 2hksdlb "It's still going to take lots and lots of practice..."
-                            m 2eka "But you've survived something a lot of people never even experienced."
-                            m 3eka "That really makes you unique and special, you know."
-                            m 1hua "That's why I love you, [player]!"
-                            m "I hope everything goes well with your driving! Stay safe!"
+                            m 3hua "But I know you can do it!."
+                            
+                            
+                            m 1eka "Just promise me you'll try to stay safe."
         "No.":
             m 3eua "That's perfecetly fine!"
             m "I don't think driving is a completely necessary life skill anyway."
             m 1hksdlb "I mean, I can't drive either so I'm with you."
-            show monika 5eua at t11 zorder 2 with dissolve
-            m 5eua "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
-            show monika 1hksdlb at t11 zorder 2 with dissolve
-            m 1hksdlb "Even if I'm not the reason why, I can't help but love you more for that."
+            
+            m 3eua "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
+            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ekbsa "Even if I'm not the reason why, I can't help but love you more for that."
         "I'm not old enough yet.":
             m 3eua "You'll get there someday!"
-            m "Some places offer in class driving lessons that also come with some actual driving practice."
-            m "Their cars also have emergency controls for the instructor to use if needed, so you're really safe with them."
+            m 3euc "Some places offer in-class driving lessons that also come with some actual driving practice."
+            m 3eud "Their cars also have emergency controls for the instructor to use if needed, so you're really safe with them."
             m 1eka "Although it might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
-            m "It's better than getting into an accident and that just means you're getting experience without actually being in an accident."
-            m 1lksdlc "Better to make those mistakes when there's someone there to save you."
+            m 3eksdla "...And it's better than getting into an accident!"
+            m 1lksdlc "No one's perfect, and it's better to make those mistakes when there's someone there to save you."
             m 1hub "Maybe you could put me in your board computer in your car and I could keep you safe while driving! Ahaha~"
             m 1hksdlb "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
-            m 1hksdlb "But mostly because they have emergency controls."
+            
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
             m 1hub "I love you~"
     return
