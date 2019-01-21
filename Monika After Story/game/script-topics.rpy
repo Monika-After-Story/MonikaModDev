@@ -3295,7 +3295,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_back_ups",
             category=['misc','mod','monika'],
-            prompt="Back-ups",
+            prompt="Backups",
             random=True
         )
     )
