@@ -6568,7 +6568,7 @@ label monika_vehicle:
             m "Speaking of which..."
             m "What exactly do you drive?"
             menu:
-                "SUV/ATV/Pickup Truck.":
+                "SUV/Pickup Truck.":
                     m 1lksdla "Oh my, your car must be pretty big then."
                     m 1eua "That means there's plenty of space inside right?"
                     m "If that's the case..."
@@ -6626,21 +6626,6 @@ label monika_vehicle:
                     m "There's no need to be shy, my love."
                     m "I'll hug you, even if you don't ask for it."
                     m 1hub "Because, I love you~"
-                "Limousine":
-                    m 1hksdlb "Huh?!"
-                    m "You have a limousine?!"
-                    m "Oh my gosh! I never would have imagined!"
-                    m 1hua "Now I can't stop thinking of all the romantic things we could do with it!"
-                    m 5eua "Of course, even if you didn't have one, I'd still love you just as much~"
-                    m 1dubsu "I can just imagine walking down a fancy red carpet with you..."
-                    m "Just about to go home after a romantic date..."
-                    m "Only to spend the rest of the night with you~"
-                    m 1lkbsa "Is that too much?"
-                    m "I hope you don't think that's too much, [player]."
-                    m 1eua "It was a really nice thing to imagine though."
-                    m 1lksdlb "Even if you don't actually have a limousine when I get there and none of those things happen..."
-                    m 1hua "It made my day just thinking about it."
-                    m 1hub "Thank you for making my day, [player]~"
         "No.":
             m 1ekc "Oh, I see."
             m 3eka "Well, buying a vehicle can be quite expensive after all."
