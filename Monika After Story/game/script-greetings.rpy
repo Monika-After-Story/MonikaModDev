@@ -82,6 +82,10 @@ init -1 python in mas_greetings:
         #   3. unlocked
         #   4. aff_ramnge
         #   5. all rules
+        #   6. conditional
+        #       NOTE: this is never cleared. Please limit use of this
+        #           property as we should aim to use lock/unlock as primary way
+        #           to enable or disable greetings.
 
         # priority check, required
         # NOTE: all greetings MUST have a priority
@@ -120,6 +124,10 @@ init -1 python in mas_greetings:
                     check_time, ev, defval=True)
                 and store.MASGreetingRule.evaluate_rule(ev, defval=True)
             ):
+            return False
+
+        # conditional check
+        if ev.conditional is not None and not eval(ev.conditional):
             return False
 
         # otherwise, we passed all tests

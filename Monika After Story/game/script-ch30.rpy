@@ -861,7 +861,7 @@ label mas_ch30_post_holiday_check:
             call spaceroom
             jump mas_affection_apologydeleted
 
-    # post greeting callback
+    # post greeting selected callback
     $ gre_cb_label = None
 
     # yuri scare incoming. No monikaroom when yuri is the name
@@ -895,11 +895,17 @@ label mas_ch30_post_holiday_check:
                 if setup_label is not None and renpy.has_label(setup_label):
                     gre_cb_label = setup_label
 
+    # TODO: have generic idle mode adjust the crashed greeting
+
     # crash check
     elif persistent._mas_game_crashed:
         $ selected_greeting = "mas_crashed_start"
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
+
+    # call pre-post greeting check setup label
+    if gre_cb_label is not None:
+        call expression gre_cb_label
 
 label ch30_post_greeting_check:
     # this label skips only greeting checks
