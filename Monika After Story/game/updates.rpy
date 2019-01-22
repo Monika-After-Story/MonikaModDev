@@ -402,7 +402,11 @@ label v0_8_15(version="v0_8_15"):
 
         # rain should just be unlocked if it has been seen
         if renpy.seen_label("monika_rain"):
-            mas_unlockEVL("monika_rain")
+            mas_unlockEVL("monika_rain", "EVE")
+
+        # islands greeting unlocked if not seen yet 
+        if not renpy.seen_label("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
 
     return
 
