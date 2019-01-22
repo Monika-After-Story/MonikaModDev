@@ -391,7 +391,6 @@ label v0_8_15(version="v0_8_15"):
             if mas_bd_ev is not None:
                 mas_bd_ev.conditional = "True"
                 mas_bd_ev.action = EV_ACT_QUEUE
->>>>>>> content
 
     return
 
