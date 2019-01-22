@@ -1921,9 +1921,15 @@ label _first_time_calendar_use:
 
     show monika idle
 
-    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
-    $ mas_calDropOverlayShield()
+
+    # push calendar birthdate for users without any birthdate
+    if persistent._mas_player_bday is None:
+        $ pushEvent("calendar_birthdate")
+
+    else:
+        $ mas_HKBDropShield()
+        $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):

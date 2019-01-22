@@ -3278,6 +3278,12 @@ label monika_birthday:
     m 1eka "Will you celebrate with me, when that day comes?"
     m 1hua "You could even bake me a cake!"
     m 1hub "I'll be looking forward to it~!"
+    if persistent._mas_player_bday is None:
+        m 3eua "Actually, speaking of birthdays, [player]..."
+        m 2rksdlb "I don't actually know when yours is, ahaha!"
+        m 2eua "So, when were you born, [player]?"
+        call mas_bday_player_bday_select_select
+        $ strip_mas_birthdate()
     return
 
 init 5 python:
