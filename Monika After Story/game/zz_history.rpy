@@ -763,6 +763,8 @@ init -810 python:
 
             # actions / mas / dev
             "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+            "_mas_pm_has_contributed_to_mas": "pm.actions.mas.dev.has_contributed",
+            "_mas_pm_wants_to_contribute_to_mas": "pm.actions.mas.dev.wants_to_contribute",
 
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",

@@ -205,6 +205,7 @@ init -900 python in mas_ev_data_ver:
     verify_event_data(store.persistent.greeting_database)
     verify_event_data(store.persistent._mas_mood_database)
     verify_event_data(store.persistent._mas_story_database)
+    verify_event_data(store.persistent._mas_apology_database)
 
 
 init -500 python:
@@ -281,7 +282,8 @@ init 4 python:
         "MOO": store.mas_moods.mood_db,
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
-        "FLR": store.mas_filereacts.filereact_db
+        "FLR": store.mas_filereacts.filereact_db,
+        "APL": store.mas_apology.apology_db
     }
 
 

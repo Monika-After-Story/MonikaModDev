@@ -2286,6 +2286,12 @@ label mas_dockstat_abort_gen:
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    # we are not leaving on player_bday and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
     return
 
 
@@ -2301,6 +2307,9 @@ label mas_dockstat_empty_desk:
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
 
     else:
         # show birthday visuals?

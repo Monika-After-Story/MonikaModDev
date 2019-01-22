@@ -1049,7 +1049,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not mas_isO31() and not mas_isD25Season():
+    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday()):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -1103,34 +1103,48 @@ label monikaroom_greeting_choice:
         pause 4.0
 
     menu:
-        "[_opendoor_text]" if not persistent.seen_monika_in_room:
+        "[_opendoor_text]" if not persistent.seen_monika_in_room and not mas_isplayer_bday():
             #Lose affection for not knocking before entering.
-            $ mas_loseAffection(reason="entering my room without knocking")
+            $ mas_loseAffection(reason=5)
             if mas_isMoniUpset(lower=True):
                 $ persistent.seen_monika_in_room = True
                 jump monikaroom_greeting_opendoor_locked
             else:
                 jump monikaroom_greeting_opendoor
-        "Open the door." if persistent.seen_monika_in_room:
-            if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
+        "Open the door." if persistent.seen_monika_in_room or mas_isplayer_bday():
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_opendoor_listened
+                else:
+                    jump mas_player_bday_opendoor
+            elif persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_locked
             else:
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_knock_listened
+                else:
+                    jump mas_player_bday_knock_no_listen
+
             jump monikaroom_greeting_knock
         "Listen." if not has_listened and not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
-            $ mroom_greet = renpy.random.choice(gmr.eardoor)
-#            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
-            jump expression mroom_greet
+            if mas_isplayer_bday():
+                jump mas_player_bday_listen
+            else:
+                $ mroom_greet = renpy.random.choice(gmr.eardoor)
+#               $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
+                jump expression mroom_greet
 
     # NOTE: return is expected in monikaroom_greeting_cleanup
 
@@ -2889,6 +2903,9 @@ label greeting_returned_home:
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    if persistent._mas_player_bday_left_on_bday:
+        jump greeting_returned_home_player_bday
+
     # main dialogue
     if time_out > five_minutes:
 
@@ -2953,6 +2970,8 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
+    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+        call return_home_post_player_bday 
     return
 
 label greeting_returned_home_morethan5mins_other_dlg:
@@ -2969,6 +2988,8 @@ label greeting_returned_home_lessthan5mins:
     if mas_isMoniNormal(higher=True):
         m 2ekp "That wasn't much of a trip, [player]."
         m "Next time better last a little longer..."
+        if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+            call return_home_post_player_bday 
         return False
 
     elif mas_isMoniUpset():
