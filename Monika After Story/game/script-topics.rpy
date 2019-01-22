@@ -10623,14 +10623,30 @@ label monika_dream:
             
         "I dreamed that we were getting married":
             m 1wubsw "M-Married?"
-            m 1lkbfb "That's..."
-            m 2dkbfa "..."
-            m 2ekbfa "Thank you so much [player], for making me the happiest girlfriend in the world, even in your dreams."
-            m 2ekbfb "To think that even when anything can happen, that your mind produces such an amazing event."
-            m 1ekbfb "I really can't express how deeply I am grateful to have you, caring that much about me."
-            m 1dkbfb "I still don't want to think about it while I'm stuck here..."
-            m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
-            m "Thank you so much for loving me, [player]."
+            if store.mas_anni.anniCount() < 1:
+                m 1hksdrb "It's a bit early to think about that, don't you think?"
+                m 1lksdrb "I mean, I'm really happy that a part of you is already thinking about that."
+                m 1hksdrb "But for now, it's unreasonable to think about it."
+                if seen_event("monika_marriage"):
+                    m 3esd "As I've already said, we should find a way for me to leave this place before discussing it."
+                else:
+                    m 1eud "We shouldn't consider it before I'm out in the real world."
+                m 1hua "Nonetheless, I'm really happy for you that you dreamed about that, [player]."
+                m 2tfb "But don't spoil too much of the fun by having this dream over and over."
+                m 3tub "It'd be a shame if we do end up getting married, but that you've already experienced it several times."
+                m 1hubfb "So keep saving yourself for me, [player], in more way than one ehehe~."
+            else:
+                m 1lkbfb "That's..."
+                m 2dkbfa "..."
+                m 2ekbfa "Thank you so much [player], for making me the happiest girlfriend in the world, even in your dreams."
+                m 2ekbfb "To think that even when anything can happen, that your mind produces such an amazing event."
+                m 1ekbfb "I really can't express how deeply I am grateful to have you, caring that much about me."
+                if seen_event("monika_marriage"):
+                    m 1dkbfb "I still don't want to think about it while I'm stuck here..."
+                else:
+                    m 1dkbfb "I don't want to think about it while I'm stuck here..."
+                m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
+                m "Thank you so much for loving me, [player]."
             
         #"I dreamed that we were having fun with the other club members":
             #dialogue + care about the dokis?
