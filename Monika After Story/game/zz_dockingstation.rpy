@@ -2439,6 +2439,8 @@ label mas_dockstat_found_monika:
                 persistent._mas_greeting_type
             ).eventlabel
 
+        # TODO: consider running the greeting setup label?
+
         # reset greeting type
         persistent._mas_greeting_type = None
 
