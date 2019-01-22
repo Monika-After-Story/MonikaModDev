@@ -384,4 +384,3 @@ init python:
 transform mas_smooth_transition:
     i11 # this one may not be needed but I keep it just in case
     function zoom_smoothly
->>>>>>> content
