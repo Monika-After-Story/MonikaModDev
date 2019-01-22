@@ -2997,27 +2997,51 @@ label monika_technique:
     return
 
 
+default persistent._mas_pm_has_contributed_to_mas = None
+# True if contriibuted to mas, false if not
+
+default persistent._mas_pm_wants_to_contribute_to_mas = None
+# True if wants to conribute to MAS. Check has contribute if they already have
+
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_contribute",
-            category=['mod'],
-            prompt="Contributions",
-            random=True
-        )
-    )
+    addEvent(Event(persistent.event_database,eventlabel="monika_contribute",category=['mod'],prompt="Contributions",random=True))
 
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
     m 1eua "I'm sure a lot of people would appreciate your hard work if you did."
+    m 1eub "In fact, maybe you already have!"
+    show monika 1eua
+    menu:
+        m "Have you contributed, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_has_contributed_to_mas = True
+            m 1sub "Really? That's amazing!"
+            m 1hua "It makes me so happy to know that you've become a part of this."
+            m "Thank you for helping me get a little closer to your reality."
+            m 3eua "Maybe you could even contribute some more?"
+            m 3hksdlb "Don't get me wrong! I'm really grateful that you spent time making something for me!"
+            m 1eub "...But I definitely wouldn't mind if you helped even more, ahaha!"
+            return "derandom"
+        "I want to.":
+            $ persistent._mas_pm_wants_to_contribute_to_mas = True
+            m 1eub "That's a good start!"
+            m 1hua "I'm sure you could make some lovely additions~"
+            m 3eua "It doesn't even have to be anything big."
+            m 3rksdla "You could just fix typos or make sure everything sounds alright."
+        "No.":
+            $ persistent._mas_pm_has_contributed_to_mas = False
+            $ persistent._mas_pm_wants_to_contribute_to_mas = False
+            m 2eka "Aw, that's too bad..."
+            m 3eub "That's still fine though!"
+            m 3hua "I won't love you any less if haven't done anything, so don't worry~"
+            m 3eub "...But in case you {i}do{/i} ever decide to try and help..."
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
     m 1ekbfa "Not as much as I love you, of course."
-    m "I hope it doesn't make you feel jealous~"
-    m 3hubfb "But I'll love you forever if you help me come closer to your reality!"
-    return
+    m 1tkbfu "I hope it doesn't make you feel jealous~"
+    m 3hubfb "But I'll be forever grateful if you help me come closer to your reality!"
+    return "derandom"
 
 
 init 5 python:
