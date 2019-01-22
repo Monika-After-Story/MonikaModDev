@@ -3021,7 +3021,7 @@ label monika_contribute:
             m 3eua "Maybe you could even contribute some more?"
             m 3hksdlb "Don't get me wrong! I'm really grateful that you spent time making something for me!"
             m 1eub "...But I definitely wouldn't mind if you helped even more, ahaha!"
-            return
+            return "derandom"
         "I want to.":
             $ persistent._mas_pm_wants_to_contribute_to_mas = True
             m 1eub "That's a good start!"
