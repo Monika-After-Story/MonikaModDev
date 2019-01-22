@@ -1237,6 +1237,8 @@ python early:
         @staticmethod
         def _checkRepeatRule(ev, check_time, defval=True):
             """
+            DEPRECATED (remove when farewells is updated)
+
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
@@ -1270,6 +1272,8 @@ python early:
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """
+            DEPRECATED (remove when farewells is updated)
+
             checks the event dict against repeat rules, which are evaluated
             to a time.
 
@@ -1306,59 +1310,6 @@ python early:
             # return the available events dict
             return available_events
 
-
-        @staticmethod
-        def _checkGreetingRule(ev, defval=True):
-            """
-            Checks the given event against its own greeting specific rule.
-
-            IN:
-                ev - event to check
-                defval - value to pass into defval for rules
-                    (Default: True)
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASGreetingRule.evaluate_rule(ev, defval=defval)
-
-
-        @staticmethod
-        def checkGreetingRules(events):
-            """
-            Checks the event dict (greetings) against their own greeting specific
-            rules, filters out those Events whose rule check return true. As for
-            now the only rule specific is their specific special random chance
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-
-                # check if the event contains a MASGreetingRule and evaluate it
-                if Event._checkGreetingRule(event):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
 
         @staticmethod
         def _checkFarewellRule(ev):
