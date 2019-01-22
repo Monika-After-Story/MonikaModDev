@@ -25,9 +25,6 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
-# TODO: add priority verification for all gretings.
-#   greetings MUST have a priority, even special ones.
-
 init -1 python in mas_greetings:
     import store
     import datetime
@@ -295,7 +292,6 @@ init -1 python in mas_greetings:
 
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -313,7 +309,6 @@ label greeting_sweetheart:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -331,7 +326,6 @@ label greeting_honey:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -408,7 +402,6 @@ label greeting_gooday:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -492,7 +485,6 @@ label greeting_goodmorning:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -512,7 +504,6 @@ label greeting_back2:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -529,7 +520,6 @@ label greeting_back3:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -549,7 +539,6 @@ label greeting_back4:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -567,7 +556,6 @@ label greeting_visit2:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -602,7 +590,6 @@ label greeting_back5:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -620,7 +607,6 @@ label greeting_visit4:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -638,7 +624,6 @@ label greeting_visit5:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -656,7 +641,6 @@ label greeting_visit6:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -676,7 +660,6 @@ label greeting_back6:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -693,7 +676,6 @@ label greeting_visit7:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -710,7 +692,6 @@ label greeting_visit8:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -728,7 +709,6 @@ label greeting_visit9:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -749,7 +729,6 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -769,7 +748,6 @@ label greeting_latin:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -787,7 +765,6 @@ label greeting_yay:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -822,7 +799,6 @@ label greeting_hamlet:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -839,7 +815,6 @@ label greeting_welcomeback:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -857,7 +832,6 @@ label greeting_flower:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -876,7 +850,6 @@ label greeting_chamfort:
 
 init 5 python:
     addEvent(
-    # TODO: update script random property
         Event(
             persistent.greeting_database,
             eventlabel="greeting_welcomeback2",
@@ -893,7 +866,6 @@ label greeting_welcomeback2:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -920,7 +892,6 @@ label greeting_longtime:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -938,7 +909,6 @@ label greeting_sweetpea:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -975,7 +945,6 @@ label greeting_glitch:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1817,7 +1786,6 @@ label greeting_youarereal:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1841,7 +1809,6 @@ label greeting_japan:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1867,7 +1834,6 @@ label greeting_sunshine:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1887,7 +1853,6 @@ label greeting_hai_domo:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -1944,7 +1909,6 @@ label greeting_amnesia:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2030,7 +1994,6 @@ label greeting_stillsicknorest:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2379,7 +2342,6 @@ init 5 python:
     )
     ev_rules.update(MASPriorityRule.create_rule(45))
 
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2473,13 +2435,12 @@ label greeting_hairdown:
 
 
 init 5 python:
-    # TODO: what triggers ths?
 
+    # NOTE: this triggers when affection reaches BROKEN state.
+    #   AND you have not seen this before
     ev_rules = {}
-    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
     ev_rules.update(MASPriorityRule.create_rule(15))
 
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2525,12 +2486,11 @@ label greeting_tears:
     m 2f "Please...just...try to understand."
     m 1r "I love you and I need you to show that you love me too..."
     m 1q "Otherwise...I just won't be able to handle it anymore."
-    $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
+    $ mas_lockEVL("greeting_tears", "GRE")
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2570,7 +2530,6 @@ label greeting_upset:
     return
 
 init 5 python:
-    # TODO update script random prop
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2628,7 +2587,6 @@ label greeting_broken:
 # special type greetings
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2685,7 +2643,6 @@ label greeting_back_from_school:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,
@@ -2748,7 +2705,6 @@ label greeting_back_from_work:
     return
 
 init 5 python:
-    # TODO: update script random property
     addEvent(
         Event(
             persistent.greeting_database,

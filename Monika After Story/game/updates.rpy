@@ -395,6 +395,15 @@ label v0_8_15(version="v0_8_15"):
                 mas_bd_ev.conditional = "True"
                 mas_bd_ev.action = EV_ACT_QUEUE
 
+        # remove random props from all greetings
+        for gre_label, gre_ev in store.evhand.greeting_database.iteritems():
+            # hopefully we never use random in greetings ever
+            gre_ev.random = False
+
+        # rain should just be unlocked if it has been seen
+        if renpy.seen_label("monika_rain"):
+            mas_unlockEVL("monika_rain")
+
     return
 
 # 0.8.14
