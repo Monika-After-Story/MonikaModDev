@@ -2769,6 +2769,11 @@ init -876 python in mas_delact:
     # the sprites for this were decoded correctly
 
     # NOTE: we dont need this anymore
+    #   We originally needed this since aff_range was not used by greetings
+    #   so we wanted to get this to unlock if we are only able to decode 
+    #   islands. Now that aff range is part of gre parsing, the only thing
+    #   that matters is whether or not the event is active, which in this
+    #   case, only happens if the islands were decoded and aff is enamored+
     def _greeting_ourreality_unlock():
         return store.MASDelayedAction(
             1,
