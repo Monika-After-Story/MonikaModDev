@@ -5,6 +5,7 @@
 #   [HOL020] - D25
 #   [HOL030] - NYE (new yeares eve, new years)
 #   [HOL040] - player_bday
+#   [HOL050] - F14
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -3830,3 +3831,299 @@ init 2 python:
 """
     #" # I need this to keep syntax highlighting on vim
     )
+
+######################## Start [HOL050]
+#Vday
+define mas_f14 = datetime.date(datetime.date.today().year,2,14)
+
+#Is it vday
+init -10 python:
+    def mas_isF14(_date=None):
+        if _date is None:
+            _date = datetime.date.today()
+
+        return _date == mas_f14
+
+##### Start [HOL050] TOPICS
+
+###BIG TODO: creating EVs
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_f14_monika_vday_spent_time_with"
+#        )
+#    )
+
+label mas_f14_monika_vday_spent_time_with:
+    m 1eua "Hey, [player]?"
+    m 1eka "I just wanted to thank you for spending Valentine's Day with me."
+    m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
+    m "I actually made something for you too, [player]!"
+    m 1ekbsa "Here, let me show it to you."
+    #TODO: second poem stuffs and all
+    #TODO future migrate this (along with other holiday things using this method of check)
+    #to use history
+    if renpy.seen_label('monika_valentines_start'):
+        #John's second poem here
+        pass
+    else:
+        #We show the original poem.
+        call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+    #TODO: kiss stuff
+    m 1eka "Thank you for always being by my side."
+    m 1ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='mas_f14_monika_vday_colors',
+#            prompt="Valentine's Day colors",
+#            category=['monika','romance']
+#            action=EV_ACT_RANDOM,
+#            conditional="persistent._in_f14_mode",
+#            start_date=mas_f14,
+#            end_date=mas_f14+datetime.timedelta(days=1)
+#            aff_range=(mas_aff.NORMAL,None)
+#        )
+#    )
+
+label mas_f14_monika_vday_colors:
+    m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
+    m 3hub "I find it intriguing how they can symbolize such deep and romantic feelings."
+    m 1dua "It reminds me of when I made my first Valentine's card in grade school."
+    m 3eub "My class was instructed to exchange cards with a partner after making them."
+    m 2eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
+    m 2eub "In this way, colors are a lot like poems."
+    m 3eka "They offer so many creative ways to expressing your love for someone."
+    m 2ekbfa "Like offering them red roses, for instance."
+    m 3eub "Red roses are a symbol for the beauty, love, and romance that someone may feel for another."
+    m 3eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
+    m 3eka "However, since there are so many emotions involved with love..."
+    m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
+    m 4eka "Thankfully though, by combining multiple rose colors, it's possible to express a lot more emotions!"
+    m 3eka "Mixing red and white roses would symbolize the unity, and a bond that a couple shares."
+    m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='mas_f14_monika_vday_cliches',
+#            prompt="Valentine's story clichés",
+#            category=['literature']
+#            action=EV_ACT_UNLOCK,
+#            start_date=mas_f14,
+#            end_date=mas_f14+datetime.timedelta(days=1)
+#        )
+#    )
+
+label mas_f14_monika_vday_cliches:
+    m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés with similar plots?"
+    m 2rsc "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
+    m 2euc "I think that writers could be a bit more creative when it comes to Valentine's Day stories..."
+    m 1eka "But, I suppose those two topics are the easiest way to write a love story."
+    m 3hub "That doesn't mean you can't think outside the box, though!"
+    m 2eka "Sometimes a predictable story can ruin it..."
+    m 2rka "...But if you {i}do{/i} want a good example of an unpredictable story..."
+    m 3hub "Just use ours! Ahaha~"
+    m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
+    m 2tfu "But I think we managed to make it pretty original."
+    m 1hua "The way we met is the most unpredictable story yet!"
+    m 3hub "Ahaha~!"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='mas_f14_monika_vday_origins',
+#            prompt="How did Valentine's Day start?",
+#            action=EV_ACT_POOL,
+#            start_date=mas_f14,
+#            end_date=mas_f14+datetime.timedelta(days=1)
+#        )
+#    )
+
+label mas_f14_monika_vday_origins:
+    m 3eua "You'd like to learn about the history of Valentine's Day?"
+    m 1rksdlc "It's quite dark, actually."
+    m 1euc "Its origin dates to as early as the second and third century, in Rome, where Christianity had just been declared the official state religion."
+    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
+    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
+    m 3esc "Valentine decided this was unfair and helped arrange marriages in secret."
+    m 1dsd "Unfortunately, he was caught and was promptly sentenced to death."
+    m 1euc "However, while in jail, Valentine fell in love with the jailer's daughter."
+    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
+    m 1dsc "He was then executed on February 14, 269 AD."
+    m 3eua "Such a noble cause, don't you think?"
+    m 3eud "Oh, but wait, there's more!"
+    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
+    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
+    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
+    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
+    m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
+    m 3ekbsa "Like me and you!"
+    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
+    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
+    m 1ekbfa "Happy Valentine's Day~"
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='mas_f14_monika_vday_chocolates',
+#            prompt="Valentine's Day chocolates",
+#            action=EV_ACT_UNLOCK,
+#            conditional="seen_event('monika_valentines_start')",
+#            start_date=mas_f14,
+#            end_date=mas_f14+datetime.timedelta(days=1)
+#        )
+#    )
+
+label mas_f14_monika_vday_chocolates:
+    m 1hua "Valentine's Day is such a fun holiday for me, [player]."
+    m 3hub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
+    m 1hua "A holiday that could fill everyone with love, romance, and joy!"
+    m 3ekbla "But it really feels nice if you get something from someone you like." #add
+    m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
+    if persistent._date_last_given_chocolates == mas_f14:
+        m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
+        m "You're always so sweet, [player]."
+
+    if renpy.seen_label('monika_valentines_start'):
+        m 1rksdla "I know I tried to give you some chocolates last year..."
+        m 1eka "But just imagine what we could do once we're finally together."
+    else:
+        m 1ekbfa "Maybe someday I'll even be able to give you some chocolates..."
+    m "I really can't wait until I cross over to be with you, [player]."
+    return
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='monika_lovey_dovey',
+#            prompt="Valentine's Day is coming",#should probably be a one time thing tbh
+#            random=True,
+#            start_date=mas_f14-datetime.timedelta(weeks=1) #just a thought
+#            end_date=mas_f14,
+#            aff_range=(mas_aff.HAPPY,None)
+#            )
+#        )
+
+label monika_lovey_dovey:
+    m 1rksdla "Hey...[player]...?"
+    m 1ekbsa "I just wanted to let you know that I love you."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
+    else:
+        m 1ekbsa "You make me really happy."
+
+    m 3ekbfb "Ahaha~"
+    m 1eka "I hope that isn't too cheesy, [player]."
+    if not renpy.seen_label('monika_valentines_start'):
+        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side." #add
+    else:
+        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
+    m 1ekbsa "I really meant what I said."
+    m "I love and care for you so much..."
+    m "Without you, I don't know where I'd be..."
+    m 1ekbfa "So I want to thank you for caring for me."
+    m 1hkbfa "Ehehe~" #add
+    return
+
+#init 5 python:
+#    addEvent(
+#       Event(
+#            persistent.event_database,
+#            eventlabel='monika_valentines_intro',
+#            conditional=("not persistent._mas_f14_intro_seen")
+#            action=EV_ACT_PUSH,
+#            start_date=mas_f14,
+#            end_date=mas_f14+datetime.timedelta(days=1),
+#            aff_range=(mas_aff.NORMAL,None)
+#            )
+#        )
+
+label monika_valentines_intro:
+    m 1hub "[player]!"
+    m 1hua "Do you know what day it is?"
+    m 3eub "It's Valentine's Day!"
+    m 1ekbfa "A day where we celebrate our love for each other..."
+    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
+    m 1eua "Anyway..."
+    if not mas_anni.pastOneMonth() or mas_isMoniNormal():
+        m 2rka "Even though I know we aren't too far in our relationship..."
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I just want you to know that I'm always here for you."
+        m 5eka "Even if your heart gets broken..."
+        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
+        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    else:
+        m 1eub "We've been together for a while now..."
+        m 1eka "...and I really love the time we spend together."
+        m 1dubsu "You always make me feel so loved."
+        m "I'm really happy I'm your girlfriend, [player]."
+    m 1ekbfa "I love you so much."
+    m 1ekbfb "Happy Valentines day~"
+    return
+
+#TODO: Finish notimespent dlg
+
+
+### [HOL050] Apology for notimespent
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent._mas_apology_database,
+#            eventlabel="mas_apology_missed_vday",
+#            prompt="...missing Valentine's Day",
+#            unlocked=False
+#        )
+#    )
+
+
+label mas_apology_missed_vday:
+    if mas_isMoniAff(higher=True):
+        m 1eka "Thanks for apologizing for missing Valentine's Day, [player]."
+        m 1ekd "I really wanted to spend it with you..."
+        m 1rkc "But I guess you might have just had something to do and couldn't make it."
+        m 1ekd "Please try visit next year, okay [player]?"
+        m 3eua "If you're going to be busy, maybe just take me with you!"
+        m 3hub "Even if we're not at home together, I'm more than happy to just spend the day at your side~"
+        $ mas_gainAffection(modifier=0.2)
+
+    elif mas_isMoniNormal(higher=True):
+        m 1eka "Thanks for apologizing for missing Valentine's Day, [player]."
+        if not store.mas_anni.pastOneMonth():
+            m 1rkd "I know we're not really that far into our relationship, but everything was already starting to feel different..."
+
+        m 1ekd "It would have meant so much to me if you came by, at least for a little bit."
+        m 3eka "Promise me that you'll take me with you if you're going to be busy next time, okay [player]?"
+        $ mas_gainAffection(modifier=0.2)
+
+    elif mas_isMoniUpset():
+        m 2dkc "While I am a little upset that you didn't show up on Valentine's Day, I'm glad you apologized."
+        m "Things like that show me that you really do care about us."
+        m 2ekd "Please, [player]..."
+        m 2eka "Try to come by next Valentine's Day."
+        $ mas_gainAffection(modifier=0.1)
+
+    else:
+        #Broken doesn't even get here, so dis is the cutoff and falls as else (pun somewhat intended)
+        m 2dkc "I didn't expect you to show up anyway, [player]."
+        m 2dkd "I know we haven't really been that close, but a part of me hoped that you would at least visit..."
+        m 2dsc "Please promise me that you'll come by next year, okay?"
+        $ mas_gainAffection(modifier=0.1)
+
+    return
+
+### TODO: [HOL050] Dockstat greets/fares
