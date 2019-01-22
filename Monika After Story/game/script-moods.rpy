@@ -545,18 +545,18 @@ label mas_mood_bored:
 
 
 # TODO: we need to add some sort of reaction to birthdays soon
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            code="MOO"
-        )
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            code="MOO"
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
@@ -564,9 +564,6 @@ default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
 
-# player birthday
-# datetime.date
-default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime

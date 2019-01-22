@@ -195,9 +195,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
 
         # Year thresholds
         MIN_GLITCH_YEAR = 1700
-        MIN_SELECTABLE_YEAR = 200
+        MIN_VIEWABLE_YEAR = 200
+        MIN_SELECTABLE_YEAR = 1900
         MAX_GLITCH_YEAR = 2300
-        MAX_SELECTABLE_YEAR = 7000
+        MAX_VIEWABLE_YEAR = 7000
         MID_POINT_YEAR = 2000
 
         # pane constants
@@ -687,11 +688,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             it will force it back
             """
             # so people don't break it
-            if self.selected_year < self.MIN_SELECTABLE_YEAR:
-                self.selected_year = self.MIN_SELECTABLE_YEAR + 5
+            if self.selected_year < self.MIN_VIEWABLE_YEAR:
+                self.selected_year = self.MIN_VIEWABLE_YEAR + 5
 
-            if self.selected_year > self.MAX_SELECTABLE_YEAR:
-                self.selected_year = self.MAX_SELECTABLE_YEAR - 5
+            if self.selected_year > self.MAX_VIEWABLE_YEAR:
+                self.selected_year = self.MAX_VIEWABLE_YEAR - 5
 
 
 
@@ -798,10 +799,10 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
             # the lower the distance is, the lower the glitching is
             # the opposite also applies
             if self.selected_year > self.MID_POINT_YEAR:
-                max_dist = self.MID_POINT_YEAR - self.MIN_SELECTABLE_YEAR
+                max_dist = self.MID_POINT_YEAR - self.MIN_VIEWABLE_YEAR
 
             else:
-                max_dist = self.MAX_SELECTABLE_YEAR - (self.MID_POINT_YEAR * 2)
+                max_dist = self.MAX_VIEWABLE_YEAR - (self.MID_POINT_YEAR * 2)
 
             percentage = dist / float(max_dist)
 
@@ -908,7 +909,11 @@ M̼̤̱͇̤ ͈̰̬͈̭ͅw̩̜͇͈ͅa̲̩̭̩ͅs̙ ̣͔͓͚̰h̠̯̫̼͉e̗̗̮r�
                         return ""
 
                     #if we have a datetime
-                    if isinstance(sel_action, datetime.datetime):
+                    # and if its larger than valid selectable
+                    if (
+                            isinstance(sel_action, datetime.datetime)
+                            and sel_action.year >= self.MIN_SELECTABLE_YEAR
+                        ):
 
                         # return it
                         return sel_action
@@ -1921,9 +1926,15 @@ label _first_time_calendar_use:
 
     show monika idle
 
-    $ mas_HKBDropShield()
     $ persistent._mas_first_calendar_check = True
-    $ mas_calDropOverlayShield()
+
+    # push calendar birthdate for users without any birthdate
+    if persistent._mas_player_bday is None:
+        $ pushEvent("calendar_birthdate")
+
+    else:
+        $ mas_HKBDropShield()
+        $ mas_calDropOverlayShield()
     return
 
 label _mas_start_calendar(select_date=True):
