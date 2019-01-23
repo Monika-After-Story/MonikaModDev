@@ -6288,6 +6288,18 @@ label monika_yellowwp:
             m 1a "It'll definitely be an interesting read for you."
     return
 
+# Can the player drive
+default persistent._mas_pm_driving_can_drive = None
+
+# Is the player learning to drive
+default persistent._mas_pm_driving_learning = None
+
+# Has the player been in an accident 
+default persistent._mas_pm_driving_been_in_accident = None
+
+# Has the player driven much after the accident
+default persistent._mas_pm_driving_post_accident = None
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_driving",category=['monika'],prompt="Can you drive?",random=False,pool=True))
 
@@ -6303,6 +6315,8 @@ label monika_driving:
     menu:
         m "Can you drive at all?"
         "Yes.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = False
             m 1hua "Oh, really?"
             m "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
@@ -6315,6 +6329,7 @@ label monika_driving:
             menu:
                 m "I hope you've never had to experience that, [player], have you?"
                 "I've been in an accident before.":
+                    $ persistent._mas_pm_driving_been_in_accident = True
                     m 2ekc "Oh..."
                     m 2lksdlc "Sorry to bring that up, [player]..." 
                     m 2lksdld "I just..."
@@ -6334,19 +6349,20 @@ label monika_driving:
                     m 1eka "I hope you know I would never do that to you, [player]."
                     m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
                     m 1lksdla "...If I wasn't already by your side when it happened."
-                    
-                    
                 "I haven't.":
+                    $ persistent._mas_pm_driving_been_in_accident = False
                     m 1eua "I'm glad you haven't had to go through anything like that."
                     m 1eka "Even just seeing one can be pretty scary." 
                     m "If you do witness anything scary like that, I'll be here to comfort you."
         "I'm learning.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = True
             m 1hua "Wow! You're learning how to drive!"
             m 1hub "I'll be rooting for you all the way, [player]!"
-            
             menu:
                 m "You must be a {i}super{/i} safe driver then huh?"
                 "Yep!":
+                    $ persistent._mas_pm_driving_been_in_accident = False
                     m 1eua "I'm glad nothing bad has happened to you while learning."
                     m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
                     m 1hub "I can't wait to finally be able to go somewhere with you, [player]!"
@@ -6354,15 +6370,16 @@ label monika_driving:
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eua "Gosh, I just can't stop thinking about it now!"
                 "I got into an accident once actually...":
-                    m 1hksdlb "..."
-                    m 1lksdlb "........."
+                    $ persistent._mas_pm_driving_been_in_accident = True
+                    m 1ekc "..."
+                    m 1lksdlc "........."
                     m 2lksdld "Oh..."
                     m 2lksdlc "I'm...really sorry to hear that, [player]..."
-                    
                     show monika 4ekd
                     menu:
                         m "Have you driven much since then, [player]?"
                         "Yes.":
+                            $ persistent._mas_pm_driving_post_accident = True
                             m 1eka "I'm glad you didn't let it keep you down."
                             m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
                             m 1hua "I'm so proud of you for getting up and trying again!"
@@ -6371,6 +6388,7 @@ label monika_driving:
                             m 5eua "I know you can get there."
                             m "I'll be cheering for you all the way, so be safe!"
                         "No.":
+                            $ persistent._mas_pm_driving_post_accident = False
                             m 2lksdlc "I see."
                             m 2ekc "It might be a good idea to take a bit of a break to give yourself time to recover mentally."
                             m 2dsc "Just promise me one thing, [player]..."
@@ -6379,18 +6397,17 @@ label monika_driving:
                             m "Remember, a little grit adds a lot to your legend, so next time, maybe you really will be well on your way."
                             m 2hksdlb "It's still going to take lots and lots of practice..."
                             m 3hua "But I know you can do it!."
-                            
-                            
                             m 1eka "Just promise me you'll try to stay safe."
         "No.":
-            m 3eua "That's perfecetly fine!"
+            $ persistent._mas_pm_driving_can_drive = False
+            m 3eua "That's perfectly fine!"
             m "I don't think driving is a completely necessary life skill anyway."
             m 1hksdlb "I mean, I can't drive either so I'm with you."
-            
             m 3eua "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
             show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbsa "Even if I'm not the reason why, I can't help but love you more for that."
         "I'm not old enough yet.":
+            $ persistent._mas_pm_driving_can_drive = False
             m 3eua "You'll get there someday!"
             m 3euc "Some places offer in-class driving lessons that also come with some actual driving practice."
             m 3eud "Their cars also have emergency controls for the instructor to use if needed, so you're really safe with them."
@@ -6400,7 +6417,6 @@ label monika_driving:
             m 1hub "Maybe you could put me in your board computer in your car and I could keep you safe while driving! Ahaha~"
             m 1hksdlb "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
-            
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
             m 1hub "I love you~"
     return
