@@ -1131,7 +1131,7 @@ init -1 python in mas_calendar:
         Generates a display date using the given date
 
         This is considered "formal", in that it's not really realisitc when
-        used in normal conversation. For example, if today is august 24, you 
+        used in normal conversation. For example, if today is august 24, you
         don't say 'this happened august 24th, 2016', you normally would say
         'this happened x years ago today'.
 
@@ -1730,7 +1730,7 @@ init python:
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
-    calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
+    #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
     calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
     calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
     calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
@@ -1763,7 +1763,52 @@ init python:
             []
         )
 
-    # TODO: add first kiss here
+    # add first kiss
+    if (
+            persistent._mas_first_kiss is not None
+            and type(persistent._mas_first_kiss) == datetime.datetime
+        ):
+        calendar.addRepeatable_dt(
+            "first-kiss",
+            "Our First Kiss",
+            persistent._mas_first_kiss,
+            []
+        )
+
+# Using init 2 so we can have access to the season dates
+init 2 python:
+    import store.mas_calendar as calendar
+
+    # Season changes:
+    if persistent._mas_pm_live_south_hemisphere:
+        _season_names = ["Summer","Autumn","Winter","Spring"]
+    else:
+        _season_names = ["Winter","Spring","Summer","Autumn"]
+
+    calendar.addRepeatable_d(
+        _season_names[0],
+        _season_names[0],
+        mas_winter_solstice,
+        []
+    )
+    calendar.addRepeatable_d(
+        _season_names[1],
+        _season_names[1],
+        mas_spring_equinox,
+        []
+    )
+    calendar.addRepeatable_d(
+        _season_names[2],
+        _season_names[2],
+        mas_summer_solstice,
+        []
+    )
+    calendar.addRepeatable_d(
+        _season_names[3],
+        _season_names[3],
+        mas_fall_equinox,
+        []
+    )
 
 
 init 100 python:
