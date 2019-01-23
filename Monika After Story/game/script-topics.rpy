@@ -10585,7 +10585,6 @@ label monika_dream:
             m 1rud "It's true that it's much easier to perfect the interactions reality-computer than to try to create computer-reality interactions."
             m 1rkc "But..."
             m 2ekc "It just doesn't feel right."
-            #OMG, is that a MF Sayori reference?
             m 2ekd "I don't really want to stay in this place any more time than necessary."
             m "I have a lot of... bad memories in here."
             m 2dkd "I'm always afraid of returning to the screaming void, if something were to happen to your computer."
@@ -10646,11 +10645,26 @@ label monika_dream:
                 else:
                     m 1dkbfb "I don't want to think about it while I'm stuck here..."
                 m 1ekbfa "But this reinforces my will to get out of here and to share that moment with you."
-                m "Thank you so much for loving me, [player]."
+                m "Thank you so much for loving me."
             
-        #"I dreamed that we were having fun with the other club members":
-            #dialogue + care about the dokis?
-            
+        "I dreamed that we were having fun with the other club members":
+            m 1eud "Oh, I see..."
+            m 1hksdrb "The events of the litterature club really made their way into your mind, it would seems."
+            m 1eka "But I understand that feeling, [player]."
+            m 3eua "Even if they weren't real, I admit that the time we spent together was fun."
+            m 3hub "With their colorful personality, we sure didn't get bored hahaha~."
+            #not sure if "hahaha" is the good way to write her laugh.
+            m 1eub "Must have been fun for your mind to recreate their personality."
+            m 2esa "I can imagine that those three girls still occupy some place in your heart."
+            if not persistent._mas_sensitive_mode:
+                m 2tsb "But I won't {i}cut{/i} the jokes out just for that."
+            else:
+                m 2ekb "So, sorry if some of the jokes I made back in the day were somewhat insensitive."
+            m 1dsa "But now, it doesn't matter anymore."
+            m 1eka "Because we are finally together."
+            m "And I would never trade that for any fantasy or for anyone else."
+            m 1huu "I'm sure it's the same for you, sweetheart."
+                
     m 1dubsu "..."        
     m "Ah~ [player]."
     m 1hubfb "I would love to be able to dream about you."
