@@ -1653,6 +1653,7 @@ label monika_rain:
 
                     store.mas_weather.saveMWData()
                     mas_unlockEVL("monika_change_weather", "EVE")
+                    mas_unlockEVL("monika_rain_holdme", "EVE") #TODO: Update scripts to unlock this for those who've seen it
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
@@ -1812,61 +1813,39 @@ init 5 python:
     )
 
 label monika_rain_holdme:
+    # we only want this if it rains
+    if mas_is_raining or mas_isMoniAff(higher=True):
+        stop music fadeout 1.0
 
-    if mas_isMoniHappy(higher=True):
-        # happy or above
+        # clear selected track
+        $ songs.current_track = songs.FP_NO_SONG
+        $ songs.selected_track = songs.FP_NO_SONG
 
-        # we only want this if it rains
-        if mas_is_raining or mas_isMoniAff(higher=True):
-            stop music fadeout 1.0
+        # hide ui and disable hotkeys
+        $ HKBHideButtons()
+        $ store.songs.enabled = False
 
-            # clear selected track
-            $ songs.current_track = songs.FP_NO_SONG
-            $ songs.selected_track = songs.FP_NO_SONG
+        m 1a "Of course, [player]."
+        show monika 6dubsa
+        $ ui.add(PauseDisplayable())
+        $ ui.interact()
 
-            # hide ui and disable hotkeys
-            $ HKBHideButtons()
-            $ store.songs.enabled = False
+        # renable ui and hotkeys
+        $ store.songs.enabled = True
+        $ HKBShowButtons()
+        # small affection increase so people don't farm affection with this one.
+        $ mas_gainAffection(modifier=0.25)
 
-            m 1a "Of course, [player]."
-            show monika 6dubsa
-            $ ui.add(PauseDisplayable())
-            $ ui.interact()
-
-            # renable ui and hotkeys
-            $ store.songs.enabled = True
-            $ HKBShowButtons()
-            # small affection increase so people don't farm affection with this one.
-            $ mas_gainAffection(modifier=0.25)
-
-            if mas_isMoniAff(higher=True):
-                m 1hubfb "You can hold me anytime you want, [player]."
-            else:
-                m 1hubfb "You can hold me anytime it rains, [player]."
-
+        if mas_isMoniAff(higher=True):
+            m 1hubfb "You can hold me anytime you want, [player]."
         else:
-            # no affection loss here, doesn't make sense to have it
-            m 1rksdlc "..."
-            m 1rksdlc "The mood doesn't feel right, [player]."
-            m 1dsc "Sorry..."
-
-    elif mas_isMoniNormal():
-        # normal
-
-        m 1lksdlc "Uh..."
-        m 1eksdlb "Maybe when we get farther into our relationship."
-        m 1rksdlb "Sorry..."
-
-        $ lockEventLabel("monika_rain_holdme")
+            m 1hubfb "You can hold me anytime it rains, [player]."
 
     else:
-        # below normal
-
-        m 2lfc "No thanks."
-
-        $ mas_loseAffection(modifier=0.25)
-        $ lockEventLabel("monika_rain_holdme")
-
+        # no affection loss here, doesn't make sense to have it
+        m 1rksdlc "..."
+        m 1rksdlc "The mood doesn't feel right, [player]."
+        m 1dsc "Sorry..."
     return
 
 
