@@ -1654,7 +1654,6 @@ label monika_rain:
 
                     store.mas_weather.saveMWData()
                     mas_unlockEVL("monika_change_weather", "EVE")
-                    mas_unlockEVL("monika_rain_holdme", "EVE") #TODO: Update scripts to unlock this for those who've seen it
 
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
@@ -1702,6 +1701,10 @@ label monika_rain:
                 m 3rksdlb "Not to mention pretty cold!"
                 m 1eua "But if you focus on the sounds raindrops make..."
                 m 1hua "I think you'll come to enjoy it."
+
+    #Unlock this always because people will see this likely before they can even answer the question
+    #Plus, it's got aff_range on it.
+    mas_unlockEVL("monika_rain_holdme", "EVE") #TODO: Update scripts to unlock this for those who've seen it
 
     # unrandom this event if its currently random topic
     # NOTE: we force event rebuild because this can be pushed by weather
