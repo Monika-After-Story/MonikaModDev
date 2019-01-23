@@ -326,7 +326,8 @@ label birthdate_set:
                 "and not persistent._mas_player_bday_spent_time "
                 "and persistent._mas_player_confirmed_bday "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14()")
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
@@ -339,7 +340,8 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
     
@@ -351,7 +353,7 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
-                "and (mas_isO31() or mas_isD25())")
+                "and (mas_isO31() or mas_isD25() or mas_isF14())")
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
 
@@ -411,6 +413,8 @@ label birthdate_set:
             $ hol_str = "Christmas"
         elif mas_player_bday_curr() == mas_monika_birthday:
             $ hol_str = "my birthday"
+        elif mas_player_bday_curr() == mas_f14: 
+            $ hol_str = "Valentine's Day"
         else:
             $ hol_str = None
         if hol_str is not None:
@@ -434,11 +438,10 @@ label birthdate_set:
         m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
         m 3hub "It still must make it an extra special day!"
 
-#TODO: activate this once mas_f14 exists
-#    elif mas_player_bday_curr() == mas_f14:
-#        m 1sua "Oh! Your birthday is on Valentine's Day..."
-#        m 3hua "How romantic!"
-#        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+    elif mas_player_bday_curr() == mas_f14:
+        m 1sua "Oh! Your birthday is on Valentine's Day..."
+        m 3hua "How romantic!"
+        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"

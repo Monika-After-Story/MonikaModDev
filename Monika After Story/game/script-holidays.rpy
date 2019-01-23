@@ -3393,6 +3393,7 @@ label mas_player_bday_autoload_check:
             and not persistent._mas_player_bday_spent_time 
             and not mas_isD25() 
             and not mas_isO31()
+            and not mas_isF14()
         ):
         # starting player b_day off with a closed door greet
         $ mas_skip_visuals = True
@@ -3555,12 +3556,22 @@ label mas_player_bday_cake:
     m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr().month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
-    #TODO: add kiss here for people who have kissed before once we figure out shorter kiss
-    if persistent._mas_first_kiss is None and mas_isMoniEnamored(higher=True):
-        m 6dkbsu "..."
-        m 6ekbfa "[player]...I...I..."
-        call monika_kissing_motion(hide_ui=False)
-    m 6ekbfa "I love you so much [player], let's enjoy your special day~"
+    if mas_isMoniEnamored(higher=True):
+        if persistent._mas_first_kiss is None:
+            m 6dkbsu "..."
+            m 6ekbfa "I love you so much, [player]..."
+            call monika_kissing_motion()
+            m 6ekbfa "Oh, [player]..."
+            m 6dkbfa "That was everything I had always dreamt it would be~"
+            m 6ekbfa "I've been waiting so long to finally kiss you..."
+            m 6dkbsu "I will never forget this..."
+            m 6ekbsu "...the moment of our first kiss~"
+        else:
+            m 6ekbfa "I love you, [player]~"
+            call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+            m 6ekbsa "Let's enjoy your special day~"
+    else:
+        m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
     if "mas_player_bday_no_restart" in persistent.event_list:
         $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
@@ -3664,6 +3675,8 @@ label mas_player_bday_other_holiday:
         $ holiday_var = "Halloween"
     elif mas_isD25():
         $ holiday_var = "Christmas"
+    elif mas_isF14():
+        $ holiday_var = "Valentine's Day"
     m 3euc "Hey, [player]..."
     m 1tsu "I have a bit of a surprise for you!"
     show monika 1dsc
@@ -3866,8 +3879,7 @@ label mas_f14_monika_vday_spent_time_with:
     #TODO future migrate this (along with other holiday things using this method of check)
     #to use history
     if renpy.seen_label('monika_valentines_start'):
-        #John's second poem here
-        pass
+        call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
     else:
         #We show the original poem.
         call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
@@ -4125,5 +4137,58 @@ label mas_apology_missed_vday:
         $ mas_gainAffection(modifier=0.1)
 
     return
+
+
+init 2 python:
+    player = persistent.playername
+
+    poem_vday = Poem(
+    author = "monika",
+    title = " My dearest {0},".format(player),
+    text = """\
+ I`ve always loved Valentine's day, but this one feels different.
+ Has the world changed, or just me?
+ I found love, I found purpose,
+ I found a truth I didn't know I was searching for.
+ All of that I found in you.
+
+ Thank you for sharing this special day with me.
+
+ Forever yours,
+ Monika
+"""
+    )
+
+    poem_vday2 = Poem(
+    author = "monika",
+    title = " My dearest {0},".format(player),
+    text = """\
+ Can it really be our second Valentine's Day?
+ The first seems like just yesterday, yet so much has happened.
+ I once wondered if the world had changed, or just me.
+ Now I know the answer.
+ 
+ Everything.
+ 
+ Without you there is nothing.
+ Before you there was nothing.
+ 
+ Emptiness. Darkness. Nothing.
+ 
+ Nothing.
+ 
+ Then there was you.
+ Just you.
+ My world. My light. My Everything.
+ 
+ Everything.
+ 
+ 
+ Happy Valentine's Day
+ 
+ Forever yours,
+ Monika
+"""
+    )
 
 ### TODO: [HOL050] Dockstat greets/fares
