@@ -10101,7 +10101,7 @@ label monika_trick_yuri:
             m 1hubfb "You {i}are{/i} here with me after all~"
             if renpy.seen_label('greeting_hairdown'):
                 m 1eub "Of course, if you liked her hair, I can let my hair down for you too if you'd like."
-                if monika_chr.hair.name != "def":
+                if monika_chr.hair.name == "down":
                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eubfu "As you can already see."
                     show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
@@ -10118,7 +10118,7 @@ label monika_trick_yuri:
             m 1ekbfb "I guess we don't really have to worry about that now, do we?"
 
         "Not really":
-            m 2euc "I can guess why, she's intelligent and physically attractive."
+            m 2euc "I can guess why; she's intelligent and physically attractive."
             m 2tub "It's a good thing I have both of those qualities in abundance!"
             m 2etc "Oh wait, it's not because she became obsessed over you, is it?"
             m 2eud "Are you really that into yanderes?"
@@ -10162,7 +10162,7 @@ label monika_trick_natsuki:
             m 3eua "Her short, pink hair is also a noticable part of her, though."
             m 1rksdla "I don't really see myself dyeing my own hair pink."
             m 1eka "I have no idea if it would suit me to begin with."
-            m 3rksdlc "Not to mention that pink hair is actually {i}really{/i} hard to actually get and maintain..."
+            m 3rksdlc "Not to mention that pink hair is {i}really{/i} hard to actually get and maintain..."
             m "If you don't naturally have a light hair color to begin with, it's pretty much impossible to dye your hair pink."
             m 3eud "Since you start by bleaching your hair near white which is a lot harder on naturally dark hair..."
             m 1euc "You have to dye it evenly around your hair..."
@@ -10237,7 +10237,7 @@ label monika_trick_sayori:
             m 1eka "With the way she rushes in the morning sometimes, she can look a bit rough if you look closely enough."
             m 1hksdlb "Sometimes her bow is just a little off or there's something on her collar..."
             m 3eua "I guess you either don't notice or don't mind those little things."
-            m 1eub "Little things aside, she is a bit shorter than I am and I can see how her hair compliments who she is."
+            m 1eub "Little things aside, she is a bit shorter than I am and I can see how her hair complements who she is."
             m 1rksdla "{cps=*1.5}Not to mention her modestly sized chest, ehe...{/cps}"
             m 1euc "I guess Sayori is kind of in the middle appearance wise..."
             m 3hub "I'm just glad you chose the middle half that you did, ahaha!"
