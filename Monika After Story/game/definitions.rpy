@@ -5370,7 +5370,6 @@ default persistent._mas_enable_random_repeats = False
 default persistent._mas_first_calendar_check = False
 
 # rain
-default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # rain chances

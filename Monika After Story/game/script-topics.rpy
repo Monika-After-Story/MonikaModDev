@@ -1613,6 +1613,7 @@ label monika_simulated:
     m 1tfu "I'll show him what a simulation can do."
     return
 
+default persistent._mas_likes_rain = None
 
 init 5 python:
     # only available if moni-affecition normal and above
