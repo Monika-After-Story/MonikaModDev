@@ -6306,8 +6306,8 @@ init 5 python:
 label monika_driving:
     m 1eud "Hm? Can I drive?"
     m 1euc "I never really thought about getting a driver's licence."
-    m 3eua "Public transportation is enough for me usually."
-    m 3hua "Walking or biking can be really nice too sometimes!"
+    m 3eua "Public transportation is enough for me usually..."
+    m 3hua "...Although walking or biking can be really nice too sometimes!"
     m 1eua "I guess you could say I never really needed to learn how to drive."
     m 1lksdlc "I'm not even sure I'd have had time, especially with school and all the activities I had anyway."
     m 1eub "What about you, [player]?"
@@ -6320,9 +6320,9 @@ label monika_driving:
             m 1hua "Oh, really?"
             m "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
-            m "I can just think of all the things we could do together, ehehe~"
+            m "Just imagine all the places we could go together, ehehe~"
             m 1eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
-            m 3eka "No matter how prepared you are, accidents could happen to anyone."
+            m 3eka "No matter how prepared you are, accidents can happen to anyone."
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
             show monika 1eka
@@ -6347,7 +6347,7 @@ label monika_driving:
                     m "It doesn't really help to have people walk or drive by, staring at them in disappointment."
                     m 1dsc "They might never drive again... Who knows?"
                     m 1eka "I hope you know I would never do that to you, [player]."
-                    m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you."
+                    m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you..."
                     m 1lksdla "...If I wasn't already by your side when it happened."
                 "I haven't.":
                     $ persistent._mas_pm_driving_been_in_accident = False
@@ -6377,13 +6377,13 @@ label monika_driving:
                     m 2lksdlc "I'm...really sorry to hear that, [player]..."
                     show monika 4ekd
                     menu:
-                        m "Have you driven much since then, [player]?"
+                        m "Have you driven much since then?"
                         "Yes.":
                             $ persistent._mas_pm_driving_post_accident = True
                             m 1eka "I'm glad you didn't let it keep you down."
                             m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
                             m 1hua "I'm so proud of you for getting up and trying again!"
-                            m 1hksdlb "Although the aftermath can still be a huge hassle with the costs and all the explaining you'd have to do."
+                            m 1hksdlb "Although the aftermath can still be a huge hassle with the costs and all the explaining you have to do."
                             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "I know you can get there."
                             m "I'll be cheering for you all the way, so be safe!"
@@ -6409,12 +6409,12 @@ label monika_driving:
         "I'm not old enough yet.":
             $ persistent._mas_pm_driving_can_drive = False
             m 3eua "You'll get there someday!"
-            m 3euc "Some places offer in-class driving lessons that also come with some actual driving practice."
-            m 3eud "Their cars also have emergency controls for the instructor to use if needed, so you're really safe with them."
-            m 1eka "Although it might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
+            m 3euc "Some places offer in-class driving lessons that also come with actual driving practice."
+            m 3eud "Their cars have emergency controls for the instructor to use if needed, so you're really safe with them."
+            m 1eka "I know It might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
             m 3eksdla "...And it's better than getting into an accident!"
             m 1lksdlc "No one's perfect, and it's better to make those mistakes when there's someone there to save you."
-            m 1hub "Maybe you could put me in your board computer in your car and I could keep you safe while driving! Ahaha~"
+            m 1hub "Maybe you could put me on your board computer in your car and I could keep you safe while driving! Ahaha~"
             m 1hksdlb "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
