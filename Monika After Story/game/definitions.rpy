@@ -468,25 +468,29 @@ python early:
             )
 
 
-        def prepareRepeat(self):
+        def prepareRepeat(self, force=False):
             """
             Prepres this event's dates for a repeat.
 
             NOTE: does not check if the event hasnt been reached this year.
 
-            RETURNS: True if this event was repeated, False if not
+            IN:
+                force - If True, we force the years to change
+                    (Default: False)
+
+            RETURNS: True if this event can repeat, False if not
             """
             # sanity check
             if not self.canRepeat():
                 return False
 
-            new_start, new_end, was_changed = Event._yearAdjustEV(self)
+            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
                 self.start_date = new_start
                 self.end_date = new_end
 
-            return was_changed
+            return True
 
 
         @staticmethod
@@ -600,16 +604,23 @@ python early:
 
 
         @staticmethod
-        def _yearAdjustEV(ev):
+        def _yearAdjustEV(ev, force=False):
             """
             _yearAdjust, but for an Event object
 
             IN:
                 ev - evnet object to adjust years
+                force - if True, we force years to update
+                    (Default: False)
 
             RETURNS: See _verifyDates
             """
-            return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+            return Event._yearAdjust(
+                ev.start_date,
+                ev.end_date,
+                ev.years,
+                force
+            )
 
 
         @staticmethod
@@ -642,25 +653,32 @@ python early:
 
 
         @staticmethod
-        def _yearAdjust(_start, _end, _years):
+        def _yearAdjust(_start, _end, _years, force=False):
             """
             Performs the year adjustment algorithm.
+
+            IN:
+                force - If True, we force year to update
+                    (Default: False)
 
             RETURNS: see _verifyDates
             """
             _now = datetime.datetime.now()
 
             # no changes necessary if we are currently in the zone
-            if _start <= _now < _end:
+            if (_start <= _now < _end) and not force:
                 return (_start, _end, False)
 
             # otherwise, we need to repeat.
             add_yr_fun = store.mas_utils.add_years
 
-            # NOTE this is wrong
-
             if len(_years) == 0:
                 # years is empty list, we are repeat yearly.
+
+                if force:
+                    # force mode means we always update year
+                    return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+
                 # we only need to check if current works, and if not,
                 # move to one year ahead of current.
                 diff = _now.year - _start.year
@@ -675,11 +693,21 @@ python early:
                 return (add_yr_fun(_start, diff), new_end, True)
 
             # otherwise, we have a list of years, and shoudl determine next
-            new_years = [
-                year
-                for year in _years
-                if year >= _now.year
-            ]
+            if force:
+                # forcing means we should look forward from teh current
+                # year
+                new_years = [
+                    year
+                    for year in _years
+                    if year > _now.year
+                ]
+
+            else:
+                new_years = [
+                    year
+                    for year in _years
+                    if year >= _now.year
+                ]
 
             if len(new_years) == 0:
                 # no repeat years, we have already reached the limit.
@@ -690,6 +718,10 @@ python early:
             # calc diff for the first year in this list
             diff = _now.year - new_years[0]
             new_end = add_yr_fun(_end, diff)
+
+            if force:
+                # force means we should just use this diff right away
+                return (add_yr_fun(_start, diff), new_end, True)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -1191,7 +1223,7 @@ python early:
                     )
 
                     # check if we should repeat
-                    if not ev.prepareRepeat():
+                    if not ev.prepareRepeat(True):
                         # no repeats
                         ev.conditional = None
                         ev.action = None
@@ -3572,6 +3604,23 @@ init -1 python:
         return True
 
 
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        if (
+                persistent.sessions is not None
+                and "first_session" in persistent.sessions
+                and type(persistent.sessions["first_session"]) 
+                    == datetime.datetime
+            ):
+            return persistent.sessions["first_session"]
+
+        return datetime.datetime.now()
+
+
     def get_pos(channel='music'):
         pos = renpy.music.get_pos(channel=channel)
         if pos: return pos
@@ -5302,6 +5351,7 @@ default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
+default persistent._mas_apology_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False

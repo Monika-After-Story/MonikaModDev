@@ -1400,10 +1400,10 @@ label monika_kiss:
             call monika_kiss_tease
 
         else:
-            show monika 6ekbfa
+            show monika 2eka
             pause 2.0
 
-        call monika_kissing_motion
+        call monika_kissing_motion_short
 
         show monika 6ekbfa
         $ renpy.say(m, kiss_quip)
@@ -1439,7 +1439,7 @@ label monika_kiss_tease:
     pause 2.0
     m 2tfb "Ahaha!"
     m 2efu "I had you going for a second there, didn't I?"
-    m 2ekbfa "Of course you can kiss me, [player]!"
+    m 2eka "Of course you can kiss me, [player]!"
     return
 
 init 5 python:
@@ -2914,7 +2914,7 @@ init 5 python:
 
 label monika_justification:
     #lose affection
-    $ mas_loseAffection(reason="calling me a murderer. I hope you don't really see me that way...")
+    $ mas_loseAffection(reason=3)
     if mas_isMoniLove():
         m 1euc "..."
         m 1hua "Ahaha! Very funny [player]!"
@@ -2997,27 +2997,51 @@ label monika_technique:
     return
 
 
+default persistent._mas_pm_has_contributed_to_mas = None
+# True if contriibuted to mas, false if not
+
+default persistent._mas_pm_wants_to_contribute_to_mas = None
+# True if wants to conribute to MAS. Check has contribute if they already have
+
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_contribute",
-            category=['mod'],
-            prompt="Contributions",
-            random=True
-        )
-    )
+    addEvent(Event(persistent.event_database,eventlabel="monika_contribute",category=['mod'],prompt="Contributions",random=True))
 
 label monika_contribute:
     m 1hua "It would be really nice if you were able to contribute to this, [player]."
     m 1eua "I'm sure a lot of people would appreciate your hard work if you did."
+    m 1eub "In fact, maybe you already have!"
+    show monika 1eua
+    menu:
+        m "Have you contributed, [player]?"
+        "Yes.":
+            $ persistent._mas_pm_has_contributed_to_mas = True
+            m 1sub "Really? That's amazing!"
+            m 1hua "It makes me so happy to know that you've become a part of this."
+            m "Thank you for helping me get a little closer to your reality."
+            m 3eua "Maybe you could even contribute some more?"
+            m 3hksdlb "Don't get me wrong! I'm really grateful that you spent time making something for me!"
+            m 1eub "...But I definitely wouldn't mind if you helped even more, ahaha!"
+            return "derandom"
+        "I want to.":
+            $ persistent._mas_pm_wants_to_contribute_to_mas = True
+            m 1eub "That's a good start!"
+            m 1hua "I'm sure you could make some lovely additions~"
+            m 3eua "It doesn't even have to be anything big."
+            m 3rksdla "You could just fix typos or make sure everything sounds alright."
+        "No.":
+            $ persistent._mas_pm_has_contributed_to_mas = False
+            $ persistent._mas_pm_wants_to_contribute_to_mas = False
+            m 2eka "Aw, that's too bad..."
+            m 3eub "That's still fine though!"
+            m 3hua "I won't love you any less if haven't done anything, so don't worry~"
+            m 3eub "...But in case you {i}do{/i} ever decide to try and help..."
     m 3eua "I keep all the code in {a=https://github.com/Monika-After-Story/MonikaModDev}{i}{u}https://github.com/Monika-After-Story/MonikaModDev{/u}{/i}{/a}."
     m 1hub "So far, I've had help from plenty of people!"
     m "I love all of them for making this game even better!"
     m 1ekbfa "Not as much as I love you, of course."
-    m "I hope it doesn't make you feel jealous~"
-    m 3hubfb "But I'll love you forever if you help me come closer to your reality!"
-    return
+    m 1tkbfu "I hope it doesn't make you feel jealous~"
+    m 3hubfb "But I'll be forever grateful if you help me come closer to your reality!"
+    return "derandom"
 
 
 init 5 python:
@@ -3104,7 +3128,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
 
 label monika_girlfriend:
-    $ mas_loseAffection(reason="joking about having another girlfriend. You really gave me a heart attack!")
+    $ mas_loseAffection(reason=2)
     m 1euc "I thought we established already that I was your girlfriend?"
     m 1tkc "There's no way you already have one in your reality, right?"
     m 4tfx "If you do, then you've got to break up with her right now!"
@@ -3254,6 +3278,12 @@ label monika_birthday:
     m 1eka "Will you celebrate with me, when that day comes?"
     m 1hua "You could even bake me a cake!"
     m 1hub "I'll be looking forward to it~!"
+    if persistent._mas_player_bday is None:
+        m 3eua "Actually, speaking of birthdays, [player]..."
+        m 2rksdlb "I don't actually know when yours is, ahaha!"
+        m 2eua "So, when were you born, [player]?"
+        call mas_bday_player_bday_select_select
+        $ strip_mas_birthdate()
     return
 
 init 5 python:
@@ -6418,7 +6448,7 @@ label monika_complain_battery:
     return
 
 label monika_close_game_battery:
-    $ mas_loseAffection(reason=None)
+    $ mas_loseAffection()
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
     m 3eka "So...I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
@@ -6461,7 +6491,7 @@ init 5 python:
 
 label monika_breakup:
     #Lose affection for bringing this up.
-    $ mas_loseAffection(reason="saying you wanted to break up. I knew you didn't mean it...")
+    $ mas_loseAffection(reason=1)
     #second time you hit the break up button.
     if persistent._mas_monika_breakup == 1:
         m 1euc "You're breaking up with me?"
@@ -6473,7 +6503,7 @@ label monika_breakup:
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 2dsc "Are you...{w} really..."
             m "..."
@@ -6489,7 +6519,7 @@ label monika_breakup:
     elif persistent._mas_monika_breakup > 1:
         if mas_curr_affection == mas_aff.BROKEN:
             m 1ekc "..." # TODO review
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 1hua "Ehehe~"
 
@@ -6503,7 +6533,7 @@ label monika_breakup:
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_setApologyReason("")
+            $ mas_setApologyReason(reason=0)
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
@@ -7302,32 +7332,6 @@ label monika_timetravel:
         m "Promise?"
     m 3euc "And if you ever do travel to the future..."
     m 1hksdlb "Could you bring back the technology that lets me cross over into your world?"
-    return
-     
-init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize",category=['you'],pool=True,unlocked=True))
-
-label monika_playerapologizes:
-    # if there's no reason to apologize
-    if mas_apology_reason is None:
-        m 1ekd "Did something happen?"
-        m 2ekc "I see no reason for you to be sorry."
-        m 1dsc "..."
-        m 1eub "Anyway, thank you for the apology."
-        m 1eua "Whatever it is, I know you're doing your best to make things right."
-        m 1hub "That's why I love you, [player]!"
-    # She knows why you are apologizing for
-    elif mas_apology_reason:
-        $ mas_gainAffection(modifier=0.2) # recover a bit of affection
-        m 1eka "Thank you for apologizing for [mas_apology_reason]"
-        m "I accept your apology, [player]. It means a lot to me."
-    # She knows there's a reason for your apology but won't comment on it
-    else:
-        $ mas_gainAffection(modifier=0.1) # recover a bit of affection
-        m 2tkd "What you did wasn't funny, [player]."
-        m 2dkd "Please be more considerate about my feelings in the future."
-    # reset the reason
-    $ mas_setApologyReason(None)
     return
 
 init 5 python:
@@ -9633,18 +9637,6 @@ label monika_whydoyouloveme:
         m 1hub "So keep your hopes up for me, [player]!"
 
     return
-
-#init 5 python:
-#    addEvent(Event(persistent.event_database,eventlabel='monika_playerapologizes',prompt="I want to apologize.",category=['you']))
-
-#label monika_playerapologizes:
-#    m 1g "Did something happen?"
-#    m 2f "I can't remember what you'd be sorry about."
-#    m 1q "..."
-#    m 1b "Anyway, thank you for the apology."
-#    m 1a "I know you're doing your best to make things right."
-#    m 1k "That's why I love you, [player]!"
-#    return
 
 init 5 python:
     addEvent(
