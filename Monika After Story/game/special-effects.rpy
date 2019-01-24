@@ -14,7 +14,6 @@ image blood splatter1:
     truecenter
     Blood("blood_particle",dripTime=0.5, burstSize=150, burstSpeedX=400.0, burstSpeedY=400.0, numSquirts=15, squirtPower=400, squirtTime=2.0).sm
 
-
 image k_rects_eyes1:
     RectCluster(Solid("#000"), 4, 15, 5).sm
     pos (580, 270)
@@ -99,6 +98,49 @@ image mas_lightning_s:
         easeout 2.8 alpha 0.0
     3.0
     Null()
+
+image mas_lantern:
+    "mod_assets/other/lantern.png"
+    alpha 0.0
+    block:
+        0.15
+        alpha 1.0
+        0.15
+        alpha 0.0
+        repeat 6
+    alpha 0.0
+
+image mas_stab_wound:
+    "mod_assets/other/stab-wound.png"
+    zoom 0.9
+    easein 1.0 zoom 1.0
+
+image rects_bn1:
+    RectCluster(Solid("#000"), 20, 15, 10).sm
+    rotate 90
+    pos (773, 380)
+    size (28, 33)
+    alpha 0.0
+    8.0
+    easeout 12 alpha 1.0
+
+image rects_bn2:
+    RectCluster(Solid("#000"), 20, 15, 10).sm
+    rotate 90
+    pos (782, 508)
+    size (30, 35)
+    alpha 0.0
+    8.0
+    easeout 12 alpha 1.0
+
+image rects_bn3:
+    RectCluster(Solid("#000"), 4, 15, 5).sm
+    rotate 90
+    pos (688, 427)
+    size (25, 15)
+    alpha 0.0
+    8.0
+    easeout 12 alpha 1.0
 
 transform k_scare:
     tinstant(640)

@@ -5,6 +5,8 @@
 # The topic that triggers the Story menu is monika_short_stories
 # Topic is unlocked at the beginning of the game and is not
 # random
+# New rule: pool property as true means that the story gets unlocked
+# by some other way and can't be unlocked randomly
 
 
 # dict of tples containing the stories event data
@@ -50,12 +52,14 @@ label mas_stories_start(scary=False):
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 category=(True,[mas_stories.TYPE_SCARY]),
+                pool=False,
                 aff=mas_curr_affection
             )
         else:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
                 excl_cat=list(),
+                pool=False,
                 aff=mas_curr_affection
             )
 
@@ -180,6 +184,7 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
+                pool=False,
                 category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
                 aff=mas_curr_affection
             )
@@ -191,6 +196,7 @@ label mas_story_unlock_random_cat(scary=False):
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
                     seen=False,
+                    pool=False,
                     category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
                     aff=mas_curr_affection
                 )
@@ -202,6 +208,7 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
+                        pool=False,
                         category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
                         aff=mas_curr_affection
                     )
@@ -213,6 +220,7 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
+                pool=False,
                 excl_cat=list(),
                 aff=mas_curr_affection
             )
@@ -223,6 +231,7 @@ label mas_story_unlock_random_cat(scary=False):
                 stories = renpy.store.Event.filterEvents(
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
+                    pool=False,
                     seen=False,
                     excl_cat=list(),
                     aff=mas_curr_affection
@@ -235,6 +244,7 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
+                        pool=False,
                         excl_cat=list(),
                         aff=mas_curr_affection
                     )
@@ -1015,3 +1025,300 @@ label mas_scary_story_revenant:
     m 3eub "The man's corpse let out a blood curdling scream and attempted to crawl out of the flames before finally succumbing to it."
     call mas_scary_story_cleanup
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_yuki_onna",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="Yuki-onna",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_yuki_onna:
+    call mas_scary_story_setup
+    m 4eud "There were once two woodcutters, a father and son, who were on their way home when a blizzard suddenly arose."
+    m "After a little bit of travel, they came across an abandoned cabin and took shelter in it."
+    m 2eua "They were able to build a modest fire and huddled together for warmth before falling asleep."
+    m 2esd "In the middle of the night, the son awoke from his sleep with a jolt."
+    m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him, instantly freezing him."
+    m 4wud "As she turned to the son, she paused. The woman said to him that she would spare him of the same fate, for he was young and very handsome."
+    m 4ekc "If he ever spoke a word of it to anyone, she would come back and kill him."
+    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful woman traveler."
+    m 2eua "It was starting to snow, and the man offered the woman shelter from the storm, and she quickly accepted."
+    m 2eua "The two quickly fell in love and ended up marrying each other."
+    m 2hua "The two lived happily together for years and had several kids together."
+    m 2esa "One night, while the kids were sleeping, the woman was sewing by the light of the fire."
+    m "The man looked up from what he was doing and the memory of the night he was never to speak of came back to him."
+    m 3esd "The wife asked the man why he was looking at her the way he was."
+    m 3esa "The man told his tale of his encounter with the snow woman."
+    m 2wud "The smile on his wife's face melted into anger as she revealed that she was the snow woman he spoke of."
+    m "She reprimanded him for breaking his promise and would have killed him on the spot if it weren't for the children they had had together."
+    m 3dsd"She told the man that he better treat their children well or she would be back to deal with him."
+    m 4dsd "The next instant she vanished, never to be seen again."
+    if renpy.random.randint(1,3) == 1 or persistent._mas_pm_likes_spoops or mas_full_scares:
+        show monika 6ckc
+        pause 0.2
+        show monika 4dsd
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_many_loves",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="Many Loves",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_many_loves:
+    call mas_scary_story_setup
+    m 4esa "There once was a young woman who appeared in a village one day to find a husband."
+    m 4eua "She was very beautiful and quickly attracted many suitors."
+    m 2eua "She ended up choosing to marry a husky fisherman."
+    m 2esd "The two had a happy marriage, but in less than a year, the husband wasted away and died."
+    m "The people in the village felt sorry for the young woman and comforted her the best they could."
+    m 4esa"A few months later, the woman married a burly woodcutter."
+    m 4dsd "The two lived happily together for a time, but he too, seemed to wither away and died."
+    m 4eud "Some of the villagers thought that it was odd both husbands had died in the same fashion, but no one said anything, and comforted the girl for her poor luck."
+    m "A time later, the woman was married again, this time to a stout mason and they too appeared to have a happy marriage, but within a year, the woman was again a widow."
+    m "This time the villagers talked amongst themselves and felt something suspicious was going on, so a group of villagers set out to find the nearest shaman."
+    m "Once they found the shaman and told him their story, the shaman indicated he knew what was going on."
+    m "He called his assistant over, a young, well-build fellow, whispered into his ear and sent him off to return with the villagers."
+    m "Telling them not to worry, his assistant would get to the bottom of it."
+    m "When they returned to the village, the assistant called on the widow and not long afterwards they were married."
+    m 2dsc "On the night of their wedding, the assistant placed a knife under his pillow and feigned sleep."
+    m 2esd "A little after midnight, the man felt a presence over him and a prick on his neck."
+    m "The man grabbed the knife and stuck it into the thing on top of him."
+    if renpy.random.randint(1,9) == 1 and persistent._mas_pm_likes_spoops or mas_full_scares:
+        show monika 6ckc
+        show mas_stab_wound zorder 75
+        play sound "sfx/stab.ogg"
+        show blood splatter1 as bl2 zorder 73:
+            pos (590,485)
+        $ pause(1.5)
+        stop sound
+        hide bl2
+        hide mas_stab_wound
+        show black zorder 100
+        $ pause(1.5)
+        hide black
+    m 3wkd "He heard a screech and the flapping of wings."
+    m 3eud "The next day, the bride was found dead some distance from the house with a knife wound in her chest."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_gray_lady",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="The Gray Lady",
+            unlocked=False
+        ),
+    code="STY"
+    )
+
+label mas_scary_story_gray_lady:
+    call mas_scary_story_setup
+    m 4eua "There was once a man named William, who grew up helping his father with his nefarious exploits."
+    m 4ekd "His father would wave lights from the shore line in the dead of night, hoping to lure ships to wreck upon the treacherous rocks along the shore."
+    m "And then collect the plunder that was spilled from the ship and kill any survivors."
+    m 2eud "During one of his father’s expositions, he saved a beautiful woman and ultimately decided to leave his old life behind and married the woman he saved."
+    m 2esa "The couple rented a manor not too far away."
+    m 2eub "The two lived a happy life there together, but were especially joyous when their baby daughter Kate was born."
+    m 4esb "As the years went by, Kate grew into a vivacious young woman."
+    m 2ekd "William was secretly ashamed that he didn’t have enough money to buy the manor outright to offer as a dowry to the man who would one day marry his daughter."
+    m 4hud "One day Kate met and fell in love with an Irish pirate captain and the two of them were married."
+    m 4esb "The happy couple decided to settle down in Dublin, since Kate’s parents had no land of their own to offer them."
+    m 4esa "Kate promised to return and visit her parents again one day."
+    m 4esd "Time passed and William and his wife missed their daughter dearly and wished for her to return."
+    m 2dsc "William decided to go back to his old ways long enough to get the money necessary to buy the manor and invite their daughter and her husband back to live with them."
+    m 2wud "One night, after attracting a ship to wreck on the shore and gathering the plunder from it, he noticed a badly injured woman lying on the rocks before him."
+    m 2dsc "Her facial features were rendered unrecognizable due to the injuries she had sustained."
+    m 2eud "William, taking pity on her, carried her back to the manor, and did what he could to try to save her life, but the woman died without ever regaining consciousness."
+    m 2esd "As they searched her body for some clue as to her identity, they found a small purse strapped to her waist full of enough gold coins and jewels for them to finally purchase the manor they rented."
+    m 2ekd "A few days later the Admiralty inquired the couple about a missing passenger from the wreckage that turned out to be none other than their daughter."
+    m 3dsc "Devastated and ashamed, the parents walled up her remains in a secret room and moved away, never to return."
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_flowered_lantern",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="The Flowered Lantern",
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_flowered_lantern:
+    call mas_scary_story_setup
+    $ _story = mas_getEV('mas_scary_story_flowered_lantern')
+    if _story is not None and _story.shown_count == 0:
+        m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
+        m 3eua "So, I'll split it in parts."
+        m "Once I finish this part I'll ask you if you want to continue it or not."
+        m 2eub "If you say no, you can ask me later to tell you the next part, so don't worry about it"
+        m 4eua "Alright, let's begin now"
+    m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
+    m 4ekd "Tsuyu’s mother was dead and her father had remarried."
+    m 2eud "After some time, it became obvious to Tsuyu’s father that Tsuyu and her step mother couldn’t get along."
+    m 2esd "Wanting to ensure his only daughter’s happiness, he had a luxurious house built for her, away from them and had her move into it."
+    m 2eud "One day, the family physician went to Tsuyu’s residence on a routine visit with a young samurai named Hagiwara, who was very handsome."
+    m "Tsuyu and Hagiwara fell in love the moment they set eyes on each other."
+    m 4ekd "Unbeknownst to the doctor, the two pledged themselves to each other for life and before the two left, Tsuyu whispered to Hagiwara that she would surely die if he didn’t return to see her."
+    m 4eud "Hagiwara didn’t forget her words, but etiquette forbade him to make a call to visit a maiden alone, so he had to wait for the doctor to ask him to join him on another visit."
+    m "The doctor, however, had perceived his sudden affection for Tsuyu."
+    m "Tsuyu’s father was known to behead those who angered him, and fearing that he would hold him responsible for introducing the two, he avoided Hagiwara."
+    m "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
+    m "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu’s death."
+    m 2dsc "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
+    $ _story = mas_getEV("mas_scary_story_flowered_lantern_2")
+    if _story is not None:
+        $ _story.unlocked = True
+        $ _story.pool = False
+    m 1eua "That's it for part one, do you want to continue to the next one?"
+    menu:
+        "Yes.":
+            jump mas_scary_story_flowered_lantern_2
+        "No.":
+            pass
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_flowered_lantern_2",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="The Flowered Lantern 2",
+            pool=True,
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_flowered_lantern_2:
+    call mas_scary_story_setup
+    $ _mas_lantern_scare = renpy.random.randint(1,11) == 1
+    m "After sun down, on the first night of the Festival of the Dead, Hagiwara sat outside, still grieving the loss of his love until it was very late."
+    m "Just as he was about to go inside and go to sleep, he heard footsteps on the path outside his gate."
+    m 4eua "Hagiwara lived on a lonely street with few pedestrians and since it was so late out, he decided to see who it was."
+    m 4ekd "To his great surprise and delight, the person walking along the path was none other than Tsuyu, carrying a paper lantern decorated with flowers to light her way."
+    m 2eud "Hagiwara called out Tsuyu’s name and she immediately came to him and embraced him."
+    m 2esd "Each of them told the other that they were told by the doctor that the other person had died."
+    m 2eud "Tsuyu told him that her father wanted her to marry another man."
+    m "She refused and fled her luxurious home to hide from him and was currently taking residence in a cramped house in a certain neighborhood nearby."
+    m 4ekd "He invited her inside, but told her to keep quiet so that they didn’t disturb his servant who might inquire who she was."
+    m 4eud "The two spent the night together and right before dawn, Tsuyu left to return to her dwelling."
+    m "On the next night, Tsuyu visited again at the same time she had arrived the previous night."
+    m "On this night, however, Hagiwara’s servant awoke and heard a young woman’s voice he didn’t recognize."
+    m "Curious, but not wanting to disturb his master, he snuck to his master’s room and peeked through a small crack in his door and saw that he was indeed talking to a young woman."
+    m "The woman’s back was turned to him, but he was able to make out that she was very thin and was dressed in a very nice kimono that only the upper class would wear."
+    m "His curiosity piqued, the servant decided to get a glimpse of this girl’s face before retiring."
+    m "He saw that the master had left a window open, so he quietly made his way over to it."
+    m "As he peered inside, he saw, to his horror that the face of the woman was that of one that was long dead and the fingers caressing his master’s face were those of naked bone."
+    m "He fled away in terror without making a peep."
+    m "The next morning, the servant approached his master and asked him about the woman."
+    m "At first, Hagiwara denied having any visitors, but after perceiving that it was to no avail, he confessed everything that had transpired."
+    m 4eua "The servant told Hagiwara what he saw the night before and felt surely his master’s life was in danger and pleaded for him to see a priest about it."
+    m 4ekd "Startled but not entirely convinced, Hagiwara decided to put his servant’s mind at ease by finding Tsuyu’s residence."
+    m 2eud "Hagiwara set out and explored the neighborhood that Tsuyu told him she was staying at."
+    m 2esd "He looked around and inquired people about her but to no avail."
+    m 2eud "When he decided that searching more would be fruitless, he headed home."
+    m "On his way back, he passed a cemetery next to a temple."
+    m 4ekd "His attention was attracted by a large new tomb, near the back that he hadn’t noticed before."
+    if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
+        show mas_lantern zorder 75
+    m 4eud "Hanging above it was a paper lantern decorated with beautiful flowers that looked exactly the same as the one that Tsuyu carried with her at night."
+    m "Intrigued, he walked towards it, as he looked at the name of the person it belonged to, he jumped back with fright as he read it belonged to his beloved Tsuyu."
+    m "Terror stricken, Hagiwara immediately headed into the adjoining temple and asked to speak to the head priest."
+    m "When he was admitted, he told the head priest everything that had transpired."
+    m "After he had finished, the head priest told him his life was indeed in danger."
+    m "Hagiwara’s intense grieving for her and her intense love for him had brought her back during the Festival of the Dead."
+    m "Love between one who is alive and one who is dead can only result in the death of the one who is alive."
+    $ _story = mas_getEV("mas_scary_story_flowered_lantern_3")
+    if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
+        hide mas_lantern
+    if _story is not None:
+        $ _story.unlocked = True
+        $ _story.pool = False
+    m "That's it for part two, do you want to continue to the next one?"
+    menu:
+        "Yes.":
+            jump mas_scary_story_flowered_lantern_3
+        "No.":
+            pass
+    call mas_scary_story_cleanup
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_story_database,
+            eventlabel="mas_scary_story_flowered_lantern_3",
+            category=[store.mas_stories.TYPE_SCARY],
+            prompt="The Flowered Lantern 3",
+            pool=True,
+            unlocked=False
+        ),
+        code="STY"
+    )
+
+label mas_scary_story_flowered_lantern_3:
+    call mas_scary_story_setup
+    $ _mas_rects_scare = renpy.random.randint(1,11) == 1
+    m "As it was the last day of the Festival of the Dead, Tsuyu would have to return to the dead on this night and she would take Hagiwara with her if they were to see each other again."
+    m "Hagiwara pleaded with the priest to help him."
+    m "The priest said the passional karma between them was very strong, but there was some hope still."
+    m "The priest handed Hagiwara a stack of paper talismans that keep out spirits, and instructed him to cover every opening in his home, no matter how small, with them."
+    m "Tsuyu would not be able to enter the dwelling as long as he heeded these instructions."
+    m "Hagiwara, with the assistance of his servant was able to successfully cover the house with the paper talismans before dark."
+    m "As the night went on, Hagiwara attempted to fall asleep but to no avail. So he sat up meditating over the days events."
+    m "At a late hour, he heard footsteps outside his home."
+    m "The steps came nearer and nearer."
+    m "Hagiwara felt a sudden compulsion, stronger than even his fear, to look."
+    m "He foolishly approached the shutters and through a chink saw Tsuyu standing at the entrance of his house with her paper lantern staring at the paper talismans."
+    m "Never before had he seen Tsuyu look so beautiful and his heart felt so drawn to her."
+    m "Outside, Tsuyu began to weep bitterly, saying to herself that Hagiwara had broken the pledge that they had made to each other."
+    m "After weeping there for a while, she slowly collected herself and said aloud that she wouldn’t leave without seeing him one last time."
+    m "Hagiwara heard footsteps as she walked around his house, every so often he would see the light from the lantern as she went along."
+    m "When she came near the spot Hagiwara had peered out of, the footsteps stopped and suddenly Hagiwara saw one of Tsuyu’s eyes looking in at him."
+    # Natuki rects
+    if _mas_rects_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
+        play sound "sfx/glitch1.ogg"
+        show rects_bn1
+        show rects_bn2
+        show rects_bn3
+        $ style.say_dialogue = style.edited
+        ".{w=0.5}.{w=0.5}.{nw}"
+        $ style.say_dialogue = style.default_monika
+
+    m "The next day, the servant awoke and approached his master’s room and knocked upon his door."
+    m "For the first time in years he didn’t receive a response and he was worried."
+    m "He called his master repeatedly but to no avail."
+    m "Finally, with some force, he was able to make his way into his master’s room."
+    m "He opened up the curtains in the far corner of the room to let in sunlight, but no one stirred."
+    m "Finally, he worked up the courage to open the curtains around his master’s bed."
+    m "No sooner had he looked beneath than he fled from the house with a cry of horror."
+    m "Hagiwara was dead, hideously dead, and his face was in the expression of the uttermost agony of fear."
+    m "Lying beside him in the bed were the bones of a woman and the bones of the arms and hands clung fast around his neck as if in an embrace."
+    call mas_scary_story_cleanup
+    return
+
+#next one is botan doro
+#Maybe after it says her eye is looking in at the guy
+#natuski rects
