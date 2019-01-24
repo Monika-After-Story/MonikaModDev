@@ -5807,11 +5807,22 @@ label monika_promisering:
 
     return "derandom"
 
-# do you like playing sports
-default persistent._mas_pm_like_playing_sports = None
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sports",category=['misc'],prompt="Being athletic",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sports",
+            category=['misc'],
+            prompt="Being athletic",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_like_playing_sports = None
+# True if you like playing sports. False if not
+
+default persistent._mas_pm_like_playing_tennis = None
+# True if you like playing tennis, False if not
 
 label monika_sports:
     m 1eua "I've been thinking about stuff we can do together."
@@ -5827,6 +5838,8 @@ label monika_sports:
         m "Do you play tennis, [player]?"
         "Yes.":
             $ persistent._mas_pm_like_playing_sports = True
+            $ persistent._mas_pm_like_playing_tennis = True
+
             m 3eub "Really? That's great!"
             m 3hub "There are usually tennis courts at public parks. We can play all the time!"
             m "Maybe we can even team up for doubles matches!"
@@ -5835,21 +5848,30 @@ label monika_sports:
             m "..."
             m 4hub "Ahaha! I'm only joking..."
             m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
-        "No, but if it were with you...":
+
+        "No, but if it were with you...": 
             $ persistent._mas_pm_like_playing_sports = True
+            # NOTE: we cant really determine from this answer if you do like
+            #   playing tennis or not.
+
             m 1eka "Aww, that's really sweet~"
             m 3eua "I'll teach you how to play when I get there...{w=0.5}or if you just can't wait, you can take lessons!"
             m 3eub "Then we can start playing in doubles matches!"
             m 1eua "I can't imagine anything more fun than winning a match with you as my partner..."
             m 3hub "We'll be unstoppable together!"
+
         "No, I prefer other sports.":
             $ persistent._mas_pm_like_playing_sports = True
+            $ persistent._mas_pm_like_playing_tennis = False
+
             m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
             m 3eua "If it's a sport I haven't played before, you could teach me!"
             m 1tku "Watch out though, I'm a fast learner..."
             m 1tfu "It won't be long before I can beat you. Ahaha!"
         "No, I'm not really into sports.":
             $ persistent._mas_pm_like_playing_sports = False
+            $ persistent._mas_pm_like_playing_tennis = False
+
             m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
             m 1ekc "I would hate to see you get sick because of something like that."
             if mas_isMoniAff(higher=True):
