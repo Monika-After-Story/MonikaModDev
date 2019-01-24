@@ -131,6 +131,18 @@ We will not work on translations. We simply don't have the time or manpower to d
 
 We do not currently plan to include animations in *Monika After Story*. The game engine does not have very good support for animated sprites, and it also does not have licensing for the most popular 2D animation engine: Live 2D.
 
+### How do I find the spritecode for an expression?
+
+Because of the large increase in Monika expressions after the 0.8.0 update, a special tool was developed to help contributors preview expressions. This is known as the **Sprite Previewer**.
+
+![Sprite Previewer](https://raw.githubusercontent.com/Monika-After-Story/MonikaModDev/master/docs/spritepreviewer.png)
+
+If the Sprite Code is in red, then the sprite isn't defined yet despite us having the assets to make it. You can still use this sprite in topics, but your pull request will fail travis checks. This is understandable and a dev will add the sprite code to your pull request in this case.
+
+To add the Sprite Previewer to your MAS, copy [this file](https://github.com/Monika-After-Story/MonikaModDev/blob/master/Monika%20After%20Story/game/dev/dev_exp_previewer.rpy) to your `game/` directory.
+
+**NOTE:** This dev file routinely receives updates when we add new sprites. If Monika disappears on a certain sprite code, then you are missing the art for that sprite code. New sprites usually appear in unstable releases first, so try running the Sprite Previewer in an unstable install.
+
 ## Other help
 
 Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Backdash/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discord.gg/WE65rQ3).
