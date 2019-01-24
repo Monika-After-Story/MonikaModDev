@@ -3830,3 +3830,10 @@ init 2 python:
 """
     #" # I need this to keep syntax highlighting on vim
     )
+
+
+### TODO: remove this when f14 merges in
+init -10 python:
+    # dummy so evals in player birthday wont fail
+    def mas_isF14():
+        return False

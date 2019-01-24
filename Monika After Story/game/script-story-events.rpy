@@ -326,7 +326,9 @@ label birthdate_set:
                 "and not persistent._mas_player_bday_spent_time "
                 "and persistent._mas_player_confirmed_bday "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14() "
+            )
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
@@ -339,7 +341,9 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14() "
+            )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
     
@@ -351,7 +355,8 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
-                "and (mas_isO31() or mas_isD25())")
+                "and (mas_isO31() or mas_isD25() or mas_isF14()) "
+            )
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
 
