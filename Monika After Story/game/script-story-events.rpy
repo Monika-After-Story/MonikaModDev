@@ -313,6 +313,9 @@ label birthdate_set:
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
         if bday_ret_bday_ev is not None:
             bday_ret_bday_ev.start_date = mas_player_bday_curr()
@@ -331,6 +334,9 @@ label birthdate_set:
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))
@@ -344,7 +350,10 @@ label birthdate_set:
                 "and not mas_isF14()")
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-    
+   
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr()

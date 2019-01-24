@@ -3855,7 +3855,7 @@ init -10 python:
         if _date is None:
             _date = datetime.date.today()
 
-        return _date == mas_f14
+        return _date == mas_f14.replace(year=_date.year)
 
 ##### Start [HOL050] TOPICS
 
