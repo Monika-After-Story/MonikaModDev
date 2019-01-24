@@ -3,10 +3,12 @@
 #
 # NOTE: We added support for custom music.
 # To add custom music to your game:
-# 1. Ensure that the custom music is of "ogg" file format (with the extension)
+# 1. Ensure that the custom music is of OGG/VORBIS / MP3 / OPUS format.
 # 2. Add a directory "custom_bgm" in your DDLC/ directory.
-# 3. Drop your oggs into that directory.
+# 3. Drop your music into that directory.
 # 4. Start the game
+
+default persistent._mas_pm_added_custom_bgm = False
 
 # music inits first, so the screen can be made well
 init -1 python in songs:
@@ -14,6 +16,7 @@ init -1 python in songs:
     import mutagen.mp3 as muta3
     import mutagen.oggopus as mutaopus
     import mutagen.oggvorbis as mutaogg
+    import store
 
     # MUSICAL CONSTANTS
     # SONG NAMES
@@ -26,6 +29,7 @@ init -1 python in songs:
     OKAY_EV_MON = "Okay, Everyone! (Monika)"
     DDLC_MT_80 = "Doki Doki Theme (80s ver.)"
     SAYO_NARA = "Surprise!"
+    SAYO_NARA_SENS = "Sayonara"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
     NO_SONG = "No Music"
@@ -154,9 +158,14 @@ init -1 python in songs:
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
+            
 
         # sayori only allows this
-        music_choices.append((SAYO_NARA, FP_SAYO_NARA))
+        if store.persistent._mas_sensitive_mode:
+            sayonara_name = SAYO_NARA_SENS
+        else:
+            sayonara_name = SAYO_NARA
+        music_choices.append((sayonara_name, FP_SAYO_NARA))
 
         # grab custom music
         __scanCustomBGM(music_choices)
@@ -254,6 +263,9 @@ init -1 python in songs:
                     loop_prefix + custom_music_reldir + ogg_file
                 ))
 
+                # we added something!
+                store.persistent._mas_pm_added_custom_bgm = True
+
 
     def _getAudioFile(filepath):
         """
@@ -294,17 +306,17 @@ init -1 python in songs:
         RETURNS:
             The name of this Song (probably)
         """
-        if _ext == EXT_MP3:
-            disp_name = _getMP3Name(_audio_file)
+        disp_name = None
 
-        elif _ext == EXT_OGG:
-            disp_name = _getOggName(_audio_file)
+        if _audio_file.tags is not None:
+            if _ext == EXT_MP3:
+                disp_name = _getMP3Name(_audio_file)
 
-        elif _ext == EXT_OPUS:
-            disp_name = _getOggName(_audio_file)
+            elif _ext == EXT_OGG:
+                disp_name = _getOggName(_audio_file)
 
-        else:
-            disp_name = None
+            elif _ext == EXT_OPUS:
+                disp_name = _getOggName(_audio_file)
 
         if not disp_name:
             # let's just use filename minus extension at this point
@@ -325,6 +337,9 @@ init -1 python in songs:
         RETURNS:
             loop string, or and empty string if no loop string available
         """
+        if _audio_file.tags is None:
+            return ""
+
         if _ext == EXT_MP3:
             # NOTE: we do not support mp3 looping atm
             return ""
@@ -644,7 +659,11 @@ init -1 python in songs:
     current_track = "bgm/m1.ogg"
     selected_track = current_track
     menu_open = False
+
+    # enables / disables the music menu
+    # NOTE: not really used
     enabled = True
+
     vol_bump = 0.1 # how much to increase volume by
 
     # contains the song list
@@ -706,7 +725,10 @@ init 10 python:
         config.basedir + "/" + store.songs.custom_music_dir + "/"
     ).replace("\\", "/")
 
-    if persistent.playername.lower() == "sayori":
+    if (
+            persistent.playername.lower() == "sayori"
+            and not persistent._mas_sensitive_mode
+        ):
         # sayori specific
 
         # init choices
@@ -804,9 +826,16 @@ screen music_menu(music_page, page_num=0, more_pages=False):
 
     $ import store.songs as songs
 
+    # logic to ensure Return works
+    if songs.current_track is None:
+        $ return_value = songs.NO_SONG
+    else:
+        $ return_value = songs.current_track
+
+
     # allows the music menu to quit using hotkey
-    key "noshift_M" action Return()
-    key "noshift_m" action Return()
+    key "noshift_M" action Return(return_value)
+    key "noshift_m" action Return(return_value)
 
     zorder 200
 
@@ -870,12 +899,6 @@ screen music_menu(music_page, page_num=0, more_pages=False):
             style "music_menu_return_button"
             action Return(songs.NO_SONG)
 
-        # logic to ensure Return works
-        if songs.current_track is None:
-            $ return_value = songs.NO_SONG
-        else:
-            $ return_value = songs.current_track
-
         textbutton _("Return"):
             style "music_menu_return_button"
             action Return(return_value)
@@ -888,8 +911,6 @@ label display_music_menu:
     python:
         import store.songs as songs
         songs.menu_open = True
-        prev_dialogue = allow_dialogue
-        allow_dialogue = False
         song_selected = False
         curr_page = 0
 
@@ -913,5 +934,116 @@ label display_music_menu:
         $ song_selected = _return not in songs.music_pages
 
     $ songs.menu_open = False
-    $ allow_dialogue = prev_dialogue
     return _return
+
+
+init python:
+    import store.songs as songs
+    # important song-related things that need to be global
+
+
+    def dec_musicvol():
+        #
+        # decreases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        # ASSUMES:
+        #   persistent.playername
+
+        # sayori cannot make the volume quieter
+        if (
+                persistent.playername.lower() != "sayori"
+                or persistent._mas_sensitive_mode
+            ):
+            songs.adjustVolume(up=False)
+
+
+    def inc_musicvol():
+        #
+        # increases the volume of the music channel by the value defined in
+        # songs.vol_bump
+        #
+        songs.adjustVolume()
+
+
+    def mute_music(mute_enabled=True):
+        """
+        Mutes and unmutes the music channel
+
+        IN:
+            mute_enabled - True means we are allowed to mute.
+                False means we are not
+        """
+        curr_volume = songs.getVolume("music")
+        # sayori cannot mute
+        if (
+                curr_volume > 0.0 
+                and (
+                    persistent.playername.lower() != "sayori"
+                    or persistent._mas_sensitive_mode
+                )
+                and mute_enabled
+            ):
+            songs.music_volume = curr_volume
+            renpy.music.set_volume(0.0, channel="music")
+        else:
+            renpy.music.set_volume(songs.music_volume, channel="music")
+
+
+    def play_song(song, fadein=0.0):
+        #
+        # literally just plays a song onto the music channel
+        #
+        # IN:
+        #   song - song to play. If None, the channel is stopped
+        #   fadein - number of seconds to fade in the song
+        if song is None:
+            renpy.music.stop(channel="music")
+        else:
+            renpy.music.play(
+                song,
+                channel="music",
+                loop=True,
+                synchro_start=True,
+                fadein=fadein
+            )
+
+
+    def mas_startup_song():
+        """
+        Starts playing either the persistent track
+
+        Meant for usage in startup processes.
+        """
+        if persistent.current_track is not None:
+            play_song(persistent.current_track)
+
+
+    def select_music():
+        # check for open menu
+        if songs.enabled and not songs.menu_open:
+
+            # disable unwanted interactions
+            mas_RaiseShield_mumu()
+
+            # music menu label
+            selected_track = renpy.call_in_new_context("display_music_menu")
+            if selected_track == songs.NO_SONG:
+                selected_track = songs.FP_NO_SONG
+
+            # workaround to handle new context
+            if selected_track != songs.current_track:
+                play_song(selected_track)
+                songs.current_track = selected_track
+                persistent.current_track = selected_track
+
+            # unwanted interactions are no longer unwanted
+            if store.mas_globals.dlg_workflow:
+                # the dialogue workflow means we should only enable
+                # music menu interactions
+                mas_MUMUDropShield()
+
+            else:
+                # otherwise we can enable interactions normally
+                mas_DropShield_mumu()
+
