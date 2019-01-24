@@ -49,12 +49,14 @@ label mas_stories_start(scary=False):
         if scary:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
-                category=(True,[mas_stories.TYPE_SCARY])
+                category=(True,[mas_stories.TYPE_SCARY]),
+                aff=mas_curr_affection
             )
         else:
             stories = renpy.store.Event.filterEvents(
                 mas_stories.story_database,
-                excl_cat=list()
+                excl_cat=list(),
+                aff=mas_curr_affection
             )
 
         # build menu list
@@ -106,7 +108,7 @@ label mas_stories_start(scary=False):
         # check if we have seen it already
         if seen_event(story):
             m 1ekc "Sorry [player]. That's the only story I can tell you right now."
-            m 3hksdlb "Don't worry! I'll think of a story to tell you next time"
+            m 3hksdlb "Don't worry! I'll think of a story to tell you next time."
             return
 
         # increment event's shown count and update last seen
@@ -178,7 +180,8 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
-                category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                aff=mas_curr_affection
             )
 
             if len(stories) == 0:
@@ -188,7 +191,8 @@ label mas_story_unlock_random_cat(scary=False):
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
                     seen=False,
-                    category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                    category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                    aff=mas_curr_affection
                 )
 
                 if len(stories) == 0:
@@ -198,7 +202,8 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
-                        category=(True,[renpy.store.mas_stories.TYPE_SCARY])
+                        category=(True,[renpy.store.mas_stories.TYPE_SCARY]),
+                        aff=mas_curr_affection
                     )
         else:
             # reset flag so we don't unlock another one
@@ -208,7 +213,8 @@ label mas_story_unlock_random_cat(scary=False):
             stories = renpy.store.Event.filterEvents(
                 renpy.store.mas_stories.story_database,
                 unlocked=False,
-                excl_cat=list()
+                excl_cat=list(),
+                aff=mas_curr_affection
             )
 
             if len(stories) == 0:
@@ -218,7 +224,8 @@ label mas_story_unlock_random_cat(scary=False):
                     renpy.store.mas_stories.story_database,
                     unlocked=True,
                     seen=False,
-                    excl_cat=list()
+                    excl_cat=list(),
+                    aff=mas_curr_affection
                 )
 
                 if len(stories) == 0:
@@ -228,7 +235,8 @@ label mas_story_unlock_random_cat(scary=False):
                     stories = renpy.store.Event.filterEvents(
                         renpy.store.mas_stories.story_database,
                         unlocked=True,
-                        excl_cat=list()
+                        excl_cat=list(),
+                        aff=mas_curr_affection
                     )
 
         # select one story randomly
@@ -249,7 +257,7 @@ label mas_story_unlock_random_cat(scary=False):
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_tyrant",
-        prompt="The Cat and the Cock",unlocked=True),eventdb=store.mas_stories.story_database)
+        prompt="The Cat and the Cock",unlocked=True),code="STY")
 
 label mas_story_tyrant:
     call mas_story_begin
@@ -264,7 +272,7 @@ label mas_story_tyrant:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_despise",
-        prompt="The Fox",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Fox",unlocked=False),code="STY")
 
 label mas_story_despise:
     call mas_story_begin
@@ -279,7 +287,7 @@ label mas_story_despise:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_lies",
-        prompt="The Shepherd Boy and the Wolf",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Shepherd Boy and the Wolf",unlocked=False),code="STY")
 
 label mas_story_lies:
     call mas_story_begin
@@ -300,7 +308,7 @@ label mas_story_lies:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
-        prompt="The Grasshopper",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Grasshopper",unlocked=False),code="STY")
 
 label mas_story_grasshoper:
     call mas_story_begin
@@ -318,7 +326,7 @@ label mas_story_grasshoper:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
-        prompt="The Wind and the Sun",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The Wind and the Sun",unlocked=False),code="STY")
 
 label mas_story_wind_sun:
     call mas_story_begin
@@ -334,7 +342,7 @@ label mas_story_wind_sun:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_seeds",
-        prompt="The seeds",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The seeds",unlocked=False),code="STY")
 
 label mas_story_seeds:
     call mas_story_begin
@@ -354,7 +362,7 @@ label mas_story_seeds:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_gray_hair",
-        prompt="The gray hair",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The gray hair",unlocked=False),code="STY")
 
 label mas_story_gray_hair:
     call mas_story_begin
@@ -372,7 +380,7 @@ label mas_story_gray_hair:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
-        prompt="The fisherman",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="The fisherman",unlocked=False),code="STY")
 
 label mas_story_fisherman:
     call mas_story_begin
@@ -387,7 +395,7 @@ label mas_story_fisherman:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_ravel",
-    prompt="Old man's three wishes",unlocked=False),eventdb=store.mas_stories.story_database)
+    prompt="Old man's three wishes",unlocked=False),code="STY")
 
 label mas_story_ravel:
     call mas_story_begin
@@ -404,7 +412,7 @@ label mas_story_ravel:
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
-        prompt="Love Never Ends",unlocked=False),eventdb=store.mas_stories.story_database)
+        prompt="Love Never Ends",unlocked=False),code="STY")
 
 label mas_story_immortal_love:
     call mas_story_begin
@@ -432,19 +440,22 @@ label mas_story_immortal_love:
 # Scary stories start here
 label mas_scary_story_setup:
     show monika 1dsc
-    $ mas_temp_r_flag = mas_is_raining
+    $ mas_temp_r_flag = mas_current_weather
     $ scene_change = True
     $ mas_is_raining = True
     #TODO persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
     $ mas_temp_m_flag = morning_flag
+
     $ store.mas_sprites.reset_zoom()
+    $ mas_changeWeather(mas_weather_rain)
     call spaceroom(start_bg="monika_gloomy_room")
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop
-    show vignette zorder 70
+    if not mas_isO31():
+        show vignette zorder 70
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -468,23 +479,22 @@ label mas_scary_story_cleanup:
     python:
         story_end_quips = [
             "Scared, [player]?",
-            "Did I scare you, [player]",
+            "Did I scare you, [player]?",
             "How was it?",
             "Well?"
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
     m 3eua "[story_end_quip]"
-    if not mas_temp_r_flag:
-        stop background fadeout 1.0
     show monika 1dsc
     $ scene_change = True
-    $ mas_is_raining = mas_temp_r_flag
     pause 1.0
     hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
-    hide vignette
-    call spaceroom
+    if not mas_isO31():
+        hide vignette
+
+    call mas_change_weather(mas_temp_r_flag)
 #    $ store.songs.enabled = True
     $ play_song(songs.current_track)
     m 1eua "I hope you liked it, [player]~"
@@ -495,7 +505,7 @@ label mas_scary_story_cleanup:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_hunter",
     category=[store.mas_stories.TYPE_SCARY], prompt="The Hunter",unlocked=True),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_hunter:
     call mas_scary_story_setup
@@ -513,8 +523,8 @@ label mas_scary_story_hunter:
     m 3esc "The salesman then appeared to the hunter as he grieved his tragic loss, revealing that he was in fact the Devil."
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
-    m 1eud "The hunter vowed to remain true to her for for as long as he lived..."
-    m 1dsd "...{w}Or so he would."
+    m 1eud "The hunter vowed to remain true to her for as long as he lived..."
+    m 1dsd "...{w}or so he would."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
     m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
     m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
@@ -527,14 +537,14 @@ label mas_scary_story_hunter:
     show emptydesk at i11 zorder 9
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide monika
         play sound "sfx/giggle.ogg"
         show yuri dragon2 zorder 72 at malpha
         $ style.say_dialogue = style.edited
         y "{cps=*2}I'll get you too.{/cps}{nw}"
         hide yuri
-        $ style.say_dialogue = style.normal
+        $ style.say_dialogue = style.default_monika
         show monika 1eua at i11 zorder MAS_MONIKA_Z
     hide emptydesk
     call mas_scary_story_cleanup
@@ -543,11 +553,11 @@ label mas_scary_story_hunter:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_kuchisake_onna",
     category=[store.mas_stories.TYPE_SCARY], prompt="Kuchisake-Onna",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_kuchisake_onna:
     call mas_scary_story_setup
-    m 3eud "There once was a beautiful woman, whom was the wife of a samurai."
+    m 3eud "There once was a beautiful woman, who was the wife of a samurai."
     m 3eub "She was as incredibly beautiful as she was vain, welcoming the attention of any man prepared to offer it to her."
     m 1tsu "And often, would ask men to appraise her appearance."
     m 1euc "The woman was prone to cheat on her husband multiple times and was soon found out about her affairs."
@@ -560,9 +570,9 @@ label mas_scary_story_kuchisake_onna:
     m 3eud "The woman, dying from such a fate, became a vengeful and malicious spirit."
     m "They say she now wanders around aimlessly at night, her face covered with a mask and a bladed weapon on her hands."
     m 1dsd "Anyone unlucky enough to come across her will hear her spine-chilling question..."
-    m 1cua "{b}{i}Am I p r e t t y?{/b}{/i}" #Can we add 1cua here? -monik
+    m 1cua "{b}{i}Am I p r e t t y?{/i}{/b}"
     # 1 in 15
-    if renpy.random.randint(1,15) == 1 or mas_full_scares:
+    if renpy.random.randint(1,15) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide monika
         show screen tear(20, 0.1, 0.1, 0, 40)
         play sound "sfx/s_kill_glitch1.ogg"
@@ -577,49 +587,49 @@ label mas_scary_story_kuchisake_onna:
         show screen mas_background_timed_jump(5, "mas_scary_story_kuchisake_onna.no")
         menu:
             "am I pretty?"
-            "Yes":
+            "Yes.":
                 hide screen mas_background_timed_jump
                 jump mas_scary_story_kuchisake_onna.clean
-            "No":
+            "No.":
                 jump mas_scary_story_kuchisake_onna.no
     else:
         jump mas_scary_story_kuchisake_onna.end
 
-    label .no:
-        hide screen mas_background_timed_jump
-        "{b}{i}Is that, so?{w=1.0}{nw}{/i}{/b}"
-        $ _history_list.pop()
-        $ _history_list.pop()
-        $ pause(1.0)
-        hide natsuki
-        play sound "sfx/run.ogg"
-        show natsuki mas_ghost onlayer front at i11
-        $ pause(0.25)
-        hide natsuki mas_ghost onlayer front
+label .no:
+    hide screen mas_background_timed_jump
+    "{b}{i}Is that, so?{w=1.0}{nw}{/i}{/b}"
+    $ _history_list.pop()
+    $ _history_list.pop()
+    $ pause(1.0)
+    hide natsuki
+    play sound "sfx/run.ogg"
+    show natsuki mas_ghost onlayer front at i11
+    $ pause(0.25)
+    hide natsuki mas_ghost onlayer front
 
-    label .clean:
-        show black zorder 100
-        hide k_rects_eyes1
-        hide k_rects_eyes2
-        hide natsuki
-        $ pause(1.5)
-        hide black
-        $ style.say_dialogue = style.normal
-        show monika 1eua at i11 zorder MAS_MONIKA_Z
+label .clean:
+    show black zorder 100
+    hide k_rects_eyes1
+    hide k_rects_eyes2
+    hide natsuki
+    $ pause(1.5)
+    hide black
+    $ style.say_dialogue = style.default_monika
+    show monika 1eua at i11 zorder MAS_MONIKA_Z
 
-    label .end:
-        m 3eud "The fate she gives you depends on your answer, actually."
-        m "Meeting her isn't always certain to seal your doom."
-        m 3esc "However..."
-        m "If you're not smart with how you deal with the question..."
-        m 3tku "You might just end up like her."
+label .end:
+    m 3eud "The fate she gives you depends on your answer, actually."
+    m "Meeting her isn't always certain to seal your doom."
+    m 3esc "However..."
+    m "If you're not smart with how you deal with the question..."
+    m 3tku "You might just end up like her."
     call mas_scary_story_cleanup
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_o_tei",
     category=[store.mas_stories.TYPE_SCARY], prompt="The tale of O-Tei",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_o_tei:
     call mas_scary_story_setup
@@ -644,7 +654,7 @@ label mas_scary_story_o_tei:
     m 3wud "The girl that greeted him looked exactly like Tomoe."
     m "Everything he saw in her reminded him perfectly of his past love."
     # 1 in 9
-    if renpy.random.randint(1,9) == 1 or mas_full_scares:
+    if renpy.random.randint(1,9) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
         show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
         show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
@@ -667,7 +677,7 @@ label mas_scary_story_o_tei:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_mujina",
     category=[store.mas_stories.TYPE_SCARY], prompt="Mujina",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_mujina:
     call mas_scary_story_setup
@@ -692,12 +702,12 @@ label mas_scary_story_mujina:
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares:
+    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         $ style.say_dialogue = style.edited
-        m 2tub "The salesman responded, 'Oh, you mean...{w=2} {b}like this?{/b}'{nw}"
+        m 2tub "The salesman responded, 'Oh, you mean...{w=2}{b}like this?{/b}'{nw}"
         show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
-        $ style.say_dialogue = style.normal
+        $ style.say_dialogue = style.default_monika
         $ pause(0.4)
         stop sound
         hide mujina
@@ -705,7 +715,7 @@ label mas_scary_story_mujina:
         m 2tub "The salesman responded 'Oh, you mean like this?'"
     m 4wud "The man looked up at the salesman and saw the same horrifying emptiness from the girl."
     m "Before the merchant could get away, the void let out a high pitch screech..."
-    m 1dsc "...And then there was darkness."
+    m 1dsc "...and then there was darkness."
     show black zorder 100
     $ pause(3.5)
     hide black
@@ -715,7 +725,7 @@ label mas_scary_story_mujina:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_ubume",
     category=[store.mas_stories.TYPE_SCARY], prompt="The ubume",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_ubume:
     call mas_scary_story_setup
@@ -727,7 +737,7 @@ label mas_scary_story_ubume:
     m 1esd "The next night, the woman arrived at her usual time, purchased the candy that she always did, and went happily on her way."
     m 3wud "After she walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him turned into leaves from a tree."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/giggle.ogg"
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
@@ -747,7 +757,7 @@ label mas_scary_story_ubume:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_womaninblack",
     category=[store.mas_stories.TYPE_SCARY], prompt="The woman in black",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_womaninblack:
     call mas_scary_story_setup
@@ -780,7 +790,7 @@ label mas_scary_story_womaninblack:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_resurrection_mary",
     category=[store.mas_stories.TYPE_SCARY], prompt="Resurrection Mary",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_resurrection_mary:
     call mas_scary_story_setup
@@ -800,7 +810,7 @@ label mas_scary_story_resurrection_mary:
     m "Lewis sat in the car for a long time bewildered by what had just happened."
     m 1esd "He never saw the beautiful woman ever again."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares:
+    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/giggle.ogg"
     call mas_scary_story_cleanup
     return
@@ -808,7 +818,7 @@ label mas_scary_story_resurrection_mary:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_corpse",
     category=[store.mas_stories.TYPE_SCARY], prompt="The resuscitated corpse",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_corpse:
     call mas_scary_story_setup
@@ -819,14 +829,14 @@ label mas_scary_story_corpse:
     m "He explained that his daughter-in-law had recently perished and she was awaiting burial."
     m 1eua "After the old man departed, 3 of the 4 men fell asleep. The last man couldn't fall asleep."
     m 1wuo "Suddenly, the man heard a creaking noise."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/crack.ogg"
     m 3wuo "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
     m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
     m 1eud "The woman bit the pillow and apparently not realizing she hadn't bit the last man, returned to her original resting spot."
     m 3eud "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
     m 3wuo "As soon as his feet touched the ground, however, he heard another creak."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares:
+    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/crack.ogg"
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
@@ -858,7 +868,7 @@ label mas_scary_story_corpse:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_jack_o_lantern",
     category=[store.mas_stories.TYPE_SCARY], prompt="Jack O Lantern",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_jack_o_lantern:
     call mas_scary_story_setup
@@ -877,14 +887,14 @@ label mas_scary_story_jack_o_lantern:
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
-    if _mas_jack_scare or mas_full_scares:
+    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide vignette
         show darkred zorder 82:
             alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him, carved it out, and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O'Lantern."
-    if _mas_jack_scare or mas_full_scares:
+    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
         hide darkred
         show vignette zorder 70
     call mas_scary_story_cleanup
@@ -893,7 +903,7 @@ label mas_scary_story_jack_o_lantern:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_baobhan_sith",
     category=[store.mas_stories.TYPE_SCARY], prompt="Baobhan Sith",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_baobhan_sith:
     call mas_scary_story_setup
@@ -915,7 +925,7 @@ label mas_scary_story_baobhan_sith:
     m 1esa "Just before dawn, the women gave up and retreated back into the woods."
     m 1esd "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     # chance of 1 in 14
-    if renpy.random.randint(1,14) == 1 or mas_full_scares:
+    if renpy.random.randint(1,14) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         play sound "sfx/stab.ogg"
         show blood splatter1 as bl2 zorder 73:
             pos (50,95)
@@ -944,31 +954,31 @@ label mas_scary_story_baobhan_sith:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_serial_killer",
     category=[store.mas_stories.TYPE_SCARY], prompt="The serial killer",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_serial_killer:
     call mas_scary_story_setup
     m 3tub "A young couple parked their car next to a large willow tree at a cemetery one night for some undisturbed 'lovemaking.'"
     m 3euc "After a while, they were interrupted by a radio report that a notorious serial killer had escaped from a psychiatric hospital nearby."
     m "Worried about their safety, they decided to continue elsewhere."
-    m 1esc "However...{w} The car wouldn't start at all."
+    m 1esc "However...{w}the car wouldn't start at all."
     m 3esd "The young man got out of the car to look for help and told the girl to stay inside with the doors locked."
     m 3wud "A few moments later, she was startled when she heard an eerie scratching sound on the roof of the car."
     m 1eud "She thought to herself that it must've been a tree branch in the wind."
-    m 1euc "After a long time had passed, a police car drives by but no sight of her boyfriend."
-    m 1eud "The police officer went to the car and instructs the girl to exit the vehicle and walk towards him and not look back."
+    m 1euc "After a long time had passed, a police car drove by and stopped but still no sight of her boyfriend."
+    m 1eud "The police officer went to the car and instructed the girl to exit the vehicle and walk toward him and not look back."
     m "She did so slowly..."
     m 1ekc "The girl then noticed numerous other police cars arriving with their sirens blaring behind the first one to arrive."
-    m 1dsd "Curiosity then got the better of her and looked at the car..."
+    m 1dsd "Curiosity then got the better of her and she turned to look at the car..."
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8
-    if renpy.random.randint(1,8) == 1 or mas_full_scares:
+    if renpy.random.randint(1,8) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
         show y_sticker hopg zorder 74:
             pos(600,425)
             alpha 1.0
             linear 1.6 alpha 0
         play sound "<from 0.4 to 2.0 >sfx/eyes.ogg"
-    m 1dfc "...And his broken and bloody fingernails on the roof."
+    m 1dfc "...and his broken and bloody fingernails on the roof."
     hide y_sticker
     call mas_scary_story_cleanup
     return
@@ -976,7 +986,7 @@ label mas_scary_story_serial_killer:
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_revenant",
     category=[store.mas_stories.TYPE_SCARY], prompt="The Revenant",unlocked=False),
-    eventdb=store.mas_stories.story_database)
+    code="STY")
 
 label mas_scary_story_revenant:
     call mas_scary_story_setup

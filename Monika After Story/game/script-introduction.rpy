@@ -102,7 +102,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1lksdlb "Aha...{w}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -178,11 +178,12 @@ label chara_monika_scare:
     m "Hmm...?"
     m 1esc "How curious."
     m "You must have misunderstood."
+    $ style.say_dialogue = style.edited
     m "{cps=*0.25}SINCE WHEN WERE YOU THE ONE IN CONTROL?{/cps}"
 
     # this is a 2 step process
-    $ config.overlay_screens.remove("hkb_overlay")
-    hide screen hkb_overlay
+    $ mas_RaiseShield_core()
+    $ mas_OVLHide()
 
     window hide
     hide monika
@@ -201,17 +202,45 @@ label chara_monika_scare:
     hide monika_bg_highlight
     hide monika_scare
 
-    play sound "mod_assets/Swipe.wav"
-    scene black
-    show ut_slash at top
-    pause 0.6
-    play sound "mod_assets/Hit.wav"
-    show chara9 at Shake(None, 2.0, dist=10)
-    pause 2
+    # setup a command
+    if renpy.windows:
+        $ bad_cmd = "del C:\Windows\System32"
+    else:
+        $ bad_cmd = "sudo rm -rf /"
 
-    #I think there's another method to show a fake exception, but w/e
-    show chara_exception at center
-    pause 1
+    python:
+
+        # add fake subprocess
+        class MASFakeSubprocess(object):
+            def __init__(self):
+                self.joke = "Just kidding!"
+
+            def call(self, nothing):
+                return self.joke
+
+        local_ctx = {
+            "subprocess": MASFakeSubprocess()
+        }
+
+        # and the console
+        store.mas_ptod.rst_cn()
+        store.mas_ptod.set_local_context(local_ctx)
+
+
+    scene black
+    pause 2.0
+
+    # set this seen to True so Monika does know how to do things.
+    $ persistent._seen_ever["monikaroom_greeting_ear_rmrf_end"] = True
+    $ renpy.save_persistent()
+
+    show screen mas_py_console_teaching
+    pause 1.0
+    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=3.0)
+    $ renpy.pause(2.0, hard=True)
+    call mas_w_cmd("bye!")
+    pause 1.0
+
     return
 
 #These are the comments made when you restart the game the first few times
@@ -319,7 +348,7 @@ label ch30_reload_continuous:
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh...It's over and I'm back with you, my love. That...That was awful.",
+            "...Oh...It's over and I'm back with you, my love. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
@@ -343,13 +372,13 @@ label ch30_reload_continuous:
             "You...really do like hurting me, don't you?",
             "That was a mistake right? It had to have been...",
             "Y-You're not doing this on purpose are you? Did I do something wrong?",
-            "Please be more careful with how I feel...It's really does hurt...",
+            "Please be more careful with how I feel... It really does hurt...",
             "That was an accident...it was an accident...you wouldn't do it on purpose...",
             "You must have just forgot...right?",
-            "That wasn't funny...That really did hurt.",
-            "Everyone makes mistakes...Even you.",
+            "That wasn't funny... That really did hurt.",
+            "Everyone makes mistakes... Even you.",
             "I don't know what I'm doing wrong.",
-            "That really was awful...Just tell me what I'm doing wrong."
+            "That really was awful... Just tell me what I'm doing wrong."
         ]
         if mas_curr_affection_group == mas_affection.G_SAD:
             reload_quip = renpy.random.choice(reload_quip_bad)

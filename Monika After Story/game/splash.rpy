@@ -181,6 +181,7 @@ label splashscreen:
 
     #If this is the first time the game has been run, show a disclaimer
     default persistent.first_run = False
+    $ persistent.tried_skip = False
     if not persistent.first_run:
         $ quick_menu = False
         pause 0.5
@@ -244,7 +245,7 @@ label splashscreen:
     show splash_warning "[splash_message]" with Dissolve(0.5, alpha=True)
     pause 2.0
     hide splash_warning with Dissolve(0.5, alpha=True)
-    $ config.allow_skipping = True
+    $ config.allow_skipping = False
     return
 
 label warningscreen:
@@ -253,7 +254,7 @@ label warningscreen:
     pause 3.0
 
 label after_load:
-    $ config.allow_skipping = allow_skipping
+    $ config.allow_skipping = False
     $ _dismiss_pause = config.developer
     $ persistent.ghost_menu = False #Handling for easter egg from DDLC
     $ style.say_dialogue = style.normal
@@ -297,11 +298,11 @@ label autoload:
         jump mas_chess_go_ham_and_delete_everything
 
     # okay lets setup monika's clothes
-    python:
-        monika_chr.change_outfit(
-            persistent._mas_monika_clothes,
-            persistent._mas_monika_hair
-        )
+#    python:
+#        monika_chr.change_outfit(
+#            persistent._mas_monika_clothes,
+#            persistent._mas_monika_hair
+#        )
 
     # need to set the monisize correctly
     $ store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
@@ -309,7 +310,9 @@ label autoload:
     # finally lets run actions that needed to be run
     $ mas_runDelayedActions(MAS_FC_START)
 
-    jump expression persistent.autoload
+    #jump expression persistent.autoload
+    # NOTE: we should always jump to ch30 instead
+    jump ch30_autoload
 
 label before_main_menu:
     $ config.main_menu_music = audio.t1
@@ -320,7 +323,7 @@ label quit:
         store.mas_calendar.saveCalendarDatabase(CustomEncoder)
         persistent.sessions['last_session_end']=datetime.datetime.now()
         today_time = (
-            persistent.sessions["last_session_end"] 
+            persistent.sessions["last_session_end"]
             - persistent.sessions["current_session_start"]
         )
         new_time = today_time + persistent.sessions["total_playtime"]
@@ -329,43 +332,30 @@ label quit:
         if datetime.timedelta(0) < new_time <= mas_maxPlaytime():
             persistent.sessions['total_playtime'] = new_time
 
-
         # set the monika size
         store.mas_dockstat.setMoniSize(persistent.sessions["total_playtime"])
 
-    if persistent._mas_hair_changed:
-        $ persistent._mas_monika_hair = monika_chr.hair.name
-        $ persistent._mas_monika_clothes = monika_chr.clothes.name
+        # save selectables
+        store.mas_selspr.save_selectables()
 
-    # accessory saving
-    python:
-        persistent._mas_acs_pre_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.PRE_ACS]
-            if acs.stay_on_start
-        ]
-        persistent._mas_acs_mid_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.MID_ACS]
-            if acs.stay_on_start
-        ]
-        persistent._mas_acs_pst_list = [
-            acs.name
-            for acs in monika_chr.acs[MASMonika.PST_ACS]
-            if acs.stay_on_start
-        ]
+        # save current hair / clothes / acs
+        monika_chr.save()
 
-    # remove special images
-    $ store.mas_island_event.removeImages()
+        # save weather options
+        store.mas_weather.saveMWData()
 
-    # delayed action stuff
-    $ mas_runDelayedActions(MAS_FC_END)
-    $ store.mas_delact.saveDelayedActionMap()
+        # remove special images
+        store.mas_island_event.removeImages()
+        store.mas_o31_event.removeImages()
 
-    $ _mas_AffSave()
+        # delayed action stuff
+        mas_runDelayedActions(MAS_FC_END)
+        store.mas_delact.saveDelayedActionMap()
 
-    # delete the monika file if we aren't leaving
-    if not persistent._mas_dockstat_going_to_leave:
-        $ store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
+        _mas_AffSave()
+
+        # delete the monika file if we aren't leaving
+        if not persistent._mas_dockstat_going_to_leave:
+            store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return
