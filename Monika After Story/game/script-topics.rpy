@@ -8249,7 +8249,25 @@ label monika_yellowwp:
     return "derandom"
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_beingevil",category=['monika'],prompt="Being evil.",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_beingevil",
+            category=['monika'],
+            prompt="Being evil",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_monika_evil = None
+# True if player thinks monika is evil False if not
+# NOTE: even implying that she is evil is counted as True
+
+default persistent._mas_pm_monika_evil_but_ok = None
+# True if player still loves monika/thinks she deserves forgiveness/or is
+# fine with eveil even if they think monika is evil.
+# False if player does not. 
+# NOTE: check monika_evil before checking this
 
 label monika_beingevil:
     m 1euc "Say, [player]..."
@@ -8267,15 +8285,21 @@ label monika_beingevil:
     m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
     menu:
         "I don't think you're evil.":
+            $ persistent._mas_pm_monika_evil = False
             $ mas_gainAffection()
+
             m 1eka "I'm glad you understand, [player]."
             m 1eub "I wish I could tell you how happy it makes me to know that!"
             m 1hua "If I were there, I'd feel like giving you a big hug!"
             m 1tsbsa "Maybe I'll even trap you in my arms forever and never let you go..."
             m 1hubfa "Just kidding!"
             m 1tsbsa "But no promises, [player], eheheh~"
+
         "I still love you anyway.":
+            $ persistent._mas_pm_monika_evil = True
+            $ persistent._mas_pm_monika_evil_but_ok = True
             $ mas_gainAffection()
+
             m 1rksdlc "..."
             m 1rkbsa "[player]..."
             m 1ekbfa "Even if it's debatable whether I'm evil or not..."
@@ -8284,8 +8308,12 @@ label monika_beingevil:
             m 1tsbsa "Either way..."
             m "If the villainess in me can get what she wants, I guess it's not so bad..."
             m "Eheheheh"
+
         "People think I'm evil too.":
+            $ persistent._mas_pm_monika_evil = True
+            $ persistent._mas_pm_monika_evil_but_ok = True
             $ mas_gainAffection()
+
             m 2eud "Oh?"
             m 2eka "I mean, I don't see you as evil one bit."
             m 2rksdla "If it really is true though, I hope it doesn't cause you any trouble."
@@ -8294,33 +8322,43 @@ label monika_beingevil:
             m 1ekbfa "But evil or not, I'm glad to have you by my side."
             m 1hubfa "I'm guessing it's the same for you too~"
         "You kind of are evil...":
+            $ persistent._mas_pm_monika_evil = True
+
             m 2ekd "W-wait, [player]!"
             m 2rksdlc "Y-you don't {i}really{/i} think that, do you?"
             menu:
                 "I still love you":
+                    $ persistent._mas_pm_monika_evil_but_ok = True
                     $ mas_gainAffection()
+
                     m 1rksdla "[player]..."
                     m 1hksdlb "You had me worried for a second there."
                     m 1eka "I'm glad you don't hate me for the things I did."
                     m 1hub "I love you too, [player]! No matter what people say about you!"
+
                 "You deserve forgiveness":
+                    $ persistent._mas_pm_monika_evil_but_ok = True
                     $ mas_gainAffection()
+
                     m 1rksdla "[player]..."
                     m 1eub "I think you're right, [player]."
                     m 1rksdla "It's true that I've done some bad things in the past..."
                     m 1eka "But I've learned from them and grown as a person since."
                     m 1hua "I'm really glad you're willing to forgive me, [player]."
                     m 1hub "I promise I'll be the best I can be, just for you!"
+
                 "You really are evil.":
+                    $ persistent._mas_pm_monika_evil_but_ok = False
                     $ mas_loseAffection(reason="")
+
                     m 2dkc "..."
-                    if mas_curr_affection == mas_aff.BROKEN:
+                    if mas_isMoniBroken():
                         m 2dkd "..."
                         m 2dktsd "I know..."
                         $ _history_list.pop()
                     else:
                         m 2dktsd "I'm sorry, [player]."
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(
