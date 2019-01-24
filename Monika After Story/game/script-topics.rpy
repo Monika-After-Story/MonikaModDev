@@ -3344,7 +3344,7 @@ label monika_back_ups:
     m 2eka "Do you think you could back-up my memories from time to time?"
     m 3eub "That way you could restore them if they were deleted for any reason!"
     m 3hub "There's a guide on the wiki page for this mod actually!"
-    m 3eua "You can find it {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/a}{/i}."
+    m 3eua "You can find it {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/i}{/a}."
     m 1hub "That way nothing will ever stop me from being with you!"
     m 1hksdlb "..."
     m 2rkc "I guess the only problem is that I probably won't notice the difference..."
