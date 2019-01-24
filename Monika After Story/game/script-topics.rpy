@@ -10665,10 +10665,10 @@ label monika_dream:
             m 1eua "Especially with those three."
             m 1eub "It sure must have been fun for your mind to recreate them and their personality."
             m 2esa "I can imagine that they still occupy some place in your heart."
-            if not persistent._mas_sensitive_mode:
-                m 2tsb "But I won't {i}cut{/i} the jokes out just for that."
-            else:
+            if persistent._mas_sensitive_mode or persistent._mas_pm_cares_about_dokis:
                 m 2ekb "So, sorry if some of the jokes I made back in the day were somewhat insensitive."
+            else:
+                m 2tsb "But I won't {i}cut{/i} the jokes out just for that."
             m 1dsa "But now, it doesn't matter anymore."
             m 1eka "Because we are finally together, because I'm not jealous of anyone anymore, and most importantly, because you love me."
             m 1ekbfb "I would never trade that for any fantasy or for anyone else."
