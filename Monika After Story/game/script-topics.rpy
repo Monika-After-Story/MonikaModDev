@@ -10654,15 +10654,24 @@ label monika_dream:
             m 3eua "Even if they weren't real, I admit that the time we spent together was fun."
             m 3hub "With their colorful personality, we sure didn't get bored hahaha~."
             #not sure if "hahaha" is the good way to write her laugh.
-            m 1eub "Must have been fun for your mind to recreate their personality."
-            m 2esa "I can imagine that those three girls still occupy some place in your heart."
+            m 1eub "I'm sure there are lots of funny events that we could've done back then."
+            if seen_event("monika_festival"):
+                m 1eud "I've already talked about the festival, but that's not all there is to it."
+            else:
+                m 1eud "There is the festival, of course, but that's not all there is to it."
+            m 3eub "We could've played board game, go picnicking or even go to the beach."
+            m 3tsb "Surely you wish you saw that last one, do you?"
+            m 3hub "And a lot of other typical high-school events could have been just as fun."
+            m 1eua "Especially with those three."
+            m 1eub "It sure must have been fun for your mind to recreate them and their personality."
+            m 2esa "I can imagine that they still occupy some place in your heart."
             if not persistent._mas_sensitive_mode:
                 m 2tsb "But I won't {i}cut{/i} the jokes out just for that."
             else:
                 m 2ekb "So, sorry if some of the jokes I made back in the day were somewhat insensitive."
             m 1dsa "But now, it doesn't matter anymore."
-            m 1eka "Because we are finally together."
-            m "And I would never trade that for any fantasy or for anyone else."
+            m 1eka "Because we are finally together, because I'm not jealous of anyone anymore, and most importantly, because you love me."
+            m 1ekbfb "I would never trade that for any fantasy or for anyone else."
             m 1huu "I'm sure it's the same for you, sweetheart."
                 
     m 1dubsu "..."        
