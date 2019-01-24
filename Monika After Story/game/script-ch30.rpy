@@ -545,8 +545,12 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     # d25 seasonal
     if persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
-    return
 
+    # player bday
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
+    return
 
 label ch30_main:
     $ mas_skip_visuals = False
@@ -824,6 +828,9 @@ label mas_ch30_post_retmoni_check:
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
+
 
 label mas_ch30_post_holiday_check:
     # post holiday checks
@@ -854,6 +861,8 @@ label mas_ch30_post_holiday_check:
             call spaceroom
             jump mas_affection_apologydeleted
 
+    # post greeting selected callback
+    $ gre_cb_label = None
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
@@ -868,23 +877,35 @@ label mas_ch30_post_holiday_check:
         python:
 
             # we select a greeting depending on the type that we should select
-            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+            sel_greeting_ev = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
 
             # reset the greeting type flag back to None
             persistent._mas_greeting_type = None
 
-            selected_greeting = sel_greeting_event.eventlabel
+            if sel_greeting_ev is not None:
+                selected_greeting = sel_greeting_ev.eventlabel
 
-            # store if we have to skip visuals ( used to prevent visual bugs)
-            mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
-            )
+                # store if we have to skip visuals ( used to prevent visual bugs)
+                mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                    event=sel_greeting_ev
+                )
+
+                # see if we need to do a label
+                setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
+                if setup_label is not None and renpy.has_label(setup_label):
+                    gre_cb_label = setup_label
+
+    # TODO: have generic idle mode adjust the crashed greeting
 
     # crash check
     elif persistent._mas_game_crashed:
         $ selected_greeting = "mas_crashed_start"
         $ mas_skip_visuals = True
         $ persistent.closed_self = True
+
+    # call pre-post greeting check setup label
+    if gre_cb_label is not None:
+        call expression gre_cb_label
 
 label ch30_post_greeting_check:
     # this label skips only greeting checks
@@ -935,7 +956,7 @@ label ch30_post_restartevent_check:
 
         else:
             # Grant bad exp for closing the game incorrectly.
-            mas_loseAffection(modifier=2, reason="closing the game on me")
+            mas_loseAffection(modifier=2, reason=4)
 
 label ch30_post_exp_check:
     # this label skips greeting selection as well as exp checks for game close
@@ -949,6 +970,9 @@ label ch30_post_exp_check:
 
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
+
+    #Check to see if apologies should expire
+    $ mas_checkApologies()
 
     # corruption check
     if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
@@ -1033,6 +1057,9 @@ label ch30_loop:
 
             #Checks to see if affection levels have met the criteria to push an event or not.
             mas_checkAffection()
+
+            #Check if we should expire apologies
+            mas_checkApologies()
 
             # limit xp gathering to when we are not maxed
             # and once per minute

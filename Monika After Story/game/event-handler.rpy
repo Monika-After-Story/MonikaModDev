@@ -142,7 +142,10 @@ init -900 python in mas_ev_data_ver:
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
         13: MASCurriedVerify(_verify_str, True), # diary_entry
-        14: MASCurriedVerify(_verify_dict, False), # rules
+
+        # NOTE: Rules are no longer saved in persistent (0.8.15+)
+#        14: MASCurriedVerify(_verify_dict, False), # rules
+
         15: MASCurriedVerify(_verify_dt, True), # last_seen
         16: MASCurriedVerify(_verify_tuli, True), # years
         17: MASCurriedVerify(_verify_bool, True), # sensitive
@@ -202,6 +205,7 @@ init -900 python in mas_ev_data_ver:
     verify_event_data(store.persistent.greeting_database)
     verify_event_data(store.persistent._mas_mood_database)
     verify_event_data(store.persistent._mas_story_database)
+    verify_event_data(store.persistent._mas_apology_database)
 
 
 init -500 python:
@@ -278,7 +282,8 @@ init 4 python:
         "MOO": store.mas_moods.mood_db,
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
-        "FLR": store.mas_filereacts.filereact_db
+        "FLR": store.mas_filereacts.filereact_db,
+        "APL": store.mas_apology.apology_db
     }
 
 
@@ -734,7 +739,9 @@ init -875 python in mas_delact:
     #   NOTE: this function MUST be runnable at init level 995.
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
-        1: _greeting_ourreality_unlock,
+        # NOTE: commented IDs have been retired
+#        1: _greeting_ourreality_unlock,
+
         2: _mas_monika_islands_unlock,
         3: _mas_bday_postbday_notimespent_reset,
         4: _mas_bday_pool_happy_bday_reset,

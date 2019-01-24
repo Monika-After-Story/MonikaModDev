@@ -1992,41 +1992,33 @@ init 200 python in mas_dockstat:
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to
-            runtime
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
 
         IN:
-            _type - additional mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = [_type]
-        else:
-            greeting_types = []
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
-
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+        # otherwise, return this ev
+        return sel_gre_ev
 
 
     def getCheckTimes(chksum=None):
@@ -2294,6 +2286,12 @@ label mas_dockstat_abort_gen:
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    # we are not leaving on player_bday and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
     return
 
 
@@ -2309,6 +2307,9 @@ label mas_dockstat_empty_desk:
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
 
     else:
         # show birthday visuals?
@@ -2429,12 +2430,16 @@ label mas_dockstat_found_monika:
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
+            # TODO: consider if this forced greeting should be changed to 
+            #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 
         else:
             selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
                 persistent._mas_greeting_type
             ).eventlabel
+
+        # TODO: consider running the greeting setup label?
 
         # reset greeting type
         persistent._mas_greeting_type = None

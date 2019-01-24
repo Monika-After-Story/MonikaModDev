@@ -304,6 +304,113 @@ label v0_3_1(version=version): # 0.3.1
 #   without conditionals and start_date
 #   We will save this for versiojn 0812 or 9
 
+
+# 0.8.15
+label v0_8_15(version="v0_8_15"):
+    python:
+        # unlock nickname topic if called bad name
+        if persistent._mas_called_moni_a_bad_name:
+            nickname_ev = mas_getEV("monika_affection_nickname")
+            if nickname_ev is not None:
+                nickname_ev.unlocked = True
+
+        # because of a fucking dumb mistake, need to update script a ton 
+        # of events taht got fooked. UGH
+
+        # d25
+        d25e_ev = mas_getEV("mas_d25_monika_christmas_eve")
+        if d25e_ev is not None:
+            d25e_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25e_ev.action = EV_ACT_QUEUE
+
+        d25_hi_ev = mas_getEV("mas_d25_monika_holiday_intro")
+        if d25_hi_ev is not None:
+            d25_hi_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and not persistent._mas_d25_started_upset "
+            )
+            d25_hi_ev.action = EV_ACT_PUSH
+
+        d25_ev = mas_getEV("mas_d25_monika_christmas")
+        if d25_ev is not None:
+            d25_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+                "and not persistent._mas_d25_spent_d25"
+            )
+            d25_ev.action = EV_ACT_PUSH
+
+        d25p_nts = mas_getEV("mas_d25_postd25_notimespent")
+        if d25p_nts is not None:
+            d25p_nts.conditional = (
+                "not persistent._mas_d25_spent_d25"
+            )
+            d25p_nts.action = EV_ACT_PUSH
+
+        d25_hiu_ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
+        if d25_hiu_ev is not None:
+            d25_hiu_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+            )
+            d25_hiu_ev.action = EV_ACT_PUSH
+
+        d25_stm_ev = mas_getEV("mas_d25_spent_time_monika")
+        if d25_stm_ev is not None:
+            d25_stm_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25_stm_ev.action = EV_ACT_QUEUE
+            d25_stm_ev.start_date = datetime.datetime.combine(
+                mas_d25, 
+                datetime.time(hour=20)
+            )
+            d25_stm_ev.end_date = datetime.datetime.combine(
+                mas_d25p,
+                datetime.time(hour=1)
+            )
+            d25_stm_ev.years = []
+            Event._verifyAndSetDatesEV(d25_stm_ev)
+
+        # nye
+        nye_yr_ev = mas_getEV("monika_nye_year_review")
+        if nye_yr_ev is not None:
+            nye_yr_ev.action = EV_ACT_PUSH
+
+        nyd_ev = mas_getEV("mas_nye_monika_nyd")
+        if nyd_ev is not None:
+            nyd_ev.action = EV_ACT_QUEUE
+
+        res_ev = mas_getEV("monika_resolutions")
+        if res_ev is not None:
+            res_ev.action = EV_ACT_QUEUE 
+
+        # push mas birthdate event for users a non None birthday
+        if (
+                persistent._mas_player_bday is not None
+                and not persistent._mas_player_confirmed_bday
+            ):
+            mas_bd_ev = mas_getEV("mas_birthdate")
+            if mas_bd_ev is not None:
+                mas_bd_ev.conditional = "True"
+                mas_bd_ev.action = EV_ACT_QUEUE
+
+        # remove random props from all greetings
+        for gre_label, gre_ev in store.evhand.greeting_database.iteritems():
+            # hopefully we never use random in greetings ever
+            gre_ev.random = False
+
+        # rain should just be unlocked if it has been seen
+        if renpy.seen_label("monika_rain"):
+            mas_unlockEVL("monika_rain", "EVE")
+
+        # islands greeting unlocked if not seen yet 
+        if not renpy.seen_label("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+    return
+
 # 0.8.14
 label v0_8_14(version="v0_8_14"):
     python:
