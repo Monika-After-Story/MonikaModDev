@@ -3436,7 +3436,15 @@ label monika_ribbon:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outdoors",category=['nature'],prompt="Camping safety",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_outdoors",
+            category=['nature'],
+            prompt="Camping safety",
+            random=True
+        )
+    )
 
 label monika_outdoors:
     m 1eua "Do you ever go camping, [player]? It's a wonderful way to relax and get some fresh air,"
@@ -3456,7 +3464,19 @@ label monika_outdoors:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_mountain",category=['nature'],prompt="Mountains",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_mountain",
+            category=['nature'],
+            prompt="Mountains",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_would_like_mt_peak = None
+# True if the player would like to reach the top of a mountain
+# False if not
 
 label monika_mountain:
     m 1eua "Have you ever been in the mountains, [player]?"
@@ -3477,10 +3497,14 @@ label monika_mountain:
     menu:
         m "Wouldn't you like that too, [player]?"
         "Yes.":
+            $ persistent._mas_pm_would_like_mt_peak = True
+
             m 5eubla "Well...I hope that one day, we'll have that chance. To make it to the top of our mountain."
             m 5hua "And I'll do anything to give us that shot."
             
         "Not really.":
+            $ persistent._mas_pm_would_like_mt_peak = False
+
             show monika 1wud at t11 zorder MAS_MONIKA_Z with dissolve
             m 1wud "Oh."
             m 1rud "Well... I suppose it doesn't matter." 
