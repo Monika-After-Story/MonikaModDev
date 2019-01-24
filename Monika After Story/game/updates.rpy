@@ -387,7 +387,10 @@ label v0_8_15(version="v0_8_15"):
             res_ev.action = EV_ACT_QUEUE 
 
         # push mas birthdate event for users a non None birthday
-        if persistent._mas_player_bday is not None:
+        if (
+                persistent._mas_player_bday is not None
+                and not persistent._mas_player_confirmed_bday
+            ):
             mas_bd_ev = mas_getEV("mas_birthdate")
             if mas_bd_ev is not None:
                 mas_bd_ev.conditional = "True"
