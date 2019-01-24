@@ -1300,7 +1300,7 @@ python early:
 
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
-                if Event._checkRepeatRule(event, check_time):
+                if Event._checkRepeatRule(event, check_time, defval=False):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
