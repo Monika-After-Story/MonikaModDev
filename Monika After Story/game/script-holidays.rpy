@@ -540,7 +540,6 @@ init 5 python:
             eventlabel="greeting_trick_or_treat_back",
             unlocked=True,
             category=[
-                store.mas_greetings.TYPE_GO_SOMEWHERE,
                 store.mas_greetings.TYPE_HOL_O31_TT
             ]
         ),
