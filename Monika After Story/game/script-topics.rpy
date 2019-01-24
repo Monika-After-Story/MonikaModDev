@@ -8479,7 +8479,25 @@ label monika_savingwater:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_vehicle",category=['monika'],prompt="What's your favorite car?",random=False,pool=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_vehicle",
+            category=['monika'],
+            prompt="What's your favorite car?",
+            pool=True
+        )
+    )
+
+default persistent._mas_pm_owns_car = None
+# True if player owns car, False if not
+
+default persistent._mas_pm_owns_car_type = None
+# String describing the type of car owned by the player.
+#   SUV-Pickup: SUV or pickup
+#   sports: sports car
+#   sedan: sedan car
+#   motorcyle: motorcyle
 
 label monika_vehicle:
     m 1euc "My favorite car?"
@@ -8487,9 +8505,11 @@ label monika_vehicle:
     m "And usually, I would just walk or take the train if I had to go somewhere far."
     m 1hksdlb "So I'm not too sure what to tell you [player]..."
     m 1eua "What about you?"
-    m "Do you own a car?"
     menu:
+        m "Do you own a car?"
         "Yes.":
+            $ persistent._mas_pm_owns_car = True
+
             m 1hua "Oh wow, I can't believe that you actually own one!"
             m 1hub "You're really lucky, you know that?"
             m 1eub "I mean, just owning a vehicle is a status symbol itself."
@@ -8500,9 +8520,11 @@ label monika_vehicle:
             m 1hksdlb "Actually, nevermind, ahaha!"
             m 1eua "Either way, it's nice to know that you do own a vehicle."
             m "Speaking of which..."
-            m "What exactly do you drive?"
             menu:
+                m "What exactly do you drive?"
                 "SUV/Pickup Truck.":
+                    $ persistent._mas_pm_owns_car_type = "SUV-Pickup"
+
                     m 1lksdla "Oh my, your car must be pretty big then."
                     m 1eua "That means there's plenty of space inside right?"
                     m "If that's the case..."
@@ -8513,7 +8535,10 @@ label monika_vehicle:
                     m 1eua "Then when night falls, we'd lie down on our sleeping bags, and go stargazing while holding hands."
                     m "It's definitely a romantic adventure I'd envision with you [player]."
                     m 1hub "ehehe~"
+
                 "Sports Car.":
+                    $ persistent._mas_pm_owns_car_type = "sports"
+
                     m 1hua "Oh, wow!"
                     m 1eua "I didn't even know you were into those types of cars."
                     m "It must be really fast, huh?"
@@ -8525,7 +8550,10 @@ label monika_vehicle:
                     m 1eka "It would also be nice to drive at a normal pace."
                     m 1eua "Because, I want to enjoy every moment of the ride."
                     m 1hua "Just beside you~"
+
                 "Sedan.":
+                    $ persistent._mas_pm_owns_car_type = "sedan"
+
                     m 1eua "That's nice."
                     m "I actually prefer that type of car, to be honest."
                     m "From what I heard, they're lively and easy to drive."
@@ -8542,7 +8570,10 @@ label monika_vehicle:
                     m 1eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates."
                     m 1hua "I hope you'll surprise me, [player]~"
                     m 1hub "But then again, I'd love anything as long as it's with you."
+
                 "Motorcycle.":
+                    $ persistent._mas_pm_owns_car_type = "motorcyle"
+
                     m 1hksdlb "Eh?"
                     m 1lksdlb "You drive a motorcycle?"
                     m "I'm surprised, I never expected that to be your choice of vehicle."
@@ -8560,13 +8591,16 @@ label monika_vehicle:
                     m "There's no need to be shy, my love."
                     m "I'll hug you, even if you don't ask for it."
                     m 1hub "Because, I love you~"
+
         "No.":
+            $ persistent._mas_pm_owns_car = False
+
             m 1ekc "Oh, I see."
             m 3eka "Well, buying a vehicle can be quite expensive after all."
             m 1eua "It's alright [player], we can always rent one to travel."
             m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
             m 5eua "Then again, walks are far romantic anyway~"                    
-    return
+    return 
 
 init 5 python:
     addEvent(

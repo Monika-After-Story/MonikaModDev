@@ -689,6 +689,7 @@ init -810 python:
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
     #   looks - your physical apperance
+    #   owns - posessions
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -830,7 +831,11 @@ init -810 python:
 
             # looks / dims (dimensions)
             "_mas_pm_height": "pm.looks.dims.height",
-            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric",
+
+            # owns
+            "_mas_pm_owns_car": "pm.owns.car",
+            "_mas_pm_owns_car_type": "pm.owns.car_type",
 
         },
         use_year_before=True,
