@@ -284,10 +284,17 @@ label mas_birthdate:
         menu:
             m "So just to make sure, is your birthdate [bday_str]?"
             "Yes.":
-                $ old_bday = mas_player_bday_curr()
-                if not mas_isplayer_bday():
-                    m 1hua "Ah, great [player], thank you."
-                    m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
+                if datetime.date.today().year - persistent._mas_player_bday.year < 5:
+                    m 2rksdla "Are you sure about that, [player]?"
+                    m 2eksdlc "That would make you very young..."
+                    m 3ekc "Remember, I'm asking for your {b}birthdate{/b}, not just your birthday."
+                    m 1eka "So, when were you born, [player]?"
+                    jump mas_bday_player_bday_select_select
+                else:
+                    $ old_bday = mas_player_bday_curr()
+                    if not mas_isplayer_bday():
+                        m 1hua "Ah, great [player], thank you."
+                        m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
 
             "No.":
                 m 3rksdlc "Oh! Okay then..."
@@ -2025,7 +2032,7 @@ label mas_bday_player_bday_select_select:
         m 1hua "Try again!"
         jump mas_bday_player_bday_select_select
 
-    elif  _today.year - selected_date.year < 5:
+    elif _today.year - selected_date.year < 5:
         m 2efc "[player]!"
         m "There's no way you're {i}that{/i} young!"
         m 1hua "Try again!"
