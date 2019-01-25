@@ -1057,7 +1057,7 @@ label mas_scary_story_yuki_onna:
     m 3esa "The man told his tale of his encounter with the snow woman."
     m 2wud "The smile on his wife's face melted into anger as she revealed that she was the snow woman he spoke of."
     m "She reprimanded him for breaking his promise and would have killed him on the spot if it weren't for the children they had had together."
-    m 3dsd"She told the man that he better treat their children well or she would be back to deal with him."
+    m 3dsd "She told the man that he better treat their children well or she would be back to deal with him."
     m 4dsd "The next instant she vanished, never to be seen again."
     if renpy.random.randint(1,3) == 1 or persistent._mas_pm_likes_spoops or mas_full_scares:
         show monika 6ckc
@@ -1085,7 +1085,7 @@ label mas_scary_story_many_loves:
     m 2eua "She ended up choosing to marry a husky fisherman."
     m 2esd "The two had a happy marriage, but in less than a year, the husband wasted away and died."
     m "The people in the village felt sorry for the young woman and comforted her the best they could."
-    m 4esa"A few months later, the woman married a burly woodcutter."
+    m 4esa "A few months later, the woman married a burly woodcutter."
     m 4dsd "The two lived happily together for a time, but he too, seemed to wither away and died."
     m 4eud "Some of the villagers thought that it was odd both husbands had died in the same fashion, but no one said anything, and comforted the girl for her poor luck."
     m "A time later, the woman was married again, this time to a stout mason and they too appeared to have a happy marriage, but within a year, the woman was again a widow."
@@ -1137,7 +1137,7 @@ label mas_scary_story_gray_lady:
     m 2eub "The two lived a happy life there together, but were especially joyous when their baby daughter Kate was born."
     m 4esb "As the years went by, Kate grew into a vivacious young woman."
     m 2ekd "William was secretly ashamed that he didn’t have enough money to buy the manor outright to offer as a dowry to the man who would one day marry his daughter."
-    m 4hud "One day Kate met and fell in love with an Irish pirate captain and the two of them were married."
+    m 4hub "One day Kate met and fell in love with an Irish pirate captain and the two of them were married."
     m 4esb "The happy couple decided to settle down in Dublin, since Kate’s parents had no land of their own to offer them."
     m 4esa "Kate promised to return and visit her parents again one day."
     m 4esd "Time passed and William and his wife missed their daughter dearly and wished for her to return."
