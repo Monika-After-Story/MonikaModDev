@@ -6317,12 +6317,12 @@ label monika_driving:
         "Yes.":
             $ persistent._mas_pm_driving_can_drive = True
             $ persistent._mas_pm_driving_learning = False
-            m 1hua "Oh, really?"
-            m "That's great!"
+            m 1eua "Oh, really?"
+            m 3hua "That's great!"
             m 1hub "Gosh, you're amazing, you know that?"
-            m "Just imagine all the places we could go together, ehehe~"
-            m 1eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
-            m 3eka "No matter how prepared you are, accidents can happen to anyone."
+            m 1eub "Just imagine all the places we could go together, ehehe~"
+            m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
+            m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
             show monika 1eka
@@ -6365,7 +6365,7 @@ label monika_driving:
                     $ persistent._mas_pm_driving_been_in_accident = False
                     m 1eua "I'm glad nothing bad has happened to you while learning."
                     m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
-                    m 1hub "I can't wait to finally be able to go somewhere with you, [player]!"
+                    m 3eub "I can't wait to finally be able to go somewhere with you, [player]!"
                     m 1hksdlb "I hope I'm not getting too excited, ehehe~"
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eua "Gosh, I just can't stop thinking about it now!"
@@ -6374,7 +6374,7 @@ label monika_driving:
                     m 1ekc "..."
                     m 1lksdlc "........."
                     m 2lksdld "Oh..."
-                    m 2lksdlc "I'm...really sorry to hear that, [player]..."
+                    m 2lksdlc "I'm...{w=0.5}really sorry to hear that, [player]..."
                     show monika 4ekd
                     menu:
                         m "Have you driven much since then?"
@@ -6383,10 +6383,10 @@ label monika_driving:
                             m 1eka "I'm glad you didn't let it keep you down."
                             m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
                             m 1hua "I'm so proud of you for getting up and trying again!"
-                            m 1hksdlb "Although the aftermath can still be a huge hassle with the costs and all the explaining you have to do."
+                            m 3rksdld "Although the aftermath can still be a huge hassle with the costs and all the explaining you have to do."
                             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                             m 5eua "I know you can get there."
-                            m "I'll be cheering for you all the way, so be safe!"
+                            m 5hua "I'll be cheering for you all the way, so be safe!"
                         "No.":
                             $ persistent._mas_pm_driving_post_accident = False
                             m 2lksdlc "I see."
@@ -6396,7 +6396,7 @@ label monika_driving:
                             m "Don't let this scar you for life, because I know you can overcome it and be an amazing driver."
                             m "Remember, a little grit adds a lot to your legend, so next time, maybe you really will be well on your way."
                             m 2hksdlb "It's still going to take lots and lots of practice..."
-                            m 3hua "But I know you can do it!."
+                            m 3hua "But I know you can do it!"
                             m 1eka "Just promise me you'll try to stay safe."
         "No.":
             $ persistent._mas_pm_driving_can_drive = False
