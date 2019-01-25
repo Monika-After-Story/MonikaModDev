@@ -1722,6 +1722,24 @@ init -1 python in mas_calendar:
         removeRepeatable_d(identifier, _datetime.date())
 
 
+    def updateRepeatableDisplayableLabel(identifier, new_label, month, day):
+        """
+        Updates an already existing event's displayable label.
+        It does nothing if the event doesn't exist.
+
+        IN:
+            identifier - identifier of the event to update
+            new_label - the new label to put on the event
+            month - the event's month
+            day - the event's day
+        """
+        _events = calendar_database[month][day]
+
+        if identifier in _events:
+            _ev = _events[identifier]
+            _events[identifier] = (_ev[0], new_label, _ev[2])
+
+
 # add repeatable events
 init python:
 
@@ -1776,39 +1794,81 @@ init python:
         )
 
 # Using init 2 so we can have access to the season dates
-init 2 python:
-    import store.mas_calendar as calendar
+init 2 python in mas_calendar:
+    import store
 
-    # Season changes:
-    if persistent._mas_pm_live_south_hemisphere:
-        _season_names = ["Summer","Autumn","Winter","Spring"]
-    else:
-        _season_names = ["Winter","Spring","Summer","Autumn"]
+    def addSeasonEvents(changed=False):
+        """
+        Adds season change events to the calendar.
+        If the changed param is True it changes the old events.
+        IN:
+            changed - flag to specify that we need to change the
+                old events from the calendar
+        """
 
-    calendar.addRepeatable_d(
-        _season_names[0],
-        _season_names[0],
-        mas_winter_solstice,
-        []
-    )
-    calendar.addRepeatable_d(
-        _season_names[1],
-        _season_names[1],
-        mas_spring_equinox,
-        []
-    )
-    calendar.addRepeatable_d(
-        _season_names[2],
-        _season_names[2],
-        mas_summer_solstice,
-        []
-    )
-    calendar.addRepeatable_d(
-        _season_names[3],
-        _season_names[3],
-        mas_fall_equinox,
-        []
-    )
+        # Season changes:
+        if renpy.game.persistent._mas_pm_live_south_hemisphere:
+            _season_names = ["Summer","Autumn","Winter","Spring"]
+        else:
+            _season_names = ["Winter","Spring","Summer","Autumn"]
+
+        if changed:
+            updateRepeatableDisplayableLabel(
+                _season_names[0],
+                _season_names[2],
+                store.mas_winter_solstice.month,
+                store.mas_winter_solstice.day
+            )
+
+            updateRepeatableDisplayableLabel(
+                _season_names[1],
+                _season_names[3],
+                store.mas_spring_equinox.month,
+                store.mas_spring_equinox.day
+            )
+
+            updateRepeatableDisplayableLabel(
+                _season_names[2],
+                _season_names[0],
+                store.mas_summer_solstice.month,
+                store.mas_summer_solstice.day
+            )
+
+            updateRepeatableDisplayableLabel(
+                _season_names[3],
+                _season_names[1],
+                store.mas_fall_equinox.month,
+                store.mas_fall_equinox.day
+            )
+
+        else:
+
+            addRepeatable_d(
+                _season_names[0],
+                _season_names[0],
+                store.mas_winter_solstice,
+                []
+            )
+            addRepeatable_d(
+                _season_names[1],
+                _season_names[1],
+                store.mas_spring_equinox,
+                []
+            )
+            addRepeatable_d(
+                _season_names[2],
+                _season_names[2],
+                store.mas_summer_solstice,
+                []
+            )
+            addRepeatable_d(
+                _season_names[3],
+                _season_names[3],
+                store.mas_fall_equinox,
+                []
+            )
+
+    addSeasonEvents()
 
 
 init 100 python:
