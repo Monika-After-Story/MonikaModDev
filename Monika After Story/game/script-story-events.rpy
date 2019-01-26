@@ -1309,6 +1309,9 @@ label mas_coffee_finished_drinking:
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
+
+        else:
+            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
     
     else:
         if get_new_cup:
@@ -1435,6 +1438,9 @@ label mas_c_hotchoc_finished_drinking:
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
+
+        else:
+            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
 
     else:
         if get_new_cup:
