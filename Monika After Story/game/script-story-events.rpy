@@ -665,6 +665,26 @@ label mas_monikai_detected:
     m 3eua "I'm the real one after all."
     return
 
+# NOTE: crashed is a greeting, but we do not give it a greeting label for
+#   compatibility purposes.
+# NOTE: we are for sure only going to have 1 generic crashed greeting
+init 5 python:
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(skip_visual=True))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="mas_crashed_start",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_CRASHED],
+            rules=ev_rules,
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
 # if the game crashed
 # I have no idea if we will use this persistent ever
 default persistent._mas_crashed_before = False

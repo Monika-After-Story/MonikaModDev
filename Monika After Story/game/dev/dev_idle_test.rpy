@@ -50,6 +50,9 @@ init 5 python:
     )
 
 label greeting_dev_idle_test:
+    # we can always assume the following:
+    # - if crashed, we do NOT have visuals
+    # - if force closed, we HAVE visuals
 
     if persistent._mas_idle_mode_was_crashed:
 
@@ -57,6 +60,10 @@ label greeting_dev_idle_test:
         #   version of the existing first crash dialogue.
         #   See the mas_crashed_start label in script-story-events for labels
         #   you can call to trigger certain bits of the starting crash setup
+
+        # NOTE: mas_crashed_post will reset many things so that normal
+        #   spaceroom operation will occur. Best to call that at the end of
+        #   your crashed flow.
 
         if persistent._mas_crashed_before:
             # crashed

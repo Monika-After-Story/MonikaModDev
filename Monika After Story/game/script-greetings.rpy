@@ -56,6 +56,9 @@ init -1 python in mas_greetings:
     TYPE_HOL_NYE = "nye"
     TYPE_HOL_NYE_FW = "fireworks"
 
+    # crashed only
+    TYPE_CRASHED = "generic_crash"
+
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
 
@@ -307,9 +310,7 @@ init -1 python in mas_greetings:
 
 # NOTE: this is auto pushed to be shown after an idle mode greeting
 label mas_idle_mode_greeting_cleanup:
-    $ persistent._mas_in_idle_mode = False
-    $ persistent._mas_greeting_type = None
-    $ persistent._mas_idle_mode_was_crashed = None
+    $ mas_resetIdleMode()
     return
 
 
