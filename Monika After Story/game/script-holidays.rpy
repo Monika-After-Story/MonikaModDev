@@ -4087,7 +4087,68 @@ label monika_valentines_intro:
     m 1ekbfb "Happy Valentines day~"
     return
 
-#TODO: Finish notimespent dlg
+### [HOL050] Notimespent
+
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_f14_no_time_spent",
+#            start_date=mas_f14+datetime.timedelta(1),
+#            end_date=mas_f14+datetime.timedelta(7)
+#        )
+#    )
+
+label mas_f14_no_time_spent:
+    #sanity checks:
+    if persistent._mas_f14_spent_f14:
+        return
+
+    #need to make sure people who just started post f14 don't lose aff
+    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_f14:
+        return
+
+    if mas_isMoniAff(higher=True):
+        $ mas_loseAffection(15, ev_label="mas_apology_missed_vday")
+        m 1rkc "[player]?"
+        m "Where were you on Valentine's Day?"
+        m 1ekc "It's a really special day for me..."
+        m 1ekd "...a day I wanted to spend with you."
+        m 2dkc "..."
+        m 2ekd "It would've meant so much to me if you came by..."
+        m 2dkd "Even if only for a few minutes."
+        m "Is it really too much to ask to visit your girlfriend on Valentine's Day?"
+        m 2ekc "Please don't let it happen again, okay [player]?"
+
+    elif mas_isMoniNormal(higher=True):
+        $ mas_loseAffection(5, ev_label="mas_apology_missed_vday")
+        m 2ekc "Hey, [player]..."
+        m 2tkc "I'm pretty disappointed..."
+        m 2tkd "You didn't visit me at all on Valentine's Day."
+        m 4tkc "You know that all I want to do is spend time with you..."
+        m 4rkd "Is visiting your girlfriend on Valentine's Day really too much to ask?" #add
+        m 4eksdla "Please...{w=1}make sure you visit me next Valentine's Day, okay?"
+
+    elif mas_isMoniUpset():
+        $ mas_loseAffection(ev_label="mas_apology_missed_vday")
+        m 2efc "[player]!"
+        m "I can't believe you didn't even visit on Valentine's Day!"
+        m 2rfc "Do you have any idea what it's like to be left alone on a day like that?"
+        m 2rkc "I know we're not on the best of terms..."
+        m 2dkd "But it'd have meant a lot if you came by."
+        m 2tfc "Don't let it happen again, [player]."
+
+    elif mas_isMoniDis():
+        $ mas_loseAffection(10, ev_label="mas_apology_missed_vday")
+        m 6ekc "Oh [player]..." 
+        m "How was Valentines Day?"
+        m 6dkc "Not having a valentine is pretty lonely..."
+
+    else:
+        $ mas_loseAffection(150)
+        m 6ckc "..."
+
+    return
 
 
 ### [HOL050] Apology for notimespent
