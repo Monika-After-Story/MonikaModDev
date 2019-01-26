@@ -741,13 +741,12 @@ init -875 python in mas_delact:
     MAP = {
         # NOTE: commented IDs have been retired
 #        1: _greeting_ourreality_unlock,
-
         2: _mas_monika_islands_unlock,
-        3: _mas_bday_postbday_notimespent_reset,
-        4: _mas_bday_pool_happy_bday_reset,
-        5: _mas_bday_surprise_party_cleanup_reset,
-        6: _mas_bday_surprise_party_hint_reset,
-        7: _mas_bday_spent_time_with_reset,
+#        3: _mas_bday_postbday_notimespent_reset,
+#        4: _mas_bday_pool_happy_bday_reset,
+#        5: _mas_bday_surprise_party_cleanup_reset,
+#        6: _mas_bday_surprise_party_hint_reset,
+#        7: _mas_bday_spent_time_with_reset,
         8: _mas_d25_holiday_intro_upset_reset,
         9: _mas_d25_monika_carolling_reset
     }
