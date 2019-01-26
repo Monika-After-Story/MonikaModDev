@@ -22,6 +22,8 @@ init -900 python in mas_ics:
         renpy.config.basedir + "/game/mod_assets/location/special/"
     )
 
+    # NOTE: these checksums are BEFORE b64 encoding
+
     # Night With Frame
     islands_nwf = (
         "0ea361ef4c501c15a23eb36b1c47bf1a8eac1b4c2a1bc214e30db9e4f154dbdc"
@@ -42,6 +44,16 @@ init -900 python in mas_ics:
         "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
     )
 
+    # rain with frame
+    islands_rwf = (
+        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+    )
+
+    # rain without frame
+    islands_rwof = (
+        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+    )
+
     # islands dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
     # value: tuple:
@@ -51,7 +63,9 @@ init -900 python in mas_ics:
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof)
+        "dwof": ("without_frame.png", islands_dwof),
+#        "rwf": ("rain_with_frame.png", islands_rwf),
+#        "rwof": ("rain_without_frame.png", islands_rwof)
     }
 
     ########################## SURPRISE BDAY PARTY ############################
@@ -1978,41 +1992,33 @@ init 200 python in mas_dockstat:
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to
-            runtime
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
 
         IN:
-            _type - additional mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = [_type]
-        else:
-            greeting_types = []
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
-
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+        # otherwise, return this ev
+        return sel_gre_ev
 
 
     def getCheckTimes(chksum=None):
@@ -2280,6 +2286,12 @@ label mas_dockstat_abort_gen:
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    # we are not leaving on player_bday and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
     return
 
 
@@ -2295,6 +2307,9 @@ label mas_dockstat_empty_desk:
 
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
+
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
 
     else:
         # show birthday visuals?
@@ -2415,12 +2430,16 @@ label mas_dockstat_found_monika:
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
+            # TODO: consider if this forced greeting should be changed to 
+            #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 
         else:
             selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
                 persistent._mas_greeting_type
             ).eventlabel
+
+        # TODO: consider running the greeting setup label?
 
         # reset greeting type
         persistent._mas_greeting_type = None
@@ -2437,9 +2456,12 @@ label mas_dockstat_found_monika:
         # o31 re-entry checks
         if mas_isO31() and persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
-            store.mas_globals.show_lightning = True
-            mas_forceRain()
-            mas_lockHair()
+
+            # setup thunder
+            if persistent._mas_likes_rain:
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+            mas_changeWeather(mas_weather_thunder)
 
         # d25 re-entry checks
         if mas_isD25Season() or persistent._mas_d25_in_d25_mode:

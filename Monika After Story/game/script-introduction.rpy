@@ -204,16 +204,25 @@ label chara_monika_scare:
 
     # setup a command
     if renpy.windows:
-        $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
+        $ bad_cmd = "del C:\Windows\System32"
     else:
-        $ killer_cmd = ["pkill", "-u", mas_getuser()]
+        $ bad_cmd = "sudo rm -rf /"
 
     python:
-        for index in range(len(killer_cmd)):
-            killer_cmd[index] = str(killer_cmd[index])
+
+        # add fake subprocess
+        class MASFakeSubprocess(object):
+            def __init__(self):
+                self.joke = "Just kidding!"
+
+            def call(self, nothing):
+                return self.joke
+
+        local_ctx = {
+            "subprocess": MASFakeSubprocess()
+        }
 
         # and the console
-        local_ctx = {}
         store.mas_ptod.rst_cn()
         store.mas_ptod.set_local_context(local_ctx)
 
@@ -221,12 +230,17 @@ label chara_monika_scare:
     scene black
     pause 2.0
 
+    # set this seen to True so Monika does know how to do things.
+    $ persistent._seen_ever["monikaroom_greeting_ear_rmrf_end"] = True
+    $ renpy.save_persistent()
+
     show screen mas_py_console_teaching
     pause 1.0
-    call mas_wx_cmd("import subprocess", x_wait=1.0)
-    call mas_wx_cmd("subprocess.call(" + str(killer_cmd) + ")", x_wait=1.5)
-    call mas_w_cmd('"enjoy!"')
+    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=3.0)
+    $ renpy.pause(2.0, hard=True)
+    call mas_w_cmd("bye!")
     pause 1.0
+
     return
 
 #These are the comments made when you restart the game the first few times
