@@ -3909,14 +3909,14 @@ label mas_f14_monika_vday_colors:
     m 3eub "My class was instructed to exchange cards with a partner after making them."
     m 2eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
     m 2eub "In this way, colors are a lot like poems."
-    m 3eka "They offer so many creative ways to expressing your love for someone."
-    m 2ekbfa "Like offering them red roses, for instance."
-    m 3eub "Red roses are a symbol for the beauty, love, and romance that someone may feel for another."
+    m 3eka "They offer so many creative ways to express your love for someone."
+    m 2ekbfa "Like giving them red roses, for example."
+    m 3eub "Red roses are a symbol for romantic feelings towards someone."
     m 3eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
     m 3eka "However, since there are so many emotions involved with love..."
     m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
-    m 4eka "Thankfully though, by combining multiple rose colors, it's possible to express a lot more emotions!"
-    m 3eka "Mixing red and white roses would symbolize the unity, and a bond that a couple shares."
+    m 4eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
+    m 3eka "Mixing red and white roses would symbolize the unit and bond that a couple shares."
     m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
     return
 
@@ -3934,7 +3934,7 @@ label mas_f14_monika_vday_colors:
 #    )
 
 label mas_f14_monika_vday_cliches:
-    m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés with similar plots?"
+    m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
     m 2rsc "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
     m 2euc "I think that writers could be a bit more creative when it comes to Valentine's Day stories..."
     m 1eka "But, I suppose those two topics are the easiest way to write a love story."
@@ -3944,7 +3944,7 @@ label mas_f14_monika_vday_cliches:
     m 3hub "Just use ours! Ahaha~"
     m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
     m 2tfu "But I think we managed to make it pretty original."
-    m 1hua "The way we met is the most unpredictable story yet!"
+    m 1hua "The way we met is the most interesting story yet!"
     m 3hub "Ahaha~!"
     return
 
@@ -3963,14 +3963,14 @@ label mas_f14_monika_vday_cliches:
 label mas_f14_monika_vday_origins:
     m 3eua "You'd like to learn about the history of Valentine's Day?"
     m 1rksdlc "It's quite dark, actually."
-    m 1euc "Its origin dates to as early as the second and third century, in Rome, where Christianity had just been declared the official state religion."
+    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
     m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
     m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
-    m 3esc "Valentine decided this was unfair and helped arrange marriages in secret."
-    m 1dsd "Unfortunately, he was caught and was promptly sentenced to death."
-    m 1euc "However, while in jail, Valentine fell in love with the jailer's daughter."
+    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
+    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
+    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
     m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
-    m 1dsc "He was then executed on February 14, 269 AD."
+    m 1dsc "He was executed on February 14, 269 AD."
     m 3eua "Such a noble cause, don't you think?"
     m 3eud "Oh, but wait, there's more!"
     m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
