@@ -241,7 +241,7 @@ label monika_zoom_value_transition(new_zoom,transition=3.0):
     $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause transition
+    $ renpy.pause(transition, hard=True)
     return
 
 # Zoom Transition label #2
@@ -289,7 +289,7 @@ label monika_zoom_fixed_duration_transition(new_zoom,transition=3.0):
     $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause transition
+    $ renpy.pause(transition, hard=True)
     return
 
 # Zoom Transition label #3
@@ -342,7 +342,12 @@ label monika_zoom_transition(new_zoom,transition=3.0):
 
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause _mas_transition_time
+    $ renpy.pause(_mas_transition_time, hard=True)
+    return
+
+# Resets to the default zoom level, smoothly.
+label monika_zoom_transition_reset(transition=3.0):
+    call monika_zoom_transition(store.mas_sprites.default_zoom_level, transition)
     return
 
 init python:

@@ -1221,7 +1221,7 @@ label mas_coffee_finished_brewing:
 
     #moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
-    $ store.mas_sprites.reset_zoom()
+    call monika_zoom_transition_reset(1.0)
 
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
@@ -1242,12 +1242,14 @@ label mas_coffee_finished_brewing:
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
-    $ store.mas_sprites.zoom_level = curr_zoom
-    $ store.mas_sprites.adjust_zoom()
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
 
     if mas_in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
@@ -1279,7 +1281,7 @@ label mas_coffee_finished_drinking:
 
     #moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
-    $ store.mas_sprites.reset_zoom()
+    call monika_zoom_transition_reset(1.0)
 
     show emptydesk at i11 zorder 9
 
@@ -1307,12 +1309,14 @@ label mas_coffee_finished_drinking:
     else:
         $ mas_drinkCoffee()
 
-    $ store.mas_sprites.zoom_level = curr_zoom
-    $ store.mas_sprites.adjust_zoom()
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
 
     if mas_in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
@@ -1343,7 +1347,7 @@ label mas_c_hotchoc_finished_brewing:
 
     #moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
-    $ store.mas_sprites.reset_zoom()
+    call monika_zoom_transition_reset(1.0)
 
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
@@ -1363,12 +1367,14 @@ label mas_c_hotchoc_finished_brewing:
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
-    $ store.mas_sprites.zoom_level = curr_zoom
-    $ store.mas_sprites.adjust_zoom()
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
 
     if mas_in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
@@ -1401,7 +1407,7 @@ label mas_c_hotchoc_finished_drinking:
 
     #moving this here so she uses this line to 'pull her chair back'
     $ curr_zoom = store.mas_sprites.zoom_level
-    $ store.mas_sprites.reset_zoom()
+    call monika_zoom_transition_reset(1.0)
 
     show emptydesk at i11 zorder 9
 
@@ -1430,13 +1436,14 @@ label mas_c_hotchoc_finished_drinking:
     else:
         $ mas_drinkHotChoc()
 
-    $ store.mas_sprites.zoom_level = curr_zoom
-    $ store.mas_sprites.adjust_zoom()
-
     $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
+
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
 
     if mas_in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
