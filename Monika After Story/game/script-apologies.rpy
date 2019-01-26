@@ -183,8 +183,7 @@ label mas_apology_generic:
             m 2dsc "..."
             m 1eka "...Thank you for the apology."
             m 2ekc "But please, try to be more mindful about my feelings."
-            m 2ektuc "Please."
-            m 2dkd "..."
+            m 2dkd "Please."
         elif mas_isMoniUpset():
             m 1eka "Thank you, [player]."
             m 1rksdlc "I know things aren't the best between us, but I know that you're still a good person."
