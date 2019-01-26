@@ -8291,6 +8291,18 @@ label monika_yellowwp:
 
     return "derandom"
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_driving",
+            category=['monika'],
+            prompt="Can you drive?",
+            pool=True
+        )
+    )
+
 # Can the player drive
 default persistent._mas_pm_driving_can_drive = None
 
@@ -8302,9 +8314,6 @@ default persistent._mas_pm_driving_been_in_accident = None
 
 # Has the player driven much after the accident
 default persistent._mas_pm_driving_post_accident = None
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_driving",category=['monika'],prompt="Can you drive?",random=False,pool=True))
 
 label monika_driving:
     m 1eud "Hm? Can I drive?"
