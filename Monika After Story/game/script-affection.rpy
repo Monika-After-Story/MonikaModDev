@@ -1,3 +1,5 @@
+# AFF010 is progpoints
+#
 # Affection module:
 #
 # General:
@@ -440,39 +442,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from upset to normal
         """
-        # access global vars
-        mas_is_raining = store.mas_is_raining
-
-        # NOTE: rain topics are unlock-dependent on if its currently raining
-        if mas_is_raining:
-            store.mas_lockEventLabel("monika_rain")
-            store.mas_lockEventLabel("monika_rain_start")
-            if persistent._mas_likes_rain:
-                store.mas_unlockEventLabel("monika_rain_stop")
-            else:
-                store.mas_lockEventLabel("monika_rain_stop")
-                
-        else:
-            store.mas_unlockEventLabel("monika_rain")
-            store.mas_lockEventLabel("monika_rain_stop")
-            if persistent._mas_like_rain:
-                store.mas_unlockEventLabel("monika_rain_start")
-            else:
-                store.mas_lockEventLabel("monika_rain_start")
-
-        # greeting unlocks
-        if not store.mas_isO31():
-            evhand._unlockEventLabel(
-                "i_greeting_monikaroom",
-                eventdb=evhand.greeting_database
-            )
-
-        if not persistent._mas_hair_changed:
-            evhand._unlockEventLabel(
-                "greeting_hairdown",
-                eventdb=evhand.greeting_database
-            )
-
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO
 
@@ -484,11 +453,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from normal to upset
         """
-        evhand._lockEventLabel(
-            "greeting_hairdown",
-            eventdb=evhand.greeting_database
-        )
-
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
 
@@ -561,19 +525,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-
-        # If the greeting hasn't been seen yet, push the islands greeting
-        if (
-                not store.seen_event("greeting_ourreality")
-            ):
-            if store.mas_cannot_decode_islands:
-                # failed to decode the islands, lets delay this action
-                store.mas_addDelayedAction(1)
-
-            else:
-                # otherwise we can directly unlock this greeting
-                store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
-
         # unlock islands event if seen already
         if (
                 store.seen_event("mas_monika_islands")
@@ -1751,7 +1702,7 @@ init 20 python:
                 pushEvent("mas_affection_apology")
         # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            unlockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
+            mas_unlockEVL("greeting_tears", "GRE")
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.

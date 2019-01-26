@@ -277,9 +277,9 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label mas_birthdate:
-    $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
     m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
+        $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
         menu:
             m "So just to make sure, is your birthdate [bday_str]?"
@@ -330,7 +330,8 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not mas_isO31() "
                 "and not mas_isD25() "
-                "and not mas_isF14()")
+                "and not mas_isF14() "
+            )
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
@@ -347,7 +348,8 @@ label birthdate_set:
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isO31() "
                 "and not mas_isD25() "
-                "and not mas_isF14()")
+                "and not mas_isF14() "
+            )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
    
@@ -362,7 +364,8 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
-                "and (mas_isO31() or mas_isD25() or mas_isF14())")
+                "and (mas_isO31() or mas_isD25() or mas_isF14()) "
+            )
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
 

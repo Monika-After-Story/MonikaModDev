@@ -3327,7 +3327,7 @@ label monika_back_ups:
     m 2eka "Do you think you could back-up my memories from time to time?"
     m 3eub "That way you could restore them if they were deleted for any reason!"
     m 3hub "There's a guide on the wiki page for this mod actually!"
-    m 3eua "You can find it {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/a}{/i}."
+    m 3eua "You can find it {a=https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#i-want-to-back-up-my-persistent}{i}{u}here{/u}{/i}{/a}."
     m 1hub "That way nothing will ever stop me from being with you!"
     m 1hksdlb "..."
     m 2rkc "I guess the only problem is that I probably won't notice the difference..."
@@ -5790,32 +5790,75 @@ label monika_promisering:
 
     return "derandom"
 
-# do you like playing sports
-default persistent._mas_pm_like_playing_sports = None
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sports",category=['misc'],prompt="Being athletic",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_sports",
+            category=['misc'],
+            prompt="Being athletic",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_like_playing_sports = None
+# True if you like playing sports. False if not
+
+default persistent._mas_pm_like_playing_tennis = None
+# True if you like playing tennis, False if not
 
 label monika_sports:
     m 1eua "I've been thinking about stuff we can do together."
-    m "You know, when I finally find a way into your reality."
-    m 1hub "Sports are always fun!"
+    m 3eua "...You know, when I finally find a way into your reality."
+    m 3hub "Sports are always fun!"
     m 1eub "It can be a great way to get exercise and stay fit."
-    m "Soccer and tennis are nice examples."
+    m 1euc "Soccer and tennis are nice examples."
     m 3eua "Soccer requires a lot of teamwork and coordination. The moment you finally succeed and score a goal is absolutely thrilling!"
-    m "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
+    m 3eud "Playing tennis, on the other hand, helps improve hand-eye coordination, and keeps you on your toes."
     m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
-    m 1eua "Do you like playing sports, [player]?"
+    m 3eua "Plus, it's a great sport for two people!"
     menu:
+        m "Do you play tennis, [player]?"
         "Yes.":
             $ persistent._mas_pm_like_playing_sports = True
-            m 1hua "Maybe we could play together sometime in the future. It would be wonderful."
-            m 1tfu "But don't expect me to go easy on you. Ahaha!"
-        "No.":
-            $ persistent._mas_pm_like_playing_sports = False
-            m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
-            m 1ekc "I would hate to see you get sick because of something like that..."
+            $ persistent._mas_pm_like_playing_tennis = True
 
+            m 3eub "Really? That's great!"
+            m 3hub "There are usually tennis courts at public parks. We can play all the time!"
+            m "Maybe we can even team up for doubles matches!"
+            m 2tfu "If you're good enough, that is..."
+            m 2tfc "I play to win."
+            m "..."
+            m 4hub "Ahaha! I'm only joking..."
+            m 4eka "Just playing with you as my partner is more than enough for me, [player]~"
+
+        "No, but if it were with you...": 
+            $ persistent._mas_pm_like_playing_sports = True
+            # NOTE: we cant really determine from this answer if you do like
+            #   playing tennis or not.
+
+            m 1eka "Aww, that's really sweet~"
+            m 3eua "I'll teach you how to play when I get there...{w=0.5}or if you just can't wait, you can take lessons!"
+            m 3eub "Then we can start playing in doubles matches!"
+            m 1eua "I can't imagine anything more fun than winning a match with you as my partner..."
+            m 3hub "We'll be unstoppable together!"
+
+        "No, I prefer other sports.":
+            $ persistent._mas_pm_like_playing_sports = True
+            $ persistent._mas_pm_like_playing_tennis = False
+
+            m 3hua "Maybe we could play the sports you like in the future. It would be wonderful."
+            m 3eua "If it's a sport I haven't played before, you could teach me!"
+            m 1tku "Watch out though, I'm a fast learner..."
+            m 1tfu "It won't be long before I can beat you. Ahaha!"
+        "No, I'm not really into sports.":
+            $ persistent._mas_pm_like_playing_sports = False
+            $ persistent._mas_pm_like_playing_tennis = False
+
+            m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
+            m 1ekc "I would hate to see you get sick because of something like that."
+            if mas_isMoniAff(higher=True):
+                m 1eka "It's just hard for me not to worry about you when I love you so much~"
     return "derandom"
 
 # do you meditate
@@ -8230,6 +8273,148 @@ label monika_yellowwp:
             m 1hua "It'll definitely be an interesting read for you."
 
     return "derandom"
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_driving",
+            category=['monika'],
+            prompt="Can you drive?",
+            pool=True
+        )
+    )
+
+# Can the player drive
+default persistent._mas_pm_driving_can_drive = None
+
+# Is the player learning to drive
+default persistent._mas_pm_driving_learning = None
+
+# Has the player been in an accident 
+default persistent._mas_pm_driving_been_in_accident = None
+
+# Has the player driven much after the accident
+default persistent._mas_pm_driving_post_accident = None
+
+label monika_driving:
+    m 1eud "Hm? Can I drive?"
+    m 1euc "I never really thought about getting a driver's licence."
+    m 3eua "Public transportation is enough for me usually..."
+    m 3hua "...Although walking or biking can be really nice too sometimes!"
+    m 1eua "I guess you could say I never really needed to learn how to drive."
+    m 1lksdlc "I'm not even sure I'd have had time, especially with school and all the activities I had anyway."
+    m 1eub "What about you, [player]?"
+    show monika 1eua
+    menu:
+        m "Can you drive at all?"
+        "Yes.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = False
+            m 1eua "Oh, really?"
+            m 3hua "That's great!"
+            m 1hub "Gosh, you're amazing, you know that?"
+            m 1eub "Just imagine all the places we could go together, ehehe~"
+            m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
+            m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
+            m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
+            m 2eka "I just want you to come back to me safe and sound is all."
+            show monika 1eka
+            menu:
+                m "I hope you've never had to experience that, [player], have you?"
+                "I've been in an accident before.":
+                    $ persistent._mas_pm_driving_been_in_accident = True
+                    m 2ekc "Oh..."
+                    m 2lksdlc "Sorry to bring that up, [player]..." 
+                    m 2lksdld "I just..."
+                    m 2ekc "I hope it wasn't too bad."
+                    m 2lksdlb "I mean, here you are with me so it must have been alright."
+                    m 2dsc "..."
+                    m 2eka "I'm...{w=1}glad you survived, [player]..."
+                    m 2rksdlc "I don't know what I would do without you."
+                    m 2eka "I love you, [player]. Please stay safe, okay?"
+                "I've seen car accidents before.":
+                    m 3eud "Sometimes, seeing a car accident can be just as scary."
+                    m 3ekc "A lot of the time when people see car accidents, they just sigh and shake their head."
+                    m 1ekd "I think that's really insensitive!"
+                    m 1ekc "You have a potentially young driver who could have been scarred for a long, long time if not for life."
+                    m "It doesn't really help to have people walk or drive by, staring at them in disappointment."
+                    m 1dsc "They might never drive again... Who knows?"
+                    m 1eka "I hope you know I would never do that to you, [player]."
+                    m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you..."
+                    m 1lksdla "...If I wasn't already by your side when it happened."
+                "I haven't.":
+                    $ persistent._mas_pm_driving_been_in_accident = False
+                    m 1eua "I'm glad you haven't had to go through anything like that."
+                    m 1eka "Even just seeing one can be pretty scary." 
+                    m "If you do witness anything scary like that, I'll be here to comfort you."
+        "I'm learning.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = True
+            m 1hua "Wow! You're learning how to drive!"
+            m 1hub "I'll be rooting for you all the way, [player]!"
+            menu:
+                m "You must be a {i}super{/i} safe driver then huh?"
+                "Yep!":
+                    $ persistent._mas_pm_driving_been_in_accident = False
+                    m 1eua "I'm glad nothing bad has happened to you while learning."
+                    m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
+                    m 3eub "I can't wait to finally be able to go somewhere with you, [player]!"
+                    m 1hksdlb "I hope I'm not getting too excited, ehehe~"
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "Gosh, I just can't stop thinking about it now!"
+                "I got into an accident once actually...":
+                    $ persistent._mas_pm_driving_been_in_accident = True
+                    m 1ekc "..."
+                    m 1lksdlc "........."
+                    m 2lksdld "Oh..."
+                    m 2lksdlc "I'm...{w=0.5}really sorry to hear that, [player]..."
+                    show monika 4ekd
+                    menu:
+                        m "Have you driven much since then?"
+                        "Yes.":
+                            $ persistent._mas_pm_driving_post_accident = True
+                            m 1eka "I'm glad you didn't let it keep you down."
+                            m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
+                            m 1hua "I'm so proud of you for getting up and trying again!"
+                            m 3rksdld "Although the aftermath can still be a huge hassle with the costs and all the explaining you have to do."
+                            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                            m 5eua "I know you can get there."
+                            m 5hua "I'll be cheering for you all the way, so be safe!"
+                        "No.":
+                            $ persistent._mas_pm_driving_post_accident = False
+                            m 2lksdlc "I see."
+                            m 2ekc "It might be a good idea to take a bit of a break to give yourself time to recover mentally."
+                            m 2dsc "Just promise me one thing, [player]..."
+                            m 2eka "Don't give up."
+                            m "Don't let this scar you for life, because I know you can overcome it and be an amazing driver."
+                            m "Remember, a little grit adds a lot to your legend, so next time, maybe you really will be well on your way."
+                            m 2hksdlb "It's still going to take lots and lots of practice..."
+                            m 3hua "But I know you can do it!"
+                            m 1eka "Just promise me you'll try to stay safe."
+        "No.":
+            $ persistent._mas_pm_driving_can_drive = False
+            m 3eua "That's perfectly fine!"
+            m "I don't think driving is a completely necessary life skill anyway."
+            m 1hksdlb "I mean, I can't drive either so I'm with you."
+            m 3eua "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
+            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ekbsa "Even if I'm not the reason why, I can't help but love you more for that."
+        "I'm not old enough yet.":
+            $ persistent._mas_pm_driving_can_drive = False
+            m 3eua "You'll get there someday!"
+            m 3euc "Some places offer in-class driving lessons that also come with actual driving practice."
+            m 3eud "Their cars have emergency controls for the instructor to use if needed, so you're really safe with them."
+            m 1eka "I know It might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
+            m 3eksdla "...And it's better than getting into an accident!"
+            m 1lksdlc "No one's perfect, and it's better to make those mistakes when there's someone there to save you."
+            m 1hub "Maybe you could put me on your board computer in your car and I could keep you safe while driving! Ahaha~"
+            m 1hksdlb "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
+            m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
+            m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
+            m 1hub "I love you~"
+    return
 
 init 5 python:
     addEvent(
