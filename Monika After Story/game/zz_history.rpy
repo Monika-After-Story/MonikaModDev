@@ -662,7 +662,9 @@ init -815 python in mas_history:
     def _bday_exit_pp(mhs):
         # this PP will just add the appropriate delayed action IDs to the 
         # persistent delayed action list.
-        _MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4)
+        pass
 
 
 init -810 python:

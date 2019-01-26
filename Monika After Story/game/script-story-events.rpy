@@ -1336,29 +1336,38 @@ label mas_c_hotchoc_finished_drinking:
 
 
 ### birthday surprise party
+# TODO: move all of this to script-holidays
 
 default persistent._mas_bday_sbp_aff_given = 0
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_spent_time_with",
-            action=EV_ACT_QUEUE,
-            start_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22),
-            end_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59),
-            years=[]
-        ),
-        skipCalendar=True
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_spent_time_with",
+#            action=EV_ACT_QUEUE,
+#            start_date=datetime.combine(
+#                mas_monika_birthday,
+#                datetime.time(22)
+#            ),
+#            end_date=datetime.combine(
+#                mas_monika_birthday,
+#                datetime.time(23, 59)
+#            ),
+#            years=[]
+#        ),
+#        skipCalendar=True
+#    )
 
 
 init -876 python in mas_delact:
 
+    # TODO: remove this after 0815
     def _mas_bday_spent_time_with_reset_action(ev):
         # updates conditional and action
         next_bday_year = store.mas_getNextMonikaBirthday().year
-        # TODO: what the fuck is this? I dont know if this bit should be here.
+        # what the fuck is this? I dont know if this bit should be here.
+        # NVM, found out this was copied code. lol
         ev.conditional = (
             "datetime.date.today() < mas_monika_birthday and "
             "mas_monika_birthday.day - datetime.date.today().day == 1"
@@ -1369,6 +1378,7 @@ init -876 python in mas_delact:
         return True
 
 
+    # TODO: remove this after 0815
     def _mas_bday_spent_time_with_reset():
         # creates delayed action for surprise party hint reset
         return store.MASDelayedAction.makeWithLabel(
@@ -1427,13 +1437,13 @@ label mas_bday_spent_time_with:
     return
 
 ### no time spent
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_reaction"
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_reaction"
+#        )
+#    )
 
 label mas_bday_surprise_party_reaction:
     python:
@@ -1513,23 +1523,22 @@ label mas_bday_surprise_party_reaction_end:
 
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_hint",
-            # TODO: consider making the conditional span for a week.
-            conditional=(
-                "datetime.date.today() < mas_monika_birthday and "
-                "mas_monika_birthday.day - datetime.date.today().day == 1"
-            ),
-            action=EV_ACT_PUSH
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_hint",
+#            start_date=mas_monika_birthday - datetime.timedelta(days=7),
+#            end_date=mas_monika_birthday - datetime.timedelta(days=1),
+#            action=EV_ACT_PUSH
+#        ),
+#        skipCalendar=True
+#    )
 
 init -876 python in mas_delact:
     # delayed action to reset the party hint
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_hint_reset_action(ev):
         # updates conditional and action
         threw_surprise_party = store.mas_HistVerify(
@@ -1544,7 +1553,7 @@ init -876 python in mas_delact:
             ev.action = store.EV_ACT_PUSH
         return True
 
-
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_hint_reset():
         # creates delayed action for surprise party hint reset
         return store.MASDelayedAction.makeWithLabel(
@@ -1573,23 +1582,26 @@ label mas_bday_surprise_party_hint:
     m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_cleanup",
-            conditional=(
-                "persistent._mas_bday_sbp_reacted "
-                "and datetime.date.today().day > mas_monika_birthday.day"
-            ),
-            action=EV_ACT_PUSH
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_cleanup",
+#            conditional=(
+#                "persistent._mas_bday_sbp_reacted "
+#            ),
+#            start_date=mas_monika_birthday + datetime.timedelta(days=1),
+#            end_date=mas_monika_birthday + datetime.timedelta(days=2),
+#            years=[],
+#            action=EV_ACT_PUSH
+#        )
+#    )
 
 
 init -876 python in mas_delact:
     # delayed action to reset the conditional post bday
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_cleanup_reset_action(ev):
         # updates conditional and action
         ev.conditional = (
@@ -1600,6 +1612,7 @@ init -876 python in mas_delact:
         return True
 
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_cleanup_reset():
         # creates delayed action for this event
         return store.MASDelayedAction.makeWithLabel(
@@ -1626,27 +1639,27 @@ default persistent._mas_bday_said_happybday = False
 default persistent._mas_bday_need_to_reset_bday = False
 # NOTE: DONT think we need to save this one
 
-init 5 python:
-    # NOTE: instead of using start/end date, we use condition since we
-    # want this to only appear once per day
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_pool_happy_bday",
-            prompt="Happy birthday!",
-            category=["monika"],
-            conditional="mas_isMonikaBirthday()",
-            action=EV_ACT_UNLOCK,
-            pool=True,
-            rules={"no unlock":0}
-#            start_date=mas_monika_birthday,
-#            end_date=mas_monika_birthday + datetime.timedelta(1),
-#            years=[]
-        )
-    )
-
-    # make sure this event is considered seen
-    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
+#init 5 python:
+#    # NOTE: instead of using start/end date, we use condition since we
+#    # want this to only appear once per day
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_pool_happy_bday",
+#            prompt="Happy birthday!",
+#            category=["monika"],
+#            conditional="mas_isMonikaBirthday()",
+#            action=EV_ACT_UNLOCK,
+#            pool=True,
+#            rules={"no unlock":0}
+##            start_date=mas_monika_birthday,
+##            end_date=mas_monika_birthday + datetime.timedelta(1),
+##            years=[]
+#        )
+#    )
+#
+#    # make sure this event is considered seen
+#    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
 
 init -876 python in mas_delact:
     # This greeting has a delayed action, which actually only occurs if
@@ -1714,22 +1727,22 @@ default persistent._mas_bday_opened_game = False
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_postbday_notimespent",
-
-            # within a week after monika's birthday, user did not recognize
-            # monika's birthday at all, and they were not long absenced
-            conditional=(
-                "mas_monika_birthday < datetime.date.today() <= "
-                "(mas_monika_birthday + datetime.timedelta(7)) "
-                "and not mas_recognizedBday()"
-            ),
-            action=EV_ACT_QUEUE
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_postbday_notimespent",
+#
+#            # within a week after monika's birthday, user did not recognize
+#            # monika's birthday at all, and they were not long absenced
+#            conditional=(
+#                "mas_monika_birthday < datetime.date.today() <= "
+#                "(mas_monika_birthday + datetime.timedelta(7)) "
+#                "and not mas_recognizedBday()"
+#            ),
+#            action=EV_ACT_QUEUE
+#        )
+#    )
 
 
 init -876 python in mas_delact:
