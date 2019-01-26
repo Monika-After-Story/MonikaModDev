@@ -246,7 +246,7 @@ label mas_ghost_monika:
     show ghost_monika zorder MAS_MONIKA_Z at i11
     
     #wait 10 seconds (length of ghost menu music)
-    pause(10)
+    $ renpy.pause(10, hard=True)
 
     stop music
 
