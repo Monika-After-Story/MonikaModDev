@@ -103,11 +103,11 @@ image mas_lantern:
     "mod_assets/other/lantern.png"
     alpha 0.0
     block:
-        0.15
+        0.05
         alpha 1.0
-        0.15
+        0.05
         alpha 0.0
-        repeat 6
+        repeat 4
     alpha 0.0
 
 image mas_stab_wound:
@@ -116,31 +116,28 @@ image mas_stab_wound:
     easein 1.0 zoom 1.0
 
 image rects_bn1:
-    RectCluster(Solid("#000"), 20, 15, 10).sm
+    RectCluster(Solid("#000"), 25, 20, 15).sm
     rotate 90
-    pos (773, 380)
-    size (28, 33)
+    pos (571, 217)
+    size (20, 25)
     alpha 0.0
-    8.0
-    easeout 12 alpha 1.0
+    easeout 1 alpha 1.0
 
 image rects_bn2:
-    RectCluster(Solid("#000"), 20, 15, 10).sm
+    RectCluster(Solid("#000"), 25, 20, 15).sm
     rotate 90
-    pos (782, 508)
-    size (30, 35)
+    pos (700, 217)
+    size (20, 25)
     alpha 0.0
-    8.0
-    easeout 12 alpha 1.0
+    easeout 1 alpha 1.0
 
 image rects_bn3:
     RectCluster(Solid("#000"), 4, 15, 5).sm
-    rotate 90
-    pos (688, 427)
+    rotate 180
+    pos (636, 302)
     size (25, 15)
     alpha 0.0
-    8.0
-    easeout 12 alpha 1.0
+    easeout 1 alpha 1.0
 
 transform k_scare:
     tinstant(640)

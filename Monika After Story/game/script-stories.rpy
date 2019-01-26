@@ -447,8 +447,13 @@ label mas_story_immortal_love:
     m 1hua "Thanks for listening~"
     return
 
+define mas_scary_story_setup_done = False
+
 # Scary stories start here
 label mas_scary_story_setup:
+    if mas_scary_story_setup_done:
+        return
+    $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
     $ scene_change = True
@@ -510,6 +515,7 @@ label mas_scary_story_cleanup:
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()
     $ HKBShowButtons()
+    $ mas_scary_story_setup_done = False
     return
 
 init 5 python:
@@ -1173,16 +1179,17 @@ label mas_scary_story_flowered_lantern:
         m 2eub "If you say no, you can ask me later to tell you the next part, so don't worry about it"
         m 4eua "Alright, let's begin now"
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
-    m 4ekd "Tsuyu’s mother was dead and her father had remarried."
-    m 2eud "After some time, it became obvious to Tsuyu’s father that Tsuyu and her step mother couldn’t get along."
-    m 2esd "Wanting to ensure his only daughter’s happiness, he had a luxurious house built for her, away from them and had her move into it."
-    m 2eud "One day, the family physician went to Tsuyu’s residence on a routine visit with a young samurai named Hagiwara, who was very handsome."
-    m "Tsuyu and Hagiwara fell in love the moment they set eyes on each other."
-    m 4ekd "Unbeknownst to the doctor, the two pledged themselves to each other for life and before the two left, Tsuyu whispered to Hagiwara that she would surely die if he didn’t return to see her."
-    m 4eud "Hagiwara didn’t forget her words, but etiquette forbade him to make a call to visit a maiden alone, so he had to wait for the doctor to ask him to join him on another visit."
-    m "The doctor, however, had perceived his sudden affection for Tsuyu."
-    m "Tsuyu’s father was known to behead those who angered him, and fearing that he would hold him responsible for introducing the two, he avoided Hagiwara."
-    m "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
+    m 4eud "Tsuyu’s mother was dead and her father had remarried."
+    m 2euc "After some time, it became obvious to Tsuyu’s father that Tsuyu and her step mother couldn’t get along."
+    m 2esa "Wanting to ensure his only daughter’s happiness, he had a luxurious house built for her, away from them and had her move into it."
+    m "One day, the family physician went to Tsuyu’s residence on a routine visit with a young samurai named Hagiwara, who was very handsome."
+    m 4eub "Tsuyu and Hagiwara fell in love the moment they set eyes on each other."
+    m 4esa "Unbeknownst to the doctor, the two pledged themselves to each other for life and before the two left."
+    m 4eud "Tsuyu whispered to Hagiwara that she would surely die if he didn’t return to see her."
+    m 2dsc "Hagiwara didn’t forget her words, but etiquette forbade him to make a call to visit a maiden alone, so he had to wait for the doctor to ask him to join him on another visit."
+    m 2dsd "The doctor, however, had perceived his sudden affection for Tsuyu."
+    m 2esd "Tsuyu’s father was known to behead those who angered him, and fearing that he would hold him responsible for introducing the two, he avoided Hagiwara."
+    m 2dsd "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
     m "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu’s death."
     m 2dsc "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
     $ _story = mas_getEV("mas_scary_story_flowered_lantern_2")
@@ -1242,7 +1249,7 @@ label mas_scary_story_flowered_lantern_2:
     m "On his way back, he passed a cemetery next to a temple."
     m 4ekd "His attention was attracted by a large new tomb, near the back that he hadn’t noticed before."
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
-        show mas_lantern zorder 75
+        show mas_lantern zorder 75 at right
     m 4eud "Hanging above it was a paper lantern decorated with beautiful flowers that looked exactly the same as the one that Tsuyu carried with her at night."
     m "Intrigued, he walked towards it, as he looked at the name of the person it belonged to, he jumped back with fright as he read it belonged to his beloved Tsuyu."
     m "Terror stricken, Hagiwara immediately headed into the adjoining temple and asked to speak to the head priest."
@@ -1300,12 +1307,20 @@ label mas_scary_story_flowered_lantern_3:
     # Natuki rects
     if _mas_rects_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         play sound "sfx/glitch1.ogg"
-        show rects_bn1
-        show rects_bn2
-        show rects_bn3
+        show rects_bn1 zorder 80
+        show rects_bn2 zorder 80
+        show rects_bn3 zorder 80
+        pause 0.5
         $ style.say_dialogue = style.edited
-        ".{w=0.5}.{w=0.5}.{nw}"
+        ".{w=0.7}.{w=0.9}.{nw}"
         $ style.say_dialogue = style.default_monika
+        stop sound
+        hide rects_bn1
+        hide rects_bn2
+        hide rects_bn3
+        show black zorder 100
+        $ pause(1.5)
+        hide black
 
     m "The next day, the servant awoke and approached his master’s room and knocked upon his door."
     m "For the first time in years he didn’t receive a response and he was worried."
@@ -1318,7 +1333,3 @@ label mas_scary_story_flowered_lantern_3:
     m "Lying beside him in the bed were the bones of a woman and the bones of the arms and hands clung fast around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
-
-#next one is botan doro
-#Maybe after it says her eye is looking in at the guy
-#natuski rects
