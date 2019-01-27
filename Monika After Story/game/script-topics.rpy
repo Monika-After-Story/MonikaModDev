@@ -3401,9 +3401,10 @@ label monika_playersface:
         m 5eka "As nice as that would be, I'm really happy you shared your appearance with me."
         m 5rsc "I know that some people like to keep their appearance to themselves..."
         m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
-        m 5luu "and I'll always enjoy thinking about the kind of expressions you make..."
+        m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
         m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
-        m 5esu "You must look so beautiful, inside and out."
+        if mas_isMoniHappy(higher=True):
+            m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
         m 5tsu "Even if I never get to see you..."
         m "Just thinking about you is enough to make me happy."
     else:    
