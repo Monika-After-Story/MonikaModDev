@@ -2292,6 +2292,9 @@ label mas_dockstat_abort_gen:
         $ persistent._mas_player_bday_left_on_bday = False
         $ persistent._mas_player_bday_date -= 1
 
+    if persistent._mas_f14_on_date:
+        $ persistent._mas_f14_on_date = False
+        $ persistent._mas_f14_date -= 1
     return
 
 

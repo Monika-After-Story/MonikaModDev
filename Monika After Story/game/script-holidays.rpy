@@ -3846,6 +3846,10 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
+default persistent._mas_f14_in_f14_mode = None
+default persistent._mas_f14_date = 0
+default persistent._mas_f14_date_aff_gain = 0
+default persistent._mas_f14_on_date = None
 define mas_f14 = datetime.date(datetime.date.today().year,2,14)
 
 #Is it vday
@@ -3855,6 +3859,8 @@ init -10 python:
             _date = datetime.date.today()
 
         return _date == mas_f14.replace(year=_date.year)
+
+#TODO: f14 autoload check for outfit, make sure flowers are present if gifted, set f14 mode to False post f14
 
 ##### Start [HOL050] TOPICS
 
@@ -4252,3 +4258,59 @@ init 2 python:
     )
 
 ### TODO: [HOL050] Dockstat greets/fares
+
+##################################################[HOL050] dockstat farwell###################################
+label bye_f14:
+    $ persistent._mas_f14_date += 1
+    $ persistent._mas_f14_on_date = True
+    if persistent._mas_f14_date == 1:
+        m 1sua "Taking me some place special for Valentine's Day, [player]?"
+        m 3hub "That sounds so romantic, I can't wait!"
+    elif persistent._mas_f14_date == 2:
+        m 1sua "Taking me out again on Valentine's Day?"
+        m 3hua "You really know how to make a girl feel special, [player]!"
+        m 1ekbfa "I'm so lucky to have someone like you~"
+    else:
+        m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
+        m 1ekbfa "You're the best partner I could ever hope for~"
+    jump bye_going_somewhere_iostart
+
+##################################################[HOL050] dockstat greet###################################
+label greeting_returned_home_f14:
+    python:
+        five_minutes = datetime.timedelta(seconds=5*60)
+        one_hour = datetime.timedelta(seconds=3600)
+        three_hour = datetime.timedelta(seconds=3*3600)
+        time_out = store.mas_dockstat.diffCheckTimes()
+
+        def cap_gain_aff(amt):
+            if default persistent._mas_f14_date_aff_gain < 25:
+                default persistent._mas_f14_date_aff_gain += amt
+                mas_gainAffection(amt, bypass=True)
+
+    if time_out < five_minutes:
+        $ mas_loseAffection()
+        m 2ekp "That wasn't much of a date, [player]..."
+        m 2eksdlc "I hope nothing happened."
+        m 2rksdla "Maybe we'll go out later..."
+
+    elif time_out < one_hour:
+        $ cap_gain_aff(5)
+        m 1eka "That was fun while it lasted, [player]..."
+        m 3hua "Thanks for making some time for me on Valentine's Day."
+
+    elif time_out < three_hour:
+        $ cap_gain_aff(10)
+        m 1eub "That was such a fun date, [player]!"
+        m 3ekbfa "Thanks for making me feel special on Valentine's Day~"
+
+    else:
+        # more than 3 hours
+        $ cap_gain_aff(15)
+        m 1hua "And we're home!"
+        m 3hub "That was wonderful, [player]!"
+        m 1eka "It was so nice going out with you on Valentine's Day..."
+        m 1ekbfa "Thanks for making today truly special~"
+
+    $ persistent._mas_f14_on_date = False
+    return

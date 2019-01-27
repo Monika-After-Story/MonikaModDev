@@ -2875,6 +2875,9 @@ label greeting_returned_home:
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
 
+    if persistent._mas_f14_on_date:
+        jump greeting_returned_home_f14
+
     # main dialogue
     if time_out > five_minutes:
 
