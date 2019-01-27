@@ -6654,6 +6654,20 @@ image monika 1hkbla = DynamicDisplayable(
     blush="lines"
 )
 
+image monika 1hkbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1dkbla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9812,6 +9826,20 @@ image monika 3tku = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tkbsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="f",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
+)
+
 image monika 3tkd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -10728,10 +10756,24 @@ image monika 3ekbsa = DynamicDisplayable(
     nose="def",
     mouth="smile",
     head="a",
-    left="1l",
+    left="2l",
     right="1r",
     arms="restleftpointright",
     blush="shade"
+)
+
+image monika 3ekbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines"
 )
 
 image monika 3subfb = DynamicDisplayable(
@@ -10757,7 +10799,7 @@ image monika 3skbltda = DynamicDisplayable(
     mouth="smile",
     head="b",
     left="2l",
-    right="2r",
+    right="1r",
     arms="restleftpointright",
     blush="lines",
     tears="dried"
@@ -11729,6 +11771,19 @@ image monika 4rsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4rkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
     eyes="right",
     nose="def",
     mouth="smirk",

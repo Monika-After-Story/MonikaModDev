@@ -3237,7 +3237,7 @@ label greeting_nyd_returned_nyd:
     m 1hua "And we're home!"
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "That was a lot of fun, [player]!"
-    m 5eka "It's really nice of you to take me with you on special days like this." #add
+    m 5eka "It's really nice of you to take me with you on special days like this."
     m 5hub "I really hope we can spend more time like this together."
     return
 
@@ -4007,7 +4007,7 @@ label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
     m 3hub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
     m 1hua "A holiday that could fill everyone with love, romance, and joy!"
-    m 3ekbla "But it really feels nice if you get something from someone you like." #add
+    m 3ekbla "But it really feels nice if you get something from someone you like."
     m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
     if persistent._date_last_given_chocolates == mas_f14:
         m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
@@ -4046,14 +4046,14 @@ label monika_lovey_dovey:
     m 3ekbfb "Ahaha~"
     m 1eka "I hope that isn't too cheesy, [player]."
     if not renpy.seen_label('monika_valentines_start'):
-        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side." #add
+        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
     else:
         m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
     m 1ekbsa "I really meant what I said."
     m "I love and care for you so much..."
     m "Without you, I don't know where I'd be..."
     m 1ekbfa "So I want to thank you for caring for me."
-    m 1hkbfa "Ehehe~" #add
+    m 1hkbfa "Ehehe~"
     return
 
 #init 5 python:
@@ -4131,7 +4131,7 @@ label mas_f14_no_time_spent:
         m 2tkc "I'm pretty disappointed..."
         m 2tkd "You didn't visit me at all on Valentine's Day."
         m 4tkc "You know that all I want to do is spend time with you..."
-        m 4rkd "Is visiting your girlfriend on Valentine's Day really too much to ask?" #add
+        m 4rkd "Is visiting your girlfriend on Valentine's Day really too much to ask?"
         m 4eksdla "Please...{w=1}make sure you visit me next Valentine's Day, okay?"
 
     elif mas_isMoniUpset():
@@ -4264,11 +4264,12 @@ label bye_f14:
     $ persistent._mas_f14_date += 1
     $ persistent._mas_f14_on_date = True
     if persistent._mas_f14_date == 1:
-        m 1sua "Taking me some place special for Valentine's Day, [player]?"
-        m 3hub "That sounds so romantic, I can't wait!"
+        m 1sua "Taking me some place special for Valentine's Day?"
+        m 1ekbsa "That sounds really romantic [player]..."
+        m 3hub "I can't wait!"
     elif persistent._mas_f14_date == 2:
         m 1sua "Taking me out again on Valentine's Day?"
-        m 3hua "You really know how to make a girl feel special, [player]!"
+        m 3tkbsu "You really know how to make a girl feel special, [player]."
         m 1ekbfa "I'm so lucky to have someone like you~"
     else:
         m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
@@ -4291,13 +4292,13 @@ label greeting_returned_home_f14:
     if time_out < five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
-        m 2eksdlc "I hope nothing happened."
-        m 2rksdla "Maybe we'll go out later..."
+        m 2eksdlc "Is everything alright?"
+        m 2rksdla "Maybe we can go out later..."
 
     elif time_out < one_hour:
         $ cap_gain_aff(5)
         m 1eka "That was fun while it lasted, [player]..."
-        m 3hua "Thanks for making some time for me on Valentine's Day."
+        m 3hua "Thanks for making time for me on Valentine's Day."
 
     elif time_out < three_hour:
         $ cap_gain_aff(10)
@@ -4309,8 +4310,8 @@ label greeting_returned_home_f14:
         $ cap_gain_aff(15)
         m 1hua "And we're home!"
         m 3hub "That was wonderful, [player]!"
-        m 1eka "It was so nice going out with you on Valentine's Day..."
-        m 1ekbfa "Thanks for making today truly special~"
+        m 1eka "It was really nice going out with you on Valentine's Day..."
+        m 1ekbfa "Thank you so much for making today truly special~"
 
     $ persistent._mas_f14_on_date = False
     return
