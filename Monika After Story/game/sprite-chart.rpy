@@ -5008,6 +5008,20 @@ image monika 1hksdlb = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1hksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
 image monika 1lksdla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6033,6 +6047,19 @@ image monika 1rkc = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1rkd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1rud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6347,6 +6374,20 @@ image monika 1dsbso = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1dsbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1dftsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6380,6 +6421,19 @@ image monika 1cua = DynamicDisplayable(
     character=monika_chr,
     eyebrows="up",
     eyes="crazy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1dua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
     nose="def",
     mouth="smile",
     head="j",
@@ -11800,6 +11854,19 @@ image monika 4rkc = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4rkd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
     head="h",
     left="2l",
     right="2r",
