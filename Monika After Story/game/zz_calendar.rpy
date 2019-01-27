@@ -1805,37 +1805,41 @@ init 2 python in mas_calendar:
             changed - flag to specify that we need to change the
                 old events from the calendar
         """
+        WINTER = "Winter"
+        SPRING = "Spring"
+        SUMMER = "Summer"
+        AUTUMN = "Autumn"
 
         # Season changes:
         if renpy.game.persistent._mas_pm_live_south_hemisphere:
-            _season_names = ["Summer","Autumn","Winter","Spring"]
+            _season_names = [SUMMER,AUTUMN,WINTER,SPRING]
         else:
-            _season_names = ["Winter","Spring","Summer","Autumn"]
+            _season_names = [WINTER,SPRING,SUMMER,AUTUMN]
 
         if changed:
             updateRepeatableDisplayableLabel(
-                _season_names[0],
+                WINTER,
                 _season_names[2],
                 store.mas_winter_solstice.month,
                 store.mas_winter_solstice.day
             )
 
             updateRepeatableDisplayableLabel(
-                _season_names[1],
+                SPRING,
                 _season_names[3],
                 store.mas_spring_equinox.month,
                 store.mas_spring_equinox.day
             )
 
             updateRepeatableDisplayableLabel(
-                _season_names[2],
+                SUMMER,
                 _season_names[0],
                 store.mas_summer_solstice.month,
                 store.mas_summer_solstice.day
             )
 
             updateRepeatableDisplayableLabel(
-                _season_names[3],
+                AUTUMN,
                 _season_names[1],
                 store.mas_fall_equinox.month,
                 store.mas_fall_equinox.day
@@ -1844,25 +1848,25 @@ init 2 python in mas_calendar:
         else:
 
             addRepeatable_d(
-                _season_names[0],
+                WINTER,
                 _season_names[0],
                 store.mas_winter_solstice,
                 []
             )
             addRepeatable_d(
-                _season_names[1],
+                SPRING,
                 _season_names[1],
                 store.mas_spring_equinox,
                 []
             )
             addRepeatable_d(
-                _season_names[2],
+                SUMMER,
                 _season_names[2],
                 store.mas_summer_solstice,
                 []
             )
             addRepeatable_d(
-                _season_names[3],
+                AUTUMN,
                 _season_names[3],
                 store.mas_fall_equinox,
                 []
