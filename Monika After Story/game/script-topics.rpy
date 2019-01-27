@@ -3405,8 +3405,8 @@ label monika_playersface:
         m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
         if mas_isMoniHappy(higher=True):
             m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
-        m 5tsu "Even if I never get to see you..."
-        m "Just thinking about you is enough to make me happy."
+        m 5eka "Even if I never get to see you..."
+        m 5eua "Just thinking about you is enough to make me happy."
     else:    
         m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
         m 5luu "But...I'll always wonder what kind of expressions you make."
