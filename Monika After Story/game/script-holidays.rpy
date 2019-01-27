@@ -4285,8 +4285,8 @@ label greeting_returned_home_f14:
         time_out = store.mas_dockstat.diffCheckTimes()
 
         def cap_gain_aff(amt):
-            if default persistent._mas_f14_date_aff_gain < 25:
-                default persistent._mas_f14_date_aff_gain += amt
+            if persistent._mas_f14_date_aff_gain < 25:
+                persistent._mas_f14_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
 
     if time_out < five_minutes:
