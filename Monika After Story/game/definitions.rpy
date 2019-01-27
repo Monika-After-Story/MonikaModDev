@@ -5362,6 +5362,7 @@ define mas_is_snowing = False
 # idle
 define mas_in_idle_mode = False
 default persistent._mas_in_idle_mode = False
+default persistent._mas_idle_data = {}
 
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA

@@ -749,6 +749,10 @@ label mas_crashed_prelong:
 # long flow involves 2 questions
 label mas_crashed_long_qs:
 
+    ## TESTING
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "I KNOW YOU CRASHED (long)"
+
     # start off in the dark
     m "[player]?{w} Is that you?"
     show screen mas_background_timed_jump(4, "mas_crashed_long_uthere")
@@ -961,6 +965,10 @@ label mas_crashed_short:
 
         # pull a quip
         t_quip, v_quip = q_list.quip()
+
+    ## TESTING
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "I KNOW YOU CRASHED (short)"
 
     if t_quip == MASQuipList.TYPE_LABEL:
         call expression v_quip

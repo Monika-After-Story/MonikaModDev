@@ -244,8 +244,10 @@ label chara_monika_scare:
     return
 
 #These are the comments made when you restart the game the first few times
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+# NOTE: these are now triaged by a function in script-greetings
+
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_0:
     call ch30_reload_0_dlg
@@ -263,10 +265,15 @@ label ch30_reload_0_dlg:
     m 1ekc "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m 1eka "If you could figure out what's causing that, I'll love you forever~"
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (ch30 0)"
+
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_1:
     call ch30_reload_1_dlg
@@ -291,8 +298,8 @@ label ch30_reload_1_dlg:
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_2:
     call ch30_reload_2_dlg
@@ -318,8 +325,8 @@ label ch30_reload_2_dlg:
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_3:
     call ch30_reload_3_dlg
@@ -345,13 +352,14 @@ label ch30_reload_3_dlg:
 
 #This reload event gets pushed when you reach the end of the scripted reload events
 #Be sure to increment the check if more reload events are added
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_continuous',action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_continuous',action=EV_ACT_PUSH))
     #Make sure that the conditional is ready even if the event has been loaded before
-    evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
+#    evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
 
 label ch30_reload_continuous:
     call ch30_reload_continuous_dlg
+    $ mas_incMoniReload()
     return
     
 label ch30_reload_continuous_dlg:
@@ -408,4 +416,9 @@ label ch30_reload_continuous_dlg:
             reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (continous)"
+
     return

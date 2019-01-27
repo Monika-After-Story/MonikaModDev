@@ -13,16 +13,12 @@ init 5 python:
     )
 
 
-init -1 python in mas_greetings:
-
-    TYPE_IDLE_RET_TEST = "idle_test"
-
 
 label dev_idle_test:
     m 1eua "Hi there! I will test idle mode now."
-    
-    # set crash/quit greeting
-    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_IDLE_RET_TEST
+
+    # set idle data
+    $ persistent._mas_idle_data["dev_idle_test"] = True
 
     # set return label when done with idle
     $ mas_idle_mailbox.send_idle_cb("dev_idle_test_cb")
@@ -36,63 +32,4 @@ label dev_idle_test_cb:
     return
 
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_dev_idle_test",
-            unlocked=True,
-            category=[
-                store.mas_greetings.TYPE_IDLE_RET_TEST,
-            ],
-        ),
-        code="GRE"
-    )
 
-label greeting_dev_idle_test:
-    # we can always assume the following:
-    # - if crashed, we do NOT have visuals
-    # - if force closed, we HAVE visuals
-
-    if persistent._mas_idle_mode_was_crashed:
-
-        # NOTE: when first crashed, you might want to launch a slightly custom
-        #   version of the existing first crash dialogue.
-        #   See the mas_crashed_start label in script-story-events for labels
-        #   you can call to trigger certain bits of the starting crash setup
-
-        # NOTE: mas_crashed_post will reset many things so that normal
-        #   spaceroom operation will occur. Best to call that at the end of
-        #   your crashed flow.
-
-        if persistent._mas_crashed_before:
-            # crashed
-
-            # this restores visuals and other things
-            call mas_crashed_preshort
-
-            m 1hua "i THINK you CRASHSED"
-
-            call mas_crashed_post
-
-        else:
-            # first time crash
-
-            # this just sets some vars
-            call mas_crashed_prelong
-
-            $ scene_change = True
-            call spaceroom
-            
-            m 1hua "i THINK you CRASHED for the first time"
-
-            call mas_crashed_post
-
-    else:
-        # quit
-        m 2efc "I think YOU closed THE game ON me"
-
-        # NOTE: ch30 reload dialogue may also occur.
-
-    m "okay we good now."
-    return

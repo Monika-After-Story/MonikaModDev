@@ -59,6 +59,9 @@ init -1 python in mas_greetings:
     # crashed only
     TYPE_CRASHED = "generic_crash"
 
+    # reload dialogue only
+    TYPE_RELOAD = "reload_dlg"
+
     # idle mode returns
     # these are meant if you had a game crash/quit during idle mode
 
@@ -3263,4 +3266,28 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="ch30_reload_delegate",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_RELOAD
+            ],
+        ),
+        code="GRE"
+    )
+
+label ch30_reload_delegate:
+
+    if persistent.monika_reload >= 4:
+        call ch30_reload_continuous
+
+    else:
+        $ reload_label = "ch30_reload_" + str(persistent.monika_reload)
+        call expression reload_label
+
     return

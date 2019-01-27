@@ -524,8 +524,7 @@ init python:
         global mas_in_idle_mode
         mas_in_idle_mode = False
         persistent._mas_in_idle_mode = False
-        persistent._mas_idle_mode_was_crashed = False
-        persistent._mas_greeting_type = None
+        persistent._mas_idle_data = {}
         mas_idle_mailbox.get_idle_cb()
 
 
@@ -903,6 +902,8 @@ label mas_ch30_post_holiday_check:
 
     # post greeting selected callback
     $ gre_cb_label = None
+    $ just_crashed = False
+    $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
@@ -910,67 +911,71 @@ label mas_ch30_post_holiday_check:
             and not persistent._mas_sensitive_mode
         ):
         call yuri_name_scare from _call_yuri_name_scare
- 
-    elif persistent._mas_game_crashed:
-        # this is only False if we had a forced quit.
+        
+        # this skips greeting algs
+        jump ch30_post_greeting_check
 
-        python:
-            # not closed self means we must have crashed.
-            just_crashed = not persistent.closed_self
+    elif not persistent._mas_game_crashed:
+        # if this is False, a force quit happened
+        $ forced_quit = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RELOAD
+
+    elif not persistent.closed_self:
+        # this (+ game_crashed being True) means we crashed
+        $ just_crashed = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CRASHED
+
+        # we dont consider crashes as bad quits
+        $ persistent.closed_self = True
+
+    # else, we are in regular mode.
+
+    # greeting selection
+    python:
+
+        # we select a greeting depending on the type that we should select
+        sel_greeting_ev = store.mas_greetings.selectGreeting(
+            persistent._mas_greeting_type
+        )
+
+        # reset the greeting type flag back to None
+        persistent._mas_greeting_type = None
+
+        if sel_greeting_ev is None:
+            # special cases to deal with when no greeting is found.
+
+            if persistent._mas_in_idle_mode:
+                # currently in idle mode? reset please
+                mas_resetIdleMode()
 
             if just_crashed:
-                # we definitely just crashed. must determine if idle or not
-                persistent.closed_self = True
+                # but if we just crashed, then we want to select the 
+                # only crashed greeting.
+                # NOTE: we shouldnt actually have to do this ever, but
+                #   its here as a sanity check
+                sel_greeting_ev = mas_getEV("mas_crashed_start")
 
-                if not persistent._mas_in_idle_mode:
-                    # not in idle, so we must force greeting type
-                    persistent._mas_greeting_type = (
-                        store.mas_greetings.TYPE_CRASHED
-                    )
+            elif forced_quit:
+                # if we just forced quit, then we want to select the only
+                # reload greeting.
+                # NOTE: again, shouldnt have to do this, but its sanity checks
+                sel_greeting_ev = mas_getEV("ch30_reload_delegate")
 
-            # we select a greeting depending on the type that we should select
-            sel_greeting_ev = store.mas_greetings.selectGreeting(
-                persistent._mas_greeting_type
+
+        # NOTE: this MUST be an if. it may be True if we crashed but
+        #   didnt get a greeting to show. 
+        if sel_greeting_ev is not None:
+            selected_greeting = sel_greeting_ev.eventlabel
+
+            # store if we have to skip visuals ( used to prevent visual bugs)
+            mas_skip_visuals = MASGreetingRule.should_skip_visual(
+                event=sel_greeting_ev
             )
 
-            # reset the greeting type flag back to None
-            persistent._mas_greeting_type = None
-
-            if sel_greeting_ev is None:
-                # special cases to deal with when no greeting is found.
-
-                if persistent._mas_in_idle_mode:
-                    # currently in idle mode? reset please
-                    mas_resetIdleMode()
-
-                if just_crashed:
-                    # but if we just crashed, then we want to select the 
-                    # only crashed greeting.
-                    # NOTE: we shouldnt actually have to do this ever, but
-                    #   its here as a sanity check
-                    sel_greeting_ev = mas_getEV("mas_crashed_start")
-
-
-            # NOTE: this MUST be an if. it may be True if we crashed but
-            #   didnt get a greeting to show. 
-            if sel_greeting_ev is not None:
-                selected_greeting = sel_greeting_ev.eventlabel
-
-                # store if we have to skip visuals ( used to prevent visual bugs)
-                mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                    event=sel_greeting_ev
-                )
-
-                # see if we need to do a label
-                setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
-                if setup_label is not None and renpy.has_label(setup_label):
-                    gre_cb_label = setup_label
-
-            # final checks for idle mode stuff
-            if persistent._mas_in_idle_mode and just_crashed:
-                # NOTE: we always skip visuals when in idle mode and crash
-                mas_skip_visuals = True
-                persistent._mas_idle_mode_was_crashed = True
+            # see if we need to do a label
+            setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
+            if setup_label is not None and renpy.has_label(setup_label):
+                gre_cb_label = setup_label
 
     
     # call pre-post greeting check setup label
