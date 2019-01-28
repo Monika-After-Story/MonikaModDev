@@ -1722,23 +1722,6 @@ init -1 python in mas_calendar:
         removeRepeatable_d(identifier, _datetime.date())
 
 
-    def updateRepeatableDisplayableLabel(identifier, new_label, month, day):
-        """
-        Updates an already existing event's displayable label.
-        It does nothing if the event doesn't exist.
-
-        IN:
-            identifier - identifier of the event to update
-            new_label - the new label to put on the event
-            month - the event's month
-            day - the event's day
-        """
-        _events = calendar_database[month][day]
-
-        if identifier in _events:
-            _ev = _events[identifier]
-            _events[identifier] = (_ev[0], new_label, _ev[2])
-
 
 # add repeatable events
 init python:
@@ -1797,7 +1780,7 @@ init python:
 init 2 python in mas_calendar:
     import store
 
-    def addSeasonEvents(changed=False):
+    def addSeasonEvents():
         """
         Adds season change events to the calendar.
         If the changed param is True it changes the old events.
@@ -1816,61 +1799,30 @@ init 2 python in mas_calendar:
         else:
             _season_names = [WINTER,SPRING,SUMMER,AUTUMN]
 
-        if changed:
-            updateRepeatableDisplayableLabel(
-                WINTER,
-                _season_names[2],
-                store.mas_winter_solstice.month,
-                store.mas_winter_solstice.day
-            )
-
-            updateRepeatableDisplayableLabel(
-                SPRING,
-                _season_names[3],
-                store.mas_spring_equinox.month,
-                store.mas_spring_equinox.day
-            )
-
-            updateRepeatableDisplayableLabel(
-                SUMMER,
-                _season_names[0],
-                store.mas_summer_solstice.month,
-                store.mas_summer_solstice.day
-            )
-
-            updateRepeatableDisplayableLabel(
-                AUTUMN,
-                _season_names[1],
-                store.mas_fall_equinox.month,
-                store.mas_fall_equinox.day
-            )
-
-        else:
-
-            addRepeatable_d(
-                WINTER,
-                _season_names[0],
-                store.mas_winter_solstice,
-                []
-            )
-            addRepeatable_d(
-                SPRING,
-                _season_names[1],
-                store.mas_spring_equinox,
-                []
-            )
-            addRepeatable_d(
-                SUMMER,
-                _season_names[2],
-                store.mas_summer_solstice,
-                []
-            )
-            addRepeatable_d(
-                AUTUMN,
-                _season_names[3],
-                store.mas_fall_equinox,
-                []
-            )
+        addRepeatable_d(
+            WINTER,
+            _season_names[0],
+            store.mas_winter_solstice,
+            []
+        )
+        addRepeatable_d(
+            SPRING,
+            _season_names[1],
+            store.mas_spring_equinox,
+            []
+        )
+        addRepeatable_d(
+            SUMMER,
+            _season_names[2],
+            store.mas_summer_solstice,
+            []
+        )
+        addRepeatable_d(
+            AUTUMN,
+            _season_names[3],
+            store.mas_fall_equinox,
+            []
+        )
 
     addSeasonEvents()
 

@@ -10554,29 +10554,18 @@ label monika_hemispheres:
     m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
     m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
     m 2eka "But anyway..."
-    $ _old_value = persistent._mas_pm_live_south_hemisphere
     menu:
         m "Which hemisphere do you live in, [player]?"
 
         "The Northern hemisphere.":
-            if _old_value is None:
-                $ _changed = False
-            else:
-                $ _changed = _old_value != persistent._mas_pm_live_south_hemisphere
-            $ store.mas_calendar.addSeasonEvents(_changed)
             $ persistent._mas_pm_live_south_hemisphere = False
             m 2eka "I had a feeling..."
 
         "The Southern hemisphere.":
-            if _old_value is None:
-                $ _changed = True
-            else:
-                $ _changed = _old_value != persistent._mas_pm_live_south_hemisphere
-            $ store.mas_calendar.addSeasonEvents(_changed)
             $ persistent._mas_pm_live_south_hemisphere = True
             m 1wuo "I wouldn't have thought!"
 
-
+    $ store.mas_calendar.addSeasonEvents()
     m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
     m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
     if not persistent._mas_pm_live_south_hemisphere:
