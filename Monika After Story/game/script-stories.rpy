@@ -42,8 +42,8 @@ init -1 python in mas_stories:
             story.unlocked = True
 
 
-    def unlock_pooled_story(label):
-        _story = store.mas_getEV(label)
+    def unlock_pooled_story(event_label):
+        _story = store.mas_getEV(event_label)
         if _story is not None:
             _story.unlocked = True
             _story.pool = False
