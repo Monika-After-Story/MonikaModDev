@@ -238,7 +238,7 @@ label mas_monikamovie:
 
         menu:
             "Ready?"
-            "Yes":
+            "Yes.":
                 label mm_movie_resume:
                     $ mas_RaiseShield_dlg()
                     m 1eua "Three...{w=1}{nw}"
@@ -265,7 +265,7 @@ label mas_monikamovie:
 
                         jump movie_loop
 
-            "No":
+            "No.":
                 hide countdown # Dupicated code, call function?
                 $ MovieOverlayHideButtons()
                 m 1eua "Oh, okay! I will just wait for you then~"
@@ -294,10 +294,10 @@ label mas_monikamovie:
         m 1eub "Oh, you just paused the movie, [player]."
         menu:
             "Do want to continue?"
-            "Yes":
+            "Yes.":
                 m 1hua "Okay, [player]."
                 jump mm_movie_resume
-            "No":
+            "No.":
                 m 1eua "Oh, alright then, [player]."
                 jump mm_movie_loop_end
 
