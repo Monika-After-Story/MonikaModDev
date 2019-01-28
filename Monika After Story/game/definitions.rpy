@@ -119,6 +119,9 @@ python early:
     #       NOTE: the tuple items should be AFFECTION STATES.
     #           not using an affection state may break things
     #       (Default: None)
+    #   show_in_idle - True if this Event can be shown during idle
+    #       False if not
+    #       (Default: False)
     class Event(object):
 
         # tuple constants
@@ -141,7 +144,8 @@ python early:
             "last_seen":15,
             "years":16,
             "sensitive":17,
-            "aff_range":18
+            "aff_range":18,
+            "show_in_idle":19,
         }
 
         # name constants
@@ -186,7 +190,8 @@ python early:
                 last_seen=None,
                 years=None,
                 sensitive=False,
-                aff_range=None
+                aff_range=None,
+                show_in_idle=False
             ):
 
             # setting up defaults
@@ -288,7 +293,8 @@ python early:
                 last_seen,
                 years,
                 sensitive,
-                aff_range
+                aff_range,
+                show_in_idle
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -336,6 +342,9 @@ python early:
                     self.diary_entry = diary_entry
 #                    self.rules = rules
                     self.years = years
+                    self.sensitive = sensitive
+                    self.aff_range = aff_range
+                    self.show_in_idle = show_in_idle
 
             # new items are added appropriately
             else:
@@ -4100,6 +4109,13 @@ init 2 python:
         return
 
 
+    def mas_incMoniReload():
+        """
+        Increments the monika reload counter unless its at max
+        """
+        if persistent.monika_reload < 4:
+            persistent.monika_reload += 1
+
 
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
@@ -5342,6 +5358,11 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# idle
+define mas_in_idle_mode = False
+default persistent._mas_in_idle_mode = False
+default persistent._mas_idle_data = {}
 
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
