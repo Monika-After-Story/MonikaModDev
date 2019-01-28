@@ -3770,7 +3770,7 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
         # lock and derandom monika_plushie when removing plushie
-        store.mas_hideEVL("monika_plushie","EVE",lock=True,derandom=False)
+        store.mas_hideEVL("monika_plushie","EVE",lock=True,derandom=True)
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
