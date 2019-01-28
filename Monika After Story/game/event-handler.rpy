@@ -1751,7 +1751,9 @@ label call_next_event:
                 $ mas_rebuildEventLists()
 
             if "quit" in _return:
-                $persistent.closed_self = True #Monika happily closes herself
+                $ persistent.closed_self = True #Monika happily closes herself
+                # remove plushie here to allow PP to run so we can derandom monika_plushie
+                $ monika_chr.remove_acs(mas_acs_quetzalplushie)
                 jump _quit
 
         # loop over until all events have been called

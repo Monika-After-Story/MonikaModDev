@@ -5579,18 +5579,16 @@ label monika_pets:
     return
 
 init 5 python:
-    # only want this available if the plushie is out
-    if monika_chr.is_wearing_acs(mas_acs_quetzalplushie):
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="monika_plushie",
-                category=['misc'],
-                prompt="Quetzal plushie",
-                random=True,
-                aff_range=(mas_aff.NORMAL, None)
-            )
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_plushie",
+            category = ['misc'],
+            prompt = "Quetzal plushie",
+            aff_range=(mas_aff.NORMAL, None)
         )
+    )
 
 label monika_plushie:
     m 1eka "Hey, [player], I just wanted to thank you again for this wonderful quetzal plushie!"
