@@ -18,6 +18,7 @@ default mas_full_scares = False
 
 # store containing stories-related things
 init -1 python in mas_stories:
+    import store
 
     # TYPES:
     TYPE_SCARY = 0
@@ -40,6 +41,12 @@ init -1 python in mas_stories:
         for _, story in stories.iteritems():
             story.unlocked = True
 
+
+    def unlock_pooled_story(label):
+        _story = store.mas_getEV(label)
+        if _story is not None:
+            _story.unlocked = True
+            _story.pool = False
 
 
 # entry point for stories flow
@@ -1192,10 +1199,7 @@ label mas_scary_story_flowered_lantern:
     m 2dsd "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
     m "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu’s death."
     m 2dsc "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
-    $ _story = mas_getEV("mas_scary_story_flowered_lantern_2")
-    if _story is not None:
-        $ _story.unlocked = True
-        $ _story.pool = False
+    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
     m 1eua "That's it for part one, do you want to continue to the next one?"
     menu:
         "Yes.":
@@ -1257,12 +1261,9 @@ label mas_scary_story_flowered_lantern_2:
     m 4esd "After he had finished, the head priest told him his life was indeed in danger."
     m "Hagiwara’s intense grieving for her and her intense love for him had brought her back during the Festival of the Dead."
     m 4dsc "Love between one who is alive and one who is dead can only result in the death of the one who is alive."
-    $ _story = mas_getEV("mas_scary_story_flowered_lantern_3")
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         hide mas_lantern
-    if _story is not None:
-        $ _story.unlocked = True
-        $ _story.pool = False
+    $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
     m 1esa "That's it for part two, do you want to continue to the next one?"
     menu:
         "Yes.":
