@@ -5578,6 +5578,7 @@ label monika_pets:
         m 3hua "It was such a wonderful gift~"
     return
 
+# This topic is only available and random when the quetzal plushie is active
 init 5 python:
 
     addEvent(

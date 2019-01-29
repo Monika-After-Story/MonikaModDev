@@ -4097,6 +4097,11 @@ init 2 python:
 
             else:
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+        
+        else:
+            # run the plushie exit PP if plushie is not selected
+            mas_acs_quetzalplushie.exit(monika_chr)
+        
         return
 
 
