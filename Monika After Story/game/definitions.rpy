@@ -4089,6 +4089,8 @@ init 2 python:
         """
         # do we even have plushe enabled?
         if not persistent._mas_acs_enable_quetzalplushie:
+            # run the plushie exit PP in case plushie is no longer enabled
+            mas_acs_quetzalplushie.exit(monika_chr)
             return
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
