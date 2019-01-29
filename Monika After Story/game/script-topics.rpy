@@ -3451,7 +3451,7 @@ label monika_ribbon:
 
     else:
         m 3hksdlb "I hope you like it, you gave it to me after all, ahaha!"
-        m 1eka "It really was a wonderful gift, I think it's just beautiful!"
+        m 1eka "It really was a wonderful gift and I think it's just beautiful!"
         m 3eka "I'll wear it anytime you want, [player]~"
     return
 
