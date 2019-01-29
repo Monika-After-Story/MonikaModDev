@@ -3824,7 +3824,6 @@ init -1 python:
         ex_props={
             "ribbon": True
         }
-#        split=False
     )
     store.mas_sprites.init_hair(mas_hair_def)
     store.mas_selspr.init_selectable_hair(
