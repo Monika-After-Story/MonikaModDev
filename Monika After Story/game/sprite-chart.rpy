@@ -3525,7 +3525,7 @@ init -2 python in mas_sprites:
 
         # the musicnote necklace has issues with leaning
         # TODO: remove this once we have split hair ready
-        temp_storage["musicnote_necklace"] = (
+        temp_storage["hair.def"] = (
             store.mas_acs_musicnote_necklace_gold.pose_map
         )
         store.mas_acs_musicnote_necklace_gold.pose_map = store.MASPoseMap(
@@ -3540,7 +3540,7 @@ init -2 python in mas_sprites:
         """
         # restore musicnote necklace
         # TODO: remove this once we have split hair ready
-        old_pose_map = temp_storage.get("musicnote_necklace", None)
+        old_pose_map = temp_storage.get("hair.def", None)
         if old_pose_map is not None:
             store.mas_acs_musicnote_necklace_gold.pose_map = old_pose_map
 
@@ -3562,7 +3562,7 @@ init -2 python in mas_sprites:
 
         # the musicnote necklace has issues with leaning
         # TODO: remove this once we have split hair rady
-        temp_storage["musicnote_necklace"] = (
+        temp_storage["hair.down"] = (
             store.mas_acs_musicnote_necklace_gold.pose_map
         )
         store.mas_acs_musicnote_necklace_gold.pose_map = store.MASPoseMap(
@@ -3577,7 +3577,7 @@ init -2 python in mas_sprites:
         """
         # restore musicnote necklace
         # TODO: remove this once we have split hair ready
-        old_pose_map = temp_storage.get("musicnote_necklace", None)
+        old_pose_map = temp_storage.get("hair.down", None)
         if old_pose_map is not None:
             store.mas_acs_musicnote_necklace_gold.pose_map = old_pose_map
 
@@ -3626,7 +3626,7 @@ init -2 python in mas_sprites:
             p2=None,
             p3="1",
             p4=None,
-            p5="5",
+            p5="5old",
             p6=None
         )
 
@@ -3702,7 +3702,7 @@ init -2 python in mas_sprites:
             p2="6",
             p3="1",
             p4=None,
-            p5="5",
+            p5="5old",
             p6=None
         )
 
@@ -3775,7 +3775,7 @@ init -2 python in mas_sprites:
             p2="7",
             p3="1",
             p4=None,
-            p5="5",
+            p5="5old",
             p6=None
         )
 
@@ -3805,6 +3805,33 @@ init -2 python in mas_sprites:
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
+
+
+    def _clothes_sundress_white_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for sundress white
+        """
+        # change the promisering poses to the updated pose 5.
+        # TODO: this should be removed once we completely transition to 
+        #   new leaning
+        temp_storage["clothes.sundress"] = store.mas_acs_promisering.pose_map
+        store.mas_acs_promisering.pose_map = store.MASPoseMap(
+            p1=None,
+            p2="4",
+            p3="1",
+            p4=None,
+            p5="5",
+            p6=None
+        )
+
+
+    def _clothes_sundress_white_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for sundress white
+        """
+        sundress_map = temp_storage.get("clothes.sundress", None)
+        if sundress_map is not None:
+            store.mas_acs_promisering.pose_map = sundress_map
 
 
     ######### ACS ###########
@@ -4139,6 +4166,8 @@ init -1 python:
             use_reg_for_l=True,
         ),
         stay_on_start=True,
+        entry_pp=store.mas_sprites._clothes_sundress_white_entry,
+        exit_pp=store.mas_sprites._clothes_sundress_white_exit,
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
     store.mas_selspr.init_selectable_clothes(
@@ -4271,7 +4300,7 @@ init -1 python:
             p2="4",
             p3="1",
             p4=None,
-            p5="5",
+            p5="5old",
             p6=None
         ),
         stay_on_start=True,
