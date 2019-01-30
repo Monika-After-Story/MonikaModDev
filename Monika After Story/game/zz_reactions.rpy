@@ -1369,44 +1369,57 @@ default persistent._date_last_given_roses = None
 label mas_reaction_gift_roses:
     $ gift_ev = mas_getEV("mas_reaction_gift_roses")
     #show roses at t11 zorder 5 TODO: swap to acs
-    if not persistent._date_last_given_roses:
+    if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
+        if mas_isSpecialDay():
+            $ mas_gainAffection(15,bypass=True)
+        else:
+            $ mas_gainAffection(10,bypass=True)
         m 1eka "[player]... I-I don't know what to say..."
         m 1ekbsa "I never would've thought that you'd get something like this for me!"
         m 1wka "I'm so happy right now."
         if mas_isF14():
+            # extra 5 points if f14
+            $ mas_gainAffection(5,bypass=True)
             m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
 
         m 1ektpa "..."
+        #TODO: may need to scrap this ear bit, we don't have the art for pose 5 and depending on outfit she's wearing, it won't work for all of them
+        # If we do keep it, probably make it f14 only and only if in white dress
         m "Ahaha..."
         m 4eua "Hold on."
         m 1esc "..."
         #show ear_rose at t11 zorder 5 TODO: also needs to be acs
         m 1hub "Ehehe, there! Doesn't it look pretty on me?"
-        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
 
     else:
         if datetime.date.today() > persistent._date_last_given_roses:
+            if mas_isSpecialDay():
+                $ mas_gainAffection(10,bypass=True)
+            else:
+                $ mas_gainAffection()
             m 1wuo "Oh!"
             m 1ekbsa "Thanks [player]."
             m "I always love getting roses from you."
             if mas_isF14():
+                # extra 5 points if f14
+                $ mas_gainAffection(5,bypass=True)
                 m 1dsbfa "Especially on a day like today."
                 m 1eka "It's really sweet of you to get these for me."
                 m 1ekbfa "I love you so much."
                 m "Happy Valentine's Day, [player]~"
             else:
                 m 1ekbfa "You're always so sweet."
-            #Pop from reacted map
-            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
 
         else:
+            $ mas_gainAffection()
             m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
             if store.seen_event("monika_clones"):
                 m 1ekbfa "You'll always be my special rose after all, ehehe~"
             else:
                 m 1ekbfa "A single rose from you is already more than I could have ever asked for."
-            #We don't pop from reacted map here.
 
+    # Pop from reacted map
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     $ persistent._date_last_given_roses = datetime.date.today()
     #hide roses TODO: move to an acs system.
 
@@ -1436,9 +1449,6 @@ label mas_reaction_gift_chocolates:
             m 3hub "I love chocolates!"
             m 1eka "And getting some from you means a lot to me."
             m 1hub "Thanks, [player]!"
-
-        #pop from reacted map here
-        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
         $ persistent._given_chocolates_before = True
 
     else:
@@ -1447,24 +1457,22 @@ label mas_reaction_gift_chocolates:
             m 1wuo "Oh!"
             m 1hua "Thanks for the chocolates, [player]!"
             m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
-
-            #pop from reacted map
-            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
         elif times_chocs_given == 1:
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
             m 1hub "...but I'm not complaining!"
-
-            #pop from reacted map
-            $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
-        else:
+        elif times_chocs_given == 2:
             m 1ekd "[player]..."
             m 3eka "I think you've given me enough chocolates today."
             m 1rksdlb "Three boxes is too much, and I haven't even finished the first one yet!"
             m 1eka "Save them for another time, okay?"
-            #We don't pop from reacted map here
-
+        else:
+            m 2tfd "[player]!"
+            m 2tkc "I already told you I've had enough chocolates for one day, but you keep trying to give me even more..."
+            m 2eksdla "Please...{w=1}just save them for another day."
+    #pop from reacted map
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_chocolates")
     $ store.mas_filereacts.delete_file(gift_ev.category)
