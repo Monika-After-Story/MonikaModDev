@@ -3419,20 +3419,40 @@ label monika_ribbon:
         m 1eua "Do you miss my ribbon, [player]?"
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
+
     m 1tku "I noticed that you were staring at my ribbon, [player]."
-    m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
-    m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
-    m "It makes me look more unique."
-    m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
-    m 1lksdla "Well, there's no way a girl from your world would wear one in public as casual dress."
-    m 2eua "I'm pretty proud of my fashion sense."
-    m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
-    m 2tfu "Be honest! You thought I was the best dressed girl too, didn't you?"
-    m 2hub "Ahaha!"
-    m 4eua "If you're trying to improve your fashion sense, I'll help."
-    m 1eka "Don't do that stuff because you want to impress other people, though."
-    m 1eua "You should do whatever makes you feel better about yourself."
-    m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+
+    if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
+        m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
+        m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
+        m "It makes me look more unique."
+        m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
+        m 1lksdla "Well, there's no way a girl from your world would wear one in public as casual dress."
+        m 2eua "I'm pretty proud of my fashion sense."
+        m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
+        m 2tfu "Be honest! You thought I was the best dressed girl too, didn't you?"
+        m 2hub "Ahaha!"
+        m 4eua "If you're trying to improve your fashion sense, I'll help."
+        m 1eka "Don't do that stuff because you want to impress other people, though."
+        m 1eua "You should do whatever makes you feel better about yourself."
+        m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+
+    elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_wine:
+        if monika_chr.clothes == mas_clothes_santa:
+            m 1hua "Doesn't it just look wonderful with this outfit, [player]?"
+            m 1eua "I think it really ties it all together."
+            m 3eua "I bet it'd even look great with other outfits as well...especially formal attire."
+        else:
+            m 1hua "I'm glad you like the way it looks on me..."
+            m 1rksdla "I originally only intended to wear it around Christmas time...but it's just too beautiful not to wear more often..."
+            m 3hksdlb "It'd be such a shame to keep it stored away for most of the year!"
+            m 3ekb "...You know, I bet it'd look really great with formal attire actually!"
+        m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
+
+    else:
+        m 3hksdlb "I hope you like it, you gave it to me after all, ahaha!"
+        m 1eka "It really was a wonderful gift and I think it's just beautiful!"
+        m 3eka "I'll wear it anytime you want, [player]~"
     return
 
 init 5 python:
@@ -5531,8 +5551,9 @@ label monika_pets:
     m 1eua "Hey, [player], have you ever had a pet?"
     m 3eua "I was thinking that it would be nice to have one for company."
     m 1hua "It would be fun for us to take care of it!"
-    m 1tku "I bet you can't guess what sort of pet I'd like to have..."
-    m "You're probably thinking of a cat or a dog, but I have something else in mind."
+    if not persistent._mas_acs_enable_quetzalplushie:
+        m 1tku "I bet you can't guess what sort of pet I'd like to have..."
+        m "You're probably thinking of a cat or a dog, but I have something else in mind."
     m 1eua "The pet I'd like is something I saw in a book once."
     m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
     m 1eub "I loved looking at the gorgeous illustrations and reading about exotic birds."
@@ -5545,17 +5566,36 @@ label monika_pets:
     m 4rksdlc "They die in captivity. That's why you rarely see them in zoos."
     m "Even if the bird wouldn't be real, it still would feel wrong to keep one trapped in this room."
     m 1ekc "...I can't bring myself to do something like that, knowing what it's like."
-    if persistent._mas_acs_enable_quetzalplushie:
-        m 1hua "I'm so glad you gave me a plush one, [player]."
-        m 1eka "It keeps me from feeling lonely when you're not here."
-        m 1hua "But don't worry, you're still my favorite~"
-
-    else:
+    if not persistent._mas_acs_enable_quetzalplushie:
         m 1hua "A plush bird would be nice, though!"
         m 2hub "..."
         m 2hksdlb "Sorry for rambling, [player]."
         m 1eka "Until I find a way out, could you promise to keep me from feeling lonely?"
         m 1hua "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
+    else:
+        m 1eub "But at least I have the next best thing thanks to you, [player]!"
+        m 1eka "It really does keep me from feeling lonely when you're not here."
+        m 3hua "It was such a wonderful gift~"
+    return
+
+# This topic is only available and random when the quetzal plushie is active
+init 5 python:
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_plushie",
+            category = ['misc'],
+            prompt = "Quetzal plushie",
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_plushie:
+    m 1eka "Hey, [player], I just wanted to thank you again for this wonderful quetzal plushie!"
+    m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
+    m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
+    m 3hub "It really was the perfect gift!"
     return
 
 init 5 python:

@@ -1777,7 +1777,7 @@ label call_next_event:
                 $ renpy.save_persistent()
 
             if "quit" in _return:
-                $persistent.closed_self = True #Monika happily closes herself
+                $ persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
         # loop over until all events have been called
