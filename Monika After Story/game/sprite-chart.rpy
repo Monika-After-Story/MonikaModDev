@@ -4120,21 +4120,22 @@ init -1 python:
     mas_clothes_santa = MASClothes(
         "santa",
         "def",
+        # NOTE: this is disabled until santa is using new leaning
+#        MASPoseMap(
+#            default=True,
+#            use_reg_for_l=True
+#        ),
         MASPoseMap(
-            default=True,
-            use_reg_for_l=True
+            p1="steepling",
+            p2="crossed",
+            p3="restleftpointright",
+            p4="pointright",
+            p6="down"
         ),
+        fallback=True,
         hair_map={
             "bun": "def"
         },
-#        MASPoseMap(
-#            p1="steepling",
-#            p2="crossed",
-#            p3="restleftpointright",
-#            p4="pointright",
-#            p6="down"
-#        ),
-#        fallback=True,
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit
