@@ -3846,6 +3846,7 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
+default persistent._mas_f14_spent_f14 = False
 default persistent._mas_f14_in_f14_mode = None
 default persistent._mas_f14_date = 0
 default persistent._mas_f14_date_aff_gain = 0
@@ -3871,6 +3872,7 @@ init -10 python:
 #        Event(
 #            persistent.event_database,
 #            eventlabel="mas_f14_monika_vday_spent_time_with"
+#            conditional=("persistent._mas_f14_spent_f14")
 #        )
 #    )
 
@@ -4090,6 +4092,7 @@ label monika_valentines_intro:
         m "I'm really happy I'm your girlfriend, [player]."
     m 1ekbfa "I love you so much."
     m 1ekbfb "Happy Valentines day~"
+    $ persistent._mas_f14_spent_f14 = True
     return
 
 ### [HOL050] Notimespent
@@ -4101,6 +4104,9 @@ label monika_valentines_intro:
 #            eventlabel="mas_f14_no_time_spent",
 #            start_date=mas_f14+datetime.timedelta(1),
 #            end_date=mas_f14+datetime.timedelta(7)
+#            conditional=("not persistent._mas_long_absence"
+#                         " persistent._mas_f14_spent_f14") 
+             #TODO: the rest of this conditional. Also, should also do
 #        )
 #    )
 

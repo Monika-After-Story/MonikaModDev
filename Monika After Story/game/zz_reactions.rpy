@@ -1369,6 +1369,7 @@ default persistent._date_last_given_roses = None
 label mas_reaction_gift_roses:
     $ gift_ev = mas_getEV("mas_reaction_gift_roses")
     #show roses at t11 zorder 5 TODO: swap to acs
+    #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
         if mas_isSpecialDay():
             $ mas_gainAffection(15,bypass=True)
@@ -1421,16 +1422,14 @@ label mas_reaction_gift_roses:
     # Pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     $ persistent._date_last_given_roses = datetime.date.today()
-    #hide roses TODO: move to an acs system.
 
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_roses")
     $ store.mas_filereacts.delete_file(gift_ev.category)
-    #hide ear_rose | not this year. Come on, it's pretty cute. TODO: get leaning vers of this
+    #hide ear_rose | not this year. Come on, it's pretty cute. TODO: See previous TODO
     return
 
-#I'm really iffy on this lol. Needs a lot of review tbh.
-#Not that great at writing gift dlg lol
+
 init 5 python:
     addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True)
 
@@ -1440,7 +1439,19 @@ label mas_reaction_gift_chocolates:
     $ gift_ev = mas_getEV("mas_reaction_gift_chocolates")
 
     if not persistent._given_chocolates_before:
+        #Special day rules
+        if mas_isSpecialDay():
+            $ mas_gainAffection(5,bypass=True)
+        else:
+            $ mas_gainAffection()
+
         m 1tsu "That's so {i}sweet{/i} of you, ehehe~"
+        if mas_isF14():
+            #Extra little bump if on f14
+            $ mas_gainAffection(5,bypass=True)
+            m 1ekbsa "Giving me chocolates on Valentine's Day..."
+            m 1ekbfa "You really know how to make a girl feel special, [player]."
+            m "It means a lot getting these from you."
         if renpy.seen_label('monika_date'):
             m 3rka "I know I mentioned visiting a chocolate store together someday..."
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
@@ -1454,9 +1465,23 @@ label mas_reaction_gift_chocolates:
     else:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
         if times_chocs_given == 0:
+            if mas_isSpecialDay():
+                $ mas_gainAffection(3,bypass=True)
+            else:
+                $ mas_gainAffection()
             m 1wuo "Oh!"
-            m 1hua "Thanks for the chocolates, [player]!"
-            m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
+
+            if mas_isF14():
+                #Extra little bump if on f14
+                $ mas_gainAffection(5,bypass=True)
+                m 1eka "[player]!"
+                m 1ekbsa "You're such a sweetheart, getting me chocolates on a day like today..."
+                m 1ekbfa "You really know how to make me feel special."
+                m "Thanks, [player]."
+            else:
+                m 1hua "Thanks for the chocolates, [player]!"
+                m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
+
         elif times_chocs_given == 1:
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
