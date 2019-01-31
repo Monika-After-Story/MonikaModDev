@@ -3760,7 +3760,7 @@ init -2 python in mas_sprites:
             p2="6",
             p3="1",
             p4=None,
-            p5="5old",
+            p5=None,
             p6=None
         )
 
@@ -3833,7 +3833,7 @@ init -2 python in mas_sprites:
             p2="7",
             p3="1",
             p4=None,
-            p5="5old",
+            p5=None,
             p6=None
         )
 
@@ -3869,27 +3869,14 @@ init -2 python in mas_sprites:
         """
         Entry programming point for sundress white
         """
-        # change the promisering poses to the updated pose 5.
-        # TODO: this should be removed once we completely transition to 
-        #   new leaning
-        temp_storage["clothes.sundress"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2="4",
-            p3="1",
-            p4=None,
-            p5="5",
-            p6=None
-        )
+        pass
 
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
-        sundress_map = temp_storage.get("clothes.sundress", None)
-        if sundress_map is not None:
-            store.mas_acs_promisering.pose_map = sundress_map
+        pass
 
 
     ######### ACS ###########
@@ -4360,7 +4347,7 @@ init -1 python:
             p2="4",
             p3="1",
             p4=None,
-            p5="5old",
+            p5="5",
             p6=None
         ),
         stay_on_start=True,
@@ -4769,6 +4756,7 @@ init -1 python:
     ## ribbon_wine
     # Wine ribbon for ponytail/bun hairstyles. This matches the santa outfit
     # thanks Ryuse
+    # NOTE: we may have to disable this
     mas_acs_ribbon_wine = MASAccessory(
         "ribbon_wine",
         "ribbon_wine",
