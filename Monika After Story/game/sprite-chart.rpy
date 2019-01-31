@@ -3581,26 +3581,12 @@ init -2 python in mas_sprites:
         if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
             store.mas_unlockEVL("monika_ribbon_select", "EVE")
 
-        # the musicnote necklace has issues with leaning
-        # TODO: remove this once we have split hair ready
-        temp_storage["hair.def"] = (
-            store.mas_acs_musicnote_necklace_gold.pose_map
-        )
-        store.mas_acs_musicnote_necklace_gold.pose_map = store.MASPoseMap(
-            default="0",
-            p5="5def"
-        )
-
 
     def _hair_def_exit(_moni_chr, **kwargs):
         """
         Exit programming point for ponytail
         """
-        # restore musicnote necklace
-        # TODO: remove this once we have split hair ready
-        old_pose_map = temp_storage.get("hair.def", None)
-        if old_pose_map is not None:
-            store.mas_acs_musicnote_necklace_gold.pose_map = old_pose_map
+        pass
 
 
     def _hair_down_entry(_moni_chr, **kwargs):
@@ -3618,26 +3604,12 @@ init -2 python in mas_sprites:
         # lock ribbon select
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
-        # the musicnote necklace has issues with leaning
-        # TODO: remove this once we have split hair rady
-        temp_storage["hair.down"] = (
-            store.mas_acs_musicnote_necklace_gold.pose_map
-        )
-        store.mas_acs_musicnote_necklace_gold.pose_map = store.MASPoseMap(
-            default="0",
-            p5="5down"
-        )
-
 
     def _hair_down_exit(_moni_chr, **kwargs):
         """
         Exit programming point for hair down
         """
-        # restore musicnote necklace
-        # TODO: remove this once we have split hair ready
-        old_pose_map = temp_storage.get("hair.down", None)
-        if old_pose_map is not None:
-            store.mas_acs_musicnote_necklace_gold.pose_map = old_pose_map
+        pass
 
 
     def _hair_bun_entry(_moni_chr, **kwargs):
@@ -4284,7 +4256,7 @@ init -1 python:
         MASPoseMap(
             p1="1",
             p2="2",
-            p3="3",
+            p3="1",
             p4="4",
             p5="5",
             p6=None
