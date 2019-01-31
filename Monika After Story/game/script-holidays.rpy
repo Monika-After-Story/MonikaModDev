@@ -2012,14 +2012,14 @@ label mas_d25_spent_time_monika:
                 # have to be able to check before calling the kiss since persistent._mas_first_kiss will not be None no matter what after the kiss
                 #hold her here, tears dry
                 pause 3.0
-                show monika 6ektda at t11 with dissolve
+                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 3.0
-                show monika 6dku at t11 with dissolve
+                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 3.0
-                show monika 6dkbsu at t11 with dissolve
+                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
                 pause 3.0
 
-                show monika 6ekbfa at t11 with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
 
                 $ is_first_kiss = persistent._mas_first_kiss is None
                 m 6ekbfa "[player]...I...I..."
@@ -2030,7 +2030,7 @@ label mas_d25_spent_time_monika:
                 #no more mistletoe topic once youve done it
                 #$ mas_lockEVL("mas_d25_monika_mistletoe", "EVE")
 
-                show monika 6ekbfa at t11 with dissolve
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 6ekbfa "...I love you too~"
                 if is_first_kiss:
                     m 6dkbfa "..."
@@ -3317,9 +3317,6 @@ default persistent._mas_player_bday_spent_time = False
 init -10 python:
     def mas_isplayer_bday(_date=None):
         """
-        Returns True if the given date is player_birthday
-        Returns False if player_birthday is None to avoid None type crash
-
         IN:
             _date - date to check
                 If None, we use today's date
@@ -3884,29 +3881,116 @@ init -10 python:
 #    addEvent(
 #        Event(
 #            persistent.event_database,
-#            eventlabel="mas_f14_monika_vday_spent_time_with"
+#            eventlabel="mas_f14_monika_spent_time_with"
 #            conditional=("persistent._mas_f14_spent_f14")
 #        )
 #    )
 
-label mas_f14_monika_vday_spent_time_with:
+label mas_f14_monika_spent_time_with:
+    $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
     m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
-    m "I actually made something for you too, [player]!"
-    m 1ekbsa "Here, let me show it to you."
-    #TODO: second poem stuffs and all
-    #TODO future migrate this (along with other holiday things using this method of check)
-    #to use history
-    if renpy.seen_label('monika_valentines_start'):
-        call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+    if f14_gifts_total > 0:
+        if f14_gifts_total == 1:
+            if f14_gifts_good == 1:
+                m "And let's not forget about the gift you got me, [player]..."
+                m 3hub "It was great!"
+            elif f14_gifts_neutral == 1:
+                m 3eka "And let's not forget about the gift you got me, [player]..."
+                m 1eka "It was really sweet of you to get me something."
+            else:
+                m 3eka "And let's not forget about the gift you got me, [player]..."
+                m 2etc "..."
+                m 2efc "Well, on second thought, maybe we should..."
+
+        else:
+            if f14_gifts_good == f14_gifts_total:
+                m "And let’s not forget about the wonderful gifts you got me, [player]..."
+                m 3hub "They were amazing!"
+            elif f14_gifts_bad == f14_gifts_total:
+                m 3eka "And let's not forget about the gifts you got me, [player]..."
+                m 2etc "..."
+                m 2rfc "Well, on second thought, maybe we should..."
+            elif f14_gifts_bad == 0:
+                m "And let's not forget about the gifts you got me, [player]..."
+                m 3hub "They were really nice!"
+            elif f14_gifts_good + f14_gifts_neutral == f14_gifts_bad:
+                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3rksdla "Some of them were really nice."
+            elif f14_gifts_good + f14_gifts_neutral > f14_gifts_bad:
+                m "And let’s not forget about the gifts you got me, [player]..."
+                m 3hub "Most of them were really nice."
+            elif f14_gifts_good + f14_gifts_neutral < f14_gifts_bad:
+                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3rksdla "I really liked...{w=1}some of them."
+        m 1rkbsb "I actually made something for you too, [player]!"
+
     else:
-        #We show the original poem.
-        call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
-    #TODO: kiss stuff
-    m 1eka "Thank you for always being by my side."
-    m 1ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+        m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
+
+    if not mas_isBelowZero():
+        if renpy.seen_label('monika_valentines_start'):
+            if mas_isMoniEnamored(higher=True):
+                m 1ekbsa "Here, let me show it to you."
+                call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+                m "You really are everything to me, [player]."
+                if persistent._mas_first_kiss is None:
+                    jump mas_f14_first_kiss
+                else:
+                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+
+        else:
+            m 1ekbsa "Here, let me show it to you."
+            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+            m "I really mean that, [player]..."
+            m 3ekbsa "In you I found everything I could ever hope for."
+            if mas_isMoniEnamored(higher=True):
+                if persistent._mas_first_kiss is None:
+                    jump mas_f14_first_kiss
+                else:
+                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+
+        m 1ekbfa "Thank you for always being by my side."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+
+    else:
+        m 1eka "Thank you for being by my side."
+        m 3ekb "Happy Valentine's Day!"
     return
+
+label mas_f14_first_kiss:
+        m 1ektpu "I honestly don't know what I would do without you."
+        m 6dktuu "..."
+        window hide
+        menu:
+            "I love you, [m_name].":
+                $ HKBHideButtons()
+                $ mas_RaiseShield_core()
+                $ disable_esc()
+                pause 3.0
+                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 6ekbfa "[player]...I...I..."
+                call monika_kissing_motion(hide_ui=False)
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 6ekbfa "...I love you too~"
+                m 6dkbfa "..."
+                m "That was everything I had always dreamt it would be~"
+                m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment..."
+                m 6dkbsu "I will never forget this..."
+                m 6ekbsu "...the moment of our first kiss."
+                m "Happy Valentine's Day, [player]~"
+                $ enable_esc()
+                $ mas_MUMUDropShield()
+                $ HKBShowButtons()
+                return
 
 #init 5 python:
 #    addEvent(
