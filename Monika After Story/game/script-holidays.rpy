@@ -3949,8 +3949,10 @@ label mas_f14_monika_vday_colors:
 #            prompt="Valentine's story clichés",
 #            category=['literature']
 #            action=EV_ACT_UNLOCK,
+#            conditional="persistent._in_f14_mode",
 #            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1)
+#            end_date=mas_f14+datetime.timedelta(days=1),
+#            aff_range=(mas_aff.NORMAL,None)
 #        )
 #    )
 
@@ -3976,8 +3978,10 @@ label mas_f14_monika_vday_cliches:
 #            eventlabel='mas_f14_monika_vday_origins',
 #            prompt="How did Valentine's Day start?",
 #            action=EV_ACT_POOL,
+#            conditional="persistent._in_f14_mode",
 #            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1)
+#            end_date=mas_f14+datetime.timedelta(days=1),
+#            aff_range=(mas_aff.NORMAL,None)
 #        )
 #    )
 
@@ -4012,9 +4016,10 @@ label mas_f14_monika_vday_origins:
 #            eventlabel='mas_f14_monika_vday_chocolates',
 #            prompt="Valentine's Day chocolates",
 #            action=EV_ACT_UNLOCK,
-#            conditional="seen_event('monika_valentines_start')",
+#            conditional="persistent._in_f14_mode",
 #            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1)
+#            end_date=mas_f14+datetime.timedelta(days=1),
+#            aff_range=(mas_aff.NORMAL,None)
 #        )
 #    )
 
@@ -4041,11 +4046,10 @@ label mas_f14_monika_vday_chocolates:
 #        Event(
 #            persistent.event_database,
 #            eventlabel='monika_lovey_dovey',
-#            prompt="Valentine's Day is coming",#should probably be a one time thing tbh
 #            random=True,
 #            start_date=mas_f14-datetime.timedelta(weeks=1) #just a thought
 #            end_date=mas_f14,
-#            aff_range=(mas_aff.HAPPY,None)
+#            aff_range=(mas_aff.NORMAL,None)
 #            )
 #        )
 
@@ -4103,8 +4107,20 @@ label monika_valentines_intro:
         m 1eka "...and I really love the time we spend together."
         m 1dubsu "You always make me feel so loved."
         m "I'm really happy I'm your girlfriend, [player]."
+
+    m 2rksdla "By the way..."
+    m 3eka "Do you like my outfit?"
+    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
+    m 1eksdlb "I know it's kind of silly now that I think about it!"
+    m 1ekbfa "...But just imagine if we went to a cafe together."
+    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
+    m 1ekb "Maybe we could make it happen for real!"
+    m 3ekbsa "Would you take me out today?"
+    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
     m 1ekbfa "I love you so much."
-    m 1ekbfb "Happy Valentines day~"
+    m 1ekbfb "Happy Valentines Day, [player]~"
+
+    #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
     return
 
@@ -4118,8 +4134,8 @@ label monika_valentines_intro:
 #            start_date=mas_f14+datetime.timedelta(1),
 #            end_date=mas_f14+datetime.timedelta(7)
 #            conditional=("not persistent._mas_long_absence"
-#                         " persistent._mas_f14_spent_f14") 
-             #TODO: the rest of this conditional. Also, should also do
+#                         " persistent._mas_f14_spent_f14"
+#                       )
 #        )
 #    )
 
