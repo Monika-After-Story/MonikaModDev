@@ -3801,6 +3801,9 @@ label greeting_returned_home_player_bday:
 
     $ persistent._mas_player_bday_left_on_bday = False
 
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+        call mas_gone_over_f14_check
+
     if not mas_isplayer_bday():
         call return_home_post_player_bday
 
@@ -3821,7 +3824,13 @@ label return_home_post_player_bday:
         pause 2.0
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
         m 3eua "There we go!"
-        m 1hua "Now, let's enjoy the day together, [player]~"
+        if persistent._mas_f14_gone_over_f14:
+            m 2etc "..."
+            m 3wuo "..."
+            m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
+            call greeting_gone_over_f14_normal_plus
+        else:
+            m 1hua "Now, let's enjoy the day together, [player]~"
     return
     
 # birthday card/poem for player
@@ -3851,6 +3860,7 @@ default persistent._mas_f14_in_f14_mode = None
 default persistent._mas_f14_date = 0
 default persistent._mas_f14_date_aff_gain = 0
 default persistent._mas_f14_on_date = None
+default persistent._mas_f14_gone_over_f14 = None
 define mas_f14 = datetime.date(datetime.date.today().year,2,14)
 
 #Is it vday
@@ -4320,4 +4330,34 @@ label greeting_returned_home_f14:
         m 1ekbfa "Thank you so much for making today truly special~"
 
     $ persistent._mas_f14_on_date = False
+    return
+
+# if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
+# need to make sure we get credit for time spent and don't get the event
+label mas_gone_over_f14_check:
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
+    if checkout_time is not None and checkout_time.date() < mas_f14:
+        $ persistent._mas_f14_spent_f14 = True
+        $ persistent._mas_f14_gone_over_f14 = True
+        if "mas_f14_no_time_spent" in persistent.event_list:
+            $ persistent.event_list.remove("mas_f14_no_time_spent")
+        return
+
+label greeting_gone_over_f14:
+    $ mas_gainAffection(5,bypass=True)
+    m 1hua "And we're finally home!"
+    m 3wud "Wow [player], we were gone so long we missed Valentine's Day!"
+    if mas_isMoniNormal(higher=True):
+        call greeting_gone_over_f14_normal_plus
+    else:
+        m 2rka "I appreciate you making sure I didn't have to spend the day alone..."
+        m 2eka "It really means a lot, [player]."
+    return
+
+label greeting_gone_over_f14_normal_plus:
+    $ mas_gainAffection(10,bypass=True)
+    m 1ekbsa "I would've loved to have spent the day with you here, but no matter where we were, just knowing we were together to celebrate our love..."
+    m 1dubsu "Well it means everything to me."
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "Thank you for making sure we had a wonderful Valentine's Day, [player]~"
     return
