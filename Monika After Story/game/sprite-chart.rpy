@@ -280,11 +280,12 @@ init -5 python in mas_sprites:
 
     # Prefixes for files
     PREFIX_TORSO = "torso" + ART_DLM
-    PREFIX_BODY = "body" + ART_DLM
-    PREFIX_HAIR = "hair" + ART_DLM
-    PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_TORSO_LEAN = "torso-leaning" + ART_DLM
+    PREFIX_BODY = "body" + ART_DLM
     PREFIX_BODY_LEAN = "body-leaning" + ART_DLM
+    PREFIX_HAIR = "hair" + ART_DLM
+    PREFIX_HAIR_LEAN = "hair-leaning" + ART_DLM
+    PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_ARMS_LEAN = "arms-leaning" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
@@ -778,7 +779,7 @@ init -5 python in mas_sprites:
             _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix)
 
         # add final part
-        sprite_list.append(")")
+        sprite_list.append('")')
 
 
     def _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix):
@@ -798,8 +799,7 @@ init -5 python in mas_sprites:
             PREFIX_ARMS,
             arms,
             n_suffix,
-            FILE_EXT,
-            '"'
+            FILE_EXT
         ))
 
 
@@ -829,8 +829,7 @@ init -5 python in mas_sprites:
             ART_DLM,
             arms,
             n_suffix,
-            FILE_EXT,
-            '"'
+            FILE_EXT
         ))
 
 
@@ -1124,9 +1123,9 @@ init -5 python in mas_sprites:
         sprite_list.append(")")
 
 
-    def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split):
+    def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split, lean):
         """
-        Creates split hair string
+        Creates split hair string for leaning
 
         IN:
             sprite_list - list to add sprite strings to
@@ -1135,7 +1134,6 @@ init -5 python in mas_sprites:
             n_suffix - night suffix to use
             front_split - True means use front split, False means use back
             lean - type of lean
-                (Default: None)
         """
         if front_split:
             hair_suffix = FHAIR_SUFFIX
@@ -1149,14 +1147,75 @@ init -5 python in mas_sprites:
             loc_str,
             ",",
             LOC_Z,
-            ',"',
+            ',"'
+        ))
+
+        if lean:
+            _ms_hair_leaning(
+                sprite_list,
+                loc_str,
+                hair,
+                n_suffix,
+                hair_suffix,
+                lean
+            )
+
+        else:
+            _ms_hair_up(sprite_list, loc_str, hair, n_suffix, hair_suffix)
+
+        # add final paren
+        sprite_list.append('")')
+
+
+    def _ms_hair_up(sprite_list, loc_str, hair, n_suffix, hair_suffix):
+        """
+        Creates split hair string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string to use
+            hair - type of hair
+            n_suffix - night suffix to use
+            hair_suffix - hair suffix to use
+        """
+        sprite_list.extend((
             H_MAIN,
             PREFIX_HAIR,
             hair,
             hair_suffix,
             n_suffix,
-            FILE_EXT,
-            '")'
+            FILE_EXT
+        ))
+
+
+    def _ms_hair_leaning(
+            sprite_list,
+            loc_str,
+            hair,
+            n_suffix,
+            hair_suffix,
+            lean
+        ):
+        """
+        Creates split hair string for leaning
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string to use
+            hair - type of hair
+            n_suffix - night suffix to use
+            hair_suffix - hair suffix to use
+            lean - type of lean
+        """
+        sprite_list.extend((
+            H_MAIN,
+            PREFIX_HAIR_LEAN,
+            lean,
+            ART_DLM,
+            hair,
+            hair_suffix,
+            n_suffix,
+            FILE_EXT
         ))
 
 
@@ -1410,7 +1469,7 @@ init -5 python in mas_sprites:
         if hair_split:
 
             # 2. back-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False, lean)
 
             # 3. post back hair acs
             _ms_accessorylist(
@@ -1450,7 +1509,7 @@ init -5 python in mas_sprites:
             sprite_str_list.extend(loc_build_tup)
 
             # 6. front-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True, lean)
 
             # 7. post-front hair acs
             _ms_accessorylist(
@@ -3431,8 +3490,7 @@ init -2 python:
 
             # determine hair split
             if hair.split is None:
-                # TODO: this should be True instead.
-                hair_split = False
+                hair_split = True
 
             elif lean:
                 # we assume split if lean not found
@@ -3870,7 +3928,7 @@ init -1 python:
         "bun",
         MASPoseMap(
             default=True,
-            p5=None
+            p5=False
         ),
         entry_pp=store.mas_sprites._hair_bun_entry,
         ex_props={
@@ -3887,8 +3945,10 @@ init -1 python:
     mas_hair_custom = MASHair(
         "custom",
         "custom",
-        MASPoseMap()
-#        split=False
+        MASPoseMap(
+            default=False,
+            use_reg_for_l=True
+        )
     )
     store.mas_sprites.init_hair(mas_hair_custom)
 
