@@ -254,6 +254,9 @@ label mas_holiday_o31_autoload_check:
             persistent._mas_o31_in_o31_mode = True
             mas_skip_visuals = True
 
+            # reset idle since we will force greetings
+            mas_resetIdleMode()
+
             if random.randint(1,100) <= mas_o31_marisa_chance:
                 persistent._mas_o31_current_costume = "marisa"
                 selected_greeting = "greeting_o31_marisa"

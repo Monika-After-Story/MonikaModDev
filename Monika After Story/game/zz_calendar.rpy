@@ -1928,8 +1928,14 @@ label _first_time_calendar_use:
 
     $ persistent._mas_first_calendar_check = True
 
+    if mas_in_idle_mode:
+        # IDLe only enables talk extra and music
+        $ store.hkb_button.talk_enabled = True
+        $ store.hkb_button.extra_enabled = True
+        $ store.hkb_button.music_enabled = True
+
     # push calendar birthdate for users without any birthdate
-    if persistent._mas_player_bday is None:
+    elif persistent._mas_player_bday is None:
         $ pushEvent("calendar_birthdate")
 
     else:
