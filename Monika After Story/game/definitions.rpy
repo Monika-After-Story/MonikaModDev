@@ -4103,9 +4103,11 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie:
+        # do we even have plushe enabled?| We don't want plush on f14
+        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
             return
+
+
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+

@@ -347,6 +347,33 @@ init -2 python in mas_sprites:
         _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
 
 
+    def _acs_heartchoc_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for heartchoc acs
+        """
+        #Need this because it won't accept the mas_isF14() method
+        import datetime
+        #We only want to be temporarily moving the plush if not on f14
+        #Since we keep the chocs post reaction if it is f14
+
+        #Again, need this because for whatever reason, despite the inits, mas_isF14() is undefined
+        if not datetime.date.today() == datetime.date(datetime.date.today().year,2,14):
+            if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_quetzalplushie):
+                _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
+                _moni_chr.wear_acs_pst(store.mas_acs_center_quetzalplushie)
+        else:
+            if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_center_quetzalplushie):
+                _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
+
+    def _acs_heartchoc_exit(_moni_chr, **kwargs):
+        """
+        Exit programming point for heartchoc acs
+        """
+        if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_center_quetzalplushie):
+            _moni_chr.remove_acs(store.mas_acs_center_quetzalplushie)
+            _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
+
+
 
 init -1 python:
     # HAIR (SPR110)
@@ -807,6 +834,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=False,
+        acs_type="plush",
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -1250,6 +1278,63 @@ init -1 python:
         ]
     )
 
+    ###DESK ROSES
+    ## roses
+    # The necklace Monika wore in the vday outfit
+    mas_acs_roses = MASAccessory(
+        "roses",
+        "roses",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        acs_type="flowers",
+    )
+    store.mas_sprites.init_acs(mas_acs_roses)
+
+    ###Desk Chocolates
+    ##chocolates
+    # The necklace Monika wore in the vday outfit
+    mas_acs_heartchoc = MASAccessory(
+        "heartchoc",
+        "heartchoc",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False,
+        acs_type="chocs",
+        entry_pp=store.mas_sprites._acs_heartchoc_entry,
+        exit_pp=store.mas_sprites._acs_heartchoc_exit
+    )
+    store.mas_sprites.init_acs(mas_acs_heartchoc)
+
+    ###Ear Rose
+    ##ear_rose
+    # Monika's ear rose
+    mas_acs_ear_rose = MASAccessory(
+        "ear_rose",
+        "ear_rose",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=False,
+    )
+    store.mas_sprites.init_acs(mas_acs_ear_rose)
+
+    mas_acs_center_quetzalplushie = MASAccessory(
+        "quetzalplushie_mid",
+        "quetzalplushie_mid",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False,
+        acs_type="plush",
+    )
+    store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever

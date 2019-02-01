@@ -687,7 +687,13 @@ label mas_reaction_quetzal_plush:
         $ mas_receivedGift("mas_reaction_quetzal_plush")
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh!"
-        $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+
+        #Wear mid plush if chocs out
+        if monika_chr.get_acs_of_type('chocs'):
+            $ monika_chr.wear_acs_pst(mas_acs_center_quetzalplushie)
+        else:
+            $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It’s a quetzal!"
         m "Oh my gosh, thanks a lot, [player]!"
@@ -696,11 +702,16 @@ label mas_reaction_quetzal_plush:
         m 1hua "And now you gave me the next closest thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
-            m 5esbfa "You always seem to know how to make me smile."
+            m 3ekbsa "You always seem to know how to make me smile."
 
         m 1hsb "Thank you again, [player]~"
     else:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
+
+    #Remove mid plush
+    if monika_chr.get_acs_of_type('chocs'):
+        $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
@@ -1368,7 +1379,9 @@ default persistent._date_last_given_roses = None
 
 label mas_reaction_gift_roses:
     $ gift_ev = mas_getEV("mas_reaction_gift_roses")
-    #show roses at t11 zorder 5 TODO: swap to acs
+
+    $ monika_chr.wear_acs_pst(mas_acs_roses)
+
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
         if mas_isSpecialDay():
@@ -1382,15 +1395,18 @@ label mas_reaction_gift_roses:
             # extra 5 points if f14
             $ mas_gainAffection(5,bypass=True)
             m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
+            m "You're so sweet."
+            m 1ektpa "..."
+            m "Ahaha..."
 
-        m 1ektpa "..."
-        #TODO: may need to scrap this ear bit, we don't have the art for pose 5 and depending on outfit she's wearing, it won't work for all of them
-        # If we do keep it, probably make it f14 only and only if in white dress
-        m "Ahaha..."
-        m 4eua "Hold on."
-        m 1esc "..."
-        #show ear_rose at t11 zorder 5 TODO: also needs to be acs
-        m 1hub "Ehehe, there! Doesn't it look pretty on me?"
+        #We can only have this on poses which use the new sprite set
+        if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+            m 4eua "Hold on..."
+            show monika 1esc
+            pause 1.0
+
+            $ monika_chr.wear_acs_pst(mas_acs_ear_rose)
+            m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
     else:
         if datetime.date.today() > persistent._date_last_given_roses:
@@ -1411,6 +1427,16 @@ label mas_reaction_gift_roses:
             else:
                 m 1ekbfa "You're always so sweet."
 
+            #Random chance (unless f14) for her to do the ear rose thing
+            if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
+                if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+                    m 4eua "Hold on..."
+                    show monika 1esc
+                    pause 1.0
+
+                    $ monika_chr.wear_acs_pst(mas_acs_ear_rose)
+                    m 1hub "Ehehe~"
+
         else:
             $ mas_gainAffection()
             m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
@@ -1426,7 +1452,6 @@ label mas_reaction_gift_roses:
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_roses")
     $ store.mas_filereacts.delete_file(gift_ev.category)
-    #hide ear_rose | not this year. Come on, it's pretty cute. TODO: See previous TODO
     return
 
 
@@ -1438,7 +1463,9 @@ default persistent._given_chocolates_before = False
 label mas_reaction_gift_chocolates:
     $ gift_ev = mas_getEV("mas_reaction_gift_chocolates")
 
-    if not persistent._given_chocolates_before:
+    if not persistent._mas_given_chocolates_before:
+        $ persistent._mas_given_chocolates_before = True
+        $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
         #Special day rules
         if mas_isSpecialDay():
             $ mas_gainAffection(5,bypass=True)
@@ -1452,6 +1479,7 @@ label mas_reaction_gift_chocolates:
             m 1ekbsa "Giving me chocolates on Valentine's Day..."
             m 1ekbfa "You really know how to make a girl feel special, [player]."
             m "It means a lot getting these from you."
+
         if renpy.seen_label('monika_date'):
             m 3rka "I know I mentioned visiting a chocolate store together someday..."
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
@@ -1460,11 +1488,14 @@ label mas_reaction_gift_chocolates:
             m 3hub "I love chocolates!"
             m 1eka "And getting some from you means a lot to me."
             m 1hub "Thanks, [player]!"
-        $ persistent._given_chocolates_before = True
+
 
     else:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
         if times_chocs_given == 0:
+            #We want this to show up where she accepts the chocs
+            $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
+
             if mas_isSpecialDay():
                 $ mas_gainAffection(3,bypass=True)
             else:
@@ -1483,6 +1514,7 @@ label mas_reaction_gift_chocolates:
                 m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
 
         elif times_chocs_given == 1:
+            $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
@@ -1496,6 +1528,11 @@ label mas_reaction_gift_chocolates:
             m 2tfd "[player]!"
             m 2tkc "I already told you I've had enough chocolates for one day, but you keep trying to give me even more..."
             m 2eksdla "Please...{w=1}just save them for another day."
+
+    #remove the chocolates acs if not f14
+    if datetime.date.today() != mas_f14:
+        $ monika_chr.remove_acs(mas_acs_heartchoc)
+
     #pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     # normal gift processing
