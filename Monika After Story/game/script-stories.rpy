@@ -1325,8 +1325,8 @@ label mas_scary_story_flowered_lantern_3:
     m 4eud "For the first time in years he didn't receive a response and he was worried."
     m 2esd "He called his master repeatedly but to no avail."
     m "Finally, with a bit of courage, he entered into his master's room."
-    m 4wud "Only to flee from the house with a cry of horror upon seeing his master."
-    m 2dsc "Hagiwara was dead, hideously dead, and his face was in the expression of the uttermost agony of fear."
+    m 4wud "...Only to flee from the house crying in horror after seeing him."
+    m 2dsc "Hagiwara was dead, hideously dead, and his face had the expression of uttermost agony of fear."
     m 4esd "Lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
