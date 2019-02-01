@@ -900,7 +900,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=False,
-        acs_type="plush",
+        acs_type="plush_mid",
     )
     store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
