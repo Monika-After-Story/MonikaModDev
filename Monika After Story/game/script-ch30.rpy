@@ -650,6 +650,9 @@ label ch30_main:
     # now we out of intro
     $ mas_in_intro_flow = False
 
+    # set session data to startup values
+    $ store._mas_root.initialSessionData()
+
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
         $ mas_rebuildEventLists()

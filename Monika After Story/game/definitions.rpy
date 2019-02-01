@@ -2219,6 +2219,8 @@ python early:
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
+    import store
+    import datetime
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -2334,6 +2336,21 @@ init -1 python in _mas_root:
 
         # affection
         renpy.game.persistent._mas_affection["affection"] = 0
+
+
+    def initialSessionData():
+        """
+        Completely resets session data to usable initial values.
+        NOTE: these are not the defaults, but rather what they would be set to
+        on a first load.
+        """
+        store.persistent.sessions = {
+            "last_session_end": None,
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 1,
+            "first_session": datetime.datetime.now()
+        }
 
 
 init -999 python:
