@@ -674,7 +674,7 @@ label mas_pong_dlg_winner:
     
     #Monika wins after telling the player she would win the next game
     elif powerup_value_this_game == DIFFICULTY_POWERUP:
-        m 1hub "Eheheh."
+        m 1hub "Ehehe."
         
         $ dt = datetime.date.today()
         $ dt = datetime.datetime(dt.year, dt.month, dt.day)
@@ -723,7 +723,7 @@ label mas_pong_dlg_winner:
         
     #Monika wins a second time after the player got a 3+ winstreak
     elif pong_last_responce_id == 60:
-        m 6hua "Ehehehe!"
+        m 6hua "Ehehe!"
         m 1eub "Keep up, [player]!"
         
         if persistent.gender == "M":
@@ -751,7 +751,7 @@ label mas_pong_dlg_winner:
         if pong_last_responce_id == 80:            
             m 6hub "Another quick win for me~"
         else:
-            m 4hub "Eheheh, I got you with that one!"
+            m 4hub "Ehehe, I got you with that one!"
         
         $ pong_last_responce_id = 80
         
@@ -878,7 +878,7 @@ label mas_pong_dlg_loser:
     #Player wins after losing at least three times in a row
     elif loss_streak_counter_before >= 3:
         m 4eub "Congrats [player]!"#
-        m 2eua "I knew you would win a game after enough practise!"
+        m 2eua "I knew you would win a game after enough practice!"
         m 4eua "Remember that skill comes mostly through repetitive training."
         m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
         
@@ -892,7 +892,7 @@ label mas_pong_dlg_loser:
         
     #Monika loses after going easy on the player
     elif powerup_value_this_game == DIFFICULTY_POWERDOWN:
-        m 5hub "Ehehehe!"
+        m 5hub "Ehehe!"
         m 6esa "Good job, [player]!"
         
         
