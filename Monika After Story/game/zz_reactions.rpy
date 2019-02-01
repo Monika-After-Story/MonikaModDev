@@ -705,12 +705,14 @@ label mas_reaction_quetzal_plush:
             m 3ekbsa "You always seem to know how to make me smile."
 
         m 1hsb "Thank you again, [player]~"
+        #Remove mid plush
+        if monika_chr.get_acs_of_type('chocs'):
+            m 1rksdlb "Ah, my desk is getting kind of crowded, ahaha!"
+            m 3eksdla "I'm just going to put this away for now so it doesn't accidentally get knocked off."
+            $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+
     else:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
-
-    #Remove mid plush
-    if monika_chr.get_acs_of_type('chocs'):
-        $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
 
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
@@ -1480,17 +1482,22 @@ label mas_reaction_gift_chocolates:
             $ mas_gainAffection(5,bypass=True)
             m 1ekbsa "Giving me chocolates on Valentine's Day..."
             m 1ekbfa "You really know how to make a girl feel special, [player]."
-            m "It means a lot getting these from you."
-
-        if renpy.seen_label('monika_date'):
+            if renpy.seen_label('monika_date'):
+                m 1lkbfa "I know I mentioned visiting a chocolate store together someday..."
+                m 1hkbfa "But while we can't really do that just yet, getting some chocolates as a gift from you, well..."
+            m 3ekbfa "It means a lot getting these from you."
+        elif renpy.seen_label('monika_date'):
             m 3rka "I know I mentioned visiting a chocolate store together someday..."
             m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
             m 1ekc "I really wish we could share them though..."
+            m 3rksdlb "But until that day comes, I'll just have to enjoy them for both of us, ahaha!"
+            m 3hua "Thank you, [player]~"
+            call mas_remove_choc
         else:
             m 3hub "I love chocolates!"
             m 1eka "And getting some from you means a lot to me."
             m 1hub "Thanks, [player]!"
-
+            call mas_remove_choc
 
     else:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
@@ -1514,6 +1521,7 @@ label mas_reaction_gift_chocolates:
             else:
                 m 1hua "Thanks for the chocolates, [player]!"
                 m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
+                call mas_remove_choc
 
         elif times_chocs_given == 1:
             $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
@@ -1521,6 +1529,7 @@ label mas_reaction_gift_chocolates:
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
             m 1hub "...but I'm not complaining!"
+            call mas_remove_choc
         elif times_chocs_given == 2:
             m 1ekd "[player]..."
             m 3eka "I think you've given me enough chocolates today."
@@ -1531,13 +1540,19 @@ label mas_reaction_gift_chocolates:
             m 2tkc "I already told you I've had enough chocolates for one day, but you keep trying to give me even more..."
             m 2eksdla "Please...{w=1}just save them for another day."
 
-    #remove the chocolates acs if not f14
-    if datetime.date.today() != mas_f14:
-        $ monika_chr.remove_acs(mas_acs_heartchoc)
-
     #pop from reacted map
     $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
     # normal gift processing
     $ mas_receivedGift("mas_reaction_gift_chocolates")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+label mas_remove_choc:
+    # we remove chocolates if not f14
+    m 1hua "..."
+    m 3eub "These are {i}so{/i} good!"
+    m 1hua "..."
+    m 3hksdlb "Ahaha! I should probably put these away for now..."
+    m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
+    $ monika_chr.remove_acs(mas_acs_heartchoc)
     return
