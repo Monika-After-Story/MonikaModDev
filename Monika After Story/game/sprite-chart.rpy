@@ -2806,6 +2806,11 @@ init -2 python:
             else:
                 self.__set_posedefs(self.l_map, l_default)
 
+            # use all map for quick pose lookup
+            self.__all_map = {}
+            self.__all_map.update(self.map)
+            self.__all_map.update(self.l_map)
+
 
         def __set_posedefs(self, pose_dict, _def):
             """
@@ -2818,6 +2823,21 @@ init -2 python:
             for k in pose_dict:
                 if pose_dict[k] is None:
                     pose_dict[k] = _def
+
+
+        def get(self, pose, defval):
+            """
+            Get passed to the internal pose map
+            only because its common to call get on this object. 
+
+            IN:
+                pose - pose to get from pose map
+                defval - default value to return if pose not found
+
+            RETURNS:
+                value of pose in internal dict, or defval if not found
+            """
+            return self.__all_map.get(pose, defval)
 
 
     # base class for MAS sprite things
@@ -3467,6 +3487,7 @@ init -2 python:
 
             if store.mas_sprites.should_disable_lean(lean, arms, character):
                 # set lean to None if its on the blacklist
+                # NOTE: this function checks pose_maps
                 lean = None
                 arms = "steepling"
 

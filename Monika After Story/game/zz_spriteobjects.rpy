@@ -486,10 +486,13 @@ init -1 python:
     mas_hair_custom = MASHair(
         "custom",
         "custom",
-        MASPoseMap(
+        MASPoseMap(),
+
+        # NOTE: custom disables hair splitting.
+        split=MASPoseMap(
             default=False,
             use_reg_for_l=True
-        )
+        ),
     )
     store.mas_sprites.init_hair(mas_hair_custom)
 
