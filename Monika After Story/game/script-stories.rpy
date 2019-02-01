@@ -1057,19 +1057,19 @@ label mas_scary_story_yuki_onna:
     m "After a little bit of travel, they came across an abandoned cabin and took shelter in it."
     m 2eua "They were able to build a modest fire and huddled together for warmth before falling asleep."
     m 2esd "In the middle of the night, the son awoke from his sleep with a jolt."
-    m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him, instantly freezing him."
+    m 2wud "To his surprise, a beautiful woman was standing over his father, blowing her breath on him and instantly freezing him."
     m 4wud "As she turned to the son, she paused. The woman said to him that she would spare him of the same fate, for he was young and very handsome."
-    m 4ekc "If he ever spoke a word of it to anyone, she would come back and kill him."
-    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful woman traveler."
+    m 4ekc "If he ever spoke a word of it to anyone, she would come back to kill him."
+    m 4esa "The following winter, the young man was on his way home from a day of cutting wood, when he came across a beautiful travelling woman."
     m 2eua "It was starting to snow, and the man offered the woman shelter from the storm, and she quickly accepted."
     m 2eua "The two quickly fell in love and ended up marrying each other."
-    m 2hua "The two lived happily together for years and had several kids together."
+    m 2hua "They lived happily for years and had several kids as time went by."
     m 2esa "One night, while the kids were sleeping, the woman was sewing by the light of the fire."
     m "The man looked up from what he was doing and the memory of the night he was never to speak of came back to him."
     m 3esd "The wife asked the man why he was looking at her the way he was."
     m 3esa "The man told his tale of his encounter with the snow woman."
     m 2wud "The smile on his wife's face melted into anger as she revealed that she was the snow woman he spoke of."
-    m "She reprimanded him for breaking his promise and would have killed him on the spot if it weren't for the children they had had together."
+    m "She reprimanded him for breaking his promise and would have killed him if it weren't for the sake of their children."
     m 3dsd "She told the man that he better treat their children well or she would be back to deal with him."
     m 4dsd "The next instant she vanished, never to be seen again."
     if renpy.random.randint(1,3) == 1 or persistent._mas_pm_likes_spoops or mas_full_scares:
@@ -1095,16 +1095,16 @@ label mas_scary_story_many_loves:
     call mas_scary_story_setup
     m 4esa "There once was a young woman who appeared in a village one day to find a husband."
     m 4eua "She was very beautiful and quickly attracted many suitors."
-    m 2eua "She ended up choosing to marry a husky fisherman."
+    m 2eua "Eventually settling down with a husky fisherman."
     m 2esd "The two had a happy marriage, but in less than a year, the husband wasted away and died."
     m "The people in the village felt sorry for the young woman and comforted her the best they could."
     m 4esa "A few months later, the woman married a burly woodcutter."
-    m 4dsd "The two lived happily together for a time, but he too, seemed to wither away and died."
+    m 4dsd "The two lived happily together for a time, but he too withered away and died."
     m 4eud "Some of the villagers thought that it was odd both husbands had died in the same fashion, but no one said anything, and comforted the girl for her poor luck."
     m "A time later, the woman was married again, this time to a stout mason and they too appeared to have a happy marriage, but within a year, the woman was again a widow."
     m "This time the villagers talked amongst themselves and felt something suspicious was going on, so a group of villagers set out to find the nearest shaman."
     m "Once they found the shaman and told him their story, the shaman indicated he knew what was going on."
-    m "He called his assistant over, a young, well-build fellow, whispered into his ear and sent him off to return with the villagers."
+    m "He called his assistant over, a young, well-built fellow, whispered into his ear and sent him off to return with the villagers."
     m "Telling them not to worry, his assistant would get to the bottom of it."
     m "When they returned to the village, the assistant called on the widow and not long afterwards they were married."
     m 2dsc "On the night of their wedding, the assistant placed a knife under his pillow and feigned sleep."
@@ -1123,7 +1123,7 @@ label mas_scary_story_many_loves:
         show black zorder 100
         $ pause(1.5)
         hide black
-    m 3wkd "He heard a screech and the flapping of wings."
+    m 3wkd "He heard a screech and the flapping of wings as the creature flew through a window."
     m 3eud "The next day, the bride was found dead some distance from the house with a knife wound in her chest."
     call mas_scary_story_cleanup
     return
@@ -1139,7 +1139,7 @@ init 5 python:
         ),
     code="STY"
     )
-
+##Stop
 label mas_scary_story_gray_lady:
     call mas_scary_story_setup
     m 4eua "There was once a man named William, who grew up helping his father with his nefarious exploits."
