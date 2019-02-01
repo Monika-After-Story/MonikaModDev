@@ -3871,7 +3871,35 @@ init -10 python:
 
         return _date == mas_f14.replace(year=_date.year)
 
-#TODO: f14 autoload check for outfit, make sure flowers are present if gifted, set f14 mode to False post f14
+init -810 python:
+    # MASHistorySaver for o31
+    store.mas_history.addMHS(MASHistorySaver(
+        "f14",
+        datetime.datetime(2020, 1, 6),
+        {
+            "_mas_f14_date": "f14.date",
+            "_mas_f14_date_aff_gain": "f14.aff_gain",
+            "_mas_f14_gone_over_f14": "f14.gone_over_f14",
+            "_mas_f14_spent_f14": "f14.actions.spent_f14"
+        }
+    ))
+
+label mas_f14_autoload_check:
+    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+        $ persistent._mas_f14_in_f14_mode = True
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
+        $ monika_chr.save()
+
+    elif persistent._mas_f14_in_f14_mode and not mas_isF14() and not persistent._mas_f14_on_date:
+        $ persistent._mas_f14_in_f14_mode = False
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+            $ monika_chr.reset_clothes(False)
+
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
+
+    jump mas_ch30_post_holiday_check
 
 ##### Start [HOL050] TOPICS
 
@@ -4431,6 +4459,9 @@ label greeting_returned_home_f14:
         m 3hub "That was wonderful, [player]!"
         m 1eka "It was really nice going out with you on Valentine's Day..."
         m 1ekbfa "Thank you so much for making today truly special~"
+
+    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+        call return_home_post_player_bday
 
     $ persistent._mas_f14_on_date = False
     return

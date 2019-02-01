@@ -588,6 +588,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     if persistent._mas_player_bday_decor:
         $ store.mas_player_bday_event.show_player_bday_Visuals()
 
+    if datetime.date.today() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs_pst(mas_acs_roses)
+
     return
 
 label ch30_main:
@@ -869,6 +872,9 @@ label mas_ch30_post_retmoni_check:
 
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
+
+    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+        jump mas_f14_autoload_check
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check

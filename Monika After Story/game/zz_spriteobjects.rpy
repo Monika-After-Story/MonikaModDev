@@ -1339,7 +1339,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         priority=11,
-        stay_on_start=True,
+        stay_on_start=False,
         acs_type="flowers",
     )
     store.mas_sprites.init_acs(mas_acs_roses)

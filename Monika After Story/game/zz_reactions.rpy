@@ -1414,6 +1414,8 @@ label mas_reaction_gift_roses:
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
     else:
+        if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
+            $ persistent._date_last_given_roses = datetime.date(2018,2,14)
         if datetime.date.today() > persistent._date_last_given_roses:
             if mas_isSpecialDay():
                 $ mas_gainAffection(10,bypass=True)

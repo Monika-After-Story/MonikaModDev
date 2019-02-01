@@ -170,6 +170,13 @@ image emptydesk = ConditionSwitch(
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
+image mas_roses = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag",
+    "mod_assets/monika/a/acs-roses-0-n.png"
+)
+
 ### bday stuff
 define mas_bday_cake_lit = False
 image mas_bday_cake = ConditionSwitch(
