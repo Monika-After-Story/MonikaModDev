@@ -738,6 +738,21 @@ init -1 python:
     )
     store.mas_sprites.init_acs(mas_acs_mug)
 
+    ### ROSE EAR ACCESSORY
+    ## ear_rose
+    # rose that is placed on Monika's ear
+    mas_acs_ear_rose = MASAccessory(
+        "ear_rose",
+        "ear_rose",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=False,
+        rec_layer=MASMonika.AFH_ACS,
+    )
+    store.mas_sprites.init_acs(mas_acs_ear_rose)
+
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown
     # The bracelet Monika wore in the vday outfit
@@ -761,6 +776,24 @@ init -1 python:
         }
     )
     store.mas_sprites.init_acs(mas_acs_hairties_bracelet_brown)
+
+    ### HEART-SHAPED DESK CHOCOLATES
+    ## heartchoc
+    # heart-shaped chocolate box to be placed on Monika's desk
+    mas_acs_heartchoc = MASAccessory(
+        "heartchoc",
+        "heartchoc",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False,
+        acs_type="chocs",
+        mux_type=["plush"],
+        entry_pp=store.mas_sprites._acs_heartchoc_entry,
+        exit_pp=store.mas_sprites._acs_heartchoc_exit
+    )
+    store.mas_sprites.init_acs(mas_acs_heartchoc)
 
     ### HOT CHOCOLATE MUG
     ## hotchoc_mug
@@ -835,6 +868,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush",
+        mux_type=["chocs"],
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -855,6 +889,21 @@ init -1 python:
         entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
     )
 
+    ### QUETZAL PLUSHIE (CENTER)
+    ## quetzalplushie_mid
+    # version of the plushie that is on the center of the desk
+    mas_acs_center_quetzalplushie = MASAccessory(
+        "quetzalplushie_mid",
+        "quetzalplushie_mid",
+        MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        ),
+        stay_on_start=False,
+        acs_type="plush",
+    )
+    store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
+
     ### QUETZAL PLUSHIE SANTA HAT
     ## quetzalplushie_santahat
     # Santa hat for the Quetzal Plushie
@@ -870,6 +919,7 @@ init -1 python:
         stay_on_start=False,
         entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
     )
+    store.mas_sprites.init_acs(mas_acs_quetzalplushie_santahat)
 
     ### BLACK RIBBON
     ## ribbon_black
@@ -1278,9 +1328,9 @@ init -1 python:
         ]
     )
 
-    ###DESK ROSES
+    ### DESK ROSES
     ## roses
-    # The necklace Monika wore in the vday outfit
+    # roses to be placed on Monika's desk
     mas_acs_roses = MASAccessory(
         "roses",
         "roses",
@@ -1288,53 +1338,11 @@ init -1 python:
             default="0",
             use_reg_for_l=True
         ),
+        priority=11,
         stay_on_start=True,
         acs_type="flowers",
     )
     store.mas_sprites.init_acs(mas_acs_roses)
-
-    ###Desk Chocolates
-    ##chocolates
-    # The necklace Monika wore in the vday outfit
-    mas_acs_heartchoc = MASAccessory(
-        "heartchoc",
-        "heartchoc",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=False,
-        acs_type="chocs",
-        entry_pp=store.mas_sprites._acs_heartchoc_entry,
-        exit_pp=store.mas_sprites._acs_heartchoc_exit
-    )
-    store.mas_sprites.init_acs(mas_acs_heartchoc)
-
-    ###Ear Rose
-    ##ear_rose
-    # Monika's ear rose
-    mas_acs_ear_rose = MASAccessory(
-        "ear_rose",
-        "ear_rose",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=False,
-    )
-    store.mas_sprites.init_acs(mas_acs_ear_rose)
-
-    mas_acs_center_quetzalplushie = MASAccessory(
-        "quetzalplushie_mid",
-        "quetzalplushie_mid",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=False,
-        acs_type="plush",
-    )
-    store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
