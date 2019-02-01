@@ -4103,8 +4103,10 @@ init 2 python:
                 determines if the plushie will appear
                 Defualts to 4
         """
-        # do we even have plushe enabled?| We don't want plush on f14
+        # do we even have plushe enabled?
         if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
+            # run the plushie exit PP in case plushie is no longer enabled
+            mas_acs_quetzalplushie.exit(monika_chr)
             return
 
 
@@ -4115,6 +4117,11 @@ init 2 python:
 
             else:
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+        
+        else:
+            # run the plushie exit PP if plushie is not selected
+            mas_acs_quetzalplushie.exit(monika_chr)
+        
         return
 
 

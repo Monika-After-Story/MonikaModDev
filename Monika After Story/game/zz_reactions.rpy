@@ -714,6 +714,8 @@ label mas_reaction_quetzal_plush:
 
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    # derandom pets topic once given
+    $ mas_hideEVL("monika_pets", "EVE", derandom=True)
     return
 
 init 5 python:
