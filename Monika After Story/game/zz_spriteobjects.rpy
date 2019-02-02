@@ -870,8 +870,11 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=False,
-        acs_type="plush",
-        #Don't want to mux this at the mo.
+        acs_type="plush_q",
+
+        # NOTE: this shouldn't be muxed with heart choc as heart choc 
+        #   needs to add mid version of this
+        mux_type=["plush_mid"],
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -904,6 +907,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush_mid",
+        mux_type=["plush_q"],
     )
     store.mas_sprites.init_acs(mas_acs_center_quetzalplushie)
 
