@@ -3855,10 +3855,11 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
-#We need these so we don't infiqueue
+#We need these so we don't infiqueue/infirand
 default persistent._mas_f14_intro_seen = False
 default persistent._mas_f14_time_spent_seen = False
 default persistent._mas_f14_nts_seen = False
+default persistent._mas_f14_pre_intro_seen = False
 
 #The other vars
 default persistent._mas_f14_spent_f14 = False
@@ -3888,10 +3889,11 @@ init -810 python:
             "_mas_f14_gone_over_f14": "f14.gone_over_f14",
             "_mas_f14_spent_f14": "f14.actions.spent_f14",
 
-            #Resets for queued bits
+            #Resets for queued/rand bits
             "_mas_f14_intro_seen": "f14.intro_seen",
             "_mas_f14_time_spent_seen": "f14.ts_seen",
-            "_mas_f14_nts_seen": "f14.nts_seen"
+            "_mas_f14_nts_seen": "f14.nts_seen",
+            "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         }
     ))
 
@@ -3915,7 +3917,7 @@ label mas_f14_autoload_check:
         $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+        $ mas_lockEVL("mas_f14_monika_vday_origins","EVE")
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -3931,6 +3933,9 @@ init 5 python:
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
             action=EV_ACT_RANDOM,
+            conditional=(
+                "not persistent._mas_f14_pre_intro_seen"
+            ),
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
@@ -3959,6 +3964,9 @@ label mas_pf14_monika_lovey_dovey:
     m "Without you, I don't know where I'd be..."
     m 1ekbfa "So I want to thank you for caring for me."
     m 1hubfa "Ehehe~"
+
+    #Set this flag to True so we don't infirand
+    $ persistent._mas_f14_pre_intro_seen = True
     return "derandom"
 
 #######################[HOL050] INTRO:
@@ -4087,7 +4095,7 @@ init 5 python:
             eventlabel='mas_f14_monika_vday_cliches',
             prompt="Valentine's story clichés",
             category=['literature'],
-            action=EV_ACT_UNLOCK,
+            action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
