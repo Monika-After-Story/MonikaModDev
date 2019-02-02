@@ -400,7 +400,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
-    $ last_year = datetime.datetime.today.year-1
+    $ last_year = datetime.datetime.today().year-1
     m 1ekc "..."
     m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
     m 2lksdlc "After all, everything I say would probably just come off as lip service."
