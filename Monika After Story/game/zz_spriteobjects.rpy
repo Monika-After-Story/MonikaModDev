@@ -359,8 +359,8 @@ init -2 python in mas_sprites:
 
         if not (store.mas_isF14() or store.mas_isD25Season()):
             if _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
-                _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
                 _moni_chr.wear_acs(store.mas_acs_center_quetzalplushie)
+
         elif _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
 
@@ -370,7 +370,6 @@ init -2 python in mas_sprites:
         Exit programming point for heartchoc acs
         """
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
-            _moni_chr.remove_acs(store.mas_acs_center_quetzalplushie)
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
 
