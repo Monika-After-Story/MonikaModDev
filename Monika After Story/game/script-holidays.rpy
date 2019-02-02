@@ -4176,7 +4176,7 @@ label mas_f14_monika_vday_chocolates:
     m 1hua "A holiday that could fill everyone with love, romance, and joy!"
     m 3ekbla "But it really feels nice if you get something from someone you like."
     m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
-    if persistent._date_last_given_chocolates == mas_f14:
+    if mas_getGiftStatsForDate("mas_reaction_gift_chocolates") > 0:
         m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
         m "You're always so sweet, [player]."
 
