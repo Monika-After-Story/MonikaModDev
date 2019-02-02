@@ -336,7 +336,7 @@ init -2 python in mas_sprites:
         Entry programming point for quetzal plushie santa hat acs
         """
         # need to wear the quetzal plushie if we putting the santa hat on
-        _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
+        _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
 
     def _acs_quetzalplushie_antlers_entry(_moni_chr, **kwargs):
@@ -344,7 +344,7 @@ init -2 python in mas_sprites:
         Entry programming point for quetzal plushie antlers acs
         """
         # need to wear the quetzal plushie if we putting the antlers on
-        _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
+        _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
 
     def _acs_heartchoc_entry(_moni_chr, **kwargs):
@@ -354,13 +354,16 @@ init -2 python in mas_sprites:
         #We only want to be temporarily moving the plush if not on f14
         #Since we keep the chocs post reaction if it is f14
 
+        # TODO: might need to make a center version of santa hat
+        #   or just make heartchoc not giftable during d25
+
         if not (store.mas_isF14() or store.mas_isD25Season()):
             if _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
-                _moni_chr.wear_acs_pst(store.mas_acs_center_quetzalplushie)
-        else:
-            if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
+                _moni_chr.wear_acs(store.mas_acs_center_quetzalplushie)
+        elif _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
+
 
     def _acs_heartchoc_exit(_moni_chr, **kwargs):
         """
@@ -368,7 +371,7 @@ init -2 python in mas_sprites:
         """
         if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.remove_acs(store.mas_acs_center_quetzalplushie)
-            _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
+            _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
 
 

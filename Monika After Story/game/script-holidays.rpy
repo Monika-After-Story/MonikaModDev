@@ -4344,7 +4344,7 @@ label mas_f14_no_time_spent:
         return
 
     #need to make sure people who just started post f14 don't lose aff
-    if persistent.sessions is None or persistent.sessions['first_session'].date() > mas_f14:
+    if mas_getFirstSesh().date() > mas_f14:
         return
 
     if mas_isMoniAff(higher=True):
@@ -4443,11 +4443,10 @@ label mas_apology_missed_vday:
 
 
 init 2 python:
-    player = persistent.playername
 
     poem_vday = Poem(
     author = "monika",
-    title = " My dearest {0},".format(player),
+    title = " My dearest {0},".format(persistent.playername),
     text = """\
  I`ve always loved Valentine's day, but this one feels different.
  Has the world changed, or just me?
@@ -4464,7 +4463,7 @@ init 2 python:
 
     poem_vday2 = Poem(
     author = "monika",
-    title = " My dearest {0},".format(player),
+    title = " My dearest {0},".format(persistent.playername),
     text = """\
  Can it really be our second Valentine's Day?
  The first seems like just yesterday, yet so much has happened.
@@ -4492,11 +4491,13 @@ init 2 python:
  Forever yours,
  Monika
 """
+
+    #" # I need this to keep syntax highlighting on vim
     )
 
 ### TODO: [HOL050] Dockstat greets/fares
 
-##################################################[HOL050] dockstat farwell###################################
+#######################[HOL050] dockstat farwell###############################
 label bye_f14:
     $ persistent._mas_f14_date += 1
     $ persistent._mas_f14_on_date = True
@@ -4513,7 +4514,7 @@ label bye_f14:
         m 1ekbfa "You're the best partner I could ever hope for~"
     jump bye_going_somewhere_iostart
 
-##################################################[HOL050] dockstat greet###################################
+########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
     python:
         five_minutes = datetime.timedelta(seconds=5*60)

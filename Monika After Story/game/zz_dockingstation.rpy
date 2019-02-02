@@ -2312,12 +2312,16 @@ label mas_dockstat_empty_desk:
     if mas_isD25Season() and persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
 
-    if persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
-
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
+    # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
+    #   else statment is supposed to be paired with (i.e. mutally exclusive)
+    #   to the if statement regarding the player's bday decor. 
+    #   Dont be screwing this up by shoving if statemetns randomly in places.
     else:
         # show birthday visuals?
         $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
@@ -2417,7 +2421,7 @@ label mas_dockstat_found_monika_from_empty:
     $ renpy.hide("mas_roses")
     show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ monika_chr.wear_acs_pst(mas_acs_roses)
+        $ monika_chr.wear_acs(mas_acs_roses)
     hide emptydesk
 
     # dont want users using our promises
@@ -2435,7 +2439,7 @@ label mas_dockstat_found_monika:
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
-        $ monika_chr.wear_acs_pst(mas_acs_roses)
+        $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
         if (

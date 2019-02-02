@@ -690,9 +690,9 @@ label mas_reaction_quetzal_plush:
 
         #Wear mid plush if chocs out
         if monika_chr.is_wearing_acs(mas_acs_heartchoc):
-            $ monika_chr.wear_acs_pst(mas_acs_center_quetzalplushie)
+            $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
         else:
-            $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+            $ monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         $ persistent._mas_acs_enable_quetzalplushie = True
         m 1sub "It’s a quetzal!"
@@ -731,7 +731,7 @@ label mas_reaction_promisering:
         if mas_isMoniEnamored(higher=True):
             $ mas_receivedGift("mas_reaction_promisering")
             $ mas_gainAffection(modifier=5, bypass=True)
-            $ monika_chr.wear_acs_pst(mas_acs_promisering)
+            $ monika_chr.wear_acs(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
             if not persistent._mas_tried_gift_ring:
                 m 1wud "Is that...a..."
@@ -1385,7 +1385,7 @@ default persistent._date_last_given_roses = None
 label mas_reaction_gift_roses:
     $ gift_ev = mas_getEV("mas_reaction_gift_roses")
 
-    $ monika_chr.wear_acs_pst(mas_acs_roses)
+    $ monika_chr.wear_acs(mas_acs_roses)
 
     #TODO: future migrate this to use history (post f14)
     if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
@@ -1410,7 +1410,7 @@ label mas_reaction_gift_roses:
             show monika 1esc
             pause 1.0
 
-            $ monika_chr.wear_acs_pst(mas_acs_ear_rose)
+            $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
     else:
@@ -1441,7 +1441,7 @@ label mas_reaction_gift_roses:
                     show monika 1esc
                     pause 1.0
 
-                    $ monika_chr.wear_acs_pst(mas_acs_ear_rose)
+                    $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 
         else:
@@ -1472,7 +1472,7 @@ label mas_reaction_gift_chocolates:
 
     if not persistent._mas_given_chocolates_before:
         $ persistent._mas_given_chocolates_before = True
-        $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
+        $ monika_chr.wear_acs(mas_acs_heartchoc)
         #Special day rules
         if mas_isSpecialDay():
             $ mas_gainAffection(5,bypass=True)
@@ -1506,7 +1506,7 @@ label mas_reaction_gift_chocolates:
         $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
         if times_chocs_given == 0:
             #We want this to show up where she accepts the chocs
-            $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
 
             if mas_isSpecialDay():
                 $ mas_gainAffection(3,bypass=True)
@@ -1527,7 +1527,7 @@ label mas_reaction_gift_chocolates:
                 call mas_remove_choc
 
         elif times_chocs_given == 1:
-            $ monika_chr.wear_acs_pst(mas_acs_heartchoc)
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
             m 1eka "More chocolates, [player]?"
             m 3tku "You really love to spoil me don't you, ahaha!"
             m 1rksdla "I still haven't finished the first box you gave me..."
