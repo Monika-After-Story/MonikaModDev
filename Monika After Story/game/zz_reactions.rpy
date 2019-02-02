@@ -692,6 +692,8 @@ label mas_reaction_quetzal_plush:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    # derandom pets topic once given
+    $ mas_hideEVL("monika_pets", "EVE", derandom=True)
     return
 
 init 5 python:

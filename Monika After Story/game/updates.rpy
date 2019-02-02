@@ -305,8 +305,8 @@ label v0_3_1(version=version): # 0.3.1
 #   We will save this for versiojn 0812 or 9
 
 
-# 0.8.15
-label v0_8_15(version="v0_8_15"):
+# 0.9.0
+label v0_9_0(version="v0_9_0"):
     python:
         # unlock nickname topic if called bad name
         if persistent._mas_called_moni_a_bad_name:
@@ -409,6 +409,9 @@ label v0_8_15(version="v0_8_15"):
         if not renpy.seen_label("greeting_ourreality"):
             mas_unlockEVL("greeting_ourreality", "GRE")
 
+        # derandom pets topic if player has given the plushie
+        if persistent._mas_acs_enable_quetzalplushie:
+            mas_hideEVL("monika_pets", "EVE", derandom=True)
     return
 
 # 0.8.14

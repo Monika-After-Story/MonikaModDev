@@ -662,7 +662,9 @@ init -815 python in mas_history:
     def _bday_exit_pp(mhs):
         # this PP will just add the appropriate delayed action IDs to the 
         # persistent delayed action list.
-        _MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4)
+        pass
 
 
 init -810 python:
@@ -699,6 +701,9 @@ init -810 python:
             "_mas_pm_like_playing_tennis": "pm.lifestyle.plays_tennis",
             "_mas_pm_meditates": "pm.lifestyle.meditates",
             "_mas_pm_see_therapist": "pm.lifestyle.sees_therapist",
+            "_mas_pm_driving_can_drive": "pm.lifestyle.can_drive",
+            "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
+            "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -809,6 +814,7 @@ init -810 python:
 
             # exp (experience)
             "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+            "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
 
             # op (opinions)
             # op / monika

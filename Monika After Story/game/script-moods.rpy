@@ -244,7 +244,7 @@ label mas_mood_sick:
             m "I hate knowing you're suffering like this."
             m 1eka "I know you love spending time with me, but maybe you should go get some rest."
             m 1hua "Don't worry, I'll be here waiting for you when you get back."
-            m 3hub "Get well soon, my love!"    
+            m 3hub "Get well soon, my love!"
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
@@ -411,8 +411,6 @@ label mas_mood_inadequate:
         m "You took time out of your schedule to be with me on Christmas..."
     if renpy.seen_label('monika_valentines_greeting'):
         m 1ekbfa "On Valentine's Day..."
-    if renpy.seen_label('monika_white_day_start'):
-        m 1hubfb "White Day too!"
     # TODO mention celebrating birthday
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
