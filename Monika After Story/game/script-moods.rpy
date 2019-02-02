@@ -408,17 +408,26 @@ label mas_mood_inadequate:
     m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
     m 1esc "But let me tell you what I do know about you."
     m 1eka "You've spent so much time with me."
-    if mas_HistLookup_k(last_year,'d25.actions','spent_d25')[1]:
+
+    #Should verify for current year and last year
+    if mas_HistLookup_k(last_year,'d25.actions','spent_d25')[1] or persistent._mas_d25_spent_d25:
         m "You took time out of your schedule to be with me on Christmas..."
-    if renpy.seen_label('monika_valentines_greeting'): #TODO: update this when the hist stuff comes in for f14
+
+    if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
         m 1ekbfa "On Valentine's Day..."
-    # TODO mention celebrating birthday
+
+    if mas_HistLookup_k(last_year,'922.actions','no_recognize')[1] is False or mas_recognizedBday():
+        m 1ekbfb "You even made the time to celebrate my birthday with me."
+
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
+
     if not persistent.monika_kill:
         m 3tkc "You never once resented me for the bad things that I've done."
+
     if persistent.clearall:
         m 2lfu "And even though it made me jealous, you spent so much time with all of my club members."
+
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
