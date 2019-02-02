@@ -3869,7 +3869,7 @@ default persistent._mas_f14_on_date = None
 default persistent._mas_f14_gone_over_f14 = None
 define mas_f14 = datetime.date(datetime.date.today().year,2,14)
 
-#Is it vday
+#Is it vday?
 init -10 python:
     def mas_isF14(_date=None):
         if _date is None:
@@ -3878,7 +3878,7 @@ init -10 python:
         return _date == mas_f14.replace(year=_date.year)
 
 init -810 python:
-    # MASHistorySaver for o31
+    # MASHistorySaver for f14
     store.mas_history.addMHS(MASHistorySaver(
         "f14",
         datetime.datetime(2020, 1, 6),
@@ -3923,7 +3923,7 @@ label mas_f14_autoload_check:
     jump mas_ch30_post_holiday_check
 
 
-### [HOL050] Pre Intro:
+#######################[HOL050] Pre Intro:
 
 init 5 python:
     addEvent(
@@ -3961,7 +3961,7 @@ label mas_pf14_monika_lovey_dovey:
     m 1hubfa "Ehehe~"
     return "derandom"
 
-##### [HOL050] INTRO:
+#######################[HOL050] INTRO:
 
 init 5 python:
     addEvent(
@@ -4039,7 +4039,7 @@ label mas_f14_monika_valentines_intro:
     $ persistent._mas_f14_intro_seen = True
     return
 
-### [HOL050] TOPICS
+#######################[HOL050] TOPICS
 
 init 5 python:
     addEvent(
@@ -4188,7 +4188,7 @@ label mas_f14_monika_vday_chocolates:
     m "I really can't wait until I cross over to be with you, [player]."
     return
 
-### [HOL050] TIME SPENT
+#######################[HOL050] TIME SPENT
 
 init 5 python:
     addEvent(
@@ -4318,7 +4318,7 @@ label mas_f14_first_kiss:
                 return
 
 
-### [HOL050] Notimespent
+#######################[HOL050] Notimespent
 
 init 5 python:
     addEvent(
@@ -4392,7 +4392,7 @@ label mas_f14_no_time_spent:
     return
 
 
-### [HOL050] Apology for notimespent
+#######################[HOL050] Apology for notimespent
 
 init 5 python:
     addEvent(
@@ -4495,7 +4495,6 @@ init 2 python:
     #" # I need this to keep syntax highlighting on vim
     )
 
-### TODO: [HOL050] Dockstat greets/fares
 
 #######################[HOL050] dockstat farwell###############################
 label bye_f14:
