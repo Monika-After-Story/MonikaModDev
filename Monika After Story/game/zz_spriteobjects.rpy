@@ -691,8 +691,8 @@ init -1 python:
         visible_when_locked=False,
         hover_dlg=None,
         select_dlg=[
-            "TODO",
-            "EAT CHOCO",
+            "Are we going anywhere special today, [player]?",
+            "I've always loved this outfit...",
         ],
     )
 
