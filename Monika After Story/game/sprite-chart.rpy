@@ -3752,6 +3752,13 @@ init -2 python in mas_sprites:
     # available kwargs:
     #   NONE
 
+    def _acs_quetzalplushie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for quetzal plushie acs
+        """
+        # unlock and random monika_plushie when plushie is active
+        store.mas_showEVL("monika_plushie","EVE",unlock=True,_random=True)
+
     def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
         Exit programming point for quetzal plushie acs
@@ -3762,6 +3769,8 @@ init -2 python in mas_sprites:
         # also remove antlers
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
+        # lock and derandom monika_plushie when removing plushie
+        store.mas_hideEVL("monika_plushie","EVE",lock=True,derandom=True)
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
@@ -4150,6 +4159,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=False,
+        entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -4671,7 +4681,7 @@ default persistent._mas_acs_enable_quetzalplushie = False
 
 ### PROMISE RING ###
 default persistent._mas_acs_enable_promisering = False
-# True enables plushie, False disables plushie
+# True enables promise ring, False disables promise ring
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes

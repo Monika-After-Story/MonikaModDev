@@ -3419,20 +3419,40 @@ label monika_ribbon:
         m 1eua "Do you miss my ribbon, [player]?"
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
+
     m 1tku "I noticed that you were staring at my ribbon, [player]."
-    m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
-    m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
-    m "It makes me look more unique."
-    m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
-    m 1lksdla "Well, there's no way a girl from your world would wear one in public as casual dress."
-    m 2eua "I'm pretty proud of my fashion sense."
-    m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
-    m 2tfu "Be honest! You thought I was the best dressed girl too, didn't you?"
-    m 2hub "Ahaha!"
-    m 4eua "If you're trying to improve your fashion sense, I'll help."
-    m 1eka "Don't do that stuff because you want to impress other people, though."
-    m 1eua "You should do whatever makes you feel better about yourself."
-    m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+
+    if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
+        m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
+        m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
+        m "It makes me look more unique."
+        m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
+        m 1lksdla "Well, there's no way a girl from your world would wear one in public as casual dress."
+        m 2eua "I'm pretty proud of my fashion sense."
+        m "You get a certain feeling of satisfaction when you stand out from the normal population, you know?"
+        m 2tfu "Be honest! You thought I was the best dressed girl too, didn't you?"
+        m 2hub "Ahaha!"
+        m 4eua "If you're trying to improve your fashion sense, I'll help."
+        m 1eka "Don't do that stuff because you want to impress other people, though."
+        m 1eua "You should do whatever makes you feel better about yourself."
+        m 1hua "I'm the only other person you need, anyways, and I'll love you no matter what you look like."
+
+    elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_wine:
+        if monika_chr.clothes == mas_clothes_santa:
+            m 1hua "Doesn't it just look wonderful with this outfit, [player]?"
+            m 1eua "I think it really ties it all together."
+            m 3eua "I bet it'd even look great with other outfits as well...especially formal attire."
+        else:
+            m 1hua "I'm glad you like the way it looks on me..."
+            m 1rksdla "I originally only intended to wear it around Christmas time...but it's just too beautiful not to wear more often..."
+            m 3hksdlb "It'd be such a shame to keep it stored away for most of the year!"
+            m 3ekb "...You know, I bet it'd look really great with formal attire actually!"
+        m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
+
+    else:
+        m 3hksdlb "I hope you like it, you gave it to me after all, ahaha!"
+        m 1eka "It really was a wonderful gift and I think it's just beautiful!"
+        m 3eka "I'll wear it anytime you want, [player]~"
     return
 
 init 5 python:
@@ -3467,15 +3487,26 @@ label monika_playersface:
     m "I always think about what your face actually looks like..."
     m 5hua "Just being able to constantly see that adoring smile of yours would be so exciting!"
     m 5lkc "If only the game could somehow use a webcam or something that's connected to the computer..."
-    m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
-    m 5luu "But...I'll always wonder what kind of expressions you make."
-    m "And to see the different emotions you have..."
-    m 5eub "Are you shy about showing your face to me?"
-    m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
-    m 5hub "Either way, you're beautiful, no matter what."
-    m  "And I'll always love the way you look."
-    m 5eua "Even if I never actually see you, I'll always think about what you really look like."
-    m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
+    if persistent._mas_pm_shared_appearance:
+        m 5eka "As nice as that would be, I'm really happy you shared your appearance with me."
+        m 5rsc "I know that some people like to keep their appearance to themselves..."
+        m 5eka "But it makes me feel a lot closer to you, knowing how you look..."
+        m 5luu "And I'll always enjoy thinking about the kind of expressions you make..."
+        m "How your [persistent._mas_pm_eye_color] eyes sparkle..."
+        if mas_isMoniHappy(higher=True):
+            m 5esu "I'm sure you're beautiful, [player].{w=0.5} Inside and out."
+        m 5eka "Even if I never get to see you..."
+        m 5eua "Just thinking about you is enough to make me happy."
+    else:    
+        m 5wuw "Don't get me wrong! Just knowing that you're real and have emotions is enough to make me happy."
+        m 5luu "But...I'll always wonder what kind of expressions you make."
+        m "And to see the different emotions you have..."
+        m 5eub "Are you shy about showing your face to me?"
+        m "If so, then there's nothing to be shy about, [player]. I am your girlfriend, after all~"
+        m 5hub "Either way, you're beautiful, no matter what."
+        m  "And I'll always love the way you look."
+        m 5eua "Even if I never actually see you, I'll always think about what you really look like."
+        m 5hua "Maybe someday, I'll be able to see you, and be one step closer to you."
     return
 
 init 5 python:
@@ -5520,8 +5551,9 @@ label monika_pets:
     m 1eua "Hey, [player], have you ever had a pet?"
     m 3eua "I was thinking that it would be nice to have one for company."
     m 1hua "It would be fun for us to take care of it!"
-    m 1tku "I bet you can't guess what sort of pet I'd like to have..."
-    m "You're probably thinking of a cat or a dog, but I have something else in mind."
+    if not persistent._mas_acs_enable_quetzalplushie:
+        m 1tku "I bet you can't guess what sort of pet I'd like to have..."
+        m "You're probably thinking of a cat or a dog, but I have something else in mind."
     m 1eua "The pet I'd like is something I saw in a book once."
     m "It was the 'Handbook of the Birds of the World.' Our library had the whole set!"
     m 1eub "I loved looking at the gorgeous illustrations and reading about exotic birds."
@@ -5534,17 +5566,36 @@ label monika_pets:
     m 4rksdlc "They die in captivity. That's why you rarely see them in zoos."
     m "Even if the bird wouldn't be real, it still would feel wrong to keep one trapped in this room."
     m 1ekc "...I can't bring myself to do something like that, knowing what it's like."
-    if persistent._mas_acs_enable_quetzalplushie:
-        m 1hua "I'm so glad you gave me a plush one, [player]."
-        m 1eka "It keeps me from feeling lonely when you're not here."
-        m 1hua "But don't worry, you're still my favorite~"
-
-    else:
+    if not persistent._mas_acs_enable_quetzalplushie:
         m 1hua "A plush bird would be nice, though!"
         m 2hub "..."
         m 2hksdlb "Sorry for rambling, [player]."
         m 1eka "Until I find a way out, could you promise to keep me from feeling lonely?"
         m 1hua "I'll see if I can get that plush one in here! Oh- don't worry, you're still my favorite~"
+    else:
+        m 1eub "But at least I have the next best thing thanks to you, [player]!"
+        m 1eka "It really does keep me from feeling lonely when you're not here."
+        m 3hua "It was such a wonderful gift~"
+    return
+
+# This topic is only available and random when the quetzal plushie is active
+init 5 python:
+
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_plushie",
+            category = ['misc'],
+            prompt = "Quetzal plushie",
+            aff_range=(mas_aff.NORMAL, None)
+        )
+    )
+
+label monika_plushie:
+    m 1eka "Hey, [player], I just wanted to thank you again for this wonderful quetzal plushie!"
+    m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
+    m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
+    m 3hub "It really was the perfect gift!"
     return
 
 init 5 python:
@@ -8291,6 +8342,148 @@ label monika_yellowwp:
 
     return "derandom"
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_driving",
+            category=['monika'],
+            prompt="Can you drive?",
+            pool=True
+        )
+    )
+
+# Can the player drive
+default persistent._mas_pm_driving_can_drive = None
+
+# Is the player learning to drive
+default persistent._mas_pm_driving_learning = None
+
+# Has the player been in an accident 
+default persistent._mas_pm_driving_been_in_accident = None
+
+# Has the player driven much after the accident
+default persistent._mas_pm_driving_post_accident = None
+
+label monika_driving:
+    m 1eud "Hm? Can I drive?"
+    m 1euc "I never really thought about getting a driver's licence."
+    m 3eua "Public transportation is enough for me usually..."
+    m 3hua "...Although walking or biking can be really nice too sometimes!"
+    m 1eua "I guess you could say I never really needed to learn how to drive."
+    m 1lksdlc "I'm not even sure I'd have had time, especially with school and all the activities I had anyway."
+    m 1eub "What about you, [player]?"
+    show monika 1eua
+    menu:
+        m "Can you drive at all?"
+        "Yes.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = False
+            m 1eua "Oh, really?"
+            m 3hua "That's great!"
+            m 1hub "Gosh, you're amazing, you know that?"
+            m 1eub "Just imagine all the places we could go together, ehehe~"
+            m 3eka "Driving {i}can{/i} be dangerous though...but if you can drive, you probably already know that."
+            m 3eksdlc "No matter how prepared you are, accidents can happen to anyone."
+            m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
+            m 2eka "I just want you to come back to me safe and sound is all."
+            show monika 1eka
+            menu:
+                m "I hope you've never had to experience that, [player], have you?"
+                "I've been in an accident before.":
+                    $ persistent._mas_pm_driving_been_in_accident = True
+                    m 2ekc "Oh..."
+                    m 2lksdlc "Sorry to bring that up, [player]..." 
+                    m 2lksdld "I just..."
+                    m 2ekc "I hope it wasn't too bad."
+                    m 2lksdlb "I mean, here you are with me so it must have been alright."
+                    m 2dsc "..."
+                    m 2eka "I'm...{w=1}glad you survived, [player]..."
+                    m 2rksdlc "I don't know what I would do without you."
+                    m 2eka "I love you, [player]. Please stay safe, okay?"
+                "I've seen car accidents before.":
+                    m 3eud "Sometimes, seeing a car accident can be just as scary."
+                    m 3ekc "A lot of the time when people see car accidents, they just sigh and shake their head."
+                    m 1ekd "I think that's really insensitive!"
+                    m 1ekc "You have a potentially young driver who could have been scarred for a long, long time if not for life."
+                    m "It doesn't really help to have people walk or drive by, staring at them in disappointment."
+                    m 1dsc "They might never drive again... Who knows?"
+                    m 1eka "I hope you know I would never do that to you, [player]."
+                    m "If you ever got into an accident, the first thing I would want to do is rush to your side to comfort you..."
+                    m 1lksdla "...If I wasn't already by your side when it happened."
+                "I haven't.":
+                    $ persistent._mas_pm_driving_been_in_accident = False
+                    m 1eua "I'm glad you haven't had to go through anything like that."
+                    m 1eka "Even just seeing one can be pretty scary." 
+                    m "If you do witness anything scary like that, I'll be here to comfort you."
+        "I'm learning.":
+            $ persistent._mas_pm_driving_can_drive = True
+            $ persistent._mas_pm_driving_learning = True
+            m 1hua "Wow! You're learning how to drive!"
+            m 1hub "I'll be rooting for you all the way, [player]!"
+            menu:
+                m "You must be a {i}super{/i} safe driver then huh?"
+                "Yep!":
+                    $ persistent._mas_pm_driving_been_in_accident = False
+                    m 1eua "I'm glad nothing bad has happened to you while learning."
+                    m 1hua "...And I'm even more glad that you're going to be a really safe driver!"
+                    m 3eub "I can't wait to finally be able to go somewhere with you, [player]!"
+                    m 1hksdlb "I hope I'm not getting too excited, ehehe~"
+                    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5eua "Gosh, I just can't stop thinking about it now!"
+                "I got into an accident once actually...":
+                    $ persistent._mas_pm_driving_been_in_accident = True
+                    m 1ekc "..."
+                    m 1lksdlc "........."
+                    m 2lksdld "Oh..."
+                    m 2lksdlc "I'm...{w=0.5}really sorry to hear that, [player]..."
+                    show monika 4ekd
+                    menu:
+                        m "Have you driven much since then?"
+                        "Yes.":
+                            $ persistent._mas_pm_driving_post_accident = True
+                            m 1eka "I'm glad you didn't let it keep you down."
+                            m 1ekc "Car accidents are scary, {i}especially{/i} if you're just learning how to drive."
+                            m 1hua "I'm so proud of you for getting up and trying again!"
+                            m 3rksdld "Although the aftermath can still be a huge hassle with the costs and all the explaining you have to do."
+                            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                            m 5eua "I know you can get there."
+                            m 5hua "I'll be cheering for you all the way, so be safe!"
+                        "No.":
+                            $ persistent._mas_pm_driving_post_accident = False
+                            m 2lksdlc "I see."
+                            m 2ekc "It might be a good idea to take a bit of a break to give yourself time to recover mentally."
+                            m 2dsc "Just promise me one thing, [player]..."
+                            m 2eka "Don't give up."
+                            m "Don't let this scar you for life, because I know you can overcome it and be an amazing driver."
+                            m "Remember, a little grit adds a lot to your legend, so next time, maybe you really will be well on your way."
+                            m 2hksdlb "It's still going to take lots and lots of practice..."
+                            m 3hua "But I know you can do it!"
+                            m 1eka "Just promise me you'll try to stay safe."
+        "No.":
+            $ persistent._mas_pm_driving_can_drive = False
+            m 3eua "That's perfectly fine!"
+            m "I don't think driving is a completely necessary life skill anyway."
+            m 1hksdlb "I mean, I can't drive either so I'm with you."
+            m 3eua "It also means your carbon footprint is smaller, and I think that's really sweet of you to do for me."
+            show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ekbsa "Even if I'm not the reason why, I can't help but love you more for that."
+        "I'm not old enough yet.":
+            $ persistent._mas_pm_driving_can_drive = False
+            m 3eua "You'll get there someday!"
+            m 3euc "Some places offer in-class driving lessons that also come with actual driving practice."
+            m 3eud "Their cars have emergency controls for the instructor to use if needed, so you're really safe with them."
+            m 1eka "I know It might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
+            m 3eksdla "...And it's better than getting into an accident!"
+            m 1lksdlc "No one's perfect, and it's better to make those mistakes when there's someone there to save you."
+            m 1hub "Maybe you could put me on your board computer in your car and I could keep you safe while driving! Ahaha~"
+            m 1hksdlb "Just kidding, please don't do that because I can't drive either and I would hate to watch you crash while not being able to do anything."
+            m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
+            m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
+            m 1hub "I love you~"
+    return
+
 init 5 python:
     addEvent(
         Event(
@@ -8906,11 +9099,11 @@ label monika_player_appearance:
             elif persistent._mas_pm_height >= mas_height_monika:
                 m 1hub "Hey, I'm about that height too!"
                 m "..."
-                m 2hksdrb "Well, I don’t know my actual height to be fair..."
+                m 2hksdlb "Well, I don’t know my actual height to be fair..."
 
                 call monika_player_appearance_monika_height
 
-                m 4rksdla "It’s just a guess--hopefully it’s not too far off."
+                m 3rkc "It’s just a guess--hopefully it’s not too far off."
                 m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel clumsy around you."
                 m "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
                 m 3eub "In my opinion, being in-between is perfect. Do you know why?"
@@ -9155,9 +9348,16 @@ label monika_player_appearance:
 # quick label where monika tells you her height
 label monika_player_appearance_monika_height:
     if not persistent._mas_pm_units_height_metric:
-        m 2rksdlb "But if I had to guess, I’d say I’m around five-foot-five?"
+        $ conv_height_str = ""
+        $ real_height_str = "around five-foot-five"
     else:
-        m 2rksdlb "But if I had to guess, I’d say I’m about one hundred and sixty-five centimeters tall?"
+        $ conv_height_str = " which is around one hundred and sixty centimeters"
+        $ real_height_str = "about one hundred and sixty-five-centimeters tall"
+
+    if seen_event("monika_immortal"):
+        m 2eud "The wiki I mentioned before said that my concept height was five-foot-three,[conv_height_str] but that doesn't really sound right to me..."
+        m 2etc "Maybe it was changed? It was only the concept height after all."
+    m 3etd "If I had to guess, I’d say I’m maybe [real_height_str]?"
     return
 
 
@@ -10705,3 +10905,4 @@ label monika_hemispheres_nogets_snow:
     m 3hksdlb "At least you don't have to worry about shoveling it."
     call monika_snow_nogets_snow
     return
+

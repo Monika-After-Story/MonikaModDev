@@ -173,12 +173,29 @@ label mas_apology_generic:
 
     #If there's no reason to apologize
     if mas_apology_reason is None and len(persistent._mas_apology_time_db) == 0:
-        m 1ekd "Did something happen?"
-        m 2ekc "I see no reason for you to be sorry."
-        m 1dsc "..."
-        m 1eub "Anyway, thank you for the apology."
-        m 1eua "Whatever it is, I know you're doing your best to make things right."
-        m 1hub "That's why I love you, [player]!"
+        if mas_isMoniBroken():
+            m 1ekc "...{w=1}Oh."
+            m 2dsc ".{w=2}.{w=2}."
+            m "Okay."
+        elif mas_isMoniDis():
+            m 2dfd "{i}sigh{/i}"
+            m 2dsd "I hope this isn't some joke or trick, [player]."
+            m 2dsc "..."
+            m 1eka "...Thank you for the apology."
+            m 2ekc "But please, try to be more mindful about my feelings."
+            m 2dkd "Please."
+        elif mas_isMoniUpset():
+            m 1eka "Thank you, [player]."
+            m 1rksdlc "I know things aren't the best between us, but I know that you're still a good person."
+            m 1ekc "So could you be a little more considerate of my feelings?"
+            m 1ekd "Please?"
+        else:
+            m 1ekd "Did something happen?"
+            m 2ekc "I don't see a reason for you to be sorry."
+            m 1dsc "..."
+            m 1eub "Anyway, thank you for the apology."
+            m 1eua "Whatever it is, I know you're doing your best to make things right."
+            m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
     elif mas_apology_reason:

@@ -25,6 +25,11 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+default persistent._mas_idle_mode_was_crashed = None
+# this gets to set to True if the user crashed during idle mode
+# or False if the user quit during idle mode.
+# in your idle greetings, you can assume that it will NEVER be None
+
 init -1 python in mas_greetings:
     import store
     import datetime
@@ -51,6 +56,14 @@ init -1 python in mas_greetings:
     TYPE_HOL_NYE = "nye"
     TYPE_HOL_NYE_FW = "fireworks"
 
+    # crashed only
+    TYPE_CRASHED = "generic_crash"
+
+    # reload dialogue only
+    TYPE_RELOAD = "reload_dlg"
+
+    # idle mode returns
+    # these are meant if you had a game crash/quit during idle mode
 
 
     def _filterGreeting(
@@ -297,6 +310,11 @@ init -1 python in mas_greetings:
 #        return random_greetings_dict[
 #            renpy.random.choice(random_greetings_dict.keys())
 #        ]
+
+# NOTE: this is auto pushed to be shown after an idle mode greeting
+label mas_idle_mode_greeting_cleanup:
+    $ mas_resetIdleMode()
+    return
 
 
 init 5 python:
@@ -3248,4 +3266,28 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="ch30_reload_delegate",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_RELOAD
+            ],
+        ),
+        code="GRE"
+    )
+
+label ch30_reload_delegate:
+
+    if persistent.monika_reload >= 4:
+        call ch30_reload_continuous
+
+    else:
+        $ reload_label = "ch30_reload_" + str(persistent.monika_reload)
+        call expression reload_label
+
     return
