@@ -306,14 +306,14 @@ init -2 python in mas_sprites:
         """
         Entry programming point for sundress white
         """
-        pass
+        _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
 
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
-        pass
+        _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
 
 
     ######### ACS [SPR030] ###########
@@ -361,7 +361,7 @@ init -2 python in mas_sprites:
             if _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
                 _moni_chr.wear_acs(store.mas_acs_center_quetzalplushie)
 
-        elif _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
+        else:
             _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
 
 
