@@ -1065,7 +1065,7 @@ label bye_going_somewhere_normalplus_flow:
         if mas_isNYD():
             jump bye_nyd_delegate
 
-    if persistent._mas_f14_in_f14_mode:
+    if mas_isF14() and persistent._mas_f14_in_f14_mode:
         jump bye_f14
 
 label bye_going_somewhere_normalplus_flow_aff_check:
