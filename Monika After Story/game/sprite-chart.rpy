@@ -8887,6 +8887,19 @@ image monika 3tsb = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3tsbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

@@ -3855,6 +3855,7 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
+default persistent._mas_f14_intro_seen = False
 default persistent._mas_f14_spent_f14 = False
 default persistent._mas_f14_in_f14_mode = None
 default persistent._mas_f14_date = 0
@@ -3880,7 +3881,8 @@ init -810 python:
             "_mas_f14_date": "f14.date",
             "_mas_f14_date_aff_gain": "f14.aff_gain",
             "_mas_f14_gone_over_f14": "f14.gone_over_f14",
-            "_mas_f14_spent_f14": "f14.actions.spent_f14"
+            "_mas_f14_spent_f14": "f14.actions.spent_f14",
+            "_mas_f14_intro_seen": "f14.actions.seen_intro"
         }
     ))
 
@@ -3896,6 +3898,12 @@ label mas_f14_autoload_check:
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
             $ monika_chr.reset_clothes(False)
 
+        #We want to lock and derandom/depool all of the f14 labels
+        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
@@ -3905,14 +3913,20 @@ label mas_f14_autoload_check:
 
 ###BIG TODO: creating EVs
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_f14_monika_spent_time_with"
-#            conditional=("persistent._mas_f14_spent_f14")
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_monika_spent_time_with",
+            conditional=("persistent._mas_f14_spent_f14"),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL,None),
+            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=20)),
+            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=1)),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_spent_time_with:
     $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
@@ -4020,20 +4034,22 @@ label mas_f14_first_kiss:
                 $ HKBShowButtons()
                 return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_colors',
-#            prompt="Valentine's Day colors",
-#            category=['monika','romance']
-#            action=EV_ACT_RANDOM,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1)
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_colors',
+            prompt="Valentine's Day colors",
+            category=['monika','romance'],
+            action=EV_ACT_RANDOM,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_vday_colors:
     m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
@@ -4049,24 +4065,30 @@ label mas_f14_monika_vday_colors:
     m 3eka "However, since there are so many emotions involved with love..."
     m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
     m 4eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
-    m 3eka "Mixing red and white roses would symbolize the unit and bond that a couple shares."
-    m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
+    m 3eka "Mixing red and white roses would symbolize the unity and bond that a couple shares."
+
+    if monika_chr.is_wearing_acs(mas_acs_roses):
+        m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
+    else:
+        m 1ekbla "Maybe you could give me some roses today, [player]?"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_cliches',
-#            prompt="Valentine's story clichés",
-#            category=['literature']
-#            action=EV_ACT_UNLOCK,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_cliches',
+            prompt="Valentine's story clichés",
+            category=['literature'],
+            action=EV_ACT_UNLOCK,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_vday_cliches:
     m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
@@ -4083,19 +4105,22 @@ label mas_f14_monika_vday_cliches:
     m 3hub "Ahaha~!"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_origins',
-#            prompt="How did Valentine's Day start?",
-#            action=EV_ACT_POOL,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_origins',
+            prompt="How did Valentine's Day start?",
+            category=['misc','romance'],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_vday_origins:
     m 3eua "You'd like to learn about the history of Valentine's Day?"
@@ -4121,19 +4146,22 @@ label mas_f14_monika_vday_origins:
     m 1ekbfa "Happy Valentine's Day~"
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_chocolates',
-#            prompt="Valentine's Day chocolates",
-#            action=EV_ACT_UNLOCK,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_chocolates',
+            prompt="Valentine's Day chocolates",
+            category=['misc','romance'],
+            action=EV_ACT_RANDOM,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
@@ -4153,17 +4181,19 @@ label mas_f14_monika_vday_chocolates:
     m "I really can't wait until I cross over to be with you, [player]."
     return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='monika_lovey_dovey',
-#            random=True,
-#            start_date=mas_f14-datetime.timedelta(weeks=1) #just a thought
-#            end_date=mas_f14,
-#            aff_range=(mas_aff.NORMAL,None)
-#            )
-#        )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_lovey_dovey',
+            action=EV_ACT_RANDOM,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14,
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label monika_lovey_dovey:
     m 1rksdla "Hey...[player]...?"
@@ -4184,21 +4214,23 @@ label monika_lovey_dovey:
     m "I love and care for you so much..."
     m "Without you, I don't know where I'd be..."
     m 1ekbfa "So I want to thank you for caring for me."
-    m 1hkbfa "Ehehe~"
-    return
+    m 1hubfa "Ehehe~"
+    return "derandom"
 
-#init 5 python:
-#    addEvent(
-#       Event(
-#            persistent.event_database,
-#            eventlabel='monika_valentines_intro',
-#            conditional=("not persistent._mas_f14_intro_seen")
-#            action=EV_ACT_PUSH,
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#            )
-#        )
+init 5 python:
+    addEvent(
+       Event(
+            persistent.event_database,
+            eventlabel='monika_valentines_intro',
+            conditional=("not persistent._mas_f14_intro_seen"),
+            action=EV_ACT_PUSH,
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label monika_valentines_intro:
     m 1hub "[player]!"
@@ -4213,15 +4245,20 @@ label monika_valentines_intro:
         m 5eua "I just want you to know that I'm always here for you."
         m 5eka "Even if your heart gets broken..."
         m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
-        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        pause 2.0
     else:
         m 1eub "We've been together for a while now..."
         m 1eka "...and I really love the time we spend together."
         m 1dubsu "You always make me feel so loved."
         m "I'm really happy I'm your girlfriend, [player]."
+        pause 2.0
 
-    m 2rksdla "By the way..."
-    m 3eka "Do you like my outfit?"
+    show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
+    m 2rfc "..."
+    m 2efc "You know [player]...it's not polite to stare...."
+    m 2tfc "..."
+    m 2tsu "..."
+    m 3tsu "Ahaha! I'm just kidding...do you like my outfit?"
     m 1rkbsa "I've always dreamt of a date with you while wearing this..."
     m 1eksdlb "I know it's kind of silly now that I think about it!"
     m 1ekbfa "...But just imagine if we went to a cafe together."
@@ -4234,22 +4271,29 @@ label monika_valentines_intro:
 
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
+
+    #We have now seen the intro
+    $ persistent._mas_f14_intro_seen = True
     return
 
 ### [HOL050] Notimespent
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_f14_no_time_spent",
-#            start_date=mas_f14+datetime.timedelta(1),
-#            end_date=mas_f14+datetime.timedelta(7)
-#            conditional=("not persistent._mas_long_absence"
-#                         " persistent._mas_f14_spent_f14"
-#                       )
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_no_time_spent",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14+datetime.timedelta(1),
+            end_date=mas_f14+datetime.timedelta(7),
+            conditional=(
+                "not persistent._mas_long_absence"
+                " and not persistent._mas_f14_spent_f14"
+            ),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_no_time_spent:
     #sanity checks:
@@ -4305,15 +4349,16 @@ label mas_f14_no_time_spent:
 
 ### [HOL050] Apology for notimespent
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent._mas_apology_database,
-#            eventlabel="mas_apology_missed_vday",
-#            prompt="...missing Valentine's Day",
-#            unlocked=False
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_missed_vday",
+            prompt="...for missing Valentine's Day.",
+            unlocked=False
+        ),
+        code="APL"
+    )
 
 
 label mas_apology_missed_vday:
