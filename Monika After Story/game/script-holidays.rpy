@@ -1253,7 +1253,7 @@ init -815 python in mas_history:
     # d25 season
     def _d25s_exit_pp(mhs):
         # just add appropriate delayed action IDs
-        _MDA_safeadd(8, 9)
+        _MDA_safeadd(8, 9, 10)
 
 
 # topics
@@ -1792,9 +1792,35 @@ init 5 python:
         )
     )
 
-label mas_d25_monika_mistletoe:
-    $ mas_unlockEVL("mas_d25_monika_mistletoe", "EVE")
+init -876 python in mas_delact:
+    # delayed action to reeset the mistle topic
+    # NOTE: this is to derandom and lock this topic post d25 season.
 
+    def _mas_d25_monika_mistletoe_reset_action(ev):
+        # updates conditional, action, random, unlocked
+        ev.conditional = (
+            "mas_isD25Season() "
+            "and not mas_isD25Post() "
+            "and persistent._mas_d25_in_d25_mode"
+        )
+        ev.action = store.EV_ACT_RANDOM
+        ev.unlocked = False
+        ev.random = False
+        return True
+
+
+    def _mas_d25_monika_mistletoe_reset():
+        # creates delayed action for mistletoe
+        return store.MASDelayedAction.makeWithLabel(
+            10,
+            "mas_d25_monika_mistletoe",
+            "True",
+            _mas_d25_monika_mistletoe_reset_action,
+            store.MAS_FC_INIT
+        )
+
+
+label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
     m 1eub "You've heard about the mistletoe tradition, right?"
     m 1tku "When lovers end up underneath it, they're expected to kiss."
