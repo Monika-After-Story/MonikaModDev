@@ -1187,7 +1187,7 @@ label mas_scary_story_flowered_lantern:
         m 4eua "Alright, let's begin now."
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
     m 4eud "Tsuyu's mother had been dead and her father eventually remarried."
-    m 2euc "Although it became obvious to Tsuyu's father that her and her step mother couldn't get along."
+    m 2euc "Although it became obvious to Tsuyu's father that she and her step mother couldn't get along."
     m 2esa "Wanting to ensure his only daughter's happiness, he had a luxurious house built for her, away from them and had her move into it."
     m "One day, the family physician went to Tsuyu's residence on a routine visit with a young samurai named Hagiwara, who was very handsome."
     m 4eub "Tsuyu and Hagiwara fell in love the moment they set eyes on each other."
