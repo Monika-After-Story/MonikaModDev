@@ -351,25 +351,22 @@ init -2 python in mas_sprites:
         """
         Entry programming point for heartchoc acs
         """
-        #Need this because it won't accept the mas_isF14() method
-        import datetime
         #We only want to be temporarily moving the plush if not on f14
         #Since we keep the chocs post reaction if it is f14
 
-        #Again, need this because for whatever reason, despite the inits, mas_isF14() is undefined
-        if not datetime.date.today() == datetime.date(datetime.date.today().year,2,14):
-            if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_quetzalplushie):
+        if not (store.mas_isF14() or store.mas_isD25Season()):
+            if _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
                 _moni_chr.wear_acs_pst(store.mas_acs_center_quetzalplushie)
         else:
-            if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_center_quetzalplushie):
+            if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
 
     def _acs_heartchoc_exit(_moni_chr, **kwargs):
         """
         Exit programming point for heartchoc acs
         """
-        if (_moni_chr.get_acs_of_type('plush') == store.mas_acs_center_quetzalplushie):
+        if _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
             _moni_chr.remove_acs(store.mas_acs_center_quetzalplushie)
             _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
 
@@ -792,7 +789,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="chocs",
-        mux_type=["plush"],
+        #Can't mux this since this has special handling via programming points
         entry_pp=store.mas_sprites._acs_heartchoc_entry,
         exit_pp=store.mas_sprites._acs_heartchoc_exit
     )
@@ -871,7 +868,7 @@ init -1 python:
         ),
         stay_on_start=False,
         acs_type="plush",
-        mux_type=["chocs"],
+        #Don't want to mux this at the mo.
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -1342,7 +1339,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         priority=11,
-        stay_on_start=True,
+        stay_on_start=False,
         acs_type="flowers",
     )
     store.mas_sprites.init_acs(mas_acs_roses)

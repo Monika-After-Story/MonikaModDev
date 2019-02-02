@@ -689,7 +689,7 @@ label mas_reaction_quetzal_plush:
         m 1wud "Oh!"
 
         #Wear mid plush if chocs out
-        if monika_chr.get_acs_of_type('chocs'):
+        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
             $ monika_chr.wear_acs_pst(mas_acs_center_quetzalplushie)
         else:
             $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
@@ -705,8 +705,9 @@ label mas_reaction_quetzal_plush:
             m 3ekbsa "You always seem to know how to make me smile."
 
         m 1hsb "Thank you again, [player]~"
+
         #Remove mid plush
-        if monika_chr.get_acs_of_type('chocs'):
+        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
             m 1rksdlb "Ah, my desk is getting kind of crowded, ahaha!"
             m 3eksdla "I'm just going to put this away for now so it doesn't accidentally get knocked off."
             $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
@@ -1413,6 +1414,8 @@ label mas_reaction_gift_roses:
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
     else:
+        if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
+            $ persistent._date_last_given_roses = datetime.date(2018,2,14)
         if datetime.date.today() > persistent._date_last_given_roses:
             if mas_isSpecialDay():
                 $ mas_gainAffection(10,bypass=True)

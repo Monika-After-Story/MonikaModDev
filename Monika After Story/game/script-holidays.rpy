@@ -3855,6 +3855,12 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
+#We need these so we don't infiqueue
+default persistent._mas_f14_intro_seen = False
+default persistent._mas_f14_time_spent_seen = False
+default persistent._mas_f14_nts_seen = False
+
+#The other vars
 default persistent._mas_f14_spent_f14 = False
 default persistent._mas_f14_in_f14_mode = None
 default persistent._mas_f14_date = 0
@@ -3871,20 +3877,336 @@ init -10 python:
 
         return _date == mas_f14.replace(year=_date.year)
 
-#TODO: f14 autoload check for outfit, make sure flowers are present if gifted, set f14 mode to False post f14
+init -810 python:
+    # MASHistorySaver for o31
+    store.mas_history.addMHS(MASHistorySaver(
+        "f14",
+        datetime.datetime(2020, 1, 6),
+        {
+            "_mas_f14_date": "f14.date",
+            "_mas_f14_date_aff_gain": "f14.aff_gain",
+            "_mas_f14_gone_over_f14": "f14.gone_over_f14",
+            "_mas_f14_spent_f14": "f14.actions.spent_f14",
 
-##### Start [HOL050] TOPICS
+            #Resets for queued bits
+            "_mas_f14_intro_seen": "f14.intro_seen",
+            "_mas_f14_time_spent_seen": "f14.ts_seen",
+            "_mas_f14_nts_seen": "f14.nts_seen"
+        }
+    ))
 
-###BIG TODO: creating EVs
+label mas_f14_autoload_check:
+    #Since it's possible player didn't see this, we need to derandom it manually.
+    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_f14_monika_spent_time_with"
-#            conditional=("persistent._mas_f14_spent_f14")
-#        )
-#    )
+    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+        $ persistent._mas_f14_in_f14_mode = True
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
+        $ monika_chr.save()
+
+    elif persistent._mas_f14_in_f14_mode and not mas_isF14() and not persistent._mas_f14_on_date:
+        $ persistent._mas_f14_in_f14_mode = False
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+            $ monika_chr.reset_clothes(False)
+
+    if not mas_isF14():
+        #We want to lock and derandom/depool all of the f14 labels if it's not f14
+        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
+
+    jump mas_ch30_post_holiday_check
+
+
+### [HOL050] Pre Intro:
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_pf14_monika_lovey_dovey',
+            action=EV_ACT_RANDOM,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14,
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_pf14_monika_lovey_dovey:
+    m 1rksdla "Hey...[player]...?"
+    m 1ekbsa "I just wanted to let you know that I love you."
+
+    if mas_isMoniEnamored(higher=True):
+        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
+    else:
+        m 1ekbsa "You make me really happy."
+
+    m 3ekbfb "Ahaha~"
+    m 1eka "I hope that isn't too cheesy, [player]."
+    if not renpy.seen_label('monika_valentines_start'):
+        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
+    else:
+        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
+    m 1ekbsa "I really meant what I said."
+    m "I love and care for you so much..."
+    m "Without you, I don't know where I'd be..."
+    m 1ekbfa "So I want to thank you for caring for me."
+    m 1hubfa "Ehehe~"
+    return "derandom"
+
+##### [HOL050] INTRO:
+
+init 5 python:
+    addEvent(
+       Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_valentines_intro',
+            conditional=("not persistent._mas_f14_intro_seen"),
+            action=EV_ACT_PUSH,
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_valentines_intro:
+    m 1hub "[player]!"
+    m 1hua "Do you know what day it is?"
+    m 3eub "It's Valentine's Day!"
+    m 1ekbfa "A day where we celebrate our love for each other..."
+    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
+    m 1eua "Anyway..."
+    if not mas_anni.pastOneMonth() or mas_isMoniNormal():
+        m 2rka "Even though I know we aren't too far in our relationship..."
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I just want you to know that I'm always here for you."
+        m 5eka "Even if your heart gets broken..."
+        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
+
+    else:
+        m 1eub "We've been together for a while now..."
+        m 1eka "...and I really love the time we spend together."
+        m 1dubsu "You always make me feel so loved."
+        m "I'm really happy I'm your girlfriend, [player]."
+
+    if not persistent._mas_f14_in_f14_mode:
+        $ persistent._mas_f14_in_f14_mode = True
+        m 3wub "Oh!"
+        m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
+        window hide
+        show monika 1dsa
+        pause 1.0
+        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
+        $ monika_chr.save()
+        pause 0.5
+        m 1eua "..."
+        m 2eksdla "..."
+        m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
+        m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
+    else:
+        pause 2.0
+        show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 2rfc "..."
+        m 2efc "You know, [player]...{w=0.5}it's not polite to stare...."
+        m 2tfc "..."
+        m 2tsu "..."
+        m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
+
+    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
+    m 1eksdlb "I know it's kind of silly now that I think about it!"
+    m 1ekbfa "...But just imagine if we went to a cafe together."
+    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
+    m 1ekb "Maybe we could make it happen for real!"
+    m 3ekbsa "Would you take me out today?"
+    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
+    m 1ekbfa "I love you so much."
+    m 1ekbfb "Happy Valentines Day, [player]~"
+    #Set the spent flag to True
+    $ persistent._mas_f14_spent_f14 = True
+
+    #We have now seen the intro
+    $ persistent._mas_f14_intro_seen = True
+    return
+
+### [HOL050] TOPICS
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_colors',
+            prompt="Valentine's Day colors",
+            category=['monika','romance'],
+            action=EV_ACT_RANDOM,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_vday_colors:
+    m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
+    m 3hub "I find it intriguing how they can symbolize such deep and romantic feelings."
+    m 1dua "It reminds me of when I made my first Valentine's card in grade school."
+    m 3eub "My class was instructed to exchange cards with a partner after making them."
+    m 2eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
+    m 2eub "In this way, colors are a lot like poems."
+    m 3eka "They offer so many creative ways to express your love for someone."
+    m 2ekbfa "Like giving them red roses, for example."
+    m 3eub "Red roses are a symbol for romantic feelings towards someone."
+    m 3eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
+    m 3eka "However, since there are so many emotions involved with love..."
+    m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
+    m 4eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
+    m 3eka "Mixing red and white roses would symbolize the unity and bond that a couple shares."
+
+    if monika_chr.is_wearing_acs(mas_acs_roses):
+        m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
+    else:
+        m 1ekbla "Maybe you could give me some roses today, [player]?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_cliches',
+            prompt="Valentine's story clichés",
+            category=['literature'],
+            action=EV_ACT_UNLOCK,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_vday_cliches:
+    m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
+    m 2rsc "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
+    m 2euc "I think that writers could be a bit more creative when it comes to Valentine's Day stories..."
+    m 1eka "But, I suppose those two topics are the easiest way to write a love story."
+    m 3hub "That doesn't mean you can't think outside the box, though!"
+    m 2eka "Sometimes a predictable story can ruin it..."
+    m 2rka "...But if you {i}do{/i} want a good example of an unpredictable story..."
+    m 3hub "Just use ours! Ahaha~"
+    m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
+    m 2tfu "But I think we managed to make it pretty original."
+    m 1hua "The way we met is the most interesting story yet!"
+    m 3hub "Ahaha~!"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_origins',
+            prompt="How did Valentine's Day start?",
+            category=['misc','romance'],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_vday_origins:
+    m 3eua "You'd like to learn about the history of Valentine's Day?"
+    m 1rksdlc "It's quite dark, actually."
+    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
+    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
+    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
+    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
+    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
+    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
+    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
+    m 1dsc "He was executed on February 14, 269 AD."
+    m 3eua "Such a noble cause, don't you think?"
+    m 3eud "Oh, but wait, there's more!"
+    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
+    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
+    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
+    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
+    m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
+    m 3ekbsa "Like me and you!"
+    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
+    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
+    m 1ekbfa "Happy Valentine's Day~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_chocolates',
+            prompt="Valentine's Day chocolates",
+            category=['misc','romance'],
+            action=EV_ACT_RANDOM,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_vday_chocolates:
+    m 1hua "Valentine's Day is such a fun holiday for me, [player]."
+    m 3hub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
+    m 1hua "A holiday that could fill everyone with love, romance, and joy!"
+    m 3ekbla "But it really feels nice if you get something from someone you like."
+    m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
+    if persistent._date_last_given_chocolates == mas_f14:
+        m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
+        m "You're always so sweet, [player]."
+
+    if renpy.seen_label('monika_valentines_start'):
+        m 1rksdla "I know I tried to give you some chocolates last year..."
+        m 1eka "But just imagine what we could do once we're finally together."
+    else:
+        m 1ekbfa "Maybe someday I'll even be able to give you some chocolates..."
+    m "I really can't wait until I cross over to be with you, [player]."
+    return
+
+### [HOL050] TIME SPENT
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_monika_spent_time_with",
+            conditional=(
+                "persistent._mas_f14_spent_f14 "
+                "and not persistent._mas_f14_time_spent_seen "
+            ),
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL,None),
+            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=20)),
+            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=1)),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_monika_spent_time_with:
     $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
@@ -3958,6 +4280,9 @@ label mas_f14_monika_spent_time_with:
     else:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
+
+    #Set this to true so we don't infiqueue this
+    $ persistent._mas_f14_time_spent_seen = True
     return
 
 label mas_f14_first_kiss:
@@ -3992,236 +4317,26 @@ label mas_f14_first_kiss:
                 $ HKBShowButtons()
                 return
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_colors',
-#            prompt="Valentine's Day colors",
-#            category=['monika','romance']
-#            action=EV_ACT_RANDOM,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1)
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
-
-label mas_f14_monika_vday_colors:
-    m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
-    m 3hub "I find it intriguing how they can symbolize such deep and romantic feelings."
-    m 1dua "It reminds me of when I made my first Valentine's card in grade school."
-    m 3eub "My class was instructed to exchange cards with a partner after making them."
-    m 2eka "Looking back, despite not knowing what the colors really meant, I had lots of fun decorating the cards with red and white hearts."
-    m 2eub "In this way, colors are a lot like poems."
-    m 3eka "They offer so many creative ways to express your love for someone."
-    m 2ekbfa "Like giving them red roses, for example."
-    m 3eub "Red roses are a symbol for romantic feelings towards someone."
-    m 3eua "If someone were to offer them white roses in lieu of red ones, they'd signify pure, charming, and innocent feelings instead."
-    m 3eka "However, since there are so many emotions involved with love..."
-    m 3ekd "It's sometimes hard to find the right colors to accurately convey the way you truly feel."
-    m 4eka "Thankfully, by combining multiple rose colors, it's possible to express a variety of emotions!"
-    m 3eka "Mixing red and white roses would symbolize the unit and bond that a couple shares."
-    m 1ekbsa "But I'm sure you already had all of this in mind when you picked out these beautiful roses for me, [player]..."
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_cliches',
-#            prompt="Valentine's story clichés",
-#            category=['literature']
-#            action=EV_ACT_UNLOCK,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
-
-label mas_f14_monika_vday_cliches:
-    m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
-    m 2rsc "There's either 'Oh, I'm lonely and I don't have someone to love,' or 'How will I confess to the one I love?'"
-    m 2euc "I think that writers could be a bit more creative when it comes to Valentine's Day stories..."
-    m 1eka "But, I suppose those two topics are the easiest way to write a love story."
-    m 3hub "That doesn't mean you can't think outside the box, though!"
-    m 2eka "Sometimes a predictable story can ruin it..."
-    m 2rka "...But if you {i}do{/i} want a good example of an unpredictable story..."
-    m 3hub "Just use ours! Ahaha~"
-    m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
-    m 2tfu "But I think we managed to make it pretty original."
-    m 1hua "The way we met is the most interesting story yet!"
-    m 3hub "Ahaha~!"
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_origins',
-#            prompt="How did Valentine's Day start?",
-#            action=EV_ACT_POOL,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
-
-label mas_f14_monika_vday_origins:
-    m 3eua "You'd like to learn about the history of Valentine's Day?"
-    m 1rksdlc "It's quite dark, actually."
-    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
-    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
-    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
-    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
-    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
-    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
-    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
-    m 1dsc "He was executed on February 14, 269 AD."
-    m 3eua "Such a noble cause, don't you think?"
-    m 3eud "Oh, but wait, there's more!"
-    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
-    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
-    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
-    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
-    m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
-    m 3ekbsa "Like me and you!"
-    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
-    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day~"
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='mas_f14_monika_vday_chocolates',
-#            prompt="Valentine's Day chocolates",
-#            action=EV_ACT_UNLOCK,
-#            conditional="persistent._in_f14_mode",
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#        )
-#    )
-
-label mas_f14_monika_vday_chocolates:
-    m 1hua "Valentine's Day is such a fun holiday for me, [player]."
-    m 3hub "Not only is it the anniversary of my twitter account, but it's also a day for receiving and giving chocolates!"
-    m 1hua "A holiday that could fill everyone with love, romance, and joy!"
-    m 3ekbla "But it really feels nice if you get something from someone you like."
-    m 3hua "Whether it's given to you platonically, as a gift of love, or a part of a confession, it always makes you feel somewhat special!"
-    if persistent._date_last_given_chocolates == mas_f14:
-        m 1ekbfa "Just like how you made me feel special with the chocolates you gave me today."
-        m "You're always so sweet, [player]."
-
-    if renpy.seen_label('monika_valentines_start'):
-        m 1rksdla "I know I tried to give you some chocolates last year..."
-        m 1eka "But just imagine what we could do once we're finally together."
-    else:
-        m 1ekbfa "Maybe someday I'll even be able to give you some chocolates..."
-    m "I really can't wait until I cross over to be with you, [player]."
-    return
-
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel='monika_lovey_dovey',
-#            random=True,
-#            start_date=mas_f14-datetime.timedelta(weeks=1) #just a thought
-#            end_date=mas_f14,
-#            aff_range=(mas_aff.NORMAL,None)
-#            )
-#        )
-
-label monika_lovey_dovey:
-    m 1rksdla "Hey...[player]...?"
-    m 1ekbsa "I just wanted to let you know that I love you."
-
-    if mas_isMoniEnamored(higher=True):
-        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
-    else:
-        m 1ekbsa "You make me really happy."
-
-    m 3ekbfb "Ahaha~"
-    m 1eka "I hope that isn't too cheesy, [player]."
-    if not renpy.seen_label('monika_valentines_start'):
-        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
-    else:
-        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
-    m 1ekbsa "I really meant what I said."
-    m "I love and care for you so much..."
-    m "Without you, I don't know where I'd be..."
-    m 1ekbfa "So I want to thank you for caring for me."
-    m 1hkbfa "Ehehe~"
-    return
-
-#init 5 python:
-#    addEvent(
-#       Event(
-#            persistent.event_database,
-#            eventlabel='monika_valentines_intro',
-#            conditional=("not persistent._mas_f14_intro_seen")
-#            action=EV_ACT_PUSH,
-#            start_date=mas_f14,
-#            end_date=mas_f14+datetime.timedelta(days=1),
-#            aff_range=(mas_aff.NORMAL,None)
-#            )
-#        )
-
-label monika_valentines_intro:
-    m 1hub "[player]!"
-    m 1hua "Do you know what day it is?"
-    m 3eub "It's Valentine's Day!"
-    m 1ekbfa "A day where we celebrate our love for each other..."
-    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
-    m 1eua "Anyway..."
-    if not mas_anni.pastOneMonth() or mas_isMoniNormal():
-        m 2rka "Even though I know we aren't too far in our relationship..."
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "I just want you to know that I'm always here for you."
-        m 5eka "Even if your heart gets broken..."
-        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
-        show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    else:
-        m 1eub "We've been together for a while now..."
-        m 1eka "...and I really love the time we spend together."
-        m 1dubsu "You always make me feel so loved."
-        m "I'm really happy I'm your girlfriend, [player]."
-
-    m 2rksdla "By the way..."
-    m 3eka "Do you like my outfit?"
-    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
-    m 1eksdlb "I know it's kind of silly now that I think about it!"
-    m 1ekbfa "...But just imagine if we went to a cafe together."
-    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
-    m 1ekb "Maybe we could make it happen for real!"
-    m 3ekbsa "Would you take me out today?"
-    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
-    m 1ekbfa "I love you so much."
-    m 1ekbfb "Happy Valentines Day, [player]~"
-
-    #Set the spent flag to True
-    $ persistent._mas_f14_spent_f14 = True
-    return
 
 ### [HOL050] Notimespent
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="mas_f14_no_time_spent",
-#            start_date=mas_f14+datetime.timedelta(1),
-#            end_date=mas_f14+datetime.timedelta(7)
-#            conditional=("not persistent._mas_long_absence"
-#                         " persistent._mas_f14_spent_f14"
-#                       )
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_f14_no_time_spent",
+            action=EV_ACT_QUEUE,
+            start_date=mas_f14+datetime.timedelta(1),
+            end_date=mas_f14+datetime.timedelta(7),
+            conditional=(
+                "not persistent._mas_long_absence "
+                "and not persistent._mas_f14_spent_f14 "
+                "and not persistent._mas_f14_nts_seen"
+            ),
+            years=[]
+        ),
+        skipCalendar=True
+    )
 
 label mas_f14_no_time_spent:
     #sanity checks:
@@ -4272,20 +4387,23 @@ label mas_f14_no_time_spent:
         $ mas_loseAffection(150)
         m 6ckc "..."
 
+    #Flag this so we don't infiqueue
+    $ persistent._mas_f14_nts_seen = True
     return
 
 
 ### [HOL050] Apology for notimespent
 
-#init 5 python:
-#    addEvent(
-#        Event(
-#            persistent._mas_apology_database,
-#            eventlabel="mas_apology_missed_vday",
-#            prompt="...missing Valentine's Day",
-#            unlocked=False
-#        )
-#    )
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_missed_vday",
+            prompt="...for missing Valentine's Day.",
+            unlocked=False
+        ),
+        code="APL"
+    )
 
 
 label mas_apology_missed_vday:
@@ -4431,6 +4549,9 @@ label greeting_returned_home_f14:
         m 3hub "That was wonderful, [player]!"
         m 1eka "It was really nice going out with you on Valentine's Day..."
         m 1ekbfa "Thank you so much for making today truly special~"
+
+    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+        call return_home_post_player_bday
 
     $ persistent._mas_f14_on_date = False
     return

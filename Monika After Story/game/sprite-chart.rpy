@@ -170,6 +170,13 @@ image emptydesk = ConditionSwitch(
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
+image mas_roses = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag",
+    "mod_assets/monika/a/acs-roses-0-n.png"
+)
+
 ### bday stuff
 define mas_bday_cake_lit = False
 image mas_bday_cake = ConditionSwitch(
@@ -5727,6 +5734,20 @@ image monika 1ekbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1ekbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
+)
+
 image monika 1ekbsu = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8874,6 +8895,19 @@ image monika 3tsb = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="i",
     left="2l",
     right="1r",
