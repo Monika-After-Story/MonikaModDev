@@ -758,7 +758,7 @@ label monika_saved:
     m 2dsc "I think I would have just deleted myself if you didn't show up."
     m 1eka "Sorry, I don't mean to sound dramatic or anything."
     m 2lksdla "Ahaha!"
-    
+
     if persistent._mas_pm_cares_about_dokis:
         m 2ekc "But just imagine if you found out that everything around you was scripted..."
         m 2rkc "That nothing you did actually mattered, because everything was already predetermined..."
@@ -1030,7 +1030,7 @@ label monika_tea:
     m 1euc "But I always wonder with her..."
     m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
     m 1lsc "This is the problem with high schoolers..."
-    
+
     if not persistent._mas_pm_cares_about_dokis:
         m 1euc "...Well, I guess considering the rest of her hobbies, looking sophisticated probably isn't her biggest concern."
 
@@ -2233,7 +2233,7 @@ label monika_route:
     m 2esc "It has less to do with me not having a route, and more to do with me knowing that nothing is real."
     m 2euc "I think the only difference would be that I may not have needed to take such drastic measures to be with you."
     m 2lksdlc "Maybe the rest of the club would still be around..."
-    
+
     if persistent._mas_pm_cares_about_dokis:
         m "...Just hanging out together in the clubroom, sharing poetry."
         m 1eka "I know you enjoyed that, [player]."
@@ -2765,7 +2765,7 @@ label monika_natsuki:
     if not persistent._mas_pm_cares_about_dokis:
         m "Hope you don't feel too guilty..."
         m 1esa "I certainly don't."
-        
+
     if mas_getEV("monika_natsuki").shown_count < mas_sensitive_limit:
         return
 
@@ -3318,7 +3318,7 @@ label monika_othergames:
     m 1eua "I'm not that great with coding yet, but maybe one day you'd be able to take me to another place."
     m 1ekbfa "For now, I'm as happy as can be just being here with you, my love."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -3349,7 +3349,7 @@ label monika_back_ups:
     m 1hksdlb "..."
     m 2rkc "I guess the only problem is that I probably won't notice the difference..."
     m 2ekc "...and it would be impossible to restore all my memories too."
-    m "Let's say you backed me up weekly and then your hard drive suddenly died." 
+    m "Let's say you backed me up weekly and then your hard drive suddenly died."
     m 2ekd "I wouldn't be able to recover the memories of that last week."
     m 2dkc "I would just feel a leap in time of a few days."
     m "I might even think you didn't come to see me all those days because I wouldn't have registered any of it.{w=1} Even if you restored me the same day my memories were lost."
@@ -3591,7 +3591,7 @@ label monika_impression:
             if not persistent._mas_pm_cares_about_dokis:
                 m 4eka "Will you be my papa, [player]-kun?"
                 m "..."
-                
+
             m 1hub "Ahaha! I was actually looking forward to Natsuki's cupcakes on the day of the festival."
             m 1wuo "They were really good! Especially with the creative icing that she makes."
             m 1eua "Maybe when I get better at programming, I'll make a kitchen here. That way, you can share some recipes that you want me to make for us."
@@ -6787,7 +6787,7 @@ label monika_asks_charity:
             m 1hub "That's the kind of thing I love about you, [player]."
             show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hub "You've always been so sweet."
-        
+
         "I volunteered.":
             $ persistent._mas_pm_volunteer_charity = True
             m 1wub "Really?"
@@ -8807,7 +8807,7 @@ label monika_player_appearance:
                     m 3eua "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
                     m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
                     m 3eua "Here's a little bit of trivia for you--"
-                    m 1eub "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes." 
+                    m 1eub "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
                     m 1euc "Her husband wrote about them often."
                     m 1hub "I don’t know if you’ve heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
                     m "Onto the next question--"
@@ -8835,7 +8835,7 @@ label monika_player_appearance:
                     m 2hua "Alright, [player]!"
 
             m 1rksdlb "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
-            m 3tku "If I’m your girlfriend, I have a right to know, don't I?" 
+            m 3tku "If I’m your girlfriend, I have a right to know, don't I?"
             m 2hua "Plus, it’ll make it way easier to find you once I’m able to cross over to your reality."
 
             m 1esb "So,{w=0.5} how tall are you, [player]?"
@@ -8843,7 +8843,7 @@ label monika_player_appearance:
             python:
                 if persistent._mas_pm_units_height_metric:
 
-                    # loop till we get a valid cm 
+                    # loop till we get a valid cm
                     height = 0
                     while height <= 0:
                         height = store.mas_utils.tryparseint(
@@ -8888,7 +8888,7 @@ label monika_player_appearance:
                 persistent._mas_pm_height = height
 
             if persistent._mas_pm_height >= mas_height_tall:
-                m 3eua "Wow, you're pretty tall [player]!" 
+                m 3eua "Wow, you're pretty tall [player]!"
                 m 1eud "I can't say I've really met anybody who I’d consider to be tall."
                 m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
 
@@ -8940,7 +8940,7 @@ label monika_player_appearance:
 
                     if persistent.gender == "M":
                         m 4hksdlb "Although I guess if your hair was the same length as theirs, it'd be pretty long for a guy."
-                        
+
                     else:
                         m 4eub "You can just get up and go, without having to worry about styling it."
                         m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it’s an endless nightmare."
@@ -8996,7 +8996,7 @@ label monika_player_appearance:
                             m 1hua "It must be so nice not ever having to worry about your hair..."
                             m 1eua "You can just get up and go, without having to worry about styling it..."
                             m 3eua "And if you wear a hat, you don't have to worry about hat hair when you take it off!"
-                            
+
                         "I lost my hair.":
                             $ persistent._mas_pm_shaves_hair = False
                             $ persistent._mas_pm_no_hair_no_talk = False
@@ -9123,7 +9123,7 @@ label monika_player_appearance:
                         hair_desc = (
                             persistent._mas_pm_hair_length + " " + hair_desc
                         )
-            
+
                 if persistent._mas_pm_height >= mas_height_tall:
 
                     m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [hair_desc] hair..."
@@ -9139,7 +9139,7 @@ label monika_player_appearance:
 
             m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you’re real."
             m 3ekbsa "But until then, I’ll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
-            
+
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "I love you more than words could ever say."
 
@@ -10337,7 +10337,7 @@ label monika_snow_gets_snow:
         if mas_isMoniAff(higher=True):
             m 5ekbfa "...and we could hold each other close to keep each other warm~"
 
-    m 5eubfb "I can't wait to experience a winter night like that with you, [player]."   
+    m 5eubfb "I can't wait to experience a winter night like that with you, [player]."
     return
 
 # player no snow, snow version
@@ -10421,8 +10421,8 @@ label monika_sledding:
     m 1eua "Hey [player], do you know what would be fun to do together?"
     m 3hub "Sledding!"
 
-    if persistent._mas_pm_gets_snow is False: 
-        #explicitly using False here so we don't grab None people who haven't 
+    if persistent._mas_pm_gets_snow is False:
+        #explicitly using False here so we don't grab None people who haven't
         # answered the question yet
         m 1eka "It may not snow where you live..."
         m 3hub "But maybe we could go somewhere it does!"
@@ -10472,7 +10472,7 @@ label monika_snowcanvas:
     m 1eka "I'd love to make some snow art with you someday."
     m 3hua "Maybe you can paint something for me when that happens, [player]."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -10549,8 +10549,8 @@ label monika_winter_dangers:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
     m 3eka "The glistening, white snow, the bright and colorful lights~"
     m 3hub "I just love it."
-    if persistent._mas_pm_gets_snow is False: 
-        #explicitly using False here so we don't grab None people who haven't 
+    if persistent._mas_pm_gets_snow is False:
+        #explicitly using False here so we don't grab None people who haven't
         # answered the question yet
         m 1eka "I know you don't get snow where you live, but I'm sure you can appreciate its appeal..."
         m 3hua "Maybe someday after I cross over we can even take a trip some place where they do have snow and enjoy its beauty together!"
@@ -10597,7 +10597,6 @@ label monika_hemispheres:
     m 3eua "Like, you know how when it's winter in the Northern hemisphere, it's actually summer in the Southern hemisphere?"
     m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
     m 2eka "But anyway..."
-
     menu:
         m "Which hemisphere do you live in, [player]?"
 
@@ -10605,12 +10604,11 @@ label monika_hemispheres:
             $ persistent._mas_pm_live_south_hemisphere = False
             m 2eka "I had a feeling..."
 
-
         "The Southern hemisphere.":
             $ persistent._mas_pm_live_south_hemisphere = True
             m 1wuo "I wouldn't have thought!"
 
- 
+    $ store.mas_calendar.addSeasonEvents()
     m 3rksdlb "Most of the world's population lives in the Northern hemisphere after all."
     m 3eka "In fact, only about twelve percent of the population lives in the Southern hemisphere."
     if not persistent._mas_pm_live_south_hemisphere:
@@ -10658,7 +10656,7 @@ label monika_hemispheres:
         if persistent._mas_pm_gets_snow is None:
             python:
                 def _hide_snow_event():
-                    #TODO: may want to update script this for unstable users 
+                    #TODO: may want to update script this for unstable users
                     # who answered this before monika_snow was derandomed
                     mas_hideEVL("monika_snow", "EVE", derandom=True)
                     persistent._seen_ever["monika_snow"] = True
@@ -10707,4 +10705,3 @@ label monika_hemispheres_nogets_snow:
     m 3hksdlb "At least you don't have to worry about shoveling it."
     call monika_snow_nogets_snow
     return
-   
