@@ -743,6 +743,7 @@ init -1 python:
     ### ROSE EAR ACCESSORY
     ## ear_rose
     # rose that is placed on Monika's ear
+    # thanks jmwall
     mas_acs_ear_rose = MASAccessory(
         "ear_rose",
         "ear_rose",
@@ -782,6 +783,7 @@ init -1 python:
     ### HEART-SHAPED DESK CHOCOLATES
     ## heartchoc
     # heart-shaped chocolate box to be placed on Monika's desk
+    # NOTE: anyone remember who made these?
     mas_acs_heartchoc = MASAccessory(
         "heartchoc",
         "heartchoc",
@@ -1276,8 +1278,7 @@ init -1 python:
     ### WINE RIBBON
     ## ribbon_wine
     # Wine ribbon for ponytail/bun hairstyles. This matches the santa outfit
-    # thanks Ryuse
-    # NOTE: we may have to disable this
+    # thanks Ryuse/Ronin
     mas_acs_ribbon_wine = MASAccessory(
         "ribbon_wine",
         "ribbon_wine",
@@ -1337,6 +1338,7 @@ init -1 python:
     ### DESK ROSES
     ## roses
     # roses to be placed on Monika's desk
+    # NOTE: who made these?
     mas_acs_roses = MASAccessory(
         "roses",
         "roses",
