@@ -362,7 +362,7 @@ init -2 python in mas_sprites:
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
                 _moni_chr.wear_acs(store.mas_acs_center_quetzalplushie)
         elif _moni_chr.is_wearing_acs(store.mas_acs_center_quetzalplushie):
-                _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
+            _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
 
 
     def _acs_heartchoc_exit(_moni_chr, **kwargs):
