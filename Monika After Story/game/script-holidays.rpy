@@ -4022,6 +4022,10 @@ label mas_f14_monika_valentines_intro:
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
         m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
+
+        #Derandom this since it's possible to get this still
+        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+
     else:
         pause 2.0
         show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
