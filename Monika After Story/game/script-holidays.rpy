@@ -3855,7 +3855,12 @@ init 2 python:
 
 ######################## Start [HOL050]
 #Vday
+#We need these so we don't infiqueue
 default persistent._mas_f14_intro_seen = False
+default persistent._mas_f14_time_spent_seen = False
+default persistent._mas_f14_nts_seen = False
+
+#The other vars
 default persistent._mas_f14_spent_f14 = False
 default persistent._mas_f14_in_f14_mode = None
 default persistent._mas_f14_date = 0
@@ -3882,11 +3887,18 @@ init -810 python:
             "_mas_f14_date_aff_gain": "f14.aff_gain",
             "_mas_f14_gone_over_f14": "f14.gone_over_f14",
             "_mas_f14_spent_f14": "f14.actions.spent_f14",
-            "_mas_f14_intro_seen": "f14.actions.seen_intro"
+
+            #Resets for queued bits
+            "_mas_f14_intro_seen": "f14.intro_seen",
+            "_mas_f14_time_spent_seen": "f14.ts_seen",
+            "_mas_f14_nts_seen": "f14.nts_seen"
         }
     ))
 
 label mas_f14_autoload_check:
+    #Since it's possible player didn't see this, we need to derandom it manually.
+    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+
     if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
         $ persistent._mas_f14_in_f14_mode = True
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
@@ -3898,7 +3910,8 @@ label mas_f14_autoload_check:
         if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
             $ monika_chr.reset_clothes(False)
 
-        #We want to lock and derandom/depool all of the f14 labels
+    if not mas_isF14():
+        #We want to lock and derandom/depool all of the f14 labels if it's not f14
         $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
@@ -3909,130 +3922,124 @@ label mas_f14_autoload_check:
 
     jump mas_ch30_post_holiday_check
 
-##### Start [HOL050] TOPICS
 
-###BIG TODO: creating EVs
+### [HOL050] Pre Intro:
 
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_f14_monika_spent_time_with",
-            conditional=("persistent._mas_f14_spent_f14"),
-            action=EV_ACT_QUEUE,
+            eventlabel='mas_pf14_monika_lovey_dovey',
+            action=EV_ACT_RANDOM,
+            start_date=mas_f14-datetime.timedelta(days=3),
+            end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
-            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=20)),
-            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=1)),
             years=[]
         ),
         skipCalendar=True
     )
 
-label mas_f14_monika_spent_time_with:
-    $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
-    m 1eua "Hey, [player]?"
-    m 1eka "I just wanted to thank you for spending Valentine's Day with me."
-    m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
-    if f14_gifts_total > 0:
-        if f14_gifts_total == 1:
-            if f14_gifts_good == 1:
-                m "And let's not forget about the gift you got me, [player]..."
-                m 3hub "It was great!"
-            elif f14_gifts_neutral == 1:
-                m 3eka "And let's not forget about the gift you got me, [player]..."
-                m 1eka "It was really sweet of you to get me something."
-            else:
-                m 3eka "And let's not forget about the gift you got me, [player]..."
-                m 2etc "..."
-                m 2efc "Well, on second thought, maybe we should..."
+label mas_pf14_monika_lovey_dovey:
+    m 1rksdla "Hey...[player]...?"
+    m 1ekbsa "I just wanted to let you know that I love you."
 
-        else:
-            if f14_gifts_good == f14_gifts_total:
-                m "And let’s not forget about the wonderful gifts you got me, [player]..."
-                m 3hub "They were amazing!"
-            elif f14_gifts_bad == f14_gifts_total:
-                m 3eka "And let's not forget about the gifts you got me, [player]..."
-                m 2etc "..."
-                m 2rfc "Well, on second thought, maybe we should..."
-            elif f14_gifts_bad == 0:
-                m "And let's not forget about the gifts you got me, [player]..."
-                m 3hub "They were really nice!"
-            elif f14_gifts_good + f14_gifts_neutral == f14_gifts_bad:
-                m 3eka "And let’s not forget about the gifts you got me, [player]..."
-                m 3rksdla "Some of them were really nice."
-            elif f14_gifts_good + f14_gifts_neutral > f14_gifts_bad:
-                m "And let’s not forget about the gifts you got me, [player]..."
-                m 3hub "Most of them were really nice."
-            elif f14_gifts_good + f14_gifts_neutral < f14_gifts_bad:
-                m 3eka "And let’s not forget about the gifts you got me, [player]..."
-                m 3rksdla "I really liked...{w=1}some of them."
-        m 1rkbsb "I actually made something for you too, [player]!"
+    if mas_isMoniEnamored(higher=True):
+        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
+    else:
+        m 1ekbsa "You make me really happy."
+
+    m 3ekbfb "Ahaha~"
+    m 1eka "I hope that isn't too cheesy, [player]."
+    if not renpy.seen_label('monika_valentines_start'):
+        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
+    else:
+        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
+    m 1ekbsa "I really meant what I said."
+    m "I love and care for you so much..."
+    m "Without you, I don't know where I'd be..."
+    m 1ekbfa "So I want to thank you for caring for me."
+    m 1hubfa "Ehehe~"
+    return "derandom"
+
+##### [HOL050] INTRO:
+
+init 5 python:
+    addEvent(
+       Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_valentines_intro',
+            conditional=("not persistent._mas_f14_intro_seen"),
+            action=EV_ACT_PUSH,
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+label mas_f14_monika_valentines_intro:
+    m 1hub "[player]!"
+    m 1hua "Do you know what day it is?"
+    m 3eub "It's Valentine's Day!"
+    m 1ekbfa "A day where we celebrate our love for each other..."
+    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
+    m 1eua "Anyway..."
+    if not mas_anni.pastOneMonth() or mas_isMoniNormal():
+        m 2rka "Even though I know we aren't too far in our relationship..."
+        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eua "I just want you to know that I'm always here for you."
+        m 5eka "Even if your heart gets broken..."
+        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
 
     else:
-        m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
+        m 1eub "We've been together for a while now..."
+        m 1eka "...and I really love the time we spend together."
+        m 1dubsu "You always make me feel so loved."
+        m "I'm really happy I'm your girlfriend, [player]."
 
-    if not mas_isBelowZero():
-        if renpy.seen_label('monika_valentines_start'):
-            if mas_isMoniEnamored(higher=True):
-                m 1ekbsa "Here, let me show it to you."
-                call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
-                m "You really are everything to me, [player]."
-                if persistent._mas_first_kiss is None:
-                    jump mas_f14_first_kiss
-                else:
-                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-
-        else:
-            m 1ekbsa "Here, let me show it to you."
-            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
-            m "I really mean that, [player]..."
-            m 3ekbsa "In you I found everything I could ever hope for."
-            if mas_isMoniEnamored(higher=True):
-                if persistent._mas_first_kiss is None:
-                    jump mas_f14_first_kiss
-                else:
-                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-
-        m 1ekbfa "Thank you for always being by my side."
-        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
-
+    if not persistent._mas_f14_in_f14_mode:
+        $ persistent._mas_f14_in_f14_mode = True
+        m 3wub "Oh!"
+        m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
+        window hide
+        show monika 1dsa
+        pause 1.0
+        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
+        $ monika_chr.save()
+        pause 0.5
+        m 1eua "..."
+        m 2eksdla "..."
+        m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
+        m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
     else:
-        m 1eka "Thank you for being by my side."
-        m 3ekb "Happy Valentine's Day!"
+        pause 2.0
+        show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
+        m 2rfc "..."
+        m 2efc "You know [player]...it's not polite to stare...."
+        m 2tfc "..."
+        m 2tsu "..."
+        m 3tsb "Ahaha! I'm just kidding...{w=0.5}do you like my outfit?"
+
+    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
+    m 1eksdlb "I know it's kind of silly now that I think about it!"
+    m 1ekbfa "...But just imagine if we went to a cafe together."
+    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
+    m 1ekb "Maybe we could make it happen for real!"
+    m 3ekbsa "Would you take me out today?"
+    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
+    m 1ekbfa "I love you so much."
+    m 1ekbfb "Happy Valentines Day, [player]~"
+    #Set the spent flag to True
+    $ persistent._mas_f14_spent_f14 = True
+
+    #We have now seen the intro
+    $ persistent._mas_f14_intro_seen = True
     return
 
-label mas_f14_first_kiss:
-        m 1ektpu "I honestly don't know what I would do without you."
-        m 6dktuu "..."
-        window hide
-        menu:
-            "I love you, [m_name].":
-                $ HKBHideButtons()
-                $ mas_RaiseShield_core()
-                $ disable_esc()
-                pause 3.0
-                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
-                pause 3.0
-                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
-                pause 3.0
-                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
-                pause 3.0
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 6ekbfa "[player]...I...I..."
-                call monika_kissing_motion(hide_ui=False)
-                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
-                m 6ekbfa "...I love you too~"
-                m 6dkbfa "..."
-                m "That was everything I had always dreamt it would be~"
-                m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment..."
-                m 6dkbsu "I will never forget this..."
-                m 6ekbsu "...the moment of our first kiss."
-                m "Happy Valentine's Day, [player]~"
-                $ enable_esc()
-                $ mas_MUMUDropShield()
-                $ HKBShowButtons()
-                return
+### [HOL050] TOPICS
 
 init 5 python:
     addEvent(
@@ -4181,100 +4188,135 @@ label mas_f14_monika_vday_chocolates:
     m "I really can't wait until I cross over to be with you, [player]."
     return
 
+### [HOL050] TIME SPENT
+
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel='monika_lovey_dovey',
-            action=EV_ACT_RANDOM,
-            start_date=mas_f14-datetime.timedelta(days=3),
-            end_date=mas_f14,
+            eventlabel="mas_f14_monika_spent_time_with",
+            conditional=(
+                "persistent._mas_f14_spent_f14 "
+                "and not persistent._mas_f14_time_spent_seen "
+            ),
+            action=EV_ACT_QUEUE,
             aff_range=(mas_aff.NORMAL,None),
+            start_date=datetime.datetime.combine(mas_f14, datetime.time(hour=20)),
+            end_date=datetime.datetime.combine(mas_f14+datetime.timedelta(1), datetime.time(hour=1)),
             years=[]
         ),
         skipCalendar=True
     )
 
-label monika_lovey_dovey:
-    m 1rksdla "Hey...[player]...?"
-    m 1ekbsa "I just wanted to let you know that I love you."
+label mas_f14_monika_spent_time_with:
+    $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
+    m 1eua "Hey, [player]?"
+    m 1eka "I just wanted to thank you for spending Valentine's Day with me."
+    m 1ekbsa "I know that it's not a normal holiday, but it's a really special day for me now that I have you."
+    if f14_gifts_total > 0:
+        if f14_gifts_total == 1:
+            if f14_gifts_good == 1:
+                m "And let's not forget about the gift you got me, [player]..."
+                m 3hub "It was great!"
+            elif f14_gifts_neutral == 1:
+                m 3eka "And let's not forget about the gift you got me, [player]..."
+                m 1eka "It was really sweet of you to get me something."
+            else:
+                m 3eka "And let's not forget about the gift you got me, [player]..."
+                m 2etc "..."
+                m 2efc "Well, on second thought, maybe we should..."
 
-    if mas_isMoniEnamored(higher=True):
-        m 1ekbfa "You make me really happy...and I could never ask for someone better than you."
+        else:
+            if f14_gifts_good == f14_gifts_total:
+                m "And let’s not forget about the wonderful gifts you got me, [player]..."
+                m 3hub "They were amazing!"
+            elif f14_gifts_bad == f14_gifts_total:
+                m 3eka "And let's not forget about the gifts you got me, [player]..."
+                m 2etc "..."
+                m 2rfc "Well, on second thought, maybe we should..."
+            elif f14_gifts_bad == 0:
+                m "And let's not forget about the gifts you got me, [player]..."
+                m 3hub "They were really nice!"
+            elif f14_gifts_good + f14_gifts_neutral == f14_gifts_bad:
+                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3rksdla "Some of them were really nice."
+            elif f14_gifts_good + f14_gifts_neutral > f14_gifts_bad:
+                m "And let’s not forget about the gifts you got me, [player]..."
+                m 3hub "Most of them were really nice."
+            elif f14_gifts_good + f14_gifts_neutral < f14_gifts_bad:
+                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3rksdla "I really liked...{w=1}some of them."
+        m 1rkbsb "I actually made something for you too, [player]!"
+
     else:
-        m 1ekbsa "You make me really happy."
+        m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
 
-    m 3ekbfb "Ahaha~"
-    m 1eka "I hope that isn't too cheesy, [player]."
-    if not renpy.seen_label('monika_valentines_start'):
-        m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
+    if not mas_isBelowZero():
+        if renpy.seen_label('monika_valentines_start'):
+            if mas_isMoniEnamored(higher=True):
+                m 1ekbsa "Here, let me show it to you."
+                call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+                m "You really are everything to me, [player]."
+                if persistent._mas_first_kiss is None:
+                    jump mas_f14_first_kiss
+                else:
+                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+
+        else:
+            m 1ekbsa "Here, let me show it to you."
+            call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+            m "I really mean that, [player]..."
+            m 3ekbsa "In you I found everything I could ever hope for."
+            if mas_isMoniEnamored(higher=True):
+                if persistent._mas_first_kiss is None:
+                    jump mas_f14_first_kiss
+                else:
+                    call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
+
+        m 1ekbfa "Thank you for always being by my side."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+
     else:
-        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
-    m 1ekbsa "I really meant what I said."
-    m "I love and care for you so much..."
-    m "Without you, I don't know where I'd be..."
-    m 1ekbfa "So I want to thank you for caring for me."
-    m 1hubfa "Ehehe~"
-    return "derandom"
+        m 1eka "Thank you for being by my side."
+        m 3ekb "Happy Valentine's Day!"
 
-init 5 python:
-    addEvent(
-       Event(
-            persistent.event_database,
-            eventlabel='monika_valentines_intro',
-            conditional=("not persistent._mas_f14_intro_seen"),
-            action=EV_ACT_PUSH,
-            start_date=mas_f14,
-            end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
-            years=[]
-        ),
-        skipCalendar=True
-    )
-
-label monika_valentines_intro:
-    m 1hub "[player]!"
-    m 1hua "Do you know what day it is?"
-    m 3eub "It's Valentine's Day!"
-    m 1ekbfa "A day where we celebrate our love for each other..."
-    m "I guess every day we're together is already a celebration of our love, but there's something that's really special about Valentine's Day."
-    m 1eua "Anyway..."
-    if not mas_anni.pastOneMonth() or mas_isMoniNormal():
-        m 2rka "Even though I know we aren't too far in our relationship..."
-        show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "I just want you to know that I'm always here for you."
-        m 5eka "Even if your heart gets broken..."
-        m 5ekbla "I'll always be here to fix it for you. Okay, [player]?"
-        pause 2.0
-    else:
-        m 1eub "We've been together for a while now..."
-        m 1eka "...and I really love the time we spend together."
-        m 1dubsu "You always make me feel so loved."
-        m "I'm really happy I'm your girlfriend, [player]."
-        pause 2.0
-
-    show monika 2rfc at t11 zorder MAS_MONIKA_Z with dissolve
-    m 2rfc "..."
-    m 2efc "You know [player]...it's not polite to stare...."
-    m 2tfc "..."
-    m 2tsu "..."
-    m 3tsu "Ahaha! I'm just kidding...do you like my outfit?"
-    m 1rkbsa "I've always dreamt of a date with you while wearing this..."
-    m 1eksdlb "I know it's kind of silly now that I think about it!"
-    m 1ekbfa "...But just imagine if we went to a cafe together."
-    m 1rksdlb "I think there's a picture of something like that somewhere actually..."
-    m 1ekb "Maybe we could make it happen for real!"
-    m 3ekbsa "Would you take me out today?"
-    m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
-    m 1ekbfa "I love you so much."
-    m 1ekbfb "Happy Valentines Day, [player]~"
-
-    #Set the spent flag to True
-    $ persistent._mas_f14_spent_f14 = True
-
-    #We have now seen the intro
-    $ persistent._mas_f14_intro_seen = True
+    #Set this to true so we don't infiqueue this
+    $ persistent._mas_f14_time_spent_seen = True
     return
+
+label mas_f14_first_kiss:
+        m 1ektpu "I honestly don't know what I would do without you."
+        m 6dktuu "..."
+        window hide
+        menu:
+            "I love you, [m_name].":
+                $ HKBHideButtons()
+                $ mas_RaiseShield_core()
+                $ disable_esc()
+                pause 3.0
+                show monika 6ektda at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6dku at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6dkbsu at t11 zorder MAS_MONIKA_Z with dissolve
+                pause 3.0
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 6ekbfa "[player]...I...I..."
+                call monika_kissing_motion(hide_ui=False)
+                show monika 6ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 6ekbfa "...I love you too~"
+                m 6dkbfa "..."
+                m "That was everything I had always dreamt it would be~"
+                m 6ekbfa "I've been waiting so long to finally kiss you, and there couldn't have been a more perfect moment..."
+                m 6dkbsu "I will never forget this..."
+                m 6ekbsu "...the moment of our first kiss."
+                m "Happy Valentine's Day, [player]~"
+                $ enable_esc()
+                $ mas_MUMUDropShield()
+                $ HKBShowButtons()
+                return
+
 
 ### [HOL050] Notimespent
 
@@ -4287,8 +4329,9 @@ init 5 python:
             start_date=mas_f14+datetime.timedelta(1),
             end_date=mas_f14+datetime.timedelta(7),
             conditional=(
-                "not persistent._mas_long_absence"
-                " and not persistent._mas_f14_spent_f14"
+                "not persistent._mas_long_absence "
+                "and not persistent._mas_f14_spent_f14 "
+                "and not persistent._mas_f14_nts_seen"
             ),
             years=[]
         ),
@@ -4344,6 +4387,8 @@ label mas_f14_no_time_spent:
         $ mas_loseAffection(150)
         m 6ckc "..."
 
+    #Flag this so we don't infiqueue
+    $ persistent._mas_f14_nts_seen = True
     return
 
 

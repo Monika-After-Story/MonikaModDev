@@ -354,7 +354,7 @@ init -2 python in mas_sprites:
         #We only want to be temporarily moving the plush if not on f14
         #Since we keep the chocs post reaction if it is f14
 
-        if not store.mas_isF14():
+        if not (store.mas_isF14() or store.mas_isD25Season()):
             if _moni_chr.is_wearing_acs(store.mas_acs_quetzalplushie):
                 _moni_chr.remove_acs(store.mas_acs_quetzalplushie)
                 _moni_chr.wear_acs_pst(store.mas_acs_center_quetzalplushie)

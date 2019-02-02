@@ -82,8 +82,14 @@ label monika_playerapologizes:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
             for ev_label, ev in store.mas_apology.apology_db.iteritems()
-            if ev.unlocked
+            if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
         ]
+
+        #Now we add the generic if there's no prompt attached
+        generic_ev = mas_getEV('mas_apology_generic')
+
+        if generic_ev.prompt == "...for something." or generic_ev.prompt == "...for something else.":
+            apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
 
         #The back button
         return_prompt_back = ("Nevermind", False, False, False, 20)
