@@ -305,8 +305,8 @@ label v0_3_1(version=version): # 0.3.1
 #   We will save this for versiojn 0812 or 9
 
 
-# 0.8.15
-label v0_8_15(version="v0_8_15"):
+# 0.9.0
+label v0_9_0(version="v0_9_0"):
     python:
         # unlock nickname topic if called bad name
         if persistent._mas_called_moni_a_bad_name:
