@@ -6957,7 +6957,7 @@ label monika_graduation:
     m "..."
     
     #Went through and timed out on the menu twice
-    if not persistent._mas_pm_monika_listened is False:
+    if persistent._mas_pm_monika_listened is False:
         m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
         m 2esc "Let's forget about this and talk about something else, okay [player]?"
         return "derandom"
