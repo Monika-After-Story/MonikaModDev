@@ -412,6 +412,13 @@ label v0_9_0(version="v0_9_0"):
         # derandom pets topic if player has given the plushie
         if persistent._mas_acs_enable_quetzalplushie:
             mas_hideEVL("monika_pets", "EVE", derandom=True)
+
+        # reset mistletoe if random'd
+        d25_mis_ev = mas_getEV("mas_d25_monika_mistletoe")
+        if d25_mis_ev is not None:
+            # this will reset later
+            mas_addDelayedAction(10)
+
     return
 
 # 0.8.14
