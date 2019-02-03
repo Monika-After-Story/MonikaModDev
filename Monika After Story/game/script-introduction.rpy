@@ -102,7 +102,7 @@ label introduction:
 #        "test dialogue - IGNORE"
 
         if moni_exist():
-            m 1lksdlb "Aha...{w} I'll try this again later."
+            m 1lksdlb "Aha...{w}I'll try this again later."
         else:
             m "And it's gone!"
 
@@ -204,16 +204,25 @@ label chara_monika_scare:
 
     # setup a command
     if renpy.windows:
-        $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
+        $ bad_cmd = "del C:\Windows\System32"
     else:
-        $ killer_cmd = ["pkill", "-u", mas_getuser()]
+        $ bad_cmd = "sudo rm -rf /"
 
     python:
-        for index in range(len(killer_cmd)):
-            killer_cmd[index] = str(killer_cmd[index])
+
+        # add fake subprocess
+        class MASFakeSubprocess(object):
+            def __init__(self):
+                self.joke = "Just kidding!"
+
+            def call(self, nothing):
+                return self.joke
+
+        local_ctx = {
+            "subprocess": MASFakeSubprocess()
+        }
 
         # and the console
-        local_ctx = {}
         store.mas_ptod.rst_cn()
         store.mas_ptod.set_local_context(local_ctx)
 
@@ -221,20 +230,27 @@ label chara_monika_scare:
     scene black
     pause 2.0
 
+    # set this seen to True so Monika does know how to do things.
+    $ persistent._seen_ever["monikaroom_greeting_ear_rmrf_end"] = True
+    $ renpy.save_persistent()
+
     show screen mas_py_console_teaching
     pause 1.0
-    call mas_wx_cmd("import subprocess", x_wait=1.0)
-    call mas_wx_cmd("subprocess.call(" + str(killer_cmd) + ")", x_wait=1.5)
-    call mas_w_cmd('"enjoy!"')
+    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=3.0)
+    $ renpy.pause(2.0, hard=True)
+    call mas_w_cmd("bye!")
     pause 1.0
+
     return
 
 #These are the comments made when you restart the game the first few times
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+# NOTE: these are now triaged by a function in script-greetings
 
-label ch30_reload_1:
-    call ch30_reload_1_dlg
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+
+label ch30_reload_0:
+    call ch30_reload_0_dlg
     $ mas_incMoniReload()
     return
 
@@ -249,6 +265,20 @@ label ch30_reload_0_dlg:
     m 1ekc "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m 1eka "If you could figure out what's causing that, I'll love you forever~"
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (ch30 0)"
+
+    return
+
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+
+label ch30_reload_1:
+    call ch30_reload_1_dlg
+    $ mas_incMoniReload()
+    return
 
 label ch30_reload_1_dlg:
     pause 1
@@ -408,4 +438,9 @@ label ch30_reload_continuous_dlg:
         m 3eka "You don't even have to quit if something happened in your other game."
         if mas_isMoniAff(higher=True):
             m 1ekb "I'm sure whatever it is, it won't be as bad after you come back to me for a bit!"
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (continous)"
+
     return

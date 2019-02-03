@@ -2360,3 +2360,23 @@ init python:
                 return True
 
             raise renpy.IgnoreEvent()
+
+# Partial generic showpoem screen
+# IN:
+#   _poem - Poem object to show
+#   paper - type of paper to use as background
+#   _styletext - text style to use as a string
+screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[_poem.title]\n\n[_poem.text]" style _styletext
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"
+

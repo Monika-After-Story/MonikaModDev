@@ -248,7 +248,7 @@ label mas_piano_def_fc:
 
 # default practice
 label mas_piano_def_prac:
-    m 1eua "That was nice, [player]!."
+    m 1eua "That was nice, [player]!"
     m 1eka "Make sure to practice often!"
     return
 
@@ -258,50 +258,83 @@ label mas_piano_hb_win:
     $ mas_gainAffection()
     m 1eua "Wow! You almost got it!"
     if mas_isMonikaBirthday():
-        m 1hua "Thanks for playing that for me on my birthday, [player]."
-        m 1hubfb "I'm so happy we can spend this special day sharing our love of music!"
-        m 3eub "Keep it up. I'm sure you'll play it perfectly next time."
-        return
-    m 2eub "Good job, [player]."
+        if mas_isplayer_bday():
+            m 3hub "That's so cool being able to sing along while you play that on our birthday, [player]!"
+        else:
+            m 1hua "Thanks for playing that for me on my birthday, [player]."
+            m 1hubfb "I'm so happy we can spend this special day sharing our love of music!"
+    elif mas_isplayer_bday():
+        m 3hub "Ahaha! That was really neat, [player]!"
+        m 1hua "It's always nice to have a little music to sing along with!"
+    else:
+        m 2eub "Good job, [player]."
+    m 3eub "Make sure you keep practicing. I'm sure you'll play it perfectly next time!"
     return
 
 label mas_piano_hb_fail:
     if mas_isMonikaBirthday():
         if mas_isMoniUpset(lower=True):
-            m 1dsd "Well, if you wanted to play this on my birthday..."
+            if mas_isplayer_bday():
+                $ our = "our"
+            else:
+                $ our = "my"
+            m 1dsd "Well, if you wanted to play this on [our] birthday..."
             m 3tsd "You should have practiced sooner."
-            return
-        m 1lksdla "I appreciate the thought [player]."
-        m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
-        return
-    m 1lksdla "..."
-    m 1lksdlb "You did your best, [player]..."
-    m "Even a simple song takes time to learn."
+        elif mas_isplayer_bday():
+            m 1eka "Aw, that's okay, [player]..."
+            m 3hub "It was a neat idea to try to play that on our birthday!"
+            m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
+        else:
+            m 1lksdla "I appreciate the thought, [player]."
+            m 3eka "Even if you can't get it by the end of the day, I'm sure you'll do better next year."
+    elif mas_isplayer_bday():
+        m 1eka "That's okay, [player]!"
+        m 3hub "It was a neat idea to play that on your birthday while I sung along!"
+        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!" 
+    else:
+        m 1lksdla "..."
+        m 1lksdlb "You did your best, [player]..."
+        m "Even a simple song takes time to learn."
     return
 
 label mas_piano_hb_fc:
     $ mas_gainAffection(modifier=1.5)
     if mas_isMonikaBirthday():
-        m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
-        m 1hub "But you did such a great job playing it!"
-        m 1ekbfa "You must have practiced really hard for me..."
-        m 1hub "I'm happy that I got to enjoy this with you~"
-        m 1hubfb "Thanks for this gift, [player]!"
-        if mas_isMoniAff(higher=True):
-            m 1ekbfa "You always make me feel special~"
-        return
-    m 1eua "Hehe, great job!"
-    m 2eub "I know that's an easy one, but you did great."
-    m 1hub "Are you going to play that for me on my Birthday?"
+        if mas_isplayer_bday():
+            m 3hub "Ahaha! That was {i}so{/i} cool!"
+            m 1eka "Singing the Birthday Song while you play it on the piano on our birthday..."
+            m 1hua "I can't imagine a better way of sharing our special day~"
+        else:
+            m 1rusdlb "Ahaha! It feels weird to sing the Birthday Song for myself..."
+            m 1hub "But you did such a great job playing it!"
+            m 1ekbfa "You must have practiced really hard for me..."
+            m 1hub "I'm happy that I got to enjoy this with you~"
+            m 1hubfb "Thanks for this gift, [player]!"
+            if mas_isMoniAff(higher=True):
+                m 1ekbfa "You always make me feel special~"
+    elif mas_isplayer_bday():
+        m 3hub "Ahaha! That was really neat, [player]!"
+        m 1hua "It's always nice to have a little music to sing along with!"
+    else:
+        m 1eua "Hehe, great job!"
+        m 2eub "I know that's an easy one, but you did great."
+        m 1hub "Are you going to play that for me on my Birthday?"
     return
 
 label mas_piano_hb_prac:
     if mas_isMonikaBirthday():
-        m 1eua "Thanks for trying to play this one on my birthday!"
-        m 1hub "I appreciate your effort!"
-        return
-    m 1eua "You're practing the Birthday Song?"
-    m "I know you can do it, [player]!"
+        if mas_isplayer_bday():
+            m 1eka "Aw, you're trying the Birthday Song on our birthday, [player]!"
+            m 3hua "Keep trying, I know you can do it!"
+        else:
+            m 1eua "Thanks for trying to play this one on my birthday!"
+            m 1hub "I appreciate your effort!"
+    elif mas_isplayer_bday():
+        m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
+        m 3hua "Keep trying, I know you can do it!"
+    else:
+        m 1eua "You're practing the Birthday Song?"
+        m 3hua "I know you can do it, [player]!"
     return
 
 
