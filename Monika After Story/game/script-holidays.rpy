@@ -3929,10 +3929,10 @@ label mas_f14_autoload_check:
         $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_lockEVL("mas_f14_monika_vday_origins","EVE")
+        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
 
         # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15, 16, 17)
+        $ mas_removeDelayedActions(12, 13, 14, 15, 16, 17, 18, 19)
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -4024,7 +4024,7 @@ init 5 python:
 
 label mas_f14_monika_valentines_intro:
     # add appropriate dleayd actions
-    $ mas_addDelayedActions(11, 12, 13, 14, 15, 16, 17)
+    $ mas_addDelayedActions(11, 12, 13, 14, 15, 16, 17, 18, 19)
 
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -4098,7 +4098,7 @@ init 5 python:
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_colors',
             prompt="Valentine's Day colors",
-            category=['monika','romance'],
+            category=['holidays','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
             start_date=mas_f14,
@@ -4181,7 +4181,7 @@ init 5 python:
             persistent.event_database,
             eventlabel='mas_f14_monika_vday_cliches',
             prompt="Valentine's story clichés",
-            category=['literature'],
+            category=['holidays','literature','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
             start_date=mas_f14,
@@ -4253,50 +4253,9 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel='mas_f14_monika_vday_origins',
-            prompt="How did Valentine's Day start?",
-            category=['misc','romance'],
-            action=EV_ACT_POOL,
-            conditional="persistent._mas_f14_in_f14_mode",
-            start_date=mas_f14,
-            end_date=mas_f14+datetime.timedelta(days=1),
-            aff_range=(mas_aff.NORMAL,None),
-            years=[]
-        ),
-        skipCalendar=True
-    )
-
-label mas_f14_monika_vday_origins:
-    m 3eua "You'd like to learn about the history of Valentine's Day?"
-    m 1rksdlc "It's quite dark, actually."
-    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
-    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
-    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
-    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
-    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
-    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
-    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
-    m 1dsc "He was executed on February 14, 269 AD."
-    m 3eua "Such a noble cause, don't you think?"
-    m 3eud "Oh, but wait, there's more!"
-    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
-    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
-    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
-    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
-    m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
-    m 3ekbsa "Like me and you!"
-    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
-    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
-    m 1ekbfa "Happy Valentine's Day~"
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
             eventlabel='mas_f14_monika_vday_chocolates',
             prompt="Valentine's Day chocolates",
-            category=['misc','romance'],
+            category=['holidays','romance'],
             action=EV_ACT_RANDOM,
             conditional="persistent._mas_f14_in_f14_mode",
             start_date=mas_f14,
@@ -4367,6 +4326,88 @@ label mas_f14_monika_vday_chocolates:
     m "I really can't wait until I cross over to be with you, [player]."
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='mas_f14_monika_vday_origins',
+            prompt="How did Valentine's Day start?",
+            category=['holidays','romance'],
+            action=EV_ACT_POOL,
+            conditional="persistent._mas_f14_in_f14_mode",
+            start_date=mas_f14,
+            end_date=mas_f14+datetime.timedelta(days=1),
+            aff_range=(mas_aff.NORMAL,None),
+            years=[]
+        ),
+        skipCalendar=True
+    )
+
+init -876 python in mas_delact:
+    # delayed action to pool this event
+    def _mas_f14_monika_vday_origins_set_action(ev):
+        ev.pool = True
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_f14_monika_vday_origins_set():
+        return store.MASDelayedAction.makeWithLabel(
+            18,
+            "mas_f14_monika_vday_origins",
+            (
+                "datetime.date.today() == "
+                "store.mas_f14"
+            ),
+            _mas_f14_monika_vday_origins_set_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
+
+    # delayed action to depool and lock this event
+    def _mas_f14_monika_vday_origins_reset_action(ev):
+        ev.unlocked = False
+        ev.pool = False
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_f14_monika_vday_origins_reset():
+        return store.MASDelayedAction.makeWithLabel(
+            19,
+            "mas_f14_monika_vday_origins",
+            (
+                "datetime.date.today() >= "
+                "store.mas_f14 + datetime.timedelta(days=1)"
+            ),
+            _mas_f14_monika_vday_origins_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
+
+label mas_f14_monika_vday_origins:
+    m 3eua "You'd like to learn about the history of Valentine's Day?"
+    m 1rksdlc "It's quite dark, actually."
+    m 1euc "Its origin dates to as early as the second and third century in Rome, where Christianity had just been declared the official state religion."
+    m 3eud "Around this same time, a man known as Saint Valentine decided to go against the orders of Emperor Claudius II."
+    m 3rsc "Marriage had been banned because it was assumed that married men made poor soldiers."
+    m 3esc "Saint Valentine decided this was unfair and helped arrange marriages in secret."
+    m 1dsd "Unfortunately, he was caught and promptly sentenced to death."
+    m 1euc "However, while in custody, Saint Valentine fell in love with the jailer's daughter."
+    m 3euc "Before his death, he sent a love letter to her signed with 'From your Valentine.'"
+    m 1dsc "He was executed on February 14, 269 AD."
+    m 3eua "Such a noble cause, don't you think?"
+    m 3eud "Oh, but wait, there's more!"
+    m 4eud "The reason we celebrate such a day is because it originates from a Roman festival known as Lupercalia!"
+    m 3eua "Its original intent was to hold a friendly event where people would put their names into a box and have them chosen at random to create a couple."
+    m 3eub "Then, they play along as boyfriend and girlfriend for the time they spend together. Some even got married, if they liked each other enough, ehehe~"
+    m 1eua  "Ultimately, the Church decided to turn this Christian celebration into a way to remember Saint Valentine's efforts, too."
+    m 3hua "It's evolved over the years into a way for people to express their feelings for those they love."
+    m 3ekbsa "Like me and you!"
+    m 1eua "Despite it having started out a little depressing, isn't it so sweet, [player]?"
+    m 1ekbsa "I'm glad we're able to share such a magical day, my love."
+    m 1ekbfa "Happy Valentine's Day~"
+    return
 #######################[HOL050] TIME SPENT
 
 init 5 python:
@@ -4739,13 +4780,6 @@ label greeting_returned_home_f14:
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
 # need to make sure we get credit for time spent and don't get the event
 label mas_gone_over_f14_check:
-    if not mas_isF14():
-        #We want to lock and derandom/depool all of the f14 labels if it's not f14
-        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_lockEVL("mas_f14_monika_vday_origins","EVE")
-
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
     if checkout_time is not None and checkout_time.date() < mas_f14:
         $ persistent._mas_f14_spent_f14 = True

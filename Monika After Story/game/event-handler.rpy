@@ -824,6 +824,8 @@ init -875 python in mas_delact:
         15: _mas_f14_monika_vday_cliches_reset,
         16: _mas_f14_monika_vday_chocolates_set,
         17: _mas_f14_monika_vday_chocolates_reset,
+        18: _mas_f14_monika_vday_origins_set,
+        19: _mas_f14_monika_vday_origins_reset,
     }
 
 
