@@ -7105,7 +7105,7 @@ label monika_grad_speech_call:
 label monika_grad_speech_not_paying_attention:
     #First menu timeout
     hide screen mas_background_timed_jump
-    ##stop
+
     if mas_isMoniAff(higher=True):
         $ mas_loseAffection(modifier=0.5)
         m 2ekc "..."
@@ -7173,28 +7173,28 @@ label monika_grad_speech:
     #play some grad music
     play music "mod_assets/sounds/amb/PaC.ogg" fadein 1.0
     $ mas_MUMURaiseShield()
-#stop
+
     m 2dsc "Ahem...{w=0.7}{nw}"
     m ".{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 4eub "{w=0.2}Okay, everyone! It's time to get started...{w=0.7}{nw}"
-    m 2eub "{w=0.2}Teachers,{w=0.3} faculty,{w=0.3} and fellow students,{w=0.3} I cannot express how proud I am to have made this journey with you.{w=0.6}{nw}"
+    m 2eub "{w=0.2}Teachers,{w=0.3} faculty,{w=0.3} and fellow students.{w=0.3} I cannot express how proud I am to have made this journey with you.{w=0.6}{nw}"
     m "{w=0.2}Each and every one of you here today has spent the last four years working hard to achieve the futures you all wanted.{w=0.6}{nw}"
     m 2hub "{w=0.2}I am so happy that I was able to be a part of some of your journeys,{w=0.7} but I don't think this speech should be about me.{w=0.6}{nw}"
     m 4eud "{w=0.2}Today isn't about me.{w=0.7}{nw}"
     m 2esa "{w=0.2}Today is about celebrating what we all did.{w=0.6}{nw}"
     m 4eud "{w=0.2}We took on the challenge of our own dreams,{w=0.3} and from here,{w=0.3} the sky's the limit.{w=0.6}{nw}"
-    m 2eud "{w=0.2}Before moving on though,{w=0.3} I think we could all look back on our time here in high school and effectively end this chapter in our lives...{w=0.7}{nw}" 
+    m 2eud "{w=0.2}Before moving on though,{w=0.3} I think we could all look back on our time here in high school and effectively end this chapter in our lives.{w=0.7}{nw}" 
     m 2hub "{w=0.2}We'll laugh at our past{w=0.7} and see just how far we've come in these four short years.{w=0.6}{nw}"
-    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eud "{w=0.2}It honestly feels like just a couple weeks ago...{w=0.6}{nw}"
-    m 2lksdld "{w=0.2}I was back in first year,{w=0.3} on the first day of school,{w=0.3} quivering in my shoes and running up and down the halls from class to class just trying to find my classroom...{w=0.6}{nw}"
+    m 2lksdld "{w=0.2}I was back in first year{w=0.3} on the first day of school,{w=0.3} quivering in my shoes and running up and down the halls from class to class just trying to find my classroom.{w=0.6}{nw}"
     m 2lksdla "{w=0.2}Hoping that at least one of my friends would walk in before the bell.{w=0.6}{nw}"
     m 2eka "{w=0.2}You all remember that too,{w=0.3} don't you?{w=0.6}{nw}"
     m 2eub "{w=0.2}I also remember making my first new friends.{w=0.6}{nw}"
     m 2eka "{w=0.2}Things were incredibly different from when we made our friends back in elementary school,{w=0.3} but I guess that's what happens when you finally grow up.{w=0.6}{nw}"
-    m "{w=0.2}Back in our youth,{w=0.3} we made friends with just about anyone,{w=0.3} but over time,{w=0.3} it seems more and more like a game of chance.{w=0.6}{nw}"
+    m "...{w=0.2}Back in our youth,{w=0.3} we made friends with just about anyone,{w=0.3} but over time,{w=0.3} it seems more and more like a game of chance.{w=0.6}{nw}"
     m 4dsd "{w=0.2}Maybe that's just us finally learning more about the world.{w=0.6}{nw}"
-    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eka "{w=0.2}It's funny just how much we've changed.{w=0.6}{nw}"
     m 4eka "{w=0.2}We've gone from being small fish in a huge pond to now being big fish in a small pond.{w=0.6}{nw}"
     m 4eua "{w=0.2}Each of us have our own experiences with how these four years have changed us and how we've all managed to grow as individuals.{w=0.6}{nw}"
@@ -7203,17 +7203,18 @@ label monika_grad_speech:
     m 2esa "{w=0.2}To think that just a small phase in our lives has changed us so much,{w=0.3} and that there's still so much we will experience.{w=0.6}{nw}"
     m 2eua "{w=0.2}The ambition in all of you will surely lead to greatness.{w=0.6}{nw}"
     m 4hub "I can see it.{w=0.6}{nw}"
-    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eua "{w=0.2}I know I can't speak for everyone here,{w=0.3} but there is one thing I can say for sure:{w=0.7} my experience in high school wouldn't be complete without the clubs I was a part of.{w=0.6}{nw}"
     m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
     m 4eub "Starting the literatute club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
     m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
     m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}" 
     m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
-    m 2eka "{w=0.2}All these small roles teach you so much about the future and how to manage both{w=0.3} projects and people,{w=0.3} but in an environment that you enjoy.{w=0.6}{nw}"
+    m 2eka "{w=0.2}All these small roles teach you so much about the future and how to manage both{w=0.3} projects and people,{w=0.3} in an environment you enjoy, nonetheless.{w=0.6}{nw}"
     m "{w=0.2}If you didn't join a club,{w=0.3} I encourage you to at least try something in your future paths.{w=0.6}{nw}"
-    m 4eua "{w=0.2}I can assure you,{w=0.7} that you won't regret it.{w=0.6}{nw}"
-    m 2duu "{w=0.2}.{w=0.3} .{w=0.3} .{w=0.6}{nw}"
+    m 4eua "{w=0.2}I can assure you that you won't regret it.{w=0.6}{nw}"
+    m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
+##stop
     m 2eua "{w=0.2}As of today,{w=0.3} it may seem like we're at the top of the world.{w=0.7}{nw}"
     m 2lksdld "{w=0.2}The climb may not have been smooth,{w=0.3} and as we get further,{w=0.3} the climb may even get rougher....{w=0.6}{nw}"
     m 2eksdlc "{w=0.2}There will be stumbles --{w=0.7} even falls along the way,{w=0.3} and sometimes{w=0.7} you may think you've fallen so far that you'll never climb out.{w=0.7}{nw}"
