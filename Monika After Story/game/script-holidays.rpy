@@ -4368,17 +4368,18 @@ label mas_f14_monika_spent_time_with:
             elif f14_gifts_good + f14_gifts_neutral < f14_gifts_bad:
                 m 3eka "And let’s not forget about the gifts you got me, [player]..."
                 m 3rksdla "I really liked...{w=1}some of them."
-        m 1rkbsb "I actually made something for you too, [player]!"
+        if not mas_isBelowZero():
+            m 1rkbsb "I actually made something for you too, [player]!"
 
-    else:
+    elif not mas_isBelowZero():
         m 1rkbsb "Also, I...{w=1}made something for you, [player]!"
 
     if not mas_isBelowZero():
         if renpy.seen_label('monika_valentines_start'):
+            m 1ekbsa "Here, let me show it to you."
+            call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
+            m "You really are everything to me, [player]~"
             if mas_isMoniEnamored(higher=True):
-                m 1ekbsa "Here, let me show it to you."
-                call showpoem(poem_vday2, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
-                m "You really are everything to me, [player]."
                 if persistent._mas_first_kiss is None:
                     jump mas_f14_first_kiss
                 else:
@@ -4388,7 +4389,7 @@ label mas_f14_monika_spent_time_with:
             m 1ekbsa "Here, let me show it to you."
             call showpoem(poem_vday, music=False,paper="mod_assets/poem_assets/poem_vday.jpg")
             m "I really mean that, [player]..."
-            m 3ekbsa "In you I found everything I could ever hope for."
+            m 3ekbsa "In you I found everything I could ever hope for~"
             if mas_isMoniEnamored(higher=True):
                 if persistent._mas_first_kiss is None:
                     jump mas_f14_first_kiss
