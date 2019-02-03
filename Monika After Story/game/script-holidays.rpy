@@ -4571,13 +4571,20 @@ label greeting_returned_home_f14:
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
 # need to make sure we get credit for time spent and don't get the event
 label mas_gone_over_f14_check:
+    if not mas_isF14():
+        #We want to lock and derandom/depool all of the f14 labels if it's not f14
+        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+        $ mas_lockEVL("mas_f14_monika_vday_origins","EVE")
+
     $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
     if checkout_time is not None and checkout_time.date() < mas_f14:
         $ persistent._mas_f14_spent_f14 = True
         $ persistent._mas_f14_gone_over_f14 = True
         if "mas_f14_no_time_spent" in persistent.event_list:
             $ persistent.event_list.remove("mas_f14_no_time_spent")
-        return
+    return
 
 label greeting_gone_over_f14:
     $ mas_gainAffection(5,bypass=True)
@@ -4588,6 +4595,8 @@ label greeting_gone_over_f14:
     else:
         m 2rka "I appreciate you making sure I didn't have to spend the day alone..."
         m 2eka "It really means a lot, [player]."
+
+    $ persistent._mas_f14_gone_over_f14 = False
     return
 
 label greeting_gone_over_f14_normal_plus:
@@ -4596,4 +4605,6 @@ label greeting_gone_over_f14_normal_plus:
     m 1dubsu "Well it means everything to me."
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "Thank you for making sure we had a wonderful Valentine's Day, [player]~"
+
+    $ persistent._mas_f14_gone_over_f14 = False
     return
