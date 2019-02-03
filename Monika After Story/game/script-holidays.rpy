@@ -3878,6 +3878,15 @@ init -10 python:
 
         return _date == mas_f14.replace(year=_date.year)
 
+
+init -815 python in mas_history:
+    
+    # f14
+    def _f14_exit_pp(mhs):
+        # remove certain prog points
+        _MDA_saferm(11, 12, 13, 14)
+
+
 init -810 python:
     # MASHistorySaver for f14
     store.mas_history.addMHS(MASHistorySaver(
@@ -3894,12 +3903,15 @@ init -810 python:
             "_mas_f14_time_spent_seen": "f14.ts_seen",
             "_mas_f14_nts_seen": "f14.nts_seen",
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
-        }
+        },
+        use_year_before=True,
+        exit_pp=store.mas_history._f14_exit_pp
     ))
 
 label mas_f14_autoload_check:
     #Since it's possible player didn't see this, we need to derandom it manually.
     $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+    $ mas_removeDelayedAction(11)
 
     if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
         $ persistent._mas_f14_in_f14_mode = True
@@ -3918,6 +3930,9 @@ label mas_f14_autoload_check:
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
         $ mas_lockEVL("mas_f14_monika_vday_origins","EVE")
+
+        # remove delayed actions for the above events
+        $ mas_removeDelayedActions(12, 13, 14)
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -3943,6 +3958,27 @@ init 5 python:
         ),
         skipCalendar=True
     )
+
+init -876 python in mas_delact:
+    # delayed action to derandom this event on or after f14
+    # basically just check last_seen
+
+    def _mas_pf14_monika_lovey_dovey_reset_action(ev):
+        ev.random = False
+        ev.unlocked = False
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_pf14_monika_lovey_dovey_reset():
+        return store.MASDelayedAction.makeWithLabel(
+            11,
+            "mas_pf14_monika_lovey_dovey",
+            "datetime.date.today() >= store.mas_f14",
+            _mas_pf14_monika_lovey_dovey_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
 
 label mas_pf14_monika_lovey_dovey:
     m 1rksdla "Hey...[player]...?"
@@ -3987,6 +4023,9 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
+    # add appropriate dleayd actions
+    $ mas_addDelayedActions(11, 12, 13, 14)
+
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
@@ -4070,6 +4109,31 @@ init 5 python:
         skipCalendar=True
     )
 
+
+init -876 python in mas_delact:
+    # delayed action to derandom and lock this event
+
+    def _mas_f14_monika_vday_colors_reset_action(ev):
+        # only reset if past end date
+        ev.unlocked = False
+        ev.random = False
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_f14_monika_vday_colors_reset():
+        return store.MASDelayedAction.makeWithLabel(
+            12,
+            "mas_f14_monika_vday_colors",
+            (
+                "datetime.date.today() >= "
+                "store.mas_f14 + datetime.timedelta(days=1)"
+            ),
+            _mas_f14_monika_vday_colors_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
+
 label mas_f14_monika_vday_colors:
     m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
     m 3hub "I find it intriguing how they can symbolize such deep and romantic feelings."
@@ -4108,6 +4172,29 @@ init 5 python:
         ),
         skipCalendar=True
     )
+
+init -876 python in mas_delact:
+    # delayed action to derandom and lock this event
+
+    def _mas_f14_monika_vday_cliches_reset_action(ev):
+        ev.unlocked = False
+        ev.random = False
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_f14_monika_vday_cliches_reset():
+        return store.MASDelayedAction.makeWithLabel(
+            13,
+            "mas_f14_monika_vday_cliches",
+            (
+                "datetime.date.today() >= "
+                "store.mas_f14 + datetime.timedelta(days=1)"
+            ),
+            _mas_f14_monika_vday_cliches_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
 
 label mas_f14_monika_vday_cliches:
     m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
@@ -4181,6 +4268,29 @@ init 5 python:
         ),
         skipCalendar=True
     )
+
+init -876 python in mas_delact:
+    # delayed action to derandom and lock this event
+
+    def _mas_f14_monika_vday_chocolates_reset_action(ev):
+        ev.unlocked = False
+        ev.random = False
+        store.mas_idle_mailbox.send_rebuild_msg()
+        return True
+
+
+    def _mas_f14_monika_vday_chocolates_reset():
+        return store.MASDelayedAction.makeWithLabel(
+            14,
+            "mas_f14_monika_vday_chocolates",
+            (
+                "datetime.date.today() >= "
+                "store.mas_f14 + datetime.timedelta(days=1)"
+            ),
+            _mas_f14_monika_vday_chocolates_reset_action,
+            store.MAS_FC_IDLE_ROUTINE
+        )
+
 
 label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
