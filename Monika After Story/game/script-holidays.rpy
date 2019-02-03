@@ -3968,6 +3968,7 @@ init -876 python in mas_delact:
         ev.random = False
         ev.unlocked = False
         store.mas_idle_mailbox.send_rebuild_msg()
+        store.removeEventIfExist(ev.eventlabel)
         return True
 
 
@@ -4004,6 +4005,10 @@ label mas_pf14_monika_lovey_dovey:
 
     #Set this flag to True so we don't infirand
     $ persistent._mas_f14_pre_intro_seen = True
+
+    #Add the delayed action to remove itself
+    $ mas_addDelayedAction(11)
+
     return "derandom"
 
 #######################[HOL050] INTRO:
@@ -4089,7 +4094,7 @@ label mas_f14_monika_valentines_intro:
 
     #We have now seen the intro
     $ persistent._mas_f14_intro_seen = True
-    return
+    return "rebuild_ev"
 
 #######################[HOL050] TOPICS
 
@@ -4119,6 +4124,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
+        store.removeEventIfExist(ev.eventlabel)
         return True
 
 
@@ -4181,6 +4187,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
+        store.removeEventIfExist(ev.eventlabel)
         return True
 
 
@@ -4236,6 +4243,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
+        store.removeEventIfExist(ev.eventlabel)
         return True
 
 
@@ -4294,6 +4302,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.pool = False
         store.mas_idle_mailbox.send_rebuild_msg()
+        store.removeEventIfExist(ev.eventlabel)
         return True
 
 
@@ -4333,6 +4342,7 @@ label mas_f14_monika_vday_origins:
     m 1ekbsa "I'm glad we're able to share such a magical day, my love."
     m 1ekbfa "Happy Valentine's Day~"
     return
+
 #######################[HOL050] TIME SPENT
 
 init 5 python:
@@ -4557,7 +4567,7 @@ label mas_apology_missed_vday:
         m 1eka "Thanks for apologizing for missing Valentine's Day, [player]."
         m 1ekd "I really wanted to spend it with you..."
         m 1rkc "But I guess you might have just had something to do and couldn't make it."
-        m 1ekd "Please try visit next year, okay [player]?"
+        m 1ekd "Please try to visit next year, okay [player]?"
         m 3eua "If you're going to be busy, maybe just take me with you!"
         m 3hub "Even if we're not at home together, I'm more than happy to just spend the day at your side~"
         $ mas_gainAffection(modifier=0.2)
