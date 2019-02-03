@@ -3884,7 +3884,7 @@ init -815 python in mas_history:
     # f14
     def _f14_exit_pp(mhs):
         # remove certain prog points
-        _MDA_saferm(11, 12, 13, 14, 15, 16, 17)
+        _MDA_saferm(11, 12, 13, 14, 15)
 
 
 init -810 python:
@@ -3930,9 +3930,10 @@ label mas_f14_autoload_check:
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+        $ mas_idle_mailbox.send_rebuild_msg()
 
         # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15, 16, 17, 18, 19)
+        $ mas_removeDelayedActions(12, 13, 14, 15)
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -4024,7 +4025,7 @@ init 5 python:
 
 label mas_f14_monika_valentines_intro:
     # add appropriate dleayd actions
-    $ mas_addDelayedActions(11, 12, 13, 14, 15, 16, 17, 18, 19)
+    $ mas_addDelayedActions(11, 12, 13, 14, 15)
 
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
@@ -4111,25 +4112,6 @@ init 5 python:
 
 
 init -876 python in mas_delact:
-    # delayed action to random this event
-    def _mas_f14_monika_vday_colors_set_action(ev):
-        ev.random = True
-        store.mas_idle_mailbox.send_rebuild_msg()
-        return True
-
-
-    def _mas_f14_monika_vday_colors_set():
-        return store.MASDelayedAction.makeWithLabel(
-            12,
-            "mas_f14_monika_vday_colors",
-            (
-                "datetime.date.today() == "
-                "store.mas_f14"
-            ),
-            _mas_f14_monika_vday_colors_set_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
 
     # delayed action to derandom and lock this event
     def _mas_f14_monika_vday_colors_reset_action(ev):
@@ -4142,7 +4124,7 @@ init -876 python in mas_delact:
 
     def _mas_f14_monika_vday_colors_reset():
         return store.MASDelayedAction.makeWithLabel(
-            13,
+            12,
             "mas_f14_monika_vday_colors",
             (
                 "datetime.date.today() >= "
@@ -4193,25 +4175,6 @@ init 5 python:
     )
 
 init -876 python in mas_delact:
-    # delayed action to random this event
-    def _mas_f14_monika_vday_cliches_set_action(ev):
-        ev.random = True
-        store.mas_idle_mailbox.send_rebuild_msg()
-        return True
-
-
-    def _mas_f14_monika_vday_cliches_set():
-        return store.MASDelayedAction.makeWithLabel(
-            14,
-            "mas_f14_monika_vday_cliches",
-            (
-                "datetime.date.today() == "
-                "store.mas_f14"
-            ),
-            _mas_f14_monika_vday_cliches_set_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
 
     # delayed action to derandom and lock this event
     def _mas_f14_monika_vday_cliches_reset_action(ev):
@@ -4223,7 +4186,7 @@ init -876 python in mas_delact:
 
     def _mas_f14_monika_vday_cliches_reset():
         return store.MASDelayedAction.makeWithLabel(
-            15,
+            13,
             "mas_f14_monika_vday_cliches",
             (
                 "datetime.date.today() >= "
@@ -4267,25 +4230,6 @@ init 5 python:
     )
 
 init -876 python in mas_delact:
-    # delayed action to random this event
-    def _mas_f14_monika_vday_chocolates_set_action(ev):
-        ev.random = True
-        store.mas_idle_mailbox.send_rebuild_msg()
-        return True
-
-
-    def _mas_f14_monika_vday_chocolates_set():
-        return store.MASDelayedAction.makeWithLabel(
-            16,
-            "mas_f14_monika_vday_chocolates",
-            (
-                "datetime.date.today() == "
-                "store.mas_f14"
-            ),
-            _mas_f14_monika_vday_chocolates_set_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
 
     # delayed action to derandom and lock this event
     def _mas_f14_monika_vday_chocolates_reset_action(ev):
@@ -4297,7 +4241,7 @@ init -876 python in mas_delact:
 
     def _mas_f14_monika_vday_chocolates_reset():
         return store.MASDelayedAction.makeWithLabel(
-            17,
+            14,
             "mas_f14_monika_vday_chocolates",
             (
                 "datetime.date.today() >= "
@@ -4344,25 +4288,6 @@ init 5 python:
     )
 
 init -876 python in mas_delact:
-    # delayed action to pool this event
-    def _mas_f14_monika_vday_origins_set_action(ev):
-        ev.pool = True
-        store.mas_idle_mailbox.send_rebuild_msg()
-        return True
-
-
-    def _mas_f14_monika_vday_origins_set():
-        return store.MASDelayedAction.makeWithLabel(
-            18,
-            "mas_f14_monika_vday_origins",
-            (
-                "datetime.date.today() == "
-                "store.mas_f14"
-            ),
-            _mas_f14_monika_vday_origins_set_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
 
     # delayed action to depool and lock this event
     def _mas_f14_monika_vday_origins_reset_action(ev):
@@ -4374,7 +4299,7 @@ init -876 python in mas_delact:
 
     def _mas_f14_monika_vday_origins_reset():
         return store.MASDelayedAction.makeWithLabel(
-            19,
+            15,
             "mas_f14_monika_vday_origins",
             (
                 "datetime.date.today() >= "

@@ -818,14 +818,10 @@ init -875 python in mas_delact:
         9: _mas_d25_monika_carolling_reset,
         # NOTE: 10 is used by upcoming pr
         11: _mas_pf14_monika_lovey_dovey_reset,
-        12: _mas_f14_monika_vday_colors_set,
-        13: _mas_f14_monika_vday_colors_reset,
-        14: _mas_f14_monika_vday_cliches_set,
-        15: _mas_f14_monika_vday_cliches_reset,
-        16: _mas_f14_monika_vday_chocolates_set,
-        17: _mas_f14_monika_vday_chocolates_reset,
-        18: _mas_f14_monika_vday_origins_set,
-        19: _mas_f14_monika_vday_origins_reset,
+        12: _mas_f14_monika_vday_colors_reset,
+        13: _mas_f14_monika_vday_cliches_reset,
+        14: _mas_f14_monika_vday_chocolates_reset,
+        15: _mas_f14_monika_vday_origins_reset,
     }
 
 
