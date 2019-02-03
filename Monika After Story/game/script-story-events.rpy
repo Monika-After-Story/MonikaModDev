@@ -714,7 +714,7 @@ label mas_crashed_quip_takecare:
                 m 1hub "I'm alright in case you were wondering."
                 m 3hub "Well I hope you had fun before that crash happened, ahaha!"
                 if mas_isMoniHappy(higher=True):
-                    m hubfa "I'm just glad you're back with me now~"
+                    m 1hubfa "I'm just glad you're back with me now~"
         m 2rksdla "Still..."
     m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
