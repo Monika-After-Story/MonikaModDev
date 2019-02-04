@@ -6993,7 +6993,7 @@ label monika_grad_speech_call:
                 call monika_grad_speech
 
                 #timed menu to see if player listened
-                show screen mas_background_timed_jump(10, "monika_not_paying_attention")
+                show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention")
                 menu:
                     m "Well [player]? What do you think?"
 
@@ -7217,7 +7217,7 @@ label monika_grad_speech:
     m 2eua "{w=0.2}As of today,{w=0.3} it may seem like we're at the top of the world.{w=0.7}{nw}"
     m 2lksdld "{w=0.2}The climb may not have been smooth,{w=0.3} and as we get further,{w=0.3} the climb may even get rougher.{w=0.6}{nw}"
     m 2eksdlc "{w=0.2}There will be stumbles--{w=0.7}even falls along the way,{w=0.3} and sometimes{w=0.7} you may think you've fallen so far that you'll never climb out.{w=0.7}{nw}"
-    m 2euc "{w=0.2}However,{w=0.7} even if we think that we're still at the bottom of the well,{w=0.3} with all that we've learned,{w=0.3} all that we're still going to learn,{w=0.3} and all the dedication we can put in just to achieve our dreams...{w=0.6}{nw}"
+    m 2euc "{w=0.2}However,{w=0.7} even if we think that we're still at the bottom of the well of life,{w=0.3} with all that we've learned,{w=0.3} all that we're still going to learn,{w=0.3} and all the dedication we can put in just to achieve our dreams...{w=0.6}{nw}"
     m 2eua "{w=0.2}I can safely say that each and every one of you now has the tools to climb your way out.{w=0.6}{nw}"
     m 4eua "{w=0.2}In all of you,{w=0.3} I see brilliant minds:{w=0.7} future doctors,{w=0.3} engineers,{w=0.3} artists,{w=0.3} tradespeople,{w=0.3} and so much more.{w=0.7}{nw}"
     m 4eka "{w=0.2}It is truly inspiring.{w=0.6}{nw}"
