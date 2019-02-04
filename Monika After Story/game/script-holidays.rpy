@@ -3823,13 +3823,13 @@ label return_home_post_player_bday:
         pause 2.0
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
         m 3eua "There we go!"
+        if not persistent._mas_f14_gone_over_f14:
+            m 1hua "Now, let's enjoy the day together, [player]~"
     if persistent._mas_f14_gone_over_f14:
         m 2etc "..."
         m 3wuo "..."
         m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
         call greeting_gone_over_f14_normal_plus
-    else:
-        m 1hua "Now, let's enjoy the day together, [player]~"
     return
 
 # birthday card/poem for player

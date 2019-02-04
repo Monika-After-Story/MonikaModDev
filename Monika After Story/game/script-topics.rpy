@@ -5998,7 +5998,12 @@ label monika_orchestra:
         "Yes.":
             $persistent.instrument = True
             m 1sub "Really? What do you play?"
-            $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+
+            $ instrumentname = ""
+            #Loop this so we get a valid input
+            while not instrumentname:
+                $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+
             $ tempinstrument = instrumentname.lower()
             if tempinstrument == "piano":
                 m 1wuo "Oh, that's really cool!"
@@ -9855,7 +9860,7 @@ init 5 python:
     )
 
 label monika_stoicism:
-    m 1eua "I've been reading up on some ancient Greek and Roman philosophy whenever you're away, [player]."
+    m 1eua "I've been reading up on some ancient Greek and Roman philosophy, [player]."
     m 1hksdlb "Ahaha! I know, that sounds super boring when you think about it..."
     m 1eua "But there was a certain philosophy that caught my attention while I was reading."
     m "It's called Stoicism, and it's a philosophy founded in Athens in the 3rd century BCE."
