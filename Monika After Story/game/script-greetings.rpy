@@ -2897,6 +2897,8 @@ label greeting_returned_home:
         # did we miss f14 because we were on a date
         call mas_gone_over_f14_check
 
+    # Note: this ordering is key, greeting_returned_home_player_bday handles the case
+    # if we left before f14 on your bday and return after f14
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
 

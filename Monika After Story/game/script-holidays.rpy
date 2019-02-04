@@ -3803,9 +3803,6 @@ label greeting_returned_home_player_bday:
 
     $ persistent._mas_player_bday_left_on_bday = False
 
-    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
-        call mas_gone_over_f14_check
-
     if not mas_isplayer_bday():
         call return_home_post_player_bday
 
@@ -3826,15 +3823,15 @@ label return_home_post_player_bday:
         pause 2.0
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
         m 3eua "There we go!"
-        if persistent._mas_f14_gone_over_f14:
-            m 2etc "..."
-            m 3wuo "..."
-            m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
-            call greeting_gone_over_f14_normal_plus
-        else:
-            m 1hua "Now, let's enjoy the day together, [player]~"
+    if persistent._mas_f14_gone_over_f14:
+        m 2etc "..."
+        m 3wuo "..."
+        m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
+        call greeting_gone_over_f14_normal_plus
+    else:
+        m 1hua "Now, let's enjoy the day together, [player]~"
     return
-    
+
 # birthday card/poem for player
 init 2 python:
     poem_pbday = Poem(
@@ -3899,6 +3896,10 @@ init -810 python:
             "_mas_f14_date_aff_gain": "f14.aff_gain",
             "_mas_f14_gone_over_f14": "f14.gone_over_f14",
             "_mas_f14_spent_f14": "f14.actions.spent_f14",
+
+            # need to reset this in case someone never gets to the 
+            # autoload check, ie always uses dockstat farewell
+            "_mas_f14_in_f14_mode": "f14.mode.f14",
 
             #Resets for queued/rand bits
             "_mas_f14_intro_seen": "f14.intro_seen",
@@ -4734,7 +4735,6 @@ label greeting_gone_over_f14:
     else:
         m 2rka "I appreciate you making sure I didn't have to spend the day alone..."
         m 2eka "It really means a lot, [player]."
-
     $ persistent._mas_f14_gone_over_f14 = False
     return
 
@@ -4744,6 +4744,5 @@ label greeting_gone_over_f14_normal_plus:
     m 1dubsu "Well it means everything to me."
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "Thank you for making sure we had a wonderful Valentine's Day, [player]~"
-
     $ persistent._mas_f14_gone_over_f14 = False
     return
