@@ -3400,11 +3400,13 @@ label mas_player_bday_autoload_check:
         # need this so we don't get any strange force quit dlg after the greet
         $ persistent.closed_self = True
         jump ch30_post_restartevent_check
-    elif persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday() and not persistent._mas_player_bday_left_on_bday:
+
+    elif not mas_isplayer_bday():
         # no longer want to be in bday mode
         $ persistent._mas_player_bday_decor = False
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
+
     if mas_isO31():
         return
     else:
@@ -3919,12 +3921,7 @@ label mas_f14_autoload_check:
         $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
         $ monika_chr.save()
 
-    elif persistent._mas_f14_in_f14_mode and not mas_isF14() and not persistent._mas_f14_on_date:
-        $ persistent._mas_f14_in_f14_mode = False
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
-            $ monika_chr.reset_clothes(False)
-
-    if not mas_isF14():
+    elif not mas_isF14():
         #We want to lock and derandom/depool all of the f14 labels if it's not f14
         $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
         $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
@@ -3934,6 +3931,11 @@ label mas_f14_autoload_check:
 
         # remove delayed actions for the above events
         $ mas_removeDelayedActions(12, 13, 14, 15)
+
+        #Reset the f14 mode, and outfit if we're lower than the love aff level.
+        $ persistent._mas_f14_in_f14_mode = False
+        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+            $ monika_chr.reset_clothes(False)
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
