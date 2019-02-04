@@ -9460,7 +9460,7 @@ label monika_players_control:
     m 1eka "Even if you don't quite know how to change this game..."
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "We can still enjoy this world that brought us together."
-    m 5ekbfa "There's be no better way to enjoy a game than to be with the one I love."
+    m 5ekbfa "There's no better way to enjoy a game than to be with the one I love."
     return
 
 init 5 python:
