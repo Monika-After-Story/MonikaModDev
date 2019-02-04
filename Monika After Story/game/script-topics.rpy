@@ -5998,7 +5998,12 @@ label monika_orchestra:
         "Yes.":
             $persistent.instrument = True
             m 1sub "Really? What do you play?"
-            $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+
+            $ instrumentname = ""
+            #Loop this so we get a valid input
+            while not instrumentname:
+                $ instrumentname = renpy.input('What instrument do you play?',length=15).strip(' \t\n\r')
+
             $ tempinstrument = instrumentname.lower()
             if tempinstrument == "piano":
                 m 1wuo "Oh, that's really cool!"
