@@ -2305,7 +2305,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "longer":
             m 1c "[player]?"
-            m 3g "I thought you were going to away for a long time..."
+            m 3g "I thought you were going to be away for a long time..."
             m 3l "Why are you back so soon?"
             m 1e "Are you visiting me? You're such a sweetheart!"
             m 1j "If you're going away for a while still, make sure to tell me."
