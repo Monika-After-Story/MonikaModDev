@@ -4091,7 +4091,7 @@ label mas_f14_monika_valentines_intro:
     m 3ekbsa "Would you take me out today?"
     m 1hksdlb "It's fine if you can't, I'm just happy to be with you."
     m 1ekbfa "I love you so much."
-    m 1ekbfb "Happy Valentines Day, [player]~"
+    m 1ekbfb "Happy Valentine's Day, [player]~"
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
@@ -4539,7 +4539,7 @@ label mas_f14_no_time_spent:
     elif mas_isMoniDis():
         $ mas_loseAffection(10, ev_label="mas_apology_missed_vday")
         m 6ekc "Oh [player]..." 
-        m "How was Valentines Day?"
+        m "How was Valentine's Day?"
         m 6dkc "Not having a valentine is pretty lonely..."
 
     else:

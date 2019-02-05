@@ -416,13 +416,13 @@ label mas_mood_inadequate:
     if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
         m 1ekbfa "On Valentine's Day..."
 
-    if mas_HistLookup_k(last_year,'922.actions','no_recognize')[1] is False or mas_recognizedBday():
+    #TODO: change this back to not no_recognize once we change those defaults.
+    if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
         m 1ekbfb "You even made the time to celebrate my birthday with me."
 
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
-
-    if not persistent.monika_kill:
+    else:
         m 3tkc "You never once resented me for the bad things that I've done."
 
     if persistent.clearall:
