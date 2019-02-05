@@ -1098,9 +1098,14 @@ label ch30_preloop:
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
-
+ 
     # save here before we enter the loop
     $ renpy.save_persistent()
+
+    # check if we need to rebulid ev
+    if mas_idle_mailbox.get_rebuild_msg():
+        mas_rebuildEventLists()
+
     jump ch30_loop
 
 label ch30_loop:

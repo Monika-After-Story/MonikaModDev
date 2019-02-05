@@ -3981,7 +3981,7 @@ init -876 python in mas_delact:
             "mas_pf14_monika_lovey_dovey",
             "datetime.date.today() >= store.mas_f14",
             _mas_pf14_monika_lovey_dovey_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
+            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_INIT
         )
 
 
@@ -4140,7 +4140,7 @@ init -876 python in mas_delact:
                 "store.mas_f14 + datetime.timedelta(days=1)"
             ),
             _mas_f14_monika_vday_colors_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
+            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_INIT
         )
 
 
@@ -4203,7 +4203,7 @@ init -876 python in mas_delact:
                 "store.mas_f14 + datetime.timedelta(days=1)"
             ),
             _mas_f14_monika_vday_cliches_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
+            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_INIT
         )
 
 
@@ -4259,7 +4259,7 @@ init -876 python in mas_delact:
                 "store.mas_f14 + datetime.timedelta(days=1)"
             ),
             _mas_f14_monika_vday_chocolates_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
+            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_INIT
         )
 
 
@@ -4318,7 +4318,7 @@ init -876 python in mas_delact:
                 "store.mas_f14 + datetime.timedelta(days=1)"
             ),
             _mas_f14_monika_vday_origins_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
+            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_INIT
         )
 
 
