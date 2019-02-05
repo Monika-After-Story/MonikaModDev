@@ -1104,7 +1104,7 @@ label ch30_preloop:
 
     # check if we need to rebulid ev
     if mas_idle_mailbox.get_rebuild_msg():
-        mas_rebuildEventLists()
+        $ mas_rebuildEventLists()
 
     jump ch30_loop
 
