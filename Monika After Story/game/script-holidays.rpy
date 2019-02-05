@@ -4367,6 +4367,9 @@ init 5 python:
     )
 
 label mas_f14_monika_spent_time_with:
+    #Firstly, set this to true so we don't infiqueue this
+    $ persistent._mas_f14_time_spent_seen = True
+
     $ f14_gifts_total, f14_gifts_good, f14_gifts_neutral, f14_gifts_bad = mas_getGiftStatsRange(mas_f14, mas_f14 + datetime.timedelta(days=1))
     m 1eua "Hey, [player]?"
     m 1eka "I just wanted to thank you for spending Valentine's Day with me."
@@ -4440,8 +4443,6 @@ label mas_f14_monika_spent_time_with:
         m 1eka "Thank you for being by my side."
         m 3ekb "Happy Valentine's Day!"
 
-    #Set this to true so we don't infiqueue this
-    $ persistent._mas_f14_time_spent_seen = True
     return
 
 label mas_f14_first_kiss:
