@@ -1,15 +1,41 @@
 # pong difficulty changes on win / loss. Determines monika's paddle-movement-cap, the ball's start-speed, max-speed and acceleration. 
-default persistent.pong_difficulty = 10
+default persistent._mas_pong_difficulty = 10
 # increases the pong difficulty for the next game by the value this is set to. Resets after a finished match.
-default persistent.pong_difficulty_powerup = 0
+default persistent._mas_pong_difficulty_change_next_game = 0
 # whether the player answered monika he lets her win on purpose
-default persistent.player_once_let_monika_win_on_purpose = False
+default persistent._mas_pm_ever_let_monika_win_on_purpose = False
+# the day at which the difficulty change was initiated
+default persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
 
-define DIFFICULTY_CHANGE_ON_WIN  = +1
-define DIFFICULTY_CHANGE_ON_LOSS = -1
-define DIFFICULTY_POWERUP        = 5
-define DIFFICULTY_POWERDOWN      = -5
-define DIFFICULTY_POWERDOWNBIG   = -10
+define PONG_DIFFICULTY_CHANGE_ON_WIN            = +1
+define PONG_DIFFICULTY_CHANGE_ON_LOSS           = -1
+define PONG_DIFFICULTY_POWERUP                  = +5
+define PONG_DIFFICULTY_POWERDOWN                = -5
+define PONG_PONG_DIFFICULTY_POWERDOWNBIG        = -10
+
+#Triggering the same response twice in a row leads to a different response, not all responses reset this (on purpose)
+define PONG_MONIKA_RESPONSE_NONE                                                = 0
+define PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES                = 1
+define PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES         = 2
+define PONG_MONIKA_RESPONSE_WIN_LONG_GAME                                       = 3 
+define PONG_MONIKA_RESPONSE_WIN_SHORT_GAME                                      = 4
+define PONG_MONIKA_RESPONSE_WIN_TRICKSHOT                                       = 5
+define PONG_MONIKA_RESPONSE_WIN_EASY_GAME                                       = 6
+define PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME                                     = 7
+define PONG_MONIKA_RESPONSE_WIN_HARD_GAME                                       = 8
+define PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME                                     = 9
+define PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME                                    = 10
+define PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL                           = 11
+define PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT                                      = 12
+define PONG_MONIKA_RESPONSE_LOSE_LONG_GAME                                      = 13
+define PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME                                     = 14
+define PONG_MONIKA_RESPONSE_LOSE_EASY_GAME                                      = 15
+define PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME                                    = 16
+define PONG_MONIKA_RESPONSE_LOSE_HARD_GAME                                      = 17
+define PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME                                    = 18
+define PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   = 19
+
+define pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
 
 define played_pong_this_session = False
 define player_lets_monika_win_on_purpose = False
@@ -18,7 +44,6 @@ define loss_streak_counter = 0
 define win_streak_counter = 0
 define lose_on_purpose = False
 define monika_asks_to_go_easy = False
-define pong_last_responce_id = -1
 
 # Need to be set before every game and be accessible outside the class
 define ball_paddle_bounces = 0
@@ -65,7 +90,7 @@ init:
                 self.COURT_BOTTOM = 654
                 
                 # Other variables
-                self.CURRENT_DIFFICULTY = max(persistent.pong_difficulty + persistent.pong_difficulty_powerup, 0)
+                self.CURRENT_DIFFICULTY = max(persistent._mas_pong_difficulty + persistent._mas_pong_difficulty_change_next_game, 0)
                 
                 self.COURT_WIDTH = 1280
                 self.COURT_HEIGHT = 720
@@ -457,7 +482,7 @@ label game_pong:
         m 1eua "You wanna play a game of Pong? Okay!"
         $ played_pong_this_session = True
         
-    $ pong_last_responce_id = -1
+    $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
 
     call demo_minigame_pong from _call_demo_minigame_pong
     return
@@ -481,8 +506,8 @@ label demo_minigame_pong:
             $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True)
 
     $ ball_paddle_bounces = 0
-    $ pong_difficulty_before = persistent.pong_difficulty
-    $ powerup_value_this_game = persistent.pong_difficulty_powerup
+    $ pong_difficulty_before = persistent._mas_pong_difficulty
+    $ powerup_value_this_game = persistent._mas_pong_difficulty_change_next_game
     $ loss_streak_counter_before = loss_streak_counter
     $ win_streak_counter_before = win_streak_counter
     $ instant_loss_streak_counter_before = instant_loss_streak_counter
@@ -503,15 +528,15 @@ label demo_minigame_pong:
     show monika 1eua
     
     # resets the temporary difficulty bonus
-    $ persistent.pong_difficulty_powerup = 0;  
+    $ persistent._mas_pong_difficulty_change_next_game = 0;  
 
     if winner == "monika":
-        $ new_difficulty = persistent.pong_difficulty + DIFFICULTY_CHANGE_ON_LOSS
+        $ new_difficulty = persistent._mas_pong_difficulty + PONG_DIFFICULTY_CHANGE_ON_LOSS
             
         $ inst_dialogue = store.mas_pong.DLG_WINNER
 
     else:
-        $ new_difficulty = persistent.pong_difficulty + DIFFICULTY_CHANGE_ON_WIN
+        $ new_difficulty = persistent._mas_pong_difficulty + PONG_DIFFICULTY_CHANGE_ON_WIN
         
         $ inst_dialogue = store.mas_pong.DLG_LOSER
         
@@ -521,9 +546,9 @@ label demo_minigame_pong:
             $grant_xp(xp.WIN_GAME)
         
     if new_difficulty < 0:
-        $ persistent.pong_difficulty = 0
+        $ persistent._mas_pong_difficulty = 0
     else:
-        $ persistent.pong_difficulty = new_difficulty; 
+        $ persistent._mas_pong_difficulty = new_difficulty; 
          
     call expression inst_dialogue from _mas_pong_inst_dialogue
 
@@ -618,7 +643,7 @@ label mas_pong_dlg_winner:
         elif instant_loss_streak_counter == 3:
             m 2tub "[player]!"#
             
-            if persistent.player_once_let_monika_win_on_purpose:
+            if persistent._mas_pm_ever_let_monika_win_on_purpose:
                 m 5rub "Are you letting me win on purpose again?"#
             else:
                 m 5eub "Are you letting me win on purpose?"#
@@ -627,15 +652,15 @@ label mas_pong_dlg_winner:
                 "Yes":
                     m 1hub "You are so cute, [player]!"#
                     m 5hua "Thank you for letting me win~"
-                    if persistent.player_once_let_monika_win_on_purpose:
+                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 1ekbsa "But you know I wouldn't mind losing against you."#
                         m 5hua "I like to see you win just as much as you like to see me win~"
                     else:
                         m 1eka "I wouldn't mind losing against you, though."#
                     $ player_lets_monika_win_on_purpose = True
-                    $ persistent.player_once_let_monika_win_on_purpose = True
+                    $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
                 "No": 
-                    if persistent.player_once_let_monika_win_on_purpose:
+                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 1ttu "Are you sure?"
                         menu:
                             "Yes": 
@@ -673,27 +698,24 @@ label mas_pong_dlg_winner:
         
     
     #Monika wins after telling the player she would win the next game
-    elif powerup_value_this_game == DIFFICULTY_POWERUP:
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
         m 1hub "Ehehe."
         
-        $ dt = datetime.date.today()
-        $ dt = datetime.datetime(dt.year, dt.month, dt.day)
-
-        if persistent.pong_difficulty_powerup_date == dt:
+        if persistent._mas_pong_difficulty_change_next_game_date == datetime.date.today():
             m 2tsb "Didn't I tell you I would win this time?"#
         else:
             m 4tsb "Remember how I told you I would win the next game?"
     
     
     #Monika wins after going easy on the player
-    elif powerup_value_this_game == DIFFICULTY_POWERDOWN:
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
         m 2wud "Oh."
         m 3esb "Try again, [player]!"
-        $ persistent.pong_difficulty_powerup = DIFFICULTY_POWERDOWNBIG;  
+        $ persistent._mas_pong_difficulty_change_next_game = PONG_PONG_DIFFICULTY_POWERDOWNBIG;  
     
     
     #Monika wins after going even easier on the player
-    elif powerup_value_this_game == DIFFICULTY_POWERDOWNBIG:
+    elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
         m 2lssdrb "Ahahaha."
         m 2lksdrb "I really hoped you would win this game."
         m 2hksdrb "Sorry about that, [player]!"
@@ -718,11 +740,11 @@ label mas_pong_dlg_winner:
         m 1tub "It looks like your luck has run out."
         m 4hua "Now it's my turn to shine~"
             
-        $ pong_last_responce_id = 60
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
         
         
     #Monika wins a second time after the player got a 3+ winstreak
-    elif pong_last_responce_id == 60:
+    elif pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES:
         m 6hua "Ehehe!"
         m 1eub "Keep up, [player]!"
         
@@ -730,12 +752,12 @@ label mas_pong_dlg_winner:
             m 2tku "You don't want to lose to a girl like that, do you?"
             
             
-        $ pong_last_responce_id = 65
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
 
 
     #Monika wins a long game
     elif ball_paddle_bounces > 9 and ball_paddle_bounces > pong_difficulty_before * 1/2:
-        if pong_last_responce_id == 70:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_LONG_GAME:
             m 2hub "Playing against you is really tough, [player]!"
             m 4eub "Keep it up and you will beat me, I'm sure of it."
         else:
@@ -743,22 +765,22 @@ label mas_pong_dlg_winner:
             m 4eub "You are really good at pong!"
             m 5hub "But so am I, Ahahaha!"
             
-        $ pong_last_responce_id = 70
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_LONG_GAME
         
         
     #Monika wins a short game
     elif ball_paddle_bounces <= 3:
-        if pong_last_responce_id == 80:            
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_SHORT_GAME:            
             m 6hub "Another quick win for me~"
         else:
             m 4hub "Ehehe, I got you with that one!"
         
-        $ pong_last_responce_id = 80
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_SHORT_GAME
         
         
     #Monika wins by a trickshot
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
-        if pong_last_responce_id == 90:     
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_TRICKSHOT:     
             m 2eksdld "Oh..." 
             m 6ekc "It happened again." 
             m 1hub "Sorry about that!"
@@ -766,7 +788,7 @@ label mas_pong_dlg_winner:
             m 2hub "Ahahaha, sorry [player]!"
             m 3rud "It wasn't supposed to bounce that much..."
         
-        $ pong_last_responce_id = 90
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_TRICKSHOT
         
         
     #Monika wins a game
@@ -774,19 +796,19 @@ label mas_pong_dlg_winner:
         
         #On easy difficulty
         if pong_difficulty_before <= 5:
-            if pong_last_responce_id == 100:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EASY_GAME:
                 m 1eub "You can do it, [player]!" 
                 m 5hua "I believe in you~"
             else:
                 m 5eua "Concentrate, [player]." 
                 m 4hua "I'm sure you will win soon, if you try hard enough."
         
-            $ pong_last_responce_id = 100
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EASY_GAME
             
             
         #On medium difficulty
         elif pong_difficulty_before <= 10:
-            if pong_last_responce_id == 110:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME:
                 m 1hub "I win another round~"
             else:
                 if loss_streak_counter > 1:
@@ -794,12 +816,12 @@ label mas_pong_dlg_winner:
                 else:
                     m 2esa "Looks like I won."
         
-            $ pong_last_responce_id = 110           
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME           
             
             
         #On hard difficulty
         elif pong_difficulty_before <= 15:
-            if pong_last_responce_id == 120:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_HARD_GAME:
                 m 1hub "Ahahaha!"
                 m 3tsb "Am I playing too good for you?"
                 m 5hub "I am just kidding, [player]!"
@@ -810,12 +832,12 @@ label mas_pong_dlg_winner:
                 else:
                     m 1huu "I win~!"
         
-            $ pong_last_responce_id = 120 
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_HARD_GAME 
             
             
         #On expert difficulty
         elif pong_difficulty_before <= 20:
-            if pong_last_responce_id == 130:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME:
                 m 5hub "It feels good to win!"
                 m 5eua "Don't worry, I'm sure you will win again soon~"
             else:
@@ -824,19 +846,19 @@ label mas_pong_dlg_winner:
                 else:
                     m 2eub "I win this round!"
         
-            $ pong_last_responce_id = 130
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME
             
             
         #On extreme difficulty
         else:
-            if pong_last_responce_id == 140:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME:
                 m 2duu "You have done well to come this far, [player]."
                 m 4esb "I gave it everything I got, so don't feel too bad for losing from time to time."
             else:
                 m 2hub "This time it's my win!"
                 m 5hub "Keep up, [player]!"
         
-            $ pong_last_responce_id = 140
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME
         
     return
     
@@ -861,16 +883,16 @@ label mas_pong_dlg_loser:
         
     #Monika loses without hitting the ball
     elif ball_paddle_bounces == 0:
-        if pong_last_responce_id == 1010: 
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL: 
             m 1rksdlb "Maybe I should try a bit harder..."
         else:
             m 1rksdlb "Ahaha, I guess I was a bit too slow there..."
         
-        $ pong_last_responce_id = 1010
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL
               
               
     #Player starts playing seriously and wins after losing at least 3 times on purpose
-    elif instant_loss_streak_counter_before >= 3 and persistent.player_once_let_monika_win_on_purpose:
+    elif instant_loss_streak_counter_before >= 3 and persistent._mas_pm_ever_let_monika_win_on_purpose:
         m 5tsu "So you are playing seriously now?"#
         m 1huu "Let's find out how good you really are, [player]!"  
         
@@ -884,26 +906,26 @@ label mas_pong_dlg_loser:
         
         
     #Monika loses after saying she would win this time
-    elif powerup_value_this_game == DIFFICULTY_POWERUP:
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
         m 6wuo "Wow..."
         m 2tub "I was really trying this time, but you still won."
         m 5hub "Way to go, [player]!"
         
         
     #Monika loses after going easy on the player
-    elif powerup_value_this_game == DIFFICULTY_POWERDOWN:
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
         m 5hub "Ehehe!"
         m 6esa "Good job, [player]!"
         
         
     #Monika loses after going even easier on the player
-    elif powerup_value_this_game == DIFFICULTY_POWERDOWNBIG:
+    elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
         m 1hsb "I'm glad you won this time, [player]."
         
     
     #Monika loses by a trickshot
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
-        if pong_last_responce_id == 1070:     
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT:     
             m 2dfd "[player]!" 
             m 2tkc "This is kind of unfair..." 
             m 2ekp "..."
@@ -912,7 +934,7 @@ label mas_pong_dlg_loser:
         else:
             m 2ekb "Wow, I just couldn't hit this trickshot."
         
-        $ pong_last_responce_id = 1070  
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT  
         
         
     #Monika loses three times in a row
@@ -958,25 +980,25 @@ label mas_pong_dlg_loser:
         
     #Monika loses a long game 
     elif ball_paddle_bounces > 10 and ball_paddle_bounces > pong_difficulty_before * 1/2:
-        if pong_last_responce_id == 1100:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_LONG_GAME:
             m 2esb "Incredible, [player]!"
             m 4esb "I just can't keep up with you, way to go!"
         else:
             m 2hub "Amazing, [player]!"
             m 4esb "You have an excellent technique to come that far!"
         
-        $ pong_last_responce_id = 1100
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_LONG_GAME
         
         
     #Monika loses a short game
     elif ball_paddle_bounces <= 2:
-        if pong_last_responce_id == 1110:     
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME:     
             m 2hksdlb "Ahahaha..." 
             m 3eksdla "I guess I should try a little harder..."
         else:
             m 1rusdlb "I did not expect to lose this quickly."
         
-        $ pong_last_responce_id = 1110
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME
         
         
     #Monika loses a game
@@ -984,7 +1006,7 @@ label mas_pong_dlg_loser:
         
         #On easy difficulty
         if pong_difficulty_before <= 5:
-            if pong_last_responce_id == 1120:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EASY_GAME:
                 m 4eub "You win this round as well."
             else:
                 if win_streak_counter > 1:
@@ -992,12 +1014,12 @@ label mas_pong_dlg_loser:
                 else:
                     m 2esb "You won!"
         
-            $ pong_last_responce_id = 1120
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EASY_GAME
             
             
         #On medium difficulty
         elif pong_difficulty_before <= 10:
-            if pong_last_responce_id == 1130:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME:
                 m 5eub "It is nice to see you win like that, [player]."
                 m 5hub "Keep it up~"
             else:
@@ -1006,12 +1028,12 @@ label mas_pong_dlg_loser:
                 else:
                     m 1esb "You won! Not bad."
         
-            $ pong_last_responce_id = 1130
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME
             
             
         #On hard difficulty
         elif pong_difficulty_before <= 15:
-            if pong_last_responce_id == 1140:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_HARD_GAME:
                 m 4eud "You won yet another time!"
                 m 4eub "Pretty impressive, [player]."
             else:
@@ -1020,12 +1042,12 @@ label mas_pong_dlg_loser:
                 else:
                     m 2hub "You won! Congratulations!"
         
-            $ pong_last_responce_id = 1140
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_HARD_GAME
             
             
         #On expert difficulty
         elif pong_difficulty_before <= 20:
-            if pong_last_responce_id == 1150:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME:
                 m 2eud "Wow, I am really trying but you just keep on winning!"
                 m 3tsb "Well, I'm sure I will beat you sooner or later [player]..."
                 m 6hub "Ahahaha!"
@@ -1035,12 +1057,12 @@ label mas_pong_dlg_loser:
                 else:
                     m 4hubfb "You won! Impressive!"
         
-            $ pong_last_responce_id = 1150
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME
             
             
         #On extreme difficulty
         else:
-            if pong_last_responce_id == 1160:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME:
                 m 2esc "I simply can't believe how good you are at this."
                 m 4eud "You have great potential."
                 m 5eub "If you use it for something different than pong, I'm sure you can accomplish great things!"
@@ -1049,7 +1071,7 @@ label mas_pong_dlg_loser:
                 m 5hub "Good job, [player]!"
                 m 5esu "You really know how to play pong, huh?"
         
-            $ pong_last_responce_id = 1160
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME
         
     return
 
@@ -1059,9 +1081,8 @@ label mas_pong_dlg_loser:
 label mas_pong_dlg_loser_fast:
     m 1tfu "I'll beat you next time, [player]."
     
-    $ persistent.pong_difficulty_powerup = DIFFICULTY_POWERUP;    
-    $ persistent.pong_difficulty_powerup_date = datetime.datetime.today()
-    $ persistent.pong_difficulty_powerup_date = datetime.datetime(persistent.pong_difficulty_powerup_date.year, persistent.pong_difficulty_powerup_date.month, persistent.pong_difficulty_powerup_date.day)
+    $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERUP;    
+    $ persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
     return
 
 
@@ -1071,7 +1092,7 @@ label mas_pong_dlg_winner_fast:
     m 5hua "Thanks for playing Pong and letting me win, [player]."
     m 6eua "I look forward to play with you again sometime."
     
-    $ persistent.pong_difficulty_powerup = DIFFICULTY_POWERDOWN;    
+    $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERDOWN;    
     return
     
     
