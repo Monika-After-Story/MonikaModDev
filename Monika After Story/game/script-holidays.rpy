@@ -4592,12 +4592,15 @@ label mas_apology_missed_vday:
         m 2eka "Try to come by next Valentine's Day."
         $ mas_gainAffection(modifier=0.1)
 
-    else:
-        #Broken doesn't even get here, so dis is the cutoff and falls as else (pun somewhat intended)
+    elif mas_isMoniDis():
         m 2dkc "I didn't expect you to show up anyway, [player]."
         m 2dkd "I know we haven't really been that close, but a part of me hoped that you would at least visit..."
         m 2dsc "Please promise me that you'll come by next year, okay?"
         $ mas_gainAffection(modifier=0.1)
+
+    else:
+        #No gain from this
+        m 6ckc "..."
 
     return
 
