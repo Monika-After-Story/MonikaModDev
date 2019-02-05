@@ -4486,7 +4486,7 @@ init 5 python:
             eventlabel="mas_f14_no_time_spent",
             action=EV_ACT_QUEUE,
             start_date=mas_f14+datetime.timedelta(1),
-            end_date=mas_f14+datetime.timedelta(7),
+            end_date=mas_f14+datetime.timedelta(8),
             conditional=(
                 "not persistent._mas_long_absence "
                 "and not persistent._mas_f14_spent_f14 "
