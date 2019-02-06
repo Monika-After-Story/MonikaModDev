@@ -605,6 +605,9 @@ label ch30_main:
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
 
+    # set monikas outfit to default
+    $ monika_chr.reset_outfit(False)
+
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
