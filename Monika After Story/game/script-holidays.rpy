@@ -727,7 +727,7 @@ label bye_trick_or_treat:
                 if already_went:
                     m 1hua "Ahaha~"
                     m "I told you."
-                    m 1eua "We'll have to wait until next year to again."
+                    m 1eua "We'll have to wait until next year to go again."
 
                 else:
                     m 2dkc "..."
