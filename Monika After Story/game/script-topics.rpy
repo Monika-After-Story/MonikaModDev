@@ -9693,7 +9693,7 @@ label monika_fun_facts_8:
     m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
     m "The reason why this happens is because honey is mostly made of sugar and only a bit of water, making it solid over time."
     m 1euc "Most of the honey that you see in groceries doesn’t crystallize as fast as real honey would because it's been pasteurized in the process of making it."
-    m 1eud "Which removes the stuff that makes the honey go solid quickly."
+    m 1eud "...Which removes the stuff that makes the honey go solid quickly."
     m 3eub "But wouldn’t it be nice to eat crystallized honey too?"
     m "It’d be like candy when you bite into it."
     return
