@@ -1059,10 +1059,10 @@ init -1 python:
         "ribbon_emerald",
         "ribbon",
         hover_dlg=[
-            "TODO: YOU MEAN THE-",
+            "I've always loved this color...",
         ],
         select_dlg=[
-            "TODO: CHAOS EMERALDS?"
+            "It's just like my eyes!"
         ]
     )
 
@@ -1268,10 +1268,10 @@ init -1 python:
         "ribbon_platinum",
         "ribbon",
         hover_dlg=[
-            "TODO: only the most expensive-",
+            "That's an unusual color, [player].",
         ],
         select_dlg=[
-            "TODO: natural element on earth"
+            "I'm quite fond of it, actually."
         ]
     )
 
@@ -1328,10 +1328,10 @@ init -1 python:
         "ribbon_ruby",
         "ribbon",
         hover_dlg=[
-            "TODO: RUBY RUBY RUBY RUBY~"
+            "That's a beautiful shade of red."
         ],
         select_dlg=[
-            "TODO: on rails"
+            "Doesn't it look pretty?"
         ]
     )
 
@@ -1358,10 +1358,10 @@ init -1 python:
         "ribbon_sapphire",
         "ribbon",
         hover_dlg=[
-            "TODO: Nitro"
+            "Like a clear summer sky..."
         ],
         select_dlg=[
-            "TODO: Tri-X"
+            "Nice choice, [player]!"
         ]
     )
 
@@ -1388,10 +1388,10 @@ init -1 python:
         "ribbon_silver",
         "ribbon",
         hover_dlg=[
-            "TODO: gray except better"
+            "I've always loved the look of this one."
         ],
         select_dlg=[
-            "TODO: but also the first loser"
+            "Nice choice, [player]."
         ]
     )
 
