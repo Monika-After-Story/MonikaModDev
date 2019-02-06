@@ -9694,7 +9694,7 @@ label monika_fun_facts_8:
     m "The reason why this happens is because honey is mostly made of sugar and only a bit of water, making it solid over time."
     m 1euc "Most of the honey that you see in groceries don’t crystalize as fast as real honey would because they’ve been pasteurized in the process of making them."
     m 1eud "Which removes the stuff that makes the honey go solid quickly."
-    m 3eub "But wouldn’t be nice to eat crystalized honey too?"
+    m 3eub "But wouldn’t it be nice to eat crystalized honey too?"
     m "They’d be like candy when you bite into them."
     return
 
