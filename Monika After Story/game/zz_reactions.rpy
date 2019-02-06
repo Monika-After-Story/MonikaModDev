@@ -1195,6 +1195,15 @@ label mas_reaction_darkpurpleribbon:
     return
 
 init 5 python:
+    addReaction("mas_reaction_emeraldribbon", "emeraldribbon", is_good=True)
+
+label mas_reaction_emeraldribbon:
+    $ _mas_new_ribbon_color = "emerald"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_emerald
+    call _mas_reaction_ribbon_helper("mas_reaction_emeraldribbon")
+    return
+
+init 5 python:
     addReaction("mas_reaction_grayribbon", "grayribbon", is_good=True)
 
 label mas_reaction_grayribbon:
@@ -1240,12 +1249,48 @@ label mas_reaction_pinkribbon:
     return
 
 init 5 python:
+    addReaction("mas_reaction_platinumribbon", "platinumribbon", is_good=True)
+
+label mas_reaction_platinumribbon:
+    $ _mas_new_ribbon_color = "platinum"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_platinum
+    call _mas_reaction_ribbon_helper("mas_reaction_platinumribbon")
+    return
+
+init 5 python:
     addReaction("mas_reaction_redribbon", "redribbon", is_good=True)
 
 label mas_reaction_redribbon:
     $ _mas_new_ribbon_color = "red"
     $ _mas_gifted_ribbon_acs = mas_acs_ribbon_red
     call _mas_reaction_ribbon_helper("mas_reaction_redribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_rubyribbon", "rubyribbon", is_good=True)
+
+label mas_reaction_rubyribbon:
+    $ _mas_new_ribbon_color = "ruby"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_ruby
+    call _mas_reaction_ribbon_helper("mas_reaction_rubyribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_sapphireribbon", "sapphireribbon", is_good=True)
+
+label mas_reaction_sapphireribbon:
+    $ _mas_new_ribbon_color = "sapphire"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_sapphire
+    call _mas_reaction_ribbon_helper("mas_reaction_sapphireribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_silverribbon", "silverribbon", is_good=True)
+
+label mas_reaction_silverribbon:
+    $ _mas_new_ribbon_color = "silver"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_silver
+    call _mas_reaction_ribbon_helper("mas_reaction_silverribbon")
     return
 
 init 5 python:

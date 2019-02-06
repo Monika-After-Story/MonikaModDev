@@ -1036,6 +1036,36 @@ init -1 python:
         ]
     )
 
+    ### EMERALED RIBBON
+    ## ribbon_emeraled
+    # Emerald ribbon for ponytail/bun hairstyles
+    # thanks Ronin
+    mas_acs_ribbon_emerald = MASAccessory(
+        "ribbon_emerald",
+        "ribbon_emerald",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_emerald)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_emerald,
+        "Ribbon (Emerald)",
+        "ribbon_emerald",
+        "ribbon",
+        hover_dlg=[
+            "TODO: YOU MEAN THE-",
+        ],
+        select_dlg=[
+            "TODO: CHAOS EMERALDS?"
+        ]
+    )
+
     ### WHITE RIBBON
     ## ribbon_def
     # White ribbon (the default) for ponytail/bun hairstyles
@@ -1215,6 +1245,36 @@ init -1 python:
         ]
     )
 
+    ### PLATINUM RIBBON
+    ## ribbon_platinum
+    # Platinum ribbon for ponytail/bun hairstyles
+    # thanks Ronin
+    mas_acs_ribbon_platinum = MASAccessory(
+        "ribbon_platinum",
+        "ribbon_platinum",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_platinum)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_platinum,
+        "Ribbon (Platinum)",
+        "ribbon_platinum",
+        "ribbon",
+        hover_dlg=[
+            "TODO: only the most expensive-",
+        ],
+        select_dlg=[
+            "TODO: natural element on earth"
+        ]
+    )
+
     ### RED RIBBON
     ## ribbon_red
     # Red ribbon for ponytail/bun hairstyles
@@ -1242,6 +1302,96 @@ init -1 python:
         ],
         select_dlg=[
             "Just like roses~"
+        ]
+    )
+
+    ### RUBY RIBBON
+    ## ribbon_ruby
+    # Ruby ribbon for ponytail/bun hairstyles
+    # thanks Ronin
+    mas_acs_ribbon_ruby = MASAccessory(
+        "ribbon_ruby",
+        "ribbon_ruby",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_ruby)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_ruby,
+        "Ribbon (Ruby)",
+        "ribbon_ruby",
+        "ribbon",
+        hover_dlg=[
+            "TODO: RUBY RUBY RUBY RUBY~"
+        ],
+        select_dlg=[
+            "TODO: on rails"
+        ]
+    )
+
+    ### SAPPHIRE RIBBON
+    ## ribbon_sapphire
+    # Sapphire ribbon for ponytail/bun hairstyles
+    # thanks Ronin
+    mas_acs_ribbon_sapphire = MASAccessory(
+        "ribbon_sapphire",
+        "ribbon_sapphire",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_sapphire)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_sapphire,
+        "Ribbon (Sapphire)",
+        "ribbon_sapphire",
+        "ribbon",
+        hover_dlg=[
+            "TODO: Nitro"
+        ],
+        select_dlg=[
+            "TODO: Tri-X"
+        ]
+    )
+
+    ### SILVER RIBBON
+    ## ribbon_silver
+    # Silver ribbon for ponytail/bun hairstyles
+    # thanks Ronin
+    mas_acs_ribbon_silver = MASAccessory(
+        "ribbon_silver",
+        "ribbon_silver",
+        MASPoseMap(
+            default="0",
+            p5="5"
+        ),
+        stay_on_start=True,
+        acs_type="ribbon",
+        mux_type=["ribbon"],
+        rec_layer=MASMonika.BBH_ACS
+    )
+    store.mas_sprites.init_acs(mas_acs_ribbon_silver)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ribbon_silver,
+        "Ribbon (Silver)",
+        "ribbon_silver",
+        "ribbon",
+        hover_dlg=[
+            "TODO: gray except better"
+        ],
+        select_dlg=[
+            "TODO: but also the first loser"
         ]
     )
 
