@@ -147,6 +147,9 @@ init -2 python in mas_sprites:
         # lock ribbon select
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
+        # remove ear rose
+        _moni_chr.remove_acs(mas_acs_ear_rose)
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
 
@@ -223,6 +226,9 @@ init -2 python in mas_sprites:
         # lock ribbon select
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
+        # remove ear rose
+        _moni_chr.remove_acs(mas_acs_ear_rose)
+
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
 
@@ -281,6 +287,10 @@ init -2 python in mas_sprites:
                 temp_storage["hair.ribbon"] = prev_ribbon
             _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
 
+        # NOTE: revaluate if this looks bad on santa
+        # remove ear rose
+        _moni_chr.remove_acs(mas_acs_ear_rose)
+
 
     def _clothes_santa_exit(_moni_chr, **kwargs):
         """
@@ -307,13 +317,17 @@ init -2 python in mas_sprites:
         Entry programming point for sundress white
         """
         _moni_chr.wear_acs(store.mas_acs_hairties_bracelet_brown)
+        _moni_chr.wear_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     def _clothes_sundress_white_exit(_moni_chr, **kwargs):
         """
         Exit programming point for sundress white
         """
+        # TODO: dont remve the bracelet.
+        #   non-bare arms clothes should remove the bracelet
         _moni_chr.remove_acs(store.mas_acs_hairties_bracelet_brown)
+        _moni_chr.remove_acs(store.mas_acs_musicnote_necklace_gold)
 
 
     ######### ACS [SPR030] ###########
