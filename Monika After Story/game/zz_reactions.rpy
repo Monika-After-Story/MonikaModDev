@@ -1370,7 +1370,8 @@ label mas_reaction_new_ribbon:
         m 1suo "A new ribbon!"
         m 3hub "...And it's [_mas_new_ribbon_color]!"
 
-        if _mas_new_ribbon_color == "green":
+        #Ironically green is closer to her eyes, but given the selector dlg, we'll say this for both.
+        if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
         m 1hub "Thank you so much [player], I love it!"
