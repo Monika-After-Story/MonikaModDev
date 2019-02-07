@@ -7,8 +7,8 @@ default persistent._mas_can_update = True
 #define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
 
 # new s3 links
-define mas_updater.regular = "http://s3-us-west-2.amazonaws.com/monika-after-story/updates/updates.json"
-define mas_updater.unstable = "http://s3-us-west-2.amazonaws.com/monika-after-story/unstable/updates.json"
+define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
+define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
 
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
