@@ -1268,7 +1268,7 @@ init -1 python:
         "ribbon_platinum",
         "ribbon",
         hover_dlg=[
-            "That's an unusual color, [player].",
+            "That's an interesting color, [player].",
         ],
         select_dlg=[
             "I'm quite fond of it, actually."
@@ -1388,7 +1388,8 @@ init -1 python:
         "ribbon_silver",
         "ribbon",
         hover_dlg=[
-            "I've always loved the look of this one."
+            "I like the look of this one.",
+            "I've always loved silver."
         ],
         select_dlg=[
             "Nice choice, [player]."
