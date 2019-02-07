@@ -330,7 +330,7 @@ init -1 python in mas_affection:
                 datetime.datetime.now(),
                 piece_one,
                 change,
-                store.persistent._mas_affection["affection"],
+                store._mas_getAffection(),
                 new,
                 piece_five
             )
@@ -340,7 +340,7 @@ init -1 python in mas_affection:
                 datetime.datetime.now(),
                 piece_one,
                 change,
-                store.persistent._mas_affection["affection"],
+                store._mas_getAffection(),
                 new
             )
 
@@ -1075,7 +1075,17 @@ init -10 python:
         persistent._mas_pctadeibe = None
 
         # pull numerical afffection for audting
-        new_value = persistent._mas_affection["affection"]
+        if (
+                persistent._mas_affection is None
+                or "affection" not in persistent._mas_affection
+            ):
+            if persistent._mas_aff_backup is None:
+                new_value = 0 
+            else:
+                new_value = persistent._mas_aff_backup
+
+        else:
+            new_value = persistent._mas_affection["affection"]
 
         # if the back is None, set the backup
         if persistent._mas_aff_backup is None:
@@ -1147,6 +1157,32 @@ init 20 python:
             )
 
         return persistent._mas_aff_backup
+
+
+    def _mas_getBadExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get(
+                "badexp",
+                1
+            )
+        return 1
+
+
+    def _mas_getGoodExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get(
+                "goodexp",
+                1
+            )
+        return 1
+
+
+    def _mas_getTodayExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get("today_exp", 0)
+
+        return 0
+    
 
     # numerical affection check
     def mas_isBelowZero():
@@ -1469,7 +1505,7 @@ init 20 python:
         global mas_curr_affection_group
 
         # store the value for easiercomparisons
-        curr_affection = persistent._mas_affection["affection"]
+        curr_affection = _mas_getAffection()
 
         # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
         if  affection.AFF_MIN_POS_TRESH <= curr_affection < affection.AFF_MAX_POS_TRESH:
@@ -1540,10 +1576,13 @@ init 20 python:
 
     # Used to increment affection whenever something positive happens.
     def mas_gainAffection(
-            amount=persistent._mas_affection["goodexp"],
+            amount=None,
             modifier=1,
             bypass=False
         ):
+
+        if amount is None:
+            amount = _mas_getGoodExp()
 
         # is it a new day?
         if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
@@ -1554,7 +1593,7 @@ init 20 python:
         # calculate new value
         frozen = persistent._mas_affection_goodexp_freeze
         change = (amount * modifier)
-        new_value = persistent._mas_affection["affection"] + change
+        new_value = _mas_getAffection() + change
         if new_value > 1000000:
             new_value = 1000000
 
@@ -1567,7 +1606,9 @@ init 20 python:
             persistent._mas_affection["affection"] = new_value
 
             if not bypass:
-                persistent._mas_affection["today_exp"] += change
+                persistent._mas_affection["today_exp"] = (
+                    _mas_getTodayExp() + change
+                )
                 if persistent._mas_affection["today_exp"] >= 7:
                     mas_FreezeGoodAffExp()
 
@@ -1588,7 +1629,7 @@ init 20 python:
     #expirydatetime: 
     #generic: do we want this to be persistent? or not
     def mas_loseAffection(
-            amount=persistent._mas_affection["badexp"],
+            amount=None,
             modifier=1,
             reason=None,
             ev_label=None,
@@ -1596,13 +1637,16 @@ init 20 python:
             apology_overall_expiry=datetime.timedelta(weeks=1)
         ):
 
+        if amount is None:
+            amount = _mas_getBadExp()
+
         #set apology flag
         mas_setApologyReason(reason=reason,ev_label=ev_label,apology_active_expiry=apology_active_expiry,apology_overall_expiry=apology_overall_expiry)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
         change = (amount * modifier)
-        new_value = persistent._mas_affection["affection"] - change
+        new_value = _mas_getAffection() - change
         if new_value < -1000000:
             new_value = -1000000
 
@@ -1618,7 +1662,7 @@ init 20 python:
 
 
     def mas_setAffection(
-            amount=persistent._mas_affection["affection"]
+            amount=None
         ):
         # NOTE: never use this to add / lower affection unless its to
         #   strictly set affection to a level for some reason.
@@ -1626,6 +1670,8 @@ init 20 python:
 #            persistent._mas_affection_badexp_freeze
 #            or persistent._mas_affection_goodexp_freeze
 #        )
+        if amount is None:
+            amount = _mas_getAffection()
 
         # audit the change (or attempt)
         affection.audit(amount, amount, False)
@@ -1684,7 +1730,7 @@ init 20 python:
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():
 
-        curr_affection = persistent._mas_affection["affection"]
+        curr_affection = _mas_getAffection()
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
