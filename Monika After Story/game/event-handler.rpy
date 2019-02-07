@@ -39,7 +39,10 @@ init -900 python in mas_ev_data_ver:
 
 
     def _verify_dt(val, allow_none=True):
-        if val is not None and val.year < 1900:
+        if (
+                isinstance(val, datetime.datetime)
+                and val.year < 1900
+            ):
             return False
         return _verify_item(val, datetime.datetime, allow_none)
 
