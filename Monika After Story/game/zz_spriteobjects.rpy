@@ -148,7 +148,7 @@ init -2 python in mas_sprites:
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
         # remove ear rose
-        _moni_chr.remove_acs(mas_acs_ear_rose)
+        _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
@@ -227,7 +227,7 @@ init -2 python in mas_sprites:
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
         # remove ear rose
-        _moni_chr.remove_acs(mas_acs_ear_rose)
+        _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
@@ -289,7 +289,7 @@ init -2 python in mas_sprites:
 
         # NOTE: revaluate if this looks bad on santa
         # remove ear rose
-        _moni_chr.remove_acs(mas_acs_ear_rose)
+        _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
 
     def _clothes_santa_exit(_moni_chr, **kwargs):
