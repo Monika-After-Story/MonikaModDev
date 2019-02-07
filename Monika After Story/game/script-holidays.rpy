@@ -2970,7 +2970,7 @@ label monika_nye_year_review:
         m 3eka "Looking back, you gave me your promise this year when you gave me this ring..."
         m 1ekbsa "...a symbol of our love."
 
-        if persistent._mas_pm_wears_ring:
+        if persistent._mas_pm_wearsRing:
             m "And you even got one for yourself..." #note, should be only if you got a promise ring for yourself this year
 
             if mas_isMoniAff(higher=True):
