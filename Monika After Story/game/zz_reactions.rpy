@@ -1406,7 +1406,8 @@ label mas_reaction_new_ribbon:
         m 1suo "Another ribbon!"
         m 3hub "...And this time it's [_mas_new_ribbon_color]!"
 
-        if _mas_new_ribbon_color == "green":
+        #Ironically green is closer to her eyes, but given the selector dlg, we'll say this for both.
+        if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
         m 3eua "I’ll put this on right now..."
@@ -1420,7 +1421,11 @@ label mas_reaction_new_ribbon:
 
 label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
-    m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    #Need to handle vowels lol
+    if _mas_new_ribbon_color[:1] in 'aeiou':
+        m 1rusdlb "You already gave me an [_mas_new_ribbon_color] ribbon!"
+    else:
+        m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
     return
 
 init 5 python:
