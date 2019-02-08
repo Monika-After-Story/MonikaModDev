@@ -320,6 +320,9 @@ label birthdate_set:
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
         if bday_ret_bday_ev is not None:
             bday_ret_bday_ev.start_date = mas_player_bday_curr()
@@ -339,6 +342,9 @@ label birthdate_set:
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))
@@ -353,7 +359,10 @@ label birthdate_set:
             )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-    
+   
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr()
@@ -423,6 +432,8 @@ label birthdate_set:
             $ hol_str = "Christmas"
         elif mas_player_bday_curr() == mas_monika_birthday:
             $ hol_str = "my birthday"
+        elif mas_player_bday_curr() == mas_f14: 
+            $ hol_str = "Valentine's Day"
         else:
             $ hol_str = None
         if hol_str is not None:
@@ -446,11 +457,10 @@ label birthdate_set:
         m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
         m 3hub "It still must make it an extra special day!"
 
-#TODO: activate this once mas_f14 exists
-#    elif mas_player_bday_curr() == mas_f14:
-#        m 1sua "Oh! Your birthday is on Valentine's Day..."
-#        m 3hua "How romantic!"
-#        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+    elif mas_player_bday_curr() == mas_f14:
+        m 1sua "Oh! Your birthday is on Valentine's Day..."
+        m 3hua "How romantic!"
+        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"

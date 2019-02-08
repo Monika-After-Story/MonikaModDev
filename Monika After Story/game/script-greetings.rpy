@@ -1044,7 +1044,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday()):
+    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -2305,7 +2305,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "longer":
             m 1c "[player]?"
-            m 3g "I thought you were going to away for a long time..."
+            m 3g "I thought you were going to be away for a long time..."
             m 3l "Why are you back so soon?"
             m 1e "Are you visiting me? You're such a sweetheart!"
             m 1j "If you're going away for a while still, make sure to tell me."
@@ -2890,13 +2890,23 @@ label greeting_returned_home:
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    if persistent._mas_f14_on_date:
+        jump greeting_returned_home_f14
+
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+        # did we miss f14 because we were on a date
+        call mas_gone_over_f14_check
+
+    # Note: this ordering is key, greeting_returned_home_player_bday handles the case
+    # if we left before f14 on your bday and return after f14
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
 
+    if persistent._mas_f14_gone_over_f14:
+        jump greeting_gone_over_f14
+
     # main dialogue
     if time_out > five_minutes:
-
-
         jump greeting_returned_home_morethan5mins
 
     else:
@@ -2909,7 +2919,6 @@ label greeting_returned_home:
 # this just returns for now
 label greeting_returned_home_cleanup:
     return
-
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):

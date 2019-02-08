@@ -193,6 +193,7 @@ label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
     if hide_ui:
         if store.mas_globals.dlg_workflow:
             $ mas_MUMUDropShield()
+            $ enable_esc()
         else:
             $ mas_DropShield_core()
         $ HKBShowButtons()

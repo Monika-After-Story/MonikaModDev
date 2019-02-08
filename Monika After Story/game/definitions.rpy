@@ -3507,7 +3507,14 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek()) or mas_isNYE()
+        return (
+            mas_isMonikaBirthday()
+            or mas_isO31()
+            or mas_isD25()
+            or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek())
+            or mas_isNYE()
+            or mas_isF14()
+        )
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -4114,10 +4121,12 @@ init 2 python:
                 Defualts to 4
         """
         # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie:
+        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
             # run the plushie exit PP in case plushie is no longer enabled
             mas_acs_quetzalplushie.exit(monika_chr)
             return
+
+
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
@@ -5372,7 +5381,6 @@ default persistent._mas_enable_random_repeats = False
 default persistent._mas_first_calendar_check = False
 
 # rain
-default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # rain chances
