@@ -652,7 +652,7 @@ init -816 python in mas_delact:
     nothing = "temp"
 
 init -816 python in mas_history:
-    from store.mas_delact import _MDA_safeadd
+    from store.mas_delact import _MDA_safeadd, _MDA_saferm
     # mas history store has safeadd
 
 init -815 python in mas_history:
@@ -662,7 +662,9 @@ init -815 python in mas_history:
     def _bday_exit_pp(mhs):
         # this PP will just add the appropriate delayed action IDs to the 
         # persistent delayed action list.
-        _MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4)
+        pass
 
 
 init -810 python:
@@ -696,8 +698,12 @@ init -810 python:
             # lifestyles (of the rich and famous)
             "_mas_pm_religious": "pm.lifestyle.religious",
             "_mas_pm_like_playing_sports": "pm.lifestyle.plays_sports",
+            "_mas_pm_like_playing_tennis": "pm.lifestyle.plays_tennis",
             "_mas_pm_meditates": "pm.lifestyle.meditates",
             "_mas_pm_see_therapist": "pm.lifestyle.sees_therapist",
+            "_mas_pm_driving_can_drive": "pm.lifestyle.can_drive",
+            "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
+            "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -763,6 +769,8 @@ init -810 python:
 
             # actions / mas / dev
             "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+            "_mas_pm_has_contributed_to_mas": "pm.actions.mas.dev.has_contributed",
+            "_mas_pm_wants_to_contribute_to_mas": "pm.actions.mas.dev.wants_to_contribute",
 
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
@@ -806,6 +814,7 @@ init -810 python:
 
             # exp (experience)
             "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+            "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
 
             # op (opinions)
             # op / monika
