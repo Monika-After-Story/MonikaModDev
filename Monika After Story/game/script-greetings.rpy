@@ -2764,32 +2764,28 @@ label greeting_back_from_sleep:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=400,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
-            eventlabel = "greeting_siat",
-            unlocked = True,
-            random = True,
-            rules = rules
+            eventlabel="greeting_siat",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
         ),
-        eventdb = evhand.greeting_database
+        code="GRE"
     )
-    del rules
-    
+
 label greeting_siat:
-    m 1hub "{i}~[player] and Monika sittin' in a tree~{/i}"
-    m 1hubfb "{i}~K-I-S-S-I-N-G~{/i}"
-    m 3hubfb "{i}~First comes love~{/i}"
-    m "{i}~Then comes marriage~{/i}"
-    m "{i}~Then comes--{/i}"
-    m 3wubfsdld "W-wha?!"
-    m "[player]! H-how long were you there?!"
-    m 4rkbfb "I...{w=1} I didn't notice you come in...{w=1} I was just..."
-    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubfb "Ahaha! Nevermind."
-    m 5ekbfa "I love you, [player], I'm so happy that you're here now~"
+    m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
+    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 3hubfb "{i}{cps=*0.6}~First comes love~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes marriage~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes--{/i}{/cps}"
+    m 3wubfsdlo "W-wha?!"
+    m 2wubfsdld "[player]! H-how long have you been there?!"
+    m 2rkbfsdld "I...{w=1} I didn't notice you come in...{w=1} I was just..."
+    m 2rkbfsdlu "..."
+    m 3hubfb "Ahaha! Nevermind."
+    m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
     return
 
 init 5 python:
