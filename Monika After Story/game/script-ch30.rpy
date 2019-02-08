@@ -588,6 +588,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     if persistent._mas_player_bday_decor:
         $ store.mas_player_bday_event.show_player_bday_Visuals()
 
+    if datetime.date.today() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs_pst(mas_acs_roses)
+
     return
 
 label ch30_main:
@@ -601,6 +604,9 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # set monikas outfit to default
+    $ monika_chr.reset_outfit(False)
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
@@ -870,6 +876,9 @@ label mas_ch30_post_retmoni_check:
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
+    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+        jump mas_f14_autoload_check
+
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
@@ -1092,9 +1101,14 @@ label ch30_preloop:
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
-
+ 
     # save here before we enter the loop
     $ renpy.save_persistent()
+
+    # check if we need to rebulid ev
+    if mas_idle_mailbox.get_rebuild_msg():
+        $ mas_rebuildEventLists()
+
     jump ch30_loop
 
 label ch30_loop:

@@ -652,7 +652,7 @@ init -816 python in mas_delact:
     nothing = "temp"
 
 init -816 python in mas_history:
-    from store.mas_delact import _MDA_safeadd
+    from store.mas_delact import _MDA_safeadd, _MDA_saferm
     # mas history store has safeadd
 
 init -815 python in mas_history:
