@@ -40,7 +40,10 @@
 #
 # minor modifications where made so it works with RenPy
 #
-#
+# TODO: Need to move the POS Tagger and the averaged perceptron implementation to a python package 
+# so the tagger itself can be trained and pickled easily without having to do it through MAS itself.
+# Also need to decide if we'll end up moving the other definitions as well to keep the mas_nlp store
+# cleaner, and make it some sort of wrapper around the python package 
 
 init 10 python in mas_nlp:
 
