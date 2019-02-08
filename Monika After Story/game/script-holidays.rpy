@@ -1960,7 +1960,7 @@ label mas_d25_spent_time_monika:
 
         else:
             if d25_gifts_good == d25_gifts_total:
-                m "And let’s not forget about the wonderful Christmas presents you got me, [player]..."
+                m "And let's not forget about the wonderful Christmas presents you got me, [player]..."
                 m 3hub "They were amazing!"
             elif d25_gifts_bad == d25_gifts_total:
                 m 3eka "And let's not forget about the Christmas presents you got me, [player]..."
@@ -1970,13 +1970,13 @@ label mas_d25_spent_time_monika:
                 m "And let's not forget about the Christmas presents you got me, [player]..."
                 m 3hub "They were really nice!"
             elif d25_gifts_good + d25_gifts_neutral == d25_gifts_bad:
-                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 3eka "And let's not forget about the Christmas presents you got me, [player]..."
                 m 3rksdla "Some of them were really nice."
             elif d25_gifts_good + d25_gifts_neutral > d25_gifts_bad:
-                m "And let’s not forget about the Christmas presents you got me, [player]..."
+                m "And let's not forget about the Christmas presents you got me, [player]..."
                 m 3hub "Most of them were really nice."
             elif d25_gifts_good + d25_gifts_neutral < d25_gifts_bad:
-                m 3eka "And let’s not forget about the Christmas presents you got me, [player]..."
+                m 3eka "And let's not forget about the Christmas presents you got me, [player]..."
                 m 3rksdla "I really liked...{w=1}some of them."
 
         if mas_isMoniEnamored(higher=True):
@@ -2297,7 +2297,7 @@ label bye_d25e_delegate:
 label bye_d25e_first_time_out:
     m 1sua "Taking me somewhere special on Christmas Eve, [player]?"
     m 3eua "I know some people visit friends or family...or go to Christmas parties..."
-    m 3hua "But wherever we’re going, I'm happy you want me to come with you!"
+    m 3hua "But wherever we're going, I'm happy you want me to come with you!"
     m 1eka "I hope we'll be home for Christmas, but even if we're not, just being with you is more than enough for me~"
     return
 
@@ -2335,7 +2335,7 @@ label bye_d25_first_time_out:
     else:
         m 3eua "Maybe we're going to see a movie... I know some people like to do that after opening presents."
 
-    m 1eka "Well, wherever you’re going, I'm just glad you want me to come along..."
+    m 1eka "Well, wherever you're going, I'm just glad you want me to come along..."
     m 3hua "I want to spend as much of Christmas as possible with you, [player]~"
     return
 
@@ -4415,7 +4415,7 @@ label mas_f14_monika_spent_time_with:
 
         else:
             if f14_gifts_good == f14_gifts_total:
-                m "And let’s not forget about the wonderful gifts you got me, [player]..."
+                m "And let's not forget about the wonderful gifts you got me, [player]..."
                 m 3hub "They were amazing!"
             elif f14_gifts_bad == f14_gifts_total:
                 m 3eka "And let's not forget about the gifts you got me, [player]..."
@@ -4425,13 +4425,13 @@ label mas_f14_monika_spent_time_with:
                 m "And let's not forget about the gifts you got me, [player]..."
                 m 3hub "They were really nice!"
             elif f14_gifts_good + f14_gifts_neutral == f14_gifts_bad:
-                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3eka "And let's not forget about the gifts you got me, [player]..."
                 m 3rksdla "Some of them were really nice."
             elif f14_gifts_good + f14_gifts_neutral > f14_gifts_bad:
-                m "And let’s not forget about the gifts you got me, [player]..."
+                m "And let's not forget about the gifts you got me, [player]..."
                 m 3hub "Most of them were really nice."
             elif f14_gifts_good + f14_gifts_neutral < f14_gifts_bad:
-                m 3eka "And let’s not forget about the gifts you got me, [player]..."
+                m 3eka "And let's not forget about the gifts you got me, [player]..."
                 m 3rksdla "I really liked...{w=1}some of them."
         if not mas_isBelowZero():
             m 1rkbsb "I actually made something for you too, [player]!"
