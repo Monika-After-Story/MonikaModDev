@@ -1065,12 +1065,12 @@ label mas_scary_story_yuki_onna:
     m 2eua "The two quickly fell in love and ended up marrying each other."
     m 2hua "They lived happily for years and had several kids as time went by."
     m 2esa "One night, while the kids were sleeping, the woman was sewing by the light of the fire."
-    m "The man looked up from what he was doing and the memory of the night he was never to speak of came back to him."
-    m 3esd "The wife asked the man why he was looking at her the way he was."
-    m 3esa "The man told his tale of his encounter with the snow woman."
+    m 2eud "The man looked up from what he was doing and the memory of the night he was never to speak of came back to him."
+    m "The wife asked the man why he was looking at her the way he was."
+    m 3esc "The man told his tale of his encounter with the snow woman."
     m 2wud "The smile on his wife's face melted into anger as she revealed that she was the snow woman he spoke of."
-    m "She reprimanded him for breaking his promise and would have killed him if it weren't for the sake of their children."
-    m 3dsd "She told the man that he better treat their children well or she would be back to deal with him."
+    m 4efc "She reprimanded him for breaking his promise and would have killed him if it weren't for the sake of their children."
+    m 4efd "She told the man that he better treat their children well or she would be back to deal with him."
     m 4dsd "The next instant she vanished, never to be seen again."
     if renpy.random.randint(1,3) == 1 or persistent._mas_pm_likes_spoops or mas_full_scares:
         show monika 6ckc
@@ -1101,15 +1101,15 @@ label mas_scary_story_many_loves:
     m 4esa "A few months later, the woman married a burly woodcutter."
     m 4dsd "The two lived happily together for a time, but he too withered away and died."
     m 4eud "Some of the villagers thought that it was odd both husbands had died in the same fashion, but no one said anything, and comforted the girl for her poor luck."
-    m "A time later, the woman was married again, this time to a stout mason and they too appeared to have a happy marriage, but within a year, the woman was again a widow."
+    m 2esc "A time later, the woman was married again, this time to a stout mason and they too appeared to have a happy marriage, but within a year, the woman was again a widow."
     m "This time the villagers talked amongst themselves and felt something suspicious was going on, so a group of villagers set out to find the nearest shaman."
     m "Once they found the shaman and told him their story, the shaman indicated he knew what was going on."
-    m "He called his assistant over, a young, well-built fellow, whispered into his ear and sent him off to return with the villagers."
+    m 3euc "He called his assistant over, a young, well-built fellow, whispered into his ear and sent him off to return with the villagers."
     m "Telling them not to worry, his assistant would get to the bottom of it."
-    m "When they returned to the village, the assistant called on the widow and not long afterwards they were married."
-    m 2dsc "On the night of their wedding, the assistant placed a knife under his pillow and feigned sleep."
+    m 2esc "When they returned to the village, the assistant called on the widow and not long afterwards they were married."
+    m 2efc "On the night of their wedding, the assistant placed a knife under his pillow and feigned sleep."
     m 2esd "A little after midnight, the man felt a presence over him and a prick on his neck."
-    m "The man grabbed the knife and stuck it into the thing on top of him."
+    m 2dfc "The man grabbed the knife and stuck it into the thing on top of him."
     if renpy.random.randint(1,20) == 1 and persistent._mas_pm_likes_spoops or mas_full_scares:
         show monika 6ckc
         show mas_stab_wound zorder 75
@@ -1123,8 +1123,8 @@ label mas_scary_story_many_loves:
         show black zorder 100
         $ pause(1.5)
         hide black
-    m 3wkd "He heard a screech and the flapping of wings as the creature flew through a window."
-    m 3eud "The next day, the bride was found dead some distance from the house with a knife wound in her chest."
+    m 3wfc "He heard a screech and the flapping of wings as the creature flew through a window."
+    m 1dfc "The next day, the bride was found dead some distance from the house with a knife wound in her chest."
     call mas_scary_story_cleanup
     return
 
@@ -1144,23 +1144,23 @@ label mas_scary_story_gray_lady:
     call mas_scary_story_setup
     m 4eua "There was once a man named William, who grew up helping his father with his nefarious exploits."
     m 4ekd "Such as waving lights from the shore line in the dead of night, hoping to lure ships to wreck upon the treacherous rocks along the shore."
-    m "And then collect the plunder that was spilled from the ship and kill any survivors."
+    m 2ekc "And then collect the plunder that was spilled from the ship and kill any survivors."
     m 2eud "During one of his father's expositions, he saved a beautiful woman and ultimately decided to leave his old life behind and married her."
     m 2esa "The couple rented a manor not too far away."
-    m 2eub "The two lived a happy life there together, but were especially joyous when their baby daughter Kate was born."
-    m 4esb "As the years went by, Kate grew into a vivacious young woman."
-    m 2ekd "William was secretly ashamed that he didn't have enough money to buy the manor outright to offer as a dowry to the man who would marry his daughter."
+    m 2hub "The two lived a happy life there together, but were especially joyous when their baby daughter Kate was born."
+    m 4esa "As the years went by, Kate grew into a vivacious young woman."
+    m 2ekc "William was secretly ashamed that he didn't have enough money to buy the manor outright to offer as a dowry to the man who would marry his daughter."
     m 4hub "Then one day, Kate met and fell in love with an Irish pirate captain and the two of them were married."
     m 4esb "The happy couple decided to settle down in Dublin, since Kate's parents had no land of their own to offer them."
-    m 4esa "Kate promised to return and visit her parents again one day."
+    m 4eua "Kate promised to return and visit her parents again one day."
     m 4esd "Time passed and William and his wife missed their daughter dearly and wished for her to return."
-    m 2dsc "William decided to go back to his old ways long enough to get the money necessary to buy the manor and invite their daughter and her husband back to live with them."
-    m 2wud "One night, after attracting a ship to wreck on the shore and gathering the plunder from it, he noticed a badly injured woman lying on the rocks before him."
-    m 2dsc "Her facial features were rendered unrecognizable due to the injuries she had sustained."
-    m 2eud "William, taking pity on her, carried her back to the manor, and did what he could to try to save her life, but the woman died without ever regaining consciousness."
-    m 2esd "As they searched her body for some clue as to her identity, they found a small purse strapped to her waist full of enough gold coins and jewels for them to finally purchase the manor they rented."
-    m 2ekd "A few days later the Admiralty inquired the couple about a missing passenger from the wreckage that turned out to be none other than their daughter."
-    m 3dsc "Devastated and ashamed, the parents walled up her remains in a secret room and moved away, never to return."
+    m 2dkc "William decided to go back to his old ways long enough to get the money necessary to buy the manor and invite their daughter and her husband back to live with them."
+    m 4wud "One night, after attracting a ship to wreck on the shore and gathering the plunder from it, he noticed a badly injured woman lying on the rocks before him."
+    m 2wuc "Her facial features were rendered unrecognizable due to the injuries she had sustained."
+    m 2ekc "William, taking pity on her, carried her back to the manor, and did what he could to try to save her life, but the woman died without ever regaining consciousness."
+    m 2eud "As they searched her body for some clue as to her identity, they found a small purse strapped to her waist full of enough gold coins and jewels for them to finally purchase the manor they rented."
+    m 2dsc "A few days later, the Admiralty inquired the couple about a missing passenger from the wreckage that turned out to be none other than their daughter."
+    m 3dsd "Devastated and ashamed, the parents walled up her remains in a secret room and moved away, never to return."
     call mas_scary_story_cleanup
     return
 
@@ -1175,7 +1175,7 @@ init 5 python:
         ),
         code="STY"
     )
-
+##expstop
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
     $ _story = mas_getEV('mas_scary_story_flowered_lantern')
