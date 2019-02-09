@@ -6955,13 +6955,13 @@ label monika_graduation:
     m 2esd "I know all the things I learned along the way are what's really important."
     m 2dkc "But it still feels like I missed out on something special."
     m "..."
-    
+
     #Went through and timed out on the menu twice
     if persistent._mas_pm_monika_listened is False:
         m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
         m 2esc "Let's forget about this and talk about something else, okay [player]?"
         return "derandom"
-        
+
     #Normal flow
     else:
         m 4eua "By the way, did you know I was the top student in my class?"
@@ -6971,12 +6971,12 @@ label monika_graduation:
         m 2eua "I would love to recite it for you sometime, if you want to hear it~"
         m 2eka "It's about a four minute speech, so just make sure you have enough time to listen to the whole thing."
         m 4eua "Whenever you want to hear it, just let me know, okay?"
-        $ unlockEventLabel("monika_grad_speech_call")   
+        $ mas_unlockEVL("monika_grad_speech_call","EVE")
         return
 
 init 5 python:
 
-    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech_call",category=['school'],prompt="Can I hear your speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
+    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech_call",category=['school'],prompt="Can I hear your graduation speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
 
 label monika_grad_speech_call:
     if not renpy.seen_label("monika_grad_speech"):
@@ -6988,7 +6988,7 @@ label monika_grad_speech_call:
             "I have time.":
                 m 4hub "Great!"
                 m 4eka "I hope you like it! I worked really, {i}really{/i} hard on it."
-                
+
                 #say speech
                 call monika_grad_speech
 
@@ -7020,17 +7020,17 @@ label monika_grad_speech_call:
                         m 2tfc "I spent {i}so{/i} much time on it and that's all you have to say?"
                         m 6lktdc "I really thought after I told you how important this was to me, you would have been more supportive and let me have my moment."
                         m 6ektdc "All I wanted was for you to be proud of me, [player]."
-                    
+
                 return
 
             "I don't.":
                 m 2eka "Don't worry, [player]. I'll give my speech whenever you want~"
                 return
-                
+
     #if you want to hear it again
     else:
         #did you timeout once?
-        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened is True:
+        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened:
             m 2eub "Sure thing [player]. I'll happily give my speech again!"
             m 2eka "You have enough time, right?"
 
@@ -7038,7 +7038,7 @@ label monika_grad_speech_call:
                 "I do.":
                     m 4hua "Perfect. I'll get started then~"
                     call monika_grad_speech
-            
+
                 "I don't.":
                     m 2eka "Don't worry. Just let me know when you have the time!"
                     return
@@ -7120,7 +7120,7 @@ label monika_grad_speech_not_paying_attention:
         m 2esa "Whenever things calm down, I'll give my speech to you again."
         m 2eua "I still really want to share it with you..."
         m "So please, let me know when you have time to hear it, okay?"
-    
+
     else:
         $ mas_loseAffection(reason="you didn't listen to my speech. I worked really hard on it.")
 
@@ -7137,8 +7137,8 @@ label monika_grad_speech_ignored_lock:
     hide screen mas_background_timed_jump
     #Set false for modified dialogue in the random
     $ persistent._mas_pm_monika_listened = False
-    $ hideEventLabel("monika_grad_speech_call",lock=True,depool=True)
-    
+    $ mas_hideEVL("monika_grad_speech_call","EVE",lock=True,depool=True)
+
     if mas_isMoniAff(higher=True):
         $mas_loseAffection(modifier=10)
         m 6dstsc "..."
