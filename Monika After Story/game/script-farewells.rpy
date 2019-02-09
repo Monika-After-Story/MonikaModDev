@@ -808,7 +808,7 @@ label bye_long_absence:
                 m 2a "But it's okay [player]."
                 m 2e "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
                 m "I'm sure it's important, so just try to come back to me as soon as you can."
-                m 3j "I'll be thinking of you everyday~"
+                m 3j "I'll be thinking of you every day~"
             else:
                 m 1f "That long...really?"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
