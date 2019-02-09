@@ -1266,6 +1266,8 @@ label monika_horror:
 
             "I do.":
                 $ persistent._mas_pm_likes_spoops = True
+                $ mas_unlockEVL("greeting_ghost", "GRE")
+
                 m 2rkc "I suppose it {i}can{/i} be interesting for the first few times when you're watching a movie or something."
                 m 2eka "To me, it's just not fun or inspiring to get scared by stuff that just takes advantage of human instinct."
 
