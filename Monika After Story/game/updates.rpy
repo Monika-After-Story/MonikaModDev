@@ -300,10 +300,17 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# TODO: need to go through events and clear actions from all events
-#   without conditionals and start_date
-#   We will save this for versiojn 0812 or 9
+# 0.9.1
+label v0_9_1(version="v0_9_1"):
+    python:
+        # unlock the ghost greeting if not seen and you like spoops.
+        if (
+                persistent._mas_pm_likes_spoops 
+                and not renpy.seen_label("greeting_ghost")
+            ):
+            mas_unlockEVL("greeting_ghost", "GRE")
 
+    return
 
 # 0.9.0
 label v0_9_0(version="v0_9_0"):

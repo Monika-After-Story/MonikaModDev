@@ -239,10 +239,16 @@ transform zoom_ghost:
 
 
 label mas_ghost_monika:
+
+    scene black
+
     python:
         #plays music from ghost menu.
         play_song(audio.ghostmenu)
         
+    show noise zorder 11:
+        alpha 0.5
+
     #show ghost monika
     show ghost_monika zorder MAS_MONIKA_Z at i11
     
@@ -250,6 +256,7 @@ label mas_ghost_monika:
     $ renpy.pause(10, hard=True)
 
     stop music
+    hide noise
 
     #Show zoomed in ghost face.
     show ghost_monika at zoom_ghost
