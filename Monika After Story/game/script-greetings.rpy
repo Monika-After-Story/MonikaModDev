@@ -2763,6 +2763,30 @@ label greeting_back_from_sleep:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_siat",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_siat:
+    m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
+    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 3hubfb "{i}{cps=*0.6}~First comes love~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes marriage~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes--{/i}{/cps}"
+    m 3wubfsdlo "W-wha?!"
+    m 2wubfsdld "[player]! H-how long have you been there?!"
+    m 2rkbfsdld "I...{w=1} I didn't notice you come in...{w=1} I was just..."
+    m 2rkbfsdlu "..."
+    m 3hubfb "Ahaha! Nevermind."
+    m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
+    return
 
 init 5 python:
     if not mas_cannot_decode_islands:
