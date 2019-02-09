@@ -8462,7 +8462,7 @@ label monika_driving:
             m 3eua "You'll get there someday!"
             m 3euc "Some places offer in-class driving lessons that also come with actual driving practice."
             m 3eud "Their cars have emergency controls for the instructor to use if needed, so you're really safe with them."
-            m 1eka "I know It might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
+            m 1eka "I know it might be pretty discouraging to you if they have to use them, but hey, we all start somewhere."
             m 3eksdla "...And it's better than getting into an accident!"
             m 1lksdlc "No one's perfect, and it's better to make those mistakes when there's someone there to save you."
             m 1hub "Maybe you could put me on your board computer in your car and I could keep you safe while driving! Ahaha~"
