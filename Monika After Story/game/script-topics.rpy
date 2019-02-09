@@ -5579,7 +5579,7 @@ label monika_plushie:
     m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
     m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
     m 3hub "It really was the perfect gift!"
-    return
+    return "derandom"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_dogs",category=['misc','club members'],prompt="Man's best friend",random=True))
