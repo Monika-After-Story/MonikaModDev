@@ -339,7 +339,7 @@ init -2 python in mas_sprites:
         Entry programming point for quetzal plushie acs
         """
         #We need to unlock/random monika_plushie since the plush is active
-        store.mas_showEVL('monika_plushie','EVE',unlock=True,_random=True)
+        store.mas_showEVL('monika_plushie','EVE',_random=True)
 
     def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
@@ -352,7 +352,7 @@ init -2 python in mas_sprites:
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
         #Since no more plush, we need to lock/derandom monika_plushie
-        store.mas_hideEVL('monika_plushie','EVE',lock=True,derandom=True)
+        store.mas_hideEVL('monika_plushie','EVE',derandom=True)
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """

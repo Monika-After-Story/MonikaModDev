@@ -310,6 +310,12 @@ label v0_9_1(version="v0_9_1"):
             ):
             mas_unlockEVL("greeting_ghost", "GRE")
 
+        #Need to fix the monika_plushie event
+        plush_ev = mas_getEV("monika_plushie")
+        if plush_ev is not None:
+            plush_ev.unlocked = False
+            plush_ev.category = None
+
     return
 
 # 0.9.0

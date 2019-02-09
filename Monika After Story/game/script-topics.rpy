@@ -5570,8 +5570,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_plushie",
-            category = ['misc'],
-            prompt = "Quetzal plushie",
             aff_range=(mas_aff.NORMAL, None)
         )
     )
