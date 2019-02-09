@@ -579,10 +579,7 @@ label mas_hangman_game_loop:
                 hide window_sayori
                 hide hm_s
                 show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
-                if config.developer:
-                    $ style.say_dialogue = style.normal
-                else:
-                    $ style.say_dialogue = style.default_monika
+                $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc

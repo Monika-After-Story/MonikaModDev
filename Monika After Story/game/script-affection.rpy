@@ -467,6 +467,9 @@ init 15 python in mas_affection:
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
+        # enable text speed
+        store.mas_enableTextSpeed()
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -477,6 +480,9 @@ init 15 python in mas_affection:
         """
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
+
+        # disable text speed
+        store.mas_disableTextSpeed()
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
