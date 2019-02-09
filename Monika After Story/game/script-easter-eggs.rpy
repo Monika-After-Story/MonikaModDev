@@ -11,6 +11,7 @@ label sayori_name_scare:
         persistent.current_track = FP_SAYO_NARA
         store.songs.selected_track = FP_SAYO_NARA
         store.songs.current_track = FP_SAYO_NARA
+        store.mas_globals.show_s_light = True
     return
 
 # yuri scare

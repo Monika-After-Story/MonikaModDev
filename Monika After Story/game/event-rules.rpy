@@ -13,6 +13,7 @@ init -1 python:
     EV_RULE_GREET_RANDOM = "greet_random"
     EV_RULE_FAREWELL_RANDOM = "farewell_random"
     EV_RULE_AFF_RANGE = "affection_range"
+    EV_RULE_PRIORITY = "rule_priority"
 
 
     # special constants for numerical repeat rules
@@ -172,7 +173,13 @@ init -1 python:
             return (new_start_date, new_end_date)
 
         @staticmethod
-        def evaluate_rule(check_time, ev, rule=None, skip_update=False):
+        def evaluate_rule(
+                check_time,
+                ev,
+                rule=None,
+                skip_update=False,
+                defval=True
+            ):
             """
             Evaluates the rule given and updates the event's start_date and
             end_date
@@ -187,23 +194,26 @@ init -1 python:
                 skip_update - True means we shoudl skip updating the given
                     Event's rule.
                     (Default: False)
+                defval - value to return if sanity checks fail or if the
+                    event doesnt have a rule
+                    (Default: True)
 
             RETURNS:
                 True if the event date comply to the rule, False if it doesn't
             """
             # sanity check
             if ev is None:
-                return False
+                return defval
 
             # sanity check if we don' have start_date, end_date
             if ev.start_date is None or ev.end_date is None:
-                return False
+                return defval
 
             # sanity check for a rule to use
             if rule is None:
 
                 if EV_RULE_RP_NUMERICAL not in ev.rules:
-                    return False
+                    return defval
 
                 # use event's rule if user didn't give us a rule
                 rule = ev.rules[EV_RULE_RP_NUMERICAL]
@@ -294,7 +304,7 @@ init -1 python:
             return rule
 
         @staticmethod
-        def evaluate_rule(check_time, ev=None, rule=None):
+        def evaluate_rule(check_time, ev=None, rule=None, defval=True):
             """
             Checks if the current_time is valid for the rule
 
@@ -305,6 +315,9 @@ init -1 python:
                     (Default: None)
                 rule - MASSelectiveRepeatRule to check
                     (Default: None)
+                defval - value to return if this event doesn't have a rule
+                    to check
+                    (Default: True)
 
             RETURNS:
                 A boolean value indicating if the time is in the defined interval
@@ -314,9 +327,9 @@ init -1 python:
             if ev and EV_RULE_RP_SELECTIVE in ev.rules:
                 rule = ev.rules[EV_RULE_RP_SELECTIVE]
 
-            # sanity check if we don't have a rule return False
+            # sanity check if we don't have a rule return default
             if rule is None:
-                return False
+                return defval
 
             # unpack tuple for easy access
             seconds, minutes, hours, days, weekdays, months, years = rule
@@ -365,14 +378,25 @@ init -1 python:
         """
 
         @staticmethod
-        def create_rule(skip_visual=False, random_chance=0, ev=None):
+        def create_rule(
+                ev=None,
+                skip_visual=False,
+                random_chance=0,
+                setup_label=None
+            ):
             """
             IN:
+                ev - Event to create rule for, if passed in
+                    (Default: None)
                 skip_visual - A boolean stating wheter we should skip visual
                     initialization
+                    (Default: False)
                 random_chance - An int used to determine 1 in random_chance
                     special chance for this greeting to appear
-                ev - Event to create rule for, if passed in
+                    If 0, we ignore this property
+                    (Default: 0)
+                setup_label - label to call right after this greeting is
+                    selected. This happens before post_greeting_check.
                     (Default: None)
 
             RETURNS:
@@ -383,8 +407,18 @@ init -1 python:
             if random_chance < 0:
                 raise Exception("random_chance can't be negative")
 
+            # setup_label must exist
+            if setup_label is not None and not renpy.has_label(setup_label):
+                raise Exception("'{0}' does not exist.".format(setup_label))
+
             # return the tuple inside a dict
-            rule = {EV_RULE_GREET_RANDOM : (skip_visual, random_chance)}
+            rule = {
+                EV_RULE_GREET_RANDOM: (
+                    skip_visual,
+                    random_chance,
+                    setup_label
+                )
+            }
 
             if ev:
                 ev.rules.update(rule)
@@ -393,11 +427,13 @@ init -1 python:
 
 
         @staticmethod
-        def evaluate_rule(event=None, rule=None):
+        def evaluate_rule(event=None, rule=None, defval=True):
             """
             IN:
                 event - the event to evaluate
                 rule - the MASGreetingRule to check it's random_chance
+                defval - value to return if event/rule doesn't exist
+                    (Default: True)
 
             RETURNS:
                 True if the random returned 1
@@ -407,14 +443,18 @@ init -1 python:
             if event and EV_RULE_GREET_RANDOM in event.rules:
                 rule = event.rules[EV_RULE_GREET_RANDOM]
 
-            # sanity check if we don't have a rule return False
+            # sanity check if we don't have a rule return default
             if rule is None:
-                return False
+                return defval
 
             # unpack the tuple for easy access
-            skip_visual, random_chance = rule
+            random_chance = rule[1]
 
-            # check if random_chance is less or equal to 0 return False
+            if random_chance == 0:
+                # 0 chance, return default
+                return defval
+
+            # check if random_chance is less than 0 return False
             if random_chance <= 0:
                 return False
 
@@ -443,6 +483,25 @@ init -1 python:
 
             # False since there was no rule to check
             return False
+
+
+        @staticmethod
+        def get_setup_label(ev):
+            """
+            Gets th setup label from the given ev
+
+            IN:
+                ev - the event to evalute
+
+            RETURNS: setup label, or NOne if not found
+            """
+            if ev:
+                ev_tup = ev.rules.get(EV_RULE_GREET_RANDOM, None)
+                if ev_tup is not None:
+                    return ev_tup[2]
+
+            return None
+
 
     class MASFarewellRule(object):
         """
@@ -584,3 +643,53 @@ init -1 python:
             # Evaluate if affection is inside the rule range, in case both are None
             # will return true (however that case should be catched on create_rule)
             return  (affection >= min and not max) or (min <= affection <= max)
+
+
+    class MASPriorityRule(object):
+        """
+        Static class used to create priority rules. Priority rules are just
+        integers that determine priority of somehting.
+        Lower numbers mean higher priority.
+        """
+        DEF_PRIORITY = 500
+
+        @staticmethod
+        def create_rule(priority, ev=None):
+            """
+            IN:
+                priority - the priority to set.
+                    If None is passed in, we use the default priority value.
+                ev - Event to add this rule to. This will replace existing
+                    rules of the same key.
+                    (Default: None)
+            """
+            if priority is None:
+                priority = MASPriorityRule.DEF_PRIORITY
+
+            if type(priority) is not int:
+                raise Exception(
+                    "'{0}' is not a valid in priority".format(priority)
+                )
+
+            rule = {EV_RULE_PRIORITY: priority}
+
+            if ev:
+                ev.rules.update(rule)
+
+            return rule
+
+
+        @staticmethod
+        def get_priority(ev):
+            """
+            Gets the priority of the given event.
+
+            IN:
+                ev - event to get priority of
+
+            RETURNS the priority of the given event, or def if no priorityrule
+                is found
+            """
+            return ev.rules.get(EV_RULE_PRIORITY, MASPriorityRule.DEF_PRIORITY)
+
+

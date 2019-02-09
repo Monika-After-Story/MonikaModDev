@@ -9,6 +9,8 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+default persistent._mas_pm_taken_monika_out = False
+# True if the user has taken monika out of the spaceroom
 
 init -900 python in mas_ics:
     import os
@@ -19,6 +21,8 @@ init -900 python in mas_ics:
     islands_folder = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/location/special/"
     )
+
+    # NOTE: these checksums are BEFORE b64 encoding
 
     # Night With Frame
     islands_nwf = (
@@ -40,6 +44,16 @@ init -900 python in mas_ics:
         "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
     )
 
+    # rain with frame
+    islands_rwf = (
+        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+    )
+
+    # rain without frame
+    islands_rwof = (
+        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+    )
+
     # islands dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
     # value: tuple:
@@ -49,7 +63,9 @@ init -900 python in mas_ics:
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof)
+        "dwof": ("without_frame.png", islands_dwof),
+#        "rwf": ("rain_with_frame.png", islands_rwf),
+#        "rwof": ("rain_without_frame.png", islands_rwof)
     }
 
     ########################## SURPRISE BDAY PARTY ############################
@@ -1976,41 +1992,33 @@ init 200 python in mas_dockstat:
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to
-            runtime
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
 
         IN:
-            _type - additional mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = [_type]
-        else:
-            greeting_types = []
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
-
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+        # otherwise, return this ev
+        return sel_gre_ev
 
 
     def getCheckTimes(chksum=None):
@@ -2141,6 +2149,46 @@ init 200 python in mas_dockstat:
         return time_out
 
 
+    def _ds_aff_for_tout(
+            _time_out,
+            max_hour_out,
+            max_aff_gain,
+            min_aff_gain,
+            aff_mult=1
+            ):
+        """
+        Grants an amount of affection based on time out. This is designed for
+        use ONLY with the returned home greeting.
+
+        NOTE: this also sets the monika_returned_home persistent
+
+        IN:
+            _time_out - timedelta we want to treat as monika being out
+            max_hour_out - how many hours is considered max
+                (anthing OVER this will be maxxed)
+            max_aff_gain - amount of aff to be gained when max+
+            min_aff_gain - smallest amount of aff gain
+            aff_mult - multipler to hours to use as aff gain when between min
+                and max
+                (Default: 1)
+        """
+        if store.persistent._mas_monika_returned_home is None:
+            hours_out = int(_time_out.seconds / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > max_hour_out:
+                aff_gain = max_aff_gain
+            elif hours_out == 0:
+                aff_gain = min_aff_gain
+            else:
+                aff_gain = hours_out * aff_mult
+
+            store.mas_gainAffection(aff_gain, bypass=True)
+            store.persistent._mas_monika_returned_home = (
+                datetime.datetime.now()
+            )
+
+
 init 205 python in mas_dockstat:
     import store.mas_threading as mas_threading
     # thread classes for monika files
@@ -2238,6 +2286,15 @@ label mas_dockstat_abort_gen:
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    # we are not leaving on player_bday and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
+    if persistent._mas_f14_on_date:
+        $ persistent._mas_f14_on_date = False
+        $ persistent._mas_f14_date -= 1
     return
 
 
@@ -2249,10 +2306,25 @@ label mas_dockstat_empty_desk:
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
     $ store.mas_sprites.reset_zoom()
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
     show emptydesk zorder ed_zorder at i11
 
-    # show birthday visuals?
-    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    if mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25_event.showD25Visuals()
+
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ renpy.show("mas_roses", zorder=10)
+
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
+    # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
+    #   else statment is supposed to be paired with (i.e. mutally exclusive)
+    #   to the if statement regarding the player's bday decor. 
+    #   Dont be screwing this up by shoving if statemetns randomly in places.
+    else:
+        # show birthday visuals?
+        $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2325,7 +2397,7 @@ label mas_dockstat_different_monika:
     #   player - player's name
     #   m_name - monika's name
     $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
-    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+    $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
     show monika 1ekd zorder MAS_MONIKA_Z at t11
@@ -2346,7 +2418,10 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
+    $ renpy.hide("mas_roses")
     show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     hide emptydesk
 
     # dont want users using our promises
@@ -2360,7 +2435,11 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
+    $ persistent._mas_pm_taken_monika_out = True
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
         if (
@@ -2368,12 +2447,16 @@ label mas_dockstat_found_monika:
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
+            # TODO: consider if this forced greeting should be changed to 
+            #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 
         else:
             selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
                 persistent._mas_greeting_type
             ).eventlabel
+
+        # TODO: consider running the greeting setup label?
 
         # reset greeting type
         persistent._mas_greeting_type = None
@@ -2390,8 +2473,16 @@ label mas_dockstat_found_monika:
         # o31 re-entry checks
         if mas_isO31() and persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
-            store.mas_globals.show_lightning = True
-            mas_forceRain()
-            mas_lockHair()
+
+            # setup thunder
+            if persistent._mas_likes_rain:
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+            mas_changeWeather(mas_weather_thunder)
+
+        # d25 re-entry checks
+        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+            #mas_is_snowing = True
+            pass
 
     jump ch30_post_exp_check
