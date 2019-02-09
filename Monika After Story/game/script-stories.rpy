@@ -1175,7 +1175,7 @@ init 5 python:
         ),
         code="STY"
     )
-##expstop
+    
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
     $ _story = mas_getEV('mas_scary_story_flowered_lantern')
@@ -1183,24 +1183,24 @@ label mas_scary_story_flowered_lantern:
         m 3eub "Before we start, I need to tell you that my next story is going to be a bit long."
         m 3eua "So, I'll split it in parts."
         m "Once I finish this part I'll ask you if you want to continue it or not."
-        m 2eub "If you say no, you can ask me later to tell you the next part, so don't worry about it."
-        m 4eua "Alright, let's begin now."
+        m 1eub "If you say no, you can ask me later to tell you the next part, so don't worry about it."
+        m 4hua "Alright, let's begin now."
     m 4eua "There was once a beautiful, young maiden named Tsuyu, whose father was a high-ranking samurai."
     m 4eud "Tsuyu's mother had been dead and her father eventually remarried."
     m 2euc "Although it became obvious to Tsuyu's father that she and her step mother couldn't get along."
     m 2esa "Wanting to ensure his only daughter's happiness, he had a luxurious house built for her, away from them and had her move into it."
     m "One day, the family physician went to Tsuyu's residence on a routine visit with a young samurai named Hagiwara, who was very handsome."
     m 4eub "Tsuyu and Hagiwara fell in love the moment they set eyes on each other."
-    m 4esa "Unbeknownst to the doctor, the two pledged themselves to each other for life and before the two left."
-    m 4eud "Tsuyu whispered to Hagiwara that she would surely die if he didn't return to see her."
-    m 2dsc "Hagiwara didn't forget her words, but etiquette forbade him to make a call to visit a maiden alone, so he had to wait for the doctor to ask him to join him on another visit."
+    m 4esc "Unbeknownst to the doctor, the two pledged themselves to each other for life and before the two left."
+    m 4dsd "Tsuyu whispered to Hagiwara that she would surely die if he didn't return to see her."
+    m 2esc "Hagiwara didn't forget her words, but etiquette forbade him to make a call to visit a maiden alone, so he had to wait for the doctor to ask him to join him on another visit."
     m 2dsd "The doctor, however, had perceived his sudden affection for Tsuyu."
-    m 2esd "Tsuyu's father was known to behead those who angered him, and fearing that he would hold him responsible for introducing the two, he avoided Hagiwara."
-    m 2dsd "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
-    m "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu's death."
-    m 2dsc "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
+    m 4ekc "Tsuyu's father was known to behead those who angered him, and fearing that he would hold him responsible for introducing the two, he avoided Hagiwara."
+    m 2rkc "Months passed and Tsuyu, feeling scorned that Hagiwara had abandoned her, passed away."
+    m 1ekc "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu's death."
+    m 1dsd "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
-    m 1eua "That's it for part one, do you want to continue to the next one?"
+    m 1hua "...And that's it for part one! Do you want to continue to the next one?"
     menu:
         "Yes.":
             jump mas_scary_story_flowered_lantern_2
@@ -1225,46 +1225,46 @@ init 5 python:
 label mas_scary_story_flowered_lantern_2:
     call mas_scary_story_setup
     $ _mas_lantern_scare = renpy.random.randint(1,11) == 1
-    m 2ekd "After sun down, on the first night of the Festival of the Dead, Hagiwara sat outside, still grieving the loss of his love until late evening."
-    m 2eud "Just as he was about to go inside and go to sleep, he heard footsteps on the path outside his gate."
-    m 4eud "Hagiwara lived on a lonely street with few pedestrians and since it was so late out, he decided to see who it was."
-    m 4eub "To his great surprise and delight, the person walking along the path was none other than Tsuyu, carrying a paper lantern decorated with flowers to light her way."
-    m "Hagiwara called out Tsuyu's name and she immediately came to him and embraced him."
-    m 2esc "Each of them told the other that they were told by the doctor that the other person had died."
-    m 2esd "Tsuyu told him that her father wanted her to marry another man."
-    m "She refused and fled her luxurious home to hide from him and was currently taking residence in a cramped house in a certain neighborhood nearby."
-    m 4esa "He invited her inside, but told her to keep quiet so that they didn't disturb his servant who might inquire who she was."
+    m 4ekd "After sun down, on the first night of the Festival of the Dead, Hagiwara sat outside, still grieving the loss of his love until late evening."
+    m 2eud "However, just as he was about to go inside and go to sleep, he heard footsteps on the path outside his gate."
+    m 4euc "Hagiwara lived on a lonely street with few pedestrians and since it was so late out, he decided to see who it was."
+    m 4wub "To his great surprise and delight, the person walking along the path was none other than Tsuyu, carrying a paper lantern decorated with flowers to light her way."
+    m 1hua "Hagiwara called out Tsuyu's name and she immediately came to him and embraced him."
+    m 1eua "Each of them told the other that they were told by the doctor that the other person had died."
+    m "Tsuyu told him that her father wanted her to marry another man."
+    m 3eub "She refused and fled her luxurious home to hide from him and was currently taking residence in a cramped house in a certain neighborhood nearby."
+    m 3eua "He invited her inside, but told her to keep quiet so that they didn't disturb his servant who might inquire who she was."
     m 4eua "The two spent the night together and right before dawn, Tsuyu left to return to her dwelling."
     m 4esa "On the next night, Tsuyu visited again at the same time she had arrived the previous night."
-    m 2eud "This time, however, Hagiwara's servant awoke and heard a young woman's voice he didn't recognize."
+    m 2euc "This time, however, Hagiwara's servant awoke and heard a young woman's voice he didn't recognize."
     m 4esd "Curious, but not wanting to disturb his master, he snuck to his master's room and peeked through a small crack in his door and saw that he was indeed talking to a young woman."
     m 4eud "The woman's back was turned to him, but he was able to make out that she was very thin and was dressed in a very elegant kimono that only the upper class would wear."
-    m 4esa "His curiosity piqued, the servant decided to get a glimpse of this girl's face before retiring."
-    m "He saw that the master had left a window open, so he quietly made his way over to it."
+    m 4esc "His curiosity piqued, the servant decided to get a glimpse of this girl's face before retiring."
+    m 2dsc "He saw that the master had left a window open, so he quietly made his way over to it."
     m 4wuw "As he peered inside, he saw to his horror that the face of the woman was one that was long dead and the fingers caressing his master's face were those of naked bone."
-    m 4eud "He fled away in terror without making a peep."
-    m "The next morning, the servant approached his master and asked him about the woman."
-    m 4esa "At first, Hagiwara denied having any visitors, but after perceiving that it was to no avail, he confessed everything that had transpired."
-    m 4eud "The servant told Hagiwara what he saw the night before and felt surely his master's life was in danger and pleaded for him to see a priest about it."
-    m 2esa "Startled but not entirely convinced, Hagiwara decided to put his servant's mind at ease by finding Tsuyu's residence."
+    m 2wfd "He fled away in terror without making a peep."
+    m 1efc "The next morning, the servant approached his master and asked him about the woman."
+    m 4efd "At first, Hagiwara denied having any visitors, but after perceiving that it was to no avail, he confessed everything that had transpired."
+    m 4ekc "The servant told Hagiwara what he saw the night before and felt surely his master's life was in danger and pleaded for him to see a priest about it."
+    m 2euc "Startled but not entirely convinced, Hagiwara decided to put his servant's mind at ease by finding Tsuyu's residence."
     m "Hagiwara set out and explored the neighborhood that Tsuyu told him she was staying at."
-    m 2esd "He looked around and inquired people about her but to no avail."
+    m 2esc "He looked around and inquired people about her but to no avail."
     m 4dsd "When he decided that searching more would be fruitless, he headed home."
     m 4eud "On his way back, he passed a cemetery next to a temple."
     m "His attention was attracted by a large new tomb, near the back that he hadn't noticed before."
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         show mas_lantern zorder 75 at right
-    m "Hanging above it was a paper lantern decorated with beautiful flowers that looked exactly the same as the one that Tsuyu carried with her at night."
-    m 4wud "Intrigued, he walked towards it, as he looked at the name of the person it belonged to, he jumped back with fright as he read it belonged to his beloved Tsuyu."
-    m "Terror stricken, Hagiwara immediately headed into the adjoining temple and asked to speak to the head priest."
-    m 4esa "When he was admitted, he told the head priest everything that had transpired."
+    m 4euc "Hanging above it was a paper lantern decorated with beautiful flowers that looked exactly the same as the one that Tsuyu carried with her at night."
+    m 4wuc "Intrigued, he walked towards it, as he looked at the name of the person it belonged to, he jumped back with fright as he read it belonged to his beloved Tsuyu."
+    m 2wkc "Terror stricken, Hagiwara immediately headed into the adjoining temple and asked to speak to the head priest."
+    m 4esc "When he was admitted, he told the head priest everything that had transpired."
     m 4esd "After he had finished, the head priest told him his life was indeed in danger."
     m "Hagiwara's intense grieving for her and her intense love for him had brought her back during the Festival of the Dead."
     m 4dsc "Love between one who is alive and one who is dead can only result in the death of the one who is alive."
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         hide mas_lantern
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
-    m 1esa "That's it for part two, do you want to continue to the next one?"
+    m 1hua "...And that's it for part two! Do you want to continue to the next one?"
     menu:
         "Yes.":
             jump mas_scary_story_flowered_lantern_3
@@ -1289,22 +1289,22 @@ init 5 python:
 label mas_scary_story_flowered_lantern_3:
     call mas_scary_story_setup
     $ _mas_rects_scare = renpy.random.randint(1,11) == 1
-    m 1esd "As it was the last day of the Festival of the Dead, Tsuyu would have to return to the dead on this night and she would take Hagiwara with her if they were to see each other again."
+    m 1eud "As it was the last day of the Festival of the Dead, Tsuyu would have to return to the dead on this night and she would take Hagiwara with her if they were to see each other again."
     m 3esd "Hagiwara pleaded with the priest to help him."
-    m "The priest said the passional karma between them was very strong, but there was some hope still."
-    m 2esd "The priest handed Hagiwara a stack of paper talismans that keep out spirits, and instructed him to cover every opening in his home, no matter how small, with them."
-    m 4esd "Tsuyu would not be able to enter the dwelling as long as he heeded these instructions."
-    m 4esa "Hagiwara, with the assistance of his servant was able to successfully cover the house with the paper talismans before dark."
-    m 3esa "As the night went on, Hagiwara attempted to fall asleep but to no avail. So he sat up meditating over the recent events."
-    m 2eud "At a late hour, he heard footsteps outside his home."
+    m 3esc "The priest said the passional karma between them was very strong, but there was some hope still."
+    m "He handed Hagiwara a stack of paper talismans that keep out spirits, and instructed him to cover every opening in his home, no matter how small, with them."
+    m 1esd "Tsuyu would not be able to enter the dwelling as long as he heeded these instructions."
+    m 2esa "Hagiwara, with the assistance of his servant was able to successfully cover the house with the paper talismans before dark."
+    m 4esc "As the night went on, Hagiwara attempted to fall asleep but to no avail. So he sat up meditating over the recent events."
+    m 2dsd "At a late hour, he heard footsteps outside his home."
     m "The steps came nearer and nearer."
-    m "Hagiwara felt a sudden compulsion, stronger than even his fear, to look."
-    m 4esd "He foolishly approached the shutters and through a chink saw Tsuyu standing at the entrance of his house with her paper lantern staring at the paper talismans."
-    m 4eud "Never before had he seen Tsuyu look so beautiful and his heart felt so drawn to her."
-    m 4ekd "Outside, Tsuyu began to weep bitterly, saying to herself that Hagiwara had broken the pledge that they had made to each other."
-    m 2eud "She wept until she collected herself and said aloud that she wouldn't leave without seeing him one last time."
+    m 4wkc "Hagiwara felt a sudden compulsion, stronger than even his fear, to look."
+    m 4wkd "He foolishly approached the shutters and through a chink saw Tsuyu standing at the entrance of his house with her paper lantern staring at the paper talismans."
+    m "Never before had he seen Tsuyu look so beautiful and his heart felt so drawn to her."
+    m 2ekd "Outside, Tsuyu began to weep bitterly, saying to herself that Hagiwara had broken the pledge that they had made to each other."
+    m 4eud "She wept until she collected herself and said aloud that she wouldn't leave without seeing him one last time."
     m 4esd "Hagiwara heard footsteps as she walked around his house, every so often he would see the light from the lantern as she went along."
-    m "When she came near the spot Hagiwara had peered out of, the footsteps stopped and suddenly Hagiwara saw one of Tsuyu's eyes looking in at him."
+    m 2wud "When she came near the spot he had peered out of, the footsteps stopped and suddenly Hagiwara saw one of Tsuyu's eyes looking in at him."
     if _mas_rects_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         play sound "sfx/glitch1.ogg"
         show rects_bn1 zorder 80
@@ -1321,12 +1321,12 @@ label mas_scary_story_flowered_lantern_3:
         show black zorder 100
         $ pause(1.5)
         hide black
-    m 4esa "The next day, the servant awoke and approached his master's room and knocked upon his door."
-    m 4eud "For the first time in years he didn't receive a response and he was worried."
-    m 2esd "He called his master repeatedly but to no avail."
-    m "Finally, with a bit of courage, he entered into his master's room."
-    m 4wud "...Only to flee from the house crying in horror after seeing him."
-    m 2dsc "Hagiwara was dead, hideously dead, and his face had the expression of uttermost agony of fear."
-    m 4esd "Lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
+    m 2dsc "The next day, the servant awoke and approached his master's room and knocked upon his door."
+    m 4ekc "For the first time in years he didn't receive a response and he was worried."
+    m 2dsd "He called his master repeatedly but to no avail."
+    m 2esc "Finally, with a bit of courage, he entered into his master's room."
+    m 4wuw "...Only to flee from the house crying in horror after seeing him."
+    m "Hagiwara was dead, hideously dead, and his face had the expression of uttermost agony of fear..."
+    m 2wfc "And lying beside him in the bed were the bones of a woman with its arms clung around his neck as if in an embrace."
     call mas_scary_story_cleanup
     return
