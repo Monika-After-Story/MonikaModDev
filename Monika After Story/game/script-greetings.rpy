@@ -2277,7 +2277,7 @@ label greeting_long_absence:
             m 1j "And thanks for properly warning me about how long you'd be away."
             m 1e "It means a lot to know I can trust your words."
             m 3k "I hope you know you can trust me too!"
-            m 3e "Our relationship grows stronger everyday~"
+            m 3e "Our relationship grows stronger every day~"
 
         elif persistent._mas_absence_choice == "week":
             m 1d "Oh! You're a little bit earlier than I expected!"
