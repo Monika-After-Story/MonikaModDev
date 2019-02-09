@@ -5202,7 +5202,7 @@ label monika_home_memories:
     m 1eua "Maybe you've heard about me at school a few times? I'm pretty on top of things."
     m 1eka "I admit, it's not always easy, and some people have it rougher than others."
     m 1ekc "But I always felt like I was missing something."
-    m "I stayed optimistic everyday, trying to find it."
+    m "I stayed optimistic every day, trying to find it."
     m 1eka "It turns out, that missing piece was you."
     m 1lksdla "If you hadn't found me, I would've been gone a long time ago..."
     m 2hubfa "But now that I found the missing piece, I'm complete now, [player]."
@@ -5362,10 +5362,10 @@ label monika_piggybank:
     m 1lsc "Not many people do these days."
     m "Coins are often disregarded as worthless."
     m 3eub "But they really do begin to add up!"
-    m 1eub "I read that there was once a man that searched his local car washes for loose change everyday in his walks."
+    m 1eub "I read that there was once a man that searched his local car washes for loose change every day in his walks."
     m 1wuo "In a decade he turned in all of his coins for a total of 21,495 dollars!"
     m "That's a whole lot of cash!"
-    m 1lksdla "Of course not everybody has time for that everyday."
+    m 1lksdla "Of course not everybody has time for that every day."
     m 1euc "Instead they just throw their loose change into their piggy banks."
     m 1eua "Some people like to set goals for what they want to purchase with their saved funds."
     m "Usually under normal conditions they wouldn't ever find the freed up money to purchase that item."
@@ -6703,7 +6703,7 @@ label monika_smoking:
     m 2euc "You know, [player]..."
     m "I realized that people really like a lot of things that are very bad for them."
     m 2euc "One particular vice that intrigues me the most is cigarettes."
-    m "It's amazing how they're heavily consumed everyday even though it's so damaging not only to themselves, but to others as well."
+    m "It's amazing how they're heavily consumed every day even though it's so damaging not only to themselves, but to others as well."
     m 2ekc "Not to mention how harmful it is to the environment. All the smoke and trash it leaves behind is ridiculous for a stick of carcinogens."
     m 2tkc "Not even in moderation would it ever be a good thing since those who use it get addicted to its taste too easily."
     m 4tkd "It's also quite a big hole to your pockets since you'll be buying yourself cartons of it once your supply is out."
@@ -8677,7 +8677,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_savingwater",category=['life'],prompt="Water Conservation",random=True))
 
 label monika_savingwater:
-    m 1euc "[player], have you ever thought about how much water people use everyday?"
+    m 1euc "[player], have you ever thought about how much water people use every day?"
     m 3euc "Maybe you take a drink of water every now and then."
     m 3dsc "You go to the washroom, wash your hands, bathe..."
     m 1euc "All that and yet some parts of the world can't even get a single drop of water."
@@ -9814,7 +9814,7 @@ label monika_whydoyouloveme:
 
     if mas_isMoniBroken(lower=True):
         m 2euc "Hmph."
-        m 2wfc "I ask myself that question everyday."
+        m 2wfc "I ask myself that question every day."
 
     elif mas_isMoniDis(lower=True):
         m 1efc "I-"
@@ -9932,7 +9932,7 @@ label monika_fun_facts_open:
     if fun_facts_started:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
-        m 3hub "They say you learn something new everyday, this way I'm making sure we actually do."
+        m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
         m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true... "
         $ fun_facts_started = False
     else:
@@ -10683,7 +10683,7 @@ label monika_cozy:
     m 3eua "But you know what the best way to warm yourself up is?"
     m 3eka "Cuddling with the one you love in front of the fireplace~"
     m "Just sitting there under a warm blanket, sharing a hot beverage."
-    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather everyday!"
+    m 1hua "Ah, if I got to feel your warmth everytime we cuddle, I'd wish for cold weather every day!"
     m 1eka "I'd never let you go once I got a hold of you, [player]~"
     return
 
