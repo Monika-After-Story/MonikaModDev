@@ -315,7 +315,7 @@ label v0_9_1(version="v0_9_1"):
         if plush_ev is not None:
             plush_ev.unlocked = False
             plush_ev.category = None
-            plush_ev.prompt = None
+            plush_ev.prompt = "monika_plushie"
 
     return
 
