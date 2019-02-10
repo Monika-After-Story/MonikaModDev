@@ -5589,6 +5589,9 @@ init 1 python in mas_randchat:
     def waitedLongEnough():
         """
         Checks whether the waiting time is up yet.
+
+        RETURNS:
+            boolean to determine whether the wait is over
         """
         global rand_chat_waittime_left
         
