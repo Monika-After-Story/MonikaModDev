@@ -5567,8 +5567,9 @@ init 1 python in mas_randchat:
         
     def wait():
         """
-        Pauses renpy for a max of 5 seconds.
+        Pauses renpy for a small amount of seconds.
         This helps adapting fast to a new random chatter selection.
+        All events before a random chat can also be handled rather than to keep waiting the whole time at once.
         """
         global rand_chat_waittime_left
         
