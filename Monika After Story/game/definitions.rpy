@@ -5533,7 +5533,7 @@ init 1 python in mas_randchat:
         rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
         
-        startWaiting()
+        setWaitingTime()
 
 
     def getRandChatDisp(slider_value):
@@ -5556,7 +5556,7 @@ init 1 python in mas_randchat:
         return randchat_disp
 
         
-    def startWaiting():
+    def setWaitingTime():
         """
         Sets up the waiting time for the next random chat, depending on the current random chatter selection.
         """
@@ -5572,20 +5572,22 @@ init 1 python in mas_randchat:
         """
         global rand_chat_waittime_left
         
-        if rand_chat_waittime_left > 5:
-            rand_chat_waittime_left -= 5
-            renpy.pause(5, hard=True)
+        WAITING_TIME = 5
+        
+        if rand_chat_waittime_left > WAITING_TIME:
+            rand_chat_waittime_left -= WAITING_TIME
+            renpy.pause(WAITING_TIME, hard=True)
             
         elif rand_chat_waittime_left > 0:
             waitFor = rand_chat_waittime_left
             rand_chat_waittime_left = 0
             renpy.pause(waitFor, hard=True)
             
-        else:
+        else: 
             rand_chat_waittime_left = 0
-            renpy.pause(5, hard=True)
+            renpy.pause(WAITING_TIME, hard=True)
+            
                 
-        
     def waitedLongEnough():
         """
         Checks whether the waiting time is up yet.
@@ -5596,20 +5598,6 @@ init 1 python in mas_randchat:
         global rand_chat_waittime_left
         
         return rand_chat_waittime_left == 0 and rand_low != 0
-       
-       
-    def startWaitProcess():
-        """
-        Use this method for convenience.
-        It can be used to actively wait the random chatter time.
-        """
-        startWaiting()
-        
-        while not waitedLongEnough():
-            wait()
-       
-       
-    startWaiting()
     
     
     
