@@ -1935,7 +1935,7 @@ init -2 python:
             return self.acs.get(acs_type, None)
 
 
-        def _load(self, 
+        def _load(self,
                 _clothes_name,
                 _hair_name,
                 _acs_pre_names,
@@ -2027,7 +2027,7 @@ init -2 python:
 
         def _save_acs_obj(self, acs_type, force_acs=False):
             """
-            Generaltes list of acs objects to save 
+            Generaltes list of acs objects to save
 
             IN:
                 acs_type - acs type to buld acs list
@@ -2081,7 +2081,7 @@ init -2 python:
             """
             if self.lock_hair:
                 return
-           
+
             prev_hair = self.hair
             self.hair.exit(self, new_hair=new_hair)
             self.hair = new_hair
@@ -2106,7 +2106,7 @@ init -2 python:
             self.change_clothes(new_cloth, by_user=by_user)
             self.change_hair(new_hair, by_user=by_user)
 
-    
+
         def get_acs_of_type(self, acs_type, get_all=False):
             """
             Gets the acs objects currently being worn of a given type.
@@ -2232,7 +2232,7 @@ init -2 python:
 
         def load_state(self, _data, as_prims=False):
             """
-            Loads clothes/hair/acs from a tuple data format that was saved 
+            Loads clothes/hair/acs from a tuple data format that was saved
             using the save_state function.
 
             IN:
@@ -2479,7 +2479,7 @@ init -2 python:
                     (Default: False)
                 force_clothes - True meanas force clothes saving even if
                     stay_on_start is False. If False and stay_on_start is
-                    False, the default clothes will be returned. 
+                    False, the default clothes will be returned.
                     (Default: False)
                 force_acs - True means force acs saving even if stay_on_start
                     is False. At minimum, this will be an empty list.
@@ -2815,7 +2815,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -2963,7 +2963,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3092,10 +3092,10 @@ init -2 python:
                     NOTE: not used by the sprite system. This purely for caller
                     use.
                     (Default: None)
-                mux_type - list of acs types that should be 
+                mux_type - list of acs types that should be
                     mutually exclusive with this acs.
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
 
@@ -3197,7 +3197,7 @@ init -2 python:
                 split - MASPoseMap object saying which hair has splits or Not.
                     If None, we assume hair has splits for everything.
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3280,7 +3280,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3590,7 +3590,7 @@ init -2 python in mas_sprites:
         # wearing a ribbon
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
         if (
-                prev_ribbon is not None 
+                prev_ribbon is not None
                 and prev_ribbon != store.mas_acs_ribbon_blank
             ):
             temp_storage["hair.ribbon"] = prev_ribbon
@@ -3618,7 +3618,7 @@ init -2 python in mas_sprites:
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
-        
+
         # wear previous ribbon if we are wearing blank ribbon
         # NOTE: we are gauanteed to be wearing blank ribbon when wearing
         # these clothes. Regardless, we should always restore to what we
@@ -3663,7 +3663,7 @@ init -2 python in mas_sprites:
         # wearing a ribbon
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
         if (
-                prev_ribbon is not None 
+                prev_ribbon is not None
                 and prev_ribbon != store.mas_acs_ribbon_blank
             ):
             temp_storage["hair.ribbon"] = prev_ribbon
@@ -7448,6 +7448,19 @@ image monika 2wkbsc = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 2wkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="l",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2hksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7764,6 +7777,19 @@ image monika 2wud = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="small",
+    head="d",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2wuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
     head="d",
     left="1l",
     right="2r",
@@ -9612,6 +9638,19 @@ image monika 3wfx = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3wfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3wfw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11421,6 +11460,19 @@ image monika 4wkbsc = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 4wkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
 image monika 4wfw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11441,6 +11493,19 @@ image monika 4wua = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="smile",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4wuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
     head="d",
     left="2l",
     right="2r",
