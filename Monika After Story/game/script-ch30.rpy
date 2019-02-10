@@ -1230,10 +1230,19 @@ label ch30_post_mid_loop_eval:
             $ pause(0.5)
             play sound "mod_assets/sounds/amb/thunder.wav"
         
-        $ mas_randchat.startWaitProcess()
-            
-        window auto
+        # Before a random topic can be displayed, a set waiting time needs to pass.
+        # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
+        # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
 
+        $ mas_randchat.wait()
+        
+        if not mas_randchat.waitedLongEnough():
+            jump post_pick_random_topic
+        else:
+            $ mas_randchat.setWaitingTime()
+        
+        window auto
+        
 #        python:
 #            if (
 #                    mas_battery_supported
