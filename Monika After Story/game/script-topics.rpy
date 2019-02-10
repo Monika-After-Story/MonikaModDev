@@ -5570,8 +5570,6 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_plushie",
-            category = ['misc'],
-            prompt = "Quetzal plushie",
             aff_range=(mas_aff.NORMAL, None)
         )
     )
@@ -5581,6 +5579,9 @@ label monika_plushie:
     m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
     m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
     m 3hub "It really was the perfect gift!"
+
+    #Hiding this so this doesn't unlock after being seen
+    $ mas_hideEVL("monika_plushie","EVE",lock=True,derandom=True)
     return
 
 init 5 python:
