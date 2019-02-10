@@ -559,7 +559,10 @@ init python:
         if config.developer and not ignoredev:
             mas_enableTextSpeed()
 
-        elif mas_isMoniHappy(higher=True):
+        elif (
+                mas_isMoniHappy(higher=True)
+                and persistent._mas_text_speed_enabled
+            ):
             mas_enableTextSpeed()
 
         else:

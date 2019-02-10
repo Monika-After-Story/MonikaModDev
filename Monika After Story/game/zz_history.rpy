@@ -704,6 +704,7 @@ init -810 python:
             "_mas_pm_driving_can_drive": "pm.lifestyle.can_drive",
             "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
+            "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
