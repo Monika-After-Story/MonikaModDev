@@ -1889,7 +1889,7 @@ label monika_holdme_start:
     return
 
 label monika_holdme_reactions:
-    if mas_ismoniLove():
+    if mas_isMoniLove():
         if start_time > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
         elif start_time > (start_time + datetime.timedelta(minutes=10)):
@@ -1956,7 +1956,7 @@ label monika_holdme_reactions:
                         "No.":
                             m 2hksdlb "Alright, fine."
                             m 3tsbsa "But you owe me next time, okay, [player]?"
-    elif mas_ismoniEnamored():
+    elif mas_isMoniEnamored():
         if start_time > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
         elif start_time > (start_time + datetime.timedelta(minutes=10)):
@@ -2065,7 +2065,7 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
-    if mas_ismoniLove():
+    if mas_isMoniLove():
         menu:
             "{i}Wake Monika up.{/i}":
                 m 6dubfa "...{w=1} Mmm~"
@@ -2090,7 +2090,7 @@ label monika_holdme_long:
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
                 call monika_holdme_start
                 call monika_holdme_long
-    elif mas_ismoniEnamored():
+    elif mas_isMoniEnamored():
         menu:
             "{i}Wake Monika up.{/i}":
                 m 6dkbfa "...{w=1} Hm?"
