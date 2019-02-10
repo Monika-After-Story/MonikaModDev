@@ -5474,24 +5474,28 @@ define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
 
-    # these numbers are the low end of how many seconds to wait between
+    # these numbers are the lower end of how many seconds to wait between
     # random topics
-    NORMAL = 20
-    OFTEN = 4
-    RARE = 36
-    NEVER = 0
+    OFTEN         = 10
+    NORMAL        = 20
+    LESS_OFTEN    = 40
+    RARELY        = 3600
+    VERY_RARELY   = 14400
+    NEVER         = 0
 
-    # this is the added to the low end to get the upper end of seconds
-    SPAN = 24
+    # this is multiplied to the low end to get the upper end of seconds
+    SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 3
+    ## to better work with the sliders, we will create a range from 0 to 5
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
         0: OFTEN,
         1: NORMAL,
-        2: RARE,
-        3: NEVER
+        2: LESS_OFTEN,
+        3: RARELY,
+        4: VERY_RARELY,
+        5: NEVER
     }
 
     ## slider map for displaying
@@ -5499,13 +5503,15 @@ init 1 python in mas_randchat:
         0: "Often",
         1: "Normal",
         2: "Less Often",
-        3: "Never"
+        3: "Rarely",
+        4: "Very Rarely",
+        5: "Never"
     }
 
     # current frequency times
     # also default to NORMAL, will get recaluated in reset
     rand_low = NORMAL
-    rand_high = NORMAL + SPAN
+    rand_high = NORMAL * SPAN_MULTIPLIER
 
     def adjustRandFreq(slider_value):
         """
@@ -5513,7 +5519,7 @@ init 1 python in mas_randchat:
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 3
+                Should be between 0 - 5
         """
         slider_setting = SLIDER_MAP.get(slider_value, 1)
 
@@ -5523,7 +5529,7 @@ init 1 python in mas_randchat:
         global rand_high
 
         rand_low = slider_setting
-        rand_high = slider_setting + SPAN
+        rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
 
 
