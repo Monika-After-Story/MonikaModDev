@@ -2295,8 +2295,7 @@ init 5 python:
     )
 
 default persistent._mas_text_speed_enabled = False
-# text speed should be enabled when happy+, but disabled if dipping below
-#   upset. (and reenabled on happy+)
+# text speed should be enabled only when happy+
 
 default persistent._mas_pm_is_fast_reader = None
 # True if fast reader, False if not
