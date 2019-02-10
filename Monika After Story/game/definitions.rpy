@@ -5476,9 +5476,9 @@ init 1 python in mas_randchat:
 
     # these numbers are the lower end of how many seconds to wait between
     # random topics
-    OFTEN         = 10
-    NORMAL        = 20
-    LESS_OFTEN    = 40
+    OFTEN         = 5
+    NORMAL        = 15
+    LESS_OFTEN    = 60
     RARELY        = 3600
     VERY_RARELY   = 14400
     NEVER         = 0
@@ -5512,6 +5512,7 @@ init 1 python in mas_randchat:
     # also default to NORMAL, will get recaluated in reset
     rand_low = NORMAL
     rand_high = NORMAL * SPAN_MULTIPLIER
+    rand_chat_waittime_left = 0
 
     def adjustRandFreq(slider_value):
         """
@@ -5531,6 +5532,8 @@ init 1 python in mas_randchat:
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
+        
+        startWaiting()
 
 
     def getRandChatDisp(slider_value):
@@ -5552,7 +5555,61 @@ init 1 python in mas_randchat:
 
         return randchat_disp
 
-
+        
+    def startWaiting():
+        """
+        Sets up the waiting time for the next random chat, depending on the current random chatter selection.
+        """
+        global rand_chat_waittime_left
+        
+        rand_chat_waittime_left = renpy.random.randint(rand_low, rand_high)
+        
+        
+    def wait():
+        """
+        Pauses renpy for a max of 5 seconds.
+        This helps adapting fast to a new random chatter selection.
+        """
+        global rand_chat_waittime_left
+        
+        if rand_chat_waittime_left > 5:
+            rand_chat_waittime_left -= 5
+            renpy.pause(5, hard=True)
+            
+        elif rand_chat_waittime_left > 0:
+            waitFor = rand_chat_waittime_left
+            rand_chat_waittime_left = 0
+            renpy.pause(waitFor, hard=True)
+            
+        else:
+            rand_chat_waittime_left = 0
+            renpy.pause(5, hard=True)
+                
+        
+    def waitedLongEnough():
+        """
+        Checks whether the waiting time is up yet.
+        """
+        global rand_chat_waittime_left
+        
+        return rand_chat_waittime_left == 0 and rand_low != 0
+       
+       
+    def startWaitProcess():
+        """
+        Use this method for convenience.
+        It can be used to actively wait the random chatter time.
+        """
+        startWaiting()
+        
+        while not waitedLongEnough():
+            wait()
+       
+       
+    startWaiting()
+    
+    
+    
 # stores that need to be globally available
 init 4 python:
     import store.mas_randchat as mas_randchat
