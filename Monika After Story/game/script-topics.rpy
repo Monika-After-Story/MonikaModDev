@@ -1935,25 +1935,25 @@ label monika_holdme_reactions:
             show monika 3eka
             menu:
                 m "Could you hold me for just a bit longer?"
-                "Yes":
+                "Yes.":
                     m 1hua "Ehehe~"
                     call monika_holdme_prep
                     m 1hub "You're so sweet, [player]~"
                     call monika_holdme_start
                     call monika_holdme_reactions
-                "No":
+                "No.":
                     m 2ekc "Aww..."
                     m 2rksdlc "..."
                     show monika 4eka
                     menu:
                         m "Please?"
-                        "Yes":
+                        "Yes.":
                             m 1hub "Yay~"
                             call monika_holdme_prep
                             m 2ekbfb "Thanks, [player]~"
                             call monika_holdme_start
                             call monika_holdme_reactions
-                        "No":
+                        "No.":
                             m 2hksdlb "Alright, fine."
                             m 3tsbsa "But you owe me next time, okay, [player]?"
     elif mas_ismoniEnamored():
@@ -1993,13 +1993,13 @@ label monika_holdme_reactions:
             show monika 2ekbfa
             menu:
                 m "Could you...{w=0.7} hold me again for a bit longer?"
-                "Yes":
+                "Yes.":
                     m 1hubfb "Yay!"
                     call monika_holdme_prep
                     m 2ekbfb "Thanks, [player]~"
                     call monika_holdme_start
                     call monika_holdme_reactions
-                "No":
+                "No.":
                     m 2ekc "Aww."
                     m 1eka "Alright, then."
                     m 1hub "I'll just have to wait until next time, ahaha!"
@@ -2067,7 +2067,7 @@ label monika_holdme_reactions:
 label monika_holdme_long:
     if mas_ismoniLove():
         menu:
-            "{i}Wake Monika up{/i}":
+            "{i}Wake Monika up.{/i}":
                 m 6dubfa "...{w=1} Mmm~"
                 m 6dkbfu "[player]...{w=1} warm~"
                 m 6tsbfa "..."
@@ -2084,7 +2084,7 @@ label monika_holdme_long:
                 m 5tsbfu "Who knows when I'd let go when I finally get the chance?"
                 m 5hubfu "Ehehe~"
                 show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-            "{i}Let her rest on you{/i}":
+            "{i}Let her rest on you.{/i}":
                 call monika_holdme_prep
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -2092,7 +2092,7 @@ label monika_holdme_long:
                 call monika_holdme_long
     elif mas_ismoniEnamored():
         menu:
-            "{i}Wake Monika up{/i}":
+            "{i}Wake Monika up.{/i}":
                 m 6dkbfa "...{w=1} Hm?"
                 m 6tsbfa "[player]..."
                 m 2wubfsdld "Oh! [player]!"
@@ -2102,14 +2102,14 @@ label monika_holdme_long:
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 1ekbfa "Could...{w=0.7} we do that again sometime?"
                 m 1ekbfb "It...{w=1} felt nice~"
-            "{i}Let her rest on you{/i}":
+            "{i}Let her rest on you.{/i}":
                 call monika_holdme_prep
                 m 6dubfa "{cps=*0.5}[player]...{/cps}"
                 call monika_holdme_start
                 call monika_holdme_long
     elif mas_isMoniAff():
         menu:
-            "{i}Wake Monika up{/i}":
+            "{i}Wake Monika up.{/i}":
                 m 6dubsa "Mm...{w=1} hm..?"
                 m 1wubfsdld "Oh!..{w=1} [player]?"
                 m 1hksdlb "Did...{w=2} I fall asleep?"
@@ -2122,15 +2122,15 @@ label monika_holdme_long:
                 m 5eubfu "You're so sweet, [player]~"
                 show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 1hubfa "Hopefully you enjoyed that as much as I did~"
-            "{i}Let her rest on you{/i}":
+            "{i}Let her rest on you.{/i}":
                 call monika_holdme_prep
-                    m "{cps=*0.5}Mm...{/cps}"
+                m "{cps=*0.5}Mm...{/cps}"
                 call monika_holdme_start
                 call monika_holdme_long
     else:
         #happy
         menu:
-            "{i}Wake Monika up{/i}":
+            "{i}Wake Monika up.{/i}":
                 m 6dubsc "Hm..?"
                 m 6wubfo "O-{w=0.3} oh!"
                 m "[player]!"
@@ -2145,7 +2145,7 @@ label monika_holdme_long:
                 m 3ekbfb "I still enjoyed it mind you!"
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
-            "{i}Let her rest on you{/i}":
+            "{i}Let her rest on you.{/i}":
                 call monika_holdme_prep
                 m "..."
                 call monika_holdme_start
