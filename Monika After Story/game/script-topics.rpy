@@ -1941,7 +1941,7 @@ label monika_holdme_reactions:
                     m 1hub "You're so sweet, [player]~"
                     call monika_holdme_start
                     call monika_holdme_reactions
-                m "No":
+                "No":
                     m 2ekc "Aww..."
                     m 2rksdlc "..."
                     show monika 4eka
@@ -2066,45 +2066,47 @@ label monika_holdme_reactions:
 
 label monika_holdme_long:
     if mas_ismoniLove():
-        "{i}Wake Monika up{/i}":
-            m 6dubfa "...{w=1} Mmm~"
-            m 6dkbfu "[player]...{w=1} warm~"
-            m 6tsbfa "..."
-            m 2wubfsdld "Oh, [player]!"
-            m 2hkbfsdlb "It looks like my dream came true, ahaha!"
-            m 1hubfa "You might just be too comfy for my own good~"
-            m 1tubfb "Not that I'm complaining, ehehe~"
-            m 2rkbsa "Gosh, sometimes I wish we could stay like that forever..."
-            m 3rksdlb "Well, I guess we {i}kind of{/i} can, but I wouldn't want to keep you from doing anything."
-            m 1dkbfa "I just want to feel your warm, soft embrace more~"
-            m 3hubfb "So be sure to hug me often, ahaha!"
-            show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5hubfb "I'd do the same to you, after all~"
-            m 5tsbfu "Who knows when I'd let go when I finally get the chance?"
-            m 5hubfu "Ehehe~"
-            show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        "{i}Let her rest on you{/i}":
-            call monika_holdme_prep
-            m 6dubfd "{cps=*0.5}[player]~{/cps}"
-            m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
-            call monika_holdme_start
-            call monika_holdme_long
+        menu:
+            "{i}Wake Monika up{/i}":
+                m 6dubfa "...{w=1} Mmm~"
+                m 6dkbfu "[player]...{w=1} warm~"
+                m 6tsbfa "..."
+                m 2wubfsdld "Oh, [player]!"
+                m 2hkbfsdlb "It looks like my dream came true, ahaha!"
+                m 1hubfa "You might just be too comfy for my own good~"
+                m 1tubfb "Not that I'm complaining, ehehe~"
+                m 2rkbsa "Gosh, sometimes I wish we could stay like that forever..."
+                m 3rksdlb "Well, I guess we {i}kind of{/i} can, but I wouldn't want to keep you from doing anything."
+                m 1dkbfa "I just want to feel your warm, soft embrace more~"
+                m 3hubfb "So be sure to hug me often, ahaha!"
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hubfb "I'd do the same to you, after all~"
+                m 5tsbfu "Who knows when I'd let go when I finally get the chance?"
+                m 5hubfu "Ehehe~"
+                show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            "{i}Let her rest on you{/i}":
+                call monika_holdme_prep
+                m 6dubfd "{cps=*0.5}[player]~{/cps}"
+                m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
+                call monika_holdme_start
+                call monika_holdme_long
     elif mas_ismoniEnamored():
-        "{i}Wake Monika up{/i}":
-            m 6dkbfa "...{w=1} Hm?"
-            m 6tsbfa "[player]..."
-            m 2wubfsdld "Oh! [player]!"
-            m 2hkbfsdlb "Ahaha..."
-            m 3rksdla "I guess I got a little too comfortable."
-            m 1hubfa "But you're just too warm and comfy to {i}not{/i} fall asleep on..."
-            m 1hubfb "So I have to blame you for that, ahaha!"
-            m 1ekbfa "Could...{w=0.7} we do that again sometime?"
-            m 1ekbfb "It...{w=1} felt nice~"
-        "{i}Let her rest on you{/i}":
-            call monika_holdme_prep
-            m 6dubfa "{cps=*0.5}[player]...{/cps}"
-            call monika_holdme_start
-            call monika_holdme_long
+        menu:
+            "{i}Wake Monika up{/i}":
+                m 6dkbfa "...{w=1} Hm?"
+                m 6tsbfa "[player]..."
+                m 2wubfsdld "Oh! [player]!"
+                m 2hkbfsdlb "Ahaha..."
+                m 3rksdla "I guess I got a little too comfortable."
+                m 1hubfa "But you're just too warm and comfy to {i}not{/i} fall asleep on..."
+                m 1hubfb "So I have to blame you for that, ahaha!"
+                m 1ekbfa "Could...{w=0.7} we do that again sometime?"
+                m 1ekbfb "It...{w=1} felt nice~"
+            "{i}Let her rest on you{/i}":
+                call monika_holdme_prep
+                m 6dubfa "{cps=*0.5}[player]...{/cps}"
+                call monika_holdme_start
+                call monika_holdme_long
     elif mas_isMoniAff():
         menu:
             "{i}Wake Monika up{/i}":
