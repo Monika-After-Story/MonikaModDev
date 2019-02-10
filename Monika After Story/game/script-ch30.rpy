@@ -1094,9 +1094,9 @@ label ch30_post_exp_check:
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
 
-    $persistent.closed_self = False
+    $ persistent.closed_self = False
     $ persistent._mas_game_crashed = True
-    $startup_check = False
+    $ startup_check = False
     $ mas_checked_update = False
 
     # delayed actions in here please
@@ -1229,17 +1229,20 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.5)
             play sound "mod_assets/sounds/amb/thunder.wav"
+        
+        # Before a random topic can be displayed, a set waiting time needs to pass.
+        # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
+        # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
 
-        if mas_randchat.rand_low == 0:
-            # we are not repeating for now
-            # we'll wait 60 seconds inbetween loops
-            $ renpy.pause(60, hard=True)
+        $ mas_randchat.wait()
+        
+        if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
-
-        $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
-        $ renpy.pause(waittime, hard=True)
+        else:
+            $ mas_randchat.setWaitingTime()
+        
         window auto
-
+        
 #        python:
 #            if (
 #                    mas_battery_supported
@@ -1417,7 +1420,7 @@ label ch30_reset:
 
     # monika hair/acs
     $ monika_chr.load()
-
+ 
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
     # this is likely to occur in crashes / reloads
@@ -1428,7 +1431,6 @@ label ch30_reset:
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
-
     ## chess strength reset
     python:
         if persistent.chess_strength < 0:
