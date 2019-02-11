@@ -8487,7 +8487,8 @@ init 5 python:
             prompt="What's your favorite car?",
             random=False,
             unlocked=False,
-            pool=True
+            pool=True,
+            rules={"no unlock": None}
         )
     )
 
@@ -8600,8 +8601,8 @@ label monika_vehicle:
     else:
         m 3eua "I remember you said that you couldn't drive, last time I asked."
         m 3rksdla "You sure asked an interesting question, ahaha..."
-        m 1hua "Maybe that'll change one day and you'll get something then~"
-        m 1hubfb "Then, you could take me all sorts of places together, ahaha!"
+        m 1hua "Maybe that'll change one day and you'll get something then."
+        m 1hubfb "Then, you could take me all sorts of places, ahaha!"
     return 
 
 init 5 python:
