@@ -3867,7 +3867,7 @@ init 2 python:
  To the one I love,
  The one I trust,
  The one I can't live without.
- I hope your day is as special as you make everyday for me.
+ I hope your day is as special as you make every day for me.
  Thank you so much for being you. 
 
  Happy Birthday, sweetheart
