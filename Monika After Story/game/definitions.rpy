@@ -94,6 +94,7 @@ python early:
     #       NOTE: treat diary entries as single paragraphs
     #       (Default: None)
     #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: this does not get svaed to persistent
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
@@ -118,6 +119,9 @@ python early:
     #       NOTE: the tuple items should be AFFECTION STATES.
     #           not using an affection state may break things
     #       (Default: None)
+    #   show_in_idle - True if this Event can be shown during idle
+    #       False if not
+    #       (Default: False)
     class Event(object):
 
         # tuple constants
@@ -136,15 +140,16 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14,
+#            "rules":14,
             "last_seen":15,
             "years":16,
             "sensitive":17,
-            "aff_range":18
+            "aff_range":18,
+            "show_in_idle":19,
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
 
         # other constants
         DIARY_LIMIT = 500
@@ -185,7 +190,8 @@ python early:
                 last_seen=None,
                 years=None,
                 sensitive=False,
-                aff_range=None
+                aff_range=None,
+                show_in_idle=False
             ):
 
             # setting up defaults
@@ -263,6 +269,8 @@ python early:
                     datetime.time.min
                 )
 
+            self.rules = rules
+
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -281,11 +289,12 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules,
+                None, # rules, #NOTE: this is no longer stored in persistent
                 last_seen,
                 years,
                 sensitive,
-                aff_range
+                aff_range,
+                show_in_idle
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -331,8 +340,11 @@ python early:
                     self.prompt = prompt
                     self.category = category
                     self.diary_entry = diary_entry
-                    self.rules = rules
+#                    self.rules = rules
                     self.years = years
+                    self.sensitive = sensitive
+                    self.aff_range = aff_range
+                    self.show_in_idle = show_in_idle
 
             # new items are added appropriately
             else:
@@ -1232,8 +1244,10 @@ python early:
 
 
         @staticmethod
-        def _checkRepeatRule(ev, check_time):
+        def _checkRepeatRule(ev, check_time, defval=True):
             """
+            DEPRECATED (remove when farewells is updated)
+
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
@@ -1241,18 +1255,24 @@ python early:
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
+                defval - defval to pass into the rules
+                    (Default: True)
 
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
             # check if the event contains a MASSelectiveRepeatRule and
             # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+            if MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+            if MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             return False
@@ -1261,6 +1281,8 @@ python early:
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """
+            DEPRECATED (remove when farewells is updated)
+
             checks the event dict against repeat rules, which are evaluated
             to a time.
 
@@ -1287,7 +1309,7 @@ python early:
 
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
-                if Event._checkRepeatRule(event, check_time):
+                if Event._checkRepeatRule(event, check_time, defval=False):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -1297,57 +1319,6 @@ python early:
             # return the available events dict
             return available_events
 
-
-        @staticmethod
-        def _checkGreetingRule(ev):
-            """
-            Checks the given event against its own greeting specific rule.
-
-            IN:
-                ev - event to check
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASGreetingRule.evaluate_rule(ev)
-
-
-        @staticmethod
-        def checkGreetingRules(events):
-            """
-            Checks the event dict (greetings) against their own greeting specific
-            rules, filters out those Events whose rule check return true. As for
-            now the only rule specific is their specific special random chance
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-
-                # check if the event contains a MASGreetingRule and evaluate it
-                if Event._checkGreetingRule(event):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
 
         @staticmethod
         def _checkFarewellRule(ev):
@@ -2248,6 +2219,8 @@ python early:
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
+    import store
+    import datetime
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -2363,6 +2336,21 @@ init -1 python in _mas_root:
 
         # affection
         renpy.game.persistent._mas_affection["affection"] = 0
+
+
+    def initialSessionData():
+        """
+        Completely resets session data to usable initial values.
+        NOTE: these are not the defaults, but rather what they would be set to
+        on a first load.
+        """
+        store.persistent.sessions = {
+            "last_session_end": None,
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 1,
+            "first_session": datetime.datetime.now()
+        }
 
 
 init -999 python:
@@ -3519,7 +3507,14 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek()) or mas_isNYE()
+        return (
+            mas_isMonikaBirthday()
+            or mas_isO31()
+            or mas_isD25()
+            or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek())
+            or mas_isNYE()
+            or mas_isF14()
+        )
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -4126,8 +4121,12 @@ init 2 python:
                 Defualts to 4
         """
         # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie:
+        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
+            # run the plushie exit PP in case plushie is no longer enabled
+            mas_acs_quetzalplushie.exit(monika_chr)
             return
+
+
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
@@ -4135,8 +4134,20 @@ init 2 python:
 
             else:
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+        
+        else:
+            # run the plushie exit PP if plushie is not selected
+            mas_acs_quetzalplushie.exit(monika_chr)
+        
         return
 
+
+    def mas_incMoniReload():
+        """
+        Increments the monika reload counter unless its at max
+        """
+        if persistent.monika_reload < 4:
+            persistent.monika_reload += 1
 
 
 # Music
@@ -5370,7 +5381,6 @@ default persistent._mas_enable_random_repeats = False
 default persistent._mas_first_calendar_check = False
 
 # rain
-default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # rain chances
@@ -5380,6 +5390,11 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# idle
+define mas_in_idle_mode = False
+default persistent._mas_in_idle_mode = False
+default persistent._mas_idle_data = {}
 
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA

@@ -39,6 +39,11 @@ init -900 python in mas_ev_data_ver:
 
 
     def _verify_dt(val, allow_none=True):
+        if (
+                isinstance(val, datetime.datetime)
+                and val.year < 1900
+            ):
+            return False
         return _verify_item(val, datetime.datetime, allow_none)
 
 
@@ -142,11 +147,15 @@ init -900 python in mas_ev_data_ver:
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
         13: MASCurriedVerify(_verify_str, True), # diary_entry
-        14: MASCurriedVerify(_verify_dict, False), # rules
+
+        # NOTE: Rules are no longer saved in persistent (0.8.15+)
+#        14: MASCurriedVerify(_verify_dict, False), # rules
+
         15: MASCurriedVerify(_verify_dt, True), # last_seen
         16: MASCurriedVerify(_verify_tuli, True), # years
         17: MASCurriedVerify(_verify_bool, True), # sensitive
-        18: MASCurriedVerify(_verify_tuli_aff, True) # aff_range
+        18: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
+        19: MASCurriedVerify(_verify_bool, True), # show_in_idle
     }
 
 
@@ -230,7 +239,8 @@ init -500 python:
         True, # last_seen
         False, # years
         False, # sensitive
-        False # aff_range
+        False, # aff_range
+        False, # show_in_idle
     )
 
     # NOTE: aff_range is unlocked because making adjustments to topics would
@@ -472,6 +482,9 @@ init -880 python:
         conditional - the logical conditional we want to check before performing
             action
             NOTE: this is not checked for correctness
+            If cond_is_callable is True, then this is called instead of eval'd.
+            In that case, the event object in question is passed into the
+            callable.
         action - EV_ACTION constant this delayed action will perform
             NOTE: this is not checked for existence
             NOTE: this can also be a callable
@@ -484,13 +497,23 @@ init -880 python:
         been_checked - True if this action has been checked this game session
         executed - True if this delayed action has been executed
             - Delayed actions that have been executed CANNOT be executed again
+        cond_is_callable - True if the conditional is a callable instead of
+            a eval check. 
+            NOTE: we do not check callable for correctness
         """
         import store.mas_utils as m_util
 
         ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
 
 
-        def __init__(self, _id, ev, conditional, action, flowcheck):
+        def __init__(self, 
+                _id,
+                ev,
+                conditional,
+                action,
+                flowcheck,
+                cond_is_callable=False
+            ):
             """
             Constructor
 
@@ -501,6 +524,7 @@ init -880 python:
                 _id - id of this delayedAction
                 ev - event this action is related to
                 conditional - conditional to check to do this action
+                    NOTE: if this is a callable, then event is passed in
                 action - EV_ACTION constant for this delayed action
                     NOTE: this can also be a callable
                         ev would be passed in as ev
@@ -508,16 +532,23 @@ init -880 python:
                         otherwise
                 flowcheck - FC constant saying when this delaeyd action should
                     be checked
+                cond_is_callable - True if the conditional is actually a
+                    callable.
+                    If this True and None is passed into the conditional, then
+                    we just return False (aka never run the delayedaction)
+                    (Default: False)
             """
-            try:
-                eval(conditional)
-            except Exception as e:
-                self.m_util.writelog(self.ERR_COND.format(
-                    conditional,
-                    str(e)
-                ))
-                raise e
+            if not cond_is_callable:
+                try:
+                    eval(conditional)
+                except Exception as e:
+                    self.m_util.writelog(self.ERR_COND.format(
+                        conditional,
+                        str(e)
+                    ))
+                    raise e
 
+            self.cond_is_callable = cond_is_callable
             self.conditional = conditional
             self.action = action
             self.flowcheck = flowcheck
@@ -542,7 +573,21 @@ init -880 python:
 
             # this should already have been checked on start
             try:
-                if eval(self.conditional):
+
+                # test conditional
+                if self.cond_is_callable:
+
+                    if self.conditional is None:
+                        # no conditional, then we dont do anything
+                        return False
+
+                    condition_passed = self.conditional(ev=self.ev)
+
+                else:
+                    condition_passed = eval(self.conditional)
+
+                # run event if condition passed
+                if condition_passed:
                     if self.action in Event.ACTION_MAP:
                         Event.ACTION_MAP[self.action](
                             self.ev, unlock_time=datetime.datetime.now()
@@ -564,7 +609,14 @@ init -880 python:
 
         
         @staticmethod
-        def makeWithLabel(_id, ev_label, conditional, action, flowcheck):
+        def makeWithLabel(
+                _id,
+                ev_label,
+                conditional,
+                action,
+                flowcheck,
+                cond_is_callable=False
+            ):
             """
             Makes a MASDelayedAction using an eventlabel instead of an event
 
@@ -579,13 +631,19 @@ init -880 python:
                         otherwise
                 flowcheck - FC constant saying when this delayed action should
                     be checked
+                cond_is_callable - True if the conditional is actually a
+                    callable.
+                    If this True and None is passed into the conditional, then
+                    we just return False (aka never run the delayedaction)
+                    (Default: False)
             """
             return MASDelayedAction(
                 _id,
                 mas_getEV(ev_label),
                 conditional,
                 action,
-                flowcheck
+                flowcheck,
+                cond_is_callable
             )
 
 
@@ -726,6 +784,23 @@ init -880 python in mas_delact:
                 store.persistent._mas_delayed_action_list.append(_id)
 
 
+    def _MDA_saferm(*ids):
+        """
+        Removes MASDelayedActions from the persistent mas delayed action list.
+
+        NOTE: this is only meant for code that runs super early yet needs to
+        remove MASDelayedActions
+
+        NOTE: this will check for existence before removing
+
+        IN:
+            ids - ids to remove from the delayed action list
+        """
+        for _id in ids:
+            if _id in store.persistent._mas_delayed_action_list:
+                store.persistent._mas_delayed_action_list.remove(_id)
+
+
 init -875 python in mas_delact:
     # store containing a map for delayed action mapping
     import datetime # for use in later functions
@@ -736,15 +811,22 @@ init -875 python in mas_delact:
     #   NOTE: this function MUST be runnable at init level 995.
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
-        1: _greeting_ourreality_unlock,
+        # NOTE: commented IDs have been retired
+#        1: _greeting_ourreality_unlock,
         2: _mas_monika_islands_unlock,
-        3: _mas_bday_postbday_notimespent_reset,
-        4: _mas_bday_pool_happy_bday_reset,
-        5: _mas_bday_surprise_party_cleanup_reset,
-        6: _mas_bday_surprise_party_hint_reset,
-        7: _mas_bday_spent_time_with_reset,
+#        3: _mas_bday_postbday_notimespent_reset,
+#        4: _mas_bday_pool_happy_bday_reset,
+#        5: _mas_bday_surprise_party_cleanup_reset,
+#        6: _mas_bday_surprise_party_hint_reset,
+#        7: _mas_bday_spent_time_with_reset,
         8: _mas_d25_holiday_intro_upset_reset,
-        9: _mas_d25_monika_carolling_reset
+        9: _mas_d25_monika_carolling_reset,
+        10: _mas_d25_monika_mistletoe_reset,
+        11: _mas_pf14_monika_lovey_dovey_reset,
+        12: _mas_f14_monika_vday_colors_reset,
+        13: _mas_f14_monika_vday_cliches_reset,
+        14: _mas_f14_monika_vday_chocolates_reset,
+        15: _mas_f14_monika_vday_origins_reset,
     }
 
 
@@ -1456,6 +1538,25 @@ init python:
 
         if len(persistent.event_list) == 0:
             return None
+
+        if mas_in_idle_mode:
+            # idle requires us to loop over the list and find the first
+            # event available in idle
+            ev_found = None
+
+            for ev_label in persistent.event_list:
+                ev_found = mas_getEV(ev_label)
+                if ev_found is not None and ev_found.show_in_idle:
+
+                    if remove:
+                        persistent.event_list.remove(ev_label)
+
+                    persistent.current_monikatopic = ev_label
+                    return ev_label
+
+            # we did not find an idle event
+            return None
+
         elif remove:
             event_label = persistent.event_list.pop()
             persistent.current_monikatopic = event_label
@@ -1745,8 +1846,13 @@ label call_next_event:
             if "rebuild_ev" in _return:
                 $ mas_rebuildEventLists()
 
+            if "idle" in _return:
+                $ mas_in_idle_mode = True
+                $ persistent._mas_in_idle_mode = True
+                $ renpy.save_persistent()
+
             if "quit" in _return:
-                $persistent.closed_self = True #Monika happily closes herself
+                $ persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
         # loop over until all events have been called
@@ -1756,7 +1862,10 @@ label call_next_event:
         # return to normal pose
         show monika idle at t11 zorder MAS_MONIKA_Z
 
-        $ mas_DropShield_dlg()
+
+    if mas_in_idle_mode:
+        # idle mode should transition shields
+        $ mas_dlgToIdleShield()
 
     else:
         $ mas_DropShield_dlg()
@@ -1782,7 +1891,44 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+
     $ mas_RaiseShield_dlg()
+
+    if mas_in_idle_mode:
+        # if talk is hit here, then we retrieve label from mailbox and 
+        # call it.
+        # after the event is over, we drop shields return to idle flow
+        $ cb_label = mas_idle_mailbox.get_idle_cb()
+
+        # NOTE: we call the label directly instead of pushing to event stack
+        #   so that if the user quits during the event, we get the appropriate
+        #   greeting instead of the regular reload greeting.
+        #
+        #   This also prevents the end-of-idle label from being saved and
+        #   restored on a relaunch, which would make no sense lol.
+
+        # only call label if it exists
+        if cb_label is not None:
+            call expression cb_label
+
+        # clean up idle stuff
+        $ mas_in_idle_mode = False
+
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
+
+        $ persistent._mas_greeting_type = None
+        $ persistent._mas_in_idle_mode = False
+
+        # if we have events, jump to idle before call_next_event to start
+        # the usual setup
+        if len(persistent.event_list) > 0:
+            jump ch30_post_mid_loop_eval
+
+        # otherwise, return regular spaceroom idle
+        jump prompt_menu_end
+
 
     python:
         unlocked_events = Event.filterEvents(
@@ -1846,6 +1992,8 @@ label prompt_menu:
 
     else: #nevermind
         $_return = None
+
+label prompt_menu_end:
 
     show monika idle at t11
     $ mas_DropShield_dlg()

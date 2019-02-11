@@ -118,6 +118,9 @@ init -10 python:
         DOCKSTAT_GRE_TYPE = 2
         # used by the bye_going_somewhere farewell as a type
 
+        IDLE_MODE_CB_LABEL = 3
+        # label to call when returning from idle mode
+
         # end keys
        
 
@@ -160,6 +163,20 @@ init -10 python:
             if result is None:
                 return default
             return result
+
+
+        def send_idle_cb(self, cb_label):
+            """
+            Sends idle callback label to mailbox
+            """
+            self.send(self.IDLE_MODE_CB_LABEL, cb_label)
+
+
+        def get_idle_cb(self):
+            """
+            Gets idle callback label
+            """
+            return self.get(self.IDLE_MODE_CB_LABEL)
             
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -380,7 +397,14 @@ init python:
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
 
-        mas_HKBDropShield()
+        if mas_in_idle_mode:
+            # IDLe only enables talk extra and music
+            store.hkb_button.talk_enabled = True
+            store.hkb_button.extra_enabled = True
+            store.hkb_button.music_enabled = True
+
+        else:
+            mas_HKBDropShield()
 
 
     dismiss_keys = config.keymap['dismiss']
@@ -490,6 +514,20 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
+    def mas_resetIdleMode():
+        """
+        Resets specific idle mode vars.
+
+        This is meant to basically clear idle mode for holidays or other
+        things that hijack main flow
+        """
+        global mas_in_idle_mode
+        mas_in_idle_mode = False
+        persistent._mas_in_idle_mode = False
+        persistent._mas_idle_data = {}
+        mas_idle_mailbox.get_idle_cb()
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -550,6 +588,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     if persistent._mas_player_bday_decor:
         $ store.mas_player_bday_event.show_player_bday_Visuals()
 
+    if datetime.date.today() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs_pst(mas_acs_roses)
+
     return
 
 label ch30_main:
@@ -563,6 +604,9 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # set monikas outfit to default
+    $ monika_chr.reset_outfit(False)
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
@@ -611,6 +655,9 @@ label ch30_main:
 
     # now we out of intro
     $ mas_in_intro_flow = False
+
+    # set session data to startup values
+    $ store._mas_root.initialSessionData()
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
@@ -770,6 +817,7 @@ label ch30_nope:
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
+# NOTE: START HERE
 label ch30_autoload:
     # This is where we check a bunch of things to see what events to push to the
     # event list
@@ -828,6 +876,9 @@ label mas_ch30_post_retmoni_check:
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
+    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+        jump mas_f14_autoload_check
+
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
@@ -861,6 +912,10 @@ label mas_ch30_post_holiday_check:
             call spaceroom
             jump mas_affection_apologydeleted
 
+    # post greeting selected callback
+    $ gre_cb_label = None
+    $ just_crashed = False
+    $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
@@ -868,30 +923,76 @@ label mas_ch30_post_holiday_check:
             and not persistent._mas_sensitive_mode
         ):
         call yuri_name_scare from _call_yuri_name_scare
+        
+        # this skips greeting algs
+        jump ch30_post_greeting_check
 
-    # check persistent to see if player put Monika to sleep correctly
-    elif persistent.closed_self:
+    elif not persistent._mas_game_crashed:
+        # if this is False, a force quit happened
+        $ forced_quit = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RELOAD
 
-        python:
+    elif not persistent.closed_self:
+        # this (+ game_crashed being True) means we crashed
+        $ just_crashed = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CRASHED
 
-            # we select a greeting depending on the type that we should select
-            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+        # we dont consider crashes as bad quits
+        $ persistent.closed_self = True
 
-            # reset the greeting type flag back to None
-            persistent._mas_greeting_type = None
+    # else, we are in regular mode.
 
-            selected_greeting = sel_greeting_event.eventlabel
+    # greeting selection
+    python:
+
+        # we select a greeting depending on the type that we should select
+        sel_greeting_ev = store.mas_greetings.selectGreeting(
+            persistent._mas_greeting_type
+        )
+
+        # reset the greeting type flag back to None
+        persistent._mas_greeting_type = None
+
+        if sel_greeting_ev is None:
+            # special cases to deal with when no greeting is found.
+
+            if persistent._mas_in_idle_mode:
+                # currently in idle mode? reset please
+                mas_resetIdleMode()
+
+            if just_crashed:
+                # but if we just crashed, then we want to select the 
+                # only crashed greeting.
+                # NOTE: we shouldnt actually have to do this ever, but
+                #   its here as a sanity check
+                sel_greeting_ev = mas_getEV("mas_crashed_start")
+
+            elif forced_quit:
+                # if we just forced quit, then we want to select the only
+                # reload greeting.
+                # NOTE: again, shouldnt have to do this, but its sanity checks
+                sel_greeting_ev = mas_getEV("ch30_reload_delegate")
+
+
+        # NOTE: this MUST be an if. it may be True if we crashed but
+        #   didnt get a greeting to show. 
+        if sel_greeting_ev is not None:
+            selected_greeting = sel_greeting_ev.eventlabel
 
             # store if we have to skip visuals ( used to prevent visual bugs)
             mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
+                event=sel_greeting_ev
             )
 
-    # crash check
-    elif persistent._mas_game_crashed:
-        $ selected_greeting = "mas_crashed_start"
-        $ mas_skip_visuals = True
-        $ persistent.closed_self = True
+            # see if we need to do a label
+            setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
+            if setup_label is not None and renpy.has_label(setup_label):
+                gre_cb_label = setup_label
+
+    
+    # call pre-post greeting check setup label
+    if gre_cb_label is not None:
+        call expression gre_cb_label
 
 label ch30_post_greeting_check:
     # this label skips only greeting checks
@@ -966,6 +1067,10 @@ label ch30_post_exp_check:
 
     # push greeting if we have one
     if selected_greeting:
+        # before greeting, we should push idle clean if in idle mode
+        if persistent._mas_in_idle_mode:
+            $ pushEvent("mas_idle_mode_greeting_cleanup")
+
         $ pushEvent(selected_greeting)
 
     # if not persistent.tried_skip:
@@ -996,9 +1101,14 @@ label ch30_preloop:
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
-
+ 
     # save here before we enter the loop
     $ renpy.save_persistent()
+
+    # check if we need to rebulid ev
+    if mas_idle_mailbox.get_rebuild_msg():
+        $ mas_rebuildEventLists()
+
     jump ch30_loop
 
 label ch30_loop:
@@ -1138,6 +1248,9 @@ label ch30_post_mid_loop_eval:
 #                    and battery.get_level() < 20
 #                ):
 #                pushEvent("monika_battery")
+
+        if mas_in_idle_mode:
+            jump post_pick_random_topic
 
         # Pick a random Monika topic
         if persistent.random_seen < random_seen_limit:
