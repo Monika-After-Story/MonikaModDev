@@ -10832,7 +10832,7 @@ label monika_hemispheres:
         m 5hua "I can't wait to spend them with you when I finally cross over."
 
     elif mas_isFall():
-        m 1eua "Anyway, It must be autumn for you right now."
+        m 1eua "Anyway, it must be autumn for you right now."
         m 1eka "Autumn is always full of such pretty colors."
         m 3hub "The weather is normally pretty nice too!"
         show monika 5ruu at t11 zorder MAS_MONIKA_Z with dissolve
