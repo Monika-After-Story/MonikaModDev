@@ -2320,8 +2320,8 @@ label mas_text_speed_enabler:
             m "Regardless..."
 
     if not persistent._mas_pm_is_fast_reader:
-        # this sets the current speed to slowest possible.
-        $ preferences.text_cps = 20
+        # this sets the current speed to default monika's speed
+        $ preferences.text_cps = 30
 
     m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
 
@@ -2346,3 +2346,5 @@ label mas_text_speed_enabler:
         m "So feel free to change the text speed when you feel comfortable doing so."
 
     return "derandom|no_unlock"
+
+
