@@ -70,8 +70,12 @@ label monika_playerapologizes:
         #If there's a non-generic apology reason pending we use "for something else."
         $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,player_apology_reasons[0])
     else:
-        #Otherwise we just use "for something."
-        $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
+        #Otherwise, we use "for something." if reason isn't 0
+        if mas_apology_reason == 0:
+            $ mas_getEV('mas_apology_generic').prompt = "...for something."
+        else:
+            #We set this to an apology reason if it's valid
+            $ mas_getEV('mas_apology_generic').prompt = "...for " + player_apology_reasons.get(mas_apology_reason,"something.")
 
     #Then we delete this since we're not going to need it again until we come back here, where it's created again.
     #No need to store excess memory
@@ -82,8 +86,14 @@ label monika_playerapologizes:
         apologylist = [
             (ev.prompt, ev.eventlabel, False, False)
             for ev_label, ev in store.mas_apology.apology_db.iteritems()
-            if ev.unlocked
+            if ev.unlocked and (ev.prompt != "...for something." and ev.prompt != "...for something else.")
         ]
+
+        #Now we add the generic if there's no prompt attached
+        generic_ev = mas_getEV('mas_apology_generic')
+
+        if generic_ev.prompt == "...for something." or generic_ev.prompt == "...for something else.":
+            apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
 
         #The back button
         return_prompt_back = ("Nevermind", False, False, False, 20)
@@ -173,12 +183,29 @@ label mas_apology_generic:
 
     #If there's no reason to apologize
     if mas_apology_reason is None and len(persistent._mas_apology_time_db) == 0:
-        m 1ekd "Did something happen?"
-        m 2ekc "I see no reason for you to be sorry."
-        m 1dsc "..."
-        m 1eub "Anyway, thank you for the apology."
-        m 1eua "Whatever it is, I know you're doing your best to make things right."
-        m 1hub "That's why I love you, [player]!"
+        if mas_isMoniBroken():
+            m 1ekc "...{w=1}Oh."
+            m 2dsc ".{w=2}.{w=2}."
+            m "Okay."
+        elif mas_isMoniDis():
+            m 2dfd "{i}sigh{/i}"
+            m 2dsd "I hope this isn't some joke or trick, [player]."
+            m 2dsc "..."
+            m 1eka "...Thank you for the apology."
+            m 2ekc "But please, try to be more mindful about my feelings."
+            m 2dkd "Please."
+        elif mas_isMoniUpset():
+            m 1eka "Thank you, [player]."
+            m 1rksdlc "I know things aren't the best between us, but I know that you're still a good person."
+            m 1ekc "So could you be a little more considerate of my feelings?"
+            m 1ekd "Please?"
+        else:
+            m 1ekd "Did something happen?"
+            m 2ekc "I don't see a reason for you to be sorry."
+            m 1dsc "..."
+            m 1eub "Anyway, thank you for the apology."
+            m 1eua "Whatever it is, I know you're doing your best to make things right."
+            m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
     elif mas_apology_reason:

@@ -194,7 +194,8 @@ init 999 python:
                 "def": "School Uniform",
                 "marisa": "Witch Costume",
                 "rin": "Neko Costume",
-                "santa": "Santa Monika"
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -317,7 +318,8 @@ init 999 python:
                 "def",
                 "marisa",
                 "rin",
-                "santa"
+                "santa",
+                "sundress_white",
             ],
             "arms": [
                 1,

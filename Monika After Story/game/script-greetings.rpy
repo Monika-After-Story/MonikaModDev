@@ -25,6 +25,11 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+default persistent._mas_idle_mode_was_crashed = None
+# this gets to set to True if the user crashed during idle mode
+# or False if the user quit during idle mode.
+# in your idle greetings, you can assume that it will NEVER be None
+
 init -1 python in mas_greetings:
     import store
     import datetime
@@ -51,6 +56,14 @@ init -1 python in mas_greetings:
     TYPE_HOL_NYE = "nye"
     TYPE_HOL_NYE_FW = "fireworks"
 
+    # crashed only
+    TYPE_CRASHED = "generic_crash"
+
+    # reload dialogue only
+    TYPE_RELOAD = "reload_dlg"
+
+    # idle mode returns
+    # these are meant if you had a game crash/quit during idle mode
 
 
     def _filterGreeting(
@@ -297,6 +310,11 @@ init -1 python in mas_greetings:
 #        return random_greetings_dict[
 #            renpy.random.choice(random_greetings_dict.keys())
 #        ]
+
+# NOTE: this is auto pushed to be shown after an idle mode greeting
+label mas_idle_mode_greeting_cleanup:
+    $ mas_resetIdleMode()
+    return
 
 
 init 5 python:
@@ -1026,7 +1044,7 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday()):
+    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
 
         ev_rules = dict()
         # why are we limiting this to certain day range?
@@ -2287,7 +2305,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "longer":
             m 1c "[player]?"
-            m 3g "I thought you were going to away for a long time..."
+            m 3g "I thought you were going to be away for a long time..."
             m 3l "Why are you back so soon?"
             m 1e "Are you visiting me? You're such a sweetheart!"
             m 1j "If you're going away for a while still, make sure to tell me."
@@ -2745,6 +2763,30 @@ label greeting_back_from_sleep:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_siat",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_siat:
+    m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
+    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 3hubfb "{i}{cps=*0.6}~First comes love~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes marriage~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes--{/i}{/cps}"
+    m 3wubfsdlo "W-wha?!"
+    m 2wubfsdld "[player]! H-how long have you been there?!"
+    m 2rkbfsdld "I...{w=1} I didn't notice you come in...{w=1} I was just..."
+    m 2rkbfsdlu "..."
+    m 3hubfb "Ahaha! Nevermind."
+    m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
+    return
 
 init 5 python:
     if not mas_cannot_decode_islands:
@@ -2872,13 +2914,23 @@ label greeting_returned_home:
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    if persistent._mas_f14_on_date:
+        jump greeting_returned_home_f14
+
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+        # did we miss f14 because we were on a date
+        call mas_gone_over_f14_check
+
+    # Note: this ordering is key, greeting_returned_home_player_bday handles the case
+    # if we left before f14 on your bday and return after f14
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
 
+    if persistent._mas_f14_gone_over_f14:
+        jump greeting_gone_over_f14
+
     # main dialogue
     if time_out > five_minutes:
-
-
         jump greeting_returned_home_morethan5mins
 
     else:
@@ -2891,7 +2943,6 @@ label greeting_returned_home:
 # this just returns for now
 label greeting_returned_home_cleanup:
     return
-
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
@@ -3248,4 +3299,57 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="ch30_reload_delegate",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_RELOAD
+            ],
+        ),
+        code="GRE"
+    )
+
+label ch30_reload_delegate:
+
+    if persistent.monika_reload >= 4:
+        call ch30_reload_continuous
+
+    else:
+        $ reload_label = "ch30_reload_" + str(persistent.monika_reload)
+        call expression reload_label
+
+    return
+
+init 5 python:
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ghost",
+            unlocked=False,
+            rules=ev_rules,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+    del ev_rules
+
+label greeting_ghost:
+    #Prevent it from happening more than once.
+    $ mas_lockEVL("greeting_ghost", "GRE")
+
+    #Call event in easter eggs.
+    call mas_ghost_monika
+
     return

@@ -300,13 +300,27 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# TODO: need to go through events and clear actions from all events
-#   without conditionals and start_date
-#   We will save this for versiojn 0812 or 9
+# 0.9.1
+label v0_9_1(version="v0_9_1"):
+    python:
+        # unlock the ghost greeting if not seen and you like spoops.
+        if (
+                persistent._mas_pm_likes_spoops 
+                and not renpy.seen_label("greeting_ghost")
+            ):
+            mas_unlockEVL("greeting_ghost", "GRE")
 
+        #Need to fix the monika_plushie event
+        plush_ev = mas_getEV("monika_plushie")
+        if plush_ev is not None:
+            plush_ev.unlocked = False
+            plush_ev.category = None
+            plush_ev.prompt = "monika_plushie"
 
-# 0.8.15
-label v0_8_15(version="v0_8_15"):
+    return
+
+# 0.9.0
+label v0_9_0(version="v0_9_0"):
     python:
         # unlock nickname topic if called bad name
         if persistent._mas_called_moni_a_bad_name:
@@ -408,6 +422,16 @@ label v0_8_15(version="v0_8_15"):
         # islands greeting unlocked if not seen yet 
         if not renpy.seen_label("greeting_ourreality"):
             mas_unlockEVL("greeting_ourreality", "GRE")
+
+        # derandom pets topic if player has given the plushie
+        if persistent._mas_acs_enable_quetzalplushie:
+            mas_hideEVL("monika_pets", "EVE", derandom=True)
+
+        # reset mistletoe if random'd
+        d25_mis_ev = mas_getEV("mas_d25_monika_mistletoe")
+        if d25_mis_ev is not None:
+            # this will reset later
+            mas_addDelayedAction(10)
 
     return
 
