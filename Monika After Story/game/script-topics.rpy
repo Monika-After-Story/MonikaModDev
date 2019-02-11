@@ -8732,8 +8732,8 @@ default persistent._mas_pm_owns_car_type = None
 
 label monika_vehicle:
     m 1euc "My favorite car?"
-    m 1lksdla "Well for starters, I can't even drive..."
-    m "And usually, I would just walk or take the train if I had to go somewhere far."
+    m 1hksdlb "You already know i can't drive, silly~"
+    m "I would usually just walk or take the train if I had to go somewhere far."
     m 1hksdlb "So I'm not too sure what to tell you, [player]..."
     if persistent._mas_pm_driving_can_drive = True:
         m 1eua "What about you?"
