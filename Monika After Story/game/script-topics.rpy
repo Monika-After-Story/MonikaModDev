@@ -1830,10 +1830,10 @@ label monika_rain_holdme:
         # small affection increase so people don't farm affection with this one.
         $ mas_gainAffection(modifier=0.25)
 
-    if mas_isMoniAff(higher=True):
-        m 1hubfb "You can hold me anytime you want, [player]."
-    else:
-        m 1hubfb "You can hold me anytime it rains, [player]."
+        if mas_isMoniAff(higher=True):
+            m 1hubfb "You can hold me anytime you want, [player]."
+        else:
+            m 1hubfb "You can hold me anytime it rains, [player]."
 
     else:
         # no affection loss here, doesn't make sense to have it
