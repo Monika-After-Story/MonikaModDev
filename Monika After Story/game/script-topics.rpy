@@ -1820,47 +1820,26 @@ init 5 python:
 
 label monika_rain_holdme:
 
-    if mas_isMoniHappy(higher=True):
-        # happy or above
+    # we only want this if it rains
+    if mas_is_raining or mas_isMoniAff(higher=True):
+        call monika_holdme_prep
+        m 1a "Of course, [player]."
+        call monika_holdme_start
 
-        # we only want this if it rains
-        if mas_is_raining or mas_isMoniAff(higher=True):
-            call monika_holdme_prep
-            m 1a "Of course, [player]."
-            call monika_holdme_start
+        call monika_holdme_reactions
+        # small affection increase so people don't farm affection with this one.
+        $ mas_gainAffection(modifier=0.25)
 
-            call monika_holdme_reactions
-            # small affection increase so people don't farm affection with this one.
-            $ mas_gainAffection(modifier=0.25)
-
-            if mas_isMoniAff(higher=True):
-                m 1hubfb "You can hold me anytime you want, [player]."
-            else:
-                m 1hubfb "You can hold me anytime it rains, [player]."
-
-        else:
-            # no affection loss here, doesn't make sense to have it
-            m 1rksdlc "..."
-            m 1rksdlc "The mood doesn't feel right, [player]."
-            m 1dsc "Sorry..."
-
-    elif mas_isMoniNormal():
-        # normal
-
-        m 1lksdlc "Uh..."
-        m 1eksdlb "Maybe when we get farther into our relationship."
-        m 1rksdlb "Sorry..."
-
-        $ lockEventLabel("monika_rain_holdme")
+    if mas_isMoniAff(higher=True):
+        m 1hubfb "You can hold me anytime you want, [player]."
+    else:
+        m 1hubfb "You can hold me anytime it rains, [player]."
 
     else:
-        # below normal
-
-        m 2lfc "No thanks."
-
-        $ mas_loseAffection(modifier=0.25)
-        $ lockEventLabel("monika_rain_holdme")
-
+        # no affection loss here, doesn't make sense to have it
+        m 1rksdlc "..."
+        m 1rksdlc "The mood doesn't feel right, [player]."
+        m 1dsc "Sorry..."
     return
 
 label monika_holdme_prep:
