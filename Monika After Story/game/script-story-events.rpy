@@ -2336,7 +2336,7 @@ label mas_text_speed_enabler:
     m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
 
     if persistent._mas_pm_is_fast_reader:
-        m 1tuu "...I wonder if you can keep up."
+        m 1tuu "However,{w} I wonder if you can keep up."
         m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
         $ _history_list.pop()
         m 3hua "Ahaha~"
