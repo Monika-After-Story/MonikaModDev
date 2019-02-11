@@ -8473,6 +8473,7 @@ label monika_driving:
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
             m 1hub "I love you~"
+    $ mas_unlockEVL("monika_vehicle","EVE")
     return
 
 init 5 python:
