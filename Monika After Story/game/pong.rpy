@@ -54,6 +54,8 @@ define win_streak_counter_before = 0
 define pong_difficulty_before = 0
 define pong_angle_last_shot = 0.0
     
+define ended_with_pose_5 = False
+
 init:
 
     image bg pong field = "mod_assets/pong_field.png"
@@ -476,7 +478,9 @@ label game_pong:
     hide screen keylistener
     
     if played_pong_this_session:
+        show monika 5esu at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esu "You wanna play pong again?"
+        show monika 4esb at t11 zorder MAS_MONIKA_Z with dissolve
         m 4esb "I'm ready when you are~"
     else:
         m 1eua "You wanna play a game of Pong? Okay!"
@@ -554,8 +558,13 @@ label demo_minigame_pong:
 
     $ mas_gainAffection(modifier=0.5)
 
-    show monika 1hua
+    if ended_with_pose_5:
+        show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
+        $ ended_with_pose_5 = False;
+    else:
+        show monika 1hua
     
+   
     menu:
         m "Do you want to play again?"
 
@@ -622,11 +631,14 @@ label mas_pong_dlg_winner:
     #Player lets Monika win after being asked to go easy on her without hitting the ball too much
     if monika_asks_to_go_easy and ball_paddle_bounces <= 9:
         m 1esb "Yay, I won!"
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "Thanks, [player]!"
         if renpy.random.randint(1, 2) == 1:
             m 5hubfb "You are awesome~"
+            $ ended_with_pose_5 = True;
         else:
             m 5hubfb "You're so sweet, letting me win~"
+            $ ended_with_pose_5 = True;
             
         $ monika_asks_to_go_easy = False
         
@@ -637,6 +649,7 @@ label mas_pong_dlg_winner:
         #One time
         if instant_loss_streak_counter == 1:
             m 5hub "Ahaha, how did you miss that?"
+            $ ended_with_pose_5 = True;
             
             
         #Two times
@@ -653,29 +666,35 @@ label mas_pong_dlg_winner:
             else:
                 $ menu_response = "Are you letting me win on purpose?"
                 
-            show monika 5eub
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
             
             menu:
                 m "[menu_response]"
                     
                 "Yes":
                     if renpy.random.randint(1, 2) == 1:
+                        show monika 1hub at t11 zorder MAS_MONIKA_Z with dissolve
                         m 1hub "You are so cute, [player]!"
+                        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
                         m 5hua "Thank you for letting me win~"
                     else:
                         m 5hub "Ehehe!"
                         m 5hua "Thanks for letting me win, [player]~"
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         if renpy.random.randint(1, 2) == 1:
+                            show monika 1ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
                             m 1ekbsa "But you know I wouldn't mind losing against you."
+                            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                         else:
                             m 5eubla "But I wouldn't mind losing against you sometimes."
                         m 5hub "I like to see you win just as much as you like to see me win~"
                     else:
                         if renpy.random.randint(1, 2) == 1:
+                            show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve
                             m 1eka "I wouldn't mind losing against you, though."
                         else:
                             m 5eub "I wouldn't mind losing against you, though."
+                            $ ended_with_pose_5 = True;
                             
                     $ player_lets_monika_win_on_purpose = True
                     $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
@@ -683,7 +702,7 @@ label mas_pong_dlg_winner:
                 "No": 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         
-                        show monika1ttu
+                        show monika 1ttu at t11 zorder MAS_MONIKA_Z with dissolve
                         
                         menu:
                             m "Are you sure?"
@@ -716,6 +735,7 @@ label mas_pong_dlg_winner:
             if player_lets_monika_win_on_purpose:
                 if renpy.random.randint(1, 2) == 1:
                     m 5eub "Aren't you getting tired of letting me win, [player]?"
+                    $ ended_with_pose_5 = True;
                 else:
                     m 2tku "Aren't you getting tired of letting me win, [player]?"
             else: 
@@ -730,7 +750,9 @@ label mas_pong_dlg_winner:
         else:
             m 3tsu "As you can see, I can win by myself!"
         if renpy.random.randint(1, 2) == 1:
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hub "Ehehe~"
+            $ ended_with_pose_5 = True;
         else:
             m 3hub "Ehehe~"
         
@@ -813,7 +835,9 @@ label mas_pong_dlg_winner:
             m 6hub "Well played, [player]!"
             m 4eub "You're really good at pong!"
             if renpy.random.randint(1, 2) == 1:
+                show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hub "But so am I, Ahaha!"
+                $ ended_with_pose_5 = True;
             else:
                 m 4tfu "But so am I, Ahaha!"
             
@@ -859,12 +883,16 @@ label mas_pong_dlg_winner:
         if pong_difficulty_before <= 5:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EASY_GAME:
                 m 1eub "You can do it, [player]!" 
+                show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hua "I believe in you~"
+                $ ended_with_pose_5 = True;
             else:
                 m 5eua "Concentrate, [player]." 
                 if renpy.random.randint(1, 2) == 1:
+                    show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 4hua "I'm sure you'll win soon, if you try hard enough."
                 else:
+                    show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 4hua "I'm sure you'll win soon." 
                     m 4hub "Just keep trying!"
         
@@ -896,7 +924,9 @@ label mas_pong_dlg_winner:
                 m 1hub "Ahaha!"
                 m 3tsb "Am I playing too good for you?"
                 if renpy.random.randint(1, 2) == 1:
+                    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5hub "I'm just kidding, [player]!"
+                    show monika 6esa at t11 zorder MAS_MONIKA_Z with dissolve
                     m 6esa "I know you are pretty good yourself!"
                 else:
                     m 3tub "I'm just kidding, [player]."
@@ -906,12 +936,16 @@ label mas_pong_dlg_winner:
                     if renpy.random.randint(1, 2) == 1:
                         m 1huu "I win again~!"
                     else:
+                        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve
                         m 5huu "I win again~!"
+                        $ ended_with_pose_5 = True;
                 else:
                     if renpy.random.randint(1, 2) == 1:
                         m 1huu "I win~!"
                     else:
+                        show monika 5huu at t11 zorder MAS_MONIKA_Z with dissolve
                         m 5huu "I win~!"
+                        $ ended_with_pose_5 = True;
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_HARD_GAME 
             
@@ -919,8 +953,10 @@ label mas_pong_dlg_winner:
         #On expert difficulty
         elif pong_difficulty_before <= 20:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME:
+                show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hub "It feels good to win!"
                 m 5eua "Don't worry, I'm sure you'll win again soon~"
+                $ ended_with_pose_5 = True;
             else:
                 if loss_streak_counter > 1:
                     m 2eub "I win another round!"
@@ -944,7 +980,9 @@ label mas_pong_dlg_winner:
                 else:
                     m 2hua "This time it's my win!"
                 if renpy.random.randint(1, 2) == 1:
+                    show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5hub "Keep up, [player]!"
+                    $ ended_with_pose_5 = True;
                 else:
                     m 2efu "Keep up, [player]!"
         
@@ -968,6 +1006,7 @@ label mas_pong_dlg_loser:
     if lose_on_purpose:
         if renpy.random.randint(1, 2) == 1:
             m 5hub "Ahaha!"
+            show monika 1kua at t11 zorder MAS_MONIKA_Z with dissolve
         else:
             m 1hub "Ahaha!"
         m 1kua "Now we're even, [player]!"
@@ -988,6 +1027,7 @@ label mas_pong_dlg_loser:
     elif instant_loss_streak_counter_before >= 3 and persistent._mas_pm_ever_let_monika_win_on_purpose:
         if renpy.random.randint(1, 2) == 1:
             m 5tsu "So you are playing seriously now?"
+            show monika 1huu at t11 zorder MAS_MONIKA_Z with dissolve
             m 1huu "Let's find out how good you really are, [player]!"  
         else:
             m 2tsu "So you are playing seriously now?"
@@ -1010,7 +1050,9 @@ label mas_pong_dlg_loser:
         else:
             m 2tub "I was really trying this time!"
         if renpy.random.randint(1, 2) == 1:
+            show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hub "Way to go, [player]!"
+            $ ended_with_pose_5 = True;
         else:
             m 1hub "Way to go, [player]!"
         
@@ -1018,6 +1060,7 @@ label mas_pong_dlg_loser:
     #Monika loses after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
         m 5hub "Ehehe!"
+        show monika 6esa at t11 zorder MAS_MONIKA_Z with dissolve
         m 6esa "Good job, [player]!"
         
         
@@ -1068,6 +1111,7 @@ label mas_pong_dlg_loser:
         elif pong_difficulty_before <= 15:
             if renpy.random.randint(1, 2) == 1:
                 m 5tsu "Watching you play is quite impressive!"
+                $ ended_with_pose_5 = True;
             else:
                 m 3hub "Well played, [player]!"
             
@@ -1084,6 +1128,7 @@ label mas_pong_dlg_loser:
         else:
             if renpy.random.randint(1, 2) == 1:
                 m 5tsu "Are you sure you aren't cheating?"
+                show monika 1kua at t11 zorder MAS_MONIKA_Z with dissolve
             else:
                 m 3tfu "Are you sure you aren't cheating, [player]?"
             m 1kua "Ehehe!"
@@ -1159,6 +1204,7 @@ label mas_pong_dlg_loser:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME:
                 m 5eub "It's nice to see you win, [player]."
                 m 5hub "Keep it up~"
+                $ ended_with_pose_5 = True;
             else:
                 if win_streak_counter > 1:
                     m 1esb "You won again! Not bad."
@@ -1223,7 +1269,9 @@ label mas_pong_dlg_loser:
                     m 1tsu "This is getting intense!"
                 else:
                     m 1tsu "This is intense!"
+                show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hub "Good job, [player]!"
+                $ ended_with_pose_5 = True;
                 #m 5esu "You really know how to play pong, huh?"
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME
@@ -1234,6 +1282,7 @@ label mas_pong_dlg_loser:
 
 # quick dialogue shown when monika is the pong loser
 label mas_pong_dlg_loser_fast:
+    show monika 1tfu at t11 zorder MAS_MONIKA_Z with dissolve
     m 1tfu "I'll beat you next time, [player]."
     
     $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERUP;    
@@ -1244,8 +1293,10 @@ label mas_pong_dlg_loser_fast:
 
 # quick dialogue shown when monika is the pong winner
 label mas_pong_dlg_winner_fast:
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hua "Thanks for playing Pong and letting me win, [player]."
     if renpy.random.randint(1, 2) == 1:
+        show monika 6eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 6eua "I look forward to play with you again sometime."
     else:
         m 5hub "Let's play again sometime soon, okay?"
