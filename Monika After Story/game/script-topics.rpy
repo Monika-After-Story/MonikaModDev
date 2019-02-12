@@ -8473,6 +8473,7 @@ label monika_driving:
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
             m 1hub "I love you~"
+    $ mas_unlockEVL("monika_vehicle","EVE")
     return
 
 init 5 python:
@@ -8704,6 +8705,134 @@ label monika_savingwater:
         if mas_isMoniAff():
             m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_vehicle",
+            category=['monika'],
+            prompt="What's your favorite car?",
+            unlocked=False,
+            pool=True,
+            rules={"no unlock": None}
+        )
+    )
+
+default persistent._mas_pm_owns_car = None
+# True if player owns car, False if not
+
+default persistent._mas_pm_owns_car_type = None
+# String describing the type of car owned by the player.
+#   SUV-Pickup: SUV or pickup
+#   sports: sports car
+#   sedan: sedan car
+#   motorcyle: motorcyle
+
+label monika_vehicle:
+    m 1euc "My favorite car?"
+    m 3hksdlb "You already know I can't drive, silly!"
+    m 3eua "Usually I would just walk or take the train if I had to go somewhere far."
+    m 1eka "So I'm not too sure what to tell you, [player]..."
+
+    if persistent._mas_pm_driving_can_drive:
+        m 1eua "What about you?"
+        menu:
+            m "Do you own a car?"
+            "Yes.":
+                $ persistent._mas_pm_owns_car = True
+
+                m 1hua "Oh wow, that's really cool that you actually own one!"
+                m 3hub "You're really lucky, you know that?"
+                m 1eua "I mean, just owning a vehicle is a status symbol itself."
+                m "Isn't it a luxury to own one?"
+                m 1euc "Unless..."
+                m 3eua "You live some place where it's necessary..."
+                m 1hksdlb "Actually, nevermind, ahaha!"
+                m 1eua "Either way, it's nice to know that you own a vehicle."
+                m 3eua "Speaking of which..."
+                menu:
+                    m "What exactly do you drive?"
+                    "SUV or Pickup Truck.":
+                        $ persistent._mas_pm_owns_car_type = "SUV-Pickup"
+
+                        m 1lksdla "Oh my, your vehicle must be pretty big then."
+                        m 1eua "That means there's plenty of space right?"
+                        m 3etc "If that's the case..."
+                        m 3hub "We could go camping!"
+                        m 3eua "We'd drive all the way to the woods and you'd set up the tent while I prepared our picnic."
+                        m 1eka "While we're having lunch, we'd enjoy the scenery and nature surrounding us..."
+                        m 1ekbsa "Then when night falls, we'd lie down on our sleeping bags, stargazing while holding hands."
+                        m 3ekbsa "It's definitely a romantic adventure I can't wait to share with you, [player]."
+                        m 1hkbfa "Ehehe~"
+
+                    "Sports Car.":
+                        $ persistent._mas_pm_owns_car_type = "sports"
+
+                        m 3hua "Oh, wow!"
+                        m 3eua "It must be really fast, huh?"
+                        m 3hub "We should definitely go on a road trip..."
+                        m 1eub "Taking the scenic route, cruising along the highway..."
+                        m 1eub "If it's possible it'd be nice to take down the top of the car..."
+                        m 3hua "That way, we can feel the wind on our faces while everything passes by in a blur!"
+                        m 1esc "But..."
+                        m 1eua "It would also be nice to drive at a normal pace..."
+                        m 1ekbsa "That way we can savor every moment of the ride together~"
+
+                    "Sedan.":
+                        $ persistent._mas_pm_owns_car_type = "sedan"
+
+                        m 1eua "That's really nice."
+                        m "I actually prefer that type of car, to be honest."
+                        m 3eua "From what I've heard, they're lively and easy to drive."
+                        m 3eub "A car like that would be great for driving around the city, don't you think, [player]?"
+                        m 3eua "We could go to museums, parks, malls and so on."
+                        m 1eua "It'd be so nice to be able to drive to places that are too far to walk to by foot."
+                        m 3hua "It's always exhilarating to discover and explore new places."
+                        m 1rksdla "We might even find a place where the both of us can be together..."
+                        m 1tsu "...Alone."
+                        m 1hub "Ahaha!"
+                        m 3eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates..."
+                        m 1hua "I hope you'll surprise me, [player]."
+                        m 1hub "But then again...{w=0.5}I'd love anything as long as it's with you~"
+
+                    "Motorcycle.":
+                        $ persistent._mas_pm_owns_car_type = "motorcyle"
+
+                        m 1hksdlb "Eh?"
+                        m 1lksdlb "You drive a motorcycle?"
+                        m 1eksdla "I'm surprised, I never expected that to be your kind of ride."
+                        m 1lksdlb "To be honest, I'm a little hesitant to ride one, ahaha!"
+                        m 1eua "Really, I shouldn't be scared..."
+                        m 3eua "You're the one driving after all."
+                        m 1lksdla "That puts my mind at ease...{w=1}a little."
+                        m 1eua "Just take it nice and slow, okay?"
+                        m 3hua "After all, we aren't in any rush."
+                        m 1tsu "Or...{w=1}was it your plan to drive fast, so that I would hang on to you tightly?"
+                        m 3tsu "That's pretty sneaky of you, [player]."
+                        m 1hub "Ehehe~"
+                        m 3eka "There's no need to be shy, my love."
+                        m 3ekbsa "I'll hug you, even if you don't ask for it..."
+                        m 1hkbfa "That's how much I love you~"
+
+            "No.":
+                $ persistent._mas_pm_owns_car = False
+
+                m 1ekc "Oh, I see."
+                m 3eka "Well, buying a vehicle can be quite expensive after all."
+                m 1eua "It's alright [player], we can always rent one to travel."
+                m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
+                show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eua "Then again...{w=1}walks are far more romantic anyway~"
+
+    else:
+        $ persistent._mas_pm_owns_car = False
+
+        m 3eua "In fact, I remember you said before that you couldn't drive, either..."
+        m 3rksdla "You sure asked an interesting question, ehehe..."
+        m 1hua "Maybe that'll change one day and you'll get something then."
+        m 1hubfb "That way, you can take me all sorts of places, ahaha!"
+    return 
 
 init 5 python:
     addEvent(
