@@ -8503,11 +8503,16 @@ label monika_citizenship:
     m 1eka "Thank you for listening to me vent, [player]."
     return
     
-#Local variable to check if someone has skipped
-default persistent._mas_pm_monika_listened = None
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_graduation",category=['school'],prompt="Graduation",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_graduation",
+            category=['school'],
+            prompt="Graduation",
+            random=True
+        )
+    )
 
 label monika_graduation:
     m 2ekc "You know, [player], one thing I really wish I got to experience is my high school graduation."
@@ -8522,7 +8527,7 @@ label monika_graduation:
     m "..."
 
     #Went through and timed out on the menu twice
-    if persistent._mas_pm_monika_listened is False:
+    if persistent._mas_grad_speech_timed_out:
         m 2lsc "Oh... Sorry, I hope I'm not boring you again..."
         m 2esc "Let's forget about this and talk about something else, okay [player]?"
         return "derandom"
@@ -8540,8 +8545,26 @@ label monika_graduation:
         return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_grad_speech_call",
+            category=['school'],
+            prompt="Can I hear your graduation speech now?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
 
-    addEvent(Event(persistent.event_database,eventlabel="monika_grad_speech_call",category=['school'],prompt="Can I hear your graduation speech now?",pool=True,unlocked=False,rules={"no unlock": None}))
+default persistent._mas_grad_speech_timed_out = False
+# True if and only if the player ignored the grad speech twice
+
+default persistent._mas_pm_listened_to_grad_speech = None
+# True if the player, heard the grad speech, False if they ignored it
+
+default persistent._mas_pm_liked_grad_speech = None
+# True if user liked the grad speech, False if not
 
 label monika_grad_speech_call:
     if not renpy.seen_label("monika_grad_speech"):
@@ -8565,6 +8588,9 @@ label monika_grad_speech_call:
                     "It's great! I'm so proud of you!":
                         hide screen mas_background_timed_jump
                         $ mas_gainAffection(amount=5, bypass=True)
+                        $ persistent._mas_pm_liked_grad_speech = True
+                        $ persistent._mas_pm_listened_to_grad_speech = True
+
                         m 2subfb "Aww, [player]!"
                         m 2ekbfa "Thank you so much! I worked really hard on that speech, and it means so much that you're proud of me~"
                         show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
@@ -8573,13 +8599,19 @@ label monika_grad_speech_call:
 
                     "I like it!":
                         hide screen mas_background_timed_jump
-                        $mas_gainAffection(amount=3, bypass=True)
+                        $ mas_gainAffection(amount=3, bypass=True)
+                        $ persistent._mas_pm_liked_grad_speech = True
+                        $ persistent._mas_pm_listened_to_grad_speech = True
+
                         m 2eua "Thanks [player]!"
                         m 4hub "I'm glad you enjoyed it!"
 
                     "That {i}was{/i} long":
                         hide screen mas_background_timed_jump
-                        $mas_loseAffection()
+                        $ mas_loseAffection()
+                        $ persistent._mas_pm_liked_grad_speech = False
+                        $ persistent._mas_pm_listened_to_grad_speech = True
+
                         m 2tkc "Well, I {i}did{/i} warn you, didn't I?"
                         m 2dfc "..."
                         m 2tfc "I spent {i}so{/i} much time on it and that's all you have to say?"
@@ -8595,7 +8627,7 @@ label monika_grad_speech_call:
     #if you want to hear it again
     else:
         #did you timeout once?
-        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_monika_listened:
+        if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_listened_to_grad_speech:
             m 2eub "Sure thing [player]. I'll happily give my speech again!"
             m 2eka "You have enough time, right?"
 
@@ -8638,7 +8670,8 @@ label monika_grad_speech_call:
                 "It's great! I'm so proud of you!":
                     hide screen mas_background_timed_jump
                     $ mas_gainAffection(amount=3, bypass=True)
-                    $ persistent._mas_pm_monika_listened = True
+                    $ persistent._mas_pm_listened_to_grad_speech = True
+                    $ persistent._mas_pm_liked_grad_speech = True
 
                     m 2subfb "Aww, [player]!"
                     m 2ekbfa "Thank you so much! I worked really hard on that speech, and it means so much to me that you gave it another chance."
@@ -8650,7 +8683,8 @@ label monika_grad_speech_call:
                 "I like it!":
                     hide screen mas_background_timed_jump
                     $mas_gainAffection(amount=1, bypass=True)
-                    $ persistent._mas_pm_monika_listened = True
+                    $ persistent._mas_pm_listened_to_grad_speech = True
+                    $ persistent._mas_pm_liked_grad_speech = True
 
                     m 2eka "Thanks for listening this time, [player]~"
                     m "I'm so glad you enjoyed it!"                   
@@ -8658,7 +8692,8 @@ label monika_grad_speech_call:
                 "That {i}was{/i} long":
                     hide screen mas_background_timed_jump
                     $mas_loseAffection(modifier=2)
-                    $ persistent._mas_pm_monika_listened = True
+                    $ persistent._mas_pm_listened_to_grad_speech = True
+                    $ persistent._mas_pm_liked_grad_speech = False
 
                     m 2tfc "After acting like you actually wanted me to recite it for you again, {i}that's{/i} what you have to say?"
                     m 2dfc "..."
@@ -8670,6 +8705,7 @@ label monika_grad_speech_call:
 label monika_grad_speech_not_paying_attention:
     #First menu timeout
     hide screen mas_background_timed_jump
+    $ persistent._mas_pm_listened_to_grad_speech = False
 
     if mas_isMoniAff(higher=True):
         $ mas_loseAffection(modifier=0.5)
@@ -8701,7 +8737,8 @@ label monika_grad_speech_ignored_lock:
     #Second timeout, lock speech
     hide screen mas_background_timed_jump
     #Set false for modified dialogue in the random
-    $ persistent._mas_pm_monika_listened = False
+    $ persistent._mas_pm_listened_to_grad_speech = False
+    $ persistent._mas_grad_speech_timed_out = True
     $ mas_hideEVL("monika_grad_speech_call","EVE",lock=True,depool=True)
 
     if mas_isMoniAff(higher=True):
@@ -10176,7 +10213,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
                         hide screen mas_background_timed_jump
 
                 label monika_dating_startdate_confirm_tooslow:
-                    pass
+                    hide screen mas_background_timed_jump
 
                 # lol why would you stay slient?
                 # TODO: Affection considerable decrease?

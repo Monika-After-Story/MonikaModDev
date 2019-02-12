@@ -741,6 +741,7 @@ init -810 python:
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
             "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
+            "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -790,6 +791,7 @@ init -810 python:
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
+            "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",
