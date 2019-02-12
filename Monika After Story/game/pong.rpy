@@ -612,9 +612,10 @@ label mas_pong_dlg_winner:
         
     #Player lets Monika win after being asked to go easy on her without hitting the ball
     if monika_asks_to_go_easy and ball_paddle_bounces == 1:
-        m 2lssdrb "Ahaha.."
+        m 2lssdrb "Ahaha..."
         m 1hsb "This isn't exactly what I had in mind."
         m 4esb "However, I do appreciate the gesture~"
+        
         $ monika_asks_to_go_easy = False
         
         
@@ -622,7 +623,11 @@ label mas_pong_dlg_winner:
     if monika_asks_to_go_easy and ball_paddle_bounces <= 9:
         m 1esb "Yay, I won!"
         m 5ekbfa "Thanks, [player]!"
-        m 5hubfb "You are awesome~"
+        if renpy.random.randint(1, 2) == 1:
+            m 5hubfb "You are awesome~"
+        else:
+            m 5hubfb "You're so sweet, letting me win~"
+            
         $ monika_asks_to_go_easy = False
         
         
@@ -631,78 +636,113 @@ label mas_pong_dlg_winner:
         
         #One time
         if instant_loss_streak_counter == 1:
-            m 5hub "Ahaha, how did you miss that?"#
+            m 5hub "Ahaha, how did you miss that?"
             
             
         #Two times
         elif instant_loss_streak_counter == 2:
-            m 2tsb "[player], you missed again!"#
+            m 2tsb "[player], you missed again!"
             
             
         #Three times
         elif instant_loss_streak_counter == 3:
-            m 2tub "[player]!"#
-            
-            if persistent._mas_pm_ever_let_monika_win_on_purpose:
-                m 5rub "Are you letting me win on purpose again?"#
-            else:
-                m 5eub "Are you letting me win on purpose?"#
+            m 2tub "[player]!"
                 
+            if persistent._mas_pm_ever_let_monika_win_on_purpose:
+                $ menu_response = "Are you letting me win on purpose again?"
+            else:
+                $ menu_response = "Are you letting me win on purpose?"
+                
+            show monika 5eub
+            
             menu:
+                m "[menu_response]"
+                    
                 "Yes":
-                    m 1hub "You are so cute, [player]!"#
-                    m 5hua "Thank you for letting me win~"
-                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
-                        m 1ekbsa "But you know I wouldn't mind losing against you."#
-                        m 5hua "I like to see you win just as much as you like to see me win~"
+                    if renpy.random.randint(1, 2) == 1:
+                        m 1hub "You are so cute, [player]!"
+                        m 5hua "Thank you for letting me win~"
                     else:
-                        m 1eka "I wouldn't mind losing against you, though."#
+                        m 5hub "Ehehe!"
+                        m 5hua "Thanks for letting me win, [player]~"
+                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
+                        if renpy.random.randint(1, 2) == 1:
+                            m 1ekbsa "But you know I wouldn't mind losing against you."
+                        else:
+                            m 5eubla "But I wouldn't mind losing against you sometimes."
+                        m 5hub "I like to see you win just as much as you like to see me win~"
+                    else:
+                        if renpy.random.randint(1, 2) == 1:
+                            m 1eka "I wouldn't mind losing against you, though."
+                        else:
+                            m 5eub "I wouldn't mind losing against you, though."
+                            
                     $ player_lets_monika_win_on_purpose = True
                     $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
+                    
                 "No": 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
-                        m 1ttu "Are you sure?"
+                        
+                        show monika1ttu
+                        
                         menu:
+                            m "Are you sure?"
+                            
                             "Yes": 
-                                m 1hua "Alright."#
+                                m 1hua "Alright."
                                 m 2ekc "I'm sorry for assuming then..."
                                 m 3ekb "In case you can't concentrate, maybe you should take a break."
                                 m 4eka "Drinking a glass of water can also help."
+                                
                                 $ player_lets_monika_win_on_purpose = False
+                                
                             "No":
-                                m 1rfu "[player]."#
+                                m 1rfu "[player]!"
                                 m 2eub "Stop teasing me!"
+                                
                                 $ player_lets_monika_win_on_purpose = True
                                 $ lose_on_purpose = True
                         
                     else:
-                        m 2ekd "I'm sorry for assuming..."#
+                        m 2ekd "I'm sorry for assuming..."
                         m 3eka "If you can't concentrate, maybe you should take a break."
-                        m 4eka "Drinking a glass of water can also help."
+                        #m 4eka "Drinking a glass of water can also help."
+                        
                         $ player_lets_monika_win_on_purpose = False
                     
                     
         #More than three times
         else:
             if player_lets_monika_win_on_purpose:
-                m 5eub "Aren't you getting tired of letting me win, [player]?"#
+                if renpy.random.randint(1, 2) == 1:
+                    m 5eub "Aren't you getting tired of letting me win, [player]?"
+                else:
+                    m 2tku "Aren't you getting tired of letting me win, [player]?"
             else: 
-                m 1rsc "..."#
+                m 1rsc "..."
         
         
     #Monika wins a game after the player let her win on purpose at least three times
     elif instant_loss_streak_counter_before >= 3 and player_lets_monika_win_on_purpose:
-        m 3hub "Nice try, [player]!"#
-        m 6eua "As you see I can win all by myself!"
-        m 5hub "Ehehe~"
+        m 3hub "Nice try, [player]!"
+        if renpy.random.randint(1, 2) == 1:
+            m 6eua "As you see I can win all by myself!"
+        else:
+            m 3tsu "As you can see, I can win by myself!"
+        if renpy.random.randint(1, 2) == 1:
+            m 5hub "Ehehe~"
+        else:
+            m 3hub "Ehehe~"
         
     
     #Monika wins after telling the player she would win the next game
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
         m 1hub "Ehehe."
-        
         if persistent._mas_pong_difficulty_change_next_game_date == datetime.date.today():
-            m 2tsb "Didn't I tell you I would win this time?"#
+            if renpy.random.randint(1, 2) == 1:
+                m 2tsb "Didn't I tell you I would win this time?"
+            else:
+                m 4tsb "I told you I'd win the next game."
         else:
             m 4tsb "Remember how I told you I would win the next game?"
     
@@ -711,12 +751,13 @@ label mas_pong_dlg_winner:
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
         m 2wud "Oh."
         m 3esb "Try again, [player]!"
+        
         $ persistent._mas_pong_difficulty_change_next_game = PONG_PONG_DIFFICULTY_POWERDOWNBIG;  
     
     
     #Monika wins after going even easier on the player
     elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
-        m 2lssdrb "Ahahaha."
+        m 2lssdrb "Ahaha..."
         m 2lksdrb "I really hoped you would win this game."
         m 2hksdrb "Sorry about that, [player]!"
         
@@ -724,34 +765,42 @@ label mas_pong_dlg_winner:
     #The player has lost 3, 8, 13, ... matches in a row.
     elif loss_streak_counter >= 3 and loss_streak_counter % 5 == 3:
         m 2eku "Come on, [player], I know you can beat me!" 
-        m 2duu "Stay determined!"
-        
+        if renpy.random.randint(1, 2) == 1:
+            m 2duu "Stay determined!"
+        else:
+            m 3eub "Keep trying!"
+            
         
     #The player has lost 5, 10, 15, ... matches in a row.
     elif loss_streak_counter >= 5 and loss_streak_counter % 5 == 0:
-        m 2esd "I hope you are having fun, [player]."
+        m 2esd "I hope you're having fun, [player]."
         m 2rksdlc "I don't want you to feel bad for losing too often."
         
         
     #Monika wins after the player got a 3+ winstreak
     elif win_streak_counter_before >= 3:
-        m 1hub "Ahahaha!"
+        m 1hub "Ahaha!"
         m 1duu "Sorry, [player]."
-        m 1tub "It looks like your luck has run out."
-        m 4hua "Now it's my turn to shine~"
+        if renpy.random.randint(1, 2) == 1:
+            m 1tub "It looks like your luck has run out."
+            if renpy.random.randint(1, 2) == 1:
+                m 4hua "Now it's my turn to shine~"
+            else:
+                m 4hua "Now it's my time to shine~"
+        else:
+            m 2tku "Looks like your streak is over!"
             
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
         
         
     #Monika wins a second time after the player got a 3+ winstreak
     elif pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES:
-        m 6hua "Ehehe!"
+        if renpy.random.randint(1, 2) == 1:
+            m 6hua "Ehehe!"
+        else:
+            m 1hua "Ehehe!"
         m 1eub "Keep up, [player]!"
         
-        if persistent.gender == "M":
-            m 2tku "You don't want to lose to a girl like that, do you?"
-            
-            
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
 
 
@@ -759,11 +808,14 @@ label mas_pong_dlg_winner:
     elif ball_paddle_bounces > 9 and ball_paddle_bounces > pong_difficulty_before * 1/2:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_LONG_GAME:
             m 2hub "Playing against you is really tough, [player]!"
-            m 4eub "Keep it up and you will beat me, I'm sure of it."
+            m 4eub "Keep it up and you'll beat me, I'm sure of it."
         else:
             m 6hub "Well played, [player]!"
-            m 4eub "You are really good at pong!"
-            m 5hub "But so am I, Ahahaha!"
+            m 4eub "You're really good at pong!"
+            if renpy.random.randint(1, 2) == 1:
+                m 5hub "But so am I, Ahaha!"
+            else:
+                m 4tfu "But so am I, Ahaha!"
             
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_LONG_GAME
         
@@ -782,11 +834,20 @@ label mas_pong_dlg_winner:
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_TRICKSHOT:     
             m 2eksdld "Oh..." 
-            m 6ekc "It happened again." 
-            m 1hub "Sorry about that!"
+            if renpy.random.randint(1, 2) == 1:
+                m 6ekc "It happened again." 
+            else:
+                m 2eksdlc "It happened again."
+            if renpy.random.randint(1, 2) == 1:
+                m 1hub "Sorry about that!"
+            else:
+                m 3hksdlb "Sorry about that!"
         else:
-            m 2hub "Ahahaha, sorry [player]!"
-            m 3rud "It wasn't supposed to bounce that much..."
+            m 2hub "Ahaha, sorry [player]!"
+            if renpy.random.randint(1, 2) == 1:
+                m 3rud "It wasn't supposed to bounce that much..."
+            else:
+                m 3hksdla "I didn't mean to bounce it that much."
         
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_TRICKSHOT
         
@@ -801,7 +862,11 @@ label mas_pong_dlg_winner:
                 m 5hua "I believe in you~"
             else:
                 m 5eua "Concentrate, [player]." 
-                m 4hua "I'm sure you will win soon, if you try hard enough."
+                if renpy.random.randint(1, 2) == 1:
+                    m 4hua "I'm sure you'll win soon, if you try hard enough."
+                else:
+                    m 4hua "I'm sure you'll win soon." 
+                    m 4hub "Just keep trying!"
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EASY_GAME
             
@@ -812,9 +877,15 @@ label mas_pong_dlg_winner:
                 m 1hub "I win another round~"
             else:
                 if loss_streak_counter > 1:
-                    m 2esa "Looks like I won again."
+                    if renpy.random.randint(1, 2) == 1:
+                        m 2esa "Looks like I won again."
+                    else:
+                        m 3hub "Looks like I won again."
                 else:
-                    m 2esa "Looks like I won."
+                    if renpy.random.randint(1, 2) == 1:
+                        m 2esa "Looks like I won."
+                    else:
+                        m 2hub "Looks like I won."
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME           
             
@@ -822,15 +893,25 @@ label mas_pong_dlg_winner:
         #On hard difficulty
         elif pong_difficulty_before <= 15:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_HARD_GAME:
-                m 1hub "Ahahaha!"
+                m 1hub "Ahaha!"
                 m 3tsb "Am I playing too good for you?"
-                m 5hub "I am just kidding, [player]!"
-                m 6esa "I know you are pretty good yourself!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 5hub "I'm just kidding, [player]!"
+                    m 6esa "I know you are pretty good yourself!"
+                else:
+                    m 3tub "I'm just kidding, [player]."
+                    m 4hub "You're pretty good yourself!"
             else:
                 if loss_streak_counter > 1:
-                    m 1huu "I win again~!"
+                    if renpy.random.randint(1, 2) == 1:
+                        m 1huu "I win again~!"
+                    else:
+                        m 5huu "I win again~!"
                 else:
-                    m 1huu "I win~!"
+                    if renpy.random.randint(1, 2) == 1:
+                        m 1huu "I win~!"
+                    else:
+                        m 5huu "I win~!"
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_HARD_GAME 
             
@@ -839,7 +920,7 @@ label mas_pong_dlg_winner:
         elif pong_difficulty_before <= 20:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME:
                 m 5hub "It feels good to win!"
-                m 5eua "Don't worry, I'm sure you will win again soon~"
+                m 5eua "Don't worry, I'm sure you'll win again soon~"
             else:
                 if loss_streak_counter > 1:
                     m 2eub "I win another round!"
@@ -852,11 +933,20 @@ label mas_pong_dlg_winner:
         #On extreme difficulty
         else:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME:
-                m 2duu "You have done well to come this far, [player]."
-                m 4esb "I gave it everything I got, so don't feel too bad for losing from time to time."
+                if renpy.random.randint(1, 2) == 1: 
+                    m 2duu "You have done well to make it this far, [player]."
+                else:
+                    m 2duu "Not bad, [player]."
+                m 4esb "I gave it everything I had, so don't feel too bad for losing from time to time."
             else:
-                m 2hub "This time it's my win!"
-                m 5hub "Keep up, [player]!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 2hub "This time it's my win!"
+                else:
+                    m 2hua "This time it's my win!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 5hub "Keep up, [player]!"
+                else:
+                    m 2efu "Keep up, [player]!"
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME
         
@@ -876,7 +966,10 @@ label mas_pong_dlg_loser:
      
     #Monika loses on purpose
     if lose_on_purpose:
-        m 5hub "Ahahaha!"
+        if renpy.random.randint(1, 2) == 1:
+            m 5hub "Ahaha!"
+        else:
+            m 1hub "Ahaha!"
         m 1kua "Now we're even, [player]!"
         $ lose_on_purpose = False
         
@@ -893,13 +986,17 @@ label mas_pong_dlg_loser:
               
     #Player starts playing seriously and wins after losing at least 3 times on purpose
     elif instant_loss_streak_counter_before >= 3 and persistent._mas_pm_ever_let_monika_win_on_purpose:
-        m 5tsu "So you are playing seriously now?"#
-        m 1huu "Let's find out how good you really are, [player]!"  
+        if renpy.random.randint(1, 2) == 1:
+            m 5tsu "So you are playing seriously now?"
+            m 1huu "Let's find out how good you really are, [player]!"  
+        else:
+            m 2tsu "So you are playing seriously now?"
+            m 2tfu "Let's find out how good you really are, [player]!"
         
     
     #Player wins after losing at least three times in a row
     elif loss_streak_counter_before >= 3:
-        m 4eub "Congrats [player]!"#
+        m 4eub "Congrats [player]!"
         m 2eua "I knew you would win a game after enough practice!"
         m 4eua "Remember that skill comes mostly through repetitive training."
         m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
@@ -908,8 +1005,14 @@ label mas_pong_dlg_loser:
     #Monika loses after saying she would win this time
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
         m 6wuo "Wow..."
-        m 2tub "I was really trying this time, but you still won."
-        m 5hub "Way to go, [player]!"
+        if renpy.random.randint(1, 2) == 1:
+            m 2tub "I was really trying this time, but you still won."
+        else:
+            m 2tub "I was really trying this time!"
+        if renpy.random.randint(1, 2) == 1:
+            m 5hub "Way to go, [player]!"
+        else:
+            m 1hub "Way to go, [player]!"
         
         
     #Monika loses after going easy on the player
@@ -926,13 +1029,16 @@ label mas_pong_dlg_loser:
     #Monika loses by a trickshot
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT:     
-            m 2dfd "[player]!" 
-            m 2tkc "This is kind of unfair..." 
+            #m 2dfd "[player]!" 
+            #m 2tkc "This is kind of unfair..." 
             m 2ekp "..."
-            m 1hksdlb "Sorry, [player]."
+            #m 1hksdlb "Sorry, [player]."
             m 1lsc "Losing like this kind of gets to me."
         else:
-            m 2ekb "Wow, I just couldn't hit this trickshot."
+            if renpy.random.randint(1, 2) == 1:
+                m 2ekb "Wow, I just couldn't hit this trickshot."
+            else:
+                m 2wuo "Wow, there's no way I could hit that!"
         
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT  
         
@@ -940,52 +1046,83 @@ label mas_pong_dlg_loser:
     #Monika loses three times in a row
     elif win_streak_counter == 3:
         m 2wuo "Wow, [player]..."
-        m 2wud "You have beaten me three times in a row already..."
+        if renpy.random.randint(1, 2) == 1:
+            m 2wud "You have beaten me three times in a row already..."
+        else:
+            m 2wud "You've won three times in a row already..."
         
         #On easy difficulty
         if pong_difficulty_before <= 5:
-            m 2tub "Maybe I am going a little bit too easy on you~"
+            m 2tub "Maybe I'm going a little bit too easy on you~"
             
             
         #On medium difficulty
         elif pong_difficulty_before <= 10:
-            m 4hua "You definitely know how to play!"
+            if renpy.random.randint(1, 2) == 1:
+                m 4hua "You definitely know how to play!"
+            else:
+                m 4hua "You're good, [player]!"
             
             
         #On hard difficulty
         elif pong_difficulty_before <= 15:
-            m 5tsu "Watching you play is quite impressive!"
+            if renpy.random.randint(1, 2) == 1:
+                m 5tsu "Watching you play is quite impressive!"
+            else:
+                m 3hub "Well played, [player]!"
             
             
         #On expert difficulty
         elif pong_difficulty_before <= 20:
-            m 4tub "You should get a medal!"
+            if renpy.random.randint(1, 2) == 1:
+                m 4tub "You should get a medal!"
+            else:
+                m 4wuo "That was amazing, [player]!"
             
             
         #On extreme difficulty
         else:
-            m 5tsu "Are you sure you aren't cheating?"
+            if renpy.random.randint(1, 2) == 1:
+                m 5tsu "Are you sure you aren't cheating?"
+            else:
+                m 3tfu "Are you sure you aren't cheating, [player]?"
             m 1kua "Ehehe!"
         
         
     #Monika loses five times in a row
     elif win_streak_counter == 5:
-        m 2wud "[player]..." 
-        m 5euc "Have you been playing pong behind my back?" 
-        m 6ekd "I don't know what happened but I don't stand a chance against you!" 
-        m 1eua "Could you go a little bit easier on me please?"
+        m 2wud "[player]..."  
+        m 2tsu "Have you been practicing?"
+        if renpy.random.randint(1, 2) == 1:
+            m 6ekd "I don't know what happened but I don't stand a chance against you!" 
+        else:
+            m 3hksdlb "I don't know what happened but I don't stand a chance against you!"
+        if renpy.random.randint(1, 2) == 1:
+            m 1eua "Could you go a little bit easier on me please?"
+        else:
+            m 1eka "Do you think you could go a little easier on me please?"
         m 3hub "I would really appreciate it~"
+        
         $ monika_asks_to_go_easy = True
         
         
     #Monika loses a long game 
     elif ball_paddle_bounces > 10 and ball_paddle_bounces > pong_difficulty_before * 1/2:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_LONG_GAME:
-            m 2esb "Incredible, [player]!"
-            m 4esb "I just can't keep up with you, way to go!"
+            if renpy.random.randint(1, 2) == 1:
+                m 2esb "Incredible, [player]!"
+            else:
+                m 2wuo "Incredible, [player]!"
+            if renpy.random.randint(1, 2) == 1:
+                m 4esb "I just can't keep up with you, way to go!"
+            else:
+                m 4hksdlb "I can't keep up!"
         else:
             m 2hub "Amazing, [player]!"
-            m 4esb "You have an excellent technique to come that far!"
+            if renpy.random.randint(1, 2) == 1:
+                m 4esb "You have an excellent technique to come that far!"
+            else:
+                m 4eub "You're really good!"
         
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_LONG_GAME
         
@@ -993,10 +1130,10 @@ label mas_pong_dlg_loser:
     #Monika loses a short game
     elif ball_paddle_bounces <= 2:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME:     
-            m 2hksdlb "Ahahaha..." 
+            m 2hksdlb "Ahaha..." 
             m 3eksdla "I guess I should try a little harder..."
         else:
-            m 1rusdlb "I did not expect to lose this quickly."
+            m 1rusdlb "I didn't expect to lose this quickly."
         
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME
         
@@ -1020,7 +1157,7 @@ label mas_pong_dlg_loser:
         #On medium difficulty
         elif pong_difficulty_before <= 10:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME:
-                m 5eub "It is nice to see you win like that, [player]."
+                m 5eub "It's nice to see you win, [player]."
                 m 5hub "Keep it up~"
             else:
                 if win_streak_counter > 1:
@@ -1034,7 +1171,10 @@ label mas_pong_dlg_loser:
         #On hard difficulty
         elif pong_difficulty_before <= 15:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_HARD_GAME:
-                m 4eud "You won yet another time!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 4eud "You won yet another time!"
+                else:
+                    m 4eud "Another win for you!"
                 m 4eub "Pretty impressive, [player]."
             else:
                 if win_streak_counter > 1:
@@ -1048,9 +1188,18 @@ label mas_pong_dlg_loser:
         #On expert difficulty
         elif pong_difficulty_before <= 20:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME:
-                m 2eud "Wow, I am really trying but you just keep on winning!"
-                m 3tsb "Well, I'm sure I will beat you sooner or later [player]..."
-                m 6hub "Ahahaha!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 2eud "Wow, I'm really trying, but... {w=1}you just keep on winning!"
+                else:
+                    m 2wuo "Wow, I'm really trying...{w=1}you're unstoppable!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 3tsb "Well, I'm sure I'll beat you sooner or later [player]..."
+                else:
+                    m 2tfb "Well, I'm sure I'll beat you sooner or later [player]..."
+                if renpy.random.randint(1, 2) == 1:
+                    m 6hub "Ahaha!"
+                else:
+                    m 3hub "Ahaha!"
             else:
                 if win_streak_counter > 1:
                     m 4hubfb "You won again! Impressive!"
@@ -1064,12 +1213,18 @@ label mas_pong_dlg_loser:
         else:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME:
                 m 2esc "I simply can't believe how good you are at this."
-                m 4eud "You have great potential."
-                m 5eub "If you use it for something different than pong, I'm sure you can accomplish great things!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 4eud "You have great potential."
+                else:
+                    m 4eua "I love playing Pong with you."
+                #m 5eub "If you use it for something different than pong, I'm sure you can accomplish great things!"
             else:
-                m 1tsu "This is getting intense!"
+                if renpy.random.randint(1, 2) == 1:
+                    m 1tsu "This is getting intense!"
+                else:
+                    m 1tsu "This is intense!"
                 m 5hub "Good job, [player]!"
-                m 5esu "You really know how to play pong, huh?"
+                #m 5esu "You really know how to play pong, huh?"
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME
         
@@ -1090,7 +1245,10 @@ label mas_pong_dlg_loser_fast:
 # quick dialogue shown when monika is the pong winner
 label mas_pong_dlg_winner_fast:
     m 5hua "Thanks for playing Pong and letting me win, [player]."
-    m 6eua "I look forward to play with you again sometime."
+    if renpy.random.randint(1, 2) == 1:
+        m 6eua "I look forward to play with you again sometime."
+    else:
+        m 5hub "Let's play again sometime soon, okay?"
     
     $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERDOWN;    
     return
