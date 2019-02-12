@@ -1,8 +1,15 @@
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
 default persistent._mas_can_update = True
-define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
-define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# legacy. These will be redirected to the s3 links after 090
+#define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
+#define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# new s3 links
+define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
+define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
+
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
@@ -377,6 +384,49 @@ init -1 python:
                 self._state = self.STATE_CHECKING
 
 
+        @staticmethod
+        def _handleRedirect(new_url):
+            """
+            Attempts to connect to the redircted url
+
+            IN:
+                new_url - the redirect we want to connect to
+
+            Returns read_json if we got a connection, Nnone otherwise
+            """
+            import httplib
+
+            _http, double_slash, url = new_url.partition("//")
+            url, single_slash, req_uri = url.partition("/")
+            read_json = None
+            h_conn = httplib.HTTPConnection(
+                url
+            )
+
+            try:
+                # make connection
+                h_conn.connect()
+
+                # get file we need
+                h_conn.request("GET", single_slash + req_uri)
+                server_response = h_conn.getresponse()
+
+                if server_response.status != 200:
+                    # we dont follow anymore redirects
+                    return None
+
+                read_json = server_response.read()
+
+            except httplib.HTTPException:
+                # we assume a timeout / connection error
+                return None
+
+            finally:
+                h_conn.close()
+
+            return read_json
+
+
         # some function here
         @staticmethod
         def _sendRequest(update_link, thread_result):
@@ -409,13 +459,32 @@ init -1 python:
                 server_response = h_conn.getresponse()
 
                 # check status
-                if server_response.status != 200:
+                if server_response.status == 301:
+                    # redirect, pull the location header and continue
+                    new_url = server_response.getheader("location", None)
+
+                    if new_url is None:
+                        # we have to have the redirect location to continue
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return
+
+                    # otherwise, switch connection to the new url
+                    h_conn.close()
+                    read_json = MASUpdaterDisplayable._handleRedirect(new_url)
+
+                    if read_json is None:
+                        # redirect failed too
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return                   
+
+                elif server_response.status != 200:
                     # didnt get an OK response
                     thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
                     return
 
-                # good status, lets get the value
-                read_json = server_response.read()
+                else:
+                    # good status, lets get the value
+                    read_json = server_response.read()
 
             except httplib.HTTPException:
                 # we assume a timeout / connection error
@@ -651,6 +720,7 @@ init python in mas_updater:
         """
         import time
         import os
+        import shutil
 
         curr_time = time.time()
 
@@ -665,27 +735,26 @@ init python in mas_updater:
         if last_updated > curr_time:
             last_updated = 0
 
-        #Make sure the update folder is where it should be
-        can_update = renpy.store.updater.can_update()
-        if not can_update:
-
+        # always move update folder if possible
+        game_update = os.path.normcase(renpy.config.basedir + "/game/update")
+        ddlc_update = os.path.normcase(renpy.config.basedir + "/update")
+        base_update = os.path.normcase(renpy.config.basedir)
+        if os.access(game_update, os.F_OK):
             try:
-                os.rename(
-                    os.path.normcase(renpy.config.basedir + "/game/update"),
-                    os.path.normcase(renpy.config.basedir + "/update")
-                )
+                if os.access(ddlc_update, os.F_OK):
+                    shutil.rmtree(ddlc_update)
+
+                shutil.move(game_update, base_update)
                 can_update = renpy.store.updater.can_update()
 
-                if not can_update:
-                    # still cant move the update folder. notify user
-                    renpy.game.persistent._mas_can_update = False
-
             except:
-                # we cant move the update folder. We should notify user
-                renpy.game.persistent._mas_can_update = False
+                can_update = False
 
         else:
-            renpy.game.persistent._mas_can_update = True
+            can_update = renpy.store.updater.can_update()
+
+        # notify user
+        renpy.game.persistent._mas_can_update = can_update
 
         if force:
             check_wait = 0
@@ -753,7 +822,7 @@ label mas_updater_steam_issue:
     m 1eub "[player]!{w} I see you're using Steam."
     m 1eksdlb "Unfortunately..."
     m 1efp "I can't run the updater because Steam is a meanie!"
-    m 1eksdla "You'll have to manually install the update from the releases page on Github.{w} {a=https://github.com/Monika-After-Story/MonikaModDev/releases}Click here to go to releases page{/a}."
+    m 1eksdla "You'll have to manually install the update from the releases page on the mod's website.{w} {a=http://www.monikaafterstory.com/releases.html}Click here to go to releases page{/a}."
     m 1hua "Make sure to say goodbye to me first before installing the update."
     return
 
@@ -816,7 +885,14 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
+
+            # call quit so we can save important stuff
+            call quit
+            $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
+
+            # we have to quit because calling QUIT breaks things
+            jump _quit
 
         else:
             # just update the last checked, regardless of issue

@@ -3,7 +3,7 @@
 # Monika After Story (MAS)
 Monika After Story is a mod for the free game [Doki Doki Literature Club](https://www.ddlc.moe) from [Team Salvato](http://teamsalvato.com/). MAS builds on Act 3 to create a simulator of your eternal life with Monika, featuring new events, handlers, and metacommentary!
 
-Please check the [Releases](https://github.com/Backdash/MonikaModDev/releases) page for the latest stable build.
+Please check the [Releases](http://www.monikaafterstory.com/releases.html) page for the latest stable build.
 
 If you would like to make your own mod like this one, check out our sister project: the [DDLCModTemplate](https://github.com/therationalpi/DDLCModTemplate).
 
@@ -11,7 +11,9 @@ If you would like to make your own mod like this one, check out our sister proje
 
 Video tutorial on install MAS: https://youtu.be/eH5Q4Xdlg6Y
 
-* Download the latest [Release](https://github.com/Backdash/MonikaModDev/releases) zip file.
+* Navigate to the [releases page](http://www.monikaafterstory.com/releases.html).
+
+* Click the latest version link. This will download a zip file to your system.
 
 * Extract the contents the zip file into the `/game` folder of your DDLC installation.
 
@@ -58,6 +60,7 @@ Want to add some content to MAS? Here's a list of important .RPY files the game 
 - **script-moods.rpy**: Tell Monika that you're in _a mood_.
 - **script-stories.rpy**: Add stories for Monika to tell you.
 - **script-compliments.rpy**: Add compliments you can say to Monika.
+- **script-apologies.rpy**: Add things to apologize for.
 
 If you wish to add more dialogue to the space room, navigate to script-topics.rpy and use this template.
 
@@ -107,3 +110,4 @@ We do our best to conform to Team Salvato's [guidelines for fan works](http://te
 ### enhancement: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=enhancement)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### unstable: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=unstable)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### community: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=community)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### alpha: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=alpha)](https://travis-ci.org/Monika-After-Story/MonikaModDev)

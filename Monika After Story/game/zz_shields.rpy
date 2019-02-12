@@ -16,6 +16,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey 
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -30,6 +31,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button + hotkey + volume keys + mute key
             - Play button + hotkey
             - Calendar overlay
@@ -46,6 +48,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
 
@@ -56,8 +59,10 @@ init python:
             - Monika stops talking
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
         store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
         store.hkb_button.play_enabled = True
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
@@ -67,6 +72,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
 
@@ -77,8 +83,10 @@ init python:
             - Monika starts talking
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False
         store.hkb_button.talk_enabled = False
+        store.hkb_button.extra_enabled = False
         store.hkb_button.play_enabled = False
         store.mas_globals.dlg_workflow = True
         mas_calRaiseOverlayShield()
@@ -90,6 +98,7 @@ init python:
         """
         Enables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button
             - Play button + hotkey
             - Calendar overlay
@@ -98,6 +107,7 @@ init python:
             - The Music menu is closed
         """
         store.mas_hotkeys.talk_enabled = True
+        store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
         mas_OVLDropShield()
 
@@ -106,6 +116,7 @@ init python:
         """
         Disables:
             - Talk button + hotkey
+            - Extra button + hotkey
             - Music button
             - Play button + hotkey
             - Calendar overlay           
@@ -114,8 +125,41 @@ init python:
             - The Music menu is opened
         """
         store.mas_hotkeys.talk_enabled = False
+        store.mas_hotkeys.extra_enabled = False
         store.mas_hotkeys.play_enabled = False
         mas_OVLRaiseShield()
+
+
+    ################## Idle mode workflow #####################################
+    # Used in idle mode
+    def mas_DropShield_idle():
+        """
+        Enables:
+            - Talk hotkey
+            - Extra hotkey
+            - Music hotkey
+            - Play button + hotkey
+
+        Intended Flow:
+            - Idle mode ends
+        """
+        mas_HKDropShield()
+        store.hkb_button.play_enabled = True
+
+
+    def mas_RaiseShield_idle():
+        """
+        Disables:
+            - Talk hotkey
+            - Extra hotkey
+            - Music hotkey
+            - Play button + hotkey
+
+        Intended Flow:
+            - Idle mode starts
+        """
+        mas_HKRaiseShield()
+        store.hkb_button.play_enabled = False
 
 
 ################################## GENERALIZED ################################
@@ -153,3 +197,64 @@ init python:
         store.songs.enabled = False
 
 
+    ################## dlg <-> idle transitions ###############################
+    # specifically for transitioning between DLg and idle modes
+    def mas_dlgToIdleShield():
+        """
+        Enables:
+            - Talk button
+            - Extra button
+            - Calendar overlay
+
+        Disables:
+            - Music hotkey
+        
+        Unsets:
+            - dialogue workflow flag
+
+        Intended flow:
+            - when transitioning from a dialogue workflow to idle mode
+        """
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
+        store.mas_hotkeys.music_enabled = False
+        store.mas_globals.dlg_workflow = False
+        mas_calDropOverlayShield()
+
+    
+    def mas_coreToIdleShield():
+        """
+        Enables:
+            - Talk button
+            - Extra button
+            - Music button
+            - Calendar overlay
+            - Escape key
+
+        Intended flow:
+            - when transitiong from core sheilds to idle shields
+        """
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
+        store.hkb_button.music_enabled = True
+        mas_calDropOverlayShield()
+        enable_esc()
+
+
+    def mas_mumuToIdleShield():
+        """
+        Enables:
+            - Talk button
+            - Extra button
+            - Music button
+            - songs
+            - calendar overlay
+
+        Intended Flow:
+            - when transitioning from music menu to idle mode
+        """
+        store.hkb_button.talk_enabled = True
+        store.hkb_button.extra_enabled = True
+        store.hkb_button.music_enabled = True
+        store.songs.enabled = True
+        mas_calDropOverlayShield()
