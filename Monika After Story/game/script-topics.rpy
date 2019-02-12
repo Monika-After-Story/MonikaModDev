@@ -8713,7 +8713,6 @@ init 5 python:
             eventlabel="monika_vehicle",
             category=['monika'],
             prompt="What's your favorite car?",
-            random=False,
             unlocked=False,
             pool=True,
             rules={"no unlock": None}
@@ -8732,90 +8731,89 @@ default persistent._mas_pm_owns_car_type = None
 
 label monika_vehicle:
     m 1euc "My favorite car?"
-    m 1hksdlb "You already know i can't drive, silly~"
-    m "I would usually just walk or take the train if I had to go somewhere far."
-    m 1hksdlb "So I'm not too sure what to tell you, [player]..."
-    if persistent._mas_pm_driving_can_drive = True:
+    m 3hksdlb "You already know I can't drive, silly!"
+    m 3eua "Usually I would just walk or take the train if I had to go somewhere far."
+    m 1eka "So I'm not too sure what to tell you, [player]..."
+
+    if persistent._mas_pm_driving_can_drive:
         m 1eua "What about you?"
         menu:
             m "Do you own a car?"
             "Yes.":
                 $ persistent._mas_pm_owns_car = True
 
-                m 1hua "Oh wow, I can't believe that you actually own one!"
-                m 1hub "You're really lucky, you know that?"
-                m 1eub "I mean, just owning a vehicle is a status symbol itself."
+                m 1hua "Oh wow, that's really cool that you actually own one!"
+                m 3hub "You're really lucky, you know that?"
+                m 1eua "I mean, just owning a vehicle is a status symbol itself."
                 m "Isn't it a luxury to own one?"
                 m 1euc "Unless..."
-                m 4eua "You live in a country where its necessary, like the United States?"
-                m "Or are there other places like that in your reality?"
+                m 3eua "You live some place where it's necessary..."
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
-                m "Speaking of which..."
+                m 3eua "Speaking of which..."
                 menu:
                     m "What exactly do you drive?"
                     "SUV or Pickup Truck.":
                         $ persistent._mas_pm_owns_car_type = "SUV-Pickup"
 
                         m 1lksdla "Oh my, your vehicle must be pretty big then."
-                        m 1eua "That means there's plenty of space inside right?"
+                        m 1eua "That means there's plenty of space right?"
                         m 3etc "If that's the case..."
-                        m 3hua "We could go camping!"
-                        m 1eub "We'd drive all the way to the woods and you'd set up the tent while I prepared our picnic."
-                        m "While we're having lunch, we'd enjoy the scenery and nature surrounding us."
-                        m 1eua "Then when night falls, we'd lie down on our sleeping bags, stargazing while holding hands."
-                        m "It's definitely a romantic adventure I can't wait to share with you, [player]."
-                        m 1hub "Ehehe~"
+                        m 3hub "We could go camping!"
+                        m 3eua "We'd drive all the way to the woods and you'd set up the tent while I prepared our picnic."
+                        m 1eka "While we're having lunch, we'd enjoy the scenery and nature surrounding us..."
+                        m 1ekbsa "Then when night falls, we'd lie down on our sleeping bags, stargazing while holding hands."
+                        m 3ekbsa "It's definitely a romantic adventure I can't wait to share with you, [player]."
+                        m 1hkbfa "Ehehe~"
 
                     "Sports Car.":
                         $ persistent._mas_pm_owns_car_type = "sports"
 
-                        m 1hua "Oh, wow!"
+                        m 3hua "Oh, wow!"
                         m 3eua "It must be really fast, huh?"
                         m 3hub "We should definitely go on a road trip..."
-                        m 1eub "Taking the scenic route, cruising along the highway...."
-                        m 3eub "It'd be nice if it's possible to take down the roof of the car."
+                        m 1eub "Taking the scenic route, cruising along the highway..."
+                        m 1eub "If it's possible it'd be nice to take down the top of the car..."
                         m 3hua "That way, we can feel the wind on our faces while everything passes by in a blur!"
                         m 1esc "But..."
-                        m 1eka "It would also be nice to drive at a normal pace, savoring every moment of the ride together~"
+                        m 1eua "It would also be nice to drive at a normal pace..."
+                        m 1ekbsa "That way we can savor every moment of the ride together~"
 
                     "Sedan.":
                         $ persistent._mas_pm_owns_car_type = "sedan"
 
-                        m 1eua "That's nice."
+                        m 1eua "That's really nice."
                         m "I actually prefer that type of car, to be honest."
-                        m "From what I heard, they're lively and easy to drive."
-                        m 1eub "A car like that would be great for a drive around the city, don't you think, [player]?"
+                        m 3eua "From what I've heard, they're lively and easy to drive."
+                        m 3eub "A car like that would be great for driving around the city, don't you think, [player]?"
                         m 3eua "We could go to museums, parks, malls and so on."
-                        m 3eua "It'd be so nice to be able to drive to places that are too far to walk to by foot."
+                        m 1eua "It'd be so nice to be able to drive to places that are too far to walk to by foot."
                         m 3hua "It's always exhilarating to discover and explore new places."
-                        m 1rksdla "We might even find a place where the both of us can be together."
-                        m 1tsu "Alone..."
+                        m 1rksdla "We might even find a place where the both of us can be together..."
+                        m 1tsu "...Alone."
                         m 1hub "Ahaha!"
-                        m 3eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates."
-                        m 1hua "I hope you'll surprise me, [player]..."
-                        m 1hub "But then again, I'd love anything as long as it's with you~"
+                        m 3eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates..."
+                        m 1hua "I hope you'll surprise me, [player]."
+                        m 1hub "But then again...{w=0.5}I'd love anything as long as it's with you~"
 
                     "Motorcycle.":
                         $ persistent._mas_pm_owns_car_type = "motorcyle"
 
                         m 1hksdlb "Eh?"
                         m 1lksdlb "You drive a motorcycle?"
-                        m "I'm surprised, I never expected that to be your kind of ride."
-                        m 1lksdla "To be honest, I'm a little hesitant to ride one."
-                        m "..."
-                        m 1hua "Ahaha!"
-                        m 1eua "Really, I shouldn't be scared."
-                        m 4eua "You're the one driving after all."
+                        m 1eksdla "I'm surprised, I never expected that to be your kind of ride."
+                        m 1lksdlb "To be honest, I'm a little hesitant to ride one, ahaha!"
+                        m 1eua "Really, I shouldn't be scared..."
+                        m 3eua "You're the one driving after all."
                         m 1lksdla "That puts my mind at ease...{w=1}a little."
                         m 1eua "Just take it nice and slow, okay?"
-                        m 3hua "After all, we aren't in a rush."
-                        m 1tsu "Or was it your plan to drive fast, so that I would hang on to you tightly?"
-                        m 1hub "Ehehe~"
+                        m 3hua "After all, we aren't in any rush."
+                        m 1tsu "Or...{w=1}was it your plan to drive fast, so that I would hang on to you tightly?"
                         m 3tsu "That's pretty sneaky of you, [player]."
+                        m 1hub "Ehehe~"
                         m 3eka "There's no need to be shy, my love."
-                        m "I'll hug you, even if you don't ask for it..."
-                        m 1hub "Just because I love you so much~"
+                        m 3ekbsa "I'll hug you, even if you don't ask for it..."
+                        m 1hkbfa "That's how much I love you~"
 
             "No.":
                 $ persistent._mas_pm_owns_car = False
@@ -8825,12 +8823,15 @@ label monika_vehicle:
                 m 1eua "It's alright [player], we can always rent one to travel."
                 m 1hua "I'm sure that when you do, we'll make a lot of great memories together."
                 show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5eua "Then again, walks are far romantic anyway~"
+                m 5eua "Then again...{w=1}walks are far more romantic anyway~"
+
     else:
-        m 3eua "I remember you said that you couldn't drive, last time I asked."
-        m 3rksdla "You sure asked an interesting question, ahaha..."
+        $ persistent._mas_pm_owns_car = False
+
+        m 3eua "In fact, I remember you said before that you couldn't drive, either..."
+        m 3rksdla "You sure asked an interesting question, ehehe..."
         m 1hua "Maybe that'll change one day and you'll get something then."
-        m 1hubfb "Then, you could take me all sorts of places, ahaha!"
+        m 1hubfb "That way, you can take me all sorts of places, ahaha!"
     return 
 
 init 5 python:

@@ -317,6 +317,9 @@ label v0_9_1(version="v0_9_1"):
             plush_ev.category = None
             plush_ev.prompt = "monika_plushie"
 
+        if renpy.seen_label("monika_driving"):
+            mas_unlockEVL("monika_vehicle","EVE")
+
     return
 
 # 0.9.0
