@@ -790,7 +790,7 @@ label mas_pong_dlg_winner:
             m 1hub "Sorry about that!"
         else:
             m 2hub "Ahaha, sorry [player]!"
-            m 3hksdla "I didn't mean to bounce it that much..."
+            m 3hksdlb "I didn't mean to bounce it that much..."
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_TRICKSHOT
 
