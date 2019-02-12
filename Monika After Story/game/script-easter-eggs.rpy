@@ -215,10 +215,7 @@ label natsuki_name_scare_hungry:
     hide n_cg1bs
     hide monika_body_glitch1
 
-    if config.developer:
-        $ style.say_dialogue = style.normal
-    else:
-        $ style.say_dialogue = style.default_monika
+    $ mas_resetTextSpeed()
 
     # cleanup
     python:

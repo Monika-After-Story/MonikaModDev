@@ -3867,6 +3867,19 @@ image monika 1huu = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3874,6 +3887,19 @@ image monika 1tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="1l",
     right="1r",
@@ -8354,6 +8380,19 @@ image monika 3hub = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8361,6 +8400,19 @@ image monika 3tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="2l",
     right="1r",
