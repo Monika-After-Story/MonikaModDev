@@ -8504,6 +8504,28 @@ label monika_citizenship:
     return
     
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
+
+label monika_procrastination:
+    m 1euc "Hey [player], have you ever had something to do that you found really boring..."
+    m 3ekd "That rather than taking a lot of time to do it, you just keep putting it off?"
+    m 3eud "Well, when you have a task to do like that, I find it's best to just do it as soon as possible and get it done."
+    m 2tkc "When you put stuff off like that, it'll always be in the back of your mind."
+    m 4tkc "It makes everything you do less enjoyable, knowing you {i}still{/i} have this thing that you have to do."
+    m 4dkd "And what's worse is that the longer you put it off,{w=.0.5} you'll only increase the odds of more tasks getting added."
+    m 2rksdlc "Until eventually, you end up with so many things to do it seems impossible to ever get caught up."
+    m 4eksdld "It creates too much stress that can be easily avoided if you just keep on top of things in the first place."
+    m 2rksdld "Plus, if other people are counting on you, they'll start to think less of you and find that you're not very reliable."
+    m 4eua "So please, [player], whenever you have something that you have to do, just get it done."
+    m 1eka "Even if it means you can't spend time with me until it's over."
+    m 1hub "By then, you'll be less stressed and we can enjoy our time together that much more!"
+    m 3eua "So if you have something you've been putting off, why don't you go do it right now?"
+    m 1hua "If it's something you can do right here, I'll stay with you and provide all the support you need."
+    m 1hub "Then, when you're done, we can celebrate your accomplishment!"
+    m 1eka "All I want is for you to be happy and to be the best you can be, [player]~"    
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
