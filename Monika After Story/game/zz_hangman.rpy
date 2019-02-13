@@ -167,8 +167,8 @@ init -1 python in mas_hangman:
     HARD_MODE = 2
 
     hm_words = {
-        EASY_MODE: list(), # easy 
-        NORM_MODE: list(), # normal 
+        EASY_MODE: list(), # easy
+        NORM_MODE: list(), # normal
         HARD_MODE: list() # hard
     }
 
@@ -210,7 +210,7 @@ init -1 python in mas_hangman:
         for word in MONI_WORDS:
             wordlist.append(renpy.store.PoemWord(glitch=False,sPoint=0,yPoint=0,nPoint=0,word=word))
 
-    
+
     # file names
     NORMAL_LIST = "mod_assets/MASpoemwords.txt"
     HARD_LIST = "mod_assets/1000poemwords.txt"
@@ -224,13 +224,13 @@ init -1 python in mas_hangman:
         Does a deepcopy of the words for the given mode.
 
         Sets the hm_words dict for that mode
-        
+
         NOTE: does a list clear, so old references will still work
 
         RETURNS: the copied list of words. This is the same reference as
             hm_words's list. (empty list if mode is invalid)
         """
-        if _mode not in all_hm_words:   
+        if _mode not in all_hm_words:
             return list()
 
         # otherwise valid mode
@@ -365,6 +365,9 @@ init 10 python:
 
 # entry point for the hangman game
 label game_hangman:
+
+    $ disable_esc()
+
     python:
         import store.mas_hangman as mas_hmg
         is_sayori = (
@@ -393,11 +396,11 @@ label mas_hangman_game_select_diff:
 
     menu:
         m "Choose a difficulty."
-        "Easy":
+        "Easy.":
             $ hangman_mode = mas_hmg.EASY_MODE
-        "Normal":
+        "Normal.":
             $ hangman_mode = mas_hmg.NORM_MODE
-        "Hard":
+        "Hard.":
             $ hangman_mode = mas_hmg.HARD_MODE
 
 label mas_hangman_game_preloop:
@@ -492,6 +495,7 @@ label mas_hangman_game_loop:
     $ done = False
     $ win = False
     $ chances = 6
+    $ guesses = 0
     $ missed = ""
     $ avail_letters = list(hm_ltrs_only)
 
@@ -575,10 +579,7 @@ label mas_hangman_game_loop:
                 hide window_sayori
                 hide hm_s
                 show monika 1 zorder MAS_MONIKA_Z at hangman_monika_i
-                if config.developer:
-                    $ style.say_dialogue = style.normal
-                else:
-                    $ style.say_dialogue = style.default_monika
+                $ mas_resetTextSpeed()
                 $ is_window_sayori_visible = False
 
                 # enable disabled songs and esc
@@ -629,11 +630,20 @@ label mas_hangman_game_loop:
                 #hide hmg_hanging_man
                 #show hm_6 zorder 10 as hmg_hanging_man at hangman_hangman
                 m 1lksdlb "[player]..."
-                if chances == 6:
+                if guesses == 0:
                     m "I thought you said you wanted to play [store.mas_hangman.game_name]."
                     m 1lksdlc "You didn't even guess a single letter."
                     m "..."
                     m 1ekc "I really enjoy playing with you, you know."
+                elif chances == 5:
+                    m 1ekc "Don't give up so easily."
+                    m 3eka "That was only your first wrong letter!"
+                    if chances > 1:
+                        m 1eka "You still had [chances] more lives left."
+                    else:
+                        m 1eka "You still had [chances] more life left."
+                    m 1hua "I know you can do it!"
+                    m 1eka "It would really mean a lot to me if you just tried a bit harder."
                 else:
                     m "You should at least play to the end..."
                     m 1ekc "Giving up so easily is a sign of poor resolve."
@@ -643,6 +653,7 @@ label mas_hangman_game_loop:
                         m "I mean, you'd have to miss [chances] more letter to actually lose."
                 m 1eka "Can you play to the end next time, [player]? For me?"
             else:
+                $ guesses += 1
                 python:
                     if guess in word:
                         for index in range(0,len(word)):
@@ -683,9 +694,9 @@ label mas_hangman_game_loop:
     # try again?
     menu:
         m "Would you like to play again?"
-        "Yes":
+        "Yes.":
             jump mas_hangman_game_loop
-        "No":
+        "No.":
             jump mas_hangman_game_end
 
     # RETURN AT END
@@ -710,6 +721,8 @@ label mas_hangman_game_end:
         call mas_hangman_dlg_game_end_short from _mas_hangman_dges
     else:
         call mas_hangman_dlg_game_end_long from _mas_hangman_dgel
+
+    $ enable_esc()
 
     return
 

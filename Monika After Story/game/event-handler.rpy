@@ -22,6 +22,198 @@ image monika_waiting_img:
 transform prompt_monika:
     tcommon(950,z=0.8)
 
+
+init -900 python in mas_ev_data_ver:
+    # special store dedicated to verification of Event-based data
+    import datetime
+    import store
+
+    ## verification type functions
+    ## most of these lead into verify_item
+    def _verify_bool(val, allow_none=True):
+        return _verify_item(val, bool, allow_none)
+
+
+    def _verify_dict(val, allow_none=True):
+        return _verify_item(val, dict, allow_none)
+
+
+    def _verify_dt(val, allow_none=True):
+        if (
+                isinstance(val, datetime.datetime)
+                and val.year < 1900
+            ):
+            return False
+        return _verify_item(val, datetime.datetime, allow_none)
+
+
+    def _verify_evact(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return val in store.EV_ACTIONS
+
+
+    def _verify_int(val, allow_none=True):
+        return _verify_item(val, int, allow_none)
+
+
+    def _verify_str(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, str) or isinstance(val, unicode)
+
+
+    def _verify_tuli(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, list) or isinstance(val, tuple)
+
+
+    def _verify_tuli_aff(val, allow_none=True):
+        if val is None:
+            return allow_none
+
+        return isinstance(val, tuple) and len(val) == 2
+
+
+    def _verify_item(val, _type, allow_none=True):
+        """
+        Verifies the given value has the given type/instance
+
+        IN:
+            val - value to verify
+            _type - type to check
+            allow_none - If True, None should be considered good value,
+                false means bad value
+                (Default: True)
+
+        RETURNS: True if the given value has the given type/instance,
+            false otherwise
+        """
+        if val is None:
+            return allow_none
+
+        # otherwise check item
+        return isinstance(val, _type)
+
+
+    class MASCurriedVerify(object):
+        """
+        Allows for currying of a verification function
+        """
+
+        def __init__(self, verifier, allow_none):
+            """
+            Constructor
+
+            IN:
+                verifier - the verification function we want to use
+                allow_none - True if we should pass True for allow_none,
+                    false for False
+            """
+            self.verifier = verifier
+            self.allow_none = allow_none
+
+
+        def __call__(self, value):
+            """
+            Callable override
+
+            IN:
+                value - the value we want to verify
+
+            RETURNS: True if the value passes verification, False otherwise
+            """
+            return self.verifier(value, self.allow_none)
+
+
+    # map data to tuples
+    _verify_map = {
+        0: MASCurriedVerify(_verify_str, False), # eventlabel
+        1: MASCurriedVerify(_verify_str, True), # prompt
+        2: MASCurriedVerify(_verify_str, True), # label
+        # TODO: because of reactions, we cannot verify category yet
+#        3: MASCurriedVerify(_verify_tuli, True), # category
+        4: MASCurriedVerify(_verify_bool, True), # unlocked
+        5: MASCurriedVerify(_verify_bool, True), # random
+        6: MASCurriedVerify(_verify_bool, True), # pool
+        7: MASCurriedVerify(_verify_str, True), # conditional
+        8: MASCurriedVerify(_verify_evact, True), # action
+        9: MASCurriedVerify(_verify_dt, True), # start_date
+        10: MASCurriedVerify(_verify_dt, True), # end_date
+        11: MASCurriedVerify(_verify_dt, True), # unlock_date
+        12: MASCurriedVerify(_verify_int, False), # shown_count
+        13: MASCurriedVerify(_verify_str, True), # diary_entry
+
+        # NOTE: Rules are no longer saved in persistent (0.8.15+)
+#        14: MASCurriedVerify(_verify_dict, False), # rules
+
+        15: MASCurriedVerify(_verify_dt, True), # last_seen
+        16: MASCurriedVerify(_verify_tuli, True), # years
+        17: MASCurriedVerify(_verify_bool, True), # sensitive
+        18: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
+        19: MASCurriedVerify(_verify_bool, True), # show_in_idle
+    }
+
+
+    def _verify_data_line(ev_line):
+        """
+        Verifies event data for a single tuple of data.
+
+        IN:
+            ev_line - single line of data to verify
+
+        RETURNS:
+            True if passed verification, False if not
+        """
+        # we only want to check what exists in this data
+        for index in range(len(ev_line)):
+            # go through verification map and verify
+            verify = _verify_map.get(index, None)
+            if verify is not None and not verify(ev_line[index]):
+                # verification failed! 
+                return False
+
+        return True
+
+
+    def verify_event_data(per_db):
+        """
+        Verifies event data of the given persistent data. Entries that are 
+        invalid are removed. We only check the bits of data that we have, so
+        data lines with smaller sizes are only validated for what they have.
+
+        IN:
+            per_db - persistent database to verify
+        """
+        if per_db is None:
+            return
+
+        for ev_label in per_db.keys():
+            # pull out the data
+            ev_line = per_db[ev_label]
+
+            if not _verify_data_line(ev_line):
+                # verification failed! pop this element
+                store.mas_utils.writelog(
+                    "bad data found in {0}\n".format(ev_label)
+                )
+                per_db.pop(ev_label)
+
+
+    # verify some databases
+    verify_event_data(store.persistent.event_database)
+    verify_event_data(store.persistent._mas_compliments_database)
+    verify_event_data(store.persistent.farewell_database)
+    verify_event_data(store.persistent.greeting_database)
+    verify_event_data(store.persistent._mas_mood_database)
+    verify_event_data(store.persistent._mas_story_database)
+    verify_event_data(store.persistent._mas_apology_database)
+
+
 init -500 python:
     # initalies the locks db
 
@@ -46,8 +238,13 @@ init -500 python:
         False, # rules
         True, # last_seen
         False, # years
-        False # sensitive
+        False, # sensitive
+        False, # aff_range
+        False, # show_in_idle
     )
+
+    # NOTE: aff_range is unlocked because making adjustments to topics would
+    #   become really difficult if we just kept this locked
 
     # set defaults
 #    if (
@@ -81,17 +278,32 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
-init 850 python:
+init 4 python:
+
+    # the mapping is built here so events can use to build 
+    # map databses to a code
+    mas_all_ev_db_map = {
+        "EVE": store.evhand.event_database,
+        "BYE": store.evhand.farewell_database,
+        "GRE": store.evhand.greeting_database,
+        "MOO": store.mas_moods.mood_db,
+        "STY": store.mas_stories.story_database,
+        "CMP": store.mas_compliments.compliment_database,
+        "FLR": store.mas_filereacts.filereact_db,
+        "APL": store.mas_apology.apology_db
+    }
+
+
+init 6 python:
+    # here we combine the data from teh databases so we can have easy lookups.
+    
     # mainly to create centralized database for calendar lookup
     # (and possible general db lookups)
-    mas_all_ev_db = dict()
-    mas_all_ev_db.update(store.evhand.event_database)
-    mas_all_ev_db.update(store.evhand.farewell_database)
-    mas_all_ev_db.update(store.evhand.greeting_database)
-    mas_all_ev_db.update(store.mas_moods.mood_db)
-    mas_all_ev_db.update(store.mas_stories.story_database)
-    mas_all_ev_db.update(store.mas_compliments.compliment_database)
-    mas_all_ev_db.update(store.mas_filereacts.filereact_db)
+    mas_all_ev_db = {}
+    for code,ev_db in mas_all_ev_db_map.iteritems():
+        mas_all_ev_db.update(ev_db)
+
+    del code, ev_db
 
     def mas_getEV(ev_label):
         """
@@ -127,6 +339,89 @@ init 850 python:
         else:
             return ev.label
 
+
+    def mas_hideEVL(
+            ev_label, 
+            code, 
+            lock=False, 
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hides an event given label and code.
+
+        IN:
+            ev_label - label of event to hide
+            code - string code of the db this ev_label belongs to
+            lock - True if we want to lock this event
+                (Default: False)
+            derandom - True if we want to de random this event
+                (Default: False)
+            depool - True if we want to de pool this event
+                (Default: False)
+            decond - True if we want to remove conditoinal for this event
+                (Default: False)
+        """
+        store.evhand._hideEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond
+        )
+
+
+    def mas_showEVL(
+            ev_label,
+            code, 
+            unlock=False, 
+            _random=False,
+            _pool=False,
+        ):
+        """
+        Shows an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+            unlock - True if we want to unlock this Event
+                (Default: False)
+            _random - True if we want to random this event
+                (Default: False)
+            _pool - True if we want to random thsi event
+                (Default: False)
+        """
+        store.mas_showEvent(
+            mas_all_ev_db_map.get(code, {}).get(ev_label, None),
+            unlock=unlock,
+            _random=_random,
+            _pool=_pool
+        )
+
+
+    def mas_lockEVL(ev_label, code):
+        """
+        Locks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_hideEVL(ev_label, code, lock=True)
+
+
+    def mas_unlockEVL(ev_label, code):
+        """
+        Unlocks an event given label and code.
+
+        IN:
+            ev_label - label of event to show
+            code - string code of the db this ev_label belongs to
+        """
+        mas_showEVL(ev_label, code, unlock=True)
+
+
 python early:
     # FLOW CHECK CONSTANTS
     # these define where in game flow should a delayed action be checked
@@ -159,7 +454,7 @@ python early:
     ]
 
 
-init -600 python:
+init -880 python:
     # THE DELAYED ACTION MAP
     # this is the one we actually use when running stuff
     # please note that this is internal use only.
@@ -187,6 +482,9 @@ init -600 python:
         conditional - the logical conditional we want to check before performing
             action
             NOTE: this is not checked for correctness
+            If cond_is_callable is True, then this is called instead of eval'd.
+            In that case, the event object in question is passed into the
+            callable.
         action - EV_ACTION constant this delayed action will perform
             NOTE: this is not checked for existence
             NOTE: this can also be a callable
@@ -199,13 +497,23 @@ init -600 python:
         been_checked - True if this action has been checked this game session
         executed - True if this delayed action has been executed
             - Delayed actions that have been executed CANNOT be executed again
+        cond_is_callable - True if the conditional is a callable instead of
+            a eval check. 
+            NOTE: we do not check callable for correctness
         """
         import store.mas_utils as m_util
 
         ERR_COND = "[ERROR] delayed action has bad conditional '{0}' | {1}\n"
 
 
-        def __init__(self, _id, ev, conditional, action, flowcheck):
+        def __init__(self, 
+                _id,
+                ev,
+                conditional,
+                action,
+                flowcheck,
+                cond_is_callable=False
+            ):
             """
             Constructor
 
@@ -216,6 +524,7 @@ init -600 python:
                 _id - id of this delayedAction
                 ev - event this action is related to
                 conditional - conditional to check to do this action
+                    NOTE: if this is a callable, then event is passed in
                 action - EV_ACTION constant for this delayed action
                     NOTE: this can also be a callable
                         ev would be passed in as ev
@@ -223,16 +532,23 @@ init -600 python:
                         otherwise
                 flowcheck - FC constant saying when this delaeyd action should
                     be checked
+                cond_is_callable - True if the conditional is actually a
+                    callable.
+                    If this True and None is passed into the conditional, then
+                    we just return False (aka never run the delayedaction)
+                    (Default: False)
             """
-            try:
-                eval(conditional)
-            except Exception as e:
-                self.m_util.writelog(self.ERR_COND.format(
-                    conditional,
-                    str(e)
-                ))
-                raise e
+            if not cond_is_callable:
+                try:
+                    eval(conditional)
+                except Exception as e:
+                    self.m_util.writelog(self.ERR_COND.format(
+                        conditional,
+                        str(e)
+                    ))
+                    raise e
 
+            self.cond_is_callable = cond_is_callable
             self.conditional = conditional
             self.action = action
             self.flowcheck = flowcheck
@@ -257,7 +573,21 @@ init -600 python:
 
             # this should already have been checked on start
             try:
-                if eval(self.conditional):
+
+                # test conditional
+                if self.cond_is_callable:
+
+                    if self.conditional is None:
+                        # no conditional, then we dont do anything
+                        return False
+
+                    condition_passed = self.conditional(ev=self.ev)
+
+                else:
+                    condition_passed = eval(self.conditional)
+
+                # run event if condition passed
+                if condition_passed:
                     if self.action in Event.ACTION_MAP:
                         Event.ACTION_MAP[self.action](
                             self.ev, unlock_time=datetime.datetime.now()
@@ -279,7 +609,14 @@ init -600 python:
 
         
         @staticmethod
-        def makeWithLabel(_id, ev_label, conditional, action, flowcheck):
+        def makeWithLabel(
+                _id,
+                ev_label,
+                conditional,
+                action,
+                flowcheck,
+                cond_is_callable=False
+            ):
             """
             Makes a MASDelayedAction using an eventlabel instead of an event
 
@@ -294,13 +631,19 @@ init -600 python:
                         otherwise
                 flowcheck - FC constant saying when this delayed action should
                     be checked
+                cond_is_callable - True if the conditional is actually a
+                    callable.
+                    If this True and None is passed into the conditional, then
+                    we just return False (aka never run the delayedaction)
+                    (Default: False)
             """
             return MASDelayedAction(
                 _id,
                 mas_getEV(ev_label),
                 conditional,
                 action,
-                flowcheck
+                flowcheck,
+                cond_is_callable
             )
 
 
@@ -420,12 +763,47 @@ init 995 python:
     # this is where we run the init level batch of delayed actions
     mas_runDelayedActions(MAS_FC_INIT)
 
-init -600 python in mas_delact:
+init -880 python in mas_delact:
     # we can assume store is imported for all mas_delacts
     import store
 
-init 994 python in mas_delact:
+    def _MDA_safeadd(*ids):
+        """
+        Adds MASDelayedAction ids to the persistent mas delayed action list.
+
+        NOTE: this is only meant for code that runs super early yet needs to
+        add MASDelayedActions. 
+
+        NOTE: This will NOT add duplicates.
+
+        IN:
+            ids - ids to add to the delayed action list
+        """
+        for _id in ids:
+            if _id not in store.persistent._mas_delayed_action_list:
+                store.persistent._mas_delayed_action_list.append(_id)
+
+
+    def _MDA_saferm(*ids):
+        """
+        Removes MASDelayedActions from the persistent mas delayed action list.
+
+        NOTE: this is only meant for code that runs super early yet needs to
+        remove MASDelayedActions
+
+        NOTE: this will check for existence before removing
+
+        IN:
+            ids - ids to remove from the delayed action list
+        """
+        for _id in ids:
+            if _id in store.persistent._mas_delayed_action_list:
+                store.persistent._mas_delayed_action_list.remove(_id)
+
+
+init -875 python in mas_delact:
     # store containing a map for delayed action mapping
+    import datetime # for use in later functions
 
     # delayed action map:
     # key: ID of the delayed action
@@ -433,9 +811,26 @@ init 994 python in mas_delact:
     #   NOTE: this function MUST be runnable at init level 995.
     #   NOTE: the result delayedaction does NOT have to be runnable at 995.
     MAP = {
-        1: _greeting_ourreality_unlock,
-        2: _mas_monika_islands_unlock
+        # NOTE: commented IDs have been retired
+#        1: _greeting_ourreality_unlock,
+        2: _mas_monika_islands_unlock,
+#        3: _mas_bday_postbday_notimespent_reset,
+#        4: _mas_bday_pool_happy_bday_reset,
+#        5: _mas_bday_surprise_party_cleanup_reset,
+#        6: _mas_bday_surprise_party_hint_reset,
+#        7: _mas_bday_spent_time_with_reset,
+        8: _mas_d25_holiday_intro_upset_reset,
+        9: _mas_d25_monika_carolling_reset,
+        10: _mas_d25_monika_mistletoe_reset,
+        11: _mas_pf14_monika_lovey_dovey_reset,
+        12: _mas_f14_monika_vday_colors_reset,
+        13: _mas_f14_monika_vday_cliches_reset,
+        14: _mas_f14_monika_vday_chocolates_reset,
+        15: _mas_f14_monika_vday_origins_reset,
     }
+
+
+init 994 python in mas_delact:
 
     # this is also where we initialize the delayed action map
     def loadDelayedActionMap():
@@ -521,7 +916,10 @@ init -1 python in evhand:
         "mas_crashed_start",
         "monika_affection_nickname",
         "mas_coffee_finished_brewing",
-        "mas_coffee_finished_drinking"
+        "mas_coffee_finished_drinking",
+        "monikaroom_will_change",
+        "monika_hair_select",
+        "monika_clothes_select"
     ]
 
     # as well as special functions
@@ -730,18 +1128,31 @@ init python:
     import store.evhand as evhand
     import datetime
 
-    def addEvent(event, eventdb=evhand.event_database, skipCalendar=False):
+    def addEvent(
+            event, 
+            eventdb=None,
+            skipCalendar=False, 
+            code="EVE"
+        ):
         #
         # Adds an event object to the given eventdb dict
         # Properly checksfor label and conditional statements
         # This function ensures that a bad item is not added to the database
         #
+        # NOTE: this MUST be ran after init level 4.
+        #
         # IN:
         #   event - the Event object to add to database
         #   eventdb - The Event databse (dict) we want to add to
-        #       (Default: evhand.event_database)
+        #       NOTE: DEPRECATED. Use code instead.
+        #       NOTE: this can still be used for custom adds.
+        #       (Default: None)
         #   skipCalendar - flag that marks wheter or not calendar check should
         #       be skipped
+        #   code - code of the event database to add to.
+        #       (Default: EVE) - event database
+        if eventdb is None:
+            eventdb = mas_all_ev_db_map.get(code, None)
 
         if type(eventdb) is not dict:
             raise EventException("Given db is not of type dict")
@@ -760,6 +1171,11 @@ init python:
         if not skipCalendar and type(event.start_date) is datetime.datetime:
             # add it to the calendar database
             store.mas_calendar.addEvent(event)
+
+        # verify the event's dates
+        # NOTE: this covers time travel
+        Event._verifyAndSetDatesEV(event)
+
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
 
@@ -773,6 +1189,7 @@ init python:
             eventdb=evhand.event_database
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event in the given eventdb by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -788,14 +1205,7 @@ init python:
         #       (Default: False)
         #   eventdb - the event database (dict) we want to reference
         #       (DEfault: evhand.event_database)
-        evhand._hideEventLabel(
-            eventlabel,
-            lock=lock,
-            derandom=derandom,
-            depool=depool,
-            decond=decond,
-            eventdb=eventdb
-        )
+        mas_hideEventLabel(eventlabel, lock, derandom, depool, decond, eventdb)
 
 
     def hideEvent(
@@ -806,6 +1216,7 @@ init python:
             decond=False
         ):
         #
+        # NOTE: DEPRECATED
         # hide an event by Falsing its unlocked,
         # random, and pool properties.
         #
@@ -820,8 +1231,32 @@ init python:
         #   decond - True if we want to remove the conditional, False
         #       otherwise
         #       (Default: False)
+        mas_hideEvent(event, lock, derandom, depool, decond)
+
+
+    def mas_hideEvent(
+            ev,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False
+        ):
+        """
+        Hide an event by Falsing its unlocked/random/pool props
+
+        IN:
+            ev - event object we want to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+        """
         evhand._hideEvent(
-            event,
+            ev,
             lock=lock,
             derandom=derandom,
             depool=depool,
@@ -829,7 +1264,123 @@ init python:
         )
 
 
+    def mas_hideEventLabel(
+            ev_label,
+            lock=False,
+            derandom=False,
+            depool=False,
+            decond=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Hide an event label by Falsing its unlocked/random/pool props
+
+        NOTE: use this with custom eventdbs
+
+        IN:
+            ev_label - label of the event we wnat to hide
+            lock - True if we want to lock this event, False if not
+                (Default: False)
+            derandom - True fi we want to unrandom this Event, False if not
+                (Default: False)
+            depool - True if we want to unpool this event, Flase if not
+                (Default: False)
+            decond - True if we want to remove the conditional, False if not
+                (Default: False)
+            eventdb - event databsae ev_label is in
+                (Default: evhand.event_database)
+        """
+        evhand._hideEventLabel(
+            ev_label,
+            lock=lock,
+            derandom=derandom,
+            depool=depool,
+            decond=decond,
+            eventdb=eventdb
+        )
+
+
+    def mas_showEvent(
+            ev,
+            unlock=False,
+            _random=False,
+            _pool=False
+        ):
+        """
+        Show an event by Truing its unlock/ranomd/pool props
+
+        IN:
+            ev - event to show
+            unlock - True if we want to unlock this event, False if not
+                (Default: False)
+            _random - True if we want to random this event, Flase otherwise
+                (Default: False)
+            _pool - True if we want to pool this event, False otherwise
+                (Default: False)
+        """
+        if ev:
+            
+            if unlock:
+                ev.unlocked = True
+
+            if _random:
+                ev.random = True
+
+            if _pool:
+                ev.pool = True
+
+
+    def mas_showEventLabel(
+            ev_label,
+            unlock=False,
+            _random=False,
+            _pool=False,
+            eventdb=evhand.event_database
+        ):
+        """
+        Shows an event label, by Truing the unlocked, random, and pool
+        properties.
+
+        NOTE: use this for custom event dbs
+
+        IN:
+            ev_label - label of event to show
+            unlock - True if we want to unlock this event, False if not
+                (DEfault: False)
+            _random - True if we want to random this event, False if not
+                (Default: False)
+            _pool - True if we want to pool this event, False if not
+                (Default: False)
+            eventdb - eventdatabase this label belongs to
+                (Default: evhannd.event_database)
+        """
+        mas_showEvent(eventdb.get(ev_label, None), unlock, _random, _pool)
+
+
     def lockEvent(ev):
+        """
+        NOTE: DEPRECATED
+        Locks the given event object
+
+        IN:
+            ev - the event object to lock
+        """
+        mas_lockEvent(ev)
+
+
+    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Locks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_lockEventLabel(evlabel, eventdb)
+
+
+    def mas_lockEvent(ev):
         """
         Locks the given event object
 
@@ -839,7 +1390,7 @@ init python:
         evhand._lockEvent(ev)
 
 
-    def lockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_lockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Locks the given event label
 
@@ -881,6 +1432,29 @@ init python:
 
     def unlockEvent(ev):
         """
+        NOTE: DEPRECATED
+        Unlocks the given evnet object
+
+        IN:
+            ev - the event object to unlock
+        """
+        mas_unlockEvent(ev)
+
+
+    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+        """
+        NOTE: DEPRECATED
+        Unlocks the given event label
+
+        IN:
+            evlabel - event label of the event to lock
+            eventdb - Event database to find this label
+        """
+        mas_unlockEventLabel(evlabel, eventdb)
+
+
+    def mas_unlockEvent(ev):
+        """
         Unlocks the given evnet object
 
         IN:
@@ -889,7 +1463,7 @@ init python:
         evhand._unlockEvent(ev)
 
 
-    def unlockEventLabel(evlabel, eventdb=evhand.event_database):
+    def mas_unlockEventLabel(evlabel, eventdb=evhand.event_database):
         """
         Unlocks the given event label
 
@@ -964,6 +1538,25 @@ init python:
 
         if len(persistent.event_list) == 0:
             return None
+
+        if mas_in_idle_mode:
+            # idle requires us to loop over the list and find the first
+            # event available in idle
+            ev_found = None
+
+            for ev_label in persistent.event_list:
+                ev_found = mas_getEV(ev_label)
+                if ev_found is not None and ev_found.show_in_idle:
+
+                    if remove:
+                        persistent.event_list.remove(ev_label)
+
+                    persistent.current_monikatopic = ev_label
+                    return ev_label
+
+            # we did not find an idle event
+            return None
+
         elif remove:
             event_label = persistent.event_list.pop()
             persistent.current_monikatopic = event_label
@@ -1089,7 +1682,7 @@ init python:
         """
         import datetime
         now = datetime.datetime.now()
-        cleaned_list = list();
+        cleaned_list = list()
 
         for ev in ev_list:
             if ev.last_seen is not None:
@@ -1144,6 +1737,7 @@ init 1 python in evhand:
     import store
     import datetime
 
+
     def actionPush(ev, **kwargs):
         """
         Runs Push Event action for the given event
@@ -1164,7 +1758,7 @@ init 1 python in evhand:
         store.queueEvent(ev.eventlabel)
 
 
-    def actionUnlock(ev, unlock_time, **kwargs):
+    def actionUnlock(ev, **kwargs):
         """
         Unlocks an event. Also setse the unlock_date to the given
             unlock time
@@ -1174,7 +1768,7 @@ init 1 python in evhand:
             unlock_time - time to set unlock_date to
         """
         ev.unlocked = True
-        ev.unlock_date = unlock_time
+        ev.unlock_date = kwargs.get("unlock_time", datetime.datetime.now())
 
 
     def actionRandom(ev, **kwargs):
@@ -1183,8 +1777,11 @@ init 1 python in evhand:
 
         IN:
             ev - event to random
+            rebuild_ev - True if we wish to notify idle to rebuild events
         """
         ev.random = True
+        if kwargs.get("rebuild_ev", False):
+            store.mas_idle_mailbox.send_rebuild_msg()
 
 
     def actionPool(ev, **kwargs):
@@ -1243,11 +1840,25 @@ label call_next_event:
             $ ev.last_seen = datetime.datetime.now()
 
         if _return is not None:
-            if "derandom" in _return:
+            $ ret_items = _return.split("|")
+
+            if "derandom" in ret_items:
                 $ ev.random = False
 
-            if "quit" in _return:
-                $persistent.closed_self = True #Monika happily closes herself
+            if "no_unlock" in ret_items:
+                $ ev.unlocked = False
+                $ ev.unlock_date = None
+
+            if "rebuild_ev" in ret_items:
+                $ mas_rebuildEventLists()
+
+            if "idle" in ret_items:
+                $ mas_in_idle_mode = True
+                $ persistent._mas_in_idle_mode = True
+                $ renpy.save_persistent()
+
+            if "quit" in ret_items:
+                $ persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
         # loop over until all events have been called
@@ -1257,7 +1868,10 @@ label call_next_event:
         # return to normal pose
         show monika idle at t11 zorder MAS_MONIKA_Z
 
-        $ mas_DropShield_dlg()
+
+    if mas_in_idle_mode:
+        # idle mode should transition shields
+        $ mas_dlgToIdleShield()
 
     else:
         $ mas_DropShield_dlg()
@@ -1283,10 +1897,51 @@ label unlock_prompt:
 #pulled from a random set of prompts.
 
 label prompt_menu:
+
     $ mas_RaiseShield_dlg()
 
+    if mas_in_idle_mode:
+        # if talk is hit here, then we retrieve label from mailbox and 
+        # call it.
+        # after the event is over, we drop shields return to idle flow
+        $ cb_label = mas_idle_mailbox.get_idle_cb()
+
+        # NOTE: we call the label directly instead of pushing to event stack
+        #   so that if the user quits during the event, we get the appropriate
+        #   greeting instead of the regular reload greeting.
+        #
+        #   This also prevents the end-of-idle label from being saved and
+        #   restored on a relaunch, which would make no sense lol.
+
+        # only call label if it exists
+        if cb_label is not None:
+            call expression cb_label
+
+        # clean up idle stuff
+        $ mas_in_idle_mode = False
+
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
+
+        $ persistent._mas_greeting_type = None
+        $ persistent._mas_in_idle_mode = False
+
+        # if we have events, jump to idle before call_next_event to start
+        # the usual setup
+        if len(persistent.event_list) > 0:
+            jump ch30_post_mid_loop_eval
+
+        # otherwise, return regular spaceroom idle
+        jump prompt_menu_end
+
+
     python:
-        unlocked_events = Event.filterEvents(evhand.event_database,unlocked=True)
+        unlocked_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
@@ -1294,7 +1949,12 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
-        repeatable_events = Event.filterEvents(evhand.event_database,unlocked=True,pool=False)
+        repeatable_events = Event.filterEvents(
+            evhand.event_database,
+            unlocked=True,
+            pool=False,
+            aff=mas_curr_affection
+        )
     #Top level menu
     # NOTE: should we force this to a particualr exp considering that 
     # monika now rotates
@@ -1339,6 +1999,8 @@ label prompt_menu:
     else: #nevermind
         $_return = None
 
+label prompt_menu_end:
+
     show monika idle at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
@@ -1375,7 +2037,8 @@ label prompts_categories(pool=True):
 #            full_copy=True,
 #                category=[False,current_category],
             unlocked=True,
-            pool=pool
+            pool=pool,
+            aff=mas_curr_affection
         )
 
         # add all categories the master category list
@@ -1426,7 +2089,8 @@ label prompts_categories(pool=True):
 #                    full_copy=True,
                     category=(False,current_category),
                     unlocked=True,
-                    pool=pool
+                    pool=pool,
+                    aff=mas_curr_affection
                 )
 
                 # add deeper categories to a list

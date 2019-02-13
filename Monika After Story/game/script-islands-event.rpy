@@ -11,6 +11,9 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
+    # 
+    #   NOTE: other things to note:
+    #       on o31, we cannot have islands event
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
 
 
@@ -18,8 +21,6 @@ init -11 python in mas_island_event:
     import store
     import store.mas_dockstat as mds
     import store.mas_ics as mis
-    import store.mas_utils as mus
-    import os
 
     # setup the docking station we are going to use here
     islands_station = store.MASDockingStation(mis.islands_folder)
@@ -30,71 +31,7 @@ init -11 python in mas_island_event:
 
         Returns TRUE upon success, False otherwise
         """
-        for b64_name in mis.islands_map:
-            real_name, chksum = mis.islands_map[b64_name]
-
-            # read in the base64 versions, output an image
-            b64_pkg = islands_station.getPackage(b64_name)
-
-            if b64_pkg is None:
-                # if we didnt find the image, we in big trouble
-                return False
-
-            # setup the outfile
-            real_pkg = None
-            real_chksum = None
-            real_path = islands_station._trackPackage(real_name)
-
-            # now try to decode image
-            try:
-                real_pkg = open(real_path, "wb")
-
-                # unpack this package
-                islands_station._unpack(
-                    b64_pkg,
-                    real_pkg,
-                    True,
-                    False,
-                    bs=mds.b64_blocksize
-                )
-
-                # close and reopen as read
-                real_pkg.close()
-                real_pkg = open(real_path, "rb")
-
-                # check pkg slip
-                real_chksum = islands_station.createPackageSlip(
-                    real_pkg,
-                    bs=mds.blocksize
-                )
-
-            except Exception as e:
-                mus.writelog("[ERROR] failed to decode '{0}' | {1}\n".format(
-                    b64_name,
-                    str(e)
-                ))
-                return False
-
-            finally:
-                # always close the base64 package
-                b64_pkg.close()
-
-                if real_pkg is not None:
-                    real_pkg.close()
-
-            # now to check this image for chksum correctness
-            if real_chksum is None:
-                # bad shit happened here somehow
-                mus.trydel(real_path)
-                return False
-
-            if real_chksum != chksum:
-                # decoded was wrong somehow
-                mus.trydel(real_path)
-                return False
-
-        # otherwise success somehow
-        return True
+        return mds.decodeImages(islands_station, mis.islands_map)
 
 
     def removeImages():
@@ -103,9 +40,15 @@ init -11 python in mas_island_event:
 
         AKA quitting
         """
-        for b64_name in mis.islands_map:
-            real_name, chksum = mis.islands_map[b64_name]
-            mus.trydel(islands_station._trackPackage(real_name), log=True)
+        mds.removeImages(islands_station, mis.islands_map)
+
+
+init 4 python:
+    # adjustments to islands flags in the case of other runtime things
+    if mas_isO31():
+        # no islands event on o31
+        mas_cannot_decode_islands = True
+        store.mas_island_event.removeImages()
 
 
 init 5 python:
@@ -118,11 +61,12 @@ init 5 python:
                 prompt="Can you show me the floating islands?",
                 pool=True,
                 unlocked=False,
-                rules={"no unlock": None}
+                rules={"no unlock": None},
+                aff_range=(mas_aff.ENAMORED, None)
             )
         )
 
-init 900 python in mas_delact:
+init -876 python in mas_delact:
     # this event requires a delayed aciton, since we cannot ensure that
     # the sprites for this were decoded correctly
 
@@ -316,7 +260,7 @@ label mas_monika_night2:
     m "Have you ever gone stargazing, [player]?"
     m "Taking some time out of your evening to look at the night sky and to just stare at the beauty of the sky above..."
     m "It's surprisingly relaxing, you know?"
-    m "I’ve found that it can really relieve stress and clear your head..."
+    m "I've found that it can really relieve stress and clear your head..."
     m "And seeing all kinds of constellations in the sky just fills your mind with wonder."
     m "Of course, it really makes you realize just how small we are in the universe."
     m "Ahaha..."
@@ -396,16 +340,20 @@ label mas_island_bookshelf2:
     return
 
 screen mas_islands_background:
-    if morning_flag:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/without_frame.png"
-        else:
-            add "mod_assets/location/special/with_frame.png"
-    else:
-        if _mas_island_window_open:
-            add "mod_assets/location/special/night_without_frame.png"
-        else:
-            add "mod_assets/location/special/night_with_frame.png"
+
+    # NOTE: we will ALWAYS show the islands firs time without any weather options
+    add mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#    if morning_flag:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/without_frame.png"
+#        else:
+#            add "mod_assets/location/special/with_frame.png"
+#    else:
+#        if _mas_island_window_open:
+#            add "mod_assets/location/special/night_without_frame.png"
+#        else:
+#            add "mod_assets/location/special/night_with_frame.png"
 
     if _mas_island_shimeji:
         add "gui/poemgame/m_sticker_1.png" at moni_sticker_mid:
@@ -416,16 +364,24 @@ screen mas_islands_background:
 screen mas_show_islands():
     style_prefix "island"
     imagemap:
-        if morning_flag:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/without_frame.png"
-            else:
-                ground "mod_assets/location/special/with_frame.png"
-        else:
-            if _mas_island_window_open:
-                ground "mod_assets/location/special/night_without_frame.png"
-            else:
-                ground "mod_assets/location/special/night_with_frame.png"
+
+        ground mas_current_weather.isbg_window(morning_flag, _mas_island_window_open)
+
+#        if mas_is_raining:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/rain_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/rain_with_frame.png"
+#        elif morning_flag:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/with_frame.png"
+#        else:
+#            if _mas_island_window_open:
+#                ground "mod_assets/location/special/night_without_frame.png"
+#            else:
+#                ground "mod_assets/location/special/night_with_frame.png"
 
 
         hotspot (11, 13, 314, 270) action Return("mas_monika_upsidedownisland") # island upside down

@@ -20,6 +20,9 @@ label dev_exp_previewer:
 
     $ HKBHideButtons()
     $ prev_mflag = morning_flag
+    $ prev_zoom = store.mas_sprites.zoom_level
+    $ store.mas_sprites.reset_zoom()
+    $ prev_moni_state = monika_chr.save_state(True, True, True)
     $ monika_chr.reset_outfit()
     $ morning_flag = True
 
@@ -27,14 +30,14 @@ label dev_exp_previewer:
     $ result = ui.interact()
 
     $ monika_chr.reset_outfit()
+    $ monika_chr.load_state(prev_moni_state)
+    $ store.mas_sprites.zoom_level = prev_zoom
+    $ store.mas_sprites.adjust_zoom()
     $ morning_flag = prev_mflag
     $ HKBShowButtons()
 
     show monika at i11
     window auto
-
-    $ lockEventLabel("monika_hair_ponytail")
-    $ unlockEventLabel("monika_hair_down")
 
     return
 
@@ -45,6 +48,7 @@ init 999 python:
         we are about to go there
         """
         import pygame
+        import store.mas_sprites as mas_sprites
 
         # CONSTANTS
         VIEW_WIDTH = 1280
@@ -107,8 +111,11 @@ init 999 python:
         # for building the real deal sprites
 
         # list of leaning poses so we know
+        # format:
+        #   [0]: lean
+        #   [1]: arm
         LEAN_SMAP = {
-            5: "def"
+            5: ("def", "def")
         }
 
         # image name map
@@ -184,7 +191,11 @@ init 999 python:
         ### sprite code maps
         SEL_TX_MAP = {
             "torso": {
-                "def": "School Uniform"
+                "def": "School Uniform",
+                "marisa": "Witch Costume",
+                "rin": "Neko Costume",
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -304,7 +315,11 @@ init 999 python:
         # sprite code map
         SC_MAP = {
             "torso": [
-                "def"
+                "def",
+                "marisa",
+                "rin",
+                "santa",
+                "sundress_white",
             ],
             "arms": [
                 1,
@@ -713,8 +728,7 @@ init 999 python:
             """
             _arms = self._get_spr_code("arms")
             if _arms in self.LEAN_SMAP:
-                _lean = self.LEAN_SMAP[_arms]
-                _arms = None
+                _lean, _arms = self.LEAN_SMAP[_arms]
             else:
                 _lean = None
                 _arms = self._get_img_name("arms")
@@ -891,7 +905,10 @@ init 999 python:
         def _sel_hair(self, direct):
             self._adj_sel(direct, "hair")
             self._update_sel_tx("hair")
-            monika_chr.change_hair(self._get_spr_code("hair"))
+            monika_chr.change_hair(mas_sprites.HAIR_MAP.get(
+                self._get_spr_code("hair"),
+                mas_hair_def
+            ))
 
 
         def _sel_mouth(self, direct):
@@ -928,7 +945,10 @@ init 999 python:
         def _sel_torso(self, direct):
             self._adj_sel(direct, "torso")
             self._update_sel_tx("torso")
-            monika_chr.change_clothes(self._get_spr_code("torso"))
+            monika_chr.change_clothes(mas_sprites.CLOTH_MAP.get(
+                self._get_spr_code("torso"),
+                mas_clothes_def
+            ))
 
 
         ######################### button functions ###########################
