@@ -23,7 +23,8 @@ SHW_START = "show monika"
 SHW_KEY = [
     "at",
     "zorder",
-    "as"
+    "as",
+    "with"
 ]
 
 EXT_RPY = ".rpy"

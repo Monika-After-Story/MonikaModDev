@@ -1,5 +1,7 @@
 # Affection related checks
 
+default persistent._mas_disable_sorry = None
+
 init 5 python:
     addEvent(
         Event(
@@ -8,7 +10,6 @@ init 5 python:
             category=["dev"],
             prompt="AFFECTION CHECK",
             pool=True,
-            random=True,
             unlocked=True
         )
     )
