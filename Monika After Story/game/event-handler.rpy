@@ -1840,18 +1840,24 @@ label call_next_event:
             $ ev.last_seen = datetime.datetime.now()
 
         if _return is not None:
-            if "derandom" in _return:
+            $ ret_items = _return.split("|")
+
+            if "derandom" in ret_items:
                 $ ev.random = False
 
-            if "rebuild_ev" in _return:
+            if "no_unlock" in ret_items:
+                $ ev.unlocked = False
+                $ ev.unlock_date = None
+
+            if "rebuild_ev" in ret_items:
                 $ mas_rebuildEventLists()
 
-            if "idle" in _return:
+            if "idle" in ret_items:
                 $ mas_in_idle_mode = True
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
-            if "quit" in _return:
+            if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 

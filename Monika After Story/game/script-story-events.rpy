@@ -2281,3 +2281,70 @@ label mas_bday_player_bday_select_select:
     $ persistent._mas_player_bday = selected_date
     $ renpy.save_persistent()
     jump birthdate_set
+
+
+# Enables the text speed setting
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_text_speed_enabler",
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+default persistent._mas_text_speed_enabled = False
+# text speed should be enabled only when happy+
+
+default persistent._mas_pm_is_fast_reader = None
+# True if fast reader, False if not
+
+label mas_text_speed_enabler:
+    m 1eua "Hey [player], I was wondering..."
+    menu:
+        m "Are you a fast reader?"
+        "Yes.":
+            $ persistent._mas_pm_is_fast_reader = True
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1wub "Really? That's impressive."
+            m 1kua "I guess you do a lot of reading in your spare time."
+            m 1eua "In that case..."
+
+        "No.":
+            $ persistent._mas_pm_is_fast_reader = False
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1eud "Oh, that's alright."
+            m "Regardless..."
+
+    if not persistent._mas_pm_is_fast_reader:
+        # this sets the current speed to default monika's speed
+        $ preferences.text_cps = 30
+
+    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
+
+    $ mas_enableTextSpeed()
+
+    if persistent._mas_pm_is_fast_reader:
+        m 4eua "There!"
+
+    m 4eua "I've enabled the text speed setting!"
+
+    m 1hka "I was only controlling it earlier so I could make sure you read {i}every single{/i} word I say to you."
+    m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
+
+    if persistent._mas_pm_is_fast_reader:
+        m 1tuu "However,{w} I wonder if you can keep up."
+        m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
+        $ _history_list.pop()
+        m 3hua "Ahaha~"
+
+    else:
+        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time togther."
+        m "So feel free to change the text speed when you feel comfortable doing so."
+
+    return "derandom|no_unlock"
+
+

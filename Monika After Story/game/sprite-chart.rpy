@@ -3867,6 +3867,19 @@ image monika 1huu = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -3874,6 +3887,19 @@ image monika 1tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="1l",
     right="1r",
@@ -8128,6 +8154,36 @@ image monika 2tsu = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2rkbfsdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full",
+    sweat="def"
+)
+
+image monika 2rkbfsdlu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smug",
+    head="e",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full",
+    sweat="def"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8324,6 +8380,19 @@ image monika 3hub = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8331,6 +8400,19 @@ image monika 3tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="2l",
     right="1r",
@@ -9999,6 +10081,21 @@ image monika 3wubfsdld = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="small",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="full",
+    sweat="def"
+)
+
+image monika 3wubfsdlo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="gasp",
     head="o",
     left="2l",
     right="1r",
@@ -13969,3 +14066,8 @@ image monika idle = ConditionSwitch(
 image chibika smile = "gui/poemgame/m_sticker_1.png"
 image chibika sad = "mod_assets/other/m_sticker_sad.png"
 image chibika 3 = "gui/poemgame/m_sticker_2.png"
+
+#Ghost monika
+image ghost_monika: 
+    "mod_assets/other/ghost_monika.png" 
+    zoom 1.25

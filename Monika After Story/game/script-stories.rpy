@@ -544,7 +544,7 @@ label mas_scary_story_hunter:
         $ style.say_dialogue = style.edited
         y "{cps=*2}I'll get you too.{/cps}{nw}"
         hide yuri
-        $ style.say_dialogue = style.default_monika
+        $ mas_resetTextSpeed()
         show monika 1eua at i11 zorder MAS_MONIKA_Z
     hide emptydesk
     call mas_scary_story_cleanup
@@ -614,7 +614,7 @@ label .clean:
     hide natsuki
     $ pause(1.5)
     hide black
-    $ style.say_dialogue = style.default_monika
+    $ mas_resetTextSpeed()
     show monika 1eua at i11 zorder MAS_MONIKA_Z
 
 label .end:
@@ -707,7 +707,7 @@ label mas_scary_story_mujina:
         m 2tub "The salesman responded, 'Oh, you mean...{w=2}{b}like this?{/b}'{nw}"
         show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
         play sound "sfx/glitch1.ogg"
-        $ style.say_dialogue = style.default_monika
+        $ mas_resetTextSpeed()
         $ pause(0.4)
         stop sound
         hide mujina

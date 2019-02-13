@@ -35,6 +35,9 @@ init -1 python in mas_globals:
     # NOTE: set to True during o31, and also during sayori easter egg
     # TODO: need to this
 
+    text_speed_enabled = False
+    # set to True if text speed is enabled
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -528,6 +531,51 @@ init python:
         mas_idle_mailbox.get_idle_cb()
 
 
+    def mas_enableTextSpeed():
+        """
+        Enables text speed
+        """
+        style.say_dialogue = style.normal
+        store.mas_globals.text_speed_enabled = True
+
+
+    def mas_disableTextSpeed():
+        """
+        Disables text speed
+        """
+        style.say_dialogue = style.default_monika
+        store.mas_globals.text_speed_enabled = False
+
+
+    def mas_resetTextSpeed(ignoredev=False):
+        """
+        Sets text speed to the appropriate one depending on global settings
+
+        Rules:
+        1 - developer always gets text speed (unless ignoredev is True)
+        2 - text speed enabled if affection above happy
+        3 - text speed disabled otherwise
+        """
+        if config.developer and not ignoredev:
+            mas_enableTextSpeed()
+
+        elif (
+                mas_isMoniHappy(higher=True)
+                and persistent._mas_text_speed_enabled
+            ):
+            mas_enableTextSpeed()
+
+        else:
+            mas_disableTextSpeed()
+
+
+    def mas_isTextSpeedEnabled():
+        """
+        Returns true if text speed is enabled
+        """
+        return store.mas_globals.text_speed_enabled
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -825,8 +873,8 @@ label ch30_autoload:
     $ m.what_args["slow_abortable"] = config.developer
     $ import store.evhand as evhand
     if not config.developer:
-        $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
+    $ mas_resetTextSpeed()
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
