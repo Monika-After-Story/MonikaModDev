@@ -1,3 +1,59 @@
+# pong difficulty changes on win / loss. Determines monika's paddle-movement-cap, the ball's start-speed, max-speed and acceleration. 
+default persistent._mas_pong_difficulty = 10
+# increases the pong difficulty for the next game by the value this is set to. Resets after a finished match.
+default persistent._mas_pong_difficulty_change_next_game = 0
+# whether the player answered monika he lets her win on purpose
+default persistent._mas_pm_ever_let_monika_win_on_purpose = False
+# the day at which the difficulty change was initiated
+default persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
+
+define PONG_DIFFICULTY_CHANGE_ON_WIN            = +1
+define PONG_DIFFICULTY_CHANGE_ON_LOSS           = -1
+define PONG_DIFFICULTY_POWERUP                  = +5
+define PONG_DIFFICULTY_POWERDOWN                = -5
+define PONG_PONG_DIFFICULTY_POWERDOWNBIG        = -10
+
+#Triggering the same response twice in a row leads to a different response, not all responses reset this (on purpose)
+define PONG_MONIKA_RESPONSE_NONE                                                = 0
+define PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES                = 1
+define PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES         = 2
+define PONG_MONIKA_RESPONSE_WIN_LONG_GAME                                       = 3 
+define PONG_MONIKA_RESPONSE_WIN_SHORT_GAME                                      = 4
+define PONG_MONIKA_RESPONSE_WIN_TRICKSHOT                                       = 5
+define PONG_MONIKA_RESPONSE_WIN_EASY_GAME                                       = 6
+define PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME                                     = 7
+define PONG_MONIKA_RESPONSE_WIN_HARD_GAME                                       = 8
+define PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME                                     = 9
+define PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME                                    = 10
+define PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL                           = 11
+define PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT                                      = 12
+define PONG_MONIKA_RESPONSE_LOSE_LONG_GAME                                      = 13
+define PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME                                     = 14
+define PONG_MONIKA_RESPONSE_LOSE_EASY_GAME                                      = 15
+define PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME                                    = 16
+define PONG_MONIKA_RESPONSE_LOSE_HARD_GAME                                      = 17
+define PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME                                    = 18
+define PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   = 19
+
+define pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
+
+define played_pong_this_session = False
+define player_lets_monika_win_on_purpose = False
+define instant_loss_streak_counter = 0
+define loss_streak_counter = 0
+define win_streak_counter = 0
+define lose_on_purpose = False
+define monika_asks_to_go_easy = False
+
+# Need to be set before every game and be accessible outside the class
+define ball_paddle_bounces = 0
+define powerup_value_this_game = 0
+define instant_loss_streak_counter_before = 0
+define loss_streak_counter_before = 0
+define win_streak_counter_before = 0
+define pong_difficulty_before = 0
+define pong_angle_last_shot = 0.0
+
 init:
 
     image bg pong field = "mod_assets/pong_field.png"
@@ -19,6 +75,11 @@ init:
                 self.monika = Text(_("[m_name]"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
+                # Sounds used.
+                self.playsounds = True
+                self.soundboop = "mod_assets/pong_boop.wav"
+                self.soundbeep = "mod_assets/pong_beep.wav"
+
                 # The sizes of some of the images.
                 self.PADDLE_WIDTH = 8
                 self.PADDLE_HEIGHT = 79
@@ -27,19 +88,28 @@ init:
                 self.BALL_HEIGHT = 15
                 self.COURT_TOP = 124
                 self.COURT_BOTTOM = 654
-                
+
                 # Other variables
+                self.CURRENT_DIFFICULTY = max(persistent._mas_pong_difficulty + persistent._mas_pong_difficulty_change_next_game, 0)
+
                 self.COURT_WIDTH = 1280
                 self.COURT_HEIGHT = 720
-                self.BALL_MAX_SPEED = 4000.0
-                self.PADDLE_X_PLAYER = 128                                      #self.COURT_WIDTH * 0.1
-                self.PADDLE_X_MONIKA = 1152 - self.PADDLE_WIDTH                 #self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
+
+                self.BALL_LEFT = 80 - self.BALL_WIDTH / 2
+                self.BALL_RIGHT = 1199 + self.BALL_WIDTH / 2
                 self.BALL_TOP = self.COURT_TOP + self.BALL_HEIGHT / 2
                 self.BALL_BOTTOM = self.COURT_BOTTOM - self.BALL_HEIGHT / 2
+                
+                self.PADDLE_X_PLAYER = 128                                      #self.COURT_WIDTH * 0.1
+                self.PADDLE_X_MONIKA = 1152 - self.PADDLE_WIDTH                 #self.COURT_WIDTH * 0.9 - self.PADDLE_WIDTH
+
+                self.BALL_MAX_SPEED = 2000.0 + self.CURRENT_DIFFICULTY * 100.0
 
                 # The maximum possible reflection angle, achieved when the ball
                 # hits the corners of the paddle.
                 self.MAX_REFLECT_ANGLE = math.pi / 3
+                # A bit redundand, but math.pi / 3 is greater than 1, which is a problem.
+                self.MAX_ANGLE = 0.9
 
                 # If the ball is stuck to the paddle.
                 self.stuck = True
@@ -53,20 +123,18 @@ init:
                 # the centre.
                 self.ctargetoffset = self.get_random_offset()
 
-                # The speed of the computer.
-                # I changed this to triple. Get ready for the dark souls of pong
-                self.computerspeed = 1000.0
+                # The speed of Monika's paddle.
+                self.computerspeed = 150.0 + self.CURRENT_DIFFICULTY * 30.0
 
                 # Get an initial angle for launching the ball.
                 init_angle = random.uniform(-self.MAX_REFLECT_ANGLE, self.MAX_REFLECT_ANGLE)
-                
-                # The position, dental-position, and the speed of the
-                # ball.
+
+                # The position, dental-position, and the speed of the ball.
                 self.bx = self.PADDLE_X_PLAYER + self.PADDLE_WIDTH + 0.1
                 self.by = self.playery
                 self.bdx = .5 * math.cos(init_angle)
                 self.bdy = .5 * math.sin(init_angle)
-                self.bspeed = 500.0
+                self.bspeed = 500.0 + self.CURRENT_DIFFICULTY * 25
 
                 # Where the computer wants to go.
                 self.ctargety = self.by + self.ctargetoffset
@@ -86,59 +154,97 @@ init:
             def check_bounce_off_top(self):
                 # The ball wants to leave the screen upwards.
                 if self.by < self.BALL_TOP and self.oldby - self.by != 0:
-                    
+
                     # The x value at which the ball hits the upper wall.
                     collisionbx = self.oldbx + (self.bx - self.oldbx) * ((self.oldby - self.BALL_TOP) / (self.oldby - self.by))
+
+                    # Ignores the walls outside the field.
+                    if collisionbx < self.BALL_LEFT or collisionbx > self.BALL_RIGHT:
+                        return
+
                     self.bouncebx = collisionbx
                     self.bounceby = self.BALL_TOP
-                        
+
                     # Bounce off by teleporting ball (mirror position on wall).
                     self.by = -self.by + 2 * self.BALL_TOP
-                    
+
                     if not self.stuck:
                         self.bdy = -self.bdy
-                    
+
                     # Ball is so fast it still wants to leave the screen after mirroring, now downwards. 
                     # Bounces the ball again (to the other wall) and leaves it there.
                     if self.by > self.BALL_BOTTOM:
                         self.bx = self.bouncebx + (self.bx - self.bouncebx) * ((self.bounceby - self.BALL_BOTTOM) / (self.bounceby - self.by))
                         self.by = self.BALL_BOTTOM
                         self.bdy = -self.bdy
-                        
+
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
-                
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
+
                     return True             
                 return False
 
             def check_bounce_off_bottom(self):
                 # The ball wants to leave the screen downwards.
                 if self.by > self.BALL_BOTTOM and self.oldby - self.by != 0:
-                    
+
                     # The x value at which the ball hits the lower wall.  
                     collisionbx = self.oldbx + (self.bx - self.oldbx) * ((self.oldby - self.BALL_BOTTOM) / (self.oldby - self.by))
+
+                    # Ignores the walls outside the field.
+                    if collisionbx < self.BALL_LEFT or collisionbx > self.BALL_RIGHT:
+                        return
+
                     self.bouncebx = collisionbx
                     self.bounceby = self.BALL_BOTTOM
-                    
+
                     # Bounce off by teleporting ball (mirror position on wall). 
                     self.by = -self.by + 2 * self.BALL_BOTTOM
-                    
+
                     if not self.stuck:
                         self.bdy = -self.bdy
-                    
+
                     # Ball is so fast it still wants to leave the screen after mirroring, now downwards. 
                     # Bounces the ball again (to the other wall) and leaves it there.
                     if self.by < self.BALL_TOP:
                         self.bx = self.bouncebx + (self.bx - self.bouncebx) * ((self.bounceby - self.BALL_TOP) / (self.bounceby - self.by))
                         self.by = self.BALL_TOP
                         self.bdy = -self.bdy
-                        
+
                     if not self.stuck:
-                        renpy.sound.play("mod_assets/pong_beep.wav", channel=0)
-                 
+                        if self.playsounds:
+                            renpy.sound.play(self.soundbeep, channel=1)
+
                     return True
                 return False
+
+            def getCollisionY(self, hotside, is_computer):
+                # Checks whether the ball went through the player's paddle on the x-axis while moving left or monika's paddle while moving right.
+                # Returns the y collision-position and sets self.collidedonx
+
+                self.collidedonx = is_computer and self.oldbx <= hotside <= self.bx or not is_computer and self.oldbx >= hotside >= self.bx;
                 
+                if self.collidedonx:
+
+                    # Checks whether a bounce happened before potentially colliding with the paddle.
+                    if self.oldbx <= self.bouncebx <= hotside <= self.bx or self.oldbx >= self.bouncebx >= hotside >= self.bx:
+                        startbx = self.bouncebx
+                        startby = self.bounceby
+                    else:
+                        startbx = self.oldbx
+                        startby = self.oldby
+
+                    # The y value at which the ball hits the paddle.
+                    if startbx - self.bx != 0:
+                        return startby + (self.by - startby) * ((startbx - hotside) / (startbx - self.bx))
+                    else:
+                        return startby
+
+                # The ball did not go through the paddle on the x-axis.
+                else:
+                    return self.oldby
+
             # Recomputes the position of the ball, handles bounces, and
             # draws the screen.
             def render(self, width, height, st, at):
@@ -152,10 +258,10 @@ init:
 
                 dtime = st - self.oldst
                 self.oldst = st
-                
+
                 # Figure out where we want to move the ball to.
                 speed = dtime * self.bspeed
-                
+
                 # Stores the starting position of the ball.
                 self.oldbx = self.bx
                 self.oldby = self.by
@@ -168,27 +274,48 @@ init:
                 else:
                     self.bx += self.bdx * speed
                     self.by += self.bdy * speed
-                    
-                # Handles Monika's speed.
-                self.ctargety = self.by + self.ctargetoffset
-
-                # Moves Monika's paddle. It wants to go to self.by, but
-                # may be limited by it's speed limit.
-                cspeed = self.computerspeed * dtime
-                if abs(self.ctargety - self.computery) <= cspeed:
-                    self.computery = self.ctargety
-                elif self.ctargety - self.computery >= 0:
-                    self.computery += cspeed
-                else:
-                    self.computery -= cspeed
-                    
-                # Set the position of Monika's paddle.
-                self.computery = max(self.computery, self.COURT_TOP)
-                self.computery = min(self.computery, self.COURT_BOTTOM)
 
                 # Bounces the ball up to one time, either up or down
                 if not self.check_bounce_off_top():
                    self.check_bounce_off_bottom()
+
+                # Handles Monika's targeting and speed.
+
+                # If the ball goes through Monika's paddle, aim for the collision-y, not ball-y.
+                # Avoids Monika overshooting her aim on lags.
+                collisionby = self.getCollisionY(self.PADDLE_X_MONIKA, True)
+                if self.collidedonx:
+                    self.ctargety = collisionby + self.ctargetoffset
+                else:
+                    self.ctargety = self.by + self.ctargetoffset
+
+                cspeed = self.computerspeed * dtime
+
+                # Moves Monika's paddle. It wants to go to self.by, but
+                # may be limited by it's speed limit.
+                global lose_on_purpose
+                if lose_on_purpose and self.bx >= self.COURT_WIDTH * 0.75:
+                    if self.bx <= self.PADDLE_X_MONIKA:
+                        if self.ctargety > self.computery:
+                            self.computery -= cspeed
+                        else:
+                            self.computery += cspeed
+
+                else:
+                    cspeed = self.computerspeed * dtime
+
+                    if abs(self.ctargety - self.computery) <= cspeed:
+                        self.computery = self.ctargety
+                    elif self.ctargety >= self.computery:
+                        self.computery += cspeed
+                    else:
+                        self.computery -= cspeed
+
+                # Limits the position of Monika's paddle.
+                if self.computery > self.COURT_BOTTOM:
+                    self.computery = self.COURT_BOTTOM
+                elif self.computery < self.COURT_TOP: 
+                    self.computery = self.COURT_TOP;
 
                 # This draws a paddle, and checks for bounces.
                 def paddle(px, py, hotside, is_computer):
@@ -203,39 +330,15 @@ init:
                     # renpy.render returns a Render object, which we can
                     # blit to the Render we're making.
                     r.blit(pi, (int(px), int(py - self.PADDLE_RADIUS)))
-                    
-                    # Calculates the start-position (startbx, startby) of the ball.
-                    # Default is its old position, changes if the ball collided with a wall.
-                    
-                    collidedonx = False
-                    
-                    # Checks whether the ball went through the paddle on the x-axis while moving left or right.
-                    if self.oldbx <= hotside <= self.bx or self.oldbx >= hotside >= self.bx:
-                        collidedonx = True
-                        
-                        # Checks whether a bounce happened before potentially colliding with the paddle.
-                        if self.oldbx <= self.bouncebx <= hotside <= self.bx or self.oldbx >= self.bouncebx >= hotside >= self.bx:
-                            startbx = self.bouncebx
-                            startby = self.bounceby
-                        else:
-                            startbx = self.oldbx
-                            startby = self.oldby
-                            
-                        # The y value at which the ball hits the paddle.
-                        if startbx - self.bx != 0:
-                            collisionby = startby + (self.by - startby) * ((startbx - hotside) / (startbx - self.bx))
-                        else:
-                            collisionby = startby
-                        
-                    # The ball did not go through the paddle on the x-axis.
-                    else:
-                        collisionby = self.oldby
-                        
+
+                    # Checks whether the ball went through the paddle on the x-axis and gets the y-collision-posisiton.
+                    collisionby = self.getCollisionY(hotside, is_computer)
+
                     # Checks whether the ball went through the paddle on the y-axis.
                     collidedony = py - self.PADDLE_RADIUS - self.BALL_HEIGHT / 2 <= collisionby <= py + self.PADDLE_RADIUS + self.BALL_HEIGHT / 2
-                    
+
                     # Checks whether the ball collided with the paddle 
-                    if not self.stuck and collidedonx and collidedony:
+                    if not self.stuck and self.collidedonx and collidedony:
                         hit = True
                         if self.oldbx >= hotside >= self.bx:
                             self.bx = hotside + (hotside - self.bx)
@@ -243,20 +346,34 @@ init:
                             self.bx = hotside - (self.bx - hotside)
                         else:
                             hit = False
-                   
+
                         if hit:
                             # The reflection angle scales linearly with the
                             # distance from the centre to the point of impact.
                             angle = (self.by - py) / (self.PADDLE_RADIUS + self.BALL_HEIGHT / 2) * self.MAX_REFLECT_ANGLE
+
+                            if angle >    self.MAX_ANGLE:
+                                angle =   self.MAX_ANGLE
+                            elif angle < -self.MAX_ANGLE: 
+                                angle =  -self.MAX_ANGLE;
+
+                            global pong_angle_last_shot
+                            pong_angle_last_shot = angle;
+                                
                             self.bdy = .5 * math.sin(angle)
                             self.bdx = math.copysign(.5 * math.cos(angle), -self.bdx)
+
+                            global ball_paddle_bounces
+                            ball_paddle_bounces += 1
 
                             # Changes where the computer aims after a hit.
                             if is_computer:
                                 self.ctargetoffset = self.get_random_offset()
 
-                            renpy.sound.play("mod_assets/pong_boop.wav", channel=1)
-                            self.bspeed += 250
+                            if self.playsounds:
+                                renpy.sound.play(self.soundboop, channel=1)
+
+                            self.bspeed += 125.0 + self.CURRENT_DIFFICULTY * 12.5
                             if self.bspeed > self.BALL_MAX_SPEED:
                                 self.bspeed = self.BALL_MAX_SPEED
 
@@ -287,6 +404,21 @@ init:
 
                 # Check for a winner.
                 if self.bx < -200:
+
+                    if self.winner == None:
+                        global loss_streak_counter
+                        loss_streak_counter += 1
+
+                        if ball_paddle_bounces <= 1: 
+                            global instant_loss_streak_counter
+                            instant_loss_streak_counter += 1
+                        else:
+                            global instant_loss_streak_counter
+                            instant_loss_streak_counter = 0
+
+                    global win_streak_counter
+                    win_streak_counter = 0;
+
                     self.winner = "monika"
 
                     # Needed to ensure that event is called, noticing
@@ -294,7 +426,21 @@ init:
                     renpy.timeout(0)
 
                 elif self.bx > self.COURT_WIDTH + 200:
+                    
+                    if self.winner == None:
+                        global win_streak_counter
+                        win_streak_counter += 1;
+
+                    global loss_streak_counter
+                    loss_streak_counter = 0
+
+                    #won't reset if Monika misses the first hit
+                    if ball_paddle_bounces > 1:
+                        global instant_loss_streak_counter
+                        instant_loss_streak_counter = 0
+                    
                     self.winner = "player"
+                    
                     renpy.timeout(0)
 
                 # Ask that we be re-rendered ASAP, so we can show the next
@@ -326,11 +472,18 @@ init:
                 else:
                     raise renpy.IgnoreEvent()
 
-
 label game_pong:
     hide screen keylistener
-    m 1eua "You wanna play a game of Pong? Okay!"
-#    m 1b "I'll beat you for sure this time!" # this line is useless #Why's the line here then blyat #Why are those four lines still here?
+
+    if played_pong_this_session:
+        m 5esu "You wanna play pong again?"
+        m 4esb "I'm ready when you are~"
+    else:
+        m 1eua "You wanna play a game of Pong? Okay!"
+        $ played_pong_this_session = True
+
+    $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
+
     call demo_minigame_pong from _call_demo_minigame_pong
     return
 
@@ -352,6 +505,13 @@ label demo_minigame_pong:
             stop music fadeout 2.0
             $ renpy.music.play(adjusted_t5, fadein=2.0, tight=True)
 
+    $ ball_paddle_bounces = 0
+    $ pong_difficulty_before = persistent._mas_pong_difficulty
+    $ powerup_value_this_game = persistent._mas_pong_difficulty_change_next_game
+    $ loss_streak_counter_before = loss_streak_counter
+    $ win_streak_counter_before = win_streak_counter
+    $ instant_loss_streak_counter_before = instant_loss_streak_counter
+
     # Run the pong minigame, and determine the winner.
     python:
         ui.add(PongDisplayable())
@@ -367,21 +527,34 @@ label demo_minigame_pong:
 
     show monika 1eua
 
+    # resets the temporary difficulty bonus
+    $ persistent._mas_pong_difficulty_change_next_game = 0;  
+
     if winner == "monika":
+        $ new_difficulty = persistent._mas_pong_difficulty + PONG_DIFFICULTY_CHANGE_ON_LOSS
+
         $ inst_dialogue = store.mas_pong.DLG_WINNER
 
     else:
+        $ new_difficulty = persistent._mas_pong_difficulty + PONG_DIFFICULTY_CHANGE_ON_WIN
+
+        $ inst_dialogue = store.mas_pong.DLG_LOSER
+
         #Give player XP if this is their first win
         if not persistent.ever_won['pong']:
             $persistent.ever_won['pong'] = True
             $grant_xp(xp.WIN_GAME)
 
-        $ inst_dialogue = store.mas_pong.DLG_LOSER
+    if new_difficulty < 0:
+        $ persistent._mas_pong_difficulty = 0
+    else:
+        $ persistent._mas_pong_difficulty = new_difficulty; 
 
     call expression inst_dialogue from _mas_pong_inst_dialogue
 
     $ mas_gainAffection(modifier=0.5)
 
+    show monika 1hua
     menu:
         m "Do you want to play again?"
 
@@ -430,28 +603,502 @@ init -1 python in mas_pong:
 
 # dialogue shown right when monika wins
 label mas_pong_dlg_winner:
-    m 1hua "I win~!"
+    # adapts the dialog, depending on the difficulty, game length (bounces), games losses, wins and dialog response.
+    # the order of the dialog is crucial, the first matching condition is chosen, other possible dialog is cancelled in the process.
+    # todo: adapt dialog to affection
+    # todo: add randomized dialog
+
+
+    #Player lets Monika win after being asked to go easy on her without hitting the ball
+    if monika_asks_to_go_easy and ball_paddle_bounces == 1:
+        m 2lssdrb "Ahaha..."
+        m 1hsb "This isn't exactly what I had in mind."
+        m 4esb "However, I do appreciate the gesture~"
+        $ monika_asks_to_go_easy = False
+
+
+    #Player lets Monika win after being asked to go easy on her without hitting the ball too much
+    elif monika_asks_to_go_easy and ball_paddle_bounces <= 9:
+        m 1esb "Yay, I won!"
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "Thanks, [player]!"
+        m 5hubfb "You're so sweet, letting me win~"
+        $ monika_asks_to_go_easy = False
+
+
+    #The player fails to hit the first ball
+    elif ball_paddle_bounces == 1:
+
+        #One time
+        if instant_loss_streak_counter == 1:
+            m 5hub "Ahaha, how did you miss that?"
+
+
+        #Two times
+        elif instant_loss_streak_counter == 2:
+            m 2tsb "[player], you missed again!"
+
+
+        #Three times
+        elif instant_loss_streak_counter == 3:
+            m 2tub "[player]!"
+
+            if persistent._mas_pm_ever_let_monika_win_on_purpose:
+                $ menu_response = "Are you letting me win on purpose again?"
+            else:
+                $ menu_response = "Are you letting me win on purpose?"
+
+            show monika 5eub
+            menu:
+                m "[menu_response]"
+
+                "Yes":
+                    m 5hub "Ehehe!"
+                    m 5hua "Thanks for letting me win, [player]~"
+                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
+                        m 5eubla "But I wouldn't mind losing against you sometimes."
+                        m 5hub "I like to see you win just as much as you like to see me win~"
+                    else:
+                        m 1eka "I wouldn't mind losing against you, though."
+                    $ player_lets_monika_win_on_purpose = True
+                    $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
+                "No": 
+                    if persistent._mas_pm_ever_let_monika_win_on_purpose:
+                        show monika 1ttu
+
+                        menu:
+                            m "Are you sure?"
+
+                            "Yes": 
+                                m 1hua "Alright."
+                                m 2ekc "I'm sorry for assuming..."
+                                m 3ekb "In case you can't concentrate, maybe you should take a break."
+                                $ player_lets_monika_win_on_purpose = False
+                            "No":
+                                m 1rfu "[player]!"
+                                m 2eub "Stop teasing me!"
+                                $ player_lets_monika_win_on_purpose = True
+                                $ lose_on_purpose = True
+
+                    else:
+                        #TODO: Make this its own label
+                        m 2ekd "I'm sorry for assuming..."
+                        m 3eka "If you can't concentrate, maybe you should take a break."
+                        m 4eka "Drinking a glass of water can also help."
+                        $ player_lets_monika_win_on_purpose = False
+
+
+        #More than three times
+        else:
+            if player_lets_monika_win_on_purpose:
+                m 2tku "Aren't you getting tired of letting me win, [player]?"
+            else:
+                m 1rsc "..."
+
+
+    #Monika wins a game after the player let her win on purpose at least three times
+    elif instant_loss_streak_counter_before >= 3 and player_lets_monika_win_on_purpose:
+        m 3hub "Nice try, [player]!"
+        m 3tsu "As you can see, I can win by myself!"
+        m 3hub "Ehehe~"
+
+
+    #Monika wins after telling the player she would win the next game
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
+        m 1hub "Ehehe."
+
+        if persistent._mas_pong_difficulty_change_next_game_date == datetime.date.today():
+            m 2tsb "Didn't I tell you I would win this time?"
+        else:
+            m 4tsb "Remember?{w=0.5} I told you I'd win the next game."
+
+
+    #Monika wins after going easy on the player
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
+        m 2wud "Oh."
+        m 3esb "Try again, [player]!"
+
+        $ persistent._mas_pong_difficulty_change_next_game = PONG_PONG_DIFFICULTY_POWERDOWNBIG
+
+
+    #Monika wins after going even easier on the player
+    elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
+        m 2lssdrb "Ahaha..."
+        m 2lksdrb "I really hoped you'd win this game."
+        m 2hksdrb "Sorry about that, [player]!"
+
+
+    #The player has lost 3, 8, 13, ... matches in a row.
+    elif loss_streak_counter >= 3 and loss_streak_counter % 5 == 3:
+        m 2eku "Come on, [player], I know you can beat me!" 
+        m 3eub "Keep trying!"
+
+
+    #The player has lost 5, 10, 15, ... matches in a row.
+    elif loss_streak_counter >= 5 and loss_streak_counter % 5 == 0:
+        m 2esd "I hope you're having fun, [player]."
+        m 2rksdlc "I don't want you to feel bad for losing too often."
+
+
+    #Monika wins after the player got a 3+ winstreak
+    elif win_streak_counter_before >= 3:
+        m 1hub "Ahaha!"
+        m 1duu "Sorry, [player]."
+        m 1tub "It looks like your luck has run out."
+        m 4hua "Now it's my time to shine~"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
+
+
+    #Monika wins a second time after the player got a 3+ winstreak
+    elif pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES:
+        m 1hua "Ehehe!"
+        m 1eub "Keep up, [player]!"
+        m 2tku "It looks like your streak is over!"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
+
+
+    #Monika wins a long game
+    elif ball_paddle_bounces > 9 and ball_paddle_bounces > pong_difficulty_before * 1/2:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_LONG_GAME:
+            m 2hub "Playing against you is really tough, [player]!"
+            m 4eub "Keep it up and you'll beat me, I'm sure of it."
+        else:
+            m 6hub "Well played, [player]!"
+            m 4eub "You're really good!"
+            m 4tfu "But so am I, ahaha!"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_LONG_GAME
+
+
+    #Monika wins a short game
+    elif ball_paddle_bounces <= 3:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_SHORT_GAME:            
+            m 6hub "Another quick win for me~"
+        else:
+            m 4hub "Ehehe, I got you with that one!"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_SHORT_GAME
+
+
+    #Monika wins by a trickshot
+    elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_TRICKSHOT:     
+            m 2eksdld "Oh..." 
+            m 2eksdlc "It happened again." 
+            m 1hub "Sorry about that!"
+        else:
+            m 2hub "Ahaha, sorry [player]!"
+            m 3hksdlb "I didn't mean to bounce it that much..."
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_TRICKSHOT
+
+
+    #Monika wins a game
+    else:
+
+        #On easy difficulty
+        if pong_difficulty_before <= 5:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EASY_GAME:
+                m 1eub "You can do it, [player]!" 
+                m 1hub "I believe in you~"
+            else:
+                m 2eua "Concentrate, [player]." 
+                m 3hua "I'm sure you will win soon."
+                m 3hub "Just keep trying!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EASY_GAME
+
+
+        #On medium difficulty
+        elif pong_difficulty_before <= 10:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME:
+                m 1hub "I win another round~"
+            else:
+                if loss_streak_counter > 1:
+                    m 3hub "Looks like I won again."
+                else:
+                    m 2hub "Looks like I won."
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_MEDIUM_GAME           
+
+
+        #On hard difficulty
+        elif pong_difficulty_before <= 15:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_HARD_GAME:
+                m 1hub "Ahaha!"
+                m 3tsb "Am I playing too good for you?"
+                m 3tub "I'm just kidding, [player]."
+                m 4hub "You're pretty good yourself!"
+            else:
+                if loss_streak_counter > 1:
+                    m 1huu "I win again~!"
+                else:
+                    m 1huu "I win~!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_HARD_GAME 
+
+
+        #On expert difficulty
+        elif pong_difficulty_before <= 20:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME:
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+
+                m 5hub "It feels good to win!"
+                m 5eua "Don't worry, I'm sure you will win again soon~"
+            else:
+                if loss_streak_counter > 1:
+                    m 2eub "I win another round!"
+                else:
+                    m 2eub "I win this round!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME
+
+
+        #On extreme difficulty
+        else:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME:
+                m 2duu "Not bad, [player]."
+                m 4esb "I gave it everything I had, so don't feel too bad for losing from time to time."
+            else:
+                m 2hub "This time it's my win!"
+                m 2efu "Keep up, [player]!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME
+
     return
 
-# end dialogue shown when monika is the pong winner
-label mas_pong_dlg_winner_end:
-    m 4tku "I can't really get excited for a game this simple..."
-    m 1eua "At least we can still hang out with each other."
-    m 1hub "Ahaha!"
-    m 1eua "Thanks for letting me win, [player]."
-    m 1tku "Only elementary schoolers seriously lose at Pong, right?"
-    m 1hua "Ehehe~"
-    return
 
-# quick dialogue shown when monika is the pong winner
-label mas_pong_dlg_winner_fast:
-    # there is nothing here on purpose
-    return
 
 # dialogtue shown right when monika loses
 label mas_pong_dlg_loser:
-    m 1hub "You won! Congratulations."
+    # adapts the dialog, depending on the difficulty, game length (bounces), games losses, wins and dialog response.
+    # the order of the dialog is crucial, the first matching condition is chosen, other possible dialog is cancelled in the process.
+    # todo: adapt dialog to affection
+    # todo: add randomized dialog
+
+    $ monika_asks_to_go_easy = False
+
+    #Monika loses on purpose
+    if lose_on_purpose:
+        m 1hub "Ahaha!"
+        m 1kua "Now we're even, [player]!"
+        $ lose_on_purpose = False
+
+
+    #Monika loses without hitting the ball
+    elif ball_paddle_bounces == 0:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL: 
+            m 1rksdlb "Maybe I should try a bit harder..."
+        else:
+            m 1rksdlb "Ahaha, I guess I was a bit too slow there..."
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_WITHOUT_HITTING_BALL
+
+
+    #Player starts playing seriously and wins after losing at least 3 times on purpose
+    elif instant_loss_streak_counter_before >= 3 and persistent._mas_pm_ever_let_monika_win_on_purpose:
+        m 2tsu "So you're playing seriously now?"
+        m 2tfu "Let's find out how good you really are, [player]!"  
+
+
+    #Player wins after losing at least three times in a row
+    elif loss_streak_counter_before >= 3:
+        m 4eub "Congrats [player]!"
+        m 2eua "I knew you would win a game after enough practice!"
+        m 4eua "Remember that skill comes mostly through repetitive training."
+        m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
+
+
+    #Monika loses after saying she would win this time
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
+        m 6wuo "Wow..."
+        m 2tub "I was really trying this time!"
+        m 1hub "Way to go, [player]!"
+
+
+    #Monika loses after going easy on the player
+    elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
+        m 1hub "Ehehe!"
+        m 2hua "Good job, [player]!"
+
+
+    #Monika loses after going even easier on the player
+    elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
+        m 1hub "I'm glad you won this time, [player]."
+
+
+    #Monika loses by a trickshot
+    elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT:     
+            m 2wuo "[player]!" 
+            m 2hksdlb "There's no way I could've hit that!"
+        else:
+            m 2wuo "Wow, there's no way I could hit that!"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT  
+
+
+    #Monika loses three times in a row
+    elif win_streak_counter == 3:
+        m 2wuo "Wow, [player]..."
+        m 2wud "You've won three times in a row already..."
+
+        #On easy difficulty
+        if pong_difficulty_before <= 5:
+            m 2tub "Maybe I'm going a little bit too easy on you~"
+
+
+        #On medium difficulty
+        elif pong_difficulty_before <= 10:
+            m 4hua "You're pretty good, [player]!"
+
+
+        #On hard difficulty
+        elif pong_difficulty_before <= 15:
+            m 3hub "Well played, [player]!"
+
+
+        #On expert difficulty
+        elif pong_difficulty_before <= 20:
+            m 4wuo "That was amazing, [player]!"
+
+
+        #On extreme difficulty
+        else:
+            m 3tfu "Are you sure you aren't cheating?"
+            m 1kua "Ehehe!"
+
+
+    #Monika loses five times in a row
+    elif win_streak_counter == 5:
+        m 2wud "[player]..." 
+        m 2tsu "Have you been practicing?" 
+        m 3hksdlb "I don't know what happened but I don't stand a chance against you!" 
+        m 1eka "Could you go a little bit easier on me please?"
+        m 3hub "I would really appreciate it~"
+        $ monika_asks_to_go_easy = True
+
+
+    #Monika loses a long game 
+    elif ball_paddle_bounces > 10 and ball_paddle_bounces > pong_difficulty_before * 1/2:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_LONG_GAME:
+            m 2wuo "Incredible, [player]!"
+            m 4hksdlb "I can't keep up!"
+        else:
+            m 2hub "Amazing, [player]!"
+            m 4eub "You're really good!"
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_LONG_GAME
+
+
+    #Monika loses a short game
+    elif ball_paddle_bounces <= 2:
+        if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME:     
+            m 2hksdlb "Ahaha..." 
+            m 3eksdla "I guess I should try a little harder..."
+        else:
+            m 1rusdlb "I didn't expect to lose this quickly."
+
+        $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_SHORT_GAME
+
+
+    #Monika loses a game
+    else:
+
+        #On easy difficulty
+        if pong_difficulty_before <= 5:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EASY_GAME:
+                m 4eub "You win this round as well."
+            else:
+                if win_streak_counter > 1:
+                    m 2esb "You won again!"
+                else:
+                    m 2esb "You won!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EASY_GAME
+
+
+        #On medium difficulty
+        elif pong_difficulty_before <= 10:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME:
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eub "It's nice to see you win, [player]."
+                m 5hub "Keep it up~"
+            else:
+                if win_streak_counter > 1:
+                    m 1esb "You won again! Not bad."
+                else:
+                    m 1esb "You won! Not bad."
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_MEDIUM_GAME
+
+
+        #On hard difficulty
+        elif pong_difficulty_before <= 15:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_HARD_GAME:
+                m 4hub "Another win for you!"
+                m 4eua "Pretty impressive, [player]."
+            else:
+                if win_streak_counter > 1:
+                    m 2hub "You won again! Congratulations!"
+                else:
+                    m 2hub "You won! Congratulations!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_HARD_GAME
+
+
+        #On expert difficulty
+        elif pong_difficulty_before <= 20:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME:
+                m 2wuo "Wow, I'm really trying...{w=1}you're unstoppable!"
+                m 2tfb "Well, I'm sure I will beat you sooner or later [player]..."
+                m 3hub "Ahaha!"
+            else:
+                if win_streak_counter > 1:
+                    m 4hubfb "You won again! Impressive!"
+                else:
+                    m 4hubfb "You won! Impressive!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME
+
+
+        #On extreme difficulty
+        else:
+            if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME:
+                m 1hub "You're really good, [player]!"
+                m 4eua "I love playing Pong with you."
+            else:
+                m 1tsu "This is intense!"
+
+                show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hub "Good job, [player]!"
+
+            $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME
+
     return
+
+
+
+# quick dialogue shown when monika is the pong loser
+label mas_pong_dlg_loser_fast:
+    m 1tfu "I'll beat you next time, [player]."
+
+    $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERUP;    
+    $ persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
+    return
+
+
+
+# quick dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_fast:
+    m 5hua "Thanks for playing Pong and letting me win, [player]."
+    m 5hub "Let's play again sometime soon, okay?"
+
+    $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERDOWN;    
+    return
+
 
 # end dialogue shown when monka is the pong loser
 label mas_pong_dlg_loser_end:
@@ -461,7 +1108,14 @@ label mas_pong_dlg_loser_end:
     m 1hua "I guess you wanted to impress me, [player]~"
     return
 
-# quick dialogue shown when monika is the pong loser
-label mas_pong_dlg_loser_fast:
-    m 1tfu "I'll beat you next time, [player]."
+
+
+# end dialogue shown when monika is the pong winner
+label mas_pong_dlg_winner_end:
+    m 4tku "I can't really get excited for a game this simple..."
+    m 1eua "At least we can still hang out with each other."
+    m 1hub "Ahaha!"
+    m 1eua "Thanks for letting me win, [player]."
+    m 1tku "Only elementary schoolers seriously lose at Pong, right?"
+    m 1hua "Ehehe~"
     return
