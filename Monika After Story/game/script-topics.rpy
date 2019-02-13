@@ -6945,8 +6945,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
 
 label monika_procrastination:
-    m 1euc "Hey [player], have you ever had something to do that you found really boring?"
-    m 3ekd "So rather than taking a lot of time to do it, you just keep putting it off?"
+    m 1euc "Hey [player], have you ever had something to do that you found really boring..."
+    m 3ekd "That rather than taking a lot of time to do it, you just keep putting it off?"
     m 3eud "Well, when you have a task to do like that, I find it's best to just do it as soon as possible and get it done."
     m 2tkc "When you put stuff off like that, it'll always be in the back of your mind."
     m 4tkc "It makes everything you do less enjoyable, knowing you {i}still{/i} have this thing that you have to do."
