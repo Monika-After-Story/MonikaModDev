@@ -936,17 +936,11 @@ label mas_pong_dlg_winner:
                     m 4hub "You're pretty good yourself!"
             else:
                 if loss_streak_counter > 1:
-                    if renpy.random.randint(1, 2) == 1:
-                        m 1huu "I win again~!"
-                    else:
-                        m 5huu "I win again~!"
-                        $ ended_with_pose_5 = True
+                    m 1huu "I win again~!"
+                    $ ended_with_pose_5 = True
                 else:
-                    if renpy.random.randint(1, 2) == 1:
-                        m 1huu "I win~!"
-                    else:
-                        m 5huu "I win~!"
-                        $ ended_with_pose_5 = True
+                    m 1huu "I win~!"
+                    $ ended_with_pose_5 = True
         
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_HARD_GAME 
             
