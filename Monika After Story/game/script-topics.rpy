@@ -8647,7 +8647,7 @@ label monika_mystery:
     m 2eub "And that part is..."
     m 2eua "..."
     m 2wub "...a mystery!"
-    m 2hksdlb "Oh! I didn't mean I'm not going to tell you!"
+    m 2hksdlb "Oh! I didn't mean I'm not going to tell you, ahaha!"
     m 3esa "I mean that a mystery itself can change everything when it comes to a story!"
     m 3eub "If done really well it can build up intrigue and upon rereading make previous hints become obvious."
     m 3hub "Knowing a twist can really alter how someone views an entire narrative! Not many plot points can do that!"
