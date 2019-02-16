@@ -104,7 +104,10 @@ label mas_extra_menu_close:
         call mas_extra_menu_zoom_callback
 
     # re-enable overlays
-    $ mas_DropShield_core()
+    if mas_in_idle_mode:
+        $ mas_coreToIdleShield()
+    else:
+        $ mas_DropShield_core()
 
     show monika idle
 
@@ -219,14 +222,7 @@ label mas_extra_menu_zoom_in_max_first_time:
 ################################# EXTRA MENU STUFF ############################
 # [EXM900]
 
-# trasnform for the modebar show
-transform mas_modebar_tr_show:
-    xpos 1280 xanchor 0 ypos 10 yanchor 0
-    easein 0.7 xpos 1210
 
-transform mas_modebar_tr_hide:
-    xpos 1210 xanchor 0 ypos 10 yanchor 0
-    easeout 0.7 xpos 1280
 
 style mas_mbs_vbox is vbox
 style mas_mbs_button is button
