@@ -143,16 +143,9 @@ init -999 python in _mas_dm_dm:
 
     ## migration functions
 
-    def _dm_1_to_2():
-        """
-        Data migration from version 1 to 2
-
-        GOALS:
-            - remove rules property from events and shrink the tuples.
-        """
+    def __dm_1_to_2_helper(curr_len):
         ### needed vars
         rules_index = 14
-        curr_len = 20 # number of properties ver 1 events have. 
 
         ### perform logic
 
@@ -163,6 +156,72 @@ init -999 python in _mas_dm_dm:
         # removes rules proerty in lock db at index 14
         rm_idxs_db(lock_db, curr_len, rules_index)
 
+
+    def _dm_1_to_2():
+        """
+        Data migration from version 1 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples.
+        """
+        # ver 1 means we have 20 props
+        __dm_1_to_2_helper(20)
+
+
+    def _dm_0811_to_2():
+        """
+        Data migration from version 0811-0814 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples
+        """
+        # versions 0811-0814 means we have 19 props
+        __dm_1_to_2_helper(19)
+
+
+    def _dm_089_to_2():
+        """
+        Data migration from version 089-0810 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples
+        """
+        # versions 089-0810 means we have 18 props
+        __dm_1_to_2_helper(18)
+
+
+    def _dm_082_to_2():
+        """
+        Data migration from version 082-088 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples
+        """
+        # versions 082-088 means we have 17 props
+        __dm_1_to_2_helper(17)
+
+
+    def _dm_080_to_2():
+        """
+        Data migration from version 080-081 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples
+        """
+        # versions 080-081 means we have 16 props
+        __dm_1_to_2_helper(16)
+
+
+    def _dm_073_to_2():
+        """
+        Data migration from version 073-074 to 2
+
+        GOALS:
+            - remove rules property from events and shrink the tuples
+        """
+        # versions 073-074 means we have 15 props
+        __dm_1_to_2_helper(15)
+        
 
     def _dm_2_to_1():
         """
@@ -192,6 +251,14 @@ init -999 python in _mas_dm_dm:
     #       [1]: version updating to
     #   value: function to run
     dm_map = {
+        # special versions (aka migrating to 091)
+        (-1, 2): _dm_0811_to_2,
+        (-2, 2): _dm_089_to_2,
+        (-3, 2): _dm_082_to_2,
+        (-4, 2): _dm_080_to_2,
+        (-5, 2): _dm_073_to_2,
+
+        # regular data migrations
         (1, 2): _dm_1_to_2,
         (2, 1): _dm_2_to_1,
     }
@@ -297,8 +364,32 @@ init -897 python:
         # if this value is None, but version number is not None, then the user
         # is coming from a post 0.5.0 install. They should have some data,
         # but we only want to modify it if contains RULES. 
-        # TODO
-        pass
+        maj_ver, mid_ver, min_ver = persistent.version_number.split(".")
+        ## NOTE: crash if this fails.
+        mid_ver = int(mid_ver)
+        min_ver = int(min_ver)
+
+        if mid_ver == 8:
+            if 11 <= min_ver <= 14:
+                persistent._mas_dm_data_version = -1
+
+            elif 9 <= min_ver <= 10:
+                persistent._mas_dm_data_version = -2
+
+            elif 2 <= min_ver <= 8:
+                persistent._mas_dm_data_version = -3
+
+            else:
+                # 080 or 081
+                persistent._mas_dm_data_version = -4
+
+        elif mid_ver == 7 and 3 <= min_ver <= 4:
+            # 073 or 074
+            persistent._mas_dm_data_version = -5
+
+        else:
+            # otherwise, we do NOT do any ver migrations
+            persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
 
     if persistent._mas_dm_data_version != store._mas_dm_dm.dm_data_version:
         store._mas_dm_dm.run(
