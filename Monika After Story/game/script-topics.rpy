@@ -10839,7 +10839,7 @@ label monika_mystery:
     m 3esa "It can make a tale either amazing to go back through or make you never want to touch it again."
     m 2eub "And that part is..."
     m 2eua "..."
-    m 2wub "...a mystery!"
+    m 4wub "...a mystery!"
     m 2hksdlb "Oh! I didn't mean I'm not going to tell you, ahaha!"
     m 3esa "I mean that a mystery itself can change everything when it comes to a story!"
     m 3eub "If done really well it can build up intrigue and upon rereading make previous hints become obvious."
