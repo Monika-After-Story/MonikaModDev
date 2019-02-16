@@ -8660,5 +8660,5 @@ label monika_mystery:
     m 2lud "When they try to do that it can just make it seem like nonsense if not set up properly."
     m 2eud "I guess you could argue that not all stories with mysteries are {i}really{/i} a mystery..."
     m 2eua "Even cheesy action films use mystery elements to keep them interesting."
-    m 2hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
+    m 4hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
     return
