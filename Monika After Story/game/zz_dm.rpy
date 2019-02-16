@@ -4,7 +4,8 @@ init -999 python in _mas_dm_dm:
     import store
 
     # sets current version of dta migration
-    dm_data_version = 1
+    dm_data_version = 2
+    # this should be updated whenever we do a data version migration
 
     # persistent var is set below
 
@@ -40,7 +41,7 @@ init -999 python in _mas_dm_dm:
             _db[_key] = tuple(_data)
 
 
-    def __rm_idxs(_db, _key, _exp_len, idx_list)
+    def __rm_idxs(_db, _key, _exp_len, idx_list):
         """INTERNAL ONLY
         removes indexes off the given key off the given db
         """
@@ -50,7 +51,7 @@ init -999 python in _mas_dm_dm:
         _data = list(_db[_key])
 
         if ignore_len or len(_data) == _exp_len:
-            for idx in idx_list
+            for idx in idx_list:
                 _data.pop(idx)
 
             _db[_key] = tuple(_data)
@@ -182,7 +183,7 @@ init -999 python in _mas_dm_dm:
             add_idxs_db(_db, curr_len, (rules_index, rules_data))
 
         # adds rules property to lock db index 14
-        add_idxs_db(lock_db, curr_len, (rules_index, rules_data))
+        add_idxs_db(lock_db, curr_len, (rules_index, False))
 
 
     # data migration map maps data migration functions and a version jump:
@@ -194,22 +195,107 @@ init -999 python in _mas_dm_dm:
 
         # if we dont have a current dm version, we can assume we are using
         #   the latest one
-        (None, dm_data_version): None,
+        (None, dm_data_version): -1,
         (1, 2): _dm_1_to_2,
         (2, 1): _dm_2_to_1,
     }
 
 
+    ## algorithm runners
+
+    def __lessthan(val_a, val_b):
+        return val_a < val_b
+
+
+    def __morethan(val_a, val_b):
+        return val_a > val_b
+
+
+    def _find_dm_fun(piv_ver, adj_ver, direction):
+        """
+        Iterates until we find a dm function and returns it.
+
+        IN:
+            piv_ver - the verion number we dont want to change when searching
+            adj_ver - the verison number we change when searching
+            direction - the direction to change adj_ver
+
+        RETURNS tuple of the following format:
+            [0]: data migration function found, Or none if not found
+            [1]: value of adj_ver when data migration found 
+        """
+        if direction < 0:
+            # if we are decreasing the adj_ver, then we want to stop when
+            #   adj_ver is less than or equal to piv_ver
+            ver_not_passed = __lessthan
+        else:
+            # if we are increasing the adj_ver, then we want to stop when
+            #   adj_ver is more than or equal to piv_ver
+            ver_not_passed = __morethan
+
+        # start
+        dm_found = dm_map.get((piv_ver, adj_ver), None)
+        while dm_found is None and ver_not_passed(piv_ver, adj_ver):
+            adj_ver += direction
+            dm_found = dm_map.get((piv_ver, adj_ver), None)
+
+        return (dm_found, adj_ver)
+
+
+    def run(start_ver, end_ver):
+        """
+        Runs the data migration algorithms.
+
+        ASSUMES: start_ver != end_ver
+
+        IN:
+            start_ver - start version to start
+            end_ver - ending version number
+        """
+        _dm_fun = dm_map.get((start_ver, end_ver), None)
+
+        if _dm_fun == -1:
+            # this is first run.
+            return
+
+        if _dm_fun is not None:
+            # we have a direct migration
+            _dm_fun()
+            return
+
+        # otherwise, we need to loop
+        # but first, to find direction
+        # NOTE: direction is what value we should add to END version.
+        #   NOT what direction we are updating to.
+        if start_ver < end_ver:
+            direction = -1
+        else:
+            direction = 1
+
+        curr_ver = start_ver
+        while curr_ver != end_ver:
+            _dm_fun, new_ver = _find_dm_fun(curr_ver, end_ver, direction)
+
+            if _dm_fun is None:
+                raise Exception(
+                    "DATA MIGRATION FAILURE. {0} to {1}".format(
+                        curr_ver, end_ver
+                    )
+                )
+
+            # run the function and set the curr ver
+            _dm_fun()
+            curr_ver = new_ver
+
+
 init -897 python:
-    pass
+    if persistent._mas_dm_data_version != store._mas_dm_dm.dm_data_version:
+        store._mas_dm_dm.run(
+            persistent._mas_dm_data_version,
+            store._mas_dm_dm.dm_data_version
+        )
     
-    
-
-
-
-    # NOTE: this should be the last thing we do
-
-    persistent._mas_dm_data_version = 1
-    # this should be updated whenever we do a data version migration
+        # NOTE: this should be the last thing we do
+        persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
 
 
