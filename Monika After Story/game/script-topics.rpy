@@ -8638,7 +8638,6 @@ init 5 python:
             category=['literature','media'],
             random=True
             unlocked=False,
-            pool=False
         )
     )
 
