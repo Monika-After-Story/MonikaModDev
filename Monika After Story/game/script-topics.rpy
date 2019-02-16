@@ -8643,7 +8643,7 @@ init 5 python:
 
 label monika_mystery:
     m 3eub "You know [player], I think there's an interesting part in many stories that some people overlook."
-    m 3eua "It's something that makes a story interesting... but can break them when used incorrectly."
+    m 3eua "It's something that makes a story interesting...but can break them when used incorrectly."
     m 3esa "It can make a tale either amazing to go back through or make you never want to touch it again."
     m 2eub "And that part is..."
     m 2eua "..."
