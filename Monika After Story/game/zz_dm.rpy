@@ -192,10 +192,6 @@ init -999 python in _mas_dm_dm:
     #       [1]: version updating to
     #   value: function to run
     dm_map = {
-
-        # if we dont have a current dm version, we can assume we are using
-        #   the latest one
-        (None, dm_data_version): -1,
         (1, 2): _dm_1_to_2,
         (2, 1): _dm_2_to_1,
     }
@@ -289,6 +285,21 @@ init -999 python in _mas_dm_dm:
 
 
 init -897 python:
+    # if version number is None, we can assume this is a completely fresh game
+    # as version number is not set until init level 10
+    # This means that we should NOT run the data migration scripts
+    # NOTE: this also may mean the user is from 0.3.0, but data is too old by
+    #   that point.
+    if persistent.version_number is None:
+        persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
+
+    elif persistent._mas_dm_data_version is None:
+        # if this value is None, but version number is not None, then the user
+        # is coming from a post 0.5.0 install. They should have some data,
+        # but we only want to modify it if contains RULES. 
+        # TODO
+        pass
+
     if persistent._mas_dm_data_version != store._mas_dm_dm.dm_data_version:
         store._mas_dm_dm.run(
             persistent._mas_dm_data_version,
