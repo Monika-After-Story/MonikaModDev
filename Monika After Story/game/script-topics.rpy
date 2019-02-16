@@ -8636,7 +8636,7 @@ init 5 python:
             eventlabel='monika_mystery',
             prompt="Mysteries",
             category=['literature','media'],
-            random=True,
+            random=True
             unlocked=False,
             pool=False
         )
