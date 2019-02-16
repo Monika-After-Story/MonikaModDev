@@ -8650,7 +8650,7 @@ label monika_mystery:
     m 2hksdlb "Oh! I didn't mean I'm not going to tell you, ahaha!"
     m 3esa "I mean that a mystery itself can change everything when it comes to a story!"
     m 3eub "If done really well it can build up intrigue and upon rereading make previous hints become obvious."
-    m 3hub "Knowing a twist can really alter how someone views an entire narrative! Not many plot points can do that!"
+    m 3hub "Knowing a twist can really alter how someone views an entire narrative. Not many plot points can do that!"
     m 1eua "It's almost funny, knowing the answers actually changes how you view the story itself..."
     m 1eub "At first when you read a mystery you view the story from an unknowing perspective..."
     m 1esa "But upon rereading it you look at it from the author's view."
