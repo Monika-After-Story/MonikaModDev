@@ -10826,6 +10826,40 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel='monika_mystery',
+            prompt="Mysteries",
+            category=['literature','media'],
+            random=True
+        )
+    )
+
+label monika_mystery:
+    m 3eub "You know [player], I think there's an interesting part in many stories that some people overlook."
+    m 3eua "It's something that makes a story interesting...but can break them when used incorrectly."
+    m 3esa "It can make a tale either amazing to go back through or make you never want to touch it again."
+    m 2eub "And that part is..."
+    m 2eua "..."
+    m 4wub "...a mystery!"
+    m 2hksdlb "Oh! I didn't mean I'm not going to tell you, ahaha!"
+    m 3esa "I mean that a mystery itself can change everything when it comes to a story!"
+    m 3eub "If done really well it can build up intrigue and upon rereading make previous hints become obvious."
+    m 3hub "Knowing a twist can really alter how someone views an entire narrative. Not many plot points can do that!"
+    m 1eua "It's almost funny...knowing the answers actually changes how you view the story itself."
+    m 1eub "At first when you read a mystery you view the story from an unknowing perspective..."
+    m 1esa "But upon rereading it you look at it from the author's view."
+    m 3eua "You see how they left clues and structured the story to give just enough hints so that the reader might be able to figure it out!"
+    m 2esa "I find it really interesting, some of the best stories know how to use a good hook."
+    m 2lsc "But if a story doesn't do it properly, it can be the worst. They use hooks to try and seem 'clever.'"
+    m 2lud "When they try to do that it can just make it seem like nonsense if not set up properly."
+    m 2eud "I guess you could argue that not all stories with mysteries are {i}really{/i} a mystery..."
+    m 2eua "Even cheesy action films use mystery elements to keep them interesting."
+    m 4hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
+    return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_trick",
             category=["club members"],
             prompt="[player]'s second choice",
