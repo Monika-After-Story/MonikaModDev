@@ -8637,7 +8637,6 @@ init 5 python:
             prompt="Mysteries",
             category=['literature','media'],
             random=True
-            unlocked=False,
         )
     )
 
