@@ -8512,7 +8512,7 @@ label monika_procrastination:
     m 3eud "Well, when you have a task to do like that, I find it's best to just do it as soon as possible and get it done."
     m 2tkc "When you put stuff off like that, it'll always be in the back of your mind."
     m 4tkc "It makes everything you do less enjoyable, knowing you {i}still{/i} have this thing that you have to do."
-    m 4dkd "And what's worse is that the longer you put it off,{w=.0.5} you'll only increase the odds of more tasks getting added."
+    m 4dkd "And what's worse is that the longer you put it off,{w=0.5} you'll only increase the odds of more tasks getting added."
     m 2rksdlc "Until eventually, you end up with so many things to do it seems impossible to ever get caught up."
     m 4eksdld "It creates too much stress that can be easily avoided if you just keep on top of things in the first place."
     m 2rksdld "Plus, if other people are counting on you, they'll start to think less of you and find that you're not very reliable."
