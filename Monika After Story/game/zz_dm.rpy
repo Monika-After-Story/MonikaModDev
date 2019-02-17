@@ -4,8 +4,7 @@ init -999 python in _mas_dm_dm:
     import store
 
     # sets current version of dta migration
-    # TODO: change this to 2 on release
-    dm_data_version = 1
+    dm_data_version = 2
     # this should be updated whenever we do a data version migration
 
     # persistent var is set below
