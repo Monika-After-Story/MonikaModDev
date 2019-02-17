@@ -8504,7 +8504,24 @@ label monika_citizenship:
     return
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_bullying",category=['society'],prompt="Bullying",random=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_bullying",
+            category=['society'],
+            prompt="Bullying",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_is_bullying_victim = None
+# True if bully victum, False if not
+
+default persistent._mas_pm_has_bullied_people = None
+# True if bullied people, False if not
+
+default persistent._mas_pm_currently_bullied = None
+# True if currently being bullied, False if not
 
 label monika_bullying:
     m 4ekc "Hey [player], I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
@@ -8539,9 +8556,14 @@ label monika_bullying:
     m 2rsc "They're unhappy and it doesn't seem fair to them that other people {i}are{/i} happy, so they try to make them feel the same way they do."
     m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
-    m 2ekd "Have you ever been a victim of bullying, [player]?"
+    show monika 2ekd
     menu:
+        m "Have you ever been a victim of bullying, [player]?"
         "I have.":
+            $ persistent._mas_pm_is_bullying_victim = True
+            $ persistent._mas_pm_has_bullied_people = False
+            $ persistent._mas_pm_currently_bullied = False
+
             m 2ekc "I'm so sorry that you've had to deal with that..."
             m 2dkc "It really makes me sad knowing you suffered at the hands of a bully."
             m 2ekd "People can just be so awful to each other."
@@ -8552,6 +8574,10 @@ label monika_bullying:
             m 1esa "Having someone to confide in can be really therapeutic, and nothing would make me happier than to be that person for you."
 
         "I'm being bullied.":
+            $ persistent._mas_pm_is_bullying_victim = True
+            $ persistent._mas_pm_has_bullied_people = False
+            $ persistent._mas_pm_currently_bullied = True
+
             m 2wud "Oh no, that's terrible!"
             m 2dkd "It kills me to know you're suffering like that."
             m 4ekd "Please, [player], if it's not something you can safely deal with yourself, please tell someone..."
@@ -8563,6 +8589,10 @@ label monika_bullying:
             m 1eka "You're all I have...{w=0.5} please stay safe."
 
         "No.":    
+            $ persistent._mas_pm_is_bullying_victim = False
+            $ persistent._mas_pm_has_bullied_people = False
+            $ persistent._mas_pm_currently_bullied = False
+
             m 2hua "Ah, that's such a relief to hear!"
             m 4eka "I'm so glad you don't have to deal with bullying, [player]..."
             m 4hua "It really puts my mind at ease."
@@ -8574,6 +8604,10 @@ label monika_bullying:
                 m "You've already helped me so much, maybe you can help someone else as well."
 
         "I have bullied people.":
+            $ persistent._mas_pm_is_bullying_victim = False
+            $ persistent._mas_pm_has_bullied_people = True
+            $ persistent._mas_pm_currently_bullied = False
+
             if mas_isMoniDis(lower=True):
                 m 2dfc "..."
                 m 2tfc "That's disappointing to hear."            

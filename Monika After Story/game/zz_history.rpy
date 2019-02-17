@@ -737,6 +737,7 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
@@ -819,6 +820,8 @@ init -810 python:
             # exp (experience)
             "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
+            "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
+            "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
 
             # op (opinions)
             # op / monika
