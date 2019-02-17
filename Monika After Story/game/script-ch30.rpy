@@ -1012,7 +1012,6 @@ label ch30_post_restartevent_check:
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
-                persistent.random_seen = 0
 
                 #Grant good exp for closing the game correctly.
                 mas_gainAffection()
