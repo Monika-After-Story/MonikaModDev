@@ -992,9 +992,10 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
-
-        m 3ekc "Do you think it had something to do with your game?"
+    
+        show monika 3ekc
         menu:
+            m "Do you think it had something to do with your game?"
             "Yes.":
                 m 1hksdlb "Ahaha..."
                 m 1hub "Well I hope you had fun~"
