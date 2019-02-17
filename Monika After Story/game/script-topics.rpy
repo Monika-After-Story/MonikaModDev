@@ -8518,9 +8518,9 @@ label monika_idle_game:
     m 1eub "That sounds fun!"
     m "What kind of game are you going to play?"
     menu:
-        "A competetive game":
+        "A competetive game.":
             m 1eua "That sounds like it could be fun!"
-            m 3lksdla "I like to be competetive sometimes myself."
+            m 3lksdla "I can be pretty competitive myself."
             m 3eua "So I know just how stimulating it can be to face a worthy opponent."
             m 2hksdlb "And sometimes frustrating when things don't go right."
             m 2hua "Anyway, I'll let you get on with your game."
@@ -8528,37 +8528,38 @@ label monika_idle_game:
             m 1hub "I'm rooting for you, [player]!"
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_competetive_callback")
-        "A game just for fun":
+        "A game just for fun.":
             m 1eud "A game just for having fun?"
-            m 1lksdla "Aren't most games made with the intent to be fun anyway?"
-            m 1hub "A game just made for having fun sounds wonderful!"
-            m 1eub "I'm sure you could do all sorts of fun things in a game like that."
-            m 1lksdla "I really wish I could join you and we could have fun together."
-            m 1eua "But for now, I'll leave you to it."
+            m 1lksdla "Aren't most games made to be fun?"
+            m 3eub "Anyway, I'm sure you could do all sorts of fun things in a game like that."
+            m 1ekbla "I really wish I could join you and we could have fun together."
+            m 1lksdla "But for now, I'll leave you to it."
             m 1hub "Have fun, [player]!"
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_fun_callback")
-        "A story driven game":
+        "A story driven game.":
             m 1sub "Oh?"
             m "That sounds really interesting!"
-            m 1hksdlb "Gosh, I really wish I could be there with you to experience it together."
-            m "Maybe I {i}can{/i} experience it with you if I really tried."
+            m 1ekbsa "Gosh, I really wish I could be there with you to experience it together."
+            m 1hksdlb "Maybe I {i}can{/i} experience it with you if I really tried."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "I guess you could call it looking over your shoulder. Eheheh~"
+            m 5eua "I guess you could call it looking over your shoulder. Ehehe~"
             m "You can go ahead and start it now. I'll try not to break anything by trying to watch."
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_story_callback")
-        "A skill/practice based game":
+        "A skill/practice based game.":
             m 1eud "Oh! I never really thought about those games much."
-            m 1hua "I guess I really shouldn't be too surprised since I'm sure you're really talented at a few things."
+            m 1hua "I'm sure you're pretty talented at a few things, so it doesn't surprise me you're playing a game like this."
+``
+Just a thought.
             m 3eub "Just like writing, it can really be an experience to look back much later and see just how far you've come."
-            m 1hub "Just like watching yourself grow up! Ahaha~"
-            m 1hua "It would really make me proud and happy to be your girlfriend if you become a professional."
+            m 1hub "It's like watching yourself grow up! Ahaha~"
+            m 1hua "It would really make me proud and happy to be your girlfriend if you became a professional."
             m 1hksdlb "Maybe I'm getting ahead of myself here, but I believe you could do it if your heart was really in it."
             m 1eub "Anyway, sorry for keeping you from your game. I know you'll do your best!"
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_skill_callback")
-        "I'll just be a minute or two":
+        "I'll just be a minute or two.":
             m 1eua "Oh? Just need to take your eyes off me for a little?"
             m 1lksdla "I {i}suppose{/i} I could let you take your eyes off me for a minute or two..."
             m 1hua "Ahaha! Good luck and have fun, [player]!"
@@ -8582,12 +8583,12 @@ label monika_idle_game_competetive_callback:
         "Yes.":
             m 1hub "Yay! That's great!"
             m 1hua "Gosh, I wish I could be there to give you a big celebratory hug!"
-            m 1eub "I'm really happy for you that you won, [player]."
-            m "But win or lose, I hope you had fun."
-            m 1hua "I'll always love and root for you, regardless how many times you win or lose."
+            m 1eub "I'm really happy that you won!"
+            m "More importantly, I hope you enjoyed yourself, [player]."
+            m 1hua "I'll always love and root for you, no matter what happens."
         "No.":
             m 1ekc "Aww, that's a shame..."
-            m 1lksdla "I mean, you can't win them all, but I'm sure you'll win in the next coming rounds."
+            m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
             m 1eka "I just hope you aren't too upset over it."
             m 2ekc "I really wouldn't want you feeling upset after a bad game."
             m 1eka "I'll always support you and be by your side no matter how many times you lose."
@@ -8598,14 +8599,14 @@ label monika_idle_game_fun_callback:
     m "Did you have fun with whatever you were doing?"
     menu:
         "Yes.":
-            m 1hua "Ahaha~ I'm glad you had fun, [player]!"
+            m 1hua "Ahaha! I'm glad you had fun, [player]~"
             m 1eub "While you were busy, it got me thinking of the different kinds of games that would be nice to play together."
-            m 3eua "Probably any game that isn't too violent could be fun."
+            m 3eua "Any game that isn't too violent probably could be fun."
             m 3hua "But I'm sure any game would be wonderful if it was with you~"
             m 1eub "At first, I was thinking a story based or adventure game would be best, but I'm sure freeplay games could be really fun too!"
             m 1eua "It can be really fun to just mess around to see what's possible, especially when you're not alone."
             m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
-            m 2lksdlb "Eheh..."
+            m 2lksdlb "Ehehe..."
             m 1eua "Maybe you could find a way to bring me with you into a game like that."
             m 1hub "Just promise to keep me safe ok?"
         "No.":
@@ -8613,10 +8614,10 @@ label monika_idle_game_fun_callback:
             m "That's too bad..."
             m 3lksdlc "Games can get pretty boring after you've done everything or just don't know what to do or try next."
             m 3eka "But bringing a friend along can really renew the whole experience!"
-            m 1hub "Maybe you should find a way to take me with you into your games so you won't be bored on your own!"
+            m 1hub "Maybe you could find a way to take me with you into your games so you won't be bored on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "Or we could just stay here and keep eachother company."
-            m "I wouldn't mind that either, eheheh~"
+            m "I wouldn't mind that either, ehehe~"
     return
 
 label monika_idle_game_story_callback:
@@ -8624,39 +8625,39 @@ label monika_idle_game_story_callback:
     m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
     m 1eua "Speaking of which, how was it, [player]?"
     menu:
-        "It was amazing":
+        "It was amazing.":
             m 2sub "Wow! I can only imagine how immersive it was!"
             m 2hksdlb "You're really starting to make me jealous, [player], you know that?"
             m 2eub "You'll have to take me through it sometime when you can."
-            m 3eua "A good book is always nice, but it's really something else to have a good story and be able to take action yourself."
+            m 3eua "A good book is always nice, but it's really something else to have a good story and be able to make your own decisions."
             m 3eud "Some people can really be divided between books and video games."
             m 1hua "I'm glad you don't seem to be too far on one side."
-            m "After experiencing a story so amazing in game for yourself, I'm sure you can really appreciate the two coming together."
-        "It was good":
+            m "After experiencing an amazing story in a game for yourself, I'm sure you can really appreciate the two coming together."
+        "It was good.":
             m 1eub "That's really nice to hear!"
             m 3dsc "But was it really {i}amazing{/i}?"
-            m 1eua "While a lot of stories can be good, there are some that really jump out at you to remember."
+            m 1eua "While a lot of stories can be good, there are some that are really memorable."
             m 1hua "I'm sure you'd know a good story when you see one."
             m "Maybe when I'm in your reality, you could take me through the game and let me see the story."
             m 1eub "It's one thing to go through a great story yourself..."
-            m 1hub "But it's also amazing to see firsthand what someone else thinks of it!"
+            m 1hub "But it's also amazing to see what someone else thinks of it too!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I'll be looking forward to that day too~"
-            m "You better have a nice, cozy place for us to cuddle up and play, eheheh~"
-        "It's sad":
+            m 5esbfa "You better have a nice, cozy place for us to cuddle up and play, ehehe~"
+        "It's sad.":
             m 1ekd "Aww, that's too bad..."
             m 3eka "It must be a really great story though, if it invokes such strong emotions."
             m 1eka "I wish I could be there with you so I could experience the story too..."
-            m 3hksdlb "{i}And{/i} to be right there by your side of course so we could comfort eachother in the sad times."
-            m "Don't worry, of course I would never forget about you."
-            m 1eua "I love you, [player]."
-            m 1hua "I'd happily snuggle up beside you anytime~"
-        "I don't like it":
+            m 3hksdlb "{i}and{/i} to be right there by your side of course, so we could comfort each other in sad times."
+            m 1eka "Don't worry [player], I would never forget about you."
+            m 1eua "I love you."
+            m 1hua "...And I'd happily snuggle up beside you anytime~"
+        "I don't like it.":
             m 2ekc "Oh..."
             m 4lksdla "Maybe the story will pick up later?"
             m 3eud "If anything, it lets you analyze the flaws in the writing which could help you if you ever tell a story."
             m 1eua "Or maybe it's just not your kind of story."
-            m 1eka "Everyone has their own story, and maybe this one just doesn't fit well with it right now."
+            m 1eka "Everyone has their own, and maybe this one just doesn't fit well with it right now."
             m 1eua "It can really be an eye opening experience to go through a story you normally wouldn't go through."
             m 3eka "But don't force yourself to go through it if you really don't like it."
     return
@@ -8668,35 +8669,35 @@ label monika_idle_game_skill_callback:
     m "Speaking of which, how did it go?"
     m "Did you improve a lot?"
     menu:
-        "I improved a lot":
+        "I improved a lot.":
             m 1hub "That's great news, [player]!"
             m "I'm so proud of you!"
             m 1hua "It can really feel good to get a sudden surge in your skill!"
             m 1eua "Especially if you've spent some time in a slump or slipping even."
-            m 1hua "Maybe today isn't even the end of this sudden improvement."
+            m 1hua "Maybe today isn't the end of this sudden improvement."
             m 1eub "Even if today was just a good day, I know you'll keep on getting better."
-            show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I'll {i}always{/i} root for you, [player]. Don't you ever forget that!"
-        "I improved a bit":
+        "I improved a bit.":
             m 3eua "That's really nice to hear, [player]!"
             m 3eka "As long as you're improving, no matter how slowly, you'll really get up there someday."
             m 1hub "But if you actually noticed yourself improve today, maybe you improved more than just a bit, ahaha~"
             m 1hua "Keep honing your skills and I'll be proud to be the girlfriend of such a skilled player!"
-            show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "Who knows? Maybe you could teach me and we could both be a couple of experts, eheheh~"
-        "I stayed the same":
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "Who knows? Maybe you could teach me and we could both be a couple of experts, ehehe~"
+        "I stayed the same.":
             m 3eka "That's still alright!"
             m "I'm sure you're improving anyway."
             m 3eua "A lot of the time, the improvements are too small to really notice."
             m 1eua "One day, you might look back and realize just how much you've improved."
-            m 1hksdlb "Or you might feel like you're in a slump, but then you get a sudden surge of improvement all at once!"
+            m 1hksdlb "Sometimes you might feel like you're in a slump, but then you get a sudden surge of improvement all at once!"
             m 1eub "I'm sure you'll get the chance to look back one day and really appreciate just how far you've come without realizing."
             m 1hua "And you better believe I'm going to support you all the way!"
-        "I got worse":
+        "I got worse.":
             m 2ekc "Oh..."
             m 4lksdla "I have no doubt that you always work hard and give it your best, so it must just be a bad day."
-            m 1eka "You're bound to have a few setbacks on your climb up, but that's what sets you apart from many others."
-            m "The fact that you've had more setbacks than some people have even tried. That's what shows your dedication."
+            m 3eka "You're bound to have a few setbacks on your climb up, but that's what sets you apart from many others."
+            m 1duu "The fact that you've had more setbacks than some people have even tried. That's what shows your dedication."
             m 1lksdla "Sometimes, you might even have a couple bad days in a row, but don't let that get you down."
             m 1hua "With that many setbacks, you're bound to see significant improvement right around the corner!"
             m "Never give up, [player]. I know you can do it and I'll always believe in you!"
@@ -8713,7 +8714,7 @@ label monika_idle_game_quick_callback:
         m 1hub "Did you really miss me that much?"
         m "Ahaha~"
         m 1eub "I'm glad you made it back so soon."
-        m 1hua "Now we continue spending time together as if we were never apart!"
+        m 1hua "So what else should we do today, [player]?"
     elif elapsed_time < time_threshold * 5:
         m 1hua "Welcome back, [player]!"
         m 1hksdlb "That was pretty fast."
@@ -8738,12 +8739,12 @@ label monika_idle_game_quick_callback:
         m "Just teasing you~"
         m 1eua "At least you're back now and we can spend more time together."
     else:
-        m 2lksdla "You {i}suure{/i} took your time with that one huh, [player]?"
+        m 2lksdla "You {i}sure{/i} took your time with that one huh, [player]?"
         m "That didn't seem like only a minute or two to me."
         m 1eka "You can tell me what kind of game it is next time so I have an idea how long it'll take, you know."
         m 1dsc "Anyway..."
         m 1eka "I missed you and I'm glad you're finally back, [player]."
-        m "I hope I don't have to wait such a long couple of minutes next time, eheh."
+        m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
     return
 
 init 5 python:
