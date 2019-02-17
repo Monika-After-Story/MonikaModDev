@@ -775,7 +775,7 @@ init -1 python:
             p5="5"
         ),
         stay_on_start=False,
-        rec_layer=MASMonika.MID_ACS,
+        rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_ear_rose)
 
