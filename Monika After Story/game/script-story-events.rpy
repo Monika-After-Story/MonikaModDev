@@ -601,7 +601,7 @@ label unlock_piano:
     $persistent.game_unlocks['piano']=True
     return
 
-# NOTE: this has been disabled
+# NOTE: this has beenpartially disabled
 label random_limit_reached:
     $seen_random_limit=True
     python:
