@@ -4,13 +4,16 @@ init -999 python in _mas_dm_dm:
     import store
 
     # sets current version of dta migration
-    dm_data_version = 2
+    # TODO: change this to 2 on release
+    dm_data_version = 1
     # this should be updated whenever we do a data version migration
 
     # persistent var is set below
 
     # persistent databases:
     per_dbs = [
+
+        # ver 1, 2
         store.persistent.event_database,
         store.persistent._mas_compliments_database,
         store.persistent.farewell_database,
@@ -132,7 +135,7 @@ init -999 python in _mas_dm_dm:
             *idxs - indexes to remove
                 if Nothing is passsed, nothing happens
         """
-        if len(idxs) < 1:
+        if len(idxs) < 1 or _db is None:
             return
 
         idxs_rev = sorted(idxs, reverse=True)
@@ -265,6 +268,42 @@ init -999 python in _mas_dm_dm:
 
 
     ## algorithm runners
+    def _determine_version():
+        """
+        This returns an  appropriate dm version based on version
+        NOTE: this should only be used if migrating from versions 0814 and
+        below.
+        """
+        # if this value is None, but version number is not None, then the user
+        # is coming from a post 0.5.0 install. They should have some data,
+        # but we only want to modify it if contains RULES. 
+        version, sp, ignore = store.persistent.version_number.partition("-")
+        maj_ver, mid_ver, min_ver = version.split(".")
+        ## NOTE: crash if this fails.
+        mid_ver = int(mid_ver)
+        min_ver = int(min_ver)
+
+        if mid_ver == 8:
+            if 11 <= min_ver <= 14:
+                return -1
+
+            elif 9 <= min_ver <= 10:
+                return -2
+
+            elif 2 <= min_ver <= 8:
+                return -3
+
+            else:
+                # 080 or 081
+                return -4
+
+        elif mid_ver == 7 and 3 <= min_ver <= 4:
+            # 073 or 074
+            return -5
+
+        # otherwise, we do NOT do any ver migrations
+        return dm_data_version
+
 
     def __lessthan(val_a, val_b):
         return val_a < val_b
@@ -361,35 +400,7 @@ init -897 python:
         persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
 
     elif persistent._mas_dm_data_version is None:
-        # if this value is None, but version number is not None, then the user
-        # is coming from a post 0.5.0 install. They should have some data,
-        # but we only want to modify it if contains RULES. 
-        maj_ver, mid_ver, min_ver = persistent.version_number.split(".")
-        ## NOTE: crash if this fails.
-        mid_ver = int(mid_ver)
-        min_ver = int(min_ver)
-
-        if mid_ver == 8:
-            if 11 <= min_ver <= 14:
-                persistent._mas_dm_data_version = -1
-
-            elif 9 <= min_ver <= 10:
-                persistent._mas_dm_data_version = -2
-
-            elif 2 <= min_ver <= 8:
-                persistent._mas_dm_data_version = -3
-
-            else:
-                # 080 or 081
-                persistent._mas_dm_data_version = -4
-
-        elif mid_ver == 7 and 3 <= min_ver <= 4:
-            # 073 or 074
-            persistent._mas_dm_data_version = -5
-
-        else:
-            # otherwise, we do NOT do any ver migrations
-            persistent._mas_dm_data_version = store._mas_dm_dm.dm_data_version
+        persistent._mas_dm_data_version = store._mas_dm_dm._determine_version()
 
     if persistent._mas_dm_data_version != store._mas_dm_dm.dm_data_version:
         store._mas_dm_dm.run(
