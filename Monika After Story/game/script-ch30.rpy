@@ -1256,29 +1256,29 @@ label ch30_post_mid_loop_eval:
             jump post_pick_random_topic
 
         # Pick a random Monika topic
-        if persistent.random_seen < random_seen_limit:
-            label pick_random_topic:
+#        if persistent.random_seen < random_seen_limit:
+        label pick_random_topic:
 
-                # check if we have repeats enabled
-                if not persistent._mas_enable_random_repeats:
-                    jump mas_ch30_select_unseen
+            # check if we have repeats enabled
+            if not persistent._mas_enable_random_repeats:
+                jump mas_ch30_select_unseen
 
-                # randomize selection
-                $ chance = random.randint(1, 100)
+            # randomize selection
+            $ chance = random.randint(1, 100)
 
-                if chance <= store.mas_topics.UNSEEN:
-                    # unseen topic shoud be selected
-                    jump mas_ch30_select_unseen
+            if chance <= store.mas_topics.UNSEEN:
+                # unseen topic shoud be selected
+                jump mas_ch30_select_unseen
 
-                elif chance <= store.mas_topics.SEEN:
-                    # seen topic should be seelcted
-                    jump mas_ch30_select_seen
+            elif chance <= store.mas_topics.SEEN:
+                # seen topic should be seelcted
+                jump mas_ch30_select_seen
 
-                # most seen topic should be selected
-                jump mas_ch30_select_mostseen
+            # most seen topic should be selected
+            jump mas_ch30_select_mostseen
 
-        elif not seen_random_limit:
-            $pushEvent('random_limit_reached')
+#        elif not seen_random_limit:
+#            $pushEvent('random_limit_reached')
 
 label post_pick_random_topic:
 
@@ -1295,8 +1295,8 @@ label mas_ch30_select_unseen:
         if not persistent._mas_enable_random_repeats:
             # no repeats means we should push randomlimit if appropriate,
             # otherwise stay slient
-            if not seen_random_limit:
-                $ pushEvent("random_limit_reached")
+#            if not seen_random_limit:
+#                $ pushEvent("random_limit_reached")
 
             jump post_pick_random_topic
 
