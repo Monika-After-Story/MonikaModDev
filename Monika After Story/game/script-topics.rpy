@@ -121,7 +121,7 @@ init -1 python:
                 return
 
             pushEvent(sel_ev.eventlabel)
-            persistent.random_seen += 1
+#            persistent.random_seen += 1
 
 
     def mas_insertSort(sort_list, item, key):
