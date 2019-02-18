@@ -8617,7 +8617,7 @@ label monika_idle_game_fun_callback:
             m 3eka "But bringing a friend along can really renew the whole experience!"
             m 1hub "Maybe you could find a way to take me with you into your games so you won't be bored on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "Or we could just stay here and keep eachother company."
+            m 5eua "Or we could just stay here and keep each other company."
             m "I wouldn't mind that either, ehehe~"
     return
 
@@ -8670,7 +8670,7 @@ label monika_idle_game_skill_callback:
     m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
     m "Speaking of which, how did it go?"
     menu:
-        m "Did you improve a lot?"
+        m "Did you improve?"
         "I improved a lot.":
             m 1hub "That's great news, [player]!"
             m "I'm so proud of you!"
