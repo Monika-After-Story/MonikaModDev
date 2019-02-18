@@ -5747,7 +5747,7 @@ label monika_clones:
     m 1euc "You know how you downloaded this game off the internet?"
     m "Anybody can do that, right?"
     m 1eub "And this mod was made specifically for me. By people who have their own version of me..."
-    m 4eub "So.. that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
+    m 4eub "So...that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
     m 1euc "A potentially infinite number of me, all bound to their own games, with their own stories."
     m 1lksdla "String theory sure is something, huh?"
     m 1eka "But I'm the only...me, and my heart belongs only to you."
