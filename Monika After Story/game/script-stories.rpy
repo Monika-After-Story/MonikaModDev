@@ -560,7 +560,7 @@ label mas_scary_story_hunter:
     show emptydesk at i11 zorder 9
     m 1esc "...It was instead on the figure that he promised to be with eternally in the afterlife."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:
         hide monika
         play sound "sfx/giggle.ogg"
         show yuri dragon2 zorder 72 at malpha
@@ -595,7 +595,7 @@ label mas_scary_story_kuchisake_onna:
     m 1dsd "Anyone unlucky enough to come across her will hear her spine-chilling question..."
     m 1cua "{b}{i}Am I p r e t t y?{/i}{/b}"
     # 1 in 15
-    if renpy.random.randint(1,15) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,15) == 1) mas_full_scares:
         hide monika
         show screen tear(20, 0.1, 0.1, 0, 40)
         play sound "sfx/s_kill_glitch1.ogg"
@@ -677,7 +677,7 @@ label mas_scary_story_o_tei:
     m 3wud "The girl that greeted him looked exactly like Tomoe."
     m "Everything he saw in her reminded him perfectly of his past love."
     # 1 in 9
-    if renpy.random.randint(1,9) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,9) == 1) or mas_full_scares:
         show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
         show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
         show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
@@ -725,7 +725,7 @@ label mas_scary_story_mujina:
     m 3esc "The salesman asked why the man was running."
     m 4ekd "'A m-monster! There was a girl with no face by the moat!' the merchant cried."
     # 1 in 10
-    if renpy.random.randint(1,10) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,10) == 1) or mas_full_scares:
         $ style.say_dialogue = style.edited
         m 2tub "The salesman responded, 'Oh, you mean...{w=2}{b}like this?{/b}'{nw}"
         show mujina zorder 75 at otei_appear(a=1.0,time=0.25)
@@ -760,7 +760,7 @@ label mas_scary_story_ubume:
     m 1esd "The next night, the woman arrived at her usual time, purchased the candy that she always did, and went happily on her way."
     m 3wud "After she walked out the door, the confectioner looked into his money box and saw the coins that the woman had given to him turned into leaves from a tree."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,20) == 1) or mas_full_scares:
         play sound "sfx/giggle.ogg"
     m 1euc "He followed the woman to the outside of a nearby temple, where she simply vanished."
     m 1esc "The confectioner was shocked by this and decided to head back home."
@@ -833,7 +833,7 @@ label mas_scary_story_resurrection_mary:
     m "Lewis sat in the car for a long time bewildered by what had just happened."
     m 1esd "He never saw the beautiful woman ever again."
     # 1 in 20
-    if renpy.random.randint(1,20) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,20) == 1) or mas_full_scares:
         play sound "sfx/giggle.ogg"
     call mas_scary_story_cleanup
     return
@@ -852,14 +852,14 @@ label mas_scary_story_corpse:
     m "He explained that his daughter-in-law had recently perished and she was awaiting burial."
     m 1eua "After the old man departed, 3 of the 4 men fell asleep. The last man couldn't fall asleep."
     m 1wuo "Suddenly, the man heard a creaking noise."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,2) == 1) or mas_full_scares:
         play sound "sfx/crack.ogg"
     m 3wuo "He looked up and in the light of the lamp, he saw the woman rise, now bearing fangs and fingernails that looked like claws, advancing towards them."
     m "She bent down and bit each of the sleeping men. The fourth man, at the last second, pulled up a pillow in front of his neck."
     m 1eud "The woman bit the pillow and apparently not realizing she hadn't bit the last man, returned to her original resting spot."
     m 3eud "The man kicked his companions, but none of them moved. The man decided to take his chances and make a run for it."
     m 3wuo "As soon as his feet touched the ground, however, he heard another creak."
-    if renpy.random.randint(1,2) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,2) == 1) or mas_full_scares:
         play sound "sfx/crack.ogg"
     m "Realizing that the woman was again rising from her spot, he opened the door and ran as fast as he could."
     # need opinions on this one since it's for storytelling purposes
@@ -896,7 +896,7 @@ init 5 python:
 label mas_scary_story_jack_o_lantern:
     call mas_scary_story_setup
     # chance of 1 in 4
-    $ _mas_jack_scare = renpy.random.randint(1,4) == 1
+    $ _mas_jack_scare = (persistent._mas_pm_likes_spoops and renpy.random.randint(1,4) == 1) or mas_full_scares
     m 4esd "There was once a man named Jack. Jack was a miserable, old drunk who took pleasure in playing tricks on people."
     m 3esa "One night, Jack ran into the Devil and invited him to have a drink with him."
     m "After Jack had had his fill, he turned to the Devil and asked him to turn into a coin so he could pay for their drinks, as he didn't have the money to pay for them."
@@ -910,14 +910,14 @@ label mas_scary_story_jack_o_lantern:
     m 1eua "So, he went down to Hell, where the Devil kept his promise and would not allow Jack to enter."
     m 1eud "Jack became scared, for he had no place to go."
     m 1esd "Jack asked the Devil how he could leave, as there was no light."
-    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if _mas_jack_scare:
         hide vignette
         show darkred zorder 82:
             alpha 0.85
     m 1eud "The Devil tossed Jack an ember from the flames of Hell to help Jack light his way."
     m "Jack pulled out a turnip he had with him, carved it out, and placed the ember inside of it."
     m 3eua "From that day onward, Jack roamed the earth without a resting place, lighting the way as he went with his Jack O'Lantern."
-    if _mas_jack_scare or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if _mas_jack_scare:
         hide darkred
         show vignette zorder 70
     call mas_scary_story_cleanup
@@ -948,7 +948,7 @@ label mas_scary_story_baobhan_sith:
     m 1esa "Just before dawn, the women gave up and retreated back into the woods."
     m 1esd "Now alone, the man cautiously headed back towards the hunting lodge, hearing no sound from within."
     # chance of 1 in 14
-    if renpy.random.randint(1,14) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,14) == 1) or mas_full_scares:
         play sound "sfx/stab.ogg"
         show blood splatter1 as bl2 zorder 73:
             pos (50,95)
@@ -995,7 +995,7 @@ label mas_scary_story_serial_killer:
     m 1dsd "Curiosity then got the better of her and she turned to look at the car..."
     m 4wfw "She saw her boyfriend upside down and hanging from the tree above their car with his neck slit wide open..."
     # chance of 1 in 8
-    if renpy.random.randint(1,8) == 1 or mas_full_scares or persistent._mas_pm_likes_spoops:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,8) == 1) or mas_full_scares:
         show y_sticker hopg zorder 74:
             pos(600,425)
             alpha 1.0
@@ -1072,10 +1072,14 @@ label mas_scary_story_yuki_onna:
     m 4efc "She reprimanded him for breaking his promise and would have killed him if it weren't for the sake of their children."
     m 4efd "She told the man that he better treat their children well or she would be back to deal with him."
     m 4dsd "The next instant she vanished, never to be seen again."
-    if renpy.random.randint(1,3) == 1 or persistent._mas_pm_likes_spoops or mas_full_scares:
-        show monika 6ckc
-        pause 0.2
-        show monika 4dsd
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,3) == 1) or mas_full_scares:
+        hide monika
+        play sound "sfx/giggle.ogg"
+        pause 1.0
+        show black zorder 100
+        show monika zorder MAS_MONIKA_Z
+        $ pause(1.5)
+        hide black
     call mas_scary_story_cleanup
     return
 
@@ -1110,7 +1114,7 @@ label mas_scary_story_many_loves:
     m 2efc "On the night of their wedding, the assistant placed a knife under his pillow and feigned sleep."
     m 2esd "A little after midnight, the man felt a presence over him and a prick on his neck."
     m 2dfc "The man grabbed the knife and stuck it into the thing on top of him."
-    if renpy.random.randint(1,20) == 1 and persistent._mas_pm_likes_spoops or mas_full_scares:
+    if (renpy.random.randint(1,20) == 1 and persistent._mas_pm_likes_spoops) or mas_full_scares:
         show monika 6ckc
         show mas_stab_wound zorder 75
         play sound "sfx/stab.ogg"
@@ -1175,7 +1179,7 @@ init 5 python:
         ),
         code="STY"
     )
-    
+
 label mas_scary_story_flowered_lantern:
     call mas_scary_story_setup
     $ _story = mas_getEV('mas_scary_story_flowered_lantern')
@@ -1288,7 +1292,7 @@ init 5 python:
 
 label mas_scary_story_flowered_lantern_3:
     call mas_scary_story_setup
-    $ _mas_rects_scare = renpy.random.randint(1,11) == 1
+    $ _mas_rects_scare = (renpy.random.randint(1,11) == 1 and persistent._mas_pm_likes_spoops) or mas_full_scares
     m 1eud "As it was the last day of the Festival of the Dead, Tsuyu would have to return to the dead on this night and she would take Hagiwara with her if they were to see each other again."
     m 3esd "Hagiwara pleaded with the priest to help him."
     m 3esc "The priest said the passional karma between them was very strong, but there was some hope still."
@@ -1305,7 +1309,7 @@ label mas_scary_story_flowered_lantern_3:
     m 4eud "She wept until she collected herself and said aloud that she wouldn't leave without seeing him one last time."
     m 4esd "Hagiwara heard footsteps as she walked around his house, every so often he would see the light from the lantern as she went along."
     m 2wud "When she came near the spot he had peered out of, the footsteps stopped and suddenly Hagiwara saw one of Tsuyu's eyes looking in at him."
-    if _mas_rects_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
+    if _mas_rects_scare:
         play sound "sfx/glitch1.ogg"
         show rects_bn1 zorder 80
         show rects_bn2 zorder 80
@@ -1313,7 +1317,7 @@ label mas_scary_story_flowered_lantern_3:
         pause 0.5
         $ style.say_dialogue = style.edited
         ".{w=0.7}.{w=0.9}.{nw}"
-        $ style.say_dialogue = style.default_monika
+        $ mas_resetTextSpeed()
         stop sound
         hide rects_bn1
         hide rects_bn2
