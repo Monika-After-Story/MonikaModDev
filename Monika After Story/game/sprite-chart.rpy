@@ -1395,10 +1395,10 @@ init -5 python in mas_sprites:
             acs_bfh_list - sorted list of MASAccessories to draw between body
                 and front hair
             acs_afh_list - sorted list of MASAccessories to draw between front
-                hair and arms
+                hair and face
             acs_mid_list - sorted list of MASAccessories to draw between body
-                and face
-            acs_pst_list - sorted list of MASAccessories to draw after face
+                and arms
+            acs_pst_list - sorted list of MASAccessories to draw after arms
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -1447,12 +1447,12 @@ init -5 python in mas_sprites:
         #   5. pre-front-hair-acs - acs that should render after body, but
         #       before front hair (split mode)
         #   6. front-hair - front portion of hair (split mode)
-        #   7. front-hair-arms acs - acs that should render after front hair
-        #       but before arms (split mode)
-        #   7. arms - arms (split mode, lean mode)
-        #   8. mid - acs that render between body and face
-        #   9. face - face expressions
-        #   10. post-acs - acs that should render after basically everything
+        #   7. front-hair-face acs - acs that should render after front hair
+        #       but before face (split mode)
+        #   8. face - face expressions
+        #   9. mid - acs that render between body and arms
+        #   10. arms - arms (split mode, lean mode)
+        #   11. post-acs - acs that should render after basically everything
 
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
@@ -1528,9 +1528,41 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
+            # position setup
             sprite_str_list.extend(loc_build_tup)
 
-            # 8. arms
+            # 8. face
+            _ms_face(
+                sprite_str_list,
+                loc_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+
+            # 9. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            sprite_str_list.extend(loc_build_tup)
+
+            # 10. arms
             _ms_arms_nh(
                 sprite_str_list,
                 loc_str,
@@ -1541,7 +1573,7 @@ init -5 python in mas_sprites:
             )
 
         else:
-            # in thise case, 2,6,7 are skipped.
+            # in thise case, 2,6 are skipped.
 
             # 4. body
             _ms_body(
@@ -1576,25 +1608,55 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 7. post-front hair acs gets rendered before arms instead
-            # NOTE: we MUST skip 7 because it would conflict with
-            #   old-style leaning
-#            _ms_accessorylist(
-#                sprite_str_list,
-#                loc_build_str,
-#                acs_afh_list,
-#                n_suffix,
-#                True,
-#                arms,
-#                lean=lean
-#            )
+            # 7. post-front hair acs
+            # NOTE: this is consdiered before face
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # position setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 8. face
+            _ms_face(
+                sprite_str_list,
+                loc_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+            # 9. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
 
             # no lean means ARMS
             if not lean:
                 # position setup
                 sprite_str_list.extend(loc_build_tup)
 
-                # 8. arms
+                # 10. arms
                 #   NOTE: force no lean here
                 _ms_arms_nh(
                     sprite_str_list,
@@ -1606,38 +1668,7 @@ init -5 python in mas_sprites:
                 )
 
 
-        # 9. between body and face acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_mid_list,
-            n_suffix,
-            True,
-            arms,
-            lean=lean
-        )
-
-        # position setup
-        sprite_str_list.extend(loc_build_tup)
-
-        # 10. face
-        _ms_face(
-            sprite_str_list,
-            loc_str,
-            eyebrows,
-            eyes,
-            nose,
-            mouth,
-            n_suffix,
-            lean=lean,
-            eyebags=eyebags,
-            sweat=sweat,
-            blush=blush,
-            tears=tears,
-            emote=emote
-        )
-
-        # 11. after face acs
+        # 11. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1919,11 +1950,11 @@ init -2 python:
 
         # CONSTANTS
         PRE_ACS = 0 # PRE ACCESSORY (before body)
-        MID_ACS = 1 # MID ACCESSORY (right before face)
-        PST_ACS = 2 # post accessory (after face)
+        MID_ACS = 1 # MID ACCESSORY (right before arms)
+        PST_ACS = 2 # post accessory (after arms)
         BBH_ACS = 3 # betweeen Body and Back Hair accessory
         BFH_ACS = 4 # between Body and Front Hair accessory
-        AFH_ACS = 5 # between arms and front hair accessory
+        AFH_ACS = 5 # between face and front hair accessory
 
 
         def __init__(self):
