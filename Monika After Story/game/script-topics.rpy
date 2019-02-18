@@ -8547,11 +8547,9 @@ label monika_idle_game:
             m "You can go ahead and start it now. I'll try not to break anything by trying to watch."
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_story_callback")
-        "A skill/practice based game.":
+        "A skill and practice based game.":
             m 1eud "Oh! I never really thought about those games much."
             m 1hua "I'm sure you're pretty talented at a few things, so it doesn't surprise me you're playing a game like this."
-
-Just a thought.
             m 3eub "Just like writing, it can really be an experience to look back much later and see just how far you've come."
             m 1hub "It's like watching yourself grow up! Ahaha~"
             m 1hua "It would really make me proud and happy to be your girlfriend if you became a professional."
@@ -8571,10 +8569,6 @@ Just a thought.
     $ persistent._mas_idle_data["monika_idle_game"] = True
     # return idle to notify event system to switch to idle
     return "idle"
-
-
-
-
 
 label monika_idle_game_competetive_callback:
     m 1esa "Welcome back, [player]!"
