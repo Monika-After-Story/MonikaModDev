@@ -8504,6 +8504,28 @@ label monika_citizenship:
     return
     
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
+
+label monika_procrastination:
+    m 1euc "Hey [player], have you ever had something to do that you found really boring..."
+    m 3ekd "That rather than taking a lot of time to do it, you just keep putting it off?"
+    m 3eud "Well, when you have a task to do like that, I find it's best to just do it as soon as possible and get it done."
+    m 2tkc "When you put stuff off like that, it'll always be in the back of your mind."
+    m 4tkc "It makes everything you do less enjoyable, knowing you {i}still{/i} have this thing that you have to do."
+    m 4dkd "And what's worse is that the longer you put it off,{w=0.5} you'll only increase the odds of more tasks getting added."
+    m 2rksdlc "Until eventually, you end up with so many things to do it seems impossible to ever get caught up."
+    m 4eksdld "It creates too much stress that can be easily avoided if you just keep on top of things in the first place."
+    m 2rksdld "Plus, if other people are counting on you, they'll start to think less of you and find that you're not very reliable."
+    m 4eua "So please, [player], whenever you have something that you have to do, just get it done."
+    m 1eka "Even if it means you can't spend time with me until it's over."
+    m 1hub "By then, you'll be less stressed and we can enjoy our time together that much more!"
+    m 3eua "So if you have something you've been putting off, why don't you go do it right now?"
+    m 1hua "If it's something you can do right here, I'll stay with you and provide all the support you need."
+    m 1hub "Then, when you're done, we can celebrate your accomplishment!"
+    m 1eka "All I want is for you to be happy and to be the best you can be, [player]~"    
+    return
+
+init 5 python:
     addEvent(
         Event(
             persistent.event_database,
@@ -10800,6 +10822,40 @@ label monika_load_custom_music:
                 $ pushEvent("monika_add_custom_music")
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_mystery',
+            prompt="Mysteries",
+            category=['literature','media'],
+            random=True
+        )
+    )
+
+label monika_mystery:
+    m 3eub "You know [player], I think there's an interesting part in many stories that some people overlook."
+    m 3eua "It's something that makes a story interesting...but can break them when used incorrectly."
+    m 3esa "It can make a tale either amazing to go back through or make you never want to touch it again."
+    m 2eub "And that part is..."
+    m 2eua "..."
+    m 4wub "...a mystery!"
+    m 2hksdlb "Oh! I didn't mean I'm not going to tell you, ahaha!"
+    m 3esa "I mean that a mystery itself can change everything when it comes to a story!"
+    m 3eub "If done really well it can build up intrigue and upon rereading make previous hints become obvious."
+    m 3hub "Knowing a twist can really alter how someone views an entire narrative. Not many plot points can do that!"
+    m 1eua "It's almost funny...knowing the answers actually changes how you view the story itself."
+    m 1eub "At first when you read a mystery you view the story from an unknowing perspective..."
+    m 1esa "But upon rereading it you look at it from the author's view."
+    m 3eua "You see how they left clues and structured the story to give just enough hints so that the reader might be able to figure it out!"
+    m 2esa "I find it really interesting, some of the best stories know how to use a good hook."
+    m 2lsc "But if a story doesn't do it properly, it can be the worst. They use hooks to try and seem 'clever.'"
+    m 2lud "When they try to do that it can just make it seem like nonsense if not set up properly."
+    m 2eud "I guess you could argue that not all stories with mysteries are {i}really{/i} a mystery..."
+    m 2eua "Even cheesy action films use mystery elements to keep them interesting."
+    m 4hksdlb "Though I guess a story with absolutely no form of mystery would be pretty boring!"
+    return
+    
 init 5 python:
     addEvent(
         Event(
