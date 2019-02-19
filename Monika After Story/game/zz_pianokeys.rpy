@@ -170,8 +170,7 @@ label mas_piano_setupstart:
     # pre call setup
     python:
         disable_esc()
-        store.songs.enabled = False
-        store.hkb_button.enabled = False
+        mas_MUMURaiseShield()
     stop music
 #    show text quit_label zorder 10 at piano_quit_label
 
@@ -181,8 +180,7 @@ label mas_piano_setupstart:
 
     # post call cleanup
 #    hide text quit_label
-    $ store.songs.enabled = True
-    $ store.hkb_button.enabled = True
+    $ mas_MUMUDropShield()
     $ enable_esc()
     $ mas_startup_song()
     $ pnmlSaveTuples()
