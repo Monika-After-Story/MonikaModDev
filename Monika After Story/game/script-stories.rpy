@@ -74,17 +74,10 @@ label mas_stories_start(scary=False):
         stories_menu_items = [
             (mas_stories.story_database[k].prompt, k, False, False)
             for k in stories
-            if mas_stories.story_database[k].unlocked and seen_event(k)
+            if mas_stories.story_database[k].unlocked
         ]
 
-        # sanity check for first timers
-        if not stories_menu_items:
-            stories_menu_items = [
-                (mas_stories.story_database[k].prompt, k, False, False)
-                for k in stories
-                if mas_stories.story_database[k].unlocked
-            ]
-
+        if len(stories_menu_items) == 1 and not seen_event(stories_menu_items[0][1]):
             # set the mas_can_unlock_story flag to False since it
             # shouldn't unlock anything at this time
             if scary:
