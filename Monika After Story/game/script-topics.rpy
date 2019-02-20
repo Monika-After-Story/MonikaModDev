@@ -3405,7 +3405,7 @@ label monika_ribbon:
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
 
-    m 1tku "I noticed that you were staring at my ribbon, [player]."
+    m 1tku "Have you ever wondered why I wear this ribbon, [player]?"
 
     if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
         m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
