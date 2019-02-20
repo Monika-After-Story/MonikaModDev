@@ -5379,6 +5379,7 @@ default seen_random_limit = False
 default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
+default persistent._mas_food_database = dict()
 
 # rain
 define mas_is_raining = False
