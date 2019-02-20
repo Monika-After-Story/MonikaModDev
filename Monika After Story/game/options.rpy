@@ -23,7 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.6.2"
+define config.version = "0.9.0"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -220,13 +220,16 @@ init python:
     ## This is the archive of data for your mod
     #build.archive(build.name, "all")
 
+    #Add the pictures necessary for the scrollable menu
+    build.classify("game/gui/**",build.name)
+
     ## These files get put into your data file
     build.classify("game/mod_assets/**",build.name)
     #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
     build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
     build.classify("game/dev/*.*",None) #But not the dev folder
     build.classify("README.html",build.name) #Included help file for mod installation
-    build.classify("game/python-packages/**.**",build.name)#Additional python pacakges
+    build.classify("game/python-packages/**",build.name)#Additional python pacakges
     build.classify("CustomIcon**.**",build.name)
 
 
