@@ -3405,10 +3405,9 @@ label monika_ribbon:
         m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
         return
 
-    m 1tku "Have you ever wondered why I wear this ribbon, [player]?"
-
     if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
-        m 3eua "It doesn't hold sentimental value to me or anything, in case you were wondering."
+        m 3eub "Have you ever wondered why I wear this ribbon, [player]?"
+        m 3eua "It doesn't hold sentimental value to me or anything."
         m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
         m "It makes me look more unique."
         m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
@@ -3424,18 +3423,18 @@ label monika_ribbon:
 
     elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_wine:
         if monika_chr.clothes == mas_clothes_santa:
-            m 1hua "Doesn't it just look wonderful with this outfit, [player]?"
+            m 1hua "Doesn't my ribbon look wonderful with this outfit, [player]?"
             m 1eua "I think it really ties it all together."
             m 3eua "I bet it'd even look great with other outfits as well...especially formal attire."
         else:
-            m 1hua "I'm glad you like the way it looks on me..."
+            m 1hua "I'm glad you like the way this ribbon looks on me..."
             m 1rksdla "I originally only intended to wear it around Christmas time...but it's just too beautiful not to wear more often..."
             m 3hksdlb "It'd be such a shame to keep it stored away for most of the year!"
             m 3ekb "...You know, I bet it'd look really great with formal attire actually!"
         m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
 
     else:
-        m 3hksdlb "I hope you like it, you gave it to me after all, ahaha!"
+        m 3hksdlb "I hope you like this ribbon. You gave it to me after all, ahaha!"
         m 1eka "It really was a wonderful gift and I think it's just beautiful!"
         m 3eka "I'll wear it anytime you want, [player]~"
     return
