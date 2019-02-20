@@ -292,7 +292,8 @@ init 4 python:
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
-        "APL": store.mas_apology.apology_db
+        "APL": store.mas_apology.apology_db,
+        "FOO": store.mas_food.food_db
     }
 
 
@@ -1966,6 +1967,7 @@ label prompt_menu:
             talk_menu.append(("Repeat conversation.", "repeat"))
         talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
+        talk_menu.appent(("I'm Having", "food"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
@@ -1986,6 +1988,10 @@ label prompt_menu:
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
+        if not _return:
+            jump prompt_menu
+    elif madechoice == "food":
+        call mas_food_start from _call_mas_food_start
         if not _return:
             jump prompt_menu
 
