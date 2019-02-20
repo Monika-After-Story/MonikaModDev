@@ -212,6 +212,8 @@ init -900 python in mas_ev_data_ver:
     verify_event_data(store.persistent._mas_mood_database)
     verify_event_data(store.persistent._mas_story_database)
     verify_event_data(store.persistent._mas_apology_database)
+    verify_event_data(store.peristent._mas_food_database)
+    
 
 
 init -500 python:
