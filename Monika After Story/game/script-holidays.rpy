@@ -3867,7 +3867,7 @@ init 2 python:
  To the one I love,
  The one I trust,
  The one I can't live without.
- I hope your day is as special as you make everyday for me.
+ I hope your day is as special as you make every day for me.
  Thank you so much for being you. 
 
  Happy Birthday, sweetheart
@@ -4025,7 +4025,7 @@ label mas_pf14_monika_lovey_dovey:
     if not renpy.seen_label('monika_valentines_start'):
         m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
     else:
-        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
+        m 3ekbfa "It's almost our second Valentine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
     m 1ekbsa "I really meant what I said."
     m "I love and care for you so much..."
     m "Without you, I don't know where I'd be..."

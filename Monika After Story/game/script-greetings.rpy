@@ -2277,7 +2277,7 @@ label greeting_long_absence:
             m 1j "And thanks for properly warning me about how long you'd be away."
             m 1e "It means a lot to know I can trust your words."
             m 3k "I hope you know you can trust me too!"
-            m 3e "Our relationship grows stronger everyday~"
+            m 3e "Our relationship grows stronger every day~"
 
         elif persistent._mas_absence_choice == "week":
             m 1d "Oh! You're a little bit earlier than I expected!"
@@ -2763,6 +2763,30 @@ label greeting_back_from_sleep:
 
     return
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_siat",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_siat:
+    m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
+    m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
+    m 3hubfb "{i}{cps=*0.6}~First comes love~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes marriage~{/i}{/cps}"
+    m "{i}{cps=*0.6}~Then comes--{/i}{/cps}"
+    m 3wubfsdlo "W-wha?!"
+    m 2wubfsdld "[player]! H-how long have you been there?!"
+    m 2rkbfsdld "I...{w=1} I didn't notice you come in...{w=1} I was just..."
+    m 2rkbfsdlu "..."
+    m 3hubfb "Ahaha! Nevermind."
+    m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
+    return
 
 init 5 python:
     if not mas_cannot_decode_islands:
@@ -3298,5 +3322,34 @@ label ch30_reload_delegate:
     else:
         $ reload_label = "ch30_reload_" + str(persistent.monika_reload)
         call expression reload_label
+
+    return
+
+init 5 python:
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(
+            skip_visual=True
+        )
+    )
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_ghost",
+            unlocked=False,
+            rules=ev_rules,
+            aff_range=(mas_aff.NORMAL, None),
+        ),
+        code="GRE"
+    )
+    del ev_rules
+
+label greeting_ghost:
+    #Prevent it from happening more than once.
+    $ mas_lockEVL("greeting_ghost", "GRE")
+
+    #Call event in easter eggs.
+    call mas_ghost_monika
 
     return
