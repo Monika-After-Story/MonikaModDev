@@ -1301,8 +1301,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            #_outbuffer.write(cPickle.dumps(store.persistent).decode("utf-8"))
-            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64").decode())
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1987,15 +1986,11 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            #return cPickle.loads(str(data_line))#TODO
             data = data_line
             missing_padding = len(str(data)) % 4
             if missing_padding:
                 data += b'='* (4 - missing_padding)
-            return cPickle.loads(codecs.decode(data.encode(), "base64"))#TODO
-            #
-
-            #_outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64").decode())
+            return cPickle.loads(codecs.decode(data, "base64"))
 
         except Exception as e:
             mas_utils.writelog(
