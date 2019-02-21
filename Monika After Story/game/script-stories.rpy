@@ -588,7 +588,7 @@ label mas_scary_story_kuchisake_onna:
     m 1dsd "Anyone unlucky enough to come across her will hear her spine-chilling question..."
     m 1cua "{b}{i}Am I p r e t t y?{/i}{/b}"
     # 1 in 15
-    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,15) == 1) mas_full_scares:
+    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,15) == 1) or mas_full_scares:
         hide monika
         show screen tear(20, 0.1, 0.1, 0, 40)
         play sound "sfx/s_kill_glitch1.ogg"
