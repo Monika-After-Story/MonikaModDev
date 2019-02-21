@@ -8516,8 +8516,9 @@ init 5 python:
 
 label monika_idle_game:
     m 1eub "That sounds fun!"
+    m "What kind of game are you going to play?"
     menu:
-        m "What kind of game are you going to play?"
+        m "What kind of game are you going to play?{fast}"
         "A competetive game.":
             m 1eua "That sounds like it could be fun!"
             m 3lksdla "I can be pretty competitive myself."
@@ -8572,9 +8573,9 @@ label monika_idle_game:
 
 label monika_idle_game_competetive_callback:
     m 1esa "Welcome back, [player]!"
-    show monika 1eua
+    m 1eua "How did it go? Did you win?"
     menu:
-        m "How did it go? Did you win?"
+        m "How did it go? Did you win?{fast}"
         "Yes.":
             m 1hub "Yay! That's great!"
             m 1hua "Gosh, I wish I could be there to give you a big celebratory hug!"
@@ -8591,8 +8592,9 @@ label monika_idle_game_competetive_callback:
 
 label monika_idle_game_fun_callback:
     m 1eub "Welcome back, [player]!"
+    m "Did you have fun with whatever you were doing?"
     menu:
-        m "Did you have fun with whatever you were doing?"
+        m "Did you have fun with whatever you were doing?{fast}"
         "Yes.":
             m 1hua "Ahaha! I'm glad you had fun, [player]~"
             m 1eub "While you were busy, it got me thinking of the different kinds of games that would be nice to play together."
@@ -8618,9 +8620,9 @@ label monika_idle_game_fun_callback:
 label monika_idle_game_story_callback:
     m 1eub "Welcome back, [player]!"
     m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
-    show monika 1eua
+    m 1eua "Speaking of which, how was it, [player]?"
     menu:
-        m "Speaking of which, how was it, [player]?"
+        m "Speaking of which, how was it, [player]?{fast}"
         "It was amazing.":
             m 2sub "Wow! I can only imagine how immersive it was!"
             m 2hksdlb "You're really starting to make me jealous, [player], you know that?"
@@ -8663,8 +8665,9 @@ label monika_idle_game_skill_callback:
     m 1hua "I missed you! Ahaha~"
     m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
     m "Speaking of which, how did it go?"
+    m "Did you improve?"
     menu:
-        m "Did you improve?"
+        m "Did you improve?{fast}"
         "I improved a lot.":
             m 1hub "That's great news, [player]!"
             m "I'm so proud of you!"
