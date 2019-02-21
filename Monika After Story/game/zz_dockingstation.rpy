@@ -111,7 +111,7 @@ init -900 python in mas_ics:
     # key: filename of b64 encode
     # value: tuple:
     #   [0] - filename to save the image as
-    #   [1] - checksum for that image   
+    #   [1] - checksum for that image
     o31_map = {
         "o31mcg": ("o31_marisa_cg.png", o31_marisa),
         "o31rcg": ("o31_rin_cg.png", o31_rin)
@@ -1228,6 +1228,7 @@ init 200 python in mas_dockstat:
     import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
+    import codecs
     import os
     import random
     import datetime
@@ -1242,7 +1243,7 @@ init 200 python in mas_dockstat:
 
     def _buildMetaDataList(_outbuffer):
         """
-        Writes out a pipe-delimeted metadata list tot he given buffer
+        Writes out a pipe-delimeted metadata list to the given buffer
 
         OUT:
             _outbuffer - buffer to write metadata to
@@ -1300,7 +1301,8 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(cPickle.dumps(store.persistent))
+            #_outbuffer.write(cPickle.dumps(store.persistent).decode("utf-8"))
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64").decode())
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1476,7 +1478,7 @@ init 200 python in mas_dockstat:
 #            return
 #
 #        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check 
+#        # means we need to double check
 #        checkout_time, checkin_time = getCheckTimes(moni_chksum)
 #
 #        if
@@ -1637,6 +1639,7 @@ init 200 python in mas_dockstat:
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
+        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
         NUM_DELIM = "|num|"
@@ -1700,13 +1703,14 @@ init 200 python in mas_dockstat:
                 blocksize
             )
             moni_tbuffer = fastIO()
+            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
                 moni_tbuffer.write(_line)
             moni_buffer.close()
 
             # now we can prepare to write
-            moni_fbuffer = open(moni_path, "wb")
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")#TODO
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
@@ -1983,7 +1987,15 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            return cPickle.loads(str(data_line))
+            #return cPickle.loads(str(data_line))#TODO
+            data = data_line
+            missing_padding = len(str(data)) % 4
+            if missing_padding:
+                data += b'='* (4 - missing_padding)
+            return cPickle.loads(codecs.decode(data.encode(), "base64"))#TODO
+            #
+
+            #_outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64").decode())
 
         except Exception as e:
             mas_utils.writelog(
@@ -2034,7 +2046,7 @@ init 200 python in mas_dockstat:
         RETURNS tuple of the following format:
             [0] - checkout time
             [1] - checkin time
-        If any param is None, then we couldn't find the matching chksum or 
+        If any param is None, then we couldn't find the matching chksum or
         there were no entries
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
@@ -2065,7 +2077,7 @@ init 200 python in mas_dockstat:
 
             else:
                 checkout_time = find_time(checkout_log, chksum)
-           
+
         return (checkout_time, checkin_time)
 
 
@@ -2320,7 +2332,7 @@ label mas_dockstat_empty_desk:
 
     # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
     #   else statment is supposed to be paired with (i.e. mutally exclusive)
-    #   to the if statement regarding the player's bday decor. 
+    #   to the if statement regarding the player's bday decor.
     #   Dont be screwing this up by shoving if statemetns randomly in places.
     else:
         # show birthday visuals?
@@ -2443,11 +2455,11 @@ label mas_dockstat_found_monika:
     # select the greeting we want
     python:
         if (
-                (store.mas_dockstat.retsbp_status 
+                (store.mas_dockstat.retsbp_status
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
-            # TODO: consider if this forced greeting should be changed to 
+            # TODO: consider if this forced greeting should be changed to
             #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 
