@@ -2176,7 +2176,7 @@ label monika_aiwfc_song:
     stop music fadeout 1.0
 
     #Now we re-enable text speed
-    $ mas_enableTextSpeed()
+    $ mas_resetTextSpeed()
     return
 
 init 5 python:
