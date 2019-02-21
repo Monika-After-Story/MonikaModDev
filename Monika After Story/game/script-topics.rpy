@@ -3427,7 +3427,7 @@ label monika_ribbon:
             m 1eua "I think it really ties it all together."
             m 3eua "I bet it'd even look great with other outfits as well...especially formal attire."
         else:
-            m 1eua "I really love this ribbon [player]."
+            m 1eua "I really love this ribbon, [player]."
             m 1hua "I'm glad you seem to like it just as much, ehehe~"
             m 1rksdla "I originally only intended to wear it around Christmas time...but it's just too beautiful not to wear more often..."
             m 3hksdlb "It'd be such a shame to keep it stored away for most of the year!"
