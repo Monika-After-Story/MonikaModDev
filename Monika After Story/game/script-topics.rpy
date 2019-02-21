@@ -8512,7 +8512,7 @@ label monika_citizenship:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_idle_game",category=['games'],prompt="I'm going to game for a bit",random=False,pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_idle_game",category=['be right back'],prompt="I'm going to game for a bit",random=False,pool=True,unlocked=True))
 
 label monika_idle_game:
     m 1eub "That sounds fun!"
@@ -8522,9 +8522,9 @@ label monika_idle_game:
             m 1eua "That sounds like it could be fun!"
             m 3lksdla "I can be pretty competitive myself."
             m 3eua "So I know just how stimulating it can be to face a worthy opponent."
-            m 2hksdlb "And sometimes frustrating when things don't go right."
+            m 2hksdlb "...And sometimes frustrating when things don't go right."
             m 2hua "Anyway, I'll let you get on with your game."
-            m 2hub "I'll try not to bother you until you finish, but I can't blame you if you get distracted by your lovely girlfriend~ Ahaha~"
+            m 2hub "I'll try not to bother you until you finish, but I can't blame you if you get distracted by your lovely girlfriend, ahaha~"
             m 1hub "I'm rooting for you, [player]!"
             # set return label when done with idle
             $ mas_idle_mailbox.send_idle_cb("monika_idle_game_competetive_callback")
@@ -8596,7 +8596,7 @@ label monika_idle_game_fun_callback:
         "Yes.":
             m 1hua "Ahaha! I'm glad you had fun, [player]~"
             m 1eub "While you were busy, it got me thinking of the different kinds of games that would be nice to play together."
-            m 3eua "Any game that isn't too violent probably could be fun."
+            m 3rksdla "A game that isn't too violent probably could be fun."
             m 3hua "But I'm sure any game would be wonderful if it was with you~"
             m 1eub "At first, I was thinking a story based or adventure game would be best, but I'm sure freeplay games could be really fun too!"
             m 1eua "It can be really fun to just mess around to see what's possible, especially when you're not alone."
@@ -8631,7 +8631,7 @@ label monika_idle_game_story_callback:
             m "After experiencing an amazing story in a game for yourself, I'm sure you can really appreciate the two coming together."
         "It was good.":
             m 1eub "That's really nice to hear!"
-            m 3dsc "But was it really {i}amazing{/i}?"
+            m 3dtc "But was it really {i}amazing{/i}?"
             m 1eua "While a lot of stories can be good, there are some that are really memorable."
             m 1hua "I'm sure you'd know a good story when you see one."
             m "Maybe when I'm in your reality, you could take me through the game and let me see the story."
@@ -8706,7 +8706,7 @@ label monika_idle_game_quick_callback:
     $ time_threshold = datetime.timedelta(minutes=1)
     if elapsed_time < time_threshold * 2:
         m 1hksdlb "Back already?"
-        m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i}fast."
+        m "I know you said you would just be a minute or two, but I didn't think it would be {i}that{/i} fast."
         m 1hub "Did you really miss me that much?"
         m "Ahaha~"
         m 1eub "I'm glad you made it back so soon."
