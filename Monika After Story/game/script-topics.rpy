@@ -3427,16 +3427,17 @@ label monika_ribbon:
             m 1eua "I think it really ties it all together."
             m 3eua "I bet it'd even look great with other outfits as well...especially formal attire."
         else:
-            m 1hua "I'm glad you like the way this ribbon looks on me..."
+            m 1eua "I really love this ribbon [player]."
+            m 1hua "I'm glad you seem to like it just as much, ehehe~"
             m 1rksdla "I originally only intended to wear it around Christmas time...but it's just too beautiful not to wear more often..."
             m 3hksdlb "It'd be such a shame to keep it stored away for most of the year!"
             m 3ekb "...You know, I bet it'd look really great with formal attire actually!"
         m 3ekbsa "I can't wait to wear this ribbon on a fancy date with you, [player]~"
 
     else:
-        m 3hksdlb "I hope you like this ribbon. You gave it to me after all, ahaha!"
+        m 3eka "I just want to thank you again for this ribbon, [player]."
         m 1eka "It really was a wonderful gift and I think it's just beautiful!"
-        m 3eka "I'll wear it anytime you want, [player]~"
+        m 3eka "I'll wear it anytime you want~"
     return
 
 init 5 python:
