@@ -1070,7 +1070,7 @@ label mas_scary_story_yuki_onna:
         play sound "sfx/giggle.ogg"
         pause 1.0
         show black zorder 100
-        show monika zorder MAS_MONIKA_Z
+        show monika at i11 zorder MAS_MONIKA_Z
         $ pause(1.5)
         hide black
     call mas_scary_story_cleanup
