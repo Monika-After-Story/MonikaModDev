@@ -993,13 +993,13 @@ label mas_crashed_quip_takecare:
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
     
-        show monika 3ekc
+        m 3ekc "Do you think it had something to do with your game?"
         menu:
-            m "Do you think it had something to do with your game?"
+            m "Do you think it had something to do with your game?{fast}"
             "Yes.":
                 m 1hksdlb "Ahaha..."
                 m 1hub "Well I hope you had fun~"
-                m 1rksdla "And that your computer is alright."
+                m 1rksdla "...And that your computer is alright."
                 m 3eub "I'm fine, so don't worry~"
             "No.":
                 m 1eka "Oh, I see."

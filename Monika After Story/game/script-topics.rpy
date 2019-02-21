@@ -8672,9 +8672,9 @@ label monika_idle_game_skill_callback:
             m 1hub "That's great news, [player]!"
             m "I'm so proud of you!"
             m 1hua "It can really feel good to get a sudden surge in your skill!"
-            m 1eua "Especially if you've spent some time in a slump or slipping even."
+            m 1eua "Especially if you've spent some time in a slump or even slipping."
             m 1hua "Maybe today isn't the end of this sudden improvement."
-            m 1eub "Even if today was just a good day, I know you'll keep on getting better."
+            m 1eub "Even if today was just a good day, I know you'll keep getting better."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I'll {i}always{/i} root for you, [player]. Don't you ever forget that!"
         "I improved a bit.":

@@ -320,7 +320,7 @@ label ch30_reload_2_dlg:
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
         m 1rksdld "Is something happening in your other game?"
-        m 1ekc "You know you could just come talk to me if something's happening, right?"
+        m 1ekc "You know you could just come talk to me if there is, right?"
 
     if mas_curr_affection_group == mas_affection.G_HAPPY:
         m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
