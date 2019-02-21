@@ -4150,6 +4150,7 @@ init 2 python:
             persistent.monika_reload += 1
 
 
+
 # Music
 define audio.t1 = "<loop 22.073>bgm/1.ogg"  #Main theme (title)
 define audio.t2 = "<loop 4.499>bgm/2.ogg"   #Sayori theme
