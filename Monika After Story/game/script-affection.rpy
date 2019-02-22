@@ -2030,6 +2030,7 @@ label monika_affection_nickname:
         jump monika_affection_nickname_yes
 
     menu:
+        m "What do you say?{fast}"
         "Yes.":
             label monika_affection_nickname_yes:
                 pass

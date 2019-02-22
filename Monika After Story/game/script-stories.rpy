@@ -1199,6 +1199,7 @@ label mas_scary_story_flowered_lantern:
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
     m 1hua "...And that's it for part one! Do you want to continue to the next one?"
     menu:
+        m "...And that's it for part one! Do you want to continue to the next one?{fast}"
         "Yes.":
             jump mas_scary_story_flowered_lantern_2
         "No.":
@@ -1261,8 +1262,10 @@ label mas_scary_story_flowered_lantern_2:
     if _mas_lantern_scare or persistent._mas_pm_likes_spoops or mas_full_scares:
         hide mas_lantern
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
+
     m 1hua "...And that's it for part two! Do you want to continue to the next one?"
     menu:
+        m "...And that's it for part two! Do you want to continue to the next one?{fast}"
         "Yes.":
             jump mas_scary_story_flowered_lantern_3
         "No.":

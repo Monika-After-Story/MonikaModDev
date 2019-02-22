@@ -135,8 +135,10 @@ label introduction:
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"
+
+    m "Do you love me, [player]?"
     menu:
-        "Do you love me, [player]?"
+        m "Do you love me, [player]?{fast}"
         "I love you too.":
             #Gain affection for saying I love you too.
             $ mas_gainAffection()
