@@ -4798,7 +4798,7 @@ label monika_penname:
         if lowerpen == player.lower():
             $ menuOption = "Is your pen name still "+penname+"?"
         else:
-            $ menuOption = "Are you still going by "+penname+", "+player]+"?"
+            $ menuOption = "Are you still going by "+penname+", "+player+"?"
 
         m "[menuOption]"
         menu:
@@ -7924,42 +7924,41 @@ label monika_timeconcern_night_1:
 
     m "Are you busy working on something?"
     menu:
-       m "Are you busy working on something?{fast}"
-       "Yes, I am.":
-           $persistent._mas_timeconcern = 2
-           m 1eud "I see."
-           m 1eua "Well, I suppose it must be really important for you to do it so late."
-           m 1eka "I honestly can't help but feel that maybe you should have done it at a better time."
-           m 1lsc "Your sleep is very important after all. Maybe it can't be helped though..."
+        m "Are you busy working on something?{fast}"
+        "Yes, I am.":
+            $ persistent._mas_timeconcern = 2
+            m 1eud "I see."
+            m 1eua "Well, I suppose it must be really important for you to do it so late."
+            m 1eka "I honestly can't help but feel that maybe you should have done it at a better time."
+            m 1lsc "Your sleep is very important after all. Maybe it can't be helped though..."
 
-           m "Do you always work late, [player]?"
-           menu:
-               m "Do you always work late, [player]?{fast}"
-               "Yes, I do.":
-                   $ persistent._mas_timeconcerngraveyard = True
-                   m 1rksdld "That's not good..."
-                   m 1ekd "You're not able to change that, are you?"
-                   m 1rksdlc "I wish you could follow my healthier lifestyle."
-                   m 1dsc "But if you're not able to, then I'll just have to accept it."
-                   m 1eka "Just make sure you do try to stay healthy, okay?"
-                   m 1ekc "If something were to happen to you, I don't know what I'd do..."
+            m "Do you always work late, [player]?"
+            menu:
+                m "Do you always work late, [player]?{fast}"
+                "Yes, I do.":
+                    $ persistent._mas_timeconcerngraveyard = True
+                    m 1rksdld "That's not good..."
+                    m 1ekd "You're not able to change that, are you?"
+                    m 1rksdlc "I wish you could follow my healthier lifestyle."
+                    m 1dsc "But if you're not able to, then I'll just have to accept it."
+                    m 1eka "Just make sure you do try to stay healthy, okay?"
+                    m 1ekc "If something were to happen to you, I don't know what I'd do..."
 
-               "No, I don't.":
-                   $ evhand.greeting_database["greeting_timeconcern"].unlocked = True
-                   $ evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
-                   m 1hua "That's a relief!"
-                   m 1eua "If you're doing it this one time then it must be {i}really{/i} important."
-                   m 1hub "Good luck with your work and thanks for keeping me company when you're so busy!"
-                   m 1eka "It means a lot to me, [player], that even when you're preoccupied...you're here with me~"
-                return
-
-       "No, I'm not.":
-           $ persistent._mas_timeconcern = 3
-           m 1esc "I see."
-           m 1ekc "Well in that case, I would really prefer it if you went to bed now."
-           m "It's really worrying me that you're still up so late..."
-           m 1eka "So once again, please go to bed. Would you kindly do it for me?"
-           return
+                "No, I don't.":
+                    $ evhand.greeting_database["greeting_timeconcern"].unlocked = True
+                    $ evhand.greeting_database["greeting_timeconcern_day"].unlocked = True
+                    m 1hua "That's a relief!"
+                    m 1eua "If you're doing it this one time then it must be {i}really{/i} important."
+                    m 1hub "Good luck with your work and thanks for keeping me company when you're so busy!"
+                    m 1eka "It means a lot to me, [player], that even when you're preoccupied...you're here with me~"
+ 
+        "No, I'm not.":
+            $ persistent._mas_timeconcern = 3
+            m 1esc "I see."
+            m 1ekc "Well in that case, I would really prefer it if you went to bed now."
+            m "It's really worrying me that you're still up so late..."
+            m 1eka "So once again, please go to bed. Would you kindly do it for me?"
+    return
 
 #If player says they were working. Progress stops here.
 label monika_timeconcern_night_2:
