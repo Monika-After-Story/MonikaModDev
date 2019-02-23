@@ -1967,7 +1967,6 @@ label prompt_menu:
             talk_menu.append(("Repeat conversation.", "repeat"))
         talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
-        talk_menu.appent(("I'm Having", "food"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind.","nevermind"))
 
