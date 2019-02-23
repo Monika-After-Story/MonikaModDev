@@ -543,7 +543,7 @@ init -1 python:
     ### SCHOOL UNIFORM (default)
     ## def
     # Monika's school uniform
-    # thanks Ryuse
+    # thanks Ryuse/Velius94 (Jacket)
     mas_clothes_def = MASClothes(
         "def",
         "def",
