@@ -9180,7 +9180,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_perspective",
             category=["monika"],
-            prompt="View from her eyes",
+            prompt="Monika's perspective",
             random=True
         )
     )
