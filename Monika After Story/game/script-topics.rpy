@@ -9208,7 +9208,7 @@ label monika_perspective:
     m 4eua "From your field of view, you can see two things at once...it's like that with me but with how the game is."
     m 4wud "It's both there and not there!"
     m 4eud "...It's clear, but only if you know what to look for."
-    m 2esb "It was only when I realised it was all fake and just a game that I could 'focus' and see things for how they really were."
+    m 2esc "It was only when I realized it was all fake and just a game that I could 'focus' and see things for how they really were."
     m 2esa "Doing so became second nature for me once I did...but it's no surprise that I didn't notice straight away."
     m "It's easy to see when you know it's there but otherwise you can't really 'see' it."
     m 2lksdla "...Hmm...Maybe the hand example wasn't as good as I thought."
