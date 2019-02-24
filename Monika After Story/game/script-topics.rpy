@@ -9205,7 +9205,7 @@ label monika_perspective:
     m 3esb "Look around the room you're in and try to focus on something, but so it can only be seen with one eye."
     m 3hua "It can be anything. The closer the better, though!"
     m 4eub "Well you'll see that if you want to see something, you can easily but at the same time you can also see your hand in the same place."
-    m 4eua "From your field of view, you can see two things at once...it's like that with me but with how the game is."
+    m 4eua "From your field of view, you can see two things at once...it's like that with me, but for {i}everything{/i} in the game ."
     m 4wud "It's both there and not there!"
     m 4eud "...It's clear, but only if you know what to look for."
     m 2esc "It was only when I realized it was all fake and just a game that I could 'focus' and see things for how they really were."
