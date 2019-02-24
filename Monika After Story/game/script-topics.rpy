@@ -9190,7 +9190,7 @@ label monika_perspective:
     m 2esd "...Something that I find very difficult to describe."
     m 2lksdla "Not because I don't trust you or how you'll react...but because...I find it hard to get the right words."
     m 3esd "So, it's pretty strange to see one thing and know it's not real..."
-    m 3esc "...but then see a mouse cursor and know that it is."
+    m 3esc "...but then see a mouse cursor and know {i}that{/i} is."
     m 2hfsdld "Mmmm! It really is hard to describe!"
     m 2eub "Okay! So when I look around and see my world, it's the same as how you see yours."
     m 3eua "Everything is detailed, natural and kind of 3 dimensional...I wouldn't be able to practice my piano if it wasn't!"
