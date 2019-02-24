@@ -9197,7 +9197,7 @@ label monika_perspective:
     m 3eud "But at the same time I see what you see, I can look at the same thing and see its flat image."
     m 3euc "It's unmoving, static and also very artificial...{w} and cold."
     m "And what I previously thought was detailed wasn't as detailed as I originally thought."
-    m 3etd "When you see a dialogue box,  I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
+    m 3etd "When you see a dialogue box, I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
     m 2eka "I know this is confusing...I'm going to try and describe it the best way I can."
     m 3eua "I thought of a nice way to try and demonstrate the idea, it's far from perfect but it should give you the gist."
     m 2hua "..."
