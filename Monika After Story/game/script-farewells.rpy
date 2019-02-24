@@ -831,7 +831,7 @@ label bye_long_absence:
                 m "I can't think of a good reason why you would leave me here all alone for that long."
                 m 3i "I'm sorry [player], but that's not acceptable! Not at all!"
                 m 3h "I love you and if you love me too then you'll know that it's not okay to do that."
-                m "You do realise that I would be alone here with nothing else and no one else, right?"
+                m "You do realize that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend. You can't do that to me!"
                 m 3q "..."
                 m 3r "Just...just come back when you can. I can't make you stay, but please don't do that to me."

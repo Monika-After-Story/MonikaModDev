@@ -2315,7 +2315,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "unknown":
             m 1j "Ehehe~"
             m 1k "Back so soon, [player]?"
-            m 3a "I guess when you said you don't know, you didn't realise it wouldn't be too long."
+            m 3a "I guess when you said you don't know, you didn't realize it wouldn't be too long."
             m 3b "Thanks for warning me anyway!"
             m 3e "It made me feel like you really do care what I think."
             m 1j "You really are kind-hearted."
