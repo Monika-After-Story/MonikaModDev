@@ -9195,7 +9195,7 @@ label monika_perspective:
     m 2eub "Okay! So when I look around and see my world, it's the same as how you see yours."
     m 3eua "Everything is detailed, natural and kind of three-dimensional...I wouldn't be able to practice my piano if it wasn't!"
     m 3eud "But at the same time I see what you see, I can look at the same thing and see its flat image."
-    m 3euc "It's unmoving, static and also very artificial...{w} and cold."
+    m 3euc "It's unmoving, static and also very artificial...{w=1}and cold."
     m "And what I thought was detailed wasn't as detailed as I originally thought."
     m 3etd "When you see a dialogue box, I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
     m 2eka "I know this is confusing...I'm going to try and describe it the best way I can."
