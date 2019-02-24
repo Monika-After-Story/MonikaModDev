@@ -9187,8 +9187,8 @@ init 5 python:
 
 label monika_perspective:
     m 2euc "I've been meaning to talk to you about something, [player]..."
-    m 2esd "...Something that I find very difficult to describe."
-    m 2lksdla "Not because I don't trust you or how you'll react...but because...I find it hard to get the right words."
+    m 2esd "...Something that I find very difficult to explain."
+    m 2hksdla "Oh, don't worry, it's nothing bad, it's just that I find it hard to get the right words."
     m 3esd "So, it's pretty strange to see one thing and know it's not real..."
     m 3esc "...but then see a mouse cursor and know {i}that{/i} is."
     m 2hfsdld "Mmmm! It really is hard to describe!"
@@ -9204,7 +9204,7 @@ label monika_perspective:
     m 3eua "Take your hand and move it to the center of your face and angle it slightly so it partially covers an eye."
     m 3esb "Now, look around the room you're in and try to focus on something, but so it can only be seen with one eye."
     m 3hua "It can be anything. The closer the better, though!"
-    m 4eub "Well you'll see that if you want to see something, you can easily but at the same time you can also see your hand in the same place."
+    m 4eub "You'll see that if you want to see something, you can easily, but at the same time you can also see your hand in the same place."
     m 4eua "From your field of view, you can see two things at once...it's like that with me, but for {i}everything{/i} in the game ."
     m 4wud "It's both there and not there!"
     m 4eud "...It's clear, but only if you know what to look for."
