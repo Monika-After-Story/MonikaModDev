@@ -8616,7 +8616,7 @@ label monika_bullying:
     m 2ekc "Hey [player], there's something I want to talk to you about..."
     m 4ekc "I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
     m 4dkd "Some people are bullied every day until the point they just can't take it anymore."
-    m 2rsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5}{i}'kids being kids.'{/i}"
+    m 2rsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5}'{i}kids being kids.{/i}'"
     m "Eventually, the victims lose all trust in authority figures because they let it go on day after day."
     m 2rksdld "It can make them so desperate, they eventually just snap..."
     m 2eksdlc "...resulting in violence toward the bully, other people, or even themselves."
