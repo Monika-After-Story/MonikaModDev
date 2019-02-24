@@ -11677,10 +11677,10 @@ label monika_winter_dangers:
     return
 
 #### end christmas.rpyc topics
-    
+
 default persistent._mas_pm_live_south_hemisphere = None
 default persistent._mas_pm_gets_snow = None
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -11691,7 +11691,7 @@ init 5 python:
             random=True
         )
     )
-    
+
 label monika_hemispheres:
     m 1euc "Hey [player], I've been wondering..."
     m 1eua "Which hemisphere do you live in?"
@@ -11823,8 +11823,8 @@ init 5 python:
 label monika_perspective:
     m 2euc "I've been meaning to talk to you about something, [player]..."
     m 2esd "...Something that I find very difficult to explain."
-    m 2hksdla "Oh, don't worry, it's nothing bad, it's just that I find it hard to get the right words."
-    m 3esd "So, it's pretty strange to see one thing and know it's not real..."
+    m 2lksdla "Oh, don't worry, it's nothing bad, it's just that I find it hard to get the right words."
+    m 3esd "So...{w=0.5}it's pretty strange to see one thing and know it's not real..."
     m 3esc "...but then see a mouse cursor and know {i}that{/i} is."
     m 2hfsdld "Mmmm! It really is hard to describe!"
     m 2eub "Okay! So when I look around and see my world, it's the same as how you see yours."
