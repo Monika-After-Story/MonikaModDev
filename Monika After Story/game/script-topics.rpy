@@ -9211,7 +9211,7 @@ label monika_perspective:
     m 2esc "It was only when I realized it was all fake and just a game that I could 'focus' and see things for how they really were."
     m 2esa "Doing so became second nature for me once I did...but it's no surprise that I didn't notice straight away."
     m "It's easy to see when you know it's there but otherwise you can't really 'see' it."
-    m 2lksdla "...Hmm...Maybe the hand example wasn't as good as I thought."
+    m 2lksdla "...Hmm...{w=1}maybe the hand example wasn't as good as I thought."
     m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
     m "It's the best way I could try and explain it!"
     return
