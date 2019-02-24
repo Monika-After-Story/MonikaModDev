@@ -30,14 +30,14 @@ init -20 python:
                 (png is added in the constructor)
             group - string id to group related selectable sprites. this really
                 applies only to acs, but in case other things need this.
-            unlocked - True if this selectable sprite can be selected, 
+            unlocked - True if this selectable sprite can be selected,
                 False otherwise.
             visible_when_locked - True if this should be visible when locked
                 False, otherwise.
                 Locked items will generally be displayed with a placeholder
                 thumb.
             hover_dlg - list of text to display when hovering over the object
-            first_select_dlg - text to display the first time you 
+            first_select_dlg - text to display the first time you
                 select this sprite
             select_dlg - list text to display everytime you select this sprite
                 (after the first time)
@@ -45,10 +45,10 @@ init -20 python:
         """
 
 
-        def __init__(self, 
+        def __init__(self,
                 _sprite_object,
                 display_name,
-                thumb, 
+                thumb,
                 group,
                 visible_when_locked=True,
                 hover_dlg=None,
@@ -69,7 +69,7 @@ init -20 python:
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - list of text to display when hovering over the 
+                hover_dlg - list of text to display when hovering over the
                     object
                     (Default: None)
                 first_select_dlg - text to display the first time you select
@@ -77,7 +77,7 @@ init -20 python:
                     (Default: None)
                 select_dlg - list of text to display everytime you select this
                     sprite
-                    (after the first time)            
+                    (after the first time)
                     (Default: None)
             """
 #            self._check_dlg(hover_dlg)
@@ -154,7 +154,7 @@ init -20 python:
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - list of text to display when hovering over the 
+                hover_dlg - list of text to display when hovering over the
                     object
                     (Default: None)
                 first_select_dlg - text to display the first time you select
@@ -162,8 +162,8 @@ init -20 python:
                     (Default: None)
                 select_dlg - list of text to display everytime you select this
                     sprite
-                    (after the first time)            
-                    (Default: None)            
+                    (after the first time)
+                    (Default: None)
             """
             if type(_sprite_object) != MASAccessory:
                 raise Exception("not an acs: {0}".format(group))
@@ -223,7 +223,7 @@ init -20 python:
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - list of text to display when hovering over the 
+                hover_dlg - list of text to display when hovering over the
                     object
                     (Default: None)
                 first_select_dlg - text to display the first time you select
@@ -231,8 +231,8 @@ init -20 python:
                     (Default: None)
                 select_dlg - list of text to display everytime you select this
                     sprite
-                    (after the first time)            
-                    (Default: None)            
+                    (after the first time)
+                    (Default: None)
             """
             if type(_sprite_object) != MASHair:
                 raise Exception("not a hair: {0}".format(group))
@@ -292,7 +292,7 @@ init -20 python:
                 visible_when_locked - True if this item should be visible in
                     the screen when locked, False otherwise
                     (Default: True)
-                hover_dlg - list of text to display when hovering over the 
+                hover_dlg - list of text to display when hovering over the
                     object
                     (Default: None)
                 first_select_dlg - text to display the first time you select
@@ -300,8 +300,8 @@ init -20 python:
                     (Default: None)
                 select_dlg - list of text to display everytime you select this
                     sprite
-                    (after the first time)            
-                    (Default: None)            
+                    (after the first time)
+                    (Default: None)
             """
             if type(_sprite_object) != MASClothes:
                 raise Exception("not a clothes: {0}".format(group))
@@ -339,7 +339,7 @@ init -10 python in mas_selspr:
 
     ## screen constants
     SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
-    # keep this in sync with teh screen area 
+    # keep this in sync with teh screen area
 
     ## string constants
     DEF_DISP = "..."
@@ -397,10 +397,10 @@ init -10 python in mas_selspr:
                 (Default: True)
             hover_dlg - list of dialogue to say when the item is hovered over
                 (Default: None)
-            first_select_dlg - list of dialogue to say when the item is 
+            first_select_dlg - list of dialogue to say when the item is
                 selected for the first time
                 (Default: None)
-            select_dlg - list of dialogue to say when the item is selected 
+            select_dlg - list of dialogue to say when the item is selected
                 after the first time
                 (Default: None)
         """
@@ -444,12 +444,12 @@ init -10 python in mas_selspr:
                 (Default: True)
             hover_dlg - list of dialogue to say when the item is hovered over
                 (Default: None)
-            first_select_dlg - list of dialogue to say when the item is 
+            first_select_dlg - list of dialogue to say when the item is
                 selected for the first time
                 (Default: None)
-            select_dlg - list of dialogue to say when the item is selected 
+            select_dlg - list of dialogue to say when the item is selected
                 after the first time
-                (Default: None)        
+                (Default: None)
         """
         # no duplicates
         if clothes.name in CLOTH_SEL_MAP:
@@ -493,12 +493,12 @@ init -10 python in mas_selspr:
                 (Default: True)
             hover_dlg - list of dialogue to say when the item is hovered over
                 (Default: None)
-            first_select_dlg - list of dialogue to say when the item is 
+            first_select_dlg - list of dialogue to say when the item is
                 selected for the first time
                 (Default: None)
-            select_dlg - list of dialogue to say when the item is selected 
+            select_dlg - list of dialogue to say when the item is selected
                 after the first time
-                (Default: None)        
+                (Default: None)
         """
         # no duplicates
         if hair.name in HAIR_SEL_MAP:
@@ -530,7 +530,7 @@ init -10 python in mas_selspr:
         """
         Adjusts an aspect of monika based on the select type
 
-        NOTE: this also logs exceptions if they occur. Also will undo 
+        NOTE: this also logs exceptions if they occur. Also will undo
             a chnage that causes crash.
 
         IN:
@@ -558,7 +558,7 @@ init -10 python in mas_selspr:
                 remove_keys = old_map_view - new_map_view
                 remove_map = old_map
                 add_map = new_map
-        
+
             # remove what is excess
             for item_name in remove_keys:
                 moni_chr.remove_acs(
@@ -567,15 +567,14 @@ init -10 python in mas_selspr:
 
             # then readd everything that was previous
             for item in add_map.itervalues():
-                acs = item.selectable.get_sprobj()
-                moni_chr.wear_acs_in(acs, acs.rec_layer)
+                moni_chr.wear_acs(item.selectable.get_sprobj())
 
         elif select_type == SELECT_HAIR:
 
             # determine which map to change to
             if use_old:
                 select_map = old_map
-            
+
             else:
                 select_map = new_map
 
@@ -583,9 +582,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_hair = moni_chr.hair
+                    new_hair = item.selectable.get_sprobj()
+
+                    if prev_hair == new_hair:
+                        # hair is the same? no point in changing
+                        return
 
                     try:
-                        moni_chr.change_hair(item.selectable.get_sprobj())
+                        moni_chr.change_hair(new_hair)
 
                     except Exception as e:
                         mas_utils.writelog("BAD HAIR: " + repr(e))
@@ -606,9 +610,14 @@ init -10 python in mas_selspr:
             for item in select_map.itervalues():
                 if use_old or item.selected:
                     prev_cloth = moni_chr.clothes
+                    new_cloth = item.selectable.get_sprobj()
+
+                    if prev_cloth == new_cloth:
+                        # we are changing to the what we are wearing? no point
+                        return
 
                     try:
-                        moni_chr.change_clothes(item.selectable.get_sprobj())
+                        moni_chr.change_clothes(new_cloth)
 
                     except Exception as e:
                         mas_utils.writelog("BAD CLOTHES: " + repr(e))
@@ -717,14 +726,14 @@ init -10 python in mas_selspr:
         # otherwise, now we get intersection and verify length
         return old_len == len(old_map_view & new_map_view)
 
-    
+
     def _save_selectable(source, dest):
         """
         Saves selectable data from the given source into the destination.
 
         IN:
             source - source data to read
-            dest - data place to save 
+            dest - data place to save
         """
         for item_name, item in source.iteritems():
             dest[item_name] = item.toTuple()
@@ -733,7 +742,7 @@ init -10 python in mas_selspr:
     def save_selectables():
         """
         Goes through the selectables and saves their unlocked property.
-        
+
         NOTE: we do this by adding the name into the appropriate persistent.
         also the data we want to save
         """
@@ -754,7 +763,8 @@ init -10 python in mas_selspr:
             dest - data to save the loaded data into
         """
         for item_name, item_tuple in source.iteritems():
-            dest[item_name].fromTuple(item_tuple)
+            if item_name in dest:
+                dest[item_name].fromTuple(item_tuple)
 
 
     def load_selectables():
@@ -767,6 +777,92 @@ init -10 python in mas_selspr:
             store.persistent._mas_selspr_clothes_db,
             CLOTH_SEL_MAP
         )
+
+
+    def _filter_sel_single(item, unlocked, group):
+        """
+        Checks if the given item matches the given criteria
+
+        IN:
+            item - selectable to check
+            unlocked - True means item matches if its unlocked
+            group - if not None, then item matches if the group matches
+
+        RETURNS:
+            True if the item matches the criteria, False otherwise
+        """
+        if unlocked and not item.unlocked:
+            return False
+
+        if group is not None and item.group != group:
+            return False
+
+        return True
+
+
+    def _filter_sel(select_list, unlocked, group=None):
+        """
+        Filters the selectable list based on criteria
+
+        IN:
+            select_list - list of Selectables to filter
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this
+                group. If None, we dont check group at all.
+                (Default: None)
+
+        RETURNS: list of selectables that match criteria
+        """
+        return [
+            item
+            for item in select_list
+            if _filter_sel_single(item, unlocked, group)
+        ]
+
+
+    def filter_acs(unlocked, group=None):
+        """
+        Filters the selectable acs based on criteria
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all.
+                (Default: None)
+
+        RETURNS: list of selectable acs that match criteria
+        """
+        return _filter_sel(ACS_SEL_SL, unlocked, group)
+
+
+    def filter_clothes(unlocked, group=None):
+        """
+        Filters the selectable clothes based on critera
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all
+                (Default: None)
+
+        RETURNS: list of selectable clothes that match criteria
+        """
+        return _filter_sel(CLOTH_SEL_SL, unlocked, group)
+
+
+    def filter_hair(unlocked, group=None):
+        """
+        Filters the selectable hair based on critera
+
+        IN:
+            unlocked - True means we only match unlocked selectables
+            group - non-None means we match selectables that match this group
+                if None, we don't check group at all
+                (Default: None)
+
+        RETURNS: list of selectable hair that match criteria
+        """
+        return _filter_sel(HAIR_SEL_SL, unlocked, group)
 
 
     def _get_sel(item, select_type):
@@ -931,7 +1027,7 @@ init -10 python in mas_selspr:
             super(MASSelectableSpriteMailbox, self).__init__()
             self.send_def_disp_text(def_disp_text)
             self.send_conf_enable(False)
-        
+
 
         def _get(self, headline):
             """
@@ -965,7 +1061,7 @@ init -10 python in mas_selspr:
             Returns the value of the conf enable message
 
             RETURNS:
-                True if the confirmation button should be enabled, False 
+                True if the confirmation button should be enabled, False
                 otherwise
             """
             return self._read(MB_CONF)
@@ -989,14 +1085,14 @@ init -10 python in mas_selspr:
             RETURNS: display text
             """
             return self._get(MB_DISP)
-            
+
 
         def send_conf_enable(self, enable):
             """
             Sends enable message
 
             IN:
-                enable - True means to enable, False means to disable 
+                enable - True means to enable, False means to disable
             """
             self._send(MB_CONF, enable)
 
@@ -1023,7 +1119,25 @@ init -10 python in mas_selspr:
 
 init -1 python:
     import random
-    
+
+    # better more user-friendly sel functions
+    def mas_SELisUnlocked(_sprite_item, select_type):
+        """
+        Checks if the given sprite item is unlocked
+
+        IN:
+            _sprite_item - sprite object to check
+            select_type - type of this sprite object
+
+        RETURNS: True if the given sprite item is unlocked, false otherwise
+        """
+        _sel_item = store.mas_selspr._get_sel(_sprite_item, select_type)
+        if _sel_item is not None:
+            return _sel_item.unlocked
+
+        return False
+
+
     ## custom displayable
     class MASSelectableImageButtonDisplayable(renpy.Displayable):
         """
@@ -1037,10 +1151,10 @@ init -1 python:
 
         WIDTH = 180 # default width
         TX_WIDTH = 170 # width of the text object
-        
+
         # technically this should change.
-        TOTAL_HEIGHT = 218 
-        SELECTOR_HEIGHT = 180 
+        TOTAL_HEIGHT = 218
+        SELECTOR_HEIGHT = 180
 
         # this is the default, but the real may change using the expanding
         # frame properties.
@@ -1057,8 +1171,8 @@ init -1 python:
         )
         MOUSE_WHEEL = (4, 5)
 
-        
-        def __init__(self, 
+
+        def __init__(self,
                 _selectable,
                 select_map,
                 viewport_bounds,
@@ -1143,7 +1257,7 @@ init -1 python:
 
             # these get changed
             self.hover_width = self.WIDTH
-            self.hover_height = self.TOTAL_HEIGHT 
+            self.hover_height = self.TOTAL_HEIGHT
 
             self.selected = False
             self.select_jump = False
@@ -1193,10 +1307,10 @@ init -1 python:
             line_index = 1
             for line in _disp_name:
                 r.blit(
-                    line, 
+                    line,
                     (
                         5,
-                        (line_index * self.TOP_FRAME_CHUNK) 
+                        (line_index * self.TOP_FRAME_CHUNK)
                         - line.get_size()[1]
                     )
                 )
@@ -1290,7 +1404,7 @@ init -1 python:
                 self.hover_jumped = False
 
             elif not self.hover_jumped:
-                # first time hovering 
+                # first time hovering
                 self.hover_jumped = True
 
                 # play hover sound
@@ -1381,11 +1495,11 @@ init -1 python:
 
         def _render_bottom_frame(self, hover, st, at):
             """
-            Renders the bottom frames, returns a list of the renders in order 
+            Renders the bottom frames, returns a list of the renders in order
             of bliting.
 
             IN:
-                hover - True means we are hovering (or are selected), false 
+                hover - True means we are hovering (or are selected), false
                     otherwise
 
             RETURNS:
@@ -1487,7 +1601,7 @@ init -1 python:
             if self.selected:
                 # TODO: this actually can break things if we dselect
                 #   probably should handle this a smarter way like if
-                #   something was selected originally, dont make it possible 
+                #   something was selected originally, dont make it possible
                 #   to deselect.
                 #   or make it select what was originally selected.
                 # deselect self
@@ -1585,9 +1699,9 @@ init -1 python:
 
         def _setup_display_name(self, st, at):
             """
-            Sets up item_name and item_name_hover with list of renders, ready 
+            Sets up item_name and item_name_hover with list of renders, ready
             for bliting.
-            
+
             IN:
                 st - st for renpy render
                 at - at for renpy render
@@ -1629,7 +1743,7 @@ init -1 python:
             self.top_frame_height = (
                 (self.TOP_FRAME_CHUNK * len(self.item_name_hover))
             )
-            
+
 
         def _split_render(self, disp_name, st, at):
             """
@@ -1737,22 +1851,28 @@ init -1 python:
                 MOUSEMOTION + hover is over us
                 MOUSEDOWN + mouse is over us
             """
+            # window event means we need to re-render everything
+            if ev.type == pygame.WINDOWEVENT:
+                self.first_render = True
+                renpy.redraw(self, 0)
+                return
+
             if ev.type in self.MOUSE_EVENTS:
-                
+
                 if ev.type == pygame.MOUSEMOTION:
                     if not self.locked:
                         self.hovered = self._is_over_me(x, y)
                         renpy.redraw(self, 0)
 
                 elif ev.type == pygame.MOUSEBUTTONDOWN:
-                    
+
                     if ev.button in self.MOUSE_WHEEL:
-                        # TODO: scrolling in mouse wheel is not perfect, 
+                        # TODO: scrolling in mouse wheel is not perfect,
                         #   the previously hovered item gest hovered instead
                         #   of what we actually want.
                         if not self.locked:
                             self.hovered = self._is_over_me(x, y)
-                            renpy.redraw(self, 0)           
+                            renpy.redraw(self, 0)
 
                     elif ev.button == 1:
                         # left click
@@ -1979,6 +2099,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
 #        selecting_hair = select_type == store.mas_selspr.SELECT_HAIR
 #        selecting_clothes = select_type == store.mas_selspr.SELECT_CLOTH
 
+        # save state
+        prev_moni_state = monika_chr.save_state(True, True, True)
+
         # setup the mailbox
         if mailbox is None:
             mailbox = store.mas_selspr.MASSelectableSpriteMailbox()
@@ -2023,6 +2146,15 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         old_view = old_select_map.viewkeys()
         new_view = select_map.viewkeys()
 
+        # disable menu interactions to prevent bugs
+        disable_esc()
+
+        # store current auto forward mode state
+        afm_state = _preferences.afm_enable
+
+        # and disable it
+        _preferences.afm_enable = False
+
     show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel")
 
 label mas_selector_sidebar_select_loop:
@@ -2061,6 +2193,10 @@ label mas_selector_sidebar_select_loop:
 label mas_selector_sidebar_select_confirm:
     hide screen mas_selector_sidebar
 
+    # re-enable the menu and restore afm
+    $ _preferences.afm_enable = afm_state
+    $ enable_esc()
+
     python:
         if not save_on_confirm:
             store.mas_selspr._clean_select_map(
@@ -2070,21 +2206,32 @@ label mas_selector_sidebar_select_confirm:
                 monika_chr
             )
 
-            store.mas_selspr._adjust_monika(
-                monika_chr,
-                old_select_map,
-                select_map,
-                select_type,
-                True
-            )
+#            store.mas_selspr._adjust_monika(
+#                monika_chr,
+#                old_select_map,
+#                select_map,
+#                select_type,
+#                True
+#            )
 
-            monika_chr.save()
-            renpy.save_persistent()
+            # reload state
+            monika_chr.reset_outfit()
+            monika_chr.remove_all_acs()
+            monika_chr.load_state(prev_moni_state)
+
+
+        # always save confirming
+        monika_chr.save()
+        renpy.save_persistent()
 
     return True
 
 label mas_selector_sidebar_select_cancel:
     hide screen mas_selector_sidebar
+
+    # re-enable the menu and restore afm
+    $ _preferences.afm_enable = afm_state
+    $ enable_esc()
 
     python:
         store.mas_selspr._clean_select_map(
@@ -2094,16 +2241,21 @@ label mas_selector_sidebar_select_cancel:
             monika_chr
         )
 
-        store.mas_selspr._adjust_monika(
-            monika_chr,
-            old_select_map,
-            select_map,
-            select_type,
-            True
-        )
+#        store.mas_selspr._adjust_monika(
+#            monika_chr,
+#            old_select_map,
+#            select_map,
+#            select_type,
+#            True
+#        )
+
+        # reload state
+        monika_chr.reset_outfit()
+        monika_chr.remove_all_acs()
+        monika_chr.load_state(prev_moni_state)
 
     return False
-   
+
 # ACS sidebar selector label
 #
 # SEE mas_selector_sidebar_select for info on input params.
@@ -2124,8 +2276,12 @@ label mas_selector_sidebar_select_acs(items, preview_selections=True, only_unloc
 #
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
-    
+
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_HAIR, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_hair = True
 
     return _return
 
@@ -2136,7 +2292,11 @@ label mas_selector_sidebar_select_hair(items, preview_selections=True, only_unlo
 #
 # RETURNS: True if we are confirming the changes, False if not
 label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_unlocked=True, save_on_confirm=True, mailbox=None, select_map={}):
-    
+
     call mas_selector_sidebar_select(items, store.mas_selspr.SELECT_CLOTH, preview_selections, only_unlocked, save_on_confirm, mailbox, select_map)
+
+    if _return:
+        # user hit confirm
+        $ persistent._mas_force_clothes = True
 
     return _return

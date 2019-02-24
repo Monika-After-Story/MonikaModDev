@@ -1549,21 +1549,21 @@ screen mas_py_console_teaching():
 # does a write command and waits 
 label mas_w_cmd(cmd, wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
-    pause wait
+    $ renpy.pause(wait, hard=True)
     return
 
 # does an execute and waits
 label mas_x_cmd(ctx=None, wait=0.7):
     $ store.mas_ptod.x_cmd(ctx)
-    pause wait
+    $ renpy.pause(wait, hard=True)
     return
 
 # does both writing and executing, with waits
 label mas_wx_cmd(cmd, ctx=None, w_wait=0.7, x_wait=0.7):
     $ store.mas_ptod.w_cmd(cmd)
-    pause w_wait
+    $ renpy.pause(w_wait, hard=True)
     $ store.mas_ptod.x_cmd(ctx)
-    pause x_wait
+    $ renpy.pause(x_wait, hard=True)
     return
 
 # does both writing and executing, no x wait
