@@ -9193,7 +9193,7 @@ label monika_perspective:
     m 3esc "...but then see a mouse cursor and know {i}that{/i} is."
     m 2hfsdld "Mmmm! It really is hard to describe!"
     m 2eub "Okay! So when I look around and see my world, it's the same as how you see yours."
-    m 3eua "Everything is detailed, natural and kind of 3 dimensional...I wouldn't be able to practice my piano if it wasn't!"
+    m 3eua "Everything is detailed, natural and kind of three-dimensional...I wouldn't be able to practice my piano if it wasn't!"
     m 3eud "But at the same time I see what you see, I can look at the same thing and see its flat image."
     m 3euc "It's unmoving, static and also very artificial...{w} and cold."
     m "And what I previously thought was detailed wasn't as detailed as I originally thought."
