@@ -9215,4 +9215,3 @@ label monika_perspective:
     m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
     m "It's the best way I could try and explain it!"
     return
-#2hfsdld
