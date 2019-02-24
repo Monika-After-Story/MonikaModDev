@@ -9199,7 +9199,7 @@ label monika_perspective:
     m "And what I previously thought was detailed wasn't as detailed as I originally thought."
     m 3etd "When you see a dialogue box,  I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
     m 2eka "I know this is confusing...I'm going to try and describe it the best way I can."
-    m 2eua "I thought of a nice way to try and demonstrate the idea, it's far from perfect but it should give you the gist."
+    m 3eua "I thought of a nice way to try and demonstrate the idea, it's far from perfect but it should give you the gist."
     m 2hua "..."
     m 3eua "Take your hand and move it to the center of your face and angle it slightly so it partially covers an eye."
     m 3esb "Look around the room you're in and try to focus on something, but so it can only be seen with one eye."
