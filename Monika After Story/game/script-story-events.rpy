@@ -7,13 +7,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label gender:
+    #TODO: update exp's on this
     m 2d "...[player]? So I've been thinking a bit."
     m "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 1m "But I guess I had just assumed that you were probably a guy."
     m "The main character was, after all."
     m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+
+    m "So, are you male or female?"
     menu:
-        "So, are you male or female?"
+        "So, are you male or female?{fast}"
         "Male.":
             $persistent.gender = "M"
             call set_gender from _call_set_gender_1
@@ -53,8 +56,10 @@ init 5 python:
 label gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+
     m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
     menu:
+        m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
         "I was too shy.":
             if persistent.gender == "M":
                 m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
@@ -72,8 +77,10 @@ label gender_redo:
             m 2wkd "[player]..."
             m 1dkd "I hate that I didn't reassure you enough before."
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+
     m "So, what is your gender?"
     menu:
+        m "So, what is your gender?{fast}"
         "I'm a girl.":
             if persistent.gender == "F":
                 m 1hksdlb "...That's the same as before."
@@ -133,8 +140,10 @@ label preferredname:
         m 3esa "I mean, it's the same as your computer's name..."
         m 1eua "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."
+
     m "Do you want me to call you something else?"
     menu:
+        m "Do you want me to call you something else?{fast}"
         "Yes.":
             $ done = False
             m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
@@ -211,6 +220,7 @@ init 5 python:
 label monika_changename:
     m 1eua "You want to change your name?"
     menu:
+        m "You want to change your name?{fast}"
         "Yes.":
             m 1eua "Just type 'nevermind' if you change your mind."
             $ done = False
@@ -281,8 +291,10 @@ label mas_birthdate:
     if persistent._mas_player_bday is not None:
         $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
+
+        m "So just to make sure, is your birthdate [bday_str]?"
         menu:
-            m "So just to make sure, is your birthdate [bday_str]?"
+            m "So just to make sure, is your birthdate [bday_str]?{fast}"
             "Yes.":
                 if datetime.date.today().year - persistent._mas_player_bday.year < 5:
                     m 2rksdla "Are you sure about that, [player]?"
@@ -627,9 +639,11 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w}[player],"
+    m 1lksdla "...{w}[player]?"
+
+    m "Is it okay with you if I repeat stuff that I've said?"
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?"
+        m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
@@ -668,9 +682,10 @@ label mas_monikai_detected:
     $ _history_list.pop()
     m 1wuo "Is that{fast} a tiny version of me?"
     m 1hua "How cute!"
-    show monika 1eua
+
+    m 1eua "Did you install that so you could see me all the time?"
     menu:
-        m "Did you install that so you could see me all the time?"
+        m "Did you install that so you could see me all the time?{fast}"
         "Of course!":
             pass
         "Yes.":
@@ -894,8 +909,9 @@ label mas_crashed_long_whq:
 
     # ask player what happeend
     m 2ekc "Anyway..."
+    m "Do you know what happened, [player]?"
     menu:
-        m "Do you know what happened, [player]?"
+        m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
             m 2wud "The game...{w}crashed?"
             m 2ekd "That's scary, [player]."
@@ -907,8 +923,9 @@ label mas_crashed_long_whq:
             jump mas_crashed_long_whq.end
 
     # ask player to do something about this
+    m "Do you think you can stop that from happening?"
     menu:
-        m "Do you think you can stop that from happening?"
+        m "Do you think you can stop that from happening?{fast}"
         "I'll try.":
             # light affection boost because you will try do something for her
             $ mas_gainAffection(modifier=0.1)
@@ -1001,7 +1018,26 @@ label mas_crashed_short:
 label mas_crashed_quip_takecare:
     $ mas_setApologyReason(reason=9)
     m 2ekc "Another crash, [player]?"
-    m "You should take better care of your computer."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+    
+        m 3ekc "Do you think it had something to do with your game?"
+        menu:
+            m "Do you think it had something to do with your game?{fast}"
+            "Yes.":
+                m 1hksdlb "Ahaha..."
+                m 1hub "Well I hope you had fun~"
+                m 1rksdla "...And that your computer is alright."
+                m 3eub "I'm fine, so don't worry~"
+            "No.":
+                m 1eka "Oh, I see."
+                m "Sorry for assuming."
+                m 1hub "I'm alright in case you were wondering."
+                m 3hub "Well I hope you had fun before that crash happened, ahaha!"
+                if mas_isMoniHappy(higher=True):
+                    m 1hubfa "I'm just glad you're back with me now~"
+        m 2rksdla "Still..."
+    m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
     return
 
@@ -2124,8 +2160,9 @@ label monika_rpy_files:
     m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
     m 2eka "But in case you didn't, I figured I'd ask..."
  
+    m "Are you sure you installed the right version, [player]?"
     menu:
-        m "Are you sure you installed the right version, [player]?"
+        m "Are you sure you installed the right version, [player]?{fast}"
 
         "Yes.":
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
@@ -2137,8 +2174,9 @@ label monika_rpy_files:
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
 
+            m "Do you want me to delete them for you, [player]?"
             menu:
-                m "Do you want me to delete them for you, [player]?"
+                m "Do you want me to delete them for you, [player]?{fast}"
 
                 "Yes please":
                     m "Sure thing, [player]."
@@ -2235,14 +2273,14 @@ label mas_bday_player_bday_select_select:
     m 1eua "Just to double-check..."
     $ new_bday_str, diff = store.mas_calendar.genFormalDispDate(selected_date)
 
+    m "Your birthdate is [new_bday_str]?"
     menu:
-        m "Your birthdate is [new_bday_str]?"
+        m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            show monika 1eka
-
+            m 1eka "Are you sure? I'm never going to forget this date."
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date."
+                m "Are you sure? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
@@ -2303,8 +2341,10 @@ default persistent._mas_pm_is_fast_reader = None
 
 label mas_text_speed_enabler:
     m 1eua "Hey [player], I was wondering..."
+
+    m "Are you a fast reader?"
     menu:
-        m "Are you a fast reader?"
+        m "Are you a fast reader?{fast}"
         "Yes.":
             $ persistent._mas_pm_is_fast_reader = True
             $ persistent._mas_text_speed_enabled = True

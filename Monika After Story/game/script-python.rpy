@@ -630,8 +630,9 @@ label monika_ptod_tip006:
     if tip_ev.last_seen is None:
         m 1eud "Whew!{w} That was a mouthful!"
 
+    m "Did you understand all that?"
     menu:
-        m "Did you understand all that?"
+        m "Did you understand all that?{fast}"
         "Yes!":
             m 1hua "Yay!"
 
