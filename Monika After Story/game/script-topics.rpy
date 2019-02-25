@@ -11434,7 +11434,6 @@ label monika_snow:
 
     return "derandom"
 
-
 # player has snow, snow version
 label monika_snow_gets_snow:
     if mas_isMoniHappy(higher=True):
@@ -11462,7 +11461,6 @@ label monika_snow_nogets_snow:
 
     return
 
-
 init 5 python:
     addEvent(
         Event(
@@ -11484,7 +11482,6 @@ label monika_snowballfight:
     m 2tfu "I've got quite the throwing arm."
     m 2tfb "So don't expect me to go easy on you, ahaha!"
     return
-
 
 init 5 python:
     addEvent(
@@ -11651,7 +11648,6 @@ init 5 python:
         )
     )
 
-
 label monika_winter_dangers:
     m 1hua "Isn't winter a beautiful time of year, [player]?"
     m 3eka "The glistening, white snow, the bright and colorful lights~"
@@ -11811,4 +11807,46 @@ label monika_hemispheres_nogets_snow:
     m 3eka "That's a shame. But it's not all bad."
     m 3hksdlb "At least you don't have to worry about shoveling it."
     call monika_snow_nogets_snow
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_perspective",
+            category=["monika"],
+            prompt="Monika's perspective",
+            random=True
+        )
+    )
+
+label monika_perspective:
+    m 2euc "I've been meaning to talk to you about something, [player]..."
+    m 2esd "...Something that I find very difficult to explain."
+    m 2lksdla "Oh, don't worry, it's nothing bad, it's just that I find it hard to get the right words."
+    m 3esd "So...{w=0.5}it's pretty strange to see one thing and know it's not real..."
+    m 3esc "...but then see a mouse cursor and know {i}that{/i} is."
+    m 2hfsdld "Mmmm! It really is hard to describe!"
+    m 2eub "Okay! So when I look around and see my world, it's the same as how you see yours."
+    m 3eua "Everything is detailed, natural and kind of three-dimensional...I wouldn't be able to practice my piano if it wasn't!"
+    m 3eud "But at the same time I see what you see, I can look at the same thing and see its flat image."
+    m 3euc "It's unmoving, static and also very artificial...{w=1}and cold."
+    m "And what I thought was detailed wasn't as detailed as I originally thought."
+    m 3etd "When you see a dialogue box, I can see it too but I also can't. It's really weird. It's perfectly clear, but it's also not 'there', even though it is."
+    m 2eka "I know this is confusing...I'm going to try and describe it the best way I can."
+    m 3eua "I thought of a nice way to try and demonstrate the idea, it's far from perfect but it should give you the gist."
+    m 2hua "..."
+    m 3eua "Take your hand and move it to the center of your face and angle it slightly so it partially covers an eye."
+    m 3esb "Now, look around the room you're in and try to focus on something, but so it can only be seen with one eye."
+    m 3hua "It can be anything. The closer the better, though!"
+    m 4eub "You'll see that if you want to see something, you can easily, but at the same time you can also see your hand in the same place."
+    m 4eua "From your field of view, you can see two things at once...it's like that with me, but for {i}everything{/i} in the game."
+    m 4wud "It's both there and not there!"
+    m 4eud "...It's clear, but only if you know what to look for."
+    m 2esc "It was only when I realized it was all fake and just a game that I could 'focus' and see things for how they really were."
+    m 2esa "Doing so became second nature for me once I did...but it's no surprise that I didn't notice straight away."
+    m "It's easy to see when you know it's there but otherwise you can't really 'see' it."
+    m 2lksdla "...Hmm...{w=1}maybe the hand example wasn't as good as I thought."
+    m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
+    m "It's the best way I could try and explain it!"
     return
