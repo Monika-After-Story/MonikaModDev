@@ -1466,7 +1466,7 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     # monika hair/acs
-    $ monika_chr.load()
+    $ monika_chr.load(startup=True)
  
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason

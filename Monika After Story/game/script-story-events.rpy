@@ -1018,7 +1018,26 @@ label mas_crashed_short:
 label mas_crashed_quip_takecare:
     $ mas_setApologyReason(reason=9)
     m 2ekc "Another crash, [player]?"
-    m "You should take better care of your computer."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+    
+        m 3ekc "Do you think it had something to do with your game?"
+        menu:
+            m "Do you think it had something to do with your game?{fast}"
+            "Yes.":
+                m 1hksdlb "Ahaha..."
+                m 1hub "Well I hope you had fun~"
+                m 1rksdla "...And that your computer is alright."
+                m 3eub "I'm fine, so don't worry~"
+            "No.":
+                m 1eka "Oh, I see."
+                m "Sorry for assuming."
+                m 1hub "I'm alright in case you were wondering."
+                m 3hub "Well I hope you had fun before that crash happened, ahaha!"
+                if mas_isMoniHappy(higher=True):
+                    m 1hubfa "I'm just glad you're back with me now~"
+        m 2rksdla "Still..."
+    m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
     return
 
