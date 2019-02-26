@@ -3385,3 +3385,23 @@ label greeting_ghost:
     call mas_ghost_monika
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_rent",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_rent:
+    m 1eub "Welcome back dear!"
+    m 2tub "You know, you spend so much time here that I should start charging you for rent."
+    m 2tku "Or would you rather pay a mortgage?"
+    m 2hua "..." 
+    m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
+    m 5lsbfu "Although, I don't mind how long you stay here, ehehe~."
+    return
