@@ -1989,11 +1989,7 @@ label prompt_menu:
         call mas_mood_start from _call_mas_mood_start
         if not _return:
             jump prompt_menu
-    elif madechoice == "food":
-        call mas_food_start from _call_mas_food_start
-        if not _return:
-            jump prompt_menu
-
+    
     elif madechoice == "goodbye":
         call mas_farewell_start from _call_select_farewell
 
