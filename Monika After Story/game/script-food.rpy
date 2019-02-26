@@ -1,8 +1,8 @@
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_imhaving",category=['you'],prompt="I'm Having",pool=True,unlocked=True))
-if seen_event(monika_imhaving) = False:
-    label monika_imhaving:
+    addEvent(Event(persistent.event_database,eventlabel="monika_imdining",category=['you'],prompt="I'm Dining",pool=True,unlocked=True))
+if seen_event(monika_imdining) = False:
+    label monika_imdining:
         m 1eub "You know, although I don't get hungry, I still miss enjoying good food."
         m 4eub "Like Natsuki's cupcakes."
         m 4eub "For a bunch of lines of code, they were pretty tasty."
@@ -74,7 +74,7 @@ label mas_food_coffee:
     m 5eua "I really miss having coffee."
     m 3eub "I would always have a cup before and after school."
     m 3hub "Maybe even sometimes during class."
-    m 2hub "Who knows, maybe you and I could share a glass, [player]"
+    m 2hub "Who knows, maybe you and I could share a glass, [player]."
     return
 
 init 5 python:
@@ -87,6 +87,7 @@ label mas_food_water:
     m 2lud "I don't want you getting sick because you didn't drink any."
     m 2eua "Even if it's just a glass or two, do it for me."
     return
+    
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_milk',prompt='Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 label mas_food_milk:
@@ -96,10 +97,11 @@ label mas_food_milk:
     m 1hub "I guess I could learn to love it if you do, [player]."
     m 1hua "Be sure to pour an extra glass for me next time."
     return
+    
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
-if isWinter():
-    label mas_food_hotchocolate:
+ label mas_food_hotchocolate:
+    if isWinter():
         m 1hub "That's so nice, [player]!"
         m 4eub "There's really nothing quite like the comfort of hot chocolate when it's chilly outside, is there?"
         m 1eub "In winter I always enjoy wrapping up in some warm clothes and unwinding with a cup myself."
@@ -107,31 +109,33 @@ if isWinter():
         m 1kua "Maybe some day when it's cold out, we could sit back and have a glass together."
         m 1duu "That would be a dream come true, my love!"
         return
-else:
-    label mas_food_hotchocolate:
+    else:
         m 1hua "That sounds really good right about now."
         m 1hub "There's nothing better than a nice glass of hot cocoa after a long day."
         m 1duu "I can't wait until we can drink some together."
+        
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 label mas_food_chocolatemilk:
     m 3eub "That's wonderful, [player]."
-    m 3eub "Although I was never a big fan of milk, there was something different when you mixed chocolate with it."
+    m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
     m 3hub "Mind pouring me a glass?"
     return
+    
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_pizza',prompt='Pizza',category=[store.mas_food.TYPE_FOOD],unlocked=True,),code='FOO')
 label mas_food_pizza:
     m 1hua "Pizza is such a great treat!"
-    m 3eua "It's usually not the healthiest food, of course, but I think on occasion it's fine to just treat yourself, you know?"
+    m 3eua "It's usually not the healthiest food, of course, but I think on occasion, it's fine to just treat yourself, you know?"
     m 3hub "I think it's really interesting that pizza was created almost by accident."
     m 3eub "Italian bakery workers would use excess dough and left-over ingredients from their days of work to feed the poor."
     m 3eub "Who would have thought that they were making what would become one of the most popular foods today?"
     m 1eub "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
     m 1hua "What always matters to me is that you're happy!"
     return
+    
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_salad',prompt='Salad',category=[store.mas_food.TYPE_FOOD],unlocked=True,),code='FOO')
 label mas_food_salad:
