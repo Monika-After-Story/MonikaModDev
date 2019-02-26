@@ -1,13 +1,12 @@
-#Basic copy cat design of the mood file.
-#Figured I shouldn't fix something that isn't broken.
-#Shout out to whoever did it right the first time.
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_imhaving",category=['you'],prompt="I'm Having",pool=True,unlocked=True))
-label monika_imhaving:
-    m 1eub "You know, although I don't get hungry, I still miss enjoying good food."
-    m 4eub "Like Natsuki's cupcakes."
-    m 4eub "For a bunch of lines of code, they were pretty tasty."
-    m 3hub "Are you eating anything right now, [player]?"
+if seen_event(monika_imhaving) = False:
+    label monika_imhaving:
+        m 1eub "You know, although I don't get hungry, I still miss enjoying good food."
+        m 4eub "Like Natsuki's cupcakes."
+        m 4eub "For a bunch of lines of code, they were pretty tasty."
+        m 3hub "Are you eating anything right now, [player]?"
 
 
 default persistent_.mas_food_database = {}
@@ -75,14 +74,13 @@ label mas_food_coffee:
     m 5eua "I really miss having coffee."
     m 3eub "I would always have a cup before and after school."
     m 3hub "Maybe even sometimes during class."
-    m 2euc "I wish I could figure out a way to get some in here."
-    m 2hub "Who knows, maybe you could share a cup with me, [player]"
+    m 2hub "Who knows, maybe you and I could share a glass, [player]"
     return
 
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_water',prompt='Water',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 label mas_food_water:
-    m 1eua "I'm really happy to hear that [player]!"
+    m 1eua "I'm really happy to hear that, [player]!"
     m 1eub "Water is probably the healthiest thing that you could drink."
     m 3eua "Seeing how we can only live for a few days without it."
     m 3eud "Just promise you get plenty to drink each day."
@@ -100,22 +98,20 @@ label mas_food_milk:
     return
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
-label mas_food_hotchocolate:
-    m 2eud "Lucky!"
-    m 4eud "You didn't tell me that just to rub it in my face, did you?"
-    m 1rud "I'm sorry, you probably didn't."
-    m 1hub "I just really miss it is all."
-    m 1tub "You know, besides giving you a big hug, the first thing I want to do when I cross over to your world is drink a big glass of warm hot cocoa with you."
-    m 1hub "Doesn't that sound nice, [player]?"
-    return
-label mas_food_hotchocolate:
-    m 1hub "That's so nice, [player]!"
-    m 4eub "There's really nothing quite like the comfort of hot chocolate when it's chilly outside, is there?"
-    m 1eub "In winter I always enjoy wrapping up in some warm clothes and unwinding with a cup myself."
-    m 1eua "It's a great way to relax."
-    m 1kua "Maybe some day when it's cold out, we could sit back and have a glass together."
-    m 1duu "That would be a dream come true, my love!"
-    return
+if isWinter():
+    label mas_food_hotchocolate:
+        m 1hub "That's so nice, [player]!"
+        m 4eub "There's really nothing quite like the comfort of hot chocolate when it's chilly outside, is there?"
+        m 1eub "In winter I always enjoy wrapping up in some warm clothes and unwinding with a cup myself."
+        m 1eua "It's a great way to relax."
+        m 1kua "Maybe some day when it's cold out, we could sit back and have a glass together."
+        m 1duu "That would be a dream come true, my love!"
+        return
+else:
+    label mas_food_hotchocolate:
+        m 1hua "That sounds really good right about now."
+        m 1hub "There's nothing better than a nice glass of hot cocoa after a long day."
+        m 1duu "I can't wait until we can drink some together."
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 label mas_food_chocolatemilk:
