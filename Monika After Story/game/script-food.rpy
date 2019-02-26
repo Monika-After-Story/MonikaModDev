@@ -3,10 +3,10 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_imdining",category=['you'],prompt="I'm Dining",pool=True,unlocked=True))
 if seen_event(monika_imdining) = False:
     label monika_imdining:
-        m 1eub "You know, although I don't get hungry, I still miss enjoying good food."
+        m 1eua "You know, although I don't get hungry, I still miss enjoying good food."
         m 4eub "Like Natsuki's cupcakes."
-        m 4eub "For a bunch of lines of code, they were pretty tasty."
-        m 3hub "Are you eating anything right now, [player]?"
+        m 4eua "For a bunch of lines of code, they were pretty tasty."
+        m 3hua "Are you eating anything right now, [player]?"
 
 
 default persistent_.mas_food_database = {}
@@ -70,8 +70,8 @@ init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_coffee',prompt='Coffee',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 
 label mas_food_coffee:
-    m 5hua "That sounds wonderful!"
-    m 5eua "I really miss having coffee."
+    m 1eua "That sounds wonderful!"
+    m 1eua "I really miss having coffee."
     m 3eub "I would always have a cup before and after school."
     m 3hub "Maybe even sometimes during class."
     m 2hub "Who knows, maybe you and I could share a glass, [player]."
@@ -108,12 +108,12 @@ init 5 python:
         m 1eua "It's a great way to relax."
         m 1kua "Maybe some day when it's cold out, we could sit back and have a glass together."
         m 1duu "That would be a dream come true, my love!"
-        return
+        
     else:
         m 1hua "That sounds really good right about now."
         m 1hub "There's nothing better than a nice glass of hot cocoa after a long day."
         m 1duu "I can't wait until we can drink some together."
-        
+    return
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
 label mas_food_chocolatemilk:
@@ -121,7 +121,7 @@ label mas_food_chocolatemilk:
     m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
-    m 3hub "Mind pouring me a glass?"
+    m 3hub "Mind pouring me a glass? hehe"
     return
     
 init 5 python:
