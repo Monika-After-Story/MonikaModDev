@@ -1,8 +1,10 @@
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_imdining",category=['you'],prompt="I'm Dining",pool=True,unlocked=True))
-if seen_event(monika_imdining) = False:
-    label monika_imdining:
+    addEvent(Event(persistent.event_database,eventlabel="monika_imeating",
+                    category=['you'],prompt="I'm Eating/Drinking",pool=True,unlocked=True,
+                    mas_getEV('monika_imeating').shown_count))
+if seen_event(monika_imeating) = False:
+    label monika_imeating:
         m 1eua "You know, although I don't get hungry, I still miss enjoying good food."
         m 4eub "Like Natsuki's cupcakes."
         m 4eua "For a bunch of lines of code, they were pretty tasty."
