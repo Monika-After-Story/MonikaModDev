@@ -394,7 +394,7 @@ label monika_god:
             m 1hua "I'm happy for you that you can lead a life on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m "Eheheh~"
+            m "Ehehe~"
 
     return "derandom"
 
