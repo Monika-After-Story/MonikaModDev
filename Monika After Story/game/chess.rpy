@@ -24,6 +24,7 @@ define mas_chess.CHESS_SAVE_PATH = "/chess_games/"
 define mas_chess.CHESS_SAVE_EXT = ".pgn"
 define mas_chess.CHESS_SAVE_NAME = "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ-_0123456789"
 define mas_chess.CHESS_PROMPT_FORMAT = "{0} | {1} | Turn: {2} | You: {3}"
+#testing crap
 
 # mass chess store
 init 1 python in mas_chess:
