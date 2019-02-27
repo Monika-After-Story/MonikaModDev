@@ -62,6 +62,7 @@ label mas_food_start:
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_imeating",
                     category=['you'],prompt="I'm Eating/Drinking",pool=True,unlocked=True))
+                    
 label monika_imeating:
     if mas_getEV('monika_imeating').shown_count == 0
     label monika_imeating:
