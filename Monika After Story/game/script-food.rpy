@@ -64,7 +64,7 @@ init 5 python:
                     category=['you'],prompt="I'm Eating/Drinking",pool=True,unlocked=True))
                     
 label monika_imeating:
-    if mas_getEV('monika_imeating').shown_count == 0
+    if mas_getEV('monika_imeating').shown_count == 0:
         m 1eua "You know, although I don't get hungry, I still miss enjoying good food."
         m 4eub "Like Natsuki's cupcakes."
         m 4eua "For a bunch of lines of code, they were pretty tasty."
