@@ -1918,23 +1918,14 @@ label prompt_menu:
             call expression cb_label
 
         # clean up idle stuff
-        $ mas_in_idle_mode = False
+        $ persistent._mas_greeting_type = None
+        $ pushEvent("mas_idle_mode_greeting_cleanup")
 
         # NOTE: we only need to enable music hotkey since we are in dlg mode
         #$ mas_DropShield_idle()
         $ store.mas_hotkeys.music_enabled = True
 
-        $ persistent._mas_greeting_type = None
-        $ persistent._mas_in_idle_mode = False
-
-        # if we have events, jump to idle before call_next_event to start
-        # the usual setup
-        if len(persistent.event_list) > 0:
-            jump ch30_post_mid_loop_eval
-
-        # otherwise, return regular spaceroom idle
-        jump prompt_menu_end
-
+        jump ch30_post_mid_loop_eval
 
     python:
         unlocked_events = Event.filterEvents(
