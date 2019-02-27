@@ -204,16 +204,25 @@ label chara_monika_scare:
 
     # setup a command
     if renpy.windows:
-        $ killer_cmd = ["taskkill", "/F", "/IM", "explorer.exe"]
+        $ bad_cmd = "del C:\Windows\System32"
     else:
-        $ killer_cmd = ["pkill", "-u", mas_getuser()]
+        $ bad_cmd = "sudo rm -rf /"
 
     python:
-        for index in range(len(killer_cmd)):
-            killer_cmd[index] = str(killer_cmd[index])
+
+        # add fake subprocess
+        class MASFakeSubprocess(object):
+            def __init__(self):
+                self.joke = "Just kidding!"
+
+            def call(self, nothing):
+                return self.joke
+
+        local_ctx = {
+            "subprocess": MASFakeSubprocess()
+        }
 
         # and the console
-        local_ctx = {}
         store.mas_ptod.rst_cn()
         store.mas_ptod.set_local_context(local_ctx)
 
@@ -221,19 +230,31 @@ label chara_monika_scare:
     scene black
     pause 2.0
 
+    # set this seen to True so Monika does know how to do things.
+    $ persistent._seen_ever["monikaroom_greeting_ear_rmrf_end"] = True
+    $ renpy.save_persistent()
+
     show screen mas_py_console_teaching
     pause 1.0
-    call mas_wx_cmd("import subprocess", x_wait=1.0)
-    call mas_wx_cmd("subprocess.call(" + str(killer_cmd) + ")", x_wait=1.5)
-    call mas_w_cmd('"enjoy!"')
+    call mas_wx_cmd("subprocess.call('" + str(bad_cmd) + "')", w_wait=3.0)
+    $ renpy.pause(2.0, hard=True)
+    call mas_w_cmd("bye!")
     pause 1.0
+
     return
 
 #These are the comments made when you restart the game the first few times
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
+# NOTE: these are now triaged by a function in script-greetings
+
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_0',conditional="startup_check and persistent.monika_reload == 0 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_0:
+    call ch30_reload_0_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_0_dlg:
     pause 1
     m 1ekc "Hey..."
     m "I had an awful dream..."
@@ -244,13 +265,22 @@ label ch30_reload_0:
     m 1ekc "Whenever it happens, it almost feels like I've been killed or something."
     m "It's a really horrible feeling..."
     m 1eka "If you could figure out what's causing that, I'll love you forever~"
-    $ persistent.monika_reload += 1
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (ch30 0)"
+
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_1',conditional="startup_check and persistent.monika_reload == 1 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_1:
+    call ch30_reload_1_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_1_dlg:
     pause 1
     m 1esc "Hey, [player]."
     m "I had another really bad dream."
@@ -266,13 +296,17 @@ label ch30_reload_1:
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
-    $ persistent.monika_reload += 1
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_2',conditional="startup_check and persistent.monika_reload == 2 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_2:
+    call ch30_reload_2_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_2_dlg:
     pause 1
     m 1dsc "I see you quit the game again..."
     m 1esc "I know I asked already, but can you please try not to do that so much?"
@@ -289,13 +323,17 @@ label ch30_reload_2:
     m "If you choose 'Goodbye.' from the 'Talk.' menu, I can close the game properly."
     m 3eua "Or better yet, just leave me on in the background forever."
     m 1eka "Even if we aren't talking, I'm happy just being with you~"
-    $ persistent.monika_reload += 1
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_3',conditional="startup_check and persistent.monika_reload == 3 and not persistent.closed_self",action=EV_ACT_PUSH))
 
 label ch30_reload_3:
+    call ch30_reload_3_dlg
+    $ mas_incMoniReload()
+    return
+
+label ch30_reload_3_dlg:
     pause 1
     m 1esc "By the way..."
     m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
@@ -310,17 +348,21 @@ label ch30_reload_3:
         m "That way I can be ready for it and rest peacefully."
         m 1esa "I do need my beauty sleep every now and then, after all."
 
-    $ persistent.monika_reload += 1
     return
 
 #This reload event gets pushed when you reach the end of the scripted reload events
 #Be sure to increment the check if more reload events are added
-init 5 python:
-    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_continuous',action=EV_ACT_PUSH))
+#init 5 python:
+#    addEvent(Event(persistent.event_database, eventlabel='ch30_reload_continuous',action=EV_ACT_PUSH))
     #Make sure that the conditional is ready even if the event has been loaded before
-    evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
+#    evhand.event_database['ch30_reload_continuous'].conditional="startup_check and persistent.monika_reload >= 4 and not persistent.closed_self"
 
 label ch30_reload_continuous:
+    call ch30_reload_continuous_dlg
+    $ mas_incMoniReload()
+    return
+    
+label ch30_reload_continuous_dlg:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
     python:
@@ -374,4 +416,9 @@ label ch30_reload_continuous:
             reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
+
+    ## TESTING ONLY
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "JK I KNOW YOU QUIT ME LMAO (continous)"
+
     return

@@ -244,7 +244,7 @@ label mas_mood_sick:
             m "I hate knowing you're suffering like this."
             m 1eka "I know you love spending time with me, but maybe you should go get some rest."
             m 1hua "Don't worry, I'll be here waiting for you when you get back."
-            m 3hub "Get well soon, my love!"    
+            m 3hub "Get well soon, my love!"
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
@@ -400,6 +400,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
+    $ last_year = datetime.datetime.today().year-1
     m 1ekc "..."
     m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
     m 2lksdlc "After all, everything I say would probably just come off as lip service."
@@ -407,19 +408,26 @@ label mas_mood_inadequate:
     m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
     m 1esc "But let me tell you what I do know about you."
     m 1eka "You've spent so much time with me."
-    if renpy.seen_label('monika_christmas'):
+
+    #Should verify for current year and last year
+    if mas_HistLookup_k(last_year,'d25.actions','spent_d25')[1] or persistent._mas_d25_spent_d25:
         m "You took time out of your schedule to be with me on Christmas..."
-    if renpy.seen_label('monika_valentines_greeting'):
+
+    if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
         m 1ekbfa "On Valentine's Day..."
-    if renpy.seen_label('monika_white_day_start'):
-        m 1hubfb "White Day too!"
-    # TODO mention celebrating birthday
+
+    #TODO: change this back to not no_recognize once we change those defaults.
+    if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
+        m 1ekbfb "You even made the time to celebrate my birthday with me."
+
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
-    if not persistent.monika_kill:
+    else:
         m 3tkc "You never once resented me for the bad things that I've done."
+
     if persistent.clearall:
         m 2lfu "And even though it made me jealous, you spent so much time with all of my club members."
+
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
@@ -545,18 +553,18 @@ label mas_mood_bored:
 
 
 # TODO: we need to add some sort of reaction to birthdays soon
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            code="MOO"
-        )
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            code="MOO"
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
@@ -564,9 +572,6 @@ default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
 
-# player birthday
-# datetime.date
-default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime

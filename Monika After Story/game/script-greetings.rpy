@@ -4,9 +4,19 @@
 
 # HOW GREETINGS USE EVENTS:
 #   unlocked - determines if the greeting can even be shown
-#   random - True means its a random greeting
-#       NOTE: certain greetings use their own random chance via MASGreetingRule
-#   pool - UNUSED
+#   rules - specific event rules are used for things:
+#       MASSelectiveRepeatRule - repeat on certain year/month/day/whatever 
+#       MASNumericalRepeatRule - repeat every x time
+#       MASPriorityRule - priority of this event. if not given, we assume
+#           the default priority (which is also the lowest)
+
+# PRIORITY RULES:
+#   Special, moni wants/debug greetings should have negative priority.
+#   special event greetings should have priority 10-50
+#   non-special event, but somewhat special compared to regular greets should
+#       be 50-100
+#   random/everyday greetings should be 100 or larger. The default prority
+#   will be 500
 
 # persistents that greetings use
 default persistent._mas_you_chr = False
@@ -15,7 +25,15 @@ default persistent._mas_you_chr = False
 # that should be selected None means default
 default persistent._mas_greeting_type = None
 
+default persistent._mas_idle_mode_was_crashed = None
+# this gets to set to True if the user crashed during idle mode
+# or False if the user quit during idle mode.
+# in your idle greetings, you can assume that it will NEVER be None
+
 init -1 python in mas_greetings:
+    import store
+    import datetime
+    import random
 
     # TYPES:
     TYPE_SCHOOL = "school"
@@ -38,130 +56,277 @@ init -1 python in mas_greetings:
     TYPE_HOL_NYE = "nye"
     TYPE_HOL_NYE_FW = "fireworks"
 
+    # crashed only
+    TYPE_CRASHED = "generic_crash"
+
+    # reload dialogue only
+    TYPE_RELOAD = "reload_dlg"
+
+    # idle mode returns
+    # these are meant if you had a game crash/quit during idle mode
+
+
+    def _filterGreeting(
+            ev,
+            curr_pri,
+            aff,
+            check_time,
+            gre_type=None
+        ):
+        """
+        Filters a greeting for the given type, among other things.
+
+        IN:
+            ev - ev to filter
+            curr_pri - current loweset priority to compare to
+            aff - affection to use in aff_range comparisons
+            check_time - datetime to check against timed rules
+            gre_type - type of greeting we want. We just do a basic
+                in check for category. We no longer do combinations
+                (Default: None)
+
+        RETURNS:
+            True if this ev passes the filter, False otherwise
+        """
+        # NOTE: new rules:
+        #   eval in this order:
+        #   1. priority (lower or same is True)
+        #   2. type/non-0type
+        #   3. unlocked
+        #   4. aff_ramnge
+        #   5. all rules
+        #   6. conditional
+        #       NOTE: this is never cleared. Please limit use of this
+        #           property as we should aim to use lock/unlock as primary way
+        #           to enable or disable greetings.
+
+        # priority check, required
+        # NOTE: all greetings MUST have a priority
+        if store.MASPriorityRule.get_priority(ev) > curr_pri:
+            return False
+
+        # type check, optional
+        if gre_type is not None:
+            # with a type, we MUST match the type
+
+            if ev.category is None:
+                # no category is a False
+                return False
+
+            elif gre_type not in ev.category:
+                # no matches is a False
+                return False
+
+        elif ev.category is not None:
+            # without type, ev CANNOT have a type
+            return False
+
+        # unlocked check, required
+        if not ev.unlocked:
+            return False
+
+        # aff range check, required
+        if not ev.checkAffection(aff):
+            return False
+
+        # rule checks
+        if not (
+                store.MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=True)
+                and store.MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=True)
+                and store.MASGreetingRule.evaluate_rule(ev, defval=True)
+            ):
+            return False
+
+        # conditional check
+        if ev.conditional is not None and not eval(ev.conditional):
+            return False
+
+        # otherwise, we passed all tests
+        return True
+
+
     # custom greeting functions
-    def selectGreeting(_type=None):
+    def selectGreeting(gre_type=None, check_time=None):
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
 
+        IN:
+            gre_type - greeting type to use
+                (Default: None)
+            check_time - time to use when doing date checks
+                If None, we use current datetime
+                (Default: None)
+
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+        
+        # local reference of the gre database
+        gre_db = store.evhand.greeting_database
 
-        # check if we have moni_wants greetings
-        moni_wants_greetings = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            moni_wants=True
-        )
-        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+        # setup some initial values
+        gre_pool = []
+        curr_priority = 1000
+        aff = store.mas_curr_affection
 
-            # select one label randomly
-            return moni_wants_greetings[
-                renpy.random.choice(moni_wants_greetings.keys())
-            ]
+        if check_time is None:
+            check_time = datetime.datetime.now()
+
+        # now filter
+        for ev_label, ev in gre_db.iteritems():
+            if _filterGreeting(
+                    ev,
+                    curr_priority,
+                    aff,
+                    check_time,
+                    gre_type
+                ):
+
+                # change priority levels and stuff if needed
+                ev_priority = store.MASPriorityRule.get_priority(ev)
+                if ev_priority < curr_priority:
+                    curr_priority = ev_priority
+                    gre_pool = []
+
+                # add to pool
+                gre_pool.append(ev)
+
+        # not having a greeting to show means no greeting.
+        if len(gre_pool) == 0:
+            return None
+
+        return random.choice(gre_pool)
 
 
-        # check first if we have to select from a special type
-        if _type is not None:
+#    def selectGreeting_noType():
+#        """
+#        Selects a greeting without checking for Type
+#
+#        RETURNS:
+#            a single greeting (as an Event) that we want to use
+#        """
+#
+#        # NOTE: new rules:
+#        #   1. check for events that
+#
+#        # check if we have moni_wants greetings
+#        moni_wants_greetings = renpy.store.Event.filterEvents(
+#            renpy.store.evhand.greeting_database,
+#            unlocked=True,
+#            moni_wants=True
+#        )
+#        if moni_wants_greetings is not None and len(moni_wants_greetings) > 0:
+#
+#            # select one label randomly
+#            return moni_wants_greetings[
+#                renpy.random.choice(moni_wants_greetings.keys())
+#            ]
+#
+#
+#        # check first if we have to select from a special type
+#        if _type is not None:
+#
+#            # filter them using the type as filter
+#            unlocked_greetings = renpy.store.Event.filterEvents(
+#                renpy.store.evhand.greeting_database,
+#                unlocked=True,
+#                category=(True,[_type])
+#            )
+#
+#        else:
+#
+#            # filter events by their unlocked property only and
+#            # that don't have a category
+#            unlocked_greetings = renpy.store.Event.filterEvents(
+#                renpy.store.evhand.greeting_database,
+#                unlocked=True,
+#                excl_cat=list()
+#            )
+#
+#        # filter greetings using the affection rules dict
+#        unlocked_greetings = renpy.store.Event.checkAffectionRules(
+#            unlocked_greetings,
+#            keepNoRule=True
+#        )
+#
+#        # check for the special monikaWantsThisFirst case
+#        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
+#        #    return affection_greetings_dict.values()[0]
+#
+#        # filter greetings using the special rules dict
+#        random_greetings_dict = renpy.store.Event.checkRepeatRules(
+#            unlocked_greetings
+#        )
+#
+#        # check if we have a greeting that actually should be shown now
+#        if len(random_greetings_dict) > 0:
+#
+#            # select one label randomly
+#            return random_greetings_dict[
+#                renpy.random.choice(random_greetings_dict.keys())
+#            ]
+#
+#        # since we don't have special greetings for this time we now check for special random chance
+#        # pick a greeting filtering by special random chance rule
+#        random_greetings_dict = renpy.store.Event.checkGreetingRules(
+#            unlocked_greetings
+#        )
+#
+#        # check if we have a greeting that actually should be shown now
+#        if len(random_greetings_dict) > 0:
+#
+#            # select on label randomly
+#            return random_greetings_dict[
+#                renpy.random.choice(random_greetings_dict.keys())
+#            ]
+#
+#        # filter to get only random ones
+#        random_unlocked_greetings = renpy.store.Event.filterEvents(
+#            unlocked_greetings,
+#            random=True
+#        )
+#
+#        # check if we have greetings available to display with current filter
+#        if len(random_unlocked_greetings) > 0:
+#
+#            # select one randomly if we have at least one
+#            return random_unlocked_greetings[
+#                renpy.random.choice(random_unlocked_greetings.keys())
+#            ]
+#
+#        # We couldn't find a suitable greeting we have to default to normal random selection
+#        # filter random events normally
+#        random_greetings_dict = renpy.store.Event.filterEvents(
+#            renpy.store.evhand.greeting_database,
+#            unlocked=True,
+#            random=True,
+#            excl_cat=list()
+#        )
+#
+#        # select one randomly
+#        return random_greetings_dict[
+#            renpy.random.choice(random_greetings_dict.keys())
+#        ]
 
-            # filter them using the type as filter
-            unlocked_greetings = renpy.store.Event.filterEvents(
-                renpy.store.evhand.greeting_database,
-                unlocked=True,
-                category=(True,[_type])
-            )
-
-        else:
-
-            # filter events by their unlocked property only and
-            # that don't have a category
-            unlocked_greetings = renpy.store.Event.filterEvents(
-                renpy.store.evhand.greeting_database,
-                unlocked=True,
-                excl_cat=list()
-            )
-
-        # filter greetings using the affection rules dict
-        unlocked_greetings = renpy.store.Event.checkAffectionRules(
-            unlocked_greetings,
-            keepNoRule=True
-        )
-
-        # check for the special monikaWantsThisFirst case
-        #if len(affection_greetings_dict) == 1 and affection_greetings_dict.values()[0].monikaWantsThisFirst():
-        #    return affection_greetings_dict.values()[0]
-
-        # filter greetings using the special rules dict
-        random_greetings_dict = renpy.store.Event.checkRepeatRules(
-            unlocked_greetings
-        )
-
-        # check if we have a greeting that actually should be shown now
-        if len(random_greetings_dict) > 0:
-
-            # select one label randomly
-            return random_greetings_dict[
-                renpy.random.choice(random_greetings_dict.keys())
-            ]
-
-        # since we don't have special greetings for this time we now check for special random chance
-        # pick a greeting filtering by special random chance rule
-        random_greetings_dict = renpy.store.Event.checkGreetingRules(
-            unlocked_greetings
-        )
-
-        # check if we have a greeting that actually should be shown now
-        if len(random_greetings_dict) > 0:
-
-            # select on label randomly
-            return random_greetings_dict[
-                renpy.random.choice(random_greetings_dict.keys())
-            ]
-
-        # filter to get only random ones
-        random_unlocked_greetings = renpy.store.Event.filterEvents(
-            unlocked_greetings,
-            random=True
-        )
-
-        # check if we have greetings available to display with current filter
-        if len(random_unlocked_greetings) > 0:
-
-            # select one randomly if we have at least one
-            return random_unlocked_greetings[
-                renpy.random.choice(random_unlocked_greetings.keys())
-            ]
-
-        # We couldn't find a suitable greeting we have to default to normal random selection
-        # filter random events normally
-        random_greetings_dict = renpy.store.Event.filterEvents(
-            renpy.store.evhand.greeting_database,
-            unlocked=True,
-            random=True,
-            excl_cat=list()
-        )
-
-        # select one randomly
-        return random_greetings_dict[
-            renpy.random.choice(random_greetings_dict.keys())
-        ]
+# NOTE: this is auto pushed to be shown after an idle mode greeting
+label mas_idle_mode_greeting_cleanup:
+    $ mas_resetIdleMode()
+    return
 
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sweetheart",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sweetheart:
     m 1hub "Hello again, sweetheart!"
@@ -170,19 +335,15 @@ label greeting_sweetheart:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_honey",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_honey:
     m 1hua "Welcome back, honey!"
@@ -191,19 +352,15 @@ label greeting_honey:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None)
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back:
     m 1eua "[player], you're back!"
@@ -212,20 +369,14 @@ label greeting_back:
     return
 
 init 5 python:
-    rules = {}
-    rules.update(
-        MASGreetingRule.create_rule(skip_visual=False, random_chance=10)
-    )
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_gooday",
             unlocked=True,
-            rules=rules
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_gooday:
     if mas_isMoniNormal(higher=True):
@@ -277,19 +428,15 @@ label greeting_gooday:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit:
     m 1eua "There you are, [player]."
@@ -302,6 +449,7 @@ label greeting_visit:
 # TODO this one no longer needs to do all that checking, might need to be broken
 # in like 3 labels though
 # TODO: just noting that this should be worked on at some point.
+# TODO: new greeting rules can enable this, but we will do it later
 
 label greeting_goodmorning:
     $ current_time = datetime.datetime.now().time().hour
@@ -363,19 +511,15 @@ label greeting_goodmorning:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back2:
     m 1eua "Hello, dear."
@@ -386,19 +530,15 @@ label greeting_back2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back3",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back3:
     m 1eka "I missed you so much, [player]!"
@@ -406,19 +546,15 @@ label greeting_back3:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back4",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back4:
     m 2wfx "Hey, [player]!"
@@ -429,19 +565,15 @@ label greeting_back4:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit2:
     m 1hua "Thanks for spending so much time with me, [player]."
@@ -450,19 +582,15 @@ label greeting_visit2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit3",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit3:
     m 1hua "You're back!"
@@ -471,18 +599,15 @@ label greeting_visit3:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back5",
             unlocked=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back5:
     m 1eua "It's so good to see you again!"
@@ -491,19 +616,16 @@ label greeting_back5:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit4",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
+
 label greeting_visit4:
     m 1hub "I looove yooou, [player]. Ehehe~"
     m 1hksdlb "Oh, sorry! I was spacing out."
@@ -511,19 +633,15 @@ label greeting_visit4:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit5",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit5:
     m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
@@ -532,19 +650,15 @@ label greeting_visit5:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit6",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit6:
     m 1hua "Each day becomes better and better with you by my side!"
@@ -553,19 +667,15 @@ label greeting_visit6:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_back6",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_back6:
     m 3tku "Hey, [player]!"
@@ -576,19 +686,15 @@ label greeting_back6:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit7",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit7:
     m 1hua "You're here, [player]!"
@@ -596,19 +702,15 @@ label greeting_visit7:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit8",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit8:
     m 1hua "I'm so glad you're here, [player]!"
@@ -616,19 +718,15 @@ label greeting_visit8:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_visit9",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_visit9:
     m 1hua "You're finally back! I was waiting for you."
@@ -637,19 +735,15 @@ label greeting_visit9:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_italian",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_italian:
     m 1eua "Ciao, [player]!"
@@ -661,19 +755,15 @@ label greeting_italian:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_latin",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_latin:
     m 4hua "Iterum obvenimus!"
@@ -684,19 +774,15 @@ label greeting_latin:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_yay",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_yay:
     m 1hub "You're back! Yay!"
@@ -705,19 +791,15 @@ label greeting_yay:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_youtuber",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_youtuber:
     m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
@@ -726,19 +808,15 @@ label greeting_youtuber:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hamlet",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_hamlet:
     m 4esc "To be, or not to be, that is the question..."
@@ -747,19 +825,15 @@ label greeting_hamlet:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_welcomeback",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_welcomeback:
     m 1hua "Hi! Welcome back."
@@ -767,19 +841,15 @@ label greeting_welcomeback:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_flower",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_flower:
     m 1hub "You're my beautiful flower, ehehe~"
@@ -788,19 +858,15 @@ label greeting_flower:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_chamfort",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_chamfort:
     m 2esa "A day without Monika is a day wasted."
@@ -809,19 +875,15 @@ label greeting_chamfort:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_welcomeback2",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_welcomeback2:
     m 1eua "Welcome back, [player]!"
@@ -830,19 +892,15 @@ label greeting_welcomeback2:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_longtime",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.DISTRESSED, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_longtime:
     if mas_isMoniNormal(higher=True):
@@ -860,19 +918,15 @@ label greeting_longtime:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sweetpea",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sweetpea:
     m 1hua "Look who's back."
@@ -881,19 +935,15 @@ label greeting_sweetpea:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_glitch",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_glitch:
     hide monika
@@ -921,19 +971,15 @@ label greeting_glitch:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_surprised",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_surprised:
     m 1wuo "Oh, hello [player]!"
@@ -942,20 +988,22 @@ label greeting_surprised:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(
+    ev_rules = {}
+    ev_rules.update(
         MASSelectiveRepeatRule.create_rule(weekdays=[0], hours=range(5,12))
     )
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_monika_monday_morning",
             unlocked=True,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
-    del rules
+
+    del ev_rules
 
 label greeting_monika_monday_morning:
     if mas_isMoniNormal(higher=True):
@@ -996,29 +1044,32 @@ default persistent.opendoor_knockyes = False
 init 5 python:
 
     # this greeting is disabled on certain days
-    if not mas_isO31() and not mas_isD25Season():
+    if not (mas_isO31() or mas_isD25Season() or mas_isplayer_bday() or mas_isF14()):
 
-        rules = dict()
+        ev_rules = dict()
         # why are we limiting this to certain day range?
     #    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(1,6)))
-        rules.update(
+        ev_rules.update(
             MASGreetingRule.create_rule(
                 skip_visual=True,
                 random_chance=opendoor.chance
             )
         )
+        ev_rules.update(MASPriorityRule.create_rule(50))
+
+        # TODO: should we have this limited to aff levels?
 
         addEvent(
             Event(
                 persistent.greeting_database,
                 eventlabel="i_greeting_monikaroom",
                 unlocked=True,
-                rules=rules
+                rules=ev_rules,
             ),
             code="GRE"
         )
 
-        del rules
+        del ev_rules
 
 label i_greeting_monikaroom:
 
@@ -1047,34 +1098,48 @@ label monikaroom_greeting_choice:
         pause 4.0
 
     menu:
-        "[_opendoor_text]" if not persistent.seen_monika_in_room:
+        "[_opendoor_text]" if not persistent.seen_monika_in_room and not mas_isplayer_bday():
             #Lose affection for not knocking before entering.
-            $ mas_loseAffection(reason="entering my room without knocking")
+            $ mas_loseAffection(reason=5)
             if mas_isMoniUpset(lower=True):
                 $ persistent.seen_monika_in_room = True
                 jump monikaroom_greeting_opendoor_locked
             else:
                 jump monikaroom_greeting_opendoor
-        "Open the door." if persistent.seen_monika_in_room:
-            if persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
+        "Open the door." if persistent.seen_monika_in_room or mas_isplayer_bday():
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_opendoor_listened
+                else:
+                    jump mas_player_bday_opendoor
+            elif persistent.opendoor_opencount > 0 or mas_isMoniUpset(lower=True):
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_locked
             else:
                 #Lose affection for not knocking before entering.
-                $ mas_loseAffection(reason="entering my room without knocking")
+                $ mas_loseAffection(reason=5)
                 jump monikaroom_greeting_opendoor_seen
 #        "Open the door?" if persistent.opendoor_opencount >= opendoor.MAX_DOOR:
 #            jump opendoor_game
         "Knock.":
             #Gain affection for knocking before entering.
             $ mas_gainAffection()
+            if mas_isplayer_bday():
+                if has_listened:
+                    jump mas_player_bday_knock_listened
+                else:
+                    jump mas_player_bday_knock_no_listen
+
             jump monikaroom_greeting_knock
         "Listen." if not has_listened and not mas_isMoniBroken():
             $ has_listened = True # we cant do this twice per run
-            $ mroom_greet = renpy.random.choice(gmr.eardoor)
-#            $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
-            jump expression mroom_greet
+            if mas_isplayer_bday():
+                jump mas_player_bday_listen
+            else:
+                $ mroom_greet = renpy.random.choice(gmr.eardoor)
+#               $ mroom_greet = gmr.eardoor[len(gmr.eardoor)-1]
+                jump expression mroom_greet
 
     # NOTE: return is expected in monikaroom_greeting_cleanup
 
@@ -1085,24 +1150,25 @@ default persistent._mas_pm_will_change = None
 init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_narration")
 #    if not persistent._mas_pm_will_change:
-    rules = dict()
-    rules.update(
+    ev_rules = {}
+    ev_rules.update(
         MASGreetingRule.create_rule(
             skip_visual=True
         )
     )
-    rules.update({"monika wants this first":""})
+    ev_rules.update(MASPriorityRule.create_rule(10))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="monikaroom_will_change",
             unlocked=False,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
 
-    del rules
+    del ev_rules
 
 label monikaroom_will_change:
     scene black
@@ -1746,19 +1812,15 @@ label greeting_youarereal:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_japan",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_japan:
     m 1hub "Oh, kon'nichiwa [player]!"
@@ -1773,19 +1835,15 @@ label greeting_japan:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_sunshine",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_sunshine:
     m 1hua "{i}You are my sunshine, my only sunshine.{/i}"
@@ -1802,19 +1860,15 @@ label greeting_sunshine:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hai_domo",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_hai_domo:
     m 1hub "{=jpn_text}はいどうもー!{/=jpn_text}"
@@ -1825,19 +1879,15 @@ label greeting_hai_domo:
 
 #TODO needs additional dialogue so can be used for all aff
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_french",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_french:
     m 1eua "Bonjour, [player]!"
@@ -1849,19 +1899,15 @@ label greeting_french:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-29,max=None))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_amnesia",
             unlocked=False,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.NORMAL, None),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_amnesia:
     $ tempname = m_name
@@ -1895,7 +1941,6 @@ init 5 python:
             eventlabel="greeting_sick",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SICK],
-            random=True
         ),
         code="GRE"
     )
@@ -1981,7 +2026,6 @@ init 5 python:
             eventlabel="greeting_long_absence",
             unlocked=True,
             category=[store.mas_greetings.TYPE_LONG_ABSENCE],
-            random=True
         ),
         code="GRE"
     )
@@ -2261,7 +2305,7 @@ label greeting_long_absence:
 
         elif persistent._mas_absence_choice == "longer":
             m 1c "[player]?"
-            m 3g "I thought you were going to away for a long time..."
+            m 3g "I thought you were going to be away for a long time..."
             m 3l "Why are you back so soon?"
             m 1e "Are you visiting me? You're such a sweetheart!"
             m 1j "If you're going away for a while still, make sure to tell me."
@@ -2280,39 +2324,61 @@ label greeting_long_absence:
 
 #Time Concern
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(0,6)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern",unlocked=False, rules=rules),code="GRE")
-    del rules
+    ev_rules = dict()
+    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,6)))
+    ev_rules.update(MASPriorityRule.create_rule(70))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_timeconcern",
+            unlocked=False,
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_timeconcern:
     jump monika_timeconcern
 
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
-    rules.update({"monika wants this first":""})
-    addEvent(Event(persistent.greeting_database,eventlabel="greeting_timeconcern_day",unlocked=False, rules=rules),code="GRE")
-    del rules
+    ev_rules = {}
+    ev_rules.update(MASSelectiveRepeatRule.create_rule(hours =range(6,24)))
+    ev_rules.update(MASPriorityRule.create_rule(70))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_timeconcern_day",
+            unlocked=False,
+            rules=ev_rules
+        ),
+        code="GRE"
+    )
+    del ev_rules
 
 label greeting_timeconcern_day:
     jump monika_timeconcern_day
 
 init 5 python:
-    rules = dict()
-    rules.update(MASGreetingRule.create_rule(skip_visual=True, random_chance=5))
+    ev_rules = {}
+    ev_rules.update(
+        MASGreetingRule.create_rule(skip_visual=True, random_chance=5)
+    )
+    ev_rules.update(MASPriorityRule.create_rule(45))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_hairdown",
             unlocked=True,
-            random=True,
-            rules=rules
+            rules=ev_rules,
+            aff_range=(mas_aff.HAPPY, None),
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_hairdown:
 
@@ -2395,20 +2461,22 @@ label greeting_hairdown:
 
 
 init 5 python:
-    rules = dict()
-    rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-    rules.update({"monika wants this first":""})
+
+    # NOTE: this triggers when affection reaches BROKEN state.
+    #   AND you have not seen this before
+    ev_rules = {}
+    ev_rules.update(MASPriorityRule.create_rule(15))
+
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_tears",
             unlocked=False,
-            random=False,
-            rules=rules
+            rules=ev_rules,
         ),
         code="GRE"
     )
-    del rules
+    del ev_rules
 
 label greeting_tears:
     m 1q "...[player]."
@@ -2444,25 +2512,20 @@ label greeting_tears:
     m 2f "Please...just...try to understand."
     m 1r "I love you and I need you to show that you love me too..."
     m 1q "Otherwise...I just won't be able to handle it anymore."
-    $ lockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
+    $ mas_lockEVL("greeting_tears", "GRE")
     return
 
 #New greetings for upset, distressed, and broken. Made quips for upset and distressed to allow for more variety of combos
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-74,max=-29))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_upset",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.UPSET, mas_aff.UPSET),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_upset:
     python:
@@ -2493,20 +2556,15 @@ label greeting_upset:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=-99,max=-74))
-    rules.update(MASGreetingRule.create_rule(skip_visual=False, random_chance=2))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_distressed",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED)
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_distressed:
     python:
@@ -2538,19 +2596,15 @@ label greeting_distressed:
     return
 
 init 5 python:
-    rules = dict()
-    rules.update(MASAffectionRule.create_rule(min=None,max=-99))
     addEvent(
         Event(
             persistent.greeting_database,
             eventlabel="greeting_broken",
             unlocked=True,
-            random=True,
-            rules=rules
+            aff_range=(None, mas_aff.BROKEN),
         ),
         code="GRE"
     )
-    del rules
 
 label greeting_broken:
     m 6ckc "..."
@@ -2565,7 +2619,6 @@ init 5 python:
             eventlabel="greeting_back_from_school",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SCHOOL],
-            random=True
         ),
         code="GRE"
     )
@@ -2622,7 +2675,6 @@ init 5 python:
             eventlabel="greeting_back_from_work",
             unlocked=True,
             category=[store.mas_greetings.TYPE_WORK],
-            random=True
         ),
         code="GRE"
     )
@@ -2685,7 +2737,6 @@ init 5 python:
             eventlabel="greeting_back_from_sleep",
             unlocked=True,
             category=[store.mas_greetings.TYPE_SLEEP],
-            random=True
         ),
         code="GRE"
     )
@@ -2715,26 +2766,32 @@ label greeting_back_from_sleep:
 
 init 5 python:
     if not mas_cannot_decode_islands:
-        rules = dict()
-        rules.update(MASSelectiveRepeatRule.create_rule(hours=range(0,24)))
-        rules.update({"monika wants this first":""})
+        ev_rules = {}
+        ev_rules.update(MASPriorityRule.create_rule(40))
+
         addEvent(
             Event(
                 persistent.greeting_database,
                 eventlabel="greeting_ourreality",
-                unlocked=False,
-                random=False,
-                rules=rules
+                unlocked=True,
+                rules=ev_rules,
+                aff_range=(mas_aff.ENAMORED, None),
             ),
             code="GRE"
         )
-        del rules
+        del ev_rules
 
 
 init -876 python in mas_delact:
     # this greeting requires a delayed action, since we cannot ensure that
     # the sprites for this were decoded correctly
 
+    # NOTE: we dont need this anymore
+    #   We originally needed this since aff_range was not used by greetings
+    #   so we wanted to get this to unlock if we are only able to decode 
+    #   islands. Now that aff range is part of gre parsing, the only thing
+    #   that matters is whether or not the event is active, which in this
+    #   case, only happens if the islands were decoded and aff is enamored+
     def _greeting_ourreality_unlock():
         return store.MASDelayedAction(
             1,
@@ -2833,10 +2890,23 @@ label greeting_returned_home:
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    if persistent._mas_f14_on_date:
+        jump greeting_returned_home_f14
+
+    if mas_f14 < datetime.date.today() <= mas_f14 + datetime.timedelta(7):
+        # did we miss f14 because we were on a date
+        call mas_gone_over_f14_check
+
+    # Note: this ordering is key, greeting_returned_home_player_bday handles the case
+    # if we left before f14 on your bday and return after f14
+    if persistent._mas_player_bday_left_on_bday:
+        jump greeting_returned_home_player_bday
+
+    if persistent._mas_f14_gone_over_f14:
+        jump greeting_gone_over_f14
+
     # main dialogue
     if time_out > five_minutes:
-
-
         jump greeting_returned_home_morethan5mins
 
     else:
@@ -2849,7 +2919,6 @@ label greeting_returned_home:
 # this just returns for now
 label greeting_returned_home_cleanup:
     return
-
 
 label greeting_returned_home_morethan5mins:
     if mas_isMoniNormal(higher=True):
@@ -2897,6 +2966,8 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
+    if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+        call return_home_post_player_bday 
     return
 
 label greeting_returned_home_morethan5mins_other_dlg:
@@ -2913,6 +2984,8 @@ label greeting_returned_home_lessthan5mins:
     if mas_isMoniNormal(higher=True):
         m 2ekp "That wasn't much of a trip, [player]."
         m "Next time better last a little longer..."
+        if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
+            call return_home_post_player_bday 
         return False
 
     elif mas_isMoniUpset():
@@ -3202,4 +3275,28 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="ch30_reload_delegate",
+            unlocked=True,
+            category=[
+                store.mas_greetings.TYPE_RELOAD
+            ],
+        ),
+        code="GRE"
+    )
+
+label ch30_reload_delegate:
+
+    if persistent.monika_reload >= 4:
+        call ch30_reload_continuous
+
+    else:
+        $ reload_label = "ch30_reload_" + str(persistent.monika_reload)
+        call expression reload_label
+
     return
