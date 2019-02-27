@@ -1925,7 +1925,7 @@ label prompt_menu:
         #$ mas_DropShield_idle()
         $ store.mas_hotkeys.music_enabled = True
 
-        jump ch30_post_mid_loop_eval
+        jump prompt_menu_end
 
     python:
         unlocked_events = Event.filterEvents(
