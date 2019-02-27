@@ -9208,7 +9208,7 @@ label monika_idle_game_fun_callback:
             m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
             m 2lksdlb "Ehehe..."
             m 1eua "Maybe you could find a way to bring me with you into a game like that."
-            m 1hub "Just promise to keep me safe ok?"
+            m 1hub "Just promise to keep me safe, ok?"
         "No.":
             m 2ekc "Aww, you didn't have any fun?"
             m "That's too bad..."
