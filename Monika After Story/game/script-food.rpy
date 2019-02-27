@@ -103,7 +103,7 @@ label mas_food_milk:
 init 5 python:
     addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
  label mas_food_hotchocolate:
-    if isWinter():
+    if mas_isWinter():
         m 1hub "That's so nice, [player]!"
         m 4eub "There's really nothing quite like the comfort of hot chocolate when it's chilly outside, is there?"
         m 1eub "In winter I always enjoy wrapping up in some warm clothes and unwinding with a cup myself."
