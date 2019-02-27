@@ -2640,20 +2640,15 @@ init -990 python in mas_utils:
 
                 home = expanduser("~")
                 base = os.path.join(home,".MonikaAfterStory/" )
-                #base = os.environ.get("RENPY_LOG_BASE", renpy.config.logdir or renpy.config.basedir)
-
+                
                 if base is None:
                     return False
 
                 fn = os.path.join(base, self.name + ".txt")
 
-                #altfn = os.path.join(tempfile.gettempdir(), "renpy-" + self.name + ".txt")
-
-                #if not os.path.exists(fn):
-                #    os.makedirs(fn)
-
-                #if not os.path.exists(altfn):
-                    #os.makedirs(altfn)
+                path, filename = os.path.split(fn)
+                if not os.path.exists(path):
+                    os.makedirs(path)
 
                 if self.append:
                     mode = "a"
@@ -2669,7 +2664,6 @@ init -990 python in mas_utils:
                         self.file = codecs.open(fn, mode, "utf-8")
                     except:
                         pass
-                        #self.file = codecs.open(altfn, mode, "utf-8")
 
                 if self.append:
                     self.write('')
