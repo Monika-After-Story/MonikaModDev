@@ -451,13 +451,13 @@ init 5 python:
     )
 
 label mas_compliment_hero:
+    $ mas_gainAffection()
     m 1wubfsdld "H-{w=0.3}huh?"
     m "I'm your hero?"
     m 2rkbfsdlb "[player]...{w=1.5} I'm not sure what you mean..."
     m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
     m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
-    m 1ekbfa "You've helped me in every way possible."
-    m 3ekbfa "How could I not return the favor by being there for you whenever you need support?"
+    m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
     show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
