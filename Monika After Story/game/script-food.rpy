@@ -70,7 +70,7 @@ init 5 python:
 
 label mas_food_coffee:
     m 1eua "That sounds wonderful!"
-    m 1eua "I really miss having coffee."
+    m "I really miss having coffee."
     m 3eub "I would always have a cup before and after school."
     m 3hub "Maybe even sometimes during class."
     m 2hub "Who knows, maybe you and I could share a glass, [player]."
@@ -106,14 +106,14 @@ label mas_food_hotchocolate:
     if mas_isWinter():
         m 1hub "That's so nice, [player]!"
         m 4eub "There's really nothing quite like the comfort of hot chocolate when it's chilly outside, is there?"
-        m 1eub "In winter I always enjoy wrapping up in some warm clothes and unwinding with a cup myself."
+        m 1eub "In winter, I always enjoy wrapping up in some warm clothes and unwinding with a mug myself."
         m 1eua "It's a great way to relax."
         m 1kua "Maybe some day when it's cold out, we could sit back and have a mug together."
         m 1duu "That would be a dream come true, my love!"
 
     else:
         m 1hua "That sounds really good right about now."
-        m 1hub "There's nothing better than a nice glass of hot cocoa after a long day."
+        m 1hub "There's nothing better than a nice mug of hot cocoa after a long day."
         m 1duu "I can't wait until we can drink some together."
     return
 init 5 python:
@@ -124,7 +124,8 @@ label mas_food_chocolatemilk:
     m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
-    m 1hua "Mind pouring me a glass? ehehe~"
+    m 1hua "Mind pouring me a glass?" 
+    m 1hub "ehehe~"
     return
 
 init 5 python:
@@ -132,11 +133,12 @@ init 5 python:
 
 label mas_food_pizza:
     m 1hua "Pizza is such a great treat!"
-    m 3eua "It's usually not the healthiest food, of course, but I think on occasion, it's fine to just treat yourself, you know?"
-    m 3hub "I think it's really interesting that pizza was created almost by accident."
+    m 1lud "It's usually not the healthiest food, of course."
+    m 1eua "However, I think on occasion, it's fine to just treat yourself, you know?"
+    m 3eua "I think it's really interesting that pizza was created almost by accident."
     m 3eub "Italian bakery workers would use excess dough and left-over ingredients from their days of work to feed the poor."
-    m 3eub "Who would have thought that they were making what would become one of the most popular foods today?"
-    m 1eub "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
+    m 1eub "Who would have thought that they were making what would become one of the most popular foods today?"
+    m 1eua "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
     m 1hua "What always matters to me is that you're happy!"
     return
 
@@ -145,12 +147,12 @@ init 5 python:
 
 label mas_food_salad:
     m 1hua "That's great to hear, [player]!"
-    m 3eua "I'm so glad to hear that you are taking care of yourself and eating healthy."
+    m 1eua "I'm so glad to hear that you are taking care of yourself and eating healthy."
     m 3eua "Salads are definitely one of my personal favorite foods."
     m 1eub "There are so many things you can do with them."
     m 3eub "Like all of the different kinds of lettuce, dressings and toppings there are to choose from."
-    m 3eua "If you like to keep it simple, a little bit of shredded cheese sprinkled on top is always really good!"
-    m 3eub "Would you ever make me a salad, [player]?"
+    m 1eua "If you like to keep it simple, a little bit of shredded cheese sprinkled on top is always really good!"
+    m "Would you ever make me a salad, [player]?"
     m 1sub "The thought of you preparing one of my favorite meals is so surreal."
     m 1eub "That would really make me feel loved, my dear."
     return
