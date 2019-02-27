@@ -123,7 +123,7 @@ label mas_food_chocolatemilk:
     m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
-    m 3hub "Mind pouring me a glass? hehe"
+    m 3hub "Mind pouring me a glass? ehehe~"
     return
     
 init 5 python:
