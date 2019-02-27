@@ -15,7 +15,7 @@ python early:
     # this is now global
     import datetime
 
-
+#testing shitagain
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
 
