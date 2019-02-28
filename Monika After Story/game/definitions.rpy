@@ -5477,9 +5477,10 @@ init 1 python in mas_randchat:
 
     # these numbers are the lower end of how many seconds to wait between
     # random topics
+    # TODO: incorporate poll results next release
     OFTEN         = 5
     NORMAL        = 15
-    LESS_OFTEN    = 60
+    LESS_OFTEN    = 40 # 60 previous
     RARELY        = 3600
     VERY_RARELY   = 14400
     NEVER         = 0
