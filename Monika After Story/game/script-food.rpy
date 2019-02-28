@@ -8,7 +8,29 @@ label monika_imeating:
         m 4eub "Like Natsuki's cupcakes."
         m 4eua "For a bunch of lines of code, they were pretty tasty."
         m 3hua "Are you eating anything right now, [player]?"
+    python:
+         import store.mas_food as mas_food
 
+         filtered_food= Event.filterEvents(
+            mas_food.food_db,
+            unlocked=True,
+            aff=mas_curr_affection
+            )
+
+         food_menu_items = [
+        (mas_food.food_db[k].prompt, k, False, False)
+        for k in filtered_food
+        ]
+
+         food_menu_items.sort()
+
+         final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
+    call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
+
+    if _return:
+        $ pushEvent(_return)
+        $ persistent._mas_food_current = _return
+    return
 default persistent_.mas_food_database = {}
 
 default persistent_.mas_food_current = None
