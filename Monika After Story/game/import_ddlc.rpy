@@ -20,16 +20,21 @@ init python:
         fo.close()
 
 label import_ddlc_persistent_in_settings:
-    $ prev_songs_enabled = store.songs.enabled
-    $ prev_dialogue = allow_dialogue
-    $ store.songs.enabled = False
-    $ allow_dialogue = False
-#    $ disable_esc() # tthis doesnt work somehow
+
+    $ mas_RaiseShield_core()
+
     call import_ddlc_persistent from _call_import_ddlc_persistent_1
-    $ quick_menu = True
-    $ store.songs.enabled = prev_songs_enabled
-    $ allow_dialogue = prev_dialogue
-#    $ enable_esc()
+
+    if store.mas_globals.dlg_workflow:
+        # current in dialogue workflow, we should only enable the escape
+        # and music stuff
+        $ enable_esc()
+        $ mas_MUMUDropShield()
+
+    else:
+        # otherwise, reenable core interactions
+        $ mas_DropShield_core()
+
     return
 
 label import_ddlc_persistent:
@@ -310,7 +315,8 @@ label import_ddlc_persistent:
         #steam
         #Steam version of the DDLC?
         #There's no real way to merge this, so just use the old version
-        persistent.steam=old_persistent.steam
+        # NOTE: we cannot do this because it interferes with a topic
+        #persistent.steam=old_persistent.steam
 
         #tried_skip
         #Did the player try to skip Monika's dialogue in Act 3?
