@@ -5,7 +5,6 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
-define mas_skip_mid_loop_eval = False
 define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
