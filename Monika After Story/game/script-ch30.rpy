@@ -5,7 +5,6 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
-define mas_skip_mid_loop_eval = False
 define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
@@ -37,6 +36,9 @@ init -1 python in mas_globals:
 
     text_speed_enabled = False
     # set to True if text speed is enabled
+
+    in_idle_mode = False
+    # set to True if in idle mode
 
 
 init 970 python:
@@ -124,6 +126,9 @@ init -10 python:
         IDLE_MODE_CB_LABEL = 3
         # label to call when returning from idle mode
 
+        SKIP_MID_LOOP_EVAL = 4
+        # True if we want idle to skip mid loop eval once
+
         # end keys
        
 
@@ -180,6 +185,20 @@ init -10 python:
             Gets idle callback label
             """
             return self.get(self.IDLE_MODE_CB_LABEL)
+
+
+        def send_skipmidloopeval(self):
+            """
+            Sends skip mid loop eval message to mailbox
+            """
+            self.send(self.SKIP_MID_LOOP_EVAL, True)
+
+
+        def get_skipmidloopeval(self):
+            """
+            Gets skip midloop eval value
+            """
+            return self.get(self.SKIP_MID_LOOP_EVAL)
             
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -400,7 +419,7 @@ init python:
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
 
-        if mas_in_idle_mode:
+        if store.mas_globals.in_idle_mode:
             # IDLe only enables talk extra and music
             store.hkb_button.talk_enabled = True
             store.hkb_button.extra_enabled = True
@@ -524,8 +543,7 @@ init python:
         This is meant to basically clear idle mode for holidays or other
         things that hijack main flow
         """
-        global mas_in_idle_mode
-        mas_in_idle_mode = False
+        store.mas_globals.in_idle_mode = False
         persistent._mas_in_idle_mode = False
         persistent._mas_idle_data = {}
         mas_idle_mailbox.get_idle_cb()
@@ -1185,7 +1203,7 @@ label ch30_loop:
     if store.mas_dockstat.abort_gen_promise:
         $ store.mas_dockstat.abortGenPromise()
 
-    if mas_skip_mid_loop_eval:
+    if mas_idle_mailbox.get_skipmidloopeval():
         jump ch30_post_mid_loop_eval
 
     #Check time based events and grant time xp
@@ -1248,9 +1266,6 @@ label ch30_post_mid_loop_eval:
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
-    # reset the mid loop eval if we didnt' quit right away
-    $ mas_skip_mid_loop_eval = False
-
     #If there's no event in the queue, add a random topic as an event
     if not _return:
         # Wait 20 to 45 seconds before saying something new
@@ -1299,7 +1314,7 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
-        if mas_in_idle_mode:
+        if store.mas_globals.in_idle_mode:
             jump post_pick_random_topic
 
         # Pick a random Monika topic
