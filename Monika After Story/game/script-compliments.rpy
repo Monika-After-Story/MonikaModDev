@@ -109,7 +109,7 @@ label mas_compliment_beautiful_2:
             m 1hub "Ehehehe~"
             m "I love you so much, [player]!"
         "You're in my top ten.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
             m 2lsc "Well, thanks, I guess..."
         "Thanks.":
@@ -206,7 +206,7 @@ label mas_compliment_awesome_2:
             m 2lksdla "I was trying to feel your embrace from here."
             m 2hub "Ahaha~"
         "... I don't like hugs.":
-            $ mas_loseAffection(reason=None) # you monster.
+            $ mas_loseAffection() # you monster.
             m 1eft "...Really?"
             m 1dkc "Well, to each their own, I guess. But you have to hug me sometime..."
     return
@@ -251,7 +251,7 @@ label mas_compliment_intelligent_2:
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
         "You make me feel stupid sometimes.":
-            $ mas_loseAffection(modifier=0.5,reason=None)
+            $ mas_loseAffection(modifier=0.5)
             m 1wkbsc "..."
             m 2lkbsc "I'm sorry, that wasn't my intention..."
     return
@@ -299,7 +299,7 @@ label mas_compliment_hair_2:
             m 1hubfb "You always make me feel special!"
             m "Thank you!"
         "You'd be even cuter with short hair.":
-            $ mas_loseAffection(modifier=0.3,reason=None)
+            $ mas_loseAffection(modifier=0.3)
             m "Well, I can't exactly go to the salon from here..."
             m 1lksdlc "I...appreciate your input."
             pass
@@ -436,6 +436,32 @@ label mas_compliment_smile_3:
     m 1eub "[thanks_quip]"
     m 1hua "I'll keep smiling just for you!"
     m "Hehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_hero",
+            prompt="... You're my hero!",
+            unlocked=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_hero:
+    $ mas_gainAffection()
+    m 1wubfsdld "H-{w=0.3}huh?"
+    m "I'm your hero?"
+    m 2rkbfsdlb "[player]...{w=1.5} I'm not sure what you mean..."
+    m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
+    m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
+    m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "You'll always be my hero, after all~"
+    m 5hubfb "I love you and I'll always believe in you!"
+    m 5ekbfa "I hope you never forget that, [player]~"
     return
 
 init 5 python:

@@ -151,6 +151,7 @@ label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
     m "Are you having a bad day, [player]?"
     menu:
+        m "Are you having a bad day, [player]?{fast}"
         "Yes.":
             m 1duu "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
             m 1eka "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
@@ -161,11 +162,13 @@ label mas_mood_sad:
             m 1eka "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
         "No.":
             m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
-            m 1eua "I don't want to interrupt you while you're talking, so let me know when you are done."
+            m 1eua "I don't want to interrupt you while you're talking, so let me know when you're done."
             menu:
+                m "I don't want to interrupt you while you're talking, so let me know when you're done.{fast}"
                 "I'm done.":
                     m "Do you feel a little better now, [player]?"
                     menu:
+                        m "Do you feel a little better now, [player]?{fast}"
                         "Yeah I do.":
                             m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
@@ -185,6 +188,7 @@ label mas_mood_proud:
     m 2sub "Really? That's exciting!"
     m 2b "Was it a major accomplishment, or a minor one?"
     menu:
+        m "Was it a major accomplishment, or a minor one?{fast}"
         "Major.":
             m 1euc "You know, [player]..."
             m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
@@ -244,7 +248,7 @@ label mas_mood_sick:
             m "I hate knowing you're suffering like this."
             m 1eka "I know you love spending time with me, but maybe you should go get some rest."
             m 1hua "Don't worry, I'll be here waiting for you when you get back."
-            m 3hub "Get well soon, my love!"    
+            m 3hub "Get well soon, my love!"
     else:
         m 2ekc "I'm sorry to hear that, [player]."
         m 4ekc "You should really go get some rest so it doesn't get any worse."
@@ -400,6 +404,7 @@ init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
+    $ last_year = datetime.datetime.today().year-1
     m 1ekc "..."
     m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
     m 2lksdlc "After all, everything I say would probably just come off as lip service."
@@ -407,19 +412,26 @@ label mas_mood_inadequate:
     m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
     m 1esc "But let me tell you what I do know about you."
     m 1eka "You've spent so much time with me."
-    if renpy.seen_label('monika_christmas'):
+
+    #Should verify for current year and last year
+    if mas_HistLookup_k(last_year,'d25.actions','spent_d25')[1] or persistent._mas_d25_spent_d25:
         m "You took time out of your schedule to be with me on Christmas..."
-    if renpy.seen_label('monika_valentines_greeting'):
+
+    if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
         m 1ekbfa "On Valentine's Day..."
-    if renpy.seen_label('monika_white_day_start'):
-        m 1hubfb "White Day too!"
-    # TODO mention celebrating birthday
+
+    #TODO: change this back to not no_recognize once we change those defaults.
+    if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
+        m 1ekbfb "You even made the time to celebrate my birthday with me."
+
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
-    if not persistent.monika_kill:
+    else:
         m 3tkc "You never once resented me for the bad things that I've done."
+
     if persistent.clearall:
         m 2lfu "And even though it made me jealous, you spent so much time with all of my club members."
+
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
@@ -456,8 +468,9 @@ label mas_mood_bored:
     elif mas_isMoniNormal(higher=True):
         show monika 1ekc
         pause 1.0
+        m "Do I really bore you that much, [player]?"
         menu:
-            m "Do I really bore you that much, [player]?"
+            m "Do I really bore you that much, [player]?{fast}"
             "No, I'm not bored {i}of you{/i}...":
                 m 1hua "Oh,{w} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
@@ -511,8 +524,9 @@ label mas_mood_bored:
         else:
             m 2rkc "Maybe we could play a game of [display_picked]..."
 
+    m "What do you say, [player]?"
     menu:
-        m "What do you say, [player]?"
+        m "What do you say, [player]?{fast}"
         "Yes.":
             if gamepicked == "pong":
                 call game_pong
@@ -545,18 +559,18 @@ label mas_mood_bored:
 
 
 # TODO: we need to add some sort of reaction to birthdays soon
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            code="MOO"
-        )
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            code="MOO"
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
@@ -564,9 +578,6 @@ default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
 
-# player birthday
-# datetime.date
-default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime

@@ -5,7 +5,6 @@ default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
 define mas_battery_supported = False
-define mas_skip_mid_loop_eval = False
 define mas_in_intro_flow = False
 
 # True means disable animations, False means enable
@@ -34,6 +33,12 @@ init -1 python in mas_globals:
     # set to True to show s easter egg.
     # NOTE: set to True during o31, and also during sayori easter egg
     # TODO: need to this
+
+    text_speed_enabled = False
+    # set to True if text speed is enabled
+
+    in_idle_mode = False
+    # set to True if in idle mode
 
 
 init 970 python:
@@ -118,6 +123,12 @@ init -10 python:
         DOCKSTAT_GRE_TYPE = 2
         # used by the bye_going_somewhere farewell as a type
 
+        IDLE_MODE_CB_LABEL = 3
+        # label to call when returning from idle mode
+
+        SKIP_MID_LOOP_EVAL = 4
+        # True if we want idle to skip mid loop eval once
+
         # end keys
        
 
@@ -160,6 +171,34 @@ init -10 python:
             if result is None:
                 return default
             return result
+
+
+        def send_idle_cb(self, cb_label):
+            """
+            Sends idle callback label to mailbox
+            """
+            self.send(self.IDLE_MODE_CB_LABEL, cb_label)
+
+
+        def get_idle_cb(self):
+            """
+            Gets idle callback label
+            """
+            return self.get(self.IDLE_MODE_CB_LABEL)
+
+
+        def send_skipmidloopeval(self):
+            """
+            Sends skip mid loop eval message to mailbox
+            """
+            self.send(self.SKIP_MID_LOOP_EVAL, True)
+
+
+        def get_skipmidloopeval(self):
+            """
+            Gets skip midloop eval value
+            """
+            return self.get(self.SKIP_MID_LOOP_EVAL)
             
 
     mas_idle_mailbox = MASIdleMailbox()
@@ -380,7 +419,14 @@ init python:
 
         renpy.call_in_new_context("mas_start_calendar_read_only")
 
-        mas_HKBDropShield()
+        if store.mas_globals.in_idle_mode:
+            # IDLe only enables talk extra and music
+            store.hkb_button.talk_enabled = True
+            store.hkb_button.extra_enabled = True
+            store.hkb_button.music_enabled = True
+
+        else:
+            mas_HKBDropShield()
 
 
     dismiss_keys = config.keymap['dismiss']
@@ -490,6 +536,64 @@ init python:
                 persistent._mas_current_season = _s_tag
 
 
+    def mas_resetIdleMode():
+        """
+        Resets specific idle mode vars.
+
+        This is meant to basically clear idle mode for holidays or other
+        things that hijack main flow
+        """
+        store.mas_globals.in_idle_mode = False
+        persistent._mas_in_idle_mode = False
+        persistent._mas_idle_data = {}
+        mas_idle_mailbox.get_idle_cb()
+
+
+    def mas_enableTextSpeed():
+        """
+        Enables text speed
+        """
+        style.say_dialogue = style.normal
+        store.mas_globals.text_speed_enabled = True
+
+
+    def mas_disableTextSpeed():
+        """
+        Disables text speed
+        """
+        style.say_dialogue = style.default_monika
+        store.mas_globals.text_speed_enabled = False
+
+
+    def mas_resetTextSpeed(ignoredev=False):
+        """
+        Sets text speed to the appropriate one depending on global settings
+
+        Rules:
+        1 - developer always gets text speed (unless ignoredev is True)
+        2 - text speed enabled if affection above happy
+        3 - text speed disabled otherwise
+        """
+        if config.developer and not ignoredev:
+            mas_enableTextSpeed()
+
+        elif (
+                mas_isMoniHappy(higher=True)
+                and persistent._mas_text_speed_enabled
+            ):
+            mas_enableTextSpeed()
+
+        else:
+            mas_disableTextSpeed()
+
+
+    def mas_isTextSpeedEnabled():
+        """
+        Returns true if text speed is enabled
+        """
+        return store.mas_globals.text_speed_enabled
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -545,8 +649,15 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
     # d25 seasonal
     if persistent._mas_d25_deco_active:
         $ store.mas_d25_event.showD25Visuals()
-    return
 
+    # player bday
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
+    if datetime.date.today() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs_pst(mas_acs_roses)
+
+    return
 
 label ch30_main:
     $ mas_skip_visuals = False
@@ -559,6 +670,9 @@ label ch30_main:
     $ delete_all_saves()
     $ persistent.clear[9] = True
     play music m1 loop # move music out here because of context
+
+    # set monikas outfit to default
+    $ monika_chr.reset_outfit(False)
 
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
@@ -607,6 +721,9 @@ label ch30_main:
 
     # now we out of intro
     $ mas_in_intro_flow = False
+
+    # set session data to startup values
+    $ store._mas_root.initialSessionData()
 
     # lastly, rebuild Event lists for new people if not built yet
     if not mas_events_built:
@@ -766,6 +883,7 @@ label ch30_nope:
     m "Being alone is only lonely if you want it to be, so cheer up!"
     jump ch30_loop
 
+# NOTE: START HERE
 label ch30_autoload:
     # This is where we check a bunch of things to see what events to push to the
     # event list
@@ -773,8 +891,8 @@ label ch30_autoload:
     $ m.what_args["slow_abortable"] = config.developer
     $ import store.evhand as evhand
     if not config.developer:
-        $ style.say_dialogue = style.default_monika
         $ config.allow_skipping = False
+    $ mas_resetTextSpeed()
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
@@ -824,6 +942,12 @@ label mas_ch30_post_retmoni_check:
     if mas_isD25Season():
         jump mas_holiday_d25c_autoload_check
 
+    if mas_isF14() or persistent._mas_f14_in_f14_mode:
+        jump mas_f14_autoload_check
+
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
+
 
 label mas_ch30_post_holiday_check:
     # post holiday checks
@@ -854,6 +978,10 @@ label mas_ch30_post_holiday_check:
             call spaceroom
             jump mas_affection_apologydeleted
 
+    # post greeting selected callback
+    $ gre_cb_label = None
+    $ just_crashed = False
+    $ forced_quit = False
 
     # yuri scare incoming. No monikaroom when yuri is the name
     if (
@@ -861,30 +989,76 @@ label mas_ch30_post_holiday_check:
             and not persistent._mas_sensitive_mode
         ):
         call yuri_name_scare from _call_yuri_name_scare
+        
+        # this skips greeting algs
+        jump ch30_post_greeting_check
 
-    # check persistent to see if player put Monika to sleep correctly
-    elif persistent.closed_self:
+    elif not persistent._mas_game_crashed:
+        # if this is False, a force quit happened
+        $ forced_quit = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_RELOAD
 
-        python:
+    elif not persistent.closed_self:
+        # this (+ game_crashed being True) means we crashed
+        $ just_crashed = True
+        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CRASHED
 
-            # we select a greeting depending on the type that we should select
-            sel_greeting_event = store.mas_greetings.selectGreeting(persistent._mas_greeting_type)
+        # we dont consider crashes as bad quits
+        $ persistent.closed_self = True
 
-            # reset the greeting type flag back to None
-            persistent._mas_greeting_type = None
+    # else, we are in regular mode.
 
-            selected_greeting = sel_greeting_event.eventlabel
+    # greeting selection
+    python:
+
+        # we select a greeting depending on the type that we should select
+        sel_greeting_ev = store.mas_greetings.selectGreeting(
+            persistent._mas_greeting_type
+        )
+
+        # reset the greeting type flag back to None
+        persistent._mas_greeting_type = None
+
+        if sel_greeting_ev is None:
+            # special cases to deal with when no greeting is found.
+
+            if persistent._mas_in_idle_mode:
+                # currently in idle mode? reset please
+                mas_resetIdleMode()
+
+            if just_crashed:
+                # but if we just crashed, then we want to select the 
+                # only crashed greeting.
+                # NOTE: we shouldnt actually have to do this ever, but
+                #   its here as a sanity check
+                sel_greeting_ev = mas_getEV("mas_crashed_start")
+
+            elif forced_quit:
+                # if we just forced quit, then we want to select the only
+                # reload greeting.
+                # NOTE: again, shouldnt have to do this, but its sanity checks
+                sel_greeting_ev = mas_getEV("ch30_reload_delegate")
+
+
+        # NOTE: this MUST be an if. it may be True if we crashed but
+        #   didnt get a greeting to show. 
+        if sel_greeting_ev is not None:
+            selected_greeting = sel_greeting_ev.eventlabel
 
             # store if we have to skip visuals ( used to prevent visual bugs)
             mas_skip_visuals = MASGreetingRule.should_skip_visual(
-                event=sel_greeting_event
+                event=sel_greeting_ev
             )
 
-    # crash check
-    elif persistent._mas_game_crashed:
-        $ selected_greeting = "mas_crashed_start"
-        $ mas_skip_visuals = True
-        $ persistent.closed_self = True
+            # see if we need to do a label
+            setup_label = MASGreetingRule.get_setup_label(sel_greeting_ev)
+            if setup_label is not None and renpy.has_label(setup_label):
+                gre_cb_label = setup_label
+
+    
+    # call pre-post greeting check setup label
+    if gre_cb_label is not None:
+        call expression gre_cb_label
 
 label ch30_post_greeting_check:
     # this label skips only greeting checks
@@ -904,7 +1078,6 @@ label ch30_post_restartevent_check:
             #Reset the idlexp total if monika has had at least 6 hours of rest
             if away_experience_time.total_seconds() >= times.REST_TIME:
                 persistent.idlexp_total=0
-                persistent.random_seen = 0
 
                 #Grant good exp for closing the game correctly.
                 mas_gainAffection()
@@ -935,7 +1108,7 @@ label ch30_post_restartevent_check:
 
         else:
             # Grant bad exp for closing the game incorrectly.
-            mas_loseAffection(modifier=2, reason="closing the game on me")
+            mas_loseAffection(modifier=2, reason=4)
 
 label ch30_post_exp_check:
     # this label skips greeting selection as well as exp checks for game close
@@ -950,12 +1123,19 @@ label ch30_post_exp_check:
     #Checks to see if affection levels have met the criteria to push an event or not.
     $ mas_checkAffection()
 
+    #Check to see if apologies should expire
+    $ mas_checkApologies()
+
     # corruption check
     if mas_corrupted_per and not renpy.seen_label("mas_corrupted_persistent"):
         $ pushEvent("mas_corrupted_persistent")
 
     # push greeting if we have one
     if selected_greeting:
+        # before greeting, we should push idle clean if in idle mode
+        if persistent._mas_in_idle_mode:
+            $ pushEvent("mas_idle_mode_greeting_cleanup")
+
         $ pushEvent(selected_greeting)
 
     # if not persistent.tried_skip:
@@ -979,16 +1159,21 @@ label ch30_post_exp_check:
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
 
-    $persistent.closed_self = False
+    $ persistent.closed_self = False
     $ persistent._mas_game_crashed = True
-    $startup_check = False
+    $ startup_check = False
     $ mas_checked_update = False
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
-
+ 
     # save here before we enter the loop
     $ renpy.save_persistent()
+
+    # check if we need to rebulid ev
+    if mas_idle_mailbox.get_rebuild_msg():
+        $ mas_rebuildEventLists()
+
     jump ch30_loop
 
 label ch30_loop:
@@ -1018,7 +1203,7 @@ label ch30_loop:
     if store.mas_dockstat.abort_gen_promise:
         $ store.mas_dockstat.abortGenPromise()
 
-    if mas_skip_mid_loop_eval:
+    if mas_idle_mailbox.get_skipmidloopeval():
         jump ch30_post_mid_loop_eval
 
     #Check time based events and grant time xp
@@ -1033,6 +1218,9 @@ label ch30_loop:
 
             #Checks to see if affection levels have met the criteria to push an event or not.
             mas_checkAffection()
+
+            #Check if we should expire apologies
+            mas_checkApologies()
 
             # limit xp gathering to when we are not maxed
             # and once per minute
@@ -1078,9 +1266,6 @@ label ch30_post_mid_loop_eval:
     # Just finished a topic, so we set current topic to 0 in case user quits and restarts
     $ persistent.current_monikatopic = 0
 
-    # reset the mid loop eval if we didnt' quit right away
-    $ mas_skip_mid_loop_eval = False
-
     #If there's no event in the queue, add a random topic as an event
     if not _return:
         # Wait 20 to 45 seconds before saying something new
@@ -1106,17 +1291,20 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.5)
             play sound "mod_assets/sounds/amb/thunder.wav"
+        
+        # Before a random topic can be displayed, a set waiting time needs to pass.
+        # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
+        # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
 
-        if mas_randchat.rand_low == 0:
-            # we are not repeating for now
-            # we'll wait 60 seconds inbetween loops
-            $ renpy.pause(60, hard=True)
+        $ mas_randchat.wait()
+        
+        if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
-
-        $ waittime = renpy.random.randint(mas_randchat.rand_low, mas_randchat.rand_high)
-        $ renpy.pause(waittime, hard=True)
+        else:
+            $ mas_randchat.setWaitingTime()
+        
         window auto
-
+        
 #        python:
 #            if (
 #                    mas_battery_supported
@@ -1126,30 +1314,33 @@ label ch30_post_mid_loop_eval:
 #                ):
 #                pushEvent("monika_battery")
 
+        if store.mas_globals.in_idle_mode:
+            jump post_pick_random_topic
+
         # Pick a random Monika topic
-        if persistent.random_seen < random_seen_limit:
-            label pick_random_topic:
+#        if persistent.random_seen < random_seen_limit:
+        label pick_random_topic:
 
-                # check if we have repeats enabled
-                if not persistent._mas_enable_random_repeats:
-                    jump mas_ch30_select_unseen
+            # check if we have repeats enabled
+            if not persistent._mas_enable_random_repeats:
+                jump mas_ch30_select_unseen
 
-                # randomize selection
-                $ chance = random.randint(1, 100)
+            # randomize selection
+            $ chance = random.randint(1, 100)
 
-                if chance <= store.mas_topics.UNSEEN:
-                    # unseen topic shoud be selected
-                    jump mas_ch30_select_unseen
+            if chance <= store.mas_topics.UNSEEN:
+                # unseen topic shoud be selected
+                jump mas_ch30_select_unseen
 
-                elif chance <= store.mas_topics.SEEN:
-                    # seen topic should be seelcted
-                    jump mas_ch30_select_seen
+            elif chance <= store.mas_topics.SEEN:
+                # seen topic should be seelcted
+                jump mas_ch30_select_seen
 
-                # most seen topic should be selected
-                jump mas_ch30_select_mostseen
+            # most seen topic should be selected
+            jump mas_ch30_select_mostseen
 
-        elif not seen_random_limit:
-            $pushEvent('random_limit_reached')
+#        elif not seen_random_limit:
+#            $pushEvent('random_limit_reached')
 
 label post_pick_random_topic:
 
@@ -1290,8 +1481,8 @@ label ch30_reset:
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     # monika hair/acs
-    $ monika_chr.load()
-
+    $ monika_chr.load(startup=True)
+ 
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
     # this is likely to occur in crashes / reloads
@@ -1302,7 +1493,6 @@ label ch30_reset:
 
     ## random chatter frequency reset
     $ mas_randchat.adjustRandFreq(persistent._mas_randchat_freq)
-
     ## chess strength reset
     python:
         if persistent.chess_strength < 0:

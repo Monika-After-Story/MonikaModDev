@@ -215,10 +215,7 @@ label natsuki_name_scare_hungry:
     hide n_cg1bs
     hide monika_body_glitch1
 
-    if config.developer:
-        $ style.say_dialogue = style.normal
-    else:
-        $ style.say_dialogue = style.default_monika
+    $ mas_resetTextSpeed()
 
     # cleanup
     python:
@@ -232,3 +229,40 @@ label natsuki_name_scare_hungry:
 
     #go back to dialog
     return
+
+#Zoomed in on ghost face, just like original ghost menu exit.
+transform zoom_ghost: 
+        zoom 1.5 yoffset 500
+
+
+label mas_ghost_monika:
+
+    scene black
+
+    python:
+        #plays music from ghost menu.
+        play_song(audio.ghostmenu)
+        
+    show noise zorder 11:
+        alpha 0.5
+
+    #show ghost monika
+    show ghost_monika zorder MAS_MONIKA_Z at i11
+    
+    #wait 10 seconds (length of ghost menu music)
+    $ renpy.pause(10, hard=True)
+
+    stop music
+    hide noise
+
+    #Show zoomed in ghost face.
+    show ghost_monika at zoom_ghost
+
+    #Time the original game displayed zoomed in face for.
+    pause 0.01
+    
+    #Prevent player from losing affection.
+    $ persistent.closed_self = True
+
+    #Exit the game.
+    jump _quit
