@@ -9363,7 +9363,7 @@ init 5 python:
 
 label monika_brb_idle:
     if mas_isMoniAff(higher=True):
-        m 1eua "Alright [player]."
+        m 1eua "Alright, [player]."
         m 1hub "Hurry back, I'll be waiting here for you~"
 
     elif mas_isMoniNormal(higher=True):
@@ -9384,7 +9384,7 @@ label monika_brb_idle:
 label monika_brb_idle_callback:
     python:
         wb_quips = [
-            "So what else did you want to do today?",
+            "So, what else did you want to do today?",
             "Is there anything else you wanted to do today?",
             "What else should we do today?",
         ]
