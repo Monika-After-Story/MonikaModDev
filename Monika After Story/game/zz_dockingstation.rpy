@@ -1997,13 +1997,6 @@ init 200 python in mas_dockstat:
             mas_utils.writelog(
                 "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
             )
-            mas_utils.writelog(data_line)
-            mas_utils.writelog("\n")
-            mas_utils.writelog("="*5)
-            mas_utils.writelog("\n")
-            mas_utils.writelog(str(pers))
-            mas_utils.writelog("\n")
-            mas_utils.writelog("\n")
             return None
 
 
