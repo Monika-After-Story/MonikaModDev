@@ -1229,6 +1229,7 @@ init 200 python in mas_dockstat:
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
     import codecs
+    import re
     import os
     import random
     import datetime
@@ -1709,7 +1710,7 @@ init 200 python in mas_dockstat:
             moni_buffer.close()
 
             # now we can prepare to write
-            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")#TODO
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
@@ -1986,16 +1987,23 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            data = data_line
-            missing_padding = len(str(data)) % 4
-            if missing_padding:
-                data += b'='* (4 - missing_padding)
-            return cPickle.loads(codecs.decode(data, "base64"))
+            #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            splitted = data_line.split("|||per|")
+            if(len(splitted)>0):
+                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             mas_utils.writelog(
                 "[ERROR]: persistent unpickle failed: {0}\n".format(repr(e))
             )
+            mas_utils.writelog(data_line)
+            mas_utils.writelog("\n")
+            mas_utils.writelog("="*5)
+            mas_utils.writelog("\n")
+            mas_utils.writelog(str(pers))
+            mas_utils.writelog("\n")
+            mas_utils.writelog("\n")
             return None
 
 
