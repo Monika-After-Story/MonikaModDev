@@ -8981,7 +8981,7 @@ label monika_grad_speech_not_paying_attention:
     $ persistent._mas_pm_listened_to_grad_speech = False
 
     if mas_isMoniAff(higher=True):
-        $ mas_loseAffection(modifier=0.5)
+        $ mas_loseAffection(reason=11,modifier=0.5)
         m 2ekc "..."
         m 2ekd "[player]? You didn't pay attention to my speech?"
         m 2rksdlc "That...{w=1} that's not like you at all..."
@@ -8996,7 +8996,7 @@ label monika_grad_speech_not_paying_attention:
         m "So please, let me know when you have time to hear it, okay?"
 
     else:
-        $ mas_loseAffection(reason="you didn't listen to my speech. I worked really hard on it.")
+        $ mas_loseAffection(reason=11)
 
         m 2ekc "..."
         m 6ektdc "[player]! You weren't even paying attention!"
