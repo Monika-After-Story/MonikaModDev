@@ -9353,6 +9353,63 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_brb_idle",
+            prompt="I'll be right back",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_brb_idle:
+    if mas_isMoniAff(higher=True):
+        m 1eua "Alright, [player]."
+        m 1hub "Hurry back, I'll be waiting here for you~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1hub "Hurry back, [player]!"
+
+    elif mas_isMoniDis(higher=True):
+        m 1rsc "Oh,{w=1} okay."
+
+    else:
+        m 6ckc "..."
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_brb_idle_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_brb"] = True
+    return "idle"
+
+label monika_brb_idle_callback:
+    python:
+        wb_quips = [
+            "So, what else did you want to do today?",
+            "Is there anything else you wanted to do today?",
+            "What else should we do today?",
+        ]
+
+        wb_quip = renpy.random.choice(wb_quips)
+
+    if mas_isMoniAff(higher=True):
+        m 1hub "Welcome back, [player]. I missed you~"
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniDis(higher=True):
+        m 1esc "Oh, back already?"
+
+    else:
+        m 6ckc "..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel='monika_shipping',
             prompt="Shipping",
             category=['ddlc'],

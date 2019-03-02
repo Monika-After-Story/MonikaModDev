@@ -1538,7 +1538,7 @@ init python:
         if len(persistent.event_list) == 0:
             return None
 
-        if mas_in_idle_mode:
+        if store.mas_globals.in_idle_mode:
             # idle requires us to loop over the list and find the first
             # event available in idle
             ev_found = None
@@ -1852,7 +1852,7 @@ label call_next_event:
                 $ mas_rebuildEventLists()
 
             if "idle" in ret_items:
-                $ mas_in_idle_mode = True
+                $ store.mas_globals.in_idle_mode = True
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
@@ -1868,7 +1868,7 @@ label call_next_event:
         show monika idle at t11 zorder MAS_MONIKA_Z
 
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
 
@@ -1899,7 +1899,7 @@ label prompt_menu:
 
     $ mas_RaiseShield_dlg()
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # if talk is hit here, then we retrieve label from mailbox and 
         # call it.
         # after the event is over, we drop shields return to idle flow
@@ -1917,23 +1917,18 @@ label prompt_menu:
             call expression cb_label
 
         # clean up idle stuff
-        $ mas_in_idle_mode = False
+        $ persistent._mas_greeting_type = None
+        $ store.mas_globals.in_idle_mode = False
+
+        # this event will cleanup the remaining idle vars
+        $ pushEvent("mas_idle_mode_greeting_cleanup")
+        $ mas_idle_mailbox.send_skipmidloopeval()
 
         # NOTE: we only need to enable music hotkey since we are in dlg mode
         #$ mas_DropShield_idle()
         $ store.mas_hotkeys.music_enabled = True
 
-        $ persistent._mas_greeting_type = None
-        $ persistent._mas_in_idle_mode = False
-
-        # if we have events, jump to idle before call_next_event to start
-        # the usual setup
-        if len(persistent.event_list) > 0:
-            jump ch30_post_mid_loop_eval
-
-        # otherwise, return regular spaceroom idle
         jump prompt_menu_end
-
 
     python:
         unlocked_events = Event.filterEvents(

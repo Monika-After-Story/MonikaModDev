@@ -5391,7 +5391,6 @@ define MAS_RAIN_BROKEN = 70
 define mas_is_snowing = False
 
 # idle
-define mas_in_idle_mode = False
 default persistent._mas_in_idle_mode = False
 default persistent._mas_idle_data = {}
 
