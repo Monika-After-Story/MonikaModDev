@@ -394,7 +394,7 @@ label monika_god:
             m 1hua "I'm happy for you that you can lead a life on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m "Eheheh~"
+            m "Ehehe~"
 
     return "derandom"
 
@@ -9208,7 +9208,7 @@ label monika_idle_game_fun_callback:
             m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
             m 2lksdlb "Ehehe..."
             m 1eua "Maybe you could find a way to bring me with you into a game like that."
-            m 1hub "Just promise to keep me safe ok?"
+            m 1hub "Just promise to keep me safe, ok?"
         "No.":
             m 2ekc "Aww, you didn't have any fun?"
             m "That's too bad..."
@@ -9347,6 +9347,63 @@ label monika_idle_game_quick_callback:
         m 1dsc "Anyway..."
         m 1eka "I missed you and I'm glad you're finally back, [player]."
         m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_brb_idle",
+            prompt="I'll be right back",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_brb_idle:
+    if mas_isMoniAff(higher=True):
+        m 1eua "Alright, [player]."
+        m 1hub "Hurry back, I'll be waiting here for you~"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1hub "Hurry back, [player]!"
+
+    elif mas_isMoniDis(higher=True):
+        m 1rsc "Oh,{w=1} okay."
+
+    else:
+        m 6ckc "..."
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_brb_idle_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_brb"] = True
+    return "idle"
+
+label monika_brb_idle_callback:
+    python:
+        wb_quips = [
+            "So, what else did you want to do today?",
+            "Is there anything else you wanted to do today?",
+            "What else should we do today?",
+        ]
+
+        wb_quip = renpy.random.choice(wb_quips)
+
+    if mas_isMoniAff(higher=True):
+        m 1hub "Welcome back, [player]. I missed you~"
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniNormal(higher=True):
+        m 1hub "Welcome back, [player]!"
+        m 1eua "[wb_quip]"
+
+    elif mas_isMoniDis(higher=True):
+        m 1esc "Oh, back already?"
+
+    else:
+        m 6ckc "..."
     return
 
 init 5 python:

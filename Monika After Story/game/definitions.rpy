@@ -140,12 +140,11 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-#            "rules":14,
-            "last_seen":15,
-            "years":16,
-            "sensitive":17,
-            "aff_range":18,
-            "show_in_idle":19,
+            "last_seen":14,
+            "years":15,
+            "sensitive":16,
+            "aff_range":17,
+            "show_in_idle":18,
         }
 
         # name constants
@@ -289,7 +288,6 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                None, # rules, #NOTE: this is no longer stored in persistent
                 last_seen,
                 years,
                 sensitive,
@@ -5393,7 +5391,6 @@ define MAS_RAIN_BROKEN = 70
 define mas_is_snowing = False
 
 # idle
-define mas_in_idle_mode = False
 default persistent._mas_in_idle_mode = False
 default persistent._mas_idle_data = {}
 
@@ -5477,9 +5474,10 @@ init 1 python in mas_randchat:
 
     # these numbers are the lower end of how many seconds to wait between
     # random topics
+    # TODO: incorporate poll results next release
     OFTEN         = 5
     NORMAL        = 15
-    LESS_OFTEN    = 60
+    LESS_OFTEN    = 40 # 60 previous
     RARELY        = 3600
     VERY_RARELY   = 14400
     NEVER         = 0
