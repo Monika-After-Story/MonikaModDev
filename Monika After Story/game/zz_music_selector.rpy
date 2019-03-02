@@ -1043,7 +1043,7 @@ init python:
                 # music menu interactions
                 mas_MUMUDropShield()
 
-            elif store.mas_in_idle_mode:
+            elif store.mas_globals.in_idle_mode:
                 # to idle
                 mas_mumuToIdleShield() 
 

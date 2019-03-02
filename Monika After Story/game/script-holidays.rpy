@@ -689,9 +689,9 @@ label bye_trick_or_treat:
         m 3eksdla "Doesn't it seem a little early for trick or treating, [player]?"
         m 3rksdla "I don't think there's going to be anyone giving out candy yet..."
 
-        show monika 2etc
+        m 2etc "Are you {i}sure{/i} you want to go right now?"
         menu:
-            m "Are you {i}sure{/i} you want to go right now?"
+            m "Are you {i}sure{/i} you want to go right now?{fast}"
             "Yes.":
                 $ persistent._mas_o31_trick_or_treating_start_early = True
                 m 2etc "Well...{w=1}okay then, [player]..."
@@ -712,9 +712,9 @@ label bye_trick_or_treat:
         m 2dkc "Not to mention that I doubt there would be much candy left..."
         m "..."
 
-        show monika 4ekc
+        m 4ekc "Are you sure you still want to go?"
         menu:
-            m "Are you sure you still want to go?"
+            m "Are you sure you still want to go?{fast}"
             "Yes.":
                 $ persistent._mas_o31_trick_or_treating_start_late = True
                 m 1eka "...Okay."
@@ -1726,9 +1726,9 @@ label mas_d25_monika_carolling:
     else:
         m 1eua "It just feels heartwarming to know people are spreading joy to others in their spare time."
 
-    show monika 3eua
+    m 3eua "Do you like singing Christmas carols, [player]?"
     menu:
-        m "Do you like singing Christmas carols, [player]?"
+        m "Do you like singing Christmas carols, [player]?{fast}"
         "Yes.":
             $ persistent._mas_pm_likes_singing_d25_carols = True
             m 1hua "I'm glad you feel the same way, [player]!"
@@ -2135,6 +2135,10 @@ label monika_aiwfc:
 label monika_aiwfc_song:
     # TODO: consider doing something where we can use lyric bar and style
     #   like in piano
+
+    #Disable text speed for this
+    $ mas_disableTextSpeed()
+
     stop music fadeout 1.0
     play music "mod_assets/bgm/aiwfc.ogg"
     m 1eub "{i}{cps=9}I don't want{/cps}{cps=20} a lot{/cps}{cps=11} for Christmas{/cps}{/i}{nw}"
@@ -2162,14 +2166,17 @@ label monika_aiwfc_song:
     m 2eua "{i}{cps=10}I{/cps}{cps=17} won't make{/cps}{cps=9} a list and send it{w=0.35}{/cps}{/i}{nw}"
     m 3eua "{i}{cps=10}To{/cps}{cps=20} the North{/cps}{cps=10} Pole for Saint Nick{w=0.3}{/cps}{/i}{nw}"
     m 4hub "{i}{cps=18}I won't ev{/cps}{cps=10}en stay awake to{w=0.4}{/cps}{/i}{nw}"
-    m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=1}{/cps}{/i}{nw}"
+    m 3hub "{i}{cps=10}Hear{/cps}{cps=20} those ma{/cps}{cps=14}gic reindeer click{w=0.9}{/cps}{/i}{nw}"
 
     m 3ekbsa "{i}{cps=20}I{/cps}{cps=11} just want you here tonight{w=0.4}{/cps}{/i}{nw}"
     m 3ekbfa "{i}{cps=10}Holding on{/cps}{cps=20}to me{/cps}{cps=10} so tight{w=0.9}{/cps}{/i}{nw}"
     m 4hksdlb "{i}{cps=10}What more{/cps}{cps=15} can I{/cps}{cps=8} doooo?{w=0.3}{/cps}{/i}{nw}"
-    m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.5} is yoooooooou~{w=2.5}{/cps}{/i}{nw}"
+    m 4ekbfb "{i}{cps=20}Cause baby{/cps}{cps=12} all I want for Christmas{w=0.3} is yoooooooou~{w=2.3}{/cps}{/i}{nw}"
     m "{i}{cps=9}Yoooooooou, baaaaby~{w=2.5}{/cps}{/i}{nw}"
     stop music fadeout 1.0
+
+    #Now we re-enable text speed
+    $ mas_resetTextSpeed()
     return
 
 init 5 python:
@@ -2666,9 +2673,9 @@ label mas_nye_monika_nye:
     m 3hua "Well, there's still some time left before midnight."
     m 1eua "We might as well enjoy this year while it lasts..."
 
-    show monika 3euc
+    m 3euc "Say, [player], do you have any resolutions for next year?"
     menu:
-        m "Say, [player], do you have any resolutions for next year?"
+        m "Say, [player], do you have any resolutions for next year?{fast}"
         "Yes.":
             $ persistent._mas_pm_has_new_years_res = True
 
@@ -2779,8 +2786,9 @@ label mas_nye_monika_nyd_fresh_start:
     m 4ekc "It's not too late for us, [player], we can still make each other so happy."
     m 4eka "It's all I've ever wanted."
 
+    m "What do you say, [player]?"
     menu:
-        m "What do you say, [player]?"
+        m "What do you say, [player]?{fast}"
 
         "I would love that.":
             #so we can revert back to previous affection if player continues to mistreat after the second chance. need to determine the threshold the player must stay above for this.
@@ -2840,17 +2848,17 @@ label monika_resolutions:
     m 2eub "Hey [player]?"
     m 2eka "I was wondering..."
 
-    show monika 3eub
+    m 3eub "Did you make any New Year's resolutions last year?"
     menu:
-        m "Did you make any New Year's resolutions last year?"
+        m "Did you make any New Year's resolutions last year?{fast}"
 
         "Yes.":
             m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
             m 2eka "That said..."
 
-            show monika 3hub
+            m 3hub "Did you accomplish last year's resolutions?"
             menu:
-                m "Did you accomplish last year's resolutions?"
+                m "Did you accomplish last year's resolutions?{fast}"
 
                 "Yes.":
                     $ persistent._mas_pm_accomplished_resolutions = True
@@ -2894,8 +2902,10 @@ label monika_resolutions:
 
             else:
                 m 2rkc "You probably should make one this year [player]..."
+
+    m "Do you have any resolutions for next year?"
     menu:
-        m "Do you have any resolutions for next year?"
+        m "Do you have any resolutions for next year?{fast}"
         "Yes.":
             $ persistent._mas_pm_has_new_years_res = True
 
@@ -3481,8 +3491,10 @@ label mas_player_bday_surprise:
     show monika 1hub at t11
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
+
+    m "Did I surprise you?"
     menu:
-        m "Did I surprise you?"
+        m "Did I surprise you?{fast}"
         "Yes.":
             m 1hub "Yay!"
             m 3hua "I always love pulling off a good surprise!"
@@ -3867,7 +3879,7 @@ init 2 python:
  To the one I love,
  The one I trust,
  The one I can't live without.
- I hope your day is as special as you make everyday for me.
+ I hope your day is as special as you make every day for me.
  Thank you so much for being you. 
 
  Happy Birthday, sweetheart
@@ -4025,7 +4037,7 @@ label mas_pf14_monika_lovey_dovey:
     if not renpy.seen_label('monika_valentines_start'):
         m 3ekbla "Valentine's Day is coming soon...and it just gets me in a good mood because I know I have you by my side."
     else:
-        m 3ekbfa "It's almost our second Valetine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
+        m 3ekbfa "It's almost our second Valentine's Day together, and it just makes me so overwhelmingly happy knowing you're still by my side."
     m 1ekbsa "I really meant what I said."
     m "I love and care for you so much..."
     m "Without you, I don't know where I'd be..."

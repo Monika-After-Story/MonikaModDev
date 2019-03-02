@@ -104,7 +104,7 @@ label mas_extra_menu_close:
         call mas_extra_menu_zoom_callback
 
     # re-enable overlays
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         $ mas_coreToIdleShield()
     else:
         $ mas_DropShield_core()

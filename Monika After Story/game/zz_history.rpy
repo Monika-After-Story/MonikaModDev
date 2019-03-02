@@ -691,6 +691,7 @@ init -810 python:
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
     #   looks - your physical apperance
+    #   owns - posessions
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -704,6 +705,7 @@ init -810 python:
             "_mas_pm_driving_can_drive": "pm.lifestyle.can_drive",
             "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
             "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
+            "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -735,10 +737,12 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
             "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
+            "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -788,6 +792,7 @@ init -810 python:
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
+            "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",
@@ -815,6 +820,8 @@ init -810 python:
             # exp (experience)
             "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
             "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
+            "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
+            "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
 
             # op (opinions)
             # op / monika
@@ -837,7 +844,11 @@ init -810 python:
 
             # looks / dims (dimensions)
             "_mas_pm_height": "pm.looks.dims.height",
-            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric",
+
+            # owns
+            "_mas_pm_owns_car": "pm.owns.car",
+            "_mas_pm_owns_car_type": "pm.owns.car_type",
 
         },
         use_year_before=True,
