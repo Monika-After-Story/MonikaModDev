@@ -2373,6 +2373,8 @@ init -990 python in mas_utils:
     import shutil
     import datetime
     import codecs
+    import platform
+    import time
     #import tempfile
     from os.path import expanduser
     from renpy.log import LogFile
@@ -2640,7 +2642,7 @@ init -990 python in mas_utils:
 
                 home = expanduser("~")
                 base = os.path.join(home,".MonikaAfterStory/" )
-                
+
                 if base is None:
                     return False
 
