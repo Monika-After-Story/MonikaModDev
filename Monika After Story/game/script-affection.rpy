@@ -467,6 +467,10 @@ init 15 python in mas_affection:
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
+        # enable text speed
+        if persistent._mas_text_speed_enabled:
+            store.mas_enableTextSpeed()
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -477,6 +481,9 @@ init 15 python in mas_affection:
         """
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
+
+        # disable text speed
+        store.mas_disableTextSpeed()
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -2023,6 +2030,7 @@ label monika_affection_nickname:
         jump monika_affection_nickname_yes
 
     menu:
+        m "What do you say?{fast}"
         "Yes.":
             label monika_affection_nickname_yes:
                 pass
@@ -2372,7 +2380,7 @@ init python:
             filepath = "/My one and only love.txt"
             message = """\
 My dearest lover, friend, companion and owner of my heart...
-Everyday you make my dreams come true, a screen means nothing when you spend your time with me.
+Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
 I want to be yours forever, so would you be mine?

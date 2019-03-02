@@ -1234,7 +1234,7 @@ screen preferences():
                         label _("[[ " + rc_display + " ]")
 
                     bar value FieldValue(persistent, "_mas_randchat_freq",
-                    range=3, style="slider")
+                    range=5, style="slider")
 
 
                 vbox:
@@ -1242,7 +1242,7 @@ screen preferences():
                     label _("Text Speed")
 
                     #bar value Preference("text speed")
-                    bar value FieldValue(_preferences, "text_cps", range=180, max_is_zero=False, style="slider", offset=20)
+                    bar value FieldValue(_preferences, "text_cps", range=170, max_is_zero=False, style="slider", offset=30)
 
                     label _("Auto-Forward Time")
 
