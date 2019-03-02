@@ -140,12 +140,11 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-#            "rules":14,
-            "last_seen":15,
-            "years":16,
-            "sensitive":17,
-            "aff_range":18,
-            "show_in_idle":19,
+            "last_seen":14,
+            "years":15,
+            "sensitive":16,
+            "aff_range":17,
+            "show_in_idle":18,
         }
 
         # name constants
@@ -289,7 +288,6 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                None, # rules, #NOTE: this is no longer stored in persistent
                 last_seen,
                 years,
                 sensitive,

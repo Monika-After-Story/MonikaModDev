@@ -147,15 +147,11 @@ init -895 python in mas_ev_data_ver:
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
         13: MASCurriedVerify(_verify_str, True), # diary_entry
-
-        # NOTE: Rules are no longer saved in persistent (0.8.15+)
-#        14: MASCurriedVerify(_verify_dict, False), # rules
-
-        15: MASCurriedVerify(_verify_dt, True), # last_seen
-        16: MASCurriedVerify(_verify_tuli, True), # years
-        17: MASCurriedVerify(_verify_bool, True), # sensitive
-        18: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
-        19: MASCurriedVerify(_verify_bool, True), # show_in_idle
+        14: MASCurriedVerify(_verify_dt, True), # last_seen
+        15: MASCurriedVerify(_verify_tuli, True), # years
+        16: MASCurriedVerify(_verify_bool, True), # sensitive
+        17: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
+        18: MASCurriedVerify(_verify_bool, True), # show_in_idle
     }
 
 
@@ -205,13 +201,17 @@ init -895 python in mas_ev_data_ver:
 
 
     # verify some databases
-    verify_event_data(store.persistent.event_database)
-    verify_event_data(store.persistent._mas_compliments_database)
-    verify_event_data(store.persistent.farewell_database)
-    verify_event_data(store.persistent.greeting_database)
-    verify_event_data(store.persistent._mas_mood_database)
-    verify_event_data(store.persistent._mas_story_database)
-    verify_event_data(store.persistent._mas_apology_database)
+    for _dm_db in store._mas_dm_dm.per_dbs:
+        verify_event_data(_dm_db)
+
+    _dm_db = None
+#    verify_event_data(store.persistent.event_database)
+#    verify_event_data(store.persistent._mas_compliments_database)
+#    verify_event_data(store.persistent.farewell_database)
+#    verify_event_data(store.persistent.greeting_database)
+#    verify_event_data(store.persistent._mas_mood_database)
+#    verify_event_data(store.persistent._mas_story_database)
+#    verify_event_data(store.persistent._mas_apology_database)
 
 
 init -500 python:
@@ -235,7 +235,6 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        False, # rules
         True, # last_seen
         False, # years
         False, # sensitive
