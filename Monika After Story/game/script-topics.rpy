@@ -9081,7 +9081,7 @@ label monika_grad_speech:
     m 2duu "{w=0.2}.{w=0.3}.{w=0.3}.{w=0.6}{nw}"
     m 2eua "{w=0.2}I know I can't speak for everyone here,{w=0.3} but there is one thing I can say for sure:{w=0.7} my experience in high school wouldn't be complete without the clubs I was a part of.{w=0.6}{nw}"
     m 4eua "{w=0.2}Debate club taught me a lot about dealing with people and how to properly handle heated situations.{w=0.6}{nw}"
-    m 4eub "Starting the literatute club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
+    m 4eub "Starting the literature club,{w=0.7} however,{w=0.7} was one of the best things I ever did.{w=0.6}{nw}"
     m 4hub "{w=0.2}I met the best friends I could have possibly imagined,{w=0.3} and I learned a lot about leadership.{w=0.6}{nw}"
     m 2eka "{w=0.2}Sure,{w=0.3} not all of you may have decided to start your own clubs,{w=0.3} but I'm sure plenty of you had the opportunities to learn these values nonetheless.{w=0.6}{nw}" 
     m 4eub "{w=0.2}Maybe you yourself got into a position in band where you had to lead your instrument section,{w=0.3} or maybe you were the captain of a sports team!{w=0.6}{nw}"
@@ -9122,7 +9122,7 @@ label monika_idle_game:
     m "What kind of game are you going to play?"
     menu:
         m "What kind of game are you going to play?{fast}"
-        "A competetive game.":
+        "A competitive game.":
             m 1eua "That sounds like it could be fun!"
             m 3lksdla "I can be pretty competitive myself."
             m 3eua "So I know just how stimulating it can be to face a worthy opponent."
