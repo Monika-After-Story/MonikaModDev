@@ -2407,7 +2407,7 @@ init -1 python:
 
         def __init__(self):
             super(MASInactivity, self).__init__()
-            self.mas_afk_duration = 10
+            self.mas_afk_duration = 600
             self.mas_afk_time = time.time() + self.mas_afk_duration
 
 
