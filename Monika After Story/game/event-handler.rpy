@@ -920,6 +920,8 @@ init -1 python in evhand:
         "monikaroom_will_change",
         "monika_hair_select",
         "monika_clothes_select"
+        "inactivity_detection"
+        "inactivity_detection_blank"
     ]
 
     # as well as special functions
