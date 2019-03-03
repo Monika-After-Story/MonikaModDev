@@ -4028,7 +4028,7 @@ label monika_lottery:
     m 3eua "A lot of people dream about winning the lottery, you know!"
     m 1eua "Even I’ve entertained the idea every now and then."
     m "There isn't a lottery here anymore, but the concept still exists."
-    m 1eka "The more I think about it , the more I believe that winning the lottery is a really bad thing."
+    m 1eka "The more I think about it, the more I believe that winning the lottery is a really bad thing."
     m 1euc "Sure, you’ve got all this money..."
     m 4esc "But because of it, people look at you differently."
     m "There’s so many stories of people winning a ton of money..."
@@ -9000,7 +9000,7 @@ label monika_grad_speech_not_paying_attention:
 
         m 2ekc "..."
         m 6ektdc "[player]! You weren't even paying attention!"
-        m 6lktdc "You have no idea how much that hurts, especially after how much of work I put into it..."
+        m 6lktdc "You have no idea how much that hurts, especially after how much work I put into it..."
         m 6ektdc "I just wanted to make you proud of me..."
         m 6dstsc "..."
 
@@ -10989,7 +10989,7 @@ label monika_fun_facts_open:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
-        m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true... "
+        m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true..."
         $ fun_facts_started = False
     else:
         m 1eua "Up for another fun fact, [player]?"
@@ -11269,14 +11269,14 @@ label monika_bad_facts_1:
     m 1eub "Did you know th--"
     m 1wud "..."
     m 2efw "T-this isn't a true fact at all!"
-    m 2dfc "'Humans only use 10 percent of their brain."
+    m 2dfc "'Humans only use 10 percent of their brain.'"
     m 2lfd "Ugh, such nonsense."
     m 4tfc "People don't really believe this, do they?"
     return
 
 label monika_bad_facts_2:
     m 2ekc "Hm? This doesn't sound right..."
-    m 2tkd "It says here that different areas of the tounge tastes different flavors."
+    m 2tkd "It says here that different areas of the tongue taste different flavors."
     m 2tfd "One area for bitter tastes, another for sweet..."
     m 2dfd "{i}*sigh*{/i}{w} For the love of--"
     m 2rfd "--only children would believe this."
