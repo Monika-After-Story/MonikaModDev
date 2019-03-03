@@ -2380,3 +2380,62 @@ screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
         null height 100
     vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
+init 5 python:
+    config.overlay_screens.append("inactivity_detection_screen")
+
+init -1 python:
+    import time
+    
+    # quick functions to enable disable the Inactivity Detection
+    def mas_enableInactivityDetection():
+        if not mas_isInactivityDetectionActive():
+            config.overlay_screens.append("inactivity_detection_screen")
+
+
+    def mas_disableInactivityDetection():
+        if mas_isInactivityDetectionActive():
+            config.overlay_screens.remove("inactivity_detection_screen")
+            renpy.hide_screen("inactivity_detection_screen")
+
+
+    def mas_isInactivityDetectionActive():
+        return "inactivity_detection_screen" in config.overlay_screens
+
+
+    class MASInactivity(renpy.Displayable):
+        import pygame
+
+        def __init__(self):
+            super(MASInactivity, self).__init__()
+            self.mas_afk_duration = 10
+            self.mas_afk_time = time.time() + self.mas_afk_duration
+
+
+        def event(self, ev, x, y, st):
+            # Constant checking for player activity - mouse movement, keystrokes and mouse button clicks
+            if ev.type == pygame.MOUSEMOTION:
+                self.mas_afk_time = time.time() + self.mas_afk_duration
+            if ev.type == pygame.KEYDOWN:
+                self.mas_afk_time = time.time() + self.mas_afk_duration
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                self.mas_afk_time = time.time() + self.mas_afk_duration
+            if self.mas_afk_time < time.time():
+                # Checking if event can be restarted
+                if not mas_isRstBlk(persistent.current_monikatopic):
+                    #If can be restarted jump to afk dialogue, ending the current dialogue.
+                    pushEvent(persistent.current_monikatopic)
+                    pushEvent('continue_event')
+                    persistent.current_monikatopic = 0
+                    pushEvent('inactivity_detection')
+                    mas_disableInactivityDetection()
+                    renpy.jump("inactivity_detection_blank")
+                else:
+                    #If can't be restarted simply call afk dialogue without ending the current dialogue. Curently it triggers also if there is no dialogue at all.
+                    pushEvent('inactivity_detection')
+                    mas_disableInactivityDetection()
+                    renpy.call("inactivity_detection_blank")
+            renpy.redraw(self, 0)
+
+
+        def render(self, width, height, st, at):
+            return renpy.Render(0, 0)

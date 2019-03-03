@@ -996,7 +996,7 @@ label mas_ch30_post_holiday_check:
 
 label ch30_post_greeting_check:
     # this label skips only greeting checks
-
+    $ mas_enableInactivityDetection()
     #If you were interrupted, push that event back on the stack
     $ restartEvent()
 
@@ -1541,3 +1541,16 @@ label ch30_reset:
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
     return
+
+label inactivity_detection_blank:
+    return
+
+label inactivity_detection:
+#TODO: I'm terrible at making dialogues, can someone please do it?
+    m "Are you still there?"
+    m "Oh, you are back!"
+    $ mas_enableInactivityDetection()
+    return
+
+screen inactivity_detection_screen():
+    add MASInactivity()
