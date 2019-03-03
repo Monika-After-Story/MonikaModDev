@@ -1634,6 +1634,10 @@ init 200 python in mas_dockstat:
             mas_utils.writelog("[ERROR] temp directory found, aborting.\n")
             return False
 
+        ## NOTE: don't generate file on mac until it is fixed
+        if renpy.macintosh:
+            return False
+
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()

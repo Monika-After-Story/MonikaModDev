@@ -2039,7 +2039,8 @@ init -2 python:
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
-                _acs_pst_names
+                _acs_pst_names,
+                startup=False
             ):
             """
             INTERNAL
@@ -2054,12 +2055,15 @@ init -2 python:
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
-                _acs_pst_names - list of pst acs names to load
+                _acs_pst_names - list of pst acs names to load,
+                startup - True if we are loading on start, False if not
+                    (Default: False)
             """
             # clothes and hair
             self.change_outfit(
                 store.mas_sprites.CLOTH_MAP[_clothes_name],
-                store.mas_sprites.HAIR_MAP[_hair_name]
+                store.mas_sprites.HAIR_MAP[_hair_name],
+                startup=startup
             )
 
             # acs
@@ -2141,7 +2145,7 @@ init -2 python:
             ]
 
 
-        def change_clothes(self, new_cloth, by_user=None):
+        def change_clothes(self, new_cloth, by_user=None, startup=False):
             """
             Changes clothes to the given cloth. also sets the persistent
             force clothes var to by_user, if its not None
@@ -2151,8 +2155,11 @@ init -2 python:
                 by_user - True if this action was mandated by the user, False
                     if not. If None, we do NOT set the forced clothes var
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    When True, we dont respect locking
+                    (Default: False)
             """
-            if self.lock_clothes:
+            if self.lock_clothes and not startup:
                 return
 
             prev_cloth = self.clothes
@@ -2164,7 +2171,7 @@ init -2 python:
                 persistent._mas_force_clothes = bool(by_user)
 
 
-        def change_hair(self, new_hair, by_user=None):
+        def change_hair(self, new_hair, by_user=None, startup=False):
             """
             Changes hair to the given hair. also sets the persistent force
             hair var to by_user, if its not None
@@ -2174,8 +2181,11 @@ init -2 python:
                 by_user - True if this action was mandated by the user, False
                     if not. If None, we do NOT set the forced hair var
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    When True, we dont respect locking
+                    (Default: False)
             """
-            if self.lock_hair:
+            if self.lock_hair and not startup:
                 return
 
             prev_hair = self.hair
@@ -2187,7 +2197,13 @@ init -2 python:
                 persistent._mas_force_hair = bool(by_user)
 
 
-        def change_outfit(self, new_cloth, new_hair, by_user=None):
+        def change_outfit(
+                self,
+                new_cloth,
+                new_hair,
+                by_user=None,
+                startup=False
+            ):
             """
             Changes both clothes and hair. also sets the persisten forced vars
             to by_user, if its not None
@@ -2198,9 +2214,11 @@ init -2 python:
                 by_user - True if this action ws mandated by user, False if not
                     If None, we do NOT set the forced vars
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    (Default: False)
             """
-            self.change_clothes(new_cloth, by_user=by_user)
-            self.change_hair(new_hair, by_user=by_user)
+            self.change_clothes(new_cloth, by_user=by_user, startup=startup)
+            self.change_hair(new_hair, by_user=by_user, startup=startup)
 
 
         def get_acs_of_type(self, acs_type, get_all=False):
@@ -2310,9 +2328,14 @@ init -2 python:
             return False
 
 
-        def load(self):
+        def load(self, startup=False):
             """
             Loads hair/clothes/accessories from persistent.
+
+            IN:
+                startup - True if loading on start, False if not
+                    When True, we dont respesct locking
+                    (Default: False)
             """
             self._load(
                 store.persistent._mas_monika_clothes,
@@ -2322,10 +2345,12 @@ init -2 python:
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
-                store.persistent._mas_acs_pst_list
+                store.persistent._mas_acs_pst_list,
+                startup=startup
             )
 
 
+        # TODO: consider adding startup to this
         def load_state(self, _data, as_prims=False):
             """
             Loads clothes/hair/acs from a tuple data format that was saved
@@ -7421,6 +7446,21 @@ image monika 2rksdlb = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 2rkbfsdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def",
+    blush="full"
+)
+
 image monika 2lksdlw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -8238,6 +8278,20 @@ image monika 2rkbfsdlu = DynamicDisplayable(
     right="2r",
     arms="crossed",
     blush="full",
+    sweat="def"
+)
+
+image monika 2hfsdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedhappy",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed",
     sweat="def"
 )
 
@@ -10195,6 +10249,19 @@ image monika 3sua = DynamicDisplayable(
     nose="def",
     mouth="smile",
     head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3dtc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="i",
     left="2l",
     right="1r",
     arms="restleftpointright"
