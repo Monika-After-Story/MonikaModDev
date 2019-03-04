@@ -1232,7 +1232,7 @@ label monika_outfit:
         show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     else:
-        m 1lsbssdrb "I don't want something so embarassing on there!"
+        m 1lsbssdrb "I don't want something so embarrassing on there!"
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "So let's keep it between just us..."
     return

@@ -944,7 +944,7 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarassing to say, ehehe~"
+    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
     return
 
 init 5 python:
@@ -1869,7 +1869,7 @@ label greeting_sunshine:
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
-    m 1lkbsa "Oh my gosh, this is so embarassing!"
+    m 1lkbsa "Oh my gosh, this is so embarrassing!"
     m "I w-was just singing to myself to pass time!"
     m 1ekbfa "Ehehe..."
     m 3hubfa "But now that you're here, we can spend some time together~"
