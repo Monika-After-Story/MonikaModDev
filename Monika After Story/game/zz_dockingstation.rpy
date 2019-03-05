@@ -1988,6 +1988,7 @@ init 200 python in mas_dockstat:
         """
         try:
             #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
             splitted = data_line.split("|||per|")
             if(len(splitted)>0):
                 return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
