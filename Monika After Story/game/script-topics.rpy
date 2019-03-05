@@ -9688,7 +9688,7 @@ label monika_vehicle:
                         m 1eua "It would also be nice to drive at a normal pace..."
                         m 1ekbsa "That way we can savor every moment of the ride together~"
 
-                    "Sedan.":
+                    "Sedan or Hatchback.":
                         $ persistent._mas_pm_owns_car_type = "sedan"
 
                         m 1eua "That's really nice."
