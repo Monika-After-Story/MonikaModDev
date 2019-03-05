@@ -288,7 +288,7 @@ label mas_piano_hb_fail:
     elif mas_isplayer_bday():
         m 1eka "That's okay, [player]!"
         m 3hub "It was a neat idea to play that on your birthday while I sung along!"
-        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!" 
+        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
     else:
         m 1lksdla "..."
         m 1lksdlb "You did your best, [player]..."
@@ -377,7 +377,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("log/pnm")
+    log = renpy.store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 
