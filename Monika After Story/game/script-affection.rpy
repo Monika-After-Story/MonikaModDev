@@ -49,7 +49,7 @@ init python:
 
 init -900 python in mas_affection:
     # this is very early because they are importnat constants
-    
+
     # numerical constants of affection levels
     BROKEN = 1
     DISTRESSED = 2
@@ -159,7 +159,7 @@ init -900 python in mas_affection:
         if aff_check is None:
             # aff_check not a valid affection?
             return False
-            
+
         # clean the affection compares
         aff_low = _aff_level_map.get(aff_low, None)
         aff_high = _aff_level_map.get(aff_high, None)
@@ -287,7 +287,7 @@ init -1 python in mas_affection:
         store.persistent._mas_affection_log_counter += 1
 
     # affection log setup
-    log = renpy.renpy.log.open("log/aff_log", append=True)
+    log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
     log_open = log.open()
     log.raw_write = True
 
@@ -1087,7 +1087,7 @@ init -10 python:
                 or "affection" not in persistent._mas_affection
             ):
             if persistent._mas_aff_backup is None:
-                new_value = 0 
+                new_value = 0
             else:
                 new_value = persistent._mas_aff_backup
 
@@ -1189,7 +1189,7 @@ init 20 python:
             return persistent._mas_affection.get("today_exp", 0)
 
         return 0
-    
+
 
     # numerical affection check
     def mas_isBelowZero():
@@ -1633,7 +1633,7 @@ init 20 python:
     # not totally necessary.
     #NEW BITS:
     #prompt: the prompt shown in the menu for apologizing
-    #expirydatetime: 
+    #expirydatetime:
     #generic: do we want this to be persistent? or not
     def mas_loseAffection(
             amount=None,
@@ -1683,7 +1683,7 @@ init 20 python:
         # audit the change (or attempt)
         affection.audit(amount, amount, False)
 
-        # NOTE: we should NEVER freeze set affection. 
+        # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
         persistent._mas_affection["affection"] = amount
         # Updates the experience levels if necessary.
