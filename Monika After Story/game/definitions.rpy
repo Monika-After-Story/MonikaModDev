@@ -5584,12 +5584,12 @@ init 1 python in mas_randchat:
 
     # these numbers are the lower end of how many seconds to wait between
     # random topics
-    # TODO: incorporate poll results next release
-    OFTEN         = 5
-    NORMAL        = 15
-    LESS_OFTEN    = 40 # 60 previous
-    RARELY        = 3600
-    VERY_RARELY   = 14400
+    OFTEN         = 5 # end 15
+    NORMAL        = 15 # end 45
+    LESS_OFTEN    = 40 # end 120 (2 min)
+    OCCASIONALLY  = 2*60 # end 360 (6 min)
+    RARELY        = 390 # end 1170 (19.5 min)
+    VERY_RARELY   = 20*60 # end 3600 (60 mins)
     NEVER         = 0
 
     # this is multiplied to the low end to get the upper end of seconds
@@ -5602,9 +5602,10 @@ init 1 python in mas_randchat:
         0: OFTEN,
         1: NORMAL,
         2: LESS_OFTEN,
-        3: RARELY,
-        4: VERY_RARELY,
-        5: NEVER
+        3: OCCASIONALLY,
+        4: RARELY,
+        5: VERY_RARELY,
+        6: NEVER
     }
 
     ## slider map for displaying
@@ -5612,9 +5613,10 @@ init 1 python in mas_randchat:
         0: "Often",
         1: "Normal",
         2: "Less Often",
-        3: "Rarely",
-        4: "Very Rarely",
-        5: "Never"
+        3: "Occasionally",
+        4: "Rarely",
+        5: "Very Rarely",
+        6: "Never"
     }
 
     # current frequency times
