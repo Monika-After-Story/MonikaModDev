@@ -12030,3 +12030,44 @@ label monika_perspective:
     m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
     m "It's the best way I could try and explain it!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_relationcomfort",
+            category=["romance","advice"],
+            prompt="Comfortable in a relationship",
+            random=True
+        )
+    )
+
+label monika_relationcomfort:
+    m 1wud "You know [player], I've been thinking about our relationship lately..."
+    m 2lssdrb "It didn't really start in a way most of them do so it's not exactly what I would call normal."
+    m 2esa "But the more I thought about it, the more I realized that in a way it is actually pretty standard."
+    m 3eub "Almost every relationship, no matter how it begins is always 'exciting' at first!"
+    m 3eua "People view relationships in an almost fairy tale way, they see it as an adventure."
+    m 3rssdlb "I'm guilty of this too, and I think it's fine..."
+    m 2euc "But it's also a pretty dangerous way to look at a bond between two people, isn't it?"
+    m 2eud "Because really, while a partnership is an adventure, that doesn't mean it'll always be exciting."
+    m 2esc "There's only so many times you can do the same thing and experience the same breathtaking moments and have it still have that same impact."
+    m 4euc "That doesn't make it any less valuable, or meaningful. It also can still be heart-racing!"
+    m 4esc "But it does mean that that same sensation isn't anything new, it's no longer so thrilling."
+    m 2dkd "And some people mistake that thrill for love, not the truly meaningful bond between two people."
+    m 2dkc "So when things slow down, when they become less electrifying, they mistakingly think they're falling out of love..."
+    m 2rkc "You could say that they never really did love someone in the first place, but maybe that's harsh... Love isn't always such a clear thing."
+    if store.mas_anni.anniCount() < 1:
+        m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that... Know that I love you for more than just the excitement!"
+    elif store.mas_anni.anniCount() < 2:
+        m 2eka "I feel like we're past that phase, but you still make me feel exhilarant. Maybe you're just that special, but know that no matter how slow it goes, I'll never get bored with you."
+    else:
+        m 2eka "We've been together for so long already that I know you're not with me just for the thrill of it, and it really makes you that much more special to me, more than anyone!"
+    m 4eua "Maybe it's just me, but I think it's important to learn how to be comfortable when it does slow down."
+    m 4eub "I mean, at the end of the day it's the little things that matter isn't it? And that's true even in a relationship."
+    m 2ekb "You'll miss the small comforts that only a partner can bring and that's much more valuable than some excitement."
+    m 2eka "And just because a relationship has slowed down, doesn't mean it's worse for it..."
+    m 2hua "It just means that the people involved are truly comfortable with one another."
+    m 2hub "And I think that's just sweet."
+    m 1kua "Try not to fall into the same trap [player], Ahaha!"
+    return
