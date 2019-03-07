@@ -1869,9 +1869,9 @@ label monika_holdme_start:
 
 label monika_holdme_reactions:
     if mas_isMoniLove():
-        if start_time > (start_time + datetime.timedelta(minutes=30)):
+        if datetime.datetime.now() > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
-        elif start_time > (start_time + datetime.timedelta(minutes=10)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=10)):
             m 6dubsa "..."
             m 6tubfa "Mm...{w=1} hm..?"
             m 1hksdlb "Oh, did I almost fall asleep?"
@@ -1889,7 +1889,7 @@ label monika_holdme_reactions:
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
             m 1hubfb "Ehehe~"
-        elif start_time > (start_time + datetime.timedelta(minutes=2)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=2)):
             m 6eud "Oh?"
             m 1hksdlb "Ah..."
             m 1rksdlb "At that point, I thought you were just going to let me lean on you forever, ahaha..."
@@ -1899,13 +1899,13 @@ label monika_holdme_reactions:
             m 5tubfb "Maybe we could even hug a bit more for good measure?"
             m 5tubfu "Ehehe~"
             show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        elif start_time > (start_time + datetime.timedelta(seconds=30)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(seconds=30)):
             m 1eub "Ah~"
             m 1hua "I feel much better now!"
             m 1eua "I hope you do too."
             m 2rksdla "Well, even if you don't..."
             m 3hubfb "You could always hold me again, Ahaha!"
-            m 1hkbfsldb "Actually...{w=0.5} you can hold me again either way."
+            m 1hkbfsdlb "Actually...{w=0.5} you can hold me again either way."
             m 1tubfb "Ehehe~"
             m 1hubfa "Just let me know if you want to~"
         else:
@@ -1936,9 +1936,9 @@ label monika_holdme_reactions:
                             m 2hksdlb "Alright, fine."
                             m 3tsbsa "But you owe me next time, okay, [player]?"
     elif mas_isMoniEnamored():
-        if start_time > (start_time + datetime.timedelta(minutes=30)):
+        if datetime.datetime.now() > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
-        elif start_time > (start_time + datetime.timedelta(minutes=10)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=10)):
             m 6dubsa "Mmm~"
             m 6tsbsa "..."
             m 1hksdlb "Oh!"
@@ -1947,7 +1947,7 @@ label monika_holdme_reactions:
             m 3rksdla "Nothing wrong with that but..."
             m 1hubfa "That felt really comfortable!"
             m 1hubfb "We should do this more often, ahaha!"
-        elif start_time > (start_time + datetime.timedelta(minutes=2)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=2)):
             m 2dkbfa "That was really nice~"
             m 1rkbsa "Not too short..."
             m 1hubfb "and I don't know if there's such thing as too long in this case, ahaha!"
@@ -1957,7 +1957,7 @@ label monika_holdme_reactions:
             show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tsbfu "You {i}do{/i} plan on doing that again, right, [player]? Ehehe~"
             show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-        elif start_time > (start_time + datetime.timedelta(seconds=30)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(seconds=30)):
             m 1hubfa "Mmm~"
             m 1hub "Much better."
             m 1eub "Thanks for that, [player]!"
@@ -1983,23 +1983,23 @@ label monika_holdme_reactions:
                     m 1eka "Alright, then."
                     m 1hub "I'll just have to wait until next time, ahaha!"
     elif mas_isMoniAff():
-        if start_time > (start_time + datetime.timedelta(minutes=30)):
+        if datetime.datetime.now() > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
-        elif start_time > (start_time + datetime.timedelta(minutes=10)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=10)):
             m 6dubsa "Mm..."
             m 6eud "Oh?"
             m 1hubfa "Finally done, [player]?"
             m 3tubfb "I {i}guess{/i} that was long enough, ehehe~"
             m 1rkbsa "I wouldn't mind another hug..."
             m 1hubfb "But I'm sure you're saving one for later, aren't you?~"
-        elif start_time > (start_time + datetime.timedelta(minutes=2)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=2)):
             m 2hubfa "Mmm~"
             m 1ekbfb "That was really nice, [player]."
             m 1hubfb "Long hugs are supposed to wash away any stress."
             m 1tubfb "Even if you weren't stressed, I hope you're feeling better after that."
             m 1hubfa "I know I sure am~"
             m 1hubfb "Ahaha!"
-        elif start_time > (start_time + datetime.timedelta(seconds=30)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(seconds=30)):
             m 1hubfa "Mmm~"
             m 1hubfb "I can almost feel your warmth, even from here."
             m 1eua "I'm sure you know hugs are good for you, since they relieve stress and all."
@@ -2016,9 +2016,9 @@ label monika_holdme_reactions:
             m 1hubfa "I'm sure that won't be the last time you hold me though, so I'll look forward to next time!"
     #happy
     else:
-        if start_time > (start_time + datetime.timedelta(minutes=30)):
+        if datetime.datetime.now() > (start_time + datetime.timedelta(minutes=30)):
             call monika_holdme_long
-        elif start_time > (start_time + datetime.timedelta(minutes=10)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=10)):
             m 6dubsa "Hm?"
             m 1wud "Oh! We're done?"
             m 3hksdlb "That hug sure lasted a while, [player]..."
@@ -2027,12 +2027,12 @@ label monika_holdme_reactions:
             m 2tubfb "Too much longer and I might have fallen asleep in your arms..."
             m 1tubfa "Maybe you'd like that, ehehe~"
             m 1hubfa "I feel all warm and nice now from that~"
-        elif start_time > (start_time + datetime.timedelta(minutes=2)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(minutes=2)):
             m 1hksdlb "That lasted a little while."
             m 1rkbsa "Don't get me wrong- I still enjoyed it."
             m 1tubfb "I hope you're satisfied~"
             m 1hubfa "I'm happy with just sitting with you now."
-        elif start_time > (start_time + datetime.timedelta(seconds=30)):
+        elif datetime.datetime.now() > (start_time + datetime.timedelta(seconds=30)):
             m 1hubfa "Ehehe~"
             m 3eub "Did you enjoy that?"
             m 1hua "I sure hope so~"
