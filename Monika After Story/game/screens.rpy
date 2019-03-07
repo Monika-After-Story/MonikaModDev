@@ -1234,7 +1234,7 @@ screen preferences():
                         label _("[[ " + rc_display + " ]")
 
                     bar value FieldValue(persistent, "_mas_randchat_freq",
-                    range=5, style="slider")
+                    range=6, style="slider")
 
 
                 vbox:
