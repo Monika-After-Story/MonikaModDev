@@ -1234,7 +1234,7 @@ screen preferences():
                         label _("[[ " + rc_display + " ]")
 
                     bar value FieldValue(persistent, "_mas_randchat_freq",
-                    range=3, style="slider")
+                    range=5, style="slider")
 
 
                 vbox:
@@ -1242,7 +1242,7 @@ screen preferences():
                     label _("Text Speed")
 
                     #bar value Preference("text speed")
-                    bar value FieldValue(_preferences, "text_cps", range=180, max_is_zero=False, style="slider", offset=20)
+                    bar value FieldValue(_preferences, "text_cps", range=170, max_is_zero=False, style="slider", offset=30)
 
                     label _("Auto-Forward Time")
 
@@ -2360,3 +2360,23 @@ init python:
                 return True
 
             raise renpy.IgnoreEvent()
+
+# Partial generic showpoem screen
+# IN:
+#   _poem - Poem object to show
+#   paper - type of paper to use as background
+#   _styletext - text style to use as a string
+screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[_poem.title]\n\n[_poem.text]" style _styletext
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"
+

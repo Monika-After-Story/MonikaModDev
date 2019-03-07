@@ -1,8 +1,15 @@
 # enabling unstable mode
 default persistent._mas_unstable_mode = False
 default persistent._mas_can_update = True
-define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
-define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# legacy. These will be redirected to the s3 links after 090
+#define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
+#define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
+
+# new s3 links
+define mas_updater.regular = "http://d2vycydjjutzqv.cloudfront.net/updates.json"
+define mas_updater.unstable = "http://dzfsgufpiee38.cloudfront.net/updates.json"
+
 define mas_updater.force = False
 define mas_updater.timeout = 10 # timeout default
 
@@ -377,6 +384,49 @@ init -1 python:
                 self._state = self.STATE_CHECKING
 
 
+        @staticmethod
+        def _handleRedirect(new_url):
+            """
+            Attempts to connect to the redircted url
+
+            IN:
+                new_url - the redirect we want to connect to
+
+            Returns read_json if we got a connection, Nnone otherwise
+            """
+            import httplib
+
+            _http, double_slash, url = new_url.partition("//")
+            url, single_slash, req_uri = url.partition("/")
+            read_json = None
+            h_conn = httplib.HTTPConnection(
+                url
+            )
+
+            try:
+                # make connection
+                h_conn.connect()
+
+                # get file we need
+                h_conn.request("GET", single_slash + req_uri)
+                server_response = h_conn.getresponse()
+
+                if server_response.status != 200:
+                    # we dont follow anymore redirects
+                    return None
+
+                read_json = server_response.read()
+
+            except httplib.HTTPException:
+                # we assume a timeout / connection error
+                return None
+
+            finally:
+                h_conn.close()
+
+            return read_json
+
+
         # some function here
         @staticmethod
         def _sendRequest(update_link, thread_result):
@@ -409,13 +459,32 @@ init -1 python:
                 server_response = h_conn.getresponse()
 
                 # check status
-                if server_response.status != 200:
+                if server_response.status == 301:
+                    # redirect, pull the location header and continue
+                    new_url = server_response.getheader("location", None)
+
+                    if new_url is None:
+                        # we have to have the redirect location to continue
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return
+
+                    # otherwise, switch connection to the new url
+                    h_conn.close()
+                    read_json = MASUpdaterDisplayable._handleRedirect(new_url)
+
+                    if read_json is None:
+                        # redirect failed too
+                        thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
+                        return                   
+
+                elif server_response.status != 200:
                     # didnt get an OK response
                     thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
                     return
 
-                # good status, lets get the value
-                read_json = server_response.read()
+                else:
+                    # good status, lets get the value
+                    read_json = server_response.read()
 
             except httplib.HTTPException:
                 # we assume a timeout / connection error

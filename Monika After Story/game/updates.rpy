@@ -83,7 +83,9 @@ init python:
 
 
     def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
-        """
+        """DEPREACTED
+        NOTE: This can cause data corruption. DO NOT USE.
+
         Transfers a topic's data from the old topic ID to the new one int he
         given database as well as the lock database.
 
@@ -253,15 +255,21 @@ init 10 python:
         """
         late_updates = [
             "v0_8_3",
-            "v0_8_4"
+            "v0_8_4",
+            "v0_8_10"
         ]
 
         renpy.call_in_new_context("vv_updates_topics")
         ver_list = store.updates.version_updates.keys()
 
+        if "-" in config.version:
+            working_version = config.version[:config.version.index("-")]
+        else:
+            working_version = config.version
+
         ver_list.extend(["mas_lupd_" + x for x in late_updates])
         ver_list.append("v" + "_".join(
-            config.version[:config.version.index("-")].split(".")
+            working_version.split(".")
         ))
 
         for _version in ver_list:
@@ -293,6 +301,265 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.9.1
+label v0_9_1(version="v0_9_1"):
+    python:
+        # unlock the ghost greeting if not seen and you like spoops.
+        if (
+                persistent._mas_pm_likes_spoops 
+                and not renpy.seen_label("greeting_ghost")
+            ):
+            mas_unlockEVL("greeting_ghost", "GRE")
+
+        #Need to fix the monika_plushie event
+        plush_ev = mas_getEV("monika_plushie")
+        if plush_ev is not None:
+            plush_ev.unlocked = False
+            plush_ev.category = None
+            plush_ev.prompt = "monika_plushie"
+
+        if renpy.seen_label("monika_driving"):
+            mas_unlockEVL("monika_vehicle","EVE")
+
+    return
+
+# 0.9.0
+label v0_9_0(version="v0_9_0"):
+    python:
+        # unlock nickname topic if called bad name
+        if persistent._mas_called_moni_a_bad_name:
+            nickname_ev = mas_getEV("monika_affection_nickname")
+            if nickname_ev is not None:
+                nickname_ev.unlocked = True
+
+        # because of a fucking dumb mistake, need to update script a ton 
+        # of events taht got fooked. UGH
+
+        # d25
+        d25e_ev = mas_getEV("mas_d25_monika_christmas_eve")
+        if d25e_ev is not None:
+            d25e_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25e_ev.action = EV_ACT_QUEUE
+
+        d25_hi_ev = mas_getEV("mas_d25_monika_holiday_intro")
+        if d25_hi_ev is not None:
+            d25_hi_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and not persistent._mas_d25_started_upset "
+            )
+            d25_hi_ev.action = EV_ACT_PUSH
+
+        d25_ev = mas_getEV("mas_d25_monika_christmas")
+        if d25_ev is not None:
+            d25_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+                "and not persistent._mas_d25_spent_d25"
+            )
+            d25_ev.action = EV_ACT_PUSH
+
+        d25p_nts = mas_getEV("mas_d25_postd25_notimespent")
+        if d25p_nts is not None:
+            d25p_nts.conditional = (
+                "not persistent._mas_d25_spent_d25"
+            )
+            d25p_nts.action = EV_ACT_PUSH
+
+        d25_hiu_ev = mas_getEV("mas_d25_monika_holiday_intro_upset")
+        if d25_hiu_ev is not None:
+            d25_hiu_ev.conditional = (
+                "not persistent._mas_d25_intro_seen "
+                "and persistent._mas_d25_started_upset "
+            )
+            d25_hiu_ev.action = EV_ACT_PUSH
+
+        d25_stm_ev = mas_getEV("mas_d25_spent_time_monika")
+        if d25_stm_ev is not None:
+            d25_stm_ev.conditional = (
+                "persistent._mas_d25_in_d25_mode "
+            )
+            d25_stm_ev.action = EV_ACT_QUEUE
+            d25_stm_ev.start_date = datetime.datetime.combine(
+                mas_d25, 
+                datetime.time(hour=20)
+            )
+            d25_stm_ev.end_date = datetime.datetime.combine(
+                mas_d25p,
+                datetime.time(hour=1)
+            )
+            d25_stm_ev.years = []
+            Event._verifyAndSetDatesEV(d25_stm_ev)
+
+        # nye
+        nye_yr_ev = mas_getEV("monika_nye_year_review")
+        if nye_yr_ev is not None:
+            nye_yr_ev.action = EV_ACT_PUSH
+
+        nyd_ev = mas_getEV("mas_nye_monika_nyd")
+        if nyd_ev is not None:
+            nyd_ev.action = EV_ACT_QUEUE
+
+        res_ev = mas_getEV("monika_resolutions")
+        if res_ev is not None:
+            res_ev.action = EV_ACT_QUEUE 
+
+        # push mas birthdate event for users a non None birthday
+        if (
+                persistent._mas_player_bday is not None
+                and not persistent._mas_player_confirmed_bday
+            ):
+            mas_bd_ev = mas_getEV("mas_birthdate")
+            if mas_bd_ev is not None:
+                mas_bd_ev.conditional = "True"
+                mas_bd_ev.action = EV_ACT_QUEUE
+
+        # remove random props from all greetings
+        for gre_label, gre_ev in store.evhand.greeting_database.iteritems():
+            # hopefully we never use random in greetings ever
+            gre_ev.random = False
+
+        # rain should just be unlocked if it has been seen
+        if renpy.seen_label("monika_rain"):
+            mas_unlockEVL("monika_rain", "EVE")
+
+        # islands greeting unlocked if not seen yet 
+        if not renpy.seen_label("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        # derandom pets topic if player has given the plushie
+        if persistent._mas_acs_enable_quetzalplushie:
+            mas_hideEVL("monika_pets", "EVE", derandom=True)
+
+        # reset mistletoe if random'd
+        d25_mis_ev = mas_getEV("mas_d25_monika_mistletoe")
+        if d25_mis_ev is not None:
+            # this will reset later
+            mas_addDelayedAction(10)
+
+    return
+
+# 0.8.14
+label v0_8_14(version="v0_8_14"):
+    python:
+        # unlock monika_rain if it is no longer random
+        rain_ev = mas_getEV("monika_rain")
+        if rain_ev is not None and not rain_ev.random:
+            rain_ev.unlocked = True
+
+        # unlock thunder if you spent time on o31
+        if store.mas_o31_event.spentO31():
+            mas_weather_thunder.unlocked = True
+            store.mas_weather.saveMWData()
+
+    return
+
+# 0.8.13
+label v0_8_13(version="v0_8_13"):
+    python:
+
+        ## start date and end date fixes
+        d25_sp_tm = mas_getEV("mas_d25_spent_time_monika")
+        if d25_sp_tm is not None:
+            if (
+                    d25_sp_tm.start_date.hour != 20
+                    or d25_sp_tm.end_date.hour != 1
+                ):
+                d25_sp_tm.start_date = datetime.datetime.combine(
+                    mas_d25,
+                    datetime.time(hour=20)
+                )
+
+                d25_sp_tim.end_date = datetime.datetime.combine(
+                    mas_d25p,
+                    datetime.time(hour=1)
+                )
+
+                Event._verifyAndSetDatesEV(d25_sp_tm)
+
+        d25_ce = mas_getEV("mas_d25_monika_christmas_eve")
+        if d25_ce is not None:
+            if d25_ce.start_date.hour != 20:
+                d25_ce.start_date = datetime.datetime.combine(
+                    mas_d25e,
+                    datetime.time(hour=20)
+                )
+
+                d25_ce.end_date = mas_d25
+
+                Event._verifyAndSetDatesEV(d25_ce)
+
+        nye_re = mas_getEV("monika_nye_year_review")
+        if nye_re is not None:
+            if (
+                    nye_re.start_date.hour != 19
+                    or nye_re.end_date.hour != 23
+                ):
+                nye_re.start_date = datetime.datetime.combine(
+                    mas_nye,
+                    datetime.time(hour=19)
+                )
+
+                nye_re.end_date = datetime.datetime.combine(
+                    mas_nye,
+                    datetime.time(hour=23)
+                )
+
+                Event._verifyAndSetDatesEV(nye_re)
+
+
+        bday_sp = mas_getEV("mas_bday_spent_time_with")
+        if bday_sp is not None:
+            if (
+                    bday_sp.start_date.hour != 22
+                    or bday_sp.end_date.hour != 23
+                ):
+                bday_sp.start_date = datetime.datetime.combine(
+                    mas_monika_birthday,
+                    datetime.time(hour=22)
+                )
+
+                bday_sp.end_date = datetime.datetime.combine(
+                    mas_monika_birthday,
+                    datetime.time(hour=23, minute=59)
+                )
+
+                Event._verifyAndSetDatesEV(bday_sp)
+
+    return
+
+# 0.8.11
+label v0_8_11(version="v0_8_11"):
+    python:
+        import store.mas_compliments as mas_comp
+        import store.evhand as evhand
+        
+        # change compliements event props
+        thanks_ev = mas_comp.compliment_database.get(
+            "mas_compliment_thanks",
+            None
+        )
+        if thanks_ev:
+            # remove conditional and action
+            thanks_ev.conditional = None
+            thanks_ev.action = None
+
+            # unlock only if you have not seen this
+            if not renpy.seen_label(thanks_ev.eventlabel):
+                thanks_ev.unlocked = True
+
+        # change monika nick name
+        if not persistent._mas_called_moni_a_bad_name:
+            mas_unlockEventLabel("monika_affection_nickname")
+
+        if (
+                not persistent._mas_pm_taken_monika_out 
+                and len(persistent._mas_dockstat_checkin_log) > 0
+            ):
+            persistent._mas_pm_taken_monika_out = True
+
+    return
 
 # 0.8.10
 label v0_8_10(version="v0_8_10"):
@@ -538,12 +805,18 @@ label v0_8_1(version="v0_8_1"):
             writ_4.action = EV_ACT_POOL
 
         # writing tip 3
-        mas_transferTopic(
-            "monika_write",
-            "monika_writingtip3",
-            persistent.event_database
-        )
+        # transfer specific ev data
+        writ_3_old = persistent.event_database.get("monika_write", None)
+
+        if writ_3_old is not None:
+            persistent.event_database.pop("monika_write")
+
         writ_3 = evhand.event_database.get("monika_writingtip3", None)
+
+        if writ_3_old is not None and writ_3 is not None:
+            writ_3.unlocked = writ_3_old[Event.T_EVENT_NAMES["unlocked"]]
+            writ_3.unlock_date = writ_3_old[Event.T_EVENT_NAMES["unlock_date"]]
+
         if writ_3 and not renpy.seen_label(writ_3.eventlabel):
             writ_3.pool = False
             writ_3.conditional = "seen_event('monika_writingtip2')"
@@ -558,14 +831,26 @@ label v0_8_1(version="v0_8_1"):
             # are migrating
 
             mas_transferTopicSeen(old_t, new_t)
-            mas_transferTopic(old_t, new_t, persistent.event_database)
-            writ_2 = evhand.event_database.get(new_t, None)
-            if writ_2 and not renpy.seen_label(new_t):
-                writ_2.conditional = "seen_event('monika_writingtip1')"
+            old_t_ev = mas_getEV(old_t)
+            new_t_ev = mas_getEV(new_t)
+
+            if old_t_ev is not None and new_t_ev is not None:
+                new_t_ev.unlocked = old_t_ev.unlocked
+                new_t_ev.unlock_date = old_t_ev.unlock_date
+
+            if new_t_ev and not renpy.seen_label(new_t):
+                new_t_ev.conditional = "seen_event('monika_writingtip1')"
+                new_t_ev.pool = False
+                new_t_ev.action = EV_ACT_POOL
 
             # writing tip 1
+            zero_t_d = persistent.event_database.pop(zero_t)
             mas_transferTopicSeen(zero_t, old_t)
-            mas_transferTopic(zero_t, old_t, persistent.event_database)
+            if old_t_ev is not None:
+                old_t_ev.unlocked = zero_t_d[Event.T_EVENT_NAMES["unlocked"]]
+                old_t_ev.unlock_date = zero_t_d[
+                    Event.T_EVENT_NAMES["unlock_date"]
+                ]
 
         ## dropping repeats
         persistent._mas_enable_random_repeats = None
@@ -894,15 +1179,15 @@ label mas_lupd_v0_8_10:
             mas_selspr.unlock_hair(mas_hair_down)
             unlockEventLabel("monika_hair_select")
 
-        # unlock the o31 seen costumes
+        # unlock selectables for unlocked clothes
         if persistent._mas_o31_seen_costumes is not None:
-            seen_costume = persistent._mas_o31_seen_costumes.get("marisa")
-            if seen_costume:
+            if persistent._mas_o31_seen_costumes.get("marisa", False):
                 mas_selspr.unlock_clothes(mas_clothes_marisa)
-
-            seen_costume = persistent._mas_o31_seen_costumes.get("rin")
-            if seen_costume:
+            if persistent._mas_o31_seen_costumes.get("rin", False):
                 mas_selspr.unlock_clothes(mas_clothes_rin)
+
+        # save the selectables we just unlocked
+        mas_selspr.save_selectables()
 
     return
 
