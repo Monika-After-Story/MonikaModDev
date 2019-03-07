@@ -609,10 +609,6 @@ init -5 python in mas_sprites:
             lean - type of lean
                 (Default: None)
         """
-        if acs.no_lean:
-            # the lean version is the same as regular
-            lean = None
-
         # pose map check
         # Since None means we dont show, we are going to assume that the
         # accessory should be shown if the pose key is missing.
@@ -3168,8 +3164,6 @@ init -2 python:
         PROPERTIES:
             rec_layer - recommended layer to place this accessory
             priority - render priority. Lower is rendered first
-            no_lean - determins if the leaning versions are hte same as the
-                regular ones.
             acs_type - an optional type to help organize acs
             mux_type - list of acs types that we shoudl treat
                 as mutally exclusive with this type. Basically if this acs is
@@ -3186,7 +3180,6 @@ init -2 python:
                 img_stand="",
                 rec_layer=MASMonika.PST_ACS,
                 priority=10,
-                no_lean=False,
                 stay_on_start=False,
                 entry_pp=None,
                 exit_pp=None,
@@ -3210,13 +3203,6 @@ init -2 python:
                     (Default: MASMonika.PST_ACS)
                 priority - render priority. Lower is rendered first
                     (Default: 10)
-                no_lean - True means the leaning versions are the same as the
-                    regular versions (which means we don't need lean variants)
-                    False means otherwise
-                    NOTE: This means that the non-lean version works for ALL
-                    LEANING VERSIONS. If at least one lean version doesn't
-                    work, then you need separate versions, sorry.
-                    (Default: False)
                 stay_on_start - True means the accessory is saved for next
                     startup. False means the accessory is dropped on next
                     startup.
@@ -3230,11 +3216,13 @@ init -2 python:
                     function
                     (Default: None)
                 acs_type - type, for ease of organization of acs
-                    NOTE: not used by the sprite system. This purely for caller
-                    use.
+                    This works with mux type to determine if an ACS can work
+                    with another ACS.
                     (Default: None)
                 mux_type - list of acs types that should be
                     mutually exclusive with this acs.
+                    this works with acs_type to determine if this works with
+                    other ACS.
                     (Default: None)
                 ex_props - dict of additional properties to apply to this
                     sprite object.
@@ -3253,7 +3241,6 @@ init -2 python:
             )
             self.__rec_layer = rec_layer
             self.priority=priority
-            self.no_lean = no_lean
             self.acs_type = acs_type
             self.mux_type = mux_type
 
