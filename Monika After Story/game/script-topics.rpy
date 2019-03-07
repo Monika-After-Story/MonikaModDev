@@ -2253,7 +2253,7 @@ label monika_imouto:
     m 1esa "If she struggles, let her go."
     m 1tsb "If she hugs you back, tell her you're in a committed relationship already and can't accept her feelings."
     m 4hua "Then introduce her to me! I'm sure we'll get along great!"
-    m 1eua "I won't get jealous. Things like love between siblings only happens in creepy romance stories anyways."
+    m 1eua "I won't get jealous. Things like love between siblings only happen in creepy romance stories anyways."
     m 1hub "Ahaha!"
     return
 
@@ -6280,7 +6280,7 @@ label monika_writingtip5:
      m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
      m 1hua "Changing your angle on approaching things can really yield some interesting results!"
      m 1eua "So try new things that might give you the momentum to break out."
-     m 1lksdla "Just makes sure it's nothing too dangerous for you, [player]."
+     m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
      m 1hua "That's my advice for today!"
      m 1hub "Thanks for listening~"
      return
