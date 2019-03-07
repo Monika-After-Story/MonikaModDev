@@ -171,3 +171,7 @@
 #
 # CLOTHES (pose_map):
 #   This functions the same as pose_map for HAIR.
+#
+# Selectables JSON:
+#   
+
