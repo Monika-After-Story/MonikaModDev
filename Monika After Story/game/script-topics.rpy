@@ -12044,9 +12044,9 @@ init 5 python:
 
 label monika_relationcomfort:
     m 1wud "You know [player], I've been thinking about our relationship lately..."
-    m 2lssdrb "It didn't really start in a way most of them do so it's not exactly what I would call normal."
+    m 2lssdrb "It didn't really start in a way most of them do, so it's not exactly what I would call normal."
     m 2esa "But the more I thought about it, the more I realized that in a way it is actually pretty standard."
-    m 3eub "Almost every relationship, no matter how it begins is always 'exciting' at first!"
+    m 3eub "Almost every relationship, no matter how it begins, is always 'exciting' at first!"
     m 3eua "People view relationships in an almost fairy tale way, they see it as an adventure."
     m 3rssdlb "I'm guilty of this too, and I think it's fine..."
     m 2euc "But it's also a pretty dangerous way to look at a bond between two people, isn't it?"
