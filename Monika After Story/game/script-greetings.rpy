@@ -383,6 +383,7 @@ label greeting_gooday:
         m 1hua "Hello again, [player]. How are you doing?"
 
         m "Are you having a good day today?"
+        $ _history_list.pop()
         menu:
             m "Are you having a good day today?{fast}"
             "Yes.":
@@ -401,6 +402,7 @@ label greeting_gooday:
         m 2efc "[player]."
 
         m "How is your day going?"
+        $ _history_list.pop()
         menu:
             m "How is your day going?{fast}"
             "Good.":
@@ -419,6 +421,7 @@ label greeting_gooday:
         m 6ekc "Oh... {w=1}Hi, [player]."
 
         m "H-How is your day going?"
+        $ _history_list.pop()
         menu:
             m "H-How is your day going?{fast}"
             "Good.":
@@ -468,6 +471,7 @@ label greeting_goodmorning:
         m 5eua "I'm guessing you can't sleep..."
 
         m "Is that it?"
+        $ _history_list.pop()
         menu:
             m "Is that it?{fast}"
             "Yes.":
@@ -506,6 +510,7 @@ label greeting_goodmorning:
         m 1hua "Good evening, love!"
 
         m "Did you have a good day today?"
+        $ _history_list.pop()
         menu:
             m "Did you have a good day today?{fast}"
             "Yes.":
@@ -1224,6 +1229,7 @@ label monikaroom_greeting_ear_narration:
             m "[player], I need you to promise me that you'll change."
 
             m "You'll change, right?{w=1} For me?"
+            $ _history_list.pop()
             menu:
                 m "You'll change, right? For me?{fast}"
                 "I will.":
@@ -1246,6 +1252,7 @@ label monikaroom_greeting_ear_narration:
             m "Oh, you're back."
 
             m "Are you ready to change, [player]?"
+            $ _history_list.pop()
             menu:
                 m "Are you ready to change, [player]?{fast}"
                 "I will.":
@@ -1494,6 +1501,7 @@ label monikaroom_greeting_opendoor_locked:
 
     $ style.say_window = style.window_monika
     m "Did I scare you, [player]?"
+    $ _history_list.pop()
     menu:
         m "Did I scare you, [player]?{fast}"
         "Yes.":
@@ -1972,6 +1980,7 @@ label greeting_sick:
         m 2ekc "Welcome back, [player]..."
         m "Are you feeling better?"
 
+    $ _history_list.pop()
     menu:
         m "Are you feeling better?{fast}"
         "Yes.":
@@ -1998,6 +2007,7 @@ label greeting_stillsick:
         m "Now please, [player], just go get some rest."
         m 2ekc "Will you do that for me?"
 
+    $ _history_list.pop()
     menu:
         m "Will you do that for me?{fast}"
         "Yes.":
@@ -2426,6 +2436,7 @@ label greeting_hairdown:
     m 1hub "I decided to try something new~"
 
     m "Do you like it?"
+    $ _history_list.pop()
     menu:
         m "Do you like it?{fast}"
         "Yes.":
@@ -2648,6 +2659,7 @@ label greeting_back_from_school:
         m 1hua "Oh, welcome back [player]!"
 
         m "Did you have a good day at school?"
+        $ _history_list.pop()
         menu:
             m "Did you have a good day at school?{fast}"
             "Yes.":
@@ -2666,6 +2678,7 @@ label greeting_back_from_school:
         m 2efc "You're back, [player]..."
 
         m "How was school?"
+        $ _history_list.pop()
         menu:
             m "How was school?{fast}"
             "Good.":
@@ -2679,6 +2692,7 @@ label greeting_back_from_school:
         m 6ekc "Oh...{w=1}you're back."
 
         m "How was school?"
+        $ _history_list.pop()
         menu:
             m "How was school?{fast}"
             "Good.":
@@ -2710,6 +2724,7 @@ label greeting_back_from_work:
         m 1hua "Oh, welcome back, [player]!"
 
         m "Did you have a good day at work today?"
+        $ _history_list.pop()
         menu:
             m "Did you have a good day at work today?{fast}"
             "Yes.":
@@ -2731,6 +2746,7 @@ label greeting_back_from_work:
         m 2efc "You're back from work I see, [player]..."
 
         m "How was your day?"
+        $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
             "Good.":
@@ -2745,6 +2761,7 @@ label greeting_back_from_work:
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
 
         m "How was your day?"
+        $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
             "Good.":

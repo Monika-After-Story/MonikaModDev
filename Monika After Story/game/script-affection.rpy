@@ -2029,6 +2029,7 @@ label monika_affection_nickname:
     else:
         jump monika_affection_nickname_yes
 
+    $ _history_list.pop()
     menu:
         m "What do you say?{fast}"
         "Yes.":

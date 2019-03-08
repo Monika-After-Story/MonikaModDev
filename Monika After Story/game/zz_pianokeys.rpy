@@ -121,10 +121,10 @@ label mas_piano_songchoice:
     $ pnml = None
 
     if len(song_list) > 0:
-        show monika 1eua
-
+        m 1eua "Did you want to play a song or play on your own, [player]?"
+        $ _history_list.pop()
         menu:
-            m "Did you want to play a song or play on your own, [player]?"
+            m "Did you want to play a song or play on your own, [player]?{fast}"
             "Play a song.":
                 m "Which song?"
                 show monika at t21
@@ -198,9 +198,10 @@ label mas_piano_setupstart:
 
     # No-hits dont get to try again
     if post_piano != "mas_piano_result_none":
-        show monika 1eua
+        m 1eua "Would you like to play again?"
+        $ _history_list.pop()
         menu:
-            m "Would you like to play again?"
+            m "Would you like to play again?{fast}"
             "Yes.":
                 jump mas_piano_loopstart
             "No.":
