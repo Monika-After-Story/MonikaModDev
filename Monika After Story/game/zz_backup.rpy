@@ -368,6 +368,7 @@ init -900 python:
 ### now for some dialogue bits courtesy of chibika
 
 label mas_backups_you_have_corrupted_persistent:
+    #TODO: Decide whether or not text speed should be enforced here.
     $ quick_menu = False
     scene black
     window show
