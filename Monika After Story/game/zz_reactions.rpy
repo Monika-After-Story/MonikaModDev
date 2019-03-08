@@ -19,6 +19,15 @@ default persistent._mas_filereacts_historic = dict()
 default persistent._mas_filereacts_last_reacted_date = None
 # stores the last date gifts were received so we can clear _mas_filereacts_reacted_map
 
+default persistent._mas_filereacts_sprite_gifts = {}
+# contains sprite gifts that are currently available. aka not already unlocked
+# key: giftname to react to
+# value: tuple of the following format:
+#   [0] - sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
+#   [1] - id of the sprite object this gift unlocks.
+
+# TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)

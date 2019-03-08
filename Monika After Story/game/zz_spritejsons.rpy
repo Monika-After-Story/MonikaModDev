@@ -6,6 +6,10 @@
 #
 # Shared JSON props:
 # {
+#   "type": integer type of sprite object this is,
+#       - REQUIRED
+#       - integer
+#       - see the json store below for constants
 #   "name": "id"
 #       - REQUIRED
 #       - id for this sprite object. Must be unqiue for the type of object.
@@ -42,6 +46,12 @@
 #       - providing this will enable the object to be selected in some
 #            activities
 #       - see Selectable JSON below for more info
+#   "giftname": "filename of the gift that unlocks this item",
+#       - optional
+#       - NOTE: if not provided, and this item is not unlocked or used 
+#           under other means, this item will NOT be selectable or usable.
+#       - do not include extension
+#       - default None
 # }
 #
 #
@@ -173,5 +183,64 @@
 #   This functions the same as pose_map for HAIR.
 #
 # Selectables JSON:
-#   
+#
+# {
+#   "display_name": "Name that should be shown in a selector menu for this
+#       item",
+#       - REQUIRED
+#   "thumb": "Thumnail code of image",
+#       - REQUIRED
+#       - do not include extension
+#   "group": "id of group this should be selectable with",
+#       - REQUIRED
+#       - this is like the type of acs/clothing/hair this item should be
+#           selectable with
+#   "visible_when_locked": True if this item should be visible in selectors
+#       even when locked, False if not,
+#       - optional
+#       - boolean
+#       - locked items will show the locked item thumbnail
+#       - default True
+#   "hover_dlg": [List of text to show when mouse is hovered over this in 
+#       selector],
+#       - optional
+#       - list of strings
+#       - lines are picked randomly when hovered
+#       - default None
+#   "select_dlg": [List of text to show when this item is selected in the
+#       selector],
+#       - optional
+#       - list of strings
+#       - lines are picked randomly when selected
+#       - default None
+# }
+
+init -21 python in mas_sprites_json:
+    import store
+    import json
+
+    # TODO: switch to newer log
+    log = renpy.renpy.log.open("log/spj")
+
+    sprite_station = store.MASDockingStation(
+        renpy.config.basedir + "/game/mod_assets/monika/jsons/"
+    )
+    # docking station for custom sprites. 
+
+    ### CONSTANTS
+    SP_ACS = 0
+    SP_HAIR = 1
+    SP_CLOTHES = 2
+
+
+init 790 python in mas_sprites_json:
+    def addSpriteObject(filepath):
+        """
+        TODO
+        """
+        pass
+
+init 800 python in mas_sprites_json:
+    pass
+
 
