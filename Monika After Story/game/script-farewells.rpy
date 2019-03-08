@@ -268,7 +268,7 @@ init 5 python:
     del rules
 
 label bye_untilwemeetagain:
-    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
+    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
     m "Ehehe, 'till then, [player]!"
     return 'quit'
 

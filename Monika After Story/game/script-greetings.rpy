@@ -1944,7 +1944,7 @@ label greeting_amnesia:
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
     m 1tku "And you reacted the way I hoped you would."
     m 3eka "I hope I didn't upset you too much, though."
-    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
 
     $ mas_lockEvent(mas_getEV("greeting_amnesia"))

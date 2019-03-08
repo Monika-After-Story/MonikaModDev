@@ -381,9 +381,9 @@ label mas_mood_scared:
     m 3eua "Do you remember when I talked to you about faking confidence?"
     if not seen_event("monika_confidence"):
         m 2euc "No?"
-        m 2lksdla "Guess that’s for another time then."
+        m 2lksdla "Guess that's for another time then."
         m 1eka "Anyways…"
-    m 1eua "Keeping up one’s appearance helps with faking your own confidence."
+    m 1eua "Keeping up one's appearance helps with faking your own confidence."
     m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     if seen_event("monika_confidence_2"):
         m "I remember explaining how initiative is an important skill to have as well."
@@ -394,7 +394,7 @@ label mas_mood_scared:
     m 1hua "Listening to your favorite music can be counted as meditating too!"
     m 1eua "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
-    m "Procrastination isn’t necessarily bad, you know?"
+    m "Procrastination isn't necessarily bad, you know?"
     m 2esc "Besides…"
     m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"

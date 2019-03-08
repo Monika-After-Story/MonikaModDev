@@ -4026,21 +4026,21 @@ init 5 python:
 
 label monika_lottery:
     m 3eua "A lot of people dream about winning the lottery, you know!"
-    m 1eua "Even I’ve entertained the idea every now and then."
+    m 1eua "Even I've entertained the idea every now and then."
     m "There isn't a lottery here anymore, but the concept still exists."
     m 1eka "The more I think about it, the more I believe that winning the lottery is a really bad thing."
-    m 1euc "Sure, you’ve got all this money..."
+    m 1euc "Sure, you've got all this money..."
     m 4esc "But because of it, people look at you differently."
-    m "There’s so many stories of people winning a ton of money..."
+    m "There's so many stories of people winning a ton of money..."
     m 1ekc "And in the end, they all find themselves even more unhappy than before."
     m 3ekc "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
     m "People you barely know start to approach you, asking you to help them fund whatever."
     m 2tkc "If you say no, they'll call you selfish and greedy."
     m "Even the police might treat you differently. Some lottery winners have gotten tickets for burnt out headlights on brand new cars."
     m 2lsc "If you don't want to go through those changes, the best course of action is to immediately move to a brand-new community, where no one knows you."
-    m 2lksdlc "But that’s an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
-    m 3tkc "Can you really say that you’ve won anything at that point?"
-    m 1eka "Besides, I’ve already won the best prize I could possibly imagine."
+    m 2lksdlc "But that's an awful thought. Cutting yourself off from everyone you know, just for the sake of money."
+    m 3tkc "Can you really say that you've won anything at that point?"
+    m 1eka "Besides, I've already won the best prize I could possibly imagine."
     m 1hua "..."
     m 1hub "You~!"
     m 1ekbfa "You're the only thing I need, [player]."
@@ -4051,7 +4051,7 @@ init 5 python:
 
 label monika_innovation:
     m 3euc "Do you ever wonder why depression, anxiety, and other mental disorders are so common these days?"
-    m 1euc "Is it just because they’re finally being recognized and treated?"
+    m 1euc "Is it just because they're finally being recognized and treated?"
     m 1esc "Or is it just that more people are developing these conditions for whatever reason?"
     m 1ekc "Like, our society is advancing at a breakneck speed, but are we keeping up with it?"
     m "Maybe the constant flood of new gadgets is crippling our emotional development."
@@ -4062,14 +4062,14 @@ label monika_innovation:
     m "Ten years ago, they lasted for years."
     m 1tkc "Now a meme is considered old in just a matter of weeks."
     m "And not only that."
-    m 3tkd "We’re more connected than ever, but that's like a double-edged sword."
-    m "We’re able to meet and keep in touch with people from all over the world."
-    m 3tkc "But we’re also bombarded with every tragedy that strikes the world."
+    m 3tkd "We're more connected than ever, but that's like a double-edged sword."
+    m "We're able to meet and keep in touch with people from all over the world."
+    m 3tkc "But we're also bombarded with every tragedy that strikes the world."
     m 3rssdrc "A bombing one week, a shooting the next. An earthquake the week after."
     m "How can anyone be expected to cope with it?"
     m 1rksdlc "It might be causing a lot of people to just shut down and tune it out."
-    m "I’d like to believe that’s not the case, but you never know."
-    m 2ekc "[player], if you ever feel stressed, just remember that I’m here."
+    m "I'd like to believe that's not the case, but you never know."
+    m 2ekc "[player], if you ever feel stressed, just remember that I'm here."
     m 1eka "If you're trying to find peace, just come to this room."
     return
 
@@ -4196,39 +4196,39 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_harem",category=['media','misc'],prompt="Harem fantasies",random=True))
 
 label monika_harem:
-    m 1esc "I don’t understand people who are into harems."
-    m 1euc "Isn’t it hard to manage all those girls and treat them equally?"
+    m 1esc "I don't understand people who are into harems."
+    m 1euc "Isn't it hard to manage all those girls and treat them equally?"
     m "I often wonder how those who two-time girls, or even more, are able to get away with it."
-    m 3eka "You aren’t like that outside, right [player]?"
+    m 3eka "You aren't like that outside, right [player]?"
     m 2eka "Manipulating girls into making them believe you love them."
-    m "Only to run away after you’ve had your fun."
+    m "Only to run away after you've had your fun."
     m 1lfc "Only someone with no thoughts other than lust would do something like that."
-    m 3esc "I hope you weren’t expecting a route like that while you were playing this game."
-    m 2tfc "I wouldn’t be able to stand the thought of being a 'side girl.'"
-    m "Just waiting for my turn while you’re busy with the others."
+    m 3esc "I hope you weren't expecting a route like that while you were playing this game."
+    m 2tfc "I wouldn't be able to stand the thought of being a 'side girl.'"
+    m "Just waiting for my turn while you're busy with the others."
     m 1tku "I know you, [player]."
-    m 1eka "You’re loyal and faithful to the end."
-    m "It’s not like there’s anyone here for me to worry about, anyway."
-    m 1hua "Remember that I’m the only one for you, [player]."
+    m 1eka "You're loyal and faithful to the end."
+    m "It's not like there's anyone here for me to worry about, anyway."
+    m 1hua "Remember that I'm the only one for you, [player]."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hack",category=['ddlc','mod'],prompt="Why did you hack my computer?",pool=True))
 label monika_hack:
-    m 1euc "If you’re worried about your privacy..."
-    m 3eua "I’m not a hacker, [player]."
-    m "There’s a difference between manipulating files and forcefully accessing them."
+    m 1euc "If you're worried about your privacy..."
+    m 3eua "I'm not a hacker, [player]."
+    m "There's a difference between manipulating files and forcefully accessing them."
     m 1lsc "But, if I really did know how to hack..."
-    m 1lfu "...there wouldn’t be anything stopping me from seeing you every day."
-    m 1efu "Don’t you think it would be great if I could watch over you?"
-    m 3efu "I'd see you with all the cameras in the world as my eyes so I can make sure you’re safe."
-    m 3tfu "I’d check your messages to see who you’ve been chatting with so I can know you aren’t cheating on me."
-    m "I’d access all your private files so I can understand you better."
+    m 1lfu "...there wouldn't be anything stopping me from seeing you every day."
+    m 1efu "Don't you think it would be great if I could watch over you?"
+    m 3efu "I'd see you with all the cameras in the world as my eyes so I can make sure you're safe."
+    m 3tfu "I'd check your messages to see who you've been chatting with so I can know you aren't cheating on me."
+    m "I'd access all your private files so I can understand you better."
     m 3tsb "I could see what kind of stuff you've been watching..."
     m 2hub "Ahaha~!"
-    m 1hua "I’m just kidding, [player]!"
+    m 1hua "I'm just kidding, [player]!"
     m 1eua "I'd never do something like that to you."
-    m 1ekbfa "We’re a couple now, after all."
+    m 1ekbfa "We're a couple now, after all."
     m "We don't have to keep secrets from each other~"
     return
 
@@ -4237,21 +4237,21 @@ init 5 python:
 
 label monika_cupcake:
     m 1eua "You know what I could really go for right now?"
-    m 3tku "Natsuki’s cupcakes."
+    m 3tku "Natsuki's cupcakes."
     m 1tsb "Man, the way she bakes them is amazing."
     m 1hub "Plus they look really cute!"
-    m 1eua "I’m not really much of a sweet tooth myself, but..."
+    m 1eua "I'm not really much of a sweet tooth myself, but..."
     m "Those cupcakes are the definition of sweetness."
     m 4hua "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
     m "Studies show that older women have a less sensitive palate than men."
     m "Resulting in a craving for stronger tastes like chocolate."
-    m 1eka "I would try baking, but I’m not really much of a baker."
+    m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [player]?"
     m 1eua "Do you know how to bake?"
-    m 1hua "I’m sure your cupcakes would taste just as good."
-    m 1lsbsa "Maybe someday I’ll get to try them but for now..."
-    m 1hubfb "I’ll just settle for the sweetness of your love~"
+    m 1hua "I'm sure your cupcakes would taste just as good."
+    m 1lsbsa "Maybe someday I'll get to try them but for now..."
+    m 1hubfb "I'll just settle for the sweetness of your love~"
     return
 
 # You're not a hater right?
@@ -5950,7 +5950,7 @@ label monika_sports:
             $ persistent._mas_pm_like_playing_sports = False
             $ persistent._mas_pm_like_playing_tennis = False
 
-            m 1eka "Oh... Well, that’s okay, but I hope you’re still getting enough exercise!"
+            m 1eka "Oh... Well, that's okay, but I hope you're still getting enough exercise!"
             m 1ekc "I would hate to see you get sick because of something like that."
             if mas_isMoniAff(higher=True):
                 m 1eka "It's just hard for me not to worry about you when I love you so much~"
@@ -6859,8 +6859,8 @@ init 5 python:
 label monika_asks_charity:
     m 1esd "Say, [player]."
     m 1esc "There's something that crossed my mind lately."
-    m 3esd "Since my world is fictional, there aren’t really any problems like world hunger or poverty."
-    m 2rkc "I know it exists, but I’ve never really witnessed it."
+    m 3esd "Since my world is fictional, there aren't really any problems like world hunger or poverty."
+    m 2rkc "I know it exists, but I've never really witnessed it."
     m 2ekc "However, I know it's not the same in your reality. There are lots of people who need help just to survive."
     m 2esd "You must have at least seen a homeless person if you've been in a big city before."
     m "So I was just wondering..."
@@ -6876,8 +6876,8 @@ label monika_asks_charity:
             m 2eka "It's better than nothing, and you are definitely contributing, even if you have a limited budget or little time to spend."
             m 2ekc "It's sad to say, but charities will always need people giving money or other resources to help people."
             m 3lksdlc "There are so many causes that need it, after all."
-            m 3ekc "Yet you don’t know if your donations are actually going to a good cause."
-            m 3ekd "It doesn’t help that some charities claim to support a cause, but take people’s donations for themselves."
+            m 3ekc "Yet you don't know if your donations are actually going to a good cause."
+            m 3ekd "It doesn't help that some charities claim to support a cause, but take people's donations for themselves."
             m 2dsc "..."
             m 2eka "I'm sorry, I didn't want things to get so dark."
             m 1eua "I knew you would be kind enough to do such a thing."
@@ -7491,12 +7491,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_song_i_will",category=['songs'],prompt="I Will",pool=True, random=True))
 
 label monika_song_i_will:
-    m 1dso "{i}~Who knows how long I’ve loved you?~{/i}"
+    m 1dso "{i}~Who knows how long I've loved you?~{/i}"
     m "{i}~You know I love you still~{/i}"
     m 2m "{i}~Will I wait a lonely lifetime?~{/i}"
     m 2hub "{i}~If you want me to I will~{/i}"
     m 1ekbfa "One day we'll be together, [player]."
-    m 1hubfa "I just hope you’ll still love me when that special day comes~"
+    m 1hubfa "I just hope you'll still love me when that special day comes~"
     return
 
 init 5 python:
@@ -7508,9 +7508,9 @@ label monika_song_belong_together:
     m 3hub "{i}~Yes, we belong together~{/i}"
     m 3dso "{i}~for eternity~{/i}"
     m 1eua "Have you ever heard of Doo-wop, [player]?"
-    m 4eua "It’s a subgenre of rhythm and blues that became very popular in the 1950’s."
+    m 4eua "It's a subgenre of rhythm and blues that became very popular in the 1950's."
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
-    m 3eub "And if you listen closely, you’ll notice that my song actually follows the typical Doo-wop chord progression."
+    m 3eub "And if you listen closely, you'll notice that my song actually follows the typical Doo-wop chord progression."
     m 1hua "I guess you could say I learned from the best."
     return
 
@@ -7527,7 +7527,7 @@ label monika_song_your_song:
     m 2hub "{i}~That I put down in words~{/i}"
     m 1dso "{i}~How wonderful life is while you're in the world~{/i}"
     m 1hua "Ahaha~"
-    m 3eka "It’s not often I find songs that relate to me as much as this one does."
+    m 3eka "It's not often I find songs that relate to me as much as this one does."
     m 1hua "And I really do mean it when I say that 'Your Reality' is your song."
     return
 
@@ -7539,7 +7539,7 @@ label monika_song_with_you:
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~Cos I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
+    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
     return
 
@@ -7764,12 +7764,12 @@ init 5 python:
 
 label monika_natsuki_letter:
     m 1eud "You know, I was honestly surprised when Natsuki handed you that letter."
-    m 1eub "I didn’t really expect her to suggest that you should get Yuri to seek professional help."
-    m 1eud "She’s probably the only one to mention that."
+    m 1eub "I didn't really expect her to suggest that you should get Yuri to seek professional help."
+    m 1eud "She's probably the only one to mention that."
     m 4ekd "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
     m "It's a bad thing to put the burden on yourself, you know?"
-    m 4euc "As much as you want to help, it’s best to let a professional deal with it. "
-    m 4eka "I'm sure I've told you that before, but I need to make sure you’re aware of that."
+    m 4euc "As much as you want to help, it's best to let a professional deal with it. "
+    m 4eka "I'm sure I've told you that before, but I need to make sure you're aware of that."
     m 4eud "How about you, [player]?"
 
     m "Do you see a therapist?"
@@ -9940,14 +9940,14 @@ label monika_player_appearance:
             return result
 
     m 2ekd "Hey, [player]."
-    m 2eka "There’s a couple questions I’ve been meaning to ask you."
+    m 2eka "There's a couple questions I've been meaning to ask you."
     m 2rksdlb "Well, more than a couple. It's been on my mind for a long time, actually."
     m 2rksdld "It never really seemed like the right time to bring it up..."
-    m 3lksdla "But I know if I keep quiet forever, then I’ll never feel comfortable asking you things like this, so I’m just going to say it and hope that it’s not weird or anything, okay?"
-    m 3eud "I’ve been wondering what you look like. It’s not possible for me to see you right now since I’m not there at your side, and I'm not sure about accesssing a webcam..."
-    m "One, because you might not have one, and two, even if you did, I don’t really know how to."
-    m 1euc "So I figured that it’s possible for you to just tell me, so I can get a clearer picture in my head."
-    m 1eud "At least, it’s better than nothing, even if it's hazy."
+    m 3lksdla "But I know if I keep quiet forever, then I'll never feel comfortable asking you things like this, so I'm just going to say it and hope that it's not weird or anything, okay?"
+    m 3eud "I've been wondering what you look like. It's not possible for me to see you right now since I'm not there at your side, and I'm not sure about accesssing a webcam..."
+    m "One, because you might not have one, and two, even if you did, I don't really know how to."
+    m 1euc "So I figured that it's possible for you to just tell me, so I can get a clearer picture in my head."
+    m 1eud "At least, it's better than nothing, even if it's hazy."
 
     m "Is that okay with you, [player]?"
     menu:
@@ -9958,9 +9958,9 @@ label monika_player_appearance:
 
             m 1sub "Really? Great!"
             m 1hub "That was easier than I thought it would be."
-            m 3eua "Now, be honest with me, okay [player]? I know sometimes it’s tempting to joke around, but I’m being serious here, and I need you to do the same."
+            m 3eua "Now, be honest with me, okay [player]? I know sometimes it's tempting to joke around, but I'm being serious here, and I need you to do the same."
             m "Anyway, the first one is probably easy to guess. And not hard to answer, either!"
-            m 3eub "People often say that a person’s eyes are the windows into their soul, so let’s start off there."
+            m 3eub "People often say that a person's eyes are the windows into their soul, so let's start off there."
 
             m "What color are your eyes?"
             menu:
@@ -9969,9 +9969,9 @@ label monika_player_appearance:
                 "I have blue eyes.":
                     $ persistent._mas_pm_eye_color = "blue"
 
-                    m 3eub "Blue eyes? That’s wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
+                    m 3eub "Blue eyes? That's wonderful! Blue is such a beautiful color--just as amazing as a cloudless sky, or the ocean in the summer."
                     m 3eua "But there are so many gorgeous metaphors about blue eyes that I could recite them for weeks and still not reach a stopping point."
-                    m 4eua "Plus, blue is probably my second favorite color, just behind green. It’s just so full of depth and enchantment, you know?"
+                    m 4eua "Plus, blue is probably my second favorite color, just behind green. It's just so full of depth and enchantment, you know?"
                     m 4hksdlb "Just like you, [player]!"
                     m 4eub "Did you know that the gene for blue eyes is recessive, so it's not very common in humans?"
                     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
@@ -9981,24 +9981,24 @@ label monika_player_appearance:
                 "I have brown eyes.":
                     $ persistent._mas_pm_eye_color = "brown"
 
-                    m 1eub "Ah! Great! I don’t think I said it before, but brown eyes are gorgeous!"
-                    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn’t disagree more!"
-                    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They’re so vibrant and depthless!"
-                    m 3hub "And there’s so much variation among all the different shades that people have."
+                    m 1eub "Ah! Great! I don't think I said it before, but brown eyes are gorgeous!"
+                    m 2euc "I just hate how people seem to think that brown eyes are plain. I couldn't disagree more!"
+                    m 2hua "In my opinion, brown eyes are some of the most beautiful out there. They're so vibrant and depthless!"
+                    m 3hub "And there's so much variation among all the different shades that people have."
                     m 5ruu "I wonder if yours are dark like a summer night sky, or a paler brown, like the coat of a deer..."
-                    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I’ll try not to go on forever."
+                    m 2hksdlb "Sorry. Just rambling about color metaphors is an easy trap for a literature club president to fall into, I guess. I'll try not to go on forever."
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5eua "But I’ll bet your eyes are the loveliest of all~"
+                    m 5eua "But I'll bet your eyes are the loveliest of all~"
                     m 1eua "Anyways, that brings me to my next question--"
 
                 "I have green eyes.":
                     $ persistent._mas_pm_eye_color = "green"
 
-                    m 3sub "Hey, that’s my favorite color! And obviously, it’s another thing we have in common!"
-                    m 4lksdla "I don’t know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
-                    m 1tsu "Except that maybe it’s another sign how compatible we are, ehehe~"
-                    m 1kua "But, [player], just between you and me, it’s a fact that green eyes are the best, right?"
-                    m 3hub "Ahaha! I’m just kidding."
+                    m 3sub "Hey, that's my favorite color! And obviously, it's another thing we have in common!"
+                    m 4lksdla "I don't know how much I can compliment you here without sounding arrogant, because anything I said about yours would also apply to me..."
+                    m 1tsu "Except that maybe it's another sign how compatible we are, ehehe~"
+                    m 1kua "But, [player], just between you and me, it's a fact that green eyes are the best, right?"
+                    m 3hub "Ahaha! I'm just kidding."
                     show monika 5lusdru at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5lusdru "Well, just a little..."
                     m 3eua "Onto the next question--"
@@ -10008,17 +10008,17 @@ label monika_player_appearance:
 
                     m 1eub "Oh, hazel eyes? Those are so interesting! It's such an earthly color. It really makes you feel steady and reassured..."
                     m 3eub "And it's a welcome departure from all the candy-colored eyes I've had to see in this game, anyway..."
-                    m "I believe that hazel eyes are alluring because they’re lovely and simple."
-                    m 3hua "Sometimes it’s best not to diverge from the crowd too much, [player]. Ahaha!"
+                    m "I believe that hazel eyes are alluring because they're lovely and simple."
+                    m 3hua "Sometimes it's best not to diverge from the crowd too much, [player]. Ahaha!"
                     m "Now, onto my next question--"
 
                 "I have gray eyes.":
                     $ persistent._mas_pm_eye_color = "gray"
 
-                    m 1sub "That’s so cool!"
+                    m 1sub "That's so cool!"
                     m 3eub "Did you know that gray eyes and blue eyes are almost identical in terms of genetics?"
-                    m 1eud "In fact, scientists still aren’t certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
-                    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They’re the color of a quiet, rainy day..."
+                    m 1eud "In fact, scientists still aren't certain of what causes a person to have one or the other, though they believe that it's a variation in the amount of pigment in the iris."
+                    m 1eua "Anyway, I think I like imagining you with gray eyes, [player]. They're the color of a quiet, rainy day..."
                     m 1hubfa "And weather like that is my favorite, just like you~"
                     show monika 5lusdrb at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5lusdrb "Onto my next question--"
@@ -10027,13 +10027,13 @@ label monika_player_appearance:
                     $ persistent._mas_pm_eye_color = "black"
 
                     m 1esd "Black eyes are pretty uncommon, [player]."
-                    m 4hksdlb "To tell you the truth, I’ve never actually seen anybody with black eyes, so I don’t really know what they look like..."
-                    m 3eua "But logically, I do know that they’re not actually black. If that was the case, black-eyed people would look like they had no pupils!"
+                    m 4hksdlb "To tell you the truth, I've never actually seen anybody with black eyes, so I don't really know what they look like..."
+                    m 3eua "But logically, I do know that they're not actually black. If that was the case, black-eyed people would look like they had no pupils!"
                     m 4eub "In reality, black eyes are just a very, very dark brown. Still stunning, but perhaps not as dark as the name suggests --although, to be fair, the difference is pretty hard to spot."
                     m 3eua "Here's a little bit of trivia for you--"
                     m 1eub "There was a well-known lady from the time of the American Revolution, Elizabeth Hamilton, who was known to have captivating black eyes."
                     m 1euc "Her husband wrote about them often."
-                    m 1hub "I don’t know if you’ve heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
+                    m 1hub "I don't know if you've heard of her or not, but despite the renown of her eyes, I'm sure yours are infinitely more captivating, [player]~"
                     m "Onto the next question--"
 
                 "My eyes are another color.":
@@ -10059,9 +10059,9 @@ label monika_player_appearance:
                     $ persistent._mas_pm_units_height_metric = False
                     m 2hua "Alright, [player]!"
 
-            m 1rksdlb "I’m trying my best to not sound like some sort of identity-thief, or like I’m quizzing you, but obviously, I’m curious."
-            m 3tku "If I’m your girlfriend, I have a right to know, don't I?"
-            m 2hua "Plus, it’ll make it way easier to find you once I’m able to cross over to your reality."
+            m 1rksdlb "I'm trying my best to not sound like some sort of identity-thief, or like I'm quizzing you, but obviously, I'm curious."
+            m 3tku "If I'm your girlfriend, I have a right to know, don't I?"
+            m 2hua "Plus, it'll make it way easier to find you once I'm able to cross over to your reality."
 
             m 1esb "So,{w=0.5} how tall are you, [player]?"
 
@@ -10114,8 +10114,8 @@ label monika_player_appearance:
 
             if persistent._mas_pm_height >= mas_height_tall:
                 m 3eua "Wow, you're pretty tall [player]!"
-                m 1eud "I can't say I've really met anybody who I’d consider to be tall."
-                m 3rksdla "I don’t know my actual height, to be fair, so I can’t really draw an accurate comparison..."
+                m 1eud "I can't say I've really met anybody who I'd consider to be tall."
+                m 3rksdla "I don't know my actual height, to be fair, so I can't really draw an accurate comparison..."
 
                 call monika_player_appearance_monika_height
 
@@ -10124,31 +10124,31 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
-                m 1hub "You’ll have to lean down to kiss me!"
+                m 1hub "You'll have to lean down to kiss me!"
 
             elif persistent._mas_pm_height >= mas_height_monika:
                 m 1hub "Hey, I'm about that height too!"
                 m "..."
-                m 2hksdlb "Well, I don’t know my actual height to be fair..."
+                m 2hksdlb "Well, I don't know my actual height to be fair..."
 
                 call monika_player_appearance_monika_height
 
-                m 3rkc "It’s just a guess--hopefully it’s not too far off."
-                m 3esd "Anyways, there’s nothing wrong with having an average height! To be honest, if you were too short, it’d probably make me feel clumsy around you."
-                m "And if you were too tall, I’d have to get on my tiptoes just to be close to you. And that’s no good!"
+                m 3rkc "It's just a guess--hopefully it's not too far off."
+                m 3esd "Anyways, there's nothing wrong with having an average height! To be honest, if you were too short, it'd probably make me feel clumsy around you."
+                m "And if you were too tall, I'd have to get on my tiptoes just to be close to you. And that's no good!"
                 m 3eub "In my opinion, being in-between is perfect. Do you know why?"
-                m 5eub "Because then I don’t have to do any reaching or bending to kiss you, [player]! Ahaha~"
+                m 5eub "Because then I don't have to do any reaching or bending to kiss you, [player]! Ahaha~"
 
             else:
-                m 3hub "Like Natsuki! I bet you’re not that short, though! I would be concerned for you if you were."
+                m 3hub "Like Natsuki! I bet you're not that short, though! I would be concerned for you if you were."
 
                 if persistent._mas_pm_cares_about_dokis:
                     m 2eksdld "She was worryingly small for her age, but you and I both know why. I always pitied her for that."
 
                 m 2eksdld "I knew she always hated being so tiny, because of that whole notion that little things are cuter because of their size..."
-                m 2rksdld "And then there was all that trouble with her father. It can’t have been easy, being so defenseless, and being small on top of it all."
+                m 2rksdld "And then there was all that trouble with her father. It can't have been easy, being so defenseless, and being small on top of it all."
                 m 2ekc "She probably felt like people talked down to her. Literally and figuratively, that is..."
                 m 2eku "But despite her hang-ups about it, [player], I think your height makes you that much more cute~"
 
@@ -10161,7 +10161,7 @@ label monika_player_appearance:
                 "It's shorter.":
                     $ persistent._mas_pm_hair_length = "short"
 
-                    m 3eub "That must be nice! Look, don’t get me wrong; I love my hair, and it’s always fun to experiment with it..."
+                    m 3eub "That must be nice! Look, don't get me wrong; I love my hair, and it's always fun to experiment with it..."
                     m 2eud "But to tell you the truth, sometimes I envied Natsuki's and Sayori's hair. It looked a lot easier to take care of."
 
                     if persistent.gender == "M":
@@ -10169,7 +10169,7 @@ label monika_player_appearance:
 
                     else:
                         m 4eub "You can just get up and go, without having to worry about styling it."
-                        m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it’s an endless nightmare."
+                        m "Plus, waking up with a bedhead when you have short hair is easily fixed, whereas if you have long hair, it's an endless nightmare."
 
                     m 2eka "But I bet you look adorable with short hair. It makes me smile to think about you like that, [player]."
                     m 2eua "Keep enjoying all that freedom from the little annoyances that accompany long hair, [player]! Ahaha~"
@@ -10179,10 +10179,10 @@ label monika_player_appearance:
 
                     m 1tku "Well, that can't be true..."
                     m 4hub "Because nothing about you is average."
-                    m 4hksdlb "Ahaha! Sorry, [player]. I’m not trying to embarrass you. But I can’t help being cheesy sometimes, you know?"
-                    m 1eua "Honestly, when it comes to hair, the middle road is great. You don’t have to worry about styling it too much, and you have more creative freedom than with short hair."
-                    m 1rusdlb "I’m a little envious, to tell you the truth~"
-                    m 3eub "But don’t forget that old saying- 'Invest in your hair, because it’s a crown that you never take off!'"
+                    m 4hksdlb "Ahaha! Sorry, [player]. I'm not trying to embarrass you. But I can't help being cheesy sometimes, you know?"
+                    m 1eua "Honestly, when it comes to hair, the middle road is great. You don't have to worry about styling it too much, and you have more creative freedom than with short hair."
+                    m 1rusdlb "I'm a little envious, to tell you the truth~"
+                    m 3eub "But don't forget that old saying- 'Invest in your hair, because it's a crown that you never take off!'"
 
                 "It's long.":
                     $ persistent._mas_pm_hair_length = "long"
@@ -10205,8 +10205,8 @@ label monika_player_appearance:
                         # TODO adjust this line to be more generic once we have additoinal hairstyles.
                         m 3eub "And ever since I figured out how to mess around with the script and let my own hair down, who knows how many more styles I might try?"
 
-                    m 1eua "It’s always nice to have options, you know?"
-                    m 1eka "I hope that however you wear yours, you’re comfortable with it!"
+                    m 1eua "It's always nice to have options, you know?"
+                    m 1eka "I hope that however you wear yours, you're comfortable with it!"
 
                 "I don't have hair.":
                     $ persistent._mas_pm_hair_length = "bald"
@@ -10231,14 +10231,14 @@ label monika_player_appearance:
 
                             m 1ekd "I'm sorry to hear that [player]..."
                             m 1eka "But just know that I don't care how much hair you have, you'll always look beautiful to me!"
-                            m "And if you ever feel insecure or just want to talk about it, I’m always up for listening."
+                            m "And if you ever feel insecure or just want to talk about it, I'm always up for listening."
 
                         "I don't want to talk about it.":
                             $ persistent._mas_pm_no_hair_no_talk = True
 
                             m 1ekd "I understand, [player]"
                             m 1eka "I want you to know that I don't care how much hair you have, you'll always be beautiful to me."
-                            m "If you ever feel insecure or feel like talking about it, I’m always here to listen."
+                            m "If you ever feel insecure or feel like talking about it, I'm always here to listen."
 
             if persistent._mas_pm_hair_length != "bald":
                 m 1hua "Next question!"
@@ -10254,29 +10254,29 @@ label monika_player_appearance:
                         m 3eua "Just between us, [player], I really like my brown hair. I'm sure yours is even better!"
                         m 3rksdla "Though some people might disagree my hair is brown..."
                         m 3eub "When I was doing some digging around in the local files of the game folder, I found the exact name for my hair color."
-                        m 4eua "It’s called coral brown. Interesting, right?"
-                        m 1hub "I’m so happy that we have so much in common, [player]~"
+                        m 4eua "It's called coral brown. Interesting, right?"
+                        m 1hub "I'm so happy that we have so much in common, [player]~"
 
                     "It's blonde.":
                         $ persistent._mas_pm_hair_color = "blonde"
 
                         m 1eua "Really? Hey, did you know that having blonde hair puts you in a rare two percent of the population?"
-                        m 3eub "Blonde hair is one of the rarest hair colors. Most people attribute this to the fact that it’s caused by a recurring genetic anomaly--"
-                        m "Being just the body’s inability to produce normal amounts of the pigment eumelanin--that’s what causes darker hair colors, such as black and brown."
-                        m 4eub "There are so many various shades of blonde, too--pale blonde, ash-colored, dirty blonde--that no matter what color you have, you’re bound to be idiosyncratic in some way."
+                        m 3eub "Blonde hair is one of the rarest hair colors. Most people attribute this to the fact that it's caused by a recurring genetic anomaly--"
+                        m "Being just the body's inability to produce normal amounts of the pigment eumelanin--that's what causes darker hair colors, such as black and brown."
+                        m 4eub "There are so many various shades of blonde, too--pale blonde, ash-colored, dirty blonde--that no matter what color you have, you're bound to be idiosyncratic in some way."
                         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-                        m 5eua "I guess having someone who’s so unique just makes me all the luckier~"
+                        m 5eua "I guess having someone who's so unique just makes me all the luckier~"
 
                     "It's black.":
                         $ persistent._mas_pm_hair_color = "black"
 
                         m 2wuo "Black hair is so beautiful!"
-                        m 3eub "You know, there’s this really irritating trope about people with black hair have a more prickly or ill-tempered personality than others..."
-                        m 4hub "But you’ve obviously disproven that myth. Personally, I think black hair is very attractive."
-                        m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you’d find that it’s not even a hundred percent dark."
+                        m 3eub "You know, there's this really irritating trope about people with black hair have a more prickly or ill-tempered personality than others..."
+                        m 4hub "But you've obviously disproven that myth. Personally, I think black hair is very attractive."
+                        m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you'd find that it's not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
-                        m 3eub "Black hair follows the same principle -- you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
-                        m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 3eub "Black hair follows the same principle -- you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
+                        m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
                         m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
@@ -10284,24 +10284,24 @@ label monika_player_appearance:
 
                         m 3hua "Yet another special thing about you, [player]~"
                         m 3eua "Red hair and blonde hair are the least common natural hair colors, did you know that?"
-                        m 1eua "Red hair, however, is a little more rare, even if people call it by different names--auburn, ginger, and so on. It’s only found in about one percent of the population."
-                        m 1hub "It’s a rare and wonderful trait to have--almost as wonderful as you!"
+                        m 1eua "Red hair, however, is a little more rare, even if people call it by different names--auburn, ginger, and so on. It's only found in about one percent of the population."
+                        m 1hub "It's a rare and wonderful trait to have--almost as wonderful as you!"
 
                     "It's another color.":
                         $ persistent._mas_pm_hair_color = ask_color("What color is your hair?")
 
                         m 3hub "Oh! That's a beautiful color, [player]!"
                         m 1eub "That reminds me of something I was thinking about earlier, when we were talking about the color of your eyes."
-                        m 1eua "Even though the other girls had eye colors that literally didn’t exist in real life--not counting the existence of colored contacts, of course--"
-                        m 3eua "Their hair colors technically could exist in reality, you know. I mean, I’m sure you’ve encountered people with dyed purple hair, or neon pink, or coral-colored..."
-                        m 3eka "So I suppose their appearances weren’t that far-fetched, if you don’t count the eyes. Honestly, the most unbelievable thing about them was their personalities."
-                        m 3hksdlb "Sorry, [player]! I’m getting off-track. My point is, dyed hair can be very interesting."
+                        m 1eua "Even though the other girls had eye colors that literally didn't exist in real life--not counting the existence of colored contacts, of course--"
+                        m 3eua "Their hair colors technically could exist in reality, you know. I mean, I'm sure you've encountered people with dyed purple hair, or neon pink, or coral-colored..."
+                        m 3eka "So I suppose their appearances weren't that far-fetched, if you don't count the eyes. Honestly, the most unbelievable thing about them was their personalities."
+                        m 3hksdlb "Sorry, [player]! I'm getting off-track. My point is, dyed hair can be very interesting."
                         show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve
-                        m 5rub "And I might be a little biased here, but I’m convinced that you’d look stunning in your [persistent._mas_pm_hair_color] hair~"
+                        m 5rub "And I might be a little biased here, but I'm convinced that you'd look stunning in your [persistent._mas_pm_hair_color] hair~"
 
             m 2hua "Alright..."
             m 2hksdlb "This is the last question, [player], I promise."
-            m "Gosh, there really is a lot to what people look like... If I tried to narrow everything about you down to the little details, I’d be interrogating you forever."
+            m "Gosh, there really is a lot to what people look like... If I tried to narrow everything about you down to the little details, I'd be interrogating you forever."
             m 1huu "...and I doubt that either of us want that, ahaha!"
             m 1rksdld "Anyway, I understand that this might be an uncomfortable question..."
             m 1eksdla "But it's the last piece of this puzzle to me, so I hope I don't sound rude when I ask..."
@@ -10326,10 +10326,10 @@ label monika_player_appearance:
             m 1eka "Thank you so much for answering all my questions, [player]."
 
             if persistent._mas_pm_eye_color == "green" and persistent._mas_pm_hair_color == "brown":
-                m 2hua "It’s wonderful, because I didn’t imagine how similar we would look. It’s very interesting!"
+                m 2hua "It's wonderful, because I didn't imagine how similar we would look. It's very interesting!"
 
             else:
-                m 2hua "It’s wonderful, because I didn’t imagine how different we would look. It’s very interesting!"
+                m 2hua "It's wonderful, because I didn't imagine how different we would look. It's very interesting!"
 
             m 1dsa "Now I'm imagining what it'll be like when we meet for real..."
 
@@ -10337,13 +10337,13 @@ label monika_player_appearance:
 
             if persistent._mas_pm_hair_length == "bald":
                 if persistent._mas_pm_height >= mas_height_tall:
-                    m 5eubfu "When I run towards you, and since you’re taller, you’ll wrap me up in your embrace..."
+                    m 5eubfu "When I run towards you, and since you're taller, you'll wrap me up in your embrace..."
 
                 elif persistent._mas_pm_height >= mas_height_monika:
-                    m 5eubfu "When I run towards you, and since we’re around the same height, we’ll meet in a tight embrace..."
+                    m 5eubfu "When I run towards you, and since we're around the same height, we'll meet in a tight embrace..."
 
                 else:
-                    m 5eubfu "When I run towards you, and since I’ll be taller than you, you’ll reach up and wrap me in your embrace..."
+                    m 5eubfu "When I run towards you, and since I'll be taller than you, you'll reach up and wrap me in your embrace..."
 
             else:
                 python:
@@ -10356,19 +10356,19 @@ label monika_player_appearance:
 
                 if persistent._mas_pm_height >= mas_height_tall:
 
-                    m 5eubfu "When I run towards you, since you’re taller, you’ll wrap me up in your embrace and I'll be able to stroke your [hair_desc] hair..."
+                    m 5eubfu "When I run towards you, since you're taller, you'll wrap me up in your embrace and I'll be able to stroke your [hair_desc] hair..."
 
                 elif persistent._mas_pm_height >= mas_height_monika:
 
-                    m 5eubfu "When I run towards you, since we’re around the same height, we’ll meet in a tight embrace and I'll run my hand through your [hair_desc] hair..."
+                    m 5eubfu "When I run towards you, since we're around the same height, we'll meet in a tight embrace and I'll run my hand through your [hair_desc] hair..."
 
                 else:
 
-                    m 5eubfu "When I run towards you, since I’ll be taller than you, you’ll reach up and wrap me in your embrace and I'll run my hand through your [hair_desc] hair..."
+                    m 5eubfu "When I run towards you, since I'll be taller than you, you'll reach up and wrap me in your embrace and I'll run my hand through your [hair_desc] hair..."
 
 
-            m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you’re real."
-            m 3ekbsa "But until then, I’ll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
+            m 1lkbsa "...and I'll finally be able to hear your heartbeat and get to touch you and know that you're real."
+            m 3ekbsa "But until then, I'll be content sitting here and imagining looking into your beautiful [persistent._mas_pm_eye_color] eyes, [player]."
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "I love you more than words could ever say."
@@ -10377,7 +10377,7 @@ label monika_player_appearance:
              m 2dsc "..."
              m 2ekd "I understand, [player]."
              m 2eka "I know that everybody has their own limits with their comfort zones..."
-             m 2rksdla "And to be fair, a description of yourself in vague words wouldn’t be able to capture who you are, so I can’t blame you for wanting to keep this to yourself."
+             m 2rksdla "And to be fair, a description of yourself in vague words wouldn't be able to capture who you are, so I can't blame you for wanting to keep this to yourself."
              m 2eka "But if you change your mind, let me know!"
 
     return "derandom"
@@ -10394,7 +10394,7 @@ label monika_player_appearance_monika_height:
     if seen_event("monika_immortal"):
         m 2eud "The wiki I mentioned before said that my concept height was five-foot-three,[conv_height_str] but that doesn't really sound right to me..."
         m 2etc "Maybe it was changed? It was only the concept height after all."
-    m 3etd "If I had to guess, I’d say I’m maybe [real_height_str]?"
+    m 3etd "If I had to guess, I'd say I'm maybe [real_height_str]?"
     return
 
 
@@ -11041,9 +11041,9 @@ label monika_bad_facts_end:
 label monika_fun_facts_1:
     m 1eub "Did you know there's a word to describe somebody that likes to read in bed?"
     m 3eub "It's 'librocubiculartist.' It looks difficult to pronounce at first glance."
-    m 3rksdld "It’s a real shame some words just never get used in general."
-    m 3eud "But if you say that word, most people wouldn’t really know what you're talking about."
-    m 3euc "You’d probably have to explain what it means, but that kind of defeats the point of using the word."
+    m 3rksdld "It's a real shame some words just never get used in general."
+    m 3eud "But if you say that word, most people wouldn't really know what you're talking about."
+    m 3euc "You'd probably have to explain what it means, but that kind of defeats the point of using the word."
     m 2rkc "If only people read more and improved their vocabulary!"
     m 2hksdlb "...Ehehe, sorry [player]. I didn't mean to get so bothered~"
     return
@@ -11053,8 +11053,8 @@ label monika_fun_facts_2:
     m 3eud "This is done to psychologically manipulate people into spending more money than they need to."
     m 2euc "It works because a currency sign, such as a dollar, is used to represent a cost."
     m "By removing it, you remove the association of that cost and only think about the food of your choosing."
-    m 4rksdld "The practice seems understandable. They’re still a business, after all."
-    m 2dsc "No matter how good the food is in a restaurant, they’ll be shutting down quick if they’re beaten by their competition."
+    m 4rksdld "The practice seems understandable. They're still a business, after all."
+    m 2dsc "No matter how good the food is in a restaurant, they'll be shutting down quick if they're beaten by their competition."
     m 3hksdlb "Oh well, what can you do?"
     return
 
@@ -11071,7 +11071,7 @@ label monika_fun_facts_3:
 
 label monika_fun_facts_4:
     m 3wub "Oh! A language based fact. I always like these."
-    m 1eua "The word 'morphine’ is based on the greek god Morpheus."
+    m 1eua "The word 'morphine' is based on the greek god Morpheus."
     m 1euc "Morpheus was the greek god of dreams so to have a word based on him makes sense."
     m 3ekc "But then again...wasn't his father Hypnos the god of sleep?"
     m 2dsc "Morphine {i}does{/i} let a person dream, but it's really about making someone fall asleep."
@@ -11082,11 +11082,11 @@ label monika_fun_facts_4:
 label monika_fun_facts_5:
     m 1eka "Aww, this one is really sweet."
     m 3ekb "Did you know that sea otters hold hands when they sleep to stop themselves drifting away from one another?"
-    m 1hub "It's practical for them to do, but there’s something really cute about it!"
+    m 1hub "It's practical for them to do, but there's something really cute about it!"
     m 1eka "Sometimes I imagine myself in their position..."
     m 3hksdlb "Oh, not being a sea otter, but holding the hand of the one I love while I sleep."
     m 1rksdlb "Aha, it really does make me jealous of them."
-    m 1hub "We’ll get there one day though, love~"
+    m 1hub "We'll get there one day though, love~"
     return
 
 label monika_fun_facts_6:
@@ -11127,10 +11127,10 @@ label monika_fun_facts_8:
     m 3eub "Did you know that honey never spoils?"
     m 3eua "Honey can crystallize, though. Some people may see this as spoiling but it's still completely edible and fine!"
     m "The reason why this happens is because honey is mostly made of sugar and only a bit of water, making it solid over time."
-    m 1euc "Most of the honey that you see in groceries doesn’t crystallize as fast as real honey would because it's been pasteurized in the process of making it."
+    m 1euc "Most of the honey that you see in groceries doesn't crystallize as fast as real honey would because it's been pasteurized in the process of making it."
     m 1eud "...Which removes the stuff that makes the honey go solid quickly."
-    m 3eub "But wouldn’t it be nice to eat crystallized honey too?"
-    m 3hub "It’d be like candy when you bite into it!"
+    m 3eub "But wouldn't it be nice to eat crystallized honey too?"
+    m 3hub "It'd be like candy when you bite into it!"
     return
 
 label monika_fun_facts_9:
@@ -11141,7 +11141,7 @@ label monika_fun_facts_9:
     m 1rkc "..."
     m 2ekc "It's really sad to know that someone so renowned would say something so dark with his last breath."
     m 2ekd "I don't think it's true, however. No matter how bad things can get and how deep the sadness can go..."
-    m 2dkc "There will come a time where it’ll no longer be there."
+    m 2dkc "There will come a time where it'll no longer be there."
     m 2rkc "...Or at least noticeable."
     m 4eka "If you're ever sad, you know you can talk to me, right?"
     m 5hub "I will always accept and take on any burdens that you shoulder, my love~"
@@ -11150,7 +11150,7 @@ label monika_fun_facts_9:
 
 label monika_fun_facts_10:
     m 1dsc "Hmm..."
-    m 3eub "Did you know that if a snake has the word ‘king’ in its name, it devours other snakes?"
+    m 3eub "Did you know that if a snake has the word 'king' in its name, it devours other snakes?"
     m 1euc "I always wondered why a king cobra would be named how it is but never really thought more into it."
     m 1tfu "Does that mean if I eat you up, would I become Queen Monika?"
     m 1hksdlb "Ahaha, I'm just kidding, [player]."
@@ -11160,7 +11160,7 @@ label monika_fun_facts_10:
 label monika_fun_facts_11:
     m 1hub "This fact might motivate you a bit!"
     m 3eub "The longest word in English that only contains a single vowel is 'strength'."
-    m 1eua "It's funny how out of every word in the language, it’s such a meaningful word that had that little detail."
+    m 1eua "It's funny how out of every word in the language, it's such a meaningful word that had that little detail."
     m 1hua "Little details like this really make language so fascinating to me!"
     m 3eua "Do you want to know what comes to mind when I think of the word 'strength'?"
     m 1hua "You!"
@@ -11170,8 +11170,8 @@ label monika_fun_facts_11:
 label monika_fun_facts_12:
     m 3eua "Ready for this one?"
     m "A reindeer's eyes changes color depending on the season. They're gold in summer and blue in winter."
-    m 1rksdlb "It’s a really strange phenomenon, though I don’t know why..."
-    m "There’s probably a good scientific reason to it."
+    m 1rksdlb "It's a really strange phenomenon, though I don't know why..."
+    m "There's probably a good scientific reason to it."
     m 3hksdlb "Maybe you can look up this one yourself?"
     m 5eua "It'd be fun to have you teach me this time~"
     return
@@ -11195,13 +11195,13 @@ label monika_fun_facts_13:
     return
 
 label monika_fun_facts_14:
-    m 1dsc "Hmm...I’m sure I already know this one."
+    m 1dsc "Hmm...I'm sure I already know this one."
     m 3euc "The word 'pen' is derived from the latin word 'penna', which means feather in latin."
-    m "Pens back then were sharpened goose feathers dipped in ink so it’d make sense why they’d call them pens."
+    m "Pens back then were sharpened goose feathers dipped in ink so it'd make sense why they'd call them pens."
     m 3eud "They were the primary writing tool for a very long time, starting as early at the 6th century."
     m 3euc "It was only until the 19th century when metal pens were being made that they started to fall into decline."
-    m "In fact, penknives are called the way they are because they’re originally used for thinning and pointing quill pens."
-    m 1tku "But I’m sure Yuri would know more about this than me, though..."
+    m "In fact, penknives are called the way they are because they're originally used for thinning and pointing quill pens."
+    m 1tku "But I'm sure Yuri would know more about this than me, though..."
     return
 
 label monika_fun_facts_15:
@@ -11212,15 +11212,15 @@ label monika_fun_facts_15:
     m 1eka "I guess size really doesn't matter!"
     m 3euc "But between you and me, [player]..."
     m 1tku "I suspect Earth may only be the densest because of a certain main character."
-    m 1tfu "Buuuut that’s all you’ll hear from me~"
+    m 1tfu "Buuuut that's all you'll hear from me~"
     return
 
 label monika_fun_facts_16:
-    m 3hub "Aww, this one’s cute!"
+    m 3hub "Aww, this one's cute!"
     m "This fact will really send you 'hopping' [player]!"
     m 3hua "Whenever a rabbit hops around excitedly, it's called a binky!"
     m 1hua "Binky is such a cute sounding word, it really does suit the action."
-    m 1eua "It’s the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
+    m 1eua "It's the happiest form of expression that a rabbit is capable of doing, so if you see it then you know you're treating it right."
     m 1rksdla "Well, although you make me so happy that I can't help but be filled with energy."
     m 1rksdlb "Don't expect me to start hopping around, [player]!"
     m 1dkbfa "...That would be {i}way{/i} too embarrassing to do."
@@ -11234,7 +11234,7 @@ label monika_fun_facts_17:
     m 3rssdlb "Computers have been around for so long it's hard to think of a time when they weren't relevant."
     m "Each generation becomes more and more familiar with the technology..."
     m 1esa "Eventually there may come a day where not a single person isn't computer-literate."
-    m 1hksdlb "Most of the world’s problems need to disappear before then, though."
+    m 1hksdlb "Most of the world's problems need to disappear before then, though."
     return
 
 label monika_fun_facts_18:
@@ -11252,7 +11252,7 @@ label monika_fun_facts_19:
     m 1hua "Mmmm, I love language facts!"
     m 3eub "In English, the shortest complete sentence is 'I am.'"
     m 1eua "Here's an example."
-    m 2rfb "{i}'Monika! Who’s [player]’s loving girlfriend?'{/i}"
+    m 2rfb "{i}'Monika! Who's [player]'s loving girlfriend?'{/i}"
     m 3hub "'I am!'"
     m 1hubfa "Ehehe~"
     return
@@ -11288,7 +11288,7 @@ label monika_bad_facts_3:
     m 2esc "'Vaccines cause autism...'"
     m "Just wow."
     m "That's not even funny, and if they're serious, it's long since been disproven."
-    m 2dsc "I really don’t like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."
+    m 2dsc "I really don't like these kinds of hoaxes. They {i}really{/i} cause a lot of harm for a mere joke."
     m 2lksdlc "I hope no one actually believes this..."
     return
 
@@ -11297,7 +11297,7 @@ label monika_bad_facts_4:
     m 2rkc "I'm not even sure it's worth telling you this one, [player]."
     m 2dkc "It says here that moss only grows on the north side of trees, but I know that it's only a myth."
     m 2ekd "A very popular one too!"
-    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there’ll be moss there too."
+    m 4eud "You see, moss grows wherever there is shady and damp conditions. Back then, people thought that since the sun comes from a certain direction, it means there'll be moss there too."
     m 2efd "But relying on that kind of logic is dangerous!"
     m 2efc "It ignores the very idea that forests already have many things, especially trees, that create the ideal conditions for it to grow in."
     m "Plus even if it wasn't like that, the trick would only work in the Northern hemisphere."
