@@ -385,6 +385,7 @@ label mas_backups_you_have_corrupted_persistent:
         show chibika at sticker_move_n
         "I was unable to find a working backup persistent."
 
+        "Do you have your own backups?"
         menu:
             "Do you have your own backups?"
             "Yes.":
