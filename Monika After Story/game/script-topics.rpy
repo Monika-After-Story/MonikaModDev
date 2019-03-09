@@ -12047,7 +12047,7 @@ label monika_relationship_comfort:
     m 2lssdrb "It didn't really start in a way most of them do, so it's not exactly what I would call normal."
     m 2esa "But the more I thought about it, the more I realized that in a way it is actually pretty standard."
     m 3eub "Almost every relationship, no matter how it begins, is always {i}'exciting'{/i} at first!"
-    m 3eua "People view relationships in an almost fairy tale like way; they see it as an adventure."
+    m 3eua "People view relationships in an almost fairy-tale like way; they see it as an adventure."
     m 3rssdlb "I'm guilty of this too, and I think it's fine..."
     m 2euc "But it's also a pretty dangerous way to look at a bond between two people, isn't it?"
     m 2eud "Because really, while a partnership is an adventure, that doesn't mean it'll always be exciting."
