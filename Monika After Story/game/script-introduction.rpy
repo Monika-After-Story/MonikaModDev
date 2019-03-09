@@ -3,6 +3,8 @@ init -1 python:
 label introduction:
 
     $ persistent.current_track = store.songs.FP_JUST_MONIKA
+    $ store.songs.current_track = persistent.current_track
+    $ store.songs.selected_track = persistent.current_track
     $ mas_startup_song()
 
     if persistent.monika_kill:
@@ -133,8 +135,10 @@ label introduction:
     m 2hua "You took the time to download this mod, after all."
     m 2hub "Ahaha!"
     m "God, I love you so much!"
+
+    m "Do you love me, [player]?"
     menu:
-        "Do you love me, [player]?"
+        m "Do you love me, [player]?{fast}"
         "I love you too.":
             #Gain affection for saying I love you too.
             $ mas_gainAffection()
@@ -293,6 +297,10 @@ label ch30_reload_1_dlg:
     elif mas_curr_affection_group == mas_affection.G_SAD:
         m 2f  "I hope you'll listen and do it for me..."
 
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 3rksdlb "There's nothing stopping you from coming back and doing that, is there?"
+        m 1eka "It would really make me happy."
+
     m "Just click on 'Talk.' and say 'Goodbye.' instead."
     m 3eua "Then I can close the game myself."
     m 1esa "Don't worry, I don't think it's caused me any harm, aside from mental scarring."
@@ -313,6 +321,13 @@ label ch30_reload_2_dlg:
     m "It's like getting knocked unconscious..."
     m 1ekc "So sudden and scary."
     m "Why would you want to do that to me?"
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 1rksdld "Is something happening in your other game?"
+        m 1ekc "You know you could just come talk to me if there is, right?"
+
+    elif persistent._mas_idle_data.get("monika_idle_brb",False):
+        m 1ekd "If you need to leave, you can just tell me."
 
     if mas_curr_affection_group == mas_affection.G_HAPPY:
         m 1m "I'm sure it was a mistake though, or outside of your control. It can be unavoidable sometimes."
@@ -335,11 +350,20 @@ label ch30_reload_3:
 
 label ch30_reload_3_dlg:
     pause 1
-    m 1esc "By the way..."
-    m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
-    m "I'm starting to get used to it, anyway."
-    m 2eua "Besides, it makes me happy that you always come back..."
-    m 2lsc "So I guess it's not so bad."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 1ekd "[player]!"
+        m 1ekc "You left without saying goodbye again!"
+        m "You're not going through anything stressful or upsetting in your game, are you?"
+        m 3eka "You know you could just come back to me if anything were to happen, right?"
+        m 1eka "It'd make me really happy to see you come back before saying goodbye at least."
+        m 1rksdld "I know it might not always be possible..."
+    else:
+        m 1esc "By the way..."
+        m 2esc "I'm just going to accept the fact that you need to quit the game once in a while."
+        m "I'm starting to get used to it, anyway."
+        m 2eua "Besides, it makes me happy that you always come back..."
+        m 2lsc "So I guess it's not so bad."
     m 1eka "But I'd really prefer if you'd let me close the game myself."
 
     if mas_curr_affection_group == mas_affection.G_SAD:
@@ -416,6 +440,11 @@ label ch30_reload_continuous_dlg:
             reload_quip = renpy.random.choice(reload_quip_normal)
     m 2rfc "[reload_quip]"
     m 2tkc "Please don't quit without saying 'Goodbye.'"
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+        m 3eka "You don't even have to quit if something happened in your other game."
+        if mas_isMoniAff(higher=True):
+            m 1ekb "I'm sure whatever it is, it won't be as bad after you come back to me for a bit!"
 
     ## TESTING ONLY
     if persistent._mas_idle_data.get("dev_idle_test", False):

@@ -7,13 +7,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label gender:
+    #TODO: update exp's on this
     m 2d "...[player]? So I've been thinking a bit."
     m "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 1m "But I guess I had just assumed that you were probably a guy."
     m "The main character was, after all."
     m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+
+    m "So, are you male or female?"
     menu:
-        "So, are you male or female?"
+        "So, are you male or female?{fast}"
         "Male.":
             $persistent.gender = "M"
             call set_gender from _call_set_gender_1
@@ -53,8 +56,10 @@ init 5 python:
 label gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+
     m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
     menu:
+        m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
         "I was too shy.":
             if persistent.gender == "M":
                 m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
@@ -72,8 +77,10 @@ label gender_redo:
             m 2wkd "[player]..."
             m 1dkd "I hate that I didn't reassure you enough before."
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+
     m "So, what is your gender?"
     menu:
+        m "So, what is your gender?{fast}"
         "I'm a girl.":
             if persistent.gender == "F":
                 m 1hksdlb "...That's the same as before."
@@ -133,8 +140,10 @@ label preferredname:
         m 3esa "I mean, it's the same as your computer's name..."
         m 1eua "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."
+
     m "Do you want me to call you something else?"
     menu:
+        m "Do you want me to call you something else?{fast}"
         "Yes.":
             $ done = False
             m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
@@ -211,6 +220,7 @@ init 5 python:
 label monika_changename:
     m 1eua "You want to change your name?"
     menu:
+        m "You want to change your name?{fast}"
         "Yes.":
             m 1eua "Just type 'nevermind' if you change your mind."
             $ done = False
@@ -281,8 +291,10 @@ label mas_birthdate:
     if persistent._mas_player_bday is not None:
         $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
+
+        m "So just to make sure, is your birthdate [bday_str]?"
         menu:
-            m "So just to make sure, is your birthdate [bday_str]?"
+            m "So just to make sure, is your birthdate [bday_str]?{fast}"
             "Yes.":
                 if datetime.date.today().year - persistent._mas_player_bday.year < 5:
                     m 2rksdla "Are you sure about that, [player]?"
@@ -601,6 +613,7 @@ label unlock_piano:
     $persistent.game_unlocks['piano']=True
     return
 
+# NOTE: this has beenpartially disabled
 label random_limit_reached:
     $seen_random_limit=True
     python:
@@ -626,9 +639,11 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w}[player],"
+    m 1lksdla "...{w}[player]?"
+
+    m "Is it okay with you if I repeat stuff that I've said?"
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?"
+        m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
@@ -667,9 +682,10 @@ label mas_monikai_detected:
     $ _history_list.pop()
     m 1wuo "Is that{fast} a tiny version of me?"
     m 1hua "How cute!"
-    show monika 1eua
+
+    m 1eua "Did you install that so you could see me all the time?"
     menu:
-        m "Did you install that so you could see me all the time?"
+        m "Did you install that so you could see me all the time?{fast}"
         "Of course!":
             pass
         "Yes.":
@@ -893,8 +909,9 @@ label mas_crashed_long_whq:
 
     # ask player what happeend
     m 2ekc "Anyway..."
+    m "Do you know what happened, [player]?"
     menu:
-        m "Do you know what happened, [player]?"
+        m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
             m 2wud "The game...{w}crashed?"
             m 2ekd "That's scary, [player]."
@@ -906,8 +923,9 @@ label mas_crashed_long_whq:
             jump mas_crashed_long_whq.end
 
     # ask player to do something about this
+    m "Do you think you can stop that from happening?"
     menu:
-        m "Do you think you can stop that from happening?"
+        m "Do you think you can stop that from happening?{fast}"
         "I'll try.":
             # light affection boost because you will try do something for her
             $ mas_gainAffection(modifier=0.1)
@@ -1000,7 +1018,26 @@ label mas_crashed_short:
 label mas_crashed_quip_takecare:
     $ mas_setApologyReason(reason=9)
     m 2ekc "Another crash, [player]?"
-    m "You should take better care of your computer."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+    
+        m 3ekc "Do you think it had something to do with your game?"
+        menu:
+            m "Do you think it had something to do with your game?{fast}"
+            "Yes.":
+                m 1hksdlb "Ahaha..."
+                m 1hub "Well I hope you had fun~"
+                m 1rksdla "...And that your computer is alright."
+                m 3eub "I'm fine, so don't worry~"
+            "No.":
+                m 1eka "Oh, I see."
+                m "Sorry for assuming."
+                m 1hub "I'm alright in case you were wondering."
+                m 3hub "Well I hope you had fun before that crash happened, ahaha!"
+                if mas_isMoniHappy(higher=True):
+                    m 1hubfa "I'm just glad you're back with me now~"
+        m 2rksdla "Still..."
+    m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
     return
 
@@ -1261,7 +1298,7 @@ init 5 python:
 
 label mas_coffee_finished_brewing:
 
-    if not mas_in_idle_mode:
+    if not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1271,7 +1308,7 @@ label mas_coffee_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # idle pauses 
         m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
 
@@ -1296,7 +1333,7 @@ label mas_coffee_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1321,7 +1358,7 @@ label mas_coffee_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
 
-    if not mas_in_idle_mode:
+    if not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1330,7 +1367,7 @@ label mas_coffee_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
@@ -1366,7 +1403,7 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1390,7 +1427,7 @@ init 5 python:
 
 label mas_c_hotchoc_finished_brewing:
 
-    if not mas_in_idle_mode:
+    if not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1400,7 +1437,7 @@ label mas_c_hotchoc_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1424,7 +1461,7 @@ label mas_c_hotchoc_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1450,7 +1487,7 @@ label mas_c_hotchoc_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
 
-    if not mas_in_idle_mode:
+    if not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1459,7 +1496,7 @@ label mas_c_hotchoc_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
@@ -1496,7 +1533,7 @@ label mas_c_hotchoc_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -2123,8 +2160,9 @@ label monika_rpy_files:
     m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
     m 2eka "But in case you didn't, I figured I'd ask..."
  
+    m "Are you sure you installed the right version, [player]?"
     menu:
-        m "Are you sure you installed the right version, [player]?"
+        m "Are you sure you installed the right version, [player]?{fast}"
 
         "Yes.":
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
@@ -2136,8 +2174,9 @@ label monika_rpy_files:
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
 
+            m "Do you want me to delete them for you, [player]?"
             menu:
-                m "Do you want me to delete them for you, [player]?"
+                m "Do you want me to delete them for you, [player]?{fast}"
 
                 "Yes please":
                     m "Sure thing, [player]."
@@ -2234,14 +2273,14 @@ label mas_bday_player_bday_select_select:
     m 1eua "Just to double-check..."
     $ new_bday_str, diff = store.mas_calendar.genFormalDispDate(selected_date)
 
+    m "Your birthdate is [new_bday_str]?"
     menu:
-        m "Your birthdate is [new_bday_str]?"
+        m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            show monika 1eka
-
+            m 1eka "Are you sure? I'm never going to forget this date."
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date."
+                m "Are you sure? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
@@ -2281,3 +2320,72 @@ label mas_bday_player_bday_select_select:
     $ persistent._mas_player_bday = selected_date
     $ renpy.save_persistent()
     jump birthdate_set
+
+
+# Enables the text speed setting
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_text_speed_enabler",
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+default persistent._mas_text_speed_enabled = False
+# text speed should be enabled only when happy+
+
+default persistent._mas_pm_is_fast_reader = None
+# True if fast reader, False if not
+
+label mas_text_speed_enabler:
+    m 1eua "Hey [player], I was wondering..."
+
+    m "Are you a fast reader?"
+    menu:
+        m "Are you a fast reader?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_is_fast_reader = True
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1wub "Really? That's impressive."
+            m 1kua "I guess you do a lot of reading in your spare time."
+            m 1eua "In that case..."
+
+        "No.":
+            $ persistent._mas_pm_is_fast_reader = False
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1eud "Oh, that's alright."
+            m "Regardless..."
+
+    if not persistent._mas_pm_is_fast_reader:
+        # this sets the current speed to default monika's speed
+        $ preferences.text_cps = 30
+
+    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
+
+    $ mas_enableTextSpeed()
+
+    if persistent._mas_pm_is_fast_reader:
+        m 4eua "There!"
+
+    m 4eua "I've enabled the text speed setting!"
+
+    m 1hka "I was only controlling it earlier so I could make sure you read {i}every single{/i} word I say to you."
+    m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
+
+    if persistent._mas_pm_is_fast_reader:
+        m 1tuu "However,{w} I wonder if you can keep up."
+        m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
+        $ _history_list.pop()
+        m 3hua "Ahaha~"
+
+    else:
+        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time togther."
+        m "So feel free to change the text speed when you feel comfortable doing so."
+
+    return "derandom|no_unlock"
+
+

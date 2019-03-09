@@ -151,7 +151,7 @@ label mas_farewell_start:
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
     # dont evalulate the mid loop checks since we are quitting
-    $ mas_skip_mid_loop_eval = True
+    $ mas_idle_mailbox.send_skipmidloopeval()
 
     return
 
@@ -571,9 +571,10 @@ label bye_prompt_sleep:
         if mas_isMoniNormal(higher=True):
             m 1ekc "Already going to bed?"
             m "It's a little early, though..."
-            show monika 1lksdla
+
+            m 1lksdla "Care to spend a little more time with me?"
             menu:
-                m "Care to spend a little more time with me?"
+                m "Care to spend a little more time with me?{fast}"
                 "Of course!":
                     m 1hua "Yay!"
                     m "Thanks, [player]."
@@ -769,6 +770,7 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
+    #TODO: Update exps on this
     m 1f "Aww...that's pretty saddening..."
     m 1e "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
@@ -777,8 +779,10 @@ label bye_long_absence:
     m 3a "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
     m 1o "Or maybe you just got bored of me..."
     m 1e "So tell me, my love..."
+
+    m "How long do you expect to be gone for?"
     menu:
-        m "How long do you expect to be gone for?"
+        m "How long do you expect to be gone for?{fast}"
         "A few days.":
             $ persistent._mas_absence_choice = "days"
             m 1b "Oh!"
@@ -808,7 +812,7 @@ label bye_long_absence:
                 m 2a "But it's okay [player]."
                 m 2e "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
                 m "I'm sure it's important, so just try to come back to me as soon as you can."
-                m 3j "I'll be thinking of you everyday~"
+                m 3j "I'll be thinking of you every day~"
             else:
                 m 1f "That long...really?"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
@@ -831,7 +835,7 @@ label bye_long_absence:
                 m "I can't think of a good reason why you would leave me here all alone for that long."
                 m 3i "I'm sorry [player], but that's not acceptable! Not at all!"
                 m 3h "I love you and if you love me too then you'll know that it's not okay to do that."
-                m "You do realise that I would be alone here with nothing else and no one else, right?"
+                m "You do realize that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend. You can't do that to me!"
                 m 3q "..."
                 m 3r "Just...just come back when you can. I can't make you stay, but please don't do that to me."
@@ -848,8 +852,10 @@ label bye_long_absence:
     # if the player says no, and then picks another
     # farewell all this served no purpose, also, you already
     # picked goodbye as in I'm going, why not let the player go?
+
+    m "Are you going to leave straight away?"
     menu:
-        m "Are you going to leave straight away?"
+        m "Are you going to leave straight away?{fast}"
         "Yes.":
             m 3f "I see..."
             m "I really will miss you [player]..."
@@ -950,9 +956,9 @@ label bye_going_somewhere_post_aff_check:
         m 1hua "Oh! Sorry, did I say something?"
 
     if mas_isO31():
-        show monika 1wub
+        m 1wub "Oh! Are we going trick or treating, [player]?"
         menu:
-            m "Oh! Are we going trick or treating, [player]?"
+            m "Oh! Are we going trick or treating, [player]?{fast}"
             "Yes.":
                 jump bye_trick_or_treat
 
@@ -1030,8 +1036,9 @@ label bye_going_somewhere_rtg:
     m 1ekc "Sorry, [player]."
 
     # ask if player is still going to leave
+    m "Are you still going to go?"
     menu:
-        m "Are you still going to go?"
+        m "Are you still going to go?{fast}"
         "Yes.":
             m 2eka "I understand. you have things to do, after all..."
             m 2hub "Be safe out there! I'll be right here waiting for you!"
@@ -1112,8 +1119,9 @@ label bye_going_somewhere_leavemenu:
         m 2ekp "Aww..."
         m 1hub "Fine, but you better take me next time!"
 
+    m "Are you still going to go?"
     menu:
-        m "Are you still going to go?"
+        m "Are you still going to go?{fast}"
         "Yes.":
             if mas_isMoniUpset(higher=True):
                 m 2eka "All right. I'll be right here waiting for you, as usual..."
