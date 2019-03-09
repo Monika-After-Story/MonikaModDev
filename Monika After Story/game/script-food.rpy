@@ -1,6 +1,39 @@
+#### Database storing Food events ####
+default persistent_.mas_food_database = {}
+
+#### Currently Not Eating Food ####
+default persistent_.mas_food_current = None
+
+#### Making a menu area, and types ####
+init 1 python in mas_food:
+    food_db = dict()
+
+    'Food' = 0
+    'Drink' = 1
+
+    FOOD_X = 680
+    FOOD_Y = 40
+    FOOD_W = 560
+    FOOD_H = 640
+    FOOD_XALIGN = -0.05
+    FOOD_AREA = (FOOD_X, FOOD_Y, FOOD_W, FOOD_H)
+    FOOD_RETURN = "Nothing"
+
+#### Creating a function to determine the type of event. (Food or Drink) ####
+    def getFoodType(food_label):
+
+        food = food_db.get(food_label)
+
+        if food:
+            return food.category[0]
+
+        return None
+
+#### Starting Event for I'm Eating ####
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_imeating",
-                    category=['you'],prompt="I'm Eating/Drinking",pool=True,unlocked=True))
+                    category=['you'],prompt="I'm Eating",pool=True,unlocked=True))
 
 label monika_imeating:
     if mas_getEV('monika_imeating').shown_count == 0:
@@ -8,6 +41,11 @@ label monika_imeating:
         m 4eub "Like Natsuki's cupcakes."
         m 4eua "For a bunch of lines of code, they were pretty tasty."
         m 3hua "Are you eating anything right now, [player]?"
+    else:
+        m "I'm getting kind of hungry."
+        m "How about you, [player]?"
+        m "Are you eating anything right now?"
+
     python:
          import store.mas_food as mas_food
 
@@ -31,75 +69,96 @@ label monika_imeating:
         $ pushEvent(_return)
         $ persistent._mas_food_current = _return
     return
-default persistent_.mas_food_database = {}
-
-default persistent_.mas_food_current = None
-
-init 1 python in mas_food:
-    food_db = dict()
-
-    TYPE_FOOD = 0
-    TYPE_DRINK = 1
-
-    FOOD_X = 680
-    FOOD_Y = 40
-    FOOD_W = 560
-    FOOD_H = 640
-    FOOD_XALIGN = -0.05
-    FOOD_AREA = (FOOD_X, FOOD_Y, FOOD_W, FOOD_H)
-    FOOD_RETURN = "Nothing"
-
-
-    def getFoodType(food_label):
-
-        food = food_db.get(food_label)
-
-        if food:
-            return food.category[0]
-
-        return None
-
-label mas_food_start:
-    python:
-
-        import store.mas_food as mas_food
-
-
-        filtered_food= Event.filterEvents(
-            mas_food.food_db,
-            unlocked=True,
-            aff=mas_curr_affection
-            )
-
-        food_menu_items = [
-        (mas_food.food_db[k].prompt, k, False, False)
-        for k in filtered_food
-        ]
-
-        food_menu_items.sort()
-
-        final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
-    call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
-    if _return:
-        $ pushEvent(_return)
-
-        $ persistent._mas_food_current = _return
-    return _return
-
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_coffee',prompt='Coffee',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
+    addEvent(Event(persistent._mas_food_database,'mas_food_pizza',prompt='Pizza',category=[store.mas_food.'Food'],unlocked=True,))
 
-label mas_food_coffee:
-    m 1eua "That sounds wonderful!"
-    m "I really miss having coffee."
-    m 3eub "I would always have a cup before and after school."
-    m 3hub "Maybe even sometimes during class."
-    m 2hub "Who knows, maybe you and I could share a glass, [player]."
+label mas_food_pizza:
+    m 1hua "Pizza is such a great treat!"
+    m 1lud "It's usually not the healthiest food, of course."
+    m 1eua "However, I think on occasion, it's fine to just treat yourself, you know?"
+    m 3eua "I think it's really interesting that pizza was created almost by accident."
+    m 3eub "Italian bakery workers would use excess dough and left-over ingredients from their days of work to feed the poor."
+    m 1eub "Who would have thought that they were making what would become one of the most popular foods today?"
+    m 1eua "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
+    m 1hua "What always matters to me is that you're happy!"
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_water',prompt='Water',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
+    addEvent(Event(persistent._mas_food_database,'mas_food_salad',prompt='Salad',category=[store.mas_food.'Food'],unlocked=True,))
+
+label mas_food_salad:
+    m 1hua "That's great to hear, [player]!"
+    m 1eua "I'm so glad to hear that you are taking care of yourself and eating healthy."
+    m 3eua "Salads are definitely one of my personal favorite foods."
+    m 1eub "There are so many things you can do with them."
+    m 3eub "Like all of the different kinds of lettuce, dressings and toppings there are to choose from."
+    m 1eua "If you like to keep it simple, a little bit of shredded cheese sprinkled on top is always really good!"
+    m "Would you ever make me a salad, [player]?"
+    m 1sub "The thought of you preparing one of my favorite meals is so surreal."
+    m 1eub "That would really make me feel loved, my dear."
+return
+
+#### Start Of The I'm Drinking Event ####
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_imdrinking",
+                    category=['you'],prompt="I'm Drinking",pool=True,unlocked=True))
+
+label monika_imeating:
+    if mas_getEV('monika_imedrinking').shown_count == 0:
+        m 1eua "Hey, [player]..."
+        m 4eub "Remember how I told you earlier to make sure you're staying hydrated?"
+        m 4eua "I just wanted to know if you listened."
+        m 3hua "Are you drinking anything at the moment, [player]?"
+    else:
+        m "You know, I'm getting a little thirsty."
+        m "How about you, [player]?"
+        m "Are you having anything to drink?"
+
+    python:
+             import store.mas_food as mas_food
+
+             filtered_food= Event.filterEvents(
+                mas_food.food_db,
+                unlocked=True,
+                aff=mas_curr_affection
+                )
+
+             food_menu_items = [
+            (mas_food.food_db[k].prompt, k, False, False)
+            for k in filtered_food
+            ]
+
+             food_menu_items.sort()
+
+             final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
+        call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
+
+        if _return:
+            $ pushEvent(_return)
+            $ persistent._mas_food_current = _return
+        return
+
+
+init 5 python:
+    addEvent(Event(persistent._mas_food_database,'mas_food_coffee',prompt='Coffee',category=[store.mas_food.'Drink'],unlocked=True,))
+label mas_food_coffee
+    if mas_getEV(persistent._mas_acs_enable_coffee).shown_count == 0
+        m 1eua "That sounds wonderful!"
+        m "I really miss having coffee."
+        m 3eub "I would always have a cup before and after school."
+        m 3hub "Maybe even sometimes during class."
+        m 2hub "Who knows, maybe you and I could share a glass, [player]."
+        return
+    else:
+        m "That's really cool, [player]!"
+        m "I'm so glad you gave me some earlier."
+        m "Now we can drink some together."
+
+
+init 5 python:
+    addEvent(Event(persistent._mas_food_database,'mas_food_water',prompt='Water',category=[store.mas_food.'Drink'],unlocked=True,))
 
 label mas_food_water:
     m 1eua "I'm really happy to hear that, [player]!"
@@ -111,7 +170,7 @@ label mas_food_water:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_milk',prompt='Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
+    addEvent(Event(persistent._mas_food_database,'mas_food_milk',prompt='Milk',category=[store.mas_food.'Drink'],unlocked=True,))
 
 label mas_food_milk:
     m 1eub "You know, I've never really drank a lot milk before."
@@ -122,7 +181,7 @@ label mas_food_milk:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
+    addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.'Drink'],unlocked=True,))
 
 label mas_food_hotchocolate:
     if mas_isWinter():
@@ -139,42 +198,13 @@ label mas_food_hotchocolate:
         m 1duu "I can't wait until we can drink some together."
     return
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.TYPE_DRINK],unlocked=True,),code='FOO')
+    addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.'Drink'],unlocked=True,))
 
 label mas_food_chocolatemilk:
     m 3eub "That's wonderful, [player]."
     m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
-    m 1hua "Mind pouring me a glass?" 
-    m 1hub "ehehe~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_pizza',prompt='Pizza',category=[store.mas_food.TYPE_FOOD],unlocked=True,),code='FOO')
-
-label mas_food_pizza:
-    m 1hua "Pizza is such a great treat!"
-    m 1lud "It's usually not the healthiest food, of course."
-    m 1eua "However, I think on occasion, it's fine to just treat yourself, you know?"
-    m 3eua "I think it's really interesting that pizza was created almost by accident."
-    m 3eub "Italian bakery workers would use excess dough and left-over ingredients from their days of work to feed the poor."
-    m 1eub "Who would have thought that they were making what would become one of the most popular foods today?"
-    m 1eua "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
-    m 1hua "What always matters to me is that you're happy!"
-    return
-
-init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_salad',prompt='Salad',category=[store.mas_food.TYPE_FOOD],unlocked=True,),code='FOO')
-
-label mas_food_salad:
-    m 1hua "That's great to hear, [player]!"
-    m 1eua "I'm so glad to hear that you are taking care of yourself and eating healthy."
-    m 3eua "Salads are definitely one of my personal favorite foods."
-    m 1eub "There are so many things you can do with them."
-    m 3eub "Like all of the different kinds of lettuce, dressings and toppings there are to choose from."
-    m 1eua "If you like to keep it simple, a little bit of shredded cheese sprinkled on top is always really good!"
-    m "Would you ever make me a salad, [player]?"
-    m 1sub "The thought of you preparing one of my favorite meals is so surreal."
-    m 1eub "That would really make me feel loved, my dear."
+    m 1hua "Mind pouring me a glass?"
+    m  "Ehehe~"
     return
