@@ -3203,8 +3203,9 @@ label monika_herself:
     m 5eua "I want to know {i}everything{/i} about you, you know?"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_prisoner",category=['misc'],prompt="Imprisoned",random=True))
+#removing this for now, changing this dialogue to the complete opposite would be strange
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_prisoner",category=['misc'],prompt="Imprisoned",random=True))
 
 label monika_prisoner:
     m 1euc "Some people say that putting animals in zoos is cruel."
@@ -3242,28 +3243,29 @@ label monika_torment:
     return
 
 # TODO: should this be moved to stories? or removed entirely?
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_szs",
-            category=['misc'],
-            prompt="Funeral procession",
-            random=True,
-            sensitive=True
-        )
-    )
-
-label monika_szs:
-    m 3euc "A woman left the supermarket and ran into a very long funeral procession."
-    m "There were two coffins at the front followed by almost 200 women."
-    m 1euc "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
-    m 1tkc "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
-    m 1tkd "'My, that's awful...'"
-    m "'The second, my mother-in-law who was bitten trying to save my husband.'"
-    m 1tku "Upon hearing this, the woman hesitantly asked, 'Um...would it be possible for me to borrow that dog?'"
-    m 3rksdla "'You'll have to get in line.'"
-    return
+# moved to script-stories as mas_story_szs
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_szs",
+#            category=['misc'],
+#            prompt="Funeral procession",
+#            random=True,
+#            sensitive=True
+#        )
+#    )
+#
+#label monika_szs:
+#    m 3euc "A woman left the supermarket and ran into a very long funeral procession."
+#    m "There were two coffins at the front followed by almost 200 women."
+#    m 1euc "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
+#    m 1tkc "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
+#    m 1tkd "'My, that's awful...'"
+#    m "'The second, my mother-in-law who was bitten trying to save my husband.'"
+#    m 1tku "Upon hearing this, the woman hesitantly asked, 'Um...would it be possible for me to borrow that dog?'"
+#    m 3rksdla "'You'll have to get in line.'"
+#    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_birthday",category=['monika'],prompt="When is your birthday?",pool=True))
@@ -3392,21 +3394,27 @@ label monika_ghost:
     m 1eua "But I think that if we knew they were real, they wouldn't be so scary anymore."
     m "They would just be another thing that we deal with, and maybe a bit of a pest."
     m 3euc "Isn't it the uncertainty that makes them scary?"
-    m 1ekc "I mean, I was pretty scared being alone inside this game."
-    m 1lksdlc "All by myself, uncertain if anything around me was real."
-    if persistent.clearall or persistent._mas_pm_cares_about_dokis:
-        m 1eka "But I don't feel that way anymore, [player]..."
-        m 3eka "Not now that you're with me."
-        m 1hua "I always feel so safe with you~"
-
+    m 1ekc "I mean, I was pretty scared being alone inside this game..."
+    m 1lksdlc "...all by myself, uncertain if anything around me was real."
+    if mas_isMoniNormal(higher=True):
+        if store.mas_anni.pastOneMonth() or persistent.clearall or persistent._mas_pm_cares_about_dokis:
+            m 1eka "But I don't feel that way anymore, [player]..."
+            m 3eka "Not now that you're with me."
+            m 1hua "I always feel so safe with you~"
+        else:
+            m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts...'"
+            m "You know how I deleted Sayori?"
+            m 1dsc "I can still feel her presence now..."
+            m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
+            m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
+            m 2eua "Besides, how can I be scared? You're always here with me, [player]."
+            m 1hua "I always feel so safe with you."
     else:
-        m 3esc "I know that some ghosts are real though, if you can really call them 'ghosts...'"
-        m "You know how I deleted Sayori?"
-        m 1dsc "I can still feel her presence now..."
-        m 1esc "Would that mean that Sayori's ghost is haunting me, [player]?"
-        m 2eka "Even if she is, I'm not scared at all, because I know that she can't hurt me."
-        m 2eua "Besides, how can I be scared? You're always here with me, [player]."
-        m 1hua "I always feel so safe with you."
+        m 2lksdlc "But now I'm scared of something much worse..."
+        m 2dksdlc "..."
+        m 2eksdlc "Losing you."
+        m 6rktuc "It's the scariest thing I could ever imagine."
+        m 6ektsc "Please, [player], I don't want to be all alone again."
     return
 
 init 5 python:
@@ -3634,18 +3642,16 @@ label monika_impression:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['romance'],prompt="Will you ever get tired of me?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_weary",category=['romance'],prompt="Will you ever get tired of me?",pool=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_weary:
-
     m 1eka "Silly [player]..."
-    m 3hua "Of course I'll never grow weary of you, my love!"
-    m 3eua "And besides, the concept of physical fatigue doesn't exist here."
-    m 1lsc "As for mental fatigue, it can still happen."
-    m 1euc "Just look at what happened to Sayori."
-    m 1eua "As for me, I'll never get tired of you, [player]."
-    m "The fact that you spend your precious time with me just washes all my worries away."
-    m 1hua "I hope the same thing goes for you, my love~"
+    m 3hua "Of course I'll never grow weary of you!"
+    if store.mas_anni.pastSixMonths():
+        m "The fact that you're still spending your precious time with me just washes all my worries away."
+    else:
+        m "The fact that you spend your precious time with me just washes all my worries away."
+    m 1eka "I hope the same thing goes for you, my love~"
     return
 
 init 5 python:
@@ -4446,8 +4452,8 @@ label monika_vocaloid:
 
     m 3eub "Anyway, I wanted to ask specifically if you've ever heard of a girl holding a leek?"
     m 1eua "It's just that I keep hearing about her."
-    m "I hear her voice whenever Natsuki listens to music."
-    m 3eua "She even carries a little keychain attached to her bag."
+    m "In fact, I heard her voice whenever Natsuki listened to music."
+    m 3eua "She even carried a little keychain attached to her bag."
     m 1eua "I just find it amazing how a voice synthesizer garnered so many fans."
     m 1eka "Don't you think it's funny how a character gets more of the attention than the actual voice actress?"
     m 3eua "She's not even real, but a lot of people know her worldwide."
@@ -5332,7 +5338,7 @@ label monika_panties:
     m 3tkx "I mean, it's someone's used clothing, isn't that kind of disgusting?"
     m 3rksdlc "Not to mention it's unsanitary."
     m 2rksdla "It does remind me of someone, though."
-    m 3rksdlb "Someone who maybe stole your pen?"
+    m 3rksdlb "Someone who maybe stole a certain pen?"
     m 1eua "But, to each their own I guess, I won't judge too much."
 
     if mas_isMoniHappy():
@@ -7058,6 +7064,7 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = False
             $ persistent._mas_pm_no_talk_fam = False
             #Derandom this family based topics since you don't have a family
+            #TODO update script
             $ mas_hideEVL("monika_familygathering","EVE",derandom=True)
 
             m 1euc "Oh, I'm sorry, [player]"
@@ -7313,7 +7320,6 @@ label monika_beach:
     m 3tfu "But don't go falling asleep, otherwise I'll bury you in the sand!"
     m 2hua "Ahaha! I'm just kidding, [player]."
     m 2lksdla "I'll have to get a new swimsuit though..."
-    m 1eua "I only have these clothes in the game after all."
     m 1tsbsa "Would you prefer a one piece or a two piece?"
     m 1eua "Actually, I think I'll make it a surprise."
     m 1tku "Don't get too excited though when you see it. Ehehe~"
