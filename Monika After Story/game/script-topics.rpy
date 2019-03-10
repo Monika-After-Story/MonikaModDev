@@ -6995,7 +6995,7 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
             $ persistent._mas_pm_no_talk_fam = False
-            #Derandom this family based topics since you don't have a family
+            #Rerandom this family based topics since you do have a family
             $ mas_showEVL("monika_familygathering","EVE",_random=True)
 
             m 1hua "That's wonderful!"
