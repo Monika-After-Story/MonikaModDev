@@ -3,14 +3,15 @@ default persistent_.mas_food_database = {}
 
 #### Currently Not Eating Food ####
 default persistent_.mas_food_current = None
+#NOTE: do we need this? We're not using it anywhere. If you're planning on using this, perhaps make it local
+#(assuming that you want to periodically ask the player if they're eating/drinking something)
 
 #### Making a menu area, and types ####
 init 1 python in mas_food:
+    #The food db
     food_db = dict()
 
-    'Food' = 0
-    'Drink' = 1
-
+    #Menu dimensions/options
     FOOD_X = 680
     FOOD_Y = 40
     FOOD_W = 560
@@ -19,21 +20,18 @@ init 1 python in mas_food:
     FOOD_AREA = (FOOD_X, FOOD_Y, FOOD_W, FOOD_H)
     FOOD_RETURN = "Nothing"
 
-#### Creating a function to determine the type of event. (Food or Drink) ####
-    def getFoodType(food_label):
-
-        food = food_db.get(food_label)
-
-        if food:
-            return food.category[0]
-
-        return None
-
 #### Starting Event for I'm Eating ####
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_imeating",
-                    category=['you'],prompt="I'm Eating",pool=True,unlocked=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_imeating",
+            category=['you'],
+            prompt="I'm Eating",
+            pool=True,
+            unlocked=True
+        )
+    )
 
 label monika_imeating:
     if mas_getEV('monika_imeating').shown_count == 0:
@@ -47,31 +45,46 @@ label monika_imeating:
         m "Are you eating anything right now?"
 
     python:
-         import store.mas_food as mas_food
+        import store.mas_food as mas_food
 
-         filtered_food= Event.filterEvents(
-            mas_food.food_db,
-            unlocked=True,
-            aff=mas_curr_affection
-            )
-
-         food_menu_items = [
-        (mas_food.food_db[k].prompt, k, False, False)
-        for k in filtered_food
+        #Build the list of food items
+        food_menu_items = [
+            (ev.prompt, ev.eventlabel, False, False)
+            for ev_label, ev in mas_food.food_db.iteritems()
+            if 'food' in ev.category
         ]
 
-         food_menu_items.sort()
+        #Sort said list
+        food_menu_items.sort()
 
-         final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
+        #Create the 'Nothing' option
+        final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
+
+    #Display the scrollable
+    show monika at t21
     call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
+    show monika at t11
 
+    #Calling appropriate label (or exiting out)
     if _return:
         $ pushEvent(_return)
         $ persistent._mas_food_current = _return
+    else:
+        pass
+        #TODO: put some lead out dialogue here (this is if the user says 'Nothing' [remove pass when you do that])
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_pizza',prompt='Pizza',category=[store.mas_food.'Food'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_pizza',
+            prompt='Pizza',
+            category=['food'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_pizza:
     m 1hua "Pizza is such a great treat!"
@@ -85,7 +98,16 @@ label mas_food_pizza:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_salad',prompt='Salad',category=[store.mas_food.'Food'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_salad',
+            prompt='Salad',
+            category=['food'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_salad:
     m 1hua "That's great to hear, [player]!"
@@ -100,13 +122,20 @@ label mas_food_salad:
 return
 
 #### Start Of The I'm Drinking Event ####
-
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_imdrinking",
-                    category=['you'],prompt="I'm Drinking",pool=True,unlocked=True))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_imdrinking",
+            category=['you'],
+            prompt="I'm Drinking",
+            pool=True,
+            unlocked=True
+        )
+    )
 
-label monika_imeating:
-    if mas_getEV('monika_imedrinking').shown_count == 0:
+label monika_imdrinking:
+    if mas_getEV('monika_imdrinking').shown_count == 0:
         m 1eua "Hey, [player]..."
         m 4eub "Remember how I told you earlier to make sure you're staying hydrated?"
         m 4eua "I just wanted to know if you listened."
@@ -117,48 +146,72 @@ label monika_imeating:
         m "Are you having anything to drink?"
 
     python:
-             import store.mas_food as mas_food
+        import store.mas_food as mas_food
 
-             filtered_food= Event.filterEvents(
-                mas_food.food_db,
-                unlocked=True,
-                aff=mas_curr_affection
-                )
+        #Build the drink list
+        food_menu_items = [
+            (ev.prompt, ev.eventlabel, False, False)
+            for ev_label, ev in mas_food.food_db.iteritems()
+            if 'drink' in ev.category
+        ]
 
-             food_menu_items = [
-            (mas_food.food_db[k].prompt, k, False, False)
-            for k in filtered_food
-            ]
+        #Sort the drink list
+        food_menu_items.sort()
 
-             food_menu_items.sort()
+        #Create the 'Nothin' option
+        final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
 
-             final_item = (mas_food.FOOD_RETURN, False, False, False, 20)
-        call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
+    #Display the scrollable
+    show monika at t21
+    call screen mas_gen_scrollable_menu(food_menu_items, mas_food.FOOD_AREA, mas_food.FOOD_XALIGN, final_item=final_item)
+    show monika at t11
 
-        if _return:
-            $ pushEvent(_return)
-            $ persistent._mas_food_current = _return
-        return
+    #Call appropriate label (or exit dlg)
+    if _return:
+        $ pushEvent(_return)
+        $ persistent._mas_food_current = _return
+    else:
+        pass
+        #TODO: put some lead out dialogue here (this is if the user says nevermind [remove pass when you do that])
+    return
 
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_coffee',prompt='Coffee',category=[store.mas_food.'Drink'],unlocked=True,))
-label mas_food_coffee
-    if mas_getEV(persistent._mas_acs_enable_coffee).shown_count == 0
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_coffee',
+            prompt='Coffee',
+            category=['drink'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
+
+label mas_food_coffee:
+    if mas_getEV(persistent._mas_acs_enable_coffee).shown_count == 0:
         m 1eua "That sounds wonderful!"
         m "I really miss having coffee."
         m 3eub "I would always have a cup before and after school."
         m 3hub "Maybe even sometimes during class."
         m 2hub "Who knows, maybe you and I could share a glass, [player]."
-        return
     else:
         m "That's really cool, [player]!"
         m "I'm so glad you gave me some earlier."
         m "Now we can drink some together."
-
+    return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_water',prompt='Water',category=[store.mas_food.'Drink'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_water',
+            prompt='Water',
+            category=['drink'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_water:
     m 1eua "I'm really happy to hear that, [player]!"
@@ -170,7 +223,16 @@ label mas_food_water:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_milk',prompt='Milk',category=[store.mas_food.'Drink'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_milk',
+            prompt='Milk',
+            category=['drink'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_milk:
     m 1eub "You know, I've never really drank a lot milk before."
@@ -181,7 +243,16 @@ label mas_food_milk:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_hotchocolate',prompt='Hot Chocolate',category=[store.mas_food.'Drink'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_hotchocolate',
+            prompt='Hot Chocolate',
+            category=['drink'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_hotchocolate:
     if mas_isWinter():
@@ -197,8 +268,18 @@ label mas_food_hotchocolate:
         m 1hub "There's nothing better than a nice mug of hot cocoa after a long day."
         m 1duu "I can't wait until we can drink some together."
     return
+
 init 5 python:
-    addEvent(Event(persistent._mas_food_database,'mas_food_chocolatemilk',prompt='Chocolate Milk',category=[store.mas_food.'Drink'],unlocked=True,))
+    addEvent(
+        Event(
+            persistent._mas_food_database,
+            eventlabel='mas_food_chocolatemilk',
+            prompt='Chocolate Milk',
+            category=['drink'],
+            unlocked=True
+        ),
+        code="FOO"
+    )
 
 label mas_food_chocolatemilk:
     m 3eub "That's wonderful, [player]."
@@ -206,5 +287,5 @@ label mas_food_chocolatemilk:
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
     m 1hua "Mind pouring me a glass?"
-    m  "Ehehe~"
+    m "Ehehe~"
     return
