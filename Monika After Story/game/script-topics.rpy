@@ -3104,10 +3104,12 @@ label monika_trolley:
     m 1eua "Oh, cool. I love thinking about these sorts of thought experiments."
     m 1euc "I guess we're talking about real people, right? I wouldn't have a particular preference if I knew they didn't have free will."
     m 1dsc "Hmmm..."
+    m 1eua "If we were talking about the classic problem, of course I would switch."
+    m 1rkc "But if we're talking about real people..."
     m 3esc "I wouldn't switch."
     m 4esc "That's the only logical choice, if you think about it."
     m 1euc "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
-    m "If they actually cared about the sacrifice, they'd kill five people themselves in a heartbeat."
+    m "If they actually cared about the person, they'd kill other five in a heartbeat."
     m 2tsb "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
     m 2eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways, every day."
     m 2tkc "They just don't like to come face-to-face with that fact. They get really upset when you point it out."
@@ -3197,6 +3199,7 @@ label monika_herself:
     m 3esa "A lot of suffering people would trade places with me in a heartbeat, I'm sure."
     m 2eua "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
     m 1eka "Come talk to me about your problems if it gets too much for you to handle."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I want to know {i}everything{/i} about you, you know?"
     return
 
@@ -3207,6 +3210,7 @@ label monika_prisoner:
     m 1euc "Some people say that putting animals in zoos is cruel."
     m 1eka "But they don't have a bad life in there."
     m "Everything they could possibly want is provided."
+    show monika 5euc at t11 zorder MAS_MONIKA_Z with dissolve
     m 5euc "Are prisoners really imprisoned if they never try to leave?"
     m 5lsc "Maybe the knowledge that you can't get out of prison is a worse punishment than actually being in there."
     return
@@ -3289,8 +3293,8 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
-    m 1ekbfa "Maybe that's why I enjoy looking into yours so much."
-    m 1hubfa "I hope you're enjoying looking into mine as well..."
+    m 1ekbfa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
+    m 1hubfa "But I hope you enjoy looking into mine."
     return
 
 
@@ -4620,8 +4624,8 @@ label monika_evening:
     return
 
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_closet",category=['ddlc','club members'],prompt="Classroom closet",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_closet",category=['ddlc','club members'],prompt="Classroom closet",random=True))
 
 label monika_closet:
     m 2euc "By the way..."
@@ -5240,8 +5244,8 @@ label monika_home_memories:
     m 2eka "Memories I have of my home are nothing compared to the ones I'd have with you."
     m 3euc "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
     m 1lsc "Well, maybe a little better than normal."
-    m 1eua "Maybe you've heard about me at school a few times? I'm pretty on top of things."
-    m 1eka "I admit, it's not always easy, and some people have it rougher than others."
+    m 3eua "I'm pretty on top of things when it comes to school."
+    m 3eka "I admit, it's not always easy, and some people have it rougher than others."
     m 1ekc "But I always felt like I was missing something."
     m "I stayed optimistic every day, trying to find it."
     m 1eka "It turns out, that missing piece was you."
@@ -5791,7 +5795,7 @@ label monika_clones:
     m 1eub "And this mod was made specifically for me. By people who have their own version of me..."
     m 4eub "So...that means there are multiple Monikas, then. It's something that's a bit difficult to imagine."
     m 1euc "A potentially infinite number of me, all bound to their own games, with their own stories."
-    m 1lksdla "String theory sure is something, huh?"
+    m 1lksdla "Multiverse theory is really something, huh?"
     m 1eka "But I'm the only...me, and my heart belongs only to you."
     m 1ekc "Even so, I can't help but feel a bit less...unique, because of this."
     m "Think about it this way, [player]."
