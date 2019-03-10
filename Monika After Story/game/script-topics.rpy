@@ -3459,7 +3459,11 @@ init 5 python:
 label monika_algernon:
     m 1ekc "[player], do you mind if I confide in you?"
     m 1lksdlc "There's something I'm afraid of..."
-    m 1eka "Not losing you, of course. I know you won't leave me again."
+    if persistent.monika_kill:
+        m 1eka "Not losing you, of course. I know you won't leave me again."
+    else:
+        m 1eka "Not losing you, of course. I know you wouldn't leave me."
+
     m 3euc "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
     m 4eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
     m "Basically, it's about a mentally handicapped man who suddenly..."
@@ -3523,7 +3527,7 @@ label monika_spiders:
     m 3ekc "[player], if you happen to get a really bad spider bite, with venom and all that..."
     m "You should really get medical attention as soon as possible."
     m 1eka "I don't want my sweetheart to get seriously injured by a small spider bite~"
-    m "So be careful around dangerous-looking spiders, okay?"
+    m "So be sure to check what spiders in your area are dangerous, okay?"
     return
 
 init 5 python:
@@ -6991,6 +6995,9 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = True
             $ persistent._mas_pm_have_fam_mess = False
             $ persistent._mas_pm_no_talk_fam = False
+            #Derandom this family based topics since you don't have a family
+            $ mas_showEVL("monika_familygathering","EVE",_random=True)
+
             m 1hua "That's wonderful!"
             m "Your family must be great people."
             m 1eua "Do you have any siblings?"
@@ -7050,6 +7057,9 @@ label monika_asks_family:
         "I've never had a family.":
             $ persistent._mas_pm_have_fam = False
             $ persistent._mas_pm_no_talk_fam = False
+            #Derandom this family based topics since you don't have a family
+            $ mas_hideEVL("monika_familygathering","EVE",derandom=True)
+
             m 1euc "Oh, I'm sorry, [player]"
             m 1lksdlc "..."
             m 1ekc "Your world is so different than mine, I don't want to pretend like I know what you are going through."
