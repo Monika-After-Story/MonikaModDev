@@ -1131,7 +1131,7 @@ init -1 python in mas_calendar:
         Generates a display date using the given date
 
         This is considered "formal", in that it's not really realisitc when
-        used in normal conversation. For example, if today is august 24, you 
+        used in normal conversation. For example, if today is august 24, you
         don't say 'this happened august 24th, 2016', you normally would say
         'this happened x years ago today'.
 
@@ -1722,6 +1722,7 @@ init -1 python in mas_calendar:
         removeRepeatable_d(identifier, _datetime.date())
 
 
+
 # add repeatable events
 init python:
 
@@ -1730,7 +1731,7 @@ init python:
 
     calendar.addRepeatable("New years day","New Year's Day",month=1,day=1,year_param=list())
     calendar.addRepeatable("Valentine","Valentine's Day",month=2,day=14,year_param=list())
-    calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
+    #calendar.addRepeatable("White day","White Day",month=3,day=14,year_param=list())
     calendar.addRepeatable("April Fools","Day I Become an AI",month=4,day=1,year_param=list())
     calendar.addRepeatable("Monika's Birthday","My Birthday",month=9,day=22,year_param=list())
     calendar.addRepeatable("Halloween","Halloween",month=10,day=31,year_param=list())
@@ -1763,7 +1764,67 @@ init python:
             []
         )
 
-    # TODO: add first kiss here
+    # add first kiss
+    if (
+            persistent._mas_first_kiss is not None
+            and type(persistent._mas_first_kiss) == datetime.datetime
+        ):
+        calendar.addRepeatable_dt(
+            "first-kiss",
+            "Our First Kiss",
+            persistent._mas_first_kiss,
+            []
+        )
+
+# Using init 2 so we can have access to the season dates
+init 2 python in mas_calendar:
+    import store
+
+    def addSeasonEvents():
+        """
+        Adds season change events to the calendar.
+        If the changed param is True it changes the old events.
+        IN:
+            changed - flag to specify that we need to change the
+                old events from the calendar
+        """
+        WINTER = "Winter"
+        SPRING = "Spring"
+        SUMMER = "Summer"
+        AUTUMN = "Autumn"
+
+        # Season changes:
+        if renpy.game.persistent._mas_pm_live_south_hemisphere:
+            _season_names = [SUMMER,AUTUMN,WINTER,SPRING]
+        else:
+            _season_names = [WINTER,SPRING,SUMMER,AUTUMN]
+
+        addRepeatable_d(
+            WINTER,
+            _season_names[0],
+            store.mas_winter_solstice,
+            []
+        )
+        addRepeatable_d(
+            SPRING,
+            _season_names[1],
+            store.mas_spring_equinox,
+            []
+        )
+        addRepeatable_d(
+            SUMMER,
+            _season_names[2],
+            store.mas_summer_solstice,
+            []
+        )
+        addRepeatable_d(
+            AUTUMN,
+            _season_names[3],
+            store.mas_fall_equinox,
+            []
+        )
+
+    addSeasonEvents()
 
 
 init 100 python:
@@ -1928,8 +1989,14 @@ label _first_time_calendar_use:
 
     $ persistent._mas_first_calendar_check = True
 
+    if store.mas_globals.in_idle_mode:
+        # IDLe only enables talk extra and music
+        $ store.hkb_button.talk_enabled = True
+        $ store.hkb_button.extra_enabled = True
+        $ store.hkb_button.music_enabled = True
+
     # push calendar birthdate for users without any birthdate
-    if persistent._mas_player_bday is None:
+    elif persistent._mas_player_bday is None:
         $ pushEvent("calendar_birthdate")
 
     else:

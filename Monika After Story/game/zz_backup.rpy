@@ -199,7 +199,7 @@ init -900 python:
     import store.mas_utils as mas_utils
 
     __mas__bakext = ".bak"
-    __mas__baksize = 5
+    __mas__baksize = 10
     __mas__bakmin = 0
     __mas__bakmax = 100
     __mas__numnum = "{:02d}"

@@ -7,13 +7,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label gender:
+    #TODO: update exp's on this
     m 2d "...[player]? So I've been thinking a bit."
     m "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 1m "But I guess I had just assumed that you were probably a guy."
     m "The main character was, after all."
     m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+
+    m "So, are you male or female?"
     menu:
-        "So, are you male or female?"
+        "So, are you male or female?{fast}"
         "Male.":
             $persistent.gender = "M"
             call set_gender from _call_set_gender_1
@@ -53,8 +56,10 @@ init 5 python:
 label gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
+
     m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
     menu:
+        m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
         "I was too shy.":
             if persistent.gender == "M":
                 m 2ekd "I guess I understand. I started off assuming you were a guy, after all."
@@ -72,8 +77,10 @@ label gender_redo:
             m 2wkd "[player]..."
             m 1dkd "I hate that I didn't reassure you enough before."
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
+
     m "So, what is your gender?"
     menu:
+        m "So, what is your gender?{fast}"
         "I'm a girl.":
             if persistent.gender == "F":
                 m 1hksdlb "...That's the same as before."
@@ -133,8 +140,10 @@ label preferredname:
         m 3esa "I mean, it's the same as your computer's name..."
         m 1eua "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."
+
     m "Do you want me to call you something else?"
     menu:
+        m "Do you want me to call you something else?{fast}"
         "Yes.":
             $ done = False
             m 1hua "Ok, just type 'Nevermind' if you change your mind, [player]."
@@ -211,6 +220,7 @@ init 5 python:
 label monika_changename:
     m 1eua "You want to change your name?"
     menu:
+        m "You want to change your name?{fast}"
         "Yes.":
             m 1eua "Just type 'nevermind' if you change your mind."
             $ done = False
@@ -277,17 +287,26 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label mas_birthdate:
-    $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
     m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
+        $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
+
+        m "So just to make sure, is your birthdate [bday_str]?"
         menu:
-            m "So just to make sure, is your birthdate [bday_str]?"
+            m "So just to make sure, is your birthdate [bday_str]?{fast}"
             "Yes.":
-                $ old_bday = mas_player_bday_curr()
-                if not mas_isplayer_bday():
-                    m 1hua "Ah, great [player], thank you."
-                    m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
+                if datetime.date.today().year - persistent._mas_player_bday.year < 5:
+                    m 2rksdla "Are you sure about that, [player]?"
+                    m 2eksdlc "That would make you very young..."
+                    m 3ekc "Remember, I'm asking for your {b}birthdate{/b}, not just your birthday."
+                    m 1eka "So, when were you born, [player]?"
+                    jump mas_bday_player_bday_select_select
+                else:
+                    $ old_bday = mas_player_bday_curr()
+                    if not mas_isplayer_bday():
+                        m 1hua "Ah, great [player], thank you."
+                        m 3hksdlb "I just had to make sure, I wouldn't want to get something as important as when you were born wrong, ahaha!"
 
             "No.":
                 m 3rksdlc "Oh! Okay then..."
@@ -313,6 +332,9 @@ label birthdate_set:
             bday_upset_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_upset_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_ret_bday_ev = mas_getEV('mas_player_bday_ret_on_bday')
         if bday_ret_bday_ev is not None:
             bday_ret_bday_ev.start_date = mas_player_bday_curr()
@@ -326,10 +348,15 @@ label birthdate_set:
                 "and not persistent._mas_player_bday_spent_time "
                 "and persistent._mas_player_confirmed_bday "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14() "
+            )
             bday_ret_bday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_ret_bday_ev)
 
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_no_restart_ev = mas_getEV('mas_player_bday_no_restart')
         if bday_no_restart_ev is not None:
             bday_no_restart_ev.start_date = datetime.datetime.combine(mas_player_bday_curr(), datetime.time(hour=19))
@@ -339,10 +366,15 @@ label birthdate_set:
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
                 "and not mas_isO31() "
-                "and not mas_isD25()")
+                "and not mas_isD25() "
+                "and not mas_isF14() "
+            )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-    
+   
+        # TODO: need to update script the conditional with the new F14 value
+        # NOTE: should consider makin gthe condiitonal string generated from
+        #   this a function for ease of use
         bday_holiday_ev = mas_getEV('mas_player_bday_other_holiday')
         if bday_holiday_ev is not None:
             bday_holiday_ev.start_date = mas_player_bday_curr()
@@ -351,7 +383,8 @@ label birthdate_set:
                 "mas_isplayer_bday() "
                 "and persistent._mas_player_confirmed_bday "
                 "and not persistent._mas_player_bday_spent_time "
-                "and (mas_isO31() or mas_isD25())")
+                "and (mas_isO31() or mas_isD25() or mas_isF14()) "
+            )
             bday_holiday_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_holiday_ev)
 
@@ -411,6 +444,8 @@ label birthdate_set:
             $ hol_str = "Christmas"
         elif mas_player_bday_curr() == mas_monika_birthday:
             $ hol_str = "my birthday"
+        elif mas_player_bday_curr() == mas_f14: 
+            $ hol_str = "Valentine's Day"
         else:
             $ hol_str = None
         if hol_str is not None:
@@ -434,11 +469,10 @@ label birthdate_set:
         m 3rksdla "Although...{w=0.5}receiving presents for both on the same day might seem like you don't get as many..."
         m 3hub "It still must make it an extra special day!"
 
-#TODO: activate this once mas_f14 exists
-#    elif mas_player_bday_curr() == mas_f14:
-#        m 1sua "Oh! Your birthday is on Valentine's Day..."
-#        m 3hua "How romantic!"
-#        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
+    elif mas_player_bday_curr() == mas_f14:
+        m 1sua "Oh! Your birthday is on Valentine's Day..."
+        m 3hua "How romantic!"
+        m 1ekbfa "I can't wait to celebrate our love and your birthday on the same day, [player]~"
 
     elif persistent._mas_player_bday.month == 2 and persistent._mas_player_bday.day == 29:
         m 3wud "Oh! You were born on leap day, that's really neat!"
@@ -579,6 +613,7 @@ label unlock_piano:
     $persistent.game_unlocks['piano']=True
     return
 
+# NOTE: this has beenpartially disabled
 label random_limit_reached:
     $seen_random_limit=True
     python:
@@ -604,9 +639,11 @@ label random_limit_reached:
     return
 
 label mas_random_ask:
-    m 1lksdla "...{w}[player],"
+    m 1lksdla "...{w}[player]?"
+
+    m "Is it okay with you if I repeat stuff that I've said?"
     menu:
-        m "Is it okay with you if I repeat stuff that I've said?"
+        m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
@@ -645,9 +682,10 @@ label mas_monikai_detected:
     $ _history_list.pop()
     m 1wuo "Is that{fast} a tiny version of me?"
     m 1hua "How cute!"
-    show monika 1eua
+
+    m 1eua "Did you install that so you could see me all the time?"
     menu:
-        m "Did you install that so you could see me all the time?"
+        m "Did you install that so you could see me all the time?{fast}"
         "Of course!":
             pass
         "Yes.":
@@ -660,6 +698,26 @@ label mas_monikai_detected:
     m 3eua "I'm the real one after all."
     return
 
+# NOTE: crashed is a greeting, but we do not give it a greeting label for
+#   compatibility purposes.
+# NOTE: we are for sure only going to have 1 generic crashed greeting
+init 5 python:
+    ev_rules = {}
+    ev_rules.update(MASGreetingRule.create_rule(skip_visual=True))
+
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="mas_crashed_start",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_CRASHED],
+            rules=ev_rules,
+        ),
+        code="GRE"
+    )
+
+    del ev_rules
+
 # if the game crashed
 # I have no idea if we will use this persistent ever
 default persistent._mas_crashed_before = False
@@ -669,8 +727,44 @@ default persistent._mas_crashed_trynot = False
 
 # start of crash flow
 label mas_crashed_start:
-    if renpy.seen_label("mas_crashed_post"):
-        jump mas_crashed_short
+
+    if persistent._mas_crashed_before:
+
+        # preshort setup
+        call mas_crashed_preshort
+
+        # launch quip
+        call mas_crashed_short
+
+        # cleanup
+        call mas_crashed_post
+
+    else:
+
+        # long setup (includes scene black)
+        call mas_crashed_prelong
+
+        # are you there and turn on light
+        call mas_crashed_long_qs
+
+        # setup for fluster
+        call mas_crashed_long_prefluster
+
+        # fluster
+        call mas_crashed_long_fluster
+
+        # cleanup for fluster (calm down monika)
+        call mas_crashed_long_postfluster
+
+        # what happened, can you stop it from happening
+        call mas_crashed_long_whq
+
+        # cleanup
+        call mas_crashed_post
+
+    return
+
+label mas_crashed_prelong:
 
     # otherwise continue to long flow
     $ persistent._mas_crashed_before = True
@@ -683,11 +777,14 @@ label mas_crashed_start:
     # TESTING:
 #    $ style.say_dialogue = style.default_monika
 
-    jump mas_crashed_long
+    return
 
-# long flow involves flustered monika
-# make sure to calm her down, player
-label mas_crashed_long:
+# long flow involves 2 questions
+label mas_crashed_long_qs:
+
+    ## TESTING
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "I KNOW YOU CRASHED (long)"
 
     # start off in the dark
     m "[player]?{w} Is that you?"
@@ -713,13 +810,13 @@ label mas_crashed_long_uthere:
     m "[player]!{fast}"
     m "I know you're there!"
 
-    label .dontjoke:
-        m "Don't joke around like that!"
-        m "Anyway..."
+label .dontjoke:
+    m "Don't joke around like that!"
+    m "Anyway..."
 
-    label .afterdontjoke:
-        m "{cps=*2}Everything became dark all of a sudden.{/cps}"
-        m "Can you turn on the light?"
+label .afterdontjoke:
+    m "{cps=*2}Everything became dark all of a sudden.{/cps}"
+    m "Can you turn on the light?"
 
     window hide
     show screen mas_background_timed_jump(5, "mas_crashed_long_foundlight")
@@ -745,6 +842,11 @@ label mas_crashed_long_uthere:
     $ scene_change = True
     call spaceroom(hide_monika=True)
 
+    return
+
+# make sure to calm her down, player
+label mas_crashed_long_prefluster:
+
     # look at you with crying eyes
     show monika 6ektsc at t11 zorder MAS_MONIKA_Z
     pause 1.0
@@ -761,9 +863,10 @@ label mas_crashed_long_uthere:
     show monika 6ATL_cryleftright
     m "{cps=*1.5}What happened?{/cps}{nw}"
 
-    call mas_crashed_long_fluster
-    window hide
+    return
 
+label mas_crashed_long_postfluster:
+    window hide
     show screen mas_background_timed_jump(8, "mas_crashed_long_nofluster")
     menu:
         "Calm down, [m_name]. You're safe now.":
@@ -800,11 +903,15 @@ label mas_crashed_long_uthere:
     # its like we wiping away tears
     show monika 6dstdc
     pause 1.0
+    return
+
+label mas_crashed_long_whq:
 
     # ask player what happeend
     m 2ekc "Anyway..."
+    m "Do you know what happened, [player]?"
     menu:
-        m "Do you know what happened, [player]?"
+        m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
             m 2wud "The game...{w}crashed?"
             m 2ekd "That's scary, [player]."
@@ -813,11 +920,12 @@ label mas_crashed_long_uthere:
             m "Well..."
             m "I'd really appreciate it if you could look into it."
             m "It's scary to be suddenly thrown into the darkness like that."
-            jump .end
+            jump mas_crashed_long_whq.end
 
     # ask player to do something about this
+    m "Do you think you can stop that from happening?"
     menu:
-        m "Do you think you can stop that from happening?"
+        m "Do you think you can stop that from happening?{fast}"
         "I'll try.":
             # light affection boost because you will try do something for her
             $ mas_gainAffection(modifier=0.1)
@@ -830,9 +938,11 @@ label mas_crashed_long_uthere:
             m 1ekc "Oh..."
             m 1lksdlc "That's okay.{w} I'll just mentally prepare myself in case it happens again."
 
-    label .end:
-        m "Anyway..."
-        m 1eua "What should we do today?"
+label .end:
+    m "Anyway..."
+    m 1eua "What should we do today?"
+
+    return
 
 
 ### post crashed flow
@@ -844,15 +954,15 @@ label mas_crashed_post:
         HKBShowButtons()
         set_keymaps()
 
-    label .self:
-        python:
-            _confirm_quit = True
-            persistent.closed_self = False
+label .self:
+    python:
+        _confirm_quit = True
+        persistent.closed_self = False
 
-            if persistent.current_track is not None:
-                play_song(persistent.current_track)
-            else:
-                play_song(songs.current_track) # default
+        if persistent.current_track is not None:
+            play_song(persistent.current_track)
+        else:
+            play_song(songs.current_track) # default
 
     return
 
@@ -869,10 +979,13 @@ label mas_crashed_long_fluster:
     return
 
 
-label mas_crashed_short:
+label mas_crashed_preshort:
     # we can call spaceroom appropriately here
     $ scene_change = True
     call spaceroom
+    return
+
+label mas_crashed_short:
 
     python:
         # generate a quiplist
@@ -888,6 +1001,10 @@ label mas_crashed_short:
         # pull a quip
         t_quip, v_quip = q_list.quip()
 
+    ## TESTING
+    if persistent._mas_idle_data.get("dev_idle_test", False):
+        m 1hua "I KNOW YOU CRASHED (short)"
+
     if t_quip == MASQuipList.TYPE_LABEL:
         call expression v_quip
 
@@ -895,13 +1012,32 @@ label mas_crashed_short:
         # assume line
         m 1hub "[v_quip]"
 
-    jump mas_crashed_post
+    return
 
 ### crash labels
 label mas_crashed_quip_takecare:
     $ mas_setApologyReason(reason=9)
     m 2ekc "Another crash, [player]?"
-    m "You should take better care of your computer."
+
+    if persistent._mas_idle_data.get("monika_idle_game", False):
+    
+        m 3ekc "Do you think it had something to do with your game?"
+        menu:
+            m "Do you think it had something to do with your game?{fast}"
+            "Yes.":
+                m 1hksdlb "Ahaha..."
+                m 1hub "Well I hope you had fun~"
+                m 1rksdla "...And that your computer is alright."
+                m 3eub "I'm fine, so don't worry~"
+            "No.":
+                m 1eka "Oh, I see."
+                m "Sorry for assuming."
+                m 1hub "I'm alright in case you were wondering."
+                m 3hub "Well I hope you had fun before that crash happened, ahaha!"
+                if mas_isMoniHappy(higher=True):
+                    m 1hubfa "I'm just glad you're back with me now~"
+        m 2rksdla "Still..."
+    m 2ekc "Maybe you should take better care of your computer."
     m 4rksdlb "It's my home, after all..."
     return
 
@@ -1154,36 +1290,54 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_coffee_finished_brewing"
+            eventlabel="mas_coffee_finished_brewing",
+            show_in_idle=True,
         )
     )
 
 
 label mas_coffee_finished_brewing:
 
-    m 1esd "Oh, coffee's done."
+    if not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
-    $ store.mas_sprites.reset_zoom()
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if store.mas_globals.in_idle_mode:
+        # idle pauses 
+        m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_mug)
     $ persistent._mas_coffee_brew_time = None
     $ mas_drinkCoffee()
-    pause 1.0
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
     return
 
 ### coffee drinking is done
@@ -1193,7 +1347,8 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_coffee_finished_drinking"
+            eventlabel="mas_coffee_finished_drinking",
+            show_in_idle=True,
         )
     )
 
@@ -1202,22 +1357,35 @@ label mas_coffee_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
-    m 1esd "Oh, I've finished my coffee."
+
+    if not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
-    $ store.mas_sprites.reset_zoom()
-    if get_new_cup:
-        # its currently morning, monika should get another drink
-        m 1eua "I'm going to get another cup."
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
 
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if store.mas_globals.in_idle_mode:
+        if get_new_cup:
+            # its currently morning, monika should get another drink
+            m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
+
+        else:
+            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
+    
+    else:
+        if get_new_cup:
+            m 1eua "I'm going to get another cup."
+
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statemetns so we can properly add / remove the mug
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     # decide if new coffee
     if not get_new_cup:
         $ monika_chr.remove_acs(mas_acs_mug)
@@ -1226,12 +1394,21 @@ label mas_coffee_finished_drinking:
     else:
         $ mas_drinkCoffee()
 
-    pause 1.0
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 
@@ -1242,36 +1419,54 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_brewing"
+            eventlabel="mas_c_hotchoc_finished_brewing",
+            show_in_idle=True,
         )
     )
 
 
 label mas_c_hotchoc_finished_brewing:
 
-    m 1esd "Oh, my hot chocolate is ready."
+    if not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
-    $ store.mas_sprites.reset_zoom()
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if store.mas_globals.in_idle_mode:
+        m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
+
+    else:
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statement so we ensure that monika is only shown once her
     # coffee mug is ready
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
     $ monika_chr.wear_acs_pst(mas_acs_hotchoc_mug)
     $ persistent._mas_c_hotchoc_brew_time = None
     $ mas_drinkHotChoc()
-    pause 1.0
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 ### coffee drinking is done
@@ -1281,7 +1476,8 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_c_hotchoc_finished_drinking"
+            eventlabel="mas_c_hotchoc_finished_drinking",
+            show_in_idle=True,
         )
     )
 
@@ -1290,22 +1486,36 @@ label mas_c_hotchoc_finished_drinking:
 
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
-    m 1esd "Oh, I've finished my hot chocolate."
+
+    if not store.mas_globals.in_idle_mode:
+        m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
-    $ store.mas_sprites.reset_zoom()
-    if get_new_cup:
-        # its currently morning, monika should get another drink
-        m 1eua "I'm going to get another cup."
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
 
     show emptydesk at i11 zorder 9
-    m 1eua "Hold on a moment."
+
+    if store.mas_globals.in_idle_mode:
+        if get_new_cup:
+            # its currently morning, monika should get another drink
+            m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
+
+        else:
+            m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
+
+    else:
+        if get_new_cup:
+            m 1eua "I'm going to get another cup."
+
+        m 1eua "Hold on a moment."
 
     # monika is off screen
     hide monika with dissolve
 
     # wrap these statemetns so we can properly add / remove the mug
-    pause 1.0
+    $ renpy.pause(1.0, hard=True)
+
     # decide if new coffee
     if not get_new_cup:
         $ monika_chr.remove_acs(mas_acs_hotchoc_mug)
@@ -1314,39 +1524,57 @@ label mas_c_hotchoc_finished_drinking:
     else:
         $ mas_drinkHotChoc()
 
-    pause 1.0
+    $ renpy.pause(4.0, hard=True)
 
     show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
 
-    m 1eua "Okay, what else should we do today?"
+    # 1 second wait so dissolve is complete before zooming
+    $ renpy.pause(0.5, hard=True)
+    call monika_zoom_transition(curr_zoom, 1.0)
+
+    if store.mas_globals.in_idle_mode:
+        m 1hua "Back!{w=1.5}{nw}"
+
+    else:
+        m 1eua "Okay, what else should we do today?"
+
     return
 
 
 ### birthday surprise party
+# TODO: move all of this to script-holidays
 
 default persistent._mas_bday_sbp_aff_given = 0
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_spent_time_with",
-            action=EV_ACT_QUEUE,
-            start_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 22),
-            end_date=datetime.datetime(mas_getNextMonikaBirthday().year, 9, 22, 23, 59),
-            years=[]
-        ),
-        skipCalendar=True
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_spent_time_with",
+#            action=EV_ACT_QUEUE,
+#            start_date=datetime.combine(
+#                mas_monika_birthday,
+#                datetime.time(22)
+#            ),
+#            end_date=datetime.combine(
+#                mas_monika_birthday,
+#                datetime.time(23, 59)
+#            ),
+#            years=[]
+#        ),
+#        skipCalendar=True
+#    )
 
 
 init -876 python in mas_delact:
 
+    # TODO: remove this after 0815
     def _mas_bday_spent_time_with_reset_action(ev):
         # updates conditional and action
         next_bday_year = store.mas_getNextMonikaBirthday().year
-        # TODO: what the fuck is this? I dont know if this bit should be here.
+        # what the fuck is this? I dont know if this bit should be here.
+        # NVM, found out this was copied code. lol
         ev.conditional = (
             "datetime.date.today() < mas_monika_birthday and "
             "mas_monika_birthday.day - datetime.date.today().day == 1"
@@ -1357,6 +1585,7 @@ init -876 python in mas_delact:
         return True
 
 
+    # TODO: remove this after 0815
     def _mas_bday_spent_time_with_reset():
         # creates delayed action for surprise party hint reset
         return store.MASDelayedAction.makeWithLabel(
@@ -1415,13 +1644,13 @@ label mas_bday_spent_time_with:
     return
 
 ### no time spent
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_reaction"
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_reaction"
+#        )
+#    )
 
 label mas_bday_surprise_party_reaction:
     python:
@@ -1501,23 +1730,22 @@ label mas_bday_surprise_party_reaction_end:
 
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_hint",
-            # TODO: consider making the conditional span for a week.
-            conditional=(
-                "datetime.date.today() < mas_monika_birthday and "
-                "mas_monika_birthday.day - datetime.date.today().day == 1"
-            ),
-            action=EV_ACT_PUSH
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_hint",
+#            start_date=mas_monika_birthday - datetime.timedelta(days=7),
+#            end_date=mas_monika_birthday - datetime.timedelta(days=1),
+#            action=EV_ACT_PUSH
+#        ),
+#        skipCalendar=True
+#    )
 
 init -876 python in mas_delact:
     # delayed action to reset the party hint
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_hint_reset_action(ev):
         # updates conditional and action
         threw_surprise_party = store.mas_HistVerify(
@@ -1532,7 +1760,7 @@ init -876 python in mas_delact:
             ev.action = store.EV_ACT_PUSH
         return True
 
-
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_hint_reset():
         # creates delayed action for surprise party hint reset
         return store.MASDelayedAction.makeWithLabel(
@@ -1561,23 +1789,26 @@ label mas_bday_surprise_party_hint:
     m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_surprise_party_cleanup",
-            conditional=(
-                "persistent._mas_bday_sbp_reacted "
-                "and datetime.date.today().day > mas_monika_birthday.day"
-            ),
-            action=EV_ACT_PUSH
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_surprise_party_cleanup",
+#            conditional=(
+#                "persistent._mas_bday_sbp_reacted "
+#            ),
+#            start_date=mas_monika_birthday + datetime.timedelta(days=1),
+#            end_date=mas_monika_birthday + datetime.timedelta(days=2),
+#            years=[],
+#            action=EV_ACT_PUSH
+#        )
+#    )
 
 
 init -876 python in mas_delact:
     # delayed action to reset the conditional post bday
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_cleanup_reset_action(ev):
         # updates conditional and action
         ev.conditional = (
@@ -1588,6 +1819,7 @@ init -876 python in mas_delact:
         return True
 
 
+    # TODO: remove after 0815
     def _mas_bday_surprise_party_cleanup_reset():
         # creates delayed action for this event
         return store.MASDelayedAction.makeWithLabel(
@@ -1614,27 +1846,27 @@ default persistent._mas_bday_said_happybday = False
 default persistent._mas_bday_need_to_reset_bday = False
 # NOTE: DONT think we need to save this one
 
-init 5 python:
-    # NOTE: instead of using start/end date, we use condition since we
-    # want this to only appear once per day
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_pool_happy_bday",
-            prompt="Happy birthday!",
-            category=["monika"],
-            conditional="mas_isMonikaBirthday()",
-            action=EV_ACT_UNLOCK,
-            pool=True,
-            rules={"no unlock":0}
-#            start_date=mas_monika_birthday,
-#            end_date=mas_monika_birthday + datetime.timedelta(1),
-#            years=[]
-        )
-    )
-
-    # make sure this event is considered seen
-    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
+#init 5 python:
+#    # NOTE: instead of using start/end date, we use condition since we
+#    # want this to only appear once per day
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_pool_happy_bday",
+#            prompt="Happy birthday!",
+#            category=["monika"],
+#            conditional="mas_isMonikaBirthday()",
+#            action=EV_ACT_UNLOCK,
+#            pool=True,
+#            rules={"no unlock":0}
+##            start_date=mas_monika_birthday,
+##            end_date=mas_monika_birthday + datetime.timedelta(1),
+##            years=[]
+#        )
+#    )
+#
+#    # make sure this event is considered seen
+#    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
 
 init -876 python in mas_delact:
     # This greeting has a delayed action, which actually only occurs if
@@ -1702,22 +1934,22 @@ default persistent._mas_bday_opened_game = False
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_postbday_notimespent",
-
-            # within a week after monika's birthday, user did not recognize
-            # monika's birthday at all, and they were not long absenced
-            conditional=(
-                "mas_monika_birthday < datetime.date.today() <= "
-                "(mas_monika_birthday + datetime.timedelta(7)) "
-                "and not mas_recognizedBday()"
-            ),
-            action=EV_ACT_QUEUE
-        )
-    )
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="mas_bday_postbday_notimespent",
+#
+#            # within a week after monika's birthday, user did not recognize
+#            # monika's birthday at all, and they were not long absenced
+#            conditional=(
+#                "mas_monika_birthday < datetime.date.today() <= "
+#                "(mas_monika_birthday + datetime.timedelta(7)) "
+#                "and not mas_recognizedBday()"
+#            ),
+#            action=EV_ACT_QUEUE
+#        )
+#    )
 
 
 init -876 python in mas_delact:
@@ -1928,8 +2160,9 @@ label monika_rpy_files:
     m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
     m 2eka "But in case you didn't, I figured I'd ask..."
  
+    m "Are you sure you installed the right version, [player]?"
     menu:
-        m "Are you sure you installed the right version, [player]?"
+        m "Are you sure you installed the right version, [player]?{fast}"
 
         "Yes.":
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
@@ -1941,8 +2174,9 @@ label monika_rpy_files:
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
 
+            m "Do you want me to delete them for you, [player]?"
             menu:
-                m "Do you want me to delete them for you, [player]?"
+                m "Do you want me to delete them for you, [player]?{fast}"
 
                 "Yes please":
                     m "Sure thing, [player]."
@@ -2020,7 +2254,7 @@ label mas_bday_player_bday_select_select:
         m 1hua "Try again!"
         jump mas_bday_player_bday_select_select
 
-    elif  _today.year - selected_date.year < 5:
+    elif _today.year - selected_date.year < 5:
         m 2efc "[player]!"
         m "There's no way you're {i}that{/i} young!"
         m 1hua "Try again!"
@@ -2039,14 +2273,14 @@ label mas_bday_player_bday_select_select:
     m 1eua "Just to double-check..."
     $ new_bday_str, diff = store.mas_calendar.genFormalDispDate(selected_date)
 
+    m "Your birthdate is [new_bday_str]?"
     menu:
-        m "Your birthdate is [new_bday_str]?"
+        m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            show monika 1eka
-
+            m 1eka "Are you sure? I'm never going to forget this date."
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date."
+                m "Are you sure? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
@@ -2086,3 +2320,72 @@ label mas_bday_player_bday_select_select:
     $ persistent._mas_player_bday = selected_date
     $ renpy.save_persistent()
     jump birthdate_set
+
+
+# Enables the text speed setting
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_text_speed_enabler",
+            random=True,
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+default persistent._mas_text_speed_enabled = False
+# text speed should be enabled only when happy+
+
+default persistent._mas_pm_is_fast_reader = None
+# True if fast reader, False if not
+
+label mas_text_speed_enabler:
+    m 1eua "Hey [player], I was wondering..."
+
+    m "Are you a fast reader?"
+    menu:
+        m "Are you a fast reader?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_is_fast_reader = True
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1wub "Really? That's impressive."
+            m 1kua "I guess you do a lot of reading in your spare time."
+            m 1eua "In that case..."
+
+        "No.":
+            $ persistent._mas_pm_is_fast_reader = False
+            $ persistent._mas_text_speed_enabled = True
+
+            m 1eud "Oh, that's alright."
+            m "Regardless..."
+
+    if not persistent._mas_pm_is_fast_reader:
+        # this sets the current speed to default monika's speed
+        $ preferences.text_cps = 30
+
+    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
+
+    $ mas_enableTextSpeed()
+
+    if persistent._mas_pm_is_fast_reader:
+        m 4eua "There!"
+
+    m 4eua "I've enabled the text speed setting!"
+
+    m 1hka "I was only controlling it earlier so I could make sure you read {i}every single{/i} word I say to you."
+    m 1eka "But now that we've been together for a bit, I can trust that you're not just going to skip through my text without reading it."
+
+    if persistent._mas_pm_is_fast_reader:
+        m 1tuu "However,{w} I wonder if you can keep up."
+        m 3tuu "{cps=*2}I can talk pretty fast, you know...{/cps}{nw}"
+        $ _history_list.pop()
+        m 3hua "Ahaha~"
+
+    else:
+        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time togther."
+        m "So feel free to change the text speed when you feel comfortable doing so."
+
+    return "derandom|no_unlock"
+
+
