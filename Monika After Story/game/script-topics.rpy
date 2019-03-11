@@ -1231,7 +1231,7 @@ label monika_outfit:
             m 3eka "I'll wear whatever outfit you like, just ask~"
         
         m 2eua "Do you know any artists?"
-        m 3sua "Maybe they could make some more outfits for me to wear too!"
+        m 3sua "Maybe they could make some more outfits for me to wear!"
 
     m 2eua "If that ever happens, will you show me?"
     m 4hua "You can share it with me on Twitter, actually!"
