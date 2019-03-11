@@ -10962,7 +10962,6 @@ init 5 python:
         )
     )
 
-default fun_facts_started = True
 default persistent._mas_funfactfun = True
 define mas_funfact.fun_count = 20
 define mas_funfact.bad_count = 4
@@ -10984,19 +10983,17 @@ label monika_fun_facts_open:
     #Determines the fact number and whether it's a bad fact
     $ fun_facts_bad_chance = renpy.random.randint(1,100)
 
-    #If player has opened fun facts this session
-    if fun_facts_started:
+    if mas_getEV('whatever').shown_count == 0:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
         m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true... "
-        $ fun_facts_started = False
     else:
         m 1eua "Up for another fun fact, [player]?"
         if persistent._mas_funfactfun:
-           m 3hua "That last one was pretty interesting after all!"
+            m 3hua "That last one was pretty interesting after all!"
         else:
-           m 2rksdlb "I know the last one wasn't great...but I'm sure this next one will be better."
+            m 2rksdlb "I know the last one wasn't great...but I'm sure this next one will be better." 
     m 2dsc "Now, let's see..."
 
 
