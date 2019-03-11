@@ -12038,7 +12038,8 @@ init 5 python:
             eventlabel="monika_relationship_comfort",
             category=["romance","advice"],
             prompt="Comfortable in a relationship",
-            random=True
+            random=True,
+            aff_range=(mas_aff.AFFECTIONATE,None)
         )
     )
 
