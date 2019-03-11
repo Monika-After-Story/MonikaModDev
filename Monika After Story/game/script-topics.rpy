@@ -12073,5 +12073,5 @@ label monika_relationship_comfort:
     m 2eka "Just because a relationship has slowed down, doesn't mean it's worse for it..."
     m 2hua "It just means that the people involved are truly comfortable with one another."
     m 2hubfb "And I think that's just sweet."
-    m 1kua "Try not to fall into the same trap [player], Ahaha!"
+    m 1kua "Try not to fall into the same trap, [player]. Ahaha!"
     return
