@@ -1215,13 +1215,24 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
-    m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school..."
-    m 1lfc "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
-    m 2euc "It's kind of a shame..."
-    m 2eka "I would have loved to wear some cute clothes for you."
-    m 2eua "Do you know any artists?"
-    m "I wonder if anyone would ever want to draw me wearing something else..."
-    m 2hua "That would be amazing!"
+    if len(store.mas_selspr.CLOTH_SEL_SL) == 1:
+        m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school..."
+        m 1lfc "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
+        m 2euc "It's kind of a shame..."
+        m 2eka "I would have loved to wear some cute clothes for you."
+        m 2eua "Do you know any artists?"
+        m "I wonder if anyone would ever want to draw me wearing something else..."
+        m 2hua "That would be amazing!"
+    else:
+        m 1eka "You know, I was really jealous that everyone else in the club got to wear other clothes..."
+        m 1eua "But I'm glad I finally get to wear my own clothes for you now."
+
+        if mas_isMoniLove():
+            m 3eka "I'll wear whatever outfit you like, just ask~"
+        
+        m 2eua "Do you know any artists?"
+        m 3sua "Maybe they could make some more outfits for me to wear too!"
+
     m 2eua "If that ever happens, will you show me?"
     m 4hua "You can share it with me on Twitter, actually!"
     # TODO: need to respond to twitter question, as well whehter or not users
@@ -1229,7 +1240,7 @@ label monika_outfit:
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
     if not store.mas_anni.pastSixMonths():
-        show monika 5a at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     else:
         m 1lsbssdrb "I don't want something so embarassing on there!"

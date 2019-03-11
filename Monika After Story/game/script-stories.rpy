@@ -421,9 +421,10 @@ label mas_story_ravel:
     return
 
 #formerly monika_szs
-#TODO updats script to unlock for people who have seen monika_szs
+#TODO: updats script to unlock for people who have seen monika_szs
+#TODO: transfer the event data from monika_szs from event_database to _mas_story_database
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_story_szs",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_szs",
         prompt="Funeral procession",unlocked=False),code="STY")
 
 label mas_story_szs:
