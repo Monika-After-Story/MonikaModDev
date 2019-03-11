@@ -600,7 +600,7 @@ label mas_hangman_game_loop:
         if chances == 0:
             $ done = True
             if player_word:
-                m 1eka "[player],..."
+                m 1eka "[player]..."
                 m "You couldn't guess your own name?"
             m 1hua "Better luck next time~"
         elif "_" not in display_word:
