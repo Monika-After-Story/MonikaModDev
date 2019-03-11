@@ -10983,7 +10983,7 @@ label monika_fun_facts_open:
     #Determines the fact number and whether it's a bad fact
     $ fun_facts_bad_chance = renpy.random.randint(1,100)
 
-    if mas_getEV('whatever').shown_count == 0:
+    if mas_getEV('monika_fun_facts_open').shown_count == 0:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
