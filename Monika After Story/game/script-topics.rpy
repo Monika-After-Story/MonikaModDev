@@ -719,7 +719,7 @@ label monika_portraitof:
     m 2lksdla "Actually, I don't think I should be talking about this."
     m 2hksdlb "Ahaha, sorry!"
     m 1rksdla "Just forget I said anything."
-    return
+    return "derandom"
 
 
 init 5 python:
@@ -2249,11 +2249,15 @@ label monika_route:
 
 #END ORIGINAL TOPICS
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_imouto',
-                                                            prompt="Do you like little sisters?",
-                                                            category=['you'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_imouto',
+            prompt="Do you like little sisters?",
+            category=['you'],
+            pool=True,
+        )
+    )
 
 label monika_imouto:
     m 1euc "Little sisters?"
@@ -2270,11 +2274,15 @@ label monika_imouto:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_oneesan',
-                                                            prompt="Do you like older sisters?",
-                                                            category=['you'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_oneesan',
+            prompt="Do you like older sisters?",
+            category=['you'],
+            pool=True,
+        )
+    )
 
 label monika_oneesan:
     m 1euc "Older sisters?"
@@ -2310,11 +2318,15 @@ label monika_family:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_anime',
-                                                            prompt="Do you read manga?",
-                                                            category=['monika','media'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_anime',
+            prompt="Do you read manga?",
+            category=['monika','media'],
+            pool=True,
+        )
+    )
 
 label monika_anime:
     m 1tku "Yeah, I had a feeling you were going to ask me about this."
@@ -2326,11 +2338,15 @@ label monika_anime:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_libitina',
-                                                            prompt="Have you heard of Libitina?",
-                                                            category=['ddlc'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_libitina',
+            prompt="Have you heard of Libitina?",
+            category=['ddlc'],
+            pool=True,
+        )
+    )
 
 label monika_libitina:
     m 1euc "Huh. Where did you hear about that?"
@@ -2345,11 +2361,15 @@ label monika_libitina:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_meta',
-                                                            prompt="Isn't this game metafictional?",
-                                                            category=['ddlc'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_meta',
+            prompt="Isn't this game metafictional?",
+            category=['ddlc'],
+            pool=True,
+        )
+    )
 
 label monika_meta:
     m 1euc "Yes, this game really was metafictional, wasn't it?"
@@ -2369,11 +2389,15 @@ label monika_meta:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel='monika_programming',
-                                                            prompt="Is it hard to code?",
-                                                            category=['monika','misc'],
-                                                            pool=True,
-                                                            ))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_programming',
+            prompt="Is it hard to code?",
+            category=['monika','misc'],
+            pool=True,
+        )
+    )
 
 label monika_programming:
     m 3eka "It wasn't easy for me to learn programming."
@@ -3251,7 +3275,7 @@ init 5 python:
 label monika_torment:
     m 1euc "What can change the nature of a man?"
     m 3hksdlb "...The answer's not me, by the way."
-    return
+    return "derandom"
 
 # TODO: should this be moved to stories? or removed entirely?
 # moved to script-stories as mas_story_szs
@@ -4416,7 +4440,7 @@ label monika_pleasure:
     else:
         m 1lksdla "But I feel like we've been together long enough where we should be comfortable with one another."
         m 1eka "It's important to be open about such things."
-    m "I know that it's a private topic in your world, but I'm not sure if it's a concept here, so I'm curious..."
+    m "I know that it's a private topic in your world, but I'm curious..."
     m 1euc "Is it that good of a feeling?"
     m 1esc "I just want you to be careful; I've heard it's addicting."
     m 1ekc "And from what I hear, people addicted to masturbation often see other people as sexual objects."
