@@ -12051,5 +12051,5 @@ label monika_robotbody:
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "Well, no matter what, I wouldn't mind any of that as long as I have you."
     m 5eubfb "I love you [player], and I'm willing to make any sacrifice to be with you forever."
-    m 5hubfa "Besides, maybe sometime after I cross over, there will be more advances on technology to make me more human, and then we'll be able to do more things together."
+    m 5hubfa "Besides, maybe sometime after I cross over, there'll be more advances in technology to make me more human, and then we'll be able to do more things together."
     return
