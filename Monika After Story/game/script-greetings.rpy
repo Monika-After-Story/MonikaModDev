@@ -2377,7 +2377,7 @@ init 5 python:
     del ev_rules
 
 label greeting_timeconcern_day:
-    jump monika_timeconcern_day
+    jump monika_timeconcern
 
 init 5 python:
     ev_rules = {}
