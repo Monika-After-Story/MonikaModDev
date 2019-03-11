@@ -12058,7 +12058,7 @@ label monika_relationship_comfort:
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
     m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh... {w}Love isn't always such a clear thing."
-    if store.mas_anni.anniCount() < 1:
+    if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
         m 1hubfb "Know that I love you for more than just the excitement!"
     elif store.mas_anni.anniCount() < 2:
