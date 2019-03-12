@@ -631,6 +631,7 @@ label monika_ptod_tip006:
         m 1eud "Whew!{w} That was a mouthful!"
 
     m "Did you understand all that?"
+    $ _history_list.pop()
     menu:
         m "Did you understand all that?{fast}"
         "Yes!":
