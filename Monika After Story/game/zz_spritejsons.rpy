@@ -215,12 +215,14 @@
 #       - default None
 # }
 
-init -21 python in mas_sprites_json:
-    import store
-    import json
+# TODO :add dev label to check if prog points are executable
 
-    # TODO: switch to newer log
-    log = renpy.renpy.log.open("log/spj")
+init -21 python in mas_sprites_json:
+    import json
+    import store
+    import store.mas_utils as mas_utils
+
+    log = mas_utils.getMASLog("log/spj")
 
     sprite_station = store.MASDockingStation(
         renpy.config.basedir + "/game/mod_assets/monika/jsons/"
@@ -232,13 +234,58 @@ init -21 python in mas_sprites_json:
     SP_HAIR = 1
     SP_CLOTHES = 2
 
+    ### LOG CONSTANTS
+    ## Global
+    BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
+
+    ## MASPoseMap
+    MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
+
+
 
 init 790 python in mas_sprites_json:
+    from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
+        JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
+        MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
+        LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
+        NAME_BAD
+
+
+
     def addSpriteObject(filepath):
         """
-        TODO
+        Adds a sprite object, given its json filepath
+
+        NOTE: most exceptions logged
+        NOTE: may raise exceptions
+
+        IN:
+            filepath - filepath to the JSON we want to load
         """
-        pass
+        islogopen = log.open()
+        jobj = None
+
+        # can we read file
+        with open(filepath, "r") as jsonfile:
+            jobj = json.load(jsonfile)
+
+        # is file json
+        if jobj is None:
+            if islogopen:
+                log.write(MSG_ERR.format(JSON_LOAD_FAILED.format(filepath))
+            return
+
+        ## this happens in 3 steps:
+        # 1. build sprite object according to the json
+        #   - this includes PoseMaps
+        # 2. build selectable (if provided)
+        # 3. Init everything
+        #
+        # Everything should be wrapped in try/excepts. All exceptions should
+        #   be logged, but we include the warning in the function comment
+        #   in case.
+
+
 
 init 800 python in mas_sprites_json:
     pass

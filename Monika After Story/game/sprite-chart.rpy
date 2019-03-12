@@ -445,6 +445,17 @@ init -5 python in mas_sprites:
         "def|def"
     ]
 
+    def _verify_uprightpose(val):
+        return val in POSES
+
+
+    def _verify_leaningpose(val):
+        return val in L_POSES
+
+
+    def _verify_pose(val):
+        return _verify_uprightpose(val) or _verify_leaningpose(val)
+
 
     def acs_lean_mode(sprite_list, lean):
         """
@@ -2806,8 +2817,45 @@ init -2 python:
         There is also a seperate dict to handle lean variants
         """
         from store.mas_sprites import POSES, L_POSES
+        from store.mas_ev_data_ver import _verify_bool, _verify_str
+        from store.mas_sprites import _verify_pose
+        import store.mas_json_sprites as mjs
+
+
+        # all params
+        CONS_PARAM_NAMES = [
+            "default",
+            "l_default",
+            "use_reg_for_l",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+        ]
+
+        # params with multiple acceptable types
+        CONS_MUL_T_PARAM_NAMES = [
+            "default",
+            "l_default",
+            "p1",
+            "p2",
+            "p3",
+            "p4",
+            "p5",
+            "p6",
+        ]
+       
+        # params that only accept bool types
+        CONS_BOOL_T_PARAM_NAMES = [
+            "use_reg_for_l",
+        ]
+
 
         def __init__(self,
+                # NOTE: when updating params, make sure to modify param name
+                #   lists above accordingly.
                 default=None,
                 l_default=None,
                 use_reg_for_l=False,
@@ -2897,6 +2945,79 @@ init -2 python:
                 value of pose in internal dict, or defval if not found
             """
             return self.__all_map.get(pose, defval)
+
+
+        @classmethod
+        def fromJSON(cls, json_obj, is_fallback):
+            """
+            Builds a MASPoseMap given a JSON format of it
+
+            IN:
+                json_obj - json object to parse
+                is_fallback - True if the MASPoseMap should be built with
+                    fallback mode in mind, False otherwise.
+
+            RETURNS: Tuple of the following format:
+                [0]: MASPoseMap object built using the JSON, or None if failed
+                [1]: List of Errors/Warnings/Info messages to show
+            """
+            isbad = False
+            msgs = []
+
+            # lets start with the non-multiple types
+            for param_name in cls.CONS_BOOL_T_PARAM_NAMES:
+                if (
+                        param_name in json_obj 
+                        and not cls._verify_bool(json_obj[param_name])
+                    ):
+                    isbad = True
+                    msgs.append(cls.mjs.MSG_ERR_ID.format(
+                        cls.mjs.BAD_TYPE.format(
+                            param_name, 
+                            bool,
+                            type(json_obj[param_name])
+                        )
+                    )
+
+            # now fallback uses a different verification
+            if is_fallback:
+                verifier = cls._verify_str
+                desired_type = str
+            else:
+                verifier = cls._verify_bool
+                desired_type = bool
+
+            # and verify the multi-types
+            for param_name in cls.CONS_MUL_T_PARAM_NAMES:
+                if param_name in json_obj:
+                    param_val = json_obj[param_name]
+
+                    if not verifier(param_val):
+                        isbad = True
+                        msgs.append(cls.mjs.MSG_ERR_ID.format(
+                            cls.mjs.BAD_TYPE.format(
+                                param_name,
+                                desired_type,
+                                type(param_val)
+                            )
+                        )
+
+                    elif in_fallback and not cls._verify_pose(param_val):
+                        # in fallback mode, we need to verify poses
+                        isbad = True
+                        msgs.append(cls.mjs.MSG_ERR_ID.format(
+                            cls.mjs.MPM_BAD_POSE.format(param_name, param_val)
+                        )
+
+            # TODO: if you in fallback mode and did not set a default, 
+            #   give a warning\
+
+            # TODO: extra params in the json should be marked as warning
+
+                
+
+
+
 
 
     # base class for MAS sprite things
