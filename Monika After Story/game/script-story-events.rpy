@@ -15,6 +15,7 @@ label gender:
     m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
     m "So, are you male or female?"
+    $ _history_list.pop()
     menu:
         "So, are you male or female?{fast}"
         "Male.":
@@ -58,6 +59,7 @@ label gender_redo:
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
 
     m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
+    $ _history_list.pop()
     menu:
         m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
         "I was too shy.":
@@ -79,6 +81,7 @@ label gender_redo:
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
 
     m "So, what is your gender?"
+    $ _history_list.pop()
     menu:
         m "So, what is your gender?{fast}"
         "I'm a girl.":
@@ -142,6 +145,7 @@ label preferredname:
         m "Either that or you must really like that pseudonym."
 
     m "Do you want me to call you something else?"
+    $ _history_list.pop()
     menu:
         m "Do you want me to call you something else?{fast}"
         "Yes.":
@@ -219,6 +223,7 @@ init 5 python:
 
 label monika_changename:
     m 1eua "You want to change your name?"
+    $ _history_list.pop()
     menu:
         m "You want to change your name?{fast}"
         "Yes.":
@@ -293,6 +298,7 @@ label mas_birthdate:
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
 
         m "So just to make sure, is your birthdate [bday_str]?"
+        $ _history_list.pop()
         menu:
             m "So just to make sure, is your birthdate [bday_str]?{fast}"
             "Yes.":
@@ -642,6 +648,7 @@ label mas_random_ask:
     m 1lksdla "...{w}[player]?"
 
     m "Is it okay with you if I repeat stuff that I've said?"
+    $ _history_list.pop()
     menu:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
@@ -684,6 +691,7 @@ label mas_monikai_detected:
     m 1hua "How cute!"
 
     m 1eua "Did you install that so you could see me all the time?"
+    $ _history_list.pop()
     menu:
         m "Did you install that so you could see me all the time?{fast}"
         "Of course!":
@@ -910,6 +918,7 @@ label mas_crashed_long_whq:
     # ask player what happeend
     m 2ekc "Anyway..."
     m "Do you know what happened, [player]?"
+    $ _history_list.pop()
     menu:
         m "Do you know what happened, [player]?{fast}"
         "The game crashed.":
@@ -924,6 +933,7 @@ label mas_crashed_long_whq:
 
     # ask player to do something about this
     m "Do you think you can stop that from happening?"
+    $ _history_list.pop()
     menu:
         m "Do you think you can stop that from happening?{fast}"
         "I'll try.":
@@ -1022,6 +1032,7 @@ label mas_crashed_quip_takecare:
     if persistent._mas_idle_data.get("monika_idle_game", False):
     
         m 3ekc "Do you think it had something to do with your game?"
+        $ _history_list.pop()
         menu:
             m "Do you think it had something to do with your game?{fast}"
             "Yes.":
@@ -1154,7 +1165,7 @@ label mas_corrupted_persistent:
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Of course, I haven't read it, since it's obviously for you..."
     m 1ekd "Do you know what this is about?"
-
+    $ _history_list.pop()
     # just pasting the poem screen code here
     window hide
     if len(mas_bad_backups) > 0:
@@ -1171,6 +1182,7 @@ label mas_corrupted_persistent:
     $ _gtext = glitchtext(15)
 
     menu:
+        m "Do you know what this is about?{fast}"
         "It's nothing to worry about.":
             jump mas_corrupted_persistent_post_menu
         "It's about [_gtext].":
@@ -2161,6 +2173,7 @@ label monika_rpy_files:
     m 2eka "But in case you didn't, I figured I'd ask..."
  
     m "Are you sure you installed the right version, [player]?"
+    $ _history_list.pop()
     menu:
         m "Are you sure you installed the right version, [player]?{fast}"
 
@@ -2175,6 +2188,7 @@ label monika_rpy_files:
             m 4eua "Actually, maybe I can delete them for you."
 
             m "Do you want me to delete them for you, [player]?"
+            $ _history_list.pop()
             menu:
                 m "Do you want me to delete them for you, [player]?{fast}"
 
@@ -2274,10 +2288,12 @@ label mas_bday_player_bday_select_select:
     $ new_bday_str, diff = store.mas_calendar.genFormalDispDate(selected_date)
 
     m "Your birthdate is [new_bday_str]?"
+    $ _history_list.pop()
     menu:
         m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
             m 1eka "Are you sure? I'm never going to forget this date."
+            $ _history_list.pop()
             # one more confirmation
             menu:
                 m "Are you sure? I'm never going to forget this date.{fast}"
@@ -2343,6 +2359,7 @@ label mas_text_speed_enabler:
     m 1eua "Hey [player], I was wondering..."
 
     m "Are you a fast reader?"
+    $ _history_list.pop()
     menu:
         m "Are you a fast reader?{fast}"
         "Yes.":

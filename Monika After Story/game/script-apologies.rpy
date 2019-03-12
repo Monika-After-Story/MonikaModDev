@@ -62,7 +62,8 @@ label monika_playerapologizes:
         7: "forgetting your birthday.",
         8: "not spending time with you on your birthday.",
         9: "the game crashing.",
-        10: "the game crashing." #easiest way to handle this w/o overrides
+        10: "the game crashing.", #easiest way to handle this w/o overrides
+        11: "not listening to your speech.",
     }
 
     #Set the prompt for this...
@@ -178,7 +179,8 @@ label mas_apology_generic:
         7: "forgetting my birthday.",
         8: "not spending time with me on my birthday.",
         9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
-        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better."
+        10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
+        11: "not listening to my speech. I worked really hard on it."
     }
 
     #If there's no reason to apologize

@@ -150,6 +150,7 @@ init 5 python:
 label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
     m "Are you having a bad day, [player]?"
+    $ _history_list.pop()
     menu:
         m "Are you having a bad day, [player]?{fast}"
         "Yes.":
@@ -162,11 +163,14 @@ label mas_mood_sad:
             m 1eka "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
         "No.":
             m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
+
             m 1eua "I don't want to interrupt you while you're talking, so let me know when you're done."
+            $ _history_list.pop()
             menu:
                 m "I don't want to interrupt you while you're talking, so let me know when you're done.{fast}"
                 "I'm done.":
                     m "Do you feel a little better now, [player]?"
+                    $ _history_list.pop()
                     menu:
                         m "Do you feel a little better now, [player]?{fast}"
                         "Yeah I do.":
@@ -187,6 +191,7 @@ init 5 python:
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
     m 2b "Was it a major accomplishment, or a minor one?"
+    $ _history_list.pop()
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
         "Major.":
@@ -469,6 +474,7 @@ label mas_mood_bored:
         show monika 1ekc
         pause 1.0
         m "Do I really bore you that much, [player]?"
+        $ _history_list.pop()
         menu:
             m "Do I really bore you that much, [player]?{fast}"
             "No, I'm not bored {i}of you{/i}...":
@@ -525,6 +531,7 @@ label mas_mood_bored:
             m 2rkc "Maybe we could play a game of [display_picked]..."
 
     m "What do you say, [player]?"
+    $ _history_list.pop()
     menu:
         m "What do you say, [player]?{fast}"
         "Yes.":
