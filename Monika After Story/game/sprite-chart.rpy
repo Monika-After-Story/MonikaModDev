@@ -13417,7 +13417,7 @@ image monika 6tsbfa = DynamicDisplayable(
     arms="down"
 )
 
-image monika 6tsbfa = DynamicDisplayable(
+image monika 6tsbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
     eyebrows="mid",
