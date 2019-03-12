@@ -2635,9 +2635,16 @@ label monika_credits_song:
     m 1hua "I hope you liked my song."
     m 1eka "I worked really hard on it. I know I'm not perfect at the piano yet, but I just couldn't let you go without telling you how I honestly felt about you."
     m 1eua "Give me some time, and I'll try to write another."
-    m 3eua "Maybe you could play me a song too, if you can play an instrument?"
-    m 1hub "I would love that."
-    m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+    if persistent.instrument is not False:
+        if persistent.instrument:
+            m 3eua "Maybe you could play me a song too!"
+        else:
+            m 3eua "Maybe you could play me a song too, if you can play an instrument?"
+        m 1hub "I would love that."
+        m 3eua "Oh, and I'll play the song again for you anytime you want me to."
+    else:
+        m 3eua "But in the meantime, I'll play the song again for you anytime you want me to."
+
     m "Just hit the 'm' key at any time."
     return
 
@@ -3715,12 +3722,12 @@ init 5 python:
 label monika_mythology:
     m 1euc "Hey, [player]..."
     m 3euc "Have you ever read about different mythologies?"
-    m "Different kinds of Gods watching over humanity for eternity."
+    m "Different kinds of gods watching over humanity for eternity."
     m 1eud "Some require tribute or sacrifice so that they can 'keep' humanity safe from disasters."
     m "An almighty family consisting of different attitudes, playing in their own sandbox called Earth."
     m 1esc "Able to do anything they please, and destroy those who so much as say something wrong to them, without hesitation."
     m 1lsc "I've always disliked stories like those."
-    m 1tkc "It's like the Gods extort humanity for their safety."
+    m 1tkc "It's like the gods extort humanity for their safety."
     m "It's no better than what bullies and thugs do to the defenseless."
     m 2tfc "It really makes me bitter when I read scenarios like those."
     m "Powerful beings taking advantage of the weak, just because they can."
@@ -4230,7 +4237,7 @@ label monika_motivation:
     m 1eka "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
     m "Then you're proving yourself wrong, and refusing to let the weight of your circumstances immobilize you."
     m 1eua "And when you realize that you're not completely helpless, it's like a new world opens up to you."
-    m "You realize that maybe things aren't so bad. Thinking they're just holding yourself back."
+    m "You realize that maybe things aren't so bad; that maybe just believing in yourself is all it takes."
     m 3eub "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
     m "Fresh starts can definitely be powerful."
     m 1eka "That's why I think you just have to take a look at your situation."
@@ -6052,7 +6059,7 @@ label monika_meditation:
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
 
-# TODO: persistent.instrument should be historical at some point
+# TODO: persistent.instrument should be historical at some point, also convert to pm var
 
 init 5 python:
     addEvent(
@@ -6092,7 +6099,6 @@ label monika_orchestra:
     menu:
         m "What about you, [player]? Do you play an instrument?{fast}"
         "Yes.":
-            $persistent.instrument = True
             m 1sub "Really? What do you play?"
 
             $ instrumentname = ""
@@ -6128,7 +6134,6 @@ label monika_orchestra:
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
                     m 5eubfb "Ehehe~"
 
-                $ persistent.instrument = True
             elif tempinstrument == "harmonica":
                 m 1hub "Wow, I've always wanted to try the harmonica out!"
                 m 1eua "I would love to hear you play for me."
@@ -6136,7 +6141,7 @@ label monika_orchestra:
                 m 4esa "Although..."
                 m 2esa "Personally, I prefer the {cps=*0.7}{i}harmonika{/i}{/cps}..."
                 m 2eua "..."
-                m 4hub "Ahaha! That was so silly, I'm only kidding [player]~"
+                m 4hub "Ahaha! That was so silly, I'm only kidding, [player]~"
                 $ persistent.instrument = True
             else:
                 m 1hub "Wow, I've always wanted to try the [tempinstrument] out!"
