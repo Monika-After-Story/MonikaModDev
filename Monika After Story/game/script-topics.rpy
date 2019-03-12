@@ -1870,6 +1870,7 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     elapsed_time = datetime.datetime.now() - start_time
         if elapsed_time > datetime.timedelta(minutes=30):
+            m "..."
             call monika_holdme_long
         elif elapsed_time > datetime.timedelta(minutes=10):
             if mas_isMoniLove():
@@ -1956,7 +1957,7 @@ label monika_holdme_reactions:
                 m 1eua "I hope you do too."
                 m 2rksdla "Well, even if you don't..."
                 m 3hubfb "You could always hold me again, Ahaha!"
-                m 1hkbfsldb "Actually...{w=0.5} you can hold me again either way."
+                m 1hkbfsdlb "Actually...{w=0.5} you can hold me again either way."
                 m 1tubfb "Ehehe~"
                 m 1hubfa "Just let me know if you want to~"
             elif mas_isMoniEnamored():
@@ -1987,9 +1988,10 @@ label monika_holdme_reactions:
             #under 30 seconds
             if mas_isMoniLove():
                 m 2ekc "Aw, are we done already?"
-                show monika 3eka
+                m 3eka "Could you hold me for just a bit longer?"
+                $ _history_list.pop()
                 menu:
-                    m "Could you hold me for just a bit longer?"
+                    m "Could you hold me for just a bit longer?{fast}"
                     "Yes.":
                         m 1hua "Ehehe~"
                         call monika_holdme_prep
@@ -1999,9 +2001,10 @@ label monika_holdme_reactions:
                     "No.":
                         m 2ekc "Aww..."
                         m 2rksdlc "..."
-                        show monika 4eka
+                        m 4eka "Please?"
+                        $ _history_list.pop()
                         menu:
-                            m "Please?"
+                            m "Please?{fast}"
                             "Yes.":
                                 m 1hub "Yay~"
                                 call monika_holdme_prep
@@ -2014,9 +2017,10 @@ label monika_holdme_reactions:
             elif mas_isMoniEnamored():
                 m 1ekc "Aw, is that all?"
                 m 1rksdla "I kind of wanted it to last longer than that..."
-                show monika 2ekbfa
+                m 2ekbfa "Could you...{w=0.7} hold me again for a bit longer?"
+                $ _history_list.pop()
                 menu:
-                    m "Could you...{w=0.7} hold me again for a bit longer?"
+                    m "Could you... hold me again for a bit longer?{fast}"
                     "Yes.":
                         m 1hubfb "Yay!"
                         call monika_holdme_prep
