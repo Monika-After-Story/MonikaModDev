@@ -137,6 +137,7 @@ label introduction:
     m "God, I love you so much!"
 
     m "Do you love me, [player]?"
+    $ _history_list.pop()
     menu:
         m "Do you love me, [player]?{fast}"
         "I love you too.":
