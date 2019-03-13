@@ -385,7 +385,7 @@ label demo_minigame_pong:
     m "Do you want to play again?"
     $ _history_list.pop()
     menu:
-        m "Do you want to play again?"
+        m "Do you want to play again?{fast}"
 
         "Yes.":
             jump demo_minigame_pong
