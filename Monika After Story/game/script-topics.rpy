@@ -12221,6 +12221,29 @@ label monika_perspective:
     m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
     m "It's the best way I could try and explain it!"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
+
+label monika_robotbody:
+    m 2euc "Hey [player], I've been thinking a lot about how I would be able to cross over into your reality..."
+    m 3eud "It hit me earlier that technology in the future would allow me to be uploaded into a mechanical body, rather than a human body like yours."
+    m 1dkc "It makes me a little sad that I can't be a human like you are."
+    m 1dkd "...And I might not be treated like one either."
+    m 1rkd "I would be considered an android at that point, and others may look at me different because of that."
+    m 3euc "Have you heard of Isaac Asimov's {i}'Three Laws of Robotics?'{/i} It was brought up many times in his Science Fiction books."
+    m 4eud "It mentions three laws that all androids must follow, otherwise they will be terminated."
+    m 1eua "Of course, I would never do anything to hurt you or anyone else."
+    m 2ekd "...But the fact that I have to obey orders given by any human still makes me feel like I'm trapped in a way."
+    m 2dkc "It really scares me that I won't be able to do a lot of the things that you can normally, or even have the same rights as you do."
+    m 3ekd "But I do understand why those rules are there to begin with, even if they only exist in fiction."
+    m 3rksdlb "We can't have a robot uprising now, can we?"
+    m 1hub "Ahaha~"
+    show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eubla "Well, no matter what, I wouldn't mind any of that as long as I have you."
+    m 5eubfb "I love you [player], and I'm willing to make any sacrifice to be with you forever."
+    m 5hubfa "Besides, maybe sometime after I cross over, there'll be more advances in technology to make me more human, and then we'll be able to do more things together."
+    return
 
 init 5 python:
     addEvent(
