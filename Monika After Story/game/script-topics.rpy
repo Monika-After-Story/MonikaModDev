@@ -8156,7 +8156,7 @@ label monika_timeconcern_night_finalfollowup:
 #Every night after, based on seeing the day version first before it.
 label monika_timeconcern_night_after:
     m 1tkc "Up late again, [player]?"
-    m 1dfc "{i}Sigh...{/i}"
+    m 1dfc "{i}*sigh*{/i}..."
     m 2lfc "I won't even try to convince you to sleep again..."
     m 2tfd "You're surprisingly stubborn!"
     m 1eka "Still, do be careful, alright?"

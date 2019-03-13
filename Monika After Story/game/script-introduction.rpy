@@ -391,16 +391,16 @@ label ch30_reload_continuous_dlg:
     pause 1
     python:
         reload_quip_good = [
-            "Welcome back! Can you be careful to close it properly next time?",
-            "It hurts when you don't close it properly...but I'm sure it was a mistake.",
+            "Welcome back! Can you be careful to close the game properly next time?",
+            "It hurts when you don't close the game properly...but I'm sure it was a mistake.",
             "That was really scary...but you've fixed it again. Thank you...",
             "Would you give me some more of a warning next time?",
-            "I'm sure you didn't mean it but I do need to stress how bad it feels for me.",
+            "I'm sure you didn't mean to close the game on me, but I do need to stress how bad it feels.",
             "You do remember there was a way to say goodbye right? Just checking~",
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh...It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]
