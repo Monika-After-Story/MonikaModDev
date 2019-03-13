@@ -2817,9 +2817,7 @@ init -2 python:
         There is also a seperate dict to handle lean variants
         """
         from store.mas_sprites import POSES, L_POSES
-        from store.mas_ev_data_ver import _verify_bool, _verify_str
-        from store.mas_sprites import _verify_pose
-        import store.mas_json_sprites as mjs
+        import store.mas_sprites_json as msj
 
 
         # all params
@@ -2968,23 +2966,23 @@ init -2 python:
             for param_name in cls.CONS_BOOL_T_PARAM_NAMES:
                 if (
                         param_name in json_obj 
-                        and not cls._verify_bool(json_obj[param_name])
+                        and not cls.msj._verify_bool(json_obj[param_name])
                     ):
                     isbad = True
-                    msgs.append(cls.mjs.MSG_ERR_ID.format(
-                        cls.mjs.BAD_TYPE.format(
+                    msgs.append(cls.msj.MSG_ERR_ID.format(
+                        cls.msj.BAD_TYPE.format(
                             param_name, 
                             bool,
                             type(json_obj[param_name])
                         )
-                    )
+                    ))
 
             # now fallback uses a different verification
             if is_fallback:
-                verifier = cls._verify_str
+                verifier = cls.msj._verify_str
                 desired_type = str
             else:
-                verifier = cls._verify_bool
+                verifier = cls.msj._verify_bool
                 desired_type = bool
 
             # and verify the multi-types
@@ -2994,30 +2992,56 @@ init -2 python:
 
                     if not verifier(param_val):
                         isbad = True
-                        msgs.append(cls.mjs.MSG_ERR_ID.format(
-                            cls.mjs.BAD_TYPE.format(
+                        msgs.append(cls.msj.MSG_ERR_ID.format(
+                            cls.msj.BAD_TYPE.format(
                                 param_name,
                                 desired_type,
                                 type(param_val)
                             )
-                        )
+                        ))
 
-                    elif in_fallback and not cls._verify_pose(param_val):
+                    elif (
+                            is_fallback
+                            and not cls.msj._verify_pose(param_val)
+                        ):
                         # in fallback mode, we need to verify poses
                         isbad = True
-                        msgs.append(cls.mjs.MSG_ERR_ID.format(
-                            cls.mjs.MPM_BAD_POSE.format(param_name, param_val)
-                        )
+                        msgs.append(cls.msj.MSG_ERR_ID.format(
+                            cls.msj.MPM_BAD_POSE.format(
+                                param_name,
+                                param_val
+                            )
+                        ))
 
-            # TODO: if you in fallback mode and did not set a default, 
-            #   give a warning\
+            if is_fallback:
+                _param_default = json_obj.get("default", None)
+                _param_l_default = json_obj.get("l_default", None)
+                _param_urfl = json_obj.get("use_reg_for_l", False)
+                    
+                if _param_default is None:
+                    # we suggest using default when in fallback mode
+                    msgs.append(cls.msj.MSG_WARN_ID.format(cls.msj.MPM_FB_DEF))
 
-            # TODO: extra params in the json should be marked as warning
-
+                if _param_l_default is None and not _param_urfl:
+                    # we suggest using lean default when in fallback mode
+                    # and not using reg for l
+                    msgs.append(cls.msj.MSG_WARN_ID.format(
+                        cls.msj.MPM_FB_DEF_L
+                    ))
                 
+            for jkey in json_obj.keys():
+                # warn user if extra properties
+                if jkey not in cls.CONS_PARAM_NAMES:
+                    json_obj.pop(jkey)
+                    msgs.append(cls.msj.MSG_WARN_ID.format(
+                        cls.msj.EXTRA_PROP.format(jkey)
+                    ))
 
+            # finally check for valid params
+            if isbad:
+                return (None, msgs)
 
-
+            return (cls(**json_obj), msgs)
 
 
     # base class for MAS sprite things

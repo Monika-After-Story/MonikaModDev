@@ -196,11 +196,11 @@ init -45 python:
 #                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
 
             if not os.path.isdir(self.station):
                 try:
                     os.makedirs(self.station)
-                    self.enabled = True
                 except Exception as e:
                    mas_utils.writelog(self.ERR.format(
                        self.ERR_CREATE.format(self.station),

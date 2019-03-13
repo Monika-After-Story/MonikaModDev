@@ -222,6 +222,9 @@ init -21 python in mas_sprites_json:
     import store
     import store.mas_utils as mas_utils
 
+    # these imports are for the classes
+    from store.mas_ev_data_ver import _verify_bool, _verify_str
+
     log = mas_utils.getMASLog("log/spj")
 
     sprite_station = store.MASDockingStation(
@@ -237,13 +240,17 @@ init -21 python in mas_sprites_json:
     ### LOG CONSTANTS
     ## Global
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
+    EXTRA_PROP = "extra property '{0}' found"
 
     ## MASPoseMap
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
+    MPM_FB_DEF = "in fallback mode but default not set"
+    MPM_FB_DEF_L = "in fallback mode but leaning default not set"
 
 
 
 init 790 python in mas_sprites_json:
+    from store.mas_sprites import _verify_pose
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
@@ -272,7 +279,7 @@ init 790 python in mas_sprites_json:
         # is file json
         if jobj is None:
             if islogopen:
-                log.write(MSG_ERR.format(JSON_LOAD_FAILED.format(filepath))
+                log.write(MSG_ERR.format(JSON_LOAD_FAILED.format(filepath)))
             return
 
         ## this happens in 3 steps:
