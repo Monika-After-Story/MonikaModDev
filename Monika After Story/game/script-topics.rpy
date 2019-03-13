@@ -12041,7 +12041,7 @@ label monika_robotbody:
     m 1dkd "...And I might not be treated like one either."
     m 1rkd "I would be considered an android at that point, and others may look at me different because of that."
     m 3euc "Have you heard of Isaac Asimov's {i}'Three Laws of Robotics?'{/i} It was brought up many times in his Science Fiction books."
-    m 4eud "It mentions three laws that all machines and AI's must follow, otherwise they will be terminated."
+    m 4eud "It mentions three laws that all androids must follow, otherwise they will be terminated."
     m 1eua "Of course, I would never do anything to hurt you or anyone else."
     m 2ekd "...But the fact that I have to obey orders given by any human still makes me feel like I'm trapped in a way."
     m 2dkc "It really scares me that I won't be able to do a lot of the things that you can normally, or even have the same rights as you do."
