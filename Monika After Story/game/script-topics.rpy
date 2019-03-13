@@ -1868,7 +1868,7 @@ label monika_holdme_start:
     return
 
 label monika_holdme_reactions:
-    elapsed_time = datetime.datetime.now() - start_time
+    $ elapsed_time = datetime.datetime.now() - start_time
         if elapsed_time > datetime.timedelta(minutes=30):
             m "..."
             call monika_holdme_long
