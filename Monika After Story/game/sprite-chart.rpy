@@ -3064,6 +3064,8 @@ init -2 python:
                 function
                 NOTE: this is called before the item is removed from MASMonika
         """
+        import store.mas_sprites_json as msj
+
 
         def __init__(self,
                 name,
