@@ -3459,6 +3459,90 @@ label monika_ribbon:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_outdoors",
+            category=['nature'],
+            prompt="Camping safety",
+            random=True
+        )
+    )
+
+label monika_outdoors:
+    m 1eua "Do you ever go camping, [player]?"
+    m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
+    m 1huu "It's almost like a more relaxed backpacking trip actually."
+    m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
+    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them;{w=0.5} thinking they're unimportant..."
+    m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
+    m 1ekd "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
+    m 1eka "So, please promise me that the next time you go outdoors, be it camping or backpacking, you won't forget them."
+
+    if mas_isMoniAff(higher=True):
+        m 1eub "But, on the bright side..."
+        m 1rkbsa "Once I cross over, if you remember to bring the sunscreen..."
+        m 1tubsa "I might need a little help putting it on."
+        m 1hubfb "Ahaha!"
+        m 1efu "I'm only teasing you, [player]."
+        m 1tsu "Well, at least a little. Ehehe~"
+
+    else:
+        m "Okay, [player]?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_mountain",
+            category=['nature'],
+            prompt="Mountain climbing",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_would_like_mt_peak = None
+# True if the player would like to reach the top of a mountain
+# False if not
+
+label monika_mountain:
+    m 1eua "Have you ever been in the mountains, [player]?"
+    m 1rksdla "I don't mean driving through them or in a mountain town..."
+    m 3hua "I mean {i}really{/i} up there. In the fresh air, thousands of feet up, seeing the rest of world below you."
+    m 2dtc "..."
+    m 3eub "I've always wanted to try that, but I've never had the chance. I've only read about it."
+    m 3wuo "The stories were breathtaking though!"
+    m 1eua "How one would hike up through the forests and trees..."
+    m 1eub "Climbing up cliff faces and trudge through streams..."
+    m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
+    show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
+    m 5rub "And finally...after all the effort and struggles..."
+    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
+    m 5eka "I...I truly want to share that with you."
+    m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
+
+    m 5eka "Wouldn't you like that too, [player]?"
+    $ _history_list.pop()
+    menu:
+        m "Wouldn't you like that too, [player]?{fast}"
+        "Yes.":
+            $ persistent._mas_pm_would_like_mt_peak = True
+
+            m 5eubla "Well... I hope that one day, we'll have that chance. To make it to the top of our mountain."
+            m 5hua "And I'll do anything to give us that shot."
+
+        "Not really.":
+            $ persistent._mas_pm_would_like_mt_peak = False
+
+            show monika 1eud at t11 zorder MAS_MONIKA_Z with dissolve
+            m 1eud "Oh."
+            m 1ruc "Well... I suppose it doesn't matter." 
+            m 1eka "As long as I have you, I'll be happy wherever we are."
+
+    return "derandom"
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_algernon",category=['literature'],prompt="Flowers for Algernon",random=True))
 
 label monika_algernon:
