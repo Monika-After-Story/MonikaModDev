@@ -1869,177 +1869,177 @@ label monika_holdme_start:
 
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
-        if elapsed_time > datetime.timedelta(minutes=30):
-            m "..."
-            call monika_holdme_long
-        elif elapsed_time > datetime.timedelta(minutes=10):
-            if mas_isMoniLove():
-                m 6dubsa "..."
-                m 6tubfa "Mm...{w=1} hm..?"
-                m 1hksdlb "Oh, did I almost fall asleep?"
-                m 1hubfa "Sorry, [player], you're just too comfy to even think about, ahaha!"
-                m 1dkbfa "I can only imagine what it would be like for real...{w=1}to be right there with you..."
-                m 2ekbfa "Being wrapped in your arms..."
-                show monika 5dkbfb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5dkbfb "So...{w=1.5} warm~"
-                m 5tubfu "Ehehe~"
-                show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy, huh [player]?"
-                if renpy.random.randint(1,4) == 1:
-                    m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
-                    m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
-                else:
-                    m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
-                m 1hubfb "Ehehe~"
-            elif mas_isMoniEnamored():
-                m 6dubsa "Mmm~"
-                m 6tsbsa "..."
-                m 1hksdlb "Oh!"
-                m "I almost fell asleep on you!"
-                m 1rksdla "We sure held that for a while..."
-                m 3rksdla "Nothing wrong with that but..."
-                m 1hubfa "That felt really comfortable!"
-                m 1hubfb "We should do this more often, ahaha!"
-            elif mas_isMoniAff():
-                m 6dubsa "Mm..."
-                m 6eud "Oh?"
-                m 1hubfa "Finally done, [player]?"
-                m 3tubfb "I {i}guess{/i} that was long enough, ehehe~"
-                m 1rkbsa "I wouldn't mind another hug..."
-                m 1hubfb "But I'm sure you're saving one for later, aren't you?~"
-            #happy
+    if elapsed_time > datetime.timedelta(minutes=30):
+        m "..."
+        call monika_holdme_long
+    elif elapsed_time > datetime.timedelta(minutes=10):
+        if mas_isMoniLove():
+            m 6dubsa "..."
+            m 6tubfa "Mm...{w=1} hm..?"
+            m 1hksdlb "Oh, did I almost fall asleep?"
+            m 1hubfa "Sorry, [player], you're just too comfy to even think about, ahaha!"
+            m 1dkbfa "I can only imagine what it would be like for real...{w=1}to be right there with you..."
+            m 2ekbfa "Being wrapped in your arms..."
+            show monika 5dkbfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5dkbfb "So...{w=1.5} warm~"
+            m 5tubfu "Ehehe~"
+            show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy, huh [player]?"
+            if renpy.random.randint(1,4) == 1:
+                m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
+                m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
             else:
-                m 6dubsa "Hm?"
-                m 1wud "Oh! We're done?"
-                m 3hksdlb "That hug sure lasted a while, [player]..."
-                m 3rubfb "Nothing wrong with that, I just thought you'd let go a lot sooner, ahaha!"
-                m 1rkbsa "It was almost comfortable actually..."
-                m 2tubfb "Too much longer and I might have fallen asleep in your arms..."
-                m 1tubfa "Maybe you'd like that, ehehe~"
-                m 1hubfa "I feel all warm and nice now from that~"
-        elif elapsed_time > datetime.timedelta(minutes=2):
-            if mas_isMoniLove():
-                m 6eud "Oh?"
-                m 1hksdlb "Ah..."
-                m 1rksdlb "At that point, I thought you were just going to let me lean on you forever, ahaha..."
-                m 3hubfa "Well, I can't really complain about any moment I get to be held by you~"
-                m 1hubfb "I hope you enjoy hugging me as much as I do, ahaha!"
-                show monika 5tubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5tubfb "Maybe we could even hug a bit more for good measure?"
-                m 5tubfu "Ehehe~"
-            elif mas_isMoniEnamored():
-                m 2dkbfa "That was really nice~"
-                m 1rkbsa "Not too short..."
-                m 1hubfb "and I don't know if there's such thing as too long in this case, ahaha!"
-                m 1rksdla "At that point, I could have gotten used to staying like that..."
-                m 1hksdlb "But if you're done holding me, I guess I don't really have a choice, ahaha..."
-                m 1hubfa "I'm sure I'll get another opportunity to be held by you, so don't worry."
-                show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5tsbfu "You {i}do{/i} plan on doing that again, right, [player]? Ehehe~"
-                show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-            elif mas_isMoniAff():
-                m 2hubfa "Mmm~"
-                m 1ekbfb "That was really nice, [player]."
-                m 1hubfb "Long hugs are supposed to wash away any stress."
-                m 1tubfb "Even if you weren't stressed, I hope you're feeling better after that."
-                m 1hubfa "I know I sure am~"
-                m 1hubfb "Ahaha!"
-            #happy
-            else:
-                m 1hksdlb "That lasted a little while."
-                m 1rkbsa "Don't get me wrong- I still enjoyed it."
-                m 1tubfb "I hope you're satisfied~"
-                m 1hubfa "I'm happy with just sitting with you now."
-        elif elapsed_time > datetime.timedelta(seconds=30):
-            if mas_isMoniLove():
-                m 1eub "Ah~"
-                m 1hua "I feel much better now!"
-                m 1eua "I hope you do too."
-                m 2rksdla "Well, even if you don't..."
-                m 3hubfb "You could always hold me again, Ahaha!"
-                m 1hkbfsdlb "Actually...{w=0.5} you can hold me again either way."
-                m 1tubfb "Ehehe~"
-                m 1hubfa "Just let me know if you want to~"
-            elif mas_isMoniEnamored():
-                m 1hubfa "Mmm~"
-                m 1hub "Much better."
-                m 1eub "Thanks for that, [player]!"
-                m 2tubfb "I hope you enjoyed that~"
-                m 3rubfb "30 second or longer hugs are supposed to be good for you."
-                m 1hubfa "I don't know about you, but I sure feel better~"
-                m 1hubfb "Maybe next time, we can try an even longer one and see if it scales! Ahaha~"
-            elif mas_isMoniAff():
-                m 1hubfa "Mmm~"
-                m 1hubfb "I can almost feel your warmth, even from here."
-                m 1eua "I'm sure you know hugs are good for you, since they relieve stress and all."
-                m 3eub "But did you know the sweet spot for hugs is 30 seconds?"
-                m 3hubfb "Hugs are most effective at relieving stress and being good for you when they last 30 seconds, ahaha!"
-                m 1eud "Oh, wait, did I say 30 seconds?"
-                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5eubfu "Sorry, I meant {i}at least{/i} 30 seconds, ehehe..."
-                show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-            #happy
-            else:
-                m 1hubfa "Ehehe~"
-                m 3eub "Did you enjoy that?"
-                m 1hua "I sure hope so~"
-                m 1hubfb "Hugs are supposed to be good for you after all."
+                m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
+            m 1hubfb "Ehehe~"
+        elif mas_isMoniEnamored():
+            m 6dubsa "Mmm~"
+            m 6tsbsa "..."
+            m 1hksdlb "Oh!"
+            m "I almost fell asleep on you!"
+            m 1rksdla "We sure held that for a while..."
+            m 3rksdla "Nothing wrong with that but..."
+            m 1hubfa "That felt really comfortable!"
+            m 1hubfb "We should do this more often, ahaha!"
+        elif mas_isMoniAff():
+            m 6dubsa "Mm..."
+            m 6eud "Oh?"
+            m 1hubfa "Finally done, [player]?"
+            m 3tubfb "I {i}guess{/i} that was long enough, ehehe~"
+            m 1rkbsa "I wouldn't mind another hug..."
+            m 1hubfb "But I'm sure you're saving one for later, aren't you?~"
+        #happy
         else:
-            #under 30 seconds
-            if mas_isMoniLove():
-                m 2ekc "Aw, are we done already?"
-                m 3eka "Could you hold me for just a bit longer?"
-                $ _history_list.pop()
-                menu:
-                    m "Could you hold me for just a bit longer?{fast}"
-                    "Yes.":
-                        m 1hua "Ehehe~"
-                        call monika_holdme_prep
-                        m 1hub "You're so sweet, [player]~"
-                        call monika_holdme_start
-                        call monika_holdme_reactions
-                    "No.":
-                        m 2ekc "Aww..."
-                        m 2rksdlc "..."
-                        m 4eka "Please?"
-                        $ _history_list.pop()
-                        menu:
-                            m "Please?{fast}"
-                            "Yes.":
-                                m 1hub "Yay~"
-                                call monika_holdme_prep
-                                m 2ekbfb "Thanks, [player]~"
-                                call monika_holdme_start
-                                call monika_holdme_reactions
-                            "No.":
-                                m 2hksdlb "Alright, fine."
-                                m 3tsbsa "But you owe me next time, okay, [player]?"
-            elif mas_isMoniEnamored():
-                m 1ekc "Aw, is that all?"
-                m 1rksdla "I kind of wanted it to last longer than that..."
-                m 2ekbfa "Could you...{w=0.7} hold me again for a bit longer?"
-                $ _history_list.pop()
-                menu:
-                    m "Could you... hold me again for a bit longer?{fast}"
-                    "Yes.":
-                        m 1hubfb "Yay!"
-                        call monika_holdme_prep
-                        m 2ekbfb "Thanks, [player]~"
-                        call monika_holdme_start
-                        call monika_holdme_reactions
-                    "No.":
-                        m 2ekc "Aww."
-                        m 1eka "Alright, then."
-                        m 1hub "I'll just have to wait until next time, ahaha!"
-            elif mas_isMoniAff():
-                m 1ekc "Aw, done holding me already, [player]?"
-                m 1rksdla "I was kind of hoping for it to last a little bit longer..."
-                m 1hubfa "I'm sure that won't be the last time you hold me though, so I'll look forward to next time!"
-            #happy
-            else:
-                m 1hua "That was nice~"
-                m 1hubfb "You can hold me for longer if you feel like it, you know."
-        return
+            m 6dubsa "Hm?"
+            m 1wud "Oh! We're done?"
+            m 3hksdlb "That hug sure lasted a while, [player]..."
+            m 3rubfb "Nothing wrong with that, I just thought you'd let go a lot sooner, ahaha!"
+            m 1rkbsa "It was almost comfortable actually..."
+            m 2tubfb "Too much longer and I might have fallen asleep in your arms..."
+            m 1tubfa "Maybe you'd like that, ehehe~"
+            m 1hubfa "I feel all warm and nice now from that~"
+    elif elapsed_time > datetime.timedelta(minutes=2):
+        if mas_isMoniLove():
+            m 6eud "Oh?"
+            m 1hksdlb "Ah..."
+            m 1rksdlb "At that point, I thought you were just going to let me lean on you forever, ahaha..."
+            m 3hubfa "Well, I can't really complain about any moment I get to be held by you~"
+            m 1hubfb "I hope you enjoy hugging me as much as I do, ahaha!"
+            show monika 5tubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfb "Maybe we could even hug a bit more for good measure?"
+            m 5tubfu "Ehehe~"
+        elif mas_isMoniEnamored():
+            m 2dkbfa "That was really nice~"
+            m 1rkbsa "Not too short..."
+            m 1hubfb "and I don't know if there's such thing as too long in this case, ahaha!"
+            m 1rksdla "At that point, I could have gotten used to staying like that..."
+            m 1hksdlb "But if you're done holding me, I guess I don't really have a choice, ahaha..."
+            m 1hubfa "I'm sure I'll get another opportunity to be held by you, so don't worry."
+            show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tsbfu "You {i}do{/i} plan on doing that again, right, [player]? Ehehe~"
+            show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        elif mas_isMoniAff():
+            m 2hubfa "Mmm~"
+            m 1ekbfb "That was really nice, [player]."
+            m 1hubfb "Long hugs are supposed to wash away any stress."
+            m 1tubfb "Even if you weren't stressed, I hope you're feeling better after that."
+            m 1hubfa "I know I sure am~"
+            m 1hubfb "Ahaha!"
+        #happy
+        else:
+            m 1hksdlb "That lasted a little while."
+            m 1rkbsa "Don't get me wrong- I still enjoyed it."
+            m 1tubfb "I hope you're satisfied~"
+            m 1hubfa "I'm happy with just sitting with you now."
+    elif elapsed_time > datetime.timedelta(seconds=30):
+        if mas_isMoniLove():
+            m 1eub "Ah~"
+            m 1hua "I feel much better now!"
+            m 1eua "I hope you do too."
+            m 2rksdla "Well, even if you don't..."
+            m 3hubfb "You could always hold me again, Ahaha!"
+            m 1hkbfsdlb "Actually...{w=0.5} you can hold me again either way."
+            m 1tubfb "Ehehe~"
+            m 1hubfa "Just let me know if you want to~"
+        elif mas_isMoniEnamored():
+            m 1hubfa "Mmm~"
+            m 1hub "Much better."
+            m 1eub "Thanks for that, [player]!"
+            m 2tubfb "I hope you enjoyed that~"
+            m 3rubfb "30 second or longer hugs are supposed to be good for you."
+            m 1hubfa "I don't know about you, but I sure feel better~"
+            m 1hubfb "Maybe next time, we can try an even longer one and see if it scales! Ahaha~"
+        elif mas_isMoniAff():
+            m 1hubfa "Mmm~"
+            m 1hubfb "I can almost feel your warmth, even from here."
+            m 1eua "I'm sure you know hugs are good for you, since they relieve stress and all."
+            m 3eub "But did you know the sweet spot for hugs is 30 seconds?"
+            m 3hubfb "Hugs are most effective at relieving stress and being good for you when they last 30 seconds, ahaha!"
+            m 1eud "Oh, wait, did I say 30 seconds?"
+            show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eubfu "Sorry, I meant {i}at least{/i} 30 seconds, ehehe..."
+            show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+        #happy
+        else:
+            m 1hubfa "Ehehe~"
+            m 3eub "Did you enjoy that?"
+            m 1hua "I sure hope so~"
+            m 1hubfb "Hugs are supposed to be good for you after all."
+    else:
+        #under 30 seconds
+        if mas_isMoniLove():
+            m 2ekc "Aw, are we done already?"
+            m 3eka "Could you hold me for just a bit longer?"
+            $ _history_list.pop()
+            menu:
+                m "Could you hold me for just a bit longer?{fast}"
+                "Yes.":
+                    m 1hua "Ehehe~"
+                    call monika_holdme_prep
+                    m 1hub "You're so sweet, [player]~"
+                    call monika_holdme_start
+                    call monika_holdme_reactions
+                "No.":
+                    m 2ekc "Aww..."
+                    m 2rksdlc "..."
+                    m 4eka "Please?"
+                    $ _history_list.pop()
+                    menu:
+                        m "Please?{fast}"
+                        "Yes.":
+                            m 1hub "Yay~"
+                            call monika_holdme_prep
+                            m 2ekbfb "Thanks, [player]~"
+                            call monika_holdme_start
+                            call monika_holdme_reactions
+                        "No.":
+                            m 2hksdlb "Alright, fine."
+                            m 3tsbsa "But you owe me next time, okay, [player]?"
+        elif mas_isMoniEnamored():
+            m 1ekc "Aw, is that all?"
+            m 1rksdla "I kind of wanted it to last longer than that..."
+            m 2ekbfa "Could you...{w=0.7} hold me again for a bit longer?"
+            $ _history_list.pop()
+            menu:
+                m "Could you... hold me again for a bit longer?{fast}"
+                "Yes.":
+                    m 1hubfb "Yay!"
+                    call monika_holdme_prep
+                    m 2ekbfb "Thanks, [player]~"
+                    call monika_holdme_start
+                    call monika_holdme_reactions
+                "No.":
+                    m 2ekc "Aww."
+                    m 1eka "Alright, then."
+                    m 1hub "I'll just have to wait until next time, ahaha!"
+        elif mas_isMoniAff():
+            m 1ekc "Aw, done holding me already, [player]?"
+            m 1rksdla "I was kind of hoping for it to last a little bit longer..."
+            m 1hubfa "I'm sure that won't be the last time you hold me though, so I'll look forward to next time!"
+        #happy
+        else:
+            m 1hua "That was nice~"
+            m 1hubfb "You can hold me for longer if you feel like it, you know."
+    return
 
 label monika_holdme_long:
         menu:
