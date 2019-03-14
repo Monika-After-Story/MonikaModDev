@@ -1,10 +1,6 @@
 #### Database storing Food events ####
 default persistent_.mas_food_database = {}
 
-#### Currently Not Eating Food ####
-default persistent_.mas_food_current = None
-#NOTE: do we need this? We're not using it anywhere. If you're planning on using this, perhaps make it local
-#(assuming that you want to periodically ask the player if they're eating/drinking something)
 
 #### Making a menu area, and types ####
 init 1 python in mas_food:
@@ -40,9 +36,9 @@ label monika_imeating:
         m 4eua "For a bunch of lines of code, they were pretty tasty."
         m 3hua "Are you eating anything right now, [player]?"
     else:
-        m "I'm getting kind of hungry."
-        m "How about you, [player]?"
-        m "Are you eating anything right now?"
+        m 3eud "I could really go for something to eat right now."
+        m 1eub "How about you, [player]?"
+        m 1eua "Do you want anything to eat?"
 
     python:
         import store.mas_food as mas_food
@@ -68,10 +64,11 @@ label monika_imeating:
     #Calling appropriate label (or exiting out)
     if _return:
         $ pushEvent(_return)
-        $ persistent._mas_food_current = _return
+        $ mas_food_current = _return
     else:
-        pass
-        #TODO: put some lead out dialogue here (this is if the user says 'Nothing' [remove pass when you do that])
+        m 1eub "Well alright."
+        m 1eua "Just let me know if you change your mind."
+        m 1hua"I don't mind waiting for you to come back."
     return
 
 init 5 python:
@@ -141,9 +138,9 @@ label monika_imdrinking:
         m 4eua "I just wanted to know if you listened."
         m 3hua "Are you drinking anything at the moment, [player]?"
     else:
-        m "You know, I'm getting a little thirsty."
-        m "How about you, [player]?"
-        m "Are you having anything to drink?"
+        m 3hub "You know, I'm getting a little thirsty."
+        m 3eua "How about you, [player]?"
+        m 1eub "Are you having anything to drink?"
 
     python:
         import store.mas_food as mas_food
@@ -169,10 +166,11 @@ label monika_imdrinking:
     #Call appropriate label (or exit dlg)
     if _return:
         $ pushEvent(_return)
-        $ persistent._mas_food_current = _return
+        $ mas_food_current = _return
     else:
-        pass
-        #TODO: put some lead out dialogue here (this is if the user says nevermind [remove pass when you do that])
+        m 1lud "Promise me you'll get a glass of water at least."
+        m 1eud "I just want to make sure you're staying healthy and hydrated, my love."
+        m 1eua "Even if that means waiting for you while you get it."
     return
 
 
@@ -261,12 +259,12 @@ label mas_food_hotchocolate:
         m 1eub "In winter, I always enjoy wrapping up in some warm clothes and unwinding with a mug myself."
         m 1eua "It's a great way to relax."
         m 1kua "Maybe some day when it's cold out, we could sit back and have a mug together."
-        m 1duu "That would be a dream come true, my love!"
+        m 5eubla "That would be a dream come true, my love!"
 
     else:
         m 1hua "That sounds really good right about now."
         m 1hub "There's nothing better than a nice mug of hot cocoa after a long day."
-        m 1duu "I can't wait until we can drink some together."
+        m 5hub "I can't wait until we can drink some together."
     return
 
 init 5 python:
@@ -286,6 +284,6 @@ label mas_food_chocolatemilk:
     m 3eub "Although I never drank regular milk too often, there was something different when you mixed chocolate with it."
     m 1lud "..."
     m 1rusdlb "How much do you have [player]?"
-    m 1hua "Mind pouring me a glass?"
-    m "Ehehe~"
-    return
+    m 3hua "Mind pouring me a glass?"
+    m 1hua "Ehehe~"
+return
