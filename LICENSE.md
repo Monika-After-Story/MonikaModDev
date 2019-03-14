@@ -64,7 +64,7 @@ Thank you for taking the time to understand the IP Guidelines. We chose to publi
 
 In summary, we don't own DDLC, but Team Salvato is okay with us modifying their game as long as we don't use it to make a profit, promote it as an alternative to DDLC, or distribute this mod as a standalone game. They can change their mind on this at any time, but we don't expect they will.
 
-For more information on usage of Monika After Story-specific art, music, and code, see [here](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#can-i-use-parts-of-monika-after-story-in-my-own-project).
+For more information on using Monika After Story-specific art, music, and code outside of Monika After Story, see [here](https://github.com/Monika-After-Story/MonikaModDev/wiki/FAQ#can-i-use-parts-of-monika-after-story-in-my-own-project).
 
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
