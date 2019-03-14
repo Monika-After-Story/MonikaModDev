@@ -453,7 +453,9 @@ init -5 python in mas_sprites:
         return val in L_POSES
 
 
-    def _verify_pose(val):
+    def _verify_pose(val, allow_none=True):
+        if val is None:
+            return allow_none
         return _verify_uprightpose(val) or _verify_leaningpose(val)
 
 
@@ -1963,6 +1965,16 @@ init -2 python:
         BFH_ACS = 4 # between Body and Front Hair accessory
         AFH_ACS = 5 # between face and front hair accessory
 
+        # valid rec layers
+        REC_LAYERS = (
+            PRE_ACS,
+            MID_ACS,
+            PST_ACS,
+            BBH_ACS,
+            BFH_ACS,
+            AFH_ACS
+        )
+
 
         def __init__(self):
             """
@@ -2150,6 +2162,13 @@ init -2 python:
                 for acs in self.acs[acs_type]
                 if force_acs or acs.stay_on_start
             ]
+
+
+        @staticmethod
+        def _verify_rec_layer(val, allow_none=True):
+            if val is None:
+                return allow_none
+            return val in MASMonika.REC_LAYERS
 
 
         def change_clothes(self, new_cloth, by_user=None, startup=False):
@@ -2821,8 +2840,8 @@ init -2 python:
 
 
         # all params
-        CONS_PARAM_NAMES = [
-            "default",
+        CONS_PARAM_NAMES = (
+            "default", 
             "l_default",
             "use_reg_for_l",
             "p1",
@@ -2831,24 +2850,7 @@ init -2 python:
             "p4",
             "p5",
             "p6",
-        ]
-
-        # params with multiple acceptable types
-        CONS_MUL_T_PARAM_NAMES = [
-            "default",
-            "l_default",
-            "p1",
-            "p2",
-            "p3",
-            "p4",
-            "p5",
-            "p6",
-        ]
-       
-        # params that only accept bool types
-        CONS_BOOL_T_PARAM_NAMES = [
-            "use_reg_for_l",
-        ]
+        )
 
 
         def __init__(self,
@@ -2960,59 +2962,48 @@ init -2 python:
                 [1]: List of Errors/Warnings/Info messages to show
             """
             isbad = False
-            msgs = []
+            msgs_err = []
+            msgs_warn = []
+            msgs_exprop = []
 
-            # lets start with the non-multiple types
-            for param_name in cls.CONS_BOOL_T_PARAM_NAMES:
-                if (
-                        param_name in json_obj 
-                        and not cls.msj._verify_bool(json_obj[param_name])
-                    ):
-                    isbad = True
-                    msgs.append(cls.msj.MSG_ERR_ID.format(
-                        cls.msj.BAD_TYPE.format(
-                            param_name, 
-                            bool,
-                            type(json_obj[param_name])
-                        )
+            # go through the json object and validate everything
+            for prop_name in json_obj.keys():
+                if prop_name in cls.CONS_PARAM_NAMES:
+                    prop_val = json_obj[prop_name]
+                    
+                    if is_fallback and prop_name != "use_reg_for_l":
+
+                        if not cls.msj._verify_pose(prop_val):
+                            # fallback mode must verify pose
+                            isbad = True
+                            msgs_err.append(cls.msj.MSG_ERR_IDD.format(
+                                cls.msj.MPM_BAD_POSE.format(prop_name, prop_val)
+                            ))
+
+                    elif not cls.msj._verify_bool(prop_val):
+                        # otherwise, we in non fallback mode or
+                        # verifying the one boolean
+                        isbad = True
+                        msgs_err.append(cls.msj.MSG_ERR_IDD.format(
+                            cls.msj.BAD_TYPE.format(
+                                prop_name,
+                                bool,
+                                type(prop_val)
+                            )
+                        ))
+
+                    # else case is a valid param
+
+
+                else:
+                    # prop name NOT part of MASPoseMap. log as warning.
+                    json_obj.pop(prop_name)
+                    msgs_exprop.append(cls.msj.MSG_WARN_IDD.format(
+                        cls.msj.EXTRA_PROP.format(prop_name)
                     ))
 
-            # now fallback uses a different verification
-            if is_fallback:
-                verifier = cls.msj._verify_str
-                desired_type = str
-            else:
-                verifier = cls.msj._verify_bool
-                desired_type = bool
 
-            # and verify the multi-types
-            for param_name in cls.CONS_MUL_T_PARAM_NAMES:
-                if param_name in json_obj:
-                    param_val = json_obj[param_name]
-
-                    if not verifier(param_val):
-                        isbad = True
-                        msgs.append(cls.msj.MSG_ERR_ID.format(
-                            cls.msj.BAD_TYPE.format(
-                                param_name,
-                                desired_type,
-                                type(param_val)
-                            )
-                        ))
-
-                    elif (
-                            is_fallback
-                            and not cls.msj._verify_pose(param_val)
-                        ):
-                        # in fallback mode, we need to verify poses
-                        isbad = True
-                        msgs.append(cls.msj.MSG_ERR_ID.format(
-                            cls.msj.MPM_BAD_POSE.format(
-                                param_name,
-                                param_val
-                            )
-                        ))
-
+            # now for suggestsions based on defaults
             if is_fallback:
                 _param_default = json_obj.get("default", None)
                 _param_l_default = json_obj.get("l_default", None)
@@ -3020,28 +3011,26 @@ init -2 python:
                     
                 if _param_default is None:
                     # we suggest using default when in fallback mode
-                    msgs.append(cls.msj.MSG_WARN_ID.format(cls.msj.MPM_FB_DEF))
+                    msgs_warn.append(cls.msj.MSG_WARN_IDD.format(
+                        cls.msj.MPM_FB_DEF
+                    ))
 
                 if _param_l_default is None and not _param_urfl:
                     # we suggest using lean default when in fallback mode
                     # and not using reg for l
-                    msgs.append(cls.msj.MSG_WARN_ID.format(
+                    msgs_warn.append(cls.msj.MSG_WARN_IDD.format(
                         cls.msj.MPM_FB_DEF_L
                     ))
-                
-            for jkey in json_obj.keys():
-                # warn user if extra properties
-                if jkey not in cls.CONS_PARAM_NAMES:
-                    json_obj.pop(jkey)
-                    msgs.append(cls.msj.MSG_WARN_ID.format(
-                        cls.msj.EXTRA_PROP.format(jkey)
-                    ))
 
+            # combine messages
+            msgs_err.extend(msgs_warn)
+            msgs_err.extend(msgs_exprop)
+                
             # finally check for valid params
             if isbad:
-                return (None, msgs)
+                return (None, msgs_err)
 
-            return (cls(**json_obj), msgs)
+            return (cls(**json_obj), msgs_err)
 
 
     # base class for MAS sprite things
