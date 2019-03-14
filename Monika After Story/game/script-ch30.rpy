@@ -485,6 +485,26 @@ init python:
             rain weather to use, or None if we dont want to change weather
         """
         if mas_isMoniNormal(higher=True):
+            if mas_isSpring() and random.randint(1,10) > 5:
+                if random.randint(1,5) >= 4:
+                    return mas_weather_thunder
+                else:
+                    return mas_weather_rain
+
+            elif mas_isSummer() and random.randint(1,10) == 1:
+                if random.randint(1,10) >= 4:
+                    return mas_weather_thunder
+                else:
+                    return mas_weather_rain
+
+            elif mas_isFall() and random.randint(1,10) > 7:
+                if random.randint(1,5) >= 4:
+                    return mas_weather_thunder
+                else:
+                    return mas_weather_rain
+
+            return None
+        else:
             return None
 
         # Upset and lower means we need to roll
