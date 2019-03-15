@@ -2948,7 +2948,7 @@ init -2 python:
 
 
         @classmethod
-        def fromJSON(cls, json_obj, is_fallback):
+        def fromJSON(cls, json_obj, is_fallback, errs, warns):
             """
             Builds a MASPoseMap given a JSON format of it
 
@@ -2957,14 +2957,13 @@ init -2 python:
                 is_fallback - True if the MASPoseMap should be built with
                     fallback mode in mind, False otherwise.
 
-            RETURNS: Tuple of the following format:
-                [0]: MASPoseMap object built using the JSON, or None if failed
-                [1]: List of Errors/Warnings/Info messages to show
+            OUT:
+                errs - list to save error message to
+                warns - list to save warning messages to
+
+            RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
             isbad = False
-            msgs_err = []
-            msgs_warn = []
-            msgs_exprop = []
 
             # go through the json object and validate everything
             for prop_name in json_obj.keys():
@@ -2976,7 +2975,7 @@ init -2 python:
                         if not cls.msj._verify_pose(prop_val):
                             # fallback mode must verify pose
                             isbad = True
-                            msgs_err.append(cls.msj.MSG_ERR_IDD.format(
+                            errs.append(cls.msj.MSG_ERR_IDD.format(
                                 cls.msj.MPM_BAD_POSE.format(prop_name, prop_val)
                             ))
 
@@ -2984,7 +2983,7 @@ init -2 python:
                         # otherwise, we in non fallback mode or
                         # verifying the one boolean
                         isbad = True
-                        msgs_err.append(cls.msj.MSG_ERR_IDD.format(
+                        errs.append(cls.msj.MSG_ERR_IDD.format(
                             cls.msj.BAD_TYPE.format(
                                 prop_name,
                                 bool,
@@ -2994,11 +2993,10 @@ init -2 python:
 
                     # else case is a valid param
 
-
                 else:
                     # prop name NOT part of MASPoseMap. log as warning.
                     json_obj.pop(prop_name)
-                    msgs_exprop.append(cls.msj.MSG_WARN_IDD.format(
+                    warns.append(cls.msj.MSG_WARN_IDD.format(
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
 
@@ -3011,26 +3009,22 @@ init -2 python:
                     
                 if _param_default is None:
                     # we suggest using default when in fallback mode
-                    msgs_warn.append(cls.msj.MSG_WARN_IDD.format(
+                    warns.append(cls.msj.MSG_WARN_IDD.format(
                         cls.msj.MPM_FB_DEF
                     ))
 
                 if _param_l_default is None and not _param_urfl:
                     # we suggest using lean default when in fallback mode
                     # and not using reg for l
-                    msgs_warn.append(cls.msj.MSG_WARN_IDD.format(
+                    warns.append(cls.msj.MSG_WARN_IDD.format(
                         cls.msj.MPM_FB_DEF_L
                     ))
 
-            # combine messages
-            msgs_err.extend(msgs_warn)
-            msgs_err.extend(msgs_exprop)
-                
             # finally check for valid params
             if isbad:
-                return (None, msgs_err)
+                return None
 
-            return (cls(**json_obj), msgs_err)
+            return cls(**json_obj)
 
 
     # base class for MAS sprite things

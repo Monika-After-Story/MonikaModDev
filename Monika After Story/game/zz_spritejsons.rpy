@@ -224,7 +224,8 @@ init -21 python in mas_sprites_json:
     import store.mas_utils as mas_utils
 
     # these imports are for the classes
-    from store.mas_ev_data_ver import _verify_bool, _verify_str, _verify_int
+    from store.mas_ev_data_ver import _verify_bool, _verify_str, \
+        _verify_int, _verify_list
 
     log = mas_utils.getMASLog("log/spj")
     log_open = log.open()
@@ -240,6 +241,33 @@ init -21 python in mas_sprites_json:
         # new lines always added ourselves
         if log_open:
             log.write(msg)
+
+
+    def writelogs(msgs):
+        # writes multiple msges given list
+        if log_open:
+            for msg in msgs:
+                log.write(msg)
+
+
+    ### LOG CONSTANTS
+    ## Global
+    READING_FILE = "reading JSON at '{0}'..."
+    SP_LOADING = "loading {0} sprite object '{1}'..."
+
+    BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
+    EXTRA_PROP = "extra property '{0}' found"
+    REQ_MISS = "required property '{0}' not found"
+    BAD_SPR_TYPE = "invalid sprite type '{0}'"
+    BAD_ACS_LAYER = "invalid ACS layer '{0}'"
+    BAD_LIST_TYPE = "property '{0}' index '{0}' - expected type {1}, got {2}"
+
+    ## MASPoseMap
+    MPM_LOADING = "loading MASPoseMap in '{0}'..."
+    MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
+    MPM_FB_DEF = "in fallback mode but default not set"
+    MPM_FB_DEF_L = "in fallback mode but leaning default not set"
+
 
 
     ### CONSTANTS
@@ -264,49 +292,41 @@ init -21 python in mas_sprites_json:
             return allow_none
         return val in SP_CONSTS
 
-
-    def _verify_muxtype(val, allow_none=True);
-        if val is None:
-            return allow_none
-        if not isinstance(val, list):
-            return False
-        for item in val:
-            if not _verify_str(item):
-                return False
-
-        return True
-
-
     ## param names
-    ## with verifications
+    ## with expected types and verifications, as well as msg to
+    ##  show when verification fails.
+    ##      (if None, we use the default bad type)
     REQ_SHARED_PARAM_NAMES = {
         # type must be checked first, so its not included in this loop.
 #        "type": _verify_sptype,
-        "name": _verify_str,
-        "img_sit": _verify_str,
+        "name": (str, _verify_str),
+        "img_sit": (str, _verify_str),
         # pose map verificaiton is different
 #        "pose_map": None,
     }
 
     OPT_SHARED_PARAM_NAMES = {
-        "img_stand": _verify_str,
-        "stay_on_start": _verify_bool,
+        "img_stand": (str, _verify_str),
+        "stay_on_start": (bool, _verify_bool),
 
         # object-based verificatrion is different
 #        "ex_props": None,
 #        "select_info": None,
-        "giftname": _verify_str
+
+        "giftname": (str, _verify_str),
     }
 
     OPT_ACS_PARAM_NAMES = {
-        "rec_layer": None, # this is filled out later
-        "priority": _verify_int,
-        "acs_type": _verify_str,
-        "mux_type": _verify_muxtype,
+        # this is handled differently
+#        "rec_layer": None, 
+#        "mux_type": (None, _verify_muxtype, 
+
+        "priority": (int, _verify_int),
+        "acs_type": (str, _verify_str),
     }
 
     OPT_HC_SHARED_PARAM_NAMES = {
-        "fallback": _verify_bool,
+        "fallback": (bool, _verify_bool),
     }
 
     OPT_HAIR_PARAM_NAMES = {
@@ -321,32 +341,20 @@ init -21 python in mas_sprites_json:
     }
     OPT_CLOTH_PARAM_NAMES.update(OPT_HC_SHARED_PARAM_NAMES)
 
+    ## special param name groups
     OBJ_BASED_PARAM_NAMES = (
-        # this is handled on its own
-#        "pose_map",
+        "pose_map",
         "ex_props",
         "select_info",
         "split",
         "hair_map",
     )
 
-    ### LOG CONSTANTS
-    ## Global
-    READING_FILE = "reading JSON at '{0}'..."
-    PARSE_SP = "loading {0} sprite object '{1}'"
-
-    BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
-    EXTRA_PROP = "extra property '{0}' found"
-    REQ_MISS = "required property '{0}' not found"
-    BAD_SPR_TYPE = "invalid sprite type '{0}'"
-
-    ## MASPoseMap
-    MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
-    MPM_FB_DEF = "in fallback mode but default not set"
-    MPM_FB_DEF_L = "in fallback mode but leaning default not set"
-
-
-
+    # NOTE: renpy.loadable("path from game/")
+    IMG_BASED_PARAM_NAMES = (
+        "img_sit",
+        "img_stand"
+    )
 
 
 init 790 python in mas_sprites_json:
@@ -356,9 +364,6 @@ init 790 python in mas_sprites_json:
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
         LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
         NAME_BAD
-
-    # fill in param name verifications
-    OPT_ACS_PARAM_NAMES["rec_layer"] = store.MASMonika._verify_rec_layer
 
     # other constants
     MSG_INFO_IDD = "        [info]: {0}\n"
@@ -392,7 +397,59 @@ init 790 python in mas_sprites_json:
         return type_val
 
 
-    def _validate_params(jobj, save_obj, param_dict, required, errs, warns):
+    def _validate_mux_type(json_obj, errs):
+        """
+        Validates mux_type of this json object
+
+        IN:
+            json_obj - json object to validate
+        
+        OUT:
+            errs - list to save error messages to
+                if nothing was addeed to this list, the mux_type is valid
+
+        RETURNS: mux_type found. May be None
+        """
+        if "mux_type" not in json_obj:
+            return None
+
+        # otherwise it exists
+        mux_type = json_obj.pop("mux_type")
+
+        if not _verify_list(mux_type):
+            # not list is bad
+            errs.append(MSG_ERR_ID.format(BAD_TYPE.format(
+                "mux_type",
+                list,
+                type(mux_type)
+            )))
+            return None
+
+        # otherwise, verify each element of this list
+        for index in range(len(mux_type)):
+            acs_type = mux_type[index]
+            if not _verify_str(acs_type):
+                errs.append(MSG_ERR_ID.format(BAD_LIST_TYPE.format(
+                    "mux_type",
+                    index,
+                    str,
+                    type(acs_type)
+                )))
+                # NOTE: we log these but still return the muxtype.
+                #   it is up to the caller to check for messages
+                #   to determine if the item is valid
+
+        return mux_type
+
+
+    def _validate_params(
+            jobj, 
+            save_obj, 
+            param_dict,
+            required,
+            errs,
+            err_base
+        ):
         """
         Validates a list of parameters, while also saving said params into
         given save object.
@@ -403,14 +460,89 @@ init 790 python in mas_sprites_json:
             jobj - json object to parse
             param_dict - dict of params + verification functiosn
             required - True if the given params are required, False otherwise.
+            err_base - base format string to use for errors
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+        """
+        # if required, we do not accept Nones
+        allow_none = not required
+
+        for param_name, verifier_info in param_dict.iteritems():
+            if param_name in jobj:
+                param_val = jobj.pop(param_name)
+                desired_type, verifier = verifier_info
+        
+                if not verifier(param_val, allow_none):
+                    # failed verification
+                    errs.append(err_base.format(BAD_TYPE.format(
+                        param_name,
+                        desired_type,
+                        type(param_val)
+                    )))
+
+                else:
+                    # otherwise, good, transfer the property over
+                    # and continue
+                    save_obj[param_name] = param_val
+
+            elif required:
+                # this was a required param, add error
+                errs.append(err_base.format(REQ_MISS.format(param_name)))
+
+
+    def _validate_acs(jobj, save_obj, obj_based, errs, warns, infos):
+        """
+        Validates ACS-specific properties, as well as acs pose map
+
+        Props validated:
+            - rec_layer
+            - priority
+            - acs_type
+            - mux_type
+            - pose_map
+
+        IN:
+            jobj - json object to pasrse
+            obj_based - dict of object-based items
+                (contains pose_map)
 
         OUT:
             save_obj - dict to save data to
             errs - list to save error messages to
             warns - list to save warning messages to
+            infos - list to save info messages to
         """
+        # validate ez to validate props
+        # priority
+        # acs_type
+        _validate_params(jobj, sp_obj_params, False, errs, MSG_ERR_ID)
+        if len(errs) > 0:
+            return
+
+        # now for rec_layer
+        if "rec_layer" in jobj:
+            rec_layer = jobj.pop("rec_layer")
+
+            if not store.MASMonika._verify_rec_layer(rec_layer):
+                errs.append(MSG_ERR_ID.format(BAD_ACS_LAYER.format(rec_layer)))
+                return
+
+            # otherwise valid
+            save_obj["rec_layer"] = rec_layer
+
+        # now for mux_type
+        mux_type = _validate_mux_type(jobj, errs)
+        if len(errs) > 0:
+            return
+
+        # otherwise valid
+        save_obj["mux_type"] = mux_type
+
+        # now for pose map
         # TODO
-        pass
+
 
 
     def addSpriteObject(filepath):
@@ -426,8 +558,9 @@ init 790 python in mas_sprites_json:
         jobj = None
         msgs_err = []
         msgs_warn = []
-#        msgs_info = []
+        msgs_info = []
         msgs_exprop = []
+        obj_based_params = {}
         sp_obj_params = {}
         sel_params = {}
 
@@ -458,11 +591,40 @@ init 790 python in mas_sprites_json:
             return
 
         # check name and img_sit
-        for prop_name
-
-        # NOTE: renpy.loadable("path from game/")
+        _validate_params(jobj, sp_obj_params, True, msgs_err, MSG_ERR_ID)
+        if len(msgs_errs) > 0:
+            writelogs(msgs_errs)
+            return
 
         # log out that we are loading the sprite object and name
+        writelog(MSG_INFO.format(LOADING_SP.format(
+            SP_STR.get(sp_type),
+            sp_obj_params.get("name")
+        )))
+
+        # check for existence of pose_map property. We will not validate until
+        # later.
+        if "pose_map" not in jobj:
+            writelog(MSG_ERR_ID.format(REQ_MISS.format("pose_map")))
+            return
+
+        # move object-based params out of the jobj
+        for param_name in OBJ_BASED_PARAM_NAMES:
+            if param_name in jobj:
+                obj_based_params[param_name] = jobj.pop(param_name)
+
+        # validate optional shared params
+        _validate_params(jobj, sp_obj_params, False, msgs_err, MSG_ERR_ID)
+        if len(msgs_errs) > 0:
+            writelogs(msgs_errs)
+            return
+
+        # now for specific params
+#        if sp_type == SP_ACS:
+            
+
+
+
 
 
 

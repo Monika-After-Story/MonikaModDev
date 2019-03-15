@@ -145,7 +145,13 @@ label dev_unit_test_json_masposemap:
         ]
 
         for case_args, exp_result in cases:
-            actual_result, msgs = MASPoseMap.fromJSON(*case_args)
+            errs = []
+            warns = []
+            actual_result = MASPoseMap.fromJSON(
+                *case_args,
+                errs=errs,
+                warns=warns
+            )
             actual_result = type(actual_result)
             if actual_result == exp_result:
                 renpy.show("monika 1hua")
@@ -153,6 +159,9 @@ label dev_unit_test_json_masposemap:
             else:
                 renpy.show("monika 1ektsc")
                 renpy.say(m, "!!!FAILED!!!")
+
+            msgs = list(errs)
+            msgs.extend(warns)
 
             if len(msgs) > 0:
                 renpy.say(m, "with messages:")

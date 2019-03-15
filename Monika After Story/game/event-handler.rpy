@@ -38,6 +38,10 @@ init -895 python in mas_ev_data_ver:
         return _verify_item(val, dict, allow_none)
 
 
+    def _verify_list(val, allow_none=True):
+        return _verify_item(val, list, allow_none)
+
+
     def _verify_dt(val, allow_none=True):
         if (
                 isinstance(val, datetime.datetime)
