@@ -393,7 +393,7 @@ label game_hangman:
 
 
 label mas_hangman_game_select_diff:
-    m "Choose a difficulty."
+    m "Choose a difficulty.{nw}"
     $ _history_list.pop()
     menu:
         m "Choose a difficulty.{fast}"
@@ -693,7 +693,7 @@ label mas_hangman_game_loop:
         #TODO: grant a really tiny amount of affection?
 
     # try again?
-    m "Would you like to play again?"
+    m "Would you like to play again?{nw}"
     $ _history_list.pop()
     menu:
         m "Would you like to play again?{fast}"
