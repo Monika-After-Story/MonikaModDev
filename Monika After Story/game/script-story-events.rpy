@@ -1943,6 +1943,7 @@ default persistent._mas_bday_opened_game = False
 # TODO: these should actually default to True, then get changed if
 #   the appropriate whatver happens
 # TODO: do the above in an update script when bday comes around again
+# TODO: non-generic apology
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
