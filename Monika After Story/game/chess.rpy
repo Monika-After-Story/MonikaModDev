@@ -1508,7 +1508,7 @@ label mas_chess_new_game_start:
         return
 
     m "What color would suit you?"
-    $ _history_log.pop()
+    $ _history_list.pop()
     menu:
         m "What color would suit you?{fast}"
 
