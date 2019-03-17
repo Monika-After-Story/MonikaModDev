@@ -9813,12 +9813,12 @@ label monika_vehicle:
     m 1eka "So I'm not too sure what to tell you, [player]..."
     m 1eua "When I think of cars, the first things that come to mind are probably the commonly known types."
     m 3eud "SUVs or pickup trucks, sports cars, sedans and hatchbacks..."
-    m 3rksdlb " And they're not really cars, but I guess motorcycles are common vehicles too."
+    m 3rksdlb "And while they're not really cars, but I guess motorcycles are common vehicles too."
     
     if persistent._mas_pm_driving_can_drive:
         m 1eua "What about you?"
 
-        m "Do you own a vehicle?"
+        m "Do you own a vehicle?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you own a vehicle?{fast}"
@@ -9838,7 +9838,7 @@ label monika_vehicle:
 
                 python:
                     option_list = [
-                        ("An suv.", "monika_vehicle_suv",False,False),
+                        ("An SUV.", "monika_vehicle_suv",False,False),
                         ("A pickup truck.","monika_vehicle_pickup",False,False), #note, doing this to give the illusion of two options
                         ("A sports car.","monika_vehicle_sportscar",False,False),
                         ("A sedan.","monika_vehicle_sedan",False,False),
