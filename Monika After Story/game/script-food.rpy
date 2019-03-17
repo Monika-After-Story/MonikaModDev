@@ -23,8 +23,9 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_imeating",
             category=['you'],
-            prompt="I'm eating..."
+            prompt="I'm eating...",
             pool=True,
+            random=True,
             unlocked=True
         )
     )
@@ -38,7 +39,7 @@ label monika_imeating:
     else:
         m 3eud "I could really go for something to eat right now."
         m 1eub "How about you, [player]?"
-        m 1eua "Do you want anything to eat?"
+        m 1eua "Are you eating anything?"
 
     python:
         import store.mas_food as mas_food
@@ -85,13 +86,13 @@ init 5 python:
 
 label mas_food_pizza:
     m 1hua "Pizza is such a great treat!"
-    m 1lud "It's usually not the healthiest food, of course."
+    m 3rud "It's usually not the healthiest food, of course."
     m 1eua "However, I think on occasion, it's fine to just treat yourself, you know?"
     m 3eua "I think it's really interesting that pizza was created almost by accident."
     m 3eub "Italian bakery workers would use excess dough and left-over ingredients from their days of work to feed the poor."
     m 1eub "Who would have thought that they were making what would become one of the most popular foods today?"
     m 1eua "As I'm sure you guessed I always order a vegetarian pizza myself, but I want you to know that I would never judge you if you're eating a slice with pepperoni, sausage or any other meat, [player]."
-    m 1hua "What always matters to me is that you're happy!"
+    m 1hua "What matters to me the most is that you're happy!"
     return
 
 init 5 python:
@@ -115,7 +116,7 @@ label mas_food_salad:
     m 1eua "If you like to keep it simple, a little bit of shredded cheese sprinkled on top is always really good!"
     m "Would you ever make me a salad, [player]?"
     m 1sub "The thought of you preparing one of my favorite meals is so surreal."
-    m 1eub "That would really make me feel loved, my dear."
+    m 5hubfb "That would really make me feel loved, my dear."
 return
 
 #### Start Of The I'm Drinking Event ####
@@ -125,8 +126,9 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_imdrinking",
             category=['you'],
-            prompt="I'm drinking..."
+            prompt="I'm drinking...",
             pool=True,
+            random=True,
             unlocked=True
         )
     )
@@ -134,13 +136,13 @@ init 5 python:
 label monika_imdrinking:
     if mas_getEV('monika_imdrinking').shown_count == 0:
         m 1eua "Hey, [player]..."
-        m 4eub "Remember how I told you earlier to make sure you're staying hydrated?"
-        m 4eua "I just wanted to know if you listened."
-        m 3hua "Are you drinking anything at the moment, [player]?"
+        m 4eub "You know how much I love you."
+        m 3hub "I want you to stay healthy, so we can be together as long as possible."
+        m 3esa "Are you drinking anything at all, [player]?"
     else:
         m 3hub "You know, I'm getting a little thirsty."
         m 3eua "How about you, [player]?"
-        m 1eub "Are you having anything to drink?"
+        m 1eub "Are you drinking anything at the moment?"
 
     python:
         import store.mas_food as mas_food
@@ -168,8 +170,8 @@ label monika_imdrinking:
         $ pushEvent(_return)
         $ mas_food_current = _return
     else:
-        m 1lud "Promise me you'll get a glass of water at least."
-        m 1eud "I just want to make sure you're staying healthy and hydrated, my love."
+        m 2etc "Promise me you'll get a glass of water at least."
+        m 1eud "I just want to make sure you're staying hydrated, my love."
         m 1eua "Even if that means waiting for you while you get it."
     return
 
@@ -187,16 +189,17 @@ init 5 python:
     )
 
 label mas_food_coffee:
-    if not persistent._mas_acs_enable_coffee:
+    if not persistent.mas_acs_enable_coffee:
         m 1eua "That sounds wonderful!"
         m "I really miss having coffee."
         m 3eub "I would always have a cup before and after school."
         m 3hub "Maybe even sometimes during class."
-        m 2hub "Who knows, maybe you and I could share a glass, [player]."
+        m 2hub "Who knows, maybe you and I could share a cup, [player]."
     else:
-        m "That's really cool, [player]!"
-        m "I'm so glad you gave me some earlier."
-        m "Now we can drink some together."
+        m 1tsb "I wonder how you like yours prepared."
+        m 1hub "I'll be sure to ask one day."
+        m 1sua "That way, when I cross over to your world, I'll be able to make you some in the morning."
+        m 5hubfb "The thought of that makes my heart flutter."
     return
 
 init 5 python:
@@ -212,11 +215,11 @@ init 5 python:
     )
 
 label mas_food_water:
-    m 1eua "I'm really happy to hear that, [player]!"
-    m 1eub "Water is probably the healthiest thing that you could drink."
+    m 1eub "I'm really happy to hear that, [player]!"
+    m 1eua "Water is probably the healthiest thing that you could drink."
     m 3eua "Seeing how we can only live for a few days without it."
     m 3eud "Just promise you get plenty to drink each day."
-    m 2lud "I don't want you getting sick because you didn't drink any."
+    m 1lksdrb "I don't want you getting sick because you didn't drink any."
     m 2eua "Even if it's just a glass or two, do it for me."
     return
 
@@ -233,11 +236,12 @@ init 5 python:
     )
 
 label mas_food_milk:
-    m 1eub "You know, I've never really drank a lot milk before."
-    m 3eub "It wasn't because I didn't like it either."
+    m 1eub "You know, I never really drank a lot milk before."
+    m 3eud "It wasn't because I didn't like it either."
     m 3eua "I just never really thought about it, unless I put it in coffee, or mixed chocolate in with it."
     m 1hub "I guess I could learn to love it if you do, [player]."
     m 1hua "Be sure to pour an extra glass for me next time."
+    m 1hka "Ehehe"
     return
 
 init 5 python:
