@@ -125,7 +125,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_imdrinking",
             category=['you'],
-            prompt="I'm Drinking",
+            prompt="I'm drinking..."
             pool=True,
             unlocked=True
         )
