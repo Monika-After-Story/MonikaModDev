@@ -68,7 +68,7 @@ label monika_imeating:
     else:
         m 1eub "Well alright."
         m 1eua "Just let me know if you change your mind."
-        m 1hua"I don't mind waiting for you to come back."
+        m 1hua "I don't mind waiting for you to come back."
     return
 
 init 5 python:
