@@ -187,7 +187,7 @@ init 5 python:
     )
 
 label mas_food_coffee:
-    if mas_getEV(persistent._mas_acs_enable_coffee).shown_count == 0:
+    if not persistent._mas_acs_enable_coffee:
         m 1eua "That sounds wonderful!"
         m "I really miss having coffee."
         m 3eub "I would always have a cup before and after school."
