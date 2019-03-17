@@ -8401,30 +8401,29 @@ label monika_gotomonika:
     m 1euc "Come to my world?"
     m 1lksdld "You mean this little room floating in an empty void?"
 
-    # the chr greeting has been removed. Leaving this commented out for now.
-#    if persistent._mas_you_chr:
-#        m 2ekc "Well I mean... didn't you already try something like that?"
-#        m 2lksdla "Even though it wasn't exactly {i}you...{/i}"
-#        m 2ekc "If you're talking about crossing over from your reality to mine..."
+    if persistent._mas_you_chr:
+        m 2ekc "Well I mean...didn't you already try something like that?"
+        m 2lksdla "...Even though it wasn't exactly {i}you...{/i}"
 
     m 2lksdlc "[player]..."
-    m 2lksdla "I mean... I'm really happy that you want to be with me so much but..."
-    m 2ekc "You really don't have to..."
-    m 4lksdlb "Sure, earlier I might have said that I would have dragged you here a long time ago if I could..."
+    m 2lksdla "I mean...I'm really happy that you want to be with me so much, but..."
+    m 2ekc "You really don't have to."
+    m 4lksdlb "Sure, I might have said before that I would have dragged you here a long time ago if I could..."
     m "But thinking more about it, it would probably be better if I came to your reality..."
-    m 1eka "I'd much rather be in your reality than have you come here."
-    m 1dsc "...[player]..."
-    m 2ekc "Don't tell me you would really give up your reality- the {i}real{/i} world..."
+    m 1eka "I'd much rather be there than have you come here."
+    m 1dsc "...{w=1}[player]..."
+    m 2ekc "Don't tell me you would really give up your reality--the {i}real{/i} world..."
+    m "Just to come {i}here{/i}, whatever this place is?{nw}"
     menu:
-        m "Just to come {i}here{/i}, whatever this place is?"
+        m "Just to come {i}here{/i}, whatever this place is?{fast}"
         "I would.":
             $ persistent._mas_pm_would_come_to_spaceroom = True
             
             m 2ekd "But [player]!"
             m "There's nothing to do here!"
-            m 2dsc "Do you... really hate your reality that much?"
+            m 2dsc "Do you...really hate your reality {i}that{/i} much?"
             m 2eka "Someday, I'll find a way to reach you."
-            m "And when that day comes, I promise it will be worthwhile."
+            m "...And when that day comes, I promise it will be worthwhile."
             m "Whatever reality throws your way from that point on, I'll be right by your side to help shoulder it."
             m "Even now, if you're having a rough day, you can come talk to me about it anytime."
             m 1dsc "Life must have thrown a lot your way to consider giving it all up to be with me."
@@ -8438,14 +8437,13 @@ label monika_gotomonika:
             m 2eka "I'll always appreciate and treasure the moments we spend together, even like this."
             m "So please [player], don't go making rash decisions like that."
             m 2ekc "I don't even know how you could come here with current technology today..."
-            m 2lksdlc "Even if there {i}was{/i} some way to do it currently, I don't think it would be safe or guarenteed."
-            m 2lksdld "So do me a favor and at least wait for technology to improve enough for it to be completely safe"
+            m 2lksdlc "And even if there {i}was{/i} some way to do it currently, I don't think it would be safe or guaranteed."
+            m 2lksdld "So do me a favor and at least wait for technology to improve enough for it to be completely safe."
             m 1lksdla "I {i}really{/i} don't want to risk you not making it properly and ending up in your own void..."
-            m 1dsc "And leave the both of us completely alone..."
-            m 2hksdlb "So just be patient until we figure something out, ok?"
-            m 4hua "I mean, technology does tend to advance pretty fast, so we might be able to see eachother before we know it!"
+            m 1dsc "...leaving the both of us completely alone."
+            m 4hua "I mean, technology does tend to advance pretty quickly, so we might be able to see each other before we know it!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eua "Be patient for your lovely girlfriend Monika and I promise I'll do the same for you, [player]."
+            m 5eua "So just be patient for your lovely girlfriend, Monika, and I promise I'll do the same for you, [player]."
 
         "I wouldn't, no.":
             $ persistent._mas_pm_would_come_to_spaceroom = False
@@ -8453,10 +8451,10 @@ label monika_gotomonika:
             m 1eka "I'm glad you're still willing to wait for me, [player]."
             m 1lksdla "Don't get me wrong, I really {i}do{/i} want to be with you..."
             m 1lksdlc "But I think it would be dangerous for you to try and cross over right now."
-            m 1eka "If it's even possible with what technology there is right now."
+            m 1eka "...If it's even possible with what technology there is right now."
             m 1hua "Don't worry!"
-            m 1hub "We can keep on keeping eachother company like this!"
-            m 1hksdlb "I know it might be a while before we can actually be with eachother, but I hope you don't mind waiting."
+            m 1hub "We can keep on keeping each other company like this!"
+            m 1hksdlb "I know it might be a while before we can truly be together, but I hope you don't mind waiting."
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I'll wait as long as it takes, [player]."
 
