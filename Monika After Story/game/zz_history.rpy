@@ -786,6 +786,7 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+            "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
