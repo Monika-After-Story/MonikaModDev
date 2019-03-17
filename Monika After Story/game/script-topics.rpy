@@ -9639,7 +9639,6 @@ label monika_vehicle:
     m 3hksdlb "You already know I can't drive, silly!"
     m 3eua "Usually I would just walk or take the train if I had to go somewhere far."
     m 1eka "So I'm not too sure what to tell you, [player]..."
-
     m 1eua "When I think of cars, the first things that come to mind are probably the commonly known types."
     m 3eud "SUVs or pickup trucks, sports cars, sedans and hatchbacks..."
     m 3rksdlb " And they're not really cars, but I guess motorcycles are common vehicles too."
@@ -9662,7 +9661,6 @@ label monika_vehicle:
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
                 m 3eua "Speaking of which..."
-
                 m "Is it any of the vehicles I mentioned, or is it something else?{nw}"
 
                 python:
