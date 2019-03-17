@@ -23,7 +23,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_imeating",
             category=['you'],
-            prompt="I'm Eating",
+            prompt="I'm eating..."
             pool=True,
             unlocked=True
         )
