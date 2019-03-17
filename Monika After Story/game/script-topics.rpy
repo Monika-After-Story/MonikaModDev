@@ -9819,6 +9819,7 @@ label monika_vehicle:
         m 1eua "What about you?"
 
         m "Do you own a vehicle?"
+        $ _history_list.pop()
         menu:
             m "Do you own a vehicle?{fast}"
             "Yes.":
