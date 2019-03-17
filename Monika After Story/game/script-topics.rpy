@@ -9813,7 +9813,7 @@ label monika_vehicle:
     m 1eka "So I'm not too sure what to tell you, [player]..."
     m 1eua "When I think of cars, the first things that come to mind are probably the commonly known types."
     m 3eud "SUVs or pickup trucks, sports cars, sedans and hatchbacks..."
-    m 3rksdlb "And while they're not really cars, but I guess motorcycles are common vehicles too."
+    m 3rksdlb "And while they're not really cars, I guess motorcycles are common vehicles too."
     
     if persistent._mas_pm_driving_can_drive:
         m 1eua "What about you?"
