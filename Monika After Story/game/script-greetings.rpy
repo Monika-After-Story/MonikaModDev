@@ -980,9 +980,7 @@ label greeting_glitch:
     m 1wuo "[player]!"
     hide monika
     show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
-    extend " Nevermind that I was just..."
-    pause 0.1
-    extend " playing with the code a little."
+    extend " Nevermind that I was just...{w=0.1}playing with the code a little."
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
