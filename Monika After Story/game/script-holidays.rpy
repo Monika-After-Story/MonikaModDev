@@ -689,7 +689,7 @@ label bye_trick_or_treat:
         m 3eksdla "Doesn't it seem a little early for trick or treating, [player]?"
         m 3rksdla "I don't think there's going to be anyone giving out candy yet..."
 
-        m 2etc "Are you {i}sure{/i} you want to go right now?"
+        m 2etc "Are you {i}sure{/i} you want to go right now?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you {i}sure{/i} you want to go right now?{fast}"
@@ -713,7 +713,7 @@ label bye_trick_or_treat:
         m 2dkc "Not to mention that I doubt there would be much candy left..."
         m "..."
 
-        m 4ekc "Are you sure you still want to go?"
+        m 4ekc "Are you sure you still want to go?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you sure you still want to go?{fast}"
@@ -1728,7 +1728,7 @@ label mas_d25_monika_carolling:
     else:
         m 1eua "It just feels heartwarming to know people are spreading joy to others in their spare time."
 
-    m 3eua "Do you like singing Christmas carols, [player]?"
+    m 3eua "Do you like singing Christmas carols, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you like singing Christmas carols, [player]?{fast}"
@@ -2676,7 +2676,7 @@ label mas_nye_monika_nye:
     m 3hua "Well, there's still some time left before midnight."
     m 1eua "We might as well enjoy this year while it lasts..."
 
-    m 3euc "Say, [player], do you have any resolutions for next year?"
+    m 3euc "Say, [player], do you have any resolutions for next year?{nw}"
     $ _history_list.pop()
     menu:
         m "Say, [player], do you have any resolutions for next year?{fast}"
@@ -2790,7 +2790,7 @@ label mas_nye_monika_nyd_fresh_start:
     m 4ekc "It's not too late for us, [player], we can still make each other so happy."
     m 4eka "It's all I've ever wanted."
 
-    m "What do you say, [player]?"
+    m "What do you say, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "What do you say, [player]?{fast}"
@@ -2853,7 +2853,7 @@ label monika_resolutions:
     m 2eub "Hey [player]?"
     m 2eka "I was wondering..."
 
-    m 3eub "Did you make any New Year's resolutions last year?"
+    m 3eub "Did you make any New Year's resolutions last year?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you make any New Year's resolutions last year?{fast}"
@@ -2862,7 +2862,7 @@ label monika_resolutions:
             m 3hua "It always makes me so proud to hear that you're trying to better yourself, [player]."
             m 2eka "That said..."
 
-            m 3hub "Did you accomplish last year's resolutions?"
+            m 3hub "Did you accomplish last year's resolutions?{nw}"
             $ _history_list.pop()
             menu:
                 m "Did you accomplish last year's resolutions?{fast}"
@@ -2910,7 +2910,7 @@ label monika_resolutions:
             else:
                 m 2rkc "You probably should make one this year [player]..."
 
-    m "Do you have any resolutions for next year?"
+    m "Do you have any resolutions for next year?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you have any resolutions for next year?{fast}"
@@ -3500,7 +3500,7 @@ label mas_player_bday_surprise:
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
 
-    m "Did I surprise you?"
+    m "Did I surprise you?{nw}"
     $ _history_list.pop()
     menu:
         m "Did I surprise you?{fast}"

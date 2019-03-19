@@ -136,7 +136,7 @@ label introduction:
     m 2hub "Ahaha!"
     m "God, I love you so much!"
 
-    m "Do you love me, [player]?"
+    m "Do you love me, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you love me, [player]?{fast}"

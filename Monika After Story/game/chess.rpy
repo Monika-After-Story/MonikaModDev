@@ -1507,8 +1507,8 @@ label mas_chess_new_game_start:
         call mas_chess_dlg_chess_locked from _mas_chess_dclngs
         return
 
-    m "What color would suit you?"
-    $ _history_log.pop()
+    m "What color would suit you?{nw}"
+    $ _history_list.pop()
     menu:
         m "What color would suit you?{fast}"
 
@@ -1604,7 +1604,7 @@ label mas_chess_game_start:
 
     # we only save a game if they put in some effort
     if num_turns > 4:
-        m "Would you like to save this game?"
+        m "Would you like to save this game?{nw}"
         $ _history_list.pop()
         menu:
             m "Would you like to save this game?{fast}"
@@ -1615,7 +1615,7 @@ label mas_chess_game_start:
                 pass
 
 label mas_chess_playagain:
-    m "Do you want to play again?"
+    m "Do you want to play again?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you want to play again?{fast}"
@@ -1784,7 +1784,7 @@ label mas_chess_savegame:
         if is_file_exist:
             m 1eka "We already have a game named '[save_name].'"
 
-            m "Should I overwrite it?"
+            m "Should I overwrite it?{nw}"
             $ _history_list.pop()
             menu:
                 m "Should I overwrite it?{fast}"
@@ -1819,7 +1819,7 @@ label mas_chess_savegame:
             if game_result == "*": # ongoing game
                 m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
 
-                m 1eka "Right, [player]?"
+                m 1eka "Right, [player]?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Right, [player]?{fast}"
@@ -1909,7 +1909,7 @@ label mas_chess_dlg_qf_lost:
 
     call mas_chess_dlg_qf_lost_start from _mas_chess_dqfls
 
-    m "Did you mess with the saves, [player]?"
+    m "Did you mess with the saves, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you mess with the saves, [player]?{fast}"
@@ -2159,7 +2159,7 @@ label mas_chess_dlg_qf_edit:
 
     call mas_chess_dlg_qf_edit_start from _mas_chess_dlgqfeditstart
 
-    m 2ekc "Did you edit the save file?"
+    m 2ekc "Did you edit the save file?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you edit the save file?{fast}"
