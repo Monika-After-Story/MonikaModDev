@@ -183,6 +183,10 @@
 # CLOTHES (pose_map):
 #   This functions the same as pose_map for HAIR.
 #
+# CLOTHES (hair_map):
+#   Values should be strings. because hair might be mapped to user-custom
+#   hairs, full hair validation will happen after all objects are validated
+#
 # Selectables JSON:
 #
 # {
@@ -236,6 +240,9 @@ init -21 python in mas_sprites_json:
     )
     # docking station for custom sprites. 
 
+    # verification lists
+    hm_delayed_veri = []
+
 
     def writelog(msg):
         # new lines always added ourselves
@@ -264,9 +271,14 @@ init -21 python in mas_sprites_json:
 
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
+    MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
+
+    ## Hair Map
+    HM_LOADING = "loading hair_map..."
+    HM_SUCCESS = "hair_map loaded successfully!"
 
 
 
@@ -511,13 +523,15 @@ init 790 python in mas_sprites_json:
         OUT:
             save_obj - dict to save data to
             errs - list to save error messages to
+                NOTE: does NOT write errs
             warns - list to save warning messages to
+                NOTE: MAY WRITE WARNS
             infos - list to save info messages to
         """
         # validate ez to validate props
         # priority
         # acs_type
-        _validate_params(jobj, sp_obj_params, False, errs, MSG_ERR_ID)
+        _validate_params(jobj, save_obj, False, errs, MSG_ERR_ID)
         if len(errs) > 0:
             return
 
@@ -541,8 +555,154 @@ init 790 python in mas_sprites_json:
         save_obj["mux_type"] = mux_type
 
         # now for pose map
-        # TODO
+        writelog(MSG_INFO_ID.format(MPM_LOADING.format("pose_map")))
 
+        # pose map must exist for us to reach this point.
+        pose_map = store.MASPoseMap.fromJSON(
+            obj_based.pop("pose_map"),
+            False,
+            errs,
+            warns
+        )
+        if pose_map is None or len(errs) > 0:
+            writelogs(warns)
+            return
+
+        # Valid pose map!
+        # write out warns
+        writelogs(warns)
+
+        # and succ
+        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("pose_map")))
+        save_obj["pose_map"] = pose_map
+
+
+    def _validate_fallbacks(jobj, save_obj, obj_based, errs, warns, infos):
+        """
+        Validates fallback related properties and pose map
+
+        Props validated:
+            - fallback
+            - pose_map
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains pose_map)
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+            warns - list to save warning messages to
+            infos - list to save info messages to
+        """
+        # validate fallback
+        _validate_params(jobj, save_obj, False, errs, MSG_ERR_ID)
+        if len(errs) > 0:
+            return
+
+        # valid fallback? determine it
+        fallback = save_obj.get("fallback", False)
+
+        # now parse pose map
+        writelog(MSG_INFO_ID.format(MPM_LOADING.format("pose_map")))
+        pose_map = store.MASPoseMap.fromJSON(
+            obj_based.pop("pose_map"),
+            fallback,
+            errs,
+            warns
+        )
+        if pose_map is None or len(errs) > 0:
+            writelogs(warns)
+            return
+
+        # valid pose map!
+        # write out warns
+        writelogs(warns)
+
+        # and successful
+        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("pose_map")))
+        save_obj["pose_map"] = pose_map
+
+
+    def _validate_hair(jobj, save_obj, obj_based, errs, warns, infos):
+        """
+        Validates HAIR related properties
+        
+        Props validated:
+            - split
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains split)
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+            warns - list ot save warning messages to
+            infos - list to save info messages to
+        """
+        # validate split
+        if "split" not in obj_based:
+            # no split found, not a problem
+            return
+
+        # split exists, lets get and validate
+        writelog(MSG_INFO_ID.format(MPM_LOADING.format("split")))
+        split = store.MASPoseMap.fromJSON(
+            obj_based.pop("split"),
+            False,
+            errs,
+            warns
+        )
+        if split is None or len(errs) > 0:
+            writelogs(warns)
+            return
+
+        # valid pose map!
+        # write out wrans
+        writelogs(warns)
+
+        # and success
+        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("split")))
+        save_obj["split"] = split
+
+
+    def _validate_clothes(jobj, save_obj, obj_baed, errs, warns, infos):
+        """
+        Validates CLOTHES related properties
+
+        Props validated:
+            - hair_map
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of objected-baesd items
+                (contains split)
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+            warns - list to save warning messages to
+            infos - list to save info messages to
+        """
+        # validate hair_map
+        if "hair_map" not in obj_based:
+            # no hair map found, not a problem
+            return
+
+        # hair map exists, get and validate
+        writelog(MSG_INFO_ID.format(HM_LOADING))
+        hair_map = obj_based.pop("hair_map")
+
+        # hair map key
+        # TODO: keys and values must be valid hairs 
+        #       ( "all" is a valid key)
+        #   HOWEVER, if the hair does does not exist, then it should be
+        #       added to a special dict, which will be verified later.
+        #           (hm_delayed_veri)
+            
 
 
     def addSpriteObject(filepath):
@@ -620,7 +780,50 @@ init 790 python in mas_sprites_json:
             return
 
         # now for specific params
-#        if sp_type == SP_ACS:
+        if sp_type == SP_ACS:
+            # ACS
+            _validate_acs(
+                jobj,
+                sp_obj_params,
+                obj_based_params,
+                msgs_err,
+                msgs_warn,
+                msgs_info
+            )
+            if len(msgs_err) > 0:
+                writelogs(msgs_err)
+                return
+
+            # clear lists
+            msgs_warn = []
+
+        else:
+            # hair / clothes
+            _validate_fallbacks(
+                jobj,
+                sp_obj_params,
+                obj_based_params,
+                msgs_err,
+                msgs_warn,
+                msgs_info
+            )
+            if len(msgs_err) > 0:
+                writelogs(msgs_warn)
+                writelogs(msgs_err)
+                return
+
+            # clear lists
+            msgs_warn = []
+
+            if sp_type == SP_HAIR:
+                # hair
+                pass
+
+            else:
+                # must be clothes
+            
+
+        # now for the 
             
 
 
