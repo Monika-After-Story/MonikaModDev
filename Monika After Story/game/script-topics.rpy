@@ -9834,7 +9834,7 @@ label monika_vehicle:
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
                 m 3eua "Speaking of which..."
-                m "Is it any of the vehicles I mentioned, or is it something else?{nw}"
+                m "Is it any of the vehicles I mentioned, or is it something else?"
 
                 python:
                     option_list = [
@@ -9849,8 +9849,6 @@ label monika_vehicle:
 
                 #Display our scrollable
                 show monika at t21
-
-                m "Is it any of the vehicles I mentioned, or is it something else?{fast}"
 
                 call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, None)
                 show monika at t11
