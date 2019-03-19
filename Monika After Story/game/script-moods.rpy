@@ -149,7 +149,7 @@ init 5 python:
 
 label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
-    m "Are you having a bad day, [player]?"
+    m "Are you having a bad day, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you having a bad day, [player]?{fast}"
@@ -164,12 +164,12 @@ label mas_mood_sad:
         "No.":
             m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
 
-            m 1eua "I don't want to interrupt you while you're talking, so let me know when you're done."
+            m 1eua "I don't want to interrupt you while you're talking, so let me know when you're done.{nw}"
             $ _history_list.pop()
             menu:
                 m "I don't want to interrupt you while you're talking, so let me know when you're done.{fast}"
                 "I'm done.":
-                    m "Do you feel a little better now, [player]?"
+                    m "Do you feel a little better now, [player]?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Do you feel a little better now, [player]?{fast}"
@@ -190,7 +190,7 @@ init 5 python:
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
-    m 2b "Was it a major accomplishment, or a minor one?"
+    m 2b "Was it a major accomplishment, or a minor one?{nw}"
     $ _history_list.pop()
     menu:
         m "Was it a major accomplishment, or a minor one?{fast}"
@@ -473,7 +473,7 @@ label mas_mood_bored:
     elif mas_isMoniNormal(higher=True):
         show monika 1ekc
         pause 1.0
-        m "Do I really bore you that much, [player]?"
+        m "Do I really bore you that much, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Do I really bore you that much, [player]?{fast}"
@@ -530,7 +530,7 @@ label mas_mood_bored:
         else:
             m 2rkc "Maybe we could play a game of [display_picked]..."
 
-    m "What do you say, [player]?"
+    m "What do you say, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "What do you say, [player]?{fast}"
