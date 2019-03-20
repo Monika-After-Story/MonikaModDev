@@ -241,7 +241,11 @@ init -21 python in mas_sprites_json:
     # docking station for custom sprites. 
 
     # verification lists
-    hm_delayed_veri = []
+    hm_key_delayed_veri = []
+    # keys that are missing will give warnings
+
+    hm_val_delayed_veri = []
+    # vals tha tar emissing will give errors
 
 
     def writelog(msg):
@@ -279,6 +283,15 @@ init -21 python in mas_sprites_json:
     ## Hair Map
     HM_LOADING = "loading hair_map..."
     HM_SUCCESS = "hair_map loaded successfully!"
+    HM_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
+    HM_BAD_V_TYPE = "value for key '{0}' - expected type {1}, got {2}"
+    HM_MISS_ALL = "hair_map does not have key 'all' set."
+
+    ## ex_props
+    EP_LOADING = "loading ex_props..."
+    EP_SUCCESS = "ex_props loaded successfully!"
+    EP_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
+    EP_BAD_V_TYPE = "value for key '{0}' - expected type int/str/bool, got {1}"
 
 
 
@@ -370,7 +383,7 @@ init -21 python in mas_sprites_json:
 
 
 init 790 python in mas_sprites_json:
-    from store.mas_sprites import _verify_pose
+    from store.mas_sprites import _verify_pose, HAIR_MAP
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
@@ -669,7 +682,7 @@ init 790 python in mas_sprites_json:
         save_obj["split"] = split
 
 
-    def _validate_clothes(jobj, save_obj, obj_baed, errs, warns, infos):
+    def _validate_clothes(jobj, save_obj, obj_based, errs, warns, infos):
         """
         Validates CLOTHES related properties
 
@@ -696,13 +709,123 @@ init 790 python in mas_sprites_json:
         writelog(MSG_INFO_ID.format(HM_LOADING))
         hair_map = obj_based.pop("hair_map")
 
-        # hair map key
-        # TODO: keys and values must be valid hairs 
-        #       ( "all" is a valid key)
-        #   HOWEVER, if the hair does does not exist, then it should be
-        #       added to a special dict, which will be verified later.
-        #           (hm_delayed_veri)
-            
+        for hair_key,hair_value in hair_map.iteritems():
+            # start with type validations
+
+            # key
+            if _verify_str(hair_key):
+                if hair_key != "all" and not in HAIR_MAP:
+                    hm_key_delayed_veri.append(hair_key)
+            else:
+                errs.append(MSG_ERR_IDD.format(HM_BAD_K_TYPE.format(
+                    hair_key,
+                    str,
+                    type(hair_key)
+                )))
+
+            # value
+            if _verify_str(hair_value):
+                if hair_value not in HAIR_MAP:
+                    hm_val_delayed_veri.append(hair_value)
+
+            else:
+                errs.append(MSG_ERR_IDD.format(HM_BAD_V_TYPE.format(
+                    hair_key,
+                    str,
+                    type(hair_value)
+                )))
+
+        # recommend "all"
+        if "all" not in hair_map:
+            writelog(MSG_WARN_IDD.format(HM_MISS_ALL))
+
+        # check for no errors
+        if len(errs) > 0:
+            return
+
+        # hair map loaded! verification will happen later.
+        writelog(MSG_INFO_ID.format(HM_SUCCESS))
+        save_obj["hair_map"] = hair_map
+
+
+    def _validate_ex_props(jobj, save_obj, obj_based, errs, warns, infos):
+        """
+        Validates ex_props proprety
+
+        Props validated:
+            - ex_props
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains ex_props)
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+            warns - list to save warning messages to
+            infos - list to save info messages to
+        """
+        # validate ex_props
+        if "ex_props" not in obj_based:
+            return
+
+        # ex_props exists, get and validate
+        writelog(MSG_INFO_ID.format(EP_LOADING))
+        ex_props = obj_based.pop("ex_props")
+
+        for ep_key,ep_val in ex_props.iteritems():
+            if not _verify_str(ep_key):
+                errs.append(MSG_ERR_IDD.format(EP_BAD_K_TYPE.format(
+                    ep_key,
+                    str,
+                    type(ep_key)
+                )))
+
+            if not (
+                    _verify_str(ep_val)
+                    or _verify_bool(ep_val)
+                    or _verify_int(ep_val)
+                ):
+                errs.append(MSG_ERR_IDD.format(EP_BAD_V_TYPE.format(
+                    ep_key,
+                    type(ep_val)
+                )))
+
+        # check for no errors
+        if len(errs) > 0:
+            return
+
+        # otherwise, we can say successful loading!
+        writelog(MSG_INFO_ID.format(EP_SUCCESS))
+        save_obj["ex_props"] = ex_props
+
+
+    def _validate_selectable(jobj, save_obj, obj_based, errs, warns, infos):
+        """
+        Validates selectable 
+
+        Props validated:
+            - select_info
+
+        IN:
+            jobj - json object to parse
+            obj_based - dict of object-based items
+                (contains select_info)
+
+        OUT:
+            save_obj - dict to save data to
+            errs - list to save error messages to
+            warns - list to save warning messages to
+            infos - list to save info messages to
+        """
+        # validate select_info
+        if "select_info" not in obj_based:
+            return
+
+        # select_info exists, get and validate
+        select_info = obj_based.pop("select_info")
+        # TODO
 
 
     def addSpriteObject(filepath):
@@ -816,14 +939,62 @@ init 790 python in mas_sprites_json:
             msgs_warn = []
 
             if sp_type == SP_HAIR:
-                # hair
-                pass
+                _validate_hair(
+                    jobj,
+                    sp_obj_params,
+                    obj_based_params,
+                    msgs_err,
+                    msgs_warn,
+                    msgs_info
+                )
+                if len(msgs_err) > 0:
+                    writelogs(msgs_warn)
+                    writelogs(msgs_err)
+                    return
 
             else:
                 # must be clothes
+                _validate_clothes(
+                    jobj,
+                    sp_obj_params,
+                    obj_based_params,
+                    msgs_err,
+                    msgs_warn,
+                    msgs_info
+                )
+                if len(msgs_err) > 0:
+                    writelogs(msgs_warn)
+                    writelogs(msgs_err)
+                    return
+
+            # clear lists
+            msgs_warn = []
+
+        # back to shared acs/hair/clothes stuff
+        _validate_ex_props(
+            jobj,
+            sp_obj_params,
+            obj_based_params,
+            msgs_err,
+            msgs_warn,
+            msgs_info
+        )
+        if len(msgs_err) > 0:
+            writelogs(msgs_warn)
+            writelogs(msgs_err)
+            return
+
+        # clear lists
+        msgs_warn = []
             
 
-        # now for the 
+        # TODO:
+        #   verifying:
+        #       select_info
+        #   saving:
+        #       giftname
+        #   processing
+        #       progpoints
             
 
 
