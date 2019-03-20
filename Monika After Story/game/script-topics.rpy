@@ -5008,7 +5008,7 @@ label monika_zombie:
     m 2lksdlc "I don't even want to think about that..."
     m "There's no way I could kill you for my own safety..."
     m 2lksdlb "Ahaha..."
-    m 2lssdrb "I'm thinking way too much about this."
+    m 2lssdlb "I'm thinking way too much about this."
     m 1eua "Well, regardless, if anything bad were to happen..."
     m 2hua "I'll be by your side forever~"
     return
@@ -10361,7 +10361,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri-- and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You’ll have to lean down to kiss me!"
 
@@ -10515,7 +10515,7 @@ label monika_player_appearance:
                         m 4hub "But you’ve obviously disproven that myth. Personally, I think black hair is very attractive."
                         m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you’d find that it’s not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
-                        m 3eub "Black hair follows the same principle -- you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
+                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
                         m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
                         m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
