@@ -1,6 +1,5 @@
 # Monika's sprites!
 # To add a new image, please scroll to the IMAGE section (IMG030)
-# Accesories are in (IMG020)
 #
 ###### SPRITE CODE (IMG010)
 #
@@ -171,6 +170,13 @@ image emptydesk = ConditionSwitch(
 
 image mas_finalnote_idle = "mod_assets/poem_finalfarewell_desk.png"
 
+image mas_roses = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/monika/a/acs-roses-0.png",
+    "not morning_flag",
+    "mod_assets/monika/a/acs-roses-0-n.png"
+)
+
 ### bday stuff
 define mas_bday_cake_lit = False
 image mas_bday_cake = ConditionSwitch(
@@ -190,14 +196,14 @@ image mas_bday_banners = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/birthday_decorations-n.png"
 )
 image mas_bday_balloons = ConditionSwitch(
-    "persistent._mas_sensitive_mode and morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
-    "persistent._mas_sensitive_mode and not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png",
     "morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons_sens.png",
     "not morning_flag",
-    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
+    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n_sens.png"
+#    "morning_flag",
+#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons.png",
+#    "not morning_flag",
+#    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
 init -5 python in mas_sprites:
@@ -280,11 +286,12 @@ init -5 python in mas_sprites:
 
     # Prefixes for files
     PREFIX_TORSO = "torso" + ART_DLM
-    PREFIX_BODY = "body" + ART_DLM
-    PREFIX_HAIR = "hair" + ART_DLM
-    PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_TORSO_LEAN = "torso-leaning" + ART_DLM
+    PREFIX_BODY = "body" + ART_DLM
     PREFIX_BODY_LEAN = "body-leaning" + ART_DLM
+    PREFIX_HAIR = "hair" + ART_DLM
+    PREFIX_HAIR_LEAN = "hair-leaning" + ART_DLM
+    PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_ARMS_LEAN = "arms-leaning" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
@@ -778,7 +785,7 @@ init -5 python in mas_sprites:
             _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix)
 
         # add final part
-        sprite_list.append(")")
+        sprite_list.append('")')
 
 
     def _ms_arms_nh_up(sprite_list, clothing, arms, n_suffix):
@@ -798,8 +805,7 @@ init -5 python in mas_sprites:
             PREFIX_ARMS,
             arms,
             n_suffix,
-            FILE_EXT,
-            '"'
+            FILE_EXT
         ))
 
 
@@ -829,8 +835,7 @@ init -5 python in mas_sprites:
             ART_DLM,
             arms,
             n_suffix,
-            FILE_EXT,
-            '"'
+            FILE_EXT
         ))
 
 
@@ -1124,9 +1129,9 @@ init -5 python in mas_sprites:
         sprite_list.append(")")
 
 
-    def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split):
+    def _ms_hair(sprite_list, loc_str, hair, n_suffix, front_split, lean):
         """
-        Creates split hair string
+        Creates split hair string for leaning
 
         IN:
             sprite_list - list to add sprite strings to
@@ -1135,7 +1140,6 @@ init -5 python in mas_sprites:
             n_suffix - night suffix to use
             front_split - True means use front split, False means use back
             lean - type of lean
-                (Default: None)
         """
         if front_split:
             hair_suffix = FHAIR_SUFFIX
@@ -1149,14 +1153,75 @@ init -5 python in mas_sprites:
             loc_str,
             ",",
             LOC_Z,
-            ',"',
+            ',"'
+        ))
+
+        if lean:
+            _ms_hair_leaning(
+                sprite_list,
+                loc_str,
+                hair,
+                n_suffix,
+                hair_suffix,
+                lean
+            )
+
+        else:
+            _ms_hair_up(sprite_list, loc_str, hair, n_suffix, hair_suffix)
+
+        # add final paren
+        sprite_list.append('")')
+
+
+    def _ms_hair_up(sprite_list, loc_str, hair, n_suffix, hair_suffix):
+        """
+        Creates split hair string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string to use
+            hair - type of hair
+            n_suffix - night suffix to use
+            hair_suffix - hair suffix to use
+        """
+        sprite_list.extend((
             H_MAIN,
             PREFIX_HAIR,
             hair,
             hair_suffix,
             n_suffix,
-            FILE_EXT,
-            '")'
+            FILE_EXT
+        ))
+
+
+    def _ms_hair_leaning(
+            sprite_list,
+            loc_str,
+            hair,
+            n_suffix,
+            hair_suffix,
+            lean
+        ):
+        """
+        Creates split hair string for leaning
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string to use
+            hair - type of hair
+            n_suffix - night suffix to use
+            hair_suffix - hair suffix to use
+            lean - type of lean
+        """
+        sprite_list.extend((
+            H_MAIN,
+            PREFIX_HAIR_LEAN,
+            lean,
+            ART_DLM,
+            hair,
+            hair_suffix,
+            n_suffix,
+            FILE_EXT
         ))
 
 
@@ -1330,10 +1395,10 @@ init -5 python in mas_sprites:
             acs_bfh_list - sorted list of MASAccessories to draw between body
                 and front hair
             acs_afh_list - sorted list of MASAccessories to draw between front
-                hair and arms
+                hair and face
             acs_mid_list - sorted list of MASAccessories to draw between body
-                and face
-            acs_pst_list - sorted list of MASAccessories to draw after face
+                and arms
+            acs_pst_list - sorted list of MASAccessories to draw after arms
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -1382,12 +1447,12 @@ init -5 python in mas_sprites:
         #   5. pre-front-hair-acs - acs that should render after body, but
         #       before front hair (split mode)
         #   6. front-hair - front portion of hair (split mode)
-        #   7. front-hair-arms acs - acs that should render after front hair
-        #       but before arms (split mode)
-        #   7. arms - arms (split mode, lean mode)
-        #   8. mid - acs that render between body and face
-        #   9. face - face expressions
-        #   10. post-acs - acs that should render after basically everything
+        #   7. front-hair-face acs - acs that should render after front hair
+        #       but before face (split mode)
+        #   8. face - face expressions
+        #   9. mid - acs that render between body and arms
+        #   10. arms - arms (split mode, lean mode)
+        #   11. post-acs - acs that should render after basically everything
 
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
@@ -1410,7 +1475,7 @@ init -5 python in mas_sprites:
         if hair_split:
 
             # 2. back-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False, lean)
 
             # 3. post back hair acs
             _ms_accessorylist(
@@ -1450,7 +1515,7 @@ init -5 python in mas_sprites:
             sprite_str_list.extend(loc_build_tup)
 
             # 6. front-hair
-            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, False)
+            _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True, lean)
 
             # 7. post-front hair acs
             _ms_accessorylist(
@@ -1463,9 +1528,41 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
+            # position setup
             sprite_str_list.extend(loc_build_tup)
 
-            # 8. arms
+            # 8. face
+            _ms_face(
+                sprite_str_list,
+                loc_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+
+            # 9. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            sprite_str_list.extend(loc_build_tup)
+
+            # 10. arms
             _ms_arms_nh(
                 sprite_str_list,
                 loc_str,
@@ -1476,7 +1573,7 @@ init -5 python in mas_sprites:
             )
 
         else:
-            # in thise case, 2,6,7 are skipped.
+            # in thise case, 2,6 are skipped.
 
             # 4. body
             _ms_body(
@@ -1511,25 +1608,55 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 7. post-front hair acs gets rendered before arms instead
-            # NOTE: we MUST skip 7 because it would conflict with
-            #   old-style leaning
-#            _ms_accessorylist(
-#                sprite_str_list,
-#                loc_build_str,
-#                acs_afh_list,
-#                n_suffix,
-#                True,
-#                arms,
-#                lean=lean
-#            )
+            # 7. post-front hair acs
+            # NOTE: this is consdiered before face
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # position setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 8. face
+            _ms_face(
+                sprite_str_list,
+                loc_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+            # 9. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
 
             # no lean means ARMS
             if not lean:
                 # position setup
                 sprite_str_list.extend(loc_build_tup)
 
-                # 8. arms
+                # 10. arms
                 #   NOTE: force no lean here
                 _ms_arms_nh(
                     sprite_str_list,
@@ -1541,38 +1668,7 @@ init -5 python in mas_sprites:
                 )
 
 
-        # 9. between body and face acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_mid_list,
-            n_suffix,
-            True,
-            arms,
-            lean=lean
-        )
-
-        # position setup
-        sprite_str_list.extend(loc_build_tup)
-
-        # 10. face
-        _ms_face(
-            sprite_str_list,
-            loc_str,
-            eyebrows,
-            eyes,
-            nose,
-            mouth,
-            n_suffix,
-            lean=lean,
-            eyebags=eyebags,
-            sweat=sweat,
-            blush=blush,
-            tears=tears,
-            emote=emote
-        )
-
-        # 11. after face acs
+        # 11. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1854,11 +1950,11 @@ init -2 python:
 
         # CONSTANTS
         PRE_ACS = 0 # PRE ACCESSORY (before body)
-        MID_ACS = 1 # MID ACCESSORY (right before face)
-        PST_ACS = 2 # post accessory (after face)
+        MID_ACS = 1 # MID ACCESSORY (right before arms)
+        PST_ACS = 2 # post accessory (after arms)
         BBH_ACS = 3 # betweeen Body and Back Hair accessory
         BFH_ACS = 4 # between Body and Front Hair accessory
-        AFH_ACS = 5 # between arms and front hair accessory
+        AFH_ACS = 5 # between face and front hair accessory
 
 
         def __init__(self):
@@ -1935,7 +2031,7 @@ init -2 python:
             return self.acs.get(acs_type, None)
 
 
-        def _load(self, 
+        def _load(self,
                 _clothes_name,
                 _hair_name,
                 _acs_pre_names,
@@ -1943,7 +2039,8 @@ init -2 python:
                 _acs_bfh_names,
                 _acs_afh_names,
                 _acs_mid_names,
-                _acs_pst_names
+                _acs_pst_names,
+                startup=False
             ):
             """
             INTERNAL
@@ -1958,12 +2055,15 @@ init -2 python:
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
                 _acs_mid_names - list of mid acs names to load
-                _acs_pst_names - list of pst acs names to load
+                _acs_pst_names - list of pst acs names to load,
+                startup - True if we are loading on start, False if not
+                    (Default: False)
             """
             # clothes and hair
             self.change_outfit(
                 store.mas_sprites.CLOTH_MAP[_clothes_name],
-                store.mas_sprites.HAIR_MAP[_hair_name]
+                store.mas_sprites.HAIR_MAP[_hair_name],
+                startup=startup
             )
 
             # acs
@@ -2027,7 +2127,7 @@ init -2 python:
 
         def _save_acs_obj(self, acs_type, force_acs=False):
             """
-            Generaltes list of acs objects to save 
+            Generaltes list of acs objects to save
 
             IN:
                 acs_type - acs type to buld acs list
@@ -2045,7 +2145,7 @@ init -2 python:
             ]
 
 
-        def change_clothes(self, new_cloth, by_user=None):
+        def change_clothes(self, new_cloth, by_user=None, startup=False):
             """
             Changes clothes to the given cloth. also sets the persistent
             force clothes var to by_user, if its not None
@@ -2055,8 +2155,11 @@ init -2 python:
                 by_user - True if this action was mandated by the user, False
                     if not. If None, we do NOT set the forced clothes var
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    When True, we dont respect locking
+                    (Default: False)
             """
-            if self.lock_clothes:
+            if self.lock_clothes and not startup:
                 return
 
             prev_cloth = self.clothes
@@ -2068,7 +2171,7 @@ init -2 python:
                 persistent._mas_force_clothes = bool(by_user)
 
 
-        def change_hair(self, new_hair, by_user=None):
+        def change_hair(self, new_hair, by_user=None, startup=False):
             """
             Changes hair to the given hair. also sets the persistent force
             hair var to by_user, if its not None
@@ -2078,10 +2181,13 @@ init -2 python:
                 by_user - True if this action was mandated by the user, False
                     if not. If None, we do NOT set the forced hair var
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    When True, we dont respect locking
+                    (Default: False)
             """
-            if self.lock_hair:
+            if self.lock_hair and not startup:
                 return
-           
+
             prev_hair = self.hair
             self.hair.exit(self, new_hair=new_hair)
             self.hair = new_hair
@@ -2091,7 +2197,13 @@ init -2 python:
                 persistent._mas_force_hair = bool(by_user)
 
 
-        def change_outfit(self, new_cloth, new_hair, by_user=None):
+        def change_outfit(
+                self,
+                new_cloth,
+                new_hair,
+                by_user=None,
+                startup=False
+            ):
             """
             Changes both clothes and hair. also sets the persisten forced vars
             to by_user, if its not None
@@ -2102,11 +2214,13 @@ init -2 python:
                 by_user - True if this action ws mandated by user, False if not
                     If None, we do NOT set the forced vars
                     (Default: None)
+                startup - True if we are loading on startup, False if not
+                    (Default: False)
             """
-            self.change_clothes(new_cloth, by_user=by_user)
-            self.change_hair(new_hair, by_user=by_user)
+            self.change_clothes(new_cloth, by_user=by_user, startup=startup)
+            self.change_hair(new_hair, by_user=by_user, startup=startup)
 
-    
+
         def get_acs_of_type(self, acs_type, get_all=False):
             """
             Gets the acs objects currently being worn of a given type.
@@ -2214,9 +2328,14 @@ init -2 python:
             return False
 
 
-        def load(self):
+        def load(self, startup=False):
             """
             Loads hair/clothes/accessories from persistent.
+
+            IN:
+                startup - True if loading on start, False if not
+                    When True, we dont respesct locking
+                    (Default: False)
             """
             self._load(
                 store.persistent._mas_monika_clothes,
@@ -2226,13 +2345,15 @@ init -2 python:
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
                 store.persistent._mas_acs_mid_list,
-                store.persistent._mas_acs_pst_list
+                store.persistent._mas_acs_pst_list,
+                startup=startup
             )
 
 
+        # TODO: consider adding startup to this
         def load_state(self, _data, as_prims=False):
             """
-            Loads clothes/hair/acs from a tuple data format that was saved 
+            Loads clothes/hair/acs from a tuple data format that was saved
             using the save_state function.
 
             IN:
@@ -2479,7 +2600,7 @@ init -2 python:
                     (Default: False)
                 force_clothes - True meanas force clothes saving even if
                     stay_on_start is False. If False and stay_on_start is
-                    False, the default clothes will be returned. 
+                    False, the default clothes will be returned.
                     (Default: False)
                 force_acs - True means force acs saving even if stay_on_start
                     is False. At minimum, this will be an empty list.
@@ -2748,6 +2869,11 @@ init -2 python:
             else:
                 self.__set_posedefs(self.l_map, l_default)
 
+            # use all map for quick pose lookup
+            self.__all_map = {}
+            self.__all_map.update(self.map)
+            self.__all_map.update(self.l_map)
+
 
         def __set_posedefs(self, pose_dict, _def):
             """
@@ -2760,6 +2886,21 @@ init -2 python:
             for k in pose_dict:
                 if pose_dict[k] is None:
                     pose_dict[k] = _def
+
+
+        def get(self, pose, defval):
+            """
+            Get passed to the internal pose map
+            only because its common to call get on this object. 
+
+            IN:
+                pose - pose to get from pose map
+                defval - default value to return if pose not found
+
+            RETURNS:
+                value of pose in internal dict, or defval if not found
+            """
+            return self.__all_map.get(pose, defval)
 
 
     # base class for MAS sprite things
@@ -2815,7 +2956,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -2963,7 +3104,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3092,10 +3233,10 @@ init -2 python:
                     NOTE: not used by the sprite system. This purely for caller
                     use.
                     (Default: None)
-                mux_type - list of acs types that should be 
+                mux_type - list of acs types that should be
                     mutually exclusive with this acs.
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
 
@@ -3197,7 +3338,7 @@ init -2 python:
                 split - MASPoseMap object saying which hair has splits or Not.
                     If None, we assume hair has splits for everything.
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3280,7 +3421,7 @@ init -2 python:
                     the MASMonika object that is being changed is fed into this
                     function
                     (Default: None)
-                ex_props - dict of additional properties to apply to this 
+                ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
             """
@@ -3409,6 +3550,7 @@ init -2 python:
 
             if store.mas_sprites.should_disable_lean(lean, arms, character):
                 # set lean to None if its on the blacklist
+                # NOTE: this function checks pose_maps
                 lean = None
                 arms = "steepling"
 
@@ -3431,8 +3573,7 @@ init -2 python:
 
             # determine hair split
             if hair.split is None:
-                # TODO: this should be True instead.
-                hair_split = False
+                hair_split = True
 
             elif lean:
                 # we assume split if lean not found
@@ -3487,1191 +3628,6 @@ init -2 python:
 
 # Monika
 define monika_chr = MASMonika()
-
-init -2 python in mas_sprites:
-    # all progrmaming points should go here
-    # organize by type then id
-    # ASSUME all programming points only run at runtime
-    import store
-
-    temp_storage = dict()
-    # all programming points have access to this storage var.
-    # use names + an identifier as keys so you wont collide
-    # NOTE: this will NOT be maintained on a restart
-
-    ######### HAIR ###########
-    # available kwargs:
-    #   entry:
-    #       prev_hair - previously worn hair
-    #   exit:
-    #       new_hair - hair that is to be worn
-
-    def _hair_def_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for ponytail
-        """
-        # wear a ribbon, we do this always to enforce monika's ribbon as a
-        # separate acs.
-        if not _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
-
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
-
-
-    def _hair_down_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for hair down
-        """
-        # if wearing a ribbon, take it off
-        # NOTE: we save the ribbon in temp storage as a courtesy
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
-            if prev_ribbon != store.mas_acs_ribbon_blank:
-                temp_storage["hair.ribbon" ] = prev_ribbon
-            _moni_chr.remove_acs(prev_ribbon)
-
-        # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-
-    def _hair_bun_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for hair bun
-        """
-        # wear a ribbon, we do this always to enforce monika's ribbon as a
-        # separate acs.
-        if not _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
-
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
-
-
-    ######### CLOTHES ###########
-    # available kwargs:
-    #   entry:
-    #       prev_clothes - prevoiusly worn clothes
-    #   exit:
-    #       new_clothes - clothes that are to be worn
-
-    def _clothes_rin_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for rin clothes
-        """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.rin"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2=None,
-            p3="1",
-            p4=None,
-            p5="5",
-            p6=None
-        )
-
-        # hide hair down select
-        store.mas_lockEVL("monika_hair_select", "EVE")
-
-        # hide hairdown greeting
-#        store.mas_lockEVL("greeting_hairdown", "GRE")
-
-        # wearing rin clothes means we wear custom blank ribbon if we are
-        # wearing a ribbon
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if (
-                prev_ribbon is not None 
-                and prev_ribbon != store.mas_acs_ribbon_blank
-            ):
-            temp_storage["hair.ribbon"] = prev_ribbon
-            _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
-
-        # lock hair so we dont get ribbon issues
-        _moni_chr.lock_hair = True
-
-        # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-
-    def _clothes_rin_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for rin clothes
-        """
-        rin_map = temp_storage.get("clothes.rin", None)
-        if rin_map is not None:
-            store.mas_acs_promisering.pose_map = rin_map
-
-        # unlock hair down select, if needed
-        if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEVL("monika_hair_select", "EVE")
-
-        # unlock hair down greeting if not unlocked
-#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
-#            store.mase_unlockEVL("greeting_hairdown", "GRE")
-        
-        # wear previous ribbon if we are wearing blank ribbon
-        # NOTE: we are gauanteed to be wearing blank ribbon when wearing
-        # these clothes. Regardless, we should always restore to what we
-        # have previously saved.
-        if _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
-
-        # unlock hair
-        _moni_chr.lock_hair = False
-
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
-
-
-    def _clothes_marisa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for marisa clothes
-        """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.marisa"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2="6",
-            p3="1",
-            p4=None,
-            p5="5",
-            p6=None
-        )
-
-        # hide hair down select
-        store.mas_lockEVL("monika_hair_select", "EVE")
-
-        # hide hairdown greeting
-#        store.mas_lockEVL("greeting_hairdown", "GRE")
-
-        # wearing marisa clothes means we wear custom blank ribbon if we are
-        # wearing a ribbon
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if (
-                prev_ribbon is not None 
-                and prev_ribbon != store.mas_acs_ribbon_blank
-            ):
-            temp_storage["hair.ribbon"] = prev_ribbon
-            _moni_chr.wear_acs(store.mas_acs_ribbon_blank)
-
-        # lock hair so we dont get ribbon issues
-        _moni_chr.lock_hair = True
-
-        # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
-
-
-    def _clothes_marisa_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for marisa clothes
-        """
-        marisa_map = temp_storage.get("clothes.marisa", None)
-        if marisa_map is not None:
-            store.mas_acs_promisering.pose_map = marisa_map
-
-        # unlock hair down select, if needed
-        if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEVL("monika_hair_select", "EVE")
-
-        # unlock hair down greeting if not unlocked
-#        if not store.mas_SELisUnlocked(mas_hair_down, 1):
-#            store.mase_unlockEVL("greeting_hairdown", "GRE")
-
-        # wear previous ribbon if we are wearing blank ribbon
-        if _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
-
-        # unlock hair
-        _moni_chr.lock_hair = False
-
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
-
-
-    def _clothes_santa_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for santa clothes
-        """
-        # TODO: handle other promise ring types
-        temp_storage["clothes.santa"] = store.mas_acs_promisering.pose_map
-        store.mas_acs_promisering.pose_map = store.MASPoseMap(
-            p1=None,
-            p2="7",
-            p3="1",
-            p4=None,
-            p5="5",
-            p6=None
-        )
-
-        # wearing a ribbon? switch to the wine ribbon always
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
-            if prev_ribbon != store.mas_acs_ribbon_blank:
-                temp_storage["hair.ribbon"] = prev_ribbon
-            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
-
-
-    def _clothes_santa_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for santa clothes
-        """
-        santa_map = temp_storage.get("clothes.santa", None)
-        if santa_map is not None:
-            store.mas_acs_promisering.pose_map = santa_map
-
-        # go back to previous ribbon if wearing wine ribbon
-        if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
-
-
-    ######### ACS ###########
-    # available kwargs:
-    #   NONE
-
-    def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
-        """
-        Exit programming point for quetzal plushie acs
-        """
-        # remove the santa hat if we are removing the plushie
-        _moni_chr.remove_acs(store.mas_acs_quetzalplushie_santahat)
-
-        # also remove antlers
-        _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
-
-
-    def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for quetzal plushie santa hat acs
-        """
-        # need to wear the quetzal plushie if we putting the santa hat on
-        _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
-
-
-    def _acs_quetzalplushie_antlers_entry(_moni_chr, **kwargs):
-        """
-        Entry programming point for quetzal plushie antlers acs
-        """
-        # need to wear the quetzal plushie if we putting the antlers on
-        _moni_chr.wear_acs_pst(store.mas_acs_quetzalplushie)
-
-
-
-init -1 python:
-    # HAIR (IMG015)
-    # Hairs are representations of image objects with propertes
-    #
-    # NAMING:
-    # mas_hair_<hair name>
-    #
-    # <hair name> MUST BE UNIQUE
-    #
-    # NOTE: see the existing standards for hair file naming
-    # NOTE: PoseMaps are used to determin which lean types exist for
-    #   a given hair type, NOT filenames
-    #
-    # NOTE: the fallback system:
-    #   by setting fallback to True, you can use the fallback system to
-    #   make poses fallback to a different pose. NOTE: non-lean types CANNOT
-    #   fallback to a lean type. Lean types can fallback to anything.
-    #
-    #   When using the fallback system, map poses to the pose/lean types
-    #   that you want to fallback on.
-    #   AKA: to make pose 2 fallback to steepling, do `p2="steepling"`
-    #   To make everything fallback to steepling, do `default="steepling"`
-    #   This means that steepling MUST exist for the fallback system to work
-    #   perfectly.
-    #
-    # NOTE: template:
-    ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
-    ## hairidentifiername
-    # General description of the hair style
-
-    ### PONYTAIL WITH RIBBON (default)
-    ## def
-    # Monika's default hairstyle, aka the ponytail
-    mas_hair_def = MASHair(
-        "def",
-        "def",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        entry_pp=store.mas_sprites._hair_def_entry,
-        ex_props={
-            "ribbon": True
-        }
-#        split=False
-    )
-    store.mas_sprites.init_hair(mas_hair_def)
-    store.mas_selspr.init_selectable_hair(
-        mas_hair_def,
-        "Ponytail",
-        "ponytail",
-        "hair",
-        select_dlg=[
-            "Do you like my ribbon, [player]?"
-        ]
-    )
-    store.mas_selspr.unlock_hair(mas_hair_def)
-
-    ### DOWN
-    ## down
-    # Hair is down, not tied up
-    mas_hair_down = MASHair(
-        "down",
-        "down",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        entry_pp=store.mas_sprites._hair_down_entry
-#        exit_pp=store.mas_sprites._hair_down_exit,
-#        split=False
-    )
-    store.mas_sprites.init_hair(mas_hair_down)
-    store.mas_selspr.init_selectable_hair(
-        mas_hair_down,
-        "Down",
-        "down",
-        "hair",
-        select_dlg=[
-            "Feels nice to let my hair down..."
-        ]
-    )
-
-    ### BUN WITH RIBBON
-    ## bun
-    # Hair tied into a bun, using the ribbon
-    mas_hair_bun = MASHair(
-        "bun",
-        "bun",
-        MASPoseMap(
-            default=True,
-            p5=None
-        ),
-        entry_pp=store.mas_sprites._hair_bun_entry,
-        ex_props={
-            "ribbon": True
-        }
-#        split=False
-    )
-    store.mas_sprites.init_hair(mas_hair_bun)
-
-    ### CUSTOM
-    ## custom
-    # Not a real hair object. If an outfit uses this, it's assumed that the
-    # actual clothes have the hair baked into them.
-    mas_hair_custom = MASHair(
-        "custom",
-        "custom",
-        MASPoseMap()
-#        split=False
-    )
-    store.mas_sprites.init_hair(mas_hair_custom)
-
-
-init -1 python:
-    # THIS MUST BE AFTER THE HAIR SECTION
-    # CLOTHES (IMG018)
-    # Clothes are representations of image objects with properties
-    #
-    # NAMING:
-    # mas_clothes_<clothes name>
-    #
-    # <clothes name> MUST BE UNIQUE
-    #
-    # NOTE: see the existing standards for clothes file naming
-    # NOTE: PoseMaps are used to determine which lean types exist for
-    #  a given clothes type, NOT filenames
-    #
-    # NOTE: see IMG015 for info about the fallback system
-    #
-    # NOTE: template
-    ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
-    ## clothesidentifiername
-    # General description of the clothes
-
-    ### SCHOOL UNIFORM (default)
-    ## def
-    # Monika's school uniform
-    mas_clothes_def = MASClothes(
-        "def",
-        "def",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        stay_on_start=True
-    )
-    store.mas_sprites.init_clothes(mas_clothes_def)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_def,
-        "School Uniform",
-        "schooluniform",
-        "clothes",
-        visible_when_locked=True,
-        hover_dlg=None,
-        select_dlg=[
-            "Ready for school!"
-        ]
-    )
-    store.mas_selspr.unlock_clothes(mas_clothes_def)
-
-    ### MARISA COSTUME
-    ## marisa
-    # Witch costume based on Marisa
-    mas_clothes_marisa = MASClothes(
-        "marisa",
-        "def",
-        MASPoseMap(
-            p1="steepling",
-            p2="crossed",
-            p3="restleftpointright",
-            p4="pointright",
-            p6="down"
-        ),
-        fallback=True,
-        hair_map={
-            "all": "custom"
-        },
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_marisa_entry,
-        exit_pp=store.mas_sprites._clothes_marisa_exit,
-        ex_props={
-            "forced hair": True
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_marisa)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_marisa,
-        "Witch Costume",
-        "marisa",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Just an ordinary costume, ~ze."
-        ]
-    )
-
-
-    ### RIN COSTUME
-    ## rin
-    # Neko costume based on Rin
-    mas_clothes_rin = MASClothes(
-        "rin",
-        "def",
-        MASPoseMap(
-            p1="steepling",
-            p2="crossed",
-            p3="restleftpointright",
-            p4="pointright",
-            p6="down"
-        ),
-        fallback=True,
-        hair_map={
-            "all": "custom"
-        },
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_rin_entry,
-        exit_pp=store.mas_sprites._clothes_rin_exit,
-        ex_props={
-            "forced hair": True
-        }
-    )
-    store.mas_sprites.init_clothes(mas_clothes_rin)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_rin,
-        "Neko Costume",
-        "rin",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=[
-            "~nya?",
-            "n-nya..."
-        ],
-        select_dlg=[
-            "Nya!"
-        ]
-    )
-
-    ### SANTA MONIKA
-    ## santa
-    # Monika with Santa costume
-    mas_clothes_santa = MASClothes(
-        "santa",
-        "def",
-        MASPoseMap(
-            default=True,
-            use_reg_for_l=True
-        ),
-        hair_map={
-            "bun": "def"
-        },
-#        MASPoseMap(
-#            p1="steepling",
-#            p2="crossed",
-#            p3="restleftpointright",
-#            p4="pointright",
-#            p6="down"
-#        ),
-#        fallback=True,
-        stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_santa_entry,
-        exit_pp=store.mas_sprites._clothes_santa_exit
-    )
-    store.mas_sprites.init_clothes(mas_clothes_santa)
-    store.mas_selspr.init_selectable_clothes(
-        mas_clothes_santa,
-        "Santa Costume",
-        "santa",
-        "clothes",
-        visible_when_locked=False,
-        hover_dlg=None,
-        select_dlg=[
-            "Merry Christmas!",
-            "What kind of {i}presents{/i} do you want?",
-            "Happy holidays!"
-        ]
-    )
-
-
-init -1 python:
-    # ACCESSORIES (IMG020)
-    # Accessories are reprsentation of image objects with properties
-    # Pleaes refer to MASAccesory to understand all the properties
-    #
-    # NAMING SCHEME:
-    # mas_acs_<accessory name>
-    #
-    # <accessory name> MUST BE UNIQUE
-    #
-    # File naming:
-    # Accessories should be named like:
-    #   acs-<acs identifier/name>-<pose id>-<night suffix>
-    #
-    # acs name - name of the accessory (shoud be unique)
-    # pose id - identifier to map this image to a pose (should be unique
-    #       per accessory)
-    #
-    # NOTE: pleaes preface each accessory with the following commen template
-    # this is to ensure we hvae an accurate description of what each accessory
-    # is:
-    ### HUMAN UNDERSTANDABLE NAME OF ACCESSORY
-    ## accessoryidentifiername
-    # General description of what the object is, where it is located
-
-    ### COFFEE MUG
-    ## mug
-    # Coffee mug that sits on Monika's desk
-    mas_acs_mug = MASAccessory(
-        "mug",
-        "mug",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        acs_type="mug",
-        mux_type=["mug"]
-    )
-    store.mas_sprites.init_acs(mas_acs_mug)
-
-    ### HOT CHOCOLATE MUG
-    ## hotchoc_mug
-    # Coffee mug that sits on Monika's desk
-    mas_acs_hotchoc_mug = MASAccessory(
-        "hotchoc_mug",
-        "hotchoc_mug",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        acs_type="mug",
-        mux_type=["mug"]
-    )
-    store.mas_sprites.init_acs(mas_acs_hotchoc_mug)
-
-    ### PROMISE RING
-    ## promisering
-    # Promise ring that can be given to Monika
-    mas_acs_promisering = MASAccessory(
-        "promisering",
-        "promisering",
-        MASPoseMap(
-            p1=None,
-            p2="4",
-            p3="1",
-            p4=None,
-            p5="5",
-            p6=None
-        ),
-        stay_on_start=True,
-        acs_type="ring",
-        ex_props={
-            "bare hands": True
-        }
-    )
-    store.mas_sprites.init_acs(mas_acs_promisering)
-
-    ### QUETZAL PLUSHIE
-    ## quetzalplushie
-    # Quetzal plushie that sits on Monika's desk
-    mas_acs_quetzalplushie = MASAccessory(
-        "quetzalplushie",
-        "quetzalplushie",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=False,
-        exit_pp=store.mas_sprites._acs_quetzalplushie_exit
-    )
-    store.mas_sprites.init_acs(mas_acs_quetzalplushie)
-
-    ### QUETZAL PLUSHIE ANTLERS
-    ## quetzalplushie_antlers
-    # Antlers for the Quetzal Plushie
-    mas_acs_quetzalplushie_antlers = MASAccessory(
-        "quetzalplushie_antlers",
-        "quetzalplushie_antlers",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        priority=12,
-        stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_antlers_entry
-    )
-
-    ### QUETZAL PLUSHIE SANTA HAT
-    ## quetzalplushie_santahat
-    # Santa hat for the Quetzal Plushie
-    mas_acs_quetzalplushie_santahat = MASAccessory(
-        "quetzalplushie_santahat",
-        "quetzalplushie_santahat",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        priority=11,
-        stay_on_start=False,
-        entry_pp=store.mas_sprites._acs_quetzalplushie_santahat_entry
-    )
-
-    ### BLACK RIBBON
-    ## ribbon_black
-    # Black ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_black = MASAccessory(
-        "ribbon_black",
-        "ribbon_black",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_black)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_black,
-        "Ribbon (Black)",
-        "ribbon_black",
-        "ribbon",
-        hover_dlg=[
-            "That's pretty formal, [player]."
-        ],
-        select_dlg=[
-            "Are we going somewhere special, [player]?"
-        ]
-    )
-
-    ### BLANK RIBBON
-    ## ribbon_blank
-    # Blank ribbon for use in ponytail/bun with custom outfits
-    mas_acs_ribbon_blank = MASAccessory(
-        "ribbon_blank",
-        "ribbon_blank",
-        MASPoseMap(
-            default="0",
-            use_reg_for_l=True
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_blank)
-
-    ### BLUE RIBBON
-    ## ribbon_blue
-    # Blue ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_blue = MASAccessory(
-        "ribbon_blue",
-        "ribbon_blue",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_blue)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_blue,
-        "Ribbon (Blue)",
-        "ribbon_blue",
-        "ribbon",
-        hover_dlg=[
-            "Like the ocean..."
-        ],
-        select_dlg=[
-            "Great choice, [player]!"
-        ]
-    )
-
-    ### DARK PURPLE RIBBON
-    ## ribbon_dark_purple
-    # Dark purple ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_darkpurple = MASAccessory(
-        "ribbon_dark_purple",
-        "ribbon_dark_purple",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_darkpurple)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_darkpurple,
-        "Ribbon (Dark Purple)",
-        "ribbon_dark_purple",
-        "ribbon",
-        hover_dlg=[
-            "I love that color!"
-        ],
-        select_dlg=[
-            "Lavender is a nice change of pace."
-        ]
-    )
-
-    ### WHITE RIBBON
-    ## ribbon_def
-    # White ribbon (the default) for ponytail/bun hairstyles
-    mas_acs_ribbon_def = MASAccessory(
-        "ribbon_def",
-        "ribbon_def",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_def)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_def,
-        "Ribbon (White)",
-        "ribbon_def",
-        "ribbon",
-        hover_dlg=[
-            "Do you miss my old ribbon, [player]?"
-        ],
-        select_dlg=[
-            "Back to the classics!"
-        ]
-    )
-
-    ### GRAY RIBBON
-    ## ribbon_gray
-    # Gray ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_gray = MASAccessory(
-        "ribbon_gray",
-        "ribbon_gray",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_gray)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_gray,
-        "Ribbon (Gray)",
-        "ribbon_gray",
-        "ribbon",
-        hover_dlg=[
-            "Like a warm, rainy day..."
-        ],
-        select_dlg=[
-            "That's a really unique color, [player]."
-        ]
-    )
-
-    ### GREEN RIBBON
-    ## ribbon_green
-    # Green ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_green = MASAccessory(
-        "ribbon_green",
-        "ribbon_green",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_green)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_green,
-        "Ribbon (Green)",
-        "ribbon_green",
-        "ribbon",
-        hover_dlg=[
-            "That's a lovely color!"
-        ],
-        select_dlg=[
-            "Green, just like my eyes!"
-        ]
-    )
-
-    ### LIGHT PURPLE RIBBON
-    ## ribbon_light_purple
-    # Light purple ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_lightpurple = MASAccessory(
-        "ribbon_light_purple",
-        "ribbon_light_purple",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_lightpurple)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_lightpurple,
-        "Ribbon (Light Purple)",
-        "ribbon_light_purple",
-        "ribbon",
-        hover_dlg=[
-            "This purple looks pretty nice, right [player]?"
-        ],
-        select_dlg=[
-            "Really has a spring feel to it."
-        ]
-    )
-
-    ### PEACH RIBBON
-    ## ribbon_peach
-    # Peach ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_peach = MASAccessory(
-        "ribbon_peach",
-        "ribbon_peach",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_peach)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_peach,
-        "Ribbon (Peach)",
-        "ribbon_peach",
-        "ribbon",
-        hover_dlg=[
-            "That's beautiful!"
-        ],
-        select_dlg=[
-            "Just like autumn leaves..."
-        ]
-    )
-
-    ### PINK RIBBON
-    ## ribbon_pink
-    # Pink ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_pink = MASAccessory(
-        "ribbon_pink",
-        "ribbon_pink",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_pink)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_pink,
-        "Ribbon (Pink)",
-        "ribbon_pink",
-        "ribbon",
-        hover_dlg=[
-            "Looks cute, right?"
-        ],
-        select_dlg=[
-            "Good choice!"
-        ]
-    )
-
-    ### RED RIBBON
-    ## ribbon_red
-    # Red ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_red = MASAccessory(
-        "ribbon_red",
-        "ribbon_red",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_red)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_red,
-        "Ribbon (Red)",
-        "ribbon_red",
-        "ribbon",
-        hover_dlg=[
-            "Red is a beautiful color!"
-        ],
-        select_dlg=[
-            "Just like roses~"
-        ]
-    )
-
-    ### TEAL RIBBON
-    ## ribbon_teal
-    # Teal ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_teal = MASAccessory(
-        "ribbon_teal",
-        "ribbon_teal",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_teal)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_teal,
-        "Ribbon (Teal)",
-        "ribbon_teal",
-        "ribbon",
-        hover_dlg=[
-            "Looks really summer-y, right?"
-        ],
-        select_dlg=[
-            "Just like a summer sky."
-        ]
-    )
-
-    ### WINE RIBBON
-    ## ribbon_wine
-    # Wine ribbon for ponytail/bun hairstyles. This matches the santa outfit
-    mas_acs_ribbon_wine = MASAccessory(
-        "ribbon_wine",
-        "ribbon_wine",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_wine)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_wine,
-        "Ribbon (Wine)",
-        "ribbon_wine",
-        "ribbon",
-        hover_dlg=[
-            "That's a great color!"
-        ],
-        select_dlg=[
-            "Formal! Are you taking me somewhere special, [player]?"
-        ]
-    )
-
-    ### YELLOW RIBBON
-    ## ribbon_yellow
-    # Yellow ribbon for ponytail/bun hairstyles
-    mas_acs_ribbon_yellow = MASAccessory(
-        "ribbon_yellow",
-        "ribbon_yellow",
-        MASPoseMap(
-            default="0",
-            p5="5"
-        ),
-        stay_on_start=True,
-        acs_type="ribbon",
-        mux_type=["ribbon"],
-        rec_layer=MASMonika.BBH_ACS
-    )
-    store.mas_sprites.init_acs(mas_acs_ribbon_yellow)
-    store.mas_selspr.init_selectable_acs(
-        mas_acs_ribbon_yellow,
-        "Ribbon (Yellow)",
-        "ribbon_yellow",
-        "ribbon",
-        hover_dlg=[
-            "This color reminds me of a nice summer day!"
-        ],
-        select_dlg=[
-            "Great choice, [player]!"
-        ]
-    )
-
-
-#### ACCCESSORY VARIABLES (IMG025)
-# variables that accessories may need for enabling / disabling / whatever
-# please comment the groups and usage like so:
-### accessory name
-# <var>
-# <var comment>
-
-### COFFEE MUG
-
-default persistent._mas_acs_enable_coffee = False
-# True enables coffee, False disables coffee
-
-default persistent._mas_coffee_been_given = False
-# True means user has given monika coffee before, False means no
-
-default persistent._mas_coffee_brew_time = None
-# datetime that coffee startd brewing. None if coffe not brewing
-
-default persistent._mas_coffee_cup_done = None
-# datetime that monika will finish her coffee. None means she isnt drinking any
-
-default persistent._mas_coffee_cups_drank = 0
-# number of cups of coffee monika has drank
-
-define mas_coffee.BREW_LOW = 2*60
-# lower bound of seconds it takes to brew some coffee
-
-define mas_coffee.BREW_HIGH = 4*60
-# upper bound of seconds it takes to brew some coffee
-
-define mas_coffee.DRINK_LOW = 10 * 60
-# lower bound of seconds it takes for monika to drink coffee
-
-define mas_coffee.DRINK_HIGH = 2 * 3600
-# upper bound of seconds it takes for monika to drink coffee
-
-define mas_coffee.BREW_CHANCE = 80
-# percent chance out of 100 that we are brewing coffee during the appropriate
-# times
-
-define mas_coffee.DRINK_CHANCE = 80
-# percent chance out of 100 that we are drinking coffee during the appropriate
-# times
-
-define mas_coffee.COFFEE_TIME_START = 5
-# hour that coffee time begins (inclusive)
-
-define mas_coffee.COFFEE_TIME_END =  12
-# hour that coffee time ends (exclusive)
-
-define mas_coffee.BREW_DRINK_SPLIT = 9
-# hour between the coffee times where brewing turns to drinking
-# from COFFEE_TIME_START to this time, brew chance is used
-# from this time to COFFEE_TIME_END, drink chance is used
-
-### HOT CHOCOLATE MUG ###
-
-# NOTE: please use consumable framework when ever that is created
-# NOTE: so we dont get dum things, use _mas_c for all future consumable-based
-#   calculations. Everything will get replcaed with a more concrete storage
-#   system in the future, anyway.
-
-default persistent._mas_acs_enable_hotchoc = False
-# True enables hot chocolate, False disables
-
-default persistent._mas_c_hotchoc_been_given = False
-# True means the user has given monika hotchoc before, False means no
-
-default persistent._mas_c_hotchoc_brew_time = None
-# datetime that hot choco started being made. None if not being made
-
-default persistent._mas_c_hotchoc_cup_done = None
-# datetime that monika will finish her hotchoc. MNone means she is not drining
-
-default persistent._mas_c_hotchoc_cups_drank = 0
-# number of cups of hotchoc monika has drank
-
-define mas_coffee.HOTCHOC_TIME_START = 19
-# hour that hotchoc time begins (inclusive)
-
-define mas_coffee.HOTCHOC_TIME_END = 22
-# hour that hotchoc time ends (exclusive)
-
-define mas_coffee.HOTCHOC_BREW_DRINK_SPLIT = 21
-# similar to coffee split, but for hotchocolate
-
-### QUETZAL PLUSHIE ###
-default persistent._mas_acs_enable_quetzalplushie = False
-# True enables plushie, False disables plushie
-
-### PROMISE RING ###
-default persistent._mas_acs_enable_promisering = False
-# True enables plushie, False disables plushie
 
 #### IMAGE START (IMG030)
 # Image are created using a DynamicDisplayable to allow for runtime changes
@@ -4967,6 +3923,19 @@ image monika 1huu = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -4974,6 +3943,19 @@ image monika 1tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="1l",
     right="1r",
@@ -5001,6 +3983,20 @@ image monika 1hksdlb = DynamicDisplayable(
     eyes="closedhappy",
     nose="def",
     mouth="big",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
+image monika 1hksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
     head="l",
     left="1l",
     right="1r",
@@ -6033,6 +5029,19 @@ image monika 1rkc = DynamicDisplayable(
     arms="steepling"
 )
 
+image monika 1rkd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
 image monika 1rud = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6040,6 +5049,19 @@ image monika 1rud = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="small",
+    head="d",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1ruc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
     head="d",
     left="1l",
     right="1r",
@@ -6215,6 +5237,34 @@ image monika 1rkbfb = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1rkbsb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
+)
+
+image monika 1rkbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1dkbfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6347,6 +5397,20 @@ image monika 1dsbso = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1dsbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="r",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1dftsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6380,6 +5444,19 @@ image monika 1cua = DynamicDisplayable(
     character=monika_chr,
     eyebrows="up",
     eyes="crazy",
+    nose="def",
+    mouth="smile",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling"
+)
+
+image monika 1dua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedsad",
     nose="def",
     mouth="smile",
     head="j",
@@ -6654,6 +5731,20 @@ image monika 1hkbla = DynamicDisplayable(
     blush="lines"
 )
 
+image monika 1hkbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1dkbla = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6680,6 +5771,20 @@ image monika 1tubfb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+)
+
+image monika 1tubsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="b",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
 )
 
 image monika 1subfb = DynamicDisplayable(
@@ -6736,6 +5841,20 @@ image monika 1ekbsa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="shade"
+)
+
+image monika 1ekbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="lines"
 )
 
 image monika 1ekbsu = DynamicDisplayable(
@@ -7448,6 +6567,19 @@ image monika 2wkbsc = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 2wkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="l",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2hksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7764,6 +6896,19 @@ image monika 2wud = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="small",
+    head="d",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2wuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
     head="d",
     left="1l",
     right="2r",
@@ -8326,6 +7471,21 @@ image monika 2rksdlb = DynamicDisplayable(
     right="2r",
     arms="crossed",
     sweat="def"
+)
+
+image monika 2rkbfsdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    head="n",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def",
+    blush="full"
 )
 
 image monika 2lksdlw = DynamicDisplayable(
@@ -9105,6 +8265,63 @@ image monika 2dua = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2rkbfsdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="p",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full",
+    sweat="def"
+)
+
+image monika 2rkbfsdlu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smug",
+    head="e",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="full",
+    sweat="def"
+)
+
+image monika 2hfsdld = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="closedhappy",
+    nose="def",
+    mouth="small",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    sweat="def"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9301,6 +8518,19 @@ image monika 3hub = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tua = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9308,6 +8538,19 @@ image monika 3tub = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="k",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="k",
     left="2l",
     right="1r",
@@ -9599,6 +8842,19 @@ image monika 3wfx = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3wfc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3wfw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9799,6 +9055,20 @@ image monika 3tku = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3tkbsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="f",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="shade"
+)
+
 image monika 3tkd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -9858,6 +9128,19 @@ image monika 3tsb = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="big",
+    head="i",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3tsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
     head="i",
     left="2l",
     right="1r",
@@ -10279,6 +9562,19 @@ image monika 3rkc = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
+    head="n",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3rka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
     head="n",
     left="2l",
     right="1r",
@@ -10715,10 +10011,24 @@ image monika 3ekbsa = DynamicDisplayable(
     nose="def",
     mouth="smile",
     head="a",
-    left="1l",
+    left="2l",
     right="1r",
     arms="restleftpointright",
     blush="shade"
+)
+
+image monika 3ekbla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="lines"
 )
 
 image monika 3subfb = DynamicDisplayable(
@@ -10744,7 +10054,7 @@ image monika 3skbltda = DynamicDisplayable(
     mouth="smile",
     head="b",
     left="2l",
-    right="2r",
+    right="1r",
     arms="restleftpointright",
     blush="lines",
     tears="dried"
@@ -10930,6 +10240,21 @@ image monika 3wubfsdld = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 3wubfsdlo = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="gasp",
+    head="o",
+    left="2l",
+    right="1r",
+    arms="restleftpointright",
+    blush="full",
+    sweat="def"
+)
+
 image monika 3wkd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -10951,6 +10276,19 @@ image monika 3sua = DynamicDisplayable(
     nose="def",
     mouth="smile",
     head="a",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
+image monika 3dtc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="closedsad",
+    nose="def",
+    mouth="smirk",
+    head="i",
     left="2l",
     right="1r",
     arms="restleftpointright"
@@ -11408,6 +10746,19 @@ image monika 4wkbsc = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 4wkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
 image monika 4wfw = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -11428,6 +10779,19 @@ image monika 4wua = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="smile",
+    head="d",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4wuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="wide",
+    nose="def",
+    mouth="smirk",
     head="d",
     left="2l",
     right="2r",
@@ -11719,6 +11083,32 @@ image monika 4rsc = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4rkc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="h",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
+image monika 4rkd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
     head="h",
     left="2l",
     right="2r",
@@ -12669,7 +12059,7 @@ image monika 5eua = DynamicDisplayable(
 image monika 5euc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
-    eyebrows="mid",
+    eyebrows="up",
     eyes="normal",
     nose="def",
     mouth="smirk",
@@ -13623,6 +13013,20 @@ image monika 6dktua = DynamicDisplayable(
     tears="up"
 )
 
+image monika 6dktuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smug",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="up"
+)
+
 image monika 6dktrc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -14345,6 +13749,117 @@ image monika 6ekbsu = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 6eksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="i",
+    left="1l",
+    right="1r",
+    arms="down",
+    sweat="def"
+)
+
+image monika 6eka = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6hkbsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down",
+    blush="shade"
+)
+
+image monika 6rksdla = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="m",
+    left="1l",
+    right="1r",
+    arms="down",
+    sweat="def"
+)
+
+
+image monika 6hksdlb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedhappy",
+    nose="def",
+    mouth="big",
+    head="l",
+    left="1l",
+    right="1r",
+    arms="down",
+    sweat="def"
+)
+
+image monika 6dsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="down"
+)
+
+image monika 6rktuc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="up"
+)
+
+image monika 6tftpc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="furrowed",
+    eyes="smug",
+    nose="def",
+    mouth="smirk",
+    head="f",
+    left="1l",
+    right="1r",
+    arms="down",
+    tears="pooled"
+)
+
 image monika 1lubfb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -14769,3 +14284,8 @@ image monika idle = ConditionSwitch(
 image chibika smile = "gui/poemgame/m_sticker_1.png"
 image chibika sad = "mod_assets/other/m_sticker_sad.png"
 image chibika 3 = "gui/poemgame/m_sticker_2.png"
+
+#Ghost monika
+image ghost_monika: 
+    "mod_assets/other/ghost_monika.png" 
+    zoom 1.25

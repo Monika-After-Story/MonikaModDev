@@ -111,8 +111,11 @@ init 999 python:
         # for building the real deal sprites
 
         # list of leaning poses so we know
+        # format:
+        #   [0]: lean
+        #   [1]: arm
         LEAN_SMAP = {
-            5: "def"
+            5: ("def", "def")
         }
 
         # image name map
@@ -191,7 +194,8 @@ init 999 python:
                 "def": "School Uniform",
                 "marisa": "Witch Costume",
                 "rin": "Neko Costume",
-                "santa": "Santa Monika"
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -314,7 +318,8 @@ init 999 python:
                 "def",
                 "marisa",
                 "rin",
-                "santa"
+                "santa",
+                "sundress_white",
             ],
             "arms": [
                 1,
@@ -723,8 +728,7 @@ init 999 python:
             """
             _arms = self._get_spr_code("arms")
             if _arms in self.LEAN_SMAP:
-                _lean = self.LEAN_SMAP[_arms]
-                _arms = None
+                _lean, _arms = self.LEAN_SMAP[_arms]
             else:
                 _lean = None
                 _arms = self._get_img_name("arms")
