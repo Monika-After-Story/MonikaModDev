@@ -3086,6 +3086,7 @@ init -2 python:
                     sprite object.
                     (Default: empty dict)
             """
+            self.__sp_type = -1
             self.name = name
             self.img_sit = img_sit
             self.img_stand = img_stand
@@ -3151,6 +3152,15 @@ init -2 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+    
+        def gettype(self):
+            """
+            Gets the type of this sprite object
+
+            RETURNS: type of this sprite object
+            """
+            return self.__sp_type
 
 
         def hasprop(self, prop):
@@ -3244,6 +3254,7 @@ init -2 python:
                 exit_pp,
                 ex_props
             )
+            self.__sp_type = -2
             self.fallback = fallback
 
 
@@ -3370,6 +3381,7 @@ init -2 python:
                 ex_props
             )
             self.__rec_layer = rec_layer
+            self.__sp_type = store.mas_sprites_json.SP_ACS
             self.priority=priority
             self.acs_type = acs_type
             self.mux_type = mux_type
@@ -3470,6 +3482,7 @@ init -2 python:
                 exit_pp,
                 ex_props
             )
+            self.__sp_type = store.mas_sprites_json.SP_HAIR
 
             if split is not None and type(split) != MASPoseMap:
                 raise Exception("split MUST be PoseMap")
@@ -3553,6 +3566,7 @@ init -2 python:
                 exit_pp,
                 ex_props
             )
+            self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 
             self.hair_map = hair_map
 
@@ -3702,8 +3716,8 @@ init -2 python:
 
 
             cmd = store.mas_sprites._ms_sitting(
-                character.clothes.name,
-                hair.name,
+                character.clothes.img_sit,
+                hair.img_sit,
                 hair_split,
                 eyebrows,
                 eyes,

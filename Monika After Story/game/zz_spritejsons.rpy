@@ -240,11 +240,12 @@ init -21 python in mas_sprites_json:
     )
     # docking station for custom sprites. 
 
-    # verification lists
-    hm_key_delayed_veri = []
+    # verification dicts
+    # value is unecessary. We use key for O(1) and repeats
+    hm_key_delayed_veri = {}
     # keys that are missing will give warnings
 
-    hm_val_delayed_veri = []
+    hm_val_delayed_veri = {}
     # vals tha tar emissing will give errors
 
 
@@ -260,6 +261,9 @@ init -21 python in mas_sprites_json:
             for msg in msgs:
                 log.write(msg)
 
+        # clear msgs list
+        msgs[:] = []
+
 
     ### LOG CONSTANTS
     ## Global
@@ -272,6 +276,9 @@ init -21 python in mas_sprites_json:
     BAD_SPR_TYPE = "invalid sprite type '{0}'"
     BAD_ACS_LAYER = "invalid ACS layer '{0}'"
     BAD_LIST_TYPE = "property '{0}' index '{0}' - expected type {1}, got {2}"
+    EMPTY_LIST = "property '{0}' cannot be an empty list"
+    
+    NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
@@ -293,6 +300,14 @@ init -21 python in mas_sprites_json:
     EP_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
     EP_BAD_V_TYPE = "value for key '{0}' - expected type int/str/bool, got {1}"
 
+    ## sel info props
+    SI_LOADING = "loading select_info..."
+    SI_SUCCESS = "sel_info loaded successfully!"
+
+    ## prog points
+    PP_MISS = "'{0}' progpoint not found"
+    PP_NOTFUN = "'{0}' progpoint not callable"
+
 
 
     ### CONSTANTS
@@ -312,10 +327,17 @@ init -21 python in mas_sprites_json:
         SP_CLOTHES: "CLOTHES",
     }
 
+    SP_PP = {
+        SP_ACS: "store.mas_sprites._acs_{0}_{1}",
+        SP_HAIR: "store.mas_sprites._hair_{0}_{1}",
+        SP_CLOTHES: "store.mas_sprites._clothes_{0}_{1}",
+    }
+
     def _verify_sptype(val, allow_none=True):
         if val is None:
             return allow_none
         return val in SP_CONSTS
+            
 
     ## param names
     ## with expected types and verifications, as well as msg to
@@ -375,11 +397,16 @@ init -21 python in mas_sprites_json:
         "hair_map",
     )
 
-    # NOTE: renpy.loadable("path from game/")
-    IMG_BASED_PARAM_NAMES = (
-        "img_sit",
-        "img_stand"
-    )
+    # select info params
+    SEL_INFO_REQ_PARAM_NAMES = {
+        "display_name": (str, _verify_str),
+        "thumb": (str, _verify_str),
+        "group": (str, _verify_str),
+    }
+
+    SEL_INFO_OPT_PARAM_NAMES = {
+        "visible_when_locked": (bool, _verify_bool),
+    }
 
 
 init 790 python in mas_sprites_json:
@@ -390,10 +417,83 @@ init 790 python in mas_sprites_json:
         LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
         NAME_BAD
 
+    import store.mas_sprites as sms
+
+
     # other constants
     MSG_INFO_IDD = "        [info]: {0}\n"
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+
+    def _build_loadstrs(img_sit, sp_obj, sel_obj=None):
+        """
+        Builds list of strings that need to be verified via loadable.
+
+        IN:
+            img_sit - img sit string from sprite object
+            sp_obj - sprite object to build strings from
+            sel_obj - selectable to build thumb string from. 
+                Ignored if None
+                (Default: None)
+
+        RETURNS: list of strings that would need to be loadable verified
+        """
+        # TODO
+        to_verify = []
+
+        if sp_type == SP_ACS:
+            
+            pass
+        elif sp_type == SP_HAIR:
+            pass
+        else:
+            pass
+
+
+    def _process_progpoint(
+            sp_type,
+            name,
+            save_obj,
+            warns,
+            infos,
+            progname
+        ):
+        """
+        Attempts to find a prop point for a sprite object with the given
+        sp_type and name
+
+        IN:
+            sp_type - sprite object type
+            name - name of sprite object
+            progname - name of progpoint (do not include suffix)
+        
+        OUT:
+            save_obj - dict to save progpoint to
+            warns - list to save warning messages to
+            infos - list to save info messages to
+        """
+        # get string version
+        e_pp_str = SP_PP[sp_type].format(name, progname)
+
+        # eval string version
+        try:
+            e_pp = eval(e_pp_str)
+
+        except:
+            # only error is not exist
+            e_pp = None
+
+        # validate progpoint
+        if e_pp is None:
+            infos.append(MSG_INFO_ID.format(PP_MISS.format(progname)))
+
+        elif not callable(e_pp):
+            infos.append(MSG_WARN_ID.format(PP_NOTFUN.format(progname)))
+
+        else:
+            # success
+            save_obj[progname + "_pp"] = e_pp
 
 
     def _validate_type(json_obj):
@@ -465,6 +565,72 @@ init 790 python in mas_sprites_json:
                 #   to determine if the item is valid
 
         return mux_type
+
+
+    def _validate_iterstr(
+            jobj,
+            save_obj,
+            propname,
+            required,
+            allow_none,
+            errs,
+            err_base
+        ):
+        """
+        Validates an iterable if it consists solely of strings
+
+        an empty list is considered bad.
+
+        IN:
+            jobj - json object to parse
+            propname - property name for error messages
+            required - True if this property is required, False if not
+            allow_none - True if None is valid value, False if not
+            err_base - error base to use for error messages
+
+        OUT:
+            save_obj - dict to save to
+            errs - list to svae error message to
+        """
+        # sanity checks
+        if propname not in jobj:
+            if required:
+                errs.append(err_base.format(REQ_MISS.format(propname)))
+            return
+
+        # prop found
+        iterval = jobj.pop(propname)
+
+        # should None be allowed
+        if iterval is None:
+            if not allow_none:
+                errs.append(err_base.format(BAD_TYPE.format(
+                    propname,
+                    list,
+                    type(iterval)
+                )))
+            return
+
+        # okay not None
+        if len(iterval) <= 0:
+            errs.append(err_base.format(EMPTY_LIST.format(propname)))
+            return
+
+        # check individual strings
+        for index in range(len(iterval)):
+            item = iterval[index]
+            
+            if not _verify_str(item):
+                errs.append(err_base.format(BAD_LIST_TYPE.format(
+                    propname,
+                    index,
+                    str,
+                    type(item)
+                )))
+
+        # no errors? save data
+        if len(errs) <= 0:
+            save_obj[propname] = iterval
 
 
     def _validate_params(
@@ -714,8 +880,8 @@ init 790 python in mas_sprites_json:
 
             # key
             if _verify_str(hair_key):
-                if hair_key != "all" and not in HAIR_MAP:
-                    hm_key_delayed_veri.append(hair_key)
+                if hair_key != "all" and hair_key not in HAIR_MAP:
+                    hm_key_delayed_veri[hair_key] = None
             else:
                 errs.append(MSG_ERR_IDD.format(HM_BAD_K_TYPE.format(
                     hair_key,
@@ -726,7 +892,7 @@ init 790 python in mas_sprites_json:
             # value
             if _verify_str(hair_value):
                 if hair_value not in HAIR_MAP:
-                    hm_val_delayed_veri.append(hair_value)
+                    hm_val_delayed_veri[hair_value] = None
 
             else:
                 errs.append(MSG_ERR_IDD.format(HM_BAD_V_TYPE.format(
@@ -818,14 +984,76 @@ init 790 python in mas_sprites_json:
             errs - list to save error messages to
             warns - list to save warning messages to
             infos - list to save info messages to
+
+        RETURNS: dict of saved select info data
         """
         # validate select_info
         if "select_info" not in obj_based:
             return
 
         # select_info exists, get and validate
+        writelog(MSG_INFO_ID.format(SI_LOADING))
         select_info = obj_based.pop("select_info")
-        # TODO
+
+        # validate required
+        _validate_params(
+            select_info,
+            save_obj,
+            SEL_INFO_REQ_PARAM_NAMES,
+            True,
+            errs,
+            MSG_ERR_IDD
+        )
+        if len(errs) > 0:
+            return
+
+        # now for optional
+        _validate_params(
+            select_info,
+            save_obj,
+            SEL_INFO_OPT_PARAM_NAMES,
+            False,
+            errs,
+            MSG_ERR_IDD
+        )
+        if len(errs) > 0:
+            return
+
+        # now for list based
+        if "hover_dlg" in select_info:
+
+            _validate_iterstr(
+                select_info,
+                save_obj,
+                "hover_dlg",
+                False,
+                True,
+                errs,
+                MSG_ERR_IDD
+            )
+            if len(errs) > 0:
+                return
+
+        if "select_dlg" in select_info:
+            
+            _validate_iterstr(
+                select_info,
+                save_obj,
+                "select_dlg",
+                False,
+                True,
+                errs,
+                MSG_ERR_IDD
+            )
+            if len(errs) > 0:
+                return
+
+        # warning extra props
+        for extra_prop in select_info:
+            writelog(MSG_WARN_IDD.format(EXTRA_PROP.format(extra_prop)))
+
+        # success, lets save
+        writelog(MSG_INFO_ID.format(SI_SUCCESS))
 
 
     def addSpriteObject(filepath):
@@ -917,9 +1145,6 @@ init 790 python in mas_sprites_json:
                 writelogs(msgs_err)
                 return
 
-            # clear lists
-            msgs_warn = []
-
         else:
             # hair / clothes
             _validate_fallbacks(
@@ -934,9 +1159,6 @@ init 790 python in mas_sprites_json:
                 writelogs(msgs_warn)
                 writelogs(msgs_err)
                 return
-
-            # clear lists
-            msgs_warn = []
 
             if sp_type == SP_HAIR:
                 _validate_hair(
@@ -967,9 +1189,6 @@ init 790 python in mas_sprites_json:
                     writelogs(msgs_err)
                     return
 
-            # clear lists
-            msgs_warn = []
-
         # back to shared acs/hair/clothes stuff
         _validate_ex_props(
             jobj,
@@ -984,23 +1203,70 @@ init 790 python in mas_sprites_json:
             writelogs(msgs_err)
             return
 
-        # clear lists
-        msgs_warn = []
-            
+        # select info if found
+        _validate_selectable(
+            jobj,
+            sel_params,
+            obj_based_params,
+            msgs_err,
+            msgs_warn,
+            msgs_info
+        )
+        if len(msgs_err) > 0:
+            writelogs(msgs_warn)
+            writelogs(msgs_err)
+            return
 
-        # TODO:
-        #   verifying:
-        #       select_info
+        # time to check for warnings/recommendes
+
+        # extra property warnings
+        for extra_prop in jobj:
+            writelog(MSG_WARN_ID.format(EXTRA_PROP.format(extra_prop)))
+
+        # no gift warnings
+        if "giftname" in sp_obj_params:
+            giftname = sp_obj_params.pop("giftname")
+
+        else:
+            writelog(MSG_WARN_ID.format(NO_GIFT))
+            giftname = None
+
+        # progpoint processing
+        _process_progpoint(
+            sp_type,
+            sp_obj_params["name"],
+            sp_obj_params,
+            msgs_warn,
+            msgs_info,
+            "entry"
+        )
+        _process_progpoint(
+            sp_type,
+            sp_obj_params["name"],
+            sp_obj_params.
+            msgs_warn,
+            msgs_info,
+            "exit"
+        )
+        writelogs(msgs_info)
+        writelogs(msgs_warn)
+
+
         #   saving:
         #       giftname
-        #   processing
-        #       progpoints
+
+        #
+        # after bulid warning
+        #   warning: 
+        #       loadable
+    # NOTE: renpy.loadable("path from game/")
             
 
 
 
-
-
+    # TODO: after buliding/loading all sprite objects
+        #   delayed verify:
+        #       hair
 
 init 800 python in mas_sprites_json:
     pass

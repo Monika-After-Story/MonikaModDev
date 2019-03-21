@@ -574,7 +574,7 @@ init -1 python:
     # thanks SovietSpartan
     mas_clothes_marisa = MASClothes(
         "marisa",
-        "def",
+        "marisa",
         MASPoseMap(
             p1="steepling",
             p2="crossed",
@@ -613,7 +613,7 @@ init -1 python:
     # thanks SovietSpartan
     mas_clothes_rin = MASClothes(
         "rin",
-        "def",
+        "rin",
         MASPoseMap(
             p1="steepling",
             p2="crossed",
@@ -654,7 +654,7 @@ init -1 python:
     # thanks Ryuse
     mas_clothes_santa = MASClothes(
         "santa",
-        "def",
+        "santa",
         # NOTE: this is disabled until santa is using new leaning
 #        MASPoseMap(
 #            default=True,
@@ -696,7 +696,7 @@ init -1 python:
     # thanks @EntonyEscX
     mas_clothes_sundress_white = MASClothes(
         "sundress_white",
-        "def",
+        "sundress_white",
         MASPoseMap(
             default=True,
             use_reg_for_l=True,
