@@ -1231,10 +1231,13 @@ init 790 python in mas_sprites_json:
             writelog(MSG_WARN_ID.format(NO_GIFT))
             giftname = None
 
+        # save name for later
+        sp_name = sp_obj_params["name"]
+
         # progpoint processing
         _process_progpoint(
             sp_type,
-            sp_obj_params["name"],
+            sp_name,
             sp_obj_params,
             msgs_warn,
             msgs_info,
@@ -1242,7 +1245,7 @@ init 790 python in mas_sprites_json:
         )
         _process_progpoint(
             sp_type,
-            sp_obj_params["name"],
+            sp_name,
             sp_obj_params.
             msgs_warn,
             msgs_info,
@@ -1251,6 +1254,21 @@ init 790 python in mas_sprites_json:
         writelogs(msgs_info)
         writelogs(msgs_warn)
 
+        # now we can build the sprites
+        try:
+            if sp_type == SP_ACS:
+                sp_obj = MASAccessory(**sp_obj_params)
+
+            elif sp_type == SP_HAIR:
+                sp_obj = MASHair(**sp_obj_params)
+
+            else:
+                # clothing
+                sp_obj = MASClothes(**sp_obj_params)
+
+        except MASSpriteError:
+            # TODO: log error here
+            pass
 
         #   saving:
         #       giftname
