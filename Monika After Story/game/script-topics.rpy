@@ -4783,7 +4783,7 @@ label monika_penname:
                                 m 2euc "..."
                                 m 2hksdlb "Well, I guess I shouldn't assume that you named yourself after {i}our{/i} Yuri."
                                 m 1eua "It's something of a common name."
-                                m 1tku "Of course, there's something else that name could refer too..."
+                                m 1tku "Of course, there's something else that name could refer to..."
                                 if persistent.gender =="F":
                                   m 5eua "And well...I could get behind that, since it's you~"
                                 $ persistent._mas_penname = penname
