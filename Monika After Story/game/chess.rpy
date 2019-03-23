@@ -2489,7 +2489,7 @@ label mas_chess_dlg_game_monika_win_2:
     if renpy.random.randint(1,15) == 1:
         m 3hua "I bet if you keep practicing, you'll be even better than me someday!"
         if renpy.random.randint(1,20) == 1:
-            m 3rfu "{cps=*2}...Or at least win occasionally{/cps}{nw}"
+            m 3rfu "{cps=*2}...Or at least win occasionally.{/cps}{nw}"
             $ _history_list.pop()
     return
 
