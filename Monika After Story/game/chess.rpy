@@ -1862,14 +1862,13 @@ label mas_chess_dlg_qs_lost:
 
 # quicksave lost start
 label mas_chess_dlg_qs_lost_start:
-    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game,"
-    m "and now I can't open it anymore."
+    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game, and now I can't open it anymore."
     return
 
 # generic quicksave lost statement
 label mas_chess_dlg_qs_lost_gen:
     m 1lksdlc "I'm sorry..."
-    m "Let's start a new game instead."
+    m 3eksdla "Let's start a new game instead."
     return
 
 # 2nd time quicksave lost statement
@@ -1879,19 +1878,19 @@ label mas_chess_dlg_qs_lost_2:
     show monika 1ekc
     pause 1.0
     m 1dsc "I'll make it up to you..."
-    m 1eua "by starting a new game!"
+    m 3eua "...by starting a new game!"
     return
 
 # 3rd time quicksave lost statement
 label mas_chess_dlg_qs_lost_3:
     m 1lksdlc "I'm so clumsy, [player]...{w} I'm sorry."
-    m "Let's start a new game instead."
+    m 3eksdla "Let's start a new game instead."
     return
 
 # 5th time recurring quicksave lost statement
 label mas_chess_dlg_qs_lost_5r:
     m 2esc "This has happened [qs_gone_count] times now..."
-    m "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
+    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
     m 1esd "Anyway..."
     m "Let's start a new game."
     show monika 1esc
@@ -2088,10 +2087,11 @@ label mas_chess_dlg_qf_lost_may_filechecker:
 label mas_chess_dlg_qf_lost_may_3:
     $ persistent._mas_chess_skip_file_checks = True
 
-    m 2ekd "[player]! That's-"
-    m 1esa "Not a problem at all."
-    m "I knew you were going to do this again,"
-    m 1hub "so I kept a backup of our save!"
+    m 2ekd "[player]! That's--"
+    m 2dkc "..."
+    m 1esa "...not a problem at all."
+    m "I knew you were going to do this again..."
+    m 1hub "...so I kept a backup of our save!"
     # TODO: wink here please
     m 1eua "You can't trick me anymore, [player]."
     m "Now let's continue our game."
@@ -2129,9 +2129,9 @@ label mas_chess_dlg_qf_lost_acdnt_start:
 
 # generic accident monika
 label mas_chess_dlg_qf_lost_acdnt_gen:
-    m 1e "[player]..."
+    m 1eka "[player]..."
     m "That's okay.{w} Accidents happen."
-    m 1a "Let's play a new game instead."
+    m 1eua "Let's play a new game instead."
     return
 
 # 2nd accident monika
@@ -2484,7 +2484,13 @@ label mas_chess_dlg_game_monika_win_1:
 
 # winning, chess strength 2
 label mas_chess_dlg_game_monika_win_2:
-    m 1hksdlb "I really was going easy on you!"
+    m 1hub "That was really fun, [player]!"
+    m 3eka "No matter the outcome, I always enjoy playing chess with you~"
+    if renpy.random.randint(1,15) == 1:
+        m 3hua "I bet if you keep practicing, you'll be even better than me someday!"
+        if renpy.random.randint(1,20) == 1:
+            m 3rfu "{cps=*2}...Or at least win occasionally{/cps}{nw}"
+            $ _history_list.pop()
     return
 
 # winning, chess strength 3

@@ -8336,6 +8336,19 @@ image monika 2hfsdld = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 2tsc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smirk",
+    head="i",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 3eua = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
