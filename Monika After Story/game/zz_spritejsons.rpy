@@ -222,6 +222,14 @@
 
 # TODO :add dev label to check if prog points are executable
 
+default persistent._mas_sprites_json_gifted_sprites = {}
+# contains sprite gifts that have been reacted to (aka unlocked)
+# key: giftname to react to
+# value: typle of the following fomrat:
+#   [0] - spritre type (0 - ACS, 1 - HAIr, 2 - CLOTHES)
+#   [1] - name of the sprite object this gift unlocks
+
+
 init -21 python in mas_sprites_json:
     import json
     import store
@@ -247,6 +255,25 @@ init -21 python in mas_sprites_json:
 
     hm_val_delayed_veri = {}
     # vals tha tar emissing will give errors
+
+    # mapping giftnames to sprite type / name
+    giftname_map = {}
+    # key: giftname to react to
+    # value: typle of the following format:
+    #   [0] - sprite type (0 - ACS, 1 - HAIr, 2 - CLOTHES)
+    #   [1] - name of the sprite object this gift unlocks
+    #
+    # NOTE: we load all sprites into this map.
+    #   DUPLICATES ARE NOT ALLOWED
+    #   then we compare:
+    #       _mas_filereacts_sprite_gifts
+    #       _mas_sprites_json_gifted_sprites
+    #   and remove the ones in those dicts that are not in this one.
+
+    namegift_map = {}
+    # reverse maps names to giftname
+    # key: (sprite type, name)
+    # value: giftname
 
 
     def writelog(msg):
@@ -277,7 +304,12 @@ init -21 python in mas_sprites_json:
     BAD_ACS_LAYER = "invalid ACS layer '{0}'"
     BAD_LIST_TYPE = "property '{0}' index '{0}' - expected type {1}, got {2}"
     EMPTY_LIST = "property '{0}' cannot be an empty list"
-    
+   
+    DUPE_GIFTNAME = "giftname '{0}' already exists"
+    MATCH_GIFT = (
+        "cannot associate giftname '{0}' with sprite object type {1} name "
+        "'{2}' - sprite object already associated with giftname '{3}'"
+    )
     NO_GIFT = "without 'giftname', this cannot be natively unlocked"
 
     ## MASPoseMap
@@ -410,20 +442,50 @@ init -21 python in mas_sprites_json:
 
 
 init 790 python in mas_sprites_json:
-    from store.mas_sprites import _verify_pose, HAIR_MAP
+    from store.mas_sprites import _verify_pose, HAIR_MAP 
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
         LOAD_TRY, LOAD_SUCC, LOAD_FAILED, \
         NAME_BAD
 
+    # ACS_MAP / HAIR_MAP / CLOTH_MAP
     import store.mas_sprites as sms
+    import store.mas_selspr as sml
 
 
     # other constants
     MSG_INFO_IDD = "        [info]: {0}\n"
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+
+    def _reset_sp_obj(sp_obj):
+        """
+        Uninits the given sprite object. This is meant only for json
+        sprite usage if we need to back out.
+
+        IN:
+            sp_obj - sprite object to remove
+        """
+        sp_type = sp_obj.gettype()
+        
+        # sanity check
+        if sp_type not in SP_CONSTS:
+            return
+
+        if sp_type == SP_ACS:
+            if sp_obj.name in sms.ACS_MAP:
+                sms.ACS_MAP.pop(sp_obj.name)
+
+        elif sp_type == SP_HAIR:
+            if sp_obj.name in sms.HAIR_MAP:
+                sms.HAIR_MAP.pop(sp_obj.name)
+
+        else:
+            # clothes
+            if sp_obj.name in sms.CLOTH_MAP:
+                sms.CLOTH_MAP.pop(sp_obj.name)
 
 
     def _build_loadstrs(img_sit, sp_obj, sel_obj=None):
@@ -449,6 +511,41 @@ init 790 python in mas_sprites_json:
             pass
         else:
             pass
+
+
+    def _init_giftname(giftname, sp_type, sp_name, errs, err_base):
+        """
+        Initializes the giftname with the sprite info
+
+        IN:
+            giftname - giftname we want to use
+            sp_type - sprite type we want to init
+            sp_name - name of the sprite object to associated with this gift
+                (use the sprite's name property == ID)
+            err_base - base to use for the error messages
+
+        OUT:
+            errs - list to save error messages to
+        """
+        # giftname must be unique
+        if giftname in giftname_map:
+            errs.append(err_base.format(DUPE_GIFTNAME.format(giftname)))
+            return
+
+        # cannot have a sprite object assocaited with 2 giftnames
+        sp_value = (sp_type, sp_name)
+        if sp_value in namegift_map:
+            errs.append(err_base.format(MATCH_GIFT.format(
+                giftname,
+                SP_STR[sp_type],
+                sp_name,
+                namegift_map[sp_value]
+            )))
+            return
+
+        # add item to gift maps
+        giftname_map[giftname] = sp_value
+        namegift_map[sp_value] = giftname
 
 
     def _process_progpoint(
@@ -1054,6 +1151,8 @@ init 790 python in mas_sprites_json:
 
         # success, lets save
         writelog(MSG_INFO_ID.format(SI_SUCCESS))
+        
+        # NOTE: item is already saved into the dict
 
 
     def addSpriteObject(filepath):
@@ -1258,20 +1357,48 @@ init 790 python in mas_sprites_json:
         try:
             if sp_type == SP_ACS:
                 sp_obj = MASAccessory(**sp_obj_params)
+                sms.init_acs(sp_obj)
 
             elif sp_type == SP_HAIR:
                 sp_obj = MASHair(**sp_obj_params)
+                sms.init_hair(sp_obj)
 
             else:
                 # clothing
                 sp_obj = MASClothes(**sp_obj_params)
+                sms.init_clothes(sp_obj)
 
-        except MASSpriteError:
-            # TODO: log error here
-            pass
+        except Exception as e:
+            # in thise case, we ended up with a duplicate
+            writelog(MSG_ERR.format(e.message))
+            return
+
+        # otherwise, we were successful in initializing this sprite
+        # try initializing the selectable if we parsed it
+        if len(sel_params) > 0:
+            try:
+                if sp_type == SP_ACS:
+                    sml.init_selectable_acs(**sel_params)
+
+                elif sp_type == SP_HAIR:
+                    sml.init_selectable_hair(**sel_params)
+
+                else:
+                    # clothing
+                    sml.init_selectable_clothes(**sel_params)
+
+            except Exception as e:
+                # we probably ended up with a duplicate again
+                writelog(MSG_ERR.format(e.message))
+
+                # undo the sprite init
+                _reset_sp_obj(sp_obj)
+                return
 
         #   saving:
         #       giftname
+        # TODO: giftname MUST be unique
+
 
         #
         # after bulid warning

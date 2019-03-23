@@ -206,14 +206,6 @@ image mas_bday_balloons = ConditionSwitch(
 #    "mod_assets/location/spaceroom/bday/birthday_decorations_balloons-n.png"
 )
 
-
-init -50 python in mas_sprites:
-   
-    # custom exception for sprites
-    class MASSpriteError(Exception):
-        pass
-
-
 init -5 python in mas_sprites:
     # specific image generation functions
     import store
@@ -516,7 +508,7 @@ init -5 python in mas_sprites:
             mas_acs - MASAccessory to initialize
         """
         if mas_acs.name in ACS_MAP:
-            raise MASSpriteError(
+            raise Exception(
                 "MASAccessory name '{0}' already exists.".format(mas_acs.name)
             )
 
@@ -532,7 +524,7 @@ init -5 python in mas_sprites:
             mas_hair - MASHair to initialize
         """
         if mas_hair.name in HAIR_MAP:
-            raise MASSpriteError(
+            raise Exception(
                 "MASHair name '{0}' already exists.".format(mas_hair.name)
             )
 
@@ -548,7 +540,7 @@ init -5 python in mas_sprites:
             mas_clothes - MASClothes to initialize
         """
         if mas_cloth.name in CLOTH_MAP:
-            raise MASSpriteError(
+            raise Exception(
                 "MASClothes name '{0}' already exists.".format(mas_cloth.name)
             )
 
