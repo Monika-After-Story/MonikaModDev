@@ -2999,7 +2999,7 @@ label monika_freewill:
     m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
     m 3rsc "In some games, I guess the idea makes sense..."
     m 3eud "But when you apply it to real life, I don't think it really works out."
-    m 2etc "I mean, if it were true, couldn't you just get away with anything you wanted?"
+    m 2etc "I mean, if it were true, couldn't you just get away with anything?"
     m 4esd "The entire concept of justice falls apart, since {i}you{/i} didn't make the choice to do whatever you might have done."
     m 2dksdlc "But people still have to face up to those actions,{w=0.5} which seems more than a little unfair to me."
     m 3ekc "After all, can you really be evil if you aren't in control?"
@@ -3159,7 +3159,7 @@ label monika_trolley:
     m 3esc "I wouldn't switch."
     m 4esc "That's the only logical choice, if you think about it."
     m 1euc "It feels nice to say that you'd save the most people, doesn't it? But people only say that because nobody in the example matters to them."
-    m "If they actually cared about the person, they'd kill other five in a heartbeat."
+    m "If they actually cared about the person, they'd kill the other five in a heartbeat."
     m 2tsb "Do you know anyone who would want a self-driving car to save other people by killing the driver? Didn't think so, [player]."
     m 2eua "The truth is, humans are fine with sacrificing other lives to make themselves happy. They do it in little ways, every day."
     m 2tkc "They just don't like to come face-to-face with that fact. They get really upset when you point it out."
@@ -3293,7 +3293,7 @@ label monika_torment:
     m 3hksdlb "...The answer's not me, by the way."
     return "derandom"
 
-# TODO: should this be moved to stories? or removed entirely?
+# TODO: remove from topics completely
 # moved to script-stories as mas_story_szs
 #init 5 python:
 #    addEvent(
@@ -12281,7 +12281,7 @@ label monika_perspective:
     m 1hksdlb "Well I hope that helped you understand at least a little, [player]."
     m "It's the best way I could try and explain it!"
     return
-    
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
 
@@ -12290,7 +12290,7 @@ label monika_robotbody:
     m 3eud "It hit me earlier that technology in the future would probably allow me to be uploaded into a mechanical body, rather than a human body like yours."
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
-    m 1rkd "I would be considered an android at that point, and others may look at me different because of that."
+    m 1rkd "I would be considered an android at that point, and others may look at me differently because of that."
     m 3euc "Have you heard of Isaac Asimov's {i}'Three Laws of Robotics?'{/i} It was brought up many times in his science fiction books."
     m 4eud "It mentions three laws that all androids must follow, otherwise they would be terminated."
     m 1eua "Of course, I would never do anything to hurt you or anyone else."
