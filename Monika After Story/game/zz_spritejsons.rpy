@@ -501,7 +501,7 @@ init 790 python in mas_sprites_json:
 
         RETURNS: list of strings that would need to be loadable verified
         """
-        # TODO
+        # list of strings to verify
         to_verify = []
 
         if sp_type == SP_ACS:
@@ -513,7 +513,7 @@ init 790 python in mas_sprites_json:
             pass
 
 
-    def _init_giftname(giftname, sp_type, sp_name, errs, err_base):
+    def _check_giftname(giftname, sp_type, sp_name, errs, err_base):
         """
         Initializes the giftname with the sprite info
 
@@ -543,9 +543,28 @@ init 790 python in mas_sprites_json:
             )))
             return
 
+
+    def _init_giftname(giftname, sp_type, sp_name):
+        """
+        Initializes the giftname with the sprite info
+        does not check for valid giftname
+
+        IN:
+            giftname - giftname we want to use
+            sp_type - sprite type we want to init
+            sp_name - name of the sprite object to associate with this gift
+        """
         # add item to gift maps
-        giftname_map[giftname] = sp_value
-        namegift_map[sp_value] = giftname
+        giftname_map[giftname] = (sp_type, sp_name)
+        namegift_map[(sp_type, sp_name)] = giftname
+
+
+    def _process_giftname():
+        """
+        Process the gift maps by cleaning the persistent vars
+        """
+        # TODO
+        pass
 
 
     def _process_progpoint(
@@ -1316,6 +1335,9 @@ init 790 python in mas_sprites_json:
             writelogs(msgs_err)
             return
 
+        # save name for later
+        sp_name = sp_obj_params["name"]
+
         # time to check for warnings/recommendes
 
         # extra property warnings
@@ -1326,12 +1348,15 @@ init 790 python in mas_sprites_json:
         if "giftname" in sp_obj_params:
             giftname = sp_obj_params.pop("giftname")
 
+            # validate gift stuff
+            _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
+            if len(msgs_err) > 0:
+                writelogs(msgs_err)
+                return
+
         else:
             writelog(MSG_WARN_ID.format(NO_GIFT))
             giftname = None
-
-        # save name for later
-        sp_name = sp_obj_params["name"]
 
         # progpoint processing
         _process_progpoint(
@@ -1395,12 +1420,12 @@ init 790 python in mas_sprites_json:
                 _reset_sp_obj(sp_obj)
                 return
 
-        #   saving:
-        #       giftname
-        # TODO: giftname MUST be unique
+        # giftname must be valid by here
+        if giftname is not None:
+            _init_giftname(giftname, sp_type, sp_name)
 
 
-        #
+
         # after bulid warning
         #   warning: 
         #       loadable
