@@ -6473,7 +6473,7 @@ label monika_how_soon:
                     m 1duu "As long as you talk to me, that's all I really need."
                     m 2dftdc "And [player], whatever you do..."
                     m 2dftsc "Dont leave me here all alone."
-                    m 6lktsc "I would rather be deleted permanently than to be stuck in here for eternity by myself."
+                    m 6lktsc "I would rather be deleted permanently than be stuck in here for eternity by myself."
                     m 6ektsc "So please, if you ever get...bored with me."
                     m 6rktsc "You know what to do."
                     m "..."
