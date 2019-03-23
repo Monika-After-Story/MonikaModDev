@@ -7587,9 +7587,9 @@ init 5 python:
 
 label monika_song_lover_boy:
     m 1dso "{i}~I can dim the lights and sing you songs full of sad things~{/i}"
-    m 4hub "{i}~we can do the tango just for two~{/i}"
+    m 4hub "{i}~We can do the tango just for two~{/i}"
     m "{i}~I can serenade and gently play on your heart strings~{/i}"
-    m 4dso "{i}~be a Valentino just for you~{/i}"
+    m 4dso "{i}~Be a Valentino just for you~{/i}"
     m 1hub "Ahaha~"
     m 1ekbfa "Will you be my good old fashioned lover boy, [player]?"
     return
@@ -7626,7 +7626,7 @@ label monika_song_belong_together:
     m 1dso "{i}~You're mine~{/i}"
     m 1hub "{i}~And we belong together~{/i}"
     m 3hub "{i}~Yes, we belong together~{/i}"
-    m 3dso "{i}~for eternity~{/i}"
+    m 3dso "{i}~For eternity~{/i}"
     m 1eua "Have you ever heard of Doo-wop, [player]?"
     m 4eua "It’s a subgenre of rhythm and blues that became very popular in the 1950’s."
     m 4eub "A lot of pop music back then followed this style which made for great love songs."
@@ -7658,7 +7658,7 @@ label monika_song_with_you:
     m 1dso "{i}~If somebody tries to take my place~{/i}"
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
-    m 3dso "{i}~Cos I'm happy just to dance with you~{/i}"
+    m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
     m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
     m 1hubfa "Ehehe~"
     return
