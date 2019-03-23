@@ -9215,6 +9215,19 @@ image monika 3rsc = DynamicDisplayable(
     arms="restleftpointright"
 )
 
+image monika 3rsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="smile",
+    head="h",
+    left="2l",
+    right="1r",
+    arms="restleftpointright"
+)
+
 image monika 3rssdrc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

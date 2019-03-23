@@ -2900,7 +2900,6 @@ label monika_love:
             "I'll always be here for you!",
             "I'll never hurt or betray you.",
             "Our adventure has only just begun!",
-            "Every day is memorable and fun with you!",
             "We'll always have each other.",
             "We'll never be lonely again!",
             "I can't wait to feel your embrace!",
@@ -2993,19 +2992,20 @@ label monika_justification:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Free will",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Determinism",random=True))
 
 label monika_freewill:
-    # TODO: maybe we should actually ask player if they believ in good
-    m 1euc "Hey, [player], do you believe in free will?"
-    m "You might not believe in God, but I know for sure that someone created me."
-    m 1lsc "I wonder if that means we can only do what our creator wants."
-    m 3euc "If that's true, though, wouldn't some people be condemned to hell from day one?"
-    m 1esc "I think that seems more than a little unfair."
-    m 3euc "After all, can you really be evil if you aren't in control?"
-    m "Shouldn't the one pulling the strings take responsibility?"
-    m 1lsc "But I guess that means you can't take credit for the good things you do, either."
-    m 1lksdlc "I'm not sure which is more depressing."
+    m 1euc "Hey, [player], have you ever heard of determinism?"
+    m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
+    m 3rsc "In some games, I guess the idea makes sense..."
+    m 3eud "But when you apply it to real life, I don't think it really works out."
+    m 2etc "I mean, if it were true, couldn't you just get away with anything you wanted?"
+    m 4esd "The entire concept of justice falls apart, since {i}you{/i} didn't make the choice to do whatever you might have done."
+    m 2dksdlc "But people still have to face up to those actions,{w=0.5} which seems more than a little unfair to me."
+    m 3ekc "After all, can you really be evil if you aren't in control?"
+    m 3tkd "Shouldn't the one pulling the strings take responsibility?"
+    m 1lsc "I guess that also means you can't take credit for the good things you do, either."
+    m 1lksdlc "I'm not sure what's more depressing."
     return
 
 init 5 python:
