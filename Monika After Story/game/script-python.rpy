@@ -630,7 +630,7 @@ label monika_ptod_tip006:
     if tip_ev.last_seen is None:
         m 1eud "Whew!{w} That was a mouthful!"
 
-    m "Did you understand all that?"
+    m "Did you understand all that?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you understand all that?{fast}"

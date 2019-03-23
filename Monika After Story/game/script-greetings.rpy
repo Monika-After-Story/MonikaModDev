@@ -382,7 +382,7 @@ label greeting_gooday:
     if mas_isMoniNormal(higher=True):
         m 1hua "Hello again, [player]. How are you doing?"
 
-        m "Are you having a good day today?"
+        m "Are you having a good day today?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you having a good day today?{fast}"
@@ -401,7 +401,7 @@ label greeting_gooday:
     elif mas_isMoniUpset():
         m 2efc "[player]."
 
-        m "How is your day going?"
+        m "How is your day going?{nw}"
         $ _history_list.pop()
         menu:
             m "How is your day going?{fast}"
@@ -420,7 +420,7 @@ label greeting_gooday:
     elif mas_isMoniDis():
         m 6ekc "Oh... {w=1}Hi, [player]."
 
-        m "H-How is your day going?"
+        m "H-How is your day going?{nw}"
         $ _history_list.pop()
         menu:
             m "H-How is your day going?{fast}"
@@ -470,7 +470,7 @@ label greeting_goodmorning:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'm guessing you can't sleep..."
 
-        m "Is that it?"
+        m "Is that it?{nw}"
         $ _history_list.pop()
         menu:
             m "Is that it?{fast}"
@@ -509,7 +509,7 @@ label greeting_goodmorning:
     elif current_time >= 18:
         m 1hua "Good evening, love!"
 
-        m "Did you have a good day today?"
+        m "Did you have a good day today?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day today?{fast}"
@@ -1226,7 +1226,7 @@ label monikaroom_greeting_ear_narration:
             m "Or if you ever did..."
             m "[player], I need you to promise me that you'll change."
 
-            m "You'll change, right?{w=1} For me?"
+            m "You'll change, right?{w=1} For me?{nw}"
             $ _history_list.pop()
             menu:
                 m "You'll change, right? For me?{fast}"
@@ -1249,7 +1249,7 @@ label monikaroom_greeting_ear_narration:
         else:
             m "Oh, you're back."
 
-            m "Are you ready to change, [player]?"
+            m "Are you ready to change, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "Are you ready to change, [player]?{fast}"
@@ -1498,7 +1498,7 @@ label monikaroom_greeting_opendoor_locked:
     pause 0.7
 
     $ style.say_window = style.window_monika
-    m "Did I scare you, [player]?"
+    m "Did I scare you, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Did I scare you, [player]?{fast}"
@@ -1973,10 +1973,10 @@ init 5 python:
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
         m 1hua "Welcome back, [player]!"
-        m 3eua "Are you feeling better?"
+        m 3eua "Are you feeling better?{nw}"
     else:
         m 2ekc "Welcome back, [player]..."
-        m "Are you feeling better?"
+        m "Are you feeling better?{nw}"
 
     $ _history_list.pop()
     menu:
@@ -2003,7 +2003,7 @@ label greeting_stillsick:
         m 2ekc "[player], you really should go get some rest."
         m 4ekc "Getting plenty of rest is the best way to recover from sickness quickly."
         m "Now please, [player], just go get some rest."
-        m 2ekc "Will you do that for me?"
+        m 2ekc "Will you do that for me?{nw}"
 
     $ _history_list.pop()
     menu:
@@ -2433,7 +2433,7 @@ label greeting_hairdown:
     m 4hua "Notice anything different today?"
     m 1hub "I decided to try something new~"
 
-    m "Do you like it?"
+    m "Do you like it?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you like it?{fast}"
@@ -2656,7 +2656,7 @@ label greeting_back_from_school:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back [player]!"
 
-        m "Did you have a good day at school?"
+        m "Did you have a good day at school?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day at school?{fast}"
@@ -2675,7 +2675,7 @@ label greeting_back_from_school:
     elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
 
-        m "How was school?"
+        m "How was school?{nw}"
         $ _history_list.pop()
         menu:
             m "How was school?{fast}"
@@ -2689,7 +2689,7 @@ label greeting_back_from_school:
     elif mas_isMoniDis():
         m 6ekc "Oh...{w=1}you're back."
 
-        m "How was school?"
+        m "How was school?{nw}"
         $ _history_list.pop()
         menu:
             m "How was school?{fast}"
@@ -2721,7 +2721,7 @@ label greeting_back_from_work:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back, [player]!"
 
-        m "Did you have a good day at work today?"
+        m "Did you have a good day at work today?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day at work today?{fast}"
@@ -2743,7 +2743,7 @@ label greeting_back_from_work:
     elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
 
-        m "How was your day?"
+        m "How was your day?{nw}"
         $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
@@ -2758,7 +2758,7 @@ label greeting_back_from_work:
     elif mas_isMoniDis():
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
 
-        m "How was your day?"
+        m "How was your day?{nw}"
         $ _history_list.pop()
         menu:
             m "How was your day?{fast}"

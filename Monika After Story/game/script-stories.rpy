@@ -1215,7 +1215,7 @@ label mas_scary_story_flowered_lantern:
     m 1ekc "Not long afterwards, the doctor ran into Hagiwara, informing him of Tsuyu's death."
     m 1dsd "Hagiwara was deeply saddened and mourned greatly over her, saying prayers and burning incense for her."
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_2")
-    m 1hua "...And that's it for part one! Do you want to continue to the next one?"
+    m 1hua "...And that's it for part one! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()
     menu:
         m "...And that's it for part one! Do you want to continue to the next one?{fast}"
@@ -1282,7 +1282,7 @@ label mas_scary_story_flowered_lantern_2:
         hide mas_lantern
     $ mas_stories.unlock_pooled_story("mas_scary_story_flowered_lantern_3")
 
-    m 1hua "...And that's it for part two! Do you want to continue to the next one?"
+    m 1hua "...And that's it for part two! Do you want to continue to the next one?{nw}"
     $ _history_list.pop()
     menu:
         m "...And that's it for part two! Do you want to continue to the next one?{fast}"
