@@ -1823,7 +1823,7 @@ label monika_rain_holdme:
     # we only want this if it rains
     if mas_is_raining or mas_isMoniAff(higher=True):
         call monika_holdme_prep
-        m 1a "Of course, [player]."
+        m 1eua "Of course, [player]."
         call monika_holdme_start
 
         call monika_holdme_reactions
@@ -1875,13 +1875,13 @@ label monika_holdme_reactions:
     elif elapsed_time > datetime.timedelta(minutes=10):
         if mas_isMoniLove():
             m 6dubsa "..."
-            m 6tubfa "Mm...{w=1} hm..?"
+            m 6tubfa "Mm...{w=1}hm..?"
             m 1hksdlb "Oh, did I almost fall asleep?"
             m 1hubfa "Sorry, [player], you're just too comfy to even think about, ahaha!"
             m 1dkbfa "I can only imagine what it would be like for real...{w=1}to be right there with you..."
             m 2ekbfa "Being wrapped in your arms..."
             show monika 5dkbfb at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5dkbfb "So...{w=1.5} warm~"
+            m 5dkbfb "So...{w=1.5}warm~"
             m 5tubfu "Ehehe~"
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy, huh [player]?"
@@ -1957,7 +1957,7 @@ label monika_holdme_reactions:
             m 1eua "I hope you do too."
             m 2rksdla "Well, even if you don't..."
             m 3hubfb "You could always hold me again, Ahaha!"
-            m 1hkbfsdlb "Actually...{w=0.5} you can hold me again either way."
+            m 1hkbfsdlb "Actually...{w=0.5}you can hold me again either way."
             m 1tubfb "Ehehe~"
             m 1hubfa "Just let me know if you want to~"
         elif mas_isMoniEnamored():
@@ -2017,10 +2017,10 @@ label monika_holdme_reactions:
         elif mas_isMoniEnamored():
             m 1ekc "Aw, is that all?"
             m 1rksdla "I kind of wanted it to last longer than that..."
-            m 2ekbfa "Could you...{w=0.7} hold me again for a bit longer?"
+            m 2ekbfa "Could you...{w=0.7}hold me again for a bit longer?"
             $ _history_list.pop()
             menu:
-                m "Could you... hold me again for a bit longer?{fast}"
+                m "Could you...hold me again for a bit longer?{fast}"
                 "Yes.":
                     m 1hubfb "Yay!"
                     call monika_holdme_prep
@@ -2042,79 +2042,79 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
-        menu:
-            "{i}Wake Monika up.{/i}":
-                if mas_isMoniLove():
-                    m 6dubfa "...{w=1} Mmm~"
-                    m 6dkbfu "[player]...{w=1} warm~"
-                    m 6tsbfa "..."
-                    m 2wubfsdld "Oh, [player]!"
-                    m 2hkbfsdlb "It looks like my dream came true, ahaha!"
-                    m 1hubfa "You might just be too comfy for my own good~"
-                    m 1tubfb "Not that I'm complaining, ehehe~"
-                    m 2rkbsa "Gosh, sometimes I wish we could stay like that forever..."
-                    m 3rksdlb "Well, I guess we {i}kind of{/i} can, but I wouldn't want to keep you from doing anything."
-                    m 1dkbfa "I just want to feel your warm, soft embrace more~"
-                    m 3hubfb "So be sure to hug me often, ahaha!"
-                    show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5hubfb "I'd do the same to you, after all~"
-                    m 5tsbfu "Who knows when I'd let go when I finally get the chance?"
-                    m 5hubfu "Ehehe~"
-                    show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
-                elif mas_isMoniEnamored():
-                    m 6dkbfa "...{w=1} Hm?"
-                    m 6tsbfa "[player]..."
-                    m 2wubfsdld "Oh! [player]!"
-                    m 2hkbfsdlb "Ahaha..."
-                    m 3rksdla "I guess I got a little too comfortable."
-                    m 1hubfa "But you're just too warm and comfy to {i}not{/i} fall asleep on..."
-                    m 1hubfb "So I have to blame you for that, ahaha!"
-                    m 1ekbfa "Could...{w=0.7} we do that again sometime?"
-                    m 1ekbfb "It...{w=1} felt nice~"
-                elif mas_isMoniAff():
-                    m 6dubsa "Mm...{w=1} hm..?"
-                    m 1wubfsdld "Oh!..{w=1} [player]?"
-                    m 1hksdlb "Did...{w=2} I fall asleep?"
-                    m 1rksdla "I didn't mean to fall asleep..." 
-                    m 1rkbfsdlb "On you..."
-                    m 2dkbfa "You just make me feel so..."
-                    m 1hubfa "Warm~"
-                    m 1hubfb "Ahaha, I hope you didn't mind!"
-                    show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 5eubfu "You're so sweet, [player]~"
-                    show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
-                    m 1hubfa "Hopefully you enjoyed that as much as I did~"
-                #happy
-                else:
-                    m 6dubsc "Hm..?"
-                    m 6wubfo "O-{w=0.3} oh!"
-                    m "[player]!"
-                    m 1hkbfsdlb "Did...{w=2}{nw}"
-                    $ _history_list.pop()
-                    m "Did I fall asleep?"
-                    m 1rkbfsdlb "Oh gosh, this is embarassing..."
-                    m 1hksdlb "What were we doing again?"
-                    m 3hubfb "Oh right! You were holding on to me."
-                    m 4hksdlb "And... didn't let go..."
-                    m 2rksdla "That sure lasted a lot longer than I expected..."
-                    m 3ekbfb "I still enjoyed it mind you!"
-                    m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
-                    m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
-            "{i}Let her rest on you.{/i}":
-                call monika_holdme_prep
-                if mas_isMoniLove():
-                    m 6dubfd "{cps=*0.5}[player]~{/cps}"
-                    m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
-                elif mas_isMoniEnamored():
-                    m 6dubfa "{cps=*0.5}[player]...{/cps}"
-                elif mas_isMoniAff():
-                    m "{cps=*0.5}Mm...{/cps}"
-                #happy
-                else:
-                    m "..."
-                call monika_holdme_start
-                jump monika_holdme_long
-        return
+    menu:
+        "{i}Wake Monika up.{/i}":
+            if mas_isMoniLove():
+                m 6dubfa "...{w=1} Mmm~"
+                m 6dkbfu "[player]...{w=1}warm~"
+                m 6tsbfa "..."
+                m 2wubfsdld "Oh, [player]!"
+                m 2hkbfsdlb "It looks like my dream came true, ahaha!"
+                m 1hubfa "You might just be too comfy for my own good~"
+                m 1tubfb "Not that I'm complaining, ehehe~"
+                m 2rkbsa "Gosh, sometimes I wish we could stay like that forever..."
+                m 3rksdlb "Well, I guess we {i}kind of{/i} can, but I wouldn't want to keep you from doing anything."
+                m 1dkbfa "I just want to feel your warm, soft embrace more~"
+                m 3hubfb "So be sure to hug me often, ahaha!"
+                show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5hubfb "I'd do the same to you, after all~"
+                m 5tsbfu "Who knows when I'd let go when I finally get the chance?"
+                m 5hubfu "Ehehe~"
+                show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            elif mas_isMoniEnamored():
+                m 6dkbfa "...{w=1}Hm?"
+                m 6tsbfa "[player]..."
+                m 2wubfsdld "Oh! [player]!"
+                m 2hkbfsdlb "Ahaha..."
+                m 3rksdla "I guess I got a little too comfortable."
+                m 1hubfa "But you're just too warm and comfy to {i}not{/i} fall asleep on..."
+                m 1hubfb "So I have to blame you for that, ahaha!"
+                m 1ekbfa "Could...{w=0.7}we do that again sometime?"
+                m 1ekbfb "It...{w=1}felt nice~"
+            elif mas_isMoniAff():
+                m 6dubsa "Mm...{w=1}hm..?"
+                m 1wubfsdld "Oh!..{w=1} [player]?"
+                m 1hksdlb "Did...{w=2} I fall asleep?"
+                m 1rksdla "I didn't mean to fall asleep..." 
+                m 1rkbfsdlb "On you..."
+                m 2dkbfa "You just make me feel so..."
+                m 1hubfa "Warm~"
+                m 1hubfb "Ahaha, I hope you didn't mind!"
+                show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eubfu "You're so sweet, [player]~"
+                show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+                m 1hubfa "Hopefully you enjoyed that as much as I did~"
+            #happy
+            else:
+                m 6dubsc "Hm..?"
+                m 6wubfo "O-{w=0.3} oh!"
+                m "[player]!"
+                m 1hkbfsdlb "Did...{w=2}{nw}"
+                $ _history_list.pop()
+                m "Did I fall asleep?"
+                m 1rkbfsdlb "Oh gosh, this is embarassing..."
+                m 1hksdlb "What were we doing again?"
+                m 3hubfb "Oh right! You were holding on to me."
+                m 4hksdlb "And...didn't let go..."
+                m 2rksdla "That sure lasted a lot longer than I expected..."
+                m 3ekbfb "I still enjoyed it mind you!"
+                m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
+                m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
+        "{i}Let her rest on you.{/i}":
+            call monika_holdme_prep
+            if mas_isMoniLove():
+                m 6dubfd "{cps=*0.5}[player]~{/cps}"
+                m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
+            elif mas_isMoniEnamored():
+                m 6dubfa "{cps=*0.5}[player]...{/cps}"
+            elif mas_isMoniAff():
+                m "{cps=*0.5}Mm...{/cps}"
+            #happy
+            else:
+                m "..."
+            call monika_holdme_start
+            jump monika_holdme_long
+    return
 
 
 init 5 python:
