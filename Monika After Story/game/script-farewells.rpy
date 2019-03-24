@@ -130,10 +130,10 @@ label mas_farewell_start:
             ]
 
             # add the random selection
-            bye_prompt_list.append(("Goodbye", -1, False, False))
+            bye_prompt_list.append(("Goodbye.", -1, False, False))
 
             # setup the last option
-            bye_prompt_back = ("Nevermind", False, False, False, 20)
+            bye_prompt_back = ("Nevermind.", False, False, False, 20)
 
         # call the menu
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)

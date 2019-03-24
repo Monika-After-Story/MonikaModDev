@@ -97,7 +97,7 @@ label monika_playerapologizes:
             apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
 
         #The back button
-        return_prompt_back = ("Nevermind", False, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     #Display our scrollable
     show monika at t21
