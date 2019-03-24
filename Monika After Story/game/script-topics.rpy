@@ -2898,11 +2898,13 @@ init 5 python:
             eventlabel="monika_justification",
             category=['ddlc','monika'],
             prompt="You're a murderer!",
+            sensitive=True,
             pool=True,
-            sensitive=True
+            unlocked=True,
+            aff_range=(None, mas_aff.AFFECTIONATE)
         )
     )
-
+    
 label monika_justification:
     #lose affection
     $ mas_loseAffection(reason=3)
@@ -3117,7 +3119,7 @@ label monika_trolley:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_girlfriend",category=['romance'],prompt="Do you want to meet my girlfriend?",pool=True, unlocked=True, aff_range=(None, mas_aff.AFFECTIONATE)))
 
 label monika_girlfriend:
     $ mas_loseAffection(reason=2)
@@ -6600,7 +6602,7 @@ label monika_sleep:
 default persistent._mas_monika_breakup = 0
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_breakup",category=['misc'],prompt="I'm breaking up with you",pool=True, unlocked=True, aff_range=(None, mas_aff.AFFECTIONATE)))
 
 label monika_breakup:
     #Lose affection for bringing this up.
