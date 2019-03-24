@@ -8334,7 +8334,7 @@ label monika_hydration:
     m 1eka "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
     m 1eua "Anyways, make sure you always stay hydrated, ok?"
     m "So..."
-    m 4hub "Why not get a glass of water right now, hmm?"
+    m 4huu "Why not get a glass of water right now, hmm?"
     return
 
 init 5 python:

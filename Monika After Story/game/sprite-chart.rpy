@@ -10490,6 +10490,19 @@ image monika 4hub = DynamicDisplayable(
     arms="pointright"
 )
 
+image monika 4huu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smug",
+    head="k",
+    left="2l",
+    right="2r",
+    arms="pointright"
+)
+
 image monika 4tub = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
