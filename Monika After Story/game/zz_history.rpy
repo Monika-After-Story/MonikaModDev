@@ -652,7 +652,7 @@ init -816 python in mas_delact:
     nothing = "temp"
 
 init -816 python in mas_history:
-    from store.mas_delact import _MDA_safeadd
+    from store.mas_delact import _MDA_safeadd, _MDA_saferm
     # mas history store has safeadd
 
 init -815 python in mas_history:
@@ -662,7 +662,9 @@ init -815 python in mas_history:
     def _bday_exit_pp(mhs):
         # this PP will just add the appropriate delayed action IDs to the 
         # persistent delayed action list.
-        _MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4, 5, 6, 7)
+        #_MDA_safeadd(3, 4)
+        pass
 
 
 init -810 python:
@@ -689,6 +691,7 @@ init -810 python:
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
     #   looks - your physical apperance
+    #   owns - posessions
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
         datetime.datetime(2019, 1, 1),
@@ -696,8 +699,13 @@ init -810 python:
             # lifestyles (of the rich and famous)
             "_mas_pm_religious": "pm.lifestyle.religious",
             "_mas_pm_like_playing_sports": "pm.lifestyle.plays_sports",
+            "_mas_pm_like_playing_tennis": "pm.lifestyle.plays_tennis",
             "_mas_pm_meditates": "pm.lifestyle.meditates",
             "_mas_pm_see_therapist": "pm.lifestyle.sees_therapist",
+            "_mas_pm_driving_can_drive": "pm.lifestyle.can_drive",
+            "_mas_pm_driving_learning": "pm.lifestyle.learning_to_drive",
+            "_mas_pm_driving_post_accident": "pm.lifestyle.driving_post_accident",
+            "_mas_pm_is_fast_reader": "pm.lifestyle.reads_fast",
 
             # lifestyle / ring
             "_mas_pm_wearsRing": "pm.lifestyle.ring.wears_one",
@@ -729,10 +737,12 @@ init -810 python:
             "_mas_pm_drawn_art": "pm.actions.drawn_art",
             "_mas_pm_has_new_years_res": "pm.actions.made_new_years_resolutions",
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
+            "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
             "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
+            "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
 
             # actions / prom
             "_mas_pm_gone_to_prom": "pm.actions.prom.went",
@@ -763,6 +773,8 @@ init -810 python:
 
             # actions / mas / dev
             "_mas_pm_has_rpy": "pm.actions.mas.dev.has_rpy",
+            "_mas_pm_has_contributed_to_mas": "pm.actions.mas.dev.has_contributed",
+            "_mas_pm_wants_to_contribute_to_mas": "pm.actions.mas.dev.wants_to_contribute",
 
             # location
             "_mas_pm_live_in_city": "pm.location.live_in_city",
@@ -774,12 +786,14 @@ init -810 python:
             "_mas_pm_likes_horror": "pm.likes.horror",
             "_mas_pm_likes_spoops": "pm.likes.spooks",
             "_mas_pm_watch_mangime": "pm.likes.manga_and_anime",
+            "_mas_pm_would_like_mt_peak": "pm.likes.reach_mt_peak",
 
             # likes/ d25
             "_mas_pm_likes_singing_d25_carols": "pm.likes.d25.singing_carols",
 
             # likes / monika
             "_mas_pm_a_hater": "pm.likes.monika.not",
+            "_mas_pm_liked_grad_speech": "pm.likes.monika.grad_speech",
 
             # likes / music
             "_mas_pm_like_rap": "pm.likes.music.rap",
@@ -806,6 +820,9 @@ init -810 python:
 
             # exp (experience)
             "_mas_pm_given_false_justice": "pm.exp.given_false_justice",
+            "_mas_pm_driving_been_in_accident": "pm.exp.been_in_car_accident",
+            "_mas_pm_is_bullying_victim": "pm.exp.victim_of_bullying",
+            "_mas_pm_currently_bullied": "pm.exp.currently_being_bullied",
 
             # op (opinions)
             # op / monika
@@ -828,7 +845,11 @@ init -810 python:
 
             # looks / dims (dimensions)
             "_mas_pm_height": "pm.looks.dims.height",
-            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric"
+            "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric",
+
+            # owns
+            "_mas_pm_owns_car": "pm.owns.car",
+            "_mas_pm_owns_car_type": "pm.owns.car_type",
 
         },
         use_year_before=True,
