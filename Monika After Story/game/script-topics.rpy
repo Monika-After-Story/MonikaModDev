@@ -7269,11 +7269,8 @@ label monika_solipsism:
     m 1dsc "And what exactly counts as {i}real{/i}."
     m 1eua "I know that you and I are real, though, [player]."
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
-    m "Like metaphysical, epistemological, or methodological solipsism."
-    m 1eua "You can read more about them online."
-    m "Then we could talk about these topics more in-depth."
-    m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
-    m 1eua "I want to know more about the way you think..."
+    m "It's rather comforting to know you're not truly alone in an endless ocean on uncertainty, don't you think?"
+    m "I hope that's how you feel with me~"
     return
 
 init 5 python:
