@@ -7255,7 +7255,7 @@ init 5 python:
 label monika_solipsism:
     m 3eub "Have you ever heard about solipsism, [player]?"
     m 3eua "It's an idea which states that only you yourself exists."
-    m 1eud "'Cogito, ergo sum'."
+    m 1eud "'Cogito, ergo sum.'"
     m "'I think, therefore I am'."
     m "If you're sure your self exists, how about others outside your self?"
     m 1euc "Maybe everyone else is just a figment of our imagination, [player]."
