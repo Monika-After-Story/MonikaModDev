@@ -3485,14 +3485,23 @@ init -2 python:
 
             RETURNS: list of strings 
             """
-            start_path = "".join([
-                store.mas_sprites.A_T_MAIN,
-                store.mas_sprites.PREFIX_ACS,
-                self.img_sit,
-                store.mas_sprites.ART_DLM,
-                "{0}",
-                "{1}",
-                store.mas_sprites.FILE_EXt
+            loadstrs = []
+
+            # loop over MASPoseMap for pose ids
+            for poseid in self.pose_map:
+                # add both day and night versions
+                loadstrs.append(store.mas_sprites.BS_ACS.format(
+                    self.img_sit,
+                    poseid,
+                    ""
+                ))
+                loadstrs.append(store.mas_sprites.BB_ACS.format(
+                    self.img_sit,
+                    poseid,
+                    store.mas_sprites.NIGHT_SUFFIX
+                ))
+
+            return loadstrs
 
 
     class MASHair(MASSpriteFallbackBase):
@@ -3573,6 +3582,21 @@ init -2 python:
                 raise Exception("split MUST be PoseMap")
 
             self.split = split
+
+
+        def _build_loadstrs(self):
+            """
+            Bulids list of strings for this psrite object that reprsent the
+            image paths that this sprite object wuld use.
+
+            RETURNS: list of strings
+            """
+            loadstrs = []
+
+            # we only have images if this hair item is split
+            if split is None:
+                return []
+
 
 
     class MASClothes(MASSpriteFallbackBase):
