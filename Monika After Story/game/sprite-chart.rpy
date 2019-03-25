@@ -317,6 +317,74 @@ init -5 python in mas_sprites:
     DEF_BODY = "def"
     NEW_BODY_STR = PREFIX_BODY + DEF_BODY
 
+    ## string builder constants
+    BS_ACS = (
+        A_T_MAIN
+        PREFIX_ACS
+        "{0}" # acs img sit
+        ART_DLM
+        "{1}" # poseid
+        "{2}" # n_suffix
+        FILE_EXT
+    )
+
+    BS_HAIR_U = (
+        H_MAIN
+        PREFIX_HAIR
+        "{0}" # hair img sit
+        "{1}" # hair suffix
+        "{2}" # night suffix
+        FILE_EXT
+    )
+
+    BS_HAIR_L = (
+        H_MAIN
+        PREFIX_HAIR_LEAN
+        "{0}" # lean
+        ART_DLM
+        "{1}" # hair img sit
+        "{2}" # hair suffix
+        "{3}" # night suffix
+        FILE_EXT
+    )
+
+    BS_TORSO = (
+        C_MAIN
+        "{0}/" # clothing img sit
+        PREFIX_TORSO
+        "{1}" # hair img sit
+        "{2}" # night suffix
+        FILE_EXT
+    )
+
+    BS_TORSO_L = (
+        C_MAIN
+        "{0}/" # clothign img sit
+        PREFIX_TORSO_LEAN
+        "{1}" # hair img sit
+        ART_DLM
+        "{2}" # lean
+        "{3}" # night suffix
+        FILE_EXT
+    )
+
+    BS_TORSO_NH = (
+        C_MAIN
+        "{0}/" # clothing img sit
+        NEW_BODY_STR
+        "{1}" # night suffix
+        FILE_EXT
+    )
+
+    BS_TORSO_L_NH = (
+        C_MAIN
+        "{0}/" # clothing img sit
+        PREFIX_BODY_LEAN
+        "{1}" # lean
+        "{2}" # night suffix
+        FILE_EXT
+    )
+
     ## BLK010
     # ACCESSORY BLACKLIST
     lean_acs_blacklist = [
@@ -3408,6 +3476,23 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
+
+
+        def _build_loadstrs(self):
+            """
+            Builds list of strings for this sprite object that represent the
+            image paths that this sprite object would use.
+
+            RETURNS: list of strings 
+            """
+            start_path = "".join([
+                store.mas_sprites.A_T_MAIN,
+                store.mas_sprites.PREFIX_ACS,
+                self.img_sit,
+                store.mas_sprites.ART_DLM,
+                "{0}",
+                "{1}",
+                store.mas_sprites.FILE_EXt
 
 
     class MASHair(MASSpriteFallbackBase):

@@ -25,6 +25,9 @@ default persistent._mas_filereacts_sprite_gifts = {}
 # value: tuple of the following format:
 #   [0] - sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
 #   [1] - id of the sprite object this gift unlocks.
+#
+# NOTE: contains sprite gifts before being unlocked. When its unlocked,
+#   they move to _mas_sprites_json_gifted_sprites
 
 # TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
 

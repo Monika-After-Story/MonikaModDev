@@ -228,6 +228,9 @@ default persistent._mas_sprites_json_gifted_sprites = {}
 # value: typle of the following fomrat:
 #   [0] - spritre type (0 - ACS, 1 - HAIr, 2 - CLOTHES)
 #   [1] - name of the sprite object this gift unlocks
+#
+# NOTE: contains sprite gifts after being unlocked. When its locked, it
+#   should be in _mas_filereacts_sprite_gifts
 
 
 init -21 python in mas_sprites_json:
@@ -505,11 +508,24 @@ init 790 python in mas_sprites_json:
         to_verify = []
 
         if sp_type == SP_ACS:
+            # ACS: images consist of the all pose code items that are
+            # in the /a/ folder
+            # + night versions
+            # + thumbs
             
             pass
         elif sp_type == SP_HAIR:
+            # HAIR: images consist of upright and leaning items in /h/ 
+            # folder
+            # + night versions
+            # + thumbs
+
             pass
         else:
+            # CLOTHES: images consist of upright and leaning body items
+            # in /c/ folder
+            # + night versions
+            # + thumbs
             pass
 
 
@@ -563,8 +579,15 @@ init 790 python in mas_sprites_json:
         """
         Process the gift maps by cleaning the persistent vars
         """
-        # TODO
-        pass
+        # clean filereacts sprite gifts
+        for fr_sp_gn in store.persistent._mas_filereacts_sprite_gifts:
+            if fr_sp_gn not in giftname_map:
+                store.persistent._mas_filereacts_sprite_gifts.pop(fr_sp_gn)
+
+        # clean json gift sprites list
+        for j_sp_gn in store.persistent._mas_sprites_json_gifted_sprites:
+            if j_sp_gn not in giftname_map:
+                store.persistent._mas_sprites_json_gifted_sprites.pop(j_sp_gn)
 
 
     def _process_progpoint(
@@ -1424,6 +1447,8 @@ init 790 python in mas_sprites_json:
         if giftname is not None:
             _init_giftname(giftname, sp_type, sp_name)
 
+        # TODO: build warnrings for image loading
+
 
 
         # after bulid warning
@@ -1434,11 +1459,14 @@ init 790 python in mas_sprites_json:
 
 
 
-    # TODO: after buliding/loading all sprite objects
-        #   delayed verify:
-        #       hair
 
 init 800 python in mas_sprites_json:
     pass
 
+    # TODO: sprite jsons
+    # TODO: proressing giftnames
+
+    # TODO: after buliding/loading all sprite objects
+        #   delayed verify:
+        #       hair
 
