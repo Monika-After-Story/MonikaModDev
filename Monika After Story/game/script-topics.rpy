@@ -7269,8 +7269,8 @@ label monika_solipsism:
     m 1dsc "And what exactly counts as {i}real{/i}."
     m 1eua "I know that you and I are real, though, [player]."
     m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
-    m "It's rather comforting to know you're not truly alone in an endless ocean on uncertainty, don't you think?"
-    m "I hope that's how you feel with me~"
+    m 3eua "It's rather comforting to know you're not truly alone in an endless ocean on uncertainty, don't you think?"
+    m 3hua "I hope that's how you feel with me~"
     return
 
 init 5 python:
