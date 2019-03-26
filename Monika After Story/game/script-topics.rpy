@@ -8705,7 +8705,7 @@ label monika_bullying:
     m 2dkc "Having that destroyed essentially feels like their life is over."
     m 2rksdld "It's also the hardest for other people to notice, since the last thing most kids want is their parents seeing what they do online."
     m 2eksdlc "So no one knows what's going on while they silently suffer, until it all just becomes too much."
-    m 2dksdlc "There's been numerous cases of of teens committing suicide due to cyberbullying, and their parents had no idea anything was wrong until it was too late."
+    m 2dksdlc "There's been numerous cases of teens committing suicide due to cyberbullying, and their parents had no idea anything was wrong until it was too late."
     m 4tkc "This is also why it's easier for cyberbullies to operate..."
     m "No one really sees what they're doing, plus a lot of people do things online they'd never have the courage to do in real life."
     m 2dkc "It almost doesn't even seem real, but more like a game, so it tends to escalate that much faster."
