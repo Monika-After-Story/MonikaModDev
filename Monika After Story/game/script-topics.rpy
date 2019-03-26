@@ -7258,7 +7258,7 @@ label monika_solipsism:
     m 1eud "'Cogito, ergo sum.'"
     m 3eud "'I think, therefore I am.'"
     m 1euc "If you know that {i}you{/i} exist, can you say the same about anyone else?"
-    m 1euc "Maybe everyone else is just a figment of our imagination, [player]."
+    m 3etc "Maybe everyone else is just a figment of our imagination, [player]."
     m "Maybe in reality, we're the only consciousness in this world in a vast sea of fake minds..."
     m 1dsd "Creations of our wild machinations..."
     m 1eub "Ahaha, I'm just kidding~"
