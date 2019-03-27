@@ -22,7 +22,7 @@ init -1 python in mas_compliments:
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "Oh nevermind"
+    COMPLIMENT_RETURN = "Oh nevermind."
     compliment_database = dict()
 
     thanking_quips = [
@@ -86,7 +86,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_beautiful",
-            prompt="... You're beautiful!",
+            prompt="You're beautiful!",
             unlocked=True
         ),
         code="CMP")
@@ -130,7 +130,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_eyes",
-            prompt="... I love your eyes!",
+            prompt="I love your eyes!",
             unlocked=True
         ),
         code="CMP"
@@ -174,7 +174,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
-            prompt="... You're awesome!",
+            prompt="You're awesome!",
             unlocked=True
         ),
         code="CMP"
@@ -225,7 +225,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_intelligent",
-            prompt="... You're really intelligent!",
+            prompt="You're really intelligent!",
             unlocked=True
         ),
         code="CMP"
@@ -269,7 +269,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hair",
-            prompt="... I love your hair!",
+            prompt="I love your hair!",
             unlocked=True
         ),code="CMP"
     )
@@ -319,7 +319,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_fit",
-            prompt="... I love your dedication to fitness!",
+            prompt="I love your dedication to fitness!",
             unlocked=True
         ),
         code="CMP"
@@ -366,7 +366,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
-            prompt="... Thanks for being there for me!",
+            prompt="Thanks for being there for me!",
             unlocked=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
@@ -401,7 +401,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_smile",
-            prompt="... I love your smile!",
+            prompt="I love your smile!",
             unlocked=True
         ),
         code="CMP"
@@ -443,7 +443,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hero",
-            prompt="... You're my hero!",
+            prompt="You're my hero!",
             unlocked=True,
             aff_range=(mas_aff.LOVE, None)
         ),
@@ -469,7 +469,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="... You’re awesome at chess!",
+            prompt="You're awesome at chess!",
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
@@ -500,7 +500,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="... You’re awesome at pong!",
+            prompt="You're awesome at pong!",
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
@@ -544,7 +544,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="... You're the best girl!",
+            prompt="You're the best girl!",
             unlocked=True
         ),
         code="CMP"

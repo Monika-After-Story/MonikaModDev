@@ -251,7 +251,7 @@ label mas_monika_day3:
     return
 
 label mas_monika_night1:
-    m "You're probably wondering what happened to that orange comet that occassionaly passes by."
+    m "You're probably wondering what happened to that orange comet that occasionally passes by."
     m "Don't worry, I've dealt with it."
     m "I wouldn't want you to get hurt~"
     return

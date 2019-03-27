@@ -610,11 +610,11 @@ label unlock_piano:
     m 4hua "Wouldn't it be fun to play something together?"
     m "Maybe we could even do a duet!"
     m 4hub "We would both improve and have fun at the same time."
-    m 1hksdlb "Maybe I’m getting a bit carried away. Sorry!"
+    m 1hksdlb "Maybe I'm getting a bit carried away. Sorry!"
     m 3eua "I just want to see you enjoy the piano the same way I do."
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
-    m 1eua "I hope this isn’t too forceful, but I would love it if you tried."
+    m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please~?"
     $persistent.game_unlocks['piano']=True
     return
@@ -1619,7 +1619,7 @@ label mas_bday_spent_time_with:
         if _timeout < datetime.timedelta(hours=1.5):
             # short date
             m 1euc "That was a bit of a short trip, though."
-            m 1eub "But it’s nice to get out of this place once in a while."
+            m 1eub "But it's nice to get out of this place once in a while."
             m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
         elif _timeout < datetime.timedelta(hours=6):
             # normal date
@@ -1630,11 +1630,11 @@ label mas_bday_spent_time_with:
             #long date
             m 1eka "I really enjoyed our time outside, though."
             m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
-            m "Someday, I know we’ll be able to do so."
+            m "Someday, I know we'll be able to do so."
 
     # gave gifts?
     if _total > 0:
-        m 3euc "Let’s not forget what you gave me for my birthday."
+        m 3euc "Let's not forget what you gave me for my birthday."
         # more than 2
         if _total >= 2:
             m 1eua "You gave me lots of gifts today, [player]."
@@ -1650,9 +1650,9 @@ label mas_bday_spent_time_with:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
+                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
-    m 3hub "Let’s do it again sometime soon, okay?"
+    m 3hub "Let's do it again sometime soon, okay?"
     return
 
 ### no time spent

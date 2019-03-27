@@ -1958,14 +1958,14 @@ label prompt_menu:
     python:
         talk_menu = []
         if len(unseen_events)>0:
-            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
-        talk_menu.append(("Ask a question.", "prompt"))
+            talk_menu.append(("{b}Unseen{/b}", "unseen"))
+        talk_menu.append(("Ask a question", "prompt"))
         if len(repeatable_events)>0:
-            talk_menu.append(("Repeat conversation.", "repeat"))
+            talk_menu.append(("Repeat conversation", "repeat"))
         talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
-        talk_menu.append(("Nevermind.","nevermind"))
+        talk_menu.append(("Nevermind","nevermind"))
 
         renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")

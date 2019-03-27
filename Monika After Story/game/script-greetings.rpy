@@ -949,7 +949,7 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarassing to say, ehehe~"
+    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
     return
 
 init 5 python:
@@ -1855,7 +1855,7 @@ label greeting_japan:
     m 4hub "Watashi ha itsumademo anata no mono desu!"
     m 2hksdlb "Sorry if that didn't make sense!"
     m 3eua "You know what that means, [player]?"
-    m 4ekbfa "It means {i}'I'll be yours forever{/i}'~"
+    m 4ekbfa "It means {i}'I'll be yours forever'{/i}~"
     return
 
 init 5 python:
@@ -1877,7 +1877,7 @@ label greeting_sunshine:
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
-    m 1lkbsa "Oh my gosh, this is so embarassing!"
+    m 1lkbsa "Oh my gosh, this is so embarrassing!"
     m "I w-was just singing to myself to pass time!"
     m 1ekbfa "Ehehe..."
     m 3hubfa "But now that you're here, we can spend some time together~"
@@ -1952,7 +1952,7 @@ label greeting_amnesia:
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
     m 1tku "And you reacted the way I hoped you would."
     m 3eka "I hope I didn't upset you too much, though."
-    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
 
     $ mas_lockEvent(mas_getEV("greeting_amnesia"))
