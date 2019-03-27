@@ -11908,7 +11908,7 @@ label monika_cares_about_dokis:
 
             m 2eka "I'm glad that I haven't been making you feel bad or uneasy, [player]."
             m 1tsu "Anyway, you could say that she {i}hung{/i} around for ages!"
-            m 1hub "Ahahaha!"
+            m 1hub "Ahaha!"
 
     return "derandom|rebuild_ev"
 
