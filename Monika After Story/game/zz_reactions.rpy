@@ -834,7 +834,7 @@ init 5 python:
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
         $ mas_loseAffection(3, reason=7)
-        m 1rksdlb "Today is not my birthday, did you forget when it is, [player]?"
+        m 1ltsdlc "Today's not my birthday,{w=1} did you forget when it is, [player]?"
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
