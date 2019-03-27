@@ -430,7 +430,7 @@ init -1 python:
     ### PONYTAIL WITH RIBBON (default)
     ## def
     # Monika's default hairstyle, aka the ponytail
-    # thanks Ryuse/Iron707/Taross/Metisz
+    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO
     mas_hair_def = MASHair(
         "def",
         "def",
@@ -459,7 +459,7 @@ init -1 python:
     ### DOWN
     ## down
     # Hair is down, not tied up
-    # thanks Ryuse/Finale/Iron707/Taross/Metisz
+    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO
     mas_hair_down = MASHair(
         "down",
         "down",
@@ -543,7 +543,7 @@ init -1 python:
     ### SCHOOL UNIFORM (default)
     ## def
     # Monika's school uniform
-    # thanks Ryuse
+    # thanks Ryuse/Velius94 (Jacket)
     mas_clothes_def = MASClothes(
         "def",
         "def",
@@ -775,7 +775,7 @@ init -1 python:
             p5="5"
         ),
         stay_on_start=False,
-        rec_layer=MASMonika.AFH_ACS,
+        rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_ear_rose)
 
