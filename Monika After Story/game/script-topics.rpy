@@ -1818,6 +1818,13 @@ init 5 python:
         )
     )
 
+
+default persistent._mas_pm_longest_held_monika = None
+# timedelta for the longest time you have held monika
+
+default persistent._mas_pm_total_held_monika = datetime.timedelta(0)
+# timedelta for amount of time you have held monika
+
 label monika_rain_holdme:
 
     # we only want this if it rains
@@ -1856,6 +1863,7 @@ label monika_holdme_prep:
 
 label monika_holdme_start:
     show monika 6dubsa
+    window hide
     #Start the timer vv
     $ start_time = datetime.datetime.now()
 
@@ -1865,13 +1873,17 @@ label monika_holdme_start:
     # renable ui and hotkeys
     $ store.songs.enabled = True
     $ HKBShowButtons()
+    window auto
     return
 
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
+    $ store.mas_history._pm_holdme_adj_times(elapsed_time)
+
     if elapsed_time > datetime.timedelta(minutes=30):
         m "..."
         call monika_holdme_long
+
     elif elapsed_time > datetime.timedelta(minutes=10):
         if mas_isMoniLove():
             m 6dubsa "..."
@@ -1917,6 +1929,7 @@ label monika_holdme_reactions:
             m 2tubfb "Too much longer and I might have fallen asleep in your arms..."
             m 1tubfa "Maybe you'd like that, ehehe~"
             m 1hubfa "I feel all warm and nice now from that~"
+
     elif elapsed_time > datetime.timedelta(minutes=2):
         if mas_isMoniLove():
             m 6eud "Oh?"
@@ -1950,6 +1963,7 @@ label monika_holdme_reactions:
             m 1rkbsa "Don't get me wrong- I still enjoyed it."
             m 1tubfb "I hope you're satisfied~"
             m 1hubfa "I'm happy with just sitting with you now."
+
     elif elapsed_time > datetime.timedelta(seconds=30):
         if mas_isMoniLove():
             m 1eub "Ah~"
@@ -1984,11 +1998,12 @@ label monika_holdme_reactions:
             m 3eub "Did you enjoy that?"
             m 1hua "I sure hope so~"
             m 1hubfb "Hugs are supposed to be good for you after all."
+
     else:
         #under 30 seconds
         if mas_isMoniLove():
             m 2ekc "Aw, are we done already?"
-            m 3eka "Could you hold me for just a bit longer?"
+            m 3eka "Could you hold me for just a bit longer?{nw}"
             $ _history_list.pop()
             menu:
                 m "Could you hold me for just a bit longer?{fast}"
@@ -2001,7 +2016,7 @@ label monika_holdme_reactions:
                 "No.":
                     m 2ekc "Aww..."
                     m 2rksdlc "..."
-                    m 4eka "Please?"
+                    m 4eka "Please?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Please?{fast}"
@@ -2017,7 +2032,7 @@ label monika_holdme_reactions:
         elif mas_isMoniEnamored():
             m 1ekc "Aw, is that all?"
             m 1rksdla "I kind of wanted it to last longer than that..."
-            m 2ekbfa "Could you...{w=0.7}hold me again for a bit longer?"
+            m 2ekbfa "Could you...{w=0.7}hold me again for a bit longer?{nw}"
             $ _history_list.pop()
             menu:
                 m "Could you...hold me again for a bit longer?{fast}"
