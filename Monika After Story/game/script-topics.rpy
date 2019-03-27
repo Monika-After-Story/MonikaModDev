@@ -6736,7 +6736,7 @@ label monika_breakup:
     #Beyond the 2nd time you hit the button.
     elif persistent._mas_monika_breakup > 1:
         if mas_isMoniBroken():
-            m 1ckc "..."
+            m 6ckc "..."
         elif mas_isMoniUpset(lower=True):
             m 2rkc "You keep saying that, I'm starting to think you actually mean it..."
         else:
