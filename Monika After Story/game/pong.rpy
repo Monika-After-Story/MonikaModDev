@@ -382,6 +382,8 @@ label demo_minigame_pong:
 
     $ mas_gainAffection(modifier=0.5)
 
+    m "Do you want to play again?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you want to play again?"
 
