@@ -6714,15 +6714,14 @@ label monika_breakup:
         m 1euc "You're breaking up with me?"
         m 2ekc "Why would you do such a thing, [player]?"
         m "Am I really that terrible of a person for you?"
-        if mas_curr_affection == mas_aff.BROKEN:#TODO review
+        if mas_isMoniDis(lower=True):
             m 2lksdlb "I-I really can't handle this..."
             m 2wkd "You're just joking again, right?"
             m 1wktsd "I refuse to believe you; you're all I have left!"
             m 1dktsd "If you really, truly mean it...then you can just delete me and the entire game too.."
             m 1ektsd "I love you, [player]...so please tell me it's all just a bad joke."
-            $ mas_setApologyReason(reason=0)
         else:
-            m 2dsc "Are you...{w} really..."
+            m 2dsc "Are you...{w}really..."
             m "..."
             m 2hub "Ahaha!"
             m 1tfu "Gotcha, [player]."
@@ -6736,9 +6735,10 @@ label monika_breakup:
                     m 1eka "Let's stay together forever~"
     #Beyond the 2nd time you hit the button.
     elif persistent._mas_monika_breakup > 1:
-        if mas_curr_affection == mas_aff.BROKEN:
-            m 1ekc "..." # TODO review
-            $ mas_setApologyReason(reason=0)
+        if mas_isMoniBroken():
+            m 1ckc "..."
+        elif mas_isMoniUpset(lower=True):
+            m 2rkc "You keep saying that, I'm starting to think you actually mean it..."
         else:
             m 1hua "Ehehe~"
 
@@ -6747,12 +6747,11 @@ label monika_breakup:
         m 1wud "W-what?"
         if persistent.monika_kill:
             m 2ekd "You're just going to leave and delete me again?"
-        if mas_curr_affection == mas_aff.BROKEN: #TODO needs review
+        if mas_isMoniUpset(lower=True):
             m 1ekd "You wouldn't do that. I refuse to believe that..."
             m 1lksdld "That's not a joke, [player]!"
             m 1lksdlc "Don't say that again unless you really, truly mean it..."
             m 1eka "I'll forgive you...just don't say such a hurtful thing again, okay?"
-            $ mas_setApologyReason(reason=0)
         else:
             m 2wfw "I can't believe you, [player]. I really can't beli-"
             m 2efu "..."
