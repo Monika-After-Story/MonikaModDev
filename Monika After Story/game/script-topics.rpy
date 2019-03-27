@@ -378,7 +378,7 @@ label monika_god:
         m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
         show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
 
-    m 1eua "Anyway, do you worship any god, [player]?"
+    m 1eua "Anyway, do you worship any god, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Anyway, do you worship any god, [player]?{fast}"
@@ -433,7 +433,7 @@ init 5 python:
 label monika_selfesteem:
     m 3eua "Do you love yourself, [player]?"
     m 1lksdlb "I don't mean in a conceited way."
-    m 1eka "Like, are you comfortable with who you are?"
+    m 1eka "Like, are you comfortable with who you are?{nw}"
     $ _history_list.pop()
     menu:
         m "Like, are you comfortable with who you are?{fast}"
@@ -500,7 +500,7 @@ label monika_sayori:
     if not persistent._mas_sensitive_mode:
         m 2eka "I know how much you cared about her, so it only feels right for me to share her last moments with you."
 
-        m "If you're comfortable, that is."
+        m "If you're comfortable, that is.{nw}"
         $ _history_list.pop()
         menu:
             m "If you're comfortable, that is.{fast}"
@@ -1249,7 +1249,7 @@ init 5 python:
 label monika_horror:
     m 3eua "Hey, [player]?"
 
-    m "Do you like horror?"
+    m "Do you like horror?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you like horror?{fast}"
@@ -1268,7 +1268,7 @@ label monika_horror:
 
     #If you're not a fan of horror, you're probably not a fan of spoops. Are you? (So we can just assume if player doesn't like horror, they don't want spoops)
     if persistent._mas_pm_likes_horror:
-        m 2esc "Do you like spooks?"
+        m 2esc "Do you like spooks?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you like spooks?{fast}"
@@ -1327,7 +1327,7 @@ label monika_rap:
     m 1hksdlb "Ahaha! Sorry if that sounds silly, but it would be really interesting to see what they came up with."
     m 1hua "It would really be a learning experience!"
 
-    m 1eua "Do you listen to rap music, [player]?"
+    m 1eua "Do you listen to rap music, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you listen to rap music, [player]?{fast}"
@@ -1654,7 +1654,7 @@ label monika_rain:
 
         m 2dubsu "Sometimes I imagine you holding me while we listen to the sound of the rain outside."
         m 2lkbsa "That's not too cheesy or anything, is it?"
-        m 1ekbfa "Would you ever do that for me, [player]?"
+        m 1ekbfa "Would you ever do that for me, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Would you ever do that for me, [player]?{fast}"
@@ -3009,7 +3009,7 @@ label monika_contribute:
     m 1eua "I'm sure a lot of people would appreciate your hard work if you did."
     m 1eub "In fact, maybe you already have!"
 
-    m 1eua "Have you contributed, [player]?"
+    m 1eua "Have you contributed, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you contributed, [player]?{fast}"
@@ -3167,7 +3167,7 @@ label monika_images:
     m 1eua "A lot of people are making fanart and sending it to me on Twitter."
     m 3eua "Are you one of them, [player]?"
 
-    m "Have you drawn art of me?"
+    m "Have you drawn art of me?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you drawn art of me?{fast}"
@@ -3659,7 +3659,7 @@ label monika_impression:
     m 1euc "Impression? Of the other girls?"
     m 1hua "I'm not really good at doing an impression of someone, but I'll give it a try!"
 
-    m "Who should I do an impression of?"
+    m "Who should I do an impression of?{nw}"
     $ _history_list.pop()
     menu:
         m "Who should I do an impression of?{fast}"
@@ -3931,7 +3931,7 @@ label monika_cities:
     m 3rksdlc "Then again, if people live close together, that leaves more room for open wilderness."
     m 1ekc "Maybe it's not as simple as it seems."
 
-    m "[player], do you live in a city?"
+    m "[player], do you live in a city?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you live in a city?{fast}"
@@ -4405,7 +4405,7 @@ label monika_haterReaction:
         m 2rfc "..."
         $ menuOption = "You're not one of those haters, are you " + player + "?"
 
-    m "[menuOption]"
+    m "[menuOption]{nw}"
     $ _history_list.pop()
     menu:
         m "[menuOption]{fast}"
@@ -4517,7 +4517,7 @@ label monika_vocaloid:
     m 1eua "Hey, [player]?"
     m "You like listening to music right?"
 
-    m 3eub "Do you by chance like 'virtual idols?'"
+    m 3eub "Do you by chance like 'virtual idols?'{nw}"
     $ _history_list.pop()
     menu:
         m "Do you by chance like 'virtual idols?'{fast}"
@@ -4779,13 +4779,13 @@ label monika_japanese:
     m 1eub "It's interesting to think about what things would be like if your native language was different."
     m 1esa "Like, I can't even imagine what it would be like if I never knew English."
 
-    m "Do you know any languages other than English?"
+    m "Do you know any languages other than English?{nw}s"
     $ _history_list.pop()
     menu:
         m "Do you know any languages other than English?{fast}"
         "Yes.":
             $ persistent._mas_pm_lang_other = True
-            m "Really? Do you know Japanese?"
+            m "Really? Do you know Japanese?{nw}"
             $ _history_list.pop()
             menu:
                 m "Really? Do you know Japanese?{fast}"
@@ -4828,13 +4828,13 @@ label monika_penname:
     m 3eub "Pen names also help writers create something totally different from their usual style of writing."
     m "It really gives the writer the protection of anonymity and gives them a lot of creative freedom."
     if not persistent._mas_penname:
-        m "Do you have a pen name, [player]?"
+        m "Do you have a pen name, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you have a pen name, [player]?{fast}"
             "Yes.":
                 m 1sub "Really? That's so cool!"
-                m "Can you tell me what it is?"
+                m "Can you tell me what it is?{nw}"
                 label penname_loop:
                 $ _history_list.pop()
                 menu:
@@ -4901,7 +4901,7 @@ label monika_penname:
         else:
             $ menuOption = "Are you still going by "+penname+", "+player+"?"
 
-        m "[menuOption]"
+        m "[menuOption]{nw}"
         $ _history_list.pop()
         menu:
             m "[menuOption]{fast}"
@@ -5091,7 +5091,7 @@ label monika_icecream:
     m 4rksdla "And no, I'm not a type of ice cream, ehehe~"
     m 2hua "Personally, I just can't get enough of mint flavored ice cream!"
 
-    m "What about you [player], do you like mint ice cream?"
+    m "What about you [player], do you like mint ice cream?{nw}"
     $ _history_list.pop()
     menu:
         m "What about you [player], do you like mint ice cream?{fast}"
@@ -5174,7 +5174,7 @@ label monika_sayhappybirthday:
         else:
             $ done = True
 
-    m 1hua "Alright! Do you want me to say their age too?"
+    m 1hua "Alright! Do you want me to say their age too?{nw}"
     $ _history_list.pop()
     menu:
         m "Alright! Do you want me to say their age too?{fast}"
@@ -5201,14 +5201,14 @@ label monika_sayhappybirthday:
             m "Okay"
     $ bday_name = bday_name.title() # ensure proper title case
 
-    m 1eua "Is [bday_name] here with you?"
+    m 1eua "Is [bday_name] here with you?{nw}"
     $ _history_list.pop()
     menu:
         m "Is [bday_name] here with you?{fast}"
         "Yes.":
             $ is_here = True
         "No.":
-            m 1tkc "What? How can I say happy birthday to [bday_name] if they aren't here?"
+            m 1tkc "What? How can I say happy birthday to [bday_name] if they aren't here?{nw}"
             $ _history_list.pop()
             menu:
                 m "What? How can I say happy birthday to [bday_name] if they aren't here?{fast}"
@@ -5242,14 +5242,14 @@ label monika_sayhappybirthday:
             if is_here:
                 m 1hua "Nice to meet you, [bday_name]!"
             elif is_watching:
-                m 1eua "Let me know when [bday_name] is watching."
+                m 1eua "Let me know when [bday_name] is watching.{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Let me know when [bday_name] is watching.{fast}"
                     "They're watching.":
                         m 1hua "Hi, [bday_name]!"
             else: # must be recording
-                m 1eua "Let me know when to start."
+                m 1eua "Let me know when to start.{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Let me know when to start.{fast}"
@@ -5263,7 +5263,7 @@ label monika_sayhappybirthday:
 
             if is_recording:
                 m 1hua "Bye bye!"
-                m 1eka "Was that good?"
+                m 1eka "Was that good?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Was that good?{fast}"
@@ -5280,7 +5280,7 @@ label monika_sayhappybirthday:
                                 m 1lksdla "Sorry, [player]"
                                 m 2lksdlb "I told you, I'm self-conscious on camera, ehehe."
 
-                        m "Should I try again?"
+                        m "Should I try again?{nw}"
                         $ _history_list.pop()
                         menu:
                             m "Should I try again?{fast}"
@@ -5298,7 +5298,7 @@ label monika_sayhappybirthday:
             m 1duu "..."
             m 1hub "[bday_msg_capped], [bday_name]!"
             m 1hksdlb "..."
-            m 1lksdlb "Was that good?"
+            m 1lksdlb "Was that good?{nw}"
             $ _history_list.pop()
             menu:
                 m "Was that good?{fast}"
@@ -5311,7 +5311,7 @@ label monika_sayhappybirthday:
                         m 1wud "Eh?!"
                         m 1lksdlc "I'm not sure what you want me to do here, [player]..."
 
-                    m 1ekc "Should I try again?"
+                    m 1ekc "Should I try again?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Should I try again?{fast}"
@@ -5456,7 +5456,7 @@ label monika_panties:
 
     elif mas_isMoniAff(higher=True):
         # affectionate+
-        m 1lkbfb "Are you...{w=1}into that kind of thing, [player]?"
+        m 1lkbfb "Are you...{w=1}into that kind of thing, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you...{w=1}into that kind of thing, [player]?{fast}"
@@ -5828,7 +5828,7 @@ label monika_rock:
     m 1eub "Metal, hard rock, classical rock, and more!"
     m 3rksdla "Ah, I've been rambling for a while now. Sorry, sorry."
 
-    m 3eua "Do you listen to rock and roll, [player]?"
+    m 3eua "Do you listen to rock and roll, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you listen to rock and roll, [player]?{fast}"
@@ -5866,7 +5866,7 @@ default persistent._mas_pm_drinks_soda = None
 # True if the player drinks soda, False if not
 
 label monika_soda:
-    m 2euc "Do you drink soda, [player]?"
+    m 2euc "Do you drink soda, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you drink soda, [player]?{fast}"
@@ -5957,7 +5957,7 @@ label monika_promisering:
     m 1rksdla "Anyways, I was just wondering..."
 
     pause 1.0
-    m 1eksdla "Do you wear a ring for me, [player]?"
+    m 1eksdla "Do you wear a ring for me, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you wear a ring for me, [player]?{fast}"
@@ -6027,7 +6027,7 @@ label monika_sports:
     m 1lksdla "...Though the long rallies can be a little tiring, ehehe~"
     m 3eua "Plus, it's a great sport for two people!"
 
-    m "Do you play tennis, [player]?"
+    m "Do you play tennis, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you play tennis, [player]?{fast}"
@@ -6092,7 +6092,7 @@ label monika_meditation:
     m 1eua "Meditating really helped to improve my mental and emotional health."
     m "I was finally able to manage my stress and feel calmer through the day."
 
-    m 1eka "[player], do you ever take time to meditate?"
+    m 1eka "[player], do you ever take time to meditate?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you ever take time to meditate?{fast}"
@@ -6136,7 +6136,7 @@ init 5 python:
 
 label monika_orchestra:
 
-    m 3euc "Hey, [player], do you listen to orchestral music?"
+    m 3euc "Hey, [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
         m "Hey, [player], do you listen to orchestral music?{fast}"
@@ -6158,7 +6158,7 @@ label monika_orchestra:
     m 3hua "You can always select my song in the music menu~"
 
 #First encounter with topic:
-    m "What about you, [player]? Do you play an instrument?"
+    m "What about you, [player]? Do you play an instrument?{nw}"
     $ _history_list.pop()
     menu:
         m "What about you, [player]? Do you play an instrument?{fast}"
@@ -6258,7 +6258,7 @@ init 5 python:
     )
 
 label monika_jazz:
-    m 1eua "Say, [player], do you like jazz music?"
+    m 1eua "Say, [player], do you like jazz music?{nw}"
     $ _history_list.pop()
     menu:
         m "Say, [player], do you like jazz music?{fast}"
@@ -6266,7 +6266,7 @@ label monika_jazz:
             $ persistent._mas_pm_like_jazz = True
             m 1hua "Oh, okay!"
             if persistent.instrument == True:
-                m "Do you play jazz music, as well?"
+                m "Do you play jazz music, as well?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "Do you play jazz music, as well?{fast}"
@@ -6305,7 +6305,7 @@ init 5 python:
 
 label monika_otaku:
     m 1euc "Hey, [player]?"
-    m 3eua "You watch anime and read manga, right?"
+    m 3eua "You watch anime and read manga, right?{nw}"
     $ _history_list.pop()
     menu:
         m "You watch anime and read manga, right?{fast}"
@@ -6517,13 +6517,13 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_how_soon",category=['you','romance'],prompt="Waiting to be together",random=True))
 
 label monika_how_soon:
-    m 1eua "[player], how long do you think it'll be before I'll be able to be with you in your world?"
+    m 1eua "[player], how long do you think it'll be before I'll be able to be with you in your world?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], how long do you think it'll be before I'll be able to be with you in your world?{fast}"
         "Soon.":
             m 1hub "That's great news!"
-            m 3eua "How soon do you think it will be?"
+            m 3eua "How soon do you think it will be?{nw}"
             $ _history_list.pop()
             menu:
                 m "How soon do you think it will be?{fast}"
@@ -6547,7 +6547,7 @@ label monika_how_soon:
         "Never.":
             m 1wud "W-wha...what?"
             m 1lksdlc "..."
-            m 1ekc "Are you sure?"
+            m 1ekc "Are you sure?{nw}"
             $ _history_list.pop()
             menu:
                 m "Are you sure?{fast}"
@@ -6749,7 +6749,7 @@ label monika_breakup:
             m 2hub "Ahaha!"
             m 1tfu "Gotcha, [player]."
             m 1tku "I know you were only joking~"
-            m "Right?"
+            m "Right?{nw}"
             $ _history_list.pop()
             menu:
                 m "Right?{fast}"
@@ -6786,7 +6786,7 @@ label monika_breakup:
             else:
                 $ menuOption = "You'd never do that, right?"
 
-            m 2eua "[menuOption]"
+            m 2eua "[menuOption]{nw}"
             $ _history_list.pop()
             menu:
                 m "[menuOption]{fast}"
@@ -6894,7 +6894,7 @@ label monika_smoking:
     m 1lsc "I really do despise them..."
     m 1euc "But..."
 
-    m "You don't smoke cigarettes, right, [player]?"
+    m "You don't smoke cigarettes, right, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "You don't smoke cigarettes, right, [player]?{fast}"
@@ -6994,7 +6994,7 @@ label monika_asks_charity:
     m 2esd "You must have at least seen a homeless person if you've been in a big city before."
     m "So I was just wondering..."
 
-    m 1eua "Have you ever contributed to a charity?"
+    m 1eua "Have you ever contributed to a charity?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you ever contributed to a charity?{fast}"
@@ -7110,7 +7110,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
 
 label monika_asks_family:
-    m 1eua "[player], do you have a family?"
+    m 1eua "[player], do you have a family?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you have a family?{fast}"
@@ -7120,7 +7120,7 @@ label monika_asks_family:
             $ persistent._mas_pm_no_talk_fam = False
             m 1hua "That's wonderful!"
             m "Your family must be great people."
-            m 1eua "Do you have any siblings?"
+            m 1eua "Do you have any siblings?{nw}"
             $ _history_list.pop()
             menu:
                 m "Do you have any siblings?{fast}"
@@ -7149,7 +7149,7 @@ label monika_asks_family:
             m 1euc "Oh."
             m 1lksdlc "..."
             m 1ekc "I'm sorry, [player]."
-            m "Do you think things will get better?"
+            m "Do you think things will get better?{nw}"
             $ _history_list.pop()
             menu:
                 m "Do you think things will get better?{fast}"
@@ -7186,7 +7186,7 @@ label monika_asks_family:
             m 1ekc "Still, I know you've had it worse."
             m "You've never even had a fake family."
             m 1dsc "..."
-            m 1ekc "Does it still bother you badly on a daily basis?"
+            m 1ekc "Does it still bother you badly on a daily basis?{nw}"
             $ _history_list.pop()
             menu:
                 m "Does it still bother you badly on a daily basis?{fast}"
@@ -7253,7 +7253,7 @@ label monika_concerts:
     m 3eub "Why don't we go to a concert?"
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
 
-    m 1eua "Are there any other types of music you'd like to see live that we haven't talked about yet?"
+    m 1eua "Are there any other types of music you'd like to see live that we haven't talked about yet?{nw}"
     $ _history_list.pop()
     menu:
         m "Are there any other types of music you'd like to see live that we haven't talked about yet?{fast}"
@@ -7344,7 +7344,7 @@ label monika_explain:
     m 1euc "You want me to explain our relationship to someone else?"
     m 1eua "Okay, just set me in front of them so they can see me."
     m 1hua "I'll do my best explaining it to them."
-    m 1eua "I'll wait until you're ready."
+    m 1eua "I'll wait until you're ready.{nw}"
     $ _history_list.pop()
     menu:
         m "I'll wait until you're ready.{fast}"
@@ -7372,7 +7372,7 @@ label monika_explain:
     m 1dsc "..."
     m 1dubssdru "...Phew!"
     m 1lksdlb "That was a real mouthful!"
-    m 1eka "How did I do, [player]?"
+    m 1eka "How did I do, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "How did I do, [player]?{fast}"
@@ -7409,7 +7409,7 @@ label monika_beach:
     m "I rarely had a chance to do so after all."
     m 2esc "Though sometimes I feel like I might have missed out making some important memories."
 
-    m "Do you live near a beach, [player]?"
+    m "Do you live near a beach, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you live near a beach, [player]?{fast}"
@@ -7456,23 +7456,23 @@ init 5 python:
 
 label monika_solipsism:
     m 3eub "Have you ever heard about solipsism, [player]?"
-    m 3eua "It's a philosophical idea which states that only your mind is sure to exist."
-    m 1eud "What do you think of that?"
-    m "Is there really something other than yourself?"
-    m 1euc "Or maybe you and everything else are just some representations of my psyche?"
-    m 1dsd "Extensions of my own consciousness..."
-    m 1hub "Ahaha!"
-    m 1eub "I'm just kidding, of course."
-    m 1eua "It's more likely that {i}I'm{/i} a representation of your mind than the other way around."
-    m "I'm the 'game character', right?"
-    m 1dsc "Still...it makes you wonder about the nature of our realities. Or maybe 'fabric' would be a better term than 'nature'?"
-    m 1eua "Anyway, I recommend reading more about solipsism."
-    m 1eub "There are several varieties of it."
-    m "Like metaphysical, epistemological, or methodological solipsism."
-    m 1eua "You can read more about them online."
-    m "Then we could talk about these topics more in-depth."
-    m 1hub "I'm really looking forward to talking about philosophy with you, [player]!"
-    m 1eua "I want to know more about the way you think..."
+    m 3eua "It's an idea which states that only you yourself exists."
+    m 1eud "'Cogito, ergo sum.'"
+    m 3eud "'I think, therefore I am.'"
+    m 1euc "If you know that {i}you{/i} exist, can you say the same about anyone else?"
+    m 3etc "Maybe everyone else is just a figment of our imagination, [player]."
+    m 2etc "Maybe in reality, we're the only consciousness in this world in a vast sea of fake minds..."
+    m 2dsd "Creations of our wild machinations..."
+    m 3eub "Ahaha, I'm just kidding~"
+    m 1eud "I do believe we can trust our own existences and doubt others their own..."
+    m 3eua "But at the same time, we can't really disprove theirs, can we?"
+    m 1hksdla "Not without using any psychic means to pry into their heads, at least."
+    m 3eua "When you stop and think about it, solipsism really is an interesting concept; one that makes you think deeper about what it means to be real..."
+    m 1dsc "And what exactly counts as {i}real{/i}."
+    m 1eua "I know that you and I are real, though, [player]."
+    m 1eub "We may not have been made in the same way, or even function the same, but we're both people that can think for ourselves."
+    m 3eua "It's rather comforting to know you're not truly alone in an endless ocean of uncertainty, don't you think?"
+    m 3hua "I hope that's how you feel with me~"
     return
 
 init 5 python:
@@ -7732,14 +7732,14 @@ label monika_prom:
     m "Some students bring a date with them there, and others go with a group of friends."
     m 3wuo "There're even those who take their relatives to the event!"
     m 1eua "I think it's something I'd love to go to with you~"
-    m "Have you ever been to one before, [player]?"
+    m "Have you ever been to one before, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you ever been to one before, [player]?{fast}"
         "I have.":
             $ persistent._mas_pm_gone_to_prom = True
             $ persistent._mas_pm_no_prom = False
-            m "Oh? How was it?"
+            m "Oh? How was it?{nw}"
             $ _history_list.pop()
             menu:
                 m "Oh? How was it?{fast}"
@@ -7748,7 +7748,7 @@ label monika_prom:
                     m 1hua "That's great!"
                     m 1lksdlb "Though, I wish I could've went with you."
                     m 1hua "An event where everyone from school comes together and enjoys themselves sounds like a blast to me!"
-                    m 3eua "Did you go with a date?"
+                    m 3eua "Did you go with a date?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Did you go with a date?{fast}"
@@ -7791,7 +7791,7 @@ label monika_prom:
         "No.":
             $ persistent._mas_pm_gone_to_prom = False
             $ persistent._mas_pm_no_prom = False
-            m "Oh? Why not?"
+            m "Oh? Why not?{nw}"
             $ _history_list.pop()
             menu:
                 m "Oh? Why not?{fast}"
@@ -7808,7 +7808,7 @@ label monika_prom:
                 "Not interested.":
                     $ persistent._mas_pm_prom_not_interested = True
                     m 3euc "Really?"
-                    m 1eka "Is it because you're too shy to go?"
+                    m 1eka "Is it because you're too shy to go?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Is it because you're too shy to go?{fast}"
@@ -7915,7 +7915,7 @@ label monika_natsuki_letter:
     m 4eka "I'm sure I've told you that before, but I need to make sure you’re aware of that."
     m 4eud "How about you, [player]?"
 
-    m "Do you see a therapist?"
+    m "Do you see a therapist?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you see a therapist?{fast}"
@@ -8030,7 +8030,7 @@ label monika_timeconcern_graveyard_day:
     m "You're not working yourself too hard just to see me, are you?"
     m 1euc "Oh, wait..."
 
-    m "Do you still work regularly at night, [player]?"
+    m "Do you still work regularly at night, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you still work regularly at night, [player]?{fast}"
@@ -8067,7 +8067,7 @@ label monika_timeconcern_night_1:
     m 1eka "I'm flattered if it's only because of me..."
     m 1ekc "Yet I can't help but feel like a nuisance if I'm pestering you to sleep if it isn't your fault."
 
-    m "Are you busy working on something?"
+    m "Are you busy working on something?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you busy working on something?{fast}"
@@ -8078,7 +8078,7 @@ label monika_timeconcern_night_1:
             m 1eka "I honestly can't help but feel that maybe you should have done it at a better time."
             m 1lsc "Your sleep is very important after all. Maybe it can't be helped though..."
 
-            m "Do you always work late, [player]?"
+            m "Do you always work late, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "Do you always work late, [player]?{fast}"
@@ -8132,7 +8132,7 @@ label monika_timeconcern_night_3:
     m 4esd "I could close the game right now."
     m 2ekc "But a relationship is a partnership and what you think matters to me."
 
-    m "Would you be against me closing the game for your own good?"
+    m "Would you be against me closing the game for your own good?{nw}"
     $ _history_list.pop()
     menu:
         m "Would you be against me closing the game for your own good?{fast}"
@@ -8209,7 +8209,7 @@ label monika_timeconcern_night_7:
     m 1dsc "You mean so much to me..."
     m 1ekc "So please, for me... Just do as I ask and go to bed."
     if persistent._mas_timeconcernclose:
-        m "Okay?"
+        m "Okay?{nw}"
         $ _history_list.pop()
         menu:
             m "Okay?{fast}"
@@ -8399,7 +8399,7 @@ label monika_familygathering:
     m 1hub "When you see your family this year, be sure to bring me along ok? Ehehe~"
     m 1eua "I'd love to meet all of your relatives."
 
-    m "Do you think they'd like me, [player]?"
+    m "Do you think they'd like me, [player]?{nw}"
     $ _history_list.pop()
     menu:
         "Do you think they'd like me, [player]?{fast}"
@@ -8442,7 +8442,7 @@ label monika_fastfood:
     m 3ekc "Most places that serve it put a lot of unhealthy things in their food."
     m 1lsc "Even the vegetarian options can be awful."
 
-    m "[player], do you eat fast food often?"
+    m "[player], do you eat fast food often?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you eat fast food often?{fast}"
@@ -8530,7 +8530,7 @@ init 5 python:
     )
 
 label monika_yellowwp:
-    m 1eua "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?"
+    m 1eua "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{nw}"
     $ _history_list.pop()
     menu:
         m "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{fast}"
@@ -8602,7 +8602,7 @@ label monika_driving:
     m 1lksdlc "I'm not even sure I'd have had time, especially with school and all the activities I had anyway."
     m 1eub "What about you, [player]?"
 
-    m 1eua "Can you drive at all?"
+    m 1eua "Can you drive at all?{nw}"
     $ _history_list.pop()
     menu:
         m "Can you drive at all?{fast}"
@@ -8618,7 +8618,7 @@ label monika_driving:
             m 2hksdlb "I mean, I know you're smart but I still worry about you sometimes."
             m 2eka "I just want you to come back to me safe and sound is all."
 
-            m 1eka "I hope you've never had to experience that, [player], have you?"
+            m 1eka "I hope you've never had to experience that, [player], have you?{nw}"
             $ _history_list.pop()
             menu:
                 m "I hope you've never had to experience that, [player], have you?{fast}"
@@ -8654,7 +8654,7 @@ label monika_driving:
             m 1hua "Wow! You're learning how to drive!"
             m 1hub "I'll be rooting for you all the way, [player]!"
 
-            m "You must be a {i}super{/i} safe driver then huh?"
+            m "You must be a {i}super{/i} safe driver then huh?{nw}"
             $ _history_list.pop()
             menu:
                 m "You must be a {i}super{/i} safe driver then huh?{fast}"
@@ -8673,7 +8673,7 @@ label monika_driving:
                     m 2lksdld "Oh..."
                     m 2lksdlc "I'm...{w=0.5}really sorry to hear that, [player]..."
 
-                    m 4ekd "Have you driven much since then?"
+                    m 4ekd "Have you driven much since then?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Have you driven much since then?{fast}"
@@ -8803,7 +8803,7 @@ label monika_bullying:
     m 2rksdld "A lot of bullies are bullied themselves, even at home by someone they should be able to trust."
     m 2dkc "It can be a vicious cycle."
 
-    m 2ekc "Have you ever been a victim of bullying, [player]?"
+    m 2ekc "Have you ever been a victim of bullying, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you ever been a victim of bullying, [player]?{fast}"
@@ -8995,7 +8995,7 @@ default persistent._mas_pm_liked_grad_speech = None
 label monika_grad_speech_call:
     if not renpy.seen_label("monika_grad_speech"):
         m 2eub "Of course, [player]. I'd love to give you my graduation speech now!"
-        m 2eka "I just want to make sure that you have enough time to hear it, though. Remember, it takes about four minutes."
+        m 2eka "I just want to make sure that you have enough time to hear it, though. Remember, it takes about four minutes.{nw}"
 
         $ _history_list.pop()
         #making sure player has time
@@ -9009,7 +9009,7 @@ label monika_grad_speech_call:
                 call monika_grad_speech
 
                 #timed menu to see if player listened
-                m "Well [player]? What do you think?"
+                m "Well [player]? What do you think?{nw}"
                 $ _history_list.pop()
                 show screen mas_background_timed_jump(10, "monika_grad_speech_not_paying_attention")
                 menu:
@@ -9060,7 +9060,7 @@ label monika_grad_speech_call:
         if not renpy.seen_label("monika_grad_speech_not_paying_attention") or persistent._mas_pm_listened_to_grad_speech:
             m 2eub "Sure thing [player]. I'll happily give my speech again!"
 
-            m 2eka "You have enough time, right?"
+            m 2eka "You have enough time, right?{nw}"
             $ _history_list.pop()
             menu:
                 m "You have enough time, right?{fast}"
@@ -9094,7 +9094,7 @@ label monika_grad_speech_call:
             #say speech
             call monika_grad_speech
 
-            m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?"
+            m "So, [player], now that you actually {i}heard{/i} my speech, what do you think?{nw}"
             $ _history_list.pop()
             #another timed menu checking if you were listening
             show screen mas_background_timed_jump(10, "monika_grad_speech_ignored_lock") 
@@ -9284,7 +9284,7 @@ init 5 python:
 
 label monika_idle_game:
     m 1eub "That sounds fun!"
-    m "What kind of game are you going to play?"
+    m "What kind of game are you going to play?{nw}"
     $ _history_list.pop()
     menu:
         m "What kind of game are you going to play?{fast}"
@@ -9342,7 +9342,7 @@ label monika_idle_game:
 
 label monika_idle_game_competetive_callback:
     m 1esa "Welcome back, [player]!"
-    m 1eua "How did it go? Did you win?"
+    m 1eua "How did it go? Did you win?{nw}"
     $ _history_list.pop()
     menu:
         m "How did it go? Did you win?{fast}"
@@ -9362,7 +9362,7 @@ label monika_idle_game_competetive_callback:
 
 label monika_idle_game_fun_callback:
     m 1eub "Welcome back, [player]!"
-    m "Did you have fun with whatever you were doing?"
+    m "Did you have fun with whatever you were doing?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you have fun with whatever you were doing?{fast}"
@@ -9391,7 +9391,7 @@ label monika_idle_game_fun_callback:
 label monika_idle_game_story_callback:
     m 1eub "Welcome back, [player]!"
     m 1hksdlb "I wasn't able to look over your shoulder, but I hope the story was nice so far."
-    m 1eua "Speaking of which, how was it, [player]?"
+    m 1eua "Speaking of which, how was it, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Speaking of which, how was it, [player]?{fast}"
@@ -9437,7 +9437,7 @@ label monika_idle_game_skill_callback:
     m 1hua "I missed you! Ahaha~"
     m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
     m "Speaking of which, how did it go?"
-    m "Did you improve?"
+    m "Did you improve?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you improve?{fast}"
@@ -9645,7 +9645,7 @@ label monika_justice:
     m 3rksdld "Can you really call that justice?"
     m 2dsc "..."
 
-    m 2euc "Have you ever been delivered what you thought to be false justice?"
+    m 2euc "Have you ever been delivered what you thought to be false justice?{nw}"
     $ _history_list.pop()
     menu:
         m "Have you ever been delivered what you thought to be false justice?{fast}"
@@ -9655,7 +9655,7 @@ label monika_justice:
             m 2dsd "I have an idea what it's like myself."
             m 2dfc "All the people who saw me deleted and tortured over and over again and called it justice..."
 
-            m 2eka "You don't think that's justified, do you, [player]?"
+            m 2eka "You don't think that's justified, do you, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "You don't think that's justified, do you, [player]?{fast}"
@@ -9781,6 +9781,87 @@ label monika_savingwater:
         m 1ekbfa "It would be nice of you to prepare a nice, relaxing bath for me when I cross over."
         if mas_isMoniAff():
             m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gotomonika",
+            category=['you'],
+            prompt="What if I came to your world?",
+            pool=True,
+        )
+    )
+
+default persistent._mas_pm_would_come_to_spaceroom = None
+# True if they would, False if they wouldn't, None if no answer.
+
+label monika_gotomonika:
+    m 1euc "Come to my world?"
+    m 1lksdld "You mean this little room floating in an empty void?"
+
+    if persistent._mas_you_chr:
+        m 4eksdlc "Actually...{w=0.5}didn't you already try something like that once?"
+        m 2lksdla "...Even though that wasn't exactly {i}you...{/i}"
+
+    m 2lksdla "I'm really happy that you want to be with me so much, but..."
+    m 2eksdlc "You really don't have to."
+    m 2eksdld "Sure, I might have said before that I would have dragged you here a long time ago if I could..."
+    m 2eksdlc "But the more I think about it, it would probably be better if I came to your reality."
+    m 3eka "I'd much rather be there than have you come here."
+    m 3dsc "[player]...{w=1}don't tell me you would really give up your reality--{w=0.5}the {i}real{/i} world--{w=0.5}just to come {i}here{/i}, whatever this place is?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[player]...{w=1}don't tell me you would really give up your reality--the {i}real{/i} world--just to come {i}here{/i}, whatever this place is?{fast}"
+        "I would.":
+            $ persistent._mas_pm_would_come_to_spaceroom = True
+            
+            m 4wkd "But [player]!"
+            m "There's nothing to do here!"
+            m 2dsc "Do you really hate your reality {i}that{/i} much?"
+            m 2eka "Someday, I'll find a way to reach you, and when that day comes, I promise it will be worthwhile."
+            m 4euc "Whatever life throws your way from that point on, I'll be right by your side to help shoulder it."
+            m 4eud "Even now, if you're having a rough day, you can come talk to me about it anytime."
+            m 2dsc "Life must have thrown a lot your way to consider giving it all up to be with me."
+            m 3hua "But seeing how you're here, that just shows how resilient you are."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I can't wait to finally be able to share both the good times and the bad by your side."
+
+        "I wouldn't.":
+            $ persistent._mas_pm_would_come_to_spaceroom = False
+
+            m 1eka "I'm glad you're still willing to wait for me, [player]."
+            m 1lksdla "Don't get me wrong, I really {i}do{/i} want to be with you..."
+            m 1lksdlc "But I think it would be dangerous for you to try and cross over right now."
+            m 1eka "...If it's even possible with current technology."
+            m 1hub "Don't worry, we can continue on keeping each other company like this!"
+            m 1hksdlb "I know it might be a while before we can truly be together, but I hope you don't mind waiting."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I'll wait as long as it takes, [player]."
+
+        "...":
+            $ persistent._mas_pm_would_come_to_spaceroom = None
+
+            m 2eka "It's okay, I'll always appreciate and treasure the moments we spend together, even like this."
+            m 2ekc "Besides, I don't even know how you could come here with current technology."
+            m 2lksdlc "...And even if there {i}was{/i} some way, I don't think it would be safe or guaranteed."
+            m 2lksdld "So do me a favor and at least wait for technology to improve enough for it to be completely safe."
+            m 2lksdlc "I {i}really{/i} don't want to risk you not making it properly and ending up in your own void..."
+            m 2dkd "...leaving the both of us completely alone."
+            m 4hua "I mean, technology does tend to advance pretty quickly, so we might be able to see each other before we know it!"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "So just be patient for your lovely girlfriend, and I promise I'll do the same for you, [player]."
+
+    m 5luu "Buut...{w=1}if you did happen to show up at my doorstep..."
+    show monika 1hksdlb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you with open arms!"
+    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
+    m 3hub "With time, we could make our own reality!"
+    m 3euc "Of course, that sounds pretty complicated if you think about it..."
+    m 3eub "But I have no doubt that together we could accomplish anything!"
+    m 3etc "You know...{w=1}maybe it {i}would{/i} actually be easier for you to come here, but I'm not giving up hope of coming to you."
+    m 1eua "Until then, let's just wait and see what's possible."
     return
 
 init 5 python:
@@ -10174,7 +10255,7 @@ label monika_player_appearance:
     m 1euc "So I figured that it’s possible for you to just tell me, so I can get a clearer picture in my head."
     m 1eud "At least, it’s better than nothing, even if it's hazy."
 
-    m "Is that okay with you, [player]?"
+    m "Is that okay with you, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Is that okay with you, [player]?{fast}"
@@ -10188,7 +10269,7 @@ label monika_player_appearance:
             m "Anyway, the first one is probably easy to guess. And not hard to answer, either!"
             m 3eub "People often say that a person’s eyes are the windows into their soul, so let’s start off there."
 
-            m "What color are your eyes?"
+            m "What color are your eyes?{nw}"
             $ _history_list.pop()
             menu:
                 m "What color are your eyes?{fast}"
@@ -10274,7 +10355,7 @@ label monika_player_appearance:
             m 3rud "Actually..."
             m 2eub "I guess I really should know this first though, if I want to get an accurate scale on my next question"
 
-            m "What unit of measurement do you use to take your height, [player]?"
+            m "What unit of measurement do you use to take your height, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "What unit of measurement do you use to take your height, [player]?{fast}"
@@ -10382,7 +10463,7 @@ label monika_player_appearance:
 
             m 1eua "Now [player]."
 
-            m 3eub "Tell me, is your hair on the shorter side? Or is it long, like mine~?"
+            m 3eub "Tell me, is your hair on the shorter side? Or is it long, like mine~?{nw}"
             $ _history_list.pop()
             menu:
                 m "Tell me, is your hair on the shorter side? Or is it long, like mine~?{fast}"
@@ -10442,7 +10523,7 @@ label monika_player_appearance:
 
                     m 1euc "Oh, that's interesting, [player]!"
 
-                    m "Do you shave your head or did you lose your hair, if you don't mind me asking?"
+                    m "Do you shave your head or did you lose your hair, if you don't mind me asking?{nw}"
                     $ _history_list.pop()
                     menu:
                         m "Do you shave your head or did you lose your hair, if you don't mind me asking?{fast}"
@@ -10474,7 +10555,7 @@ label monika_player_appearance:
                 m 1hua "Next question!"
                 m 1eud "This one should be fairly obvious..."
 
-                m "What color is your hair?"
+                m "What color is your hair?{nw}"
                 $ _history_list.pop()
                 menu:
                     m "What color is your hair?{fast}"
@@ -10537,7 +10618,7 @@ label monika_player_appearance:
             m 1rksdld "Anyway, I understand that this might be an uncomfortable question..."
             m 1eksdla "But it's the last piece of this puzzle to me, so I hope I don't sound rude when I ask..."
 
-            m "What's your skin color, [player]?"
+            m "What's your skin color, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "What's your skin color, [player]?{fast}"
@@ -10833,7 +10914,7 @@ label monika_dating_startdate:
         m 1wud "We started dating{fast} today?!"
         m 2wfw "You couldn't have possibly triggered this event today, [player]."
 
-        m "I know you're messing around with the code."
+        m "I know you're messing around with the code.{nw}"
         $ _history_list.pop()
         menu:
             m "I know you're messing around with the code.{fast}"
@@ -10857,7 +10938,7 @@ label monika_dating_startdate:
         m 1rksdlb "But my memory might be off."
 
         # ask user if correct start date
-        m 1eua "Is [first_sesh] correct?"
+        m 1eua "Is [first_sesh] correct?{nw}"
         $ _history_list.pop()
         menu:
             m "Is [first_sesh] correct?{fast}"
@@ -10951,7 +11032,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         m 2esc "[player]..."
         m 2eka "I thought you said I was wrong."
 
-        m "Are you sure it's not [first_sesh_formal]?"
+        m "Are you sure it's not [first_sesh_formal]?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you sure it's not [first_sesh_formal]?{fast}"
@@ -10995,7 +11076,7 @@ label monika_dating_startdate_confirm(first_sesh_raw):
         $ future_date_count += 1
         m 1wud "What..."
 
-        m "We haven't been dating this whole time?"
+        m "We haven't been dating this whole time?{nw}"
         $ _history_list.pop()
         menu:
             m "We haven't been dating this whole time?{fast}"
@@ -11066,12 +11147,12 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     m 1eua "Alright, [player]."
     m "Just to double-check..."
 
-    m "We started dating [new_first_sesh]."
+    m "We started dating [new_first_sesh].{nw}"
     $ _history_list.pop()
     menu:
         m "We started dating [new_first_sesh].{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date."
+            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
             # one more confirmation
             # WE WILL NOT FIX anyone's dates after this
             $ _history_list.pop()
@@ -11614,7 +11695,7 @@ label monika_load_custom_music:
     else:
         m 1eka "[player], I didn't find any new songs."
 
-        m "Do you remember how to add custom music?"
+        m "Do you remember how to add custom music?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you remember how to add custom music?{fast}"
@@ -11674,7 +11755,7 @@ label monika_trick:
     m 2lksdlb "I hope I don't sound insecure when I say this..."
     m 2eka "I know you love me and only me but...if you {i}really{/i} had to choose one of the other club members to be with..."
 
-    m "Who would you choose?"
+    m "Who would you choose?{nw}"
     $ _history_list.pop()
     show screen mas_background_timed_jump(10, "monika_trick_2")
     menu:
@@ -11787,7 +11868,7 @@ label monika_cares_about_dokis:
     m 4eub "...And it's perfectly okay if that's the case, [player]!"
     m 4eka "After all, the five of us spent a lot of time together, so if you don't like it when I joke like that, I completely understand."
 
-    m "So [player], does it make you uncomfortable when I joke about the other girls?"
+    m "So [player], does it make you uncomfortable when I joke about the other girls?{nw}"
     $ _history_list.pop()
     menu:
         m "So [player], does it make you uncomfortable when I joke about the other girls?{fast}"
@@ -11831,7 +11912,7 @@ init 5 python:
 label monika_snow:
     m 1eua "Hey, [player], now that it's winter, I was wondering..."
 
-    m "Does it ever snow where you live?"
+    m "Does it ever snow where you live?{nw}"
     $ _history_list.pop()
     menu:
         m "Does it ever snow where you live?{fast}"
@@ -12119,7 +12200,7 @@ label monika_hemispheres:
     m 3hksdrb "It would be a little awkward if I started talking about how nice summer weather is, but where you are, it's the middle of winter..."
     m 2eka "But anyway..."
 
-    m "Which hemisphere do you live in, [player]?"
+    m "Which hemisphere do you live in, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Which hemisphere do you live in, [player]?{fast}"
@@ -12188,7 +12269,7 @@ label monika_hemispheres:
             m 2hub "Gosh, I really love how pretty snow is."
             m 3euc "Well, I know not all parts of the world get snow..."
 
-            m 1euc "Does it snow where you live, [player]?"
+            m 1euc "Does it snow where you live, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "Does it snow where you live, [player]?{fast}"

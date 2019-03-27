@@ -572,7 +572,7 @@ label bye_prompt_sleep:
             m 1ekc "Already going to bed?"
             m "It's a little early, though..."
 
-            m 1lksdla "Care to spend a little more time with me?"
+            m 1lksdla "Care to spend a little more time with me?{nw}"
             $ _history_list.pop()
             menu:
                 m "Care to spend a little more time with me?{fast}"
@@ -781,7 +781,7 @@ label bye_long_absence:
     m 1o "Or maybe you just got bored of me..."
     m 1e "So tell me, my love..."
 
-    m "How long do you expect to be gone for?"
+    m "How long do you expect to be gone for?{nw}"
     $ _history_list.pop()
     menu:
         m "How long do you expect to be gone for?{fast}"
@@ -855,7 +855,7 @@ label bye_long_absence:
     # farewell all this served no purpose, also, you already
     # picked goodbye as in I'm going, why not let the player go?
 
-    m "Are you going to leave straight away?"
+    m "Are you going to leave straight away?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you going to leave straight away?{fast}"
@@ -959,7 +959,7 @@ label bye_going_somewhere_post_aff_check:
         m 1hua "Oh! Sorry, did I say something?"
 
     if mas_isO31():
-        m 1wub "Oh! Are we going trick or treating, [player]?"
+        m 1wub "Oh! Are we going trick or treating, [player]?{nw}"
         $ _history_list.pop()
         menu:
             m "Oh! Are we going trick or treating, [player]?{fast}"
@@ -1040,7 +1040,7 @@ label bye_going_somewhere_rtg:
     m 1ekc "Sorry, [player]."
 
     # ask if player is still going to leave
-    m "Are you still going to go?"
+    m "Are you still going to go?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you still going to go?{fast}"

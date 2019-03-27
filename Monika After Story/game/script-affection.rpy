@@ -2019,7 +2019,7 @@ label monika_affection_nickname:
         m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
         m 3hua "I'll still get the final say, though!"
-        m "What do you say?"
+        m "What do you say?{nw}"
         python:
             # change the prompt for this event
             aff_nickname_ev.prompt = "Can I call you a different name?"
