@@ -9935,14 +9935,17 @@ label monika_vehicle:
     m 3hksdlb "You already know I can't drive, silly!"
     m 3eua "Usually I would just walk or take the train if I had to go somewhere far."
     m 1eka "So I'm not too sure what to tell you, [player]..."
-
+    m 1eua "When I think of cars, the first things that come to mind are probably the commonly known types."
+    m 3eud "SUVs or pickup trucks, sports cars, sedans and hatchbacks..."
+    m 3rksdlb "And while they're not really cars, I guess motorcycles are common vehicles too."
+    
     if persistent._mas_pm_driving_can_drive:
         m 1eua "What about you?"
 
-        m "Do you own a car?{nw}"
+        m "Do you own a vehicle?{nw}"
         $ _history_list.pop()
         menu:
-            m "Do you own a car?{fast}"
+            m "Do you own a vehicle?{fast}"
             "Yes.":
                 $ persistent._mas_pm_owns_car = True
 
@@ -9955,72 +9958,28 @@ label monika_vehicle:
                 m 1hksdlb "Actually, nevermind, ahaha!"
                 m 1eua "Either way, it's nice to know that you own a vehicle."
                 m 3eua "Speaking of which..."
+                m "Is it any of the vehicles I mentioned, or is it something else?"
 
-                m "What exactly do you drive?{nw}"
-                $ _history_list.pop()
-                menu:
-                    m "What exactly do you drive?{fast}"
-                    "SUV or Pickup Truck.":
-                        $ persistent._mas_pm_owns_car_type = "SUV-Pickup"
+                python:
+                    option_list = [
+                        ("An SUV.", "monika_vehicle_suv",False,False),
+                        ("A pickup truck.","monika_vehicle_pickup",False,False), #note, doing this to give the illusion of two options
+                        ("A sports car.","monika_vehicle_sportscar",False,False),
+                        ("A sedan.","monika_vehicle_sedan",False,False),
+                        ("A hatchback.","monika_vehicle_hatchback",False,False),
+                        ("A motorcycle.","monika_vehicle_motorcycle",False,False),
+                        ("Another vehicle.","monika_vehicle_other",False,False)
+                    ]
 
-                        m 1lksdla "Oh my, your vehicle must be pretty big then."
-                        m 1eua "That means there's plenty of space right?"
-                        m 3etc "If that's the case..."
-                        m 3hub "We could go camping!"
-                        m 3eua "We'd drive all the way to the woods and you'd set up the tent while I prepared our picnic."
-                        m 1eka "While we're having lunch, we'd enjoy the scenery and nature surrounding us..."
-                        m 1ekbsa "Then when night falls, we'd lie down on our sleeping bags, stargazing while holding hands."
-                        m 3ekbsa "It's definitely a romantic adventure I can't wait to share with you, [player]."
-                        m 1hkbfa "Ehehe~"
+                #Display our scrollable
+                show monika at t21
 
-                    "Sports Car.":
-                        $ persistent._mas_pm_owns_car_type = "sports"
+                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, None)
+                show monika at t11
 
-                        m 3hua "Oh, wow!"
-                        m 3eua "It must be really fast, huh?"
-                        m 3hub "We should definitely go on a road trip..."
-                        m 1eub "Taking the scenic route, cruising along the highway..."
-                        m 1eub "If it's possible it'd be nice to take down the top of the car..."
-                        m 3hua "That way, we can feel the wind on our faces while everything passes by in a blur!"
-                        m 1esc "But..."
-                        m 1eua "It would also be nice to drive at a normal pace..."
-                        m 1ekbsa "That way we can savor every moment of the ride together~"
+                $ selection = _return
 
-                    "Sedan.":
-                        $ persistent._mas_pm_owns_car_type = "sedan"
-
-                        m 1eua "That's really nice."
-                        m "I actually prefer that type of car, to be honest."
-                        m 3eua "From what I've heard, they're lively and easy to drive."
-                        m 3eub "A car like that would be great for driving around the city, don't you think, [player]?"
-                        m 3eua "We could go to museums, parks, malls and so on."
-                        m 1eua "It'd be so nice to be able to drive to places that are too far to walk to by foot."
-                        m 3hua "It's always exhilarating to discover and explore new places."
-                        m 1rksdla "We might even find a place where the both of us can be together..."
-                        m 1tsu "...Alone."
-                        m 1hub "Ahaha!"
-                        m 3eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates..."
-                        m 1hua "I hope you'll surprise me, [player]."
-                        m 1hub "But then again...{w=0.5}I'd love anything as long as it's with you~"
-
-                    "Motorcycle.":
-                        $ persistent._mas_pm_owns_car_type = "motorcyle"
-
-                        m 1hksdlb "Eh?"
-                        m 1lksdlb "You drive a motorcycle?"
-                        m 1eksdla "I'm surprised, I never expected that to be your kind of ride."
-                        m 1lksdlb "To be honest, I'm a little hesitant to ride one, ahaha!"
-                        m 1eua "Really, I shouldn't be scared..."
-                        m 3eua "You're the one driving after all."
-                        m 1lksdla "That puts my mind at ease...{w=1}a little."
-                        m 1eua "Just take it nice and slow, okay?"
-                        m 3hua "After all, we aren't in any rush."
-                        m 1tsu "Or...{w=1}was it your plan to drive fast, so that I would hang on to you tightly?"
-                        m 3tsu "That's pretty sneaky of you, [player]."
-                        m 1hub "Ehehe~"
-                        m 3eka "There's no need to be shy, my love."
-                        m 3ekbsa "I'll hug you, even if you don't ask for it..."
-                        m 1hkbfa "That's how much I love you~"
+                call expression selection
 
             "No.":
                 $ persistent._mas_pm_owns_car = False
@@ -10040,6 +9999,98 @@ label monika_vehicle:
         m 1hua "Maybe that'll change one day and you'll get something then."
         m 1hubfb "That way, you can take me all sorts of places, ahaha!"
     return 
+
+label monika_vehicle_sedan:
+    $ persistent._mas_pm_owns_car_type = "sedan"
+    jump monika_vehicle_sedan_hatchback
+
+label monika_vehicle_hatchback:
+    $ persistent._mas_pm_owns_car_type = "hatchback"
+    jump monika_vehicle_sedan_hatchback
+
+label monika_vehicle_pickup:
+    $ persistent._mas_pm_owns_car_type = "pickup"
+    jump monika_vehicle_suv_pickup
+
+label monika_vehicle_suv:
+    $ persistent._mas_pm_owns_car_type = "suv"
+    jump monika_vehicle_suv_pickup
+
+
+
+label monika_vehicle_suv_pickup:
+
+    m 1lksdla "Oh my, your vehicle must be pretty big then."
+    m 1eua "That means there's plenty of space right?"
+    m 3etc "If that's the case..."
+    m 3hub "We could go camping!"
+    m 3eua "We'd drive all the way to the woods and you'd set up the tent while I prepared our picnic."
+    m 1eka "While we're having lunch, we'd enjoy the scenery and nature surrounding us..."
+    m 1ekbsa "Then when night falls, we'd lie down on our sleeping bags, stargazing while holding hands."
+    m 3ekbsa "It's definitely a romantic adventure I can't wait to share with you, [player]."
+    m 1hkbfa "Ehehe~"
+    return
+
+label monika_vehicle_sportscar:
+    $ persistent._mas_pm_owns_car_type = "sports"
+
+    m 3hua "Oh, wow!"
+    m 3eua "It must be really fast, huh?"
+    m 3hub "We should definitely go on a road trip..."
+    m 1eub "Taking the scenic route, cruising along the highway..."
+    m 1eub "If it's possible it'd be nice to take down the top of the car..."
+    m 3hua "That way, we can feel the wind on our faces while everything passes by in a blur!"
+    m 1esc "But..."
+    m 1eua "It would also be nice to drive at a normal pace..."
+    m 1ekbsa "That way we can savor every moment of the ride together~"
+    return
+
+label monika_vehicle_sedan_hatchback:
+
+    m 1eua "That's really nice."
+    m "I actually prefer that type of car, to be honest."
+    m 3eua "From what I've heard, they're lively and easy to drive."
+    m 3eub "A car like that would be great for driving around the city, don't you think, [player]?"
+    m 3eua "We could go to museums, parks, malls and so on."
+    m 1eua "It'd be so nice to be able to drive to places that are too far to walk to by foot."
+    m 3hua "It's always exhilarating to discover and explore new places."
+    m 1rksdla "We might even find a place where the both of us can be together..."
+    m 1tsu "...Alone."
+    m 1hub "Ahaha!"
+    m 3eua "Just so you know, I'm expecting more than just a simple drive around the city for our dates..."
+    m 1hua "I hope you'll surprise me, [player]."
+    m 1hub "But then again...{w=0.5}I'd love anything as long as it's with you~"
+    return
+
+label monika_vehicle_motorcycle:
+    $ persistent._mas_pm_owns_car_type = "motorcyle"
+
+    m 1hksdlb "Eh?"
+    m 1lksdlb "You drive a motorcycle?"
+    m 1eksdla "I'm surprised, I never expected that to be your kind of ride."
+    m 1lksdlb "To be honest, I'm a little hesitant to ride one, ahaha!"
+    m 1eua "Really, I shouldn't be scared..."
+    m 3eua "You're the one driving after all."
+    m 1lksdla "That puts my mind at ease...{w=1}a little."
+    m 1eua "Just take it nice and slow, okay?"
+    m 3hua "After all, we aren't in any rush."
+    m 1tsu "Or...{w=1}was it your plan to drive fast, so that I would hang on to you tightly?"
+    m 3tsu "That's pretty sneaky of you, [player]."
+    m 1hub "Ehehe~"
+    m 3eka "There's no need to be shy, my love."
+    m 3ekbsa "I'll hug you, even if you don't ask for it..."
+    m 1hkbfa "That's how much I love you~"
+    return
+
+label monika_vehicle_other:
+    $ persistent._mas_pm_owns_car_type = "other"
+
+    m 1hksdlb "Oh, I guess I have a lot to learn about cars then, don't I?"
+    m 1dkbfa "Well I'll be looking forward to the day I can finally be right next to you as you drive~"
+    m 3hubfb "{i}And{/i} enjoy the scenery too, ahaha!"
+    m 1tubfb "Maybe you've got something even more romantic than any vehicle I know."
+    m 1hubfa "I guess I'll just have to wait and see, ehehe~"
+    return
 
 init 5 python:
     addEvent(
