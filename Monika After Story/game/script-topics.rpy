@@ -9787,6 +9787,87 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_gotomonika",
+            category=['you'],
+            prompt="What if I came to your world?",
+            pool=True,
+        )
+    )
+
+default persistent._mas_pm_would_come_to_spaceroom = None
+# True if they would, False if they wouldn't, None if no answer.
+
+label monika_gotomonika:
+    m 1euc "Come to my world?"
+    m 1lksdld "You mean this little room floating in an empty void?"
+
+    if persistent._mas_you_chr:
+        m 4eksdlc "Actually...{w=0.5}didn't you already try something like that once?"
+        m 2lksdla "...Even though that wasn't exactly {i}you...{/i}"
+
+    m 2lksdla "I'm really happy that you want to be with me so much, but..."
+    m 2eksdlc "You really don't have to."
+    m 2eksdld "Sure, I might have said before that I would have dragged you here a long time ago if I could..."
+    m 2eksdlc "But the more I think about it, it would probably be better if I came to your reality."
+    m 3eka "I'd much rather be there than have you come here."
+    m 3dsc "[player]...{w=1}don't tell me you would really give up your reality--{w=0.5}the {i}real{/i} world--{w=0.5}just to come {i}here{/i}, whatever this place is?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "[player]...{w=1}don't tell me you would really give up your reality--the {i}real{/i} world--just to come {i}here{/i}, whatever this place is?{fast}"
+        "I would.":
+            $ persistent._mas_pm_would_come_to_spaceroom = True
+            
+            m 4wkd "But [player]!"
+            m "There's nothing to do here!"
+            m 2dsc "Do you really hate your reality {i}that{/i} much?"
+            m 2eka "Someday, I'll find a way to reach you, and when that day comes, I promise it will be worthwhile."
+            m 4euc "Whatever life throws your way from that point on, I'll be right by your side to help shoulder it."
+            m 4eud "Even now, if you're having a rough day, you can come talk to me about it anytime."
+            m 2dsc "Life must have thrown a lot your way to consider giving it all up to be with me."
+            m 3hua "But seeing how you're here, that just shows how resilient you are."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I can't wait to finally be able to share both the good times and the bad by your side."
+
+        "I wouldn't.":
+            $ persistent._mas_pm_would_come_to_spaceroom = False
+
+            m 1eka "I'm glad you're still willing to wait for me, [player]."
+            m 1lksdla "Don't get me wrong, I really {i}do{/i} want to be with you..."
+            m 1lksdlc "But I think it would be dangerous for you to try and cross over right now."
+            m 1eka "...If it's even possible with current technology."
+            m 1hub "Don't worry, we can continue on keeping each other company like this!"
+            m 1hksdlb "I know it might be a while before we can truly be together, but I hope you don't mind waiting."
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "I'll wait as long as it takes, [player]."
+
+        "...":
+            $ persistent._mas_pm_would_come_to_spaceroom = None
+
+            m 2eka "It's okay, I'll always appreciate and treasure the moments we spend together, even like this."
+            m 2ekc "Besides, I don't even know how you could come here with current technology."
+            m 2lksdlc "...And even if there {i}was{/i} some way, I don't think it would be safe or guaranteed."
+            m 2lksdld "So do me a favor and at least wait for technology to improve enough for it to be completely safe."
+            m 2lksdlc "I {i}really{/i} don't want to risk you not making it properly and ending up in your own void..."
+            m 2dkd "...leaving the both of us completely alone."
+            m 4hua "I mean, technology does tend to advance pretty quickly, so we might be able to see each other before we know it!"
+            show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5eua "So just be patient for your lovely girlfriend, and I promise I'll do the same for you, [player]."
+
+    m 5luu "Buut...{w=1}if you did happen to show up at my doorstep..."
+    show monika 1hksdlb at t11 zorder MAS_MONIKA_Z with dissolve
+    m 1hksdlb "I guess I wouldn't have a choice but to accept it and welcome you with open arms!"
+    m 1eksdla "It wouldn't be much to begin with, but I'm sure we'll find a way to make it better."
+    m 3hub "With time, we could make our own reality!"
+    m 3euc "Of course, that sounds pretty complicated if you think about it..."
+    m 3eub "But I have no doubt that together we could accomplish anything!"
+    m 3etc "You know...{w=1}maybe it {i}would{/i} actually be easier for you to come here, but I'm not giving up hope of coming to you."
+    m 1eua "Until then, let's just wait and see what's possible."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_vehicle",
             category=['monika'],
             prompt="What's your favorite car?",
