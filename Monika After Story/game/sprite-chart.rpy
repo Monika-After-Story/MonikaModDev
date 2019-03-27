@@ -3495,7 +3495,7 @@ init -2 python:
                     poseid,
                     ""
                 ))
-                loadstrs.append(store.mas_sprites.BB_ACS.format(
+                loadstrs.append(store.mas_sprites.BS_ACS.format(
                     self.img_sit,
                     poseid,
                     store.mas_sprites.NIGHT_SUFFIX

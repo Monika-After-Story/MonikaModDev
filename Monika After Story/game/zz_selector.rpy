@@ -101,6 +101,13 @@ init -20 python:
                 raise Exception("label '{0}' no exist".format(dlg))
 
 
+        def _build_thumbstr(self):
+            """
+            Returns thumb string for this selectable
+            """
+            return MASSelectableImageButtonDisplayable.THUMB_DIR + self.thumb
+
+
         def fromTuple(self, read_tuple):
             """
             Loads data from the given tuple.

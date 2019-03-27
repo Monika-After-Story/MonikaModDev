@@ -511,22 +511,25 @@ init 790 python in mas_sprites_json:
             # ACS: images consist of the all pose code items that are
             # in the /a/ folder
             # + night versions
-            # + thumbs
+            to_verify.extend(sp_obj._build_loadstrs())
             
-            pass
         elif sp_type == SP_HAIR:
             # HAIR: images consist of upright and leaning items in /h/ 
             # folder
             # + night versions
-            # + thumbs
-
             pass
+
         else:
             # CLOTHES: images consist of upright and leaning body items
             # in /c/ folder
             # + night versions
-            # + thumbs
             pass
+
+        # thumbs
+        if sel_obj is not None:
+            to_verify.append(sel_obj._buid_thumbstr())
+
+        return to_verify
 
 
     def _check_giftname(giftname, sp_type, sp_name, errs, err_base):
