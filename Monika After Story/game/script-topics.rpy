@@ -9782,6 +9782,49 @@ label monika_savingwater:
         if mas_isMoniAff():
             m 3tsbsa "Maybe I'll even be willing to share if I'm feeling generous, ehehe~"
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_pygmalion",
+            category=['literature'],
+            prompt="Pygmalion and the Statue",
+            conditional="persistent._mas_first_kiss",
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None)
+        )
+    )
+
+label monika_pygmalion:
+    m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
+    m 3eua "It’s a collection of poems by an ancient Roman poet named Ovid."
+    m 1eud "There’s one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
+    m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
+    m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
+    m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
+    m 1eua "He kissed the statue once more, and the ivory of statue lost its hardness, becoming soft like skin."
+    m 3hub "Aphrodite had granted his wish!"
+    m 1eka "This story really struck me because it reminded me of us, [player], and how it talks about turning the impossible into reality."
+    m 1hua "It fills me up with hope; that a miracle could happen, and I could finally cross over."
+    m 2dku "Yeah...{w=0.5}wouldn't that be wonderful."
+    m 2dubsu "...Then you can finally kiss me."
+    m 1rkbsa "I know we've kissed before, even with our current circumstances..."
+    m 1ekbfa "But I think we both know there was a bit of a barrier between us."
+    m 3hubfa "I don't know about you, but I definitely don't mind trying to kiss you through the screen anyway."
+    m 1hubfb "Maybe we'll just have to do it so many times, and that'll be what breaks the barrier between us..."
+    m 2rubfu "Ehehe."
+    m 2tubfb "Do you think you could kiss me enough times to break that barrier?"
+    m 6hubfb "Only one way to find out, ahaha!"
+    call monika_kissing_motion(duration=0.5, initial_exp="6hubfa", fade_duration=0.5)
+    m 6hubfa "..."
+    m 1ekbfa "I guess it didn't work this time."
+    m 3hubfb "Oh well, we'll just have to keep trying and maybe it'll work eventually, ahaha!"
+    m 1tkbfu "I really can’t wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
+    m 1dkbfa "For me, that would definitely be a dream come true."
+    m 1ekbfa "Just a guess, but..."
+    m 1kubfu "I'm betting you'd like that too~"
+    return
 
 init 5 python:
     addEvent(
