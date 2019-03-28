@@ -3830,6 +3830,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
                 $ HKBHideButtons()
+                window hide
                 stop music fadeout 1.0
 
                 # clear selected track
@@ -3840,6 +3841,7 @@ label monika_eternity:
                 $ ui.interact()
 
                 $ HKBShowButtons()
+                window auto
                 m 2dkbfa "That was really nice while it lasted."
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
                 m 2ekbfb "I know we'll always be together no matter what."
