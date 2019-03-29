@@ -484,12 +484,38 @@ init python:
         RETURNS:
             rain weather to use, or None if we dont want to change weather
         """
-        if mas_isMoniNormal(higher=True):
-            return None
-
-        # Upset and lower means we need to roll
+        #All paths roll
         chance = random.randint(1,100)
-        if mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
+        if mas_isMoniNormal(higher=True):
+            #NOTE: Chances are as follows:
+            #Spring:
+            #   - Rain: 50%
+            #   - Thunder: 20% (40% of that 50%)
+            #
+            #Summer:
+            #   - Rain: 10%
+            #   - Thunder: 6% (60% of that 10%)
+            #
+            #Fall:
+            #   - Rain: 30%
+            #   - Thunder: 12% (40% of that 50%)
+            if mas_isSpring() and chance <= 50:
+                if chance <= 20:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+            elif mas_isSummer() and chance <= 10:
+                if chance <= 6:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+            elif mas_isFall() and chance <= 30:
+                if chance <= 12:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+        #Otherwise rain based on how Moni's feeling
+        elif mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
             return mas_weather_rain
 
         elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
