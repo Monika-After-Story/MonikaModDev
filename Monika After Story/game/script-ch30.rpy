@@ -319,7 +319,14 @@ init python:
         stop_on_mute=True,
         tight=True
     )
-#    renpy.music.set_volume(songs.getVolume("music"), channel="background")
+
+    # also need another verison of background for concurrency
+    renpy.music.register_channel(
+        "backsound",
+        mixer="amb",
+        loop=False,
+        stop_on_mute=True
+    )
 
     #Define new functions
     def show_dialogue_box():
@@ -1317,7 +1324,7 @@ label ch30_post_mid_loop_eval:
                 show mas_lightning zorder 4
 
             $ pause(0.5)
-            play sound "mod_assets/sounds/amb/thunder.wav"
+            play backsound "mod_assets/sounds/amb/thunder.wav"
         
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
