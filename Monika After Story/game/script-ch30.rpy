@@ -311,14 +311,15 @@ init python:
     mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
+    # this uses the amb (ambient) mixer. 
     renpy.music.register_channel(
         "background",
-        mixer="sfx",
+        mixer="amb",
         loop=True,
         stop_on_mute=True,
         tight=True
     )
-    renpy.music.set_volume(songs.getVolume("music"), channel="background")
+#    renpy.music.set_volume(songs.getVolume("music"), channel="background")
 
     #Define new functions
     def show_dialogue_box():
