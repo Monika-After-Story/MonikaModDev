@@ -507,23 +507,18 @@ init 790 python in mas_sprites_json:
         # list of strings to verify
         to_verify = []
 
-        if sp_type == SP_ACS:
-            # ACS: images consist of the all pose code items that are
-            # in the /a/ folder
-            # + night versions
-            to_verify.extend(sp_obj._build_loadstrs())
-            
-        elif sp_type == SP_HAIR:
-            # HAIR: images consist of upright and leaning items in /h/ 
-            # folder
-            # + night versions
-            pass
-
-        else:
-            # CLOTHES: images consist of upright and leaning body items
-            # in /c/ folder
-            # + night versions
-            pass
+        # ACS: images consist of the all pose code items that are
+        # in the /a/ folder
+        # + night versions
+        #
+        # HAIR: images consist of upright and leaning items in /h/ 
+        # folder
+        # + night versions
+        #
+        # CLOTHES: images consist of upright and leaning body items
+        # in /c/ folder
+        # + night versions
+        to_verify.extend(sp_obj._build_loadstrs())
 
         # thumbs
         if sel_obj is not None:

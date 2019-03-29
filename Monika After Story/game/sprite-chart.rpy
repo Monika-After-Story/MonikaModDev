@@ -513,6 +513,12 @@ init -5 python in mas_sprites:
         "def|def"
     ]
 
+    # all poses 
+    # this is purely for iterative purposes
+    ALL_POSES = []
+    ALL_POSES.extend(POSES)
+    ALL_POSES.extend(L_POSES)
+
     def _verify_uprightpose(val):
         return val in POSES
 
@@ -3592,11 +3598,69 @@ init -2 python:
             RETURNS: list of strings
             """
             loadstrs = []
+            all_split = self.split is None
 
-            # we only have images if this hair item is split
-            if split is None:
-                return []
+            # loop over poses and only return strings for ones that
+            # are split
+            for pose in store.mas_sprites.POSES:
+                if all_split or self.split.get(pose, False):
+                    # need front
+                    loadstrs.append(BS_HAIR_U.format(
+                        self.img_sit,
+                        store.mas_sprites.FHAIR_SUFFIX,
+                        ""
+                    ))
+                    loadstrs.append(BS_HAIR_U.format(
+                        self.img_sit,
+                        store.mas_sprites.FHAIR_SUFFIX,
+                        store.mas_sprites.NIGHT_SUFFIX
+                    ))
 
+                    # and back
+                    loadstrs.append(BS_HAIR_U.format(
+                        self.img_sit,
+                        store.mas_sprites.BHAIR_SUFFIX,
+                        ""
+                    ))
+                    loadstrs.append(BS_HAIR_U.format(
+                        self.img_sit,
+                        store.mas_sprites.BHAIR_SUFFIX,
+                        store.mas_sprites.NIGHT_SUFFIX
+                    ))
+
+            # and for leaning
+            for lpose in store.mas_sprites.L_POSES:
+                lean = lpose.partition("|")[0]
+                if all_split or self.split.get(lpose, False):
+                    # front
+                    loadstrs.append(BS_HAIR_L.format(
+                        lean,
+                        self.img_sit,
+                        store.mas_sprites.FHAIR_SUFFIX,
+                        ""
+                    ))
+                    loadstrs.append(BS_HAIR_L.format(
+                        lean,
+                        self.img_sit,
+                        store.mas_sprites.FHAIR_SUFFIX,
+                        store.mas_sprites.NIGHT_SUFFIX
+                    ))
+
+                    # back
+                    loadstrs.append(BS_HAIR_L.format(
+                        lean,
+                        self.img_sit,
+                        store.mas_sprites.BHAIR_SUFFIX,
+                        ""
+                    ))
+                    loadstrs.append(BS_HAIR_L.format(
+                        lean,
+                        self.img_sit,
+                        store.mas_sprites.BHAIR_SUFFIX,
+                        store.mas_sprites.NIGHT_SUFFIX
+                    ))
+
+            return loadstrs
 
 
     class MASClothes(MASSpriteFallbackBase):
@@ -3704,6 +3768,41 @@ init -2 python:
             RETURNS: True if we have a mapping to check, False otherwise
             """
             return len(self.hair_map) > 0
+
+
+        def _build_loadstrs(self):
+            """
+            Builds list of strings for this sprite object that represent the
+            image paths that this sprite object would use.
+
+            RETURNS: list of strings
+            """
+            # case 1: (split hair)
+            #   body-<type>.png
+            #   body-<type>-n.png
+            #   body-leaning-<type>.png
+            #   body-leaning-<type>-n.png
+            #   arms-<pose>.png
+            #   arms-<pose>-n.png
+            #   arms-leaning-<type>-<arms>.png
+            #   arms-leaning-<type>-<arms>-n.png
+            #
+            # case 2: (non split hair)
+            #   torso-<hair>.png
+            #   torso-<hair>-n.png
+            #   torso-leaning-<hair>-<lean>.png
+            #   torso-leaning-<hair>-<lean>-n.png
+            #   arms-<pose>.png
+            #   arms-<pose>-n.png
+            #
+            # have to go through hair_map, then resolve to the hairmap's 
+            #   splits to ensure that it has or has not a split variant.
+            #
+            # TODO:
+            #   has_nonsplit ? - something to check if a hair has a non-split
+            #       mode.
+            #       might be worthwhile to make this on the clothing as well
+            pass
 
 
     # The main drawing function...
