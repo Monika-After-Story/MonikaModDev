@@ -420,24 +420,6 @@ label mas_story_ravel:
     m 1tfb "'Funny,' said the old woman as she granted his wish and disappeared forever. 'That was your first wish.'"
     return
 
-#formerly monika_szs
-#TODO: updats script to unlock for people who have seen monika_szs
-#TODO: transfer the event data from monika_szs from event_database to _mas_story_database
-init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_szs",
-        prompt="Funeral procession",unlocked=False),code="STY")
-
-label mas_story_szs:
-    m 3euc "A woman left the supermarket and ran into a very long funeral procession."
-    m "There were two coffins at the front followed by almost 200 women."
-    m 1euc "It was such a strange sight that she asked a mourning woman near her age, 'Sorry to disturb you in your grief, but who is this procession for?'"
-    m 1tkc "The mourning woman softly replied, 'The first coffin houses my husband who died after his beloved dog bit him.'"
-    m 1tkd "'My, that's awful...'"
-    m "'The second, my mother-in-law who was bitten trying to save my husband.'"
-    m 1tku "Upon hearing this, the woman hesitantly asked, 'Um...would it be possible for me to borrow that dog?'"
-    m 3rksdla "'You'll have to get in line.'"
-    return
-
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_immortal_love",
         prompt="Love Never Ends",unlocked=False),code="STY")

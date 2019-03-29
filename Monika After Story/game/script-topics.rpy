@@ -1198,7 +1198,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
-    if len(store.mas_selspr.CLOTH_SEL_SL) == 1:
+    if len(store.mas_selspr.filter_clothes(True)) == 1:
         m 1lsc "You know, I'm kind of jealous that everyone else in the club had scenes outside of school..."
         m 1lfc "That makes me the only one who hasn't gotten to dress in anything but our school uniform."
         m 2euc "It's kind of a shame..."
@@ -3224,8 +3224,7 @@ label monika_torment:
     m 3hksdlb "...The answer's not me, by the way."
     return "derandom"
 
-# TODO: remove from topics completely
-# moved to script-stories as mas_story_szs
+# removed, keeping this here in case we have use for it later
 #init 5 python:
 #    addEvent(
 #        Event(
@@ -7160,7 +7159,6 @@ label monika_asks_family:
             $ persistent._mas_pm_have_fam = False
             $ persistent._mas_pm_no_talk_fam = False
             #Derandom this family based topics since you don't have a family
-            #TODO update script
             $ mas_hideEVL("monika_familygathering","EVE",derandom=True)
 
             m 1euc "Oh, I'm sorry, [player]"
@@ -12443,7 +12441,6 @@ label monika_relationship_comfort:
     return
 
 #NOTE: This was mas_d25_monika_sleigh, but it seems more like a general topic
-#TODO: probably update script removal of the mas_d25_monika_sleigh topic (or at least transfer some seen data here)
 init 5 python:
     addEvent(
         Event(
