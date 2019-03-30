@@ -64,8 +64,6 @@
 #   tr - tears, single stream, right eye (right)
 #   tp - like dried tears but with no redness (pooled)
 #   tu - tears, single stream, both eyes (up)
-#   th - tears for closedhappy eyes (closedhappy)
-#   tc - tears for closedsad eyes (closedsad)
 #
 # <sweat type> - type of sweat drop
 #   sdl - sweat drop left (def)
