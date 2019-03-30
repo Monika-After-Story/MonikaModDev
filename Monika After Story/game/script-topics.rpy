@@ -1951,8 +1951,8 @@ label monika_holdme_reactions:
             m 5tubfu "Ehehe~"
         elif mas_isMoniEnamored():
             m 2dkbfa "That was really nice~"
-            m 1rkbsa "Not too short..."
-            m 1hubfb "...and I don't know if there's such thing as too long in this case, ahaha!"
+            m 1rkbsa "Not too short--"
+            m 1hubfb "--although I don't think there's such a thing as too long in this case, ahaha!"
             m 1rksdla "At that point, I could have gotten used to staying like that..."
             m 1hksdlb "But if you're done holding me, I guess I don't really have a choice, ahaha..."
             m 1hubfa "I'm sure I'll get another opportunity to be held by you..."
