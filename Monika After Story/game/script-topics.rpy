@@ -1909,7 +1909,7 @@ label monika_holdme_reactions:
             m 5dkbfb "So...{w=1.5}warm~"
             m 5tubfu "Ehehe~"
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
-            m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy, huh [player]?"
+            m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
             if renpy.random.randint(1,4) == 1:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
                 m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
@@ -1920,10 +1920,7 @@ label monika_holdme_reactions:
             m 6dubsa "Mmm~"
             m 6tsbsa "..."
             m 1hksdlb "Oh!"
-            m "I almost fell asleep on you!"
-            m 1rksdla "We sure held that for a while..."
-            m 3rksdla "Nothing wrong with that but..."
-            m 1hubfa "That felt really comfortable!"
+            m 1hubfa "That was so comfortable, I almost fell asleep!"
             m 1hubfb "We should do this more often, ahaha!"
         elif mas_isMoniAff():
             m 6dubsa "Mm..."
@@ -1938,16 +1935,15 @@ label monika_holdme_reactions:
             m 1wud "Oh! We're done?"
             m 3hksdlb "That hug sure lasted a while, [player]..."
             m 3rubfb "Nothing wrong with that, I just thought you'd let go a lot sooner, ahaha!"
-            m 1rkbsa "It was almost comfortable actually..."
-            m 2tubfb "Too much longer and I might have fallen asleep in your arms..."
-            m 1tubfa "Maybe you'd like that, ehehe~"
-            m 1hubfa "I feel all warm and nice now from that~"
+            m 1rkbsa "It was really comfortable actually..."
+            m 2tubfb "Too much longer and I might have fallen asleep..."
+            m 1hubfa "I feel so nice and warm now from that~"
 
     elif elapsed_time > datetime.timedelta(minutes=2):
         if mas_isMoniLove():
             m 6eud "Oh?"
             m 1hksdlb "Ah..."
-            m 1rksdlb "At that point, I thought you were just going to let me lean on you forever, ahaha..."
+            m 1rksdlb "At that point, I thought we were going to stay like that forever, ahaha..."
             m 3hubfa "Well, I can't really complain about any moment I get to be held by you~"
             m 1hubfb "I hope you enjoy hugging me as much as I do, ahaha!"
             show monika 5tubfb at t11 zorder MAS_MONIKA_Z with dissolve
@@ -1956,10 +1952,10 @@ label monika_holdme_reactions:
         elif mas_isMoniEnamored():
             m 2dkbfa "That was really nice~"
             m 1rkbsa "Not too short..."
-            m 1hubfb "and I don't know if there's such thing as too long in this case, ahaha!"
+            m 1hubfb "...and I don't know if there's such thing as too long in this case, ahaha!"
             m 1rksdla "At that point, I could have gotten used to staying like that..."
             m 1hksdlb "But if you're done holding me, I guess I don't really have a choice, ahaha..."
-            m 1hubfa "I'm sure I'll get another opportunity to be held by you, so don't worry."
+            m 1hubfa "I'm sure I'll get another opportunity to be held by you..."
             show monika 5tsbfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tsbfu "You {i}do{/i} plan on doing that again, right, [player]? Ehehe~"
             show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
@@ -1972,8 +1968,8 @@ label monika_holdme_reactions:
             m 1hubfb "Ahaha!"
         #happy
         else:
-            m 1hksdlb "That lasted a little while."
-            m 1rkbsa "Don't get me wrong- I still enjoyed it."
+            m 1hksdlb "That was nice while it lasted."
+            m 1rkbsa "Don't get me wrong...{w=1}I still enjoyed it."
             m 1tubfb "I hope you're satisfied~"
             m 1hubfa "I'm happy with just sitting with you now."
 
@@ -1983,7 +1979,7 @@ label monika_holdme_reactions:
             m 1hua "I feel much better now!"
             m 1eua "I hope you do too."
             m 2rksdla "Well, even if you don't..."
-            m 3hubfb "You could always hold me again, Ahaha!"
+            m 3hubfb "You could always hold me again, ahaha!"
             m 1hkbfsdlb "Actually...{w=0.5}you can hold me again either way."
             m 1tubfb "Ehehe~"
             m 1hubfa "Just let me know if you want to~"
@@ -1991,19 +1987,18 @@ label monika_holdme_reactions:
             m 1hubfa "Mmm~"
             m 1hub "Much better."
             m 1eub "Thanks for that, [player]!"
-            m 2tubfb "I hope you enjoyed that~"
-            m 3rubfb "30 second or longer hugs are supposed to be good for you."
+            m 2tubfb "I hope you enjoyed it~"
+            m 3rubfb "Thirty second or longer hugs are supposed to be good for you."
             m 1hubfa "I don't know about you, but I sure feel better~"
             m 1hubfb "Maybe next time, we can try an even longer one and see if it scales! Ahaha~"
         elif mas_isMoniAff():
             m 1hubfa "Mmm~"
             m 1hubfb "I can almost feel your warmth, even from here."
             m 1eua "I'm sure you know hugs are good for you, since they relieve stress and all."
-            m 3eub "But did you know the sweet spot for hugs is 30 seconds?"
-            m 3hubfb "Hugs are most effective at relieving stress and being good for you when they last 30 seconds, ahaha!"
-            m 1eud "Oh, wait, did I say 30 seconds?"
+            m 3eub "But did you know hugs are most effective at relieving stress and being good for you when they last thirty seconds?"
+            m 1eud "Oh, wait, did I say thirty seconds?"
             show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eubfu "Sorry, I meant {i}at least{/i} 30 seconds, ehehe..."
+            m 5eubfu "Sorry, I meant {i}at least{/i} thirty seconds, ehehe..."
             show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
         #happy
         else:
@@ -2065,8 +2060,7 @@ label monika_holdme_reactions:
             m 1hubfa "I'm sure that won't be the last time you hold me though, so I'll look forward to next time!"
         #happy
         else:
-            m 1hua "That was nice~"
-            m 1hubfb "You can hold me for longer if you feel like it, you know."
+            m 1hua "That was a bit short, but still nice~"
     return
 
 label monika_holdme_long:
@@ -2094,8 +2088,8 @@ label monika_holdme_long:
                 m 6tsbfa "[player]..."
                 m 2wubfsdld "Oh! [player]!"
                 m 2hkbfsdlb "Ahaha..."
-                m 3rksdla "I guess I got a little too comfortable."
-                m 1hubfa "But you're just too warm and comfy to {i}not{/i} fall asleep on..."
+                m 3rksdla "I guess I got a little {i}too{/i} comfortable."
+                m 1hubfa "But you're just too warm and comfy for me {i}not{/i} fall asleep..."
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 1ekbfa "Could...{w=0.7}we do that again sometime?"
                 m 1ekbfb "It...{w=1}felt nice~"
@@ -2104,7 +2098,6 @@ label monika_holdme_long:
                 m 1wubfsdld "Oh!..{w=1} [player]?"
                 m 1hksdlb "Did...{w=2} I fall asleep?"
                 m 1rksdla "I didn't mean to fall asleep..." 
-                m 1rkbfsdlb "On you..."
                 m 2dkbfa "You just make me feel so..."
                 m 1hubfa "Warm~"
                 m 1hubfb "Ahaha, I hope you didn't mind!"
