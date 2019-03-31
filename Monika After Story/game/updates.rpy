@@ -66,7 +66,7 @@ init python:
 
     def mas_eraseTopic(topicID, per_eventDB):
         """
-        Erases an event from both seen and Event database
+        Erases an event from both lockdb and Event database
         This should also handle lockdb data as well.
         TopicIDs that are not in the given eventDB are silently ignored.
         (LockDB data will be erased if found)
@@ -301,6 +301,39 @@ label v0_3_1(version=version): # 0.3.1
     return
 
 # non generic updates go here
+
+# 0.9.2
+label v0_9_2(version="v0_9_2"):
+    python:
+        
+        # erasing monika_szs as its dum
+        mas_eraseTopic("monika_szs", persistent.event_database)
+
+        # derandom familygathering if you have no family
+        if persistent._mas_pm_have_fam is False:
+            mas_hideEVL("monika_familygathering", "EVE", derandom=True) 
+        
+        # transfer mas_d25_monika_sleigh data
+        # NOTE: we only really care about:
+        #   - unlock_date
+        #   - shown_count
+        #   - last_seen
+        #   - (seen data)
+        sleigh_ev = mas_getEV("monika_sleigh")
+        old_sleigh_ev = Event(
+            persistent.event_database,
+            "mas_d25_monika_sleigh"
+        )
+        if sleigh_ev is not None and old_sleigh_ev is not None:
+            sleigh_ev.unlock_date = old_sleigh_ev.unlock_date
+            sleigh_ev.shown_count = old_sleigh_ev.shown_count
+            sleigh_ev.last_seen = old_sleigh_ev.last_seen
+            mas_transferTopicSeen("mas_d25_monika_sleigh", "monika_sleigh")
+            
+            # erase this topic
+            mas_eraseTopic("mas_d25_monika_sleigh", persistent.event_database)
+
+    return
 
 # 0.9.1
 label v0_9_1(version="v0_9_1"):
