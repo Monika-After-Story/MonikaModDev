@@ -91,14 +91,6 @@
 #       - see PoseMap JSONs below for more info
 #       - default False
 #
-# HAIR only props:
-#
-# {
-#   "split": {Pose Map object}
-#       - optional
-#       - see PoseMap JSONs below for more info
-# }
-#
 # CLOTHES only props:
 #
 # {
@@ -108,8 +100,6 @@
 #           this clothing item, if the current hair is in this map, the
 #           value is used instead.
 #       - Use "all" as a key to signify a default for everything to map to.
-#       - Use "custom" as a value to map to the generic non-split hair style.
-#           This is useful for clothing items with baked hairstyles.
 #       - Both keys and values should be strings and should match to an 
 #           existing hair ID. 
 #       - default empty dict
@@ -171,14 +161,6 @@
 #       used to determine if a pose should be enabled or disabled for this
 #       hair. True values will mean enabled, False means disabled.
 #       By default, poses with False values will use steepling instead.
-#
-# HAIR (split):
-#   Values should be booleans. True means the hair is split for this pose. 
-#   False means the hair is not split.
-#   If this PoseMAp is not given, the hair is assumed to be split for all 
-#   poses.
-#   This is usually used when a hair is split for upright poses but not
-#   leaning poses.
 #
 # CLOTHES (pose_map):
 #   This functions the same as pose_map for HAIR.
@@ -328,6 +310,10 @@ init -21 python in mas_sprites_json:
     HM_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
     HM_BAD_V_TYPE = "value for key '{0}' - expected type {1}, got {2}"
     HM_MISS_ALL = "hair_map does not have key 'all' set."
+    HM_FOUND_CUST = (
+        "'custom' hair cannot be used in JSON hair maps. "
+        "Outfits using 'custom' hair must be created manually."
+    )
 
     ## ex_props
     EP_LOADING = "loading ex_props..."
@@ -522,7 +508,7 @@ init 790 python in mas_sprites_json:
 
         # thumbs
         if sel_obj is not None:
-            to_verify.append(sel_obj._buid_thumbstr())
+            to_verify.append(sel_obj._build_thumbstr())
 
         return to_verify
 
@@ -945,9 +931,6 @@ init 790 python in mas_sprites_json:
         """
         Validates HAIR related properties
         
-        Props validated:
-            - split
-
         IN:
             jobj - json object to parse
             obj_based - dict of object-based items
@@ -959,30 +942,33 @@ init 790 python in mas_sprites_json:
             warns - list ot save warning messages to
             infos - list to save info messages to
         """
-        # validate split
-        if "split" not in obj_based:
-            # no split found, not a problem
-            return
+        # NOTE: currently this does not do anything.
+        return
 
-        # split exists, lets get and validate
-        writelog(MSG_INFO_ID.format(MPM_LOADING.format("split")))
-        split = store.MASPoseMap.fromJSON(
-            obj_based.pop("split"),
-            False,
-            errs,
-            warns
-        )
-        if split is None or len(errs) > 0:
-            writelogs(warns)
-            return
-
-        # valid pose map!
-        # write out wrans
-        writelogs(warns)
-
-        # and success
-        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("split")))
-        save_obj["split"] = split
+#        # validate split
+#        if "split" not in obj_based:
+#            # no split found, not a problem
+#            return
+#
+#        # split exists, lets get and validate
+#        writelog(MSG_INFO_ID.format(MPM_LOADING.format("split")))
+#        split = store.MASPoseMap.fromJSON(
+#            obj_based.pop("split"),
+#            False,
+#            errs,
+#            warns
+#        )
+#        if split is None or len(errs) > 0:
+#            writelogs(warns)
+#            return
+#
+#        # valid pose map!
+#        # write out wrans
+#        writelogs(warns)
+#
+#        # and success
+#        writelog(MSG_INFO_ID.format(MPM_SUCCESS.format("split")))
+#        save_obj["split"] = split
 
 
     def _validate_clothes(jobj, save_obj, obj_based, errs, warns, infos):
@@ -1028,7 +1014,10 @@ init 790 python in mas_sprites_json:
 
             # value
             if _verify_str(hair_value):
-                if hair_value not in HAIR_MAP:
+                if hair_value == "custom":
+                    errs.append(MSG_ERR_IDD.format(HM_FOUND_CUST))
+
+                elif hair_value not in HAIR_MAP:
                     hm_val_delayed_veri[hair_value] = None
 
             else:
@@ -1446,7 +1435,9 @@ init 790 python in mas_sprites_json:
             _init_giftname(giftname, sp_type, sp_name)
 
         # TODO: build warnrings for image loading
-
+        # build warnings for image loading
+        # first get the selectable
+        sel_obj = sml.get_sel(sp_obj)
 
 
         # after bulid warning

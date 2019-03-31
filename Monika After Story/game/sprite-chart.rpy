@@ -368,7 +368,7 @@ init -5 python in mas_sprites:
         FILE_EXT
     )
 
-    BS_TORSO_NH = (
+    BS_BODY_U = (
         C_MAIN
         "{0}/" # clothing img sit
         NEW_BODY_STR
@@ -376,12 +376,32 @@ init -5 python in mas_sprites:
         FILE_EXT
     )
 
-    BS_TORSO_L_NH = (
+    BS_BODY_L = (
         C_MAIN
         "{0}/" # clothing img sit
         PREFIX_BODY_LEAN
         "{1}" # lean
         "{2}" # night suffix
+        FILE_EXT
+    )
+
+    BS_ARMS_NH_U = (
+        C_MAIN
+        "{0}/" # clothing img sit
+        PREFIX_ARMS
+        "{1}" # arms
+        "{2}" # night sfufix
+        FILE_EXT
+    )
+
+    BS_ARMS_NH_L = (
+        C_MAIN
+        "{0}/" # clothing img sit
+        PREFIX_ARMS_LEAN
+        "{1}" # lean
+        ART_DLM
+        "{2}" # arms
+        "{3}" # night suffix
         FILE_EXT
     )
 
@@ -3605,24 +3625,24 @@ init -2 python:
             for pose in store.mas_sprites.POSES:
                 if all_split or self.split.get(pose, False):
                     # need front
-                    loadstrs.append(BS_HAIR_U.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
                         self.img_sit,
                         store.mas_sprites.FHAIR_SUFFIX,
                         ""
                     ))
-                    loadstrs.append(BS_HAIR_U.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
                         self.img_sit,
                         store.mas_sprites.FHAIR_SUFFIX,
                         store.mas_sprites.NIGHT_SUFFIX
                     ))
 
                     # and back
-                    loadstrs.append(BS_HAIR_U.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
                         self.img_sit,
                         store.mas_sprites.BHAIR_SUFFIX,
                         ""
                     ))
-                    loadstrs.append(BS_HAIR_U.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
                         self.img_sit,
                         store.mas_sprites.BHAIR_SUFFIX,
                         store.mas_sprites.NIGHT_SUFFIX
@@ -3633,13 +3653,13 @@ init -2 python:
                 lean = lpose.partition("|")[0]
                 if all_split or self.split.get(lpose, False):
                     # front
-                    loadstrs.append(BS_HAIR_L.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
                         lean,
                         self.img_sit,
                         store.mas_sprites.FHAIR_SUFFIX,
                         ""
                     ))
-                    loadstrs.append(BS_HAIR_L.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
                         lean,
                         self.img_sit,
                         store.mas_sprites.FHAIR_SUFFIX,
@@ -3647,13 +3667,13 @@ init -2 python:
                     ))
 
                     # back
-                    loadstrs.append(BS_HAIR_L.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
                         lean,
                         self.img_sit,
                         store.mas_sprites.BHAIR_SUFFIX,
                         ""
                     ))
-                    loadstrs.append(BS_HAIR_L.format(
+                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
                         lean,
                         self.img_sit,
                         store.mas_sprites.BHAIR_SUFFIX,
@@ -3795,14 +3815,65 @@ init -2 python:
             #   arms-<pose>.png
             #   arms-<pose>-n.png
             #
-            # have to go through hair_map, then resolve to the hairmap's 
-            #   splits to ensure that it has or has not a split variant.
-            #
-            # TODO:
-            #   has_nonsplit ? - something to check if a hair has a non-split
-            #       mode.
-            #       might be worthwhile to make this on the clothing as well
-            pass
+            # NOTE: JSONs will NOT support non-split hair.
+            #   aka ONLY CASE 1 IS SUPPORTED
+            to_verify = []
+
+            # starting with body types
+            to_verify.append(store.mas_sprites.BS_BODY.format(
+                self.img_sit,
+                ""
+            ))
+            to_verify.append(store.mas_sprites.BS_BODY.format(
+                self.img_sit,
+                store.mas_sprites.NIGHT_SUFFIX
+            ))
+
+            # body leaning
+            # this needs to iterate over leaning types
+            for lpose in store.mas_sprites.L_POSES:
+                lean = lpose.partition("|")[0]
+                to_verify.append(store.mas_sprites.BS_BODY_L.format(
+                    self.img_sit,
+                    lean,
+                    ""
+                ))
+                to_verify.append(store.mas_sprites.BS_BODY_L.format(
+                    self.img_sit,
+                    lean,
+                    store.mas_sprites.NIGHT_SUFFIX
+                ))
+
+            # arms
+            for pose in store.mas_sprites.POSES:
+                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
+                    self.img_sit,
+                    pose,
+                    ""
+                ))
+                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
+                    self.img_sit,
+                    pose,
+                    store.mas_sprites.NIGHT_SUFFIX
+                ))
+
+            # arms leaning
+            for lpose in store.mas_sprites.L_POSES:
+                lean, pipe_sep, arms = lpose.partition("|")
+                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
+                    self.img_sit,
+                    lean,
+                    arms,
+                    ""
+                ))
+                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
+                    self.img_sit,
+                    lean,
+                    arms,
+                    store.mas_sprites.NIGHT_SUFFIX
+                ))
+
+            return to_verify
 
 
     # The main drawing function...

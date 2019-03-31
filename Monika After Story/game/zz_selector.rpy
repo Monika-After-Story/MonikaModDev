@@ -894,6 +894,28 @@ init -10 python in mas_selspr:
         return None
 
 
+    def get_sel(item):
+        """
+        Retrieves the selectable for the given item
+        This uses sprite object type from jsons.
+
+        IN:
+            item - sprite objct to find the Selectable for
+            
+        RETURNS: selectable for the given item
+        """
+        if item.gettype() == store.mas_sprites_json.SP_ACS:
+            return get_sel_acs(item)
+
+        elif item.gettype() == store.mas_sprites_json.SP_HAIR:
+            return get_sel_hair(item)
+
+        elif item.gettype() == store.mas_sprites_json.SP_CLOTHES:
+            return get_sel_clothes(item)
+
+        return None
+
+
     def get_sel_acs(acs):
         """
         Retrieves the selectable for the given accessory.
