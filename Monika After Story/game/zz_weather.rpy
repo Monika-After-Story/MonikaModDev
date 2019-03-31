@@ -633,7 +633,7 @@ init 5 python:
             pool=True,
             unlocked=True,
             rules={"no unlock": None},
-            aff_range=(mas_aff.NORMAL, None)
+            aff_range=(mas_aff.AFFECTIONATE, None)
         )
     )
 
