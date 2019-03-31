@@ -281,6 +281,7 @@ init -21 python in mas_sprites_json:
     ## Global
     READING_FILE = "reading JSON at '{0}'..."
     SP_LOADING = "loading {0} sprite object '{1}'..."
+    SP_SUCCESS = "{0} sprite object '{1}' loaded successfully!"
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
     EXTRA_PROP = "extra property '{0}' found"
@@ -329,6 +330,8 @@ init -21 python in mas_sprites_json:
     PP_MISS = "'{0}' progpoint not found"
     PP_NOTFUN = "'{0}' progpoint not callable"
 
+    ## images loadable
+    IL_NOTLOAD = "image at '{0}' is not loadable"
 
 
     ### CONSTANTS
@@ -477,12 +480,11 @@ init 790 python in mas_sprites_json:
                 sms.CLOTH_MAP.pop(sp_obj.name)
 
 
-    def _build_loadstrs(img_sit, sp_obj, sel_obj=None):
+    def _build_loadstrs(sp_obj, sel_obj=None):
         """
         Builds list of strings that need to be verified via loadable.
 
         IN:
-            img_sit - img sit string from sprite object
             sp_obj - sprite object to build strings from
             sel_obj - selectable to build thumb string from. 
                 Ignored if None
@@ -617,6 +619,28 @@ init 790 python in mas_sprites_json:
         else:
             # success
             save_obj[progname + "_pp"] = e_pp
+
+
+    def _test_loadables(sp_obj, warns):
+        """
+        Tests loadable images and warns if an image is not loadable.
+
+        IN:
+            sp_obj - sprite object to test
+
+        OUT:
+            warns - list to save warning message to
+        """
+        # get selectable
+        sel_obj = sml.get_sel(sp_obj)
+
+        # and strs to verify
+        to_verify = _build_loadstrs(sp_obj, sel_obj)
+
+        # verfiy each string
+        for imgpath in to_verify:
+            if not renpy.loadable(imgpath):
+                warns.append(MSG_WARN_ID.format(IL_NOTLOAD.format(imgpath)))
 
 
     def _validate_type(json_obj):
@@ -1236,7 +1260,7 @@ init 790 python in mas_sprites_json:
             return
 
         # log out that we are loading the sprite object and name
-        writelog(MSG_INFO.format(LOADING_SP.format(
+        writelog(MSG_INFO.format(SP_LOADING.format(
             SP_STR.get(sp_type),
             sp_obj_params.get("name")
         )))
@@ -1434,19 +1458,16 @@ init 790 python in mas_sprites_json:
         if giftname is not None:
             _init_giftname(giftname, sp_type, sp_name)
 
-        # TODO: build warnrings for image loading
         # build warnings for image loading
-        # first get the selectable
-        sel_obj = sml.get_sel(sp_obj)
+        msgs_warn = []
+        _test_loadables(sp_obj, msgs_warn)
+        writelogs(msgs_warn)
 
-
-        # after bulid warning
-        #   warning: 
-        #       loadable
-    # NOTE: renpy.loadable("path from game/")
-            
-
-
+        # alright! we have built the sprite object!
+        writelog(MSG_INFO.format(SP_SUCCESS.format(
+            SP_STR.get(sp_type),
+            sp_obj.name
+        )))
 
 
 init 800 python in mas_sprites_json:
