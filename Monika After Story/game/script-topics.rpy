@@ -2087,7 +2087,7 @@ label monika_holdme_long:
                 m 2wubfsdld "Oh! [player]!"
                 m 2hkbfsdlb "Ahaha..."
                 m 3rksdla "I guess I got a little {i}too{/i} comfortable."
-                m 1hubfa "But you make me feel so warm and comfy it's for me {i}not{/i} to fall asleep..."
+                m 1hubfa "But you make me feel so warm and comfy, it's hard {i}not{/i} to fall asleep..."
                 m 1hubfb "So I have to blame you for that, ahaha!"
                 m 1ekbfa "Could...{w=0.7}we do that again sometime?"
                 m 1ekbfb "It...{w=1}felt nice~"
