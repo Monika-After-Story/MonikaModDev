@@ -276,6 +276,7 @@ init python:
     import store.mas_globals as mas_globals
     therapist = eliza.eliza()
     process_list = []
+    mas_weather_change_time = None #Need this for the auto weather change
     currentuser = None # start if with no currentuser
     if renpy.windows:
         try:
@@ -627,6 +628,28 @@ init python:
         """
         return store.mas_globals.text_speed_enabled
 
+    def mas_weatherProgress():
+        """
+        Runs a roll on mas_shouldRain() to pick a new weather to change to after a time between half an hour - one and a half hour
+        """
+        global mas_weather_change_time
+        #Set a time for startup
+        if not mas_weather_change_time:
+            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+        elif mas_weather_change_time < datetime.datetime.now():
+            #Need to set a new check time
+            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+            #Change weather
+            new_weather = mas_shouldRain()
+            if new_weather is not None and new_weather.prompt != mas_current_weather.prompt:
+                mas_changeWeather(new_weather)
+                return True
+            elif mas_current_weather.prompt != mas_weather_def.prompt:
+                mas_changeWeather(mas_weather_def)
+                return True
+        return False
 
 # IN:
 #   start_bg - the background image we want to start with. Use this for
@@ -1239,6 +1262,11 @@ label ch30_loop:
 
     if mas_idle_mailbox.get_skipmidloopeval():
         jump ch30_post_mid_loop_eval
+
+    #Do the weather thing
+    if mas_weatherProgress() and mas_isMoniNormal(higher=True):
+        $ scene_change=True
+        call spaceroom
 
     #Check time based events and grant time xp
     python:
