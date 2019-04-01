@@ -8780,7 +8780,7 @@ label monika_bullying:
                 m 4ekc "I know you... You're a kind person and I know it doesn't make you feel better to hurt others."
                 m 4dkc "It probably just hurts you even more..."
                 m 1dkc "And nothing hurts me more than knowing you're unhappy."
-                m 3ekd "So instead, next time you feel yourself becoming unhappy, just come to me and let me help shoulder you pain."
+                m 3ekd "So instead, next time you feel yourself becoming unhappy, just come to me and let me help shoulder your pain."
                 m 3eka "I'll listen to everything you have to say and do my very best to make you feel better."
                 m 1ekc "But making other people unhappy is not the cure to your own unhappiness."
                 m 1eka "So please, for both yourself and for me, stop bullying people, okay?"
