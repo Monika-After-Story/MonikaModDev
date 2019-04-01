@@ -820,7 +820,7 @@ init 5 python:
     )
 
 label greeting_youtuber:
-    m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
+    m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
     m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
     return
