@@ -334,7 +334,7 @@ label v0_9_2(version="v0_9_2"):
             mas_eraseTopic("mas_d25_monika_sleigh", persistent.event_database)
 
         # lock pf14
-        mas_lockEVL("mas_pf14_monika_lovey_dovey")
+        mas_lockEVL("mas_pf14_monika_lovey_dovey","EVE")
 
     return
 
