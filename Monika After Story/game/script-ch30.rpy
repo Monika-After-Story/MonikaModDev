@@ -628,6 +628,36 @@ init python:
         return store.mas_globals.text_speed_enabled
 
 
+    def mas_isGameUnlocked(gamename):
+        """
+        Checks if the given game is unlocked.
+        NOTE: this is using the game_unlocks database, which only cars about
+        whether or not you have reached the appropraite level to unlock a game.
+        Each game may be disabled for other reasons not handled via
+        this system.
+
+        IN:
+            gamename - name of the game to check
+
+        RETURNS: True if the game is unlocked, false if not
+        """
+        if persistent.game_unlocks is None:
+            return False
+
+        return persistent.game_unlocks.get(gamename, False)
+
+
+    def mas_unlockGame(gamename):
+        """
+        Unlocks the given game. 
+
+        IN:
+            gamename - name of the game to unlock
+        """
+        if gamename in persistent.game_unlocks:
+            persistent.game_unlocks[gamename] = True
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -797,7 +827,7 @@ label pick_a_game:
         # single var for readibility
         chess_unlocked = (
             is_platform_good_for_chess()
-            and persistent.game_unlocks["chess"]
+            and mas_isGameUnlocked("chess")
             and not chess_disabled
         )
 
@@ -812,7 +842,7 @@ label pick_a_game:
 
     menu:
         m "[play_menu_dlg]"
-        "Pong." if persistent.game_unlocks['pong']:
+        "Pong." if mas_isGameUnlocked("pong"):
             if not renpy.seen_label('game_pong'):
                 $grant_xp(xp.NEW_GAME)
             call game_pong from _call_game_pong
@@ -820,11 +850,11 @@ label pick_a_game:
             if not renpy.seen_label('game_chess'):
                 $grant_xp(xp.NEW_GAME)
             call game_chess from _call_game_chess
-        "[_hangman_text]." if persistent.game_unlocks['hangman']:
+        "[_hangman_text]." if mas_isGameUnlocked('hangman'):
             if not renpy.seen_label("game_hangman"):
                 $ grant_xp(xp.NEW_GAME)
             call game_hangman from _call_game_hangman
-        "Piano." if persistent.game_unlocks['piano']:
+        "Piano." if mas_isGameUnlocked('piano'):
             if not renpy.seen_label("mas_piano_start"):
                 $ grant_xp(xp.NEW_GAME)
             call mas_piano_start from _call_play_piano
@@ -1473,6 +1503,22 @@ label ch30_reset:
     python:
         import datetime
         today = datetime.date.today()
+
+    # check for game unlocks
+    python:
+        game_unlock_db = {
+            "pong": "ch30_main", # pong should always be unlocked
+            "chess": "unlock_chess",
+            "hangman": "unlock_hangman",
+            "piano": "unlock_piano",
+        }
+
+        for game_name,game_startlabel in game_unlock_db.iteritems():
+            if (
+                    not mas_isGameUnlocked(game_name)
+                    and renpy.seen_label(game_startlabel)
+                ):
+                mas_unlockGame(game_name)
 
     # reset mas mood bday
     python:
