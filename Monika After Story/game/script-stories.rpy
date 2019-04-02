@@ -462,8 +462,8 @@ label mas_scary_story_setup:
     stop music fadeout 1.0
     pause 1.0
     $ mas_temp_m_flag = morning_flag
-
-    $ store.mas_sprites.reset_zoom()
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     $ mas_changeWeather(mas_weather_rain)
     call spaceroom(start_bg="monika_gloomy_room")
     $ morning_flag = True
@@ -491,6 +491,7 @@ label mas_scary_story_setup:
     return
 
 label mas_scary_story_cleanup:
+
     python:
         story_end_quips = [
             "Scared, [player]?",
@@ -508,8 +509,8 @@ label mas_scary_story_cleanup:
     $ morning_flag = mas_temp_m_flag
     if not mas_isO31():
         hide vignette
-
     call mas_change_weather(mas_temp_r_flag)
+    call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
     $ play_song(songs.current_track)
     m 1eua "I hope you liked it, [player]~"
