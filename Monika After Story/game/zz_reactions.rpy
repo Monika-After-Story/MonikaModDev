@@ -651,7 +651,6 @@ label mas_reaction_gift_coffee:
         m "Thank you so much, [player]!"
 
     else:
-        show emptydesk at i11 zorder 9
         $ mas_gainAffection(modifier=2, bypass=True)
 
         m 1hua "Now I can finally make some!"
@@ -660,6 +659,7 @@ label mas_reaction_gift_coffee:
 
         $ curr_zoom = store.mas_sprites.zoom_level
         call monika_zoom_transition_reset(1.0)
+        show emptydesk at i11 zorder 9
 
         m 1eua "I'd like to share the first with you, after all."
 
