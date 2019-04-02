@@ -911,6 +911,7 @@ init -1 python in evhand:
     LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
+    # TODO: consider an addEvent param instead
     RESTART_BLKLST = [
         "mas_crashed_start",
         "monika_affection_nickname",
@@ -918,7 +919,8 @@ init -1 python in evhand:
         "mas_coffee_finished_drinking",
         "monikaroom_will_change",
         "monika_hair_select",
-        "monika_clothes_select"
+        "monika_clothes_select",
+        "monika_rain_holdme",
     ]
 
     # as well as special functions
@@ -1958,8 +1960,8 @@ label prompt_menu:
     python:
         talk_menu = []
         if len(unseen_events)>0:
-            talk_menu.append(("{b}Unseen{/b}", "unseen"))
-        talk_menu.append(("Ask a question", "prompt"))
+            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
         talk_menu.append(("I love you!", "love"))

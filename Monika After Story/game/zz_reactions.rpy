@@ -1115,7 +1115,7 @@ label mas_reaction_christmascookies:
         m 3hua "Christmas cookies!"
         m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
         m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
-        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious{w=0.2}--icing!"
+        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
         m 3hua "Thank you, [player]~"
 
     elif times_cookies_given == 1:
