@@ -640,7 +640,7 @@ init 5 python:
 label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
-    $ store.mas_sprites.reset_zoom()
+
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
@@ -657,6 +657,10 @@ label mas_reaction_gift_coffee:
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
         m "Why don't I go ahead and make a cup right now?"
+
+        $ curr_zoom = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
+
         m 1eua "I'd like to share the first with you, after all."
 
         # monika is off screen
@@ -669,8 +673,13 @@ label mas_reaction_gift_coffee:
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
+        # 1 second wait so dissolve is complete before zooming
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
+
         # monika back on screen
         m 1eua "I'll let that brew for a few minutes."
+
         $ mas_brewCoffee()
         $ persistent._mas_acs_enable_coffee = True
         $ persistent._mas_coffee_been_given = True
@@ -1051,16 +1060,24 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            $ store.mas_sprites.reset_zoom()
+            $ curr_zoom = store.mas_sprites.zoom_level
+            call monika_zoom_transition_reset(1.0)
             show emptydesk at i11 zorder 9
+
             m 3eua "In fact, I think I'll make some right now!"
+
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
-            $ mas_brewHotChoc()
+
+            # 1 second wait so dissolve is complete before zooming
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
 
             m 1hua "There, it'll be ready in a few minutes."
+
+            $ mas_brewHotChoc()
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
