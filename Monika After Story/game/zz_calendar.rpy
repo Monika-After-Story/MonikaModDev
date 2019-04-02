@@ -1773,7 +1773,7 @@ init python:
             "first-kiss",
             "Our First Kiss",
             persistent._mas_first_kiss,
-            []
+            [persistent._mas_first_kiss.year]
         )
 
 # Using init 2 so we can have access to the season dates
