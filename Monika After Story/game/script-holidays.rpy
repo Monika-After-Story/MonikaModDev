@@ -4015,7 +4015,7 @@ label mas_pf14_monika_lovey_dovey:
     #Add the delayed action to remove itself
     $ mas_addDelayedAction(11)
 
-    return "derandom"
+    return "derandom|no_unlock"
 
 #######################[HOL050] INTRO:
 
@@ -4075,7 +4075,7 @@ label mas_f14_monika_valentines_intro:
         m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
 
         #Derandom this since it's possible to get this still
-        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True,lock=True)
 
     else:
         pause 2.0
