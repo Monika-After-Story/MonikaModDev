@@ -97,7 +97,7 @@ label monika_playerapologizes:
             apologylist.append((generic_ev.prompt, generic_ev.eventlabel, False, False))
 
         #The back button
-        return_prompt_back = ("Nevermind", False, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     #Display our scrollable
     show monika at t21
@@ -190,7 +190,7 @@ label mas_apology_generic:
             m 2dsc ".{w=2}.{w=2}."
             m "Okay."
         elif mas_isMoniDis():
-            m 2dfd "{i}sigh{/i}"
+            m 2dfd "{i}*sigh*{/i}"
             m 2dsd "I hope this isn't some joke or trick, [player]."
             m 2dsc "..."
             m 1eka "...Thank you for the apology."
