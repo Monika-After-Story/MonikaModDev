@@ -3372,25 +3372,26 @@ label ch30_reload_delegate:
 
     return
 
-init 5 python:
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(
-            skip_visual=True
-        )
-    )
-
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_ghost",
-            unlocked=False,
-            rules=ev_rules,
-            aff_range=(mas_aff.NORMAL, None),
-        ),
-        code="GRE"
-    )
-    del ev_rules
+# TODO: need to have an explanation before we use this again
+#init 5 python:
+#    ev_rules = {}
+#    ev_rules.update(
+#        MASGreetingRule.create_rule(
+#            skip_visual=True
+#        )
+#    )
+#
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_ghost",
+#            unlocked=False,
+#            rules=ev_rules,
+#            aff_range=(mas_aff.NORMAL, None),
+#        ),
+#        code="GRE"
+#    )
+#    del ev_rules
 
 label greeting_ghost:
     #Prevent it from happening more than once.
