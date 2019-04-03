@@ -645,6 +645,8 @@ init python:
             new_weather = mas_shouldRain()
             if new_weather is not None and new_weather.prompt != mas_current_weather.prompt:
                 mas_changeWeather(new_weather)
+                if new_weather.prompt == 'Thunder/Lightning':
+                    renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
                 return True
             elif mas_current_weather.prompt != mas_weather_def.prompt:
                 mas_changeWeather(mas_weather_def)
