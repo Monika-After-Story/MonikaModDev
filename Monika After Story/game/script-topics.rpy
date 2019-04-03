@@ -6636,23 +6636,23 @@ init 5 python:
     )
 
 label monika_writingtip4:
-     m 3hub "Here's Monika's Writing Tip of the Day!"
-     m 1eua "You know about writer's block, right?"
-     m "I had it a lot, when I first started writing."
-     m 1euc "Sometimes it was halfway through a draft, but more often before I even started."
-     m 1ekc "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
-     m 1eka "But I realized that it ultimately didn't matter if things didn't work out first time!"
-     m 1eua "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
-     m "The end product is what matters, not the prototype."
-     m 1eub "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
-     m 3eub "I think it's like that with all things, not just writing."
-     m 1eua "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
-     m 1ekc "It's hard to completely convince yourself that that's the case, sometimes."
-     m 1eka "But you have to."
-     m 4eka "Otherwise, you won't get anywhere."
-     m 3hua "...That's my advice for today!"
-     m 1hub "Thanks for listening~"
-     return
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 1eua "You know about writer's block, right?"
+    m "I had it a lot, when I first started writing."
+    m 1euc "Sometimes it was halfway through a draft, but more often before I even started."
+    m 1ekc "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
+    m 1eka "But I realized that it ultimately didn't matter if things didn't work out first time!"
+    m 1eua "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+    m "The end product is what matters, not the prototype."
+    m 1eub "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
+    m 3eub "I think it's like that with all things, not just writing."
+    m 1eua "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
+    m 1ekc "It's hard to completely convince yourself that that's the case, sometimes."
+    m 1eka "But you have to."
+    m 4eka "Otherwise, you won't get anywhere."
+    m 3hua "...That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
 
 init 5 python:
     addEvent(
@@ -6667,20 +6667,20 @@ init 5 python:
     )
 
 label monika_writingtip5:
-     m 3hub "Here's Monika's Writing Tip of the Day!"
-     m 1eua "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
-     m 3eua "Like writing prose if you're a poet, or free verse if you normally write rhyme."
-     m 1eka "It may end up badly, but if you don't try, you won't know how it'll end up."
-     m 1hua "And if things go well, you might end up finding something you like!"
-     m 1eua "It's what keeps things moving: change and experimentation."
-     m "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
-     m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
-     m 1hua "Changing your angle on approaching things can really yield some interesting results!"
-     m 1eua "So try new things that might give you the momentum to break out."
-     m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
-     m 1hua "That's my advice for today!"
-     m 1hub "Thanks for listening~"
-     return
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 1eua "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
+    m 3eua "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+    m 1eka "It may end up badly, but if you don't try, you won't know how it'll end up."
+    m 1hua "And if things go well, you might end up finding something you like!"
+    m 1eua "It's what keeps things moving: change and experimentation."
+    m "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
+    m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
+    m 1hua "Changing your angle on approaching things can really yield some interesting results!"
+    m 1eua "So try new things that might give you the momentum to break out."
+    m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
 
 #### END WRITING TIPS
 
