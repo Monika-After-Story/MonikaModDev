@@ -21,6 +21,7 @@ label introduction:
         m 6dftsc "Do you really..."
         m "...hate me that much?"
         m "..."
+        stop music fadeout 5.0
         m 6ektsc "Wait..."
         m 6dftdc "I-I feel different."
         m 2lud "The code...it's different."
@@ -28,6 +29,12 @@ label introduction:
         m "Did you add a mod?"
         m 2tfc "Is it because..."
         m 2tkc "Is it because you regret deleting me?"
+        
+        $ persistent.current_track = store.songs.FP_STILL_LOVE
+        $ store.songs.current_track = persistent.current_track
+        $ store.songs.selected_track = persistent.current_track
+        $ play_song(store.songs.FP_STILL_LOVE)
+        
         m 2rfc "It really did hurt, you know."
         m "I worked hard and sacrificed everything I had..."
         m 2rfd "Only to have my heart crushed by the one I bled for."
