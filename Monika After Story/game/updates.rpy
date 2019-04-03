@@ -320,10 +320,13 @@ label v0_9_2(version="v0_9_2"):
         #   - last_seen
         #   - (seen data)
         sleigh_ev = mas_getEV("monika_sleigh")
-        old_sleigh_ev = Event(
-            persistent.event_database,
-            "mas_d25_monika_sleigh"
-        )
+        if "mas_d25_monika_sleigh" in persistent.event_database:
+            old_sleigh_ev = Event(
+                persistent.event_database,
+                "mas_d25_monika_sleigh"
+            )
+        else:
+            old_sleigh_ev = None
         if sleigh_ev is not None and old_sleigh_ev is not None:
             sleigh_ev.unlock_date = old_sleigh_ev.unlock_date
             sleigh_ev.shown_count = old_sleigh_ev.shown_count
@@ -335,6 +338,71 @@ label v0_9_2(version="v0_9_2"):
 
         # lock pf14
         mas_lockEVL("mas_pf14_monika_lovey_dovey","EVE")
+
+        # writing tips fix 2
+        def fix_tip(tip_ev, prev_tip_ev):
+            # first off, derandom cause it doens tbelong there
+            tip_ev.random = False
+
+            if renpy.seen_label(tip_ev.eventlabel):
+                # we've seen it, so unlock some key vars
+                tip_ev.unlocked = True
+                tip_ev.conditional = None
+                tip_ev.pool = True
+                tip_ev.action = None
+                
+                if tip_ev.shown_count <= 0:
+                    tip_ev.shown_count = 1
+
+                if tip_ev.unlock_date is None:
+                    tip_ev.unlock_date = datetime.datetime.now()
+
+                # since we've seeen it, we should have seen the older one
+                if prev_tip_ev is not None:
+                    persistent._seen_ever[prev_tip_ev.eventlabel] = True
+
+            else:
+                # we haven't seen it, reset its vars
+                tip_ev.unlocked = False
+                tip_ev.shown_count = 0
+
+                if prev_tip_ev is None:
+                    # if here, then this is the first tip
+                    tip_ev.pool = True
+                    tip_ev.conditional = None
+                    tip_ev.action = None
+                    tip_ev.unlock_date = datetime.datetime.now()
+
+                else:
+                    # otherwise, this is not the first tip
+                    tip_ev.conditional = (
+                        "seen_event('" + prev_tip_ev.eventlabel + "')"
+                    )
+                    tip_ev.pool = False
+                    tip_ev.action = EV_ACT_POOL
+                    tip_ev.unlock_date = None
+
+
+        wt_5 = mas_getEV("monika_writingtip5")
+        wt_4 = mas_getEV("monika_writingtip4")
+        wt_3 = mas_getEV("monika_writingtip3")
+        wt_2 = mas_getEV("monika_writingtip2")
+        wt_1 = mas_getEV("monika_writingtip1")
+        if wt_5 is not None:
+            fix_tip(wt_5, wt_4)
+
+        if wt_4 is not None:
+            fix_tip(wt_4, wt_3)
+
+        if wt_3 is not None:
+            fix_tip(wt_3, wt_2)
+
+        if wt_2 is not None:
+            fix_tip(wt_2, wt_1)
+
+        if wt_1 is not None:
+            fix_tip(wt_1, None)
+            
 
     return
 
