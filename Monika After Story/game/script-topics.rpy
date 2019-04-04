@@ -1672,7 +1672,7 @@ label monika_rain:
                     mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
-                    call mas_change_weather(mas_weather_rain)
+                    call mas_change_weather(mas_weather_rain, by_user=False)
 
                 stop music fadeout 1.0
 
@@ -1710,7 +1710,7 @@ label monika_rain:
                         call mas_change_weather(mas_weather_snow)
 
                     else:
-                        call mas_change_weather(mas_weather_def)
+                        call mas_change_weather(mas_weather_def,by_user=False)
 
                 m 2eka "But it's understandable."
                 m 1eua "Rainy weather can look pretty gloomy."

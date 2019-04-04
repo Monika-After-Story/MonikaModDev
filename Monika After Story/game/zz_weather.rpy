@@ -99,8 +99,49 @@ image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 default persistent._mas_weather_MWdata = {}
 # stores locked/unlocked status for weather
 
+default persistent._mas_force_weather = False
+
+#When did we last check if it could rain
+default persistent._mas_date_last_checked_rain = None
+
+#Should it rain today?
+default persistent._mas_should_rain_today = None
+
+#Loading at init 0 because of season functions
+init python in mas_weather:
+    def shouldRainToday():
+        import random
+        import datetime
+
+        #Is it a new day? If so, we should see if it should rain today
+        if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
+            store.persistent._mas_date_last_checked_rain = datetime.date.today()
+
+            #Now we roll
+            chance = random.randint(0,100)
+
+            #ODDS:
+            #   Spring:
+            #       - 30% chance for it to not rain on a particular day
+            #   Summer:
+            #       - 85% chance for it to not rain on a particular day
+            #   Fall:
+            #       - 40% chance for it to not rain on a particular day
+            if store.mas_isSpring():
+                store.persistent._mas_should_rain_today = chance >= 30
+            elif store.mas_isSummer():
+                store.persistent._mas_should_rain_today = chance >= 85
+            elif store.mas_isFall():
+                store.persistent._mas_should_rain_today = chance >= 40
+
+        return store.persistent._mas_should_rain_today
+
 init -20 python in mas_weather:
     import store
+
+    #NOTE: Not persistent since weather changes on startup
+    mas_force_weather = False
+
 
     WEATHER_MAP = {}
 
@@ -108,7 +149,9 @@ init -20 python in mas_weather:
     # NOTE: just reference MOOD's numbers
     WEAT_RETURN = "Nevermind"
 
-    
+    mas_weather_change_time = None
+    #Stores the time at which weather should change
+
 #    def canChangeWeather():
 #        """
 #        Returns true if the user can change weather
@@ -120,6 +163,43 @@ init -20 python in mas_weather:
 #            or store.persistent._mas_weather_snow_happened
 #        )
 
+    def weatherProgress():
+        """
+        Runs a roll on mas_shouldRain() to pick a new weather to change to after a time between half an hour - one and a half hour
+
+        RETURNS:
+            - True or false on whether or not to call spaceroom
+        """
+
+        import datetime
+        import random
+
+        #If it shouldn't rain today, or the player forced weather, then we do nothing
+        if not shouldRainToday() or mas_force_weather:
+            return False
+
+        #Otherwise we do stuff
+        global mas_weather_change_time
+        #Set a time for startup
+        if not mas_weather_change_time:
+            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+        elif mas_weather_change_time < datetime.datetime.now():
+            #Need to set a new check time
+            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+            #Change weather
+            new_weather = mas_shouldRain()
+            if new_weather is not None and new_weather.prompt != mas_current_weather.prompt:
+                mas_changeWeather(new_weather)
+                #Play the rumble in the back to indicate thunder
+                if new_weather.prompt == 'Thunder/Lightning':
+                    renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
+                return True
+            elif mas_current_weather.prompt != mas_weather_def.prompt:
+                mas_changeWeather(mas_weather_def)
+                return True
+        return False
 
     def loadMWData():
         """
@@ -581,7 +661,7 @@ init 800 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather):
+    def mas_changeWeather(new_weather, by_user=None):
         """
         Changes weather without doing scene changes
 
@@ -589,7 +669,12 @@ init 800 python:
 
         IN:
             new_weather - weather to change to
+            by_user - flag for if user changes weather or not
         """
+
+        if by_user is not None:
+            mas_weather.mas_force_weather = bool(by_user)
+
         mas_current_weather.exit(new_weather)
         mas_setWeather(new_weather)
 
@@ -606,7 +691,11 @@ init 800 python:
 #
 # IN:
 #   new_weather - weather object to change to
-label mas_change_weather(new_weather):
+#   by_user - whether or not user forced weather
+label mas_change_weather(new_weather, by_user=None):
+
+    if by_user is not None:
+        $ mas_weather.mas_force_weather = bool(by_user)
 
     # call exit programming points
     $ mas_current_weather.exit(new_weather)
@@ -715,7 +804,7 @@ label monika_change_weather_loop:
     pause 1.0
 
     # finally change the weather
-    call mas_change_weather(sel_weather)
+    call mas_change_weather(sel_weather,by_user=True)
 
     if not skip_outro:
         m 1eua "There we go!"
