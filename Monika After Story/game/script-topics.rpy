@@ -1610,8 +1610,6 @@ label monika_rain:
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
 
-                stop music fadeout 1.0
-
                 call monika_holdme_prep
 
                 m 1hua "Then hold me, [player]..."
