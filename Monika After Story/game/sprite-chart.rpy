@@ -318,92 +318,92 @@ init -5 python in mas_sprites:
     NEW_BODY_STR = PREFIX_BODY + DEF_BODY
 
     ## string builder constants
-    BS_ACS = (
-        A_T_MAIN
-        PREFIX_ACS
-        "{0}" # acs img sit
-        ART_DLM
-        "{1}" # poseid
-        "{2}" # n_suffix
-        FILE_EXT
-    )
+    BS_ACS = "".join((
+        A_T_MAIN,
+        PREFIX_ACS,
+        "{0}", # acs img sit
+        ART_DLM,
+        "{1}", # poseid
+        "{2}", # n_suffix
+        FILE_EXT,
+    ))
 
-    BS_HAIR_U = (
-        H_MAIN
-        PREFIX_HAIR
-        "{0}" # hair img sit
-        "{1}" # hair suffix
-        "{2}" # night suffix
-        FILE_EXT
-    )
+    BS_HAIR_U = "".join((
+        H_MAIN,
+        PREFIX_HAIR,
+        "{0}", # hair img sit
+        "{1}", # hair suffix
+        "{2}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_HAIR_L = (
-        H_MAIN
-        PREFIX_HAIR_LEAN
-        "{0}" # lean
-        ART_DLM
-        "{1}" # hair img sit
-        "{2}" # hair suffix
-        "{3}" # night suffix
-        FILE_EXT
-    )
+    BS_HAIR_L = "".join((
+        H_MAIN,
+        PREFIX_HAIR_LEAN,
+        "{0}", # lean
+        ART_DLM,
+        "{1}", # hair img sit
+        "{2}", # hair suffix
+        "{3}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_TORSO = (
-        C_MAIN
-        "{0}/" # clothing img sit
-        PREFIX_TORSO
-        "{1}" # hair img sit
-        "{2}" # night suffix
-        FILE_EXT
-    )
+    BS_TORSO = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_TORSO,
+        "{1}", # hair img sit
+        "{2}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_TORSO_L = (
-        C_MAIN
-        "{0}/" # clothign img sit
-        PREFIX_TORSO_LEAN
-        "{1}" # hair img sit
-        ART_DLM
-        "{2}" # lean
-        "{3}" # night suffix
-        FILE_EXT
-    )
+    BS_TORSO_L = "".join((
+        C_MAIN,
+        "{0}/", # clothign img sit
+        PREFIX_TORSO_LEAN,
+        "{1}", # hair img sit
+        ART_DLM,
+        "{2}", # lean
+        "{3}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_BODY_U = (
-        C_MAIN
-        "{0}/" # clothing img sit
-        NEW_BODY_STR
-        "{1}" # night suffix
-        FILE_EXT
-    )
+    BS_BODY_U = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        NEW_BODY_STR,
+        "{1}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_BODY_L = (
-        C_MAIN
-        "{0}/" # clothing img sit
-        PREFIX_BODY_LEAN
-        "{1}" # lean
-        "{2}" # night suffix
-        FILE_EXT
-    )
+    BS_BODY_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_BODY_LEAN,
+        "{1}", # lean
+        "{2}", # night suffix
+        FILE_EXT,
+    ))
 
-    BS_ARMS_NH_U = (
-        C_MAIN
-        "{0}/" # clothing img sit
-        PREFIX_ARMS
-        "{1}" # arms
-        "{2}" # night sfufix
-        FILE_EXT
-    )
+    BS_ARMS_NH_U = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS,
+        "{1}", # arms
+        "{2}", # night sfufix
+        FILE_EXT,
+    ))
 
-    BS_ARMS_NH_L = (
-        C_MAIN
-        "{0}/" # clothing img sit
-        PREFIX_ARMS_LEAN
-        "{1}" # lean
-        ART_DLM
-        "{2}" # arms
-        "{3}" # night suffix
-        FILE_EXT
-    )
+    BS_ARMS_NH_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS_LEAN,
+        "{1}", # lean
+        ART_DLM,
+        "{2}", # arms
+        "{3}", # night suffix
+        FILE_EXT,
+    ))
 
     ## BLK010
     # ACCESSORY BLACKLIST
