@@ -1612,13 +1612,7 @@ label monika_rain:
 
                 stop music fadeout 1.0
 
-                # clear selected track
-                $ songs.current_track = songs.FP_NO_SONG
-                $ songs.selected_track = songs.FP_NO_SONG
-
-                # hide ui and disable hotkeys
-                $ HKBHideButtons()
-                $ store.songs.enabled = False
+                call monika_holdme_prep
 
                 m 1hua "Then hold me, [player]..."
                 show monika 6dubsa
