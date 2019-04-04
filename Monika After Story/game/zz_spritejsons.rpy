@@ -1254,7 +1254,14 @@ init 790 python in mas_sprites_json:
             return
 
         # check name and img_sit
-        _validate_params(jobj, sp_obj_params, True, msgs_err, MSG_ERR_ID)
+        _validate_params(
+            jobj,
+            sp_obj_params,
+            REQ_SHARED_PARAM_NAMES,
+            True,
+            msgs_err,
+            MSG_ERR_ID
+        )
         if len(msgs_errs) > 0:
             writelogs(msgs_errs)
             return
@@ -1277,7 +1284,14 @@ init 790 python in mas_sprites_json:
                 obj_based_params[param_name] = jobj.pop(param_name)
 
         # validate optional shared params
-        _validate_params(jobj, sp_obj_params, False, msgs_err, MSG_ERR_ID)
+        _validate_params(
+            jobj,
+            sp_obj_params,
+            OPT_SHARED_PARAM_NAMES,
+            False,
+            msgs_err,
+            MSG_ERR_ID
+        )
         if len(msgs_errs) > 0:
             writelogs(msgs_errs)
             return
