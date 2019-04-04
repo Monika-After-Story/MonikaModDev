@@ -311,14 +311,22 @@ init python:
     mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
+    # this uses the amb (ambient) mixer. 
     renpy.music.register_channel(
         "background",
-        mixer="sfx",
+        mixer="amb",
         loop=True,
         stop_on_mute=True,
         tight=True
     )
-    renpy.music.set_volume(songs.getVolume("music"), channel="background")
+
+    # also need another verison of background for concurrency
+    renpy.music.register_channel(
+        "backsound",
+        mixer="amb",
+        loop=False,
+        stop_on_mute=True
+    )
 
     #Define new functions
     def show_dialogue_box():
@@ -484,12 +492,38 @@ init python:
         RETURNS:
             rain weather to use, or None if we dont want to change weather
         """
-        if mas_isMoniNormal(higher=True):
-            return None
-
-        # Upset and lower means we need to roll
+        #All paths roll
         chance = random.randint(1,100)
-        if mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
+        if mas_isMoniNormal(higher=True):
+            #NOTE: Chances are as follows:
+            #Spring:
+            #   - Rain: 50%
+            #   - Thunder: 20% (40% of that 50%)
+            #
+            #Summer:
+            #   - Rain: 10%
+            #   - Thunder: 6% (60% of that 10%)
+            #
+            #Fall:
+            #   - Rain: 30%
+            #   - Thunder: 12% (40% of that 50%)
+            if mas_isSpring() and chance <= 50:
+                if chance <= 20:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+            elif mas_isSummer() and chance <= 10:
+                if chance <= 6:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+            elif mas_isFall() and chance <= 30:
+                if chance <= 12:
+                    return mas_weather_thunder
+                return mas_weather_rain
+
+        #Otherwise rain based on how Moni's feeling
+        elif mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
             return mas_weather_rain
 
         elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
@@ -1290,7 +1324,7 @@ label ch30_post_mid_loop_eval:
                 show mas_lightning zorder 4
 
             $ pause(0.5)
-            play sound "mod_assets/sounds/amb/thunder.wav"
+            play backsound "mod_assets/sounds/amb/thunder.wav"
         
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.

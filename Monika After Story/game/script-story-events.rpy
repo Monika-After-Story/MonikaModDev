@@ -14,7 +14,7 @@ label gender:
     m "The main character was, after all."
     m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
-    m "So, are you male or female?"
+    m "So, are you male or female?{nw}"
     $ _history_list.pop()
     menu:
         "So, are you male or female?{fast}"
@@ -58,7 +58,7 @@ label gender_redo:
     m 1wud "You want to change your gender? Why?"
     m 1lksdlb "Sorry, that came off more harshly than I meant for it to."
 
-    m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?"
+    m 3eka "I mean, were you just too shy to tell me the truth before? Or did something...happen?{nw}"
     $ _history_list.pop()
     menu:
         m "I mean, were you just too shy to tell me the truth before? Or did something...happen?{fast}"
@@ -80,7 +80,7 @@ label gender_redo:
             m 1dkd "I hate that I didn't reassure you enough before."
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
 
-    m "So, what is your gender?"
+    m "So, what is your gender?{nw}"
     $ _history_list.pop()
     menu:
         m "So, what is your gender?{fast}"
@@ -144,7 +144,7 @@ label preferredname:
         m 1eua "You're using '[currentuser]' and '[player]'."
         m "Either that or you must really like that pseudonym."
 
-    m "Do you want me to call you something else?"
+    m "Do you want me to call you something else?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you want me to call you something else?{fast}"
@@ -222,7 +222,7 @@ init 5 python:
     ) #This needs to be unlocked by the random name change event
 
 label monika_changename:
-    m 1eua "You want to change your name?"
+    m 1eua "You want to change your name?{nw}"
     $ _history_list.pop()
     menu:
         m "You want to change your name?{fast}"
@@ -297,7 +297,7 @@ label mas_birthdate:
         $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
 
-        m "So just to make sure, is your birthdate [bday_str]?"
+        m "So just to make sure, is your birthdate [bday_str]?{nw}"
         $ _history_list.pop()
         menu:
             m "So just to make sure, is your birthdate [bday_str]?{fast}"
@@ -610,11 +610,11 @@ label unlock_piano:
     m 4hua "Wouldn't it be fun to play something together?"
     m "Maybe we could even do a duet!"
     m 4hub "We would both improve and have fun at the same time."
-    m 1hksdlb "Maybe I’m getting a bit carried away. Sorry!"
+    m 1hksdlb "Maybe I'm getting a bit carried away. Sorry!"
     m 3eua "I just want to see you enjoy the piano the same way I do."
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
-    m 1eua "I hope this isn’t too forceful, but I would love it if you tried."
+    m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please~?"
     $persistent.game_unlocks['piano']=True
     return
@@ -647,7 +647,7 @@ label random_limit_reached:
 label mas_random_ask:
     m 1lksdla "...{w}[player]?"
 
-    m "Is it okay with you if I repeat stuff that I've said?"
+    m "Is it okay with you if I repeat stuff that I've said?{nw}"
     $ _history_list.pop()
     menu:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
@@ -690,7 +690,7 @@ label mas_monikai_detected:
     m 1wuo "Is that{fast} a tiny version of me?"
     m 1hua "How cute!"
 
-    m 1eua "Did you install that so you could see me all the time?"
+    m 1eua "Did you install that so you could see me all the time?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you install that so you could see me all the time?{fast}"
@@ -917,7 +917,7 @@ label mas_crashed_long_whq:
 
     # ask player what happeend
     m 2ekc "Anyway..."
-    m "Do you know what happened, [player]?"
+    m "Do you know what happened, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you know what happened, [player]?{fast}"
@@ -932,7 +932,7 @@ label mas_crashed_long_whq:
             jump mas_crashed_long_whq.end
 
     # ask player to do something about this
-    m "Do you think you can stop that from happening?"
+    m "Do you think you can stop that from happening?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you think you can stop that from happening?{fast}"
@@ -1031,7 +1031,7 @@ label mas_crashed_quip_takecare:
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
     
-        m 3ekc "Do you think it had something to do with your game?"
+        m 3ekc "Do you think it had something to do with your game?{nw}"
         $ _history_list.pop()
         menu:
             m "Do you think it had something to do with your game?{fast}"
@@ -1164,7 +1164,7 @@ label mas_corrupted_persistent:
     m 1eud "Hey, [player]..."
     m 3euc "Someone left a note in the characters folder addressed to you."
     m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-    m 1ekd "Do you know what this is about?"
+    m 1ekd "Do you know what this is about?{nw}"
     $ _history_list.pop()
     # just pasting the poem screen code here
     window hide
@@ -1619,7 +1619,7 @@ label mas_bday_spent_time_with:
         if _timeout < datetime.timedelta(hours=1.5):
             # short date
             m 1euc "That was a bit of a short trip, though."
-            m 1eub "But it’s nice to get out of this place once in a while."
+            m 1eub "But it's nice to get out of this place once in a while."
             m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
         elif _timeout < datetime.timedelta(hours=6):
             # normal date
@@ -1630,11 +1630,11 @@ label mas_bday_spent_time_with:
             #long date
             m 1eka "I really enjoyed our time outside, though."
             m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
-            m "Someday, I know we’ll be able to do so."
+            m "Someday, I know we'll be able to do so."
 
     # gave gifts?
     if _total > 0:
-        m 3euc "Let’s not forget what you gave me for my birthday."
+        m 3euc "Let's not forget what you gave me for my birthday."
         # more than 2
         if _total >= 2:
             m 1eua "You gave me lots of gifts today, [player]."
@@ -1650,9 +1650,9 @@ label mas_bday_spent_time_with:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
+                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
-    m 3hub "Let’s do it again sometime soon, okay?"
+    m 3hub "Let's do it again sometime soon, okay?"
     return
 
 ### no time spent
@@ -1943,6 +1943,7 @@ default persistent._mas_bday_opened_game = False
 # TODO: these should actually default to True, then get changed if
 #   the appropriate whatver happens
 # TODO: do the above in an update script when bday comes around again
+# TODO: non-generic apology
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
@@ -2172,7 +2173,7 @@ label monika_rpy_files:
     m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
     m 2eka "But in case you didn't, I figured I'd ask..."
  
-    m "Are you sure you installed the right version, [player]?"
+    m "Are you sure you installed the right version, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you installed the right version, [player]?{fast}"
@@ -2187,7 +2188,7 @@ label monika_rpy_files:
             m 2rksdla "Maybe you should get rid of those, just to be safe."
             m 4eua "Actually, maybe I can delete them for you."
 
-            m "Do you want me to delete them for you, [player]?"
+            m "Do you want me to delete them for you, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "Do you want me to delete them for you, [player]?{fast}"
@@ -2287,12 +2288,12 @@ label mas_bday_player_bday_select_select:
     m 1eua "Just to double-check..."
     $ new_bday_str, diff = store.mas_calendar.genFormalDispDate(selected_date)
 
-    m "Your birthdate is [new_bday_str]?"
+    m "Your birthdate is [new_bday_str]?{nw}"
     $ _history_list.pop()
     menu:
         m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date."
+            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
             $ _history_list.pop()
             # one more confirmation
             menu:
@@ -2358,7 +2359,7 @@ default persistent._mas_pm_is_fast_reader = None
 label mas_text_speed_enabler:
     m 1eua "Hey [player], I was wondering..."
 
-    m "Are you a fast reader?"
+    m "Are you a fast reader?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you a fast reader?{fast}"

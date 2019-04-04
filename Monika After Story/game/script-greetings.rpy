@@ -382,7 +382,7 @@ label greeting_gooday:
     if mas_isMoniNormal(higher=True):
         m 1hua "Hello again, [player]. How are you doing?"
 
-        m "Are you having a good day today?"
+        m "Are you having a good day today?{nw}"
         $ _history_list.pop()
         menu:
             m "Are you having a good day today?{fast}"
@@ -401,7 +401,7 @@ label greeting_gooday:
     elif mas_isMoniUpset():
         m 2efc "[player]."
 
-        m "How is your day going?"
+        m "How is your day going?{nw}"
         $ _history_list.pop()
         menu:
             m "How is your day going?{fast}"
@@ -420,7 +420,7 @@ label greeting_gooday:
     elif mas_isMoniDis():
         m 6ekc "Oh... {w=1}Hi, [player]."
 
-        m "H-How is your day going?"
+        m "H-How is your day going?{nw}"
         $ _history_list.pop()
         menu:
             m "H-How is your day going?{fast}"
@@ -470,7 +470,7 @@ label greeting_goodmorning:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "I'm guessing you can't sleep..."
 
-        m "Is that it?"
+        m "Is that it?{nw}"
         $ _history_list.pop()
         menu:
             m "Is that it?{fast}"
@@ -509,7 +509,7 @@ label greeting_goodmorning:
     elif current_time >= 18:
         m 1hua "Good evening, love!"
 
-        m "Did you have a good day today?"
+        m "Did you have a good day today?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day today?{fast}"
@@ -805,7 +805,7 @@ init 5 python:
 label greeting_yay:
     m 1hub "You're back! Yay!"
     m 1hksdlb "Oh, sorry. I've got a bit overexcited here."
-    m 1lksdla "I'm just very happy to see you again, hehe~"
+    m 1lksdla "I'm just very happy to see you again, ehehe~"
     return
 
 init 5 python:
@@ -820,9 +820,9 @@ init 5 python:
     )
 
 label greeting_youtuber:
-    m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
+    m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
-    m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
+    m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
     return
 
 init 5 python:
@@ -838,7 +838,7 @@ init 5 python:
 
 label greeting_hamlet:
     m 4esc "To be, or not to be, that is the question..."
-    m 1wuo "Oh, there you are. I was killing some time, hehe~"
+    m 1wuo "Oh, there you are. I was killing some time, ehehe~"
     m 1lksdlb "I wasn't expecting to see you so soon."
     return
 
@@ -906,7 +906,7 @@ init 5 python:
 label greeting_welcomeback2:
     m 1eua "Welcome back, [player]!"
     m "I hope your day is going well."
-    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
+    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
     return
 
 init 5 python:
@@ -949,7 +949,7 @@ init 5 python:
 label greeting_sweetpea:
     m 1hua "Look who's back."
     m 2hub "It's you, my sweetpea!"
-    m 1lkbsa "My goodness...that surely was embarassing to say, ehehe~"
+    m 1lkbsa "My goodness...that surely was embarrassing to say, ehehe~"
     return
 
 init 5 python:
@@ -980,9 +980,7 @@ label greeting_glitch:
     m 1wuo "[player]!"
     hide monika
     show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
-    extend " Nevermind that I was just..."
-    pause 0.1
-    extend " playing with the code a little."
+    m 4hksdlb "Nevermind that I was just...{w=0.1}playing with the code a little."
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
@@ -1228,7 +1226,7 @@ label monikaroom_greeting_ear_narration:
             m "Or if you ever did..."
             m "[player], I need you to promise me that you'll change."
 
-            m "You'll change, right?{w=1} For me?"
+            m "You'll change, right?{w=1} For me?{nw}"
             $ _history_list.pop()
             menu:
                 m "You'll change, right? For me?{fast}"
@@ -1251,7 +1249,7 @@ label monikaroom_greeting_ear_narration:
         else:
             m "Oh, you're back."
 
-            m "Are you ready to change, [player]?"
+            m "Are you ready to change, [player]?{nw}"
             $ _history_list.pop()
             menu:
                 m "Are you ready to change, [player]?{fast}"
@@ -1500,7 +1498,7 @@ label monikaroom_greeting_opendoor_locked:
     pause 0.7
 
     $ style.say_window = style.window_monika
-    m "Did I scare you, [player]?"
+    m "Did I scare you, [player]?{nw}"
     $ _history_list.pop()
     menu:
         m "Did I scare you, [player]?{fast}"
@@ -1855,7 +1853,7 @@ label greeting_japan:
     m 4hub "Watashi ha itsumademo anata no mono desu!"
     m 2hksdlb "Sorry if that didn't make sense!"
     m 3eua "You know what that means, [player]?"
-    m 4ekbfa "It means {i}'I'll be yours forever{/i}'~"
+    m 4ekbfa "It means {i}'I'll be yours forever'{/i}~"
     return
 
 init 5 python:
@@ -1877,7 +1875,7 @@ label greeting_sunshine:
     m 1wud "...Eh?"
     m "H-Huh?!"
     m 1wubsw "[player]!"
-    m 1lkbsa "Oh my gosh, this is so embarassing!"
+    m 1lkbsa "Oh my gosh, this is so embarrassing!"
     m "I w-was just singing to myself to pass time!"
     m 1ekbfa "Ehehe..."
     m 3hubfa "But now that you're here, we can spend some time together~"
@@ -1952,7 +1950,7 @@ label greeting_amnesia:
     m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
     m 1tku "And you reacted the way I hoped you would."
     m 3eka "I hope I didn't upset you too much, though."
-    m 1rksdlb "I’d feel the same way if you ever forget about me, [player]."
+    m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
     m 1hksdlb "Hope you can forgive my little prank, ehehe~"
 
     $ mas_lockEvent(mas_getEV("greeting_amnesia"))
@@ -1975,10 +1973,10 @@ init 5 python:
 label greeting_sick:
     if mas_isMoniNormal(higher=True):
         m 1hua "Welcome back, [player]!"
-        m 3eua "Are you feeling better?"
+        m 3eua "Are you feeling better?{nw}"
     else:
         m 2ekc "Welcome back, [player]..."
-        m "Are you feeling better?"
+        m "Are you feeling better?{nw}"
 
     $ _history_list.pop()
     menu:
@@ -2005,7 +2003,7 @@ label greeting_stillsick:
         m 2ekc "[player], you really should go get some rest."
         m 4ekc "Getting plenty of rest is the best way to recover from sickness quickly."
         m "Now please, [player], just go get some rest."
-        m 2ekc "Will you do that for me?"
+        m 2ekc "Will you do that for me?{nw}"
 
     $ _history_list.pop()
     menu:
@@ -2435,7 +2433,7 @@ label greeting_hairdown:
     m 4hua "Notice anything different today?"
     m 1hub "I decided to try something new~"
 
-    m "Do you like it?"
+    m "Do you like it?{nw}"
     $ _history_list.pop()
     menu:
         m "Do you like it?{fast}"
@@ -2658,7 +2656,7 @@ label greeting_back_from_school:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back [player]!"
 
-        m "Did you have a good day at school?"
+        m "Did you have a good day at school?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day at school?{fast}"
@@ -2677,7 +2675,7 @@ label greeting_back_from_school:
     elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
 
-        m "How was school?"
+        m "How was school?{nw}"
         $ _history_list.pop()
         menu:
             m "How was school?{fast}"
@@ -2691,7 +2689,7 @@ label greeting_back_from_school:
     elif mas_isMoniDis():
         m 6ekc "Oh...{w=1}you're back."
 
-        m "How was school?"
+        m "How was school?{nw}"
         $ _history_list.pop()
         menu:
             m "How was school?{fast}"
@@ -2723,7 +2721,7 @@ label greeting_back_from_work:
     if mas_isMoniNormal(higher=True):
         m 1hua "Oh, welcome back, [player]!"
 
-        m "Did you have a good day at work today?"
+        m "Did you have a good day at work today?{nw}"
         $ _history_list.pop()
         menu:
             m "Did you have a good day at work today?{fast}"
@@ -2745,7 +2743,7 @@ label greeting_back_from_work:
     elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
 
-        m "How was your day?"
+        m "How was your day?{nw}"
         $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
@@ -2760,7 +2758,7 @@ label greeting_back_from_work:
     elif mas_isMoniDis():
         m 6ekc "Hi, [player]... {w=1}Finally home from work?"
 
-        m "How was your day?"
+        m "How was your day?{nw}"
         $ _history_list.pop()
         menu:
             m "How was your day?{fast}"
@@ -3374,25 +3372,26 @@ label ch30_reload_delegate:
 
     return
 
-init 5 python:
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(
-            skip_visual=True
-        )
-    )
-
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_ghost",
-            unlocked=False,
-            rules=ev_rules,
-            aff_range=(mas_aff.NORMAL, None),
-        ),
-        code="GRE"
-    )
-    del ev_rules
+# TODO: need to have an explanation before we use this again
+#init 5 python:
+#    ev_rules = {}
+#    ev_rules.update(
+#        MASGreetingRule.create_rule(
+#            skip_visual=True
+#        )
+#    )
+#
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_ghost",
+#            unlocked=False,
+#            rules=ev_rules,
+#            aff_range=(mas_aff.NORMAL, None),
+#        ),
+#        code="GRE"
+#    )
+#    del ev_rules
 
 label greeting_ghost:
     #Prevent it from happening more than once.

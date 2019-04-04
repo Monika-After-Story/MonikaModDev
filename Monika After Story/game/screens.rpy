@@ -1236,6 +1236,11 @@ screen preferences():
                     bar value FieldValue(persistent, "_mas_randchat_freq",
                     range=6, style="slider")
 
+                    hbox:
+                        label _("Ambient Volume")
+
+                    bar value Preference("mixer amb volume")
+
 
                 vbox:
 
