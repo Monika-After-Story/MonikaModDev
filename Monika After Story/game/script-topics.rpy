@@ -1493,53 +1493,6 @@ label monika_yuri:
         m 1eua "I'd ask Yuri if I could."
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip1",category=['writing tips'],prompt="Writing Tip #1",pool=True))
-
-label monika_writingtip1:
-    m 1eua "You know, it's been a while since we've done one of these..."
-    m 1hub "...so let's go for it!"
-    m 3hub "Here's Monika's Writing Tip of the Day!"
-    m 3eua "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
-    m 1ekc "It's really depressing, you know?"
-    m "As someone who loves more than anything else to share the joy of exploring your passions..."
-    m "...it pains me when people think that being good just comes naturally."
-    m 3eka "That's how it is with everything, not just writing."
-    m 1eua "When you try something for the first time, you're probably going to suck at it."
-    m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
-    m 3eka "But maybe after a few weeks you come back to it, and you realize it was never really any good."
-    m "That happens to me all the time."
-    m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
-    m 4eub "But that tends to happen when you're always comparing yourself to the top professionals."
-    m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
-    m "The truth is, you have to climb up there, step by step."
-    m 4eua "And whenever you reach a milestone, first you look back and see how far you've gotten..."
-    m "And then you look ahead and realize how much more there is to go."
-    m 2duu "So, sometimes it can help to set the bar a little lower..."
-    m 1eua "Try to find something you think is {i}pretty{/i} good, but not world-class."
-    m "And you can make that your own personal goal."
-    m "It's also really important to understand the scope of what you're trying to do."
-    m 4eka "If you jump right into a huge project and you're still amateur, you'll never get it done."
-    m "So if we're talking about writing, a novel might be too much at first."
-    m 4esa "Why not try some short stories?"
-    m 1esa "The great thing about short stories is that you can focus on just one thing that you want to do right."
-    m 1eua "That goes for small projects in general - you can really focus on the one or two things."
-    m "It's such a good learning experience and stepping stone."
-    m 1euc "Oh, one more thing..."
-    m 1eua "Writing isn't something where you just reach into your heart and something beautiful comes out."
-    m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
-    m 1hua "That means there are methods and guides and basics to it!"
-    m 3eua "Reading up on that stuff can be super eye-opening."
-    m 1eua "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
-    m "And before you know it..."
-    m 1hua "You start sucking less and less."
-    m 1eua "Nothing comes naturally."
-    m "Our society, our art, everything - it's built on thousands of years of human innovation."
-    m 1eka "So as long as you start on that foundation, and take it step by step..."
-    m 1eua "You, too, can do amazing things."
-    m 1hua "...That's my advice for today!"
-    m 1hub "Thanks for listening~"
-    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_habits",category=['life'],prompt="Forming habits",random=True))
@@ -4966,34 +4919,6 @@ label monika_closet:
     m 3hua "So I'm expecting a lot more than just a dark closet~"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip2",category=['writing tips'],prompt="Writing Tip #2",conditional="seen_event('monika_writingtip1')",action=EV_ACT_POOL))
-
-label monika_writingtip2:
-    m 1euc "You know..."
-    m 1eua "We really don't do enough of these, so here's another one!"
-    m 3hub "Here's Monika's Writing Tip of the Day!"
-    m 2eua "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
-    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
-    m 4eka "You have to remember that we all start out from somewhere, and--"
-    m 2euc "Actually, this doesn't just apply to writing, but to anything, really."
-    m 2lksdla "What I'm trying to say is that you shouldn't be discouraged."
-    m 1hua "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
-    m 1eua "Because that just means that you can improve and be better than you were before."
-    m 3eua "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
-    m 1eka "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
-    m "I love you, and I will always support you in whatever you do."
-    m 1lksdlb "Provided it's legal, of course."
-    m 1tku "That doesn't mean I'm completely against it. I can keep a secret, after all~"
-    m 1eua "Here's a saying I've learned."
-    m 1duu "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
-    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
-    m 3eua "I don't remember the person who said that, but the words are there."
-    m 1eua "The effort one puts forth into something can transcend even one's self."
-    m 3hua "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
-    m 3hub "...That's my advice for today!"
-    m 1eka "Thanks for listening~"
-    return
 
 # languages other than english
 default persistent._mas_pm_lang_other = None
@@ -6568,8 +6493,113 @@ label monika_otaku:
     m 1hubfa "I can be your real-life fantasy instead~"
     return "derandom"
 
+### START WRITING TIPS
+
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_writingtip3",category=['writing tips'],prompt="Writing Tip #3",conditional="seen_event('monika_writingtip2')",action=EV_ACT_POOL))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip1",
+            category=['writing tips'],
+            prompt="Writing Tip #1",
+            pool=True
+        )
+    )
+
+label monika_writingtip1:
+    m 1eua "You know, it's been a while since we've done one of these..."
+    m 1hub "...so let's go for it!"
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 3eua "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
+    m 1ekc "It's really depressing, you know?"
+    m "As someone who loves more than anything else to share the joy of exploring your passions..."
+    m "...it pains me when people think that being good just comes naturally."
+    m 3eka "That's how it is with everything, not just writing."
+    m 1eua "When you try something for the first time, you're probably going to suck at it."
+    m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
+    m 3eka "But maybe after a few weeks you come back to it, and you realize it was never really any good."
+    m "That happens to me all the time."
+    m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
+    m 4eub "But that tends to happen when you're always comparing yourself to the top professionals."
+    m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
+    m "The truth is, you have to climb up there, step by step."
+    m 4eua "And whenever you reach a milestone, first you look back and see how far you've gotten..."
+    m "And then you look ahead and realize how much more there is to go."
+    m 2duu "So, sometimes it can help to set the bar a little lower..."
+    m 1eua "Try to find something you think is {i}pretty{/i} good, but not world-class."
+    m "And you can make that your own personal goal."
+    m "It's also really important to understand the scope of what you're trying to do."
+    m 4eka "If you jump right into a huge project and you're still amateur, you'll never get it done."
+    m "So if we're talking about writing, a novel might be too much at first."
+    m 4esa "Why not try some short stories?"
+    m 1esa "The great thing about short stories is that you can focus on just one thing that you want to do right."
+    m 1eua "That goes for small projects in general - you can really focus on the one or two things."
+    m "It's such a good learning experience and stepping stone."
+    m 1euc "Oh, one more thing..."
+    m 1eua "Writing isn't something where you just reach into your heart and something beautiful comes out."
+    m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
+    m 1hua "That means there are methods and guides and basics to it!"
+    m 3eua "Reading up on that stuff can be super eye-opening."
+    m 1eua "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
+    m "And before you know it..."
+    m 1hua "You start sucking less and less."
+    m 1eua "Nothing comes naturally."
+    m "Our society, our art, everything - it's built on thousands of years of human innovation."
+    m 1eka "So as long as you start on that foundation, and take it step by step..."
+    m 1eua "You, too, can do amazing things."
+    m 1hua "...That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip2",
+            category=['writing tips'],
+            prompt="Writing Tip #2",
+            conditional="seen_event('monika_writingtip1')",
+            action=EV_ACT_POOL
+        )
+    )
+
+label monika_writingtip2:
+    m 1euc "You know..."
+    m 1eua "We really don't do enough of these, so here's another one!"
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 2eua "If you're ever scared of sharing your writing to other people in fear of being criticized, don't be!"
+    m "After all, you have to remember that nobody ever starts out at their best. Not even someone like Tolkien, or Sir Terry Pratchett."
+    m 4eka "You have to remember that we all start out from somewhere, and--"
+    m 2euc "Actually, this doesn't just apply to writing, but to anything, really."
+    m 2lksdla "What I'm trying to say is that you shouldn't be discouraged."
+    m 1hua "No matter what you do, if someone tells you that your writing or work is bad, then be happy!"
+    m 1eua "Because that just means that you can improve and be better than you were before."
+    m 3eua "It also doesn't hurt to have friends and loved ones help you realize how good your writing is."
+    m 1eka "Just remember, no matter what they say about the work you put out, I'll always be there to support you all the way. Don't be afraid to turn to me, your friends, or your family."
+    m "I love you, and I will always support you in whatever you do."
+    m 1lksdlb "Provided it's legal, of course."
+    m 1tku "That doesn't mean I'm completely against it. I can keep a secret, after all~"
+    m 1eua "Here's a saying I've learned."
+    m 1duu "'If you endeavor to achieve, it will happen given enough resolve. It may not be immediate, and often your greater dreams are something you will not achieve in your own lifetime.'"
+    m "'The effort you put forth to anything transcends yourself. For there is no futility even in death.'"
+    m 3eua "I don't remember the person who said that, but the words are there."
+    m 1eua "The effort one puts forth into something can transcend even one's self."
+    m 3hua "So don't be afraid of trying! Keep going forward and eventually you'll make headway!"
+    m 3hub "...That's my advice for today!"
+    m 1eka "Thanks for listening~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip3",
+            category=['writing tips'],
+            prompt="Writing Tip #3",
+            conditional="seen_event('monika_writingtip2')",
+            action=EV_ACT_POOL
+        )
+    )
 
 label monika_writingtip3:
     m 1eua "I'm having fun doing these, so..."
@@ -6594,45 +6624,65 @@ label monika_writingtip3:
     return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip4",category=['writing tips'],prompt="Writing Tip #4",conditional="seen_event('monika_writingtip3')",action=EV_ACT_POOL))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip4",
+            category=['writing tips'],
+            prompt="Writing Tip #4",
+            conditional="seen_event('monika_writingtip3')",
+            action=EV_ACT_POOL
+        )
+    )
 
 label monika_writingtip4:
-     m 3hub "Here's Monika's Writing Tip of the Day!"
-     m 1eua "You know about writer's block, right?"
-     m "I had it a lot, when I first started writing."
-     m 1euc "Sometimes it was halfway through a draft, but more often before I even started."
-     m 1ekc "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
-     m 1eka "But I realized that it ultimately didn't matter if things didn't work out first time!"
-     m 1eua "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
-     m "The end product is what matters, not the prototype."
-     m 1eub "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
-     m 3eub "I think it's like that with all things, not just writing."
-     m 1eua "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
-     m 1ekc "It's hard to completely convince yourself that that's the case, sometimes."
-     m 1eka "But you have to."
-     m 4eka "Otherwise, you won't get anywhere."
-     m 3hua "...That's my advice for today!"
-     m 1hub "Thanks for listening~"
-     return
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 1eua "You know about writer's block, right?"
+    m "I had it a lot, when I first started writing."
+    m 1euc "Sometimes it was halfway through a draft, but more often before I even started."
+    m 1ekc "Every time I tried to write a word, I thought, 'this isn't going to sound good,' or 'this isn't how I want it to look.' So I'd stop, backtrack, and try again."
+    m 1eka "But I realized that it ultimately didn't matter if things didn't work out first time!"
+    m 1eua "I feel that the heart of writing is not about getting it right first time, but about perfecting it afterwards."
+    m "The end product is what matters, not the prototype."
+    m 1eub "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
+    m 3eub "I think it's like that with all things, not just writing."
+    m 1eua "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
+    m 1ekc "It's hard to completely convince yourself that that's the case, sometimes."
+    m 1eka "But you have to."
+    m 4eka "Otherwise, you won't get anywhere."
+    m 3hua "...That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
 
 init 5 python:
-      addEvent(Event(persistent.event_database,eventlabel="monika_writingtip5",category=['writing tips'],prompt="Writing Tip #5",conditional="seen_event('monika_writingtip4')",action=EV_ACT_POOL))
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writingtip5",
+            category=['writing tips'],
+            prompt="Writing Tip #5",
+            conditional="seen_event('monika_writingtip4')",
+            action=EV_ACT_POOL
+        )
+    )
 
 label monika_writingtip5:
-     m 3hub "Here's Monika's Writing Tip of the Day!"
-     m 1eua "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
-     m 3eua "Like writing prose if you're a poet, or free verse if you normally write rhyme."
-     m 1eka "It may end up badly, but if you don't try, you won't know how it'll end up."
-     m 1hua "And if things go well, you might end up finding something you like!"
-     m 1eua "It's what keeps things moving: change and experimentation."
-     m "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
-     m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
-     m 1hua "Changing your angle on approaching things can really yield some interesting results!"
-     m 1eua "So try new things that might give you the momentum to break out."
-     m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
-     m 1hua "That's my advice for today!"
-     m 1hub "Thanks for listening~"
-     return
+    m 3hub "Here's Monika's Writing Tip of the Day!"
+    m 1eua "If you want to improve at writing, I'd say that the most important thing, apart from actually doing it, is trying new things."
+    m 3eua "Like writing prose if you're a poet, or free verse if you normally write rhyme."
+    m 1eka "It may end up badly, but if you don't try, you won't know how it'll end up."
+    m 1hua "And if things go well, you might end up finding something you like!"
+    m 1eua "It's what keeps things moving: change and experimentation."
+    m "I'd say it helps particularly if you're stuck in a situation you want to solve, but don't know how."
+    m 3eua "Whether it's a writer's block, sheer boredom, a puzzling situation, or anything, really."
+    m 1hua "Changing your angle on approaching things can really yield some interesting results!"
+    m 1eua "So try new things that might give you the momentum to break out."
+    m 1lksdla "Just make sure it's nothing too dangerous for you, [player]."
+    m 1hua "That's my advice for today!"
+    m 1hub "Thanks for listening~"
+    return
+
+#### END WRITING TIPS
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self-harm",random=True))
