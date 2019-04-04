@@ -10098,7 +10098,7 @@ label monika_pygmalion:
     m 1tkbfu "I really can’t wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
     m 1dkbfa "For me, that would definitely be a dream come true."
     m 1ekbfa "Just a guess, but..."
-    m 1kubfu "I'm betting you'd like that too~"
+    m 1kubfu "I bet you'd like that too~"
     return
 
 init 5 python:
