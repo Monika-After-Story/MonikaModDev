@@ -229,7 +229,7 @@ init -21 python in mas_sprites_json:
     log.raw_write = True
 
     sprite_station = store.MASDockingStation(
-        renpy.config.basedir + "/game/mod_assets/monika/jsons/"
+        renpy.config.basedir + "/game/mod_assets/monika/j/"
     )
     # docking station for custom sprites. 
 
