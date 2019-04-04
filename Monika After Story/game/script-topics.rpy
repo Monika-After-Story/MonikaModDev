@@ -1630,7 +1630,8 @@ label monika_rain:
                 $ store.songs.enabled = True
                 $ HKBShowButtons()
 
-                m 1eua "If you want the rain to stop, just ask me, okay?"
+                if mas_isMoniAff(higher=True):
+                    m 1eua "If you want the rain to stop, just ask me, okay?"
 
             "I hate the rain.":
                 $ persistent._mas_likes_rain = False
