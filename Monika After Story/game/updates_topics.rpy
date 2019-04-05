@@ -68,6 +68,7 @@ label vv_updates_topics:
 
         # versions
         # use the v#_#_# notation so we can work with labels
+        vv0_9_2 = "v0_9_2"
         vv0_9_1 = "v0_9_1"
         vv0_9_0 = "v0_9_0"
         vv0_8_14 = "v0_8_14"
@@ -106,6 +107,7 @@ label vv_updates_topics:
         # update this dict accordingly to every new version
         # k:old version number -> v:new version number
         # some version changes skip some numbers because no major updates
+        updates.version_updates[vv0_9_1] = vv0_9_2
         updates.version_updates[vv0_9_0] = vv0_9_1
         updates.version_updates[vv0_8_14] = vv0_9_0
         updates.version_updates[vv0_8_13] = vv0_8_14
@@ -140,6 +142,8 @@ label vv_updates_topics:
         updates.version_updates[vv0_3_0] = vv0_3_1
         updates.version_updates[vv0_2_2] = vv0_3_0
 
+        # NOTE: we are no longer going to use this:
+        #
         # version structures:
         # if a version has changed / removed IDS, then add it as a dict
         # here

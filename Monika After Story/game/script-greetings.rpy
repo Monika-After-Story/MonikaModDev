@@ -805,7 +805,7 @@ init 5 python:
 label greeting_yay:
     m 1hub "You're back! Yay!"
     m 1hksdlb "Oh, sorry. I've got a bit overexcited here."
-    m 1lksdla "I'm just very happy to see you again, hehe~"
+    m 1lksdla "I'm just very happy to see you again, ehehe~"
     return
 
 init 5 python:
@@ -820,9 +820,9 @@ init 5 python:
     )
 
 label greeting_youtuber:
-    m 2eub "Hey everybody, welcome back to another episode of... Just Monika!"
+    m 2eub "Hey everybody, welcome back to another episode of...{w=1}Just Monika!"
     m 2hub "Ahaha!"
-    m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, hehe~"
+    m 1eua "I was impersonating a youtuber. I hope I gave you a good laugh, ehehe~"
     return
 
 init 5 python:
@@ -838,7 +838,7 @@ init 5 python:
 
 label greeting_hamlet:
     m 4esc "To be, or not to be, that is the question..."
-    m 1wuo "Oh, there you are. I was killing some time, hehe~"
+    m 1wuo "Oh, there you are. I was killing some time, ehehe~"
     m 1lksdlb "I wasn't expecting to see you so soon."
     return
 
@@ -906,7 +906,7 @@ init 5 python:
 label greeting_welcomeback2:
     m 1eua "Welcome back, [player]!"
     m "I hope your day is going well."
-    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, hehe~"
+    m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
     return
 
 init 5 python:
@@ -980,9 +980,7 @@ label greeting_glitch:
     m 1wuo "[player]!"
     hide monika
     show monika 4hksdlb at i11 zorder MAS_MONIKA_Z
-    extend " Nevermind that I was just..."
-    pause 0.1
-    extend " playing with the code a little."
+    m 4hksdlb "Nevermind that I was just...{w=0.1}playing with the code a little."
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
@@ -3374,25 +3372,26 @@ label ch30_reload_delegate:
 
     return
 
-init 5 python:
-    ev_rules = {}
-    ev_rules.update(
-        MASGreetingRule.create_rule(
-            skip_visual=True
-        )
-    )
-
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_ghost",
-            unlocked=False,
-            rules=ev_rules,
-            aff_range=(mas_aff.NORMAL, None),
-        ),
-        code="GRE"
-    )
-    del ev_rules
+# TODO: need to have an explanation before we use this again
+#init 5 python:
+#    ev_rules = {}
+#    ev_rules.update(
+#        MASGreetingRule.create_rule(
+#            skip_visual=True
+#        )
+#    )
+#
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_ghost",
+#            unlocked=False,
+#            rules=ev_rules,
+#            aff_range=(mas_aff.NORMAL, None),
+#        ),
+#        code="GRE"
+#    )
+#    del ev_rules
 
 label greeting_ghost:
     #Prevent it from happening more than once.

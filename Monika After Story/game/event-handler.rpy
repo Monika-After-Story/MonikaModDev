@@ -23,7 +23,9 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -895 python in mas_ev_data_ver:
+init -950 python in mas_ev_data_ver:
+    # must be before -900 so we can use in persistent backup/cleanup
+
     # special store dedicated to verification of Event-based data
     import datetime
     import store
@@ -911,6 +913,7 @@ init -1 python in evhand:
     LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
+    # TODO: consider an addEvent param instead
     RESTART_BLKLST = [
         "mas_crashed_start",
         "monika_affection_nickname",
@@ -918,7 +921,8 @@ init -1 python in evhand:
         "mas_coffee_finished_drinking",
         "monikaroom_will_change",
         "monika_hair_select",
-        "monika_clothes_select"
+        "monika_clothes_select",
+        "monika_rain_holdme",
     ]
 
     # as well as special functions
@@ -1958,8 +1962,8 @@ label prompt_menu:
     python:
         talk_menu = []
         if len(unseen_events)>0:
-            talk_menu.append(("{b}Unseen{/b}", "unseen"))
-        talk_menu.append(("Ask a question", "prompt"))
+            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
         talk_menu.append(("I love you!", "love"))

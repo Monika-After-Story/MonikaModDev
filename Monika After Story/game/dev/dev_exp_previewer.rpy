@@ -164,7 +164,9 @@ init 999 python:
                 "tp": "pooled",
                 "tu": "up",
                 "tl": "left",
-                "tr": "right"
+                "tr": "right",
+#                "th": "closedhappy",
+#                "tc": "closedsad",
             },
             "sweat": {
                 "sdl": "def",
@@ -247,7 +249,9 @@ init 999 python:
                 "tp": "Pooled Tears",
                 "tu": "Tearing Up",
                 "tl": "Tearing Up (Left)",
-                "tr": "Tearing Up (Right)"
+                "tr": "Tearing Up (Right)",
+#                "th": "Closed Happy Tears",
+#                "tc": "Closed Sad Tears",
             },
             "sweat": {
                 "sdl": "Left Sweat Drop",
@@ -374,7 +378,9 @@ init 999 python:
                 "tp",
                 "tu",
                 "tl",
-                "tr"
+                "tr",
+#                "th",
+#                "tc",
             ],
             "sweat": [
                 None,
@@ -747,6 +753,9 @@ init 999 python:
                     eyebags=self._get_img_name("eyebags"),
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
+
+                    # TODO: tears needs to map differently in some cases
+                    #   this is low priority
                     tears=self._get_img_name("tears"),
                     emote=self._get_img_name("emote")
                 )

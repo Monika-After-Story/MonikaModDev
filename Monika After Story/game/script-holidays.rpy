@@ -1839,50 +1839,6 @@ label mas_d25_monika_mistletoe:
     m 1hub "Ehehe~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_d25_monika_sleigh",
-            category=["holidays"],
-            prompt="Carriage ride",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
-            action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.AFFECTIONATE, None)
-        )
-    )
-
-label mas_d25_monika_sleigh:
-
-    m 3eub "Hey [player], a nice thought just crossed my mind..."
-    m 1eua "Have you ever heard of carriage rides?"
-    m 3hub "When I get out of here, we should totally go on one!"
-    m "Oh, I bet it would be magical!"
-    m 1eua "Nothing but the clip-clop of the horse's hooves against the pavement..."
-
-    if mas_isD25Season():
-        m 1eub "And the colorful array of Christmas lights shining in the night..."
-
-    m 3hub "Wouldn't that be so romantic, [player]?"
-    m 1eka "Maybe we could even take a soft, fleece blanket along to cuddle under."
-    m 1hkbla "Oooh~"
-    m 1rkbfb "I wouldn't be able to contain myself. My heart would burst!"
-    m 1ekbfa "The warmth of your body against mine, wrapped within the gentle cloth~"
-    m 1dkbfa "Fingers entwined..."
-
-    if mas_isMoniEnamored(higher=True):
-        m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1subsa "I really want to do that when I get there, [player]."
-    m 1ekbsu "...What about you?"
-
-    show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5hubfa "An experience like that with you would be so breathtaking~"
-    return
-
 init 2 python:
 
     poem_d25 = Poem(
@@ -4059,7 +4015,7 @@ label mas_pf14_monika_lovey_dovey:
     #Add the delayed action to remove itself
     $ mas_addDelayedAction(11)
 
-    return "derandom"
+    return "derandom|no_unlock"
 
 #######################[HOL050] INTRO:
 
@@ -4119,7 +4075,7 @@ label mas_f14_monika_valentines_intro:
         m 3tkbsu "...but I guess that means you like my outfit, ehehe~"
 
         #Derandom this since it's possible to get this still
-        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True,lock=True)
 
     else:
         pause 2.0
