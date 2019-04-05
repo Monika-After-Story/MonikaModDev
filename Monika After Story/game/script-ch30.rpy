@@ -1327,7 +1327,7 @@ label ch30_post_mid_loop_eval:
             else:
                 show mas_lightning zorder 4
 
-            $ pause(0.5)
+            $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
         
         # Before a random topic can be displayed, a set waiting time needs to pass.
