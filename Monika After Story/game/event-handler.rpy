@@ -23,7 +23,9 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -895 python in mas_ev_data_ver:
+init -950 python in mas_ev_data_ver:
+    # must be before -900 so we can use in persistent backup/cleanup
+
     # special store dedicated to verification of Event-based data
     import datetime
     import store
