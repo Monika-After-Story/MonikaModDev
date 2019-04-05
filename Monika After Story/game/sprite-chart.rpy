@@ -3042,14 +3042,17 @@ init -2 python:
 
 
         @classmethod
-        def fromJSON(cls, json_obj, is_fallback, errs, warns):
+        def fromJSON(cls, json_obj, is_acs, is_fallback, errs, warns):
             """
             Builds a MASPoseMap given a JSON format of it
 
             IN:
                 json_obj - json object to parse
+                is_acs - True if the MASPoseMap should be built with acs
+                    in mind, False otherwise.
                 is_fallback - True if the MASPoseMap should be built with
                     fallback mode in mind, False otherwise.
+                    NOTE: if is_acs is True, this is ignored
 
             OUT:
                 errs - list to save error message to
@@ -3059,12 +3062,23 @@ init -2 python:
             """
             isbad = False
 
+            if is_acs:
+                is_fallback = False
+
             # go through the json object and validate everything
             for prop_name in json_obj.keys():
                 if prop_name in cls.CONS_PARAM_NAMES:
                     prop_val = json_obj[prop_name]
-                    
-                    if is_fallback and prop_name != "use_reg_for_l":
+            
+                    if is_acs and prop_name != "use_reg_for_l":
+
+                        if not cls.msj._verify_str(prop_val):
+                            # acs mode must be strings
+                            isbad = True
+                            # TODO: message here
+
+
+                    elif is_fallback and prop_name != "use_reg_for_l":
 
                         if not cls.msj._verify_pose(prop_val):
                             # fallback mode must verify pose
