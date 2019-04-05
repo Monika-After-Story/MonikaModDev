@@ -1610,15 +1610,7 @@ label monika_rain:
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
 
-                stop music fadeout 1.0
-
-                # clear selected track
-                $ songs.current_track = songs.FP_NO_SONG
-                $ songs.selected_track = songs.FP_NO_SONG
-
-                # hide ui and disable hotkeys
-                $ HKBHideButtons()
-                $ store.songs.enabled = False
+                call monika_holdme_prep
 
                 m 1hua "Then hold me, [player]..."
                 show monika 6dubsa
@@ -1630,7 +1622,8 @@ label monika_rain:
                 $ store.songs.enabled = True
                 $ HKBShowButtons()
 
-                m 1eua "If you want the rain to stop, just ask me, okay?"
+                if mas_isMoniAff(higher=True):
+                    m 1eua "If you want the rain to stop, just ask me, okay?"
 
             "I hate the rain.":
                 $ persistent._mas_likes_rain = False
