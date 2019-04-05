@@ -1,0 +1,15 @@
+{
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "test",
+        "group": "test",
+        "visible_when_locked": "invalidtype"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "type": 1,
+    "name": "test",
+    "img_sit",
+    "pose_map": {
+        "default": "badtype",
+        "extraprop": true
+    }
+}

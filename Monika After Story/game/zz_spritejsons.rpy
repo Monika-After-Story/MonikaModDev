@@ -923,7 +923,14 @@ init 790 python in mas_sprites_json:
             infos - list to save info messages to
         """
         # validate fallback
-        _validate_params(jobj, save_obj, False, errs, MSG_ERR_ID)
+        _validate_params(
+            jobj,
+            save_obj,
+            OPT_HC_SHARED_PARAM_NAMES,
+            False,
+            errs,
+            MSG_ERR_ID
+        )
         if len(errs) > 0:
             return
 
