@@ -149,7 +149,7 @@ init -20 python in mas_weather:
     # NOTE: just reference MOOD's numbers
     WEAT_RETURN = "Nevermind"
 
-    mas_weather_change_time = None
+    weather_change_time = None
     #Stores the time at which weather should change
 
 #    def canChangeWeather():
@@ -178,14 +178,14 @@ init -20 python in mas_weather:
             return False
 
         #Otherwise we do stuff
-        global mas_weather_change_time
+        global weather_change_time
         #Set a time for startup
-        if not mas_weather_change_time:
-            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+        if not weather_change_time:
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
-        elif mas_weather_change_time < datetime.datetime.now():
+        elif weather_change_time < datetime.datetime.now():
             #Need to set a new check time
-            mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
             #Change weather
             new_weather = store.mas_shouldRain()
