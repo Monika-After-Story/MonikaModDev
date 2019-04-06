@@ -170,7 +170,6 @@ init -20 python in mas_weather:
         RETURNS:
             - True or false on whether or not to call spaceroom
         """
-
         import datetime
         import random
 
@@ -189,15 +188,15 @@ init -20 python in mas_weather:
             mas_weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
             #Change weather
-            new_weather = mas_shouldRain()
-            if new_weather is not None and new_weather.prompt != mas_current_weather.prompt:
-                mas_changeWeather(new_weather)
+            new_weather = store.mas_shouldRain()
+            if new_weather is not None and new_weather.prompt != store.mas_current_weather.prompt:
+                store.mas_changeWeather(new_weather)
                 #Play the rumble in the back to indicate thunder
                 if new_weather.prompt == 'Thunder/Lightning':
                     renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
                 return True
-            elif mas_current_weather.prompt != mas_weather_def.prompt:
-                mas_changeWeather(mas_weather_def)
+            elif store.mas_current_weather.prompt != store.mas_weather_def.prompt:
+                store.mas_changeWeather(store.mas_weather_def)
                 return True
         return False
 
