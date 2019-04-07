@@ -886,8 +886,8 @@ label update_now:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
 
-            #Set weather to default
-            $ mas_changeWeather(mas_weather_def)
+            #Stop background sound
+            stop background
 
             # call quit so we can save important stuff
             call quit
