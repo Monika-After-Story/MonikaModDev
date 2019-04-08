@@ -3478,7 +3478,7 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
-    if persistent._mas_pm_shared_appearance:
+    if persistent._mas_pm_eye_color:
         m 1ekbfa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
     else:
         m 1ekbfa "Maybe someday I'll be able to look into your eyes..."
