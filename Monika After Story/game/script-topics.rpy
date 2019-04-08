@@ -12771,9 +12771,9 @@ label monika_sleigh:
 
     if mas_isMoniEnamored(higher=True):
         m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1subsa "I really want to do that when I get there, [player]."
-    m 1ekbsu "...What about you?"
+    m 1subfa "I really want to do that when I get there, [player]."
+    m 1ekbfu "...What about you?"
 
-    show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "An experience like that with you would be so breathtaking~"
     return

@@ -5957,6 +5957,20 @@ image monika 1subsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1subfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="sparkle",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1dkbsa = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
