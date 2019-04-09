@@ -1610,7 +1610,7 @@ label monika_rain:
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
 
                 m 1hua "Then hold me, [player]..."
                 show monika 6dubsa
@@ -1786,12 +1786,20 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep:
-    stop music fadeout 1.0
+label monika_holdme_prep(lullaby=True, no_music=True):
 
+    # start the lullaby timer
+    if lullaby and no_music:
+        play music "<silence 1800.0>"
+        queue music "<loop 0.01>mod_assets/sounds/amb/Monika's Lullaby.ogg"
+    # otherwise stop the music without starting the timer
+    elif not lullaby and no_music:
+        stop music
+        
     # clear selected track
     $ songs.current_track = songs.FP_NO_SONG
     $ songs.selected_track = songs.FP_NO_SONG
+    $ persistent.current_track = songs.FP_NO_SONG
     
     # hide ui and disable hotkeys
     $ HKBHideButtons()
@@ -1816,7 +1824,11 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
-
+    
+    # stop the timer if the holding time is less than 30 minutes
+    if elapsed_time < datetime.timedelta(minutes=30):
+        stop music
+        
     if elapsed_time > datetime.timedelta(minutes=30):
         m "..."
         call monika_holdme_long
@@ -1987,6 +1999,7 @@ label monika_holdme_reactions:
 label monika_holdme_long:
     menu:
         "{i}Wake Monika up.{/i}":
+            stop music fadeout 1.0
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2037,7 +2050,7 @@ label monika_holdme_long:
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep
+            call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -4034,7 +4047,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
                 call monika_holdme_start
 
                 m 2dkbfa "That was really nice while it lasted."
