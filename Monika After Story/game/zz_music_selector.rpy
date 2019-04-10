@@ -32,6 +32,8 @@ init -1 python in songs:
     SAYO_NARA_SENS = "Sayonara"
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
+    MONIKA_LULLABY = "Monika's Lullaby"
+    THIRTY_MIN_OF_SILENCE = "30 Minutes of Silence"
     NO_SONG = "No Music"
 
     # SONG FILEPATHS
@@ -48,6 +50,8 @@ init -1 python in songs:
     FP_SAYO_NARA = "<loop 36.782>bgm/d.ogg"
     FP_PLAYWITHME_VAR6 = "<loop 43.572>bgm/6s.ogg"
     FP_YR_EUROBEAT = "<loop 1.414>mod_assets/bgm/eurobeatreality.ogg"
+    FP_MONIKA_LULLABY = "<loop 0.01>mod_assets/bgm/Monika's Lullaby.ogg"
+    FP_THIRTY_MIN_OF_SILENCE = "<silence 1800.0>"
     FP_NO_SONG = None
 
 

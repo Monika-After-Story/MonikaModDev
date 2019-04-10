@@ -1790,16 +1790,24 @@ label monika_holdme_prep(lullaby=True, no_music=True):
 
     # start the lullaby timer
     if lullaby and no_music:
-        play music "<silence 1800.0>"
-        queue music "<loop 0.01>mod_assets/sounds/amb/Monika's Lullaby.ogg"
-    # otherwise stop the music without starting the timer
+        if songs.current_track is None:
+            play music store.songs.FP_THIRTY_MIN_OF_SILENCE
+            queue music store.songs.FP_MONIKA_LULLABY
+            # this doesn't interfere with the timer and allows us to stop the lullaby from the music menu 
+            # after the 30 minute mark
+            $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+    # stop the music without starting the timer
     elif not lullaby and no_music:
-        stop music
-        
-    # clear selected track
-    $ songs.current_track = songs.FP_NO_SONG
-    $ songs.selected_track = songs.FP_NO_SONG
-    $ persistent.current_track = songs.FP_NO_SONG
+        stop music fadeout 1.0
+    # just play the lullaby
+    elif lullaby and not no_music:
+        play music store.songs.FP_MONIKA_LULLABY
+        $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+
+    # stop music when a song other than lullaby is playing but don't clear selected track
+    # this way the lullaby will play only if the user has clicked the no music button
+    if songs.current_track is not None and songs.current_track is not store.songs.FP_MONIKA_LULLABY: 
+        stop music fadeout 1.0
     
     # hide ui and disable hotkeys
     $ HKBHideButtons()
@@ -1826,7 +1834,7 @@ label monika_holdme_reactions:
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
     
     # stop the timer if the holding time is less than 30 minutes
-    if elapsed_time < datetime.timedelta(minutes=30):
+    if elapsed_time <= datetime.timedelta(minutes=30):
         stop music
         
     if elapsed_time > datetime.timedelta(minutes=30):
