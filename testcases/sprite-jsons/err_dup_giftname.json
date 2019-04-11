@@ -6,9 +6,5 @@
         "default": "0",
         "use_reg_for_l": true
     },
-    "select_info": {
-        "display_name": "Test",
-        "thumb": 10,
-        "group": "test"
-    }
+    "giftname": "__testing"
 }

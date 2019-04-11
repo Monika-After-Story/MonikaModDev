@@ -242,7 +242,9 @@ init -21 python in mas_sprites_json:
     # vals tha tar emissing will give errors
 
     # mapping giftnames to sprite type / name
-    giftname_map = {}
+    giftname_map = {
+        "__testing": (0, "__testing"),
+    }
     # key: giftname to react to
     # value: typle of the following format:
     #   [0] - sprite type (0 - ACS, 1 - HAIr, 2 - CLOTHES)
@@ -255,7 +257,9 @@ init -21 python in mas_sprites_json:
     #       _mas_sprites_json_gifted_sprites
     #   and remove the ones in those dicts that are not in this one.
 
-    namegift_map = {}
+    namegift_map = {
+        (0, "__testing"): "__testing"
+    }
     # reverse maps names to giftname
     # key: (sprite type, name)
     # value: giftname
@@ -304,6 +308,7 @@ init -21 python in mas_sprites_json:
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
+    MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
 
     ## Hair Map
     HM_LOADING = "loading hair_map..."
@@ -886,6 +891,7 @@ init 790 python in mas_sprites_json:
         # pose map must exist for us to reach this point.
         pose_map = store.MASPoseMap.fromJSON(
             obj_based.pop("pose_map"),
+            True,
             False,
             errs,
             warns
@@ -941,6 +947,7 @@ init 790 python in mas_sprites_json:
         writelog(MSG_INFO_ID.format(MPM_LOADING.format("pose_map")))
         pose_map = store.MASPoseMap.fromJSON(
             obj_based.pop("pose_map"),
+            False,
             fallback,
             errs,
             warns
@@ -985,6 +992,7 @@ init 790 python in mas_sprites_json:
 #        writelog(MSG_INFO_ID.format(MPM_LOADING.format("split")))
 #        split = store.MASPoseMap.fromJSON(
 #            obj_based.pop("split"),
+#            False,
 #            False,
 #            errs,
 #            warns

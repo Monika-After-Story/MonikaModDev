@@ -3,7 +3,7 @@
     "name": "test",
     "img_sit": "test",
     "pose_map": {
-        "default": true,
+        "default": "0",
         "use_reg_for_l": true
     },
     "ex_props": {

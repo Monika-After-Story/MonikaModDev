@@ -3075,8 +3075,13 @@ init -2 python:
                         if not cls.msj._verify_str(prop_val):
                             # acs mode must be strings
                             isbad = True
-                            # TODO: message here
-
+                            errs.append(cls.msj.MSG_ERR_IDD.format(
+                                cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
+                                    prop_name,
+                                    str,
+                                    type(prop_val)
+                                )
+                            ))
 
                     elif is_fallback and prop_name != "use_reg_for_l":
 
@@ -3107,6 +3112,7 @@ init -2 python:
                     warns.append(cls.msj.MSG_WARN_IDD.format(
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
+
 
 
             # now for suggestsions based on defaults

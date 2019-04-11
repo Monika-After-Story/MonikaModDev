@@ -1,7 +1,7 @@
 {
     "type": 1,
     "name": "test",
-    "img_sit",
+    "img_sit": "test",
     "pose_map": {
         "default": "badtype",
         "extraprop": true

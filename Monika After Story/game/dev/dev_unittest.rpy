@@ -60,20 +60,22 @@ label dev_unit_test_json_masposemap:
         #   [1]: type of expected result
         cases = [
             # empty dict
-            (({}, False), MASPoseMap),
-            (({}, True), MASPoseMap), # this will give warnings
+            (({}, False, False), MASPoseMap),
+            (({}, False, True), MASPoseMap), # this will give warnings
+            (({}, True, False), MASPoseMap),
+            (({}, True, True), MASPoseMap),
 
             # non fallback cases (good)
-            (({"default": True}, False), MASPoseMap),
-            (({"l_default": True}, False), MASPoseMap),
+            (({"default": True}, False, False), MASPoseMap),
+            (({"l_default": True}, False, False), MASPoseMap),
             (({
                 "default": True,
                 "use_reg_for_l": True
-            }, False), MASPoseMap),
+            }, False, False), MASPoseMap),
             (({
                 "default": True,
                 "l_default": True
-            }, False), MASPoseMap),
+            }, False, False), MASPoseMap),
             (({
                 "p1": True,
                 "p2": True,
@@ -81,7 +83,7 @@ label dev_unit_test_json_masposemap:
                 "p4": True,
                 "p5": False,
                 "p6": True
-            }, False), MASPoseMap),
+            }, False, False), MASPoseMap),
 
             # non fallback cases (bad)
             (({
@@ -94,19 +96,19 @@ label dev_unit_test_json_masposemap:
                 "p4": [],
                 "p5": "berybad",
                 "p6": -12
-            }, False), none_type),
+            }, False, False), none_type),
 
             # fallback casese (good)
-            (({"default": "steepling"}, True), MASPoseMap), # message
-            (({"l_default": "steepling"}, True), MASPoseMap), # message
+            (({"default": "steepling"}, False, True), MASPoseMap), # message
+            (({"l_default": "steepling"}, False, True), MASPoseMap), # message
             (({
                 "default": "crossed",
                 "use_reg_for_l": True
-            }, True), MASPoseMap),
+            }, False, True), MASPoseMap),
             (({
                 "default": "restleftpointright",
                 "l_default": "pointright"
-            }, True), MASPoseMap),
+            }, False, True), MASPoseMap),
             (({ # message
                 "p1": "down",
                 "p2": "def|def",
@@ -114,11 +116,11 @@ label dev_unit_test_json_masposemap:
                 "p4": "restleftpointright",
                 "p5": "crossed",
                 "p6": "pointright"
-            }, True), MASPoseMap),
+            }, False, True), MASPoseMap),
 
             # fallback cases (bad)
-            (({"default": True}, True), none_type),
-            (({"l_default": 121}, True), none_type),
+            (({"default": True}, False, True), none_type),
+            (({"l_default": 121}, False, True), none_type),
             (({
                 "p1": "not a pose",
                 "p2": 332,
@@ -126,21 +128,32 @@ label dev_unit_test_json_masposemap:
                 "p4": "p5",
                 "p5": "default",
                 "p6": "def^def"
-            }, True), none_type),
+            }, False, True), none_type),
 
             # fallback cases with warnings
-            (({"default": "steepling"}, True), MASPoseMap),
-            (({"use_reg_for_l": True}, True), MASPoseMap),
+            (({"default": "steepling"}, False, True), MASPoseMap),
+            (({"use_reg_for_l": True}, False, True), MASPoseMap),
+
+            # acs cases (bad)
+            (({"default": True}, True, True), none_type),
+            (({
+                "p1": True,
+                "p2": False,
+                "p3": 19
+            }, True, True), none_type),
+
+            # acs cases (good)
+            (({"default": "0"}, True, True), MASPoseMap),
 
             # extra props
             (({
                 "one two": None,
                 "oatmeal": False,
-            }, False), MASPoseMap),
+            }, False, False), MASPoseMap),
             (({
                 "one two": None,
                 "oatmeal": False,
-            }, True), MASPoseMap),
+            }, False, True), MASPoseMap),
 
         ]
 
