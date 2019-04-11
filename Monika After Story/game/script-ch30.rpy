@@ -389,7 +389,7 @@ init python:
         mas_enable_quitbox()
 
 
-    def mas_drawSpaceroomMasks():
+    def mas_drawSpaceroomMasks(dissolve=True):
         """
         Draws the appropriate masks according to the current state of the
         game.
@@ -414,6 +414,10 @@ init python:
         # now show the masks
         renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
         renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
+
+        #Only dissolve when specified (so only when weather changes)
+        if dissolve:
+            renpy.with_statement(Dissolve(1.0))
 
 
     def show_calendar():
@@ -668,14 +672,14 @@ init python:
 #       (Default: False)
 #   hide_monika - True will hide monika, false will not
 #       (Default: False)
-label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
+label spaceroom(start_bg=None,hide_mask=False,hide_monika=False,dissolve_masks=False):
     default dissolve_time = 0.5
 
     if is_morning():
         if not morning_flag or scene_change:
             $ morning_flag = True
             if not hide_mask:
-                $ mas_drawSpaceroomMasks()
+                $ mas_drawSpaceroomMasks(dissolve_masks)
             if start_bg:
                 $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
@@ -689,7 +693,7 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False):
             $ morning_flag = False
             scene black
             if not hide_mask:
-                $ mas_drawSpaceroomMasks()
+                $ mas_drawSpaceroomMasks(dissolve_masks)
             if start_bg:
                 $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
             else:
@@ -1272,7 +1276,7 @@ label ch30_loop:
     #Do the weather thing
     if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
         $ scene_change=True
-        call spaceroom
+        call spaceroom(dissolve_masks=True)
 
     #Check time based events and grant time xp
     python:
