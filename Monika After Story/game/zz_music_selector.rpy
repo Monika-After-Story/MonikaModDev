@@ -994,23 +994,34 @@ init python:
             renpy.music.set_volume(songs.music_volume, channel="music")
 
 
-    def play_song(song, fadein=0.0):
+    def play_song(song, fadein=0.0, loop=True, set_per=False):
         #
         # literally just plays a song onto the music channel
+        # Also sets the currentt track
         #
         # IN:
         #   song - song to play. If None, the channel is stopped
         #   fadein - number of seconds to fade in the song
+        #   loop - True if we should loop the song if possible, False to not
+        #       loop.
+        #   set_per - True if we should set persistent track, False if not
         if song is None:
+            song = songs.FP_NO_SONG
             renpy.music.stop(channel="music")
         else:
             renpy.music.play(
                 song,
                 channel="music",
-                loop=True,
+                loop=loop,
                 synchro_start=True,
                 fadein=fadein
             )
+
+        songs.current_track = song
+        songs.selected_track = song
+
+        if set_per:
+            persistent.current_track = song
 
 
     def mas_startup_song():
@@ -1037,9 +1048,7 @@ init python:
 
             # workaround to handle new context
             if selected_track != songs.current_track:
-                play_song(selected_track)
-                songs.current_track = selected_track
-                persistent.current_track = selected_track
+                play_song(selected_track, set_per=True)
 
             # unwanted interactions are no longer unwanted
             if store.mas_globals.dlg_workflow:
