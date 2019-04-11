@@ -1790,19 +1790,19 @@ label monika_holdme_prep(lullaby=True, no_music=True):
 
     # start the lullaby timer
     if lullaby and no_music:
-        if songs.current_track is None:
+        if songs.current_track is None or songs.current_track is store.songs.FP_MONIKA_LULLABY:
             play music store.songs.FP_THIRTY_MIN_OF_SILENCE
             queue music store.songs.FP_MONIKA_LULLABY
-            # this doesn't interfere with the timer and allows us to stop the lullaby from the music menu 
-            # after the 30 minute mark
+            # this doesn't interfere with the timer and allows us to stop the lullaby  
+            # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+            $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
     # stop the music without starting the timer
     elif not lullaby and no_music:
         stop music fadeout 1.0
     # just play the lullaby
     elif lullaby and not no_music:
-        play music store.songs.FP_MONIKA_LULLABY
-        $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+        $ play_song(store.songs.FP_MONIKA_LULLABY)
 
     # stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
