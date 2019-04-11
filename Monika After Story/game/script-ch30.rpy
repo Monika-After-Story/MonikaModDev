@@ -394,6 +394,9 @@ init python:
         Draws the appropriate masks according to the current state of the
         game.
 
+        IN:
+            dissolve - boolean on whether or not we want to dissolve the masks
+
         ASSUMES:
             morning_flag
             mas_is_raining
@@ -671,6 +674,8 @@ init python:
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
 #   hide_monika - True will hide monika, false will not
+#       (Default: False)
+#   dissolve_masks - True will have the spaceroom windows fade in, false will not
 #       (Default: False)
 label spaceroom(start_bg=None,hide_mask=False,hide_monika=False,dissolve_masks=False):
     default dissolve_time = 0.5
