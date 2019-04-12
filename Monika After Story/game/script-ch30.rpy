@@ -670,6 +670,7 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
+#       NOTE: Only dissolve_masks when changing weather. NEVER OTHERWISE
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
@@ -696,7 +697,9 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False,dissolve_masks=F
     else:
         if morning_flag or scene_change:
             $ morning_flag = False
-            scene black
+            #We don't want to fade the spaceroom out when changing weather
+            if not dissolve_masks:
+                scene black
             if not hide_mask:
                 $ mas_drawSpaceroomMasks(dissolve_masks)
             if start_bg:
