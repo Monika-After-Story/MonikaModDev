@@ -33,7 +33,6 @@ init -1 python in songs:
     PLAYWITHME_VAR6 = "Play With Me (Variant 6)"
     YR_EUROBEAT = "Your Reality (Eurobeat ver.)"
     MONIKA_LULLABY = "Monika's Lullaby"
-    THIRTY_MIN_OF_SILENCE = "30 Minutes of Silence"
     NO_SONG = "No Music"
 
     # SONG FILEPATHS
@@ -162,6 +161,8 @@ init -1 python in songs:
 
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
+
+            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
             
 
         # sayori only allows this
