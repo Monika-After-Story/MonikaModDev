@@ -2366,7 +2366,7 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
