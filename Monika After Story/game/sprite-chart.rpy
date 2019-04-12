@@ -3113,26 +3113,34 @@ init -2 python:
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
 
-
-
             # now for suggestsions based on defaults
-            if is_fallback:
+            # I am expecting that we will have more ACS than outfits.
+            if is_acs or is_fallback:
                 _param_default = json_obj.get("default", None)
                 _param_l_default = json_obj.get("l_default", None)
                 _param_urfl = json_obj.get("use_reg_for_l", False)
                     
                 if _param_default is None:
-                    # we suggest using default when in fallback mode
-                    warns.append(cls.msj.MSG_WARN_IDD.format(
-                        cls.msj.MPM_FB_DEF
-                    ))
+                    # we suggest using default when in fallback mode or acs
+                    if is_acs:
+                        warn_msg = cls.msj.MPM_ACS_DEF
+
+                    else:
+                        warn_msg = cls.msj.MPM_FB_DEF
+
+                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
 
                 if _param_l_default is None and not _param_urfl:
-                    # we suggest using lean default when in fallback mode
+                    # we suggest using lean default when in fallback mode or 
+                    #   acs
                     # and not using reg for l
-                    warns.append(cls.msj.MSG_WARN_IDD.format(
-                        cls.msj.MPM_FB_DEF_L
-                    ))
+                    if is_acs:
+                        warn_msg = cls.msj.MPM_ACS_DEF_L
+
+                    else:
+                        warn_msg = cls.msj.MPM_FB_DEF_L
+
+                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
 
             # finally check for valid params
             if isbad:

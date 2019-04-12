@@ -308,6 +308,8 @@ init -21 python in mas_sprites_json:
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
+    MPM_ACS_DEF = "acs default pose not set"
+    MPM_ACS_DEF_L = "acs leaning default pose not set"
     MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
 
     ## Hair Map
