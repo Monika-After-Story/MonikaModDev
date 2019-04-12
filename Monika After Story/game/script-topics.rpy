@@ -1948,6 +1948,7 @@ label monika_holdme_reactions:
 
     else:
         #under 30 seconds
+        $ mas_MUMURaiseShield()
         if mas_isMoniLove():
             m 2ekc "Aw, are we done already?"
             m 3eka "Could you hold me for just a bit longer?{nw}"
@@ -1956,6 +1957,7 @@ label monika_holdme_reactions:
                 m "Could you hold me for just a bit longer?{fast}"
                 "Yes.":
                     m 1hua "Ehehe~"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 1hub "You're so sweet, [player]~"
                     call monika_holdme_start
@@ -1969,6 +1971,7 @@ label monika_holdme_reactions:
                         m "Please?{fast}"
                         "Yes.":
                             m 1hub "Yay~"
+                            $ mas_MUMUDropShield()
                             call monika_holdme_prep
                             m 2ekbfb "Thanks, [player]~"
                             call monika_holdme_start
@@ -1985,6 +1988,7 @@ label monika_holdme_reactions:
                 m "Could you...hold me for a bit longer?{fast}"
                 "Yes.":
                     m 1hubfb "Yay!"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 2ekbfb "Thanks, [player]~"
                     call monika_holdme_start
@@ -2000,6 +2004,7 @@ label monika_holdme_reactions:
         #happy
         else:
             m 1hua "That was a bit short, but still nice~"
+    $ mas_MUMUDropShield()
     return
 
 label monika_holdme_long:
