@@ -1610,7 +1610,7 @@ label monika_rain:
                 if not mas_is_raining:
                     call mas_change_weather(mas_weather_rain)
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
 
                 m 1hua "Then hold me, [player]..."
                 show monika 6dubsa
@@ -1786,13 +1786,28 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep:
-    stop music fadeout 1.0
+label monika_holdme_prep(lullaby=True, no_music=True):
 
-    # clear selected track
-    $ songs.current_track = songs.FP_NO_SONG
-    $ songs.selected_track = songs.FP_NO_SONG
-    
+    # start the lullaby timer
+    if lullaby and no_music:
+        if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
+            play music store.songs.FP_THIRTY_MIN_OF_SILENCE
+            queue music store.songs.FP_MONIKA_LULLABY
+            # this doesn't interfere with the timer and allows us to stop the lullaby
+            # from the music menu after the 30 minute mark
+            $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+            $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+    # stop the music without starting the timer
+    elif not lullaby and no_music:
+        stop music fadeout 1.0
+    # just play the lullaby
+    elif lullaby and not no_music:
+        $ play_song(store.songs.FP_MONIKA_LULLABY)
+
+    # stop music when a song other than lullaby is playing but don't clear selected track
+    # this way the lullaby will play only if the user has clicked the no music button
+    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
+        stop music fadeout 1.0
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1816,7 +1831,10 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
-
+    
+    # stop the timer if the holding time is less than 30 minutes
+    if elapsed_time <= datetime.timedelta(minutes=30):
+        stop music
     if elapsed_time > datetime.timedelta(minutes=30):
         m "..."
         call monika_holdme_long
@@ -1930,6 +1948,7 @@ label monika_holdme_reactions:
 
     else:
         #under 30 seconds
+        $ mas_MUMURaiseShield()
         if mas_isMoniLove():
             m 2ekc "Aw, are we done already?"
             m 3eka "Could you hold me for just a bit longer?{nw}"
@@ -1938,6 +1957,7 @@ label monika_holdme_reactions:
                 m "Could you hold me for just a bit longer?{fast}"
                 "Yes.":
                     m 1hua "Ehehe~"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 1hub "You're so sweet, [player]~"
                     call monika_holdme_start
@@ -1951,6 +1971,7 @@ label monika_holdme_reactions:
                         m "Please?{fast}"
                         "Yes.":
                             m 1hub "Yay~"
+                            $ mas_MUMUDropShield()
                             call monika_holdme_prep
                             m 2ekbfb "Thanks, [player]~"
                             call monika_holdme_start
@@ -1967,6 +1988,7 @@ label monika_holdme_reactions:
                 m "Could you...hold me for a bit longer?{fast}"
                 "Yes.":
                     m 1hubfb "Yay!"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 2ekbfb "Thanks, [player]~"
                     call monika_holdme_start
@@ -1982,11 +2004,13 @@ label monika_holdme_reactions:
         #happy
         else:
             m 1hua "That was a bit short, but still nice~"
+    $ mas_MUMUDropShield()
     return
 
 label monika_holdme_long:
     menu:
         "{i}Wake Monika up.{/i}":
+            stop music fadeout 5.0
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2037,7 +2061,7 @@ label monika_holdme_long:
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep
+            call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -4034,7 +4058,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
                 call monika_holdme_start
 
                 m 2dkbfa "That was really nice while it lasted."
