@@ -110,8 +110,6 @@ default persistent._mas_should_rain_today = None
 #Loading at init 0 because of season functions
 init python in mas_weather:
     def shouldRainToday():
-        import random
-        import datetime
 
         #Is it a new day? If so, we should see if it should rain today
         if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
@@ -127,16 +125,22 @@ init python in mas_weather:
             #       - 85% chance for it to not rain on a particular day
             #   Fall:
             #       - 40% chance for it to not rain on a particular day
+            #   Winter:
+            #       - 0%. Just snow
             if store.mas_isSpring():
                 store.persistent._mas_should_rain_today = chance >= 30
             elif store.mas_isSummer():
                 store.persistent._mas_should_rain_today = chance >= 85
             elif store.mas_isFall():
                 store.persistent._mas_should_rain_today = chance >= 40
+            else:
+                store.persistent._mas_should_rain_today = False
 
         return store.persistent._mas_should_rain_today
 
 init -20 python in mas_weather:
+    import random
+    import datetime
     import store
 
     #NOTE: Not persistent since weather changes on startup
@@ -170,8 +174,6 @@ init -20 python in mas_weather:
         RETURNS:
             - True or false on whether or not to call spaceroom
         """
-        import datetime
-        import random
 
         #If it shouldn't rain today, or the player forced weather, then we do nothing
         if not shouldRainToday() or mas_force_weather:
@@ -189,10 +191,10 @@ init -20 python in mas_weather:
 
             #Change weather
             new_weather = store.mas_shouldRain()
-            if new_weather is not None and new_weather.prompt != store.mas_current_weather.prompt:
+            if new_weather is not None and new_weather.weather_id != store.mas_current_weather.weather_id:
                 store.mas_changeWeather(new_weather)
                 #Play the rumble in the back to indicate thunder
-                if new_weather.prompt == 'Thunder/Lightning':
+                if new_weather.weather_id == 'thunder':
                     renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
                 return True
             elif store.mas_current_weather.prompt != store.mas_weather_def.prompt:
