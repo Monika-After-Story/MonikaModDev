@@ -163,7 +163,6 @@ init -1 python in songs:
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
 
             music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
-            
 
         # sayori only allows this
         if store.persistent._mas_sensitive_mode:

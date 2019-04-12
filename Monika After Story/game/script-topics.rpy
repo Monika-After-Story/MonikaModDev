@@ -1793,7 +1793,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
         if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
             play music store.songs.FP_THIRTY_MIN_OF_SILENCE
             queue music store.songs.FP_MONIKA_LULLABY
-            # this doesn't interfere with the timer and allows us to stop the lullaby  
+            # this doesn't interfere with the timer and allows us to stop the lullaby
             # from the music menu after the 30 minute mark
             $ songs.current_track = store.songs.FP_MONIKA_LULLABY
             $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
@@ -1806,9 +1806,8 @@ label monika_holdme_prep(lullaby=True, no_music=True):
 
     # stop music when a song other than lullaby is playing but don't clear selected track
     # this way the lullaby will play only if the user has clicked the no music button
-    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY: 
+    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
         stop music fadeout 1.0
-    
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1836,7 +1835,6 @@ label monika_holdme_reactions:
     # stop the timer if the holding time is less than 30 minutes
     if elapsed_time <= datetime.timedelta(minutes=30):
         stop music
-        
     if elapsed_time > datetime.timedelta(minutes=30):
         m "..."
         call monika_holdme_long
@@ -2007,7 +2005,7 @@ label monika_holdme_reactions:
 label monika_holdme_long:
     menu:
         "{i}Wake Monika up.{/i}":
-            stop music fadeout 1.0
+            stop music fadeout 5.0
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
