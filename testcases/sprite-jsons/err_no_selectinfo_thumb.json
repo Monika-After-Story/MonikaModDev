@@ -2,10 +2,7 @@
     "type": 0,
     "name": "test",
     "img_sit": "test",
-    "pose_map": {
-        "default": "0",
-        "use_reg_for_l": true
-    },
+    "pose_map": {},
     "select_info": {
         "display_name": "Test",
         "group": "test"

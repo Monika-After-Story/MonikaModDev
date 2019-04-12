@@ -1,9 +1,10 @@
 {
-    "type": 2,
+    "type": 1,
     "name": "test",
     "img_sit": "test",
     "pose_map": {
-        "default": 10,
+        "default": true,
         "extraprop": true
-    }
+    },
+    "fallback": true
 }

@@ -3,7 +3,7 @@
     "name": "test",
     "img_sit": "test",
     "pose_map": {
-        "default": true,
+        "default": 10,
         "extraprop": true
     }
 }

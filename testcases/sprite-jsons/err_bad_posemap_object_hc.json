@@ -1,7 +1,8 @@
 {
-    "type": 1,
+    "type": 2,
     "name": "test",
     "img_sit": "test",
-    "pose_map": {},
-    "fallback": true
+    "pose_map": {
+        "default": 10
+    }
 }

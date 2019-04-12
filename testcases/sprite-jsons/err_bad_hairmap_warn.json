@@ -2,13 +2,10 @@
     "type": 2,
     "name": "test",
     "img_sit": "test",
-    "pose_map": {
-        "default": true,
-        "use_reg_for_l": true
-    },
+    "pose_map": {},
     "hair_map": {
-        "validkey": "yes",
-        "invalidkey": false,
-        "warningcustom": "custom"
+        "validval": "yes",
+        "invalidval": false,
+        "extraprop": "warning"
     }
 }

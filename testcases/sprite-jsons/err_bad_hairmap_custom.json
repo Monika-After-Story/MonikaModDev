@@ -6,6 +6,6 @@
     "hair_map": {
         "all": "def",
         "validval": "yes",
-        "invalidval": false
+        "invalidval": "custom"
     }
 }

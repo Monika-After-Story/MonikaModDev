@@ -4,8 +4,8 @@
     "img_sit": "test",
     "pose_map": {},
     "hair_map": {
-        "all": "def",
         "validval": "yes",
-        "invalidval": false
+        "invalidval": "custom",
+        "extraprop": "warning"
     }
 }
