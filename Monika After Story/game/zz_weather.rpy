@@ -99,8 +99,6 @@ image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 default persistent._mas_weather_MWdata = {}
 # stores locked/unlocked status for weather
 
-default persistent._mas_force_weather = False
-
 #When did we last check if it could rain
 default persistent._mas_date_last_checked_rain = None
 
@@ -144,7 +142,7 @@ init -20 python in mas_weather:
     import store
 
     #NOTE: Not persistent since weather changes on startup
-    mas_force_weather = False
+    force_weather = False
 
 
     WEATHER_MAP = {}
@@ -176,7 +174,7 @@ init -20 python in mas_weather:
         """
 
         #If it shouldn't rain today, or the player forced weather, then we do nothing
-        if not shouldRainToday() or mas_force_weather:
+        if not shouldRainToday() or force_weather:
             return False
 
         #Otherwise we do stuff
@@ -674,7 +672,7 @@ init 800 python:
         """
 
         if by_user is not None:
-            mas_weather.mas_force_weather = bool(by_user)
+            mas_weather.force_weather = bool(by_user)
 
         mas_current_weather.exit(new_weather)
         mas_setWeather(new_weather)
@@ -696,7 +694,7 @@ init 800 python:
 label mas_change_weather(new_weather, by_user=None):
 
     if by_user is not None:
-        $ mas_weather.mas_force_weather = bool(by_user)
+        $ mas_weather.force_weather = bool(by_user)
 
     # call exit programming points
     $ mas_current_weather.exit(new_weather)
@@ -759,6 +757,9 @@ label monika_change_weather_loop:
         # build full list
         weathers.extend(other_weathers)
 
+        #Add the auto option
+        weathers.append(("Progressive","auto",False,False))
+
         # now add final quit item
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
@@ -775,7 +776,22 @@ label monika_change_weather_loop:
         m "If you want to change the weather, just ask, okay?"
         return
 
-    if sel_weather == mas_current_weather:
+    elif sel_weather == "auto":
+        if mas_weather.force_weather:
+            m 1hub "Sure!"
+            m 1dsc "Just give me a second..."
+            pause 1.0
+            #Set to false and return since nothing more needs to be done
+            $ mas_weather.force_weather = False
+            m 1eua "There we go!"
+            m 1eka "If you want me to change the weather, just ask. Okay?"
+        else:
+            m 1hua "That's the current weather, silly."
+            m "Try again~"
+            jump monika_change_weather_loop
+        return
+
+    if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
         m "Try again~" 
         jump monika_change_weather_loop
