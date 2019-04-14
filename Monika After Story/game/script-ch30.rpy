@@ -389,7 +389,7 @@ init python:
         mas_enable_quitbox()
 
 
-    def mas_drawSpaceroomMasks(dissolve=True):
+    def mas_drawSpaceroomMasks(dissolve=False):
         """
         Draws the appropriate masks according to the current state of the
         game.
