@@ -162,7 +162,8 @@ init -1 python in songs:
             # BIG SHOUTOUT to HalHarrison for this lovely track!
             music_choices.append((DDLC_MT_80, FP_DDLC_MT_80))
 
-            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
+            # NOTE: this is locked until we can set this up later.
+#            music_choices.append((MONIKA_LULLABY, FP_MONIKA_LULLABY))
 
         # sayori only allows this
         if store.persistent._mas_sensitive_mode:
