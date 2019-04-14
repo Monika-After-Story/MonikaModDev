@@ -46,6 +46,20 @@ image rain_mask_right = Movie(
 )
 image rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_fallback.png"
 
+image night_rain_mask_left = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/window_5_night_rain.mp4",
+    mask=None
+)
+image night_rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_night_rain_fb.png"
+
+image night_rain_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/window_6_night_rain.mp4",
+    mask=None
+)
+image night_rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_night_rain_fb.png"
+
 # big thanks to Zer0mniac for fixing the snow
 image snow_mask_night_left = Movie(
     channel="window_7",
