@@ -2366,7 +2366,10 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            #Just so we don't end up with another file since we've changed the name
+            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
