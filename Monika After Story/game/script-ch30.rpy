@@ -1588,9 +1588,7 @@ label ch30_reset:
     python:
         # TODO: snowing should also be controlled if you like it or not
         if mas_isWinter():
-            mas_changeWeather(mas_weather_snow)
-
-            if not mas_weather_snow.unlocked:
+            if mas_is_snowing and not mas_weather_snow.unlocked:
                 mas_weather_snow.unlocked = True
                 store.mas_weather.saveMWData()
                 
