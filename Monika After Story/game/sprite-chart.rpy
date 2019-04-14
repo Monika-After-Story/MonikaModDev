@@ -3542,7 +3542,9 @@ init -2 python:
             loadstrs = []
 
             # loop over MASPoseMap for pose ids
-            for poseid in self.pose_map:
+            for pose in store.mas_sprites.ALL_POSES:
+                poseid = self.pose_map.get(pose, "_ignore")
+
                 # add both day and night versions
                 loadstrs.append(store.mas_sprites.BS_ACS.format(
                     self.img_sit,
@@ -3848,11 +3850,11 @@ init -2 python:
             to_verify = []
 
             # starting with body types
-            to_verify.append(store.mas_sprites.BS_BODY.format(
+            to_verify.append(store.mas_sprites.BS_BODY_U.format(
                 self.img_sit,
                 ""
             ))
-            to_verify.append(store.mas_sprites.BS_BODY.format(
+            to_verify.append(store.mas_sprites.BS_BODY_U.format(
                 self.img_sit,
                 store.mas_sprites.NIGHT_SUFFIX
             ))

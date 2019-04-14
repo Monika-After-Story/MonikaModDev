@@ -219,6 +219,7 @@ default persistent._mas_sprites_json_gifted_sprites = {}
 
 
 init -21 python in mas_sprites_json:
+    import __builtin__
     import json
     import store
     import store.mas_utils as mas_utils
@@ -230,6 +231,9 @@ init -21 python in mas_sprites_json:
     log = mas_utils.getMASLog("log/spj")
     log_open = log.open()
     log.raw_write = True
+
+    py_list = __builtin__.list
+    py_dict = __builtin__.dict
 
     sprite_station = store.MASDockingStation(
         renpy.config.basedir + "/game/mod_assets/monika/j/"
@@ -307,7 +311,7 @@ init -21 python in mas_sprites_json:
     REQ_MISS = "required property '{0}' not found"
     BAD_SPR_TYPE = "invalid sprite type '{0}'"
     BAD_ACS_LAYER = "invalid ACS layer '{0}'"
-    BAD_LIST_TYPE = "property '{0}' index '{0}' - expected type {1}, got {2}"
+    BAD_LIST_TYPE = "property '{0}' index '{1}' - expected type {2}, got {3}"
     EMPTY_LIST = "property '{0}' cannot be an empty list"
    
     DUPE_GIFTNAME = "giftname '{0}' already exists"
@@ -522,16 +526,16 @@ init 790 python in mas_sprites_json:
             _sel_list = sml.CLOTH_SEL_SL
 
         # remvoe from sprite object map
-        if name in _item_map:
-            _item_map.pop(name)
+        if sp_name in _item_map:
+            _item_map.pop(sp_name)
 
         if sml.get_sel(sp_obj) is not None:
             # remove from selectable map
-            if name in _sel_map:
-                _sel_map.pop(name)
+            if sp_name in _sel_map:
+                _sel_map.pop(sp_name)
 
             # remove from selectable list
-            _remove_sel_list(name, _sel_list)
+            _remove_sel_list(sp_name, _sel_list)
 
 
     def _build_loadstrs(sp_obj, sel_obj=None):
@@ -746,7 +750,7 @@ init 790 python in mas_sprites_json:
             # not list is bad
             errs.append(MSG_ERR_ID.format(BAD_TYPE.format(
                 "mux_type",
-                list,
+                py_list,
                 type(mux_type)
             )))
             return None
@@ -807,7 +811,7 @@ init 790 python in mas_sprites_json:
             if not allow_none:
                 errs.append(err_base.format(BAD_TYPE.format(
                     propname,
-                    list,
+                    py_list,
                     type(iterval)
                 )))
             return
@@ -1526,18 +1530,18 @@ init 790 python in mas_sprites_json:
         # now we can build the sprites
         try:
             if sp_type == SP_ACS:
-                sp_obj = MASAccessory(**sp_obj_params)
+                sp_obj = store.MASAccessory(**sp_obj_params)
                 sms.init_acs(sp_obj)
                 sel_obj_name = "acs"
 
             elif sp_type == SP_HAIR:
-                sp_obj = MASHair(**sp_obj_params)
+                sp_obj = store.MASHair(**sp_obj_params)
                 sms.init_hair(sp_obj)
                 sel_obj_name = "hair"
 
             else:
                 # clothing
-                sp_obj = MASClothes(**sp_obj_params)
+                sp_obj = store.MASClothes(**sp_obj_params)
                 sms.init_clothes(sp_obj)
                 sel_obj_name = "clothes"
 
@@ -1584,13 +1588,13 @@ init 790 python in mas_sprites_json:
             _reset_sp_obj(sp_obj)
             writelog(MSG_INFO.format(SP_SUCCESS_DRY.format(
                 SP_STR.get(sp_type),
-                sp_obj.name
+                sp_name
             )))
 
         else:
             writelog(MSG_INFO.format(SP_SUCCESS.format(
                 SP_STR.get(sp_type),
-                sp_obj.name
+                sp_name
             )))
 
 
