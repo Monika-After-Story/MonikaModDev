@@ -52,6 +52,9 @@
 #           under other means, this item will NOT be selectable or usable.
 #       - do not include extension
 #       - default None
+#   "dryrun": <anything>
+#       - optional
+#       - add this to dry run adding this sprite object
 # }
 #
 #
@@ -258,7 +261,7 @@ init -21 python in mas_sprites_json:
     #   and remove the ones in those dicts that are not in this one.
 
     namegift_map = {
-        (0, "__testing"): "__testing"
+        (0, "__testing"): "__testing",
     }
     # reverse maps names to giftname
     # key: (sprite type, name)
@@ -286,6 +289,7 @@ init -21 python in mas_sprites_json:
     READING_FILE = "reading JSON at '{0}'..."
     SP_LOADING = "loading {0} sprite object '{1}'..."
     SP_SUCCESS = "{0} sprite object '{1}' loaded successfully!"
+    SP_SUCCESS_DRY = "{0} sprite object '{1}' loaded successfully! DRY RUN"
 
     BAD_TYPE = "property '{0}' - expected type {1}, got {2}"
     EXTRA_PROP = "extra property '{0}' found"
@@ -439,6 +443,10 @@ init -21 python in mas_sprites_json:
         "visible_when_locked": (bool, _verify_bool),
     }
 
+    # debug param name. If the json includes this, we dont actualy add
+    # the sprite object
+    DRY_RUN = "dryrun"
+
 
 init 790 python in mas_sprites_json:
     from store.mas_sprites import _verify_pose, HAIR_MAP 
@@ -459,6 +467,18 @@ init 790 python in mas_sprites_json:
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
 
 
+    def _remove_sel_list(name, sel_list):
+        """
+        Removes selectable from selectbale list
+
+        Only intended for json usage. DO not use elsewhere. In general, you
+        should NEVER need to remove a selectable from the selectable list.
+        """
+        for index in range(len(sel_list)-1, -1, -1):
+            if sel_list[index].name == name:
+                sel_list.pop(index)
+
+
     def _reset_sp_obj(sp_obj):
         """
         Uninits the given sprite object. This is meant only for json
@@ -468,23 +488,39 @@ init 790 python in mas_sprites_json:
             sp_obj - sprite object to remove
         """
         sp_type = sp_obj.gettype()
+        sp_name = sp_obj.name
         
         # sanity check
         if sp_type not in SP_CONSTS:
             return
 
         if sp_type == SP_ACS:
-            if sp_obj.name in sms.ACS_MAP:
-                sms.ACS_MAP.pop(sp_obj.name)
+            _item_map = sms.ACS_MAP
+            _sel_map = sml.ACS_SEL_MAP
+            _sel_list = sml.ACS_SEL_SL
 
         elif sp_type == SP_HAIR:
-            if sp_obj.name in sms.HAIR_MAP:
-                sms.HAIR_MAP.pop(sp_obj.name)
+            _item_map = sms.HAIR_MAP
+            _sel_map = sml.HAIR_SEL_MAP
+            _sel_list = sml.HAIR_SEL_SL
 
         else:
             # clothes
-            if sp_obj.name in sms.CLOTH_MAP:
-                sms.CLOTH_MAP.pop(sp_obj.name)
+            _item_map = sms.CLOTH_MAP
+            _sel_map = sml.CLOTH_SEL_MAP
+            _sel_list = sml.CLOTH_SEL_SL
+
+        # remvoe from sprite object map
+        if name in _item_map:
+            _item_map.pop(name)
+
+        if sml.get_sel(sp_obj) is not None:
+            # remove from selectable map
+            if name in _sel_map:
+                _sel_map.pop(name)
+
+            # remove from selectable list
+            _remove_sel_list(name, _sel_list)
 
 
     def _build_loadstrs(sp_obj, sel_obj=None):
@@ -1235,6 +1271,7 @@ init 790 python in mas_sprites_json:
         IN:
             filepath - filepath to the JSON we want to load
         """
+        dry_run = False
         jobj = None
         msgs_err = []
         msgs_warn = []
@@ -1254,6 +1291,10 @@ init 790 python in mas_sprites_json:
         if jobj is None:
             writelog(MSG_ERR.format(JSON_LOAD_FAILED.format(filepath)))
             return
+
+        if DRY_RUN in jobj:
+            jobj.pop(DRY_RUN)
+            dry_run = True
 
         ## this happens in 3 steps:
         # 1. build sprite object according to the json
@@ -1448,15 +1489,18 @@ init 790 python in mas_sprites_json:
             if sp_type == SP_ACS:
                 sp_obj = MASAccessory(**sp_obj_params)
                 sms.init_acs(sp_obj)
+                sel_obj_name = "acs"
 
             elif sp_type == SP_HAIR:
                 sp_obj = MASHair(**sp_obj_params)
                 sms.init_hair(sp_obj)
+                sel_obj_name = "hair"
 
             else:
                 # clothing
                 sp_obj = MASClothes(**sp_obj_params)
                 sms.init_clothes(sp_obj)
+                sel_obj_name = "clothes"
 
         except Exception as e:
             # in thise case, we ended up with a duplicate
@@ -1466,6 +1510,8 @@ init 790 python in mas_sprites_json:
         # otherwise, we were successful in initializing this sprite
         # try initializing the selectable if we parsed it
         if len(sel_params) > 0:
+            sel_params[sel_obj_name] = sp_obj
+
             try:
                 if sp_type == SP_ACS:
                     sml.init_selectable_acs(**sel_params)
@@ -1486,7 +1532,7 @@ init 790 python in mas_sprites_json:
                 return
 
         # giftname must be valid by here
-        if giftname is not None:
+        if giftname is not None and not dry_run:
             _init_giftname(giftname, sp_type, sp_name)
 
         # build warnings for image loading
@@ -1495,10 +1541,18 @@ init 790 python in mas_sprites_json:
         writelogs(msgs_warn)
 
         # alright! we have built the sprite object!
-        writelog(MSG_INFO.format(SP_SUCCESS.format(
-            SP_STR.get(sp_type),
-            sp_obj.name
-        )))
+        if dry_run:
+            _reset_sp_obj(sp_obj)
+            writelog(MSG_INFO.format(SP_SUCCESS_DRY.format(
+                SP_STR.get(sp_type),
+                sp_obj.name
+            )))
+
+        else:
+            writelog(MSG_INFO.format(SP_SUCCESS.format(
+                SP_STR.get(sp_type),
+                sp_obj.name
+            )))
 
 
 init 800 python in mas_sprites_json:

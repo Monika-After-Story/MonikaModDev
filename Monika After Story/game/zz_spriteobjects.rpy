@@ -22,6 +22,18 @@ init -2 python in mas_sprites:
     # use names + an identifier as keys so you wont collide
     # NOTE: this will NOT be maintained on a restart
 
+    ######### TESTING PROG POINTS ##########
+    # none of these actually do anything. They are for testing the
+    # JSON sprite system
+
+    _hair__testing_entry = False
+    _hair__testing_exit = False
+    _clothes__testing_entry = False
+    _clothes__testing_exit = False
+    _acs__testing_entry = False
+    _acs__testing_exit = False
+
+
     ######### HAIR [SPR010] ###########
     # available kwargs:
     #   entry:

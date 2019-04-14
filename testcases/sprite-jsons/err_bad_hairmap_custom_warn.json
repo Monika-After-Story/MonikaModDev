@@ -1,4 +1,5 @@
 {
+    "dryrun": true,
     "type": 2,
     "name": "test",
     "img_sit": "test",

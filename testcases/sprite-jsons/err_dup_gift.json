@@ -1,8 +1,8 @@
 {
     "dryrun": true,
     "type": 0,
-    "name": "test",
+    "name": "__testing",
     "img_sit": "test",
     "pose_map": {},
-    "rec_layer": "notvalidreclayer"
+    "giftname": "giftnametest"
 }
