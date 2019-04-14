@@ -1,0 +1,16 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {
+        "extraprop": true
+    },
+    "select_info": {
+        "display_name": "Test",
+        "thumb": "test",
+        "group": "test",
+        "extraprop": true
+    },
+    "extraprop": true
+}
