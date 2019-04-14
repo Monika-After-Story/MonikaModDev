@@ -501,37 +501,74 @@ init python:
         """
         #All paths roll
         chance = random.randint(1,100)
-        if mas_isMoniNormal(higher=True) and mas_weather.shouldRainToday():
+        if mas_isMoniNormal(higher=True):
             #NOTE: Chances are as follows:
             #Spring:
-            #   - Rain: 50%
-            #   - Thunder: 20% (40% of that 50%)
+            #   - Rain: 40%
+            #   - Thunder: 15% (37.5% of that 40%)
+            #   - Overcast: 15% (if rain has failed)
+            #   - Sunny: 45%
             #
             #Summer:
             #   - Rain: 10%
             #   - Thunder: 6% (60% of that 10%)
+            #   - Overcast: 5% (if rain has failed)
+            #   - Sunny: 85%
             #
             #Fall:
             #   - Rain: 30%
             #   - Thunder: 12% (40% of that 50%)
-            if mas_isSpring() and chance <= 50:
-                if chance <= 20:
-                    return mas_weather_thunder
-                return mas_weather_rain
+            #   - Overcast: 15%
+            #   - Sunny: 55%
+            #
+            #Winter:
+            #   - Snow: 50%
+            #   - Overcast: 20%
+            #   - Sunny: 30%
 
-            elif mas_isSummer() and chance <= 10:
-                if chance <= 6:
-                    return mas_weather_thunder
-                return mas_weather_rain
+            if mas_isSpring():
+                #Chance for rains
+                if chance <= 40 and mas_weather.shouldRainToday():
+                    #Should it thunder
+                    if chance <= 15:
+                        return mas_weather_thunder
+                    return mas_weather_rain
+                #Otherwise should we just be overcast
+                elif 40 < chance <= 55:
+                    return mas_weather_overcast
 
-            elif mas_isFall() and chance <= 30:
-                if chance <= 12:
-                    return mas_weather_thunder
-                return mas_weather_rain
+            elif mas_isSummer():
+                #Chance of rain
+                if chance <= 10 and mas_weather.shouldRainToday():
+                    #Chance of thunder
+                    if chance <= 6:
+                        return mas_weather_thunder
+                    return mas_weather_rain
+                #Chance of overcast
+                elif 10 < chance <= 15:
+                    return mas_weather_overcast
+
+            elif mas_isFall():
+                #Chance of rain
+                if chance <= 30 and mas_weather.shouldRainToday():
+                    #Chance of thunder
+                    if chance <= 12:
+                        return mas_weather_thunder
+                    return mas_weather_rain
+                #Chance of overcast
+                elif 30 < chance < 45:
+                    return mas_weather_overcast
+
+            else:
+                #Chance of snow
+                if chance <= 50:
+                    return mas_weather_snow
+                elif 50 < chance <= 70:
+                    return mas_weather_overcast
 
         #Otherwise rain based on how Moni's feeling
         elif mas_isMoniUpset() and chance <= MAS_RAIN_UPSET:
-            return mas_weather_rain
+            return mas_weather_overcast
 
         elif mas_isMoniDis() and chance <= MAS_RAIN_DIS:
             return mas_weather_rain

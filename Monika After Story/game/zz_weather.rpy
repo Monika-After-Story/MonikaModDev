@@ -31,7 +31,7 @@ image room_mask4 = Movie(
 )
 image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
 
-# big thanks to sebastianN01 for the rain art!
+# big thanks to sebastianN01 for the rain art & multimokia for the night rain!
 image rain_mask_left = Movie(
     channel="window_5",
     play="mod_assets/window/spaceroom/window_5.webm",
@@ -74,6 +74,35 @@ image snow_mask_day_right = Movie(
     mask=None
 )
 image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.png"
+
+#Thanks multimokia for the overcast masks
+image overcast_mask_left = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/overcast_mask_left.mp4",
+    mask=None
+)
+image overcast_mask_left_fb = "mod_assets/window/spaceroom/overcast_mask_left_fb.png"
+
+image overcast_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/overcast_mask_right.mp4",
+    mask=None
+)
+image overcast_mask_right_fb = "mod_assets/window/spaceroom/overcast_mask_right_fb.png"
+
+image overcast_mask_left_night = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/overcast_mask_left_night.mp4",
+    mask=None
+)
+image overcast_mask_left_night_fb = "mod_assets/window/spaceroom/overcast_mask_left_night_fb.png"
+
+image overcast_mask_right_night = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/overcast_mask_right_night.mp4",
+    mask=None
+)
+image overcast_mask_right_night_fb = "mod_assets/window/spaceroom/overcast_mask_right_night_fb.png"
 
 ## end spaceroom weather art
 
@@ -352,6 +381,22 @@ init -20 python in mas_weather:
             _weather_rain_exit(_new)
 
 
+    def _weather_overcast_entry(_old):
+        #Lock islands
+        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
+
+
+    def _weather_overcast_exit(_new):
+        #Unlock islands
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+                and islands_ev.checkAffection(store.mas_curr_affection)
+            ):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
+
+
 init -10 python:
 
     # weather class
@@ -593,6 +638,10 @@ init -1 python:
         "rain_mask_left",
         "rain_mask_right",
 
+        # sp night
+        "night_rain_mask_left",
+        "night_rain_mask_right",
+
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
@@ -628,12 +677,38 @@ init -1 python:
         "rain_mask_left",
         "rain_mask_right",
 
+        # sp night
+        "night_rain_mask_left",
+        "night_rain_mask_right",
+
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit
+    )
+
+    #overcast
+    mas_weather_overcast = MASWeather(
+        "overcast",
+        "Overcast",
+
+        # sp day
+        "overcast_mask_left",
+        "overcast_mask_right",
+
+        # sp night
+        "overcast_mask_left_night",
+        "overcast_mask_right_night",
+
+        # islands bg day and night
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
+        entry_pp=store.mas_weather._weather_overcast_entry,
+        exit_pp=store.mas_weather._weather_overcast_exit,
+        unlocked=True
     )
 
 ### end defining weather objects
