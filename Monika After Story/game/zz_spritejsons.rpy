@@ -237,12 +237,23 @@ init -21 python in mas_sprites_json:
     # docking station for custom sprites. 
 
     # verification dicts
-    # value is unecessary. We use key for O(1) and repeats
+    # We use key for O(1) and repeats
+    # value is a list of sprite names we found the item in
     hm_key_delayed_veri = {}
     # keys that are missing will give warnings
 
     hm_val_delayed_veri = {}
-    # vals tha tar emissing will give errors
+    # vals tha tar emissing will give warnings. If a value is missing, it is
+    #   replaced with teh default hairstyle (def)
+
+
+    def _add_hair_to_verify(hairname, verimap, name):
+        # only for use with the above dicts
+        if hairname not in verimap:
+            verimap[hairname] = []
+
+        verimap[hairname].append(name)
+
 
     # mapping giftnames to sprite type / name
     giftname_map = {
@@ -900,7 +911,14 @@ init 790 python in mas_sprites_json:
         # validate ez to validate props
         # priority
         # acs_type
-        _validate_params(jobj, save_obj, False, errs, MSG_ERR_ID)
+        _validate_params(
+            jobj,
+            save_obj,
+            OPT_ACS_PARAM_NAMES,
+            False,
+            errs,
+            MSG_ERR_ID
+        )
         if len(errs) > 0:
             return
 
@@ -1048,7 +1066,16 @@ init 790 python in mas_sprites_json:
 #        save_obj["split"] = split
 
 
-    def _validate_clothes(jobj, save_obj, obj_based, errs, warns, infos):
+    def _validate_clothes(
+            jobj,
+            save_obj,
+            obj_based,
+            sp_name,
+            dry_run,
+            errs,
+            warns,
+            infos
+        ):
         """
         Validates CLOTHES related properties
 
@@ -1059,6 +1086,8 @@ init 790 python in mas_sprites_json:
             jobj - json object to parse
             obj_based - dict of objected-baesd items
                 (contains split)
+            sp_name - name of the clothes we are validating
+            dry_run - true if we are dry running, False if not
 
         OUT:
             save_obj - dict to save data to
@@ -1080,8 +1109,12 @@ init 790 python in mas_sprites_json:
 
             # key
             if _verify_str(hair_key):
-                if hair_key != "all" and hair_key not in HAIR_MAP:
-                    hm_key_delayed_veri[hair_key] = None
+                if (
+                        not dry_run 
+                        and hair_key != "all"
+                        and hair_key not in HAIR_MAP
+                    ):
+                    _add_hair_to_verify(hair_key, hm_key_delayed_veri, sp_name)
             else:
                 errs.append(MSG_ERR_IDD.format(HM_BAD_K_TYPE.format(
                     hair_key,
@@ -1094,8 +1127,12 @@ init 790 python in mas_sprites_json:
                 if hair_value == "custom":
                     errs.append(MSG_ERR_IDD.format(HM_FOUND_CUST))
 
-                elif hair_value not in HAIR_MAP:
-                    hm_val_delayed_veri[hair_value] = None
+                elif not dry_run and hair_value not in HAIR_MAP:
+                    _add_hair_to_verify(
+                        hair_value,
+                        hm_val_delayed_veri,
+                        sp_name
+                    )
 
             else:
                 errs.append(MSG_ERR_IDD.format(HM_BAD_V_TYPE.format(
@@ -1320,14 +1357,17 @@ init 790 python in mas_sprites_json:
             msgs_err,
             MSG_ERR_ID
         )
-        if len(msgs_errs) > 0:
-            writelogs(msgs_errs)
+        if len(msgs_err) > 0:
+            writelogs(msgs_err)
             return
+
+        # save name for later
+        sp_name = sp_obj_params["name"]
 
         # log out that we are loading the sprite object and name
         writelog(MSG_INFO.format(SP_LOADING.format(
             SP_STR.get(sp_type),
-            sp_obj_params.get("name")
+            sp_name
         )))
 
         # check for existence of pose_map property. We will not validate until
@@ -1350,8 +1390,8 @@ init 790 python in mas_sprites_json:
             msgs_err,
             MSG_ERR_ID
         )
-        if len(msgs_errs) > 0:
-            writelogs(msgs_errs)
+        if len(msgs_err) > 0:
+            writelogs(msgs_err)
             return
 
         # now for specific params
@@ -1404,6 +1444,8 @@ init 790 python in mas_sprites_json:
                     jobj,
                     sp_obj_params,
                     obj_based_params,
+                    sp_name,
+                    dry_run,
                     msgs_err,
                     msgs_warn,
                     msgs_info
@@ -1441,9 +1483,6 @@ init 790 python in mas_sprites_json:
             writelogs(msgs_err)
             return
 
-        # save name for later
-        sp_name = sp_obj_params["name"]
-
         # time to check for warnings/recommendes
 
         # extra property warnings
@@ -1476,7 +1515,7 @@ init 790 python in mas_sprites_json:
         _process_progpoint(
             sp_type,
             sp_name,
-            sp_obj_params.
+            sp_obj_params,
             msgs_warn,
             msgs_info,
             "exit"
@@ -1555,13 +1594,34 @@ init 790 python in mas_sprites_json:
             )))
 
 
-init 800 python in mas_sprites_json:
-    pass
+    def addSpriteObjects():
+        """
+        Adds sprite objects if we find any
 
-    # TODO: sprite jsons
-    # TODO: proressing giftnames
+        Also does delayed validation rules:
+            - hair
+        """
+        json_files = sprite_station.getPackageList(".json")
 
-    # TODO: after buliding/loading all sprite objects
+        if len(json_files) < 1:
+            return
+
+        # otherwise we have stuff
+        for j_obj in json_files:
+            j_path = sprite_station.station + j_obj
+            try:
+                addSpriteObject(j_path)
+            except Exception as e:
+                writelog(MSG_ERR.format(
+                    FILE_LOAD_FAILED.format(j_path, repr(e))
+                ))
+
+     # TODO: after buliding/loading all sprite objects
         #   delayed verify:
         #       hair
 
+
+init 800 python in mas_sprites_json:
+
+    # run the alg
+    addSpriteObjects()
