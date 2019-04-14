@@ -206,6 +206,9 @@ init -950 python in mas_ev_data_ver:
                 per_db.pop(ev_label)
 
 
+init -895 python in mas_ev_data_ver:
+    # this MUST happen after the data migrations
+
     # verify some databases
     for _dm_db in store._mas_dm_dm.per_dbs:
         verify_event_data(_dm_db)
