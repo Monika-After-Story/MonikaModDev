@@ -498,9 +498,8 @@ label greeting_o31_rin:
         m "What do {b}nya{/b} think?"
 
         scene black
-        $ scene_change = True
         pause 2.0
-        call spaceroom
+        call spaceroom(scene_change=True)
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
@@ -1458,7 +1457,6 @@ label mas_d25_monika_holiday_intro_deco:
 
     # black scene
     scene black
-    $ scene_change = True
 
     # we should consider ourselves in d25 mode now, if not already
     $ persistent._mas_d25_in_d25_mode = True
@@ -1476,7 +1474,7 @@ label mas_d25_monika_holiday_intro_deco:
     $ persistent._mas_d25_deco_active = True
 
     # now we can do spacroom call
-    call spaceroom
+    call spaceroom(scene_change=True)
 
     return
 
@@ -3416,8 +3414,7 @@ label mas_player_bday_autoload_check:
 label mas_player_bday_opendoor:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
-    $ scene_change = True
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_disable_quit()
     m "[player]!"
     m "You didn't knock!"
@@ -3449,9 +3446,8 @@ label mas_player_bday_knock_no_listen:
 
 # closed door greet surprise flow
 label mas_player_bday_surprise:
-    $ scene_change = True
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=False)
+    call spaceroom(hide_monika=False, scene_change=True)
     show monika 1hub at t11
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
@@ -3502,9 +3498,8 @@ label mas_player_bday_knock_listened:
 label mas_player_bday_opendoor_listened:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
-    $ scene_change = True
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_disable_quit()
     m "[player]!"
     m "You didn't knock!"

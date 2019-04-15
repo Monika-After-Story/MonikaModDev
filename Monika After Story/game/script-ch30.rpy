@@ -389,13 +389,14 @@ init python:
         mas_enable_quitbox()
 
 
-    def mas_drawSpaceroomMasks(dissolve=False):
+    def mas_drawSpaceroomMasks(dissolve_masks=True):
         """
         Draws the appropriate masks according to the current state of the
         game.
 
         IN:
-            dissolve - boolean on whether or not we want to dissolve the masks
+            dissolve_masks - True will dissolve masks, False will not
+                (Default; True)
 
         ASSUMES:
             morning_flag
@@ -418,8 +419,7 @@ init python:
         renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
         renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
 
-        #Only dissolve when specified (so only when weather changes)
-        if dissolve:
+        if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
 
 
@@ -707,50 +707,58 @@ init python:
 #       NOTE: This is called using renpy.show(), so pass the string name of
 #           the image you want (NOT FILENAME)
 #       NOTE: You're responsible for setting spaceroom back to normal though
-#       NOTE: Only dissolve_masks when changing weather. NEVER OTHERWISE
 #       (Default: None)
 #   hide_mask - True will hide the mask, false will not
 #       (Default: False)
 #   hide_monika - True will hide monika, false will not
 #       (Default: False)
-#   dissolve_masks - True will have the spaceroom windows fade in, false will not
+#   dissolve_masks - True will dissolve masks, False will not.
+#       NOTE: Only use these for weather changing
 #       (Default: False)
-label spaceroom(start_bg=None,hide_mask=False,hide_monika=False,dissolve_masks=False):
-    default dissolve_time = 0.5
+#   scene_change - True will prefix the draw with a scene call. scene black
+#       will always be used.
+#       (Default: False)
+#   force_exp - if not None, then we use this instead of monika idle.
+#       NOTE: this must be a string
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_masks=False, scene_change=False, force_exp=None):
 
-    if is_morning():
-        if not morning_flag or scene_change:
-            $ morning_flag = True
-            if not hide_mask:
-                $ mas_drawSpaceroomMasks(dissolve_masks)
-            if start_bg:
-                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
-            else:
-                show monika_day_room zorder MAS_BACKGROUND_Z
-                $ mas_calShowOverlay()
-            if not hide_monika:
-                show monika idle at t11 zorder MAS_MONIKA_Z
-#                with Dissolve(dissolve_time)
-    else:
-        if morning_flag or scene_change:
-            $ morning_flag = False
-            #We don't want to fade the spaceroom out when changing weather
-            if not dissolve_masks:
-                scene black
-            if not hide_mask:
-                $ mas_drawSpaceroomMasks(dissolve_masks)
-            if start_bg:
-                $ renpy.show(start_bg, zorder=MAS_BACKGROUND_Z)
-            else:
-                show monika_room zorder MAS_BACKGROUND_Z
-                $ mas_calShowOverlay()
-                #show monika_bg_highlight
-            if not hide_monika:
-                show monika idle at t11 zorder MAS_MONIKA_Z
-#                with Dissolve(dissolve_time)
+    if scene_change:
+        scene black
 
-    $scene_change = False
+    python:
+        # MORNING CHECK
+        # establishes correct room to use
+        if is_morning():
+            if not morning_flag or scene_change:
+                morning_flag = True
+                monika_room = "monika_day_room"
+                should_dissolve = True
 
+        else:
+            if morning_flag or scene_change:
+                morning_flag = False
+                monika_room = "monika_room"
+                should_dissolve = True
+
+        # actual room check
+        # are we using a custom bg or not
+        if start_bg:
+            renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
+
+        else:
+            renpy.show(monika_room, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
+            mas_calShowOverlay()
+
+        ## are we hiding monika
+        if not hide_monika:
+            if force_exp is None:
+                force_exp = "monika idle"
+
+            renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
+#            show monika idle at t11 zorder MAS_MONIKA_Z
+
+    # vignette
     if store.mas_globals.show_vignette:
         show vignette zorder 70
 
@@ -769,7 +777,12 @@ label spaceroom(start_bg=None,hide_mask=False,hide_monika=False,dissolve_masks=F
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
+    # since dissolving is slow, it shuld be last
+    if not hide_mask:
+        $ mas_drawSpaceroomMasks(dissolve_masks)
+
     return
+
 
 label ch30_main:
     $ mas_skip_visuals = False
@@ -1069,25 +1082,22 @@ label mas_ch30_post_holiday_check:
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
         #If the conditions are met and Monika expects an apology, jump to this label.
         if persistent._mas_affection["apologyflag"] and not is_apology_present():
-            $scene_change = True
             $ mas_RaiseShield_core()
-            call spaceroom
+            call spaceroom(scene_change=True)
             jump mas_affection_noapology
 
         #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
         elif persistent._mas_affection["apologyflag"] and is_apology_present():
             $ persistent._mas_affection["apologyflag"] = False
-            $scene_change = True
             $ mas_RaiseShield_core()
-            call spaceroom
+            call spaceroom(scene_change=True)
             jump mas_affection_yesapology
 
         #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
         elif not persistent._mas_affection["apologyflag"] and not is_apology_present():
             $ persistent._mas_affection["apologyflag"] = True
-            $scene_change = True
             $ mas_RaiseShield_core()
-            call spaceroom
+            call spaceroom(scene_change=True)
             jump mas_affection_apologydeleted
 
     # post greeting selected callback
@@ -1286,6 +1296,14 @@ label ch30_preloop:
     if mas_idle_mailbox.get_rebuild_msg():
         $ mas_rebuildEventLists()
 
+    # initial spaceroom
+    if not mas_skip_visuals:
+        call spaceroom(scene_change=True)
+
+    else:
+        $ mas_OVLHide()
+        $ mas_skip_visuals
+
     jump ch30_loop
 
 label ch30_loop:
@@ -1293,7 +1311,10 @@ label ch30_loop:
 
     # this event can call spaceroom
     if not mas_skip_visuals:
-        call spaceroom from _call_spaceroom_2
+
+        $ should_dissolve_masks = mas_weather.weatherProgress() and mas_isMoniNormal(higher=True)
+
+        call spaceroom(dissolve_masks=should_dissolve_masks)
 
         # updater check in here just because
         if not mas_checked_update:
@@ -1319,9 +1340,8 @@ label ch30_loop:
         jump ch30_post_mid_loop_eval
 
     #Do the weather thing
-    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
-        $ scene_change=True
-        call spaceroom(dissolve_masks=True)
+#    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
+#        call spaceroom(dissolve_masks=True)
 
     #Check time based events and grant time xp
     python:

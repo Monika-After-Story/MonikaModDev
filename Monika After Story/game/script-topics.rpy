@@ -1683,9 +1683,8 @@ label monika_rain_stop:
 
     show monika 1dsc
     pause 1.0
-    $ scene_change = True
     $ mas_is_raining = False
-    call spaceroom
+    call spaceroom(scene_change=True)
     stop background fadeout 1.0
 
     if mas_isMoniNormal(higher=True):
@@ -1729,9 +1728,8 @@ label monika_rain_start:
 
     show monika 1dsc
     pause 1.0
-    $ scene_change = True
     $ mas_is_raining = True
-    call spaceroom
+    call spaceroom(scene_change=True)
     play background audio.rain fadein 1.0 loop
 
     if mas_isMoniNormal(higher=True):

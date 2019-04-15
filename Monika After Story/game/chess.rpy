@@ -1547,10 +1547,6 @@ label mas_chess_game_start:
             persistent.chess_strength = mas_chess.chess_strength[1]
             mas_chess.chess_strength = (False, 0)
 
-    #Regenerate the spaceroom scene
-    #$scene_change=True #Force scene generation
-    #call spaceroom from _call_spaceroom
-
     # DEBUG:
     # uncomment this interaction to allow for a pause
 #    m "~~EDIT ME~~"

@@ -791,8 +791,7 @@ label mas_change_weather(new_weather, by_user=None):
     # set new weather and force change
     $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
-    $ scene_change = True
-    call spaceroom(dissolve_masks=True)
+    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc")
 
     # call entry programming point
     $ mas_current_weather.entry(old_weather)
@@ -905,7 +904,7 @@ label monika_change_weather_loop:
 
     if not skip_leadin:
         m 1eua "Alright!"
-        m 1dsc "Just give me a second..."
+        m 1dsc "Just give me a second...{w=1.0}{nw}"
 
     pause 1.0
 
