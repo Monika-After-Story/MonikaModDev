@@ -1103,24 +1103,27 @@ label mas_ch30_post_holiday_check:
 
     # TODO should the apology check be only for when she's not affectionate?
     if persistent._mas_affection["affection"] <= -50 and seen_event("mas_affection_apology"):
+        # no dissolves here since we want the player to be instantly aware
+        # that something is wrong.
+
         #If the conditions are met and Monika expects an apology, jump to this label.
         if persistent._mas_affection["apologyflag"] and not is_apology_present():
             $ mas_RaiseShield_core()
-            call spaceroom(scene_change=True)
+            call spaceroom
             jump mas_affection_noapology
 
         #If the conditions are met and there is a file called imsorry.txt in the DDLC directory, then exit the loop.
         elif persistent._mas_affection["apologyflag"] and is_apology_present():
             $ persistent._mas_affection["apologyflag"] = False
             $ mas_RaiseShield_core()
-            call spaceroom(scene_change=True)
+            call spaceroom
             jump mas_affection_yesapology
 
         #If you apologized to Monika but you deleted the apology note, jump back into the loop that forces you to apologize.
         elif not persistent._mas_affection["apologyflag"] and not is_apology_present():
             $ persistent._mas_affection["apologyflag"] = True
             $ mas_RaiseShield_core()
-            call spaceroom(scene_change=True)
+            call spaceroom
             jump mas_affection_apologydeleted
 
     # post greeting selected callback

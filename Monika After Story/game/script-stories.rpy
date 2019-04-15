@@ -464,7 +464,7 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ mas_changeWeather(mas_weather_rain)
-    call spaceroom(start_bg="monika_gloomy_room", scene_change=True)
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_masks=True)
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop

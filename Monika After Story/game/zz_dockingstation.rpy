@@ -2309,7 +2309,7 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, dissolve_masks=True)
     $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it
