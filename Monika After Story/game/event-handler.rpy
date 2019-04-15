@@ -1871,7 +1871,6 @@ label call_next_event:
         # return to normal pose
         show monika idle at t11 zorder MAS_MONIKA_Z
 
-
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
@@ -1999,7 +1998,7 @@ label prompt_menu:
 
 label prompt_menu_end:
 
-    show monika idle at t11
+    show monika at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
 

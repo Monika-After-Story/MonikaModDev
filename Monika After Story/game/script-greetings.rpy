@@ -1678,7 +1678,7 @@ label monikaroom_greeting_opendoor:
     m 2eud "..."
     show monika 1 at t33
     m 1eud "...and..."
-    if is_morning():
+    if mas_isMorning():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft 
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft

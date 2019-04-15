@@ -413,8 +413,6 @@ init:
                 lock.release()
             out.close()
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
 
         class ArchitectureError(RuntimeError):
             pass

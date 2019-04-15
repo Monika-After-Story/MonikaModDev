@@ -479,8 +479,7 @@ init python:
 #            config.keymap['dismiss'] = dismiss_keys
 #            renpy.display.behavior.clear_keymap_cache()
 
-    morning_flag = None
-    def is_morning():
+    def mas_isMorning():
         # generate the times we need
         sr_hour, sr_min = mas_cvToHM(persistent._mas_sunrise)
         ss_hour, ss_min = mas_cvToHM(persistent._mas_sunset)
@@ -490,6 +489,15 @@ init python:
         now_time = datetime.datetime.now().time()
 
         return sr_time <= now_time < ss_time
+
+
+    def mas_shouldChangeTime():
+        """
+        Checks if we should change the day to night or night to day.
+
+        RETURNS: true if we should change day/night cycle, False otherwise
+        """
+        return morning_flag != mas_isMorning()
 
 
     def mas_shouldRain():
@@ -701,6 +709,10 @@ init python:
             persistent.game_unlocks[gamename] = True
 
 
+init 1 python:
+    morning_flag = mas_isMorning()
+
+
 # IN:
 #   start_bg - the background image we want to start with. Use this for
 #       special greetings. None uses the default spaceroom images.
@@ -713,13 +725,14 @@ init python:
 #   hide_monika - True will hide monika, false will not
 #       (Default: False)
 #   dissolve_masks - True will dissolve masks, False will not.
-#       NOTE: Only use these for weather changing
+#       NOTE: this also drives functionality with force_exp
 #       (Default: False)
 #   scene_change - True will prefix the draw with a scene call. scene black
 #       will always be used.
 #       (Default: False)
 #   force_exp - if not None, then we use this instead of monika idle.
 #       NOTE: this must be a string
+#       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
 label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_masks=False, scene_change=False, force_exp=None):
 
@@ -729,33 +742,43 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_mask
     python:
         # MORNING CHECK
         # establishes correct room to use
-        if is_morning():
+        if mas_isMorning():
             if not morning_flag or scene_change:
                 morning_flag = True
                 monika_room = "monika_day_room"
-                should_dissolve = True
 
         else:
             if morning_flag or scene_change:
                 morning_flag = False
                 monika_room = "monika_room"
-                should_dissolve = True
 
         # actual room check
         # are we using a custom bg or not
         if start_bg:
-            renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
+            if not renpy.showing(start_bg):
+                renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
 
         else:
-            renpy.show(monika_room, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
-            mas_calShowOverlay()
+            if not renpy.showing(monika_room):
+                renpy.show(
+                    monika_room,
+                    tag="sp_mas_room",
+                    zorder=MAS_BACKGROUND_Z
+                )
+                mas_calShowOverlay()
 
         ## are we hiding monika
         if not hide_monika:
             if force_exp is None:
-                force_exp = "monika idle"
+#                force_exp = "monika idle"
+                if dissolve_masks:
+                    force_exp = store.mas_affection._force_exp()
 
-            renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
+                else:
+                    force_exp = "monika idle"
+
+            if not renpy.showing(force_exp):
+                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
 #            show monika idle at t11 zorder MAS_MONIKA_Z
 
     # vignette
@@ -929,7 +952,7 @@ label pick_a_game:
             pass
 #            m "Alright. Maybe later?"
 
-    show monika idle at tinstant zorder MAS_MONIKA_Z
+    show monika at tinstant zorder MAS_MONIKA_Z
 
     $ mas_DropShield_dlg()
 
@@ -1298,33 +1321,39 @@ label ch30_preloop:
 
     # initial spaceroom
     if not mas_skip_visuals:
-        call spaceroom(scene_change=True)
+        call spaceroom(dissolve_masks=True, scene_change=True)
 
     else:
         $ mas_OVLHide()
-        $ mas_skip_visuals
+        $ mas_skip_visuals = False
+        $ quick_menu = True
+        jump ch30_visual_skip
 
     jump ch30_loop
 
 label ch30_loop:
     $ quick_menu = True
 
-    # this event can call spaceroom
-    if not mas_skip_visuals:
+    python:
+        should_dissolve_masks = (
+            mas_shouldChangeTime()
+            or (
+                mas_weather.weatherProgress()
+                and mas_isMoniNormal(higher=True)
+            )
+        )
 
-        $ should_dissolve_masks = mas_weather.weatherProgress() and mas_isMoniNormal(higher=True)
+    call spaceroom(dissolve_masks=should_dissolve_masks)
 
-        call spaceroom(dissolve_masks=should_dissolve_masks)
+#    if should_dissolve_masks:
+#        show monika idle at t11 zorder MAS_MONIKA_Z
 
-        # updater check in here just because
-        if not mas_checked_update:
-            $ mas_backgroundUpdateCheck()
-            $ mas_checked_update = True
+    # updater check in here just because
+    if not mas_checked_update:
+        $ mas_backgroundUpdateCheck()
+        $ mas_checked_update = True
 
-    else:
-        $ mas_OVLHide()
-        $ mas_skip_visuals = False
-
+label ch30_visual_skip:
 
     $ persistent.autoload = "ch30_autoload"
     # if not persistent.tried_skip:
