@@ -724,8 +724,12 @@ init 1 python:
 #       (Default: False)
 #   hide_monika - True will hide monika, false will not
 #       (Default: False)
+#   dissolve_all - True will dissolve everything, False will not
+#       NOTE: takes priority over dissolve masks
+#       (Default: False)
 #   dissolve_masks - True will dissolve masks, False will not.
 #       NOTE: this also drives functionality with force_exp
+#       NOTE: if dissolve_all is True, this is ignored.
 #       (Default: False)
 #   scene_change - True will prefix the draw with a scene call. scene black
 #       will always be used.
@@ -734,7 +738,7 @@ init 1 python:
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_masks=False, scene_change=False, force_exp=None):
+label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None):
 
     if scene_change:
         scene black
@@ -751,6 +755,10 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_mask
             if morning_flag or scene_change:
                 morning_flag = False
                 monika_room = "monika_room"
+
+        # if we onyl want to dissolve masks, then we dissolve now
+        if not dissolve_all and not hide_mask:
+            mas_drawSpaceroomMasks(dissolve_masks)
 
         # actual room check
         # are we using a custom bg or not
@@ -771,7 +779,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_mask
         if not hide_monika:
             if force_exp is None:
 #                force_exp = "monika idle"
-                if dissolve_masks:
+                if dissolve_all:
                     force_exp = store.mas_affection._force_exp()
 
                 else:
@@ -800,9 +808,9 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_mask
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)
 
-    # since dissolving is slow, it shuld be last
-    if not hide_mask:
-        $ mas_drawSpaceroomMasks(dissolve_masks)
+    # dissolving everything means dissolve last
+    if dissolve_all and not hide_mask:
+        $ mas_drawSpaceroomMasks(dissolve_all)
 
     return
 
@@ -1324,7 +1332,7 @@ label ch30_preloop:
 
     # initial spaceroom
     if not mas_skip_visuals:
-        call spaceroom(dissolve_masks=True, scene_change=True)
+        call spaceroom(dissolve_all=True, scene_change=True)
 
     else:
         $ mas_OVLHide()
@@ -1338,15 +1346,13 @@ label ch30_loop:
     $ quick_menu = True
 
     python:
+        should_dissolve_all = mas_shouldChangeTime()
         should_dissolve_masks = (
-            mas_shouldChangeTime()
-            or (
-                mas_weather.weatherProgress()
-                and mas_isMoniNormal(higher=True)
-            )
+            mas_weather.weatherProgress() 
+            and mas_isMoniNormal(higher=True)
         )
 
-    call spaceroom(dissolve_masks=should_dissolve_masks)
+    call spaceroom(dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
