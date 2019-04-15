@@ -216,8 +216,8 @@ init -20 python in mas_weather:
             - True or false on whether or not to call spaceroom
         """
 
-        #If it shouldn't rain today, or the player forced weather, then we do nothing
-        if not shouldRainToday() or force_weather:
+        #If the player forced weather, then we do nothing
+        if force_weather:
             return False
 
         #Otherwise we do stuff
