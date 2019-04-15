@@ -744,6 +744,8 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         scene black
 
     python:
+        monika_room = None
+
         # MORNING CHECK
         # establishes correct room to use
         if mas_isMorning():
@@ -766,7 +768,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
             if not renpy.showing(start_bg):
                 renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
 
-        else:
+        elif monika_room is not None:
             if not renpy.showing(monika_room):
                 renpy.show(
                     monika_room,
