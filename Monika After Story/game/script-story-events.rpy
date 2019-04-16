@@ -967,11 +967,7 @@ label .self:
     python:
         _confirm_quit = True
         persistent.closed_self = False
-
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
+        mas_startup_song()
 
     return
 

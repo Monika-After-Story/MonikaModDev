@@ -2820,9 +2820,9 @@ init 5 python:
 label greeting_siat:
     m 1hub "{cps=*0.6}{i}~[player] and Monika sittin' in a tree~{/i}{/cps}"
     m 1hubfb "{cps=*0.6}{i}~K-I-S-S-I-N-G~{/i}{/cps}"
-    m 3hubfb "{i}{cps=*0.6}~First comes love~{/i}{/cps}"
-    m "{i}{cps=*0.6}~Then comes marriage~{/i}{/cps}"
-    m "{i}{cps=*0.6}~Then comes--{/i}{/cps}"
+    m 3hubfb "{cps=*0.6}{i}~First comes love~{/i}{/cps}"
+    m "{cps=*0.6}{i}~Then comes marriage~{/i}{/cps}"
+    m "{cps=*0.6}{i}~Then comes--{/i}{/cps}"
     m 3wubfsdlo "W-wha?!"
     m 2wubfsdld "[player]! H-how long have you been there?!"
     m 2rkbfsdld "I...{w=1} I didn't notice you come in...{w=1} I was just..."
