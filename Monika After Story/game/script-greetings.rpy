@@ -1271,7 +1271,7 @@ label monikaroom_greeting_ear_narration:
         # clear out var
         $ willchange_ev = None
 
-    call spaceroom from _call_spaceroom_enar
+    call spaceroom(dissolve_all=True, scene_change=True)
 
     if mas_isMoniNormal(higher=True):
         m 1hub "It's me!"
@@ -1727,7 +1727,7 @@ label monikaroom_greeting_knock:
                 if persistent.seen_monika_in_room:
                     m 6ekc "Thanks for knocking."
 
-            call spaceroom(hide_monika=True, dissolve_masks=True)
+            call spaceroom(hide_monika=True, dissolve_all=True, scene_change=True)
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
 
