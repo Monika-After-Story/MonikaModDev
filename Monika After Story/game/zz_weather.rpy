@@ -157,7 +157,7 @@ init python in mas_weather:
             store.persistent._mas_date_last_checked_rain = datetime.date.today()
 
             #Now we roll
-            chance = random.randint(0,100)
+            chance = random.randint(1,100)
 
             #ODDS:
             #   Spring:
@@ -178,6 +178,50 @@ init python in mas_weather:
                 store.persistent._mas_should_rain_today = False
 
         return store.persistent._mas_should_rain_today
+
+
+    def _determineCloudyWeather(
+            rain_chance,
+            thunder_chance,
+            overcast_chance
+            rolled_chance=None
+        ):
+        """
+        Determines if weather should be rainiy/thunder/overcase, or none of 
+        those.
+
+        IN:
+            rain_chance - chance of rain out of 100
+            thunder_chance - chance of thunder out of 100
+                NOTE: this should be percentage based on rain chance, i.e.:
+                thunder_chance * (rain_chance as %)
+            overcast_chance - chance of overcast out of 100
+            rolled_chance - if passed, then we use that chance instead of
+                generating a random chance. None means we generate our
+                own chance.
+                (Default: None)
+
+        RETURNS:
+            appropriate weather type, or None if neither of these weathers.
+        """
+        if rolled_chance is None:
+            rolled_chance = random.randint(1,100)
+
+        if mas_weather.shouldRainToday():
+            # try raining if we can
+
+            if rolled_chance <= rain_chance:
+
+                # double check thunder
+                if rolled_chance <= thunder_chance:
+                    return store.mas_weather_thunder
+
+                # otherwise rain
+                return store.mas_weather_rain
+
+#        elif rolled_chance <= overcast_chance:
+
+
 
 init -20 python in mas_weather:
     import random
@@ -232,16 +276,19 @@ init -20 python in mas_weather:
 
             #Change weather
             new_weather = store.mas_shouldRain()
-            if new_weather is not None and new_weather.weather_id != store.mas_current_weather.weather_id:
+            if new_weather is not None and new_weather != store.mas_current_weather:
                 store.mas_changeWeather(new_weather)
                 #Play the rumble in the back to indicate thunder
-                if new_weather.weather_id == 'thunder':
+                if new_weather == store.mas_weather_thunder:
                     renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
                 return True
-            elif store.mas_current_weather.prompt != store.mas_weather_def.prompt:
+
+            elif store.mas_current_weather != store.mas_weather_def:
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
+
         return False
+
 
     def loadMWData():
         """
