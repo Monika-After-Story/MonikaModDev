@@ -59,3 +59,65 @@ label dev_change_weather:
     m "If you want to change the weather again, just ask me, okay?"
 
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_weather_sampler",
+            category=["dev"],
+            prompt="SAMPLE WEATHER",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_weather_sampler:
+    m 1eua "Lets sample some weather."
+    $ store.mas_weather.shouldRainToday()
+    m "Make sure to set 'persistent._mas_should_rain_today` to what you want."
+    m "It is currently [persistent._mas_should_rain_today]."
+
+    m 1eua "sample size please"
+    $ sample_size = renpy.input("enter sample size", allow="0123456789")
+    $ sample_size = store.mas_utils.tryparseint(sample_size, 10000)
+    if sample_size > 10000:
+        $ sample_size = 10000 # anyhting longer takes too long
+    $ str_sample_size = str(sample_size)
+
+    m 1eua "using sample size of [str_sample_size]"
+
+    python:
+        # prepare data:
+        results = {
+            "default": 0
+        }
+        totals = 0
+
+        # loop over sample size
+        for count in range(sample_size):
+            got_weather = mas_shouldRain()
+            totals += 1
+            
+            if got_weather is None:
+                results["default"] += 1
+
+            elif got_weather.prompt in results:
+                results[got_weather.prompt] += 1
+
+            else:
+                results[got_weather.prompt] = 0
+
+        # done with sampling, output results
+        with open(renpy.config.basedir + "/weather_sample", "w") as outdata:
+            for weather_name, count in results.iteritems():
+                outdata.write("{0},{1} -> {2}\n".format(
+                    weather_name,
+                    count,
+                    count/float(totals)
+                ))
+
+    m "check files for 'weather_sample' for more info."
+    return
+

@@ -535,43 +535,34 @@ init python:
             #   - Sunny: 30%
 
             if mas_isSpring():
-                #Chance for rains
-                if chance <= 40 and mas_weather.shouldRainToday():
-                    #Should it thunder
-                    if chance <= 15:
-                        return mas_weather_thunder
-                    return mas_weather_rain
-                #Otherwise should we just be overcast
-                elif 40 < chance <= 55:
-                    return mas_weather_overcast
+                return mas_weather._determineCloudyWeather(
+                    40,
+                    15,
+                    15,
+                    rolled_chance=chance
+                )
 
             elif mas_isSummer():
-                #Chance of rain
-                if chance <= 10 and mas_weather.shouldRainToday():
-                    #Chance of thunder
-                    if chance <= 6:
-                        return mas_weather_thunder
-                    return mas_weather_rain
-                #Chance of overcast
-                elif 10 < chance <= 15:
-                    return mas_weather_overcast
+                return mas_weather._determineCloudyWeather(
+                    10,
+                    6,
+                    5,
+                    rolled_chance=chance
+                )
 
             elif mas_isFall():
-                #Chance of rain
-                if chance <= 30 and mas_weather.shouldRainToday():
-                    #Chance of thunder
-                    if chance <= 12:
-                        return mas_weather_thunder
-                    return mas_weather_rain
-                #Chance of overcast
-                elif 30 < chance < 45:
-                    return mas_weather_overcast
+                return mas_weather._determineCloudyWeather(
+                    30,
+                    12,
+                    15,
+                    rolled_chance=chance
+                )
 
             else:
                 #Chance of snow
                 if chance <= 50:
                     return mas_weather_snow
-                elif 50 < chance <= 70:
+                elif chance <= 70:
                     return mas_weather_overcast
 
         #Otherwise rain based on how Moni's feeling

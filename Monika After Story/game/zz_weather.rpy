@@ -150,6 +150,7 @@ default persistent._mas_should_rain_today = None
 
 #Loading at init 0 because of season functions
 init python in mas_weather:
+
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
@@ -183,7 +184,7 @@ init python in mas_weather:
     def _determineCloudyWeather(
             rain_chance,
             thunder_chance,
-            overcast_chance
+            overcast_chance,
             rolled_chance=None
         ):
         """
@@ -207,7 +208,7 @@ init python in mas_weather:
         if rolled_chance is None:
             rolled_chance = random.randint(1,100)
 
-        if mas_weather.shouldRainToday():
+        if shouldRainToday():
             # try raining if we can
 
             if rolled_chance <= rain_chance:
@@ -219,8 +220,15 @@ init python in mas_weather:
                 # otherwise rain
                 return store.mas_weather_rain
 
-#        elif rolled_chance <= overcast_chance:
+            # if we failed to rain here, then modify the rolled chance to be
+            # appropriate to for the next chance
+            rolled_chance -= rain_chance
 
+        if rolled_chance <= overcast_chance:
+            return store.mas_weather_overcast
+
+        # otherwise, no cloudy weather
+        return None
 
 
 init -20 python in mas_weather:
