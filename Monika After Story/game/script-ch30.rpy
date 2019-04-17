@@ -1312,6 +1312,9 @@ label ch30_post_exp_check:
         if set_to_weather is not None:
             $ mas_changeWeather(set_to_weather)
 
+        # initial spaceroom
+        call spaceroom(dissolve_all=True, scene_change=True)
+
     # FALL THROUGH TO PRELOOP
 
 label ch30_preloop:
@@ -1332,11 +1335,7 @@ label ch30_preloop:
     if mas_idle_mailbox.get_rebuild_msg():
         $ mas_rebuildEventLists()
 
-    # initial spaceroom
-    if not mas_skip_visuals:
-        call spaceroom(dissolve_all=True, scene_change=True)
-
-    else:
+    if mas_skip_visuals:
         $ mas_OVLHide()
         $ mas_skip_visuals = False
         $ quick_menu = True
