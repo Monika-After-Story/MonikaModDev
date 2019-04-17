@@ -1337,6 +1337,11 @@ init 790 python in mas_sprites_json:
             jobj.pop(DRY_RUN)
             dry_run = True
 
+        # get rid of __keys
+        for jkey in jobj.keys():
+            if jkey.startswith("__"):
+                jobj.pop(jkey)
+
         ## this happens in 3 steps:
         # 1. build sprite object according to the json
         #   - this includes PoseMaps
