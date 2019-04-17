@@ -1303,19 +1303,27 @@ label ch30_post_exp_check:
 
     window auto
 
-    if not mas_skip_visuals:
-        $ set_keymaps()
-        $ mas_startup_song()
+    if mas_skip_visuals:
+        # need to jump to initial setup, then we can jump to visual skip
+        jump ch30_preloop
 
-        # rain check
-        $ set_to_weather = mas_shouldRain()
-        if set_to_weather is not None:
-            $ mas_changeWeather(set_to_weather)
+    # otherwise, we are NOT skipping visuals
+    $ set_keymaps()
+    $ mas_startup_song()
 
-        # initial spaceroom
-        call spaceroom(dissolve_all=True, scene_change=True)
+    # rain check
+    $ set_to_weather = mas_shouldRain()
+    if set_to_weather is not None:
+        $ mas_changeWeather(set_to_weather)
 
-    # FALL THROUGH TO PRELOOP
+    # FALL THROUGH
+
+label ch30_preloop_visualsetup:
+
+    # initial spaceroom
+    call spaceroom(dissolve_all=True, scene_change=True)
+
+    # FALL THROUGH
 
 label ch30_preloop:
     # stuff that should happen right before we enter the loop
