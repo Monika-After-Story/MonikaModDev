@@ -34,7 +34,7 @@ label start:
             $ mas_startup_song()
         else:
             stop music
-        jump ch30_preloop
+        jump ch30_preloop_visualsetup
     jump ch30_main
 
 label endgame(pause_length=4.0):

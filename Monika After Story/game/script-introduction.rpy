@@ -1,9 +1,6 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
-
-    $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
-
     if persistent.monika_kill:
         m 6dsc "..."
         m 6dfc "[player]..."
