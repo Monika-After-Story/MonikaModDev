@@ -7,10 +7,7 @@ label sayori_name_scare:
     python:
         from store.songs import FP_SAYO_NARA, initMusicChoices
         initMusicChoices(sayori=True)
-        play_song(FP_SAYO_NARA)
-        persistent.current_track = FP_SAYO_NARA
-        store.songs.selected_track = FP_SAYO_NARA
-        store.songs.current_track = FP_SAYO_NARA
+        play_song(FP_SAYO_NARA, set_per=True)
         store.mas_globals.show_s_light = True
     return
 

@@ -169,7 +169,7 @@ init python:
 
             # call backs for the game menu
             if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks()
+                mas_drawSpaceroomMasks(dissolve_masks=False)
 
 
     def _mas_quick_menu_cb(screen_name):
@@ -186,7 +186,7 @@ init python:
 
             # call backs for the game menu
             if prev_disable_animations != persistent._mas_disable_animations:
-                mas_drawSpaceroomMasks()
+                mas_drawSpaceroomMasks(dissolve_masks=False)
 
 
     def _mas_hide_windows():

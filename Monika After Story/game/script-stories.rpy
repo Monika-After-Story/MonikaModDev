@@ -456,7 +456,6 @@ label mas_scary_story_setup:
     $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
-    $ scene_change = True
     $ mas_is_raining = True
     #TODO persistent music spoop for o31
     stop music fadeout 1.0
@@ -465,7 +464,7 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ mas_changeWeather(mas_weather_rain)
-    call spaceroom(start_bg="monika_gloomy_room")
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_masks=True)
     $ morning_flag = True
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
     play background audio.rain fadein 1.0 loop
@@ -503,7 +502,6 @@ label mas_scary_story_cleanup:
 
     m 3eua "[story_end_quip]"
     show monika 1dsc
-    $ scene_change = True
     pause 1.0
     hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag

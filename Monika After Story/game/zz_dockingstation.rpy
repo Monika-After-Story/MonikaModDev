@@ -2182,7 +2182,7 @@ init 200 python in mas_dockstat:
                 (Default: 1)
         """
         if store.persistent._mas_monika_returned_home is None:
-            hours_out = int(_time_out.seconds / 3600)
+            hours_out = int(_time_out.total_seconds() / 3600)
 
             # you gain 1 per hour, max 5, min 1
             if hours_out > max_hour_out:
@@ -2309,7 +2309,7 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it

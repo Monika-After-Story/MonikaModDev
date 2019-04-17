@@ -413,8 +413,6 @@ init:
                 lock.release()
             out.close()
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
 
         class ArchitectureError(RuntimeError):
             pass
@@ -1546,10 +1544,6 @@ label mas_chess_game_start:
         if mas_chess.chess_strength[0]:
             persistent.chess_strength = mas_chess.chess_strength[1]
             mas_chess.chess_strength = (False, 0)
-
-    #Regenerate the spaceroom scene
-    #$scene_change=True #Force scene generation
-    #call spaceroom from _call_spaceroom
 
     # DEBUG:
     # uncomment this interaction to allow for a pause

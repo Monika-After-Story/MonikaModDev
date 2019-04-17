@@ -847,8 +847,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    $ scene_change = True
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
 
     return
 
@@ -968,11 +967,7 @@ label .self:
     python:
         _confirm_quit = True
         persistent.closed_self = False
-
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
+        mas_startup_song()
 
     return
 
@@ -991,8 +986,7 @@ label mas_crashed_long_fluster:
 
 label mas_crashed_preshort:
     # we can call spaceroom appropriately here
-    $ scene_change = True
-    call spaceroom
+    call spaceroom(scene_change=True)
     return
 
 label mas_crashed_short:
