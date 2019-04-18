@@ -1628,6 +1628,7 @@ init 790 python in mas_sprites_json:
             )))
 
         else:
+            sp_obj.is_custom = True
             writelog(MSG_INFO.format(SP_SUCCESS.format(
                 SP_STR.get(sp_type),
                 sp_name

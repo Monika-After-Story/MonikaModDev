@@ -3168,6 +3168,8 @@ init -2 python:
                 the MASMonika object that is being changed is fed into this
                 function
                 NOTE: this is called before the item is removed from MASMonika
+            is_custom - True if this is a custom object. False if not.
+                NOTE: this must be set AFTER object creation
         """
         import store.mas_sprites_json as msj
 
@@ -3217,6 +3219,7 @@ init -2 python:
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
             self.ex_props = ex_props
+            self.is_custom = False
 
             if type(pose_map) != MASPoseMap:
                 raise Exception("PoseMap is REQUIRED")
