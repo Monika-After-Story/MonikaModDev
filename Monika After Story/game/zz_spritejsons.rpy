@@ -341,6 +341,16 @@ init -21 python in mas_sprites_json:
         "'custom' hair cannot be used in JSON hair maps. "
         "Outfits using 'custom' hair must be created manually."
     )
+    HM_VER_ALL = "verifying hair maps..."
+    HM_VER_SUCCESS = "hair map verification complete!"
+    HM_NO_KEY = (
+        "hair '{0}' does not exist - found in hair_map keys of these "
+        "sprites: {1}"
+    )
+    HM_NO_VAL = (
+        "hair '{0}' does not exist - found in hair_map values of these "
+        "sprites: {1}. replacing with defaults."
+    )
 
     ## ex_props
     EP_LOADING = "loading ex_props..."
@@ -464,7 +474,7 @@ init -21 python in mas_sprites_json:
 
 
 init 790 python in mas_sprites_json:
-    from store.mas_sprites import _verify_pose, HAIR_MAP 
+    from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
@@ -480,6 +490,27 @@ init 790 python in mas_sprites_json:
     MSG_INFO_IDD = "        [info]: {0}\n"
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+
+    def _replace_hair_map(sp_name, hair_to_replace):
+        """
+        Replaces the hair vals of the given sprite object with the given name
+        of the given hair with defaults.
+
+        IN:
+            sp_name - name of the clothing sprite object to replace hair
+                map values in
+            hair_to_replace - hair name to replace with defaults
+        """
+        # sanity checks
+        sp_obj = CLOTH_MAP.get(sp_name, None)
+        if sp_obj is None or sp_obj.hair_map is None:
+            return
+
+        # otherwise this is a real clothing with a hair map
+        for hair_key in sp_obj.hair_map:
+            if sp_obj.hair_map[hair_key] == hair_to_replace:
+                sp_obj.hair_map[hair_key] = store.mas_hair_def.name
 
 
     def _remove_sel_list(name, sel_list):
@@ -1625,12 +1656,39 @@ init 790 python in mas_sprites_json:
                     FILE_LOAD_FAILED.format(j_path, repr(e))
                 ))
 
-     # TODO: after buliding/loading all sprite objects
-        #   delayed verify:
-        #       hair
+
+    def verifyHairs()
+        """
+        Verifies all hair items that we encountered
+        """
+        writelog(MSG_INFO.format(HM_VER_ALL))
+
+        # start with keys
+        for hkey in hm_key_delayed_veri:
+            if hkey not in HAIR_MAP:
+                writelog(MSG_WARN_ID.format(HM_NO_KEY.format(
+                    hkey,
+                    hm_key_delayed_veri[hkey]
+                )))
+
+        # now for values
+        for hval in hm_val_delayed_veri:
+            if hval not in HAIR_MAP:
+                sp_name_list = hm_val_delayed_veri[hval]
+                writelog(MSG_WARN_ID.format(HM_NO_VAL.format(
+                    hval,
+                    sp_name_list
+                )))
+
+                # also clean the values
+                for sp_name in sp_name_list:
+                    _replace_hair_map(sp_name, hval)
+
+        writelog(MSG_INFO.format(HM_VER_SUCCESS))
 
 
 init 800 python in mas_sprites_json:
 
     # run the alg
     addSpriteObjects()
+    verifyHairs()
