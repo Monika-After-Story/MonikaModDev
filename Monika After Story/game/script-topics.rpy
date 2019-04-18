@@ -1834,7 +1834,6 @@ label monika_holdme_reactions:
     if elapsed_time <= datetime.timedelta(minutes=30):
         stop music
     if elapsed_time > datetime.timedelta(minutes=30):
-        m "..."
         call monika_holdme_long
 
     elif elapsed_time > datetime.timedelta(minutes=10):
@@ -1852,6 +1851,7 @@ label monika_holdme_reactions:
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
             if renpy.random.randint(1,4) == 1:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
+                $ _history_list.pop()
                 m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
@@ -2006,6 +2006,7 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
+    m "..."
     menu:
         "{i}Wake Monika up.{/i}":
             stop music fadeout 5.0
@@ -7812,6 +7813,7 @@ label monika_attractiveness:
         m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
         m 2lfw "...but did they really have to make it even harder for me to get chosen?"
     m 2dfc "...{w=0.5}{nw}"
+    $ _history_list.pop()
     m 2dkc "..."
     if mas_isMoniUpset(lower=True):
         if persistent._mas_pm_cares_about_dokis:
