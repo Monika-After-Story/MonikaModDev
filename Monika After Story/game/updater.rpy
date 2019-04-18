@@ -816,6 +816,38 @@ init 10 python:
         )
         the_thread.start()
 
+# Update cleanup flow:
+init python early:
+
+    def _mas_getBadFiles():
+        """
+        Searches through the entire mod_assets folder for any file
+        with the '.new' extension and returns their paths
+        """
+        import os
+        
+        return [
+            os.path.join(root, file)
+
+            for root, dirs, files in os.walk(os.path.join(config.gamedir,'mod_assets'))
+                for file in files
+                    if file.endswith(".new")
+            ]
+    
+    def mas_cleanBadUpdateFiles():
+        """
+        Moves any file with the '.new' extension to the correct file
+        """
+        import shutil
+        files = _mas_getBadFiles()
+        print(files)
+        for file in files:
+            shutil.move(file, file[:-4])
+
+    # check if we have files to move
+    mas_cleanBadUpdateFiles()
+
+
 
 label mas_updater_steam_issue:
 #    show monika at t11
