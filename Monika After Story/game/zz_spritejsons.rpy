@@ -473,7 +473,7 @@ init -21 python in mas_sprites_json:
     DRY_RUN = "dryrun"
 
 
-init 790 python in mas_sprites_json:
+init 189 python in mas_sprites_json:
     from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
@@ -1658,7 +1658,7 @@ init 790 python in mas_sprites_json:
                 ))
 
 
-    def verifyHairs()
+    def verifyHairs():
         """
         Verifies all hair items that we encountered
         """
@@ -1688,7 +1688,8 @@ init 790 python in mas_sprites_json:
         writelog(MSG_INFO.format(HM_VER_SUCCESS))
 
 
-init 800 python in mas_sprites_json:
+init 190 python in mas_sprites_json:
+    # NOTE: must be before 200, which is when saved selector data is loaded
 
     # run the alg
     addSpriteObjects()
