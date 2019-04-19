@@ -3288,6 +3288,14 @@ init -2 python:
             return self.__sp_type
 
 
+        def hasprogpoints(self):
+            """
+            RETURNS: true if this sprite object has at least 1 non-null prog
+                point, False otherwise
+            """
+            return self.entry_pp is not None or self.exit_pp is not None
+
+
         def hasprop(self, prop):
             """
             Checks if this sprite object has the given prop
@@ -3314,6 +3322,17 @@ init -2 python:
                 return True
 
             return False
+
+
+        @staticmethod
+        def sortkey(sprite_base):
+            """
+            Returns the sorting key of the given MASSpriteBase object
+            """
+            if isinstance(sprite_base, MASSpriteBase):
+                return sprite_base.name
+
+            return ""
 
 
     class MASSpriteFallbackBase(MASSpriteBase):
