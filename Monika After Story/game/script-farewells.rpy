@@ -113,7 +113,7 @@ label mas_farewell_start:
     # to define a system to handle those.
     if persistent._mas_long_absence:
         $ pushEvent("bye_long_absence_2")
-        return 
+        return
 
     $ import store.evhand as evhand
     # we use unseen menu values
@@ -1068,7 +1068,7 @@ label bye_going_somewhere_normalplus_flow:
     # handling positive affection cases separately so we can jump to
     # other specific dialogue flows
 
-    # NOTE: make sure that if you leave this flow, you either handle 
+    # NOTE: make sure that if you leave this flow, you either handle
     #   docking station yourself or jump back to the iostart label
     if persistent._mas_d25_in_d25_mode:
         # check the d25 timed variants
