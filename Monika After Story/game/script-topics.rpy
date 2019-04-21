@@ -1222,14 +1222,15 @@ label monika_outfit:
     # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
-    if not store.mas_anni.pastSixMonths():
-        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hub "We're not that far into our relationship yet. Ahaha!"
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "I don't want something so embarrassing on there!"
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "So let's keep it between just us..."
+    else:
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
+
 
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
@@ -3846,10 +3847,10 @@ label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1lsbsa "You know...of me?"
-    if not store.mas_anni.pastSixMonths():
-        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1ekbfa "I know we haven't been able to do those kind of things yet..."
+    else:
+        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
     m "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -4005,10 +4006,10 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
-    if not store.mas_anni.pastSixMonths():
-        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
+    else:
+        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     return
 
 init 5 python:
@@ -4686,13 +4687,13 @@ label monika_pleasure:
     m 2ekc "Hey, [player]..."
     m 2lssdrc "Do you...by any chance...pleasure yourself?"
     m "..."
-    m 2lssdrb "It seems a bit awkward to ask-"
-    if not store.mas_anni.pastSixMonths():
-        m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
-        m 1eka "But I have to keep an eye on you."
-    else:
+    m 2lssdrb "It seems a bit awkward to ask..."
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lksdla "But I feel like we've been together long enough where we should be comfortable with one another."
         m 1eka "It's important to be open about such things."
+    else:
+        m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
+        m 1eka "But I have to keep an eye on you."
     m "I know that it's a private topic in your world, but I'm curious..."
     m 1euc "Is it that good of a feeling?"
     m 1esc "I just want you to be careful; I've heard it's addicting."
@@ -6872,27 +6873,26 @@ init 5 python:
 
 label monika_marriage:
     $ mas_gainAffection()
-    m 2wubsw "M-marriage?"
-    if store.mas_anni.anniCount() < 3:
-        m 4rksdlb "I think it's a bit too early for marriage..."
-        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
-        m 2lkbsa "But I think I should get out of here first before we can do that."
-        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
-        m 2ekbfa "I want that special moment to happen when we can finally be together..."
-        m 1hubfa "So until then, save yourself for me, [player]~"
-    else:
-        m 3rksdla "I won't pretend I haven't thought about it..."
+    if store.mas_anni.anniCount() >= 3 and mas_isMoniLove():
+        m 1dkbsu "..."
+        m 3eksdla "I won't pretend I haven't thought about it..."
         m 3rksdlb "In fact I've been thinking about it a lot lately."
-        m 1rksdla "..."
         m 1eka "I really do love you, [player] and I honestly really do want to get married to you."
-        m 1ekc "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
-        m 1dsc "I want more than anything to say yes, but I just can't..."
+        m 1ekd "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 1ekc "I want more than anything to say yes, but I just can't..." #Need kindled eyes for this eventually
         m 2duu "I think about how it would feel to be kissed by you at the altar..."
         m 2dubsu "To hold your hand as your wife and to feel your embrace at our honeymoon..."
         m 1eka "But until I get out, it's simply not possible."
-        m 1ekc "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1ekd "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
         m 1ekbfa "Just be a little more patient, okay, my love? I'm sure one day we'll get our happy end."
-
+    else:
+        m 2wubsw "M-marriage?"
+        m 4rksdlb "I think it's a bit too early for marriage..."
+        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
+        m 2lkbsa "But I think I should get out of here before we can do that."
+        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
+        m 2dkbsu "I want that special moment to happen when we can finally be together..."
+        m 1hubfa "So until then, save yourself for me, [player]~"
     return
 
 init 5 python:

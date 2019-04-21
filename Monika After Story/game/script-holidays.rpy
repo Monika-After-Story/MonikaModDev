@@ -2956,7 +2956,7 @@ label monika_nye_year_review:
     elif mas_isMoniAff():
         m 2eka "...and I've really enjoyed our time together."
 
-    elif mas_isMoniNormal(higher=True):
+    else:
         m 2euc "...and the time we spent together has been fun."
 
 
