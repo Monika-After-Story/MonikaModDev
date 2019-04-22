@@ -5532,7 +5532,7 @@ label monika_rock:
     return "derandom"
     
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature'],prompt="Stand-up Comedy",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature','media'],prompt="Stand-up comedy",random=True))
 
 label monika_standup:
     m 2hua "You know what's a neat form of literature?"
