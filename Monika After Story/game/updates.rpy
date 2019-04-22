@@ -309,6 +309,9 @@ label v0_9_4(version="v0_9_4"):
         if persistent._mas_greeting_type != store.mas_greetings.TYPE_LONG_ABSENCE:
             # reset the long absensce flag that wasn't reset because of a bug
             persistent._mas_long_absence = False
+
+        if mas_getEV('monika_ptod_tip001').unlocked:
+            mas_hideEVL("monika_ptod_tip000", "EVE", lock=True)
     return 
 
 # 0.9.2
