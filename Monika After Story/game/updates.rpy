@@ -310,7 +310,9 @@ label v0_9_4(version="v0_9_4"):
             # reset the long absensce flag that wasn't reset because of a bug
             persistent._mas_long_absence = False
 
+        # need to lock intro to python tips for people that have it unlocked in Repeat Conversations due to a bug
         if mas_getEV('monika_ptod_tip001').unlocked:
+            # check to see if tip 001 is unlocked, since 000 is the only way to unlock 001
             mas_hideEVL("monika_ptod_tip000", "EVE", lock=True)
     return 
 
