@@ -503,13 +503,14 @@ label mas_scary_story_cleanup:
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
-    hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
+    $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
         hide vignette
-    call mas_change_weather(mas_temp_r_flag)
+    call spaceroom(scene_change=True, dissolve_all=True)
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
+
     $ play_song(songs.current_track)
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()
