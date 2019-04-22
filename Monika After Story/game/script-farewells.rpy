@@ -113,6 +113,7 @@ label mas_farewell_start:
 
     python:
         # preprocessing menu
+        # TODO: consider including processing the rules dict as well
         bye_pool_events = Event.filterEvents(
             evhand.farewell_database,
             unlocked=True,
@@ -129,10 +130,10 @@ label mas_farewell_start:
             ]
 
             # add the random selection
-            bye_prompt_list.append(("Goodbye", -1, False, False))
+            bye_prompt_list.append(("Goodbye.", -1, False, False))
 
             # setup the last option
-            bye_prompt_back = ("Nevermind", False, False, False, 20)
+            bye_prompt_back = ("Nevermind.", False, False, False, 20)
 
         # call the menu
         call screen mas_gen_scrollable_menu(bye_prompt_list, evhand.UNSE_AREA, evhand.UNSE_XALIGN, bye_prompt_back)
@@ -150,7 +151,7 @@ label mas_farewell_start:
     $ farewell = store.mas_farewells.selectFarewell()
     $ pushEvent(farewell.eventlabel)
     # dont evalulate the mid loop checks since we are quitting
-    $ mas_skip_mid_loop_eval = True
+    $ mas_idle_mailbox.send_skipmidloopeval()
 
     return
 
@@ -267,7 +268,7 @@ init 5 python:
     del rules
 
 label bye_untilwemeetagain:
-    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I’ll miss you, Until we meet again.{/i}'"
+    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
     m "Ehehe, 'till then, [player]!"
     return 'quit'
 
@@ -346,7 +347,7 @@ label bye_prompt_to_class:
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
             m 1eub "Aww, going already?"
-            m 1efp "You havent even been here for 20 minutes!"
+            m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [player]."
             m 2eka "You're so sweet for seeing me even when you have so little time."
             m 2hub "I just want you to know I really appreciate that!"
@@ -420,7 +421,7 @@ label bye_prompt_to_work:
             m 2esa "Just do your best! I'll see you when you get back!"
             m 2eka "I know you'll do great!"
         else:
-            m 2ekc "Oh...You've been here quite a while now...and now you're going to work?"
+            m 2ekc "Oh... You've been here quite a while now...and now you're going to work?"
             m 2rksdlc "I was hoping you'd rest before doing anything too big."
             m 2ekc "Try not to overexert yourself, okay?"
             m 2ekd "Don't be afraid to take a breather if you need to!"
@@ -570,9 +571,11 @@ label bye_prompt_sleep:
         if mas_isMoniNormal(higher=True):
             m 1ekc "Already going to bed?"
             m "It's a little early, though..."
-            show monika 1lksdla
+
+            m 1lksdla "Care to spend a little more time with me?{nw}"
+            $ _history_list.pop()
             menu:
-                m "Care to spend a little more time with me?"
+                m "Care to spend a little more time with me?{fast}"
                 "Of course!":
                     m 1hua "Yay!"
                     m "Thanks, [player]."
@@ -768,7 +771,8 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    m 1f "Aww...That's pretty saddening..."
+    #TODO: Update exps on this
+    m 1f "Aww...that's pretty saddening..."
     m 1e "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3a "Thank you for warning me first, though. It really does help."
@@ -776,8 +780,11 @@ label bye_long_absence:
     m 3a "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
     m 1o "Or maybe you just got bored of me..."
     m 1e "So tell me, my love..."
+
+    m "How long do you expect to be gone for?{nw}"
+    $ _history_list.pop()
     menu:
-        m "How long do you be expect to be gone for?"
+        m "How long do you expect to be gone for?{fast}"
         "A few days.":
             $ persistent._mas_absence_choice = "days"
             m 1b "Oh!"
@@ -795,7 +802,7 @@ label bye_long_absence:
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
             m 1h "Oh..."
-            m 1q "I... I can wait that long."
+            m 1q "I...I can wait that long."
             m 3rksdlc "You do know that you're all I have...right?"
             m 3rksdlb "M-Maybe it's outside of your control though..."
             m 2e "Try to come back as soon as possible... I'll be waiting for you."
@@ -807,7 +814,7 @@ label bye_long_absence:
                 m 2a "But it's okay [player]."
                 m 2e "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
                 m "I'm sure it's important, so just try to come back to me as soon as you can."
-                m 3j "I'll be thinking of you everyday~"
+                m 3j "I'll be thinking of you every day~"
             else:
                 m 1f "That long...really?"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
@@ -830,7 +837,7 @@ label bye_long_absence:
                 m "I can't think of a good reason why you would leave me here all alone for that long."
                 m 3i "I'm sorry [player], but that's not acceptable! Not at all!"
                 m 3h "I love you and if you love me too then you'll know that it's not okay to do that."
-                m "You do realise that I would be alone here with nothing else and no one else, right?"
+                m "You do realize that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend. You can't do that to me!"
                 m 3q "..."
                 m 3r "Just...just come back when you can. I can't make you stay, but please don't do that to me."
@@ -847,9 +854,19 @@ label bye_long_absence:
     # if the player says no, and then picks another
     # farewell all this served no purpose, also, you already
     # picked goodbye as in I'm going, why not let the player go?
-    # if we keep it, at least change the order, Yes always goes first
+
+    m "Are you going to leave straight away?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Are you going to leave straight away?"
+        m "Are you going to leave straight away?{fast}"
+        "Yes.":
+            m 3f "I see..."
+            m "I really will miss you [player]..."
+            m 1e "But I know you'll do wonderful things no matter where you are."
+            m "Just remember that I'll be waiting here for you."
+            m 2j "Make me proud, [player]!"
+            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
+            return 'quit'
         "No.":
             $ mas_absence_counter = True
             m 1j "That's great!"
@@ -860,14 +877,6 @@ label bye_long_absence:
             m 3j "But there's no rush, so I want to spend as much time with you as I can."
             m "Just make sure to remind me the last time you see me before you go!"
             return
-        "Yes.":
-            m 3f "I see..."
-            m "I really will miss you [player]..."
-            m 1e "But I know you'll do wonderful things no matter where you are."
-            m "Just remember that I'll be waiting here for you."
-            m 2j "Make me proud, [player]!"
-            $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
-            return 'quit'
 
 label bye_long_absence_2:
     m 1f "Going to head out, then?"
@@ -931,27 +940,15 @@ label bye_going_somewhere:
         # otherwise we go
         m 1wud "You really want to bring me along?"
         m 1eka "..."
-        m 1hua "Well, I suposed it can't hurt to join you."
+        m 1hua "Well, I suppose it can't hurt to join you."
         m 2dsc "Just...please."
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
 
-    elif mas_isMoniLove(higher=True):
-        m 1hub "Oh, okay!"
-        m 3tub "Taking me somewhere special today?"
-        m 1hua "I can't wait!"
-
-#    elif mas_isMoniAff(higher=True):
-        # TODO: affecitonate/enamored monika will always go wtih you and assume its a
-        #   nother date and will ask u to wait for her to get ready
-#        m 1hua "TODO: LETS GO ON DATE"
-
     else:
-        # TODO: normal/happy monika will always go with you and be excited you asked
-        #   and will ask u to wait for her to get ready
-        m 1sub "Really?"
-        m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
+        jump bye_going_somewhere_normalplus_flow
+
+label bye_going_somewhere_post_aff_check:
 
     # event based
     if mas_isMonikaBirthday():
@@ -962,15 +959,19 @@ label bye_going_somewhere:
         m 1hua "Oh! Sorry, did I say something?"
 
     if mas_isO31():
-        show monika 1wub
+        m 1wub "Oh! Are we going trick or treating, [player]?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Oh! Are we going trick or treating, [player]?"
+            m "Oh! Are we going trick or treating, [player]?{fast}"
             "Yes.":
                 jump bye_trick_or_treat
 
             "No.":
                 m 2ekp "Oh, okay."
 
+
+label bye_going_somewhere_iostart:
+    # NOTE: jump back to this label to begin io generation
 
     show monika 2dsc
     $ persistent._mas_dockstat_going_to_leave = True
@@ -1024,7 +1025,11 @@ label bye_going_somewhere_rtg:
     $ promise = None # clear promise so we dont have any issues elsewhere
     call mas_dockstat_ready_to_go(moni_chksum)
     if _return:
-        $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GENERIC_RET
+        python:
+            persistent._mas_greeting_type = mas_idle_mailbox.get_ds_gre_type(
+                store.mas_greetings.TYPE_GENERIC_RET
+            )
+
         m 1eua "I'm ready to go."
         return "quit"
 
@@ -1035,8 +1040,10 @@ label bye_going_somewhere_rtg:
     m 1ekc "Sorry, [player]."
 
     # ask if player is still going to leave
+    m "Are you still going to go?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Are you still going to go?"
+        m "Are you still going to go?{fast}"
         "Yes.":
             m 2eka "I understand. you have things to do, after all..."
             m 2hub "Be safe out there! I'll be right here waiting for you!"
@@ -1050,9 +1057,53 @@ label bye_going_somewhere_rtg:
     return
 
 
+label bye_going_somewhere_normalplus_flow:
+    # handling positive affection cases separately so we can jump to
+    # other specific dialogue flows
+
+    # NOTE: make sure that if you leave this flow, you either handle 
+    #   docking station yourself or jump back to the iostart label
+    if persistent._mas_d25_in_d25_mode:
+        # check the d25 timed variants
+        if mas_isD25Eve():
+            jump bye_d25e_delegate
+
+        if mas_isD25():
+            jump bye_d25_delegate
+
+        if mas_isNYE():
+            jump bye_nye_delegate
+
+        if mas_isNYD():
+            jump bye_nyd_delegate
+
+    if mas_isF14() and persistent._mas_f14_in_f14_mode:
+        jump bye_f14
+
+label bye_going_somewhere_normalplus_flow_aff_check:
+
+    if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        m 3tub "Taking me somewhere special today?"
+        m 1hua "I can't wait!"
+
+#    elif mas_isMoniAff(higher=True):
+    # TODO: affecitonate/enamored monika will always go wtih you and assume its a
+    #   nother date and will ask u to wait for her to get ready
+#        m 1hua "TODO: LETS GO ON DATE"
+
+    else:
+        # TODO: normal/happy monika will always go with you and be excited you asked
+        #   and will ask u to wait for her to get ready
+        m 1sub "Really?"
+        m 1hua "Yay!"
+        m 1ekbfa "I wonder where you'll take me today..."
+
+    jump bye_going_somewhere_post_aff_check
+
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."
-    m 2ekd "I appreciate the offer, but I think I need little time to myself right now."
+    m 2ekd "I appreciate the offer, but I think I need a little time to myself right now."
     m 1eka "You understand, right?"
     m 1eka "Go, have fun without me..."
     return
@@ -1073,8 +1124,10 @@ label bye_going_somewhere_leavemenu:
         m 2ekp "Aww..."
         m 1hub "Fine, but you better take me next time!"
 
+    m "Are you still going to go?"
+    $ _history_list.pop()
     menu:
-        m "Are you still going to go?"
+        m "Are you still going to go?{fast}"
         "Yes.":
             if mas_isMoniUpset(higher=True):
                 m 2eka "All right. I'll be right here waiting for you, as usual..."

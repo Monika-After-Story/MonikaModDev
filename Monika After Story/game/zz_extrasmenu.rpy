@@ -104,7 +104,10 @@ label mas_extra_menu_close:
         call mas_extra_menu_zoom_callback
 
     # re-enable overlays
-    $ mas_DropShield_core()
+    if store.mas_globals.in_idle_mode:
+        $ mas_coreToIdleShield()
+    else:
+        $ mas_DropShield_core()
 
     show monika idle
 

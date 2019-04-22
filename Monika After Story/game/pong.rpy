@@ -362,8 +362,7 @@ label demo_minigame_pong:
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
-    $scene_change=True #Force scene generation
-    call spaceroom from _call_spaceroom_3
+    call spaceroom(scene_change=True)
 
     show monika 1eua
 
@@ -382,8 +381,10 @@ label demo_minigame_pong:
 
     $ mas_gainAffection(modifier=0.5)
 
+    m "Do you want to play again?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Do you want to play again?"
+        m "Do you want to play again?{fast}"
 
         "Yes.":
             jump demo_minigame_pong
