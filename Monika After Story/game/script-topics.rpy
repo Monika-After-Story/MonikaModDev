@@ -5537,7 +5537,7 @@ init 5 python:
 label monika_standup:
     m 2hua "You know what's a neat form of literature?"
     m 2hub "Stand-up comedy!"
-    m 2hksdrb "...I've been saying lots of random things are literature haven't I?"
+    m 2hksdrb "...I've been saying lots of random things are literature, haven't I?"
     m 2hub "I'm starting to feel like Natsuki, or some fanatic post-modernist, ahaha!"
     m 2esa "But seriously, there's a real craft when it comes to writing bits for stand-up."
     m 4esc "It differs from making simple one-liner jokes, because it really needs to tell a story."
@@ -5545,7 +5545,7 @@ label monika_standup:
     m 4euc "So it's important to develop your ideas as much as you can, maybe even segueing into something that relates to your topic..."
     m 4eub "All the while, always keeping the audience captivated until you reach the punch line, hopefully resulting in lots of laughs."    
     m 1esa "In some ways, it's kind of like writing a short story, except you cut out the falling action."
-    m 1esc "And yet, between the jokes you can find the soul of the writer, what his thoughts and feelings are towards any given subject."
+    m 1esc "And yet, between the jokes, you can find the soul of the writer, what his thoughts and feelings are towards any given subject."
     m 1esd "What his life experiences were, and who they are today."
     m 1eub "All that comes forth within the bits that they write for their act."
     m 1esa "I think the toughest part about doing stand-up is having to perform it."
