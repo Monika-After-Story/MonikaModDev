@@ -363,13 +363,13 @@ label greeting_o31_marisa:
     if store.mas_o31_event.o31_cg_decoded:
         # ASSUMING:
         #   vignette should be enabled.
-        call spaceroom(hide_monika=True)
+        call spaceroom(hide_monika=True, scene_change=True)
         show emptydesk at i11 zorder 9
 
     else:
         # ASSUMING:
         #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True)
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika_1eua')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -470,7 +470,7 @@ label greeting_o31_rin:
     $ title_cased_hes = hes.capitalize()
 
     # ASSUME vignette
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk at i11 zorder 9
 
     m "Ugh, I hope I got these braids right."
@@ -495,11 +495,11 @@ label greeting_o31_rin:
 
         hide emptydesk
         window auto
-        m "What do {b}nya{/b} think?"
+        m "What do {i}nya{/i} think?"
 
         scene black
         pause 2.0
-        call spaceroom(scene_change=True)
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb')
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
@@ -3414,7 +3414,7 @@ label mas_player_bday_autoload_check:
 label mas_player_bday_opendoor:
     $ mas_loseAffection()
     $ persistent._mas_player_bday_opened_door = True
-    call spaceroom(hide_monika=True, scene_change=True)
+    call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     $ mas_disable_quit()
     m "[player]!"
     m "You didn't knock!"
@@ -3447,8 +3447,7 @@ label mas_player_bday_knock_no_listen:
 # closed door greet surprise flow
 label mas_player_bday_surprise:
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(hide_monika=False, scene_change=True)
-    show monika 1hub at t11
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 4hub')
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
 

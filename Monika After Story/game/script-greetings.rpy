@@ -2423,7 +2423,7 @@ label greeting_hairdown:
     # have monika's hair down
     $ monika_chr.change_hair(mas_hair_down, by_user=False)
 
-    call spaceroom(dissolve_all=True, scene_change=True)
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua')
 
     m 1eua "Hi there, [player]!"
     m 4hua "Notice anything different today?"
