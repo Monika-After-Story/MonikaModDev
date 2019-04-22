@@ -226,6 +226,29 @@ label dev_sp_obj_pp_test_sp_select:
                 renpy.show("monika 1ektsc")
                 renpy.say(m, EXIT_ERR.format(e))
 
+    show monika 1eua
+
     jump dev_sp_obj_pp_test_sp_select
 
 
+## dev functions for mas sprites that WILL cause exceptions
+
+init -2 python in mas_sprites:
+
+    def _hair__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("HAIR ENTRY")
+
+    def _hair__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("HAIR EXIT")
+
+    def _clothes__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("CLOTHES ENTRY")
+
+    def _clothes__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("CLOTHES EXIT")
+
+    def _acs__testingxcp_entry(_moni_chr, **kwargs):
+        raise Exception("ACS ENTRY")
+
+    def _acs__testingxcp_exit(_moni_chr, **kwargs):
+        raise Exception("ACS EXIT")
