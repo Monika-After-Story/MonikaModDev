@@ -199,6 +199,13 @@ init -1 python in mas_filereacts:
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
 
+        # TODO: check if sprite object gifts
+        #   If so, then we add a special set of generic reactions
+        #   that are associated with additional data
+        #
+        #   NOTE: for additional data, going to have a persistent list containing
+        #   sprite data, this will be popped as generic reactions are eaten.
+
         # add in the generic gift reactions
         generic_reacts = list()
         if len(gifts_found) > 0:
@@ -292,6 +299,18 @@ init -1 python in mas_filereacts:
 
         # Add stats
         store.persistent._mas_filereacts_historic[today][eventlabel] = store.persistent._mas_filereacts_historic[today].get(eventlabel,0) + 1
+
+        #### additionally if this is a sprite json gift
+        gift_ev = filereact_db.get(eventlabel,  None)
+        if gift_ev is None:
+            return
+
+        # TODO: small adjustment to handle the correct category type later
+        giftname = gift_ev.category
+        if giftname in store.persistent._mas_filereacts_sprite_gifts:
+            store.persistent._mas_sprites_json_gifted_sprites[giftname] = (
+                store.persistent._mas_filereacts_sprite_gifts.pop(giftname)
+            )
 
 
     def _get_full_stats_for_date(date=None):
@@ -640,6 +659,16 @@ label mas_reaction_gift_test2:
     $ gift_ev = mas_getEV("mas_reaction_gift_test2")
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
+
+## GENERIC SPRITE OBJECT JSONS
+# NOTE this does not work yey
+
+label mas_reaction_gift_generic_acs:
+    m "TODO ME"
+
+    $ gift_ev = mas_getEV("mas_reaction_gift_generic_acs")
+    return
+
 
 ## coffee vars
 # NOTE: this is just for reference, check sprite-chart for inits

@@ -260,6 +260,8 @@ init -21 python in mas_sprites_json:
 
 
     # mapping giftnames to sprite type / name
+    # NOTE: __testing is a prohibiited name
+    #   anything starting wtih 2 underscores is ignored.
     giftname_map = {
         "__testing": (0, "__testing"),
     }
@@ -272,7 +274,6 @@ init -21 python in mas_sprites_json:
     #   DUPLICATES ARE NOT ALLOWED
     #   then we compare:
     #       _mas_filereacts_sprite_gifts
-    #       _mas_sprites_json_gifted_sprites
     #   and remove the ones in those dicts that are not in this one.
 
     namegift_map = {
@@ -369,7 +370,6 @@ init -21 python in mas_sprites_json:
     ## images loadable
     IL_NOTLOAD = "image at '{0}' is not loadable"
 
-
     ### CONSTANTS
     SP_ACS = 0
     SP_HAIR = 1
@@ -392,6 +392,14 @@ init -21 python in mas_sprites_json:
         SP_HAIR: "store.mas_sprites._hair_{0}_{1}",
         SP_CLOTHES: "store.mas_sprites._clothes_{0}_{1}",
     }
+
+    SP_RL = {
+        SP_ACS: "mas_reaction_gift_acs_{0}",
+        SP_HAIR: "mas_reaction_gift_hair_{0}",
+        SP_CLOTHES: "mas_reaction_gift_clothes_{0}",
+    }
+
+    SP_RL_GEN = "{0}|{1}|{2}"
 
     def _verify_sptype(val, allow_none=True):
         if val is None:
@@ -1688,9 +1696,71 @@ init 189 python in mas_sprites_json:
         writelog(MSG_INFO.format(HM_VER_SUCCESS))
 
 
+    def _addGift(giftname):
+        """
+        Adds the reaction for this gift, using the correct label depending on
+        gift label existence.
+
+        IN:
+            giftname - giftname to add reaction for
+        """
+        namegift = giftname_map.get(giftname, None)
+        if namegift is None:
+            return
+
+        gifttype, spname = namegift
+        rlstr = SP_RL.get(gifttype,  None)
+        if rlstr is None:
+            return
+
+        # only add this reaction if we have a label for it
+        reaction_label = rlstr.format(spname)
+        if renpy.has_label(reaction_label):
+            store.addReaction(reaction_label, giftname, is_good=True)
+
+        # otherwise, add the generic reaction
+        # TODO: add function mas_reactions for adding generic sprite
+        #   sprite object
+        #store.addReaction
+
+
+    def processGifts():
+        """
+        Processes giftnames that were loaded, adding/removing them from
+        certain dicts.
+        """
+        frs_gifts = store.persistent._mas_filereacts_sprite_gifts
+        msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
+
+        for giftname in frs_gifts.keys()
+            if giftname in giftname_map:
+                # overwrite the gift data if in here
+                frs_gifts[giftname] = giftname_map[giftname]
+
+            else:
+                # remove if not in here
+                frs_gifts.pop(giftname)
+
+        # now go through the giftnames and add them if they havent been
+        # unlocked already
+        for giftname in giftname_map:
+            if not giftname.startswith("__"):
+                # no testing labels
+                if giftname in msj_gifts:
+                    # alrady unlocked, but overwrite data
+                    msj_gifts[giftname] = giftname_map[giftname]
+
+                else:
+                    # not unlocked, add this to the list
+                    frs_gifts[giftname] = giftname_map[giftname]
+                
+
 init 190 python in mas_sprites_json:
     # NOTE: must be before 200, which is when saved selector data is loaded
 
     # run the alg
     addSpriteObjects()
     verifyHairs()
+
+    # reaction setup
+    processGifts()
