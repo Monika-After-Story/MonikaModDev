@@ -85,7 +85,7 @@ Our issues page will show a list of technical issues, new features, and requests
 
 ### How can I get in touch with the development staff?
 
-The easiest way to contact our dev team is through our [Discord channel](https://discord.gg/7P5DnJ4).
+The easiest way to contact our dev team is through our [Discord channel](https://discordapp.com/invite/K2KuJeX).
 
 ## General DDLC Modding
 
@@ -145,4 +145,4 @@ To add the Sprite Previewer to your MAS, copy [this file](https://github.com/Mon
 
 ## Other help
 
-Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Backdash/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discord.gg/WE65rQ3).
+Don't see the answer that you're looking for here? Please [create an issue](https://github.com/Backdash/MonikaModDev/issues) to ask a tech-support question or file a bug report. You can also get help from members of our community on the [tech-support channel on discord](https://discordapp.com/invite/K2KuJeX).
