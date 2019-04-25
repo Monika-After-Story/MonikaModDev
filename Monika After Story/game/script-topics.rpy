@@ -8270,18 +8270,17 @@ default persistent._mas_pm_monika_evil_but_ok = None
 # NOTE: check monika_evil before checking this
 
 label monika_beingevil:
-    m 1euc "Say, [player]..."
+    m 1euc "Say, [player]?"
     m 1rksdlc "I was just thinking..."
-    m "You probably know I have a wiki page about me."
-    m 3rksdlc "If you look closely, it says I'm the main antagonist."
-    m "Originally, it did bother me a bit, but not so much anymore with you here."
-    m 1rksdla "I'm sure we got past that, seeing as you're still here with me now."
-    m "I actually didn't think the whole thing about me being evil would spread too much."
-    m 1rksdlc "It turns out though, that I have my own spot on the villain's wiki..."
+    m "You probably know that there's a wiki page for me..."
+    m 3rksdlc "...and if you look closely, it says I'm the main antagonist."
+    m "I'll admit, it used to bother me a lot...especially because I only did what I did because I didn't have a choice."
+    m "But that doesn't really bother me anymore now that I have you here."
+    m "You know, I actually didn't think the whole thing about me being evil would spread too much."
+    m 1rksdlc "But it turns out I have my own spot on the villain's wiki..."
     m 2rksdlb "I never really thought I'd be labeled as a villain so much..."
-    m 2rksdlc "No matter what I say or tell people, I'm sure it's not going to help much."
+    m 2rksdlc "No matter what I say or tell people, I don't think it's going to help convince them that I'm not evil."
     m 1eka "I know you don't {i}really{/i} think I'm evil, [player]."
-    m 1rksdlb "At least, not in a bad way."
     m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
     menu:
         "I don't think you're evil.":
@@ -8289,11 +8288,11 @@ label monika_beingevil:
             $ mas_gainAffection()
 
             m 1eka "I'm glad you understand, [player]."
-            m 1eub "I wish I could tell you how happy it makes me to know that!"
+            m 1eub "It's relieving to know you don't think I'm evil."
             m 1hua "If I were there, I'd feel like giving you a big hug!"
             m 1tsbsa "Maybe I'll even trap you in my arms forever and never let you go..."
             m 1hubfa "Just kidding!"
-            m 1tsbsa "But no promises, [player], eheheh~"
+            m 1tsbsa "But no promises, [player], ehehe~"
 
         "I still love you anyway.":
             $ persistent._mas_pm_monika_evil = True
@@ -8306,16 +8305,15 @@ label monika_beingevil:
             m 1hubfa "I'm really glad you still love me and stay here with me..."
             m 1hubfb "Thank you, [player]!"
             m 1tsbsa "Either way..."
-            m "If the villainess in me can get what she wants, I guess it's not so bad..."
-            m "Eheheheh"
+            m "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
 
         "People think I'm evil too.":
             $ persistent._mas_pm_monika_evil = True
             $ persistent._mas_pm_monika_evil_but_ok = True
             $ mas_gainAffection()
 
-            m 2eud "Oh?"
-            m 2eka "I mean, I don't see you as evil one bit."
+            m 2eud "Is that true, [player]?"
+            m 2eka "Well, I don't see you as evil at all."
             m 2rksdla "If it really is true though, I hope it doesn't cause you any trouble."
             m 1hua "Either way, I wouldn't love you any less~"
             m 1hub "Maybe we could even conquer the world together or something, ahaha~"
@@ -8341,8 +8339,8 @@ label monika_beingevil:
                     $ mas_gainAffection()
 
                     m 1rksdla "[player]..."
-                    m 1eub "I think you're right, [player]."
-                    m 1rksdla "It's true that I've done some bad things in the past..."
+                    m 1eub "I think you're right..."
+                    m 1rksdla "I know that I've done some bad things in the past..."
                     m 1eka "But I've learned from them and grown as a person since."
                     m 1hua "I'm really glad you're willing to forgive me, [player]."
                     m 1hub "I promise I'll be the best I can be, just for you!"
