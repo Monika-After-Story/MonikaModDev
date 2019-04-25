@@ -12792,7 +12792,7 @@ label monika_enjoyingspring:
     m 3eub "Did you know that they only bloom for one week each year?"
     m 3lksdla "It's quite a short lifespan, but it's still beautiful regardless."
     m 4tkc "One big downside to spring, however, would be the constant rainfall."
-    m 3esb "But rain can also be fun too!"
+    m 3esb "And personally, I think that rain can also be fun too!"
     m 3hua "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two!"
     show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5esbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
