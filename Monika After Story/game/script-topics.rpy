@@ -8280,9 +8280,14 @@ label monika_beingevil:
     m 1rksdlc "But it turns out I have my own spot on the villain's wiki..."
     m 2rksdlb "I never really thought I'd be labeled as a villain so much..."
     m 2rksdlc "No matter what I say or tell people, I don't think it's going to help convince them that I'm not evil."
-    m 1eka "I know you don't {i}really{/i} think I'm evil, [player]."
-    m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me."
+    if persistent._mas_pm_a_hater:
+        m 1eka "I know you don't {i}really{/i} think I'm evil, [player]."
+    else:
+        m 1eka "But I know you don't think I'm evil, [player].
+    m 1hksdlb "I just hope nobody starts thinking you're evil by being here with me.{nw}"
+    $ _history_list.pop()
     menu:
+        m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
         "I don't think you're evil.":
             $ persistent._mas_pm_monika_evil = False
             $ mas_gainAffection()
@@ -8323,8 +8328,9 @@ label monika_beingevil:
             $ persistent._mas_pm_monika_evil = True
 
             m 2ekd "W-wait, [player]!"
-            m 2rksdlc "Y-you don't {i}really{/i} think that, do you?"
+            m 2rksdlc "Y-you don't {i}really{/i} think that, do you?{nw}"
             menu:
+                m "Y-you don't {i}really{/i} think that, do you?{fast}"
                 "I still love you":
                     $ persistent._mas_pm_monika_evil_but_ok = True
                     $ mas_gainAffection()
@@ -8347,7 +8353,7 @@ label monika_beingevil:
 
                 "You really are evil.":
                     $ persistent._mas_pm_monika_evil_but_ok = False
-                    $ mas_loseAffection(reason="")
+                    $ mas_loseAffection(reason=12)
 
                     m 2dkc "..."
                     if mas_isMoniBroken():

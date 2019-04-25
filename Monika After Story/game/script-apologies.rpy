@@ -63,6 +63,7 @@ label monika_playerapologizes:
         8: "not spending time with you on your birthday.",
         9: "the game crashing.",
         10: "the game crashing." #easiest way to handle this w/o overrides
+        12: "calling me evil. I know you don't really think that."
     }
 
     #Set the prompt for this...
