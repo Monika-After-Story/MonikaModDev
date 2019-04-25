@@ -12791,7 +12791,9 @@ label monika_enjoyingspring:
     m 3esb "Those ones in particular are mostly white, with a slight tinge of pink."
     m 3eub "Did you know that they only bloom for one week each year?"
     m 3lksdla "It's quite a short lifespan, but it's still beautiful."
-    m 4tkc "One big downside to spring, however, would be the constant rainfall."
+    m 4tkc "However, there is one big downside to spring...{w=0.5}the constant rainfall."
+    m 2tkc "You can't really enjoy too much time outside because of it..."
+    m 2eka "But I guess April showers bring May flowers, so it's not all bad."
     m 3esb "And personally, I think that rain can also be fun too!"
     m 3hua "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two!"
     show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
