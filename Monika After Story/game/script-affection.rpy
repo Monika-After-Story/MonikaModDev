@@ -1,3 +1,5 @@
+# AFF010 is progpoints
+#
 # Affection module:
 #
 # General:
@@ -47,7 +49,7 @@ init python:
 
 init -900 python in mas_affection:
     # this is very early because they are importnat constants
-    
+
     # numerical constants of affection levels
     BROKEN = 1
     DISTRESSED = 2
@@ -107,6 +109,18 @@ init -900 python in mas_affection:
         G_HAPPY: G_NORMAL
     }
 
+    # Forced expression map. This is for spaceroom dissolving
+    FORCE_EXP_MAP = {
+        BROKEN: "monika 6ckc",
+        DISTRESSED: "monika 6rkc",
+        UPSET: "monika 2efc",
+        NORMAL: "monika 1eua",
+        AFFECTIONATE: "monika 1eua",
+        ENAMORED: "monika 1hua",
+        LOVE: "monika 1hua",
+    }
+
+
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -157,7 +171,7 @@ init -900 python in mas_affection:
         if aff_check is None:
             # aff_check not a valid affection?
             return False
-            
+
         # clean the affection compares
         aff_low = _aff_level_map.get(aff_low, None)
         aff_high = _aff_level_map.get(aff_high, None)
@@ -285,7 +299,7 @@ init -1 python in mas_affection:
         store.persistent._mas_affection_log_counter += 1
 
     # affection log setup
-    log = renpy.renpy.log.open("log/aff_log", append=True)
+    log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
     log_open = log.open()
     log.raw_write = True
 
@@ -328,7 +342,7 @@ init -1 python in mas_affection:
                 datetime.datetime.now(),
                 piece_one,
                 change,
-                store.persistent._mas_affection["affection"],
+                store._mas_getAffection(),
                 new,
                 piece_five
             )
@@ -338,7 +352,7 @@ init -1 python in mas_affection:
                 datetime.datetime.now(),
                 piece_one,
                 change,
-                store.persistent._mas_affection["affection"],
+                store._mas_getAffection(),
                 new
             )
 
@@ -362,6 +376,20 @@ init -1 python in mas_affection:
             old,
             new
         ))
+
+
+    # forced expression logic function
+    def _force_exp():
+        """
+        Determines appropriate forced expression for current affection.
+        """
+        curr_aff = store.mas_curr_affection
+
+        if store.mas_isMoniNormal() and store.mas_isBelowZero():
+            # special case
+            return "monika 1esc"
+
+        return FORCE_EXP_MAP.get(curr_aff, "monika idle")
 
 
 # need these utility functiosn post event_handler
@@ -440,39 +468,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from upset to normal
         """
-        # access global vars
-        mas_is_raining = store.mas_is_raining
-
-        # NOTE: rain topics are unlock-dependent on if its currently raining
-        if mas_is_raining:
-            store.mas_lockEventLabel("monika_rain")
-            store.mas_lockEventLabel("monika_rain_start")
-            if persistent._mas_likes_rain:
-                store.mas_unlockEventLabel("monika_rain_stop")
-            else:
-                store.mas_lockEventLabel("monika_rain_stop")
-                
-        else:
-            store.mas_unlockEventLabel("monika_rain")
-            store.mas_lockEventLabel("monika_rain_stop")
-            if persistent._mas_like_rain:
-                store.mas_unlockEventLabel("monika_rain_start")
-            else:
-                store.mas_lockEventLabel("monika_rain_start")
-
-        # greeting unlocks
-        if not store.mas_isO31():
-            evhand._unlockEventLabel(
-                "i_greeting_monikaroom",
-                eventdb=evhand.greeting_database
-            )
-
-        if not persistent._mas_hair_changed:
-            evhand._unlockEventLabel(
-                "greeting_hairdown",
-                eventdb=evhand.greeting_database
-            )
-
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO
 
@@ -484,11 +479,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from normal to upset
         """
-        evhand._lockEventLabel(
-            "greeting_hairdown",
-            eventdb=evhand.greeting_database
-        )
-
         # change quit message
         layout.QUIT_NO = mas_layout.QUIT_NO_UPSET
 
@@ -503,6 +493,10 @@ init 15 python in mas_affection:
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
+        # enable text speed
+        if persistent._mas_text_speed_enabled:
+            store.mas_enableTextSpeed()
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -513,6 +507,9 @@ init 15 python in mas_affection:
         """
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
+
+        # disable text speed
+        store.mas_disableTextSpeed()
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -561,19 +558,6 @@ init 15 python in mas_affection:
         """
         Runs when transitioning from affectionate to enamored
         """
-
-        # If the greeting hasn't been seen yet, push the islands greeting
-        if (
-                not store.seen_event("greeting_ourreality")
-            ):
-            if store.mas_cannot_decode_islands:
-                # failed to decode the islands, lets delay this action
-                store.mas_addDelayedAction(1)
-
-            else:
-                # otherwise we can directly unlock this greeting
-                store.unlockEventLabel("greeting_ourreality",eventdb=evhand.greeting_database)
-
         # unlock islands event if seen already
         if (
                 store.seen_event("mas_monika_islands")
@@ -1124,7 +1108,17 @@ init -10 python:
         persistent._mas_pctadeibe = None
 
         # pull numerical afffection for audting
-        new_value = persistent._mas_affection["affection"]
+        if (
+                persistent._mas_affection is None
+                or "affection" not in persistent._mas_affection
+            ):
+            if persistent._mas_aff_backup is None:
+                new_value = 0
+            else:
+                new_value = persistent._mas_aff_backup
+
+        else:
+            new_value = persistent._mas_affection["affection"]
 
         # if the back is None, set the backup
         if persistent._mas_aff_backup is None:
@@ -1190,9 +1184,38 @@ init 20 python:
     # getter
     def _mas_getAffection():
         if persistent._mas_affection is not None:
-            return persistent._mas_affection.get("affection", 0)
+            return persistent._mas_affection.get(
+                "affection",
+                persistent._mas_aff_backup
+            )
+
+        return persistent._mas_aff_backup
+
+
+    def _mas_getBadExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get(
+                "badexp",
+                1
+            )
+        return 1
+
+
+    def _mas_getGoodExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get(
+                "goodexp",
+                1
+            )
+        return 1
+
+
+    def _mas_getTodayExp():
+        if persistent._mas_affection is not None:
+            return persistent._mas_affection.get("today_exp", 0)
 
         return 0
+
 
     # numerical affection check
     def mas_isBelowZero():
@@ -1515,7 +1538,7 @@ init 20 python:
         global mas_curr_affection_group
 
         # store the value for easiercomparisons
-        curr_affection = persistent._mas_affection["affection"]
+        curr_affection = _mas_getAffection()
 
         # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
         if  affection.AFF_MIN_POS_TRESH <= curr_affection < affection.AFF_MAX_POS_TRESH:
@@ -1586,10 +1609,13 @@ init 20 python:
 
     # Used to increment affection whenever something positive happens.
     def mas_gainAffection(
-            amount=persistent._mas_affection["goodexp"],
+            amount=None,
             modifier=1,
             bypass=False
         ):
+
+        if amount is None:
+            amount = _mas_getGoodExp()
 
         # is it a new day?
         if persistent._mas_affection.get("freeze_date") is None or datetime.date.today() > persistent._mas_affection["freeze_date"]:
@@ -1600,7 +1626,7 @@ init 20 python:
         # calculate new value
         frozen = persistent._mas_affection_goodexp_freeze
         change = (amount * modifier)
-        new_value = persistent._mas_affection["affection"] + change
+        new_value = _mas_getAffection() + change
         if new_value > 1000000:
             new_value = 1000000
 
@@ -1613,7 +1639,9 @@ init 20 python:
             persistent._mas_affection["affection"] = new_value
 
             if not bypass:
-                persistent._mas_affection["today_exp"] += change
+                persistent._mas_affection["today_exp"] = (
+                    _mas_getTodayExp() + change
+                )
                 if persistent._mas_affection["today_exp"] >= 7:
                     mas_FreezeGoodAffExp()
 
@@ -1631,10 +1659,10 @@ init 20 python:
     # not totally necessary.
     #NEW BITS:
     #prompt: the prompt shown in the menu for apologizing
-    #expirydatetime: 
+    #expirydatetime:
     #generic: do we want this to be persistent? or not
     def mas_loseAffection(
-            amount=persistent._mas_affection["badexp"],
+            amount=None,
             modifier=1,
             reason=None,
             ev_label=None,
@@ -1642,13 +1670,16 @@ init 20 python:
             apology_overall_expiry=datetime.timedelta(weeks=1)
         ):
 
+        if amount is None:
+            amount = _mas_getBadExp()
+
         #set apology flag
         mas_setApologyReason(reason=reason,ev_label=ev_label,apology_active_expiry=apology_active_expiry,apology_overall_expiry=apology_overall_expiry)
 
         # calculate new vlaue
         frozen = persistent._mas_affection_badexp_freeze
         change = (amount * modifier)
-        new_value = persistent._mas_affection["affection"] - change
+        new_value = _mas_getAffection() - change
         if new_value < -1000000:
             new_value = -1000000
 
@@ -1664,7 +1695,7 @@ init 20 python:
 
 
     def mas_setAffection(
-            amount=persistent._mas_affection["affection"]
+            amount=None
         ):
         # NOTE: never use this to add / lower affection unless its to
         #   strictly set affection to a level for some reason.
@@ -1672,11 +1703,13 @@ init 20 python:
 #            persistent._mas_affection_badexp_freeze
 #            or persistent._mas_affection_goodexp_freeze
 #        )
+        if amount is None:
+            amount = _mas_getAffection()
 
         # audit the change (or attempt)
         affection.audit(amount, amount, False)
 
-        # NOTE: we should NEVER freeze set affection. 
+        # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
         persistent._mas_affection["affection"] = amount
         # Updates the experience levels if necessary.
@@ -1730,7 +1763,7 @@ init 20 python:
     # Used to check to see if affection level has reached the point where it should trigger an event while playing the game.
     def mas_checkAffection():
 
-        curr_affection = persistent._mas_affection["affection"]
+        curr_affection = _mas_getAffection()
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
@@ -1751,7 +1784,7 @@ init 20 python:
                 pushEvent("mas_affection_apology")
         # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            unlockEventLabel("greeting_tears",eventdb=evhand.greeting_database)
+            mas_unlockEVL("greeting_tears", "GRE")
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -2012,7 +2045,7 @@ label monika_affection_nickname:
         m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
         m 3hua "I'll still get the final say, though!"
-        m "What do you say?"
+        m "What do you say?{nw}"
         python:
             # change the prompt for this event
             aff_nickname_ev.prompt = "Can I call you a different name?"
@@ -2022,7 +2055,9 @@ label monika_affection_nickname:
     else:
         jump monika_affection_nickname_yes
 
+    $ _history_list.pop()
     menu:
+        m "What do you say?{fast}"
         "Yes.":
             label monika_affection_nickname_yes:
                 pass
@@ -2357,7 +2392,10 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            #Just so we don't end up with another file since we've changed the name
+            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
@@ -2372,7 +2410,7 @@ init python:
             filepath = "/My one and only love.txt"
             message = """\
 My dearest lover, friend, companion and owner of my heart...
-Everyday you make my dreams come true, a screen means nothing when you spend your time with me.
+Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
 I want to be yours forever, so would you be mine?

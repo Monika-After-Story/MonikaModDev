@@ -60,6 +60,7 @@ Want to add some content to MAS? Here's a list of important .RPY files the game 
 - **script-moods.rpy**: Tell Monika that you're in _a mood_.
 - **script-stories.rpy**: Add stories for Monika to tell you.
 - **script-compliments.rpy**: Add compliments you can say to Monika.
+- **script-apologies.rpy**: Add things to apologize for.
 
 If you wish to add more dialogue to the space room, navigate to script-topics.rpy and use this template.
 

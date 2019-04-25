@@ -66,7 +66,7 @@ init python:
 
     def mas_eraseTopic(topicID, per_eventDB):
         """
-        Erases an event from both seen and Event database
+        Erases an event from both lockdb and Event database
         This should also handle lockdb data as well.
         TopicIDs that are not in the given eventDB are silently ignored.
         (LockDB data will be erased if found)
@@ -83,7 +83,9 @@ init python:
 
 
     def mas_transferTopic(old_topicID, new_topicID, per_eventDB):
-        """
+        """DEPREACTED
+        NOTE: This can cause data corruption. DO NOT USE.
+
         Transfers a topic's data from the old topic ID to the new one int he
         given database as well as the lock database.
 
@@ -300,12 +302,134 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# TODO: need to go through events and clear actions from all events
-#   without conditionals and start_date
-#   We will save this for versiojn 0812 or 9
+# 0.9.2
+label v0_9_2(version="v0_9_2"):
+    python:
+        
+        # erasing monika_szs as its dum
+        mas_eraseTopic("monika_szs", persistent.event_database)
 
-# 0.8.15
-label v0_8_15(version="v0_8_15"):
+        # derandom familygathering if you have no family
+        if persistent._mas_pm_have_fam is False:
+            mas_hideEVL("monika_familygathering", "EVE", derandom=True) 
+        
+        # transfer mas_d25_monika_sleigh data
+        # NOTE: we only really care about:
+        #   - unlock_date
+        #   - shown_count
+        #   - last_seen
+        #   - (seen data)
+        sleigh_ev = mas_getEV("monika_sleigh")
+        if "mas_d25_monika_sleigh" in persistent.event_database:
+            old_sleigh_ev = Event(
+                persistent.event_database,
+                "mas_d25_monika_sleigh"
+            )
+        else:
+            old_sleigh_ev = None
+        if sleigh_ev is not None and old_sleigh_ev is not None:
+            sleigh_ev.unlock_date = old_sleigh_ev.unlock_date
+            sleigh_ev.shown_count = old_sleigh_ev.shown_count
+            sleigh_ev.last_seen = old_sleigh_ev.last_seen
+            mas_transferTopicSeen("mas_d25_monika_sleigh", "monika_sleigh")
+            
+            # erase this topic
+            mas_eraseTopic("mas_d25_monika_sleigh", persistent.event_database)
+
+        # lock pf14
+        mas_lockEVL("mas_pf14_monika_lovey_dovey","EVE")
+
+        # writing tips fix 2
+        def fix_tip(tip_ev, prev_tip_ev):
+            # first off, derandom cause it doens tbelong there
+            tip_ev.random = False
+
+            if renpy.seen_label(tip_ev.eventlabel):
+                # we've seen it, so unlock some key vars
+                tip_ev.unlocked = True
+                tip_ev.conditional = None
+                tip_ev.pool = True
+                tip_ev.action = None
+                
+                if tip_ev.shown_count <= 0:
+                    tip_ev.shown_count = 1
+
+                if tip_ev.unlock_date is None:
+                    tip_ev.unlock_date = datetime.datetime.now()
+
+                # since we've seeen it, we should have seen the older one
+                if prev_tip_ev is not None:
+                    persistent._seen_ever[prev_tip_ev.eventlabel] = True
+
+            else:
+                # we haven't seen it, reset its vars
+                tip_ev.unlocked = False
+                tip_ev.shown_count = 0
+
+                if prev_tip_ev is None:
+                    # if here, then this is the first tip
+                    tip_ev.pool = True
+                    tip_ev.conditional = None
+                    tip_ev.action = None
+                    tip_ev.unlock_date = datetime.datetime.now()
+
+                else:
+                    # otherwise, this is not the first tip
+                    tip_ev.conditional = (
+                        "seen_event('" + prev_tip_ev.eventlabel + "')"
+                    )
+                    tip_ev.pool = False
+                    tip_ev.action = EV_ACT_POOL
+                    tip_ev.unlock_date = None
+
+
+        wt_5 = mas_getEV("monika_writingtip5")
+        wt_4 = mas_getEV("monika_writingtip4")
+        wt_3 = mas_getEV("monika_writingtip3")
+        wt_2 = mas_getEV("monika_writingtip2")
+        wt_1 = mas_getEV("monika_writingtip1")
+        if wt_5 is not None:
+            fix_tip(wt_5, wt_4)
+
+        if wt_4 is not None:
+            fix_tip(wt_4, wt_3)
+
+        if wt_3 is not None:
+            fix_tip(wt_3, wt_2)
+
+        if wt_2 is not None:
+            fix_tip(wt_2, wt_1)
+
+        if wt_1 is not None:
+            fix_tip(wt_1, None)
+            
+
+    return
+
+# 0.9.1
+label v0_9_1(version="v0_9_1"):
+    python:
+        # unlock the ghost greeting if not seen and you like spoops.
+        if (
+                persistent._mas_pm_likes_spoops 
+                and not renpy.seen_label("greeting_ghost")
+            ):
+            mas_unlockEVL("greeting_ghost", "GRE")
+
+        #Need to fix the monika_plushie event
+        plush_ev = mas_getEV("monika_plushie")
+        if plush_ev is not None:
+            plush_ev.unlocked = False
+            plush_ev.category = None
+            plush_ev.prompt = "monika_plushie"
+
+        if renpy.seen_label("monika_driving"):
+            mas_unlockEVL("monika_vehicle","EVE")
+
+    return
+
+# 0.9.0
+label v0_9_0(version="v0_9_0"):
     python:
         # unlock nickname topic if called bad name
         if persistent._mas_called_moni_a_bad_name:
@@ -386,11 +510,37 @@ label v0_8_15(version="v0_8_15"):
             res_ev.action = EV_ACT_QUEUE 
 
         # push mas birthdate event for users a non None birthday
-        if persistent._mas_player_bday is not None:
+        if (
+                persistent._mas_player_bday is not None
+                and not persistent._mas_player_confirmed_bday
+            ):
             mas_bd_ev = mas_getEV("mas_birthdate")
             if mas_bd_ev is not None:
                 mas_bd_ev.conditional = "True"
                 mas_bd_ev.action = EV_ACT_QUEUE
+
+        # remove random props from all greetings
+        for gre_label, gre_ev in store.evhand.greeting_database.iteritems():
+            # hopefully we never use random in greetings ever
+            gre_ev.random = False
+
+        # rain should just be unlocked if it has been seen
+        if renpy.seen_label("monika_rain"):
+            mas_unlockEVL("monika_rain", "EVE")
+
+        # islands greeting unlocked if not seen yet 
+        if not renpy.seen_label("greeting_ourreality"):
+            mas_unlockEVL("greeting_ourreality", "GRE")
+
+        # derandom pets topic if player has given the plushie
+        if persistent._mas_acs_enable_quetzalplushie:
+            mas_hideEVL("monika_pets", "EVE", derandom=True)
+
+        # reset mistletoe if random'd
+        d25_mis_ev = mas_getEV("mas_d25_monika_mistletoe")
+        if d25_mis_ev is not None:
+            # this will reset later
+            mas_addDelayedAction(10)
 
     return
 
@@ -759,12 +909,18 @@ label v0_8_1(version="v0_8_1"):
             writ_4.action = EV_ACT_POOL
 
         # writing tip 3
-        mas_transferTopic(
-            "monika_write",
-            "monika_writingtip3",
-            persistent.event_database
-        )
+        # transfer specific ev data
+        writ_3_old = persistent.event_database.get("monika_write", None)
+
+        if writ_3_old is not None:
+            persistent.event_database.pop("monika_write")
+
         writ_3 = evhand.event_database.get("monika_writingtip3", None)
+
+        if writ_3_old is not None and writ_3 is not None:
+            writ_3.unlocked = writ_3_old[Event.T_EVENT_NAMES["unlocked"]]
+            writ_3.unlock_date = writ_3_old[Event.T_EVENT_NAMES["unlock_date"]]
+
         if writ_3 and not renpy.seen_label(writ_3.eventlabel):
             writ_3.pool = False
             writ_3.conditional = "seen_event('monika_writingtip2')"
@@ -779,14 +935,26 @@ label v0_8_1(version="v0_8_1"):
             # are migrating
 
             mas_transferTopicSeen(old_t, new_t)
-            mas_transferTopic(old_t, new_t, persistent.event_database)
-            writ_2 = evhand.event_database.get(new_t, None)
-            if writ_2 and not renpy.seen_label(new_t):
-                writ_2.conditional = "seen_event('monika_writingtip1')"
+            old_t_ev = mas_getEV(old_t)
+            new_t_ev = mas_getEV(new_t)
+
+            if old_t_ev is not None and new_t_ev is not None:
+                new_t_ev.unlocked = old_t_ev.unlocked
+                new_t_ev.unlock_date = old_t_ev.unlock_date
+
+            if new_t_ev and not renpy.seen_label(new_t):
+                new_t_ev.conditional = "seen_event('monika_writingtip1')"
+                new_t_ev.pool = False
+                new_t_ev.action = EV_ACT_POOL
 
             # writing tip 1
+            zero_t_d = persistent.event_database.pop(zero_t)
             mas_transferTopicSeen(zero_t, old_t)
-            mas_transferTopic(zero_t, old_t, persistent.event_database)
+            if old_t_ev is not None:
+                old_t_ev.unlocked = zero_t_d[Event.T_EVENT_NAMES["unlocked"]]
+                old_t_ev.unlock_date = zero_t_d[
+                    Event.T_EVENT_NAMES["unlock_date"]
+                ]
 
         ## dropping repeats
         persistent._mas_enable_random_repeats = None

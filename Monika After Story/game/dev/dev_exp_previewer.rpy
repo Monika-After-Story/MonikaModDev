@@ -164,7 +164,9 @@ init 999 python:
                 "tp": "pooled",
                 "tu": "up",
                 "tl": "left",
-                "tr": "right"
+                "tr": "right",
+#                "th": "closedhappy",
+#                "tc": "closedsad",
             },
             "sweat": {
                 "sdl": "def",
@@ -194,7 +196,8 @@ init 999 python:
                 "def": "School Uniform",
                 "marisa": "Witch Costume",
                 "rin": "Neko Costume",
-                "santa": "Santa Monika"
+                "santa": "Santa Monika",
+                "sundress_white": "Sundress (White)",
             },
             "arms": {
                 1: "Resting on Hands",
@@ -246,7 +249,9 @@ init 999 python:
                 "tp": "Pooled Tears",
                 "tu": "Tearing Up",
                 "tl": "Tearing Up (Left)",
-                "tr": "Tearing Up (Right)"
+                "tr": "Tearing Up (Right)",
+#                "th": "Closed Happy Tears",
+#                "tc": "Closed Sad Tears",
             },
             "sweat": {
                 "sdl": "Left Sweat Drop",
@@ -317,7 +322,8 @@ init 999 python:
                 "def",
                 "marisa",
                 "rin",
-                "santa"
+                "santa",
+                "sundress_white",
             ],
             "arms": [
                 1,
@@ -372,7 +378,9 @@ init 999 python:
                 "tp",
                 "tu",
                 "tl",
-                "tr"
+                "tr",
+#                "th",
+#                "tc",
             ],
             "sweat": [
                 None,
@@ -745,6 +753,9 @@ init 999 python:
                     eyebags=self._get_img_name("eyebags"),
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
+
+                    # TODO: tears needs to map differently in some cases
+                    #   this is low priority
                     tears=self._get_img_name("tears"),
                     emote=self._get_img_name("emote")
                 )

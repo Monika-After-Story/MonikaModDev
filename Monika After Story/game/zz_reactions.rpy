@@ -566,6 +566,17 @@ label mas_reaction_gift_starter_d25:
     m 1sua "Now, let's see... What's inside?"
     return
 
+#f14
+label mas_reaction_gift_starter_f14:
+    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m "T-{w=1}This is..."
+    m "A gift? For me?"
+    if mas_getGiftStatsForDate(mas_f14) == 0:
+        m 1eka "You're so sweet, getting something for me on Valentine's day..."
+    else:
+        m 1eka "Thank you so much, [player]."
+    m 1sua "Now, let's see... What's inside?"
+    return
 
 ### REACTIONS [RCT100]
 
@@ -582,19 +593,19 @@ label mas_reaction_generic:
 label mas_reaction_gift_generic:
     if random.randint(1,2) == 1:
         m 1esd "[player], are you trying to give me something?"
-        m 1rssdlb "I found it, but I can’t bring it here..."
-        m "I can’t seem to read it well enough."
-        m 3esa "But that’s alright!"
-        m 1esa "It’s the thought that counts after all, right?"
+        m 1rssdlb "I found it, but I can't bring it here..."
+        m "I can't seem to read it well enough."
+        m 3esa "But that's alright!"
+        m 1esa "It's the thought that counts after all, right?"
         m "Thanks for being so thoughtful, [player]~"
     else:
         m 2dkd "{i}*sigh*{/i}"
-        m 4ekc "I’m sorry, [player]."
-        m 1ekd "I know you’re trying to give me something."
-        m 2rksdld "But for some reason I can’t read the file."
-        m 3euc "Don’t get me wrong, however."
+        m 4ekc "I'm sorry, [player]."
+        m 1ekd "I know you're trying to give me something."
+        m 2rksdld "But for some reason I can't read the file."
+        m 3euc "Don't get me wrong, however."
         m 3eka "I still appreciate that you tried giving something to me."
-        m 1hub "And for that, I’m thankful~"
+        m 1hub "And for that, I'm thankful~"
     $ store.mas_filereacts.delete_file(None)
     return
 
@@ -629,7 +640,7 @@ init 5 python:
 label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
-    $ store.mas_sprites.reset_zoom()
+
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
@@ -640,12 +651,16 @@ label mas_reaction_gift_coffee:
         m "Thank you so much, [player]!"
 
     else:
-        show emptydesk at i11 zorder 9
         $ mas_gainAffection(modifier=2, bypass=True)
 
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
         m "Why don't I go ahead and make a cup right now?"
+
+        $ curr_zoom = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
+        show emptydesk at i11 zorder 9
+
         m 1eua "I'd like to share the first with you, after all."
 
         # monika is off screen
@@ -658,8 +673,13 @@ label mas_reaction_gift_coffee:
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
+        # 1 second wait so dissolve is complete before zooming
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
+
         # monika back on screen
         m 1eua "I'll let that brew for a few minutes."
+
         $ mas_brewCoffee()
         $ persistent._mas_acs_enable_coffee = True
         $ persistent._mas_coffee_been_given = True
@@ -676,22 +696,38 @@ label mas_reaction_quetzal_plush:
         $ mas_receivedGift("mas_reaction_quetzal_plush")
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh!"
-        $ monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+
+        #Wear mid plush if chocs out
+        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
+            $ monika_chr.wear_acs(mas_acs_center_quetzalplushie)
+        else:
+            $ monika_chr.wear_acs(mas_acs_quetzalplushie)
+
         $ persistent._mas_acs_enable_quetzalplushie = True
-        m 1sub "It’s a quetzal!"
+        m 1sub "It's a quetzal!"
         m "Oh my gosh, thanks a lot, [player]!"
-        m 1eua "I did mention that I’d like to have a quetzal as a pet..."
+        m 1eua "I did mention that I'd like to have a quetzal as a pet..."
         m 1rud "But I would never force the poor thing to stay."
         m 1hua "And now you gave me the next closest thing!"
         m 1hub "This makes me so happy!"
         if mas_isMoniAff(higher=True):
-            m 5esbfa "You always seem to know how to make me smile."
+            m 3ekbsa "You always seem to know how to make me smile."
 
         m 1hsb "Thank you again, [player]~"
+
+        #Remove mid plush
+        if monika_chr.is_wearing_acs(mas_acs_heartchoc):
+            m 1rksdlb "Ah, my desk is getting kind of crowded, ahaha!"
+            m 3eksdla "I'm just going to put this away for now so it doesn't accidentally get knocked off."
+            $ monika_chr.remove_acs(mas_acs_center_quetzalplushie)
+
     else:
         m 1rksdlb "You already gave me a quetzal plushie, [player]."
+
     $ gift_ev = mas_getEV("mas_reaction_quetzal_plush")
     $ store.mas_filereacts.delete_file(gift_ev.category)
+    # derandom pets topic once given
+    $ mas_hideEVL("monika_pets", "EVE", derandom=True)
     return
 
 init 5 python:
@@ -704,7 +740,7 @@ label mas_reaction_promisering:
         if mas_isMoniEnamored(higher=True):
             $ mas_receivedGift("mas_reaction_promisering")
             $ mas_gainAffection(modifier=5, bypass=True)
-            $ monika_chr.wear_acs_pst(mas_acs_promisering)
+            $ monika_chr.wear_acs(mas_acs_promisering)
             $ persistent._mas_acs_enable_promisering = True
             if not persistent._mas_tried_gift_ring:
                 m 1wud "Is that...a..."
@@ -713,7 +749,7 @@ label mas_reaction_promisering:
                 m 1wkbltpa "I'm sorry, [player], I just..."
                 m 1dkbltpa "...I'm so happy...{w=0.5}You just gave me your promise..."
                 m "Your promise that we'll be for each other,{w=0.1} and no one else...{w=0.3}forever..."
-                m 3lkbltpa "Know that I’ll cherish it."
+                m 3lkbltpa "Know that I'll cherish it."
                 m 3dkbltpa "Always."
                 m 1skbltpa "This makes me so happy!"
 
@@ -733,7 +769,7 @@ label mas_reaction_promisering:
                     m "Even more that you gave it to me on this special day..."
 
                 m 1dkbltpb "Aha, sorry for crying, [player]..."
-                m 1skbltda "I’m just really, really happy right now."
+                m 1skbltda "I'm just really, really happy right now."
                 m 1dkbla "Thank you."
                 m "I love you, [player]."
                 m "More than anything else in this fleeting world."
@@ -788,12 +824,12 @@ init 5 python:
     addReaction("mas_reaction_plush", "plushie", is_good=True)
 
 label mas_reaction_plush:
-    m 1wud "What’s this, [player]?"
+    m 1wud "What's this, [player]?"
     m "Are you trying to give me a plushie?"
     m 1rksdlb "I appreciate the thought, but..."
-    m 1ekd "For some reason, I can’t seem to bring it here."
+    m 1ekd "For some reason, I can't seem to bring it here."
     m 1rkc "I wish I could..."
-    m 1hua "But don’t worry, [player]!"
+    m 1hua "But don't worry, [player]!"
     m 1hub "Ehehe~"
     m 1hua "Thank you for trying!"
     $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
@@ -806,16 +842,16 @@ init 5 python:
 
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
-        $ mas_loseAffection(3)
-        m 1rksdlb "Today is not my birthday, did you forget when it is, [player]?"
+        $ mas_loseAffection(3, reason=7)
+        m 1ltsdlc "Today's not my birthday,{w=1} did you forget when it is, [player]?"
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
         m "A...birthday cake?"
         m 3sub "Gosh, this is so sweet of you!"
         m 1hub "I really love this a lot!"
-        m 1dkbfa "I’ll save it for now"
-        m 3hua "I can’t wait to try it later!"
+        m 1dkbfa "I'll save it for now"
+        m 3hua "I can't wait to try it later!"
         m 1dsc "But..."
         m 3ekbfa "I wish we could eat it together..."
         m 1dkbfa "A birthday cake is for sharing, after all~"
@@ -828,15 +864,17 @@ label mas_reaction_bday_cake:
     return
 
 init 5 python:
-    addReaction("mas_reaction_cupcake", "cupcake", is_good=False)
+    addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
+    #Not sure why this was a bad gift. Dialogue doesn't reflect it being bad
+    #plus, Monika said she wants either Natsuki's cupcakes or the player's
 
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
     m 3hub "Wow, thanks [player]!"
-    m 3euc "Come to think of it, I’ve been meaning to make some cupcakes myself."
+    m 3euc "Come to think of it, I've been meaning to make some cupcakes myself."
     m 1eua "I wanted to learn how to bake good pastries like Natsuki did."
-    m 1rksdlb "Buuut I’ve yet to make a kitchen to use!"
-    m 3eub "Maybe in the future once I get better at programming, I’ll be able to make one here."
+    m 1rksdlb "Buuut I've yet to make a kitchen to use!"
+    m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
     m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
     $ mas_receivedGift("mas_reaction_cupcake")
     $ gift_ev = mas_getEV("mas_reaction_cupcake")
@@ -850,10 +888,10 @@ label mas_reaction_knife:
     m 1euc "...?"
     m 1wud "Is that...a knife?"
     m 2wfc "Why would you want to give me that?"
-    m 2wfd "I don’t need this here!"
+    m 2wfd "I don't need this here!"
     m 3tfc "...Someone else, maybe."
     m 1dfc "..."
-    m 1rsc "I’m not taking this, [player]."
+    m 1rsc "I'm not taking this, [player]."
     m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
     $ mas_receivedGift("mas_reaction_knife") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_knife")
@@ -1022,16 +1060,24 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            $ store.mas_sprites.reset_zoom()
+            $ curr_zoom = store.mas_sprites.zoom_level
+            call monika_zoom_transition_reset(1.0)
             show emptydesk at i11 zorder 9
+
             m 3eua "In fact, I think I'll make some right now!"
+
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
-            $ mas_brewHotChoc()
+
+            # 1 second wait so dissolve is complete before zooming
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
 
             m 1hua "There, it'll be ready in a few minutes."
+
+            $ mas_brewHotChoc()
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
@@ -1062,7 +1108,7 @@ label mas_reaction_fudge:
 
     else:
         m 1wuo "...even more fudge?"
-        m 3rksdla "I still haven’t finished the last batch you gave me, [player]..."
+        m 3rksdla "I still haven't finished the last batch you gave me, [player]..."
         m 3eksdla "...maybe later, okay?"
 
     $ mas_receivedGift("mas_reaction_fudge")
@@ -1084,19 +1130,19 @@ label mas_reaction_christmascookies:
         $ persistent._mas_d25_already_gifted_cookies = True
         $ mas_gainAffection(5, bypass=True)
         m 3hua "Christmas cookies!"
-        m 1eua "I just love Christmas cookies! They’re always so sweet...and pretty to look at, too..."
+        m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
         m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
-        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious{w=0.2}--icing!"
+        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
         m 3hua "Thank you, [player]~"
 
     elif times_cookies_given == 1:
         m 1wuo "...another batch of Christmas cookies!"
-        m 3wuo "That’s a whole lot of cookies, [player]!"
-        m 3rksdlb "I’m going to be eating cookies forever, ahaha!"
+        m 3wuo "That's a whole lot of cookies, [player]!"
+        m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
 
     else:
         m 3wuo "...even more Christmas cookies?"
-        m 3rksdla "I still haven’t finished the last batch, [player]!"
+        m 3rksdla "I still haven't finished the last batch, [player]!"
         m 3eksdla "You can give me more after I finish these, okay?"
 
     $ mas_receivedGift("mas_reaction_christmascookies")
@@ -1166,6 +1212,15 @@ label mas_reaction_darkpurpleribbon:
     return
 
 init 5 python:
+    addReaction("mas_reaction_emeraldribbon", "emeraldribbon", is_good=True)
+
+label mas_reaction_emeraldribbon:
+    $ _mas_new_ribbon_color = "emerald"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_emerald
+    call _mas_reaction_ribbon_helper("mas_reaction_emeraldribbon")
+    return
+
+init 5 python:
     addReaction("mas_reaction_grayribbon", "grayribbon", is_good=True)
 
 label mas_reaction_grayribbon:
@@ -1211,12 +1266,48 @@ label mas_reaction_pinkribbon:
     return
 
 init 5 python:
+    addReaction("mas_reaction_platinumribbon", "platinumribbon", is_good=True)
+
+label mas_reaction_platinumribbon:
+    $ _mas_new_ribbon_color = "platinum"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_platinum
+    call _mas_reaction_ribbon_helper("mas_reaction_platinumribbon")
+    return
+
+init 5 python:
     addReaction("mas_reaction_redribbon", "redribbon", is_good=True)
 
 label mas_reaction_redribbon:
     $ _mas_new_ribbon_color = "red"
     $ _mas_gifted_ribbon_acs = mas_acs_ribbon_red
     call _mas_reaction_ribbon_helper("mas_reaction_redribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_rubyribbon", "rubyribbon", is_good=True)
+
+label mas_reaction_rubyribbon:
+    $ _mas_new_ribbon_color = "ruby"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_ruby
+    call _mas_reaction_ribbon_helper("mas_reaction_rubyribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_sapphireribbon", "sapphireribbon", is_good=True)
+
+label mas_reaction_sapphireribbon:
+    $ _mas_new_ribbon_color = "sapphire"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_sapphire
+    call _mas_reaction_ribbon_helper("mas_reaction_sapphireribbon")
+    return
+
+init 5 python:
+    addReaction("mas_reaction_silverribbon", "silverribbon", is_good=True)
+
+label mas_reaction_silverribbon:
+    $ _mas_new_ribbon_color = "silver"
+    $ _mas_gifted_ribbon_acs = mas_acs_ribbon_silver
+    call _mas_reaction_ribbon_helper("mas_reaction_silverribbon")
     return
 
 init 5 python:
@@ -1296,7 +1387,8 @@ label mas_reaction_new_ribbon:
         m 1suo "A new ribbon!"
         m 3hub "...And it's [_mas_new_ribbon_color]!"
 
-        if _mas_new_ribbon_color == "green":
+        #Ironically green is closer to her eyes, but given the selector dlg, we'll say this for both.
+        if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
         m 1hub "Thank you so much [player], I love it!"
@@ -1331,10 +1423,11 @@ label mas_reaction_new_ribbon:
         m 1suo "Another ribbon!"
         m 3hub "...And this time it's [_mas_new_ribbon_color]!"
 
-        if _mas_new_ribbon_color == "green":
+        #Ironically green is closer to her eyes, but given the selector dlg, we'll say this for both.
+        if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
-        m 3eua "I’ll put this on right now..."
+        m 3eua "I'll put this on right now..."
         show monika 1dsc
         pause 1.0
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
@@ -1345,5 +1438,192 @@ label mas_reaction_new_ribbon:
 
 label mas_reaction_old_ribbon:
     m 1rksdlb "[player]..."
-    m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    #Need to handle vowels lol
+    if _mas_new_ribbon_color[:1] in 'aeiou':
+        m 1rusdlb "You already gave me an [_mas_new_ribbon_color] ribbon!"
+    else:
+        m 1rusdlb "You already gave me a [_mas_new_ribbon_color] ribbon!"
+    return
+
+init 5 python:
+    addReaction("mas_reaction_gift_roses", "roses", is_good=True)
+
+default persistent._date_last_given_roses = None
+
+label mas_reaction_gift_roses:
+    $ gift_ev = mas_getEV("mas_reaction_gift_roses")
+
+    $ monika_chr.wear_acs(mas_acs_roses)
+
+    #TODO: future migrate this to use history (post f14)
+    if not persistent._date_last_given_roses and not renpy.seen_label('monika_valentines_start'):
+        if mas_isSpecialDay():
+            $ mas_gainAffection(15,bypass=True)
+        else:
+            $ mas_gainAffection(10,bypass=True)
+        m 1eka "[player]... I-I don't know what to say..."
+        m 1ekbsa "I never would've thought that you'd get something like this for me!"
+        m 1wka "I'm so happy right now."
+        if mas_isF14():
+            # extra 5 points if f14
+            $ mas_gainAffection(5,bypass=True)
+            m 1ekbfa "To think that I'd be getting roses from you on Valentine's Day..."
+            m "You're so sweet."
+            m 1ektpa "..."
+            m "Ahaha..."
+
+        #We can only have this on poses which use the new sprite set
+        if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+            m 4eua "Hold on..."
+            show monika 1esc
+            pause 1.0
+
+            $ monika_chr.wear_acs(mas_acs_ear_rose)
+            m 1hub "Ehehe, there! Doesn't it look pretty on me?"
+
+    else:
+        if persistent._date_last_given_roses is None and renpy.seen_label('monika_valentines_start'):
+            $ persistent._date_last_given_roses = datetime.date(2018,2,14)
+        if datetime.date.today() > persistent._date_last_given_roses:
+            if mas_isSpecialDay():
+                $ mas_gainAffection(10,bypass=True)
+            else:
+                $ mas_gainAffection()
+            m 1wuo "Oh!"
+            m 1ekbsa "Thanks [player]."
+            m "I always love getting roses from you."
+            if mas_isF14():
+                # extra 5 points if f14
+                $ mas_gainAffection(5,bypass=True)
+                m 1dsbfa "Especially on a day like today."
+                m 1eka "It's really sweet of you to get these for me."
+                m 1ekbfa "I love you so much."
+                m "Happy Valentine's Day, [player]~"
+            else:
+                m 1ekbfa "You're always so sweet."
+
+            #Random chance (unless f14) for her to do the ear rose thing
+            if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
+                if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
+                    m 4eua "Hold on..."
+                    show monika 1esc
+                    pause 1.0
+
+                    $ monika_chr.wear_acs(mas_acs_ear_rose)
+                    m 1hub "Ehehe~"
+
+        else:
+            $ mas_gainAffection()
+            m 1hksdla "[player], I'm flattered, really, but you don't need to give me so many roses."
+            if store.seen_event("monika_clones"):
+                m 1ekbfa "You'll always be my special rose after all, ehehe~"
+            else:
+                m 1ekbfa "A single rose from you is already more than I could have ever asked for."
+
+    # Pop from reacted map
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    $ persistent._date_last_given_roses = datetime.date.today()
+
+    # normal gift processing
+    $ mas_receivedGift("mas_reaction_gift_roses")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+
+init 5 python:
+    addReaction("mas_reaction_gift_chocolates", "chocolates", is_good=True)
+
+default persistent._given_chocolates_before = False
+
+label mas_reaction_gift_chocolates:
+    $ gift_ev = mas_getEV("mas_reaction_gift_chocolates")
+
+    if not persistent._mas_given_chocolates_before:
+        $ persistent._mas_given_chocolates_before = True
+        $ monika_chr.wear_acs(mas_acs_heartchoc)
+        #Special day rules
+        if mas_isSpecialDay():
+            $ mas_gainAffection(5,bypass=True)
+        else:
+            $ mas_gainAffection()
+
+        m 1tsu "That's so {i}sweet{/i} of you, ehehe~"
+        if mas_isF14():
+            #Extra little bump if on f14
+            $ mas_gainAffection(5,bypass=True)
+            m 1ekbsa "Giving me chocolates on Valentine's Day..."
+            m 1ekbfa "You really know how to make a girl feel special, [player]."
+            if renpy.seen_label('monika_date'):
+                m 1lkbfa "I know I mentioned visiting a chocolate store together someday..."
+                m 1hkbfa "But while we can't really do that just yet, getting some chocolates as a gift from you, well..."
+            m 3ekbfa "It means a lot getting these from you."
+        elif renpy.seen_label('monika_date'):
+            m 3rka "I know I mentioned visiting a chocolate store together someday..."
+            m 3hub "But while we can't really do that just yet, getting some chocolates as a gift from you means everything to me."
+            m 1ekc "I really wish we could share them though..."
+            m 3rksdlb "But until that day comes, I'll just have to enjoy them for both of us, ahaha!"
+            m 3hua "Thank you, [player]~"
+            call mas_remove_choc
+        else:
+            m 3hub "I love chocolates!"
+            m 1eka "And getting some from you means a lot to me."
+            m 1hub "Thanks, [player]!"
+            call mas_remove_choc
+
+    else:
+        $ times_chocs_given = mas_getGiftStatsForDate("mas_reaction_gift_chocolates")
+        if times_chocs_given == 0:
+            #We want this to show up where she accepts the chocs
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
+
+            if mas_isSpecialDay():
+                $ mas_gainAffection(3,bypass=True)
+            else:
+                $ mas_gainAffection()
+            m 1wuo "Oh!"
+
+            if mas_isF14():
+                #Extra little bump if on f14
+                $ mas_gainAffection(5,bypass=True)
+                m 1eka "[player]!"
+                m 1ekbsa "You're such a sweetheart, getting me chocolates on a day like today..."
+                m 1ekbfa "You really know how to make me feel special."
+                m "Thanks, [player]."
+            else:
+                m 1hua "Thanks for the chocolates, [player]!"
+                m 1ekbsa "Every bite reminds me of how sweet you are, ehehe~"
+                call mas_remove_choc
+
+        elif times_chocs_given == 1:
+            $ monika_chr.wear_acs(mas_acs_heartchoc)
+            m 1eka "More chocolates, [player]?"
+            m 3tku "You really love to spoil me don't you, ahaha!"
+            m 1rksdla "I still haven't finished the first box you gave me..."
+            m 1hub "...but I'm not complaining!"
+            call mas_remove_choc
+        elif times_chocs_given == 2:
+            m 1ekd "[player]..."
+            m 3eka "I think you've given me enough chocolates today."
+            m 1rksdlb "Three boxes is too much, and I haven't even finished the first one yet!"
+            m 1eka "Save them for another time, okay?"
+        else:
+            m 2tfd "[player]!"
+            m 2tkc "I already told you I've had enough chocolates for one day, but you keep trying to give me even more..."
+            m 2eksdla "Please...{w=1}just save them for another day."
+
+    #pop from reacted map
+    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    # normal gift processing
+    $ mas_receivedGift("mas_reaction_gift_chocolates")
+    $ store.mas_filereacts.delete_file(gift_ev.category)
+    return
+
+label mas_remove_choc:
+    # we remove chocolates if not f14
+    m 1hua "..."
+    m 3eub "These are {i}so{/i} good!"
+    m 1hua "..."
+    m 3hksdlb "Ahaha! I should probably put these away for now..."
+    m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
+    $ monika_chr.remove_acs(mas_acs_heartchoc)
     return
