@@ -1185,7 +1185,7 @@ label bye_prompt_game:
             m 1hubfb "I love you~{w=1}{nw}"
         $ mas_late_farewell = True
     else:
-        if mas_getEV('bye_prompt_game').shown_count == 0
+        if mas_getEV('bye_prompt_game').shown_count == 0:
             m 1ekc "You're going to play another game?"
             m 2ekd "Do you really have to leave me to go do that?"
             m 3eka "Can't you just leave me here in the background while you play?{nw}"
