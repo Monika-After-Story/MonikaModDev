@@ -13,7 +13,7 @@ init -1 python:
     )
     layout.MAS_TT_UNSTABLE = (
         "Unstable mode downloads updates from the experimental unstable "
-        "branch of development. It his HIGHLY recommended to make a backup "
+        "branch of development. It is HIGHLY recommended to make a backup "
         "of your persistents before enabling this mode."
     )
     layout.MAS_TT_REPEAT = (

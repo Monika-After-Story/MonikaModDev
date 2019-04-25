@@ -804,7 +804,7 @@ init 5 python:
 
 label greeting_yay:
     m 1hub "You're back! Yay!"
-    m 1hksdlb "Oh, sorry. I've got a bit overexcited here."
+    m 1hksdlb "Oh, sorry. I got a bit overexcited there."
     m 1lksdla "I'm just very happy to see you again, ehehe~"
     return
 

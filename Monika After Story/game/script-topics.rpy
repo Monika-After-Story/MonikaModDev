@@ -3686,7 +3686,7 @@ label monika_outdoors:
     m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
     m 1huu "It's almost like a more relaxed backpacking trip actually."
     m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
-    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them;{w=0.5} thinking they're unimportant..."
+    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them,{w=0.5} thinking they're unimportant..."
     m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
     m 1ekd "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eka "So, please promise me that the next time you go outdoors, be it camping or backpacking, you won't forget them."
