@@ -12782,7 +12782,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_enjoyingspring",category=['spring'],prompt="Enjoying spring",random=mas_isSpring()))
 
 label monika_enjoyingspring:
-    m 1esa "Spring is such an amazing time of year, isn't it?"
+    m 1esa "Spring is such an amazing time of year, isn't it, [player]?"
     m 1hua "The cold snow finally melts away, and the sunshine brings new life to nature."
     m 1hub "When the flowers bloom, I can't help but smile!"
     m 3hub "It's like the plants are waking up and saying, 'Hello world!' Ahaha~"
