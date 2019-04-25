@@ -12790,7 +12790,7 @@ label monika_enjoyingspring:
     m 4eub "They're very popular all around the world, but the most popular cherry blossoms would have to be the {i}'Somei Yoshino'{/i} in Japan."
     m 3esb "Those ones in particular are mostly white, with a slight tinge of pink."
     m 3eub "Did you know that they only bloom for one week each year?"
-    m 3lksdla "It's quite a short lifespan, but it's still beautiful regardless."
+    m 3lksdla "It's quite a short lifespan, but it's still beautiful."
     m 4tkc "One big downside to spring, however, would be the constant rainfall."
     m 3esb "And personally, I think that rain can also be fun too!"
     m 3hua "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two!"
