@@ -1158,7 +1158,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_prompt_to_games",
+            eventlabel="bye_prompt_game",
             unlocked=True,
             prompt="I'm going to play another game.",
             pool=True
@@ -1223,7 +1223,7 @@ init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
-            eventlabel="bye_prompt_to_eat",
+            eventlabel="bye_prompt_eat",
             unlocked=True,
             prompt="I'm going to go eat...",
             pool=True
@@ -1231,7 +1231,7 @@ init 5 python:
         eventdb=evhand.farewell_database
     )
 
-label bye_prompt_to_eat:
+label bye_prompt_eat:
     $ _now = datetime.datetime.now().time()
     if mas_isMNtoSR(_now):
         m 1hksdlb "Uh, [player]?"
