@@ -103,6 +103,9 @@ init 10 python in mas_seasons:
         Programming point for spring
         """
 
+        # show spring topics
+        store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
+
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
         store.mas_hideEVL("monika_sledding", "EVE", derandom=True)
@@ -119,6 +122,10 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
+        
+        # disable spring topics
+        store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
+        
         # disbale hot choc
         store.persistent._mas_acs_enable_hotchoc = False
 
