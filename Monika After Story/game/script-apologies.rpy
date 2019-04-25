@@ -62,7 +62,7 @@ label monika_playerapologizes:
         7: "forgetting your birthday.",
         8: "not spending time with you on your birthday.",
         9: "the game crashing.",
-        10: "the game crashing." #easiest way to handle this w/o overrides
+        10: "the game crashing.", #easiest way to handle this w/o overrides
         11: "not listening to your speech.",
         12: "calling you evil."
     }
@@ -212,7 +212,7 @@ label mas_apology_generic:
             m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
-    elif mas_apology_reason:
+    elif mas_apology_reason_db.get(mas_apology_reason,""):
         #Set apology_reason
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 
