@@ -387,6 +387,12 @@ init -21 python in mas_sprites_json:
         SP_CLOTHES: "CLOTHES",
     }
 
+    SP_UF_STR = {
+        SP_ACS: "accessory",
+        SP_HAIR: "hairstyle",
+        SP_CLOTHES: "outfit",
+    }
+
     SP_PP = {
         SP_ACS: "store.mas_sprites._acs_{0}_{1}",
         SP_HAIR: "store.mas_sprites._hair_{0}_{1}",
