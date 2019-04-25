@@ -12779,7 +12779,7 @@ label monika_sleigh:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_enjoyingspring",category=['spring'],prompt="Enjoying Spring",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_enjoyingspring",category=['spring'],prompt="Enjoying spring",random=mas_isSpring()))
 
 label monika_enjoyingspring:
     m 1esa "Spring is such an amazing time of year, isn't it?"
