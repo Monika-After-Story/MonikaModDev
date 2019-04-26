@@ -29,16 +29,13 @@ default persistent._mas_filereacts_sprite_gifts = {}
 # NOTE: contains sprite gifts before being unlocked. When its unlocked,
 #   they move to _mas_sprites_json_gifted_sprites
 
-default persistent._mas_filereacts_sprite_reacted = []
-# NOTE: change to dict because order actually does not matter
+default persistent._mas_filereacts_sprite_reacted = {}
 # list of sprite reactions. This MUST be handled via the sprite reaction/setup
 # labels. DO NOT ACCESS DIRECTLY. Use the helper function
-# Each item is a tuple of the following format:
+# KEY: giftname
+# value:  tuple of the following format:
 #   [0]: sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
 #   [1]: id of the sprite objec this gift unlocks (name) != display name
-#   [2]: giftname this sprite object was gifted with
-#
-# NOTE: items in this list are NOT guarenteed to match up with reactions
 
 # TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
 
@@ -217,25 +214,39 @@ init -1 python in mas_filereacts:
                     None
                 )
                 if sprite_data is not None:
-                    # NOTE This will ch ange
-                    store.persistent._mas_filereacts_sprite_reacted.append((
-                        sprite_data[0],
-                        sprite_data[1],
-                        _gift
-                    ))
+                    store.persistent._mas_filereacts_sprite_reacted[_gift] = (
+                        sprite_data
+                    )
 
-        # TODO: check if sprite object gifts
-        #   If so, then we add a special set of generic reactions
-        #   that are associated with additional data
-        #
-        #   NOTE: for additional data, going to have a persistent list containing
-        #   sprite data, this will be popped as generic reactions are eaten.
+        # generic sprite object gifts treated differently
         if len(gifts_found) > 0:
             sprite_object_reacts = []
             for index in range(len(gifts_found)-1, -1, -1):
                 _gift = gifts_found[index]
 
-                reaction = 
+                sprite_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                    _gift,
+                    None
+                )
+                if sprite_data is not None:
+                    store.persistent._mas_filereacts_sprite_reacted[_gift] = (
+                        sprite_data
+                    )
+
+                    # add the generic react
+                    sprite_object_reacts.append(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+                    sprite_object_reacts.append(gift_connectors.quip()[1])
+
+                    # stats for today
+                    _register_received_gift(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+
+            # extend the list
+            sprite_object_reacts.extend(found_reacts)
+            found_reacts = sprite_object_reacts
 
         # add in the generic gift reactions
         generic_reacts = list()
@@ -552,18 +563,40 @@ init python:
             [2]: giftname this sprite is associated with
         """
         if len(persistent._mas_filereacts_sprite_reacted) > 0:
-            return persistent._mas_filereacts_sprite_reacted[-1]
+            giftname = persistent._mas_filereacts_sprite_reacted.keys()[0]
+            sprite_data = persistent._mas_filereacts_sprite_reacted[giftname]
+            return (sprite_data[0], sprite_data[1], giftname)
 
         return (None, None, None)
 
 
-    def mas_finishSpriteObjInfo():
+    def mas_finishSpriteObjInfo(sprite_data):
         """
-        Notifies the sprite reaction list that it has finished with the
-        latest sprite reaction
+        Finishes the sprite object with the given data.
+
+        IN:
+            sprite_data - sprite data tuple from getSpriteObjInfo
         """
-        if len(persistent._mas_filereacts_sprite_reacted) > 0:
+        sp_type, sp_name, giftname = sprite_data
+
+        # sanity check
+        if sp_type is None or sp_name is None or giftname is None:
+            return
+
+        if giftname in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop()
+
+        if giftname in persistent._mas_filereacts_sprite_gifts:
+            persistent._mas_sprites_json_gifted_sprites[giftname] = (
+                persistent._mas_filereacts_sprite_gifts.pop(giftname)
+            )
+
+        else:
+            # since we have the data, we can add it ourselves if its missing
+            # for some reason.
+            persistent._mas_sprites_json_gifted_sprites[giftname] = (
+                (sp_type, sp_name)
+            )
 
 
 ### CONNECTORS [RCT000]
@@ -719,7 +752,8 @@ label mas_reaction_gift_test2:
 ## GENERIC SPRITE OBJECT JSONS
 
 label mas_reaction_gift_generic_spritejson:
-    $ sprite_type, sprite_name, giftname = mas_getSpriteObjInfo()
+    $ sprite_data = mas_getSpriteObjInfo()
+    $ sprite_type, sprite_name, giftname = sprite_data
 
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
@@ -738,7 +772,7 @@ label mas_reaction_gift_generic_spritejson:
 
     m 1eua "I CANNOT WAIT TO TRY IT"
 
-    $ mas_finishSpriteObjInfo()
+    $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
