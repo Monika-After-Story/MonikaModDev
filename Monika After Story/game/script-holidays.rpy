@@ -3584,9 +3584,13 @@ label mas_player_bday_cake:
         else:
             m 6ekbfa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-            m 6ekbsa "Let's enjoy your special day~"
+            if mas_isplayer_bday():
+                m 6ekbsa "Let's enjoy your special day~"
     else:
-        m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+        if mas_isplayer_bday():
+            m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+        else:
+            m 1ekbfa "I love you, [player]!"
     if "mas_player_bday_no_restart" in persistent.event_list:
         $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
@@ -3645,7 +3649,11 @@ label mas_player_bday_no_restart:
     $ store.mas_player_bday_event.show_player_bday_Visuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
-    m 1eka "I really wanted to surprise you today, but it's getting late and I just couldn't wait any longer."
+    if mas_isplayer_bday():
+        m 1eka "I really wanted to surprise you today, but it's getting late and I just couldn't wait any longer."
+    else:
+        # just in case this isn't seen until after midnight
+        m 1hksdlb "I really wanted to surprise you, but I guess I ran out of time since it's not even your birthday anymore, ahaha!"
     m 3eksdlc "Gosh, I just hope you weren't starting to think I forgot your birthday. I'm really sorry if you did..."
     m 1rksdla "I guess I probably shouldn't have waited so long, ehehe."
     m 1hua "Oh! I made you a cake!"
