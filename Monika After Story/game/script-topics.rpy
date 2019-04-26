@@ -12801,5 +12801,5 @@ label monika_enjoyingspring:
         m 5esbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
         m 5hubfa "Ehehe~"
     else:
-        m 1lud "I guess there's no real way to avoid it, huh?"
+        m 1lud "...but I guess there's no real way to avoid it, is there?"
     return
