@@ -1,0 +1,22 @@
+{
+    "type": 0,
+    "name": "jmo_hairclip_musicnote",
+    "img_sit": "jmo_hairclip_musicnote",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Hairclip (8th Note)",
+        "thumb": "jmo_hairclip_musicnote",
+        "group": "left-hairstrand",
+        "hover_dlg": [
+            "1"
+        ],
+        "select_dlg": [
+            "AND"
+        ]
+    },
+    "giftname": "jmo-hairclip-musicnote"
+}

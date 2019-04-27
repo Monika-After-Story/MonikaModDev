@@ -1,0 +1,22 @@
+{
+    "type": 0,
+    "name": "jmo_hairclip_cherry",
+    "img_sit": "jmo_hairclip_cherry",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Hairclip (Cherry)",
+        "thumb": "jmo_hairclip_cherry",
+        "group": "left-hairstrand",
+        "hover_dlg": [
+            "SHES MY"
+        ],
+        "select_dlg": [
+            "CHERRY PIE"
+        ]
+    },
+    "giftname": "jmo-hairclip-cherry"
+}

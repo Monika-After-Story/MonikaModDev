@@ -1,0 +1,22 @@
+{
+    "type": 0,
+    "name": "jmo_hairclip_heart",
+    "img_sit": "jmo_hairclip_heart",
+    "pose_map": {
+        "default": "0",
+        "l_default": "5"
+    },
+    "stay_on_start": true,
+    "select_info": {
+        "display_name": "Hairclip (Heart)",
+        "thumb": "jmo_hairclip_heart",
+        "group": "left-hairstrand",
+        "hover_dlg": [
+            "DOKI"
+        ],
+        "select_dlg": [
+            "DOKI"
+        ]
+    },
+    "giftname": "jmo-hairclip-heart"
+}
