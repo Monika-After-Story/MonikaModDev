@@ -50,7 +50,7 @@ init 5 python:
 
 label monika_gtod_tip000:
     m 3eub "Of course I'll teach you about grammar, [player]!"
-    m 3hua "It makes me really happy your want to better your writing skills."
+    m 3hua "It makes me really happy you want to better your writing skills."
     m 1eub "I've actually been reviewing some books on writing, and I think there are some interesting things we can talk about!"
     m 1rksdla "I'll admit...{w=0.5}it kind of sounds strange to discuss something as specific as grammar."
     m 1rksdlc "I know it's not the most exciting thing that comes up in people's minds."
@@ -178,16 +178,16 @@ init 5 python:
     )
 
 label monika_gtod_tip004:
-    m 1eua "Today we will talk abot a rarely used and commonly misunderstood punctuation mark..."
+    m 1eua "Today we will talk about a rarely used and commonly misunderstood punctuation mark..."
     m 3eub "The semicolon!"
     m 3eua "Some interesting things have been written about semicolons, including this from the author Lewis Thomas..."
     m 1esd "{i}Sometimes you get a glimpse of a semicolon coming [[...], and it is like climbing a steep path through woods and seeing a wooden bench just at a bend in the road ahead{/i}..."
     m 1esa "...{i}a place where you can expect to sit for a moment, catching your breath.{/i}"
     m 1hua "I really appreciate how eloquently he describes something as simple as a punctuation mark!"
     m 1euc "Some people think you can use a semicolon as a substitute for a colon, while others treat it as a period..."
-    m 1esd "If you recall out talk on clauses, the semicolon is actually meant to connect two independent clauses."
+    m 1esd "If you recall our talk on clauses, the semicolon is actually meant to connect two independent clauses."
     m 3euc "For example, if I wanted to keep two ideas together, such as '{b}You're here{/b}' and '{b}I'm happy{/b},' I could write them as..."
-    m 3eud "'{b}You're here; I'm happy{/b}' intead of '{b}You're here, and I'm happy{/b}' or '{b}You're here. I'm happy{/b}.'"
+    m 3eud "'{b}You're here; I'm happy{/b}' instead of '{b}You're here, and I'm happy{/b}' or '{b}You're here. I'm happy{/b}.'"
     m 1eub "All three sentences convey the same message, but in comparison, '{b}You're here; I'm happy{/b}' connects the two clauses at a happy medium."
     m 1esa "In the end, this always depends on the ideas you want to connect, but I think that Thomas puts it well when you compare them to periods or commas."
     m 1eud "Unlike a period, which opens up to a completely different sentence, or a comma, which shows you there is more to come in the same one..."
@@ -250,7 +250,7 @@ label monika_gtod_tip006:
     m 1tuu "You {i}can{/i} use the passive voice to be sneaky! {w=0.5}It does have other uses too, though."
     m 3esd "For example, in some careers, people have to use the passive voice to be impersonal."
     m 3euc "Scientists describe experiments with '{b}the data were taken{/b}...' since the important part is their work and not who did it."
-    m 1esa "Anyway, for the most part, stick with the active voice for readibility and, you know, to directly tell who's doing what."
+    m 1esa "Anyway, for the most part, stick with the active voice for readability and, you know, to directly tell who's doing what."
     m 1eub "I think that's enough for today, [player]."
     m 3hub "Thanks for listening!"
     return
@@ -331,7 +331,7 @@ label monika_gtod_tip009:
     else:
         $ tempname = 'Alexis'
 
-    m 1eua "Today we're going to talk about apostrophes. Pretty straight forward, right?"
+    m 1eua "Today we're going to talk about apostrophes. Pretty straightforward, right?"
     m 3eua "Add them to show possession: '{b}Sayori’s fork, Natsuki’s spoon, Yuri’s knife{/b}...'"
     m 1esd "I guess the issue that can come up is when you have to add an apostrophe to a word that ends with an '{b}s{/b}.'"
     m 3eub "For plural words, this is simple; just add the apostrophe at the end: {w=0.5}'{b}monkeys’{/b}.'"
@@ -368,7 +368,7 @@ label monika_gtod_tip010:
     m 1esa "Let me show you what I mean..."
     m 1hub "With the Oxford comma, I would say '{b}I love [player], reading, and writing.{/b}'"
     m 1eua "Without the Oxford comma, I would say '{b}I love [player], reading and writing.{/b}'"
-    m 3eud "The confusion lies in whether I'm referring to loving three serparate things, or if I'm referring to just loving you when you read and write."
+    m 3eud "The confusion lies in whether I'm referring to loving three separate things, or if I'm referring to just loving you when you read and write."
     m 3hub "Of course, both of those meanings are true, so there's no confusion there for me, ahaha!"
     m 1eua "That's all I have for today, [player]."
     m 3hub "Thanks for listening!"
