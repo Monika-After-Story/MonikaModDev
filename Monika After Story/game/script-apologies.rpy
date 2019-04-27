@@ -212,7 +212,7 @@ label mas_apology_generic:
             m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
-    elif mas_apology_reason_db.get(mas_apology_reason,""):
+    elif mas_apology_reason_db.get(mas_apology_reason, False):
         #Set apology_reason
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 
