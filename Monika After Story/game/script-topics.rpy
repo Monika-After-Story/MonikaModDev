@@ -12839,3 +12839,38 @@ label monika_sleigh:
     show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "An experience like that with you would be so breathtaking~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_failure",
+            prompt="Dealing with failure",
+            category=['advice','life'],
+            random=True
+        )
+    )
+
+label monika_failure:
+    m 1ekc "You know [player], I've been thinking recently..."
+    m 1euc "When it comes to failure, people seem to make a really big deal out of it..."
+    m 2rkc "Almost as if it's the end of the world."
+    m 2rksdla "But it's not actually a bad thing."
+    m 3eub "When you think about it, you can learn a lot from the experience."
+    m 3eud "Failure isn't the end at all; it's a lesson on what doesn't work."
+    m 2eka "There's nothing wrong with not getting something on the first attempt, it just means you need to try a different approach."
+    m 2rksdlc "Though, I know in some cases the feeling of failure can be crushing..."
+    m 2ekc "Like if you found out that something you wanted to do is something you're just not cut out for."
+    m 2dkd "The idea of quitting and finding something else makes you feel terrible inside...{w=1}as if you failed yourself."
+    m 2ekd "And on the other hand, trying to keep up with it also just completely drains you..."
+    m 2rkc "So either way, you feel terrible."
+    m 3eka "But the more you think about it, you realize it's better that you just accept the 'failure.'"
+    m 2eka "After all, if you're torturing yourself just to get through, it might not be worth it. Especially if it starts impacting your health."
+    m 3hub "If you're just not cut out for something, that's completely fine!"
+    m 3eua "It just means you need to figure out what you're really interested in doing."
+    m 2eka "Anyway, I'm not sure if you've had to go through something like that...but know that failure is a step towards success."
+    m 3eub "Don't be afraid to be wrong every now and then, you never know what you might learn."
+    m 1eka "And if you're really feeling bad about something, I'll always be here to support you."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "We can talk about whatever you're going through for as long as you need."
+    return
