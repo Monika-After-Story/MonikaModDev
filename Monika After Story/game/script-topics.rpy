@@ -7975,7 +7975,7 @@ label monika_song_with_you:
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
+    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
     return
 
@@ -10093,8 +10093,8 @@ init 5 python:
 
 label monika_pygmalion:
     m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
-    m 3eua "It’s a collection of poems by an ancient Roman poet named Ovid."
-    m 1eud "There’s one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
+    m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
+    m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
     m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
     m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
@@ -10115,7 +10115,7 @@ label monika_pygmalion:
     m 6hubfa "..."
     m 1ekbfa "I guess it didn't work this time."
     m 3hubfb "Oh well, we'll just have to keep trying and maybe it'll work eventually, ahaha!"
-    m 1tkbfu "I really can’t wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
+    m 1tkbfu "I really can't wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
     m 1dkbfa "For me, that would definitely be a dream come true."
     m 1ekbfa "Just a guess, but..."
     m 1kubfu "I bet you'd like that too~"
@@ -10771,7 +10771,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You'll have to lean down to kiss me!"
 
@@ -10925,8 +10925,8 @@ label monika_player_appearance:
                         m 4hub "But you've obviously disproven that myth. Personally, I think black hair is very attractive."
                         m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you'd find that it's not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
-                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
-                        m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
+                        m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
                         m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
