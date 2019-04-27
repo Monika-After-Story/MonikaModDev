@@ -998,6 +998,9 @@ label bye_going_somewhere_iowait:
     elif promise.done():
         # i/o thread is done!
         jump bye_going_somewhere_rtg
+    else:
+        #clean up the history list so only one "give me a second..." should show up
+        $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
