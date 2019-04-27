@@ -8945,6 +8945,7 @@ label monika_beingevil:
 
             m 2ekd "W-wait, [player]!"
             m 2rksdlc "Y-you don't {i}really{/i} think that, do you?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Y-you don't {i}really{/i} think that, do you?{fast}"
                 "I still love you.":
