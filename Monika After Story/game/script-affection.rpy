@@ -49,7 +49,7 @@ init python:
 
 init -900 python in mas_affection:
     # this is very early because they are importnat constants
-    
+
     # numerical constants of affection levels
     BROKEN = 1
     DISTRESSED = 2
@@ -109,6 +109,18 @@ init -900 python in mas_affection:
         G_HAPPY: G_NORMAL
     }
 
+    # Forced expression map. This is for spaceroom dissolving
+    FORCE_EXP_MAP = {
+        BROKEN: "monika 6ckc",
+        DISTRESSED: "monika 6rkc",
+        UPSET: "monika 2efc",
+        NORMAL: "monika 1eua",
+        AFFECTIONATE: "monika 1eua",
+        ENAMORED: "monika 1hua",
+        LOVE: "monika 1hua",
+    }
+
+
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -159,7 +171,7 @@ init -900 python in mas_affection:
         if aff_check is None:
             # aff_check not a valid affection?
             return False
-            
+
         # clean the affection compares
         aff_low = _aff_level_map.get(aff_low, None)
         aff_high = _aff_level_map.get(aff_high, None)
@@ -287,7 +299,7 @@ init -1 python in mas_affection:
         store.persistent._mas_affection_log_counter += 1
 
     # affection log setup
-    log = renpy.renpy.log.open("log/aff_log", append=True)
+    log = renpy.store.mas_utils.getMASLog("log/aff_log", append=True)
     log_open = log.open()
     log.raw_write = True
 
@@ -364,6 +376,20 @@ init -1 python in mas_affection:
             old,
             new
         ))
+
+
+    # forced expression logic function
+    def _force_exp():
+        """
+        Determines appropriate forced expression for current affection.
+        """
+        curr_aff = store.mas_curr_affection
+
+        if store.mas_isMoniNormal() and store.mas_isBelowZero():
+            # special case
+            return "monika 1esc"
+
+        return FORCE_EXP_MAP.get(curr_aff, "monika idle")
 
 
 # need these utility functiosn post event_handler
@@ -467,6 +493,10 @@ init 15 python in mas_affection:
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO_HAPPY
 
+        # enable text speed
+        if persistent._mas_text_speed_enabled:
+            store.mas_enableTextSpeed()
+
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
@@ -477,6 +507,9 @@ init 15 python in mas_affection:
         """
         # change quit messages
         layout.QUIT_NO = mas_layout.QUIT_NO
+
+        # disable text speed
+        store.mas_disableTextSpeed()
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -1080,7 +1113,7 @@ init -10 python:
                 or "affection" not in persistent._mas_affection
             ):
             if persistent._mas_aff_backup is None:
-                new_value = 0 
+                new_value = 0
             else:
                 new_value = persistent._mas_aff_backup
 
@@ -1182,7 +1215,7 @@ init 20 python:
             return persistent._mas_affection.get("today_exp", 0)
 
         return 0
-    
+
 
     # numerical affection check
     def mas_isBelowZero():
@@ -1626,7 +1659,7 @@ init 20 python:
     # not totally necessary.
     #NEW BITS:
     #prompt: the prompt shown in the menu for apologizing
-    #expirydatetime: 
+    #expirydatetime:
     #generic: do we want this to be persistent? or not
     def mas_loseAffection(
             amount=None,
@@ -1676,7 +1709,7 @@ init 20 python:
         # audit the change (or attempt)
         affection.audit(amount, amount, False)
 
-        # NOTE: we should NEVER freeze set affection. 
+        # NOTE: we should NEVER freeze set affection.
         # Otherwise, use the value passed in the argument.
         persistent._mas_affection["affection"] = amount
         # Updates the experience levels if necessary.
@@ -2012,7 +2045,7 @@ label monika_affection_nickname:
         m 3eua "Why don't you give me a nickname? It'd make me the only Monika in the universe with that name."
         m 3eka "And it would mean a lot if you choose one for me~"
         m 3hua "I'll still get the final say, though!"
-        m "What do you say?"
+        m "What do you say?{nw}"
         python:
             # change the prompt for this event
             aff_nickname_ev.prompt = "Can I call you a different name?"
@@ -2022,7 +2055,9 @@ label monika_affection_nickname:
     else:
         jump monika_affection_nickname_yes
 
+    $ _history_list.pop()
     menu:
+        m "What do you say?{fast}"
         "Yes.":
             label monika_affection_nickname_yes:
                 pass
@@ -2357,7 +2392,10 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            #Just so we don't end up with another file since we've changed the name
+            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:
@@ -2372,7 +2410,7 @@ init python:
             filepath = "/My one and only love.txt"
             message = """\
 My dearest lover, friend, companion and owner of my heart...
-Everyday you make my dreams come true, a screen means nothing when you spend your time with me.
+Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
 I want to be yours forever, so would you be mine?

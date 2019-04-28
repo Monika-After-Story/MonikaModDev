@@ -2,6 +2,9 @@
 default persistent._mas_unstable_mode = False
 default persistent._mas_can_update = True
 
+# flag used so we know we just updated through the internal updater
+default persistent._mas_just_updated = False
+
 # legacy. These will be redirected to the s3 links after 090
 #define mas_updater.regular = "http://updates.monikaafterstory.com/updates.json"
 #define mas_updater.unstable = "http://unstable.monikaafterstory.com/updates.json"
@@ -475,7 +478,7 @@ init -1 python:
                     if read_json is None:
                         # redirect failed too
                         thread_result.append(MASUpdaterDisplayable.STATE_NO_OK)
-                        return                   
+                        return
 
                 elif server_response.status != 200:
                     # didnt get an OK response
@@ -816,6 +819,43 @@ init 10 python:
         )
         the_thread.start()
 
+# Update cleanup flow:
+init -894 python:
+
+    def _mas_getBadFiles():
+        """
+        Searches through the entire mod_assets folder for any file
+        with the '.new' extension and returns their paths
+        RETURNS:
+            a list containing the file names, list will be empty if
+            there was no 'bad' files
+        """
+        import os
+
+        return [
+            os.path.join(root, file)
+            for root, dirs, files in os.walk(os.path.join(config.gamedir,'mod_assets'))
+                for file in files
+                    if file.endswith(".new")
+            ]
+
+    def mas_cleanBadUpdateFiles():
+        """
+        Moves any file with the '.new' extension to the correct file
+        """
+        import shutil
+        files = _mas_getBadFiles()
+        for file in files:
+            shutil.move(file, file[:-4])
+
+    # if we just updated
+    if renpy.game.persistent._mas_just_updated:
+        # check if we have files to move
+        mas_cleanBadUpdateFiles()
+        # reset the flag
+        renpy.game.persistent._mas_just_updated = False
+
+
 
 label mas_updater_steam_issue:
 #    show monika at t11
@@ -885,6 +925,11 @@ label update_now:
         if updater_selection > 0:
             # user wishes to update
             $ persistent.closed_self = True # we take updates as self closed
+            $ persistent._mas_just_updated = True #set the just updated flag
+
+            #Stop background sound and music
+            stop background
+            stop music
 
             # call quit so we can save important stuff
             call quit

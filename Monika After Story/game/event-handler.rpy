@@ -23,7 +23,9 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -900 python in mas_ev_data_ver:
+init -950 python in mas_ev_data_ver:
+    # must be before -900 so we can use in persistent backup/cleanup
+
     # special store dedicated to verification of Event-based data
     import datetime
     import store
@@ -147,15 +149,11 @@ init -900 python in mas_ev_data_ver:
         11: MASCurriedVerify(_verify_dt, True), # unlock_date
         12: MASCurriedVerify(_verify_int, False), # shown_count
         13: MASCurriedVerify(_verify_str, True), # diary_entry
-
-        # NOTE: Rules are no longer saved in persistent (0.8.15+)
-#        14: MASCurriedVerify(_verify_dict, False), # rules
-
-        15: MASCurriedVerify(_verify_dt, True), # last_seen
-        16: MASCurriedVerify(_verify_tuli, True), # years
-        17: MASCurriedVerify(_verify_bool, True), # sensitive
-        18: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
-        19: MASCurriedVerify(_verify_bool, True), # show_in_idle
+        14: MASCurriedVerify(_verify_dt, True), # last_seen
+        15: MASCurriedVerify(_verify_tuli, True), # years
+        16: MASCurriedVerify(_verify_bool, True), # sensitive
+        17: MASCurriedVerify(_verify_tuli_aff, True), # aff_range
+        18: MASCurriedVerify(_verify_bool, True), # show_in_idle
     }
 
 
@@ -204,14 +202,21 @@ init -900 python in mas_ev_data_ver:
                 per_db.pop(ev_label)
 
 
+init -895 python in mas_ev_data_ver:
+    # this MUST happen after the data migrations
+
     # verify some databases
-    verify_event_data(store.persistent.event_database)
-    verify_event_data(store.persistent._mas_compliments_database)
-    verify_event_data(store.persistent.farewell_database)
-    verify_event_data(store.persistent.greeting_database)
-    verify_event_data(store.persistent._mas_mood_database)
-    verify_event_data(store.persistent._mas_story_database)
-    verify_event_data(store.persistent._mas_apology_database)
+    for _dm_db in store._mas_dm_dm.per_dbs:
+        verify_event_data(_dm_db)
+
+    _dm_db = None
+#    verify_event_data(store.persistent.event_database)
+#    verify_event_data(store.persistent._mas_compliments_database)
+#    verify_event_data(store.persistent.farewell_database)
+#    verify_event_data(store.persistent.greeting_database)
+#    verify_event_data(store.persistent._mas_mood_database)
+#    verify_event_data(store.persistent._mas_story_database)
+#    verify_event_data(store.persistent._mas_apology_database)
 
 
 init -500 python:
@@ -235,7 +240,6 @@ init -500 python:
         True, # unlock_date
         True, # shown_count
         False, # diary_entry
-        False, # rules
         True, # last_seen
         False, # years
         False, # sensitive
@@ -912,6 +916,7 @@ init -1 python in evhand:
     LAST_SEEN_DELTA = datetime.timedelta(hours=6)
 
     # restart topic blacklist
+    # TODO: consider an addEvent param instead
     RESTART_BLKLST = [
         "mas_crashed_start",
         "monika_affection_nickname",
@@ -919,7 +924,8 @@ init -1 python in evhand:
         "mas_coffee_finished_drinking",
         "monikaroom_will_change",
         "monika_hair_select",
-        "monika_clothes_select"
+        "monika_clothes_select",
+        "monika_rain_holdme",
     ]
 
     # as well as special functions
@@ -1539,7 +1545,7 @@ init python:
         if len(persistent.event_list) == 0:
             return None
 
-        if mas_in_idle_mode:
+        if store.mas_globals.in_idle_mode:
             # idle requires us to loop over the list and find the first
             # event available in idle
             ev_found = None
@@ -1840,18 +1846,24 @@ label call_next_event:
             $ ev.last_seen = datetime.datetime.now()
 
         if _return is not None:
-            if "derandom" in _return:
+            $ ret_items = _return.split("|")
+
+            if "derandom" in ret_items:
                 $ ev.random = False
 
-            if "rebuild_ev" in _return:
+            if "no_unlock" in ret_items:
+                $ ev.unlocked = False
+                $ ev.unlock_date = None
+
+            if "rebuild_ev" in ret_items:
                 $ mas_rebuildEventLists()
 
-            if "idle" in _return:
-                $ mas_in_idle_mode = True
+            if "idle" in ret_items:
+                $ store.mas_globals.in_idle_mode = True
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
-            if "quit" in _return:
+            if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 jump _quit
 
@@ -1862,8 +1874,7 @@ label call_next_event:
         # return to normal pose
         show monika idle at t11 zorder MAS_MONIKA_Z
 
-
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
 
@@ -1894,7 +1905,7 @@ label prompt_menu:
 
     $ mas_RaiseShield_dlg()
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # if talk is hit here, then we retrieve label from mailbox and 
         # call it.
         # after the event is over, we drop shields return to idle flow
@@ -1912,23 +1923,18 @@ label prompt_menu:
             call expression cb_label
 
         # clean up idle stuff
-        $ mas_in_idle_mode = False
+        $ persistent._mas_greeting_type = None
+        $ store.mas_globals.in_idle_mode = False
+
+        # this event will cleanup the remaining idle vars
+        $ pushEvent("mas_idle_mode_greeting_cleanup")
+        $ mas_idle_mailbox.send_skipmidloopeval()
 
         # NOTE: we only need to enable music hotkey since we are in dlg mode
         #$ mas_DropShield_idle()
         $ store.mas_hotkeys.music_enabled = True
 
-        $ persistent._mas_greeting_type = None
-        $ persistent._mas_in_idle_mode = False
-
-        # if we have events, jump to idle before call_next_event to start
-        # the usual setup
-        if len(persistent.event_list) > 0:
-            jump ch30_post_mid_loop_eval
-
-        # otherwise, return regular spaceroom idle
         jump prompt_menu_end
-
 
     python:
         unlocked_events = Event.filterEvents(
@@ -1959,13 +1965,13 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0:
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
-        talk_menu.append(("Ask a question.", "prompt"))
+        talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
-            talk_menu.append(("Repeat conversation.", "repeat"))
+            talk_menu.append(("Repeat conversation", "repeat"))
         talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
-        talk_menu.append(("Nevermind.","nevermind"))
+        talk_menu.append(("Nevermind","nevermind"))
 
         renpy.say(m, store.mas_affection.talk_quip()[1], interact=False)
         madechoice = renpy.display_menu(talk_menu, screen="talk_choice")
@@ -1995,7 +2001,7 @@ label prompt_menu:
 
 label prompt_menu_end:
 
-    show monika idle at t11
+    show monika at t11
     $ mas_DropShield_dlg()
     jump ch30_loop
 

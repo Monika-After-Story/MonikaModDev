@@ -334,6 +334,13 @@ init -2 python in mas_sprites:
     # available kwargs:
     #   NONE
 
+    def _acs_quetzalplushie_entry(_moni_chr, **kwargs):
+        """
+        Entry programming point for quetzal plushie acs
+        """
+        #We need to unlock/random monika_plushie since the plush is active
+        store.mas_showEVL('monika_plushie','EVE',_random=True)
+
     def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
         Exit programming point for quetzal plushie acs
@@ -344,6 +351,8 @@ init -2 python in mas_sprites:
         # also remove antlers
         _moni_chr.remove_acs(store.mas_acs_quetzalplushie_antlers)
 
+        #Since no more plush, we need to lock/derandom monika_plushie
+        store.mas_hideEVL('monika_plushie','EVE',derandom=True)
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
@@ -421,7 +430,7 @@ init -1 python:
     ### PONYTAIL WITH RIBBON (default)
     ## def
     # Monika's default hairstyle, aka the ponytail
-    # thanks Ryuse/Iron707/Taross/Metisz
+    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO
     mas_hair_def = MASHair(
         "def",
         "def",
@@ -450,7 +459,7 @@ init -1 python:
     ### DOWN
     ## down
     # Hair is down, not tied up
-    # thanks Ryuse/Finale/Iron707/Taross/Metisz
+    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO
     mas_hair_down = MASHair(
         "down",
         "down",
@@ -534,7 +543,7 @@ init -1 python:
     ### SCHOOL UNIFORM (default)
     ## def
     # Monika's school uniform
-    # thanks Ryuse
+    # thanks Ryuse/Velius94 (Jacket)
     mas_clothes_def = MASClothes(
         "def",
         "def",
@@ -766,7 +775,7 @@ init -1 python:
             p5="5"
         ),
         stay_on_start=False,
-        rec_layer=MASMonika.AFH_ACS,
+        rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_ear_rose)
 
@@ -890,6 +899,7 @@ init -1 python:
         # NOTE: this shouldn't be muxed with heart choc as heart choc 
         #   needs to add mid version of this
         mux_type=["plush_mid"],
+        entry_pp=store.mas_sprites._acs_quetzalplushie_entry,
         exit_pp=store.mas_sprites._acs_quetzalplushie_exit
     )
     store.mas_sprites.init_acs(mas_acs_quetzalplushie)
@@ -1609,5 +1619,4 @@ default persistent._mas_acs_enable_quetzalplushie = False
 
 ### PROMISE RING ###
 default persistent._mas_acs_enable_promisering = False
-# True enables plushie, False disables plushie
-
+# True enables promise ring, False disables promise ring
