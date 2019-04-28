@@ -301,15 +301,19 @@ label monika_gtod_tip008:
     m 1esd "Another couple of words that can be just as confusing to use are '{b}and I{/b}' and '{b}and me{/b}.'"
     m 3etc "Is it '{b}[player] and I went on a date{/b}' or '{b}[player] and me went on a date{/b}?'"
     m 3eud "Just like with '{b}who{/b}' and '{b}whom{/b},' the issue boils down to one of subjects and objects."
-    m 3eub "And just like when we talked about '{b}who{/b}' versus '{b}whom{/b},' it turns out there's a simple way to figure out which one is correct!"
+    m 1esd "If the speaker is the subject of the sentence, '{b}and I{/b}' is correct."
+    m 1euc "Conversely, if the speaker is the object of the sentence, '{b}and me{/b}' is correct."
+    m 3eub "Luckily, just like when we talked about '{b}who{/b}' versus '{b}whom{/b},' it turns out there's a simple way to figure out which one is correct!"
     m 1euc "In our example, if you just take out '{b}[player] and{/b}' from the sentence, only one should make sense."
     m 1hua "Let's try it out!"
     m 3eud "The end result is: {w=0.5}'{b}I went on a date{/b}' or '{b}me went on a date{/b}.'"
     m 3eub "Clearly, only the first one makes sense, so it's '{b}[player] and I went on a date{/b}.'"
     m 1tuu "Oh, sorry, [player]...{w=1}did it make you feel left out when I said only '{b}I went on a date{/b}?'"
     m 1hksdlb "Ahaha! Don't worry, I'd never leave you behind."
-    m 1eua "Anyway, that's all for today, [player]."
-    m 3hub "Thanks for listening!"
+    m 3eub "Now, on the other hand, if I was the object of the sentence, I would need to use '{b}and me{/b}' instead."
+    m 3eua "For example: {w=0.5}'{b}Natsuki asked [player] and me if we liked her cupcakes.{/b}'"
+    m 1eub "I hope that helps the next time you come across this situation while writing, [player]!"
+    m 3hub "Anyway, that's all for today, thanks for listening!"
     return
 
 init 5 python:
