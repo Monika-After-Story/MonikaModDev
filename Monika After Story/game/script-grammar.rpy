@@ -54,11 +54,11 @@ label monika_gtod_tip000:
     m 1eub "I've actually been reviewing some books on writing, and I think there are some interesting things we can talk about!"
     m 1rksdla "I'll admit...{w=0.5}it kind of sounds strange to discuss something as specific as grammar."
     m 1rksdlc "I know it's not the most exciting thing that comes up in people's minds."
-    m 3eksdld "...Maybe images of strict teachers, or stuck-up editors..."
-    m 3eka "But I think that there's a certain beauty in mastering how you write, and eloquently delivering your message."
+    m 3eksdld "...Maybe you think of strict teachers, or stuck-up editors..."
+    m 3eka "But I think that there's a certain beauty in mastering how you write and eloquently delivering your message."
     m 1eub "So...{w=0.5}starting today, I'll be sharing Monika's Grammar Tip of the Day!"
     m 1hua "Let's improve our writing together, my love~"
-    m 3eua "We'll start with clauses, the basic building blocks of sentences!"
+    m 3eub "We'll start with clauses, the basic building blocks of sentences!"
 
     $ mas_hideEVL("monika_gtod_tip000", "EVE", lock=True, depool=True)
 
@@ -100,7 +100,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_gtod_tip002",
             category=["grammar tips"],
-            prompt="Comma Splices/Run-ons",
+            prompt="Comma Splices and Run-ons",
             conditional="store.mas_gtod.has_day_past_tip(1)",
             action=EV_ACT_POOL
         )
@@ -117,7 +117,7 @@ label monika_gtod_tip002:
     m 1eua "The best way to avoid this mistake is to separate independent clauses with periods, conjunctions, or semicolons."
     m 1eud "A conjunction is basically a word that you use to connect two clauses or phrases together."
     m 3eub "They're a pretty interesting topic on their own, so we can go over them in a future tip!"
-    m 3eud "Anyways, taking that example we had earlier, let's add a conjunction and a period to make our sentence flow better..."
+    m 3eud "Anyway, taking that example we had earlier, let's add a conjunction and a period to make our sentence flow better..."
     m 1eud "'{b}I visited the park, and I looked at the sky. I saw many stars.{/b}'"
     m 3hua "Much better, don't you think?"
     m 1eub "That's all I have for today, [player]."
@@ -146,8 +146,8 @@ label monika_gtod_tip003:
     m 1eua "Now, let's revisit an earlier line, this time with conjunctions..."
     m 1eub "'{b}It would be dull, and you would sound choppy. Since these ideas all relate, we should connect them.{/b}'"
     m 3hua "Much better, don't you think?"
-    m 1esa "Anyways, there are three types of conjunctions: {w=0.5}coordinating, correlative, and subordinating."
-    m 1hksdla "Their names may sound a little daunting, but I promise they'll make more sense as we go through them. I'll give you examples as we go along, too!"
+    m 1esa "Anyway, there are three types of conjunctions: {w=0.5}coordinating, correlative, and subordinating."
+    m 1hksdla "Their names may sound a little daunting, but I promise they'll make more sense as we go through them. I'll give you examples as we go along."
     m 1esd "Coordinating clauses bridge two words, phrases, or clauses of the same 'rank' together. This just means that they have to be of the same type...words with words, or clauses with clauses."
     m 3euc "Some common examples include: {w=0.5}'{b}and{/b},' '{b}or{/b},' '{b}but{/b},' '{b}so{/b},' and '{b}yet{/b}.'"
     m 3eub "You can connect independent clauses, {i}and{/i} you can avoid comma splices!"
@@ -181,8 +181,8 @@ label monika_gtod_tip004:
     m 1eua "Today we will talk about a rarely used and commonly misunderstood punctuation mark..."
     m 3eub "The semicolon!"
     m 3eua "Some interesting things have been written about semicolons, including this from the author Lewis Thomas..."
-    m 1esd "{i}Sometimes you get a glimpse of a semicolon coming [[...], and it is like climbing a steep path through woods and seeing a wooden bench just at a bend in the road ahead{/i}..."
-    m 1esa "...{i}a place where you can expect to sit for a moment, catching your breath.{/i}"
+    m 1esd "'{i}Sometimes you get a glimpse of a semicolon coming [[...], and it is like climbing a steep path through woods and seeing a wooden bench just at a bend in the road ahead{/i}...'"
+    m 1esa "'...{i}a place where you can expect to sit for a moment, catching your breath.{/i}'"
     m 1hua "I really appreciate how eloquently he describes something as simple as a punctuation mark!"
     m 1euc "Some people think you can use a semicolon as a substitute for a colon, while others treat it as a period..."
     m 1esd "If you recall our talk on clauses, the semicolon is actually meant to connect two independent clauses."
@@ -249,7 +249,7 @@ label monika_gtod_tip006:
     m 1eub "As you can see, you can use the passive voice to be secretive about the subject yet still have a complete sentence."
     m 1tuu "You {i}can{/i} use the passive voice to be sneaky! {w=0.5}It does have other uses too, though."
     m 3esd "For example, in some careers, people have to use the passive voice to be impersonal."
-    m 3euc "Scientists describe experiments with '{b}the data were taken{/b}...' since the important part is their work and not who did it."
+    m 3euc "Scientists describe experiments with '{b}the data was taken{/b}...' since the important part is their work and not who did it."
     m 1esa "Anyway, for the most part, stick with the active voice for readability and, you know, to directly tell who's doing what."
     m 1eub "I think that's enough for today, [player]."
     m 3hub "Thanks for listening!"
@@ -308,7 +308,7 @@ label monika_gtod_tip008:
     m 3eub "Clearly, only the first one makes sense, so it's '{b}[player] and I went on a date{/b}.'"
     m 1tuu "Oh, sorry, [player]...{w=1}did it make you feel left out when I said only '{b}I went on a date{/b}?'"
     m 1hksdlb "Ahaha! Don't worry, I'd never leave you behind."
-    m 1eua "Anyways, that's all for today, [player]."
+    m 1eua "Anyway, that's all for today, [player]."
     m 3hub "Thanks for listening!"
     return
 
