@@ -371,7 +371,7 @@ init -10 python in mas_selspr:
     # selector group - topic map
     GRP_TOPIC_MAP = {
         "ribbon": "monika_ribbon_select",
-        "left-hair-clip": "monka_hairclip_select",
+        "left-hair-clip": "monika_hairclip_select",
     }
 
 

@@ -10,7 +10,7 @@
     "select_info": {
         "display_name": "Hairclip (Heart)",
         "thumb": "jmo_hairclip_heart",
-        "group": "left-hairstrand",
+        "group": "left-hair-clip",
         "hover_dlg": [
             "DOKI"
         ],

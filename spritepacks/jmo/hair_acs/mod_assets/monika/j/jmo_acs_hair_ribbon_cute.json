@@ -10,7 +10,7 @@
     "select_info": {
         "display_name": "Hair Ribbon (Cute)",
         "thumb": "jmo_hair_ribbon_cute",
-        "group": "left-hairstrand",
+        "group": "left-hair-ribbon",
         "hover_dlg": [
             "MEGU"
         ],
