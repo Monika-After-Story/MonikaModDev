@@ -1,3 +1,17 @@
+# Monika's Grammar Tip of the Day (GTOD)
+# TIPS
+# 0 - Intro
+# 1 - Clauses
+# 2 - Comma Splices/Run-ons
+# 3 - Conjunctions
+# 4 - Semicolons
+# 5 - Subjects and Objects
+# 6 - Active and Passive Voices
+# 7 - Who vs. Whom
+# 8 - And I vs. And me
+# 9 - Apostrophes
+# 10 - The Oxford Comma
+
 init 4 python in mas_gtod:
     # to simplify unlocking, lets use a special function to unlock tips
     import datetime
@@ -37,6 +51,7 @@ init 4 python in mas_gtod:
             >= datetime.timedelta(days=1)
         )
 
+# gtod intro topic
 init 5 python:
     addEvent(
         Event(
@@ -60,6 +75,7 @@ label monika_gtod_tip000:
     m 1hua "Let's improve our writing together, my love~"
     m 3eub "We'll start with clauses, the basic building blocks of sentences!"
 
+    # hide the intro topic after viewing
     $ mas_hideEVL("monika_gtod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
@@ -73,6 +89,7 @@ label monika_gtod_tip000:
     jump monika_gtod_tip001
 
 ##############################################################################
+# Actual tips start here
 init 5 python:
     addEvent(
         Event(
