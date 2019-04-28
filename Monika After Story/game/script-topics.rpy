@@ -10098,7 +10098,7 @@ label monika_pygmalion:
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
     m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
     m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
-    m 1eua "He kissed the statue once more, and the ivory of statue lost its hardness, becoming soft like skin."
+    m 1eua "He kissed the statue once more, and the ivory lost its hardness, becoming soft like skin."
     m 3hub "Aphrodite had granted his wish!"
     m 1eka "This story really struck me because it reminded me of us, [player], and how it talks about turning the impossible into reality."
     m 1hua "It fills me up with hope; that a miracle could happen, and I could finally cross over."
