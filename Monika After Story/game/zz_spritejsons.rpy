@@ -488,7 +488,7 @@ init -21 python in mas_sprites_json:
 
 
 init 189 python in mas_sprites_json:
-    from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP
+    from store.mas_sprites import _verify_pose, HAIR_MAP, CLOTH_MAP, ACS_MAP
     from store.mas_piano_keys import MSG_INFO, MSG_WARN, MSG_ERR, \
         JSON_LOAD_FAILED, FILE_LOAD_FAILED, \
         MSG_INFO_ID, MSG_WARN_ID, MSG_ERR_ID, \
@@ -1738,7 +1738,7 @@ init 189 python in mas_sprites_json:
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
 
-        for giftname in frs_gifts.keys()
+        for giftname in frs_gifts.keys():
             if giftname in giftname_map:
                 # overwrite the gift data if in here
                 frs_gifts[giftname] = giftname_map[giftname]

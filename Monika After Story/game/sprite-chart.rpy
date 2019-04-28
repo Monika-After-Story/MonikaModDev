@@ -515,6 +515,17 @@ init -5 python in mas_sprites:
     ## clothes dictionary
     CLOTH_MAP = dict()
 
+    ### SP CONSTANTS
+    SP_ACS = store.mas_sprites_json.SP_ACS
+    SP_HAIR = store.mas_sprites_json.SP_HAIR
+    SP_CLOTHES = store.mas_sprites_json.SP_CLOTHES
+
+    SP_MAP = {
+        SP_ACS: ACS_MAP,
+        SP_HAIR: HAIR_MAP,
+        SP_CLOTHES: CLOTH_MAP
+    }
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
@@ -690,6 +701,20 @@ init -5 python in mas_sprites:
         RETURNS location string for the sprite
         """
         return "".join(("(", str(adjust_x), ",", str(adjust_y), ")"))
+
+
+    def get_sprite(sprite_type, sprite_name):
+        """
+        Returns the sprite object with the given sprite name and sprite type.
+        Or None if we couldn't find one.
+        """
+        # NOTE: we have to use the module because we need updated maps.
+        sprite_map = SP_MAP.get(sprite_type, None)
+        if sprite_map is None:
+            return None
+
+        # otherwise we have a map
+        return sprite_map.get(sprite_name, None)
 
 
     # sprite maker functions

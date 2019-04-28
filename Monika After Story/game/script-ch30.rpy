@@ -1679,6 +1679,11 @@ label ch30_reset:
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
 
+
+    ## custom sprite objects 
+    python:
+        store.mas_selspr._validate_group_topics()
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above

@@ -219,8 +219,8 @@ init -1 python in mas_filereacts:
                     )
 
         # generic sprite object gifts treated differently
+        sprite_object_reacts = []
         if len(gifts_found) > 0:
-            sprite_object_reacts = []
             for index in range(len(gifts_found)-1, -1, -1):
                 _gift = gifts_found[index]
 
@@ -229,6 +229,7 @@ init -1 python in mas_filereacts:
                     None
                 )
                 if sprite_data is not None:
+                    gifts_found.pop()
                     store.persistent._mas_filereacts_sprite_reacted[_gift] = (
                         sprite_data
                     )
@@ -246,10 +247,9 @@ init -1 python in mas_filereacts:
 
             # extend the list
             sprite_object_reacts.extend(found_reacts)
-            found_reacts = sprite_object_reacts
 
         # add in the generic gift reactions
-        generic_reacts = list()
+        generic_reacts = []
         if len(gifts_found) > 0:
             for _gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
@@ -258,7 +258,7 @@ init -1 python in mas_filereacts:
                 _register_received_gift("mas_reaction_gift_generic")
 
 
-        generic_reacts.extend(found_reacts)
+        generic_reacts.extend(sprite_object_reacts)
 
         # gotta remove the extra
         if len(generic_reacts) > 0:
@@ -584,7 +584,7 @@ init python:
             return
 
         if giftname in persistent._mas_filereacts_sprite_reacted:
-            persistent._mas_filereacts_sprite_reacted.pop()
+            persistent._mas_filereacts_sprite_reacted.pop(giftname)
 
         if giftname in persistent._mas_filereacts_sprite_gifts:
             persistent._mas_sprites_json_gifted_sprites[giftname] = (
@@ -597,6 +597,12 @@ init python:
             persistent._mas_sprites_json_gifted_sprites[giftname] = (
                 (sp_type, sp_name)
             )
+
+        # unlock the selectable for this sprite object
+        store.mas_selspr.json_sprite_unlock(store.mas_sprites.get_sprite(
+            sp_type,
+            sp_name
+        ))
 
 
 ### CONNECTORS [RCT000]
@@ -751,7 +757,7 @@ label mas_reaction_gift_test2:
 
 ## GENERIC SPRITE OBJECT JSONS
 
-label mas_reaction_gift_generic_spritejson:
+label mas_reaction_gift_generic_sprite_json:
     $ sprite_data = mas_getSpriteObjInfo()
     $ sprite_type, sprite_name, giftname = sprite_data
 

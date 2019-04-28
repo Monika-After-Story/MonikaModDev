@@ -352,9 +352,9 @@ init -10 python in mas_selspr:
     DEF_DISP = "..."
 
     ## selection types
-    SELECT_ACS = 0
-    SELECT_HAIR = 1
-    SELECT_CLOTH = 2
+    SELECT_ACS = store.mas_sprites_json.SP_ACS
+    SELECT_HAIR = store.mas_sprites_json.SP_HAIR
+    SELECT_CLOTH = store.mas_sprites_json.SP_CLOTHES
 
     # create the selectable lists
     # we also create a dict mapping similar to sprites.
@@ -368,6 +368,12 @@ init -10 python in mas_selspr:
     HAIR_SEL_SL = []
     CLOTH_SEL_SL = []
 
+    # selector group - topic map
+    GRP_TOPIC_MAP = {
+        "ribbon": "monika_ribbon_select",
+        "left-hair-clip": "monka_hairclip_select",
+    }
+
 
     def selectable_key(selectable):
         """
@@ -379,6 +385,20 @@ init -10 python in mas_selspr:
         RETURNS the display name of the selectable
         """
         return selectable.display_name
+
+
+    def _validate_group_topics():
+        """
+        Locks selector topics if there are no unlocked selectables with the
+        appropriate group.
+        Unlocks selector topics if they are unlocked selectables.
+        """
+        for group in GRP_TOPIC_MAP:
+            if len(filter_acs(True, group=group)) > 0:
+                store.mas_unlockEVL(GRP_TOPIC_MAP[group], "EVE")
+
+            else:
+                store.mas_lockEVL(GRP_TOPIC_MAP[group], "EVE")
 
 
     ## init functions for the sprites to use
@@ -1038,6 +1058,38 @@ init -10 python in mas_selspr:
         _unlock_item(hair, SELECT_HAIR)
 
 
+    def unlock_selector(group):
+        """RUNTIME ONLY
+        Unlocks the selector of the given group.
+
+        IN:
+            group - group to unlock selector topic.
+        """
+        selector_label = GRP_TOPIC_MAP.get(group, None)
+        if selector_label is None:
+            return
+
+        store.mas_unlockEVL(selector_label, "EVE")
+
+
+    def json_sprite_unlock(sp_obj):
+        """RUNTIME ONLY
+        Unlocks selectable for the given sprite, as ewll as the selector
+        topic for that sprite.
+
+        IN:
+            sp_obj - sprite object to unlock selectbale+
+        """
+        sp_type = sp_obj.gettype()
+
+        # unlocks the selectable
+        _unlock_item(sp_obj, sp_type)
+
+        # retrieve selectable and unlock the group's selector
+        sel_obj = _get_sel(sp_obj, sp_type)
+        unlock_selector(sel_obj.group)
+
+
     # extension of mailbox
     class MASSelectableSpriteMailbox(store.MASMailbox):
         """
@@ -1236,8 +1288,13 @@ init -1 python:
             self.multi_select = multi_select
             self.been_selected = False
 
+            # as a precaution, if a thumb doesn't exist, we use a placeholder. 
+            thumb_path = self.THUMB_DIR + _selectable.thumb
+            if not renpy.loadable(thumb_path):
+                thumb_path = self.THUMB_DIR + "unknown.png"
+            self.thumb = Image(thumb_path)
+
             # image setups
-            self.thumb = Image(self.THUMB_DIR + _selectable.thumb)
             self.thumb_overlay = Image(
                 "mod_assets/frames/selector_overlay.png"
             )
@@ -2329,3 +2386,233 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
         $ persistent._mas_force_clothes = True
 
     return _return
+
+
+########################## SELECTOR TOPICS ####################################
+# [MONSEL]
+
+#### Begin monika clothes topics
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_clothes_select",
+            category=["monika"],
+            prompt="Can you change your clothes?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.LOVE, None)
+        )
+    )
+
+label monika_clothes_select:
+    # setup
+    python:
+        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which clothes would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to wear different clothes, just ask, okay?"
+
+    return
+
+#### ends Monika clothes topic
+
+##### monika hair topics [MONHAIR]
+# TODO: as we introduce addiotinal hair types, we need to change the dialogue
+# for these.
+
+#init 5 python:
+    # NOTE: this event is DEPRECATED
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_ponytail",
+#            category=["monika"],
+#            prompt="Can you tie your hair into a ponytail?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
+
+label monika_hair_ponytail:
+    m 1eua "Sure thing!"
+    m "Just give me a second."
+    show monika 1dsc
+    pause 1.0
+
+    # this should auto lock/unlock stuff
+    $ monika_chr.reset_hair()
+
+    m 3hub "All done!"
+    m 1eua "If you want me to let my hair down, just ask, okay?"
+
+    return
+
+#init 5 python:
+    # NOTE: this is DEPRECATED
+    # TODO: remove this event after version 0.8.10
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_hair_down",
+#            category=["monika"],
+#            prompt="Can you let your hair down?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None}
+#        )
+#    )
+
+label monika_hair_down:
+    m 1eua "Sure thing, [player]."
+    m "Just give me a moment."
+    show monika 1dsc
+    pause 1.0
+
+    $ monika_chr.change_hair(mas_hair_down)
+
+    m 3hub "And it's down!"
+    m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
+
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hair_select",
+            category=["monika"],
+            prompt="Can you change your hairstyle?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_hair_select:
+    # setup
+    python:
+        sorted_hair = store.mas_selspr.HAIR_SEL_SL
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hairstyle would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want my hair in a different style, just ask, okay?"
+
+    return
+
+##### End monika hair topics
+
+#### Monika ribbons topic
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_ribbon_select",
+            category=["monika"],
+            prompt="Can you change your ribbon?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None}
+        )
+    )
+
+label monika_ribbon_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+#    if monika_chr.hair.name != mas_hair_def.name:
+#        m "But im going to change my clothes and hair back to normal."
+#        $ monika_chr.reset_outfit(False)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    m 1eka "If you want me to change my ribbon, just ask, okay?"
+
+    return
+#### End Ribbon change topic
+
+#### Monika hairclips
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hairclip_select",
+            category=["monika"],
+            prompt="Can you change your hairclip?",
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_hairclip_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-clip")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which hairclip would you like me to wear?"
+        )
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    if not _return:
+        1 eka "Oh, alright."
+
+    m 1eka "If you want me to change my hairclip, just ask, okay?"
+
+    return
+
+
+#### End Monika hairclips/strand topics
+
+############### END SELECTOR TOPICS ###########################################
