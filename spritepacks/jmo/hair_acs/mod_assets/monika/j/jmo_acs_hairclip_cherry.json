@@ -10,7 +10,7 @@
     "select_info": {
         "display_name": "Hairclip (Cherry)",
         "thumb": "jmo_hairclip_cherry",
-        "group": "left-hairstrand",
+        "group": "left-hairclip",
         "hover_dlg": [
             "SHES MY"
         ],
