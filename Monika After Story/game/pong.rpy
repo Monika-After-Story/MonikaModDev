@@ -863,16 +863,16 @@ label mas_pong_dlg_sorry_assuming:
     m 3eka "Would you like to take a break, [player]?{nw}"
     $ _history_list.pop()
     menu:
-       m "Would you like to take a break, [player]?{fast}"
+        m "Would you like to take a break, [player]?{fast}"
 
-       "Okay.":
+        "Okay.":
             m 1eka "Alright, [player]."
             m 1hua "I had fun, thanks for playing pong with me!"
             m 1eua "Let me know when you're ready to play again."
 
             #Set this var so Monika knows you're ready to play again
             $ mas_pong_taking_break = True
-           jump ch30_loop
+            jump ch30_loop
 
         "No.":
             m 1eka "Alright, [player]. If you're sure."
