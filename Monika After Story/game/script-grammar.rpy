@@ -266,7 +266,7 @@ label monika_gtod_tip006:
     m 1eub "As you can see, you can use the passive voice to be secretive about the subject yet still have a complete sentence."
     m 1tuu "It's true; you {i}can{/i} use the passive voice to be sneaky! {w=0.5}It does have other uses, though."
     m 3esd "For example, in some careers, people have to use the passive voice to be impersonal."
-    m 3euc "Scientists describe experiments with '{b}the data was taken{/b}...' since the important part is their work and not who did it."
+    m 3euc "Scientists describe experiments with '{b}the results were documented{/b}...' since the important part is their work and not who did it."
     m 1esa "Anyway, for the most part, stick with the active voice for readability and, you know, to directly tell who's doing what."
     m 1eub "I think that's enough for today, [player]."
     m 3hub "Thanks for listening!"
