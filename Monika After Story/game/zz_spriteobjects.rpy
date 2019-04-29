@@ -3,6 +3,7 @@
 # For documentation on classes, see sprite-chart
 #
 # quicklinks:
+#   [SPR005] - Shaired programming points/prog point utilities
 #   [SPR010] - Hair programming points
 #   [SPR020] - Clothes programming points
 #   [SPR030] - ACS programming points
@@ -34,6 +35,92 @@ init -2 python in mas_sprites:
     _acs__testing_exit = False
 
 
+    ######### SHARED PROGPOINTS [SPR005] ######################
+    # These should be used by other prog points to streamline commonly done
+    # actions.
+    def _acs_wear_if_in_tempstorage(_moni_chr, key):
+        """
+        Wears the acs in tempstorage at the given key, if any.
+
+        IN:
+            _moni_chr - MASMonika object
+            key - key in tempstorage 
+        """
+        acs_items = temp_storage.get(key, None)
+        if acs_items is not None:
+            for acs_item in acs_items:
+                _moni_chr.wear_acs(acs_item)
+
+
+    def _acs_wear_if_wearing_acs(_moni_chr, acs, acs_to_wear):
+        """
+        Wears the given acs if wearing another acs.
+
+        IN:
+            _moni_chr - MASMonika object
+            acs - acs to check if wearing
+            acs_to_wear - acs to wear if wearing acs
+        """
+        if _moni_chr.is_wearing_acs(acs):
+            _moni_chr.wear_acs(acs_to_wear)
+
+
+    def _acs_wear_if_wearing_type(_moni_chr, acs_type, acs_to_wear):
+        """
+        Wears the given acs if wearing an acs of the given type.
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_type - acs type to check if wearing
+            acs_to_wear - acs to wear if wearing acs type
+        """
+        if _moni_chr.is_wearing_acs_type(acs_type):
+            _moni_chr.wear_acs(acs_to_wear)
+
+
+    def _acs_wear_if_not_wearing_type(_moni_chr, acs_type, acs_to_wear):
+        """
+        Wears the given acs if NOT wearing an acs of the given type.
+
+        IN:
+            _moni_chr - MASMonika object
+            acs_type - asc type to check if not wearing
+            acs_to_wear - acs to wear if not wearing acs type
+        """
+        if not _moni_chr.is_wearing_acs_type(acs_type):
+            _moni_chr.wear_acs(acs_to_wear)
+
+
+    def _acs_save_and_remove_exprop(_moni_chr, exprop, key, lock_topics):
+        """
+        Removes acs with given exprop, saving them to temp storage with
+        given key.
+        Also locks topics with the exprop if desired
+
+        IN:
+            _moni_chr - MASMonika object
+            exprop - exprop to remove and save acs
+            key - key to use for temp storage
+            lock_topics - True will lock topics associated with this exprop
+                False will not
+        """
+        acs_items = _moni_chr.get_acs_of_exprop(exprop, get_all=True)
+        if len(acs_items) > 0:
+            temp_storage[key] = acs_items
+            _moni_chr.remove_acs_exprop(exprop)
+
+        if lock_topics:
+            lock_exprop_topics(exprop)
+
+
+    def _hair_unlock_select_if_needed():
+        """
+        Unlocks the hairdown selector if enough hair is unlocked.
+        """
+        if len(store.mas_selspr.filter_hair(True)) > 1:
+            store.mas_unlockEVL("monika_hair_select", "EVE")
+
+
     ######### HAIR [SPR010] ###########
     # available kwargs:
     #   entry:
@@ -47,16 +134,14 @@ init -2 python in mas_sprites:
         """
         # wear a ribbon, we do this always to enforce monika's ribbon as a
         # separate acs.
-        if not _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
+        _acs_wear_if_not_wearing_type(
+            _moni_chr,
+            "ribbon",
+            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+        )
 
         #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
 
     def _hair_def_exit(_moni_chr, **kwargs):
@@ -95,16 +180,14 @@ init -2 python in mas_sprites:
         """
         # wear a ribbon, we do this always to enforce monika's ribbon as a
         # separate acs.
-        if not _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
+        _acs_wear_if_not_wearing_type(
+            _moni_chr,
+            "ribbon",
+            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+        )
 
         #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
 
     ######### CLOTHES [SPR020] ###########
@@ -143,6 +226,7 @@ init -2 python in mas_sprites:
         # hide hairdown greeting
 #        store.mas_lockEVL("greeting_hairdown", "GRE")
 
+        #### ribbon stuff
         # wearing rin clothes means we wear custom blank ribbon if we are
         # wearing a ribbon
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
@@ -158,6 +242,18 @@ init -2 python in mas_sprites:
 
         # lock ribbon select
         store.mas_lockEVL("monika_ribbon_select", "EVE")
+
+        #### end ribbon stuff
+
+        #### hair acs
+        _acs_save_and_remove_exprop(
+            _moni_chr,
+            "left-hair-strand-eye-level",
+            "acs.left-hair-strand-eye-level",
+            True
+        )
+
+        #### end acs stuff
 
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
@@ -175,8 +271,7 @@ init -2 python in mas_sprites:
             store.mas_acs_promisering.pose_map = rin_map
 
         # unlock hair down select, if needed
-        if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEVL("monika_hair_select", "EVE")
+        _hair_unlock_select_if_needed()
 
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
@@ -186,19 +281,26 @@ init -2 python in mas_sprites:
         # NOTE: we are gauanteed to be wearing blank ribbon when wearing
         # these clothes. Regardless, we should always restore to what we
         # have previously saved.
-        if _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
+        _acs_wear_if_wearing_type(
+            _moni_chr,
+            "ribbon",
+            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+        )
 
         # unlock hair
         _moni_chr.lock_hair = False
 
         #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+
+        # wear hairclips we were previously wearing (in session only)
+        # NOTE: we assume this list only contains hairclips. This is NOT true.
+        # TODO: add additional topic unlocks as needed.
+        _acs_wear_if_in_tempstorage(
+            _moni_chr,
+            "acs.left-hair-strand-eye-level"
+        )
+        store.mas_filterUnlockGroup(SP_ACS, "left-hair-clip")
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -238,6 +340,16 @@ init -2 python in mas_sprites:
         # lock ribbon select
         store.mas_lockEVL("monika_ribbon_select", "EVE")
 
+        #### hair acs
+        _acs_save_and_remove_exprop(
+            _moni_chr,
+            "left-hair-strand-eye-level",
+            "acs.left-hair-strand-eye-level",
+            True
+        )
+
+        #### end acs stuff
+
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
@@ -254,27 +366,33 @@ init -2 python in mas_sprites:
             store.mas_acs_promisering.pose_map = marisa_map
 
         # unlock hair down select, if needed
-        if len(store.mas_selspr.filter_hair(True)) > 1:
-            store.mas_unlockEVL("monika_hair_select", "EVE")
+        _hair_unlock_select_if_needed()
 
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
         # wear previous ribbon if we are wearing blank ribbon
-        if _moni_chr.is_wearing_acs_type("ribbon"):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
+        _acs_wear_if_wearing_type(
+            _moni_chr,
+            "ribbon",
+            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+        )
 
         # unlock hair
         _moni_chr.lock_hair = False
 
         #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        if len(store.mas_selspr.filter_acs(True, group="ribbon")) > 1:
-            store.mas_unlockEVL("monika_ribbon_select", "EVE")
+        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+
+        # wear hairclips we were previously wearing (in session only)
+        # NOTE: we assume this list only contains hairclips. This is NOT true.
+        # TODO: add additional topic unlocks as needed.
+        _acs_wear_if_in_tempstorage(
+            _moni_chr,
+            "acs.left-hair-strand-eye-level"
+        )
+        store.mas_filterUnlockGroup(SP_ACS, "left-hair-clip")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -313,12 +431,11 @@ init -2 python in mas_sprites:
             store.mas_acs_promisering.pose_map = santa_map
 
         # go back to previous ribbon if wearing wine ribbon
-        if _moni_chr.is_wearing_acs(store.mas_acs_ribbon_wine):
-            _last_ribbon = temp_storage.get(
-                "hair.ribbon",
-                store.mas_acs_ribbon_def
-            )
-            _moni_chr.wear_acs(_last_ribbon)
+        _acs_wear_if_wearing_acs(
+            _moni_chr,
+            store.mas_acs_ribbon_wine,
+            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+        )
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs

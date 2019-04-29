@@ -550,6 +550,18 @@ init -5 python in mas_sprites:
     ALL_POSES.extend(POSES)
     ALL_POSES.extend(L_POSES)
 
+    # sprite exprop - list of topics
+    EXPROP_TOPIC_MAP = {
+        "left-hair-strand-eye-level": [
+            "monika_hairclip_select"
+        ],
+    }
+
+    # sprite acs type - topic
+    ACSTYPE_TOPIC_MAP = {
+        "ribbon": "monika_ribbon_select"
+    }
+
     def _verify_uprightpose(val):
         return val in POSES
 
@@ -661,6 +673,56 @@ init -5 python in mas_sprites:
             return NIGHT_SUFFIX
 
         return ""
+
+
+    def lock_exprop_topics(exprop):
+        """
+        Locks topics with the given exprop
+
+        IN:
+            exprop - extended property to lock associated topics wtih
+        """
+        topic_list = EXPROP_TOPIC_MAP.get(exprop, None)
+        if topic_list is not None:
+            for topic in topic_list:
+                store.mas_lockEVL(topic, "EVE")
+
+
+    def lock_acstype_topics(acs_type):
+        """
+        Locks topics with the given acs type
+
+        IN:
+            acstype - acs type to lock assicated topics with
+        """
+        topic_label = ACSTYPE_TOPIC_MAP.get(acs_type, None)
+        if topic_label is not None:
+            store.mas_lockEVL(topic_label, "EVE")
+
+
+    def unlock_exprop_topics(exprop):
+        """
+        Unlocks topics with the given exprop
+
+        IN:
+            exprop - extended property to unlock associated topics with
+        """
+        topic_list = EXPROP_TOPIC_MAP.get(exprop, None)
+        if topic_list is not None:
+            for topic in topic_list:
+                store.mas_unlockEVL(topic, "EVE")
+
+
+    def unlock_acstype_topics(acs_type):
+        """
+        Unlocks topics with the given acs type
+
+        IN:
+            acstype - acs type to unlock associated topics with
+        """
+        topic_label = ACSTYPE_TOPIC_MAP.get(acs_type, None)
+        if topic_label is not None:
+            store.mas_unlockEVL(topic, "EVE")
 
 
     def should_disable_lean(lean, arms, character):
@@ -2366,6 +2428,36 @@ init -2 python:
             self.change_hair(new_hair, by_user=by_user, startup=startup)
 
 
+        def get_acs_of_exprop(self, exprop, get_all=False):
+            """
+            Gets the acs objects currently being work of a given ex prop
+
+            IN:
+                exprop - extended property to check for
+                get_all - True means we get all acs being worn of this exprop
+                    False will return the first one
+                    (Default: False)
+
+            RETURNS: single matching acs or None if get_all is False, list of 
+                matching acs or empty list if get_all is True.
+            """
+            if get_all:
+                acs_items = []
+            else:
+                acs_items = None
+
+            for acs_name in self.acs_list_map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.hasprop(exprop):
+                    if get_all:
+                        acs_items.append(_acs)
+
+                    else:
+                        return _acs
+
+            return acs_items
+
+
         def get_acs_of_type(self, acs_type, get_all=False):
             """
             Gets the acs objects currently being worn of a given type.
@@ -2418,6 +2510,23 @@ init -2 python:
                 True if wearing accessory, false if not
             """
             return accessory.name in self.acs_list_map
+
+
+        def is_wearing_acs_with_exprop(self, exprop):
+            """
+            Checks if currently wearing any accessory with given exprop
+
+            IN:
+                exprop - extended property to check
+
+            RETURNS: True if wearing accessory, False if not
+            """
+            for acs_name in self.acs_list_map:
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.hasprop(exprop):
+                    return True
+
+            return False
 
 
         def is_wearing_acs_type(self, acs_type):
@@ -2559,6 +2668,19 @@ init -2 python:
                 accessory,
                 self.acs_list_map.get(accessory.name, None)
             )
+
+
+        def remove_acs_exprop(self, exprop):
+            """
+            Removes all ACS of given exprop.
+
+            IN:
+                exprop - exprop to check for
+            """
+            for acs_name in self.acs_list_map.keys():
+                _acs = store.mas_sprites.ACS_MAP.get(acs_name, None)
+                if _acs and _acs.hasprop(exprop):
+                    self.remove_acs_in(_acs, self.acs_list_map[acs_name])
 
 
         def remove_acs_mux(self, mux_types):

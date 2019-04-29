@@ -356,6 +356,12 @@ init -10 python in mas_selspr:
     SELECT_HAIR = store.mas_sprites_json.SP_HAIR
     SELECT_CLOTH = store.mas_sprites_json.SP_CLOTHES
 
+    SELECT_CONSTS = (
+        SELECT_ACS,
+        SELECT_HAIR,
+        SELECT_CLOTH
+    )
+
     # create the selectable lists
     # we also create a dict mapping similar to sprites.
     # maps
@@ -1217,6 +1223,40 @@ init -1 python:
             return _sel_item.unlocked
 
         return False
+
+
+    def mas_filterUnlockGroup(sp_type, group, unlock_min=1):
+        """
+        Unlock selector topic for the given group if appropriate number of
+        selector objects are unlocked.
+
+        IN:
+            sp_type - sprite type to filter on 
+            group - group to use for filtering selectors
+            unlock_min - minimum number that has to be unlocked for us to 
+                unock the selector topic.
+                (Default: 1)
+        """
+        # type sanity check
+        if sp_type not in store.mas_selspr.SELECT_CONSTS:
+            return
+
+        # check if we even have a label to unlock 
+        grp_topic = store.mas_selspr.GRP_TOPIC_MAP.get(group, None)
+        if grp_topic is None:
+            return
+
+        if sp_type == store.mas_selspr.SELECT_ACS:
+            sel_list = store.mas_selspr.filter_acs(True, group=group)
+
+        elif sp_type == store.mas_selspr.SELECT_HAIR:
+            sel_list = store.mas_selspr.filter_hair(True, group=group)
+
+        else:
+            sel_list = store.mas_selspr.filter_clothes(True, group=group)
+
+        if len(sel_list) >= unlock_min:
+            mas_unlockEVL(grp_topic, "EVE")
 
 
     ## custom displayable
