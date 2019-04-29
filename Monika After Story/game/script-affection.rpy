@@ -109,6 +109,18 @@ init -900 python in mas_affection:
         G_HAPPY: G_NORMAL
     }
 
+    # Forced expression map. This is for spaceroom dissolving
+    FORCE_EXP_MAP = {
+        BROKEN: "monika 6ckc",
+        DISTRESSED: "monika 6rkc",
+        UPSET: "monika 2efc",
+        NORMAL: "monika 1eua",
+        AFFECTIONATE: "monika 1eua",
+        ENAMORED: "monika 1hua",
+        LOVE: "monika 1hua",
+    }
+
+
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -364,6 +376,20 @@ init -1 python in mas_affection:
             old,
             new
         ))
+
+
+    # forced expression logic function
+    def _force_exp():
+        """
+        Determines appropriate forced expression for current affection.
+        """
+        curr_aff = store.mas_curr_affection
+
+        if store.mas_isMoniNormal() and store.mas_isBelowZero():
+            # special case
+            return "monika 1esc"
+
+        return FORCE_EXP_MAP.get(curr_aff, "monika idle")
 
 
 # need these utility functiosn post event_handler
@@ -2366,7 +2392,10 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            #Just so we don't end up with another file since we've changed the name
+            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:

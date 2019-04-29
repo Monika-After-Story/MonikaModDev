@@ -1608,9 +1608,9 @@ label monika_rain:
                     mas_unlockEVL("monika_rain_holdme", "EVE")
 
                 if not mas_is_raining:
-                    call mas_change_weather(mas_weather_rain)
+                    call mas_change_weather(mas_weather_rain, by_user=False)
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
 
                 m 1hua "Then hold me, [player]..."
                 show monika 6dubsa
@@ -1639,7 +1639,7 @@ label monika_rain:
                         call mas_change_weather(mas_weather_snow)
 
                     else:
-                        call mas_change_weather(mas_weather_def)
+                        call mas_change_weather(mas_weather_def,by_user=False)
 
                 m 2eka "But it's understandable."
                 m 1eua "Rainy weather can look pretty gloomy."
@@ -1683,9 +1683,8 @@ label monika_rain_stop:
 
     show monika 1dsc
     pause 1.0
-    $ scene_change = True
     $ mas_is_raining = False
-    call spaceroom
+    call spaceroom(scene_change=True)
     stop background fadeout 1.0
 
     if mas_isMoniNormal(higher=True):
@@ -1729,9 +1728,8 @@ label monika_rain_start:
 
     show monika 1dsc
     pause 1.0
-    $ scene_change = True
     $ mas_is_raining = True
-    call spaceroom
+    call spaceroom(scene_change=True)
     play background audio.rain fadein 1.0 loop
 
     if mas_isMoniNormal(higher=True):
@@ -1786,13 +1784,28 @@ label monika_rain_holdme:
         m 1dsc "Sorry..."
     return
 
-label monika_holdme_prep:
-    stop music fadeout 1.0
+label monika_holdme_prep(lullaby=True, no_music=True):
 
-    # clear selected track
-    $ songs.current_track = songs.FP_NO_SONG
-    $ songs.selected_track = songs.FP_NO_SONG
-    
+    # start the lullaby timer
+    if lullaby and no_music:
+        if songs.current_track is None or songs.current_track == store.songs.FP_MONIKA_LULLABY:
+            play music store.songs.FP_THIRTY_MIN_OF_SILENCE
+            queue music store.songs.FP_MONIKA_LULLABY
+            # this doesn't interfere with the timer and allows us to stop the lullaby
+            # from the music menu after the 30 minute mark
+            $ songs.current_track = store.songs.FP_MONIKA_LULLABY
+            $ songs.selected_track = store.songs.FP_MONIKA_LULLABY
+    # stop the music without starting the timer
+    elif not lullaby and no_music:
+        stop music fadeout 1.0
+    # just play the lullaby
+    elif lullaby and not no_music:
+        $ play_song(store.songs.FP_MONIKA_LULLABY)
+
+    # stop music when a song other than lullaby is playing but don't clear selected track
+    # this way the lullaby will play only if the user has clicked the no music button
+    if songs.current_track is not None and songs.current_track != store.songs.FP_MONIKA_LULLABY:
+        stop music fadeout 1.0
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
@@ -1816,7 +1829,10 @@ label monika_holdme_start:
 label monika_holdme_reactions:
     $ elapsed_time = datetime.datetime.now() - start_time
     $ store.mas_history._pm_holdme_adj_times(elapsed_time)
-
+    
+    # stop the timer if the holding time is less than 30 minutes
+    if elapsed_time <= datetime.timedelta(minutes=30):
+        stop music
     if elapsed_time > datetime.timedelta(minutes=30):
         m "..."
         call monika_holdme_long
@@ -1930,6 +1946,7 @@ label monika_holdme_reactions:
 
     else:
         #under 30 seconds
+        $ mas_MUMURaiseShield()
         if mas_isMoniLove():
             m 2ekc "Aw, are we done already?"
             m 3eka "Could you hold me for just a bit longer?{nw}"
@@ -1938,6 +1955,7 @@ label monika_holdme_reactions:
                 m "Could you hold me for just a bit longer?{fast}"
                 "Yes.":
                     m 1hua "Ehehe~"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 1hub "You're so sweet, [player]~"
                     call monika_holdme_start
@@ -1951,6 +1969,7 @@ label monika_holdme_reactions:
                         m "Please?{fast}"
                         "Yes.":
                             m 1hub "Yay~"
+                            $ mas_MUMUDropShield()
                             call monika_holdme_prep
                             m 2ekbfb "Thanks, [player]~"
                             call monika_holdme_start
@@ -1967,6 +1986,7 @@ label monika_holdme_reactions:
                 m "Could you...hold me for a bit longer?{fast}"
                 "Yes.":
                     m 1hubfb "Yay!"
+                    $ mas_MUMUDropShield()
                     call monika_holdme_prep
                     m 2ekbfb "Thanks, [player]~"
                     call monika_holdme_start
@@ -1982,11 +2002,13 @@ label monika_holdme_reactions:
         #happy
         else:
             m 1hua "That was a bit short, but still nice~"
+    $ mas_MUMUDropShield()
     return
 
 label monika_holdme_long:
     menu:
         "{i}Wake Monika up.{/i}":
+            stop music fadeout 5.0
             if mas_isMoniLove():
                 m 6dubfa "...{w=1}Mmm~"
                 m 6dkbfu "[player]...{w=1}warm~"
@@ -2037,7 +2059,7 @@ label monika_holdme_long:
                 m 1rkbsa "It really was nice, but I'm still getting used to being held by you like this, ahaha..."
                 m 1hubfa "Anyway, it was nice of you to let me nap, [player], ehehe~"
         "{i}Let her rest on you.{/i}":
-            call monika_holdme_prep
+            call monika_holdme_prep(False,False)
             if mas_isMoniLove():
                 m 6dubfd "{cps=*0.5}[player]~{/cps}"
                 m 6dubfb "{cps=*0.5}Love...{w=0.7}you~{/cps}"
@@ -3478,8 +3500,11 @@ label monika_eyecontact:
     m 3eub "I read this in a study a few years ago, where participants had to maintain eye contact at a table with someone of the opposite sex."
     m 1eub "The longer they held eye contact, the more romantically attached they felt to the other person, even if they had nothing in common!"
     m 1eka "Even if eyes aren't windows to the soul, we can see a lot more in them than we expect."
-    m 1ekbfa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
-    m 1hubfa "But I hope you enjoy looking into mine."
+    if persistent._mas_pm_eye_color:
+        m 1ekbfa "Maybe someday I'll be able to look into your [persistent._mas_pm_eye_color] eyes..."
+    else:
+        m 1ekbfa "Maybe someday I'll be able to look into your eyes..."
+    m 1hubfa "But until then, I hope you enjoy looking into mine."
     return
 
 init 5 python:
@@ -4031,7 +4056,7 @@ label monika_eternity:
                 m 6ektda "But I guess I don't have to worry about that any time soon do I?"
                 m 6dubsa "I wouldn't mind staying like this for a while..."
 
-                call monika_holdme_prep
+                call monika_holdme_prep(False,True)
                 call monika_holdme_start
 
                 m 2dkbfa "That was really nice while it lasted."
@@ -5996,6 +6021,43 @@ label monika_rock:
             m 1ekc "Oh... That's okay, everyone has their own taste in music."
             m 1hua "Though, if you ever do decide to listen to some rock 'n' roll, I'll happily listen right alongside you."
     return "derandom"
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_standup",category=['literature','media'],prompt="Stand-up comedy",random=True))
+
+label monika_standup:
+    m 1eua "You know what's a neat form of literature, [player]?"
+    m 3hub "Stand-up comedy!"
+    if seen_event('monika_rock') and seen_event('monika_rap'):
+        m 2rksdla "...Gosh, I've been saying lots of random things are literature, haven't I?"
+        m 2hksdlb "I'm starting to feel like Natsuki, or some fanatic post-modernist, ahaha!"
+        m 2eud "But seriously, there's a real craft when it comes to writing bits for stand-up."
+    else:
+        m 2eud "That may sound strange, but there's a real craft when it comes to writing bits for stand-up."
+    m 4esa "It differs from making simple one-liner jokes, because it really needs to tell a story."
+    m 4eud "But at the same time, you have to make sure you don't lose your audience."
+    m 2euc "So it's important to develop your ideas as much as you can, maybe even segueing into something that relates to your topic..."
+    m 2eub "All the while keeping your audience captivated until you reach the punch line; {w=0.5}hopefully resulting in lots of laughs."    
+    m 3esa "In some ways, it's kind of like writing a short story, except you cut out the falling action."
+    m 3esc "And yet between the jokes, you can find the soul of the writer...{w=0.5}what their thoughts and feelings are towards any given subject..."
+    m 3esd "...What their life experiences were, and who they are today."
+    m 1eub "All that comes forth within the bits that they write for their act."
+    m 3euc "I think the toughest part about doing stand-up is having to perform it."
+    m 3eud "After all, how do you know if your act is good if you never try it out on a crowd?"
+    m 1esd "Suddenly, this form of literature becomes much more complex."
+    m 1euc "How you say your lines, your body language, your facial expressions..."
+    m 3esd "Now, it's not just about what you wrote,{w=1} it's about how you deliver it."
+    m 3esa "It's kind of like poetry in that way, don't you think?"
+    m 2rksdlc "A lot people won't even try stand-up for themselves because they have to face a crowd..."
+    m 2eksdlc "Did you know that the number one fear most people have is public speaking?"
+    m 4wud "Number two is death. {w=0.5}Death is number two! {w=0.5}What's the deal with that?!" 
+    m 4eud "This means to the average person, if you go to a funeral, you're better off in the casket..."
+    m 4tub "...than doing the eulogy!"
+    m 1hub "...Ahaha! Sorry, I wanted to tell you a joke Jerry Seinfeld once wrote--"
+    m 3etc "--You've heard of him, right?"
+    m 1eua "So?{w=0.5} Did you laugh?"
+    m 3hksdlb "Hmm...{w=1}maybe I should just work on my own material..."
+    return
 
 init 5 python:
     addEvent(
@@ -12584,9 +12646,9 @@ label monika_sleigh:
 
     if mas_isMoniEnamored(higher=True):
         m 1dkbfb "And at the perfect moment, you lean in to me and our lips touch..."
-    m 1subsa "I really want to do that when I get there, [player]."
-    m 1ekbsu "...What about you?"
+    m 1subfa "I really want to do that when I get there, [player]."
+    m 1ekbfu "...What about you?"
 
-    show monika 5hkbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "An experience like that with you would be so breathtaking~"
     return

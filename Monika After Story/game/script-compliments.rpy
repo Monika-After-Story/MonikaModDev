@@ -106,7 +106,7 @@ label mas_compliment_beautiful_2:
     menu:
         "You're the most beautiful person to me, too.":
             $ mas_gainAffection(5,bypass=True)
-            m 1hub "Ehehehe~"
+            m 1hub "Ehehe~"
             m "I love you so much, [player]!"
         "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5)
@@ -120,7 +120,7 @@ label mas_compliment_beautiful_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
-    m 1hubfa "Hehehe~"
+    m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
@@ -389,7 +389,7 @@ label mas_compliment_thanks:
             m "No matter what the future may have for us both..."
             m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
         "Yeah.":
-            m 1hub "Hehehe~"
+            m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
 
     if not mas_isMoniLove():
@@ -435,7 +435,7 @@ label mas_compliment_smile_3:
         thanks_quip = renpy.substitute(thanks_quip)
     m 1eub "[thanks_quip]"
     m 1hua "I'll keep smiling just for you!"
-    m "Hehehe~"
+    m "Ehehe~"
     return
 
 init 5 python:
