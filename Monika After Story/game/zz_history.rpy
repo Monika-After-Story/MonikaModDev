@@ -850,6 +850,8 @@ init -810 python:
             # op (opinions)
             # op / monika
             "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
+            "_mas_pm_monika_evil": "pm.op.monika.is_evil",
+            "_mas_pm_monika_evil_but_ok": "pm.op.monika.is_evil_but_it_ok",
 
             # looks
             "_mas_pm_shared_appearance": "pm.looks.shared_looks",
