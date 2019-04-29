@@ -367,8 +367,8 @@ label monika_gtod_tip009:
     m 3euc "Normally this would be correct, but in this case the possessive form of '{b}it{/b}' is simply '{b}its{/b}.'"
     m 1esd "This is because '{b}it’s{/b}' is reserved for the contracted form of '{b}it is{/b}.'"
     m 1eua "If you're wondering, a contraction is simply a shortened version of a word or words, with an apostrophe indicating where letters have been left out to make the contraction."
-    m 1eub "Okay, [player], I think that's enough for today."
-    m 3hub "Thanks for listening!"
+    m 1eub "Okay, [player], {i}it's{/i} about time to wrap it up...{w=0.5}I think this lesson has run {i}its{/i} course."
+    m 3hub "Ehehe. Thanks for listening!"
     return
 
 init 5 python:
