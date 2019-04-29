@@ -159,8 +159,8 @@ label monika_gtod_tip003:
     m 3wud "When you think about it, that's a big category! There are so many words we use to accomplish that."
     m 1euc "Just imagine speaking without conjunctions..."
     m 1esc "It would be dull. {w=0.3}You would sound choppy. {w=0.3}These ideas all relate. {w=0.3}We should connect them."
-    m 3eua "As you will see, conjunctions are great for combining ideas, while at the same time they make your writing sound fluid and more similar to how we actually talk."
-    m 1eua "Now, let's revisit an earlier line, this time with conjunctions..."
+    m 3eua "As you will see, conjunctions are great for combining ideas, and at the same time, they make your writing sound fluid and more similar to how we actually talk."
+    m 1eua "Now, let's revisit our earlier example, this time with conjunctions..."
     m 1eub "'{b}It would be dull, and you would sound choppy. Since these ideas all relate, we should connect them.{/b}'"
     m 3hua "Much better, don't you think?"
     m 1esa "Anyway, there are three types of conjunctions: {w=0.5}coordinating, correlative, and subordinating."
@@ -264,7 +264,7 @@ label monika_gtod_tip006:
     m 3eud "Here's the sentence in an active voice: {w=0.5}'{b}Sayori ate the last cupcake.{/b}'"
     m 3euc "Here it is again in a passive voice: {w=0.5}'{b}The last cupcake was eaten.{/b}'"
     m 1eub "As you can see, you can use the passive voice to be secretive about the subject yet still have a complete sentence."
-    m 1tuu "You {i}can{/i} use the passive voice to be sneaky! {w=0.5}It does have other uses too, though."
+    m 1tuu "It's true; you {i}can{/i} use the passive voice to be sneaky! {w=0.5}It does have other uses, though."
     m 3esd "For example, in some careers, people have to use the passive voice to be impersonal."
     m 3euc "Scientists describe experiments with '{b}the data was taken{/b}...' since the important part is their work and not who did it."
     m 1esa "Anyway, for the most part, stick with the active voice for readability and, you know, to directly tell who's doing what."
@@ -314,7 +314,7 @@ init 5 python:
     )
 
 label monika_gtod_tip008:
-    m 1eua "Last time we talked about the difference between '{b}who{/b}' and '{b}whom{/b}.'"
+    m 1eua "Last time, we talked about the difference between '{b}who{/b}' and '{b}whom{/b}.'"
     m 1esd "Another couple of words that can be just as confusing to use are '{b}and I{/b}' and '{b}and me{/b}.'"
     m 3etc "Is it '{b}[player] and I went on a date{/b}' or '{b}[player] and me went on a date{/b}?'"
     m 3eud "Just like with '{b}who{/b}' and '{b}whom{/b},' the issue boils down to one of subjects and objects."
