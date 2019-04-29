@@ -38,6 +38,7 @@ define PONG_MONIKA_RESPONSE_LOSE_EXTREME_GAME                                   
 define pong_monika_last_response_id = PONG_MONIKA_RESPONSE_NONE
 
 define played_pong_this_session = False
+define mas_pong_taking_break = False
 define player_lets_monika_win_on_purpose = False
 define instant_loss_streak_counter = 0
 define loss_streak_counter = 0
@@ -72,7 +73,7 @@ init:
                 self.paddle = Image("mod_assets/pong.png")
                 self.ball = Image("mod_assets/pong_ball.png")
                 self.player = Text(_("[player]"), size=36)
-                self.monika = Text(_("[m_name]"), size=36)
+                self.monika = Text(_("Monika"), size=36)
                 self.ctb = Text(_("Click to Begin"), size=36)
 
                 # Sounds used.
@@ -377,7 +378,7 @@ init:
                             if self.bspeed > self.BALL_MAX_SPEED:
                                 self.bspeed = self.BALL_MAX_SPEED
 
-                # Draw the two paddles.  
+                # Draw the two paddles.
                 paddle(self.PADDLE_X_PLAYER, self.playery, self.PADDLE_X_PLAYER + self.PADDLE_WIDTH, False)
                 paddle(self.PADDLE_X_MONIKA, self.computery, self.PADDLE_X_MONIKA, True)
 
@@ -529,7 +530,7 @@ label demo_minigame_pong:
         call natsuki_name_scare(playing_okayev=playing_okayev) from _call_natsuki_name_scare
 
     #Regenerate the spaceroom scene
-    call spaceroom(scene_change=True, force_exp='monika 1hua')
+    call spaceroom(scene_change=True, force_exp='monika 3eua')
 
     # resets the temporary difficulty bonus
     $ persistent._mas_pong_difficulty_change_next_game = 0;  
@@ -558,10 +559,10 @@ label demo_minigame_pong:
 
     $ mas_gainAffection(modifier=0.5)
 
-    m 1hua "Would you like to play again, [player]?{nw}"
+    m 3eua "Would you like to play again?{nw}"
     $ _history_list.pop()
     menu:
-        m "Would you like to play again, [player]?{fast}"
+        m "Would you like to play again?{fast}"
 
         "Yes.":
             jump demo_minigame_pong
@@ -631,11 +632,11 @@ label mas_pong_dlg_winner:
 
         #Once
         if instant_loss_streak_counter == 1:
-            m 2tfb "Ahaha, how did you miss that?"
+            m 2rksdlb "Ahaha, how did you miss that?"
 
         #Twice
         elif instant_loss_streak_counter == 2:
-            m 2rkc "[player],{w=1} you missed again..."
+            m 2rksdlc "[player],{w=1} you missed again..."
 
         #Thrice
         elif instant_loss_streak_counter == 3:
@@ -649,19 +650,19 @@ label mas_pong_dlg_winner:
             m 2rkc "[menu_response]"
             $ _history_list.pop()
             menu:
-                m "[menu_response]"
+                m "[menu_response]{fast}"
 
                 "Yes...":
-                    $ player_lets_monika_win_on_purpose = True
-                    $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
-
-                    m 1hub "Ehehe!"
-                    m 1hua "Thanks for letting me win, [player]~"
+                    m 1hua "Ehehe!"
+                    m 1eka "Thanks for letting me win, [player]~"
                     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eka "But you know, I wouldn't mind losing to you sometimes."
 
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
                         m 5eua "I like to see you win just as much as you like to see me win~"
+
+                    $ player_lets_monika_win_on_purpose = True
+                    $ persistent._mas_pm_ever_let_monika_win_on_purpose = True
 
                 "No.":
                     if persistent._mas_pm_ever_let_monika_win_on_purpose:
@@ -813,8 +814,8 @@ label mas_pong_dlg_winner:
         elif pong_difficulty_before <= 15:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_HARD_GAME:
                 m 1hub "Ahaha!"
-                m 2tkb "Am I playing too good for you?"
-                m 1tub "I'm just kidding, [player]."
+                m 2tsb "Am I playing too good for you?"
+                m 1tsu "I'm just kidding, [player]."
                 m 3hub "You're pretty good yourself!"
             else:
                 if loss_streak_counter > 1:
@@ -828,7 +829,7 @@ label mas_pong_dlg_winner:
         elif pong_difficulty_before <= 20:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXPERT_GAME:
                 m 2tub "It feels good to win!"
-                m 2hub "Don't worry, I'm sure you will win again soon~"
+                m 2hub "Don't worry, I'm sure you'll win again soon~"
             else:
                 if loss_streak_counter > 1:
                     m 2eub "I win another round!"
@@ -854,7 +855,7 @@ label mas_pong_dlg_winner:
 #dlg for Monika saying she's sorry for assuming
 #Duplicated, hence label
 label mas_pong_dlg_sorry_assuming:
-    m 1hua "Alright."
+    m 3eka "Alright."
     m 2ekc "I'm sorry for assuming..."
 
     #This is only used in bits where the player lets Monika win on purpose
@@ -913,24 +914,24 @@ label mas_pong_dlg_loser:
     #Player wins after losing at least three times in a row
     elif loss_streak_counter_before >= 3:
         m 4eub "Congrats [player]!"
-        m 2eua "I knew you would win a game after enough practice!"
+        m 2hub "I knew you would win a game after enough practice!"
         m 4eua "Remember that skill comes mostly through repetitive training."
         m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
 
     #Monika loses after saying she would win this time
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERUP:
-        m 6wuo "Wow..."
-        m 2tub "I was really trying this time!"
+        m 2wuo "Wow..."
+        m 3wuo "I was really trying that time!"
         m 1hub "Way to go, [player]!"
 
     #Monika loses after going easy on the player
     elif powerup_value_this_game == PONG_DIFFICULTY_POWERDOWN:
-        m 1hub "Ehehe!"
-        m 2hua "Good job, [player]!"
+        m 1hua "Ehehe!"
+        m 2hub "Good job, [player]!"
 
     #Monika loses after going even easier on the player
     elif powerup_value_this_game == PONG_PONG_DIFFICULTY_POWERDOWNBIG:
-        m 1hub "I'm glad you won this time, [player]."
+        m 1hua "I'm glad you won this time, [player]."
 
     #Monika loses by a trickshot
     elif pong_angle_last_shot >= 0.9 or pong_angle_last_shot <= -0.9:
@@ -953,15 +954,15 @@ label mas_pong_dlg_loser:
 
         #Medium
         elif pong_difficulty_before <= 10:
-            m 4hua "You're pretty good, [player]!"
+            m 4hua "You're pretty good!"
 
         #Hard
         elif pong_difficulty_before <= 15:
-            m 3hub "Well played, [player]!"
+            m 3hub "Well played!"
 
         #Expert
         elif pong_difficulty_before <= 20:
-            m 4wuo "That was amazing, [player]!"
+            m 4wuo "That was amazing!"
 
         #Extreme
         else:
@@ -973,8 +974,8 @@ label mas_pong_dlg_loser:
     #Monika loses five times in a row
     elif win_streak_counter == 5:
         m 2wud "[player]..."
-        m 2tsu "Have you been practicing?" 
-        m 3hksdlb "I don't know what happened but I don't stand a chance against you!" 
+        m 2tsu "Have you been practicing?"
+        m 3hksdlb "I don't know what happened but I don't stand a chance against you!"
         m 1eka "Could you go a little bit easier on me please?"
         m 3hub "I would really appreciate it~"
         $ monika_asks_to_go_easy = True
@@ -1069,7 +1070,8 @@ label mas_pong_dlg_loser:
 
 #Quick Moni lose dlg
 label mas_pong_dlg_loser_fast:
-    m 1tfu "I'll beat you next time, [player]."
+    m 1eka "Alright, [player]."
+    m 3tfu "But I'll beat you next time."
 
     $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERUP;    
     $ persistent._mas_pong_difficulty_change_next_game_date = datetime.date.today()
@@ -1077,15 +1079,16 @@ label mas_pong_dlg_loser_fast:
 
 #Quick Moni win dlg
 label mas_pong_dlg_winner_fast:
-    m 5hua "Thanks for playing Pong and letting me win, [player]."
-    m 5hub "Let's play again sometime soon, okay?"
+    m 1eka "Alright, [player]."
+    m 1eka "Thanks for playing Pong with me and letting me win."
+    m 1hua "I had a lot of fun! Let's play again sometime soon, okay?"
 
     $ persistent._mas_pong_difficulty_change_next_game = PONG_DIFFICULTY_POWERDOWN;    
     return
 
 #Post dlg Moni lose
 label mas_pong_dlg_loser_end:
-    m 1wuo "Wow, I was actually trying that time."
+    m 1wuo "Wow, I was really trying that time."
     m 1eua "you must have really been practicing to get so good."
     m 2tuu "I guess you wanted to impress me, [player]."
     m 1hua "You're so sweet~"
