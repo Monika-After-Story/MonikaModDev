@@ -21,12 +21,6 @@
 #       - REQUIRED
 #       - this is used differently based on object. For more info, see the
 #           PoseMap JSON below.
-#   "img_stand": "base filename for standing image",
-#       - optional
-#       - do not include extension
-#       - NOTE: generally, this can be left out. We are unlikely to include
-#           standing monika anytime soon.
-#       - if not given, we assume no standing image
 #   "stay_on_start": True if this sprite object should be saved for startup
 #       - optional
 #       - boolean
@@ -337,7 +331,7 @@ init -21 python in mas_sprites_json:
     HM_SUCCESS = "hair_map loaded successfully!"
     HM_BAD_K_TYPE = "key '{0}' - expected type {1}, got {2}"
     HM_BAD_V_TYPE = "value for key '{0}' - expected type {1}, got {2}"
-    HM_MISS_ALL = "hair_map does not have key 'all' set."
+    HM_MISS_ALL = "hair_map does not have key 'all' set. Using default for 'all'."
     HM_FOUND_CUST = (
         "'custom' hair cannot be used in JSON hair maps. "
         "Outfits using 'custom' hair must be created manually."
@@ -427,7 +421,6 @@ init -21 python in mas_sprites_json:
     }
 
     OPT_SHARED_PARAM_NAMES = {
-        "img_stand": (str, _verify_str),
         "stay_on_start": (bool, _verify_bool),
 
         # object-based verificatrion is different
@@ -1190,9 +1183,10 @@ init 189 python in mas_sprites_json:
                     type(hair_value)
                 )))
 
-        # recommend "all"
+        # recommend "all" and set it to default
         if "all" not in hair_map:
             writelog(MSG_WARN_IDD.format(HM_MISS_ALL))
+            hair_map["all"] = "def"
 
         # check for no errors
         if len(errs) > 0:
