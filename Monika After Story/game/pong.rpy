@@ -623,7 +623,7 @@ label mas_pong_dlg_winner:
         m 1hub "Yay, I won!"
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "Thanks, [player]!"
-        m 5hubfb "You're so sweet, letting me win~"
+        m 5hubfb "You're so sweet...{w=0.5}letting me win~"
         $ monika_asks_to_go_easy = False
 
 
@@ -814,7 +814,7 @@ label mas_pong_dlg_winner:
         elif pong_difficulty_before <= 15:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_HARD_GAME:
                 m 1hub "Ahaha!"
-                m 2tsb "Am I playing too good for you?"
+                m 2tsb "Am I playing too well for you?"
                 m 1tsu "I'm just kidding, [player]."
                 m 3hub "You're pretty good yourself!"
             else:
@@ -843,9 +843,9 @@ label mas_pong_dlg_winner:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME:
                 m 2duu "Not bad, [player]."
                 m 4eua "I gave it everything I had, so don't feel too bad for losing from time to time."
-                m "Keep practicing and you'll beat me"
+                m 4eub "Keep practicing and you'll beat me!"
             else:
-                m 2hub "This time it's my win!"
+                m 2hub "This time, the win is mine!"
                 m 2efu "Keep up, [player]!"
 
             $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_WIN_EXTREME_GAME
@@ -913,7 +913,7 @@ label mas_pong_dlg_loser:
 
     #Player wins after losing at least three times in a row
     elif loss_streak_counter_before >= 3:
-        m 4eub "Congrats [player]!"
+        m 4eub "Congrats, [player]!"
         m 2hub "I knew you would win a game after enough practice!"
         m 4eua "Remember that skill comes mostly through repetitive training."
         m 4hub "If you train long enough I'm sure you can reach everything you aim for!"
@@ -939,7 +939,7 @@ label mas_pong_dlg_loser:
             m 2wuo "[player]!"
             m 2hksdlb "There's no way I could've hit that!"
         else:
-            m 2wuo "Wow, there's no way I could hit that!"
+            m 2wuo "Wow, there's no way I could've hit that!"
 
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_LOSE_TRICKSHOT
 
@@ -1045,7 +1045,7 @@ label mas_pong_dlg_loser:
         elif pong_difficulty_before <= 20:
             if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_EXPERT_GAME:
                 m 2wuo "Wow,{w=1} I'm really trying...{w=1}you're unstoppable!"
-                m 2tfu "But I'm sure I'll beat you sooner or later [player]."
+                m 2tfu "But I'm sure I'll beat you sooner or later, [player]."
                 m 3hub "Ahaha!"
             else:
                 if win_streak_counter > 1:
@@ -1089,7 +1089,7 @@ label mas_pong_dlg_winner_fast:
 #Post dlg Moni lose
 label mas_pong_dlg_loser_end:
     m 1wuo "Wow, I was really trying that time."
-    m 1eua "you must have really been practicing to get so good."
+    m 1eua "You must have really been practicing to get so good."
     m 2tuu "I guess you wanted to impress me, [player]."
     m 1hua "You're so sweet~"
     return
