@@ -553,15 +553,32 @@ init python:
         return (totalGifts,goodGifts,neutralGifts,badGifts)
 
 
-    def mas_getSpriteObjInfo():
+    def mas_getSpriteObjInfo(giftname=None):
         """
         Returns sprite info from the sprite reactions list.
+
+        IN:
+            giftname - giftname to retrieve sprite info about
+                If None, we use pseudo random select from sprite reacts
+                (Default: None)
 
         REUTRNS: tuple of the folling format:
             [0]: sprite type of the sprite
             [1]: sprite name (id) 
             [2]: giftname this sprite is associated with
         """
+        # given giftname? try and lookup
+        if giftname is not None:
+            sprite_data = persistent._mas_filereacts_sprite_reacted.get(
+                giftname,
+                None
+            )
+            if sprite_data is None:
+                return (None, None, None)
+
+            return (sprite_data[0], sprite_data[1], giftname)
+
+
         if len(persistent._mas_filereacts_sprite_reacted) > 0:
             giftname = persistent._mas_filereacts_sprite_reacted.keys()[0]
             sprite_data = persistent._mas_filereacts_sprite_reacted[giftname]
