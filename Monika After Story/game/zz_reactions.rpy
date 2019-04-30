@@ -804,14 +804,14 @@ label mas_reaction_gift_generic_sprite_json:
 #Hairpin reaction label
 #TODO: Logic
 label mas_reaction_gift_hairpin:
-    #If not given a hairpin before:
-        m 1wuo "Oh!"
-        m 1esd "Is that a hairpin?"
-        m 1hub "That's so cute, thanks [player]!"
+    #if not given a hairpin before:
+    m 1wuo "Oh!"
+    m 1esd "Is that a hairpin?"
+    m 1hub "That's so cute, thanks [player]!"
 
     #else:
-        m 1hub "Oh!{w=1} Another hairpin!"
-        m 3hua "Thanks, [player]."
+    m 1hub "Oh!{w=1} Another hairpin!"
+    m 3hua "Thanks, [player]."
 
     m 3eua "Just give me a second to put it on...{nw}"
     show monika 2dkc
