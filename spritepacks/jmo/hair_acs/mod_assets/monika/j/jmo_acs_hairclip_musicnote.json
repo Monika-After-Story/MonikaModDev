@@ -12,7 +12,7 @@
         "left-hair-clip"
     ],
     "stay_on_start": true,
-    "ex_props":
+    "ex_props": {
         "left-hair-strand-eye-level": true
     },
     "select_info": {
@@ -20,10 +20,12 @@
         "thumb": "jmo_hairclip_musicnote",
         "group": "left-hair-clip",
         "hover_dlg": [
-            "1"
+            "{i}Every day~{/i}"
         ],
         "select_dlg": [
-            "AND"
+            "I love this hairpin.",
+            "This hairpin is adorable!",
+            "Cute!"
         ]
     },
     "giftname": "jmo-hairclip-musicnote"

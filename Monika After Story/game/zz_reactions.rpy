@@ -781,23 +781,43 @@ label mas_reaction_gift_generic_sprite_json:
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
 
-    m "TODO ME"
+    m "Aww, [player]!"
     if sprite_str is None:
-
         if giftname is not None:
-            m 1eua "THANKS FOR GIVING ME THIS [giftname]!"
+            m 1hua "You're so sweet!"
+            m 1eua "Thanks for giving me this [giftname]!"
+            m 1ekbsa "You really love to spoil me, don't you."
+            m 1hubfa "Ehehe!"
 
         else:
-            m 1eua "THANKS FOR GIVING ME A GIFT I CAN WEAR!"
+            m 3eub "Thanks for this!"
 
     else:
-        m 1eua "THANKS FOR GIVING ME THIS [sprite_str]!"
-
-    m 1eua "I CANNOT WAIT TO TRY IT"
+        m 1eua "Thanks for this [sprite_str]!"
+        m 1hua "I can't wait to try it on."
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
+    return
+
+#Hairpin reaction label
+#TODO: Logic
+label mas_reaction_gift_hairpin:
+    #If not given a hairpin before:
+        m 1wuo "Oh!"
+        m 1esd "Is that a hairpin?"
+        m 1hub "That's so cute, thanks [player]!"
+
+    #else:
+        m 1hub "Oh!{w=1} Another hairpin!"
+        m 3hua "Thanks, [player]."
+
+    m 3eua "Just give me a second to put it on...{nw}"
+    show monika 2dkc
+    pause 1.0
+    #monika_chr.wear_acs(hairpin_acs)
+    m 1hua "There we go."
     return
 
 

@@ -2646,7 +2646,7 @@ label monika_hairclip_select:
     call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
 
     if not _return:
-        1 eka "Oh, alright."
+        m 1eka "Oh, alright."
 
     m 1eka "If you want me to change my hairclip, just ask, okay?"
 

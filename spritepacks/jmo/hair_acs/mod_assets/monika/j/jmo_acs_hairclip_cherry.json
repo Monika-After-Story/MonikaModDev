@@ -20,10 +20,12 @@
         "thumb": "jmo_hairclip_cherry",
         "group": "left-hair-clip",
         "hover_dlg": [
-            "SHES MY"
+            "Have you heard of a cherry kiss, [player]?~"
         ],
         "select_dlg": [
-            "CHERRY PIE"
+            "I love this hairpin.",
+            "This hairpin is adorable!",
+            "Cute!"
         ]
     },
     "giftname": "jmo-hairclip-cherry"

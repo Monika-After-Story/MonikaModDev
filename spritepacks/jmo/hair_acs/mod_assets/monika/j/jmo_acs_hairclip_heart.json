@@ -20,10 +20,12 @@
         "thumb": "jmo_hairclip_heart",
         "group": "left-hair-clip",
         "hover_dlg": [
-            "DOKI"
+            "A little bit of love..."
         ],
         "select_dlg": [
-            "DOKI"
+            "I love this hairpin.",
+            "This hairpin is adorable!",
+            "Cute!"
         ]
     },
     "giftname": "jmo-hairclip-heart"
