@@ -245,8 +245,8 @@ init -1 python in mas_filereacts:
                         "mas_reaction_gift_generic_sprite_json"
                     )
 
-            # extend the list
-            sprite_object_reacts.extend(found_reacts)
+        # extend the list
+        sprite_object_reacts.extend(found_reacts)
 
         # add in the generic gift reactions
         generic_reacts = []
@@ -803,6 +803,9 @@ label mas_reaction_gift_generic_sprite_json:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_acs_jmo_hairclip_cherry:
+    jump mas_reaction_gift_generic_sprite_json
 
 #Hairpin reaction label
 #TODO: Logic
