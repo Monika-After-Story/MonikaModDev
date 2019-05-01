@@ -804,27 +804,48 @@ label mas_reaction_gift_generic_sprite_json:
         $ store.mas_filereacts.delete_file(giftname)
     return
 
+## Hair clip reactions
+
 label mas_reaction_gift_acs_jmo_hairclip_cherry:
-    jump mas_reaction_gift_generic_sprite_json
+    # get sprite data
+    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-cherry")
+    $ sprite_type, sprite_name, giftname = sprite_data
+
+    # get object and call dialogue
+    $ hairpin_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    call mas_reaction_gift_hairpin(hairpin_acs)
+
+    # finish sprite data
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
 
 #Hairpin reaction label
-#TODO: Logic
-label mas_reaction_gift_hairpin:
-    #if not given a hairpin before:
-    m 1wuo "Oh!"
-    m 1esd "Is that a hairpin?"
-    m 1hub "That's so cute, thanks [player]!"
+label mas_reaction_gift_hairpin(hairpin_acs):
+    if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
+        m 1hub "Oh!{w=1} Another hairpin!"
+        m 3hua "Thanks, [player]."
 
-    #else:
-    m 1hub "Oh!{w=1} Another hairpin!"
-    m 3hua "Thanks, [player]."
+    else:
+        m 1wuo "Oh!"
+        m 1esd "Is that a hairpin?"
+        m 1hub "That's so cute, thanks [player]!"
 
-    m 3eua "Just give me a second to put it on...{nw}"
-    show monika 2dkc
-    pause 1.0
-    #monika_chr.wear_acs(hairpin_acs)
-    m 1hua "There we go."
+    # must include this check because we cannot for sure know if the acs
+    # exists
+    if hairpin_acs is None:
+        m 1hua "If you want me to wear it, just ask, okay?"
+
+    else:
+        m 3eua "Just give me a second to put it on...{nw}"
+        show monika 2dkc
+        pause 1.0
+        $ monika_chr.wear_acs(hairpin_acs)
+        m 1hua "There we go."
     return
+
+## End hairclip reactions
 
 
 ## coffee vars
