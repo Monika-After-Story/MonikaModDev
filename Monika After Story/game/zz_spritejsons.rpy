@@ -364,6 +364,13 @@ init -21 python in mas_sprites_json:
     ## images loadable
     IL_NOTLOAD = "image at '{0}' is not loadable"
 
+    ## gift labels
+    GR_LOADING = "creating reactions for gifts..."
+    GR_SUCCESS = "gift reactions created successfully!"
+    GR_FOUND = "reaction label found for {0} sprite '{1}', giftname '{2}'"
+    GR_GEN = "using generic reaction for {0} sprite '{1}', giftname '{2}'"
+
+
     ### CONSTANTS
     SP_ACS = 0
     SP_HAIR = 1
@@ -1717,11 +1724,18 @@ init 189 python in mas_sprites_json:
         reaction_label = rlstr.format(spname)
         if renpy.has_label(reaction_label):
             store.addReaction(reaction_label, giftname, is_good=True)
+            writelog(MSG_INFO_ID.format(GR_FOUND.format(
+                SP_STR.get(gifttype),
+                spname,
+                giftname
+            )))
 
-        # otherwise, add the generic reaction
-        # TODO: add function mas_reactions for adding generic sprite
-        #   sprite object
-        #store.addReaction
+        else:
+            writelog(MSG_INFO_ID.format(GR_GEN.format(
+                SP_STR.get(gifttype),
+                spname,
+                giftname
+            )))
 
 
     def processGifts():
@@ -1729,6 +1743,8 @@ init 189 python in mas_sprites_json:
         Processes giftnames that were loaded, adding/removing them from
         certain dicts.
         """
+        writelog(MSG_INFO.format(GR_LOADING))
+
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites
 
@@ -1753,6 +1769,11 @@ init 189 python in mas_sprites_json:
                 else:
                     # not unlocked, add this to the list
                     frs_gifts[giftname] = giftname_map[giftname]
+
+                    # and add the gift
+                    _addGift(giftname)
+
+        writelog(MSG_INFO.format(GR_SUCCESS))
                 
 
 init 190 python in mas_sprites_json:

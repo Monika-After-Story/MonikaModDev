@@ -621,6 +621,9 @@ init python:
             sp_name
         ))
 
+        # save persistent
+        renpy.save_persistent()
+
 
 ### CONNECTORS [RCT000]
 
