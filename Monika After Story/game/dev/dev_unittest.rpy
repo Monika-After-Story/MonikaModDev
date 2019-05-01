@@ -19,6 +19,7 @@ label dev_unit_tests_show_msgs(msg_list, format_text=False):
         if format_text:
             $ this_msg = renpy.substitute(this_msg)
         m 1eua "[this_msg]"
+        $ _history_list.pop()
         $ index += 1
     return
 
