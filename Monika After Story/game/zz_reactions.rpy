@@ -169,8 +169,8 @@ init -1 python in mas_filereacts:
         # otherwise we found some potential gifts
         gifts_found = list()
         # now lets lowercase this list whie also buliding a map of files
-        for _gift in raw_gifts:
-            gift_name, ext, garbage = _gift.partition(GIFT_EXT)
+        for mas_gift in raw_gifts:
+            gift_name, ext, garbage = mas_gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
             if (
                     c_gift_name not in
@@ -181,8 +181,8 @@ init -1 python in mas_filereacts:
                         store.persistent._mas_filereacts_stop_map
                 ):
                 gifts_found.append(c_gift_name)
-                found_map[c_gift_name] = _gift
-                store.persistent._mas_filereacts_reacted_map[c_gift_name] = _gift
+                found_map[c_gift_name] = mas_gift
+                store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         # then sort the list
         gifts_found.sort()
@@ -197,10 +197,10 @@ init -1 python in mas_filereacts:
         # otherwise, we need to do this more carefully
         found_reacts = list()
         for index in range(len(gifts_found)-1, -1, -1):
-            _gift = gifts_found[index]
-            reaction = filereact_map.get(_gift, None)
+            mas_gift = gifts_found[index]
+            reaction = filereact_map.get(mas_gift, None)
 
-            if _gift is not None and reaction is not None:
+            if mas_gift is not None and reaction is not None:
                 # remove from the list and add to found
                 # TODO add to the persistent react map today
                 gifts_found.pop()
@@ -210,11 +210,11 @@ init -1 python in mas_filereacts:
                 # if a special sprite gift, add to the per list matching
                 # sprite objects with data.
                 sprite_data = store.persistent._mas_filereacts_sprite_gifts.get(
-                    _gift,
+                    mas_gift,
                     None
                 )
                 if sprite_data is not None:
-                    store.persistent._mas_filereacts_sprite_reacted[_gift] = (
+                    store.persistent._mas_filereacts_sprite_reacted[mas_gift] = (
                         sprite_data
                     )
 
@@ -222,15 +222,15 @@ init -1 python in mas_filereacts:
         sprite_object_reacts = []
         if len(gifts_found) > 0:
             for index in range(len(gifts_found)-1, -1, -1):
-                _gift = gifts_found[index]
+                mas_gift = gifts_found[index]
 
                 sprite_data = store.persistent._mas_filereacts_sprite_gifts.get(
-                    _gift,
+                    mas_gift,
                     None
                 )
                 if sprite_data is not None:
                     gifts_found.pop()
-                    store.persistent._mas_filereacts_sprite_reacted[_gift] = (
+                    store.persistent._mas_filereacts_sprite_reacted[mas_gift] = (
                         sprite_data
                     )
 
@@ -251,7 +251,7 @@ init -1 python in mas_filereacts:
         # add in the generic gift reactions
         generic_reacts = []
         if len(gifts_found) > 0:
-            for _gift in gifts_found:
+            for mas_gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])
                 # keep stats for today
@@ -341,18 +341,6 @@ init -1 python in mas_filereacts:
 
         # Add stats
         store.persistent._mas_filereacts_historic[today][eventlabel] = store.persistent._mas_filereacts_historic[today].get(eventlabel,0) + 1
-
-        #### additionally if this is a sprite json gift
-        gift_ev = filereact_db.get(eventlabel,  None)
-        if gift_ev is None:
-            return
-
-        # TODO: small adjustment to handle the correct category type later
-        giftname = gift_ev.category
-        if giftname in store.persistent._mas_filereacts_sprite_gifts:
-            store.persistent._mas_sprites_json_gifted_sprites[giftname] = (
-                store.persistent._mas_filereacts_sprite_gifts.pop(giftname)
-            )
 
 
     def _get_full_stats_for_date(date=None):
@@ -812,8 +800,8 @@ label mas_reaction_gift_acs_jmo_hairclip_cherry:
     $ sprite_type, sprite_name, giftname = sprite_data
 
     # get object and call dialogue
-    $ hairpin_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
-    call mas_reaction_gift_hairpin(hairpin_acs)
+    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    call mas_reaction_gift_hairclip(hairclip_acs)
 
     # finish sprite data
     $ mas_finishSpriteObjInfo(sprite_data)
@@ -821,27 +809,27 @@ label mas_reaction_gift_acs_jmo_hairclip_cherry:
         $ store.mas_filereacts.delete_file(giftname)
     return
 
-#Hairpin reaction label
-label mas_reaction_gift_hairpin(hairpin_acs):
+# hairclip
+label mas_reaction_gift_hairclip(hairclip_acs):
     if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
-        m 1hub "Oh!{w=1} Another hairpin!"
+        m 1hub "Oh!{w=1} Another hairclip!"
         m 3hua "Thanks, [player]."
 
     else:
         m 1wuo "Oh!"
-        m 1esd "Is that a hairpin?"
+        m 1esd "Is that a hairclip?"
         m 1hub "That's so cute, thanks [player]!"
 
     # must include this check because we cannot for sure know if the acs
     # exists
-    if hairpin_acs is None:
+    if hairclip_acs is None:
         m 1hua "If you want me to wear it, just ask, okay?"
 
     else:
         m 3eua "Just give me a second to put it on...{nw}"
         show monika 2dkc
         pause 1.0
-        $ monika_chr.wear_acs(hairpin_acs)
+        $ monika_chr.wear_acs(hairclip_acs)
         m 1hua "There we go."
     return
 
