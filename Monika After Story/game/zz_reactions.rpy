@@ -203,7 +203,7 @@ init -1 python in mas_filereacts:
             if mas_gift is not None and reaction is not None:
                 # remove from the list and add to found
                 # TODO add to the persistent react map today
-                gifts_found.pop()
+                gifts_found.pop(index)
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
 
@@ -229,7 +229,7 @@ init -1 python in mas_filereacts:
                     None
                 )
                 if sprite_data is not None:
-                    gifts_found.pop()
+                    gifts_found.pop(index)
                     store.persistent._mas_filereacts_sprite_reacted[mas_gift] = (
                         sprite_data
                     )
