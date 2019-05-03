@@ -361,6 +361,7 @@ init -10 python in mas_selspr:
     MB_DISP = "disp_text"
     MB_DISP_DEF = "def_disp_text"
     MB_CONF = "conf_enable"
+    MB_DISP_FAST = "disp_fast"
 
     ## screen constants
     SB_VIEWPORT_BOUNDS = (1075, 5, 200, 625, 5)
@@ -1291,6 +1292,15 @@ init -10 python in mas_selspr:
             return self._read(MB_DISP_DEF)
 
 
+        def get_disp_fast(self):
+            """
+            Removes and returns the fast flag
+
+            RETURNS: True if we want to append fast, False/None if not
+            """
+            return self._get(MB_DISP_FAST)
+
+
         def get_disp_text(self):
             """
             Removes and returns the display text message
@@ -1318,6 +1328,13 @@ init -10 python in mas_selspr:
                 txt - txt to display
             """
             self._send(MB_DISP_DEF, txt)
+
+
+        def send_disp_fast(self):
+            """
+            Sends default fast flag
+            """
+            self._send(MB_DISP_FAST, True)
 
 
         def send_disp_text(self, txt):
@@ -1679,6 +1696,9 @@ init -1 python:
                 if self.selectable.hover_dlg is not None:
                     self._send_hover_text()
 
+                elif self.selectable.remover:
+                    self.mailbox.send_disp_fast()
+
                 # always reset on a hover
                 self.end_interaction = True
 
@@ -1902,6 +1922,9 @@ init -1 python:
                 if self.selectable.select_dlg is not None:
                     self._send_select_text()
 
+                elif self.selectable.remover:
+                    self.mailbox.send_disp_fast()
+
             else:
                 # not been selected before
                 self.been_selected = True
@@ -1910,6 +1933,9 @@ init -1 python:
 
                 elif self.selectable.select_dlg is not None:
                     self._send_select_text()
+
+                elif self.selectable.remover:
+                    self.mailbox.send_disp_fast()
 
             # always reset interaction if something has been selected
             self.end_interaction = True
@@ -2476,8 +2502,12 @@ label mas_selector_sidebar_select_loop:
     python:
         # display text parsing
         disp_text = mailbox.get_disp_text()
+        disp_fast = mailbox.get_disp_fast()
         if disp_text is None:
             disp_text = mailbox.read_def_disp_text()
+
+        if disp_fast:
+            disp_text += "{fast}"
 
         # select map parsing
         store.mas_selspr._clean_select_map(
