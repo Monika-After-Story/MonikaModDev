@@ -2852,7 +2852,13 @@ label monika_hairclip_select:
     if not _return:
         m 1eka "Oh, alright."
 
-    m 1eka "If you want me to change my hairclip, just ask, okay?"
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type('left-hair-clip'):
+        $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        m 1eka "If you want me to change my hairclip, just ask, okay?"
+    else:
+        $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+        m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return
 

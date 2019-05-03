@@ -856,11 +856,18 @@ label mas_reaction_gift_hairclip(hairclip_acs):
         m 1hua "If you want me to wear it, just ask, okay?"
 
     else:
-        m 3eua "Just give me a second to put it on...{nw}"
-        show monika 2dkc
+        m 3eua "Just give me a second to put it on...{w=1.0}{nw}"
+        show monika 2dsa
         pause 1.0
         $ monika_chr.wear_acs(hairclip_acs)
         m 1hua "There we go."
+
+    # need to make sure we set the selector prompt correctly
+    if monika_chr.get_acs_of_type('left-hair-clip'):
+        $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+    else:
+        $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+
     return
 
 ## End hairclip reactions
