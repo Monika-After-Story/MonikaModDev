@@ -809,6 +809,36 @@ label mas_reaction_gift_acs_jmo_hairclip_cherry:
         $ store.mas_filereacts.delete_file(giftname)
     return
 
+label mas_reaction_gift_acs_jmo_hairclip_heart:
+    # get sprite data
+    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-heart")
+    $ sprite_type, sprite_name, giftname = sprite_data
+
+    # get object and call dialogue
+    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    call mas_reaction_gift_hairclip(hairclip_acs)
+
+    # finish sprite data
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_acs_jmo_hairclip_musicnote:
+    # get sprite data
+    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-musicnote")
+    $ sprite_type, sprite_name, giftname = sprite_data
+
+    # get object and call dialogue
+    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+    call mas_reaction_gift_hairclip(hairclip_acs)
+
+    # finish sprite data
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
 # hairclip
 label mas_reaction_gift_hairclip(hairclip_acs):
     if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
