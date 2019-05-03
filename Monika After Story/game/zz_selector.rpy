@@ -2290,14 +2290,14 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                     spacing 10
                     null height 1
 
-                    # add the remover 
-                    if remover is not None:
-                        add remover:
-                            xalign 0.5
-
                     for selectable in items:
                         add selectable:
 #                            xoffset 5
+                            xalign 0.5
+
+                    # add the remover
+                    if remover is not None:
+                        add remover:
                             xalign 0.5
 
                     null height 1
