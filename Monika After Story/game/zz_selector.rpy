@@ -95,6 +95,10 @@ init -20 python:
             self.select_dlg = select_dlg
             self.selected = False
 
+            # by default
+            # NOTE: only ACS can override this
+            self.remover = False
+
 
         def _check_dlg(self, dlg):
             if dlg is not None and not renpy.has_label(dlg):
