@@ -617,6 +617,31 @@ init -5 python in mas_sprites:
         return PREFIX_FACE
 
 
+    def create_remover(acs_type, group):
+        """
+        Creates a remover ACS
+
+        IN:
+            acs_type - acs type for the remover. This is also used in mux_type
+            group - group of selectables this ACS remover should be linked to
+                This is used in the naming of the ACS.
+
+        RETURNS: remover ACS object
+        """
+        remover_acs = store.MASAccessory(
+            group + "-remover",
+            "ribbon_blank",
+            store.MASPoseMap(
+                default="0",
+                use_reg_for_l=True
+            ),
+            stay_on_start=False,
+            acs_type=acs_type,
+            mux_type=[acs_type]
+        )
+        init_acs(remover_acs)
+        return remover_acs
+
     def init_acs(mas_acs):
         """
         Initlializes the given MAS accessory into a dictionary map setting
@@ -663,6 +688,17 @@ init -5 python in mas_sprites:
 
         # otherwise, unique name
         CLOTH_MAP[mas_cloth.name] = mas_cloth
+
+
+    def rm_acs(acs):
+        """
+        Deletes an ACS by removing it from the map
+
+        IN:
+            acs - ACS to remove
+        """
+        if acs.name in ACS_MAP:
+            ACS_MAP.pop(acs.name)
 
 
     def night_mode(isnight):
