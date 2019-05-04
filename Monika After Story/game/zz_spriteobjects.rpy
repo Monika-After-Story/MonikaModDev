@@ -615,20 +615,20 @@ init -1 python:
     ## bun
     # Hair tied into a bun, using the ribbon
     # thanks Ryuse/Iron707/Taross
-    mas_hair_bun = MASHair(
-        "bun",
-        "bun",
-        MASPoseMap(
-            default=True,
-            p5=False
-        ),
-        entry_pp=store.mas_sprites._hair_bun_entry,
-        ex_props={
-            "ribbon": True
-        }
+#    mas_hair_bun = MASHair(
+#        "bun",
+#        "bun",
+#        MASPoseMap(
+#            default=True,
+#            p5=False
+#        ),
+#        entry_pp=store.mas_sprites._hair_bun_entry,
+#        ex_props={
+#            "ribbon": True
+#        }
 #        split=False
-    )
-    store.mas_sprites.init_hair(mas_hair_bun)
+#    )
+    #store.mas_sprites.init_hair(mas_hair_bun)
 
     ### CUSTOM
     ## custom
