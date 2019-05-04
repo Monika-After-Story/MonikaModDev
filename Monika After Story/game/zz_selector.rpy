@@ -2497,6 +2497,9 @@ label mas_selector_sidebar_select(items, select_type, preview_selections=True, o
         # and disable it
         _preferences.afm_enable = False
 
+        # setup prev line
+        prev_line = ""
+
     show screen mas_selector_sidebar(disp_items, mailbox, "mas_selector_sidebar_select_confirm", "mas_selector_sidebar_select_cancel", remover=remover_disp_item)
 
 label mas_selector_sidebar_select_loop:
@@ -2504,9 +2507,6 @@ label mas_selector_sidebar_select_loop:
         # display text parsing
         disp_text = mailbox.get_disp_text()
         disp_fast = mailbox.get_disp_fast()
-
-        #Using this to clear relevant entries from history
-        prev_line = disp_text
 
         if disp_text is None:
             disp_text = mailbox.read_def_disp_text()
@@ -2541,6 +2541,8 @@ label mas_selector_sidebar_select_loop:
         #Clear repeated lines
         if prev_line != disp_text:
             _history_list.pop()
+            #Using this to clear relevant entries from history
+            prev_line = disp_text
 
     jump mas_selector_sidebar_select_loop
 
