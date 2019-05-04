@@ -1586,7 +1586,7 @@ label monikaroom_greeting_opendoor_seen_partone:
     $ mas_disable_quit()
 
 #    scene bg bedroom
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_masks=True, scene_change=True)
+    call spaceroom(start_bg="bedroom",hide_monika=True, scene_change=True, dissolve_all=True)
     pause 0.2
     show monika 1esc at l21 zorder MAS_MONIKA_Z
     pause 1.0
@@ -1663,7 +1663,7 @@ label monikaroom_greeting_opendoor:
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
 
-    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_masks=True) from _call_spaceroom_5
+    call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder MAS_MONIKA_Z
 
@@ -2427,7 +2427,7 @@ label greeting_hairdown:
     # have monika's hair down
     $ monika_chr.change_hair(mas_hair_down, by_user=False)
 
-    call spaceroom(dissolve_masks=True, scene_change=True)
+    call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua')
 
     m 1eua "Hi there, [player]!"
     m 4hua "Notice anything different today?"
