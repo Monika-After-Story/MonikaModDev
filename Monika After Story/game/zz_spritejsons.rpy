@@ -653,7 +653,6 @@ init 189 python in mas_sprites_json:
         """
         Initializes the giftname with the sprite info
         does not check for valid giftname.
-        NOTE: if this is 
 
         IN:
             giftname - giftname we want to use
