@@ -40,12 +40,6 @@
 #       - providing this will enable the object to be selected in some
 #            activities
 #       - see Selectable JSON below for more info
-#   "giftname": "filename of the gift that unlocks this item",
-#       - optional
-#       - NOTE: if not provided, and this item is not unlocked or used 
-#           under other means, this item will NOT be selectable or usable.
-#       - do not include extension
-#       - default None
 #   "dryrun": <anything>
 #       - optional
 #       - add this to dry run adding this sprite object
@@ -87,6 +81,27 @@
 #       - boolean
 #       - see PoseMap JSONs below for more info
 #       - default False
+# }
+#
+# Shared props for ACS and CLOTHES:
+#
+# {
+#   "giftname": "filename of the gift that unlocks this item",
+#       - optional
+#       - NOTE: if not provided, and this item is not unlocked or used 
+#           under other means, this item will NOT be selectable or usable.
+#       - do not include extension
+#       - default None
+# }
+#
+# HAIR only props:
+# {
+#   "unlock": True will unlock the hair sprite for selecting. False will not.
+#       - optional
+#       - if False, then custom code will be required to unlock the sprite.
+#       - if True, the sprite will unlock automatically
+#       - Default True
+# }
 #
 # CLOTHES only props:
 #
@@ -434,6 +449,9 @@ init -21 python in mas_sprites_json:
 #        "ex_props": None,
 #        "select_info": None,
 
+    }
+
+    OPT_AC_SHARED_PARAM_NAMES = {
         "giftname": (str, _verify_str),
     }
 
@@ -445,6 +463,7 @@ init -21 python in mas_sprites_json:
         "priority": (int, _verify_int),
         "acs_type": (str, _verify_str),
     }
+    OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
     OPT_HC_SHARED_PARAM_NAMES = {
         "fallback": (bool, _verify_bool),
@@ -453,14 +472,14 @@ init -21 python in mas_sprites_json:
     OPT_HAIR_PARAM_NAMES = {
         # object-based verification is different
 #        "split": None,     
+        "unlock": (bool, _verify_bool),
     }
-    OPT_HAIR_PARAM_NAMES.update(OPT_HC_SHARED_PARAM_NAMES)
 
     OPT_CLOTH_PARAM_NAMES = {
         # object-based verificaiton is different
 #        "hair_map": None,
     }
-    OPT_CLOTH_PARAM_NAMES.update(OPT_HC_SHARED_PARAM_NAMES)
+    OPT_CLOTH_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
     ## special param name groups
     OBJ_BASED_PARAM_NAMES = (
@@ -943,6 +962,7 @@ init 189 python in mas_sprites_json:
             - acs_type
             - mux_type
             - pose_map
+            - giftname
 
         IN:
             jobj - json object to pasrse
@@ -1073,6 +1093,9 @@ init 189 python in mas_sprites_json:
     def _validate_hair(jobj, save_obj, obj_based, errs, warns, infos):
         """
         Validates HAIR related properties
+
+        Props validated:
+            - unlock
         
         IN:
             jobj - json object to parse
@@ -1085,8 +1108,19 @@ init 189 python in mas_sprites_json:
             warns - list ot save warning messages to
             infos - list to save info messages to
         """
-        # NOTE: currently this does not do anything.
-        return
+        _validate_params(
+            jobj,
+            save_obj,
+            OPT_HAIR_PARAM_NAMES,
+            False,
+            errs,
+            MSG_ERR_ID
+        )
+        if len(errs) > 0:
+            return
+
+        writelogs(warns)
+        # otherwise, should be good I think
 
 #        # validate split
 #        if "split" not in obj_based:
@@ -1130,6 +1164,7 @@ init 189 python in mas_sprites_json:
 
         Props validated:
             - hair_map
+            - giftname
 
         IN:
             jobj - json object to parse
@@ -1144,6 +1179,18 @@ init 189 python in mas_sprites_json:
             warns - list to save warning messages to
             infos - list to save info messages to
         """
+        # giftname
+        _validate_params(
+            jobj,
+            save_obj,
+            OPT_CLOTH_PARAM_NAMES,
+            False,
+            errs,
+            MSG_ERR_ID
+        )
+        if len(errs) > 0:
+            return
+
         # validate hair_map
         if "hair_map" not in obj_based:
             # no hair map found, not a problem
@@ -1367,7 +1414,8 @@ init 189 python in mas_sprites_json:
         obj_based_params = {}
         sp_obj_params = {}
         sel_params = {}
-        is_hair_with_giftname = False
+        unlock_hair = True
+        giftname = None
 
         writelog(MSG_INFO.format(READING_FILE.format(filepath)))
 
@@ -1545,23 +1593,21 @@ init 189 python in mas_sprites_json:
         for extra_prop in jobj:
             writelog(MSG_WARN_ID.format(EXTRA_PROP.format(extra_prop)))
 
-        # no gift warnings
-        if "giftname" in sp_obj_params:
+        # no gift/unlock warnings
+        if "unlock" in sp_obj_params:
+            unlock_hair = sp_obj_params.pop("unlock")
+            giftname = None
+
+        elif "giftname" in sp_obj_params:
             giftname = sp_obj_params.pop("giftname")
 
-            # hair is special as it doesnt make sense to "unlock" hair
-            if sp_type == SP_HAIR:
-                is_hair_with_giftname = True
-                giftname = None
+            # validate gift stuff
+            _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
+            if len(msgs_err) > 0:
+                writelogs(msgs_err)
+                return
 
-            else:
-                # validate gift stuff
-                _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
-                if len(msgs_err) > 0:
-                    writelogs(msgs_err)
-                    return
-
-        else:
+        elif sp_type != SP_HAIR:
             writelog(MSG_WARN_ID.format(NO_GIFT))
             giftname = None
 
@@ -1619,7 +1665,7 @@ init 189 python in mas_sprites_json:
 
                 elif sp_type == SP_HAIR:
                     sml.init_selectable_hair(**sel_params)
-                    if is_hair_with_giftname:
+                    if unlock_hair:
                         sml.unlock_hair(sp_obj)
 
                 else:
