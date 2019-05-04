@@ -652,7 +652,8 @@ init 189 python in mas_sprites_json:
     def _init_giftname(giftname, sp_type, sp_name):
         """
         Initializes the giftname with the sprite info
-        does not check for valid giftname
+        does not check for valid giftname.
+        NOTE: if this is 
 
         IN:
             giftname - giftname we want to use
@@ -1367,6 +1368,7 @@ init 189 python in mas_sprites_json:
         obj_based_params = {}
         sp_obj_params = {}
         sel_params = {}
+        is_hair_with_giftname = False
 
         writelog(MSG_INFO.format(READING_FILE.format(filepath)))
 
@@ -1548,11 +1550,17 @@ init 189 python in mas_sprites_json:
         if "giftname" in sp_obj_params:
             giftname = sp_obj_params.pop("giftname")
 
-            # validate gift stuff
-            _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
-            if len(msgs_err) > 0:
-                writelogs(msgs_err)
-                return
+            # hair is special as it doesnt make sense to "unlock" hair
+            if sp_type == SP_HAIR:
+                is_hair_with_giftname = True
+                giftname = None
+
+            else:
+                # validate gift stuff
+                _check_giftname(giftname, sp_type, sp_name, msgs_err, MSG_ERR_ID)
+                if len(msgs_err) > 0:
+                    writelogs(msgs_err)
+                    return
 
         else:
             writelog(MSG_WARN_ID.format(NO_GIFT))
@@ -1612,6 +1620,8 @@ init 189 python in mas_sprites_json:
 
                 elif sp_type == SP_HAIR:
                     sml.init_selectable_hair(**sel_params)
+                    if is_hair_with_giftname:
+                        sml.unlock_hair(sp_obj)
 
                 else:
                     # clothing
