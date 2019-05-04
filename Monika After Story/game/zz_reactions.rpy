@@ -846,7 +846,7 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
     else:
         $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
-    $ mas_finishSpriteObjInfo(sprite_data, unlock_label=not is_wearing_baked_outfit)
+    $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
