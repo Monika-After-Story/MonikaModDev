@@ -1247,6 +1247,7 @@ init -1 python:
             "Back to the classics!"
         ]
     )
+    store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
     ### GRAY RIBBON
     ## ribbon_gray

@@ -422,14 +422,17 @@ init -10 python in mas_selspr:
         appropriate group.
         Unlocks selector topics if they are unlocked selectables.
         """
+        #ACS
         for group in GRP_TOPIC_MAP:
             topic_label, min_items = GRP_TOPIC_MAP[group]
-            if len(filter_acs(True, group=group)) > min_items:
+            if len(filter_acs(True, group=group)) >= min_items:
                 store.mas_unlockEVL(topic_label, "EVE")
 
             else:
                 store.mas_lockEVL(topic_label, "EVE")
 
+        #HAIR
+        store.mas_sprites._hair_unlock_select_if_needed()
 
     def _has_remover(group):
         """
