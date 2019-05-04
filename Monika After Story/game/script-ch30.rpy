@@ -1795,6 +1795,11 @@ label ch30_reset:
     python:
         store.mas_selspr._validate_group_topics()
 
+    ## other things that should happen after most stuff but before dockstat
+    ##  checks
+    python:
+        store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
