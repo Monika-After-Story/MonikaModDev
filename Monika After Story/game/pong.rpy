@@ -754,7 +754,7 @@ label mas_pong_dlg_winner:
         $ pong_monika_last_response_id = PONG_MONIKA_RESPONSE_SECOND_WIN_AFTER_PLAYER_WON_MIN_THREE_TIMES
 
     #Monika wins a long game
-    elif ball_paddle_bounces > 9 and ball_paddle_bounces > pong_difficulty_before * 1/2:
+    elif ball_paddle_bounces > 9 and ball_paddle_bounces > pong_difficulty_before * 0.5:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_WIN_LONG_GAME:
             m 3eub "Playing against you is really tough, [player]."
             m 1hub "Keep it up and you'll beat me, I'm sure of it!"
@@ -981,7 +981,7 @@ label mas_pong_dlg_loser:
         $ monika_asks_to_go_easy = True
 
     #Monika loses a long game
-    elif ball_paddle_bounces > 10 and ball_paddle_bounces > pong_difficulty_before * 1/2:
+    elif ball_paddle_bounces > 10 and ball_paddle_bounces > pong_difficulty_before * 0.5:
         if pong_monika_last_response_id == PONG_MONIKA_RESPONSE_LOSE_LONG_GAME:
             m 2wuo "Incredible, [player]!"
             m 4hksdlb "I can't keep up!"
