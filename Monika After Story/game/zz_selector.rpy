@@ -431,8 +431,6 @@ init -10 python in mas_selspr:
             else:
                 store.mas_lockEVL(topic_label, "EVE")
 
-        #HAIR
-        store.mas_sprites._hair_unlock_select_if_needed()
 
     def _has_remover(group):
         """
@@ -2506,6 +2504,10 @@ label mas_selector_sidebar_select_loop:
         # display text parsing
         disp_text = mailbox.get_disp_text()
         disp_fast = mailbox.get_disp_fast()
+
+        #Using this to clear relevant entries from history
+        prev_line = disp_text
+
         if disp_text is None:
             disp_text = mailbox.read_def_disp_text()
 
@@ -2535,6 +2537,10 @@ label mas_selector_sidebar_select_loop:
 
         # force this to execute in this python block (no prediction)
         renpy.say(m, disp_text)
+
+        #Clear repeated lines
+        if prev_line != disp_text:
+            _history_list.pop()
 
     jump mas_selector_sidebar_select_loop
 
