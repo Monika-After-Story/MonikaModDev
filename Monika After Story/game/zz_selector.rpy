@@ -1371,7 +1371,7 @@ init -1 python:
         return False
 
 
-    def mas_filterUnlockGroup(sp_type, group, unlock_min=1):
+    def mas_filterUnlockGroup(sp_type, group, unlock_min=None):
         """
         Unlock selector topic for the given group if appropriate number of
         selector objects are unlocked.
@@ -1382,13 +1382,13 @@ init -1 python:
             unlock_min - minimum number that has to be unlocked for us to 
                 unock the selector topic.
                 IF None, then we use the amount provided by the GRP_TOPIC_MAP
-                (Default: 1)
+                (Default: None)
         """
         # type sanity check
         if sp_type not in store.mas_selspr.SELECT_CONSTS:
             return
 
-        # check if we even have a label to unlock 
+        # check if we even have a label to unlock
         grp_topic = store.mas_selspr.GRP_TOPIC_MAP.get(group, None)
         if grp_topic is None:
             return
