@@ -154,11 +154,14 @@ define config.has_autosave = False
 define config.autosave_on_quit = False
 define config.autosave_slots = 0
 define config.layers = [ 'master', 'transient', 'screens', 'overlay', 'front' ]
-define config.image_cache_size = 64
-define config.predict_statements = 50
+define config.image_cache_size = 128
+define config.predict_statements = 10
 define config.rollback_enabled = config.developer
 define config.menu_clear_layers = ["front"]
 define config.gl_test_image = "white"
+define config.label_overrides = { 
+    "_choose_renderer": "mas_choose_renderer_override"
+}
 #define config.gl_resize = False
 
 init python:

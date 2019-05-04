@@ -499,3 +499,7 @@ label mas_gmenu_start:
         jump _quit
 
     return
+
+label mas_choose_renderer_override:
+    # if we do this somehow, just quit immediately.
+    jump _quit

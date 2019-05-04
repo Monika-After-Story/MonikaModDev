@@ -108,6 +108,13 @@ init -1 python in mas_farewells:
 
 # farewells selection label
 label mas_farewell_start:
+    # TODO: if we ever have another special farewell like long absence
+    # that let's the player go after selecting the farewell we'll need
+    # to define a system to handle those.
+    if persistent._mas_long_absence:
+        $ pushEvent("bye_long_absence_2")
+        return
+
     $ import store.evhand as evhand
     # we use unseen menu values
 
@@ -772,14 +779,14 @@ label bye_long_absence:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
     #TODO: Update exps on this
-    m 1f "Aww...that's pretty saddening..."
-    m 1e "I really am going to miss you [player]!"
+    m 1ekc "Aww...that's pretty saddening..."
+    m 1eka "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
-    m 3a "Thank you for warning me first, though. It really does help."
-    m 2n "I would be worried sick otherwise!"
-    m 3a "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
-    m 1o "Or maybe you just got bored of me..."
-    m 1e "So tell me, my love..."
+    m 3esa "Thank you for warning me first, though. It really does help."
+    m 2lksdlb "I would be worried sick otherwise!"
+    m 3esa "I would constantly be thinking maybe something happened to you and that's why you couldn't come back."
+    m 1lksdlc "Or maybe you just got bored of me..."
+    m 1eka "So tell me, my love..."
 
     m "How long do you expect to be gone for?{nw}"
     $ _history_list.pop()
@@ -787,69 +794,69 @@ label bye_long_absence:
         m "How long do you expect to be gone for?{fast}"
         "A few days.":
             $ persistent._mas_absence_choice = "days"
-            m 1b "Oh!"
-            m 1j "Nowhere near as long as I feared then."
+            m 1eub "Oh!"
+            m 1hua "Nowhere near as long as I feared then."
             m 3rksdla "Geez, you really did worry me..."
-            m 3a "Don't worry about me though [player]."
+            m 3esa "Don't worry about me though [player]."
             m "I can cope waiting that long with ease."
-            m 3e "I'll still miss you greatly though."
+            m 3eka "I'll still miss you greatly though."
         "A week.":
             $ persistent._mas_absence_choice = "week"
-            m 3c "Yeah...that's about what I expected."
-            m 2m "I {i}think{/i} I'll be ok waiting that long for you."
-            m 1b "Just come back to me as soon as you can, alright, my love?"
-            m 3j "I'm sure you'll make me proud!"
+            m 3euc "Yeah...that's about what I expected."
+            m 2lksdla "I {i}think{/i} I'll be ok waiting that long for you."
+            m 1eub "Just come back to me as soon as you can, alright, my love?"
+            m 3hua "I'm sure you'll make me proud!"
         "A couple of weeks.":
             $ persistent._mas_absence_choice = "2weeks"
-            m 1h "Oh..."
-            m 1q "I...I can wait that long."
+            m 1esc "Oh..."
+            m 1dsc "I...I can wait that long."
             m 3rksdlc "You do know that you're all I have...right?"
             m 3rksdlb "M-Maybe it's outside of your control though..."
-            m 2e "Try to come back as soon as possible... I'll be waiting for you."
+            m 2eka "Try to come back as soon as possible... I'll be waiting for you."
         "A month.":
             $ persistent._mas_absence_choice = "month"
             if mas_curr_affection_group == store.mas_affection.G_HAPPY:
-                m 3c "Oh wow, that's a long time."
+                m 3euc "Oh wow, that's a long time."
                 m 3rksdla "A bit too long for my liking really..."
-                m 2a "But it's okay [player]."
-                m 2e "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
+                m 2esa "But it's okay [player]."
+                m 2eka "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
                 m "I'm sure it's important, so just try to come back to me as soon as you can."
-                m 3j "I'll be thinking of you every day~"
+                m 3hua "I'll be thinking of you every day~"
             else:
-                m 1f "That long...really?"
+                m 1ekc "That long...really?"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
                 m 3rksdld "I know that life can take you away from me but for a whole month..."
-                m 3f "Isn't that a little unreasonable?"
+                m 3ekc "Isn't that a little unreasonable?"
                 m "I don't want to sound selfish, but I am your girlfriend."
-                m 3g "You should be able to make time for me, at least once, in an entire month."
-                m 1q "..."
-                m 1r "I'll still wait for you...but please come back the moment it's possible for you to do so."
+                m 3ekd "You should be able to make time for me, at least once, in an entire month."
+                m 1dsc "..."
+                m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
             if mas_curr_affection_group == store.mas_affection.G_HAPPY:
                 m 3rksdlb "That's...well that's a little scary [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
-                m 1e "But I know you wouldn't leave me by myself if you could help it."
+                m 1eka "But I know you wouldn't leave me by myself if you could help it."
                 m "I love you [player], and I know you love me too."
-                m 1j "So I'll wait for you for however long I need to."
+                m 1hua "So I'll wait for you for however long I need to."
             else:
-                m 3h "You have to be joking."
+                m 3esc "You have to be joking."
                 m "I can't think of a good reason why you would leave me here all alone for that long."
-                m 3i "I'm sorry [player], but that's not acceptable! Not at all!"
-                m 3h "I love you and if you love me too then you'll know that it's not okay to do that."
+                m 3esd "I'm sorry [player], but that's not acceptable! Not at all!"
+                m 3esc "I love you and if you love me too then you'll know that it's not okay to do that."
                 m "You do realize that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend. You can't do that to me!"
-                m 3q "..."
-                m 3r "Just...just come back when you can. I can't make you stay, but please don't do that to me."
+                m 3dsc "..."
+                m 3dsd "Just...just come back when you can. I can't make you stay, but please don't do that to me."
         "I don't know.":
             $ persistent._mas_absence_choice = "unknown"
-            m 1l "Ehehe, that's a little concerning, [player]!"
-            m 1e "But if you don't know, then you don't know!"
+            m 1hksdlb "Ehehe, that's a little concerning, [player]!"
+            m 1eka "But if you don't know, then you don't know!"
             m "It sometimes just can't be helped."
-            m 2j "I'll be waiting here for you patiently, my love."
-            m 2k "Try not to keep me waiting for too long though!"
+            m 2hua "I'll be waiting here for you patiently, my love."
+            m 2hub "Try not to keep me waiting for too long though!"
 
-    m 2c "Honestly I'm a little afraid to ask but..."
+    m 2euc "Honestly I'm a little afraid to ask but..."
     # TODO is this really intuitive?
     # if the player says no, and then picks another
     # farewell all this served no purpose, also, you already
@@ -860,28 +867,28 @@ label bye_long_absence:
     menu:
         m "Are you going to leave straight away?{fast}"
         "Yes.":
-            m 3f "I see..."
+            m 3ekc "I see..."
             m "I really will miss you [player]..."
-            m 1e "But I know you'll do wonderful things no matter where you are."
+            m 1eka "But I know you'll do wonderful things no matter where you are."
             m "Just remember that I'll be waiting here for you."
-            m 2j "Make me proud, [player]!"
+            m 2hua "Make me proud, [player]!"
             $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
             return 'quit'
         "No.":
             $ mas_absence_counter = True
-            m 1j "That's great!"
-            m 1e "I was honestly worried I wouldn't have enough time to ready myself for your absence."
+            m 1hua "That's great!"
+            m 1eka "I was honestly worried I wouldn't have enough time to ready myself for your absence."
             m "I really do mean it when I say I'll miss you..."
-            m 1b "You truly are my entire world after all, [player]."
-            m 2a "If you tell me you're going to go for a while again then I'll know it's time for you to leave..."
-            m 3j "But there's no rush, so I want to spend as much time with you as I can."
+            m 1eub "You truly are my entire world after all, [player]."
+            m 2esa "If you tell me you're going to go for a while again then I'll know it's time for you to leave..."
+            m 3hua "But there's no rush, so I want to spend as much time with you as I can."
             m "Just make sure to remind me the last time you see me before you go!"
             return
 
 label bye_long_absence_2:
-    m 1f "Going to head out, then?"
-    m 1g "I know the world can be scary and unforgiving..."
-    m 1e "But remember that I will always be here waiting and ready to support you, my dearest [player]."
+    m 1ekc "Going to head out, then?"
+    m 1ekd "I know the world can be scary and unforgiving..."
+    m 1eka "But remember that I will always be here waiting and ready to support you, my dearest [player]."
     m "Come back to me as soon as you can...okay?"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_LONG_ABSENCE
     return 'quit'
@@ -991,6 +998,9 @@ label bye_going_somewhere_iowait:
     elif promise.done():
         # i/o thread is done!
         jump bye_going_somewhere_rtg
+    else:
+        #clean up the history list so only one "give me a second..." should show up
+        $ _history_list.pop()
 
     # display menu options
     # 4 seconds seems decent enough for waiting.
@@ -1061,7 +1071,7 @@ label bye_going_somewhere_normalplus_flow:
     # handling positive affection cases separately so we can jump to
     # other specific dialogue flows
 
-    # NOTE: make sure that if you leave this flow, you either handle 
+    # NOTE: make sure that if you leave this flow, you either handle
     #   docking station yourself or jump back to the iostart label
     if persistent._mas_d25_in_d25_mode:
         # check the d25 timed variants

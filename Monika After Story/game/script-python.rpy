@@ -137,7 +137,7 @@ label monika_ptod_tip000:
     m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
     m 1esa "Let's start with what Python even is."
 
-    $ hideEventLabel("monika_ptod_tip000", depool=True)
+    $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
     $ import datetime
