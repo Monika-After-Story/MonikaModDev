@@ -1788,6 +1788,12 @@ label ch30_reset:
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
 
+    # set any prompt variants for acs that can be removed here
+    python:
+        if monika_chr.get_acs_of_type('left-hair-clip'):
+            mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        else:
+            mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
     ## custom sprite objects 
     python:

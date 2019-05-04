@@ -2672,7 +2672,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_clothes_select",
-            category=["monika"],
+            category=["appearance"],
             prompt="Can you change your clothes?",
             pool=True,
             unlocked=False,
@@ -2776,7 +2776,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_hair_select",
-            category=["monika"],
+            category=["appearance"],
             prompt="Can you change your hairstyle?",
             pool=True,
             unlocked=False,
@@ -2820,7 +2820,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_ribbon_select",
-            category=["monika"],
+            category=["appearance"],
             prompt="Can you change your ribbon?",
             pool=True,
             unlocked=False,
@@ -2857,7 +2857,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="monika_hairclip_select",
-            category=["monika"],
+            category=["appearance"],
             prompt="Can you change your hairclip?",
             pool=True,
             unlocked=False,
