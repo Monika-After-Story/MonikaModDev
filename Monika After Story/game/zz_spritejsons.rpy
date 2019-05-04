@@ -743,15 +743,15 @@ init 189 python in mas_sprites_json:
             save_obj[progname + "_pp"] = e_pp
 
 
-    def _test_loadables(sp_obj, warns):
+    def _test_loadables(sp_obj, errs):
         """
-        Tests loadable images and warns if an image is not loadable.
+        Tests loadable images and errs if an image is not loadable.
 
         IN:
             sp_obj - sprite object to test
 
         OUT:
-            warns - list to save warning message to
+            errs - list to save error messages to
         """
         # get selectable
         sel_obj = sml.get_sel(sp_obj)
@@ -762,7 +762,7 @@ init 189 python in mas_sprites_json:
         # verfiy each string
         for imgpath in to_verify:
             if not renpy.loadable(imgpath):
-                warns.append(MSG_WARN_ID.format(IL_NOTLOAD.format(imgpath)))
+                errs.append(MSG_ERR_ID.format(IL_NOTLOAD.format(imgpath)))
 
 
     def _validate_type(json_obj):
@@ -1417,7 +1417,7 @@ init 189 python in mas_sprites_json:
         unlock_hair = True
         giftname = None
 
-        writelog(MSG_INFO.format(READING_FILE.format(filepath)))
+        writelog("\n" + MSG_INFO.format(READING_FILE.format(filepath)))
 
         # can we read file
         with open(filepath, "r") as jsonfile:
@@ -1654,6 +1654,13 @@ init 189 python in mas_sprites_json:
             writelog(MSG_ERR.format(e.message))
             return
 
+        # check image loadables
+        _test_loadables(sp_obj, msgs_err)
+        if len(msgs_err) > 0:
+            writelogs(msgs_err)
+            _reset_sp_obj(sp_obj)
+            return
+
         # otherwise, we were successful in initializing this sprite
         # try initializing the selectable if we parsed it
         if len(sel_params) > 0:
@@ -1683,11 +1690,6 @@ init 189 python in mas_sprites_json:
         # giftname must be valid by here
         if giftname is not None and not dry_run:
             _init_giftname(giftname, sp_type, sp_name)
-
-        # build warnings for image loading
-        msgs_warn = []
-        _test_loadables(sp_obj, msgs_warn)
-        writelogs(msgs_warn)
 
         # alright! we have built the sprite object!
         if dry_run:
@@ -1732,7 +1734,7 @@ init 189 python in mas_sprites_json:
         """
         Verifies all hair items that we encountered
         """
-        writelog(MSG_INFO.format(HM_VER_ALL))
+        writelog("\n" + MSG_INFO.format(HM_VER_ALL))
 
         # start with keys
         for hkey in hm_key_delayed_veri:
@@ -1798,7 +1800,7 @@ init 189 python in mas_sprites_json:
         Processes giftnames that were loaded, adding/removing them from
         certain dicts.
         """
-        writelog(MSG_INFO.format(GR_LOADING))
+        writelog("\n" + MSG_INFO.format(GR_LOADING))
 
         frs_gifts = store.persistent._mas_filereacts_sprite_gifts
         msj_gifts = store.persistent._mas_sprites_json_gifted_sprites

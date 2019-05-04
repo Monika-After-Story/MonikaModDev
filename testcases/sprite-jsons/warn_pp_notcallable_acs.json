@@ -2,6 +2,9 @@
     "dryrun": true,
     "type": 0,
     "name": "_testing",
-    "img_sit": "test",
-    "pose_map": {}
+    "img_sit": "ribbon_blank",
+    "pose_map": {
+        "default": "0",
+        "use_reg_for_l": true
+    }
 }
