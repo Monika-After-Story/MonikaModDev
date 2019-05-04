@@ -818,7 +818,6 @@ label ch30_main:
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop # move music out here because of context
 
     # set monikas outfit to default
     $ monika_chr.reset_outfit(False)
