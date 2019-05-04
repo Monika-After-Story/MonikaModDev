@@ -2956,7 +2956,7 @@ label monika_nye_year_review:
     elif mas_isMoniAff():
         m 2eka "...and I've really enjoyed our time together."
 
-    elif mas_isMoniNormal(higher=True):
+    else:
         m 2euc "...and the time we spent together has been fun."
 
 
@@ -3517,12 +3517,18 @@ label mas_player_bday_cake:
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
     $ mas_unlockEVL("bye_player_bday", "BYE")
-    window hide
-    show monika 6dsc
-    pause 1.0
+
+    # reset zoom here to make sure the cake is actually on the table
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
+    $ renpy.pause(3.0, hard=True)
     $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-    show monika 6dsa
-    pause 0.5
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(0.5, hard=True)
+
     m 6eua "Let me just light the candles for you..."
     window hide
     show monika 6dsa
@@ -3549,7 +3555,17 @@ label mas_player_bday_cake:
     m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
     m 6eksdla "This is all rather silly, isn't it?"
     m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
+
+    # monika puts away the cake and zoom is reset back to the player's pref
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
     hide mas_bday_cake with dissolve
+    $ renpy.pause(3.0, hard=True)
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(1.0, hard=True)
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+
     pause 0.5
     m 6dkbsu "..."
     m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
@@ -3568,9 +3584,13 @@ label mas_player_bday_cake:
         else:
             m 6ekbfa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
-            m 6ekbsa "Let's enjoy your special day~"
+            if mas_isplayer_bday():
+                m 6ekbsa "Let's enjoy your special day~"
     else:
-        m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+        if mas_isplayer_bday():
+            m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+        else:
+            m 1ekbfa "I love you, [player]!"
     if "mas_player_bday_no_restart" in persistent.event_list:
         $ persistent.event_list.remove("mas_player_bday_no_restart")
     return
@@ -3629,7 +3649,11 @@ label mas_player_bday_no_restart:
     $ store.mas_player_bday_event.show_player_bday_Visuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
-    m 1eka "I really wanted to surprise you today, but it's getting late and I just couldn't wait any longer."
+    if mas_isplayer_bday():
+        m 1eka "I really wanted to surprise you today, but it's getting late and I just couldn't wait any longer."
+    else:
+        # just in case this isn't seen until after midnight
+        m 1hksdlb "I really wanted to surprise you, but I guess I ran out of time since it's not even your birthday anymore, ahaha!"
     m 3eksdlc "Gosh, I just hope you weren't starting to think I forgot your birthday. I'm really sorry if you did..."
     m 1rksdla "I guess I probably shouldn't have waited so long, ehehe."
     m 1hua "Oh! I made you a cake!"
