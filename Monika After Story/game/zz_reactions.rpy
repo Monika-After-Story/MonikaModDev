@@ -795,52 +795,26 @@ label mas_reaction_gift_generic_sprite_json:
 ## Hair clip reactions
 
 label mas_reaction_gift_acs_jmo_hairclip_cherry:
-    # get sprite data
-    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-cherry")
-    $ sprite_type, sprite_name, giftname = sprite_data
-
-    # get object and call dialogue
-    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
-    call mas_reaction_gift_hairclip(hairclip_acs)
-
-    # finish sprite data
-    $ mas_finishSpriteObjInfo(sprite_data)
-    if giftname is not None:
-        $ store.mas_filereacts.delete_file(giftname)
+    call mas_reaction_gift_hairclip("jmo-hairclip-cherry")
     return
 
 label mas_reaction_gift_acs_jmo_hairclip_heart:
-    # get sprite data
-    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-heart")
-    $ sprite_type, sprite_name, giftname = sprite_data
-
-    # get object and call dialogue
-    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
-    call mas_reaction_gift_hairclip(hairclip_acs)
-
-    # finish sprite data
-    $ mas_finishSpriteObjInfo(sprite_data)
-    if giftname is not None:
-        $ store.mas_filereacts.delete_file(giftname)
+    call mas_reaction_gift_hairclip("jmo-hairclip-heart")
     return
 
 label mas_reaction_gift_acs_jmo_hairclip_musicnote:
-    # get sprite data
-    $ sprite_data = mas_getSpriteObjInfo("jmo-hairclip-musicnote")
-    $ sprite_type, sprite_name, giftname = sprite_data
-
-    # get object and call dialogue
-    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
-    call mas_reaction_gift_hairclip(hairclip_acs)
-
-    # finish sprite data
-    $ mas_finishSpriteObjInfo(sprite_data)
-    if giftname is not None:
-        $ store.mas_filereacts.delete_file(giftname)
+    call mas_reaction_gift_hairclip("jmo-hairclip-musicnote")
     return
 
 # hairclip
-label mas_reaction_gift_hairclip(hairclip_acs):
+label mas_reaction_gift_hairclip(hairclip_giftname):
+    # get sprtie dat
+    $ sprite_data = mas_getSpriteObjInfo(hairclip_giftname)
+    $ sprite_type, sprite_name, giftname = sprite_data
+
+    # get the acs
+    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+
     if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
         m 1hub "Oh!{w=1} Another hairclip!"
         m 3hua "Thanks, [player]."
@@ -852,7 +826,8 @@ label mas_reaction_gift_hairclip(hairclip_acs):
 
     # must include this check because we cannot for sure know if the acs
     # exists
-    if hairclip_acs is None:
+    # also need to not wear it if wearing clothes that are incompatible
+    if hairclip_acs is None or monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
         m 1hua "If you want me to wear it, just ask, okay?"
 
     else:
@@ -866,6 +841,9 @@ label mas_reaction_gift_hairclip(hairclip_acs):
     else:
         $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
     return
 
 ## End hairclip reactions

@@ -719,7 +719,8 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_marisa_entry,
         exit_pp=store.mas_sprites._clothes_marisa_exit,
         ex_props={
-            "forced hair": True
+            "forced hair": True,
+            "baked outfit": True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_marisa)
@@ -758,7 +759,8 @@ init -1 python:
         entry_pp=store.mas_sprites._clothes_rin_entry,
         exit_pp=store.mas_sprites._clothes_rin_exit,
         ex_props={
-            "forced hair": True
+            "forced hair": True,
+            "baked outfit": True,
         }
     )
     store.mas_sprites.init_clothes(mas_clothes_rin)

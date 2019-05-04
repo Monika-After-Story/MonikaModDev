@@ -2618,6 +2618,18 @@ init -2 python:
             return False
 
 
+        def is_wearing_clothes_with_exprop(self, exprop):
+            """
+            Checks if we are currently wearing clothes with the given exprop
+
+            IN:
+                exprop - extended property to check
+
+            RETURNS: True if wearing clothes with the exprop, False if not
+            """
+            return self.clothes.hasprop(exprop)
+
+
         def load(self, startup=False):
             """
             Loads hair/clothes/accessories from persistent.
