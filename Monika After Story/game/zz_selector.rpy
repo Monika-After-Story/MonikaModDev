@@ -1206,13 +1206,15 @@ init -10 python in mas_selspr:
         store.mas_unlockEVL(selector_label[0], "EVE")
 
 
-    def json_sprite_unlock(sp_obj):
+    def json_sprite_unlock(sp_obj, unlock_label=True):
         """RUNTIME ONLY
         Unlocks selectable for the given sprite, as ewll as the selector
         topic for that sprite.
 
         IN:
             sp_obj - sprite object to unlock selectbale+
+            unlock_label - True will unlock the selector lable, False will not
+                (Default: True)
         """
         sp_type = sp_obj.gettype()
 
@@ -1220,8 +1222,9 @@ init -10 python in mas_selspr:
         _unlock_item(sp_obj, sp_type)
 
         # retrieve selectable and unlock the group's selector
-        sel_obj = _get_sel(sp_obj, sp_type)
-        unlock_selector(sel_obj.group)
+        if unlock_label:
+            sel_obj = _get_sel(sp_obj, sp_type)
+            unlock_selector(sel_obj.group)
 
 
     # extension of mailbox

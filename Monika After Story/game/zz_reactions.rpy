@@ -575,12 +575,14 @@ init python:
         return (None, None, None)
 
 
-    def mas_finishSpriteObjInfo(sprite_data):
+    def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
         """
         Finishes the sprite object with the given data.
 
         IN:
             sprite_data - sprite data tuple from getSpriteObjInfo
+            unlock_sel - True will unlock the selector topic, False will not
+                (Default: True)
         """
         sp_type, sp_name, giftname = sprite_data
 
@@ -604,10 +606,10 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(store.mas_sprites.get_sprite(
-            sp_type,
-            sp_name
-        ))
+        store.mas_selspr.json_sprite_unlock(
+            store.mas_sprites.get_sprite(sp_type, sp_name),
+            unlock_label=unlock_sel
+        )
 
         # save persistent
         renpy.save_persistent()
@@ -815,6 +817,9 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
     # get the acs
     $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
 
+    # check for incompatibility
+    $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
+
     if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
         m 1hub "Oh!{w=1} Another hairclip!"
         m 3hua "Thanks, [player]."
@@ -827,7 +832,7 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
     # must include this check because we cannot for sure know if the acs
     # exists
     # also need to not wear it if wearing clothes that are incompatible
-    if hairclip_acs is None or monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
+    if hairclip_acs is None or is_wearing_baked_outfit:
         m 1hua "If you want me to wear it, just ask, okay?"
 
     else:
@@ -841,7 +846,7 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
     else:
         $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
-    $ mas_finishSpriteObjInfo(sprite_data)
+    $ mas_finishSpriteObjInfo(sprite_data, unlock_label=not is_wearing_baked_outfit)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
