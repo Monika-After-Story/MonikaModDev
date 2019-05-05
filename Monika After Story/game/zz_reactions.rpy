@@ -841,10 +841,13 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
         m 1hua "There we go."
 
     # need to make sure we set the selector prompt correctly
-    if monika_chr.get_acs_of_type('left-hair-clip'):
-        $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
-    else:
-        $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+    # only do this if not wearing baked, since the clip is automatically off in this case
+    # so need to make sure when we switch outfits, the prompt is still correct
+    if not is_wearing_baked_outfit:
+        if monika_chr.get_acs_of_type('left-hair-clip'):
+            $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        else:
+            $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
     $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
     if giftname is not None:
