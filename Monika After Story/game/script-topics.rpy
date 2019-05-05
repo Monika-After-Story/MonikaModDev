@@ -3570,7 +3570,7 @@ label monika_back_ups:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_playerswriting",category=['literature','you'],prompt="[player]'s writings",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_playerswriting",category=['literature','you'],prompt=player + "'s writings",random=True))
 
 label monika_playerswriting:
     m 1euc "Have you ever written a story of your own, [player]?"
@@ -3783,7 +3783,7 @@ label monika_algernon:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_playersface",category=['you'],prompt="[player]'s face",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_playersface",category=['you'],prompt=player + "'s face",random=True))
 
 label monika_playersface:
     m 5eua "You know, I sometimes wonder..."
@@ -7436,7 +7436,7 @@ default persistent._mas_pm_have_fam_mess_better = None
 default persistent._mas_pm_no_talk_fam = None
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt="[player]'s family",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_asks_family",category=['you'],prompt=player + "'s family",random=True))
 
 label monika_asks_family:
     m 1eua "[player], do you have a family?{nw}"
@@ -10724,7 +10724,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_player_appearance",
             category=['you'],
-            prompt="[player]'s appearance",
+            prompt=player + "'s appearance",
             random=True
         )
     )
@@ -11293,7 +11293,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_players_control",
             category=["games", "ddlc"],
-            prompt="[player]'s control",
+            prompt=player + "'s control",
             random=True
             )
         )
@@ -12236,7 +12236,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_trick",
             category=["club members"],
-            prompt="[player]'s second choice",
+            prompt=player + "'s second choice",
             random=True
         )
     )
