@@ -140,8 +140,9 @@ init -2 python in mas_sprites:
             temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
         )
 
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        if not _moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
+            #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
 
     def _hair_def_exit(_moni_chr, **kwargs):
@@ -186,8 +187,9 @@ init -2 python in mas_sprites:
             temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
         )
 
-        #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-        store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        if not _moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
+            #Unlock the selector for ribbons since you now have more than one (if you only had def before)
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
 
     ######### CLOTHES [SPR020] ###########
