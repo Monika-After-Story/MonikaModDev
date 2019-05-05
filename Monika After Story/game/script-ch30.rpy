@@ -1663,6 +1663,8 @@ label ch30_reset:
 #            mas_lockEVL("monika_rain", "EVE")
 #            mas_lockEVL("greeting_ourreality", "GRE")
 
+    #### SPRITES
+
     # reset hair / clothes
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
@@ -1671,8 +1673,14 @@ label ch30_reset:
     # def ribbon always unlocked
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
+    ## custom sprite objects 
+    python:
+        store.mas_selspr._validate_group_topics()
+
     # monika hair/acs
     $ monika_chr.load(startup=True)
+
+    #### END SPRITES
 
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
@@ -1796,10 +1804,6 @@ label ch30_reset:
             mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
         else:
             mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
-
-    ## custom sprite objects 
-    python:
-        store.mas_selspr._validate_group_topics()
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
