@@ -786,8 +786,8 @@ label mas_reaction_gift_generic_sprite_json:
             m 3eub "Thanks for this!"
 
     else:
-        m 1eua "Thanks for this [sprite_str]!"
-        m 1hua "I can't wait to try it on."
+        m 1hua "Thanks for this [sprite_str], [player]!"
+        m 3hub "I can't wait to try it on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
@@ -826,7 +826,7 @@ label mas_reaction_gift_hairclip(hairclip_giftname):
 
     else:
         m 1wuo "Oh!"
-        m 1esd "Is that a hairclip?"
+        m 1sub "Is that a hairclip?"
         m 1hub "That's so cute, thanks [player]!"
 
     # must include this check because we cannot for sure know if the acs
