@@ -4027,7 +4027,7 @@ init -2 python:
             RETURNS:
                 the hair mapping to use inplace for the given hair type
             """
-            return self.hair_map.get(hair, hair)
+            return self.hair_map.get(hair, self.hair_map.get("all", hair))
 
 
         def has_hair_map(self):
