@@ -1698,7 +1698,7 @@ label monikaroom_greeting_opendoor:
             m 1hksdlb "Oops! I forgot about that~"
             show monika 1 at t21
             m "Hold on..."
-            $ renpy.hide("sp_mas_backbed")
+            hide sp_mas_backbed with dissolve
             m 2hua "And... all fixed!"
             show monika 1 at lhide
             hide monika
