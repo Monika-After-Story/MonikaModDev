@@ -1664,6 +1664,10 @@ label monikaroom_greeting_opendoor:
     $ monika_chr.reset_outfit(False)
 
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
+
+    # show this under bedroom so the masks window skit still works
+    show bedroom as sp_mas_backbed zorder 4
+
     m 2i "~Is it love if I take you, or is it love if I set you free?~"
     show monika 1 at l32 zorder MAS_MONIKA_Z
 
@@ -1694,11 +1698,10 @@ label monikaroom_greeting_opendoor:
             m 1hksdlb "Oops! I forgot about that~"
             show monika 1 at t21
             m "Hold on..."
-            hide bedroom
+            $ renpy.hide("sp_mas_backbed")
             m 2hua "And... all fixed!"
             show monika 1 at lhide
             hide monika
-            $ renpy.hide("bedroom")
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
     # NOTE: return is expected in monikaroom_greeting_post
