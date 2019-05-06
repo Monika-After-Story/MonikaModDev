@@ -508,7 +508,7 @@ python early:
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
-            return ev.prompt.lower()
+            return renpy.substitute(ev.prompt).lower()
 
 
         @staticmethod
