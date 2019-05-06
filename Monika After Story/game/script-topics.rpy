@@ -12959,3 +12959,29 @@ label monika_sleigh:
     show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfa "An experience like that with you would be so breathtaking~"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_enjoyingspring",category=['spring'],prompt="Enjoying spring",random=mas_isSpring()))
+
+label monika_enjoyingspring:
+    m 3eub "Spring is such an amazing time of year, isn't it, [player]?"
+    m 1eua "The cold snow finally melts away, and the sunshine brings new life to nature."
+    m 1hua "When the flowers bloom, I can't help but smile!"
+    m 1hub "It's like the plants are waking up and saying, 'Hello world!' Ahaha~"
+    m 3eua "But I think the best thing about spring would have to be the cherry blossoms."
+    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the {i}'Somei Yoshino'{/i} in Japan."
+    m 3eua "Those ones in particular are mostly white with a slight tinge of pink."
+    m 3eud "Did you know that they only bloom for one week each year?"
+    m 1eksdla "It's quite a short lifespan, but they're still beautiful."
+    m 2rkc "Anyway, there is one big downside to spring...{w=0.5}the constant rainfall."
+    m 2tkc "You can't really enjoy too much time outside because of it..."
+    if mas_isMoniHappy(higher=True):
+        m 2eka "But I guess April showers bring May flowers, so it's not all bad."
+        m 3eub "And personally, I think that rain can also be fun too!"
+        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubla "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two."
+        m 5ekbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
+        m 5hubfa "Ehehe~"
+    else:
+        m 2rkc "...but I guess there's no real way to avoid it, is there?"
+    return
