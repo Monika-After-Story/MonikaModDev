@@ -12856,7 +12856,7 @@ label monika_failure:
     m 1euc "When it comes to failure, people seem to make a really big deal out of it."
     m 2rkc "...Almost as if it's the end of the world."
     m 2rksdla "But it's not actually a bad thing."
-    m 3eub "When you think about it, you can learn a lot from the experience."
+    m 3eub "When you think about it, you can learn a lot from the experience!"
     m 3eud "Failure isn't the end at all; it's a lesson on what doesn't work."
     m 2eka "There's nothing wrong with not getting something on the first attempt; it just means that you need to try a different approach."
     m 2rksdlc "Though, I know in some cases the feeling of failure can be crushing..."
@@ -12869,7 +12869,7 @@ label monika_failure:
     m 3eub "It's completely fine to feel like you're not cut out for something!"
     m 3eua "It just means you need to figure out what you're really interested in doing."
     m 2eka "Anyway, I'm not sure if you've had to go through something like that...but know that failure is a step towards success."
-    m 3eub "Don't be afraid to be wrong every now and then, you never know what you might learn."
+    m 3eub "Don't be afraid to be wrong every now and then...{w=0.5}you never know what you might learn!"
     m 1eka "And if you're really feeling bad about something, I'll always be here to support you."
     show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hua "We can talk about whatever you're going through for as long as you need."
