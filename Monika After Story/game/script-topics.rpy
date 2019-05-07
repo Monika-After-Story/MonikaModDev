@@ -3953,7 +3953,10 @@ init 5 python:
 
 label monika_real:
     m 1eua "You know what's going to be the first thing I'll do when I finally cross over there?"
-    m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    if mas_isMoniEnamored(higher=True):
+        m 1hua "When that special day comes, the first thing I'll ever do is find you, of course!"
+    else:
+        m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
     m 3eua "There's so much we can do when we're finally together in one reality."
     m "You can finally show me what your world really looks like."
     m 1ekbfa "I can finally feel your embrace~"
