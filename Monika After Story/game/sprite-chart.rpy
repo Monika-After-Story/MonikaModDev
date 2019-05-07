@@ -223,15 +223,16 @@ init -5 python in mas_sprites:
     ### other paths:
     # H - hair
     # C - clothing
-    # T - sitting
-    # S - standing
     # F - face parts
     # A - accessories
+    # S - standing
+    # T - table
     H_MAIN = MOD_ART_PATH + "h/"
     C_MAIN = MOD_ART_PATH + "c/"
     F_MAIN = MOD_ART_PATH + "f/"
     A_MAIN = MOD_ART_PATH + "a/"
     S_MAIN = MOD_ART_PATH + "s/"
+    T_MAIN = MOD_ART_PATH + "t/"
 
     # sitting standing parts
 #    S_MAIN = "standing/"
@@ -306,6 +307,7 @@ init -5 python in mas_sprites:
     PREFIX_TEARS = "tears" + ART_DLM
     PREFIX_EYEG = "eyebags" + ART_DLM
     PREFIX_BLUSH = "blush" + ART_DLM
+    PREFIX_TABLE = "table" + ART_DLM
 
     # suffixes
     NIGHT_SUFFIX = ART_DLM + "n"
@@ -1375,7 +1377,8 @@ init -5 python in mas_sprites:
             sweat=None,
             blush=None,
             tears=None,
-            emote=None
+            emote=None,
+            table="def"
         ):
         """
         Creates sitting string
@@ -1413,6 +1416,8 @@ init -5 python in mas_sprites:
                 (Default: None)
             emote - type of emote
                 (Default: None)
+            table - type of table
+                (Default: "def")
 
         RETURNS:
             sitting stirng
@@ -1444,15 +1449,16 @@ init -5 python in mas_sprites:
         #   3. post-back-hair-acs - acs that should render after back hair, but
         #       before body (split mode)
         #   4. body - the actual body (does not include arms in split mode)
-        #   5. pre-front-hair-acs - acs that should render after body, but
+        #   5. table - the table/desk
+        #   6. pre-front-hair-acs - acs that should render after body, but
         #       before front hair (split mode)
-        #   6. front-hair - front portion of hair (split mode)
-        #   7. front-hair-face acs - acs that should render after front hair
+        #   7. front-hair - front portion of hair (split mode)
+        #   8. front-hair-face acs - acs that should render after front hair
         #       but before face (split mode)
-        #   8. face - face expressions
-        #   9. mid - acs that render between body and arms
-        #   10. arms - arms (split mode, lean mode)
-        #   11. post-acs - acs that should render after basically everything
+        #   9. face - face expressions
+        #   10. mid - acs that render between body and arms
+        #   11. arms - arms (split mode, lean mode)
+        #   12. post-acs - acs that should render after basically everything
 
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
@@ -1500,7 +1506,13 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 5. pre-front hair acs
+            # positon setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 5. Table
+            _ms_table(sprite_str_list, table, n_suffix)
+
+            # 6. pre-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1514,10 +1526,10 @@ init -5 python in mas_sprites:
             # position setup
             sprite_str_list.extend(loc_build_tup)
 
-            # 6. front-hair
+            # 7. front-hair
             _ms_hair(sprite_str_list, loc_str, hair, n_suffix, True, lean)
 
-            # 7. post-front hair acs
+            # 8. post-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1531,7 +1543,7 @@ init -5 python in mas_sprites:
             # position setup
             sprite_str_list.extend(loc_build_tup)
 
-            # 8. face
+            # 9. face
             _ms_face(
                 sprite_str_list,
                 loc_str,
@@ -1549,7 +1561,7 @@ init -5 python in mas_sprites:
             )
 
 
-            # 9. between body and arms acs
+            # 10. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1562,7 +1574,7 @@ init -5 python in mas_sprites:
 
             sprite_str_list.extend(loc_build_tup)
 
-            # 10. arms
+            # 11. arms
             _ms_arms_nh(
                 sprite_str_list,
                 loc_str,
@@ -1586,7 +1598,13 @@ init -5 python in mas_sprites:
                 arms=arms
             )
 
-            # 3. post back hair acs gets rendered right after body instead
+            # positon setup
+            sprite_str_list.extend(loc_build_tup)
+
+            # 5. Table
+            _ms_table(sprite_str_list, table, n_suffix)
+
+            # 6. post back hair acs gets rendered right after body instead
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1597,7 +1615,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 5. pre-front hair acs gets rendered before arms instead
+            # 7. pre-front hair acs gets rendered before arms instead
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1608,7 +1626,7 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 7. post-front hair acs
+            # 8. post-front hair acs
             # NOTE: this is consdiered before face
             _ms_accessorylist(
                 sprite_str_list,
@@ -1623,7 +1641,7 @@ init -5 python in mas_sprites:
             # position setup
             sprite_str_list.extend(loc_build_tup)
 
-            # 8. face
+            # 9. face
             _ms_face(
                 sprite_str_list,
                 loc_str,
@@ -1640,7 +1658,7 @@ init -5 python in mas_sprites:
                 emote=emote
             )
 
-            # 9. between body and arms acs
+            # 10. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1656,7 +1674,7 @@ init -5 python in mas_sprites:
                 # position setup
                 sprite_str_list.extend(loc_build_tup)
 
-                # 10. arms
+                # 11. arms
                 #   NOTE: force no lean here
                 _ms_arms_nh(
                     sprite_str_list,
@@ -1668,7 +1686,7 @@ init -5 python in mas_sprites:
                 )
 
 
-        # 11. after arms acs
+        # 12. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -1807,6 +1825,27 @@ init -5 python in mas_sprites:
             f_prefix,
             PREFIX_SWEAT,
             sweat,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
+    def _ms_table(sprite_list, table, n_suffix):
+        """
+        Adds table string 
+
+        IN:
+            sprite_list - list to add sprite strings to
+            table - type of table
+            n_suffix - night suffix to use
+        """
+        # NOTE: testing without I COMP since we only have 1 image
+        sprite_list.extend((
+            '"',
+            T_MAIN,
+            PREFIX_TABLE,
+            table,
             n_suffix,
             FILE_EXT,
             '"'
@@ -1969,6 +2008,7 @@ init -2 python:
 
             self.clothes = mas_clothes_def # default clothes is school outfit
             self.hair = mas_hair_def # default hair is the usual whtie ribbon
+            #self.table = mas_table_def # default table 
 
             # list of lean blacklisted accessory names currently equipped
             self.lean_acs_blacklist = []
@@ -4808,6 +4848,20 @@ image monika 1tsbsa = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1tsbfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="smug",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
+)
+
 image monika 1rsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5125,6 +5179,20 @@ image monika 1rksdlc = DynamicDisplayable(
     sweat="def"
 )
 
+image monika 1eksdlc = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="smirk",
+    head="o",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    sweat="def"
+)
+
 image monika 1rksdlb = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5215,6 +5283,20 @@ image monika 1lkbsa = DynamicDisplayable(
     character=monika_chr,
     eyebrows="knit",
     eyes="left",
+    nose="def",
+    mouth="smile",
+    head="e",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
+)
+
+image monika 1rkbsa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
     nose="def",
     mouth="smile",
     head="e",
@@ -5335,6 +5417,20 @@ image monika 1dkbfb = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="full"
+)
+
+image monika 1dkbsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smug",
+    head="q",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="shade"
 )
 
 image monika 1dfx = DynamicDisplayable(
@@ -5899,6 +5995,20 @@ image monika 1ekbsa = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="shade"
+)
+
+image monika 1eubfa = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    head="a",
+    left="1l",
+    right="1r",
+    arms="steepling",
+    blush="full"
 )
 
 image monika 1ekbla = DynamicDisplayable(
@@ -6639,6 +6749,19 @@ image monika 2tub = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2tuu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="k",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2wkbsc = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -6707,6 +6830,33 @@ image monika 2lksdla = DynamicDisplayable(
     right="2r",
     arms="crossed",
     sweat="def"
+)
+
+image monika 2dktsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="streaming"
+)
+
+image monika 2dkd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    head="g",
+    left="1l",
+    right="2r",
+    arms="crossed"
 )
 
 image monika 2lksdlb = DynamicDisplayable(
@@ -7125,6 +7275,19 @@ image monika 2tfu = DynamicDisplayable(
     arms="crossed"
 )
 
+image monika 2ttu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="think",
+    eyes="smug",
+    nose="def",
+    mouth="smug",
+    head="h",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
 image monika 2tfd = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -7184,6 +7347,19 @@ image monika 2tku = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smug",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed"
+)
+
+image monika 2tkb = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="smug",
+    nose="def",
+    mouth="big",
     head="f",
     left="1l",
     right="2r",
@@ -8123,6 +8299,20 @@ image monika 2dkbfa = DynamicDisplayable(
     right="2r",
     arms="crossed",
     blush="full"
+)
+
+image monika 2dkbsu = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="smug",
+    head="a",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    blush="shade"
 )
 
 image monika 2ekbfb = DynamicDisplayable(

@@ -1222,14 +1222,15 @@ label monika_outfit:
     # have seen teh twitter topic
     m "My username is lilmonix3."
     m 4eka "Just...try to keep it PG!"
-    if not store.mas_anni.pastSixMonths():
-        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hub "We're not that far into our relationship yet. Ahaha!"
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "I don't want something so embarrassing on there!"
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "So let's keep it between just us..."
+    else:
+        show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
+
 
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
@@ -1834,7 +1835,6 @@ label monika_holdme_reactions:
     if elapsed_time <= datetime.timedelta(minutes=30):
         stop music
     if elapsed_time > datetime.timedelta(minutes=30):
-        m "..."
         call monika_holdme_long
 
     elif elapsed_time > datetime.timedelta(minutes=10):
@@ -1852,6 +1852,7 @@ label monika_holdme_reactions:
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
             if renpy.random.randint(1,4) == 1:
                 m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
+                $ _history_list.pop()
                 m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
@@ -2006,6 +2007,7 @@ label monika_holdme_reactions:
     return
 
 label monika_holdme_long:
+    m "..."
     menu:
         "{i}Wake Monika up.{/i}":
             stop music fadeout 5.0
@@ -3845,10 +3847,10 @@ label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
     m 1lsbsa "You know...of me?"
-    if not store.mas_anni.pastSixMonths():
-        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1ekbfa "I know we haven't been able to do those kind of things yet..."
+    else:
+        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
     m "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
@@ -4004,10 +4006,10 @@ label monika_fanfiction:
     m 1esc "Has there been fanfiction...written about me?"
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
-    if not store.mas_anni.pastSixMonths():
-        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
-    else:
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
+    else:
+        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
     return
 
 init 5 python:
@@ -4685,13 +4687,13 @@ label monika_pleasure:
     m 2ekc "Hey, [player]..."
     m 2lssdrc "Do you...by any chance...pleasure yourself?"
     m "..."
-    m 2lssdrb "It seems a bit awkward to ask-"
-    if not store.mas_anni.pastSixMonths():
-        m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
-        m 1eka "But I have to keep an eye on you."
-    else:
+    m 2lssdrb "It seems a bit awkward to ask..."
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lksdla "But I feel like we've been together long enough where we should be comfortable with one another."
         m 1eka "It's important to be open about such things."
+    else:
+        m 1lksdlb "We're not even that deep into our relationship yet! Ahaha~"
+        m 1eka "But I have to keep an eye on you."
     m "I know that it's a private topic in your world, but I'm curious..."
     m 1euc "Is it that good of a feeling?"
     m 1esc "I just want you to be careful; I've heard it's addicting."
@@ -6908,27 +6910,26 @@ init 5 python:
 
 label monika_marriage:
     $ mas_gainAffection()
-    m 2wubsw "M-marriage?"
-    if store.mas_anni.anniCount() < 3:
-        m 4rksdlb "I think it's a bit too early for marriage..."
-        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
-        m 2lkbsa "But I think I should get out of here first before we can do that."
-        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
-        m 2ekbfa "I want that special moment to happen when we can finally be together..."
-        m 1hubfa "So until then, save yourself for me, [player]~"
-    else:
-        m 3rksdla "I won't pretend I haven't thought about it..."
+    if store.mas_anni.anniCount() >= 3 and mas_isMoniLove():
+        m 1dkbsu "..."
+        m 3eksdla "I won't pretend I haven't thought about it..."
         m 3rksdlb "In fact I've been thinking about it a lot lately."
-        m 1rksdla "..."
         m 1eka "I really do love you, [player] and I honestly really do want to get married to you."
-        m 1ekc "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
-        m 1dsc "I want more than anything to say yes, but I just can't..."
+        m 1ekd "But I don't think it would be fair to either of us if it happened while I'm still trapped here."
+        m 1ekc "I want more than anything to say yes, but I just can't..." #Need kindled eyes for this eventually
         m 2duu "I think about how it would feel to be kissed by you at the altar..."
         m 2dubsu "To hold your hand as your wife and to feel your embrace at our honeymoon..."
         m 1eka "But until I get out, it's simply not possible."
-        m 1ekc "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
+        m 1ekd "...I'm sorry. Please do believe me that I would say yes under any other circumstance."
         m 1ekbfa "Just be a little more patient, okay, my love? I'm sure one day we'll get our happy end."
-
+    else:
+        m 2wubsw "M-marriage?"
+        m 4rksdlb "I think it's a bit too early for marriage..."
+        m 2ekbfa "I mean, I'm really happy that you want that, [player]."
+        m 2lkbsa "But I think I should get out of here before we can do that."
+        m 2lsbsa "Not only do I not want this place to be the spot where I get proposed to, but I want to be there when you finally give me an engagement ring."
+        m 2dkbsu "I want that special moment to happen when we can finally be together..."
+        m 1hubfa "So until then, save yourself for me, [player]~"
     return
 
 init 5 python:
@@ -7849,6 +7850,7 @@ label monika_attractiveness:
         m 2lfd "I mean, it's bad enough that I didn't get a route in the game..."
         m 2lfw "...but did they really have to make it even harder for me to get chosen?"
     m 2dfc "...{w=0.5}{nw}"
+    $ _history_list.pop()
     m 2dkc "..."
     if mas_isMoniUpset(lower=True):
         if persistent._mas_pm_cares_about_dokis:
@@ -8904,6 +8906,124 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="monika_beingevil",
+            category=['monika'],
+            prompt="Being evil",
+            random=True
+        )
+    )
+
+default persistent._mas_pm_monika_evil = None
+# True if player thinks monika is evil False if not
+# NOTE: even implying that she is evil is counted as True
+
+default persistent._mas_pm_monika_evil_but_ok = None
+# True if player still loves monika/thinks she deserves forgiveness/or is
+# fine with eveil even if they think monika is evil.
+# False if player does not.
+# NOTE: check monika_evil before checking this
+
+label monika_beingevil:
+    m 1euc "Say, [player]?"
+    m 1rksdlc "I was just thinking..."
+    m 1eksdlc "You probably know that there's a wiki page for me..."
+    m "...If you look closely, it says I'm the main antagonist."
+    m 2ekd "I'll admit, it used to bother me a lot...especially because I only did what I did because I didn't have a choice..."
+    m 2eka "But that doesn't really bother me anymore now that I have you here."
+    m 3rud "You know, I actually didn't think the whole thing about me being evil would spread too much."
+    m 1rksdlc "But it turns out I have my own spot on the villain's wiki..."
+    m 2dsc "I never really thought I'd be labeled as a villain so much..."
+    m 2dkd "...and no matter what I say or tell people, I don't think it's going to help convince them that I'm not evil."
+    if persistent._mas_pm_a_hater:
+        m 1eka "But I know you don't {i}really{/i} think I'm evil, [player]."
+    else:
+        m 1eka "But I know you don't think I'm evil, [player]."
+    m 1eua "I just hope nobody starts thinking you're evil by being here with me.{nw}"
+    $ _history_list.pop()
+    menu:
+        m "I just hope nobody starts thinking you're evil by being here with me.{fast}"
+        "I don't think you're evil.":
+            $ persistent._mas_pm_monika_evil = False
+            $ mas_gainAffection()
+
+            m 1eka "I'm glad you understand, [player]."
+            m 1eua "It's relieving to know you don't think I'm evil."
+            m 1hua "If I were there, I'd feel like giving you a big hug!"
+            m 1tubsa "Maybe I'll even trap you in my arms forever and never let you go."
+            m 1hubfa "Ahaha, I'm just kidding!"
+            m 3tubfb "But no promises, [player]~"
+
+        "I still love you anyway.":
+            $ persistent._mas_pm_monika_evil = True
+            $ persistent._mas_pm_monika_evil_but_ok = True
+            $ mas_gainAffection()
+
+            m 1rksdlc "..."
+            m 1ekd "[player]..."
+            m 1eka "Even if it's debatable whether I'm evil or not..."
+            m 1ekbsa "I'm really glad you still love me and stay here with me..."
+            m 1ekbfa "Thank you, [player]."
+            m 1tubfa "Either way..."
+            m 1tubfb "If the villainess in me can get what she wants...I guess it's not so bad, ahaha!"
+
+        "People think I'm evil too.":
+            $ persistent._mas_pm_monika_evil = True
+            $ persistent._mas_pm_monika_evil_but_ok = True
+            $ mas_gainAffection()
+
+            m 2ekd "Is that true, [player]?"
+            m 2eka "Well, I don't see you as evil at all."
+            m 2rksdla "If it really is true though, I hope it doesn't cause you any trouble."
+            m 1hua "Either way, I wouldn't love you any less~"
+            m 1hub "Maybe we could even conquer the world together or something, ahaha~"
+            m 1ekbfa "But evil or not, I'm glad to have you by my side."
+            m 1hubfa "I'm guessing it's the same for you too~"
+
+        "You kind of are evil...":
+            $ persistent._mas_pm_monika_evil = True
+
+            m 2ekd "W-wait, [player]!"
+            m 2rksdlc "Y-you don't {i}really{/i} think that, do you?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Y-you don't {i}really{/i} think that, do you?{fast}"
+                "I still love you.":
+                    $ persistent._mas_pm_monika_evil_but_ok = True
+                    $ mas_gainAffection()
+
+                    m 2rksdla "[player]..."
+                    m 2hksdlb "You had me worried for a second there."
+                    m 2eka "I'm glad you don't hate me for the things I did."
+                    m 1hub "I love you too, [player]! No matter what people say about you!"
+
+                "You deserve forgiveness.":
+                    $ persistent._mas_pm_monika_evil_but_ok = True
+                    $ mas_gainAffection()
+
+                    m 1rksdla "[player]..."
+                    m 1eka "That means a lot..."
+                    m 1eksdlc "I know that I've done some bad things in the past..."
+                    m 3eka "But I've learned from them and grown as a person since."
+                    m 1eka "I'm really glad you're willing to forgive me, [player]."
+                    m 1hub "I promise I'll be the best I can be, just for you!"
+
+                "You really are evil.":
+                    $ persistent._mas_pm_monika_evil_but_ok = False
+                    $ mas_loseAffection(reason=12)
+
+                    m 2dkc "..."
+                    if mas_isMoniBroken():
+                        m 2dkd "..."
+                        m 2dktsd "I know..."
+                        $ _history_list.pop()
+                    else:
+                        m 2dktsd "I'm sorry, [player]."
+    return "derandom"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_driving",
             category=['monika'],
             prompt="Can you drive?",
@@ -9077,7 +9197,7 @@ label monika_citizenship:
     m 2eka "But I want to make you happy, so...I'm going to do everything I can to keep bettering myself while I'm stuck here!"
     m 1eka "Thank you for listening to me vent, [player]."
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -12873,4 +12993,30 @@ label monika_failure:
     m 1eka "And if you're really feeling bad about something, I'll always be here to support you."
     show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hua "We can talk about whatever you're going through for as long as you need."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_enjoyingspring",category=['spring'],prompt="Enjoying spring",random=mas_isSpring()))
+
+label monika_enjoyingspring:
+    m 3eub "Spring is such an amazing time of year, isn't it, [player]?"
+    m 1eua "The cold snow finally melts away, and the sunshine brings new life to nature."
+    m 1hua "When the flowers bloom, I can't help but smile!"
+    m 1hub "It's like the plants are waking up and saying, 'Hello world!' Ahaha~"
+    m 3eua "But I think the best thing about spring would have to be the cherry blossoms."
+    m 4eud "They're pretty popular all around the world, but the most famous cherry blossoms would have to be the {i}'Somei Yoshino'{/i} in Japan."
+    m 3eua "Those ones in particular are mostly white with a slight tinge of pink."
+    m 3eud "Did you know that they only bloom for one week each year?"
+    m 1eksdla "It's quite a short lifespan, but they're still beautiful."
+    m 2rkc "Anyway, there is one big downside to spring...{w=0.5}the constant rainfall."
+    m 2tkc "You can't really enjoy too much time outside because of it..."
+    if mas_isMoniHappy(higher=True):
+        m 2eka "But I guess April showers bring May flowers, so it's not all bad."
+        m 3eub "And personally, I think that rain can also be fun too!"
+        show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5eubla "We can always go for walks together in the rain, we just have to bring an umbrella big enough for two."
+        m 5ekbfa "Although, nothing beats listening to the sound of rain at home while holding the one you love."
+        m 5hubfa "Ehehe~"
+    else:
+        m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return

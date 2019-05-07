@@ -9,6 +9,7 @@
 #   [SPR110] - Hair sprite objects
 #   [SPR120] - Clothes sprite objects
 #   [SPR130] - ACS sprite objects
+#   [SPR140] - Table sprite objects
 #   [SPR230] - ACS variables
 
 init -2 python in mas_sprites:
@@ -1526,6 +1527,10 @@ init -1 python:
         acs_type="flowers",
     )
     store.mas_sprites.init_acs(mas_acs_roses)
+
+#### TABLE SPRITE OBJECTS (SPR140)
+# tables are inserted between 
+# TODO: this will be done later
 
 #### ACCCESSORY VARIABLES (SPR230)
 # variables that accessories may need for enabling / disabling / whatever
