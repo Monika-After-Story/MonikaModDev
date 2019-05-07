@@ -3730,7 +3730,7 @@ label monika_mountain:
     m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
     show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
     m 5rub "And finally...after all the effort and struggles..."
-    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
+    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testament to your success around you."
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
