@@ -64,14 +64,14 @@ if win32gui.UNICODE:
     def _make_text_buffer(text):
         # XXX - at this stage win32gui.UNICODE is only True in py3k,
         # and in py3k is makes sense to reject bytes.
-        if not isinstance(text, str):
+        if not isinstance(text, unicode):
             raise TypeError('MENUITEMINFO text must be unicode')
         data = (text+'\0').encode("unicode-internal")
         return array.array("b", data)
 
 else:
     def _make_text_buffer(text):
-        if isinstance(text, str):
+        if isinstance(text, unicode):
             text = text.encode("mbcs")
         return array.array("b", text+'\0')
 
@@ -175,13 +175,13 @@ def PackMENUITEMINFO(fType=None, fState=None, wID=None, hSubMenu=None,
                 fType,
                 fState,
                 wID,
-                int(hSubMenu),
-                int(hbmpChecked),
-                int(hbmpUnchecked),
+                long(hSubMenu),
+                long(hbmpChecked),
+                long(hbmpUnchecked),
                 dwItemData,
                 lptext,
                 cch,
-                int(hbmpItem)
+                long(hbmpItem)
                 )
     # Now copy the string to a writable buffer, so that the result
     # could be passed to a 'Get' function
@@ -663,7 +663,7 @@ def PackDEV_BROADCAST(devicetype, rest_fmt, rest_data, extra_data=_make_bytes(''
 
 def PackDEV_BROADCAST_HANDLE(handle, hdevnotify=0, guid=_make_bytes("\0"*16), name_offset=0, data=_make_bytes("\0")):
     return PackDEV_BROADCAST(win32con.DBT_DEVTYP_HANDLE, "PP16sl",
-                             (int(handle), int(hdevnotify), _make_memory(guid), name_offset),
+                             (long(handle), long(hdevnotify), _make_memory(guid), name_offset),
                              data)
 
 def PackDEV_BROADCAST_VOLUME(unitmask, flags):
@@ -673,12 +673,12 @@ def PackDEV_BROADCAST_VOLUME(unitmask, flags):
 def PackDEV_BROADCAST_DEVICEINTERFACE(classguid, name=""):
     if win32gui.UNICODE:
         # This really means "is py3k?" - so not accepting bytes is OK
-        if not isinstance(name, str):
+        if not isinstance(name, unicode):
             raise TypeError("Must provide unicode for the name")
         name = name.encode('unicode-internal')
     else:
         # py2k was passed a unicode object - encode as mbcs.
-        if isinstance(name, str):
+        if isinstance(name, unicode):
             name = name.encode('mbcs')
 
     # 16 bytes for the IID followed by \0 term'd string.

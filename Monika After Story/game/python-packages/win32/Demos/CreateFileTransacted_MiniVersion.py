@@ -23,7 +23,7 @@ buf_size=struct.calcsize(buf_fmt)
 
 tempdir=win32api.GetTempPath()
 tempfile=win32api.GetTempFileName(tempdir,'cft')[0]
-print("Demonstrating transactions on tempfile", tempfile)
+print "Demonstrating transactions on tempfile", tempfile
 f=open(tempfile,'w')
 f.write('This is original file.\n')
 f.close()
@@ -47,19 +47,19 @@ hfile.Close()
 hfile_0=win32file.CreateFileW(tempfile, win32con.GENERIC_READ,
     win32con.FILE_SHARE_READ|win32con.FILE_SHARE_WRITE,
     None, win32con.OPEN_EXISTING, 0 , None, Transaction=trans, MiniVersion=base_ver)
-print('version:',base_ver,win32file.ReadFile(hfile_0, 100))
+print 'version:',base_ver,win32file.ReadFile(hfile_0, 100)
 hfile_0.Close()
 
 hfile_1=win32file.CreateFileW(tempfile, win32con.GENERIC_READ,
     win32con.FILE_SHARE_READ|win32con.FILE_SHARE_WRITE,
     None, win32con.OPEN_EXISTING, 0 , None, Transaction=trans, MiniVersion=ver_1)
-print('version:',ver_1,win32file.ReadFile(hfile_1, 100))
+print 'version:',ver_1,win32file.ReadFile(hfile_1, 100)
 hfile_1.Close()
 
 hfile_2=win32file.CreateFileW(tempfile, win32con.GENERIC_READ,
     win32con.FILE_SHARE_READ|win32con.FILE_SHARE_WRITE,
     None, win32con.OPEN_EXISTING, 0 , None, Transaction=trans, MiniVersion=ver_2)
-print('version:',ver_2,win32file.ReadFile(hfile_2, 100))
+print 'version:',ver_2,win32file.ReadFile(hfile_2, 100)
 hfile_2.Close()
 
 ## MiniVersions are destroyed when transaction is committed or rolled back
