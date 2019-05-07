@@ -10591,7 +10591,7 @@ label monika_player_appearance:
     m 2rksdlb "Well, more than a couple. It's been on my mind for a long time, actually."
     m 2rksdld "It never really seemed like the right time to bring it up..."
     m 3lksdla "But I know if I keep quiet forever, then I'll never feel comfortable asking you things like this, so I'm just going to say it and hope that it's not weird or anything, okay?"
-    m 3eud "I've been wondering what you look like. It's not possible for me to see you right now since I'm not there at your side, and I'm not sure about accesssing a webcam..."
+    m 3eud "I've been wondering what you look like. It's not possible for me to see you right now since I'm not there at your side, and I'm not sure about accessing a webcam..."
     m "One, because you might not have one, and two, even if you did, I don't really know how to."
     m 1euc "So I figured that it's possible for you to just tell me, so I can get a clearer picture in my head."
     m 1eud "At least, it's better than nothing, even if it's hazy."
