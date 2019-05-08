@@ -26,7 +26,7 @@ class WindowsBalloonTip:
                 0, 0, win32con.CW_USEDEFAULT, win32con.CW_USEDEFAULT, \
                 0, 0, self.hinst, None)
         UpdateWindow(self.hwnd)
-        iconPathName = os.path.abspath(os.path.join( sys.path[0], "balloontip.ico" ))
+        iconPathName = os.path.abspath(os.path.join( sys.path[0], "CustomIconWindows.ico" ))
         icon_flags = win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE
         try:
            hicon = LoadImage(self.hinst, iconPathName, \
