@@ -5576,7 +5576,7 @@ image monika 1dftsc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 1dftdc = DynamicDisplayable(
@@ -5824,7 +5824,7 @@ image monika 1dkbltuu = DynamicDisplayable(
     right="1r",
     arms="steepling",
     blush="lines",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 1skbltpa = DynamicDisplayable(
@@ -6162,7 +6162,7 @@ image monika 1dktub = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 1dktua = DynamicDisplayable(
@@ -6176,7 +6176,7 @@ image monika 1dktua = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 1ektua = DynamicDisplayable(
@@ -6536,7 +6536,7 @@ image monika 1dktsd = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="steepling",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 1ektpa = DynamicDisplayable(
@@ -6843,7 +6843,7 @@ image monika 2dktsd = DynamicDisplayable(
     left="1l",
     right="2r",
     arms="crossed",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 2dkd = DynamicDisplayable(
@@ -8037,7 +8037,7 @@ image monika 2dftsc = DynamicDisplayable(
     left="1l",
     right="2r",
     arms="crossed",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 2dftdc = DynamicDisplayable(
@@ -8270,7 +8270,7 @@ image monika 2dktuc = DynamicDisplayable(
     left="1l",
     right="2r",
     arms="crossed",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 2dktpc = DynamicDisplayable(
@@ -9789,7 +9789,7 @@ image monika 3hkbltub = DynamicDisplayable(
     right="1r",
     arms="restleftpointright",
     blush="lines",
-    tears="up"
+    tears="upclosedhappy"
 )
 
 image monika 3dkbltpa = DynamicDisplayable(
@@ -10239,7 +10239,7 @@ image monika 3dftsc = DynamicDisplayable(
     left="2l",
     right="1r",
     arms="restleftpointright",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 3dftdc = DynamicDisplayable(
@@ -12080,7 +12080,7 @@ image monika 4dftsc = DynamicDisplayable(
     left="2l",
     right="2r",
     arms="pointright",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 4dftdc = DynamicDisplayable(
@@ -13527,7 +13527,7 @@ image monika 6dktuc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 6dktua = DynamicDisplayable(
@@ -13541,7 +13541,7 @@ image monika 6dktua = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 6dktuu = DynamicDisplayable(
@@ -13555,7 +13555,7 @@ image monika 6dktuu = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="up"
+    tears="upclosedsad"
 )
 
 image monika 6dktrc = DynamicDisplayable(
@@ -13569,7 +13569,7 @@ image monika 6dktrc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="right"
+    tears="rightclosedsad"
 )
 
 image monika 6dksdla = DynamicDisplayable(
@@ -13611,7 +13611,7 @@ image monika 6dktsc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 6dktpc = DynamicDisplayable(
@@ -13860,7 +13860,7 @@ image monika 6dstsc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 6lktdc = DynamicDisplayable(
@@ -13956,7 +13956,7 @@ image monika 6dftsc = DynamicDisplayable(
     left="1l",
     right="1r",
     arms="down",
-    tears="streaming"
+    tears="streamingclosedsad"
 )
 
 image monika 6dftdx = DynamicDisplayable(
