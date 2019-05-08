@@ -39,7 +39,7 @@ class WindowsBalloonTip:
         Shell_NotifyIcon(NIM_MODIFY, \
                          (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20,\
                           hicon, "Balloon  tooltip",msg,200,title))
-        DestroyWindow(self.hwnd)
+        #DestroyWindow(self.hwnd)
 
     def OnDestroy(self, hwnd, msg, wparam, lparam):
         nid = (self.hwnd, 0)
