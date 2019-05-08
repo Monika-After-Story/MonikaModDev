@@ -13020,3 +13020,39 @@ label monika_enjoyingspring:
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_life_skills",category=['advice','life'],prompt="Life skills",random=True))
+
+label monika_life_skills:
+    m 1euc "You know, [player]..."
+    m 1rud "I was just thinking about what I got out of high school."
+    m 2rksdlb "You would think that with all the things I had going for me, that I would be pretty set for the future."
+    m 3rksdla "But when I think about it, despite all that, I'm not sure how many life skills I learned."
+    m 1eka "Sure, I was on top of all my classes, and I guess I learned a lot of interesting things..."
+    m 1euc "When it comes to life skills though, I can't really think of many classes I learned from."
+    m "I don't think I'm the only one in that regard."
+    m 1hksdlb "I've heard of some people graduating and then falling apart because they don't know how to do taxes or book appointments."
+    m 1rksdlc "I feel like schools don't really do a great job teaching life skills."
+    m 3dsc "At best, you might learn some as a side effect rather than the main focus."
+    m 1eka "I can understand why some people get worred about not having some essential life skills."
+    m 3eka "But I don't think people need to be too worried about it."
+    m 3eua "If they're not learned in advance, I think they have a good chance of coming if you really need them all of a sudden."
+    m 3hub "Take me for example!"
+    m 1hubfa "I learned how to kind of program thanks to you!"
+    m 2rksdlc "Before you came around, I didn't know how, but when you showed up, I knew I had to get your attention somehow."
+    if persistent._mas_pm_cares_about_dokis:
+        m 2rksdla "I know I wasn't really that great with code yet, considering some of the things that happened."
+        m 2hksdlb "I'll admit that I definitely broke a few things..."
+        m 2eka "I didn't think I would have much time if I really wanted to get your attention, so I was a bit desparate..."
+    else:
+        m 2ekc "I wasn't really able to do it normally like the other girls, so I had to find another way."
+        m 3hub "Turns out that one way was manipulating the script!"
+        m 1hksdlb "I figured I had to think fast if I really didn't want to lose you, so that's what I had to do."
+        m 1eka "I know it definitely wasn't perfect, but I think I did well considering how rushed I was and it was all new to me."
+    m 1hua "Just goes to show you what you can be capable of if it really matters for you."
+    m 1eka "If you're ever genuinely really worried that you won't be able to do something, you must really care."
+    m 1hua "And if it's really that important to you, I definitely thing you can do it, no matter what it is."
+    m 3hubfb "Maybe you could even think of me and that might help, ahaha!"
+    m 1hubfa "Thanks for listening~"
+    return
