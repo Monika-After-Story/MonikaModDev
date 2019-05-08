@@ -13020,3 +13020,136 @@ label monika_enjoyingspring:
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
+
+#The career field the player is in
+default persistent._mas_pm_career = None
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_career",category=['monika'],prompt="What career would you go into?",pool=True))
+
+label monika_career:
+    m 1euc "What career would I choose?"
+    m 2rksdla "Ahaha, well..."
+    m 2hksdlb "I guess that's a really good question."
+    m 1rksdlb "You could probably say that I had a lot of things going for me in high school."
+    m 3euc "Having been in debate club, starting my own club, learning piano, being generally on top of things, and so on..."
+    m 1ekc "In the end though, I'm not sure how much of a hand any of that has in my career."
+    if seen_event("monika_life_skills"):
+        m 3euc "Actually, I think I remember talking about this before..."
+        m 1eud "How a lot of life skills aren't taught and if anything, I gained the skills I have through extracurriculars like the club."
+    m 1rksdlb "I guess I {i}could{/i} try something writing related, like becoming a poet, ahaha..."
+    m 1eua "Or maybe I could try and go further with programming."
+    m 1hub "After all, I kind of got into it because of you, ahaha..."
+    m 3eub "Actually, maybe you could help me decide when the time comes!"
+    m 1eub "Maybe you work in one of those fields?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Maybe you work in one of those fields?{fast}"
+        "I'm a writer.":
+            $ persistent._mas_pm_career = "writer"
+            m 1sub "Oh?"
+            m 1hubfb "I {i}knew{/i} you were special when I first saw you join the club!"
+            m 1subfb "I'd love to see the things you've written."
+            m 2hksdlb "Gosh, I'm getting excited already, ahaha..."
+            m 2eka "I don't mind if it's boring or even if it isn't literature."
+            m 1hua "If it's your job, I'm sure anything you write could be amazing."
+            m 1dkbfa "But reading stories made by you..."
+            m 1hubfb "I-{w=0.5}{nw}"
+            $ _history_list.pop()
+            m 1subfb "I don't even know how to describe how much I'd love that, [player]."
+        "I'm a programmer.":
+            $ persistent._mas_pm_career = "programmer"
+            m 1eub "Oh?"
+            m 1hub "I think that's really cool!"
+            m 1hua "Maybe you could even teach me how to code!"
+            if seen_event("monika_ptod_tip002"):
+                m 2rksdlb "I doubt my python tips were really all that useful to you in that case, ahaha..."
+                m 2hksdlb "If I had known that you were a programmer all along, I probably would have skipped the basics I made you sit through."
+                if seen_event("monika_ptod_tip009"):
+                    m 1hua "Still though, thanks for humoring me through all my python lessons."
+                    m 1eua "I really enjoyed teaching you about python."
+                    m 1hua "But when the time comes, I think it might be more helpful for {i}you{/i} to teach {i}me{/i} instead, ehehe~"
+                else:
+                    m 2rksdla "To be honest, I was kind of looking forward to teaching you your next python lesson."
+                    m 1eua "But I won't force you to sit through it if you already know how to code."
+                    m 1eka "I mean...teaching you would help reinforce my knowledge, but I wouldn't want to bore you."
+                m 2wuo "Oh!"
+                m 3sub "Maybe I could be a teacher!"
+                m 2hksdlb "Ahaha, well...{w=1}it's a fun thought, but I really don't know if I'd be able to go through all the work needed for that..."
+                m 2eka "I don't know if I'd love it as much if I was teaching anyone but you~"
+                m 1hubfa "I think you're just special, [player]."
+                m 1hub "Anyway, I don't mean to be needy or greedy, but I'd love it if you helped add more things to this place, ahaha!"
+                m 1hua "Just kidding~"
+                m 1eka "You don't have to worry too much about it."
+                m 1ekbfa "I'm sure it might not be that easy, and I'm happy with what you already do for me."
+            else:
+                m 1eua "I've been practicing a bit of python myself, actually."
+                m 2rksdla "I was secretly hoping I could teach you..."
+                m 2hksdlb "But I guess that's not really necessary for you, is it?"
+                m 1eka "Still, maybe you could listen to me teach and let me test my knowledge!"
+                m 1hua "If I have you to help me along the way, maybe joining you as a programmer wouldn't be so bad."
+                m 1hub "That would be one more thing to have in common, ahaha!"
+        "I'm in a different field.":
+            $ persistent._mas_pm_career = "other"
+            m 1eud "Ah, I guess I shouldn't be too surprised."
+            m 1eua "There are definitely more occupations than the couple I thought about."
+            m 1hua "Who knows? Maybe you could tell about your field."
+            m 1eub "It might be a field I never even considered for myself."
+            m 3eua "A lot of the time, people end up on paths they never expected to."
+            m 3tubfb "For example..."
+            m 1rksdla "I bet you never thought you'd end up in a relationship like ours..."
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "But you just {i}had{/i} to play this cheesy visual novel you found, didn't you?"
+            show monika 1hubfb at t11 zorder MAS_MONIKA_Z with dissolve
+            m 1hubfb "Ahaha!"
+            m 2hksdlb "I guess that wasn't really a good example..."
+            m 3eub "Still, a lot of the time, people with interesting life experiences end up becoming famous by writing about them."
+            m 1ekbfa "Maybe we could write a book one day about our love."
+            m 1eub "With your help, it might even take off."
+            m 1hubfa "You never know, ehehe~"
+        "I don't have a job yet.":
+            $ persistent._mas_pm_career = "none"
+            m 1euc "Oh, I see."
+            m 1eua "That's alright."
+            m 1eub "Are you looking for one?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are you looking for one?{fast}"
+                "Yes.":
+                    m 1eka "Well, I hope your search goes well."
+                    m 2ekc "I know finding one can be really difficult a lot of the time..."
+                    m 1eka "I'm really proud of you for trying, though."
+                    m 1rksdlc "A lot of the time, it takes countless attempts to land a job, and it's often discouraging..."
+                    m 1hua "But I believe in you, [player]."
+                    m 1hubfa "Know that whatever happens, I'll always love you~"
+                "No.":
+                    m "Ah, that's fine."
+                    m 1eua "I'm sure you know what's best for yourself."
+                    m 1eka "If you don't think you're ready, I'm glad you're not pushing yourself."
+                    m 1rksdla "Not to mention that I don't want you being overworked and too busy."
+                    m 3eka "After all, nobody wishes on their death bed that they worked a little more."
+                    m 1hua "I think it's nice to enjoy your time while you have it."
+                    m 1hubfa "That just means you can spend more time with me, right?"
+                    m 1hubfb "Ahaha!"
+        "I don't know what I want yet.":
+            $ persistent._mas_pm_career = "unsure"
+            m 1eub "That's alright!"
+            m 1eka "Choosing a profession can definitely be a daunting task."
+            m 2rksdla "Even with all the things I did, I'm not too sure about myself either."
+            m 1eua "I wouldn't worry about it too much if I were you, though."
+            m 3eua "A lot of people end up in careers they never thought they'd be in."
+            m 1eub "A good start at least would be to see if you could make a career out of any hobbies you have."
+            m 1eua "The first step towards being successful in something is respecting and loving it."
+            m 2eka "It would be pretty hard to be successful in something you don't like."
+            if mas_isMoniEnamored():
+                m 2tubfb "And no, [player]..."
+                m 2tubfa "I'm not a career, ehehe~"
+                m 2hubfb "Though, I guess love and respect is also a good start with me too, ahaha!"
+    m 1ruc "As for me..."
+    m 2rksdla "I don't really know for sure yet what I'll end up doing."
+    m 2hksdlb "If I had to guess, I'd say that I still have quite a long time to decide..."
+    m 1eka "Maybe it's a bit too early for me to decide."
+    m 1rksdlc "After all, I think we might have bigger concerns than my career..."
+    m 1hua "I'm not worried though, not as long as I have you by my side~"
+    m 1hubfa "I hope it's the same for you too~"
+    return
