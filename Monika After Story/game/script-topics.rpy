@@ -13020,3 +13020,53 @@ label monika_enjoyingspring:
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_stayathome_player",category=['romance','you'],prompt="What if I was a stay at home partner?",pool=True))
+
+label monika_stayathome_player:
+    m 1euc "Hm?"
+    m 1rksdla "Are you thinking about being a stay-at-home partner for me?"
+    m 1rksdlb "Ahaha..."
+    m 2hksdlb "You know, if you ask me, I think it's just a little early to be planning for things like that already."
+    m 2rksdla "I mean, I'm sure you can handle any plans you make for yourself, but doesn't that leave me to provide for us?"
+    if seen_event("monika_career"):
+        m 3euc "I think I remember talking about what I would go into a little while ago."
+        m 2hksdlb "I'm pretty sure I told you that it was a bit too early to really decide what I'd do for a living..."
+    else:
+        m 2rksdla "I know I definitely had a lot of things going for me; Being in debate club, starting up my own club, learning piano..."
+        m 2rksdlc "But really, I'm not completely sure what I might do for a living..."
+    m 1hksdlb "You being a stay-at-home partner on top of that?"
+    m 1hubfb "Gosh, you're really putting pressure on me to find a good career, aren't you? Ahaha~"
+    m 1eka "I'm sure we'll figure it out when the time comes, but for the time being, I think it's a bit early."
+    m 1euc "Unless..."
+    m 3euc "Do you think you'll be allowed to reguarly work from home?{nw}"
+    menu:
+        m "Do you think you'll be allowed to reguarly work from home?{fast}"
+        "I already do.":
+            m 1eud "Oh!"
+            m 1hub "Well, isn't that convenient? Ahaha!"
+            if persistent._mas_pm_career == "writer" or persistent._mas_pm_career == "programmer":
+                m 1euc "I guess that does make sense, considering the field you told me you're in."
+            m 3tubfb "Does that mean I can demand you spend even more time with me?"
+            show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5tubfu "I don't mean to impose, but in that case, I see no reason for you not to be with me all day, ehehe~"
+        "Yes.":
+            m 1eub "That sounds nice!"
+            m 3hua "I hear that's a nice luxury to have."
+            if persistent._mas_pm_career == "writer" or persistent._mas_pm_career == "programmer":
+                m 1eua "If I remember what you told me about your field, I guess there'a pretty good chance you'll be able to."
+                m 1hua "I'm sure it'll be relaxing if you get that chance."
+            m 1dua "Not having to go anywhere and just working from the comfort of your own home."
+            m 3hubfa "Then, there won't be anything to take you away from me!"
+            m 3tubfb "You'll be able to spend all day with me, right?"
+            m 1hubfb "Ahaha!"
+        "No.":
+            m 1hksdlb "Ahaha..."
+            m 2rksdla "You're really putting all the burden on me, aren't you?"
+            m 1hua "Well, when the time comes, I promise I'll do my best for you, [player]."
+            m 1eka "But right now, I think it's best that we wait and see what happens."
+            if persistent._mas_pm_career == "unsure":
+                m 3eua "You did say that you weren't sure what you wanted to do."
+                m 1eub "Maybe you'll find something by then."
+    return
