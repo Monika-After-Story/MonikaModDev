@@ -34,7 +34,7 @@ class WindowsBalloonTip:
         except:
           hicon = LoadIcon(0, win32con.IDI_APPLICATION)
         flags = NIF_ICON | NIF_MESSAGE | NIF_TIP
-        nid = (self.hwnd, 0, flags, win32con.WM_USER+20, hicon, "tooltip")
+        nid = (self.hwnd, 0, flags, win32con.WM_USER+20, hicon, "Monika After Story")
         Shell_NotifyIcon(NIM_ADD, nid)
         Shell_NotifyIcon(NIM_MODIFY, \
                          (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20,\

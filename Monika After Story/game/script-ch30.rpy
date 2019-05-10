@@ -1476,7 +1476,11 @@ label ch30_post_mid_loop_eval:
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
-            if persistent._mas_enable_notifications and not mas_isFocused():
+            if (
+                    persistent._mas_enable_notifications
+                    and not mas_isFocused()
+                    and not store.mas_globals.in_idle_mode
+                ):
                 call display_notif(random.choice(name_quips), random.choice(notif_quips))
             $ mas_randchat.setWaitingTime()
         
