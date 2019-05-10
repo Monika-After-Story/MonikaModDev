@@ -604,7 +604,6 @@ init 15 python in mas_affection:
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
-            store.mas_unlockEVL("monika_outfit", "EVE")
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
