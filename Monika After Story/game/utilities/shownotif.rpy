@@ -8,7 +8,7 @@ init python:
     notif_quips = [
         persistent.playername + ", I want to talk to you about something.",
         "Are you there" + persistent.playername + "?",
-        "Do you mind coming here for a second?",
+        "Can you come here for a second?",
         persistent.playername + ", do you have a second?",
         "I have something to tell you, " + persistent.playername + "!",
     ]
