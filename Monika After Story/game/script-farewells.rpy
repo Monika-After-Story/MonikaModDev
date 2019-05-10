@@ -856,11 +856,18 @@ label bye_long_absence:
             m 2hua "I'll be waiting here for you patiently, my love."
             m 2hub "Try not to keep me waiting for too long though!"
 
+        "Nevermind.":
+            #Reset this flag
+            $ persistent._mas_long_absence = True
+            m 3eka "Oh... Alright, [player]."
+            m 1rksdla "To be honest, I'm actually pretty relieved..."
+            m 1ekd "I don't know what I'd do here alone."
+            m 1rksdlc "It's not like I can go anywhere either, ahaha..."
+            m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
+            m 1hua "I don't care where we go, I'm just happy to be with you, [player]."
+            return
+
     m 2euc "Honestly I'm a little afraid to ask but..."
-    # TODO is this really intuitive?
-    # if the player says no, and then picks another
-    # farewell all this served no purpose, also, you already
-    # picked goodbye as in I'm going, why not let the player go?
 
     m "Are you going to leave straight away?{nw}"
     $ _history_list.pop()

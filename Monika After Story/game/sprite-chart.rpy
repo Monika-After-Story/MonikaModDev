@@ -8233,6 +8233,20 @@ image monika 2rktsc = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 2rktsd = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    head="f",
+    left="1l",
+    right="2r",
+    arms="crossed",
+    tears="streaming"
+)
+
 image monika 2lfx = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
