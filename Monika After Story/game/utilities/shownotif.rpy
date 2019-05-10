@@ -1,4 +1,27 @@
+#Whether we want notifs or not
+default persistent._mas_enable_notifications = False
+
+#Need the activewindow db
+default persistent._mas_windowreacts_database = dict()
 init python:
+    #List of notif quips
+    notif_quips = [
+        persistent.playername + ", I want to talk to you about something.",
+        "Are you there" + persistent.playername + "?",
+        "Do you mind coming here for a second?",
+        persistent.playername + ", do you have a second?",
+        "I have something to tell you, " + persistent.playername + "!",
+    ]
+
+    #List of name quips
+    name_quips = [
+        "Sweetheart",
+        "Darling",
+        "Honey",
+        "Angel",
+        "Monika",
+    ]
+
     #We need to make sure reload works
     try:
         UnregisterClass(tip.classAtom,tip.hinst)
@@ -35,9 +58,9 @@ init python:
 #START: Testing labels
 label check_window:
     m 1hub "Okay, [player]!"
-    m 2dsc "Let's see, your active window is.{w=0.5}.{w=0.5}."
+    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}."
 
-    pause 5.0
+    pause 2.0
 
     if mas_isFocused():
         m 1hub "Me, yay!"
@@ -49,7 +72,7 @@ label check_window:
 init 5 python:
     addEvent(
         Event(
-            persistent.event_database,
+            persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             rules={"no unlock": None},
             unlocked=False,

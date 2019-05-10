@@ -1135,6 +1135,10 @@ screen preferences():
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
                         hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
+                    textbutton _("Use Notifications"):
+                        action ToggleField(persistent, "_mas_enable_notifications")
+                        selected persistent._mas_enable_notifications
+
             null height (4 * gui.pref_spacing)
 
             hbox:
