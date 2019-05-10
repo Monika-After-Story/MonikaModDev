@@ -35,14 +35,8 @@ init python:
     tip = balloontip.WindowsBalloonTip()
 
 label display_notif(title, body):
+    play sound "mod_assets/sounds/effects/notif.wav"
     $ tip.showWindow(title,body)
-    return
-
-#Need to keep testing timing
-label monika_loveyou:
-    call display_notif("Monika", "I just wanted to tell you...")
-    pause 15.0
-    call display_notif("Monika", "I love you!")
     return
 
 #START: Utility Methods
