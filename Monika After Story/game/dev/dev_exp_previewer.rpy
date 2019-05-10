@@ -409,6 +409,35 @@ init 999 python:
             ]
         }
 
+        # modifier map, for special cases. Currently this should be used
+        # as appenders to image names
+        # NOTE: each expression may use this differently.
+        MOD_MAP = {
+            "tears": {
+                "streaming": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "up": (
+                    "closedhappy",
+                    "closedsad",
+                    "winkleft",
+                    "winkright",
+                ),
+                "left": (
+                    "closedhappy",
+                    "closedsad",
+                ),
+                "right": (
+                    "closedhappy",
+                    "closedsad",
+                ),
+            },
+        }
+                
+
         # list of keys that matter for a sprite code
         SC_PARTS = [
             "arms",
@@ -739,10 +768,12 @@ init 999 python:
                 _lean = None
                 _arms = self._get_img_name("arms")
 
+            img_eyes = self._get_img_name("eyes")
+
             try:
                 trn, rfr = mas_drawmonika(0, 0, monika_chr,
                     self._get_img_name("eyebrows"),
-                    self._get_img_name("eyes"),
+                    img_eyes,
                     self._get_img_name("nose"),
                     self._get_img_name("mouth"),
                     head="",
@@ -753,10 +784,7 @@ init 999 python:
                     eyebags=self._get_img_name("eyebags"),
                     sweat=self._get_img_name("sweat"),
                     blush=self._get_img_name("blush"),
-
-                    # TODO: tears needs to map differently in some cases
-                    #   this is low priority
-                    tears=self._get_img_name("tears"),
+                    tears=self._get_img_tears("tears", img_eyes),
                     emote=self._get_img_name("emote")
                 )
                 # now we need to modify the transform a little bit
@@ -1107,6 +1135,37 @@ init 999 python:
                 return None
 
             return self.IMG_NMAP[key][spr_code]
+
+
+        def _get_img_tears(self, key, eyes):
+            """
+            Custom name generator for tear expressions, as they vary on
+            eyes.
+
+            IN:
+                key - what image name do we need
+                eyes - current eyes as img name
+            
+            REUTRNS the image name we need
+            """
+            tears_name = self._get_img_name(key)
+
+            # check for the mapping
+            tears_map = self.MOD_MAP.get(key, None)
+            if tears_map is None:
+                return tears_name
+
+            # check for specific tears in the mapping
+            tears_mappings = tears_map.get(tears_name, None)
+            if tears_mappings is None:
+                return tears_name
+
+            # check for eyes in the mapping
+            if eyes in tears_mappings:
+                return tears_name + eyes
+
+            # otherwise just tears
+            return tears_name
 
 
         ####################### render / event ###############################

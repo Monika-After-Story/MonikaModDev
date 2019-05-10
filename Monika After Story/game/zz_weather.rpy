@@ -922,8 +922,8 @@ label monika_change_weather_loop:
     elif sel_weather == "auto":
         if mas_weather.force_weather:
             m 1hub "Sure!"
-            m 1dsc "Just give me a second..."
-            pause 1.0
+            m 1dsc "Just give me a second.{w=0.5}.{w=0.5}."
+
             #Set to false and return since nothing more needs to be done
             $ mas_weather.force_weather = False
             m 1eua "There we go!"
@@ -959,9 +959,7 @@ label monika_change_weather_loop:
 
     if not skip_leadin:
         m 1eua "Alright!"
-        m 1dsc "Just give me a second...{w=1.0}{nw}"
-
-    pause 1.0
+        m 1dsc "Just give me a second.{w=0.5}.{w=0.5}."
 
     # finally change the weather
     call mas_change_weather(sel_weather,by_user=True)
