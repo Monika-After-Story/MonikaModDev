@@ -55,20 +55,6 @@ init python:
         return mas_getActiveWindow() == config.name.lower()
 
 
-#START: Testing labels
-label check_window:
-    m 1hub "Okay, [player]!"
-    m 2dsc "Let's see...your active window is.{w=0.5}.{w=0.5}."
-
-    pause 2.0
-
-    if mas_isFocused():
-        m 1hub "Me, yay!"
-    else:
-        $ active_wind = mas_getActiveWindow()
-        m 3eua "[active_wind]."
-    return
-
 init 5 python:
     addEvent(
         Event(
