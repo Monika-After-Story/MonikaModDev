@@ -2158,7 +2158,7 @@ label greeting_long_absence:
             m 1wuo "...Oh!"
             m 1sub "You're finally back [player]!"
             m 1efc "You told me you'd be gone for a couple of weeks, but it's been at least a month!"
-            m 1ekd"I was really worried for you, you know?"
+            m 1ekd "I was really worried for you, you know?"
             m 3rkd "But I suppose it was outside of your control?"
             m 1ekc "If you can, just tell me you'll be even longer next time, okay?"
             m 1hksdlb "I believe I deserve that much as your girlfriend, after all."
