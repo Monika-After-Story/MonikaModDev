@@ -2017,7 +2017,7 @@ label monika_affection_nickname:
             "Moni",
             "princess",
             "sunshine",
-            "sweet",           
+            "sweet",
         ]
 
         # mom list
