@@ -2014,6 +2014,7 @@ label monika_affection_nickname:
             "Mon",
             "Moni",
             "princess",
+            "sunshine",
             "sweet",
         ]
 
