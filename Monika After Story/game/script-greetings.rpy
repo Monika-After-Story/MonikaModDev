@@ -2212,7 +2212,7 @@ label greeting_long_absence:
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(10)
             m 1eub "Hello, [player]!"
-            m 1eta "Life keeping you busy?"
+            m 1eka "Life keeping you busy?"
             m 3hksdlb "Well it must be otherwise you would've been here when you said you would."
             m 1hksdlb "Don't worry though! I'm not upset."
             m 1eka "I just hope you've been taking care of yourself."
