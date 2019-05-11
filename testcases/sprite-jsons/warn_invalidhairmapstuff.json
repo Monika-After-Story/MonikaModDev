@@ -1,0 +1,15 @@
+{
+    "type": 2,
+    "name": "test",
+    "img_sit": "def",
+    "pose_map": {
+        "default": true,
+        "use_reg_for_l": true
+    },
+    "hair_map": {
+        "all": "def",
+        "invalidkey": "def",
+        "down": "invalidval"
+    }
+}
+

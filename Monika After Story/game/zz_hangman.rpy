@@ -393,9 +393,10 @@ label game_hangman:
 
 
 label mas_hangman_game_select_diff:
-
+    m "Choose a difficulty.{nw}"
+    $ _history_list.pop()
     menu:
-        m "Choose a difficulty."
+        m "Choose a difficulty.{fast}"
         "Easy.":
             $ hangman_mode = mas_hmg.EASY_MODE
         "Normal.":
@@ -599,7 +600,7 @@ label mas_hangman_game_loop:
         if chances == 0:
             $ done = True
             if player_word:
-                m 1eka "[player],..."
+                m 1eka "[player]..."
                 m "You couldn't guess your own name?"
             m 1hua "Better luck next time~"
         elif "_" not in display_word:
@@ -692,8 +693,10 @@ label mas_hangman_game_loop:
         #TODO: grant a really tiny amount of affection?
 
     # try again?
+    m "Would you like to play again?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Would you like to play again?"
+        m "Would you like to play again?{fast}"
         "Yes.":
             jump mas_hangman_game_loop
         "No.":

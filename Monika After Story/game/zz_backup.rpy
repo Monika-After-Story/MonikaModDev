@@ -360,14 +360,30 @@ init -900 python:
             mas_utils.writelog("[ERROR]: {0}".format(str(e)))
 
 
+    def __mas__memoryCleanup():
+        """
+        Cleans up persistent data by removing uncessary parts.
+        """
+        # the chosen dict can be completely cleaned
+        persistent._chosen.clear()
+
+        # the seen ever dict must be iterated through
+        from store.mas_ev_data_ver import _verify_str
+        for seen_ever_key in persistent._seen_ever.keys():
+            if not _verify_str(seen_ever_key):
+                persistent._seen_ever.pop(seen_ever_key)
+
+
     # run the backup system if persistents arent screwd
     if not mas_corrupted_per and persistent._mas_moni_chksum is None:
+        __mas__memoryCleanup()
         __mas__memoryBackup()
 
 
 ### now for some dialogue bits courtesy of chibika
 
 label mas_backups_you_have_corrupted_persistent:
+    #TODO: Decide whether or not text speed should be enforced here.
     $ quick_menu = False
     scene black
     window show
@@ -385,8 +401,9 @@ label mas_backups_you_have_corrupted_persistent:
         show chibika at sticker_move_n
         "I was unable to find a working backup persistent."
 
+        "Do you have your own backups?{nw}"
         menu:
-            "Do you have your own backups?"
+            "Do you have your own backups?{fast}"
             "Yes.":
                 jump mas_backups_have_some
             "No.":

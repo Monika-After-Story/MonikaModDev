@@ -137,7 +137,7 @@ label monika_ptod_tip000:
     m 1lksdlb "I don't know {i}that{/i} much about programming, but I will try my best to explain."
     m 1esa "Let's start with what Python even is."
 
-    $ hideEventLabel("monika_ptod_tip000", depool=True)
+    $ mas_hideEVL("monika_ptod_tip000", "EVE", lock=True, depool=True)
 
     # enable tip 1
     $ import datetime
@@ -630,8 +630,10 @@ label monika_ptod_tip006:
     if tip_ev.last_seen is None:
         m 1eud "Whew!{w} That was a mouthful!"
 
+    m "Did you understand all that?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Did you understand all that?"
+        m "Did you understand all that?{fast}"
         "Yes!":
             m 1hua "Yay!"
 
