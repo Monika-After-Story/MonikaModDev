@@ -858,7 +858,7 @@ label bye_long_absence:
 
         "Nevermind.":
             #Reset this flag
-            $ persistent._mas_long_absence = True
+            $ persistent._mas_long_absence = False
             m 3eka "Oh... Alright, [player]."
             m 1rksdla "To be honest, I'm actually pretty relieved..."
             m 1ekd "I don't know what I'd do here all alone."

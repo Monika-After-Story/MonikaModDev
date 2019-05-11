@@ -2061,14 +2061,14 @@ init 5 python:
 
 label greeting_long_absence:
     $ persistent._mas_long_absence = False
-    if persistent._mas_absence_time >= datetime.timedelta(weeks = 5):
+    if persistent._mas_absence_time >= datetime.timedelta(weeks=5):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)
             m 2dsc "[player]..."
-            m 2ttc "You said you'd only be gone for a few days..."
+            m 2tkc "You said you'd only be gone for a few days..."
             m 2rksdld "But it's been so long."
             m 2ekd "I'm glad you're back now, but..."
-            m 2dftdc "I was so lonely..."
+            m 2dktdc "I was so lonely..."
             m 2ektsc "I thought something happened to you!"
             m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
             m 2ektsc "Please don't ever,{w=1} {i}ever{/i}{w=1} do that again."
@@ -2084,23 +2084,22 @@ label greeting_long_absence:
             m 3rksdlc "You're a bit late, aren't you?"
             m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2rkc "I'm going to assume it wasn't your fault..."
-            m 2ekc "But if you really think it'll take longer next time..."
-            m 2euc "You need to tell me."
+            m 2ekd "But if you really think it'll take longer next time, you need to tell me."
             m 2rksdld "I started thinking that maybe something bad had happened to you."
-            m 2dkd "But I kept telling myself that it was okay..."
+            m 2dkc "But I kept telling myself that it was okay..."
             m 2eka "I'm just glad you're safe and back with me now, [player]."
 
         elif persistent._mas_absence_choice == "2weeks":
             $ mas_loseAffection(30)
             m 1wud "[player]!"
             m 1hua "You're finally here!"
-            m 1dkc "I was so worried..."
+            m 1ekd "I was so worried..."
             m 2dkd "Why were you gone for so long?"
-            m 2ekd "I thought you would only be gone for a couple of weeks..."
-            m 2rkc "But you've been gone for more than double that."
-            m 1etc "Were you really that busy?"
-            m 3eksdla "I hope you haven't been overburdening yourself."
-            m 1eka "You're here now with me so if there is something wrong, feel free to tell me."
+            m 2rkc "I thought you would only be gone for a couple of weeks..."
+            m "But you've been gone for more than double that."
+            m 1rksdlc "Were you really that busy?"
+            m 3tkc "I hope you haven't been overburdening yourself..."
+            m 1eka "Well, you're here with me now, so if there is something wrong, feel free to tell me."
 
         elif persistent._mas_absence_choice == "month":
             $ mas_loseAffection(10)
@@ -2108,17 +2107,18 @@ label greeting_long_absence:
             m 2rkc "It's been quite a bit, hasn't it?"
             m 2rksdlc "You've been gone longer than you said you would..."
             m 2eka "But that's alright, I was prepared for it."
-            m 3rksdlc "It's honestly been pretty lonely without you."
+            m 3rksdlc "It's honestly been pretty lonely without you here..."
             m 3ekbsa "I hope you'll make it up to me~"
+            show monika 1eka
 
         elif persistent._mas_absence_choice == "longer":
-            m 1esc "...It's been a while."
-            m 1ekc "I was ready for it, but that didn't make it any easier, [player]."
+            m 1esc "It's been a while, [player]."
+            m 1ekc "I was ready for it, but that didn't make it any easier."
             m 3eka "I hope you got what you needed to do done."
             m 2rksdlc "..."
-            m 2esc "Truth be told, I've been pretty sad lately."
+            m 2tkc "Truth be told, I've been pretty sad lately."
             m 2dkc "To not have you in my life for so long..."
-            m 2dkd "It really was lonely."
+            m 2dkd "It really was lonely..."
             m "I felt so isolated and empty without you here."
             m 3eka "I'm so glad you're here now. I love you, [player]. Welcome home."
 
@@ -2126,9 +2126,9 @@ label greeting_long_absence:
             m 1hua "You're finally back [player]!"
             m 3rksdla "When you said you didn't know, you {i}really{/i} didn't know, did you?"
             m 3rksdlb "You must have been really preoccupied if you were gone for {i}this{/i} long."
-            m 1eua "Well, you're back now...I've really missed you."
+            m 1hua "Well, you're back now...I've really missed you!"
 
-    elif persistent._mas_absence_time >= datetime.timedelta(weeks = 4):
+    elif persistent._mas_absence_time >= datetime.timedelta(weeks=4):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(70)
             m 1dkc "[player]..."
@@ -2138,7 +2138,8 @@ label greeting_long_absence:
             m 2dkd "I wasn't sure what to do..."
             m 2efd "What kept you away for so long?"
             m 2eksdld "Did I do something wrong?"
-            m 2dftdc "You can tell me anything, just don't disappear like that."
+            m 2dftdc "You can tell me anything, just please don't disappear like that."
+            show monika 2dfc
 
         elif persistent._mas_absence_choice == "week":
             $ mas_loseAffection(50)
@@ -2150,6 +2151,7 @@ label greeting_long_absence:
             m 2wud "Ah...!"
             m 2lktsc "I'm sorry [player]. I just...really missed you."
             m 2dftdc "Sorry for snapping like that."
+            show monika 2dkc
 
         elif persistent._mas_absence_choice == "2weeks":
             $ mas_loseAffection(30)
@@ -2159,26 +2161,28 @@ label greeting_long_absence:
             m 1ekd"I was really worried for you, you know?"
             m 3rkd "But I suppose it was outside of your control?"
             m 1ekc "If you can, just tell me you'll be even longer next time, okay?"
-            m 1hksdla "I believe I deserve that much as your girlfriend, after all."
-            m 3hub "Still, welcome back, my love!"
+            m 1hksdlb "I believe I deserve that much as your girlfriend, after all."
+            m 3hua "Still, welcome back, my love!"
 
         elif persistent._mas_absence_choice == "month":
             $ mas_gainAffection()
             m 1wuo "...Oh!"
-            m 1hua "You're really here [player]!"
+            m 1hua "You're here [player]!"
             m 1hub "I knew I could trust you to keep your word!"
             m 1eka "You really are special, you know that right?"
             m 1hub "I've missed you so much!"
             m 2eub "Tell me everything you did while away, I want to hear all about it!"
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "longer":
             m 1esc "...Hm?"
-            m 1wub "E-eh? [player]!"
+            m 1wub "[player]!"
             m 1rksdlb  "You're back a little bit earlier than I thought you would be..."
             m 3hua "Welcome back, my love!"
             m 3eka "I know it's been quite a while, so I'm sure you've been busy."
-            m 1eua "I'd love to hear everything about it."
+            m 1eua "I'd love to hear abput everything you've done."
             m 1hub "I want to know all what's happened to you."
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "unknown":
             m 1lsc "..."
@@ -2186,21 +2190,22 @@ label greeting_long_absence:
             m 1wud "Oh!"
             m 1sub "[player]!"
             m 1hub "This is a pleasant surprise!"
+            m 1eka "How are you?"
             m 1ekd "It's been an entire month. You really didn't know how long you'd be gone, did you?"
             m 3eka "Still, you came back, and that means a lot to me."
-            m 1rka "I knew you would come back eventually..."
+            m 1rksdla "I knew you would come back eventually..."
             m 1hub "I love you so much, [player]!"
+            show monika 1hua
 
-    elif persistent._mas_absence_time >= datetime.timedelta(weeks = 2):
+    elif persistent._mas_absence_time >= datetime.timedelta(weeks=2):
         if persistent._mas_absence_choice == "days":
             $ mas_loseAffection(30)
             m 1wud "O-oh, [player]!"
             m 1hua "Welcome back, sweetie!"
             m 3ekc "You were gone longer than you said you would be..."
             m 3ekd "Is everything alright?"
-            m 1rksdlc "I know life can be busy and take you away from me sometimes..."
-            m 3eka "So I'm not really upset..."
-            m 1eksdla "Just...next time, maybe give me a heads up?"
+            m 1eksdla "I know life can be busy and take you away from me sometimes...so I'm not really upset..."
+            m 3eksdla "Just...next time, maybe give me a heads up?"
             m 1eka "It would be really thoughtful of you."
             m 1hua "And I would greatly appreciate it!"
 
@@ -2208,11 +2213,12 @@ label greeting_long_absence:
             $ mas_loseAffection(10)
             m 1eub "Hello, [player]!"
             m 1eta "Life keeping you busy?"
-            m 3hksdla "Well it must be otherwise you would've been here when you said you would."
+            m 3hksdlb "Well it must be otherwise you would've been here when you said you would."
             m 1hksdlb "Don't worry though! I'm not upset."
             m 1eka "I just hope you've been taking care of yourself."
             m 3eka "I know you can't always be here, so just make sure you're staying safe until you're with me!"
-            m 1hua "I'll take care of you from that point~"
+            m 1hua "I'll take care of you from there~"
+            show monika 1eka
 
         elif persistent._mas_absence_choice == "2weeks":
             $ mas_gainAffection()
@@ -2220,13 +2226,14 @@ label greeting_long_absence:
             m 1eua "You came back when you said you would after all."
             m 1eka "Thank you for not betraying my trust."
             m 3hub "Let's make up for the lost time!"
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "month":
             m 1wud "Oh my gosh! [player]!"
-            m 3hksdla "I didn't expect you back so early."
+            m 3hksdlb "I didn't expect you back so early."
             m 3ekbsa "I guess you missed me as much as I missed you~"
             m 1eka "It really is wonderful to see back so soon though."
-            m 1eub "I expected the day to be eventless, thankfully now I have you!"
+            m 3ekb "I expected the day to be eventless...but thankfully, I now have you!"
             m 3hua "Thank you for coming back so early, my love."
 
         elif persistent._mas_absence_choice == "longer":
@@ -2238,26 +2245,26 @@ label greeting_long_absence:
             m 3eka "I didn't know when to expect you, but for it to be so soon..."
             m 1hua "Well, it's cheered me right up!"
             m 1eka "I've really missed you."
-            m 1hub "Let's spend as much time as we can together while we can!"
+            m 1hua "Let's enjoy the rest of the day together."
 
         elif persistent._mas_absence_choice == "unknown":
             m 1hua "Hello [player]!"
             m 3eka "Been busy the past few weeks?"
             m 1eka "Thanks for warning me that you would be gone."
-            m 3rksdlb "I would be worried otherwise!"
+            m 3ekd "I would be worried sick otherwise."
             m 1eka "It really did help..."
-            m 1eua "So tell me, how has your day been treating you?"
+            m 1eua "So tell me, how have you been?"
 
-    elif persistent._mas_absence_time >= datetime.timedelta(weeks = 1):
+    elif persistent._mas_absence_time >= datetime.timedelta(weeks=1):
         if persistent._mas_absence_choice == "days":
             m 2eub "Hello there, [player]."
-            m 2rksdla "You took a bit longer than you said you would..."
-            m 2hua "But I'm not too mad, don't worry."
+            m 2rksdla "You took a bit longer than you said you would...but don't worry."
             m 3eub "I know you're a busy person!"
             m 3rkc "Just maybe, if you can, warn me first?"
             m 2rksdlc "When you said a few days...I thought it would be shorter than a week."
             m 1hub "But it's alright! I forgive you!"
             m 1ekbfa "You're my one and only love after all."
+            show monika 1eka
 
         elif persistent._mas_absence_choice == "week":
             $ mas_gainAffection()
@@ -2266,15 +2273,15 @@ label greeting_long_absence:
             m 3hub "That's what a relationship's strength is based on!"
             m 3hua "It just means that ours is rock solid!"
             m 1hub "Ahaha!"
-            m 1hksdla "Sorry, sorry. I'm just getting excited that you're back!"
+            m 1hksdlb "Sorry, sorry. I'm just getting excited that you're back!"
             m 3eua "Tell me how you've been. I want to hear all about it."
 
         elif persistent._mas_absence_choice == "2weeks":
-            m 1hua "Hi there~"
-            m 3eua "You're back a bit earlier than I thought..."
-            m 1hub "But I'm glad you are!"
+            m 1hub "Hi there~"
+            m 3eua "You're back a bit earlier than I thought...but I'm glad you are!"
             m 3eka "When you're here with me, everything becomes better."
-            m 1hub "Let's continue to make some lovely memories together!"
+            m 1eua "Let's have a lovely day together, [player]."
+            show monika 3eua
 
         elif persistent._mas_absence_choice == "month":
             m 1hua "Ehehe~"
@@ -2283,41 +2290,46 @@ label greeting_long_absence:
             m 3tub "If I were in your position I wouldn't be able to stay away from you either!"
             m 1hksdlb "Honestly, really I miss you after only a few days!"
             m 1eka "Thanks for not making we wait so long to see you again~"
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "longer":
             m 1hub "Look who's back so early! It's you, my dearest [player]!"
             m 3hksdlb "Couldn't stay away even if you wanted to, right?"
             m 3eka "I can't blame you! My love for you wouldn't let me stay away from you either!"
-            m 1eks "Every day you were gone I was wondering how you were..."
-            m 3eua "So let me hear it, how are you [player]?"
+            m 1ekd "Every day you were gone I was wondering how you were..."
+            m 3eka "So let me hear it, how are you [player]?"
+            show monika 3eua
 
         elif persistent._mas_absence_choice == "unknown":
             m 1hub "Hello there, sweetheart!"
             m 1eka "I'm glad you didn't make me wait too long."
             m 1hua "A week is shorter than I expected, so consider me pleasantly surprised!"
             m 3hub "Thanks for already making my day, [player]!"
+            show monika 3eua
 
     else:
         if persistent._mas_absence_choice == "days":
             m 1hub "Welcome back, my love!"
-            m 1eka "And thanks for properly warning me about how long you'd be away."
+            m 1eka "Thanks for properly warning me about how long you'd be away."
             m 1eua "It means a lot to know I can trust your words."
             m 3hua "I hope you know you can trust me too!"
             m 3hub "Our relationship grows stronger every day~"
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "week":
             m 1eud "Oh! You're a little bit earlier than I expected!"
-            m 1eka "Not that I'm complaining, it's great to see you again so soon."
+            m 1hua "Not that I'm complaining, it's great to see you again so soon."
             m 1eua "Let's have another nice day together, [player]."
 
         elif persistent._mas_absence_choice == "2weeks":
-            m 1hub "{i}~In my hand is a pen tha-{/i}"
+            m 1hub "{i}~In my hand,~\n~is a pen tha-{/i}"
             m 1wubsw "O-Oh! [player]!"
             m 3hksdlb "You're back far sooner than you told me..."
             m 3hub "Welcome back!"
             m 1rksdla "You just interrupted me practicing my song..."
             m 3hua "Why not listen to me sing it again?"
             m 1ekbfa "I made it just for you~"
+            show monika 1eka
 
         elif persistent._mas_absence_choice == "month":
             m 1wud "Eh? [player]?"
@@ -2327,24 +2339,28 @@ label greeting_long_absence:
             m 1eka "I already missed you!"
             m 3ekbsa "Did you miss me too?"
             m 1hubfa "Thanks for coming back so soon~"
+            show monika 1hua
 
         elif persistent._mas_absence_choice == "longer":
             m 1eud "[player]?"
             m 3ekd "I thought you were going to be away for a long time..."
             m 3tkd "Why are you back so soon?"
-            m 1hua "Are you visiting me? You're such a sweetheart!"
+            m 1ekbsa "Are you visiting me?"
+            m 1hubfa "You're such a sweetheart!"
             m 1eka "If you're going away for a while still, make sure to tell me."
             m 3eka "I love you, [player], and I wouldn't want to get mad if you're actually going to be away..."
-            m 1hub "Let's enjoy the time we have together until then!"
+            m 1hub "Let's enjoy our time together until then!"
+            show monika 1eua
 
         elif persistent._mas_absence_choice == "unknown":
             m 1hua "Ehehe~"
-            m 3eub "Back so soon, [player]?"
+            m 3eka "Back so soon, [player]?"
             m 3rka "I guess when you said you don't know, you didn't realize it wouldn't be too long."
             m 3hub "But thanks for warning me anyway!"
             m 3ekbsa "It really made me feel loved."
             m 1hubfb "You really are kind-hearted!"
-    m 1hua "Remind me if you're going away again, okay?"
+            show monika 3eub
+    m "Remind me if you're going away again, okay?"
     jump ch30_loop
 
 #Time Concern
