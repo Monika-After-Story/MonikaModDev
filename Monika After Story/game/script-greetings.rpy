@@ -2071,7 +2071,7 @@ label greeting_long_absence:
             m 2dktdc "I was so lonely..."
             m 2ektsc "I thought something happened to you!"
             m 2lktsc "I...I kept thinking that maybe you wouldn't come back."
-            m 2ektsc "Please don't ever,{w=1} {i}ever{/i}{w=1} do that again."
+            m 2ektsc "Please don't ever,{w=0.5} {i}ever{/i}{w=0.5} do that again."
             m 2rktsd "Maybe you couldn't help it, but...I was worried sick."
             m 2dftdc "I didn't know what to do."
             m 4ekc "As much as possible, [player], please don't be gone for so long."
