@@ -778,7 +778,6 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    #TODO: Update exps on this
     m 1ekc "Aww...that's pretty saddening..."
     m 1eka "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
