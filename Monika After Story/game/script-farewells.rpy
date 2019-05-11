@@ -859,7 +859,7 @@ label bye_long_absence:
             #Reset this flag
             $ persistent._mas_long_absence = False
             m 3eka "Oh... Alright, [player]."
-            m 1rksdla "To be honest, I'm actually pretty relieved..."
+            m 1rksdla "Honestly, I'm pretty relieved you're not going..."
             m 1ekd "I don't know what I'd do here all alone."
             m 3rksdlb "It's not like I can go anywhere either, ahaha..."
             m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
