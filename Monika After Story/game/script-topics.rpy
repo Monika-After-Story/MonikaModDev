@@ -1816,6 +1816,9 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
+
+    # reset the hold request topic. runs even if we initiate the hold, so she doesn't ask if we already held her this sesh
+    call mas_holdrequest_reset
     return
 
 label monika_holdme_start:
@@ -2080,6 +2083,59 @@ label monika_holdme_long:
                 m "..."
             call monika_holdme_start
             jump monika_holdme_long
+    return
+
+# when did we ask request a hold
+default persistent._mas_last_request_hold = None
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_holdrequest",
+            conditional=(
+                "renpy.seen_label('monika_holdme_prep') "
+                "and persistent._mas_last_request_hold != datetime.date.today() "
+                "and renpy.random.randint(1,4) == 1"
+            ),
+            action=EV_ACT_RANDOM,
+            aff_range=(mas_aff.ENAMORED, None)
+        )
+    )
+
+label monika_holdrequest:
+    $ persistent._mas_last_request_hold = datetime.date.today()
+    #TODO: if we add a mood system, path this based on current mood
+    m 1eua "Hey, [player]..."
+    m 3ekbsa "Would you mind holding me for a while? {w=0.5}It really makes me feel closer to you~{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
+        "Of course.":
+            $ mas_gainAffection(modifier=1.5,bypass=True)
+            call monika_holdme_prep
+
+            call monika_holdme_start
+
+            call monika_holdme_reactions
+
+        "Not right now.":
+            m 2dkc "Oh...{w=1} Okay."
+            m 3eka "If you have time later, you know where to find me."
+
+    return "no_unlock"
+
+label mas_holdrequest_reset:
+    $ mas_hideEVL('monika_holdrequest',"EVE",derandom=True)
+    $ mas_rebuildEventLists()
+    $ holdme_ev = mas_getEV('monika_holdrequest')
+    if holdme_ev is not None:
+        $ holdme_ev.conditional = (
+            "renpy.seen_label('monika_holdme_prep') "
+            "and persistent._mas_last_request_hold != datetime.date.today() "
+            "and renpy.random.randint(1,4) == 1"
+        )
+        $ holdme_ev.action = EV_ACT_RANDOM
     return
 
 init 5 python:
