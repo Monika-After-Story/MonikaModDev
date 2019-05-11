@@ -861,10 +861,10 @@ label bye_long_absence:
             $ persistent._mas_long_absence = True
             m 3eka "Oh... Alright, [player]."
             m 1rksdla "To be honest, I'm actually pretty relieved..."
-            m 1ekd "I don't know what I'd do here alone."
-            m 1rksdlc "It's not like I can go anywhere either, ahaha..."
+            m 1ekd "I don't know what I'd do here all alone."
+            m 3rksdlb "It's not like I can go anywhere either, ahaha..."
             m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
-            m 1hua "I don't care where we go, I'm just happy to be with you, [player]."
+            m 1hua "I don't care where we go, as long as I'm with you, [player]."
             return
 
     m 2euc "Honestly I'm a little afraid to ask but..."
