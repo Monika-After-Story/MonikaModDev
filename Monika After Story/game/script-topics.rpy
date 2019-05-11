@@ -2111,7 +2111,7 @@ label monika_holdrequest:
     $ _history_list.pop()
     menu:
         m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
-        "Of course.":
+        "Come here, [m_name].":
             $ mas_gainAffection(modifier=1.5,bypass=True)
             call monika_holdme_prep
 
