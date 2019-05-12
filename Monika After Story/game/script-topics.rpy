@@ -1628,6 +1628,7 @@ label monika_rain:
                 # renable ui and hotkeys
                 $ store.songs.enabled = True
                 $ HKBShowButtons()
+                call monika_holdme_end
 
                 if mas_isMoniAff(higher=True):
                     m 1eua "If you want the rain to stop, just ask me, okay?"
@@ -1781,6 +1782,8 @@ label monika_rain_holdme:
         call monika_holdme_start
 
         call monika_holdme_reactions
+
+        call monika_holdme_end
         # small affection increase so people don't farm affection with this one.
         $ mas_gainAffection(modifier=0.25)
 
@@ -1817,8 +1820,6 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     $ HKBHideButtons()
     $ store.songs.enabled = False
 
-    # reset the hold request topic. runs even if we initiate the hold, so she doesn't ask if we already held her this sesh
-    call mas_holdrequest_reset
     return
 
 label monika_holdme_start:
@@ -2085,26 +2086,26 @@ label monika_holdme_long:
             jump monika_holdme_long
     return
 
-# when did we ask request a hold
-default persistent._mas_last_request_hold = None
+# when did we last hold monika
+default persistent._mas_last_hold = None
 
 init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_holdrequest",
-            conditional=(
-                "renpy.seen_label('monika_holdme_prep') "
-                "and persistent._mas_last_request_hold != datetime.date.today() "
-                "and renpy.random.randint(1,4) == 1"
-            ),
-            action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.ENAMORED, None)
+    # random chance per session Monika can ask for a hold
+    if renpy.random.randint(1,3) == 1:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="monika_holdrequest",
+                conditional=(
+                    "renpy.seen_label('monika_holdme_prep') "
+                    "and persistent._mas_last_hold != datetime.date.today()"
+                ),
+                action=EV_ACT_RANDOM,
+                aff_range=(mas_aff.ENAMORED, None)
+            )
         )
-    )
 
 label monika_holdrequest:
-    $ persistent._mas_last_request_hold = datetime.date.today()
     #TODO: if we add a mood system, path this based on current mood
     m 1eua "Hey, [player]..."
     m 3ekbsa "Would you mind holding me for a while? {w=0.5}It really makes me feel closer to you~{nw}"
@@ -2119,23 +2120,28 @@ label monika_holdrequest:
 
             call monika_holdme_reactions
 
+            call monika_holdme_end
+
         "Not right now.":
             m 2dkc "Oh...{w=1} Okay."
             m 3eka "If you have time later, you know where to find me."
 
     return "no_unlock"
 
-label mas_holdrequest_reset:
-    $ mas_hideEVL('monika_holdrequest',"EVE",derandom=True)
-    $ mas_rebuildEventLists()
+# label to set the last time held and reset the _holdrequest params
+label monika_holdme_end:
+    # set the last time held at the end of the hold to prevent a possible
+    # hold request right after a hold that ends after midnight
+    $ persistent._mas_last_hold = datetime.date.today()
     $ holdme_ev = mas_getEV('monika_holdrequest')
     if holdme_ev is not None:
+        $ holdme_ev.random = False
         $ holdme_ev.conditional = (
             "renpy.seen_label('monika_holdme_prep') "
-            "and persistent._mas_last_request_hold != datetime.date.today() "
-            "and renpy.random.randint(1,4) == 1"
+            "and persistent._mas_last_hold != datetime.date.today()"
         )
         $ holdme_ev.action = EV_ACT_RANDOM
+        $ mas_rebuildEventLists()
     return
 
 init 5 python:
@@ -4125,6 +4131,7 @@ label monika_eternity:
 
                 call monika_holdme_prep(False,True)
                 call monika_holdme_start
+                call monika_holdme_end
 
                 m 2dkbfa "That was really nice while it lasted."
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
