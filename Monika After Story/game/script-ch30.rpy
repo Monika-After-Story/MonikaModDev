@@ -1481,6 +1481,13 @@ label ch30_post_mid_loop_eval:
                     and not mas_isFocused()
                     and not store.mas_globals.in_idle_mode
                 ):
+                #We want to destroy all existing notifications
+                python:
+                    for hwnd in destroy_list:
+                        win32gui.DestroyWindow(hwnd)
+                        destroy_list.remove(hwnd)
+
+                #Create a new notif
                 call display_notif(random.choice(name_quips), random.choice(notif_quips))
             $ mas_randchat.setWaitingTime()
         

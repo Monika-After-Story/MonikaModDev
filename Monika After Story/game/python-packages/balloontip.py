@@ -26,20 +26,23 @@ class WindowsBalloonTip:
                 0, 0, win32con.CW_USEDEFAULT, win32con.CW_USEDEFAULT, \
                 0, 0, self.hinst, None)
         UpdateWindow(self.hwnd)
+
+        #Get/Set Notification Icon
         iconPathName = os.path.abspath(os.path.join( sys.path[0], "CustomIconWindows.ico" ))
         icon_flags = win32con.LR_LOADFROMFILE | win32con.LR_DEFAULTSIZE
         try:
-           hicon = LoadImage(self.hinst, iconPathName, \
+            hicon = LoadImage(self.hinst, iconPathName, \
                     win32con.IMAGE_ICON, 0, 0, icon_flags)
         except:
-          hicon = LoadIcon(0, win32con.IDI_APPLICATION)
+            hicon = LoadIcon(0, win32con.IDI_APPLICATION)
+
+        #Initialize the notif itself
         flags = NIF_ICON | NIF_MESSAGE | NIF_TIP
         nid = (self.hwnd, 0, flags, win32con.WM_USER+20, hicon, "Monika After Story")
         Shell_NotifyIcon(NIM_ADD, nid)
         Shell_NotifyIcon(NIM_MODIFY, \
                          (self.hwnd, 0, NIF_INFO, win32con.WM_USER+20,\
                           hicon, "Balloon  tooltip",msg,200,title))
-        #DestroyWindow(self.hwnd)
 
     def OnDestroy(self, hwnd, msg, wparam, lparam):
         nid = (self.hwnd, 0)

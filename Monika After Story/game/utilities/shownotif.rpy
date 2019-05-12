@@ -4,10 +4,22 @@ default persistent._mas_enable_notifications = False
 #Need the activewindow db
 default persistent._mas_windowreacts_database = dict()
 init python:
+    import sys
+    sys.path.extend((renpy.config.gamedir + '\\python-packages\\win32', renpy.config.gamedir +'\\python-packages\\win32\\Lib'))
+    import balloontip
+    #Going to import win32gui for use in destroying notifs
+    import win32gui
+
+    #Now we initialize the notification class
+    tip = balloontip.WindowsBalloonTip()
+
+    #Now we set the hwnd of this temporarily
+    tip.hwnd = None
+
     #List of notif quips
     notif_quips = [
         persistent.playername + ", I want to talk to you about something.",
-        "Are you there" + persistent.playername + "?",
+        "Are you there, " + persistent.playername + "?",
         "Can you come here for a second?",
         persistent.playername + ", do you have a second?",
         "I have something to tell you, " + persistent.playername + "!",
@@ -22,21 +34,19 @@ init python:
         "Monika",
     ]
 
-    #We need to make sure reload works
-    try:
-        UnregisterClass(tip.classAtom,tip.hinst)
-    except:
-        pass
+    #List of hwnd IDs to destroy if we want to
+    destroy_list = list()
 
-    #Firstly, we want to create the notification class
-    import sys
-    sys.path.extend((renpy.config.gamedir + '\\python-packages\\win32', renpy.config.gamedir +'\\python-packages\\win32\\Lib'))
-    import balloontip
-    tip = balloontip.WindowsBalloonTip()
-
+#Notif creation label.
+#Title: Notification heading text
+#Body: Notification body text
 label display_notif(title, body):
+    #Make the notif
     play sound "mod_assets/sounds/effects/notif.wav"
     $ tip.showWindow(title,body)
+
+    #We need the IDs of the notifs to delete them from the tray
+    $ destroy_list.append(tip.hwnd)
     return
 
 #START: Utility Methods
