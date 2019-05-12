@@ -1,8 +1,6 @@
 #Whether we want notifs or not
 default persistent._mas_enable_notifications = False
 
-#Need the activewindow db
-default persistent._mas_windowreacts_database = dict()
 init python:
     import sys
     sys.path.extend((renpy.config.gamedir + '\\python-packages\\win32', renpy.config.gamedir +'\\python-packages\\win32\\Lib'))
@@ -58,20 +56,49 @@ init python:
     def mas_isFocused():
         return mas_getActiveWindow() == config.name.lower()
 
+    def mas_isInActiveWindow(keywords):
+        return len([s for s in keywords if s.lower() not in mas_getActiveWindow()]) == 0
 
+
+#START: Window Reacts
 init 5 python:
     addEvent(
         Event(
-            persistent._mas_windowreacts_database,
+            persistent.event_database,
             eventlabel="monika_whatwatching",
-            rules={"no unlock": None},
             unlocked=False,
-            conditional="'youtube' in mas_getActiveWindow()",
+            rules={"no unlock": None},
+            conditional="mas_isInActiveWindow(['youtube'])",
             action=EV_ACT_PUSH
         )
     )
 
+init 7 python:
+    mas_getEV('monika_whatwatching').conditional = "mas_isInActiveWindow(['youtube'])"
+    mas_getEV('monika_whatwatching').action = EV_ACT_PUSH
+
 
 label monika_whatwatching:
     call display_notif("Monika","What are you watching, "+player+"?")
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_lookingat",
+            unlocked=False,
+            rules={"no unlock": None},
+            conditional="mas_isInActiveWindow(['r34', 'monika'])",
+            action=EV_ACT_PUSH
+        )
+    )
+
+init 7 python:
+    mas_getEV('monika_lookingat').conditional = "mas_isInActiveWindow(['r34', 'monika'])"
+    mas_getEV('monika_lookingat').action = EV_ACT_PUSH
+
+label monika_lookingat:
+    call display_notif("Monika", "Hey, "+player+"...what are you looking at?")
+    $ queueEvent('monika_nsfw')
     return
