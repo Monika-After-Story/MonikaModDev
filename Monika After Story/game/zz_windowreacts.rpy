@@ -15,18 +15,21 @@ init -10 python in mas_windowreacts:
 
 init python:
     #The initial setup
-    #We need to extend the sys path to see our packages
-    import sys
-    sys.path.extend((renpy.config.gamedir + '\\python-packages\\win32', renpy.config.gamedir +'\\python-packages\\win32\\Lib'))
-    import balloontip
-    #Going to import win32gui for use in destroying notifs
-    import win32gui
 
-    #Now we initialize the notification class
-    tip = balloontip.WindowsBalloonTip()
+    #We can only do this on windows
+    if renpy.windows:
+        #We need to extend the sys path to see our packages
+        import sys
+        sys.path.extend((renpy.config.gamedir + '\\python-packages\\win32', renpy.config.gamedir +'\\python-packages\\win32\\Lib'))
+        import balloontip
+        #Going to import win32gui for use in destroying notifs
+        import win32gui
 
-    #Now we set the hwnd of this temporarily
-    tip.hwnd = None
+        #Now we initialize the notification class
+        tip = balloontip.WindowsBalloonTip()
+
+        #Now we set the hwnd of this temporarily
+        tip.hwnd = None
 
     #List of notif quips (used for topic alerts)
     notif_quips = [
@@ -52,13 +55,18 @@ init python:
 
     #START: Utility methods
     def mas_getActiveWindow():
-        from win32gui import GetWindowText, GetForegroundWindow
-        return GetWindowText(GetForegroundWindow()).lower()
+        if renpy.windows:
+            from win32gui import GetWindowText, GetForegroundWindow
+            return GetWindowText(GetForegroundWindow()).lower()
+        else:
+            #TODO: Mac vers (if possible)
+            return ""
 
     def mas_isFocused():
         """
         Checks if MAS is the focused window
         """
+        #TODO: Mac vers
         return mas_getActiveWindow() == config.name.lower()
 
     def mas_isInActiveWindow(keywords):
