@@ -108,10 +108,12 @@ init python:
             return
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
-            if mas_isInActiveWindow(ev.category):
-                if (not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle):
-                    queueEvent(ev_label)
-                    ev.unlocked=False
+            if (
+                (mas_isInActiveWindow(ev.category) and ev.unlocked)
+                and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                ):
+                queueEvent(ev_label)
+                ev.unlocked=False
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """

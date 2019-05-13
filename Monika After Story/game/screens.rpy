@@ -19,6 +19,11 @@ init -1 python:
     layout.MAS_TT_REPEAT = (
         "Enable this to let Monika repeat topics that you have already seen."
     )
+    layout.MAS_TT_NOTIF = (
+        "Notifications allow Monika to speak to you through Windows "
+        "notifications. Enabling this will let Monika use them "
+        "and see your active window. Use at your own discretion."
+    )
 
 
 
@@ -1138,6 +1143,7 @@ screen preferences():
                     textbutton _("Use Notifications"):
                         action ToggleField(persistent, "_mas_enable_notifications")
                         selected persistent._mas_enable_notifications
+                        hovered tooltip.Action(layout.MAS_TT_NOTIF)
 
             null height (4 * gui.pref_spacing)
 
