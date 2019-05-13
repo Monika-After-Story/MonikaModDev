@@ -294,7 +294,8 @@ init 4 python:
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
-        "APL": store.mas_apology.apology_db
+        "APL": store.mas_apology.apology_db,
+        "WRS": store.mas_windowreacts.windowreact_db
     }
 
 

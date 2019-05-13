@@ -1327,6 +1327,9 @@ label ch30_preloop:
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
  
+    #Unlock windowreact topics
+    $ mas_resetWindowReacts()
+
     # save here before we enter the loop
     $ renpy.save_persistent()
 
@@ -1421,6 +1424,12 @@ label ch30_visual_skip:
             # run seasonal check
             mas_seasonalCheck()
 
+            #Clear the notifications tray
+            mas_clearNotifs()
+
+            #Now we check if we should queue windowreact evs
+            mas_checkForWindowReacts()
+
             # check if we need to rebulid ev
             if mas_idle_mailbox.get_rebuild_msg():
                 mas_rebuildEventLists()
@@ -1466,7 +1475,7 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
-        
+
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
@@ -1476,21 +1485,11 @@ label ch30_post_mid_loop_eval:
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
-            if (
-                    persistent._mas_enable_notifications
-                    and not mas_isFocused()
-                    and not store.mas_globals.in_idle_mode
-                ):
-                #We want to destroy all existing notifications
-                python:
-                    for hwnd in destroy_list:
-                        win32gui.DestroyWindow(hwnd)
-                        destroy_list.remove(hwnd)
-
+            if (not store.mas_globals.in_idle_mode):
                 #Create a new notif
                 call display_notif(random.choice(name_quips), random.choice(notif_quips))
             $ mas_randchat.setWaitingTime()
-        
+
         window auto
         
 #        python:
@@ -1503,6 +1502,9 @@ label ch30_post_mid_loop_eval:
 #                pushEvent("monika_battery")
 
         if store.mas_globals.in_idle_mode:
+            #We want to check for windowreacts which can run in idle
+            $ mas_checkForWindowReacts()
+
             jump post_pick_random_topic
 
         # Pick a random Monika topic
