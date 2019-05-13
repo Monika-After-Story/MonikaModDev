@@ -818,11 +818,12 @@ label ch30_main:
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop # move music out here because of context
+
+    # call reset stuff
+    call ch30_reset
 
     # set monikas outfit to default
     $ monika_chr.reset_outfit(False)
-
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
@@ -1669,24 +1670,32 @@ label ch30_reset:
                 renpy.save_persistent()
 #        mas_is_snowing = mas_isWinter()
 #        if mas_is_snowing:
-#            
+#
 #            mas_lockEVL("monika_rain_start", "EVE")
 #            mas_lockEVL("monika_rain_stop", "EVE")
 #            mas_lockEVL("mas_monika_islands", "EVE")
 #            mas_lockEVL("monika_rain", "EVE")
 #            mas_lockEVL("greeting_ourreality", "GRE")
 
+    #### SPRITES
+
     # reset hair / clothes
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
-    
-    # same with the def ribbon, should always be unlocked
+
+    # def ribbon always unlocked
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
+
+    ## custom sprite objects 
+    python:
+        store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
- 
+
+    #### END SPRITES
+
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
     # this is likely to occur in crashes / reloads
@@ -1802,6 +1811,18 @@ label ch30_reset:
 
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
+
+    ## reactions fix
+    python:
+        if persistent._mas_filereacts_just_reacted:
+            queueEvent("mas_reaction_end")
+
+    # set any prompt variants for acs that can be removed here
+    python:
+        if monika_chr.get_acs_of_type('left-hair-clip'):
+            mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        else:
+            mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

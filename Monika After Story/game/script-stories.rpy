@@ -464,12 +464,11 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ mas_changeWeather(mas_weather_rain)
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_masks=True)
-    $ morning_flag = True
-    play music "mod_assets/bgm/happy_story_telling.ogg" loop
-    play background audio.rain fadein 1.0 loop
     if not mas_isO31():
-        show vignette zorder 70
+        $ store.mas_globals.show_vignette = True
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc')
+    play music "mod_assets/bgm/happy_story_telling.ogg" loop
+
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -506,8 +505,8 @@ label mas_scary_story_cleanup:
     $ morning_flag = mas_temp_m_flag
     $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
-        hide vignette
-    call spaceroom(scene_change=True, dissolve_all=True)
+        $ store.mas_globals.show_vignette = False
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
