@@ -109,8 +109,8 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                (mas_isInActiveWindow(ev.category) and ev.unlocked)
-                and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                    (mas_isInActiveWindow(ev.category) and ev.unlocked)
+                    and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 ):
                 queueEvent(ev_label)
                 ev.unlocked=False
