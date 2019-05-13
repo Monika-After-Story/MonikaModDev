@@ -34,6 +34,11 @@ init python:
         except ImportError:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
+
+            #Log this
+            store.mas_utils.writelog(
+                "[WARNING]: win32api/win32ggui failed to be imported, disabling notifications.\n"
+            )
         else:
             import balloontip
 

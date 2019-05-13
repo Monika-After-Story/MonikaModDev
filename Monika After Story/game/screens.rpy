@@ -20,9 +20,9 @@ init -1 python:
         "Enable this to let Monika repeat topics that you have already seen."
     )
     layout.MAS_TT_NOTIF = (
-        "Notifications allow Monika to speak to you through Windows "
-        "notifications. Enabling this will let Monika use them "
+        "Enabling this will let Monika use Windows' notifications "
         "and see your active window. Use at your own discretion."
+        "Can use notifications: [mas_windowreacts.can_show_notifs]"
     )
 
 
