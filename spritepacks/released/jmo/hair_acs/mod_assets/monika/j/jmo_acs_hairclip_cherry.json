@@ -1,7 +1,7 @@
 {
     "type": 0,
-    "name": "jmo_hairclip_musicnote",
-    "img_sit": "jmo_hairclip_musicnote",
+    "name": "jmo_hairclip_cherry",
+    "img_sit": "jmo_hairclip_cherry",
     "pose_map": {
         "default": "0",
         "l_default": "5"
@@ -16,11 +16,11 @@
         "left-hair-strand-eye-level": true
     },
     "select_info": {
-        "display_name": "Hairclip (8th Note)",
-        "thumb": "jmo_hairclip_musicnote",
+        "display_name": "Hairclip (Cherry)",
+        "thumb": "jmo_hairclip_cherry",
         "group": "left-hair-clip",
         "hover_dlg": [
-            "{i}Every day~{/i}"
+            "Have you heard of a cherry kiss, [player]?~"
         ],
         "select_dlg": [
             "I love this hairpin.",
@@ -28,5 +28,5 @@
             "Cute!"
         ]
     },
-    "giftname": "jmo-hairclip-musicnote"
+    "giftname": "cherryhairclip"
 }
