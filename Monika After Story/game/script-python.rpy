@@ -400,7 +400,7 @@ label monika_ptod_tip005:
         m 1eub "Well, today I'm going into more detail about booleans and how they relate to making comparisons between values."
 
     m 1eua "Booleans are commonly used in deciding what code to run or setting a flag to note if something happened or not."
-    m "When we do comparisons, each expression is evaluted to a boolean."
+    m "When we do comparisons, each expression is evaluated to a boolean."
 
     if tip_ev.last_seen is None:
         m 1eksdlb "This probably makes no sense right now, so I'll pull up the console and show you some examples."
