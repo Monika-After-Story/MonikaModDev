@@ -218,10 +218,10 @@
 
 default persistent._mas_sprites_json_gifted_sprites = {}
 # contains sprite gifts that have been reacted to (aka unlocked)
-# key: giftname to react to
-# value: typle of the following fomrat:
+# key: typle of the following fomrat:
 #   [0] - spritre type (0 - ACS, 1 - HAIr, 2 - CLOTHES)
 #   [1] - name of the sprite object this gift unlocks
+# value: giftname to react to
 #
 # NOTE: contains sprite gifts after being unlocked. When its locked, it
 #   should be in _mas_filereacts_sprite_gifts
@@ -693,9 +693,9 @@ init 189 python in mas_sprites_json:
                 store.persistent._mas_filereacts_sprite_gifts.pop(fr_sp_gn)
 
         # clean json gift sprites list
-        for j_sp_gn in store.persistent._mas_sprites_json_gifted_sprites:
-            if j_sp_gn not in giftname_map:
-                store.persistent._mas_sprites_json_gifted_sprites.pop(j_sp_gn)
+        for j_sp_data in store.persistent._mas_sprites_json_gifted_sprites:
+            if j_sp_data not in namegift_map:
+                store.persistent._mas_sprites_json_gifted_sprites.pop(j_sp_data)
 
 
     def _process_progpoint(
@@ -1818,14 +1818,16 @@ init 189 python in mas_sprites_json:
         # unlocked already
         for giftname in giftname_map:
             if not giftname.startswith("__"):
+                sp_data = giftname_map[giftname]
+                
                 # no testing labels
-                if giftname in msj_gifts:
+                if sp_data in msj_gifts:
                     # alrady unlocked, but overwrite data
-                    msj_gifts[giftname] = giftname_map[giftname]
+                    msj_gifts[sp_data] = giftname
 
                 else:
                     # not unlocked, add this to the list
-                    frs_gifts[giftname] = giftname_map[giftname]
+                    frs_gifts[giftname] = sp_data
 
                     # and add the gift
                     _addGift(giftname)

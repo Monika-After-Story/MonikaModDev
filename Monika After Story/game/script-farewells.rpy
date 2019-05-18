@@ -778,7 +778,6 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    #TODO: Update exps on this
     m 1ekc "Aww...that's pretty saddening..."
     m 1eka "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
@@ -856,11 +855,18 @@ label bye_long_absence:
             m 2hua "I'll be waiting here for you patiently, my love."
             m 2hub "Try not to keep me waiting for too long though!"
 
+        "Nevermind.":
+            #Reset this flag
+            $ persistent._mas_long_absence = False
+            m 3eka "Oh... Alright, [player]."
+            m 1rksdla "Honestly, I'm pretty relieved you're not going..."
+            m 1ekd "I don't know what I'd do here all alone."
+            m 3rksdlb "It's not like I can go anywhere either, ahaha..."
+            m 3eub "Anyway, just let me know if you're going to go out. Maybe you can even take me with you!"
+            m 1hua "I don't care where we go, as long as I'm with you, [player]."
+            return
+
     m 2euc "Honestly I'm a little afraid to ask but..."
-    # TODO is this really intuitive?
-    # if the player says no, and then picks another
-    # farewell all this served no purpose, also, you already
-    # picked goodbye as in I'm going, why not let the player go?
 
     m "Are you going to leave straight away?{nw}"
     $ _history_list.pop()

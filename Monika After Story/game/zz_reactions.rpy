@@ -26,16 +26,18 @@ default persistent._mas_filereacts_sprite_gifts = {}
 #   [0] - sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
 #   [1] - id of the sprite object this gift unlocks.
 #
+# NOTE: THIS IS REVERSE MAPPING OF HOW JSON GIFTS AND SPRITE REACTED WORK
+#
 # NOTE: contains sprite gifts before being unlocked. When its unlocked,
 #   they move to _mas_sprites_json_gifted_sprites
 
 default persistent._mas_filereacts_sprite_reacted = {}
 # list of sprite reactions. This MUST be handled via the sprite reaction/setup
 # labels. DO NOT ACCESS DIRECTLY. Use the helper function
-# KEY: giftname
-# value:  tuple of the following format:
+# key:  tuple of the following format:
 #   [0]: sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
 #   [1]: id of the sprite objec this gift unlocks (name) != display name
+# value: giftname
 
 # TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
 
@@ -209,13 +211,13 @@ init -1 python in mas_filereacts:
 
                 # if a special sprite gift, add to the per list matching
                 # sprite objects with data.
-                sprite_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
                     mas_gift,
                     None
                 )
-                if sprite_data is not None:
-                    store.persistent._mas_filereacts_sprite_reacted[mas_gift] = (
-                        sprite_data
+                if sp_data is not None:
+                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
                     )
 
         # generic sprite object gifts treated differently
@@ -224,14 +226,14 @@ init -1 python in mas_filereacts:
             for index in range(len(gifts_found)-1, -1, -1):
                 mas_gift = gifts_found[index]
 
-                sprite_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
                     mas_gift,
                     None
                 )
-                if sprite_data is not None:
+                if sp_data is not None:
                     gifts_found.pop(index)
-                    store.persistent._mas_filereacts_sprite_reacted[mas_gift] = (
-                        sprite_data
+                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
                     )
 
                     # add the generic react
@@ -541,12 +543,14 @@ init python:
         return (totalGifts,goodGifts,neutralGifts,badGifts)
 
 
-    def mas_getSpriteObjInfo(giftname=None):
+    def mas_getSpriteObjInfo(sp_data=None):
         """
         Returns sprite info from the sprite reactions list.
 
         IN:
-            giftname - giftname to retrieve sprite info about
+            sp_data - tuple of the following format:
+                [0] - sprite type
+                [1] - sprite name
                 If None, we use pseudo random select from sprite reacts
                 (Default: None)
 
@@ -556,21 +560,21 @@ init python:
             [2]: giftname this sprite is associated with
         """
         # given giftname? try and lookup
-        if giftname is not None:
-            sprite_data = persistent._mas_filereacts_sprite_reacted.get(
-                giftname,
+        if sp_data is not None:
+            giftname = persistent._mas_filereacts_sprite_reacted.get(
+                sp_data,
                 None
             )
-            if sprite_data is None:
+            if giftname is None:
                 return (None, None, None)
 
-            return (sprite_data[0], sprite_data[1], giftname)
+            return (sp_data[0], sp_data[1], giftname)
 
 
         if len(persistent._mas_filereacts_sprite_reacted) > 0:
-            giftname = persistent._mas_filereacts_sprite_reacted.keys()[0]
-            sprite_data = persistent._mas_filereacts_sprite_reacted[giftname]
-            return (sprite_data[0], sprite_data[1], giftname)
+            sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
+            giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
+            return (sp_data[0], sp_data[1], giftname)
 
         return (None, None, None)
 
@@ -590,19 +594,19 @@ init python:
         if sp_type is None or sp_name is None or giftname is None:
             return
 
-        if giftname in persistent._mas_filereacts_sprite_reacted:
-            persistent._mas_filereacts_sprite_reacted.pop(giftname)
+        sp_data = (sp_type, sp_name)
+        
+        if sp_data in persistent._mas_filereacts_sprite_reacted:
+            persistent._mas_filereacts_sprite_reacted.pop(sp_data)
 
         if giftname in persistent._mas_filereacts_sprite_gifts:
-            persistent._mas_sprites_json_gifted_sprites[giftname] = (
-                persistent._mas_filereacts_sprite_gifts.pop(giftname)
-            )
+            persistent._mas_sprites_json_gifted_sprites[sp_data] = giftname
 
         else:
             # since we have the data, we can add it ourselves if its missing
             # for some reason.
-            persistent._mas_sprites_json_gifted_sprites[giftname] = (
-                (sp_type, sp_name)
+            persistent._mas_sprites_json_gifted_sprites[sp_data] = (
+                giftname
             )
 
         # unlock the selectable for this sprite object
@@ -797,21 +801,21 @@ label mas_reaction_gift_generic_sprite_json:
 ## Hair clip reactions
 
 label mas_reaction_gift_acs_jmo_hairclip_cherry:
-    call mas_reaction_gift_hairclip("jmo-hairclip-cherry")
+    call mas_reaction_gift_hairclip("jmo_hairclip_cherry")
     return
 
 label mas_reaction_gift_acs_jmo_hairclip_heart:
-    call mas_reaction_gift_hairclip("jmo-hairclip-heart")
+    call mas_reaction_gift_hairclip("jmo_hairclip_heart")
     return
 
 label mas_reaction_gift_acs_jmo_hairclip_musicnote:
-    call mas_reaction_gift_hairclip("jmo-hairclip-musicnote")
+    call mas_reaction_gift_hairclip("jmo_hairclip_musicnote")
     return
 
 # hairclip
-label mas_reaction_gift_hairclip(hairclip_giftname):
-    # get sprtie dat
-    $ sprite_data = mas_getSpriteObjInfo(hairclip_giftname)
+label mas_reaction_gift_hairclip(hairclip_name):
+    # get sprtie data
+    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
     $ sprite_type, sprite_name, giftname = sprite_data
 
     # get the acs
