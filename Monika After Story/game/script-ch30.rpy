@@ -23,11 +23,11 @@ init -1 python in mas_globals:
     # TRue means show the vignette mask, False means no show
 
     show_lightning = False
-    # True means show lightening, False means do not
+    # True means show lightning, False means do not
 
-    lightning_chance = 6
+    lightning_chance = 16
     lightning_s_chance = 10
-    # lghtning chances
+    # lightning chances
 
     show_s_light = False
     # set to True to show s easter egg.
@@ -1447,12 +1447,10 @@ label ch30_post_mid_loop_eval:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
 
-        # Thunder / lightening if enabled
+        # Thunder / lightning if enabled
         if (
                 store.mas_globals.show_lightning
-                and renpy.random.randint(
-                    1, store.mas_globals.lightning_chance
-                ) == 1
+                and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
             ):
             if (
                     not persistent._mas_sensitive_mode

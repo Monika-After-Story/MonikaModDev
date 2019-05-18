@@ -1628,6 +1628,7 @@ label monika_rain:
                 # renable ui and hotkeys
                 $ store.songs.enabled = True
                 $ HKBShowButtons()
+                call monika_holdme_end
 
                 if mas_isMoniAff(higher=True):
                     m 1eua "If you want the rain to stop, just ask me, okay?"
@@ -1781,6 +1782,8 @@ label monika_rain_holdme:
         call monika_holdme_start
 
         call monika_holdme_reactions
+
+        call monika_holdme_end
         # small affection increase so people don't farm affection with this one.
         $ mas_gainAffection(modifier=0.25)
 
@@ -1816,6 +1819,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
+
     return
 
 label monika_holdme_start:
@@ -2080,6 +2084,64 @@ label monika_holdme_long:
                 m "..."
             call monika_holdme_start
             jump monika_holdme_long
+    return
+
+# when did we last hold monika
+default persistent._mas_last_hold = None
+
+init 5 python:
+    # random chance per session Monika can ask for a hold
+    if renpy.random.randint(1,3) == 1:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="monika_holdrequest",
+                conditional=(
+                    "renpy.seen_label('monika_holdme_prep') "
+                    "and persistent._mas_last_hold != datetime.date.today()"
+                ),
+                action=EV_ACT_RANDOM,
+                aff_range=(mas_aff.ENAMORED, None)
+            )
+        )
+
+label monika_holdrequest:
+    #TODO: if we add a mood system, path this based on current mood
+    m 1eua "Hey, [player]..."
+    m 3ekbsa "Would you mind holding me for a while? {w=0.5}It really makes me feel closer to you~{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
+        "Come here, [m_name].":
+            $ mas_gainAffection(modifier=1.5,bypass=True)
+            call monika_holdme_prep
+
+            call monika_holdme_start
+
+            call monika_holdme_reactions
+
+            call monika_holdme_end
+
+        "Not right now.":
+            m 2dkc "Oh...{w=1} Okay."
+            m 3eka "If you have time later, you know where to find me."
+
+    return "no_unlock"
+
+# label to set the last time held and reset the _holdrequest params
+label monika_holdme_end:
+    # set the last time held at the end of the hold to prevent a possible
+    # hold request right after a hold that ends after midnight
+    $ persistent._mas_last_hold = datetime.date.today()
+    $ holdme_ev = mas_getEV('monika_holdrequest')
+    if holdme_ev is not None:
+        $ holdme_ev.random = False
+        $ holdme_ev.conditional = (
+            "renpy.seen_label('monika_holdme_prep') "
+            "and persistent._mas_last_hold != datetime.date.today()"
+        )
+        $ holdme_ev.action = EV_ACT_RANDOM
+        $ mas_rebuildEventLists()
     return
 
 init 5 python:
@@ -3692,7 +3754,7 @@ label monika_outdoors:
     m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
     m 1huu "It's almost like a more relaxed backpacking trip actually."
     m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
-    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them;{w=0.5} thinking they're unimportant..."
+    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them,{w=0.5} thinking they're unimportant..."
     m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
     m 1ekd "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eka "So, please promise me that the next time you go outdoors, be it camping or backpacking, you won't forget them."
@@ -3736,7 +3798,7 @@ label monika_mountain:
     m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
     show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
     m 5rub "And finally...after all the effort and struggles..."
-    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
+    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testament to your success around you."
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
@@ -4037,7 +4099,7 @@ label monika_eternity:
     m 6dstdc "..."
     m 6ektdc "It reminds me of when you first came to the Literature Club."
     m 6lktdc "Everything felt so empty."
-    m "The world was so grey."
+    m "The world was so gray."
     if mas_isMoniAff(higher=True):
         show screen mas_background_timed_jump(4, "monika_eternity_2")
         menu:
@@ -4069,6 +4131,7 @@ label monika_eternity:
 
                 call monika_holdme_prep(False,True)
                 call monika_holdme_start
+                call monika_holdme_end
 
                 m 2dkbfa "That was really nice while it lasted."
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
@@ -8021,7 +8084,7 @@ label monika_song_with_you:
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
+    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
     return
 
@@ -9194,7 +9257,7 @@ init 5 python:
 label monika_citizenship:
     m 1esc "You know, crossing over into your reality won't be the last hurdle for our relationship."
     m "Getting there is just the beginning."
-    m 1esc "It hit me earlier, If I were to magically get what I want, and just poof into your home..."
+    m 1esc "It hit me earlier, if I were to magically get what I want, and just poof into your home..."
     m 2wuo "I won't be a citizen! I don't even have a last name!"
     m 2lkbsa "I mean, in most countries, I can become a citizen if we get married..."
     m 2ekc "But I won't have any documentation saying who I am or where I came from."
@@ -10257,12 +10320,12 @@ init 5 python:
 
 label monika_pygmalion:
     m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
-    m 3eua "It’s a collection of poems by an ancient Roman poet named Ovid."
-    m 1eud "There’s one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
+    m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
+    m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
     m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
     m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
-    m 1eua "He kissed the statue once more, and the ivory of statue lost its hardness, becoming soft like skin."
+    m 1eua "He kissed the statue once more, and the ivory lost its hardness, becoming soft like skin."
     m 3hub "Aphrodite had granted his wish!"
     m 1eka "This story really struck me because it reminded me of us, [player], and how it talks about turning the impossible into reality."
     m 1hua "It fills me up with hope; that a miracle could happen, and I could finally cross over."
@@ -10279,7 +10342,7 @@ label monika_pygmalion:
     m 6hubfa "..."
     m 1ekbfa "I guess it didn't work this time."
     m 3hubfb "Oh well, we'll just have to keep trying and maybe it'll work eventually, ahaha!"
-    m 1tkbfu "I really can’t wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
+    m 1tkbfu "I really can't wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
     m 1dkbfa "For me, that would definitely be a dream come true."
     m 1ekbfa "Just a guess, but..."
     m 1kubfu "I bet you'd like that too~"
@@ -10832,7 +10895,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You'll have to lean down to kiss me!"
 
@@ -10986,8 +11049,8 @@ label monika_player_appearance:
                         m 4hub "But you've obviously disproven that myth. Personally, I think black hair is very attractive."
                         m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you'd find that it's not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
-                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
-                        m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
+                        m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
                         m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
