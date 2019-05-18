@@ -1971,7 +1971,7 @@ label prompt_menu:
     python:
         talk_menu = []
         if len(unseen_events)>0:
-            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+            talk_menu.append(("{b}Unseen{/b}", "unseen"))
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))

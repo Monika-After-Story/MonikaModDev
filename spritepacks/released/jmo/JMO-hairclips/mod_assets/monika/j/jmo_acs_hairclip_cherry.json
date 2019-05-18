@@ -20,7 +20,7 @@
         "thumb": "jmo_hairclip_cherry",
         "group": "left-hair-clip",
         "hover_dlg": [
-            "Have you heard of a cherry kiss, [player]?~"
+            "Have you heard of a cherry kiss, [player]~?"
         ],
         "select_dlg": [
             "I love this hairpin.",
