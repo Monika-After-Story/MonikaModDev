@@ -109,6 +109,18 @@ init -900 python in mas_affection:
         G_HAPPY: G_NORMAL
     }
 
+    # Forced expression map. This is for spaceroom dissolving
+    FORCE_EXP_MAP = {
+        BROKEN: "monika 6ckc",
+        DISTRESSED: "monika 6rkc",
+        UPSET: "monika 2efc",
+        NORMAL: "monika 1eua",
+        AFFECTIONATE: "monika 1eua",
+        ENAMORED: "monika 1hua",
+        LOVE: "monika 1hua",
+    }
+
+
     # compare functions for affection / group
     def _compareAff(aff_1, aff_2):
         """
@@ -366,6 +378,20 @@ init -1 python in mas_affection:
         ))
 
 
+    # forced expression logic function
+    def _force_exp():
+        """
+        Determines appropriate forced expression for current affection.
+        """
+        curr_aff = store.mas_curr_affection
+
+        if store.mas_isMoniNormal() and store.mas_isBelowZero():
+            # special case
+            return "monika 1esc"
+
+        return FORCE_EXP_MAP.get(curr_aff, "monika idle")
+
+
 # need these utility functiosn post event_handler
 init 15 python in mas_affection:
     import store # global
@@ -577,9 +603,7 @@ init 15 python in mas_affection:
 
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
-            store.mas_unlockEventLabel("monika_clothes_select")
-            #TODO: Amend monika_outfit if > 1 outfit available.
-            store.mas_lockEventLabel("monika_outfit")
+            store.mas_unlockEVL("monika_clothes_select", "EVE")
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -1990,6 +2014,7 @@ label monika_affection_nickname:
             "Mon",
             "Moni",
             "princess",
+            "sunshine",
             "sweet",
         ]
 
@@ -2170,7 +2195,7 @@ define mas_finalfarewell_mode = False
 
 # prepwork for the finalfarewell
 label mas_affection_finalfarewell_start:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     show emptydesk zorder MAS_MONIKA_Z at i11
     show mas_finalnote_idle zorder 11
 
@@ -2366,7 +2391,10 @@ init python:
             message = "Everything I do, I do for you...my love."
 
         elif mas_curr_affection == store.mas_affection.HAPPY:
-            filepath = "/hehehe.txt"
+            #Just so we don't end up with another file since we've changed the name
+            store.mas_utils.trydel(renpy.config.basedir + "/hehehe.txt")
+
+            filepath = "/ehehe.txt"
             message = "You are the sunshine that brightens up my day, [player]!"
 
         elif mas_curr_affection == store.mas_affection.AFFECTIONATE:

@@ -31,7 +31,7 @@ image room_mask4 = Movie(
 )
 image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
 
-# big thanks to sebastianN01 for the rain art!
+# big thanks to sebastianN01 for the rain art & multimokia for the night rain!
 image rain_mask_left = Movie(
     channel="window_5",
     play="mod_assets/window/spaceroom/window_5.webm",
@@ -45,6 +45,20 @@ image rain_mask_right = Movie(
     mask=None
 )
 image rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_fallback.png"
+
+image night_rain_mask_left = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/window_5_night_rain.mp4",
+    mask=None
+)
+image night_rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_night_rain_fb.png"
+
+image night_rain_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/window_6_night_rain.mp4",
+    mask=None
+)
+image night_rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_night_rain_fb.png"
 
 # big thanks to Zer0mniac for fixing the snow
 image snow_mask_night_left = Movie(
@@ -75,6 +89,35 @@ image snow_mask_day_right = Movie(
 )
 image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.png"
 
+#Thanks multimokia for the overcast masks
+image overcast_mask_left = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/overcast_mask_left.mp4",
+    mask=None
+)
+image overcast_mask_left_fb = "mod_assets/window/spaceroom/overcast_mask_left_fb.png"
+
+image overcast_mask_right = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/overcast_mask_right.mp4",
+    mask=None
+)
+image overcast_mask_right_fb = "mod_assets/window/spaceroom/overcast_mask_right_fb.png"
+
+image overcast_mask_left_night = Movie(
+    channel="window_5",
+    play="mod_assets/window/spaceroom/overcast_mask_left_night.mp4",
+    mask=None
+)
+image overcast_mask_left_night_fb = "mod_assets/window/spaceroom/overcast_mask_left_night_fb.png"
+
+image overcast_mask_right_night = Movie(
+    channel="window_6",
+    play="mod_assets/window/spaceroom/overcast_mask_right_night.mp4",
+    mask=None
+)
+image overcast_mask_right_night_fb = "mod_assets/window/spaceroom/overcast_mask_right_night_fb.png"
+
 ## end spaceroom weather art
 
 ## living room weather art
@@ -99,8 +142,103 @@ image mas_island_night = "mod_assets/location/special/night_without_frame.png"
 default persistent._mas_weather_MWdata = {}
 # stores locked/unlocked status for weather
 
+#When did we last check if it could rain
+default persistent._mas_date_last_checked_rain = None
+
+#Should it rain today?
+default persistent._mas_should_rain_today = None
+
+#Loading at init 0 because of season functions
+init python in mas_weather:
+
+    def shouldRainToday():
+
+        #Is it a new day? If so, we should see if it should rain today
+        if not store.persistent._mas_date_last_checked_rain or store.persistent._mas_date_last_checked_rain < datetime.date.today():
+            store.persistent._mas_date_last_checked_rain = datetime.date.today()
+
+            #Now we roll
+            chance = random.randint(1,100)
+
+            #ODDS:
+            #   Spring:
+            #       - 30% chance for it to not rain on a particular day
+            #   Summer:
+            #       - 85% chance for it to not rain on a particular day
+            #   Fall:
+            #       - 40% chance for it to not rain on a particular day
+            #   Winter:
+            #       - 0%. Just snow
+            if store.mas_isSpring():
+                store.persistent._mas_should_rain_today = chance >= 30
+            elif store.mas_isSummer():
+                store.persistent._mas_should_rain_today = chance >= 85
+            elif store.mas_isFall():
+                store.persistent._mas_should_rain_today = chance >= 40
+            else:
+                store.persistent._mas_should_rain_today = False
+
+        return store.persistent._mas_should_rain_today
+
+
+    def _determineCloudyWeather(
+            rain_chance,
+            thunder_chance,
+            overcast_chance,
+            rolled_chance=None
+        ):
+        """
+        Determines if weather should be rainiy/thunder/overcase, or none of 
+        those.
+
+        IN:
+            rain_chance - chance of rain out of 100
+            thunder_chance - chance of thunder out of 100
+                NOTE: this should be percentage based on rain chance, i.e.:
+                thunder_chance * (rain_chance as %)
+            overcast_chance - chance of overcast out of 100
+            rolled_chance - if passed, then we use that chance instead of
+                generating a random chance. None means we generate our
+                own chance.
+                (Default: None)
+
+        RETURNS:
+            appropriate weather type, or None if neither of these weathers.
+        """
+        if rolled_chance is None:
+            rolled_chance = random.randint(1,100)
+
+        if shouldRainToday():
+            # try raining if we can
+
+            if rolled_chance <= rain_chance:
+
+                # double check thunder
+                if rolled_chance <= thunder_chance:
+                    return store.mas_weather_thunder
+
+                # otherwise rain
+                return store.mas_weather_rain
+
+            # if we failed to rain here, then modify the rolled chance to be
+            # appropriate to for the next chance
+            rolled_chance -= rain_chance
+
+        if rolled_chance <= overcast_chance:
+            return store.mas_weather_overcast
+
+        # otherwise, no cloudy weather
+        return None
+
+
 init -20 python in mas_weather:
+    import random
+    import datetime
     import store
+
+    #NOTE: Not persistent since weather changes on startup
+    force_weather = False
+
 
     WEATHER_MAP = {}
 
@@ -108,7 +246,9 @@ init -20 python in mas_weather:
     # NOTE: just reference MOOD's numbers
     WEAT_RETURN = "Nevermind"
 
-    
+    weather_change_time = None
+    #Stores the time at which weather should change
+
 #    def canChangeWeather():
 #        """
 #        Returns true if the user can change weather
@@ -119,6 +259,43 @@ init -20 python in mas_weather:
 #            store.persistent._mas_weather_rain_happened 
 #            or store.persistent._mas_weather_snow_happened
 #        )
+
+    def weatherProgress():
+        """
+        Runs a roll on mas_shouldRain() to pick a new weather to change to after a time between half an hour - one and a half hour
+
+        RETURNS:
+            - True or false on whether or not to call spaceroom
+        """
+
+        #If the player forced weather, then we do nothing
+        if force_weather:
+            return False
+
+        #Otherwise we do stuff
+        global weather_change_time
+        #Set a time for startup
+        if not weather_change_time:
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+        elif weather_change_time < datetime.datetime.now():
+            #Need to set a new check time
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+
+            #Change weather
+            new_weather = store.mas_shouldRain()
+            if new_weather is not None and new_weather != store.mas_current_weather:
+                store.mas_changeWeather(new_weather)
+                #Play the rumble in the back to indicate thunder
+                if new_weather == store.mas_weather_thunder:
+                    renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
+                return True
+
+            elif store.mas_current_weather != store.mas_weather_def:
+                store.mas_changeWeather(store.mas_weather_def)
+                return True
+
+        return False
 
 
     def loadMWData():
@@ -271,6 +448,22 @@ init -20 python in mas_weather:
         # NOTE: dont change anything if swithing to rain
         if _new != store.mas_weather_rain:
             _weather_rain_exit(_new)
+
+
+    def _weather_overcast_entry(_old):
+        #Lock islands
+        store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
+
+
+    def _weather_overcast_exit(_new):
+        #Unlock islands
+        islands_ev = store.mas_getEV("mas_monika_islands")
+        if (
+                islands_ev is not None
+                and islands_ev.shown_count > 0
+                and islands_ev.checkAffection(store.mas_curr_affection)
+            ):
+            store.mas_unlockEVL("mas_monika_islands", "EVE")
 
 
 init -10 python:
@@ -514,6 +707,10 @@ init -1 python:
         "rain_mask_left",
         "rain_mask_right",
 
+        # sp night
+        "night_rain_mask_left",
+        "night_rain_mask_right",
+
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
@@ -549,12 +746,38 @@ init -1 python:
         "rain_mask_left",
         "rain_mask_right",
 
+        # sp night
+        "night_rain_mask_left",
+        "night_rain_mask_right",
+
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
         isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
 
         entry_pp=store.mas_weather._weather_thunder_entry,
         exit_pp=store.mas_weather._weather_thunder_exit
+    )
+
+    #overcast
+    mas_weather_overcast = MASWeather(
+        "overcast",
+        "Overcast",
+
+        # sp day
+        "overcast_mask_left",
+        "overcast_mask_right",
+
+        # sp night
+        "overcast_mask_left_night",
+        "overcast_mask_right_night",
+
+        # islands bg day and night
+        isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
+        isbg_wof_day="mod_assets/location/special/rain_without_frame.png",
+
+        entry_pp=store.mas_weather._weather_overcast_entry,
+        exit_pp=store.mas_weather._weather_overcast_exit,
+        unlocked=True
     )
 
 ### end defining weather objects
@@ -581,7 +804,7 @@ init 800 python:
         mas_current_weather.entry(old_weather)
 
 
-    def mas_changeWeather(new_weather):
+    def mas_changeWeather(new_weather, by_user=None):
         """
         Changes weather without doing scene changes
 
@@ -589,7 +812,12 @@ init 800 python:
 
         IN:
             new_weather - weather to change to
+            by_user - flag for if user changes weather or not
         """
+
+        if by_user is not None:
+            mas_weather.force_weather = bool(by_user)
+
         mas_current_weather.exit(new_weather)
         mas_setWeather(new_weather)
 
@@ -606,7 +834,11 @@ init 800 python:
 #
 # IN:
 #   new_weather - weather object to change to
-label mas_change_weather(new_weather):
+#   by_user - whether or not user forced weather
+label mas_change_weather(new_weather, by_user=None):
+
+    if by_user is not None:
+        $ mas_weather.force_weather = bool(by_user)
 
     # call exit programming points
     $ mas_current_weather.exit(new_weather)
@@ -614,8 +846,7 @@ label mas_change_weather(new_weather):
     # set new weather and force change
     $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
-    $ scene_change = True
-    call spaceroom
+    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc")
 
     # call entry programming point
     $ mas_current_weather.entry(old_weather)
@@ -669,6 +900,9 @@ label monika_change_weather_loop:
         # build full list
         weathers.extend(other_weathers)
 
+        #Add the auto option
+        weathers.append(("Progressive","auto",False,False))
+
         # now add final quit item
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
@@ -685,7 +919,22 @@ label monika_change_weather_loop:
         m "If you want to change the weather, just ask, okay?"
         return
 
-    if sel_weather == mas_current_weather:
+    elif sel_weather == "auto":
+        if mas_weather.force_weather:
+            m 1hub "Sure!"
+            m 1dsc "Just give me a second.{w=0.5}.{w=0.5}."
+
+            #Set to false and return since nothing more needs to be done
+            $ mas_weather.force_weather = False
+            m 1eua "There we go!"
+            m 1eka "If you want me to change the weather, just ask. Okay?"
+        else:
+            m 1hua "That's the current weather, silly."
+            m "Try again~"
+            jump monika_change_weather_loop
+        return
+
+    if sel_weather == mas_current_weather and mas_weather.force_weather:
         m 1hua "That's the current weather, silly."
         m "Try again~" 
         jump monika_change_weather_loop
@@ -710,12 +959,10 @@ label monika_change_weather_loop:
 
     if not skip_leadin:
         m 1eua "Alright!"
-        m 1dsc "Just give me a second..."
-
-    pause 1.0
+        m 1dsc "Just give me a second.{w=0.5}.{w=0.5}."
 
     # finally change the weather
-    call mas_change_weather(sel_weather)
+    call mas_change_weather(sel_weather,by_user=True)
 
     if not skip_outro:
         m 1eua "There we go!"
