@@ -314,6 +314,12 @@ label v0_9_4(version="v0_9_4"):
         if mas_getEV('monika_ptod_tip001').unlocked:
             # check to see if tip 001 is unlocked, since 000 is the only way to unlock 001
             mas_hideEVL("monika_ptod_tip000", "EVE", lock=True)
+
+        # unlock outfit if already seen before
+        outfit_ev = mas_getEV("monika_outfit")
+        if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
+            outfit_ev.unlocked = True
+
     return 
 
 # 0.9.2
