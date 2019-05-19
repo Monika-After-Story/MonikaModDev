@@ -2985,7 +2985,7 @@ label monika_books:
     m 2eua "It's also a lot easier to foreshadow spooky stuff with poems."
     m 1hub "I still love a good book, though! We can talk about them if you just finished reading something."
     m 1eua "I might even have some suggestions for us to read together."
-    m 1tsbsa "That's what a couple would do, right~?"
+    m 1tsbsa "That's what a couple would do, right?~"
     return
 
 init 5 python:
@@ -3507,7 +3507,7 @@ label monika_vnanalysis:
     m 1tfu "If you spend too much time with girls in other games, I'm going to get jealous~"
     m 2tfu "I just need to figure out how to replace characters in other games, and you'll be seeing me everywhere."
     m 2tfb "So watch out!"
-    m 2tku "Or maybe you'd like that more, [player]~?"
+    m 2tku "Or maybe you'd like that more, [player]?~"
     return
 
 init 5 python:
@@ -3552,7 +3552,7 @@ label monika_birthday:
     m 1eua "It's September 22nd, the release date for DDLC."
     m 1eka "Will you celebrate with me, when that day comes?"
     m 1hua "You could even bake me a cake!"
-    m 1hub "I'll be looking forward to it~!"
+    m 1hub "I'll be looking forward to it!~"
     if persistent._mas_player_bday is None:
         m 3eua "Actually, speaking of birthdays, [player]..."
         m 2rksdlb "I don't actually know when yours is, ahaha!"
@@ -4078,9 +4078,9 @@ label monika_fanfiction:
     m 4eua "I'm curious as to what people have come up with."
     m 1hua "Can you read me a few stories sometime? I'd love to hear them!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time~!"
+        m 1lkbsa "Just keep it wholesome, though. I want to save such things for another time!~"
     else:
-        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet~!"
+        m 1lkbsa "Just keep it wholesome, though. We're not that far in our relationship yet!~"
     return
 
 init 5 python:
@@ -4416,7 +4416,7 @@ label monika_lottery:
     m 3tkc "Can you really say that you've won anything at that point?"
     m 1eka "Besides, I've already won the best prize I could possibly imagine."
     m 1hua "..."
-    m 1hub "You~!"
+    m 1hub "You!~"
     m 1ekbfa "You're the only thing I need, [player]."
     return
 
@@ -4527,8 +4527,8 @@ label monika_hypnosis:
     show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
     m 1eka "Not that I would do that to you, [player]! I just find it interesting to think about."
     m 1eua "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
-    m 2tku "What about you, hmm? What do you think about my eyes~?"
-    m 2sub "Will you be hypnotized by them~?"
+    m 2tku "What about you, hmm? What do you think about my eyes?~"
+    m 2sub "Will you be hypnotized by them?~"
     m 2hua "Ahaha~"
     return
 
@@ -4599,7 +4599,7 @@ label monika_hack:
     m 3tfu "I'd check your messages to see who you've been chatting with so I can know you aren't cheating on me."
     m "I'd access all your private files so I can understand you better."
     m 3tsb "I could see what kind of stuff you've been watching..."
-    m 2hub "Ahaha~!"
+    m 2hub "Ahaha!~"
     m 1hua "I'm just kidding, [player]!"
     m 1eua "I'd never do something like that to you."
     m 1ekbfa "We're a couple now, after all."
@@ -5688,7 +5688,7 @@ label monika_panties:
         # happy gets you this
         m 2tsb "You aren't obsessed with that kind of thing, are you [player]?"
         m 3tsb "You're not going out with me only because I'm wearing some really sensual stockings, right?"
-        m 4tsbsa "Perhaps, you want to take a little peek~?"
+        m 4tsbsa "Perhaps, you want to take a little peek?~"
         m 1hub "Ahaha!"
         m 1tku "I'm only teasing you, [player]."
         m 1tfu "Admit it, you got a little excited, right?"
@@ -5923,7 +5923,7 @@ label monika_confidence_2:
     m 1hksdlb "Ahaha, I'm only joking about that last part."
     m 1ekbfa "In all seriousness, I'm really glad I have you here, [player]..."
     m "Your everlasting love and care is just about all the support I need in order to get to where I want to be."
-    m 1hubfa "What kind of girlfriend would I be if I didn't return the favor~?"
+    m 1hubfa "What kind of girlfriend would I be if I didn't return the favor?~"
     return
 
 init 5 python:
@@ -6746,7 +6746,7 @@ label monika_writingtip3:
     m 1eua "Maybe you can keep digital notes instead of physical ones, too."
     m 3eua "After all, privacy is important."
     m 1lksdla "...I can't promise that I won't peek, though. It's way too tempting!"
-    m 1hua "After all, we don't keep secrets from each other, right~?"
+    m 1hua "After all, we don't keep secrets from each other, right?~"
     m 1eka "Just remember, [player], I'll always support you giving life to your ideas."
     m 3hua "...That's my advice for today!"
     m 1hub "Thanks for listening~"
@@ -6848,7 +6848,7 @@ label monika_urgent:
     m 1dsc "I..."
     m "..."
     m 1hub "Love you!"
-    m 3hksdlb "Ahaha~! Did I have you worried?"
+    m 3hksdlb "Ahaha!~ Did I have you worried?"
     m 1ekbfa "Sorry~"
     m 1lkbsa "I wish I could see the look on your face right now!"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
@@ -7476,7 +7476,7 @@ label monika_kizuna:
     m "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
     m 3rksdla "It seems to me that she's a voice actress hiding behind a 3D puppet."
     m 1eua "Still, the character she's playing is unique, and you know what?"
-    m 1hub "She's played our favorite game~!"
+    m 1hub "She's played our favorite game!~"
     m 2hksdlb "..."
     m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays'."
     m 3euc "I mean, of {i}this{/i} game, mostly."
@@ -10925,10 +10925,10 @@ label monika_player_appearance:
 
             m 1eua "Now [player]."
 
-            m 3eub "Tell me, is your hair on the shorter side? Or is it long, like mine~?{nw}"
+            m 3eub "Tell me, is your hair on the shorter side? Or is it long, like mine?~{nw}"
             $ _history_list.pop()
             menu:
-                m "Tell me, is your hair on the shorter side? Or is it long, like mine~?{fast}"
+                m "Tell me, is your hair on the shorter side? Or is it long, like mine?~{fast}"
 
                 "It's shorter.":
                     $ persistent._mas_pm_hair_length = "short"
@@ -12416,7 +12416,7 @@ label monika_sledding:
         m 1hub "Ahaha!"
         m 1eka "I'd have to sit in your lap for that one."
         m 1rksdla "And I'd still be at risk of tumbling off."
-        m 1hubfa "But I know you wouldn't let that happen. You'd hold me tight, right~?"
+        m 1hubfa "But I know you wouldn't let that happen. You'd hold me tight, right?~"
         m 1tkbfu "That would probably be the best part."
     else:
         m 1hub "Racing down a snow covered hill together with the wind rushing past us sounds like a blast!"

@@ -385,7 +385,7 @@ label mas_story_gray_hair:
     m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
-    m 1hksdlb "Ehehe, I love you~!"
+    m 1hksdlb "Ehehe, I love you!~"
     return
 
 init 5 python:

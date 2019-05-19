@@ -1710,7 +1710,7 @@ label monikaroom_greeting_knock:
     if mas_isMoniBroken():
         jump monikaroom_greeting_opendoor_broken_quit
 
-    m "Who is it~?"
+    m "Who is it?~"
     menu:
         "It's me.":
             # monika knows you are here now

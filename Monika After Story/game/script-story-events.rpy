@@ -615,7 +615,7 @@ label unlock_piano:
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
-    m 1eka "For me, please~?"
+    m 1eka "For me, please?~"
     $persistent.game_unlocks['piano']=True
     return
 

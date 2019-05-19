@@ -2107,7 +2107,7 @@ label monika_affection_nickname:
                             m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
                         else:
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
                         m 2eua "Okay, [player]!"

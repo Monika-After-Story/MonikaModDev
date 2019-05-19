@@ -367,7 +367,7 @@ label mas_piano_yr_fail:
 label mas_piano_yr_prac:
     m 1hua "That was really cool, [player]!"
     m 3eua "With some more practice, you'll be able to play my song perfectly."
-    m 1eka "Make sure to practice everyday for me, okay~?"
+    m 1eka "Make sure to practice everyday for me, okay?~"
     return
 
 

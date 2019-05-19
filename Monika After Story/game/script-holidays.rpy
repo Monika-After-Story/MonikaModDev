@@ -394,7 +394,7 @@ label greeting_o31_marisa:
         hide emptydesk
         show monika 1hua at i11 zorder MAS_MONIKA_Z
         window auto
-        m "Tadaa~!"
+        m "Tadaa!~"
 
     # post CG dialogue
     # (CG might still be visible during this state, though)
@@ -845,7 +845,7 @@ label bye_trick_or_treat_rtg:
         m "I think you'll have to go trick or treating without me..."
 
     m 1ekc "Sorry, [player]..."
-    m 3eka "Make sure to bring lots of candy for the both of us to enjoy, okay~?"
+    m 3eka "Make sure to bring lots of candy for the both of us to enjoy, okay?~"
     return
 
 #################################### D25 ######################################
@@ -4240,7 +4240,7 @@ label mas_f14_monika_vday_cliches:
     m 3rksdlb "I guess it {i}did{/i} start out like those kinds of stories..."
     m 2tfu "But I think we managed to make it pretty original."
     m 1hua "The way we met is the most interesting story yet!"
-    m 3hub "Ahaha~!"
+    m 3hub "Ahaha!~"
     return
 
 init 5 python:
