@@ -11263,7 +11263,7 @@ init 5 python:
 
             # we'll pool this event after a month of the relationship
             conditional=(
-                "store.mas_anni.pastOneMonth() " +
+                "store.mas_anni.pastOneMonth() "
                 "and persistent._mas_first_calendar_check"
             ),
 
