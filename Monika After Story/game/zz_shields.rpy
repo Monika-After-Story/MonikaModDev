@@ -52,6 +52,10 @@ init python:
             - Play button + hotkey
             - Calendar overlay
 
+        Disables:
+            - Derandom hotkey
+            - Favorite hotkey
+
         Unsets:
             - dialogue workflow flag
 
@@ -61,6 +65,8 @@ init python:
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
+        store.mas_hotkeys.derandom_enabled = False
+        store.mas_hotkeys.favorite_enabled = False
         store.hkb_button.talk_enabled = True
         store.hkb_button.extra_enabled = True
         store.hkb_button.play_enabled = True
@@ -75,6 +81,10 @@ init python:
             - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
+
+        Enables:
+            - Derandom hotkey
+            - Favorite hotkey
 
         Sets:
             - dialogue workflow flag
@@ -91,6 +101,18 @@ init python:
         store.mas_globals.dlg_workflow = True
         mas_calRaiseOverlayShield()
 
+        # special dialogue shield settings for derand and favorite hotkeys
+        curr_topic = persistent.current_monikatopic
+        if mas_getEV(curr_topic) is not None and curr_topic.startswith("monika_") and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel:
+            if mas_getEV(curr_topic).random:
+                store.mas_hotkeys.derandom_enabled = True
+            else:
+                store.mas_hotkeys.derandom_enabled = False
+
+            store.mas_hotkeys.favorite_enabled = True
+        else:
+            store.mas_hotkeys.favorite_enabled = False
+            store.mas_hotkeys.derandom_enabled = False
 
     ################### Music Menu opened workflow ############################
     # Used when the music menu opens.

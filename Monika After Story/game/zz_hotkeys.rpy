@@ -29,6 +29,12 @@ init -1 python in mas_hotkeys:
     # True means the play hotkey is enabled, False means its not
     play_enabled = False
 
+    # True means the derandom hotkey is enabled, False means its not
+    derandom_enabled = False
+
+    # True means the favorite hotkey is enabled, False means its not
+    favorite_enabled = False
+
     ## other keys
     # True means the music lowering / stopping functions will work.
     # False means they will not
@@ -159,6 +165,20 @@ init python:
             select_music()
 
 
+    def _mas_hk_derandom_topic():
+        """
+        hotkey specific derandom topics
+        """
+        if store.mas_hotkeys.derandom_enabled and not _windows_hidden:
+            derandom_topic()
+
+    def _mas_hk_favorite_topic():
+        """
+        hotkey specific favorite topics
+        """
+        if store.mas_hotkeys.favorite_enabled and not _windows_hidden:
+            favorite_topic()
+
     def _mas_game_menu():
         """
         Wrapper aound _invoke_game_menu that follows additional ui rules
@@ -216,6 +236,8 @@ init python:
         config.keymap["dec_musicvol"] = [
             "K_MINUS","shift_K_UNDERSCORE","K_KP_MINUS"
         ]
+        config.keymap["derandom_topic"] = ["x","X"]
+        config.keymap["favorite_topic"] = ["f","F"]
 
         # get replace the game menu with our version (to block certain
         # workflows correctly)
@@ -240,6 +262,8 @@ init python:
         config.underlay.append(renpy.Keymap(dec_musicvol=_mas_hk_dec_musicvol))
         config.underlay.append(renpy.Keymap(mas_game_menu=_mas_game_menu))
         config.underlay.append(renpy.Keymap(mas_hide_windows=_mas_hide_windows))
+        config.underlay.append(renpy.Keymap(derandom_topic=_mas_hk_derandom_topic))
+        config.underlay.append(renpy.Keymap(favorite_topic=_mas_hk_favorite_topic))
 
         # finally enable those buttons
         mas_HKDropShield()

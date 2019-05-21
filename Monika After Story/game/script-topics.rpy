@@ -12905,3 +12905,139 @@ label monika_enjoyingspring:
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
+
+############################ Player favorite and derandom related events #############################
+default persistent._mas_player_favorited = {}
+# dict to store favorited events
+default persistent._mas_player_derandomed = {}
+# dict to store player derandomed events
+default persistent.flagged_monikatopic = None
+# var set when we flag a topic for derandom
+
+init python:
+
+    # function for manually derandoming topics
+    def derandom_topic():
+        if mas_getEV(persistent.current_monikatopic) is not None:
+            if not "mas_topicderandom" in persistent.event_list:
+                persistent.flagged_monikatopic = persistent.current_monikatopic
+                pushEvent('mas_topicderandom')
+                mas_showEVL('mas_rerandom','EVE',unlock=True)
+                renpy.notify(__("Topic flagged for removal (x)."))
+            else:
+                persistent.event_list.remove("mas_topicderandom")
+                if len(persistent._mas_player_derandomed) == 0:
+                    mas_hideEVL('mas_topicrerandom','EVE',lock=True)
+                renpy.notify(__("Topic flag removed (x)."))
+
+    # function for favoriting topics
+    def favorite_topic():
+        curr_topic = persistent.current_monikatopic
+        if mas_getEV(curr_topic) is not None:
+            if not mas_getEV(curr_topic).eventlabel in persistent._mas_player_favorited:
+                persistent._mas_player_favorited[mas_getEV(curr_topic).eventlabel] = mas_getEV(curr_topic)
+                renpy.notify(__("Topic favorited (f)."))
+            else:
+                del persistent._mas_player_favorited[mas_getEV(curr_topic).eventlabel]
+                renpy.notify(__("Topic unfavorited (f)."))
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topicderandom",unlocked=False,rules={"no unlock":None}))
+
+label mas_topicderandom:
+    $ prev_topic = persistent.flagged_monikatopic
+    m 3eksdld "Are you sure you don't want me to bring up that subject anymore?{nw}"
+    menu:
+        m "Are you sure you don't want me to bring up that subject anymore?{fast}"
+        "Please don't.":
+            $ mas_hideEVL(prev_topic,"EVE",derandom=True)
+            $ persistent._mas_player_derandomed[mas_getEV(prev_topic).eventlabel]=mas_getEV(prev_topic)
+            m 2eksdlc "Okay, [player], I won't talk about that again."
+            m 2dksdlc "I'm sorry if it upset you... {w=1}That's the last thing I would ever want to do."
+
+        "It's okay.":
+            m 1eka "Alright, [player]."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topicrerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_topicrerandom:
+    python:
+        derandomlist = [
+            (ev.prompt, ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
+        ]
+
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+
+    show monika 1eua at t21
+    $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+    call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if not _return:
+        m 1eua "Okay, [player]."
+
+    else:
+        $ mas_showEVL(topic_choice,"EVE",_random=True)
+        $ del persistent._mas_player_derandomed[topic_choice]
+        m 1eua "Okay, [player]..."
+
+        if len(persistent._mas_player_derandomed) > 0:
+            m 1eka "Are there any other topics you want to talk about again?{nw}"
+            menu:
+                m "Are there any other topics you want to talk about again?{fast}"
+                "Yes.":
+                    call mas_rerandom
+                "No.":
+                    m 3eua "Okay."
+
+        else:
+            m 3hua "All done!"
+            $ mas_hideEVL("mas_topicrerandom","EVE",lock=True)
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topicunfavorite",prompt="I'd like to unfavorite...",unlocked=False,rules={"no unlock":None}))
+
+label mas_topicunfavorite:
+    python:
+        favoritedlist = [
+            (ev.prompt, ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_favorited.iteritems()
+            if ev.unlocked
+        ]
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    $ renpy.say(m,"Which topic do you want to unfavorite?", interact=False )
+    call screen mas_gen_scrollable_menu(favoritedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if not topic_choice:
+        m 1eua "Okay, [player]."
+
+    else:
+        $ del persistent._mas_player_favorited[topic_choice]
+        $ del favoritedlist[-1]
+        m 1eua "Okay, [player]..."
+
+        if len(favoritedlist) > 0:
+            m 1eka "Are there any other topics you want to unfavorite?{nw}"
+            menu:
+                m "Are there any other topics you want to unfavorite?{fast}"
+                "Yes.":
+                    call mas_topicunfavorite
+                "No.":
+                    m 3eua "Okay."
+
+        else:
+            m 3hua "All done!"
+    return
+###############################################################################################################################

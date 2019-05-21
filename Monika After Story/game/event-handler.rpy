@@ -1962,6 +1962,7 @@ label prompt_menu:
             pool=False,
             aff=mas_curr_affection
         )
+
     #Top level menu
     # NOTE: should we force this to a particualr exp considering that 
     # monika now rotates
@@ -1972,6 +1973,10 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0:
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        for ev_label, ev in persistent._mas_player_favorited.iteritems():
+            if ev.unlocked:
+                talk_menu.append(("Favorites","favorites"))
+                break
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
@@ -1985,6 +1990,9 @@ label prompt_menu:
 
     if madechoice == "unseen":
         call show_prompt_list(unseen_events) from _call_show_prompt_list
+
+    elif madechoice == "favorites":
+        $ pushEvent("mas_favorites")
 
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
@@ -2180,4 +2188,29 @@ label prompts_categories(pool=True):
             $picked_event = True
             $pushEvent(_return)
 
+    return
+
+# sets up the favorites menu
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topicfavorites",unlocked=False,rules={"no unlock":None}))
+
+label mas_topicfavorites:
+    python:
+        favoritedlist = [
+            (ev.prompt, ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_favorited.iteritems()
+            if ev.unlocked
+        ]
+
+        favoritedlist.append((mas_getEV("mas_topicunfavorite").prompt, mas_getEV("mas_unfavorite").eventlabel, False, False))
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika at t21
+    call screen mas_gen_scrollable_menu(favoritedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if topic_choice:
+        $ pushEvent(topic_choice)
     return
