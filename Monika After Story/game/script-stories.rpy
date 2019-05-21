@@ -377,7 +377,7 @@ init 5 python:
 label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
-    m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 1euc "The Man's hair was turning gray, which the young Wife did not like, as it made him look too old."
     m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
