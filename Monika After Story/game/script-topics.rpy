@@ -11261,10 +11261,9 @@ init 5 python:
             # this will be unlockable via the action
             rules={"no unlock": None},
 
-            # we'll pool this event after 30 days
+            # we'll pool this event after a month of the relationship
             conditional=(
-                "datetime.datetime.now() - persistent.sessions[" +
-                "'first_session'] >= datetime.timedelta(days=30) " +
+                "store.mas_anni.pastOneMonth() " +
                 "and persistent._mas_first_calendar_check"
             ),
 
@@ -11282,7 +11281,7 @@ label monika_dating_startdate:
         )
 
         # but this to get the display plus diff
-        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+        first_sesh, _diff = mas_cal.genFormalDispDate(first_sesh_raw.date())
 
     if _diff.days == 0:
         # its today?!
@@ -11515,8 +11514,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # post loop
     python:
-        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
-            selected_date
+        new_first_sesh, _diff = mas_cal.genFormalDispDate(
+            selected_date.date()
         )
 
     m 1eua "Alright, [player]."
@@ -11527,12 +11526,12 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     menu:
         m "We started dating [new_first_sesh].{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{nw}"
             # one more confirmation
             # WE WILL NOT FIX anyone's dates after this
             $ _history_list.pop()
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
                     return selected_date
