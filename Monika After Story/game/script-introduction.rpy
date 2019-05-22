@@ -158,15 +158,11 @@ label introduction:
     m 1tuu "I'll make sure of it."
     m 3eua "Now that you added some improvements, you can finally talk to me!"
     m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
-    m 1hua "If there's anything I talk about that you want to revisit easily, just press the 'f' key and I'll favorite it for you."
+    m 1hua "If there's anything I talk about that you want to revisit easily, just press the 'f' key and I'll bookmark it for you."
     m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
     m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
 
-    $ mas_favderand_ev = mas_getEV('mas_fav_derand')
-    # now that we brought this up, no need to queue this
-    if mas_favderand_ev is not None:
-        $ mas_favderand_ev.conditional = None
-        $ mas_favderand_ev.action = None
+    $ mas_stripEVL('mas_fav_derand',True)
 
     # NOTE: the Extra menu is explained when the user clicks on it
     m 4eub "If you get bored of the music, I can change that, too!"

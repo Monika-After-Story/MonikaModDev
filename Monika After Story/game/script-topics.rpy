@@ -3558,7 +3558,7 @@ label monika_birthday:
         m 2rksdlb "I don't actually know when yours is, ahaha!"
         m 2eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
-        $ strip_mas_birthdate()
+        $ mas_stripEVL('mas_birthdate',True)
     return
 
 init 5 python:
@@ -12906,9 +12906,9 @@ label monika_enjoyingspring:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
 
-############################ Player favorite and derandom related events #############################
-default persistent._mas_player_favorited = {}
-# dict to store favorited events
+############################ Player bookmark and derandom related events #############################
+default persistent._mas_player_bookmarked = {}
+# dict to store bookmarked events
 default persistent._mas_player_derandomed = {}
 # dict to store player derandomed events
 default persistent.flagged_monikatopic = None
@@ -12918,33 +12918,57 @@ init python:
 
     # function for manually derandoming topics
     def derandom_topic():
-        if mas_getEV(persistent.current_monikatopic) is not None:
-            if not "mas_topicderandom" in persistent.event_list:
-                persistent.flagged_monikatopic = persistent.current_monikatopic
-                pushEvent('mas_topicderandom')
-                mas_showEVL('mas_rerandom','EVE',unlock=True)
-                renpy.notify(__("Topic flagged for removal (x)."))
-            else:
-                persistent.event_list.remove("mas_topicderandom")
-                if len(persistent._mas_player_derandomed) == 0:
-                    mas_hideEVL('mas_topicrerandom','EVE',lock=True)
-                renpy.notify(__("Topic flag removed (x)."))
-
-    # function for favoriting topics
-    def favorite_topic():
+        """
+        Function for the derandom hotkey, 'x'
+        """
         curr_topic = persistent.current_monikatopic
-        if mas_getEV(curr_topic) is not None:
-            if not mas_getEV(curr_topic).eventlabel in persistent._mas_player_favorited:
-                persistent._mas_player_favorited[mas_getEV(curr_topic).eventlabel] = mas_getEV(curr_topic)
-                renpy.notify(__("Topic favorited (f)."))
+        if (
+            mas_getEV(curr_topic) is not None
+            and mas_getEV(curr_topic).random
+            and curr_topic.startswith("monika_")
+            and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel
+        ):
+            if not "mas_topic_derandom" in persistent.event_list:
+                persistent.flagged_monikatopic = curr_topic
+                pushEvent('mas_topic_derandom')
+                mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+                renpy.notify(__("Topic flagged for removal."))
             else:
-                del persistent._mas_player_favorited[mas_getEV(curr_topic).eventlabel]
-                renpy.notify(__("Topic unfavorited (f)."))
+                persistent.event_list.remove("mas_topic_derandom")
+                if len(persistent._mas_player_derandomed) == 0:
+                    mas_hideEVL('mas_topic_rerandom','EVE',lock=True)
+                renpy.notify(__("Topic flag removed."))
+
+    def bookmark_topic():
+        """
+        Function for the bookmark hotkey, 'b'
+        """
+        curr_topic = persistent.current_monikatopic
+        if (
+            mas_getEV(curr_topic) is not None
+            and curr_topic.startswith("monika_")
+            and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel
+        ):
+            if not mas_getEV(curr_topic).eventlabel in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked[mas_getEV(curr_topic).eventlabel] = mas_getEV(curr_topic)
+                renpy.notify(__("Topic bookmarked."))
+            else:
+                del persistent._mas_player_bookmarked[mas_getEV(curr_topic).eventlabel]
+                renpy.notify(__("Bookmark removed."))
+
+    def mas_check_player_derand():
+        """
+        Checks the player derandom dict for events that are nor random and derandoms them
+        """
+        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
+            if ev.random:
+                ev.random = False
+
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topicderandom",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
-label mas_topicderandom:
+label mas_topic_derandom:
     $ prev_topic = persistent.flagged_monikatopic
     m 3eksdld "Are you sure you don't want me to bring up that subject anymore?{nw}"
     menu:
@@ -12960,17 +12984,17 @@ label mas_topicderandom:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topicrerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_rerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
 
-label mas_topicrerandom:
+label mas_topic_rerandom:
     python:
         derandomlist = [
-            (ev.prompt, ev_label, False, False)
+            (renpy.substitute(ev.prompt), ev_label, False, False)
             for ev_label, ev in persistent._mas_player_derandomed.iteritems()
         ]
 
+        derandomlist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
-
 
     show monika 1eua at t21
     $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
@@ -13002,40 +13026,44 @@ label mas_topicrerandom:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topicunfavorite",prompt="I'd like to unfavorite...",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_unbookmark",prompt="I'd like to remove a bookmark.",unlocked=False,rules={"no unlock":None}))
 
-label mas_topicunfavorite:
+label mas_topic_unbookmark:
     python:
-        favoritedlist = [
-            (ev.prompt, ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_favorited.iteritems()
+        bookmarkslist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
             if ev.unlocked
         ]
+
+        bookmarkslist.sort()
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
-    $ renpy.say(m,"Which topic do you want to unfavorite?", interact=False )
-    call screen mas_gen_scrollable_menu(favoritedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+    call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
 
     $ topic_choice = _return
 
     if not topic_choice:
         m 1eua "Okay, [player]."
+        $ pushEvent('mas_bookmarks')
 
     else:
-        $ del persistent._mas_player_favorited[topic_choice]
-        $ del favoritedlist[-1]
+        $ del persistent._mas_player_bookmarked[topic_choice]
+        $ del bookmarkslist[-1]
         m 1eua "Okay, [player]..."
 
-        if len(favoritedlist) > 0:
-            m 1eka "Are there any other topics you want to unfavorite?{nw}"
+        if len(bookmarkslist) > 0:
+            m 1eka "Are there any other bookmarks you want to remove?{nw}"
             menu:
-                m "Are there any other topics you want to unfavorite?{fast}"
+                m "Are there any other bookmarks you want to remove?{fast}"
                 "Yes.":
-                    call mas_topicunfavorite
+                    call mas_topic_unbookmark
                 "No.":
                     m 3eua "Okay."
+                    $ pushEvent('mas_bookmarks')
 
         else:
             m 3hua "All done!"

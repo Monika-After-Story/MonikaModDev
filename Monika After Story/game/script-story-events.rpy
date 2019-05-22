@@ -507,9 +507,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ strip_mas_birthdate()
-    if "mas_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("mas_birthdate")
+    $ mas_stripEVL('mas_birthdate',True)
     return
 
 ## Game unlock events
@@ -2407,7 +2405,7 @@ init 5 python:
             eventlabel="mas_fav_derand",
             conditional=(
                 "datetime.date.today()>mas_getFirstSesh().date() "
-                "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_favorited) == 0)"
+                "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0)"
             ),
             action=EV_ACT_QUEUE
         )
@@ -2416,20 +2414,20 @@ init 5 python:
 label mas_fav_derand:
     m 3eub "Hey, [player]!"
     m 3hua "I have some new features to tell you about!"
-    if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_favorited) == 0:
-        m 1eua "You now have the ability to favorite topics I talk about simply by pressing the 'f' key."
-        m 3eub "Any topics you favorite will be easily accessible simply by going to the 'Talk' menu!"
+    if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
+        m 1eua "You now have the ability to bookmark topics I talk about simply by pressing the 'b' key."
+        m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
         call mas_derand
     else:
         m 3rksdlb "Well, it seems you already found one of the features I was going to tell you about, ahaha!"
         if len(persistent._mas_player_derandomed) == 0:
-            m 3eua "As you've seen, you now have the ability to favorite topics I talk about simply by pressing the 'f' key, and then access them easily via the 'Talk' menu."
+            m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'f' key, and then access them easily via the 'Talk' menu."
             call mas_derand
         else:
             m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key."
             m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
-            m 3eua "You also now have the ability to favorite topics I talk about simply by pressing the 'f' key."
-            m 1eub "Any topics you favorite will be easily accessible simply by going to the 'Talk' menu."
+            m 3eua "You also now have the ability to bookmark topics I talk about simply by pressing the 'f' key."
+            m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
     return
 
 label mas_derand:

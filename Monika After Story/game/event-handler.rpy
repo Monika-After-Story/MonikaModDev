@@ -433,6 +433,24 @@ init 6 python:
         mas_showEVL(ev_label, code, unlock=True)
 
 
+    def mas_stripEVL(ev_label, list_pop=False):
+        """
+        Strips the conditional and action from an event given the label
+        Also removes the event from the event list if present (optional)
+
+        IN:
+            ev_label - label of event to strip
+            list_pop - True if we want to remove the event from the event list
+                (Default: False)
+        """
+        ev = mas_getEV(ev_label)
+        if ev is not None:
+            ev.conditional = None
+            ev.action = None
+
+            if list_pop and ev_label in persistent.event_list:
+                persistent.event_list.remove(ev_label)
+
 python early:
     # FLOW CHECK CONSTANTS
     # these define where in game flow should a delayed action be checked
@@ -1973,9 +1991,9 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0:
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
-        for ev_label, ev in persistent._mas_player_favorited.iteritems():
+        for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
             if ev.unlocked:
-                talk_menu.append(("Favorites","favorites"))
+                talk_menu.append(("Bookmarks","bookmarks"))
                 break
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
@@ -1991,8 +2009,8 @@ label prompt_menu:
     if madechoice == "unseen":
         call show_prompt_list(unseen_events) from _call_show_prompt_list
 
-    elif madechoice == "favorites":
-        $ pushEvent("mas_favorites")
+    elif madechoice == "bookmarks":
+        $ pushEvent("mas_bookmarks")
 
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
@@ -2190,23 +2208,25 @@ label prompts_categories(pool=True):
 
     return
 
-# sets up the favorites menu
+# sets up the bookmarks menu
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_topicfavorites",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
 
-label mas_topicfavorites:
+label mas_bookmarks:
+    show monika idle
     python:
-        favoritedlist = [
-            (ev.prompt, ev_label, False, False)
-            for ev_label, ev in persistent._mas_player_favorited.iteritems()
+        bookmarkedlist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
             if ev.unlocked
         ]
 
-        favoritedlist.append((mas_getEV("mas_topicunfavorite").prompt, mas_getEV("mas_unfavorite").eventlabel, False, False))
+        bookmarkedlist.sort()
+        bookmarkedlist.append((mas_getEV("mas_topic_unbookmark").prompt, mas_getEV("mas_topic_unbookmark").eventlabel, False, False))
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(favoritedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
 
     $ topic_choice = _return
