@@ -1425,7 +1425,7 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what
+                text h.what.replace("[","[[")
 
         if not _history_list:
             label _("The dialogue history is empty.")
