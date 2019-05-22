@@ -387,7 +387,7 @@ label mas_mood_scared:
     if not seen_event("monika_confidence"):
         m 2euc "No?"
         m 2lksdla "Guess that's for another time then."
-        m 1eka "Anyways…"
+        m 1eka "Anyway..."
     m 1eua "Keeping up one's appearance helps with faking your own confidence."
     m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     if seen_event("monika_confidence_2"):
@@ -400,7 +400,7 @@ label mas_mood_scared:
     m 1eua "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn't necessarily bad, you know?"
-    m 2esc "Besides…"
+    m 2esc "Besides..."
     m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
@@ -477,7 +477,7 @@ label mas_mood_bored:
         $ _history_list.pop()
         menu:
             m "Do I really bore you that much, [player]?{fast}"
-            "No, I'm not bored {i}of you{/i}...":
+            "No, I'm not bored {i}of you...{/i}":
                 m 1hua "Oh,{w} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
 

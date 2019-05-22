@@ -2614,7 +2614,7 @@ label mas_chess_dlg_game_monika_win_surr_resolve:
 
 # have you tried
 label mas_chess_dlg_game_monika_win_surr_trying:
-    m 1tku "Have you considered {i}actually trying{/i}?"
+    m 1tku "Have you considered {i}actually trying?{/i}"
     m 1tfu "I hear it is beneficial to your mental health."
     return
 

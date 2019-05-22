@@ -210,7 +210,7 @@ label monika_ptod_tip002:
     show screen mas_py_console_teaching
 
     ### numbers
-    m 1eua "Python has two types to represent numbers:{w} {i}integers{/i}, or {b}ints{/b},{w} and {i}floats{/i}."
+    m 1eua "Python has two types to represent numbers:{w} {i}integers,{/i} or {b}ints{/b},{w} and {i}floats.{/i}"
 
     ## integers
     m 1eua "Integers are used to represent whole numbers; basically anything that isn't a decimal."
@@ -237,7 +237,7 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
-    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it basically is the same thing."
+    m 1eksdlb "I know the interpreter says {i}unicode,{/i} but for what we're doing, it basically is the same thing."
     m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
 
     ### booleans
@@ -437,7 +437,7 @@ label monika_ptod_tip005:
         m 1eua "You may have noticed that every comparison returned {b}True{/b} or {b}False{/b}."
         m 1eksdlb "{i}That{/i} is what I meant when I said that comparison expressions evaluate to booleans."
 
-    m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators{/i}."
+    m 1eua "It's also possible to chain multiple comparison expressions together by using the keywords {b}and{/b} and {b}or{/b}. These are also known as {i}logical operators.{/i}"
     m "The {b}and{/b} operator links two comparisons by evaluating the complete expression as {b}True{/b} if both comparisons evaluate to {b}True{/b},{w} and {b}False{/b} if at least one comparison evaluates to {b}False{/b}."
     m 1hua "Let's go through some examples."
 
@@ -727,7 +727,7 @@ label monika_ptod_tip008:
     call mas_wx_cmd("10")
     m 3hua "Python still shows us a 10!"
     m 3eua "This happens because Python interprets the '10' as an integer value straight away, without having to look up a symbol and retrieve its value."
-    m "Code that Python can interpret into values directly are called {i}literals{/i}."
+    m "Code that Python can interpret into values directly are called {i}literals.{/i}"
     m 3eub "All the data types I mentioned in the Types lesson can be written as literals."
 
     call mas_wx_cmd("23")

@@ -196,7 +196,7 @@ label preferredname:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player],{/i}' ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh... Okay then, if you say so."
@@ -276,7 +276,7 @@ label monika_changename:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player],'{/i} ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player],{/i}' ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh, I see..."
@@ -1637,14 +1637,14 @@ label mas_bday_spent_time_with:
                 m 3hub "Most of them were really good and I really like them a lot!"
             # bads > than good
             else:
-                m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+                m 3rksdld "Though most of them were...{w}{i}questionable.{/i}"
         else:
             # if good_gifts equal to 1
             if _good == 1:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
+                m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
     m 3hub "Let's do it again sometime soon, okay?"
     return
@@ -1792,7 +1792,7 @@ label mas_bday_surprise_party_hint:
     m 3rksdlb "And{fast} good company!"
     m 1hua "That'd be so nice to experience, don't you think?"
     m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
-    m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
+    m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips...{/i}"
     return
 
 #init 5 python:

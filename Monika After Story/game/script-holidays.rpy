@@ -410,7 +410,7 @@ label greeting_o31_marisa:
     m 1hub "Ehehe~"
     m 3eka "I'm wondering if you'll be able to see what's different today."
     m "Besides my costume of course~"
-    m 1hua "But anyways..."
+    m 1hua "But anyway..."
 
     if store.mas_o31_event.o31_cg_decoded:
         show monika 1eua
@@ -636,7 +636,7 @@ label greeting_trick_or_treat_back:
         m 1wua "We're finally home!"
         m 1wuw "It's the next morning, [player], we were out all night..."
         m "I guess we had too much fun, ehehe~"
-        m 2eka "But anyways, thanks for taking me along, I really enjoyed it."
+        m 2eka "But anyway, thanks for taking me along, I really enjoyed it."
 
         if wearing_costume:
             m "Even if I couldn't see anything and no one else could see my costume..."
@@ -2305,7 +2305,7 @@ label bye_d25_first_time_out:
 
 #second time out on d25
 label bye_d25_second_time_out:
-    m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
+    m 1wud "Wow, we're going somewhere {i}else,{/i} [player]?"
     m 3wud "You really must have a lot of people you need to visit..."
     m 3sua "...or maybe you just have lots of special plans for us today!"
     m 1hua "But either way, thank you for thinking of me and bringing me along~"
@@ -3746,7 +3746,7 @@ label bye_player_bday:
         m 1sub "I always love going out with you, but it's so much more special going out on your birthday..."
         m 1skbla "I'm sure we'll have a lovely time~"
     else:
-        m 1wub "Wow, you want to go out {i}again{/i}, [player]?"
+        m 1wub "Wow, you want to go out {i}again,{/i} [player]?"
         m 1skbla "I just love that you want to spend so much time with me on your special day!"
     $ persistent._mas_player_bday_left_on_bday = True
     jump bye_going_somewhere_post_aff_check

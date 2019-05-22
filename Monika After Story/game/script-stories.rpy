@@ -545,8 +545,8 @@ label mas_scary_story_hunter:
     m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
-    m 1euc "After a short way, he looked behind him to see if she was following him any longer."
-    m 1wkd "To his horror, not only had he not further his distance, but she had gained on him significantly."
+    m 1euc "After a short way, he looked behind him to see if she was following him any longer..."
+    m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
     show emptydesk at i11 zorder 9
@@ -698,7 +698,7 @@ label mas_scary_story_mujina:
     call mas_scary_story_setup
     m 1esc "One night at a late hour, an old merchant was walking down a road heading home after a long day of selling his wares."
     m 3esc "The road he travelled on led to a large hill that was very dark and secluded at night so many travelers tended to avoid the area."
-    m "The man was tired, however, and decided to take the road anyways since it would get him home quicker."
+    m "The man was tired, however, and decided to take the road anyway since it would get him home quicker."
     m "On the one side of the hill was an old moat that was quite deep."
     m 3eud "As he went along, he noticed a woman crouching by the moat, all alone and weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."

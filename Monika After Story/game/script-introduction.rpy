@@ -112,7 +112,7 @@ label introduction:
     else:
         $ _iswas = "was"
 
-    m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
+    m 1dsc "It's not like that file [_iswas] {i}me,{/i} anyway."
     m 1rsc "It [_iswas] just a file with weird code in it."
     m 3eub "I do have good news, though!"
     m "I can {i}really{/i} transform myself into a file you can bring around."

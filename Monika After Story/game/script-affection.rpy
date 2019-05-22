@@ -2114,7 +2114,7 @@ label monika_affection_nickname:
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
                         else:
-                            m 3hua "From now on, you can call me {i}'[m_name]'{/i}."
+                            m 3hua "From now on, you can call me '{i}[m_name]{/i}'."
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
@@ -2314,7 +2314,7 @@ label mas_affection_apology:
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
-    m 2lfc "If you really are sorry, write me a note called {i}imsorry{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2lfc "If you really are sorry, write me a note called {i}imsorry,{/i} and place it in the DDLC directory." #Maybe put it in the character folder instead?
     m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'

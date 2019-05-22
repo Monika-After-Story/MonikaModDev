@@ -272,7 +272,7 @@ label mas_apology_bad_nickname:
 
     elif ev.shown_count == 1:
         $ mas_gainAffection(modifier=0.1) # recover less affection
-        m 2dsc "I can't believe you did that {i}again{/i}."
+        m 2dsc "I can't believe you did that {i}again.{/i}"
         m 2dkd "Even after I gave you a second chance."
         m 2tkc "I'm disappointed in you, [player]."
         m 2tfc "Don't ever do that again."
