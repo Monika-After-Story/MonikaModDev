@@ -1432,18 +1432,23 @@ init python:
         evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
-    def pushEvent(event_label):
+    def pushEvent(event_label, skipeval=False):
         #
         # This pushes high priority or time sensitive events onto the top of
         # the event list
         #
         # IN:
         #   @event_label - a renpy label for the event to be called
+        #   skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
+        #   from interrupting. Defaults False
         #
         # ASSUMES:
         #   persistent.event_list
 
         persistent.event_list.append(event_label)
+
+        if skipeval:
+            mas_idle_mailbox.send_skipmidloopeval()
         return
 
     def queueEvent(event_label):
@@ -1634,7 +1639,7 @@ init python:
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event')
+            pushEvent('continue_event',True)
             persistent.current_monikatopic = 0
         return
 
@@ -2010,7 +2015,7 @@ label prompt_menu:
         call show_prompt_list(unseen_events) from _call_show_prompt_list
 
     elif madechoice == "bookmarks":
-        $ pushEvent("mas_bookmarks")
+        $ pushEvent("mas_bookmarks",True)
 
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
@@ -2019,7 +2024,7 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love")
+        $ pushEvent("monika_love",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2232,5 +2237,5 @@ label mas_bookmarks:
     $ topic_choice = _return
 
     if topic_choice:
-        $ pushEvent(topic_choice)
+        $ pushEvent(topic_choice,True)
     return

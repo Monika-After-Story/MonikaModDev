@@ -7109,7 +7109,7 @@ label monika_system_charging:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
@@ -7122,8 +7122,8 @@ label monika_sleep:
     m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
     m 1eka "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m 1eua "So try to keep your sleep on track, okay?"
-    show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
 #special local var to handle repeated usage of this dialog box.
@@ -12078,7 +12078,7 @@ label monika_load_custom_music:
             "Yes.":
                 m "Okay, but make sure you did it correctly before asking me to check for custom music."
             "No.":
-                $ pushEvent("monika_add_custom_music")
+                $ pushEvent("monika_add_custom_music",True)
     return
 
 init 5 python:
@@ -12916,7 +12916,6 @@ default persistent.flagged_monikatopic = None
 
 init python:
 
-    # function for manually derandoming topics
     def derandom_topic():
         """
         Function for the derandom hotkey, 'x'
@@ -12930,13 +12929,10 @@ init python:
         ):
             if not "mas_topic_derandom" in persistent.event_list:
                 persistent.flagged_monikatopic = curr_topic
-                pushEvent('mas_topic_derandom')
-                mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+                pushEvent('mas_topic_derandom',True)
                 renpy.notify(__("Topic flagged for removal."))
             else:
                 persistent.event_list.remove("mas_topic_derandom")
-                if len(persistent._mas_player_derandomed) == 0:
-                    mas_hideEVL('mas_topic_rerandom','EVE',lock=True)
                 renpy.notify(__("Topic flag removed."))
 
     def bookmark_topic():
@@ -12976,8 +12972,9 @@ label mas_topic_derandom:
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
             $ persistent._mas_player_derandomed[mas_getEV(prev_topic).eventlabel]=mas_getEV(prev_topic)
+            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
             m 2eksdlc "Okay, [player], I won't talk about that again."
-            m 2dksdlc "I'm sorry if it upset you... {w=1}That's the last thing I would ever want to do."
+            m 2eksdla "Thanks for letting me know."
 
         "It's okay.":
             m 1eka "Alright, [player]."
@@ -13016,13 +13013,13 @@ label mas_topic_rerandom:
             menu:
                 m "Are there any other topics you want to talk about again?{fast}"
                 "Yes.":
-                    call mas_rerandom
+                    jump mas_topic_rerandom
                 "No.":
                     m 3eua "Okay."
 
         else:
             m 3hua "All done!"
-            $ mas_hideEVL("mas_topicrerandom","EVE",lock=True)
+            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
     return
 
 init 5 python:
@@ -13048,7 +13045,7 @@ label mas_topic_unbookmark:
 
     if not topic_choice:
         m 1eua "Okay, [player]."
-        $ pushEvent('mas_bookmarks')
+        $ pushEvent('mas_bookmarks',True)
 
     else:
         $ del persistent._mas_player_bookmarked[topic_choice]
@@ -13060,10 +13057,10 @@ label mas_topic_unbookmark:
             menu:
                 m "Are there any other bookmarks you want to remove?{fast}"
                 "Yes.":
-                    call mas_topic_unbookmark
+                    jump mas_topic_unbookmark
                 "No.":
                     m 3eua "Okay."
-                    $ pushEvent('mas_bookmarks')
+                    $ pushEvent('mas_bookmarks',True)
 
         else:
             m 3hua "All done!"
