@@ -2898,7 +2898,8 @@ label greeting_ourreality:
     m 1eua "It's just that I'm super excited to show you what I've been working on."
     m 3hksdrb "Just give me a second to get it ready..."
 
-    if mas_is_raining or mas_is_snowing:
+    #Force def weather for this
+    if mas_current_weather != mas_weather_def:
         call mas_change_weather(mas_weather_def)
 
     m 1dsc "..."
