@@ -22,6 +22,14 @@ init -10 python in mas_windowreacts:
     #The windowreacts db
     windowreact_db = {}
 
+    #Group list, to populate the menu screen
+    #NOTE: We do this so that we don't have to try to get a notification
+    #In order for it to show up in the menu and in the dict
+    _groups_list = [
+        "Topic Alerts",
+        "Window Reactions",
+    ]
+
 init python:
     import os
     #The initial setup
@@ -72,22 +80,16 @@ init python:
         "I have something to tell you, " + persistent.playername + "!",
     ]
 
-    #List of name quips (also used for topic alerts)
-    name_quips = [
-        "Sweetheart",
-        "Darling",
-        "Honey",
-        "Angel",
-        "Monika",
-        persistent._mas_monika_nickname
-    ]
-
     #List of hwnd IDs to destroy
     destroy_list = list()
 
     #START: Utility methods
     def mas_getActiveWindow():
-        if renpy.windows and mas_windowreacts.can_show_notifs:
+        if (
+                renpy.windows
+                and mas_windowreacts.can_show_notifs
+                and persistent._mas_windowreacts_windowreacts_enabled
+            ):
             from win32gui import GetWindowText, GetForegroundWindow
             return GetWindowText(GetForegroundWindow()).lower()
         else:
@@ -98,7 +100,7 @@ init python:
         """
         Checks if MAS is the focused window
         """
-        #TODO: Mac vers
+        #TODO: Mac vers (if possible)
         return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow() == config.name.lower()
 
     def mas_isInActiveWindow(keywords):
@@ -123,8 +125,8 @@ init python:
         """
         Runs through events in the windowreact_db to see if we have a reaction, and if so, queue it
         """
-        #Do not check anything if we're not enabling notifications
-        if not persistent._mas_enable_notifications or not store.mas_windowreacts.can_show_notifs:
+        #Do not check anything if we're not supposed to
+        if not persistent._mas_windowreacts_windowreacts_enabled or not store.mas_windowreacts.can_show_notifs:
             return
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
@@ -145,7 +147,15 @@ init python:
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if ev_label not in excluded:
                 ev.unlocked=True
-    
+
+    def mas_updateFilterDict():
+        """
+        Updates the filter dict with the groups in the groups list for the settings menu
+        """
+        for group in store.mas_windowreacts._groups_list:
+            if persistent._mas_windowreacts_notif_filters.get(group) is None:
+                persistent._mas_windowreacts_notif_filters[group] = False
+
     def mas_tryShowNotificationOSX(title, body):
         """
         Tries to push a notification to the notification center on macOS.
@@ -161,29 +171,30 @@ init python:
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
 
-label display_notif(title, body, location, skip_checks=False):
-    #Notif creation label
-    #Title: Notification heading text
-    #Body: Notification body text
-
+#Notif creation label
+#Title: Notification heading text
+#Body: Notification body text
+#Group: Notification group (for checking if we have this enabled)
+#skip_checks: Whether or not we skips checks
+label display_notif(title, body, group=None, skip_checks=False):
     #We only show notifications if:
     #We are able to show notifs
     #MAS isn't the active window
     #User allows them
-    #And they're allowed in the location they're used in
+    #And if the notification group is enabled
 
     #OR if we skip checks
     #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
 
     #First we want to create this location in the dict
-    if persistent._mas_windowreacts_notif_filters.get(location) is None:
-        $ persistent._mas_windowreacts_notif_filters[location] = False
+    if persistent._mas_windowreacts_notif_filters.get(group) is None:
+        $ persistent._mas_windowreacts_notif_filters[group] = False
 
     if (
             (mas_windowreacts.can_show_notifs
             and not mas_isFocused()
             and persistent._mas_enable_notifications
-            and persistent._mas_windowreacts_notif_filters.get(location))
+            and persistent._mas_windowreacts_notif_filters.get(group))
             or skip_checks
         ):
 

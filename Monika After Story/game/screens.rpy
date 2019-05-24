@@ -21,8 +21,9 @@ init -1 python:
     )
     layout.MAS_TT_NOTIF = (
         "Enabling this will let Monika use your system's notifications "
-        "and see your active window if you are on windows. "
-        "Use at your own discretion. "
+    )
+    layout.MAS_TT_G_NOTIF = (
+        "Enables notifications for the selected group."
     )
     layout.MAS_TT_ACTV_WND = (
         "Enabling this will allow Monika to see your active window "
@@ -1431,10 +1432,13 @@ screen notif_settings():
                 textbutton _(item):
                     action ToggleDict(persistent._mas_windowreacts_notif_filters, item)
                     selected persistent._mas_windowreacts_notif_filters.get(item)
+                    hovered tooltip.Action(layout.MAS_TT_G_NOTIF)
 
-        text tooltip.value:
-            xalign 0 yalign 1.0
-            style "main_menu_version"
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
 
 ## History screen ##############################################################
 ##

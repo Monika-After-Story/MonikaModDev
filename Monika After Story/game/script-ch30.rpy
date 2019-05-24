@@ -1331,6 +1331,9 @@ label ch30_preloop:
     #Unlock windowreact topics
     $ mas_resetWindowReacts()
 
+    #Then prepare the notifs
+    $ mas_updateFilterDict()
+
     # save here before we enter the loop
     $ renpy.save_persistent()
 
