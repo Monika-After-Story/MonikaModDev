@@ -700,6 +700,15 @@ init python:
             persistent.game_unlocks[gamename] = True
 
 
+    def mas_check_player_derand():
+        """
+        Checks the player derandom dict for events that are nor random and derandoms them
+        """
+        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
+            if ev.random:
+                ev.random = False
+
+
 init 1 python:
     morning_flag = mas_isMorning()
 

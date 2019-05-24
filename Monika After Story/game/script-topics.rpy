@@ -12906,7 +12906,7 @@ label monika_enjoyingspring:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
 
-############################ Player bookmark and derandom related events #############################
+# start of bookmark and derandom related events
 default persistent._mas_player_bookmarked = {}
 # dict to store bookmarked events
 default persistent._mas_player_derandomed = {}
@@ -12915,7 +12915,6 @@ default persistent.flagged_monikatopic = None
 # var set when we flag a topic for derandom
 
 init python:
-
     def derandom_topic():
         """
         Function for the derandom hotkey, 'x'
@@ -12952,23 +12951,14 @@ init python:
                 del persistent._mas_player_bookmarked[mas_getEV(curr_topic).eventlabel]
                 renpy.notify(__("Bookmark removed."))
 
-    def mas_check_player_derand():
-        """
-        Checks the player derandom dict for events that are nor random and derandoms them
-        """
-        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
-            if ev.random:
-                ev.random = False
-
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
     $ prev_topic = persistent.flagged_monikatopic
-    m 3eksdld "Are you sure you don't want me to bring up that subject anymore?{nw}"
+    m 3eksdld "Are you sure you don't want me to bring up this subject anymore?{nw}"
     menu:
-        m "Are you sure you don't want me to bring up that subject anymore?{fast}"
+        m "Are you sure you don't want me to bring up this subject anymore?{fast}"
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
             $ persistent._mas_player_derandomed[mas_getEV(prev_topic).eventlabel]=mas_getEV(prev_topic)
@@ -12994,7 +12984,11 @@ label mas_topic_rerandom:
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
-    $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+    if len(derandomlist) > 1:
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+    else:
+        $ renpy.say(m,"If you're sure it's okay to take about this again, please click the topic to confirm.", interact=False )
+
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
 
@@ -13009,9 +13003,9 @@ label mas_topic_rerandom:
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
-            m 1eka "Are there any other topics you want to talk about again?{nw}"
+            m 1eka "Are there any other topics you are okay with talking about again?{nw}"
             menu:
-                m "Are there any other topics you want to talk about again?{fast}"
+                m "Are there any other topics you are okay with talking about again?"
                 "Yes.":
                     jump mas_topic_rerandom
                 "No.":
@@ -13037,9 +13031,12 @@ label mas_topic_unbookmark:
         return_prompt_back = ("Nevermind.", False, False, False, 20)
 
     show monika 1eua at t21
-    $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+    if len(bookmarkslist) > 1:
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+    else:
+        $ renpy.say(m,"Please click the bookmark if you're sure you want to remove it.", interact=False )
+        
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
-    show monika at t11
 
     $ topic_choice = _return
 
@@ -13048,6 +13045,7 @@ label mas_topic_unbookmark:
         $ pushEvent('mas_bookmarks',True)
 
     else:
+        show monika at t11
         $ del persistent._mas_player_bookmarked[topic_choice]
         $ del bookmarkslist[-1]
         m 1eua "Okay, [player]..."
@@ -13065,4 +13063,4 @@ label mas_topic_unbookmark:
         else:
             m 3hua "All done!"
     return
-###############################################################################################################################
+# end of bookmark and derandom related events

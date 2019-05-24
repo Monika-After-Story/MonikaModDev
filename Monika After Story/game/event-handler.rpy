@@ -1433,17 +1433,18 @@ init python:
 
 
     def pushEvent(event_label, skipeval=False):
-        #
-        # This pushes high priority or time sensitive events onto the top of
-        # the event list
-        #
-        # IN:
-        #   @event_label - a renpy label for the event to be called
-        #   skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
-        #   from interrupting. Defaults False
-        #
-        # ASSUMES:
-        #   persistent.event_list
+        """
+        This pushes high priority or time sensitive events onto the top of
+        the event list
+
+        IN:
+            @event_label - a renpy label for the event to be called
+            skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
+            from interrupting. (Defaults: False)
+
+        ASSUMES:
+            persistent.event_list
+        """
 
         persistent.event_list.append(event_label)
 
@@ -1452,15 +1453,16 @@ init python:
         return
 
     def queueEvent(event_label):
-        #
-        # This adds low priority or order-sensitive events onto the bottom of
-        # the event list. This is slow, but rarely called and list should be small.
-        #
-        # IN:
-        #   @event_label - a renpy label for the event to be called
-        #
-        # ASSUMES:
-        #   persistent.event_list
+        """
+        This adds low priority or order-sensitive events onto the bottom of
+        the event list. This is slow, but rarely called and list should be small.
+        
+        IN:
+            @event_label - a renpy label for the event to be called
+
+        ASSUMES:
+            persistent.event_list
+        """
 
         persistent.event_list.insert(0,event_label)
         return
@@ -1560,18 +1562,18 @@ init python:
 
 
     def popEvent(remove=True):
-        #
-        # This returns the event name for the next event and makes it the
-        # current_monikatopic
-        #
-        # IN:
-        #   remove = If False, then just return the name of the event but don't
-        #       remove it
-        #
-        # ASSUMES:
-        #   persistent.event_list
-        #   persistent.current_monikatopic
+        """
+        This returns the event name for the next event and makes it the
+        current_monikatopic
 
+        IN:
+            remove = If False, then just return the name of the event but don't
+            remove it
+
+        ASSUMES:
+            persistent.event_list
+            persistent.current_monikatopic
+        """
         if len(persistent.event_list) == 0:
             return None
 
@@ -1614,15 +1616,16 @@ init python:
 
 
     def seen_event(event_label):
-        #
-        # This checks if an event has either been seen or is already on the
-        # event list.
-        #
-        # IN:
-        #   event_lable = The label for the event to be checked
-        #
-        # ASSUMES:
-        #   persistent.event_list
+        """
+        This checks if an event has either been seen or is already on the
+        event list.
+
+        IN:
+            event_lable = The label for the event to be checked
+
+        ASSUMES:
+            persistent.event_list
+        """
         if renpy.seen_label(event_label) or event_label in persistent.event_list:
             return True
         else:
@@ -1630,12 +1633,10 @@ init python:
 
 
     def restartEvent():
-        #
-        # This checks if there is a persistent topic, and if there was push it
-        # back on the stack with a little comment.
-        #
-        # IN:
-        #
+        """
+        This checks if there is a persistent topic, and if there was push it
+        back on the stack with a little comment.
+        """
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
@@ -1998,6 +1999,7 @@ label prompt_menu:
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
         for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
             if ev.unlocked:
+                # just need to make sure we have at least one unlocked topic in the bookmarks dict
                 talk_menu.append(("Bookmarks","bookmarks"))
                 break
         talk_menu.append(("Hey, [m_name]...", "prompt"))
@@ -2227,15 +2229,17 @@ label mas_bookmarks:
         ]
 
         bookmarkedlist.sort()
-        bookmarkedlist.append((mas_getEV("mas_topic_unbookmark").prompt, mas_getEV("mas_topic_unbookmark").eventlabel, False, False))
-        return_prompt_back = ("Nevermind.", False, False, False, 20)
+        remove_fav = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 0)
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_fav, return_prompt_back)
     show monika at t11
 
     $ topic_choice = _return
 
     if topic_choice:
+        $ pushEvent(topic_choice,True)
+    elif topic_choice == remove_fav:
         $ pushEvent(topic_choice,True)
     return

@@ -2419,19 +2419,19 @@ label mas_fav_derand:
         m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
         call mas_derand
     else:
-        m 3rksdlb "Well, it seems you already found one of the features I was going to tell you about, ahaha!"
+        m 3rksdlb "...Well, it seems you already found one of the features I was going to tell you about, ahaha!"
         if len(persistent._mas_player_derandomed) == 0:
             m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'f' key, and then access them easily via the 'Talk' menu."
             call mas_derand
         else:
-            m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key."
+            m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
             m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
             m 3eua "You also now have the ability to bookmark topics I talk about simply by pressing the 'f' key."
             m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
     return
 
 label mas_derand:
-    m 1eua "You can also now let me know of any topics that you don't like me bringing up by pressing the 'x' key."
+    m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
     m 1eka "Don't worry about hurting my feelings, we should be able to be honest with eachother after all."
     m 3eksdld "...And the last thing I want to do is keep bringing up stuff that makes you uncomfortable to talk about."
     m 3eka "So, make sure you let me know, okay?"

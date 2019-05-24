@@ -65,13 +65,15 @@ init python:
         store.mas_hotkeys.talk_enabled = True
         store.mas_hotkeys.extra_enabled = True
         store.mas_hotkeys.play_enabled = True
-        store.mas_hotkeys.derandom_enabled = False
-        store.mas_hotkeys.bookmark_enabled = False
         store.hkb_button.talk_enabled = True
         store.hkb_button.extra_enabled = True
         store.hkb_button.play_enabled = True
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
+
+        # special dialogue shield settings for derand and bookmark hotkeys
+        store.mas_hotkeys.derandom_enabled = False
+        store.mas_hotkeys.bookmark_enabled = False
 
     
     def mas_RaiseShield_dlg():
