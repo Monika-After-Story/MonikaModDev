@@ -1149,7 +1149,7 @@ screen preferences():
                         hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
                     if renpy.windows:
-                        textbutton _("Window Reactions"):
+                        textbutton _("Window Reacts"):
                             action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
                             hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
 

@@ -187,7 +187,7 @@ label display_notif(title, body, group=None, skip_checks=False):
     #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
 
     #First we want to create this location in the dict
-    if persistent._mas_windowreacts_notif_filters.get(group) is None:
+    if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
         $ persistent._mas_windowreacts_notif_filters[group] = False
 
     if (
@@ -202,20 +202,41 @@ label display_notif(title, body, group=None, skip_checks=False):
         if (renpy.windows):
             # The Windows way
             play sound "mod_assets/sounds/effects/notif.wav"
-            $ tip.showWindow(title,body)
+            $ tip.showWindow(renpy.substitute(title),renpy.substitute(body))
 
             #We need the IDs of the notifs to delete them from the tray
             $ destroy_list.append(tip.hwnd)
 
         elif (renpy.macintosh):
             # The macOS way
-            $ mas_tryShowNotificationOSX(title,body)
+            $ mas_tryShowNotificationOSX(renpy.substitute(title),renpy.substitute(body))
 
         elif (renpy.linux):
             # The Linux way
-            $ mas_tryShowNotificationLinux(title,body)
+            $ mas_tryShowNotificationLinux(renpy.substitute(title),renpy.substitute(body))
     return
 
+#START: Intro to notifs/windowreact topics
+label mas_notification_intro:
+    m 1hub "[player], I have something exciting to tell you!"
+    m 3eua "I've been practicing coding a little bit, and I've learned how to use the notifications on your computer!"
+    m "So if you want, I can let you know if I have something for us to talk about."
+    m 3eub "Would you like to see how they work?{nw}"
+
+    menu:
+        m "Would you like to see how they work?{fast}"
+
+        "Sure!":
+            m 1hua "Okay, [player]!"
+            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}."
+            call display_notif(m_name, "I love you, [player]!", skip_checks=True)
+            m 1hub "There it is!"
+
+        "No thanks.":
+            m 2eka "Alright, [player]."
+
+    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab and turn them on, along with what you'd like to be notified for."
+    return
 
 #START: Window Reacts
 init 5 python:
@@ -230,7 +251,7 @@ init 5 python:
     )
 
 label monika_whatwatching:
-    call display_notif("Monika","What are you watching, "+player+"?",'Window Reactions')
+    call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
     return
 
 init 5 python:
@@ -245,6 +266,22 @@ init 5 python:
     )
 
 label monika_lookingat:
-    call display_notif("Monika", "Hey, "+player+"...what are you looking at?",'Window Reactions')
+    call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
     $ queueEvent('monika_nsfw')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="monika_monikamoddev",
+            category=['monikamoddev'],
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+
+label monika_monikamoddev:
+    call display_notif(m_name, "Aww, are you working on something for me?\nYou're so sweet~",'Window Reactions')
     return
