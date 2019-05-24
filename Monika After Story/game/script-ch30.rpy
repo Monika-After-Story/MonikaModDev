@@ -702,7 +702,7 @@ init python:
 
     def mas_check_player_derand():
         """
-        Checks the player derandom dict for events that are nor random and derandoms them
+        Checks the player derandom dict for events that are not random and derandoms them
         """
         for ev_label, ev in persistent._mas_player_derandomed.iteritems():
             if ev.random:

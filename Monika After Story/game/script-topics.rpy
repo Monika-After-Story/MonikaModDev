@@ -13014,6 +13014,10 @@ label mas_topic_rerandom:
         else:
             m 3hua "All done!"
             $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+
+    # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
+    # to be derandomed out of season is still derandomed
+    $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
     return
 
 init 5 python:
@@ -13047,6 +13051,8 @@ label mas_topic_unbookmark:
     else:
         show monika at t11
         $ del persistent._mas_player_bookmarked[topic_choice]
+        # since it's possible to have bookmarked items that are now locked and thus not shown here
+        # we will delete an event from the list so we can check the lenth of currently available events
         $ del bookmarkslist[-1]
         m 1eua "Okay, [player]..."
 

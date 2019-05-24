@@ -158,7 +158,7 @@ label introduction:
     m 1tuu "I'll make sure of it."
     m 3eua "Now that you added some improvements, you can finally talk to me!"
     m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
-    m 1hua "If there's anything I talk about that you want to revisit easily, just press the 'f' key and I'll bookmark it for you."
+    m 1hua "If there's anything I talk about that you want to revisit easily, just press the 'b' key and I'll bookmark it for you."
     m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
     m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
 

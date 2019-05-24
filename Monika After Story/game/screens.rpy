@@ -2252,7 +2252,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 #           [2]: width of menu
 #           [3]: height of menu
 #   scroll_align - alignment of vertical scrollbar
-#   final_item - represents the final (usually quit item) of the menu
+#   *args - represents the final (usually quit) item(s) of the menu
 #       tuple of the following format:
 #           [0]: text of the button
 #           [1]: return value of the button
