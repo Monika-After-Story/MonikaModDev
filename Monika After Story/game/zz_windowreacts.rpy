@@ -1,13 +1,19 @@
 #NOTE: This ONLY works for Windows atm
 
-#Whether we want notifs or not
+#Whether Monika can use notifications or not
 default persistent._mas_enable_notifications = False
+
+#Whether Monika can see your active window or not
+default persistent._mas_windowreacts_windowreacts_enabled = False
 
 #Persistent windowreacts db
 default persistent._mas_windowreacts_database = dict()
 
 #A global list of events we DO NOT want to unlock on a new session
 default persistent._mas_windowreacts_no_unlock_list = list()
+
+#A dict of locations where notifs are used, and if they're enabled for said location
+default persistent._mas_windowreacts_notif_filters = dict()
 
 init -10 python in mas_windowreacts:
     #We need this in case we cannot get access to the libs, so everything can still run
@@ -32,19 +38,27 @@ init python:
             import win32gui
             #Import win32api so we know if we can or cannot use notifs
             import win32api
+
         except ImportError:
             #If we fail to import, then we're going to have to make sure nothing can run.
             store.mas_windowreacts.can_show_notifs = False
 
             #Log this
             store.mas_utils.writelog(
-                "[WARNING]: win32api/win32ggui failed to be imported, disabling notifications.\n"
+                "[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n"
             )
+
         else:
             import balloontip
 
             #Now we initialize the notification class
-            tip = balloontip.WindowsBalloonTip()
+            try:
+                tip = balloontip.WindowsBalloonTip()
+
+            except:
+                #So reload still works
+                tip.classAtom = win32gui.UnregisterClass(tip.classAtom, tip.hinst)
+                tip = balloontip.WindowsBalloonTip()
 
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
@@ -147,7 +161,7 @@ init python:
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
 
-label display_notif(title, body):
+label display_notif(title, body, location, skip_checks=False):
     #Notif creation label
     #Title: Notification heading text
     #Body: Notification body text
@@ -155,11 +169,22 @@ label display_notif(title, body):
     #We only show notifications if:
     #We are able to show notifs
     #MAS isn't the active window
-    #And User allows them
+    #User allows them
+    #And they're allowed in the location they're used in
+
+    #OR if we skip checks
+    #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
+
+    #First we want to create this location in the dict
+    if persistent._mas_windowreacts_notif_filters.get(location) is None:
+        $ persistent._mas_windowreacts_notif_filters[location] = False
+
     if (
-            mas_windowreacts.can_show_notifs
+            (mas_windowreacts.can_show_notifs
             and not mas_isFocused()
             and persistent._mas_enable_notifications
+            and persistent._mas_windowreacts_notif_filters.get(location))
+            or skip_checks
         ):
 
         #Make the notif
@@ -194,7 +219,7 @@ init 5 python:
     )
 
 label monika_whatwatching:
-    call display_notif("Monika","What are you watching, "+player+"?")
+    call display_notif("Monika","What are you watching, "+player+"?",'Window Reactions')
     return
 
 init 5 python:
@@ -209,6 +234,6 @@ init 5 python:
     )
 
 label monika_lookingat:
-    call display_notif("Monika", "Hey, "+player+"...what are you looking at?")
+    call display_notif("Monika", "Hey, "+player+"...what are you looking at?",'Window Reactions')
     $ queueEvent('monika_nsfw')
     return

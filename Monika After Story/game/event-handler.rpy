@@ -1873,6 +1873,7 @@ label call_next_event:
 
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
+                $ mas_clearNotifs()
                 jump _quit
 
         # loop over until all events have been called

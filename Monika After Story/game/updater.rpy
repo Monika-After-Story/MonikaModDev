@@ -936,6 +936,9 @@ label update_now:
             $ renpy.save_persistent()
             $ updater.update(update_link, restart=True)
 
+            #Clear any potential lingering things in tray
+            $ mas_clearNotifs()
+
             # we have to quit because calling QUIT breaks things
             jump _quit
 
