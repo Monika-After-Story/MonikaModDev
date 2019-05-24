@@ -1824,7 +1824,7 @@ label ch30_reset:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
 
-    # make sure nothing the player has derandomed in now random
+    # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
 
     return

@@ -1617,7 +1617,7 @@ init python:
 
     def seen_event(event_label):
         """
-        This checks if an event has either been seen or is already on the
+        This checks if an event has either been seen or is already in the
         event list.
 
         IN:
