@@ -17,6 +17,7 @@ init -10 python in mas_windowreacts:
     windowreact_db = {}
 
 init python:
+    import os
     #The initial setup
 
     #We can only do this on windows
@@ -130,6 +131,20 @@ init python:
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if ev_label not in excluded:
                 ev.unlocked=True
+    
+    def mas_tryShowNotificationOSX(title, body):
+        """
+        Tries to push a notification to the notification center on macOS.
+        If it can't it should fail silently to the user.
+        """
+        os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
+    
+    def mas_tryShowNotificationLinux(title, body):
+        """
+        Tries to push a notification to the notification center on Linux.
+        If it can't it should fail silently to the user.
+        """
+        os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
 
 label display_notif(title, body):
@@ -138,22 +153,31 @@ label display_notif(title, body):
     #Body: Notification body text
 
     #We only show notifications if:
-    #We're on windows
     #We are able to show notifs
     #MAS isn't the active window
     #And User allows them
     if (
-            renpy.windows
-            and mas_windowreacts.can_show_notifs
+            mas_windowreacts.can_show_notifs
             and not mas_isFocused()
             and persistent._mas_enable_notifications
         ):
-        #Make the notif
-        play sound "mod_assets/sounds/effects/notif.wav"
-        $ tip.showWindow(title,body)
 
-        #We need the IDs of the notifs to delete them from the tray
-        $ destroy_list.append(tip.hwnd)
+        #Make the notif
+        if (renpy.windows):
+            # The Windows way
+            play sound "mod_assets/sounds/effects/notif.wav"
+            $ tip.showWindow(title,body)
+
+            #We need the IDs of the notifs to delete them from the tray
+            $ destroy_list.append(tip.hwnd)
+
+        elif (renpy.macintosh):
+            # The macOS way
+            $ mas_tryShowNotificationOSX(title,body)
+
+        elif (renpy.linux):
+            # The Linux way
+            $ mas_tryShowNotificationLinux(title,body)
     return
 
 
