@@ -302,6 +302,15 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.9.5
+label v0_9_5(version="v0_9_5"):
+    python:
+        #Actually unlock the holdme topic since we forgot to do this when we made the weather change topic
+        if mas_isMoniHappy(higher=True) and persistent._mas_likes_rain:
+            mas_unlockEVL("monika_rain_holdme", "EVE")
+
+    return
+
 # 0.9.4
 label v0_9_4(version="v0_9_4"):
     python:
