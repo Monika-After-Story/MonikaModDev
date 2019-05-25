@@ -2415,18 +2415,18 @@ label mas_fav_derand:
     m 3eub "Hey, [player]!"
     m 3hua "I have some new features to tell you about!"
     if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
-        m 1eua "You now have the ability to bookmark topics I talk about simply by pressing the 'b' key."
+        m 1eua "You now have the ability to bookmark topics I am talking about simply by pressing the 'b' key."
         m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
         call mas_derand
     else:
         m 3rksdlb "...Well, it seems you already found one of the features I was going to tell you about, ahaha!"
         if len(persistent._mas_player_derandomed) == 0:
-            m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'f' key, and then access them easily via the 'Talk' menu."
+            m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'b' key, and then access them easily via the 'Talk' menu."
             call mas_derand
         else:
             m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
             m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
-            m 3eua "You also now have the ability to bookmark topics I talk about simply by pressing the 'f' key."
+            m 3eua "You also now have the ability to bookmark topics I am talking about by simply pressing the 'b' key."
             m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
     return
 
