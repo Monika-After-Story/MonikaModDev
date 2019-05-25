@@ -94,7 +94,8 @@ init python:
             return GetWindowText(GetForegroundWindow()).lower()
         else:
             #TODO: Mac vers (if possible)
-            return ""
+            #NOTE: Return our process name so we don't show extra notifs because windowreacts disabled
+            return "monika after story"
 
     def mas_isFocused():
         """
@@ -131,11 +132,18 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                    (mas_isInActiveWindow(ev.category) and ev.unlocked)
+                    (mas_isInActiveWindow(ev.category) and ev.unlocked and ev.checkAffection(mas_curr_affection))
                     and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                 ):
-                queueEvent(ev_label)
-                ev.unlocked=False
+                #If we have a conditional, eval it and queue if true
+                if ev.conditional and eval(ev.conditional):
+                    queueEvent(ev_label)
+                    ev.unlocked=False
+
+                #Otherwise we just queue
+                else:
+                    queueEvent(ev_label)
+                    ev.unlocked=False
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """
@@ -155,6 +163,20 @@ init python:
         for group in store.mas_windowreacts._groups_list:
             if persistent._mas_windowreacts_notif_filters.get(group) is None:
                 persistent._mas_windowreacts_notif_filters[group] = False
+
+    def mas_addBlacklistReact(ev_label):
+        """
+        Adds the given ev_label to the no unlock list
+        """
+        if renpy.has_label(ev_label) and ev_label not in persistent._mas_windowreacts_no_unlock_list:
+            persistent._mas_windowreacts_no_unlock_list.add(ev_label)
+
+    def mas_removeBlacklistReact(ev_label):
+        """
+        Removes the given ev_label to the no unlock list if exists
+        """
+        if renpy.has_label(ev_label) and ev_label in persistent._mas_windowreacts_no_unlock_list:
+            persistent._mas_windowreacts_no_unlock_list.remove(ev_label)
 
     def mas_tryShowNotificationOSX(title, body):
         """
