@@ -12958,6 +12958,7 @@ label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = persistent.flagged_monikatopic
     m 3eksdld "Are you sure you don't want me to bring up this subject anymore?{nw}"
+    $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring up this subject anymore?{fast}"
         "Please don't.":
@@ -13006,8 +13007,9 @@ label mas_topic_rerandom:
 
         if len(persistent._mas_player_derandomed) > 0:
             m 1eka "Are there any other topics you are okay with talking about again?{nw}"
+            $ _history_list.pop()
             menu:
-                m "Are there any other topics you are okay with talking about again?"
+                m "Are there any other topics you are okay with talking about again?{fast}"
                 "Yes.":
                     jump mas_topic_rerandom
                 "No.":
@@ -13060,6 +13062,7 @@ label mas_topic_unbookmark:
 
         if len(bookmarkslist) > 0:
             m 1eka "Are there any other bookmarks you want to remove?{nw}"
+            $ _history_list.pop()
             menu:
                 m "Are there any other bookmarks you want to remove?{fast}"
                 "Yes.":
