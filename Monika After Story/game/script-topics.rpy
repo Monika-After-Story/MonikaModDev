@@ -321,6 +321,81 @@ init 11 python:
 #        monika_random_topics=list(all_random_topics)
 
 
+default persistent._mas_player_bookmarked = {}
+# dict to store bookmarked events
+default persistent._mas_player_derandomed = {}
+# dict to store player derandomed events
+default persistent.flagged_monikatopic = None
+# var set when we flag a topic for derandom
+
+init python:
+    def mas_derandom_topic(ev_label=None):
+        """
+        Function for the derandom hotkey, 'x'
+
+        IN:
+            ev_label - label of the event we want to derandom.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            ev is not None
+            and ev.random
+            and ev.eventlabel.startswith("monika_")
+            and ev.prompt != ev.eventlabel
+        ):
+            if "mas_topic_derandom" not in persistent.event_list:
+                persistent.flagged_monikatopic = ev.eventlabel
+                pushEvent('mas_topic_derandom',True)
+                renpy.notify(__("Topic flagged for removal."))
+            else:
+                persistent.event_list.remove("mas_topic_derandom")
+                renpy.notify(__("Topic flag removed."))
+
+    def mas_bookmark_topic(ev_label=None):
+        """
+        Function for the bookmark hotkey, 'b'
+
+        IN:
+            ev_label - label of the event we want to bookmark.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            mas_isMoniNormal(higher=True)
+            and ev is not None
+            and ev.eventlabel.startswith("monika_")
+            and ev.prompt != ev.eventlabel
+        ):
+            if ev.eventlabel not in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                renpy.notify(__("Topic bookmarked."))
+            else:
+                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                renpy.notify(__("Bookmark removed."))
+
+    def mas_hasBookmarks():
+        """
+        Checks to see if we have bookmarks to show
+        """
+        if mas_isMoniNormal(higher=True):
+            bookmarkslist = [
+                (renpy.substitute(ev.prompt), ev_label, False, False)
+                for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
+                if ev.unlocked and ev.checkAffection(mas_curr_affection)
+            ]
+            if len(bookmarkslist) > 0:
+                return True
+
+
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
 #fields you don't plan to use
@@ -12906,65 +12981,19 @@ label monika_enjoyingspring:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
 
-# start of bookmark and derandom related events
-default persistent._mas_player_bookmarked = {}
-# dict to store bookmarked events
-default persistent._mas_player_derandomed = {}
-# dict to store player derandomed events
-default persistent.flagged_monikatopic = None
-# var set when we flag a topic for derandom
-
-init python:
-    def derandom_topic():
-        """
-        Function for the derandom hotkey, 'x'
-        """
-        curr_topic = persistent.current_monikatopic
-        if (
-            mas_getEV(curr_topic) is not None
-            and mas_getEV(curr_topic).random
-            and curr_topic.startswith("monika_")
-            and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel
-        ):
-            if not "mas_topic_derandom" in persistent.event_list:
-                persistent.flagged_monikatopic = curr_topic
-                pushEvent('mas_topic_derandom',True)
-                renpy.notify(__("Topic flagged for removal."))
-            else:
-                persistent.event_list.remove("mas_topic_derandom")
-                renpy.notify(__("Topic flag removed."))
-
-    def bookmark_topic():
-        """
-        Function for the bookmark hotkey, 'b'
-        """
-        curr_topic = persistent.current_monikatopic
-        if (
-            mas_isMoniNormal(higher=True)
-            and mas_getEV(curr_topic) is not None
-            and curr_topic.startswith("monika_")
-            and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel
-        ):
-            if not mas_getEV(curr_topic).eventlabel in persistent._mas_player_bookmarked:
-                persistent._mas_player_bookmarked[mas_getEV(curr_topic).eventlabel] = mas_getEV(curr_topic)
-                renpy.notify(__("Topic bookmarked."))
-            else:
-                del persistent._mas_player_bookmarked[mas_getEV(curr_topic).eventlabel]
-                renpy.notify(__("Bookmark removed."))
-
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
-    $ prev_topic = persistent.flagged_monikatopic
+    $ prev_topic = mas_getEV(persistent.flagged_monikatopic)
     m 3eksdld "Are you sure you don't want me to bring up this subject anymore?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring up this subject anymore?{fast}"
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
-            $ persistent._mas_player_derandomed[mas_getEV(prev_topic).eventlabel]=mas_getEV(prev_topic)
+            $ persistent._mas_player_derandomed[prev_topic.eventlabel]=prev_topic
             $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
@@ -13003,7 +13032,7 @@ label mas_topic_rerandom:
 
     else:
         $ mas_showEVL(topic_choice,"EVE",_random=True)
-        $ del persistent._mas_player_derandomed[topic_choice]
+        $ persistent._mas_player_derandomed.pop(topic_choice)
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
@@ -13055,13 +13084,10 @@ label mas_topic_unbookmark:
 
     else:
         show monika at t11
-        $ del persistent._mas_player_bookmarked[topic_choice]
-        # since it's possible to have bookmarked items that are now locked and thus not shown here
-        # we will delete an event from the list so we can check the lenth of currently available events
-        $ del bookmarkslist[-1]
+        $ persistent._mas_player_bookmarked.pop(topic_choice)
         m 1eua "Okay, [player]..."
 
-        if len(bookmarkslist) > 0:
+        if len(bookmarkslist) > 1:
             m 1eka "Are there any other bookmarks you want to remove?{nw}"
             $ _history_list.pop()
             menu:
@@ -13098,7 +13124,7 @@ label mas_hide_unseen:
 
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again.",pool=True,unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again",pool=True,unlocked=False,rules={"no unlock":None}))
 
 label mas_show_unseen:
     m 3eub "Sure, [player]!"

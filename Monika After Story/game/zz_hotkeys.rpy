@@ -170,14 +170,14 @@ init python:
         hotkey specific derandom topics
         """
         if store.mas_hotkeys.derandom_enabled and not _windows_hidden:
-            derandom_topic()
+            mas_derandom_topic()
 
     def _mas_hk_bookmark_topic():
         """
         hotkey specific bookmark topics
         """
         if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
-            bookmark_topic()
+            mas_bookmark_topic()
 
     def _mas_game_menu():
         """

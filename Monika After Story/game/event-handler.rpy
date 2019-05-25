@@ -1998,12 +1998,8 @@ label prompt_menu:
         if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
-        if mas_isMoniNormal(higher=True):
-            for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
-                if ev.unlocked and ev.checkAffection(mas_curr_affection):
-                    # just need to make sure we have at least one unlocked topic in the bookmarks dict
-                    talk_menu.append(("Bookmarks","bookmarks"))
-                    break
+        if mas_hasBookmarks():
+            talk_menu.append(("Bookmarks","bookmarks"))
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
@@ -2019,7 +2015,7 @@ label prompt_menu:
         call show_prompt_list(unseen_events) from _call_show_prompt_list
 
     elif madechoice == "bookmarks":
-        $ pushEvent("mas_bookmarks",True)
+        call mas_bookmarks
 
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
@@ -2058,10 +2054,7 @@ label show_prompt_list(sorted_event_keys):
 
     $ nvm_text = "That's enough for now."
 
-    if madechoice == "unseen":
-        $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
-    else:
-        $ remove = None
+    $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
 
     call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
