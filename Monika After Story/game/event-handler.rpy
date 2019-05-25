@@ -1997,11 +1997,12 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0:
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
-        for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
-            if ev.unlocked:
-                # just need to make sure we have at least one unlocked topic in the bookmarks dict
-                talk_menu.append(("Bookmarks","bookmarks"))
-                break
+        if mas_isMoniNormal(higher=True):
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
+                if ev.unlocked and ev.checkAffection(mas_curr_affection):
+                    # just need to make sure we have at least one unlocked topic in the bookmarks dict
+                    talk_menu.append(("Bookmarks","bookmarks"))
+                    break
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
@@ -2225,7 +2226,7 @@ label mas_bookmarks:
         bookmarkedlist = [
             (renpy.substitute(ev.prompt), ev_label, False, False)
             for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked
+            if ev.unlocked and ev.checkAffection(mas_curr_affection)
         ]
 
         bookmarkedlist.sort()

@@ -12940,7 +12940,8 @@ init python:
         """
         curr_topic = persistent.current_monikatopic
         if (
-            mas_getEV(curr_topic) is not None
+            mas_isMoniNormal(higher=True)
+            and mas_getEV(curr_topic) is not None
             and curr_topic.startswith("monika_")
             and mas_getEV(curr_topic).prompt != mas_getEV(curr_topic).eventlabel
         ):
@@ -13032,7 +13033,7 @@ label mas_topic_unbookmark:
         bookmarkslist = [
             (renpy.substitute(ev.prompt), ev_label, False, False)
             for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-            if ev.unlocked
+            if ev.unlocked and ev.checkAffection(mas_curr_affection)
         ]
 
         bookmarkslist.sort()

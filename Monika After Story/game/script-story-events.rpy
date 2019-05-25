@@ -2407,7 +2407,8 @@ init 5 python:
                 "datetime.date.today()>mas_getFirstSesh().date() "
                 "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0)"
             ),
-            action=EV_ACT_QUEUE
+            action=EV_ACT_QUEUE,
+            aff_range=(mas_aff.NORMAL, None)
         )
     )
 
