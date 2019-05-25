@@ -12966,7 +12966,7 @@ label mas_topic_derandom:
             $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
-            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty.
+            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty."
 
         "It's okay.":
             m 1eka "Alright, [player]."
