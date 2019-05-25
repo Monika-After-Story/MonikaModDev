@@ -12963,8 +12963,9 @@ label mas_topic_derandom:
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
             $ persistent._mas_player_derandomed[mas_getEV(prev_topic).eventlabel]=mas_getEV(prev_topic)
             $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
-            m 2eksdlc "Okay, [player], I won't talk about that again."
-            m 2eksdla "Thanks for letting me know."
+            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
+            m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
+            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty.
 
         "It's okay.":
             m 1eka "Alright, [player]."
@@ -12987,7 +12988,7 @@ label mas_topic_rerandom:
     if len(derandomlist) > 1:
         $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
     else:
-        $ renpy.say(m,"If you're sure it's okay to take about this again, please click the topic to confirm.", interact=False )
+        $ renpy.say(m,"If you're sure it's okay to talk about this again, please click the topic to confirm.", interact=False )
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11

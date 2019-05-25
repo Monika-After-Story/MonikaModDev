@@ -907,7 +907,7 @@ label monika_change_weather_loop:
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
 
     $ sel_weather = _return
 

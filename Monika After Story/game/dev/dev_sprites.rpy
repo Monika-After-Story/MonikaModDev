@@ -180,7 +180,7 @@ label dev_sp_obj_pp_test:
 
 label dev_sp_obj_pp_test_top:
     
-    call screen mas_gen_scrollable_menu(top_level_menu, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, final_item=returner)
+    call screen mas_gen_scrollable_menu(top_level_menu, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, returner)
 
     if _return is False:
         # restore state
@@ -192,7 +192,7 @@ label dev_sp_obj_pp_test_top:
 label dev_sp_obj_pp_test_sp_select:
 
     # otherwise, create menu using the given list
-    call screen mas_gen_scrollable_menu(selected_sp_list, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, final_item=returner)
+    call screen mas_gen_scrollable_menu(selected_sp_list, store.mas_moods.MOOD_AREA, store.mas_moods.MOOD_XALIGN, returner)
 
     if _return is False:
         jump dev_sp_obj_pp_test_top

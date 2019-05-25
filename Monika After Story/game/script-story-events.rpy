@@ -2432,7 +2432,7 @@ label mas_fav_derand:
 
 label mas_derand:
     m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
-    m 1eka "Don't worry about hurting my feelings, we should be able to be honest with eachother after all."
+    m 1eka "Don't worry about hurting my feelings, we should be able to be honest with each other after all."
     m 3eksdld "...And the last thing I want to do is keep bringing up stuff that makes you uncomfortable to talk about."
     m 3eka "So, make sure you let me know, okay?"
     return
