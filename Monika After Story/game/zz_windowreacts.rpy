@@ -313,6 +313,9 @@ label monika_lookingat:
     if choice == 1:
         $ queueEvent('monika_nsfw')
 
+    elif choice == 2:
+        $ queueEvent('monika_pleasure')
+
     elif choice < 4:
         show monika 1rsbssdlu
         pause 5.0
