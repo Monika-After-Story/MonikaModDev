@@ -167,6 +167,9 @@ init python:
     def mas_addBlacklistReact(ev_label):
         """
         Adds the given ev_label to the no unlock list
+
+        IN:
+            ev_label: eventlabel to add to the no unlock list
         """
         if renpy.has_label(ev_label) and ev_label not in persistent._mas_windowreacts_no_unlock_list:
             persistent._mas_windowreacts_no_unlock_list.add(ev_label)
@@ -174,14 +177,30 @@ init python:
     def mas_removeBlacklistReact(ev_label):
         """
         Removes the given ev_label to the no unlock list if exists
+
+        IN:
+            ev_label: eventlabel to remove from the no unlock list
         """
         if renpy.has_label(ev_label) and ev_label in persistent._mas_windowreacts_no_unlock_list:
             persistent._mas_windowreacts_no_unlock_list.remove(ev_label)
+
+    def mas_notifsEnabledForGroup(group):
+        """
+        Checks if notifications are enabled, and if enabled for the specified group
+
+        IN:
+            group: notification group to check
+        """
+        return persistent._mas_enable_notifications and persistent._mas_windowreacts_notif_filters.get(group,False)
 
     def mas_tryShowNotificationOSX(title, body):
         """
         Tries to push a notification to the notification center on macOS.
         If it can't it should fail silently to the user.
+
+        IN:
+            title: notification title
+            body: notification body
         """
         os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
     
@@ -189,6 +208,10 @@ init python:
         """
         Tries to push a notification to the notification center on Linux.
         If it can't it should fail silently to the user.
+
+        IN:
+            title: notification title
+            body: notification body
         """
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
@@ -248,6 +271,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
+            conditional="mas_notifsEnabledForGroup('Window Reactions')",
             show_in_idle=True
         ),
         code="WRS"
@@ -279,6 +303,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
+            conditional="mas_notifsEnabledForGroup('Window Reactions')",
             show_in_idle=True
         ),
         code="WRS"
