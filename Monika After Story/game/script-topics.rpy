@@ -12955,6 +12955,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
+    # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = persistent.flagged_monikatopic
     m 3eksdld "Are you sure you don't want me to bring up this subject anymore?{nw}"
     menu:

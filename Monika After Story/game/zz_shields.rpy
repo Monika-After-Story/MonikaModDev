@@ -86,7 +86,7 @@ init python:
 
         Enables:
             - Derandom hotkey
-            - bookmarke hotkey
+            - bookmark hotkey
 
         Sets:
             - dialogue workflow flag

@@ -174,7 +174,7 @@ init python:
 
     def _mas_hk_bookmark_topic():
         """
-        hotkey specific bookmarktopics
+        hotkey specific bookmark topics
         """
         if store.mas_hotkeys.bookmark_enabled and not _windows_hidden:
             bookmark_topic()
