@@ -1995,7 +1995,8 @@ label prompt_menu:
     #To make the menu line up right we have to build it up manually
     python:
         talk_menu = []
-        if len(unseen_events)>0:
+        if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
+            # show unseen if we have unseen events and the player hasn't chosen to hide it
             talk_menu.append(("{b}Unseen.{/b}", "unseen"))
         if mas_isMoniNormal(higher=True):
             for ev_label, ev in persistent._mas_player_bookmarked.iteritems():
@@ -2055,7 +2056,14 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN)
+    $ nvm_text = "That's enough for now."
+
+    if madechoice == "unseen":
+        $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
+    else:
+        $ remove = None
+
+    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
     $pushEvent(_return)
 

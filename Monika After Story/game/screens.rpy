@@ -2207,7 +2207,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                         textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
-screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
+screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -2234,6 +2234,10 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
 
                     null height 20
+
+                    if remove:
+                        # in case we want the option to hide this menu
+                        textbutton _(remove[0]) action Return(remove[1])
 
                     textbutton _(nvm_text) action Return(False)
 

@@ -10496,7 +10496,7 @@ label monika_vehicle:
                 #Display our scrollable
                 show monika at t21
 
-                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, None)
+                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
                 show monika at t11
 
                 $ selection = _return
@@ -12991,7 +12991,7 @@ label mas_topic_rerandom:
     if len(derandomlist) > 1:
         $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
     else:
-        $ renpy.say(m,"If you're sure it's okay to talk about this again, please click the topic to confirm.", interact=False )
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic.", interact=False )
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
@@ -13075,4 +13075,35 @@ label mas_topic_unbookmark:
         else:
             m 3hua "All done!"
     return
+
 # end of bookmark and derandom related events
+
+default persistent._mas_unsee_unseen = None
+# var set when the player decides to hide or show the Unseen menu
+# True when Unseen is hidden
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this anymore.",unlocked=False,rules={"no unlock":None}))
+
+label mas_hide_unseen:
+    m 3esd "Oh, okay, [player]..."
+    if mas_getEV('mas_hide_unseen').shown_count == 0:
+        m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
+        m 3hub "Ahaha!"
+    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}."
+    $ persistent._mas_unsee_unseen = True
+    $ mas_showEVL('mas_show_unseen','EVE',unlock=True)
+    m 3eub "There you go! If you want to see the menu again, just ask."
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again.",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_show_unseen:
+    m 3eub "Sure, [player]!"
+    m 1esa "Just give me a second.{w=0.5}.{w=0.5}."
+    $ persistent._mas_unsee_unseen = False
+    $ mas_hideEVL('mas_show_unseen','EVE',lock=True)
+    m 3hua "There you go!"
+    return
