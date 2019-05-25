@@ -2287,11 +2287,11 @@ label mas_bday_player_bday_select_select:
     menu:
         m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_bday_str]? I'm never going to forget this date.{nw}"
             $ _history_list.pop()
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_bday_str]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
