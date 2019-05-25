@@ -199,7 +199,7 @@ init -10 python:
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
-            
+
 
     mas_idle_mailbox = MASIdleMailbox()
 
@@ -1504,9 +1504,6 @@ label ch30_post_mid_loop_eval:
 #                pushEvent("monika_battery")
 
         if store.mas_globals.in_idle_mode:
-            #We want to check for windowreacts which can run in idle
-            $ mas_checkForWindowReacts()
-
             jump post_pick_random_topic
 
         # Pick a random Monika topic

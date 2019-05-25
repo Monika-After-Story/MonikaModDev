@@ -84,14 +84,24 @@ init python:
     destroy_list = list()
 
     #START: Utility methods
-    def mas_getActiveWindow():
+    def mas_getActiveWindow(friendly=False):
+        """
+        Gets the active window name
+
+        IN:
+            friendly: whether or not the active window name is returned in a state usable by the user
+        """
         if (
                 renpy.windows
                 and mas_windowreacts.can_show_notifs
                 and persistent._mas_windowreacts_windowreacts_enabled
             ):
             from win32gui import GetWindowText, GetForegroundWindow
-            return GetWindowText(GetForegroundWindow()).lower()
+
+            if not friendly:
+                return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
+            else:
+                return GetWindowText(GetForegroundWindow()).lower()
         else:
             #TODO: Mac vers (if possible)
             #NOTE: Return our process name so we don't show extra notifs because windowreacts disabled
@@ -233,15 +243,14 @@ label display_notif(title, body, group=None, skip_checks=False):
     #OR if we skip checks
     #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
 
-    #First we want to create this location in the dict
+    #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
     if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
         $ persistent._mas_windowreacts_notif_filters[group] = False
 
     if (
             (mas_windowreacts.can_show_notifs
-            and not mas_isFocused()
-            and persistent._mas_enable_notifications
-            and persistent._mas_windowreacts_notif_filters.get(group))
+            and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
+            and mas_notifsEnabledForGroup(group))
             or skip_checks
         ):
 
@@ -286,7 +295,7 @@ init 5 python:
         Event(
             persistent._mas_windowreacts_database,
             eventlabel="monika_lookingat",
-            category=['r34', 'monika'],
+            category=['rule34', 'monika'],
             show_in_idle=True
         ),
         code="WRS"
@@ -294,7 +303,19 @@ init 5 python:
 
 label monika_lookingat:
     call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
-    $ queueEvent('monika_nsfw')
+
+    $ choice = random.randint(1,10)
+    if choice == 1:
+        $ queueEvent('monika_nsfw')
+
+    elif choice < 4:
+        show monika 1rsbssdlu
+
+    elif choice < 7:
+        show monika 2tuu
+
+    else:
+        show monika 2ttu
     return
 
 init 5 python:

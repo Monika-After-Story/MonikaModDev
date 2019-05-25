@@ -1429,10 +1429,11 @@ screen notif_settings():
 
             #Dynamically populate this
             for item in persistent._mas_windowreacts_notif_filters:
-                textbutton _(item):
-                    action ToggleDict(persistent._mas_windowreacts_notif_filters, item)
-                    selected persistent._mas_windowreacts_notif_filters.get(item)
-                    hovered tooltip.Action(layout.MAS_TT_G_NOTIF)
+                if item != "Window Reactions" or persistent._mas_windowreacts_windowreacts_enabled:
+                    textbutton _(item):
+                        action ToggleDict(persistent._mas_windowreacts_notif_filters, item)
+                        selected persistent._mas_windowreacts_notif_filters.get(item)
+                        hovered tooltip.Action(layout.MAS_TT_G_NOTIF)
 
 
     text tooltip.value:

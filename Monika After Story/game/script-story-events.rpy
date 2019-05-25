@@ -2437,5 +2437,6 @@ label monika_notification_windowreact_intro:
         m 3eua "So I'll only look at what you're doing if you're okay with it."
         m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
         m 1tuu "It's not like you have anything to hide from your girlfriend..."
-        m 1kua "...right?"
+        show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ttu "...right?"
     return "no unlock"
