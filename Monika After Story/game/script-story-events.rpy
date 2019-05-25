@@ -2404,13 +2404,13 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="monika_notification_windowreact_intro",
+            eventlabel="mas_notification_windowreact_intro",
             conditional="store.mas_windowreacts.can_show_notifs",
             action=EV_ACT_QUEUE,
         )
     )
 
-label monika_notification_windowreact_intro:
+label mas_notification_windowreact_intro:
     m 1hub "[player], I have something exciting to tell you!"
     m 3eua "I've been practicing coding a little bit, and I've learned how to use the notifications on your computer!"
     m "So if you want, I can let you know if I have something for us to talk about."

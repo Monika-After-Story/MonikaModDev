@@ -56,6 +56,8 @@ init python:
                 "[WARNING]: win32api/win32gui failed to be imported, disabling notifications.\n"
             )
 
+        #NOTE: This is part of the try/catch block. We only run this if there was no error in the try
+        #Ensures that the game does not crash if we cannot load win32api or win32gui.
         else:
             import balloontip
 
@@ -121,16 +123,17 @@ init python:
         IN:
             List of keywords
         """
-        return store.mas_windowreacts.can_show_notifs and len([s for s in keywords if s.lower() not in mas_getActiveWindow()]) == 0
+        active_window = mas_getActiveWindow()
+        return store.mas_windowreacts.can_show_notifs and len([s for s in keywords if s.lower() not in active_window]) == 0
 
     def mas_clearNotifs():
         """
         Clears all tray icons (also action center on win10)
         """
         if renpy.windows and store.mas_windowreacts.can_show_notifs:
-            for hwnd in destroy_list:
-                win32gui.DestroyWindow(hwnd)
-                destroy_list.remove(hwnd)
+            for index in range(len(destroy_list)-1,-1,-1):
+                win32gui.DestroyWindow(destroy_list[index])
+                destroy_list.pop(index)
 
     def mas_checkForWindowReacts():
         """
@@ -248,9 +251,11 @@ label display_notif(title, body, group=None, skip_checks=False):
         $ persistent._mas_windowreacts_notif_filters[group] = False
 
     if (
-            (mas_windowreacts.can_show_notifs
-            and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
-            and mas_notifsEnabledForGroup(group))
+            (
+                mas_windowreacts.can_show_notifs
+                and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
+                and mas_notifsEnabledForGroup(group)
+            )
             or skip_checks
         ):
 
@@ -310,12 +315,15 @@ label monika_lookingat:
 
     elif choice < 4:
         show monika 1rsbssdlu
+        pause 5.0
 
     elif choice < 7:
         show monika 2tuu
+        pause 5.0
 
     else:
         show monika 2ttu
+        pause 5.0
     return
 
 init 5 python:
