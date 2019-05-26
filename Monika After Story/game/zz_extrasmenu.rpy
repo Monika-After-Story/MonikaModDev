@@ -374,3 +374,5 @@ screen mas_extramenu_area():
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
+
+        # TODO: frame for nose boop control
