@@ -320,7 +320,7 @@ init 11 python:
 #    if len(monika_random_topics) == 0:
 #        monika_random_topics=list(all_random_topics)
 
-
+# Bookmarks and derandom stuff
 default persistent._mas_player_bookmarked = {}
 # dict to store bookmarked events
 default persistent._mas_player_derandomed = {}
@@ -346,6 +346,7 @@ init python:
             ev is not None
             and ev.random
             and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
             and ev.prompt != ev.eventlabel
         ):
             if "mas_topic_derandom" not in persistent.event_list:
@@ -373,6 +374,7 @@ init python:
             mas_isMoniNormal(higher=True)
             and ev is not None
             and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
             and ev.prompt != ev.eventlabel
         ):
             if ev.eventlabel not in persistent._mas_player_bookmarked:
@@ -385,15 +387,18 @@ init python:
     def mas_hasBookmarks():
         """
         Checks to see if we have bookmarks to show
+
+        Bookmarks are restricted to Normal+ affection
+        and to topics that are unlocked and are available
+        based on current affection
         """
-        if mas_isMoniNormal(higher=True):
-            bookmarkslist = [
-                (renpy.substitute(ev.prompt), ev_label, False, False)
-                for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
-                if ev.unlocked and ev.checkAffection(mas_curr_affection)
-            ]
-            if len(bookmarkslist) > 0:
+        if mas_isMoniUpset(lower=True):
+            return False
+
+        for ev in persistent._mas_player_bookmarked.itervalues():
+           if ev.unlocked and ev.checkAffection(mas_curr_affection):
                 return True
+        return False
 
 
 #BEGIN ORIGINAL TOPICS
