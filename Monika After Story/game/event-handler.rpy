@@ -1980,6 +1980,13 @@ label prompt_menu:
             if not seen_event(event):
                 unseen_events.append(event)
 
+        if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
+            mas_showEVL('mas_show_unseen','EVE',unlock=True)
+            unseen_num = len(unseen_events)
+            mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
+        else:
+            mas_hideEVL('mas_show_unseen','EVE',lock=True)
+
         repeatable_events = Event.filterEvents(
             evhand.event_database,
             unlocked=True,

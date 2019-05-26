@@ -12991,14 +12991,15 @@ init 5 python:
 
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
-    $ prev_topic = mas_getEV(persistent.flagged_monikatopic)
+    $ prev_topic = persistent.flagged_monikatopic
+    $ ev = mas_getEV(prev_topic)
     m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
     $ _history_list.pop()
     menu:
         m "Are you sure you don't want me to bring this up anymore?{fast}"
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
-            $ persistent._mas_player_derandomed[prev_topic.eventlabel]=prev_topic
+            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
             $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
             m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
@@ -13115,13 +13116,12 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this anymore.",unlocked=False,rules={"no unlock":None}))
 
 label mas_hide_unseen:
+    $ persistent._mas_unsee_unseen = True
     m 3esd "Oh, okay, [player]..."
     if mas_getEV('mas_hide_unseen').shown_count == 0:
         m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
         m 3hub "Ahaha!"
     m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}."
-    $ persistent._mas_unsee_unseen = True
-    $ mas_showEVL('mas_show_unseen','EVE',unlock=True)
     m 3eub "There you go! If you want to see the menu again, just ask."
     return
 
@@ -13130,9 +13130,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again",pool=True,unlocked=False,rules={"no unlock":None}))
 
 label mas_show_unseen:
+    $ persistent._mas_unsee_unseen = False
     m 3eub "Sure, [player]!"
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}."
-    $ persistent._mas_unsee_unseen = False
-    $ mas_hideEVL('mas_show_unseen','EVE',lock=True)
     m 3hua "There you go!"
     return
