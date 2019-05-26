@@ -2432,7 +2432,7 @@ label mas_notification_windowreact_intro:
     m 3eua "If you want me to notify you, just head over to the 'Alerts' tab and turn them on, along with what you'd like to be notified for."
 
     if renpy.windows:
-        m 3rksdla "Also, since you're using Windows...I also learned how to check what your active window is..."
+        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
         m 1hksdlb "Don't worry though, I know you might not want me constantly watching you, and I respect your privacy."
         m 3eua "So I'll only look at what you're doing if you're okay with it."
         m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
