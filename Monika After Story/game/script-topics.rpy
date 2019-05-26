@@ -12992,10 +12992,10 @@ init 5 python:
 label mas_topic_derandom:
     # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
     $ prev_topic = mas_getEV(persistent.flagged_monikatopic)
-    m 3eksdld "Are you sure you don't want me to bring up this subject anymore?{nw}"
+    m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
     $ _history_list.pop()
     menu:
-        m "Are you sure you don't want me to bring up this subject anymore?{fast}"
+        m "Are you sure you don't want me to bring this up anymore?{fast}"
         "Please don't.":
             $ mas_hideEVL(prev_topic,"EVE",derandom=True)
             $ persistent._mas_player_derandomed[prev_topic.eventlabel]=prev_topic
@@ -13025,7 +13025,7 @@ label mas_topic_rerandom:
     if len(derandomlist) > 1:
         $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
     else:
-        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic.", interact=False )
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
 
     call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
     show monika at t11
@@ -13041,10 +13041,10 @@ label mas_topic_rerandom:
         m 1eua "Okay, [player]..."
 
         if len(persistent._mas_player_derandomed) > 0:
-            m 1eka "Are there any other topics you are okay with talking about again?{nw}"
+            m 1eka "Are there any other topics you are okay with talking about?{nw}"
             $ _history_list.pop()
             menu:
-                m "Are there any other topics you are okay with talking about again?{fast}"
+                m "Are there any other topics you are okay with talking about?{fast}"
                 "Yes.":
                     jump mas_topic_rerandom
                 "No.":
@@ -13077,7 +13077,7 @@ label mas_topic_unbookmark:
     if len(bookmarkslist) > 1:
         $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
     else:
-        $ renpy.say(m,"Please click the bookmark if you're sure you want to remove it.", interact=False )
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
         
     call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
 
@@ -13106,8 +13106,6 @@ label mas_topic_unbookmark:
         else:
             m 3hua "All done!"
     return
-
-# end of bookmark and derandom related events
 
 default persistent._mas_unsee_unseen = None
 # var set when the player decides to hide or show the Unseen menu
