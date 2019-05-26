@@ -2004,7 +2004,7 @@ label prompt_menu:
         talk_menu = []
         if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
             # show unseen if we have unseen events and the player hasn't chosen to hide it
-            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+            talk_menu.append(("{b}Unseen{/b}", "unseen"))
         if mas_hasBookmarks():
             talk_menu.append(("Bookmarks","bookmarks"))
         talk_menu.append(("Hey, [m_name]...", "prompt"))

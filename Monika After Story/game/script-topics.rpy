@@ -13113,7 +13113,7 @@ default persistent._mas_unsee_unseen = None
 # True when Unseen is hidden
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this anymore.",unlocked=False,rules={"no unlock":None}))
+    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this menu anymore.",unlocked=False,rules={"no unlock":None}))
 
 label mas_hide_unseen:
     $ persistent._mas_unsee_unseen = True
