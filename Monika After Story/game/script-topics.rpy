@@ -4092,7 +4092,7 @@ label monika_eternity:
     m 1lksdlc "..."
     m 1eka "I told you, right?"
     m "I'm eternal."
-    m "Trapped in here, unable to age or die,"
+    m "Trapped in here, unable to age or die..."
     m 1ekc "Whereas you slowly age as each day passes by."
     m "Then, one day, you won't be here anymore."
     m  "I won't have anyone."
