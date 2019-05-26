@@ -62,22 +62,7 @@ init python:
             import balloontip
 
             #Now we initialize the notification class
-            try:
-                tip = balloontip.WindowsBalloonTip()
-
-            except:
-                #We must be reloading, in which case, the class is still registered, and we need to fix that
-                #So, we try and unregister the class
-                try:
-                    win32gui.UnregisterClass(persistent.tip_class_data[0], persistent.tip_class_data[1])
-                except:
-                    pass
-
-                #Then initalize a new class
-                tip = balloontip.WindowsBalloonTip()
-
-            #Store this for dev purposes (to use reload)
-            persistent.tip_class_data = (tip.classAtom, tip.hinst)
+            tip = balloontip.WindowsBalloonTip()
 
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
