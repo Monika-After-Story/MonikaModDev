@@ -66,9 +66,18 @@ init python:
                 tip = balloontip.WindowsBalloonTip()
 
             except:
-                #So reload still works
-                tip.classAtom = win32gui.UnregisterClass(tip.classAtom, tip.hinst)
+                #We must be reloading, in which case, the class is still registered, and we need to fix that
+                #So, we try and unregister the class
+                try:
+                    win32gui.UnregisterClass(persistent.tip_classAtom, 4194304)
+                except:
+                    pass
+
+                #Then initalize a new class
                 tip = balloontip.WindowsBalloonTip()
+
+            #Store this for dev purposes (to use reload)
+            persistent.tip_classAtom = tip.classAtom
 
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
