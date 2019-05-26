@@ -115,15 +115,15 @@ init python:
                 return GetWindowText(GetForegroundWindow()).lower()
         else:
             #TODO: Mac vers (if possible)
-            #NOTE: Return our process name so we don't show extra notifs because windowreacts disabled
-            return "monika after story"
+            #NOTE: We return "" so this doesn't rule out notifications
+            return ""
 
     def mas_isFocused():
         """
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow() == config.name.lower()
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name.lower()
 
     def mas_isInActiveWindow(keywords):
         """
