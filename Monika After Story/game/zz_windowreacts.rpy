@@ -69,7 +69,7 @@ init python:
                 #We must be reloading, in which case, the class is still registered, and we need to fix that
                 #So, we try and unregister the class
                 try:
-                    win32gui.UnregisterClass(persistent.tip_classAtom, 4194304)
+                    win32gui.UnregisterClass(persistent.tip_class_data[0], persistent.tip_class_data[1])
                 except:
                     pass
 
@@ -77,7 +77,7 @@ init python:
                 tip = balloontip.WindowsBalloonTip()
 
             #Store this for dev purposes (to use reload)
-            persistent.tip_classAtom = tip.classAtom
+            persistent.tip_class_data = (tip.classAtom, tip.hinst)
 
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
@@ -163,7 +163,7 @@ init python:
                     ev.unlocked=False
 
                 #Otherwise we just queue
-                else:
+                elif not ev.conditional:
                     queueEvent(ev_label)
                     ev.unlocked=False
 
