@@ -1976,9 +1976,11 @@ label prompt_menu:
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
-        for event in sorted_event_keys:
-            if not seen_event(event):
-                unseen_events.append(event)
+        for ev_label in sorted_event_keys:
+            # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
+            # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
+            if not seen_event(ev_label) and ev_label != "mas_show_unseen":
+                unseen_events.append(ev_label)
 
         if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
             mas_showEVL('mas_show_unseen','EVE',unlock=True)
