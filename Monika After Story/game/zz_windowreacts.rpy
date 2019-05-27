@@ -253,10 +253,12 @@ label display_notif(title, body, group=None, skip_checks=False):
             or skip_checks
         ):
 
-        #Make the notif
+        #Play the notif sound
+        play sound "mod_assets/sounds/effects/notif.wav"
+
+        #Now we make the notif
         if (renpy.windows):
             # The Windows way
-            play sound "mod_assets/sounds/effects/notif.wav"
             $ tip.showWindow(renpy.substitute(title),renpy.substitute(body))
 
             #We need the IDs of the notifs to delete them from the tray
