@@ -1827,6 +1827,4 @@ label ch30_reset:
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
 
-    if not persistent._mas_unsee_unseen:
-        $ mas_hideEVL('mas_show_unseen','EVE',lock=True)
     return
