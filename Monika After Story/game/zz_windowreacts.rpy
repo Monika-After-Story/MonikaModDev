@@ -141,7 +141,7 @@ init python:
             if (
                     (mas_isInActiveWindow(ev.category) and ev.unlocked and ev.checkAffection(mas_curr_affection))
                     and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
-                    and (not "notif-group" in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
+                    and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
                 ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
