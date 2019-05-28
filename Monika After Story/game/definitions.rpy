@@ -17,7 +17,7 @@ python early:
 
 
 # uncomment this if you want syntax highlighting support on vim
-#init -1 python:
+# init -1 python:
 
     # special constants for event
     EV_ACT_PUSH = "push"
@@ -1727,7 +1727,36 @@ python early:
             # otherwise continue on
             return None
 
-#init -1 python:
+
+init -1 python:
+
+
+    class MASClickZone(renpy.Displayable):
+        """
+        Special mousezone that can react depending if being clicked
+        with mouse. Meant for custom displayable use.
+        Also can only generate zones with 4 sides. Simplicity is important.
+
+        PROPERTIES:
+            id - unique ID to assign to this mousezone. ID is always returned
+                with return values.
+            tl - top left corner vertex. must be tuple of (x, y)
+            tr - top right corner vertex. must be tuple of (x, y)
+            bl - bottom left corner vertex. must be tuple of (x, y)
+            br - bottom right corner vertex. must be tuple of (x, y)
+            disabled - True means to disable this mouse zone, False not
+            _button_down - pygame button even to act as a click
+                MOUSEBUTTONUP (Default)
+                MOUSEBUTTONDOWN (Default)
+        """
+        LEFT_CLICK = 0
+        MIDDLE_CLICK = 1
+        RIGHT_CLICK = 2
+
+        # TODO: stuff
+
+
+# init -1 python:
     # new class to manage a list of quips
     class MASQuipList(object):
         import random
