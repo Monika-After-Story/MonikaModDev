@@ -165,3 +165,30 @@ label dev_render_screen_info:
     m "okay done!"
     return
 
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_hold_still_monika",
+            category=["dev"],
+            prompt="HAVE MONIKA HOLD STILL",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_hold_still_monika:
+    m 1eua "okay!"
+    $ sel_pose = renpy.input("pose number (1-6)", allow="123456", length=1)
+    if sel_pose < 1:
+        $ sel_pose = 1
+    elif sel_pose > 6:
+        $ sel_pose = 6
+    
+    $ pose_to_make = str(sel_pose) + "eua"
+    $ renpy.show("monika " + pose_to_make)
+    m "HOLDING! (Click once to dismiss menu, once more to stop holding)"
+    $ nothing = ui.add(PauseDisplayable())
+    m 1eua "Done holding!"
+    return
