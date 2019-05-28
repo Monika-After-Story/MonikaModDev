@@ -12910,7 +12910,8 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_unknown",category=['psychology'],prompt="Fear of the unknown",random=True))
 
 label monika_unknown:
-    m 3eud "[player], did you know that a lot of people are afraid of the dark?"
+    m 2euc "Hey, [player]..."
+    m 3eud "Did you know that a lot of people are afraid of the dark?"
     m 3eua "Even though it's often dismissed as a childish fear, it's not that uncommon for adults to suffer from it as well."
     m 4eub "Fear of the dark, called 'nyctophobia', is usually caused by the brain's exaggerated guess of what may be hiding in the shadows, rather than darkness itself."
     m 4eua "We're scared because we don't know what's there...{w=1}even if it's usually nothing."
@@ -12920,13 +12921,13 @@ label monika_unknown:
     m 3eksdlc "But even if that frame of thinking helped people survive hundreds of thousands of years ago, I think it does more harm than good nowadays."
     m 1rksdlc "Like how some people are unsatisfied with their jobs but are too afraid to quit..."
     m "Or how couples stay in unhappy relationships out of fear of being alone."
-    if mas_isMoniUpset(lower=True):
-        m 2rksdlc "...I mean, I can understand where they're coming from, but still..."
+    if mas_isMoniDis(lower=True):
+        m 2rksdlc "...I mean, I kind of understand where they're coming from, but still..."
         m 2ekc "Things can always get better, right?"
         m 1rksdlc "A-anyway..."
     m 3eud "Maybe if they saw the options available to them, they'd be more willing to embrace change."
     m 1rksdlc "Not that making that kind of decision is easy, or even safe..."
     if mas_isMoniNormal(higher=True):
-        m 1eka "[player], if you ever decide to make that sort of change despite the risks, know that I'll be supporting you every step of the way!"
-        m 1ekbfa "I love you, [player]. I'll always be rooting for you~"
+        m 1ekb "[player], if you ever decide to make that sort of change despite the risks, know that I'll be supporting you every step of the way!"
+        m 1hubfa "I love you, [player]. I'll always be rooting for you~"
     return
