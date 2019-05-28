@@ -13121,7 +13121,7 @@ label mas_hide_unseen:
     if mas_getEV('mas_hide_unseen').shown_count == 0:
         m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
         m 3hub "Ahaha!"
-    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}."
+    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3eub "There you go! If you want to see the menu again, just ask."
     return
 
@@ -13132,6 +13132,6 @@ init 5 python:
 label mas_show_unseen:
     $ persistent._mas_unsee_unseen = False
     m 3eub "Sure, [player]!"
-    m 1esa "Just give me a second.{w=0.5}.{w=0.5}."
+    m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
