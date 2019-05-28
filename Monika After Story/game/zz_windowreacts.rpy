@@ -141,7 +141,7 @@ init python:
             if (
                     (mas_isInActiveWindow(ev.category) and ev.unlocked and ev.checkAffection(mas_curr_affection))
                     and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
-                    and (not "winreact" in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("winreact")))
+                    and (not "notif-group" in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
                 ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
@@ -286,7 +286,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
-            rules={"winreact": "Window Reactions"},
+            rules={"notif-group": "Window Reactions"},
             show_in_idle=True
         ),
         code="WRS"
@@ -336,7 +336,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
-            rules={"winreact": "Window Reactions"},
+            rules={"notif-group": "Window Reactions"},
             show_in_idle=True
         ),
         code="WRS"
