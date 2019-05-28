@@ -141,6 +141,7 @@ init python:
             if (
                     (mas_isInActiveWindow(ev.category) and ev.unlocked and ev.checkAffection(mas_curr_affection))
                     and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
+                    and (not ev.rules or ("winreact" in ev.rules and mas_notifsEnabledForGroup(ev.rules.get("winreact"))))
                 ):
                 #If we have a conditional, eval it and queue if true
                 if ev.conditional and eval(ev.conditional):
@@ -151,6 +152,10 @@ init python:
                 elif not ev.conditional:
                     queueEvent(ev_label)
                     ev.unlocked=False
+
+                #Add the blacklist
+                if "no unlock" in ev.rules:
+                    mas_addBlacklistReact(ev_label)
 
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """
@@ -179,7 +184,7 @@ init python:
             ev_label: eventlabel to add to the no unlock list
         """
         if renpy.has_label(ev_label) and ev_label not in persistent._mas_windowreacts_no_unlock_list:
-            persistent._mas_windowreacts_no_unlock_list.add(ev_label)
+            persistent._mas_windowreacts_no_unlock_list.append(ev_label)
 
     def mas_removeBlacklistReact(ev_label):
         """
@@ -281,7 +286,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
-            conditional="mas_notifsEnabledForGroup('Window Reactions')",
+            rules={"winreact": "Window Reactions"},
             show_in_idle=True
         ),
         code="WRS"
@@ -331,7 +336,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
-            conditional="mas_notifsEnabledForGroup('Window Reactions')",
+            rules={"winreact": "Window Reactions"},
             show_in_idle=True
         ),
         code="WRS"
