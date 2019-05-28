@@ -2422,7 +2422,7 @@ label mas_notification_windowreact_intro:
 
         "Sure!":
             m 1hua "Okay, [player]!"
-            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}."
+            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
             call display_notif(m_name, "I love you, [player]!", skip_checks=True)
             m 1hub "There it is!"
 
