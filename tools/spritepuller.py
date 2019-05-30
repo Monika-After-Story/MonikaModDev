@@ -6,7 +6,7 @@ import os
 import gamedir as GDIR
 import menutils
 
-SPRITE_PATH = GDIR.REL_PATH_GAME + "sprite-chart.rpy"
+SPRITE_PATH = GDIR.REL_PATH_GAME + "sprite-chart-01.rpy"
 SAVE_PATH = "zzzz_spritelist"
 SAVE_PATH_D = "zzzz_spritedict"
 SAVE_PATH_IO = GDIR.REL_PATH_GAME + "zzzz_sprite_opt.rpy"
