@@ -369,7 +369,7 @@ label greeting_o31_marisa:
     else:
         # ASSUMING:
         #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika_1eua')
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika_1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -499,7 +499,7 @@ label greeting_o31_rin:
 
         scene black
         pause 2.0
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb')
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
@@ -3447,7 +3447,7 @@ label mas_player_bday_knock_no_listen:
 # closed door greet surprise flow
 label mas_player_bday_surprise:
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 4hub')
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 4hub_static')
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
 

@@ -846,7 +846,7 @@ label mas_change_weather(new_weather, by_user=None):
     # set new weather and force change
     $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
-    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc")
+    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc_static")
 
     # call entry programming point
     $ mas_current_weather.entry(old_weather)
