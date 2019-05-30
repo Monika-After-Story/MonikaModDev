@@ -12926,7 +12926,7 @@ label monika_blood_type_stereotype:
     m 3esa "It's a group associated with being creative, calm and composed but also with being very critical and eccentric, and sometimes even two-faced."
     m 3hksdrb "It's pretty obvious that it would be the blood type of Yuri."
     m 2ekb "Under the impression of passiveness, she could be very critical when she was feeling confident. You saw it for yourself right?"
-    m 2luc "As for the 'two face' thing..." #need to add an expression
+    m 2lud "As for the 'two face' thing..."
     m 2lssdrb "Let's not talk about that... You know what I'm talking about."
     if persistent.blood_type == "AB":
         m 1wuo "Ah, and bear in mind that those are just superstitions without proof whatsoever of their validity."
