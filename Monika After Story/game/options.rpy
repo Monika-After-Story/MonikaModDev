@@ -1,4 +1,4 @@
-﻿## This file contains options that can be changed to customize your game.
+## This file contains options that can be changed to customize your game.
 ##
 ## Lines beginning with two '#' marks are comments, and you shouldn't uncomment
 ## them. Lines beginning with a single '#' mark are commented-out code, and you
@@ -23,8 +23,7 @@ define gui.show_name = False
 
 ## The version of the game.
 
-define config.version = "0.2.2"
-
+define config.version = "0.9.4"
 
 ## Text that is placed on the game's about screen. To insert a blank line
 ## between paragraphs, write \n\n.
@@ -155,11 +154,14 @@ define config.has_autosave = False
 define config.autosave_on_quit = False
 define config.autosave_slots = 0
 define config.layers = [ 'master', 'transient', 'screens', 'overlay', 'front' ]
-define config.image_cache_size = 64
-define config.predict_statements = 50
+define config.image_cache_size = 128
+define config.predict_statements = 10
 define config.rollback_enabled = config.developer
 define config.menu_clear_layers = ["front"]
 define config.gl_test_image = "white"
+define config.label_overrides = { 
+    "_choose_renderer": "mas_choose_renderer_override"
+}
 #define config.gl_resize = False
 
 init python:
@@ -186,8 +188,15 @@ init python:
 ## Build configuration #########################################################
 ##
 ## This section controls how Ren'Py turns your project into distribution files.
+## These settings create a set of files suitable for distributing as a mod.
 
 init python:
+
+    ## By default, renpy looks for archive files in the game and common directories
+    ## Mac needs to check in the install directory instead.
+    #if renpy.mac:
+
+
 
     ## The following functions take file patterns. File patterns are case-
     ## insensitive, and matched against the path relative to the base directory,
@@ -208,24 +217,26 @@ init python:
 
     ## Classify files as None to exclude them from the built distributions.
 
-    build.archive("scripts", "all")
-    build.archive("images", "all")
-    build.archive("audio", "all")
-    build.archive("fonts", "all")
+    ##This tells Renpy to build an updater file
+    build.include_update = True
 
-    build.classify("game/**.jpg", "images")
-    build.classify("game/**.png", "images")
-    build.classify("game/**.rpy", "scripts")
-    build.classify("game/**.rpyc", "scripts")
-    build.classify("game/**.txt", "scripts")
-    build.classify("game/**.chr", "scripts")
-    build.classify("game/**.py", "scripts")
-    build.classify("game/**.pyc", "scripts")
-    build.classify("game/**.wav", "audio")
-    build.classify("game/**.mp3", "audio")
-    build.classify("game/**.ogg", "audio")
-    build.classify("game/**.ttf", "fonts")
-    build.classify("game/**.otf", "audio")
+    ## This is the archive of data for your mod
+    #build.archive(build.name, "all")
+
+    #Add the pictures necessary for the scrollable menu
+    build.classify("game/gui/**",build.name)
+
+    ## These files get put into your data file
+    build.classify("game/mod_assets/**",build.name)
+    #build.classify("game/**.rpy",build.name) #Optional line to include plaintext scripts
+    build.classify("game/*.rpyc",build.name) #Serialized scripts must be included
+    build.classify("game/dev/*.*",None) #But not the dev folder
+    build.classify("README.html",build.name) #Included help file for mod installation
+    build.classify("game/python-packages/**",build.name)#Additional python pacakges
+    build.classify("CustomIcon**.**",build.name)
+
+
+    build.package(build.directory_name + "Mod",'zip',build.name,description='DDLC Compatible Mod')
 
     build.classify('**~', None)
     build.classify('**.bak', None)
@@ -240,19 +251,18 @@ init python:
     build.classify('script-regex.txt', None)
     build.classify('/game/10', None)
     build.classify('/game/cache/*.*', None)
-
-    ## To archive files, classify them as 'archive'.
-
-    # build.classify('game/**.png', 'archive')
-    # build.classify('game/**.jpg', 'archive')
+    build.classify('**.rpa',None)
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
 
     build.documentation('*.html')
     build.documentation('*.txt')
+    build.documentation('*.md')
 
     build.include_old_themes = False
+
+
 
 ## A Google Play license key is required to download expansion files and perform
 ## in-app purchases. It can be found on the "Services & APIs" page of the Google
@@ -264,4 +274,4 @@ init python:
 ## The username and project name associated with an itch.io project, separated
 ## by a slash.
 
-define build.itch_project = "teamsalvato/ddlc"
+# define build.itch_project = "..."

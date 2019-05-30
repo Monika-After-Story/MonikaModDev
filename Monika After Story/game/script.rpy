@@ -1,6 +1,9 @@
-﻿# This is used for top-level game strucutre.
+# This is used for top-level game strucutre.
 # Should not include any actual events or scripting; only logic and calling other labels.
+#
+# NOTE: this is ran when user starts a new game.
 
+# For simplicity, I'm taking the MAS lines from the script.rpy that was made. It's basically the same.
 label start:
 
     # Set the ID of this playthrough
@@ -18,15 +21,22 @@ label start:
     $ n_name = "Natsuki"
     $ y_name = "Yuri"
 
-    $ quick_menu = True
     $ style.say_dialogue = style.normal
+    $ quick_menu = True
     #    $ in_sayori_kill = None
     $ allow_skipping = True
     $ config.allow_skipping = True
 
-    #JUSTMONIKAJUSTMONIKAJUSTMONIKAJUSTMONIKA
+    #Jump to the space room.
+    if persistent.autoload:
+        #Stop the title screen music
+        if persistent.current_track:
+            $ mas_startup_song()
+        else:
+            stop music
+        jump ch30_preloop_visualsetup
     jump ch30_main
-    
+
 label endgame(pause_length=4.0):
     $ quick_menu = False
     stop music fadeout 2.0

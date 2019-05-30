@@ -1,4 +1,130 @@
-﻿
+init 100 python:
+    layout.QUIT = store.mas_layout.QUIT
+    layout.UNSTABLE = store.mas_layout.UNSTABLE
+
+init -1 python:
+    layout.QUIT_YES = "Please don't close the game on me!"
+    layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
+
+    # tooltips
+    layout.MAS_TT_SENS_MODE = (
+        "Sensitive mode removes content that may be disturbing, offensive, "
+        " or considered tasteless."
+    )
+    layout.MAS_TT_UNSTABLE = (
+        "Unstable mode downloads updates from the experimental unstable "
+        "branch of development. It is HIGHLY recommended to make a backup "
+        "of your persistents before enabling this mode."
+    )
+    layout.MAS_TT_REPEAT = (
+        "Enable this to let Monika repeat topics that you have already seen."
+    )
+
+
+
+
+init python in mas_layout:
+    import store
+    import store.mas_affection as aff
+
+    QUIT_YES = store.layout.QUIT_YES
+    QUIT_NO = store.layout.QUIT_NO
+    QUIT = "Leaving without saying goodbye, [player]?"
+    UNSTABLE = (
+        "WARNING: Enabling unstable mode will download updates from the " +
+        "experimental unstable branch. It is HIGHLY recommended to make a " +
+        "backup of your persistents before enabling this mode. Please report " +
+        "issues found here with an [[UNSTABLE] tag."
+    )
+
+    # quit yes messages affection scaled
+    QUIT_YES_BROKEN = "You could at least pretend that you care."
+    QUIT_YES_DIS = ":("
+    QUIT_YES_AFF = "T_T [player]..."
+
+    # quit no messages affection scaled
+    QUIT_NO_BROKEN = "{i}Now{/i} you listen?"
+    QUIT_NO_UPSET = "Thanks for being considerate, [player]."
+    QUIT_NO_HAPPY = ":)"
+    QUIT_NO_AFF_G = "Good [boy]."
+    QUIT_NO_AFF_GL = "Good. :)"
+    QUIT_NO_LOVE = "<3 u"
+
+    # quit messages affection scaled
+    QUIT_BROKEN = "Just go."
+    QUIT_AFF = "Why are you here?\n Click 'No' and use the 'Goodbye' button, silly!"
+
+    if store.persistent.gender == "M" or store.persistent.gender == "F":
+        _usage_quit_aff = QUIT_NO_AFF_G
+    else:
+        _usage_quit_aff = QUIT_NO_AFF_GL
+
+    # quit message dicts
+    # tuple:
+    #   [0]: quit message
+    #   [1]: quit yes message
+    #   [2]: quit no message
+    # if something is None we go to the state closest to normal
+    QUIT_MAP = {
+        aff.BROKEN: (QUIT_BROKEN, QUIT_YES_BROKEN, QUIT_NO_BROKEN),
+        aff.DISTRESSED: (None, QUIT_YES_DIS, None),
+        aff.UPSET: (None, None, QUIT_NO_UPSET),
+        aff.NORMAL: (QUIT, QUIT_YES, QUIT_NO),
+        aff.HAPPY: (None, None, QUIT_NO_HAPPY),
+        aff.AFFECTIONATE: (QUIT_AFF, QUIT_YES_AFF, _usage_quit_aff),
+        aff.ENAMORED: (None, None, None),
+        aff.LOVE: (None, None, QUIT_NO_LOVE)
+    }
+
+
+    def findMsg(start_aff, index):
+        """
+        Finds first non-None quit message we need
+
+        This uses the cascade map from affection
+
+        IN:
+            start_aff - starting affection
+            index - index of the tuple we need to look at
+
+        RETURNS:
+            first non-None quit message found.
+        """
+        msg = QUIT_MAP[start_aff][index]
+        while msg is None:
+            start_aff = aff._aff_cascade_map[start_aff]
+            msg = QUIT_MAP[start_aff][index]
+
+        return msg
+
+
+    def setupQuits():
+        """
+        Sets up quit message based on the current affection state
+        """
+        curr_aff_state = store.mas_curr_affection
+
+        quit_msg, quit_yes, quit_no = QUIT_MAP[curr_aff_state]
+
+        if quit_msg is None:
+            quit_msg = findMsg(curr_aff_state, 0)
+
+        if quit_yes is None:
+            quit_yes = findMsg(curr_aff_state, 1)
+
+        if quit_no is None:
+            quit_no = findMsg(curr_aff_state, 2)
+
+        store.layout.QUIT = quit_msg
+        store.layout.QUIT_YES = quit_yes
+        store.layout.QUIT_NO = quit_no
+
+
+init 900 python:
+    import store.mas_layout
+    store.mas_layout.setupQuits()
+
+
 ## Initialization
 ################################################################################
 
@@ -256,28 +382,25 @@ image input_caret:
 screen input(prompt):
     style_prefix "input"
 
-    window:
 
+    window:
         vbox:
-            xpos gui.text_xpos
-            xanchor 0.5
-            ypos gui.text_ypos
+            xalign .5
+            yalign .5
+            spacing 30
 
             text prompt style "input_prompt"
             input id "input"
 
-
-style input_prompt is default
-
 style input_prompt:
     xmaximum gui.text_width
-    xalign gui.text_xalign
-    text_align gui.text_xalign
+    xcenter 0.5
+    text_align 0.5
 
 style input:
     caret "input_caret"
     xmaximum gui.text_width
-    xalign 0.5
+    xcenter 0.5
     text_align 0.5
 
 
@@ -336,8 +459,23 @@ screen rigged_choice(items):
     vbox:
         for i in items:
             textbutton i.caption action i.action
-    
+
     timer 1.0/30.0 repeat True action Function(RigMouse)
+
+style talk_choice_vbox is choice_vbox:
+    xcenter 960
+
+style talk_choice_button is choice_button
+style talk_choice_button_text is choice_button_text
+
+
+## This screen is used for the talk menu
+screen talk_choice(items):
+    style_prefix "talk_choice"
+
+    vbox:
+        for i in items:
+            textbutton i.caption action i.action
 
 
 ## When this is true, menu captions will be spoken by the narrator. When false,
@@ -386,14 +524,23 @@ screen quick_menu():
             yalign 0.995
 
             #textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
+
+#            textbutton _("History") action ShowMenu('history')
+            textbutton _("History") action Function(_mas_quick_menu_cb, "history")
+
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Load") action ShowMenu('load')
+
+#            textbutton _("Save") action ShowMenu('save')
+            textbutton _("Save") action Function(_mas_quick_menu_cb, "save")
+
+#            textbutton _("Load") action ShowMenu('load')
+            textbutton _("Load") action Function(_mas_quick_menu_cb, "load")
             #textbutton _("Q.Save") action QuickSave()
             #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Settings") action ShowMenu('preferences')
+
+#            textbutton _("Settings") action ShowMenu("preferences")
+            textbutton _("Settings") action Function(_mas_quick_menu_cb, "preferences")
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -441,46 +588,37 @@ screen navigation():
 
         spacing gui.navigation_spacing
 
-        if not persistent.autoload or not main_menu:
 
-            if main_menu:
+        if main_menu:
 
-                if persistent.playthrough == 1:
-                    textbutton _("ŔŗñĮ¼»ŧþŀÂŻŕěōì«") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
-                else:
-                    textbutton _("New Game") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
+            textbutton _("Just Monika") action If(persistent.playername, true=Start(), false=Show(screen="name_input", message="Please enter your name", ok_action=Function(FinishEnterName)))
 
-            else:
-
-                textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
-
-                textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
-
-            textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
-
-            if _in_replay:
-
-                textbutton _("End Replay") action EndReplay(confirm=True)
-
-            elif not main_menu:
-                if persistent.playthrough != 3:
-                    textbutton _("Main Menu") action MainMenu()
-                else:
-                    textbutton _("Main Menu") action NullAction()
-
-            textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
-
-            #textbutton _("About") action ShowMenu("about")
-
-            if renpy.variant("pc"):
-
-                ## Help isn't necessary or relevant to mobile devices.
-                textbutton _("Help") action Help("README.html")
-
-                ## The quit button is banned on iOS and unnecessary on Android.
-                textbutton _("Quit") action Quit(confirm=not main_menu)
         else:
-            timer 1.75 action Start("autoload_yurikill")
+
+            textbutton _("History") action [ShowMenu("history"), SensitiveIf(renpy.get_screen("history") == None)]
+
+            textbutton _("Save Game") action [ShowMenu("save"), SensitiveIf(renpy.get_screen("save") == None)]
+
+        textbutton _("Load Game") action [ShowMenu("load"), SensitiveIf(renpy.get_screen("load") == None)]
+
+        if _in_replay:
+
+            textbutton _("End Replay") action EndReplay(confirm=True)
+
+        elif not main_menu:
+            textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
+
+        textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+
+        #textbutton _("About") action ShowMenu("about")
+
+        if renpy.variant("pc"):
+
+            ## Help isn't necessary or relevant to mobile devices.
+            textbutton _("Help") action Help("README.html")
+
+            ## The quit button is banned on iOS and unnecessary on Android.
+            textbutton _("Quit") action Quit(confirm=_confirm_quit)
 
 
 style navigation_button is gui_button
@@ -515,7 +653,7 @@ screen main_menu():
     style_prefix "main_menu"
 
 #Just add Monika art now!
-    
+
     #   if persistent.ghost_menu:
     #      add "white"
     #     add "menu_art_y_ghost"
@@ -609,6 +747,14 @@ screen game_menu_m():
 
 screen game_menu(title, scroll=None):
 
+    # when teh game menu is open, we should disable the hotkeys
+    key "noshift_T" action NullAction()
+    key "noshift_t" action NullAction()
+    key "noshift_M" action NullAction()
+    key "noshift_m" action NullAction()
+    key "noshift_P" action NullAction()
+    key "noshift_p" action NullAction()
+
     # Add the backgrounds.
     if main_menu:
         add gui.main_menu_background
@@ -663,8 +809,8 @@ screen game_menu(title, scroll=None):
 
     use navigation
 
-    if not main_menu and persistent.playthrough == 2 and not persistent.menu_bg_m and renpy.random.randint(0, 49) == 0:
-        on "show" action Show("game_menu_m")
+    # if not main_menu and not persistent.menu_bg_m and renpy.random.randint(0, 49) == 0:
+    #     on "show" action Show("game_menu_m")
 
     textbutton _("Return"):
         style "return_button"
@@ -797,13 +943,8 @@ screen load():
 
 init python:
     def FileActionMod(name, page=None, **kwargs):
-        if persistent.playthrough == 1 and not persistent.deleted_saves and renpy.current_screen().screen_name[0] == "load" and FileLoadable(name):
-            return Show(screen="dialog", message="File error: \"characters/sayori.chr\"\n\nThe file is missing or corrupt.",
-                ok_action=Show(screen="dialog", message="The save file is corrupt. Starting a new game.", ok_action=Function(renpy.full_restart, label="start")))
-        elif persistent.playthrough == 3 and renpy.current_screen().screen_name[0] == "save":
+        if renpy.current_screen().screen_name[0] == "save":
             return Show(screen="dialog", message="There's no point in saving anymore.\nDon't worry, I'm not going anywhere.", ok_action=Hide("dialog"))
-        else:
-            return FileAction(name)
 
 
 screen file_slots(title):
@@ -934,6 +1075,8 @@ screen preferences():
     else:
         $ cols = 4
 
+    default tooltip = Tooltip("")
+
     use game_menu(_("Settings"), scroll="viewport"):
 
         vbox:
@@ -949,23 +1092,48 @@ screen preferences():
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
-                if config.developer:
-                    vbox:
-                        style_prefix "radio"
-                        label _("Rollback Side")
-                        textbutton _("Disable") action Preference("rollback side", "disable")
-                        textbutton _("Left") action Preference("rollback side", "left")
-                        textbutton _("Right") action Preference("rollback side", "right")
+
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Skip")
+#                    textbutton _("Unseen Text") action Preference("skip", "toggle")
+#                    textbutton _("After Choices") action Preference("after choices", "toggle")
+                    #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+
+                #Disable/Enable space animation AND lens flair in room
+                vbox:
+                    style_prefix "check"
+                    label _("Graphics")
+                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
+                    textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
+
 
                 vbox:
                     style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
-                    #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
+                    label _("Gameplay")
+                    if persistent._mas_unstable_mode:
+                        textbutton _("Unstable"):
+                            action SetField(persistent, "_mas_unstable_mode", False)
+                            selected persistent._mas_unstable_mode
+
+                    else:
+                        textbutton _("Unstable"):
+                            action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
+                            selected persistent._mas_unstable_mode
+                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
+
+                    textbutton _("Repeat Topics"):
+                        action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_REPEAT)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
+                vbox:
+                    style_prefix "check"
+                    label _(" ")
+                    textbutton _("Sensitive Mode"):
+                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
             null height (4 * gui.pref_spacing)
 
@@ -973,12 +1141,113 @@ screen preferences():
                 style_prefix "slider"
                 box_wrap True
 
+                python:
+                    ### random chatter preprocessing
+                    if mas_randchat_prev != persistent._mas_randchat_freq:
+                        # adjust the randoms if it changed
+                        mas_randchat.adjustRandFreq(
+                            persistent._mas_randchat_freq
+                        )
+
+                    # setup the display string
+                    rc_display = mas_randchat.getRandChatDisp(
+                        persistent._mas_randchat_freq
+                    )
+
+                    # setup previous values
+                    mas_randchat_prev = persistent._mas_randchat_freq
+
+
+                    ### sunrise / sunset preprocessing
+                    # figure out which value is changing (if any)
+                    if mas_suntime.change_state == mas_suntime.RISE_CHANGE:
+                        # we are modifying sunrise
+
+                        if mas_suntime.sunrise > mas_suntime.sunset:
+                            # ensure sunset remains >= than sunrise
+                            mas_suntime.sunset = mas_suntime.sunrise
+
+                        if mas_sunrise_prev == mas_suntime.sunrise:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunrise_prev = mas_suntime.sunrise
+
+                    elif mas_suntime.change_state == mas_suntime.SET_CHANGE:
+                        # we are modifying sunset
+
+                        if mas_suntime.sunset < mas_suntime.sunrise:
+                            # ensure sunrise remains <= than sunset
+                            mas_suntime.sunrise = mas_suntime.sunset
+
+                        if mas_sunset_prev == mas_suntime.sunset:
+                            # if no change since previous, then switch state
+                            mas_suntime.change_state = mas_suntime.NO_CHANGE
+
+                        mas_sunset_prev = mas_suntime.sunset
+                    else:
+                        # decide if we are modifying sunrise or sunset
+
+                        if mas_sunrise_prev != mas_suntime.sunrise:
+                            mas_suntime.change_state = mas_suntime.RISE_CHANGE
+
+                        elif mas_sunset_prev != mas_suntime.sunset:
+                            mas_suntime.change_state = mas_suntime.SET_CHANGE
+
+                        # set previous values
+                        mas_sunrise_prev = mas_suntime.sunrise
+                        mas_sunset_prev = mas_suntime.sunset
+
+
+                    ## prepreocess display time
+                    persistent._mas_sunrise = mas_suntime.sunrise * 5
+                    persistent._mas_sunset = mas_suntime.sunset * 5
+                    sr_display = mas_cvToDHM(persistent._mas_sunrise)
+                    ss_display = mas_cvToDHM(persistent._mas_sunset)
+
+                vbox:
+
+                    hbox:
+                        label _("Sunrise   ")
+
+                        # display time
+                        label _("[[ " + sr_display + " ]")
+
+                    bar value FieldValue(mas_suntime, "sunrise", range=mas_max_suntime, style="slider")
+
+
+                    hbox:
+                        label _("Sunset   ")
+
+                        # display time
+                        label _("[[ " + ss_display + " ]")
+
+                    bar value FieldValue(mas_suntime, "sunset", range=mas_max_suntime, style="slider")
+
+
+                vbox:
+
+                    hbox:
+                        label _("Random Chatter   ")
+
+                        # display str
+                        label _("[[ " + rc_display + " ]")
+
+                    bar value FieldValue(persistent, "_mas_randchat_freq",
+                    range=6, style="slider")
+
+                    hbox:
+                        label _("Ambient Volume")
+
+                    bar value Preference("mixer amb volume")
+
+
                 vbox:
 
                     label _("Text Speed")
 
                     #bar value Preference("text speed")
-                    bar value FieldValue(_preferences, "text_cps", range=180, max_is_zero=False, style="slider", offset=20)
+                    bar value FieldValue(_preferences, "text_cps", range=170, max_is_zero=False, style="slider", offset=30)
 
                     label _("Auto-Forward Time")
 
@@ -1018,6 +1287,23 @@ screen preferences():
                         textbutton _("Mute All"):
                             action Preference("all mute", "toggle")
                             style "mute_all_button"
+
+
+            hbox:
+                textbutton _("Update Version"):
+                    action Function(renpy.call_in_new_context, 'forced_update_now')
+                    style "navigation_button"
+
+                textbutton _("Import DDLC Save Data"):
+                    action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
+                    style "navigation_button"
+
+    
+    text tooltip.value:
+        xalign 0.0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
+
     text "v[config.version]":
                 xalign 1.0 yalign 1.0
                 xoffset -10 yoffset -10
@@ -1415,6 +1701,34 @@ screen dialog(message, ok_action):
 
                 textbutton _("OK") action ok_action
 
+screen quit_dialog(message, ok_action):
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "confirm"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            label _(message):
+                style "confirm_prompt"
+                xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("QUIT") action ok_action
+
 image confirm_glitch:
     "gui/overlay/confirm_glitch.png"
     pause 0.02
@@ -1452,11 +1766,17 @@ screen confirm(message, yes_action, no_action):
                 xalign 0.5
                 spacing 100
 
-                textbutton _("Yes") action yes_action
-                textbutton _("No") action no_action
+                if mas_finalfarewell_mode:
+                    textbutton _("-") action yes_action
+                    textbutton _("-") action yes_action
+                else:
+                    textbutton _("Yes") action [SetField(persistent, "_mas_game_crashed", False), Show(screen="quit_dialog", message=layout.QUIT_YES, ok_action=yes_action)]
+                    textbutton _("No") action no_action, Show(screen="dialog", message=layout.QUIT_NO, ok_action=Hide("dialog"))
 
     ## Right-click and escape answer "no".
     #key "game_menu" action no_action
+
+
 
 
 style confirm_frame is gui_frame
@@ -1485,6 +1805,135 @@ style confirm_button:
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
 
+##Updating screen
+
+screen update_check(ok_action,cancel_action,mode):
+
+    ## Ensure other screens do not get input while this screen is displayed.
+    modal True
+
+    zorder 200
+
+    style_prefix "update_check"
+
+    add "gui/overlay/confirm.png"
+
+    frame:
+
+        vbox:
+            xalign .5
+            yalign .5
+            spacing 30
+
+            if mode == 0:
+                label _('An update is now avalable!'):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            elif mode == 1:
+                label _("No update available."):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            elif mode == 2:
+                label _('Checking for updates...'):
+                    style "confirm_prompt"
+                    xalign 0.5
+            else:
+                # otherwise, we assume a timeout
+                label _('Timeout occured while checking for updates. Try again later.'):
+                    style "confirm_prompt"
+                    xalign 0.5
+
+            hbox:
+                xalign 0.5
+                spacing 100
+
+                textbutton _("Install") action [ok_action, SensitiveIf(mode == 0)]
+
+                textbutton _("Cancel") action cancel_action
+
+    timer 1.0 action Return("None")
+
+    ## Right-click and escape answer "no".
+    #key "game_menu" action no_action
+
+
+style update_check_frame is confirm_frame
+style update_check_prompt is confirm_prompt
+style update_check_prompt_text is confirm_prompt_text
+style update_check_button is confirm_button
+style update_check_button_text is confirm_button_text
+
+## Updater screen #######################################################
+##
+## This is the screen called when the game needs to update versions
+##
+screen updater:
+
+    modal True
+
+    style_prefix "updater"
+
+    frame:
+
+        has side "t c b":
+            spacing gui._scale(10)
+
+        label _("Updater")
+
+        fixed:
+
+            vbox:
+
+                if u.state == u.ERROR:
+                    text _("An error has occured:")
+                elif u.state == u.CHECKING:
+                    text _("Checking for updates.")
+                elif u.state == u.UPDATE_AVAILABLE:
+                    text _("Version [u.version] is available. Do you want to install it?")
+
+                elif u.state == u.UPDATE_NOT_AVAILABLE:
+                    text _("Monika After Story is up to date.")
+                elif u.state == u.PREPARING:
+                    text _("Preparing to download the updates.")
+                elif u.state == u.DOWNLOADING:
+                    text _("Downloading the updates. (Progress bar may not advance during download)")
+                elif u.state == u.UNPACKING:
+                    text _("Unpacking the updates.")
+                elif u.state == u.FINISHING:
+                    text _("Finishing up.")
+                elif u.state == u.DONE:
+                    text _("The updates have been installed. Please reopen Monika After Story.")
+                elif u.state == u.DONE_NO_RESTART:
+                    text _("The updates have been installed.")
+                elif u.state == u.CANCELLED:
+                    text _("The updates were cancelled.")
+
+                if u.message is not None:
+                    null height gui._scale(10)
+                    text "[u.message!q]"
+
+                if u.progress is not None:
+                    null height gui._scale(10)
+                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff") thumb None
+
+        hbox:
+
+            spacing gui._scale(25)
+
+            if u.can_proceed:
+                textbutton _("Proceed") action u.proceed
+
+            if u.can_cancel:
+                textbutton _("Cancel") action Return()
+
+
+style updater_button_text is navigation_button_text
+style updater_button is confirm_button
+style updater_label is gui_label
+style updater_label_text is game_menu_label_text
+style updater_text is gui_text
 
 ## Skip indicator screen #######################################################
 ##
@@ -1582,29 +2031,298 @@ style notify_frame:
 style notify_text:
     size gui.notify_text_size
 
-## KeyboardListener screen #####################################################
-##
-## Screens meant to pass in player dialog to Monika so she can answer you
-## This replaces the infinite loop, ideally
-init python:
-    def FinishEnterInput():
-        if not player_dialogue: return
-        persistent.monika_topic = player_dialogue.lower()
-        persistent.current_monikatopic = 0
-        renpy.hide_screen('player_input')
-        renpy.jump('ch30_monikatopics')
+## This part of the code is used to create the tutorial selection screen.
 
-screen player_input(message, ok_action):
+#Each tutorial is defined by its name (caption) and its label,
+#items is the list of caption and label of each tutorial
+#init python is necessary because items is a List, a python object
+
+init python:
+
+    items = [(_("Introduction"),"example_chapter")
+        ,(_("Route Part 1, How To Make A Mod"),"tutorial_route_p1")
+        ,(_("Route Part 2, Music"),"tutorial_route_p2")
+        ,(_("Route Part 3, Scene"),"tutorial_route_p3")
+        ,(_("Route Part 4, Dialogue"),"tutorial_route_p4")
+        ,(_("Route Part 5, Menu"),"tutorial_route_p5")
+        ,(_("Route Part 6, Logic Statement"),"tutorial_route_p6")
+        ,(_("Route Part 7, Sprite"),"tutorial_route_p7")
+        ,(_("Route Part 8, Position"),"tutorial_route_p8")
+        ,(_("Route Part 9, Ending"),"tutorial_route_p9")]
+
+
+## Scrollable Menu ###############################################################
+##
+## This screen creates a vertically scrollable menu of prompts attached to labels
+
+#Define the properties of the object textbutton. textbutton is made by two parts:
+#button and button_text. To customize textbutton, both botton and button_text need to be modified
+#This part is usually found in gui.rpy
+
+define prev_adj = ui.adjustment()
+define main_adj = ui.adjustment()
+define gui.scrollable_menu_button_width = 560
+define gui.scrollable_menu_button_height = None
+define gui.scrollable_menu_button_tile = False
+define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
+
+define gui.scrollable_menu_button_text_font = gui.default_font
+define gui.scrollable_menu_button_text_size = gui.text_size
+define gui.scrollable_menu_button_text_xalign = 0.0
+define gui.scrollable_menu_button_text_idle_color = "#000"
+define gui.scrollable_menu_button_text_hover_color = "#fa9"
+
+# twopane_scrollabe is now a prefix
+define gui.twopane_scrollable_menu_button_width = 250
+define gui.twopane_scrollable_menu_button_height = None
+define gui.twopane_scrollable_menu_button_tile = False
+define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
+
+define gui.twopane_scrollable_menu_button_text_font = gui.default_font
+define gui.twopane_scrollable_menu_button_text_size = gui.text_size
+define gui.twopane_scrollable_menu_button_text_xalign = 0.0
+define gui.twopane_scrollable_menu_button_text_idle_color = "#000"
+define gui.twopane_scrollable_menu_button_text_hover_color = "#fa9"
+
+#Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
+# The line properties gui.button_properties("scrollable_menu_button") assigns all
+# attributes of gui.scrollable_menu_button to the style scrollable_menu_button
+# and the style scrollable_menu_button_text
+
+style scrollable_menu_vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
+
+    spacing 5
+
+style scrollable_menu_button is choice_button:
+    properties gui.button_properties("scrollable_menu_button")
+
+style scrollable_menu_button_text is choice_button_text:
+    properties gui.button_text_properties("scrollable_menu_button")
+
+style scrollable_menu_new_button is scrollable_menu_button
+
+style scrollable_menu_new_button_text is scrollable_menu_button_text:
+    italic True
+
+style scrollable_menu_special_button is scrollable_menu_button
+
+style scrollable_menu_special_button_text is scrollable_menu_button_text:
+    bold True
+
+style scrollable_menu_crazy_button is scrollable_menu_button
+
+style scrollable_menu_crazy_button_text is scrollable_menu_button_text:
+    italic True
+    bold True
+
+# two pane stuff
+style twopane_scrollable_menu_vbox:
+    xalign 0.5
+    ypos 270
+    yanchor 0.5
+
+    spacing 5
+
+style twopane_scrollable_menu_button is choice_button:
+    properties gui.button_properties("twopane_scrollable_menu_button")
+
+style twopane_scrollable_menu_button_text is choice_button_text:
+    properties gui.button_text_properties("twopane_scrollable_menu_button")
+
+style twopane_scrollable_menu_new_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_new_button_text is twopane_scrollable_menu_button_text:
+    italic True
+
+style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
+
+style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
+    bold True
+
+#scrollable_menu selection screen
+#This screen is based on work from the tutorial menu selection by haloff1
+
+screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
+        style_prefix "twopane_scrollable_menu"
+
+        fixed:
+            area left_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign left_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+                arrowkeys True
+
+                vbox:
+
+                    for i_caption,i_label in prev_items:
+                        textbutton i_caption:
+                            if renpy.has_label(i_label) and not seen_event(i_label):
+                                style "twopane_scrollable_menu_new_button"
+                            if not renpy.has_label(i_label):
+                                style "twopane_scrollable_menu_special_button"
+
+                            action Return(i_label)
+
+
+
+                    null height 20
+
+                    if cat_length == 0:
+                        textbutton _("That's enough for now.") action Return(False)
+                    elif cat_length > 1:
+                        textbutton _("Go Back") action Return(-1)
+
+
+        if main_items:
+
+            fixed:
+                area right_area
+
+                bar adjustment main_adj style "vscrollbar" xalign right_align
+
+                viewport:
+                    yadjustment main_adj
+                    mousewheel True
+                    arrowkeys True
+
+                    vbox:
+
+                        for i_caption,i_label in main_items:
+                            textbutton i_caption:
+                                if renpy.has_label(i_label) and not seen_event(i_label):
+                                    style "twopane_scrollable_menu_new_button"
+                                if not renpy.has_label(i_label):
+                                    style "twopane_scrollable_menu_special_button"
+
+                                action Return(i_label)
+
+                        null height 20
+
+                        textbutton _("That's enough for now.") action Return(False)
+
+# the regular scrollabe menu
+screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
+        style_prefix "scrollable_menu"
+
+        fixed:
+            area display_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+#                    xpos x
+#                    ypos y
+
+                    for i_caption,i_label in items:
+                        textbutton i_caption:
+                            if renpy.has_label(i_label) and not seen_event(i_label):
+                                style "scrollable_menu_new_button"
+                            if not renpy.has_label(i_label):
+                                style "scrollable_menu_special_button"
+                            action Return(i_label)
+
+
+
+                    null height 20
+
+                    textbutton _(nvm_text) action Return(False)
+
+# more general scrollable menu. This one takes the following params:
+# IN:
+#   items - list of items to display in the menu. Each item must be a tuple of
+#       the following format:
+#           [0]: prompt button
+#           [1]: prompt return object
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#   display_area - defines the display area of the menu. Tuple of the following
+#       format:
+#           [0]: x coordinate of menu
+#           [1]: y coordinate of menu
+#           [2]: width of menu
+#           [3]: height of menu
+#   scroll_align - alignment of vertical scrollbar
+#   final_item - represents the final (usually quit item) of the menu
+#       tuple of the following format:
+#           [0]: text of the button
+#           [1]: return value of the button
+#           [2]: True if we want the button italics, False if not
+#           [3]: True if we want the button bold, False if not
+#           [4]: integer spacing between this button and the regular buttons
+#               NOTE: must be >= 0
+#       (Default: None)
+screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=None):
+        style_prefix "scrollable_menu"
+
+        fixed:
+            area display_area
+
+            bar adjustment prev_adj style "vscrollbar" xalign scroll_align
+
+            viewport:
+                yadjustment prev_adj
+                mousewheel True
+
+                vbox:
+#                    xpos x
+#                    ypos y
+
+                    for item_prompt,item_value,is_italic,is_bold in items:
+                        textbutton item_prompt:
+                            if is_italic and is_bold:
+                                style "scrollable_menu_crazy_button"
+                            elif is_italic:
+                                style "scrollable_menu_new_button"
+                            elif is_bold:
+                                style "scrollable_menu_special_button"
+                            action Return(item_value)
+
+                    if final_item:
+                        if final_item[4] > 0:
+                            null height final_item[4]
+
+                        textbutton _(final_item[0]):
+                            if final_item[2] and final_item[3]:
+                                style "scrollable_menu_crazy_button"
+                            elif final_item[2]:
+                                style "scrollable_menu_new_button"
+                            elif final_item[3]:
+                                style "scrollable_menu_special_button"
+                            action Return(final_item[1])
+
+# background timed jump screen
+# NOTE: caller is responsible for hiding this screen
+#
+# IN:
+#   timeout - number of seconds to time
+#   timeout_label - label to jump to when timeout
+screen mas_background_timed_jump(timeout, timeout_label):
+    timer timeout action Jump(timeout_label)
+
+# MAS restart monika screen
+screen mas_generic_restart:
+    # this will always return True
+    # this has like a be right back button
+
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
+
     add "gui/overlay/confirm.png"
-    #BUG: This doesn't work for some god forsaken reason. Return goes to screen under this one for reasons I don't understand
-    key "K_RETURN" action [Play("sound", gui.activate_sound), ok_action]
-    
+
     frame:
 
         vbox:
@@ -1612,19 +2330,58 @@ screen player_input(message, ok_action):
             yalign .5
             spacing 30
 
-            label _(message):
+# TODO have a brb feature somehow
+# TODO: that would tie into the knowing how long player is out
+#            label _("Tell Monika that you'll be right back?"):
+            label _("Please restart Monika After Story."):
                 style "confirm_prompt"
                 xalign 0.5
-            input value VariableInputValue("player_dialogue",True, True)
 
             hbox:
                 xalign 0.5
                 spacing 100
 
-                textbutton _("OK") action ok_action
+                textbutton _("OK") action Return(True)
 
-screen keylistener:
-    key 't' action Show(screen='player_input', message='What do you want to talk about?', ok_action=Function(FinishEnterInput))
-    key 'm' action If(renpy.music.get_playing('music') == 'bgm/m1.ogg', Play('music', 'bgm/credits.ogg', loop = True), Play('music', 'bgm/m1.ogg', loop = True))
-    key 'p' action Jump('game_pong')
+
+# generic custom displayabels below:
+init python:
+    class PauseDisplayable(renpy.Displayable):
+        """
+        Pause until click variant of Pause
+        This is because normal pause until click is broken for some reason
+        """
+        import pygame
+
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+
+        def render(self, width, height, st, at):
+            # dont actually render anything
+            return renpy.Render(width, height)
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.MOUSEBUTTONDOWN:
+                return True
+
+            raise renpy.IgnoreEvent()
+
+# Partial generic showpoem screen
+# IN:
+#   _poem - Poem object to show
+#   paper - type of paper to use as background
+#   _styletext - text style to use as a string
+screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[_poem.title]\n\n[_poem.text]" style _styletext
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"
 
