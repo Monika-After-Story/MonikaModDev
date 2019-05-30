@@ -12906,6 +12906,8 @@ label monika_enjoyingspring:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
     return
     
+default persistent._mas_pm_blood_type = None
+    
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_blood_type_stereotype",category=["society"],prompt="Blood stereotypes",random=True))
 
@@ -12928,7 +12930,7 @@ label monika_blood_type_stereotype:
     m 2ekb "Under the impression of passiveness, she could be very critical when she was feeling confident. You saw it for yourself right?"
     m 2lud "As for the 'two face' thing..."
     m 2lssdrb "Let's not talk about that... You know what I'm talking about."
-    if persistent.blood_type == "AB":
+    if persistent._mas_pm_blood_type == "AB":
         m 1wuo "Ah, and bear in mind that those are just superstitions without proof whatsoever of their validity."
         m 1hksdrb "I know this is your blood type we are talking about, but don't mistake it for a personality test."
         m 1eka "You're way more awesome and complex than that [player]."
@@ -12941,7 +12943,7 @@ label monika_blood_type_stereotype:
         m 1tsb "It clearly is Natsuki."
     m 2esd "I mean, do you remember when she threatened to quit the club just because it was going in a direction that she didn't like?"
     m 2rfc "Although she had her reasons, it was impulsive and very inconsiderate of her."
-    if persistent.blood_type == "B":
+    if persistent._mas_pm_blood_type == "B":
         m 1wuo "Ah, and bear in mind that those are just superstitions without proof whatsoever of their validity."
         m 1hksdrb "I know this is your blood type we are talking about, but don't mistake it for a personality test."
         m 1eka "You're way more awesome and complex than that [player]."
@@ -12960,7 +12962,7 @@ label monika_blood_type_stereotype:
         m 2tkc "I'm almost feeling sorry for the MC, having to put up with someone that unreliable."
         m 3efd "Even if she had her reasons, she never tried to change it, to make things better. And a lot of people ended up suffering unnecessarily because of that"
         m 1dsc "Sorry, there's no need to be angry about that, it's behind us now."
-    if persistent.blood_type == "O":
+    if persistent._mas_pm_blood_type == "O":
         m 1wuo "Ah, and bear in mind that those are just superstitions without proof whatsoever of their validity."
         m 1hksdrb "I know this is your blood type we are talking about, but don't mistake it for a personality test."
         m 1eka "You're way more awesome and complex than that [player]."
@@ -12970,7 +12972,7 @@ label monika_blood_type_stereotype:
     m 1hub "Me, of course!"
     m 4wub "Peoples that have the A type are responsible, perfectionists, wise, earnest, neat and much more."
     m 2tsu "So there's no doubt that A type blood flow through my veins."
-    if persistent.blood_type == "A":
+    if persistent._mas_pm_blood_type == "A":
         m 2eka "And it's the same as yours, [player]. We really have so much in common."
         m 1hub "With all of those qualities, we sure do make one fine team."
     m 1eud "Ah... Wait! I also remember reading that peoples with A type blood are also obsessive, stubborn and inconsiderate of others."
