@@ -8177,27 +8177,11 @@ image monika 4lubfb:
 image monika 1kua:
     block:
         "monika 1kua_static"
-        block:
-            choice:
-                5
-            choice:
-                7
-            choice:
-                9
-        "monika 1dua_static"
-        0.05
-        "monika 1eua_static"
+        1
+        "monika 1eua"
 
 image monika 1kubfu:
     block:
         "monika 1kubfu_static"
-        block:
-            choice:
-                5
-            choice:
-                7
-            choice:
-                9
-        "monika 1dubfu_static"
-        0.05
-        "monika 1eubfu_static"
+        1
+        "monika 1eubfu"
