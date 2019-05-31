@@ -6,7 +6,10 @@ import os
 import gamedir as GDIR
 import menutils
 
-SPRITE_PATH = GDIR.REL_PATH_GAME + "sprite-chart-01.rpy"
+SPRITE_PATH = [
+    GDIR.REL_PATH_GAME + "sprite-chart-01.rpy",
+    GDIR.REL_PATH_GAME + "sprite-chart.rpy"
+]
 SAVE_PATH = "zzzz_spritelist"
 SAVE_PATH_D = "zzzz_spritedict"
 SAVE_PATH_IO = GDIR.REL_PATH_GAME + "zzzz_sprite_opt.rpy"
@@ -79,12 +82,13 @@ def pull_sprite_list(as_dict=False):
     """
     sprite_list = list()
 
-    with open(os.path.normcase(SPRITE_PATH), "r") as sprite_file:
-        for line in sprite_file:
-            code = pull_sprite_code(line)
-            
-            if code:
-                sprite_list.append(code)
+    for sprfile in SPRITE_PATH:
+        with open(os.path.normcase(sprfile), "r") as sprite_file:
+            for line in sprite_file:
+                code = pull_sprite_code(line)
+
+                if code:
+                    sprite_list.append(code)
 
     if as_dict:
         # do we want a dict instead?
