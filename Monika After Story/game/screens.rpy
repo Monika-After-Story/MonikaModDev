@@ -19,6 +19,16 @@ init -1 python:
     layout.MAS_TT_REPEAT = (
         "Enable this to let Monika repeat topics that you have already seen."
     )
+    layout.MAS_TT_NOTIF = (
+        "Enabling this will let Monika use your system's notifications "
+    )
+    layout.MAS_TT_G_NOTIF = (
+        "Enables notifications for the selected group."
+    )
+    layout.MAS_TT_ACTV_WND = (
+        "Enabling this will allow Monika to see your active window "
+        "and offer some comments based on what you're doing."
+    )
 
 
 
@@ -610,6 +620,9 @@ screen navigation():
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
 
+        if store.mas_windowreacts.can_show_notifs and not main_menu:
+            textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
+
         #textbutton _("About") action ShowMenu("about")
 
         if renpy.variant("pc"):
@@ -1135,6 +1148,11 @@ screen preferences():
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
                         hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
+                    if renpy.windows and store.mas_windowreacts.can_show_notifs:
+                        textbutton _("Window Reacts"):
+                            action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
+                            hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
+
             null height (4 * gui.pref_spacing)
 
             hbox:
@@ -1298,7 +1316,7 @@ screen preferences():
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
                     style "navigation_button"
 
-    
+
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
@@ -1387,6 +1405,41 @@ style slider_button_text:
 style slider_vbox:
     xsize 450
 
+##Notifications Settings Screen
+screen notif_settings():
+    tag menu
+
+    use game_menu(("Alerts"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        vbox:
+            style_prefix "check"
+            textbutton _("Use Notifications"):
+                action ToggleField(persistent, "_mas_enable_notifications")
+                selected persistent._mas_enable_notifications
+                hovered tooltip.Action(layout.MAS_TT_NOTIF)
+
+            label _("Alert Filters")
+
+        hbox:
+            style_prefix "check"
+            box_wrap True
+            spacing 25
+
+            #Dynamically populate this
+            for item in persistent._mas_windowreacts_notif_filters:
+                if item != "Window Reactions" or persistent._mas_windowreacts_windowreacts_enabled:
+                    textbutton _(item):
+                        action ToggleDict(persistent._mas_windowreacts_notif_filters, item)
+                        selected persistent._mas_windowreacts_notif_filters.get(item)
+                        hovered tooltip.Action(layout.MAS_TT_G_NOTIF)
+
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
 
 ## History screen ##############################################################
 ##

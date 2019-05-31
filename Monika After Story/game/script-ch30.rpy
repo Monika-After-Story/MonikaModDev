@@ -199,7 +199,7 @@ init -10 python:
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
-            
+
 
     mas_idle_mailbox = MASIdleMailbox()
 
@@ -1328,6 +1328,12 @@ label ch30_preloop:
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
  
+    #Unlock windowreact topics
+    $ mas_resetWindowReacts()
+
+    #Then prepare the notifs
+    $ mas_updateFilterDict()
+
     # save here before we enter the loop
     $ renpy.save_persistent()
 
@@ -1422,6 +1428,12 @@ label ch30_visual_skip:
             # run seasonal check
             mas_seasonalCheck()
 
+            #Clear the notifications tray
+            mas_clearNotifs()
+
+            #Now we check if we should queue windowreact evs
+            mas_checkForWindowReacts()
+
             # check if we need to rebulid ev
             if mas_idle_mailbox.get_rebuild_msg():
                 mas_rebuildEventLists()
@@ -1465,7 +1477,7 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
-        
+
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
@@ -1475,8 +1487,11 @@ label ch30_post_mid_loop_eval:
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
+            if not store.mas_globals.in_idle_mode:
+                #Create a new notif
+                call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")
             $ mas_randchat.setWaitingTime()
-        
+
         window auto
         
 #        python:

@@ -301,7 +301,8 @@ init 4 python:
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
-        "APL": store.mas_apology.apology_db
+        "APL": store.mas_apology.apology_db,
+        "WRS": store.mas_windowreacts.windowreact_db
     }
 
 
@@ -1872,6 +1873,7 @@ label call_next_event:
 
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
+                $ mas_clearNotifs()
                 jump _quit
 
         # loop over until all events have been called

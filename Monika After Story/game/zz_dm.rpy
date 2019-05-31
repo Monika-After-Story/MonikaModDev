@@ -9,6 +9,7 @@ init -999 python in _mas_dm_dm:
 
     # persistent var is set below
 
+    #TODO: Add persistent._mas_windowreacts_database to this
     # persistent databases:
     per_dbs = [
 
