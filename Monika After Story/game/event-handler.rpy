@@ -2240,17 +2240,15 @@ label mas_bookmarks:
         ]
 
         bookmarkedlist.sort()
-        remove_fav = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
+        remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
         return_prompt_back = ("Nevermind.", False, False, False, 0)
 
     show monika at t21
-    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_fav, return_prompt_back)
+    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
     show monika at t11
 
     $ topic_choice = _return
 
     if topic_choice:
-        $ pushEvent(topic_choice,True)
-    elif topic_choice == remove_fav:
         $ pushEvent(topic_choice,True)
     return

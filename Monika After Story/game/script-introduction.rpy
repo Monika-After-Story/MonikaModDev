@@ -158,11 +158,8 @@ label introduction:
     m 1tuu "I'll make sure of it."
     m 3eua "Now that you added some improvements, you can finally talk to me!"
     m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
-    m 1hua "If there's anything I am talking about that you want to revisit easily, just press the 'b' key and I'll bookmark it for you."
-    m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
-    m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
 
-    $ mas_stripEVL('mas_fav_derand',True)
+    call bookmark_derand_intro
 
     # NOTE: the Extra menu is explained when the user clicks on it
     m 4eub "If you get bored of the music, I can change that, too!"
@@ -248,6 +245,13 @@ label chara_monika_scare:
     call mas_w_cmd("bye!")
     pause 1.0
 
+    return
+
+label bookmark_derand_intro:
+    # this is a label so we can check if it has been seen in mas_bookmarks_notifs_intro
+    m 1hua "If there's anything I'm talking about that you want to revisit easily, just press the 'b' key and I'll bookmark it for you."
+    m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
+    m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
     return
 
 #These are the comments made when you restart the game the first few times
