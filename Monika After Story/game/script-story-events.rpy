@@ -2397,3 +2397,46 @@ label mas_text_speed_enabler:
         m "So feel free to change the text speed when you feel comfortable doing so."
 
     return "derandom|no_unlock"
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_notification_windowreact_intro",
+            conditional="store.mas_windowreacts.can_show_notifs",
+            action=EV_ACT_QUEUE,
+        )
+    )
+
+label mas_notification_windowreact_intro:
+    m 1hub "[player], I have something exciting to tell you!"
+    m 3eua "I've been practicing coding a little bit, and I've learned how to use the notifications on your computer!"
+    m "So if you want, I can let you know if I have something for us to talk about."
+
+    m 3eub "Would you like to see how they work?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to see how they work?{fast}"
+
+        "Sure!":
+            m 1hua "Okay, [player]!"
+            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
+            call display_notif(m_name, "I love you, [player]!", skip_checks=True)
+            m 1hub "There it is!"
+
+        "No thanks.":
+            m 2eka "Alright, [player]."
+
+    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab and turn them on, along with what you'd like to be notified for."
+
+    if renpy.windows:
+        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
+        m 1hksdlb "Don't worry though, I know you might not want me constantly watching you, and I respect your privacy."
+        m 3eua "So I'll only look at what you're doing if you're okay with it."
+        m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+
+        if mas_isMoniNormal(higher=True):
+            m 1tuu "It's not like you have anything to hide from your girlfriend..."
+            show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ttu "...right?"
+    return "no unlock"
