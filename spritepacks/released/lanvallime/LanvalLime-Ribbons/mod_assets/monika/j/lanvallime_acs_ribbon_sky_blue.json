@@ -1,7 +1,7 @@
 {
     "type": 0,
     "name": "lanvallime_ribbon_sky_blue",
-    "img_sit": "lanvalime_ribbon_sky_blue",
+    "img_sit": "lanvallime_ribbon_sky_blue",
     "pose_map": {
         "default": "0",
         "l_default": "5"
