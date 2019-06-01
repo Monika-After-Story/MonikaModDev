@@ -1860,7 +1860,7 @@ label call_next_event:
 
         if (
                 not store.mas_globals.in_idle_mode
-                and (ev is not None and "skip alert" not in ev.rules)
+                and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
                 and not (event_label.startswith("greeting_") or event_label.startswith("bye_"))
             ):
             #Create a new notif
