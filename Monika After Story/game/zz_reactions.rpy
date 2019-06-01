@@ -840,7 +840,7 @@ label mas_reaction_gift_hairclip(hairclip_name):
         m 1hua "If you want me to wear it, just ask, okay?"
 
     else:
-        m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}."
+        m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}.{nw}"
         $ monika_chr.wear_acs(hairclip_acs)
         m 1hua "There we go."
 
@@ -1632,7 +1632,7 @@ label mas_reaction_new_ribbon:
 
         m 3rksdlc "I really don't have a lot of choices here when it comes to fashion..."
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
-        m 2dsa "In fact, I'll put it on right now.{w=0.5}.{w=0.5}."
+        m 2dsa "In fact, I'll put it on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1657,7 +1657,7 @@ label mas_reaction_new_ribbon:
         if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
-        m 2dsa "I'll put this on right now.{w=0.5}.{w=0.5}."
+        m 2dsa "I'll put this on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1702,7 +1702,7 @@ label mas_reaction_gift_roses:
 
         #We can only have this on poses which use the new sprite set
         if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-            m 2dsa "Hold on.{w=0.5}.{w=0.5}."
+            m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
@@ -1730,7 +1730,7 @@ label mas_reaction_gift_roses:
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
                 if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-                    m 2dsa "Hold on.{w=0.5}.{w=0.5}."
+                    m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 

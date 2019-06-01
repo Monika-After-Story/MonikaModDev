@@ -26,6 +26,9 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
+        # reset this on release to show unseen
+        persistent._mas_unsee_unseen = False
+
 #default persistent._mas_084_hotfix_farewellbug = None
 
 # post many things, but not late update script appropriate

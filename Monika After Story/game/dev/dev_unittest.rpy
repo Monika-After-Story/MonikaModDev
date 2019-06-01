@@ -39,7 +39,7 @@ init 5 python:
 
 label dev_unit_tests:
     $ final_item = ("RETURN", False, False, False, 20)
-    call screen mas_gen_scrollable_menu(store.mas_dev_unit_tests.unit_tests, store.mas_dev_unit_tests.MOOD_AREA, store.mas_dev_unit_tests.MOOD_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(store.mas_dev_unit_tests.unit_tests, store.mas_dev_unit_tests.MOOD_AREA, store.mas_dev_unit_tests.MOOD_XALIGN, final_item)
 
     if _return and renpy.has_label(_return):
         call expression _return
