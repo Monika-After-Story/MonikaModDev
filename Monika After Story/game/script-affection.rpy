@@ -1765,21 +1765,21 @@ init 20 python:
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
-            pushEvent("mas_affection_upsetwarn")
+            queueEvent("mas_affection_upsetwarn")
 
         # If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         # This is an indicator you are heading in a positive direction.
         elif 15 <= curr_affection and not seen_event("mas_affection_happynotif"):
-            pushEvent("mas_affection_happynotif")
+            queueEvent("mas_affection_happynotif")
 
         # If affection level is greater than 100 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif curr_affection >= 100 and not seen_event("monika_affection_nickname"):
-            pushEvent("monika_affection_nickname")
+            queueEvent("monika_affection_nickname")
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
-                pushEvent("mas_affection_apology")
+                queueEvent("mas_affection_apology")
         # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
             mas_unlockEVL("greeting_tears", "GRE")
@@ -2180,6 +2180,7 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
+    show monika idle
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
@@ -2188,6 +2189,7 @@ label mas_affection_happynotif:
     m 1eua "I just wanted to say thank you for being such a wonderful person."
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
+    show monika idle
     return
 
 

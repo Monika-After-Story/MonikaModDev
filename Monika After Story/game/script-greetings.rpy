@@ -2898,7 +2898,8 @@ label greeting_ourreality:
     m 1eua "It's just that I'm super excited to show you what I've been working on."
     m 3hksdrb "Just give me a second to get it ready..."
 
-    if mas_is_raining or mas_is_snowing:
+    #Force def weather for this
+    if mas_current_weather != mas_weather_def:
         call mas_change_weather(mas_weather_def)
 
     m 1dsc "..."
@@ -2943,7 +2944,7 @@ label greeting_ourreality:
     $ unlockEventLabel("mas_monika_islands")
 
     # we can push here because of the slightly optimized call_next_event
-    $ pushEvent("mas_monika_islands")
+    $ pushEvent("mas_monika_islands",True)
     return
 
 init 5 python:
