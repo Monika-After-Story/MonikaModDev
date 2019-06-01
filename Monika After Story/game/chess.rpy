@@ -1801,7 +1801,7 @@ label mas_chess_savegame:
         # the file path to show is different
         display_file_path = mas_chess.REL_DIR + save_filename
 
-    m 1dsc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
     m 1hua "I've saved our game in '[display_file_path]'!"
 
     if not renpy.seen_label("mas_chess_pgn_explain"):

@@ -52,6 +52,10 @@ init python:
             - Play button + hotkey
             - Calendar overlay
 
+        Disables:
+            - Derandom hotkey
+            - bookmark hotkey
+
         Unsets:
             - dialogue workflow flag
 
@@ -67,6 +71,10 @@ init python:
         store.mas_globals.dlg_workflow = False
         mas_calDropOverlayShield()
 
+        # special dialogue shield settings for derand and bookmark hotkeys
+        store.mas_hotkeys.derandom_enabled = False
+        store.mas_hotkeys.bookmark_enabled = False
+
     
     def mas_RaiseShield_dlg():
         """
@@ -75,6 +83,10 @@ init python:
             - Extra button + hotkey
             - Play button + hotkey
             - Calendar overlay
+
+        Enables:
+            - Derandom hotkey
+            - bookmark hotkey
 
         Sets:
             - dialogue workflow flag
@@ -91,6 +103,9 @@ init python:
         store.mas_globals.dlg_workflow = True
         mas_calRaiseOverlayShield()
 
+        # special dialogue shield settings for derand and bookmark hotkeys
+        store.mas_hotkeys.derandom_enabled = True
+        store.mas_hotkeys.bookmark_enabled = True
 
     ################### Music Menu opened workflow ############################
     # Used when the music menu opens.

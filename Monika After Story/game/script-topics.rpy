@@ -320,6 +320,86 @@ init 11 python:
 #    if len(monika_random_topics) == 0:
 #        monika_random_topics=list(all_random_topics)
 
+# Bookmarks and derandom stuff
+default persistent._mas_player_bookmarked = {}
+# dict to store bookmarked events
+default persistent._mas_player_derandomed = {}
+# dict to store player derandomed events
+default persistent.flagged_monikatopic = None
+# var set when we flag a topic for derandom
+
+init python:
+    def mas_derandom_topic(ev_label=None):
+        """
+        Function for the derandom hotkey, 'x'
+
+        IN:
+            ev_label - label of the event we want to derandom.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            ev is not None
+            and ev.random
+            and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            and ev.prompt != ev.eventlabel
+        ):
+            if "mas_topic_derandom" not in persistent.event_list:
+                persistent.flagged_monikatopic = ev.eventlabel
+                pushEvent('mas_topic_derandom',True)
+                renpy.notify(__("Topic flagged for removal."))
+            else:
+                persistent.event_list.remove("mas_topic_derandom")
+                renpy.notify(__("Topic flag removed."))
+
+    def mas_bookmark_topic(ev_label=None):
+        """
+        Function for the bookmark hotkey, 'b'
+
+        IN:
+            ev_label - label of the event we want to bookmark.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            mas_isMoniNormal(higher=True)
+            and ev is not None
+            and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            and ev.prompt != ev.eventlabel
+        ):
+            if ev.eventlabel not in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                renpy.notify(__("Topic bookmarked."))
+            else:
+                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                renpy.notify(__("Bookmark removed."))
+
+    def mas_hasBookmarks():
+        """
+        Checks to see if we have bookmarks to show
+
+        Bookmarks are restricted to Normal+ affection
+        and to topics that are unlocked and are available
+        based on current affection
+        """
+        if mas_isMoniUpset(lower=True):
+            return False
+
+        for ev in persistent._mas_player_bookmarked.itervalues():
+           if ev.unlocked and ev.checkAffection(mas_curr_affection):
+                return True
+        return False
+
 
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
@@ -3558,7 +3638,7 @@ label monika_birthday:
         m 2rksdlb "I don't actually know when yours is, ahaha!"
         m 2eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
-        $ strip_mas_birthdate()
+        $ mas_stripEVL('mas_birthdate',True)
     return
 
 init 5 python:
@@ -4092,7 +4172,7 @@ label monika_eternity:
     m 1lksdlc "..."
     m 1eka "I told you, right?"
     m "I'm eternal."
-    m "Trapped in here, unable to age or die,"
+    m "Trapped in here, unable to age or die..."
     m 1ekc "Whereas you slowly age as each day passes by."
     m "Then, one day, you won't be here anymore."
     m  "I won't have anyone."
@@ -7109,7 +7189,7 @@ label monika_system_charging:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
@@ -7122,8 +7202,8 @@ label monika_sleep:
     m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
     m 1eka "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m 1eua "So try to keep your sleep on track, okay?"
-    show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
 #special local var to handle repeated usage of this dialog box.
@@ -10496,7 +10576,7 @@ label monika_vehicle:
                 #Display our scrollable
                 show monika at t21
 
-                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, None)
+                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
                 show monika at t11
 
                 $ selection = _return
@@ -11261,10 +11341,9 @@ init 5 python:
             # this will be unlockable via the action
             rules={"no unlock": None},
 
-            # we'll pool this event after 30 days
+            # we'll pool this event after a month of the relationship
             conditional=(
-                "datetime.datetime.now() - persistent.sessions[" +
-                "'first_session'] >= datetime.timedelta(days=30) " +
+                "store.mas_anni.pastOneMonth() "
                 "and persistent._mas_first_calendar_check"
             ),
 
@@ -11282,7 +11361,7 @@ label monika_dating_startdate:
         )
 
         # but this to get the display plus diff
-        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+        first_sesh, _diff = mas_cal.genFormalDispDate(first_sesh_raw.date())
 
     if _diff.days == 0:
         # its today?!
@@ -11515,8 +11594,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # post loop
     python:
-        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
-            selected_date
+        new_first_sesh, _diff = mas_cal.genFormalDispDate(
+            selected_date.date()
         )
 
     m 1eua "Alright, [player]."
@@ -11527,12 +11606,12 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     menu:
         m "We started dating [new_first_sesh].{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{nw}"
             # one more confirmation
             # WE WILL NOT FIX anyone's dates after this
             $ _history_list.pop()
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
                     return selected_date
@@ -12078,7 +12157,7 @@ label monika_load_custom_music:
             "Yes.":
                 m "Okay, but make sure you did it correctly before asking me to check for custom music."
             "No.":
-                $ pushEvent("monika_add_custom_music")
+                $ pushEvent("monika_add_custom_music",True)
     return
 
 init 5 python:
@@ -12904,4 +12983,154 @@ label monika_enjoyingspring:
         m 5hubfa "Ehehe~"
     else:
         m 2rkc "...but I guess there's no real way to avoid it, is there?"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_derandom:
+    # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
+    $ prev_topic = persistent.flagged_monikatopic
+    $ ev = mas_getEV(prev_topic)
+    m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you sure you don't want me to bring this up anymore?{fast}"
+        "Please don't.":
+            $ mas_hideEVL(prev_topic,"EVE",derandom=True)
+            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
+            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
+            m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
+            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty."
+
+        "It's okay.":
+            m 1eka "Alright, [player]."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_rerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_rerandom:
+    python:
+        derandomlist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
+        ]
+
+        derandomlist.sort()
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    if len(derandomlist) > 1:
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+    else:
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
+
+    call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if not _return:
+        m 1eua "Okay, [player]."
+
+    else:
+        $ mas_showEVL(topic_choice,"EVE",_random=True)
+        $ persistent._mas_player_derandomed.pop(topic_choice)
+        m 1eua "Okay, [player]..."
+
+        if len(persistent._mas_player_derandomed) > 0:
+            m 1eka "Are there any other topics you are okay with talking about?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are there any other topics you are okay with talking about?{fast}"
+                "Yes.":
+                    jump mas_topic_rerandom
+                "No.":
+                    m 3eua "Okay."
+
+        else:
+            m 3hua "All done!"
+            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+
+    # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
+    # to be derandomed out of season is still derandomed
+    $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_unbookmark",prompt="I'd like to remove a bookmark.",unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_unbookmark:
+    python:
+        bookmarkslist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
+            if ev.unlocked and ev.checkAffection(mas_curr_affection)
+        ]
+
+        bookmarkslist.sort()
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    if len(bookmarkslist) > 1:
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+    else:
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
+        
+    call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+
+    $ topic_choice = _return
+
+    if not topic_choice:
+        m 1eua "Okay, [player]."
+        $ pushEvent('mas_bookmarks',True)
+
+    else:
+        show monika at t11
+        $ persistent._mas_player_bookmarked.pop(topic_choice)
+        m 1eua "Okay, [player]..."
+
+        if len(bookmarkslist) > 1:
+            m 1eka "Are there any other bookmarks you want to remove?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are there any other bookmarks you want to remove?{fast}"
+                "Yes.":
+                    jump mas_topic_unbookmark
+                "No.":
+                    m 3eua "Okay."
+                    $ pushEvent('mas_bookmarks',True)
+
+        else:
+            m 3hua "All done!"
+    return
+
+default persistent._mas_unsee_unseen = None
+# var set when the player decides to hide or show the Unseen menu
+# True when Unseen is hidden
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this menu anymore.",unlocked=False,rules={"no unlock":None}))
+
+label mas_hide_unseen:
+    $ persistent._mas_unsee_unseen = True
+    m 3esd "Oh, okay, [player]..."
+    if mas_getEV('mas_hide_unseen').shown_count == 0:
+        m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
+        m 3hub "Ahaha!"
+    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3eub "There you go! If you want to see the menu again, just ask."
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_show_unseen:
+    $ persistent._mas_unsee_unseen = False
+    m 3eub "Sure, [player]!"
+    m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3hua "There you go!"
     return
