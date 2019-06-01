@@ -700,6 +700,15 @@ init python:
             persistent.game_unlocks[gamename] = True
 
 
+    def mas_check_player_derand():
+        """
+        Checks the player derandom dict for events that are not random and derandoms them
+        """
+        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
+            if ev.random:
+                ev.random = False
+
+
 init 1 python:
     morning_flag = mas_isMorning()
 
@@ -1829,5 +1838,8 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+    # make sure nothing the player has derandomed is now random
+    $ mas_check_player_derand()
 
     return

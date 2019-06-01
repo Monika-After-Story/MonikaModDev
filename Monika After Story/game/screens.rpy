@@ -2260,7 +2260,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                         textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
-screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
+screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -2288,6 +2288,10 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     null height 20
 
+                    if remove:
+                        # in case we want the option to hide this menu
+                        textbutton _(remove[0]) action Return(remove[1])
+
                     textbutton _(nvm_text) action Return(False)
 
 # more general scrollable menu. This one takes the following params:
@@ -2305,7 +2309,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 #           [2]: width of menu
 #           [3]: height of menu
 #   scroll_align - alignment of vertical scrollbar
-#   final_item - represents the final (usually quit item) of the menu
+#   *args - represents the final (usually quit) item(s) of the menu
 #       tuple of the following format:
 #           [0]: text of the button
 #           [1]: return value of the button
@@ -2314,7 +2318,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 #           [4]: integer spacing between this button and the regular buttons
 #               NOTE: must be >= 0
 #       (Default: None)
-screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=None):
+screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -2340,18 +2344,18 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                                 style "scrollable_menu_special_button"
                             action Return(item_value)
 
-                    if final_item:
-                        if final_item[4] > 0:
-                            null height final_item[4]
+                    for final_items in args:
+                        if final_items[4] > 0:
+                            null height final_items[4]
 
-                        textbutton _(final_item[0]):
-                            if final_item[2] and final_item[3]:
+                        textbutton _(final_items[0]):
+                            if final_items[2] and final_items[3]:
                                 style "scrollable_menu_crazy_button"
-                            elif final_item[2]:
+                            elif final_items[2]:
                                 style "scrollable_menu_new_button"
-                            elif final_item[3]:
+                            elif final_items[3]:
                                 style "scrollable_menu_special_button"
-                            action Return(final_item[1])
+                            action Return(final_items[1])
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
