@@ -1664,6 +1664,20 @@ image monika 1eubfa:
         0.05
         repeat
 
+image monika 1eubfu:
+    block:
+        "monika 1eubfu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubfu_static"
+        0.05
+        repeat
+
 image monika 1ekbla:
     block:
         "monika 1ekbla_static"

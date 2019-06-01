@@ -9818,6 +9818,20 @@ image monika 1eubfa_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 1eubfu_static = DynamicDisplayable(
+    mas_drawmonika,
+    monika_chr,
+    eyes="normal",
+    eyebrows="up",
+    nose="def",
+    mouth="smug",
+    blush="full",
+    head="j",
+    left="1l",
+    right="1r",
+    arms="steepling",
+)
+
 image monika 1ekbla_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
