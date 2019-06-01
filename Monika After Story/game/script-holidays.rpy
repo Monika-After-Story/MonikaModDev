@@ -369,7 +369,7 @@ label greeting_o31_marisa:
     else:
         # ASSUMING:
         #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika_1eua_static')
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
