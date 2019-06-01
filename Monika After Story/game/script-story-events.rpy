@@ -2466,7 +2466,7 @@ label mas_notification_windowreact:
         "No thanks.":
             m 2eka "Alright, [player]."
 
-    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab and turn them on, along with what you'd like to be notified for."
+    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
 
     if renpy.windows:
         m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
