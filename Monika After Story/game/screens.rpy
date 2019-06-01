@@ -22,6 +22,9 @@ init -1 python:
     layout.MAS_TT_NOTIF = (
         "Enabling this will let Monika use your system's notifications "
     )
+    layout.MAS_TT_NOTIF_SOUND = (
+        "If enabled, a custom notification sound will play for Monika's notifications "
+    )
     layout.MAS_TT_G_NOTIF = (
         "Enables notifications for the selected group."
     )
@@ -1415,10 +1418,17 @@ screen notif_settings():
 
         vbox:
             style_prefix "check"
-            textbutton _("Use Notifications"):
-                action ToggleField(persistent, "_mas_enable_notifications")
-                selected persistent._mas_enable_notifications
-                hovered tooltip.Action(layout.MAS_TT_NOTIF)
+            hbox:
+                spacing 25
+                textbutton _("Use Notifications"):
+                    action ToggleField(persistent, "_mas_enable_notifications")
+                    selected persistent._mas_enable_notifications
+                    hovered tooltip.Action(layout.MAS_TT_NOTIF)
+
+                textbutton _("Sounds"):
+                    action ToggleField(persistent, "_mas_notification_sounds")
+                    selected persistent._mas_notification_sounds
+                    hovered tooltip.Action(layout.MAS_TT_NOTIF_SOUND)
 
             label _("Alert Filters")
 

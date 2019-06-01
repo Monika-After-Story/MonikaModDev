@@ -1856,6 +1856,16 @@ label call_next_event:
 
         $ mas_RaiseShield_dlg()
 
+        $ ev = mas_getEV(event_label)
+
+        if (
+                not store.mas_globals.in_idle_mode
+                and (ev is not None and "skip alert" not in ev.rules)
+                and not (event_label.startswith("greeting_") or event_label.startswith("bye_"))
+            ):
+            #Create a new notif
+            call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")
+
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
 

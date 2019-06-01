@@ -1496,9 +1496,6 @@ label ch30_post_mid_loop_eval:
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
-            if not store.mas_globals.in_idle_mode:
-                #Create a new notif
-                call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")
             $ mas_randchat.setWaitingTime()
 
         window auto

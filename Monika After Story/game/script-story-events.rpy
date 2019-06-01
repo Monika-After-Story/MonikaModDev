@@ -2439,7 +2439,7 @@ label mas_bookmarks_notifs_intro:
         m 1hub "[player], I have something exciting to tell you!"
         call mas_notification_windowreact
 
-    return "no unlock"
+    return "no_unlock"
 
 label mas_derand:
     m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
