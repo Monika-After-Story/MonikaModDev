@@ -2402,15 +2402,54 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
-            eventlabel="mas_notification_windowreact_intro",
-            conditional="store.mas_windowreacts.can_show_notifs",
-            action=EV_ACT_QUEUE,
+            eventlabel="mas_bookmarks_notifs_intro",
+            conditional=(
+                "(not renpy.seen_label('bookmark_derand_intro') "
+                "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0)) "
+                "or store.mas_windowreacts.can_show_notifs"
+            ),
+            action=EV_ACT_QUEUE
         )
     )
 
-label mas_notification_windowreact_intro:
-    m 1hub "[player], I have something exciting to tell you!"
-    m 3eua "I've been practicing coding a little bit, and I've learned how to use the notifications on your computer!"
+label mas_bookmarks_notifs_intro:
+    if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
+        m 3eub "Hey, [player]... {w=0.5}I have some new features to tell you about!"
+
+        if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
+            m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."
+            m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
+            call mas_derand
+        else:
+            m 3rksdlb "...Well, it seems you already found one of the features I was going to tell you about, ahaha!"
+            if len(persistent._mas_player_derandomed) == 0:
+                m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'b' key, and then access them easily via the 'Talk' menu."
+                call mas_derand
+            else:
+                m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+                m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
+                m 3eua "You also now have the ability to bookmark topics I am talking about by simply pressing the 'b' key."
+                m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
+
+        if store.mas_windowreacts.can_show_notifs:
+            m 1hua "And lastly, something I'm very excited about!"
+            call mas_notification_windowreact
+
+    else:
+        m 1hub "[player], I have something exciting to tell you!"
+        call mas_notification_windowreact
+
+    return "no unlock"
+
+label mas_derand:
+    m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+    m 1eka "Don't worry about hurting my feelings, we should be able to be honest with each other after all."
+    m 3eksdld "...And the last thing I want to do is keep bringing up stuff that makes you uncomfortable to talk about."
+    m 3eka "So, make sure you let me know, okay?"
+    return
+
+label mas_notification_windowreact:
+    m 3eua "I've been practicing coding a bit more and I've learned how to use the notifications on your computer!"
     m "So if you want, I can let you know if I have something for us to talk about."
 
     m 3eub "Would you like to see how they work?{nw}"
@@ -2439,4 +2478,4 @@ label mas_notification_windowreact_intro:
             m 1tuu "It's not like you have anything to hide from your girlfriend..."
             show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ttu "...right?"
-    return "no unlock"
+    return
