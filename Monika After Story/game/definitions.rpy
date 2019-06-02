@@ -2104,13 +2104,10 @@ init -1 python:
             corners - list of verticies. each element should be a tuple like
                 (x, y)
             disabled - True means to disable this mouse zone, False not
-            _button_down - pygame button even to act as a click
-                MOUSEBUTTONUP (Default)
-                MOUSEBUTTONDOWN (Default)
         """
-        LEFT_CLICK = 0
-        MIDDLE_CLICK = 1
-        RIGHT_CLICK = 2
+        LEFT_CLICK = 1
+        MIDDLE_CLICK = 2
+        RIGHT_CLICK = 3
 
         def __init__(self, corners):
             """
@@ -2125,11 +2122,36 @@ init -1 python:
 
             self.corners = corners
             self.disabled = False
-            self._button_down = pygame.MOUSEBUTTONUP
             self._debug_back = False
             self.__edges = []
+            self._button_down = pygame.MOUSEBUTTONUP
 
             self.__setup()
+
+        def render(self, width, height, st, at):
+            """
+            Render functions
+            """
+            r = renpy.Render(self.__width, self.__height)
+
+            # only show a box if debug mode is on
+            if self._debug_back:
+                canvas = r.canvas()
+                canvas.polygon("#FFE6F4", self.corners, width=0)
+
+            return r
+
+        def event(self, ev, x, y, st):
+            """
+            Event function
+            """
+            if ev.type == self._button_down:
+                # determine if this event happend here
+                if self._isOverMe(x, y):
+                    return ev.button
+
+            # othewise, nothing happened
+            return None
 
         def _inBoundingBox(self, x, y):
             """
@@ -2170,6 +2192,26 @@ init -1 python:
             # odd number of intersctions mean inside
             return (intersections % 2) == 1
 
+        def _start_click(self, button):
+            """
+            Marks the appropraite spot where a click should occur
+            ASSUMES MOUSEBUTTONDOWN was found, and we are just determining
+            the click.
+            """
+            self.__click_start[button - 1] = True
+
+        def _was_clicked(self, button):
+            """
+            Checks if this button spot was clicked
+            """
+            return self.__click_start[button - 1]
+
+        def _reset_click(self, button):
+            """
+            Resets click status for a button
+            """
+            self.__click_start[button - 1] = False
+
         def __setup(self):
             """
             setup functions
@@ -2194,6 +2236,10 @@ init -1 python:
                 self.__bb_x_max = max(self.__bb_x_max, x)
                 self.__bb_y_min = min(self.__bb_y_min, y)
                 self.__bb_y_max = max(self.__bb_y_max, y)
+
+            # finally, set the internal width and height for rendering
+            self.__width = self.__bb_x_max - self.__bb_x_min
+            self.__height = self.__bb_y_max - self.__bb_y_min
 
         def __setupEdges(self):
             """
