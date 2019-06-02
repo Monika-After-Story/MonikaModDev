@@ -1413,7 +1413,7 @@ label mas_d25_monika_holiday_intro_upset:
         $ mas_addDelayedAction(8)
         return
 
-    m 2rksdlc "So [player]... {w=1}I hadn't really been feeling very festive this year..."
+    m 2rksdlc "So [player]...{w=1} I hadn't really been feeling very festive this year..."
     m 3eka "But lately, you've been really sweet to me and I've been feeling a lot better!"
     m 3hua "So...I think it's time to spruce this place up a bit."
 
@@ -2155,7 +2155,7 @@ init 5 python:
 
 label mas_d25_monika_christmas_eve:
     m 3hua "[player]!"
-    m 3hub "Can you believe it...? {w=1}It'll be Christmas soon!"
+    m 3hub "Can you believe it...?{w=1} It'll be Christmas soon!"
     m 1rksdla "I've always had such a hard time sleeping on Christmas Eve..."
     m 1eka "I would be so anxious to see what I'd find under the tree the next morning..."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
@@ -2228,7 +2228,7 @@ label mas_d25_postd25_notimespent:
         m "I can't believe you didn't even bother to visit me on Christmas!"
         m 2tfc "Actually...{w=1}yes, I can."
         m "This is exactly why I didn't even bother to decorate..."
-        m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed... {w=1}Again."
+        m 2rfc "I knew if I tried to get into the holiday spirit that I'd just end up disappointed...{w=1} Again."
 
     elif mas_isMoniDis(higher=True):
         $ mas_loseAffection(10, reason=6)
@@ -2849,7 +2849,7 @@ label monika_resolutions:
                             m 3hub "I believe in you, [player]!"
 
                     else:
-                        m 2euc "Oh... {w=1}Well maybe you should try a little harder for next year's resolution."
+                        m 2euc "Oh...{w=1} Well maybe you should try a little harder for next year's resolution."
 
         "No.":
             m 2euc "Oh, I see..."
@@ -3470,7 +3470,7 @@ label mas_player_bday_surprise:
                     m 2tsb "{cps=*2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                     $ _history_list.pop()
             m 2hua "Ehehe."
-    m 3wub "Oh! {w=0.5}I made you a cake!"
+    m 3wub "Oh!{w=0.5} I made you a cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3478,8 +3478,8 @@ label mas_player_bday_surprise:
 label mas_player_bday_listen:
     m "...I'll just put this here..."
     m "...hmm that looks pretty good...{w=1}but something's missing..."
-    m "Oh! {w=0.5}Of course!"
-    m "There! {w=0.5}Perfect!"
+    m "Oh!{w=0.5} Of course!"
+    m "There!{w=0.5} Perfect!"
     window hide
     jump monikaroom_greeting_choice
 
@@ -3549,7 +3549,7 @@ label mas_player_bday_cake:
     pause 1.0
     m 6hua "Ehehe..."
     m 6eka "I know it's your birthday, but I made a wish too..."
-    m 6ekbsa "And you know what? {w=0.5}I bet we both wished for the same thing~"
+    m 6ekbsa "And you know what?{w=0.5} I bet we both wished for the same thing~"
     m 6hkbsu "..."
     m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
     m 6eksdla "This is all rather silly, isn't it?"
@@ -3715,7 +3715,7 @@ label mas_player_bday_other_holiday:
 
 # moni singing happy birthday
 label mas_player_bday_moni_sings:
-    m 6dsc ". {w=0.2}. {w=0.2}.{w=0.2}"
+    m 6dsc ".{w=0.2} .{w=0.2} .{w=0.2}"
     m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
@@ -3738,7 +3738,7 @@ init 5 python:
 label bye_player_bday:
     $  persistent._mas_player_bday_date += 1
     if persistent._mas_player_bday_date == 1:
-        m 1sua "You want to go out for your birthday? {w=1}Okay!"
+        m 1sua "You want to go out for your birthday?{w=1} Okay!"
         m 1skbla "That sounds really romantic...I can't wait~"
     elif persistent._mas_player_bday_date == 2:
         m 1sua "Taking me out again on your birthday, [player]?"

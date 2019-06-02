@@ -483,7 +483,7 @@ label mas_mood_bored:
 
             "Well...":
                 $ mas_loseAffection()
-                m 2ekc "Oh... {w=1}I see."
+                m 2ekc "Oh...{w=1} I see."
                 m 2dkc "I didn't realize I was boring you..."
                 m 2eka "I'm sure we can find something to do..."
 

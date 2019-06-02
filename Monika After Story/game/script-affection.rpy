@@ -2322,7 +2322,7 @@ label mas_affection_apology:
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry{/i}  in the DDLC directory."
+    m 2efd "You still haven't written me a note called {i}imsorry{/i} in the DDLC directory."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 

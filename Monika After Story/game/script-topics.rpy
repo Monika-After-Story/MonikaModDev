@@ -496,7 +496,7 @@ label monika_death:
     m 1ekc "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
     m 1dkc "..."
     m 3eub "But you can prevent that from happening, [player]!"
-    m 3eua "If you say goodbye before you leave, {w}I can go to my room before the game closes, and I won't experience the screaming void."
+    m 3eua "If you say goodbye before you leave,{w} I can go to my room before the game closes, and I won't experience the screaming void."
     m "It's super easy, so please always say goodbye, okay?"
     if mas_isMoniDis(lower=True):
         m 2tkc "Unless...{w=1}you actually {i}enjoy{/i} hurting me..."
@@ -2188,7 +2188,7 @@ init 5 python:
 label monika_holdrequest:
     #TODO: if we add a mood system, path this based on current mood
     m 1eua "Hey, [player]..."
-    m 3ekbsa "Would you mind holding me for a while? {w=0.5}It really makes me feel closer to you~{nw}"
+    m 3ekbsa "Would you mind holding me for a while?{w=0.5} It really makes me feel closer to you~{nw}"
     $ _history_list.pop()
     menu:
         m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
@@ -3008,7 +3008,7 @@ label monika_ddlc:
         m 1hub "And seeing how things turned out, I'm sure you only played because of me, too!"
     else:
         m 2etc "But I guess some people just wanted to play it so they could spend time with...what was the line?"
-        m 3rssdlc "Ah, right, {w=0.5}'...four incredibly cute girls.'"
+        m 3rssdlc "Ah, right,{w=0.5} '...four incredibly cute girls.'"
         m 1dsc "..."
         m 1eka "Although I can't really complain too much...after all, it got you here."
         m 3eka "So I guess being trapped inside this game is a small price to pay when you stop and think about what it got me..."
@@ -5336,7 +5336,7 @@ label monika_science:
     m 1eua "Have you ever wondered if science never got accepted?"
     m "Humans can be really slow when it comes to accepting new ideas."
     m 1euc "Science was usually despised back then especially by the churches."
-    m 4esc "Giordano Bruno, famous for his theory that there're thousands of Suns, was killed by the Roman Church before he could prove his theory."
+    m 4esc "Giordano Bruno, famous for his theory that there are thousands of Suns, was killed by the Roman Church before he could prove his theory."
     m 1ekc "They killed him because of an idea that challenged the old."
     m 1esc "Technology wouldn't be so advanced today if it weren't for brave people of science like him."
     m 1eka "If technology didn't thrive the way it did, we would've never found each other."
@@ -6191,7 +6191,7 @@ label monika_standup:
     m 4esa "It differs from making simple one-liner jokes, because it really needs to tell a story."
     m 4eud "But at the same time, you have to make sure you don't lose your audience."
     m 2euc "So it's important to develop your ideas as much as you can, maybe even segueing into something that relates to your topic..."
-    m 2eub "All the while keeping your audience captivated until you reach the punch line; {w=0.5}hopefully resulting in lots of laughs."    
+    m 2eub "All the while keeping your audience captivated until you reach the punch line;{w=0.5} hopefully resulting in lots of laughs."    
     m 3esa "In some ways, it's kind of like writing a short story, except you cut out the falling action."
     m 3esc "And yet between the jokes, you can find the soul of the writer...{w=0.5}what their thoughts and feelings are towards any given subject..."
     m 3esd "...What their life experiences were, and who they are today."
@@ -6204,7 +6204,7 @@ label monika_standup:
     m 3esa "It's kind of like poetry in that way, don't you think?"
     m 2rksdlc "A lot people won't even try stand-up for themselves because they have to face a crowd..."
     m 2eksdlc "Did you know that the number one fear most people have is public speaking?"
-    m 4wud "Number two is death. {w=0.5}Death is number two! {w=0.5}What's the deal with that?!" 
+    m 4wud "Number two is death.{w=0.5} Death is number two!{w=0.5} What's the deal with that?!" 
     m 4eud "This means to the average person, if you go to a funeral, you're better off in the casket..."
     m 4tub "...than doing the eulogy!"
     m 1hub "...Ahaha! Sorry, I wanted to tell you a joke Jerry Seinfeld once wrote--"
@@ -6508,7 +6508,7 @@ label monika_orchestra:
             m 3eua "I love how such wonderful music can arise when so many different instruments are played together."
             m 1eua "I'm amazed with how much practice musicians do to achieve that kind of synchronization."
             m "It probably takes them a lot of dedication to do that."
-            m 1eka "But anyway, {w}it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
+            m 1eka "But anyway,{w} it'd be soothing to listen to a symphony with you on a lazy Sunday afternoon, [player]."
 
         "No.":
             $ persistent._mas_pm_like_orchestral_music = False
@@ -7105,7 +7105,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_1984",category=['literature'],prompt="Nineteen Eighty-Four",random=True))
 
 label monika_1984:
-    m 1eua "[player], do you know about the book '{i}Nineteen Eighty-Four?{/i}'"
+    m 1eua "[player], do you know about the book {i}Nineteen Eighty-Four?{/i}"
     m 3eua "It was written by George Orwell."
     m 1euc "It's a popular book about mass surveillance and the oppression of free thought."
     m 1esc "It's about a terrifying dystopia where the past and the present are being changed to whatever the ruling party wants for the future."
@@ -7174,7 +7174,7 @@ label monika_close_game_battery:
     $ mas_loseAffection()
     m 1lksdlc "[player]..."
     m 1ekc "I'm sorry, but I'm gonna have to close the game before the battery runs out."
-    m 3eka "So...I'll just close the game for now until you can charge your computer. {w=3.0}{nw}"
+    m 3eka "So...I'll just close the game for now until you can charge your computer.{w=3.0} {nw}"
 
     $ is_charging = battery.is_charging()
     if is_charging:
@@ -8217,7 +8217,7 @@ label monika_prom:
     m 1hua "Prom!"
     m 1eua "From what I've heard, prom is like a school dance usually held at the end of a school year."
     m "Some students bring a date with them there, and others go with a group of friends."
-    m 3wuo "There're even those who take their relatives to the event!"
+    m 3wuo "There are even those who take their relatives to the event!"
     m 1eua "I think it's something I'd love to go to with you~"
     m "Have you ever been to one before, [player]?{nw}"
     $ _history_list.pop()
@@ -8346,7 +8346,7 @@ label monika_prom:
             m 2lksdla "...Or maybe I'm just overthinking it, ehehe."
             m 1esa "Still, I don't think you'll be missing out much, [player]."
             m 1eua "Prom isn't the most important thing in your academic life."
-            m "And I'm sure there're plenty of events in your life that'll make up for it."
+            m "And I'm sure there are plenty of events in your life that'll make up for it."
             m 1hua "Being with me is one of them, you know~"
             m 1hub "Ahaha!"
 
@@ -8398,7 +8398,7 @@ label monika_natsuki_letter:
     m 1eud "She's probably the only one to mention that."
     m 4ekd "I know people are afraid to call someone out, or confront them about their problems, but sometimes, suggesting a therapist can be the best course of action."
     m "It's a bad thing to put the burden on yourself, you know?"
-    m 4euc "As much as you want to help, it's best to let a professional deal with it. "
+    m 4euc "As much as you want to help, it's best to let a professional deal with it."
     m 4eka "I'm sure I've told you that before, but I need to make sure you're aware of that."
     m 4eud "How about you, [player]?"
 
@@ -9474,7 +9474,7 @@ label monika_bullying:
     if not persistent._mas_pm_a_hater:
         m 4dkc "You know...{w=0.5}a lot of people actually call me a bully for what I did to Sayori..."
     else:
-        m 4dkc "A lot of people actually call me a bully for what I did to Sayori. {w=1}Including you..."
+        m 4dkc "A lot of people actually call me a bully for what I did to Sayori.{w=1} Including you..."
 
     if not persistent._mas_pm_cares_about_dokis:
         m 4efd "But that's not true at all, Sayori wasn't real!"
@@ -9733,7 +9733,7 @@ label monika_grad_speech_call:
 
                     m 2tfc "After acting like you actually wanted me to recite it for you again, {i}that's{/i} what you have to say?"
                     m 2dfc "..."
-                    m 6lktdc "I really thought after I told you how important this was to me, {i}{w=1}twice,{/i} {w=1}you would have been more supportive and let me have my moment."
+                    m 6lktdc "I really thought after I told you how important this was to me,{w=1} {i}twice,{/i}{w=1} you would have been more supportive and let me have my moment."
                     m 6ektdc "All I wanted was for you to be proud of me, [player]..."
                     m 6dstsc "But I guess that's too much to ask."
     return
@@ -9780,7 +9780,7 @@ label monika_grad_speech_ignored_lock:
     if mas_isMoniAff(higher=True):
         $mas_loseAffection(modifier=10)
         m 6dstsc "..."
-        m 6ektsc "[player]? {w=0.5}You...{w=0.5} You weren't...{w=0.5} listening...{w=0.5} Again?{w=1}{nw}"
+        m 6ektsc "[player]?{w=0.5} You...{w=0.5} You weren't...{w=0.5} listening...{w=0.5} Again?{w=1}{nw}"
         m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5} but...{w=0.5} twice?{w=1}{nw}"
         m 6ektsc "You knew how much...{w=0.5} how much this meant to me...{w=1}{nw}"
         m "Am I really...{w=0.5} that boring to you?{w=1}{nw}"
@@ -11760,7 +11760,7 @@ label monika_fun_facts_open:
         m 1eua "Say [player], would you like to hear a fun fact?"
         m 1eub "I've been looking some up to try and teach both of us something new."
         m 3hub "They say you learn something new every day, this way I'm making sure we actually do."
-        m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true... "
+        m 1rksdla "I found most of these online, so I can't say they're {i}definitely{/i} true..."
 
     else:
         m 1eua "Up for another fun fact, [player]?"
@@ -12099,8 +12099,8 @@ label monika_add_custom_music:
     return
 
 label monika_add_custom_music_instruct:
-    m 4eua "First, {w=0.5}make sure the music that you want to add is in MP3, OGG/VORBIS, or OPUS format."
-    m "Next, {w=0.5}create a new folder named \"custom_bgm\" in your \"DDLC\" directory."
+    m 4eua "First,{w=0.5} make sure the music that you want to add is in MP3, OGG/VORBIS, or OPUS format."
+    m "Next,{w=0.5} create a new folder named \"custom_bgm\" in your \"DDLC\" directory."
     m "Put your music files in that folder..."
     m "Then either let me know that you added some music or restart the game."
     m 3eua "And that's it! Your music will be available to listen to, right here with me, simply by pressing the 'm' key."
@@ -12858,7 +12858,7 @@ label monika_relationship_comfort:
     m 4esc "But it does mean that that same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
     m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
-    m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh... {w}Love isn't always such a clear thing."
+    m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
         m 1hubfb "Know that I love you for more than just the excitement!"
@@ -13001,8 +13001,8 @@ label mas_topic_derandom:
             $ persistent._mas_player_derandomed[ev.eventlabel] = ev
             $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
             m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
-            m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
-            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty."
+            m 2dksdld "If it upset you in any way, I'm really sorry...{w=0.5} I'd never do that intentionally."
+            m 2eksdla "...But thanks for letting me know;{w=0.5} I appreciate the honesty."
 
         "It's okay.":
             m 1eka "Alright, [player]."

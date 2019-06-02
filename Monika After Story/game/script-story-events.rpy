@@ -2414,7 +2414,7 @@ init 5 python:
 
 label mas_bookmarks_notifs_intro:
     if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
-        m 3eub "Hey, [player]... {w=0.5}I have some new features to tell you about!"
+        m 3eub "Hey, [player]...{w=0.5} I have some new features to tell you about!"
 
         if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
             m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."

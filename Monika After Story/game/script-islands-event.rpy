@@ -327,7 +327,7 @@ label mas_island_bookshelf:
 
 label mas_island_bookshelf1:
     m "Some of my favorite books are in there."
-    m "{i}Fahrenheit 451,{/i} {i}Hard-Boiled Wonderland,{/i} {i}Nineteen Eighty-Four{/i} and a few others."
+    m "{i}Fahrenheit 451,{/i} {i}Hard-Boiled Wonderland,{/i} {i}Nineteen Eighty-Four,{/i} and a few others."
     m "Maybe we can read them together sometime~"
     return
 
