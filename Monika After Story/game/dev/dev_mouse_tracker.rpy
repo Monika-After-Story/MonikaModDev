@@ -120,6 +120,7 @@ label dev_mouse_tracker:
     else:
         m "I enable mouse tracker now."
         $ mas_enableMouseTracking()
+    return
 
 
 screen dev_mouseoverlay():
@@ -189,6 +190,102 @@ label dev_hold_still_monika:
     $ pose_to_make = str(sel_pose) + "eua"
     $ renpy.show("monika " + pose_to_make)
     m "HOLDING! (Click once to dismiss menu, once more to stop holding)"
-    $ nothing = ui.add(PauseDisplayable())
+    $ ui.add(PauseDisplayable())
+    $ ui.interact()
+
     m 1eua "Done holding!"
+    return
+
+init python:
+    class MASClickZoneTester(renpy.Displayable):
+        def __init__(self):
+            super(renpy.Displayable, self).__init__()
+            self.boob_click = MASClickZone([
+                (513, 458),
+                (492, 504),
+                (489, 531),
+                (498, 560),
+                (531, 587),
+                (653, 585),
+                (762, 591),
+                (790, 577),
+                (809, 548),
+                (813, 515),
+                (791, 458),
+            ])
+            self.boob_click._debug_back = True
+            self.boob_click._button_down = pygame.MOUSEBUTTONDOWN
+
+            self.nose_click = MASClickZone([
+                (630, 239),
+                (624, 250),
+                (629, 258),
+                (632, 250),
+            ])
+            self.nose_click._debug_back = True
+            self.nose_click._button_down = pygame.MOUSEBUTTONDOWN
+
+            self.head_click = MASClickZone([
+                (562, 0),
+                (521, 52),
+                (507, 142),
+                (632, 125),
+                (730, 142),
+                (777, 173),
+                (796, 105),
+                (783, 41),
+                (742, 0),
+            ])
+            self.head_click._debug_back = True
+            self.head_click._button_down = pygame.MOUSEBUTTONDOWN
+
+        def render(self, width, height, st, at):
+            r = renpy.Render(width, height)
+            boob_zone = renpy.render(self.boob_click, width, height, st, at)
+            nose_zone = renpy.render(self.nose_click, width, height, st, at)
+            head_zone = renpy.render(self.head_click, width, height, st, at)
+            r.blit(boob_zone, (0, 0))
+            r.blit(nose_zone, (0, 0))
+            r.blit(head_zone, (0, 0))
+            return r
+
+        def event(self, ev, x, y, st):
+            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_q:
+                # quit when user hits q
+                return True
+
+            boob_click = self.boob_click.event(ev, x, y, st)
+            nose_click = self.nose_click.event(ev, x, y, st)
+            head_click = self.head_click.event(ev, x, y, st)
+            if (
+                    boob_click is not None
+                    or nose_click is not None
+                    or head_click is not None
+            ):
+                renpy.play(gui.activate_sound, channel="sound")
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="dev_clickzone_tests",
+            category=["dev"],
+            prompt="CLICKZONE TEST",
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label dev_clickzone_tests:
+    
+    m 1eua "I am reset zoom"
+    $ store.mas_sprites.reset_zoom()
+    m 6eua "ok, remember q is quit"
+    window hide
+    $ ui.add(MASClickZoneTester())
+    $ ui.interact()
+    window auto
+    m 1eua "I am done"
     return

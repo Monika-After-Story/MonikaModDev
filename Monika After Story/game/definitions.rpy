@@ -1728,7 +1728,7 @@ python early:
             return None
 
 
-init -1 python:
+# init -1 python:
 
     class MASLinearForm(object):
         """
@@ -1895,13 +1895,13 @@ init -1 python:
             """
             Gets x without any checks (this can crash)
             """
-            return (y - self.yint) / _slope(x)
+            return (y - self.yint) / self._slope()
 
         def _gety(self, x):
             """
             Gets y with out any checks (this can crash)
             """
-            return _slope(x) + self.yint
+            return self._slope(x) + self.yint
 
         def _slope(self, x=1):
             """
@@ -1985,16 +1985,17 @@ init -1 python:
             # otherwise, we are for sure within the bounding box. 
 
             # vertical lines means we only have to check x
-            if self.vertical:
+            if self._vertical:
                 # in this case, we treat on the line as passing
                 return x <= self.__bb_x_min
 
             # now just run the inverse of the linear formula, and if 
             # our x is less than that, then the point is for sure before the
             # edge
+            x, y = self._normalize((x, y))
             return x <= self.__line._getx(y)
 
-        def _inBoundingBoxX(self, x);
+        def _inBoundingBoxX(self, x):
             """
             Checks if the given point is within the vertical parts of the
             bounding box (within x range)
@@ -2027,7 +2028,7 @@ init -1 python:
             self.__setupPoints(p1, p2)
             self.__setupBoundingBox()
             self.__setupNormalizedPoints()
-            self.__setupLinearFunction(self)
+            self.__setupLinearFunction()
 
         def __setupBoundingBox(self):
             """
@@ -2067,12 +2068,10 @@ init -1 python:
             # determine of vertical line
             if p1x == p2x:
                 self._vertical = True
-                return
 
             # determine if horizontal line
-            if p1y == p2y:
+            elif p1y == p2y:
                 self._horizontal = True
-                return
 
             # determine left and righ tpoint
             self._left_point, self._right_point = MASLinearForm.sortPoints(
@@ -2117,8 +2116,10 @@ init -1 python:
                 corners - list of verticies (x, y)
                     ASSUMES THAT THIS IS SORTED IN ORDER
             """
-            if len(self.corners) <= 0:
+            if len(corners) <= 0:
                 raise Exception("Clickzone cannot be built with empty corners")
+
+            super(renpy.Displayable, self).__init__()
 
             self.corners = corners
             self.disabled = False
@@ -2132,7 +2133,9 @@ init -1 python:
             """
             Render functions
             """
-            r = renpy.Render(self.__width, self.__height)
+            # NOTE: we are using the given width and height because of teh
+            #   debug canvas mode
+            r = renpy.Render(width, height)
 
             # only show a box if debug mode is on
             if self._debug_back:
@@ -2253,9 +2256,9 @@ init -1 python:
 
             # and the final edge
             self.__edges.append(MASEdge(
-                self.corners[0]
+                self.corners[0],
                 self.corners[-1]
-            )
+            ))
 
 
 # init -1 python:
