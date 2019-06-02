@@ -1735,15 +1735,10 @@ init -1 python:
         """
         Special mousezone that can react depending if being clicked
         with mouse. Meant for custom displayable use.
-        Also can only generate zones with 4 sides. Simplicity is important.
 
         PROPERTIES:
-            id - unique ID to assign to this mousezone. ID is always returned
-                with return values.
-            tl - top left corner vertex. must be tuple of (x, y)
-            tr - top right corner vertex. must be tuple of (x, y)
-            bl - bottom left corner vertex. must be tuple of (x, y)
-            br - bottom right corner vertex. must be tuple of (x, y)
+            corners - list of verticies. each element should be a tuple like
+                (x, y)
             disabled - True means to disable this mouse zone, False not
             _button_down - pygame button even to act as a click
                 MOUSEBUTTONUP (Default)
@@ -1753,7 +1748,48 @@ init -1 python:
         MIDDLE_CLICK = 1
         RIGHT_CLICK = 2
 
-        # TODO: stuff
+        def __init__(self, corners):
+            """
+            Constructor for the Clickzone displayable
+
+            IN:
+                corners - list of verticies (x, y)
+            """
+            if len(self.corners) <= 0:
+                raise Exception("Clickzone cannot be built with empty corners")
+
+            self.corners = corners
+            self.disabled = False
+            self._button_down = pygame.MOUSEBUTTONUP
+            self._debug_back = False
+
+            # bounding box 
+            self._genBoundingBox()
+
+        def _genBoundingBox(self):
+            """
+            Generates the bounding box for this click zone
+            """
+            # set intiial vlaues
+            self.__bb_x_min = self.corners[0][0]
+            self.__bb_x_max = self.corners[0][0]
+            self.__bb_y_min = self.corners[0][1]
+            self.__bb_y_max = self.corners[0][1]
+
+            # create box
+            for index in range(1, len(self.corners)):
+                x, y = self.corners[index]
+                self.__bb_x_min = min(self.__bb_x_min, x)
+                self.__bb_x_max = max(self.__bb_x_max, x)
+                self.__bb_y_min = min(self.__bb_y_min, y)
+                self.__bb_y_max = max(self.__bb_y_max, y)
+
+        def _isOverMe(self, x, y):
+            """
+            """
+            pass
+
+
 
 
 # init -1 python:
