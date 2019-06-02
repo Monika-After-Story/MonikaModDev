@@ -17,10 +17,10 @@
         "thumb": "lanvallime_ribbon_lilac",
         "group": "ribbon",
         "hover_dlg": [
-            "FLOWER"
+            "Such a beautiful color!"
         ],
         "select_dlg": [
-            "FLOWER FLOWER"
+            "Feels just like spring!"
         ]
     },
     "giftname": "lilacribbon"

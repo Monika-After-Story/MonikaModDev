@@ -17,10 +17,10 @@
         "thumb": "lanvallime_ribbon_gold",
         "group": "ribbon",
         "hover_dlg": [
-            "$$$"
+            "Like a ray of sunshine!"
         ],
         "select_dlg": [
-            "SHINY"
+            "Perfect for summer!"
         ]
     },
     "giftname": "goldribbon"

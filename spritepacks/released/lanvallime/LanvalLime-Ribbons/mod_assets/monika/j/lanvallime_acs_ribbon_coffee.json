@@ -17,10 +17,10 @@
         "thumb": "lanvallime_ribbon_coffee",
         "group": "ribbon",
         "hover_dlg": [
-            "CAWFEE"
+            "There's something about this color I really like..."
         ],
         "select_dlg": [
-            "GWEEN TEA"
+            "Just like my coffee~"
         ]
     },
     "giftname": "coffeeribbon"
