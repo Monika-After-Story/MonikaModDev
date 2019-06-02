@@ -1730,6 +1730,370 @@ python early:
 
 init -1 python:
 
+    class MASLinearForm(object):
+        """
+        Representation of a linear functions
+        """
+        THRESH = 0.001
+
+        def __init__(self, xdiff, ydiff, yint):
+            """
+            Constructor for a Linear Formula.
+
+            IN:
+                xdiff - difference in x coords (used in M)
+                ydiff - difference in y coords (used in M)
+                yint - y intercept 
+            """
+            self.xdiff = xdiff
+            self.ydiff = ydiff
+
+            # NOTE: this xdiff is actullay used in calculations
+            self._fxdiff = float(xdiff)
+
+            # double check yintercept calcuations
+            if xdiff == 0:
+                self.yint = None
+            elif ydiff == 0:
+                self.yint = 0
+            else:
+                self.yint = yint
+
+        def getx(self, y):
+            """
+            Calculates the X value given a y
+
+            IN:
+                y - y value to input
+
+            RETURNS: x value, or None if not possible
+            """
+            if self.yint is None:
+                return x
+            if self.ydiff == 0:
+                return None
+
+            return self._getx(y)
+
+        def gety(self, x):
+            """
+            Calculates the Y value given an x
+
+            IN:
+                x - x value to input
+
+            RETURNS: y value, or None if not possible
+            """
+            if self.yint is None:
+                return None
+
+            return self._gety(x)
+
+        @staticmethod
+        def diffPoints(p1, p2):
+            """
+            Generats x/y diffs for 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - xdiff
+                [1] - ydiff
+            """
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            return rp[0] - lp[0], rp[1] - lp[1]
+
+        @staticmethod
+        def fromPoints(p1, p2):
+            """
+            Generates a MASLinearform object using points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: MASLinearForm object
+            """
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            yint = MASLinearForm.yintPoints(p1, p2)
+            return MASLinearForm(xdiff, ydiff, yint)
+
+        @staticmethod
+        def fromSlope(slope, yint):
+            """
+            Generates a MASLinearForm object using slope
+
+            IN:
+                slope - the slope of the line 
+                yint - the yintercept of the line
+
+            RETURNS: MASLinearForm object
+            """
+            return MASLinearForm(1, m, yint)
+
+        @staticmethod
+        def sortPoints(p1, p2):
+            """
+            Returns the two points as an ordered tuple
+
+            IN:
+                p1 - (x, y) point 
+                p2 - (x, y) point
+
+            RETURNS: tuple of the following format:
+                [0] - left most point 
+                [1] - right most point
+            """
+            if p1[0] < p2[0]:
+                return p1, p2
+
+            return p2, p1
+
+        @staticmethod
+        def yintPoints(p1, p2):
+            """
+            Returns yintercept from 2 points
+
+            IN:
+                p1 - (x, y) point
+                p2 - (x, y) point
+
+            RETURNS: yintercept, or None if no yintercept
+            """
+            # initial diff checks
+            xdiff, ydiff = MASLinearForm.diffPoints(p1, p2)
+            if xdiff == 0:
+                return None
+            elif ydiff == 0:
+                return 0
+
+            # otherwise, we need to check the points
+            lp, rp = MASLinearForm.sortPoints(p1, p2)
+            lx, ly = lp
+
+            # if the left point is already on y axis, this is easy
+            if lx == 0:
+                return lp[1]
+
+            # otherwise, we need to do math
+            pot_yint = ly - ( (ydiff * lx) / float(xdiff) )
+
+            # threshold check is so we dont have too many floats in simple
+            # cases
+            # NOTE: so here we are checking that the difference bewteen the
+            #   float value and its integercomponent is less than the
+            #   threshold (a small value), then we assume it is int instead
+            #   float.
+            if abs(int(pot_yint) - pot_yint) < MASLinearForm.THRESH:
+                pot_yint = int(pot_yint)
+
+            return pot_yint
+
+        def _getx(self, y):
+            """
+            Gets x without any checks (this can crash)
+            """
+            return (y - self.yint) / _slope(x)
+
+        def _gety(self, x):
+            """
+            Gets y with out any checks (this can crash)
+            """
+            return _slope(x) + self.yint
+
+        def _slope(self, x=1):
+            """
+            Returns the slope of this line
+            Pass in X to calculate mx instead of just m
+            """
+            return  (self.ydiff * x) / self._fxdiff
+
+
+    class MASEdge(object):
+        """
+        Representation of an edge (line with 2 points)
+        Has functions related to determining if a point will intersect with 
+        this edge (aka for point in polygon calculations)
+        """
+
+        def __init__(self, p1, p2):
+            """
+            Constructor for an edge
+            NOTE: the edges do NOT have to be the correct order. This is
+                determined internally.
+
+            IN:
+                p1 - start point of edge (x, y)
+                p2 - end point of edge (x, y)
+            """
+            self._horizontal = False
+            self._vertical = False
+            self._left_point = None
+            self._right_point = None
+            self.__bb_x_min = None
+            self.__bb_x_max = None
+            self.__bb_y_min = None
+            self.__bb_y_max = None
+            self.__norm_lp = (0, 0)
+            self.__norm_rp = None
+            self.__line = None
+
+            self.__setup(p1, p2)
+
+        def inBoundingBox(self, x, y):
+            """
+            Checks if the given x,y is in teh bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinate to check
+
+            RETURNS: True if in bounding box, False if not
+            """
+            return self._inBoundingBoxX(x) and self._inBoundingBoxY(y)
+
+        def horizontalIntersect(self, x, y):
+            """
+            Checks if a horizontal ray going right with the given point as
+            the origin of the ray will intersect this Edge
+
+            IN:
+                x - x coordinate to check
+                y - y coodinate to check
+
+            RETURNS: True if it intersects, False if not
+            """
+            # horizontal lines will always be considered not hitting
+            if self._horizontal:
+                return False
+
+            # then check if within the horizontal range of the edge
+            if not self._inBoundingBoxY(y):
+                return False
+
+            # right of the bounding box is for sure a miss
+            if self.__bb_x_max < x:
+                return False
+
+            # left of the bounding box is for sure a hit
+            # NOTE: this also handles vertical lines
+            if x < self.__bb_x_min:
+                return True
+
+            # otherwise, we are for sure within the bounding box. 
+
+            # vertical lines means we only have to check x
+            if self.vertical:
+                # in this case, we treat on the line as passing
+                return x <= self.__bb_x_min
+
+            # now just run the inverse of the linear formula, and if 
+            # our x is less than that, then the point is for sure before the
+            # edge
+            return x <= self.__line._getx(y)
+
+        def _inBoundingBoxX(self, x);
+            """
+            Checks if the given point is within the vertical parts of the
+            bounding box (within x range)
+
+            IN:
+                x - x coordinate to check
+
+            RETURNS: True if the given x is within bounding box range, False
+                if not
+            """
+            return self.__bb_x_min <= x <= self.__bb_x_max
+
+        def _inBoundingBoxY(self, y):
+            """
+            Checks if the given y coord is within the horizontal parts of the
+            bounding box (within y range)
+
+            IN:
+                y - y coordinate to check
+
+            RETURNS: True if the given y is within bounding box range, False if
+                not
+            """
+            return self.__bb_y_min <= y <= self.__bb_y_max
+
+        def __setup(self, p1, p2):
+            """
+            Sets up this MASEdge using given points
+            """
+            self.__setupPoints(p1, p2)
+            self.__setupBoundingBox()
+            self.__setupNormalizedPoints()
+            self.__setupLinearFunction(self)
+
+        def __setupBoundingBox(self):
+            """
+            Sets up bounding box
+            """
+            self.__bb_x_min = self._left_point[0]
+            self.__bb_x_max = self._right_point[0]
+            self.__bb_y_min = min(self._left_point[1], self._right_point[1])
+            self.__bb_y_max = max(self._left_point[1], self._right_point[1])
+
+        def __setupLinearFunction(self):
+            """
+            Sets up the MASLinearForm functions for this Edge
+            """
+            self.__line = MASLinearForm.fromPoints(
+                self.__norm_lp,
+                self.__norm_rp
+            )
+
+        def __setupNormalizedPoints(self):
+            """
+            Sets up the appropraite normlization points
+            """
+            self.__norm_rp = MASLinearForm.diffPoints(
+                self._left_point,
+                self._right_point
+            )
+
+        def __setupPoints(self, p1, p2):
+            """
+            Sets up the appropriate vars for point handling
+            """
+            # split points
+            p1x, p1y = p1
+            p2x, p2y = p2
+
+            # determine of vertical line
+            if p1x == p2x:
+                self._vertical = True
+                return
+
+            # determine if horizontal line
+            if p1y == p2y:
+                self._horizontal = True
+                return
+
+            # determine left and righ tpoint
+            self._left_point, self._right_point = MASLinearForm.sortPoints(
+                p1,
+                p2
+            )
+
+        def _normalize(self, point):
+            """
+            Normalizes a point so its normalized to this edge
+
+            IN:
+                point - (x, y) point to normalize
+
+            RETURNS: normalized point (x, y)
+            """
+            return (
+                point[0] - self._left_point[0],
+                point[1] - self._left_point[1]
+            )
+
 
     class MASClickZone(renpy.Displayable):
         """
@@ -1754,6 +2118,7 @@ init -1 python:
 
             IN:
                 corners - list of verticies (x, y)
+                    ASSUMES THAT THIS IS SORTED IN ORDER
             """
             if len(self.corners) <= 0:
                 raise Exception("Clickzone cannot be built with empty corners")
@@ -1762,11 +2127,57 @@ init -1 python:
             self.disabled = False
             self._button_down = pygame.MOUSEBUTTONUP
             self._debug_back = False
+            self.__edges = []
 
-            # bounding box 
-            self._genBoundingBox()
+            self.__setup()
 
-        def _genBoundingBox(self):
+        def _inBoundingBox(self, x, y):
+            """
+            Checks if the given coordinates are within the bounding box
+
+            IN:
+                x - x coordinate to check
+                y - y coordinat eto check
+
+            RETURNS: True if these coords are within the bounding box, False
+                if not
+            """
+            return (
+                self.__bb_x_min <= x <= self.__bb_x_max
+                and self.__bb_y_min <= y <= self.__bb_y_max
+            )
+
+        def _isOverMe(self, x, y):
+            """
+            Determines if the given coordinates are inside this click zone
+
+            IN:
+                x - x coordinage to check
+                y - y coordinate to check
+
+            RETURNS: True if these coordinates are in this clickzone, False
+                if not
+            """
+            # bounding box covers most cases
+            if not self._inBoundingBox(x, y):
+                return False
+
+            # otherwise, determine if in polygon
+            intersections = 0
+            for edge in self.__edges:
+                intersections += int(edge.horizontalIntersect(x, y))
+
+            # odd number of intersctions mean inside
+            return (intersections % 2) == 1
+
+        def __setup(self):
+            """
+            setup functions
+            """
+            self.__setupBoundingBox()
+            self.__setupEdges()
+
+        def __setupBoundingBox(self):
             """
             Generates the bounding box for this click zone
             """
@@ -1784,12 +2195,21 @@ init -1 python:
                 self.__bb_y_min = min(self.__bb_y_min, y)
                 self.__bb_y_max = max(self.__bb_y_max, y)
 
-        def _isOverMe(self, x, y):
+        def __setupEdges(self):
             """
+            Sets up the edges for this click zone
             """
-            pass
+            # only generate the edges up to the final edge
+            for index in range(len(self.corners)-1):
+                self.__edges.append(
+                    MASEdge(self.corners[index], self.corners[index+1])
+                )
 
-
+            # and the final edge
+            self.__edges.append(MASEdge(
+                self.corners[0]
+                self.corners[-1]
+            )
 
 
 # init -1 python:
