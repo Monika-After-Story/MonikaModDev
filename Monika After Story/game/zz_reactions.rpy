@@ -1561,111 +1561,111 @@ label mas_reaction_yellowribbon:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_coffee", "coffeeribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_coffee", "coffeeribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_coffee:
+label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     $ ribbon_name = "lanvallime_ribbon_coffee"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "coffee colored"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_coffee")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_coffee")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_gold", "goldribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_gold", "goldribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_gold:
+label mas_reaction_gift_acs_lanvallime_ribbon_gold:
     $ ribbon_name = "lanvallime_ribbon_gold"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "gold"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_gold")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_gold")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_hot_pink", "hotpinkribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink", "hotpinkribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_hot_pink:
+label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
     $ ribbon_name = "lanvallime_ribbon_hot_pink"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "hot pink"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_hot_pink")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_lilac", "lilacribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lilac", "lilacribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_lilac:
+label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
     $ ribbon_name = "lanvallime_ribbon_lilac"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "lilac"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_lilac")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lilac")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_lime_green", "limegreenribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lime_green", "limegreenribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_lime_green:
+label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
     $ ribbon_name = "lanvallime_ribbon_lime_green"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "lime green"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_lime_green")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lime_green")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_navy_blue", "navyblueribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue", "navyblueribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_navy_blue:
+label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
     $ ribbon_name = "lanvallime_ribbon_navy_blue"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "navy"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_navy_blue")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_orange", "orangeribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_orange", "orangeribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_orange:
+label mas_reaction_gift_acs_lanvallime_ribbon_orange:
     $ ribbon_name = "lanvallime_ribbon_orange"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "orange"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_orange")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_orange")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_royal_purple", "royalpurpleribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple", "royalpurpleribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_royal_purple:
+label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
     $ ribbon_name = "lanvallime_ribbon_royal_purple"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "royal purple"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_royal_purple")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 
 init 5 python:
-    addReaction("mas_reaction_gift_lanvallime_ribbon_sky_blue", "skyblueribbon", is_good=True)
+    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue", "skyblueribbon", is_good=True)
 
-label mas_reaction_gift_lanvallime_ribbon_sky_blue:
+label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
     $ ribbon_name = "lanvallime_ribbon_sky_blue"
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
     $ _mas_new_ribbon_color = "sky blue"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_lanvallime_ribbon_sky_blue")
+    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
     $ mas_finishSpriteObjInfo(sprite_data)
     return
 
