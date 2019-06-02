@@ -1561,7 +1561,9 @@ label mas_reaction_yellowribbon:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_coffee", "coffeeribbon", is_good=True)
+    if "lanvallime_ribbon_coffee" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_coffee", "coffeeribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     $ ribbon_name = "lanvallime_ribbon_coffee"
@@ -1573,7 +1575,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_gold", "goldribbon", is_good=True)
+    if "lanvallime_ribbon_gold" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_gold", "goldribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_gold:
     $ ribbon_name = "lanvallime_ribbon_gold"
@@ -1585,7 +1589,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_gold:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink", "hotpinkribbon", is_good=True)
+    if "lanvallime_ribbon_hot_pink" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink", "hotpinkribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
     $ ribbon_name = "lanvallime_ribbon_hot_pink"
@@ -1597,7 +1603,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lilac", "lilacribbon", is_good=True)
+    if "lanvallime_ribbon_lilac" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lilac", "lilacribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
     $ ribbon_name = "lanvallime_ribbon_lilac"
@@ -1609,7 +1617,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lime_green", "limegreenribbon", is_good=True)
+    if "lanvallime_ribbon_lime_green" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_lime_green", "limegreenribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
     $ ribbon_name = "lanvallime_ribbon_lime_green"
@@ -1621,7 +1631,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue", "navyblueribbon", is_good=True)
+    if "lanvallime_ribbon_navy_blue" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue", "navyblueribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
     $ ribbon_name = "lanvallime_ribbon_navy_blue"
@@ -1633,7 +1645,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_orange", "orangeribbon", is_good=True)
+    if "lanvallime_ribbon_orange" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_orange", "orangeribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_orange:
     $ ribbon_name = "lanvallime_ribbon_orange"
@@ -1645,7 +1659,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_orange:
     return
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple", "royalpurpleribbon", is_good=True)
+    if "lanvallime_ribbon_royal_purple" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple", "royalpurpleribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
     $ ribbon_name = "lanvallime_ribbon_royal_purple"
@@ -1658,7 +1674,9 @@ label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
 
 
 init 5 python:
-    addReaction("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue", "skyblueribbon", is_good=True)
+    if "lanvallime_ribbon_sky_blue" in mas_sprites.ACS_MAP:
+        # make sure the json is actually present
+        addReaction("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue", "skyblueribbon", is_good=True)
 
 label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
     $ ribbon_name = "lanvallime_ribbon_sky_blue"
