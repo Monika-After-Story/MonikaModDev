@@ -1568,7 +1568,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
     $ _mas_new_ribbon_color = "coffee colored"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_coffee")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_gold:
@@ -1578,7 +1577,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_gold:
     $ _mas_new_ribbon_color = "gold"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_gold")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 
@@ -1589,7 +1587,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
     $ _mas_new_ribbon_color = "hot pink"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
@@ -1599,7 +1596,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
     $ _mas_new_ribbon_color = "lilac"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lilac")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
@@ -1609,7 +1605,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
     $ _mas_new_ribbon_color = "lime green"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lime_green")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
@@ -1619,7 +1614,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
     $ _mas_new_ribbon_color = "navy"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_orange:
@@ -1629,7 +1623,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_orange:
     $ _mas_new_ribbon_color = "orange"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_orange")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
@@ -1639,7 +1632,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
     $ _mas_new_ribbon_color = "royal purple"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
@@ -1649,7 +1641,6 @@ label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
     $ _mas_new_ribbon_color = "sky blue"
     $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
     call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
-    $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
@@ -1669,11 +1660,15 @@ label _mas_reaction_ribbon_helper(label):
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
     if gift_ev:
+        # for regular ribbons
         $ store.mas_filereacts.delete_file(gift_ev.category)
         #we have dlg for repeating ribbons, may as well have it used
         $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
-    else:
+    elif giftname is not None:
+        # for JSON ribbons
         $ store.mas_filereacts.delete_file(giftname)
+        if sprite_data:
+            $ mas_finishSpriteObjInfo(sprite_data)
     return
 
 label mas_reaction_new_ribbon:
