@@ -558,6 +558,7 @@ init python:
             [0]: sprite type of the sprite
             [1]: sprite name (id) 
             [2]: giftname this sprite is associated with
+            [3]: True if this gift has already been given before
         """
         # given giftname? try and lookup
         if sp_data is not None:
@@ -566,17 +567,20 @@ init python:
                 None
             )
             if giftname is None:
-                return (None, None, None)
+                return (None, None, None, None)
 
-            return (sp_data[0], sp_data[1], giftname)
-
-
-        if len(persistent._mas_filereacts_sprite_reacted) > 0:
+        elif len(persistent._mas_filereacts_sprite_reacted) > 0:
             sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
-            return (sp_data[0], sp_data[1], giftname)
 
-        return (None, None, None)
+        else:
+            return (None, None, None, None)
+
+        # check if this gift has already been gifted
+        gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
+
+        # return results
+        return (sp_data[0], sp_data[1], giftname, gifted_before)
 
 
     def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
@@ -588,9 +592,10 @@ init python:
             unlock_sel - True will unlock the selector topic, False will not
                 (Default: True)
         """
-        sp_type, sp_name, giftname = sprite_data
+        sp_type, sp_name, giftname, gifted_before = sprite_data
 
         # sanity check
+        # NOTE: gifted_before is not required
         if sp_type is None or sp_name is None or giftname is None:
             return
 
@@ -773,10 +778,12 @@ label mas_reaction_gift_test2:
 
 label mas_reaction_gift_generic_sprite_json:
     $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
+
+    # TODO: something different if whatever was gifted has been gifted before
 
     m "Aww, [player]!"
     if sprite_str is None:
@@ -816,7 +823,7 @@ label mas_reaction_gift_acs_jmo_hairclip_musicnote:
 label mas_reaction_gift_hairclip(hairclip_name):
     # get sprtie data
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     # get the acs
     $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
@@ -1561,86 +1568,61 @@ label mas_reaction_yellowribbon:
     return
 
 # JSON ribbons
+label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_label):
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, ribbon_name)
+        )
+        _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP.get(
+            ribbon_name,
+            mas_acs_ribbon_def
+        )
+        _mas_new_ribbon_color = user_friendly_desc
+
+    call _mas_reaction_ribbon_helper(helper_label)
+
+    python:
+        # giftname is the 3rd item
+        if sprite_data[2] is not None:
+            store.mas_filereacts.delete_file(sprite_data[2])
+            
+        mas_finishSpriteObjInfo(sprite_data)
+    return
+
 label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
-    $ ribbon_name = "lanvallime_ribbon_coffee"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "coffee colored"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_coffee")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_coffee", "coffee colored", "mas_reaction_gift_acs_lanvallime_ribbon_coffee")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_gold:
-    $ ribbon_name = "lanvallime_ribbon_gold"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "gold"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_gold")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_gold", "gold", "mas_reaction_gift_acs_lanvallime_ribbon_gold")
     return
 
-
 label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
-    $ ribbon_name = "lanvallime_ribbon_hot_pink"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "hot pink"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_hot_pink", "hot pink", "mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
-    $ ribbon_name = "lanvallime_ribbon_lilac"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "lilac"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lilac")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lilac", "lilac", "mas_reaction_gift_acs_lanvallime_ribbon_lilac")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
-    $ ribbon_name = "lanvallime_ribbon_lime_green"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "lime green"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_lime_green")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lime_green", "lime green", "mas_reaction_gift_acs_lanvallime_lime_green")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
-    $ ribbon_name = "lanvallime_ribbon_navy_blue"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "navy"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_navy_blue", "navy", "mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_orange:
-    $ ribbon_name = "lanvallime_ribbon_orange"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "orange"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_orange")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_orange", "orange", "mas_reaction_gift_acs_lanvallime_ribbon_orange")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
-    $ ribbon_name = "lanvallime_ribbon_royal_purple"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "royal purple"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_royal_purple", "royal purple", "mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
     return
 
 label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
-    $ ribbon_name = "lanvallime_ribbon_sky_blue"
-    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, ribbon_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
-    $ _mas_new_ribbon_color = "sky blue"
-    $ _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP[ribbon_name]
-    call _mas_reaction_ribbon_helper("mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_sky_blue", "sky blue", "mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
     return
 
 #specific to this, since we need to verify if the player actually gave a ribbon.
@@ -1664,11 +1646,7 @@ label _mas_reaction_ribbon_helper(label):
         $ store.mas_filereacts.delete_file(gift_ev.category)
         #we have dlg for repeating ribbons, may as well have it used
         $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
-    elif giftname is not None:
-        # for JSON ribbons
-        $ store.mas_filereacts.delete_file(giftname)
-        if sprite_data:
-            $ mas_finishSpriteObjInfo(sprite_data)
+
     return
 
 label mas_reaction_new_ribbon:
