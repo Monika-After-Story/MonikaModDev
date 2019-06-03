@@ -831,7 +831,7 @@ label mas_reaction_gift_hairclip(hairclip_name):
     # check for incompatibility
     $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
 
-    if store.mas_selspr.get_sel_acs(mas_sprites.ACS_MAP[sprite_name]).unlocked:
+    if gifted_before:
         m 1rksdlb "You already gave me this hairclip, silly!"
 
     else:
