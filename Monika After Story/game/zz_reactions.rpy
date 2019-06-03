@@ -831,36 +831,41 @@ label mas_reaction_gift_hairclip(hairclip_name):
     # check for incompatibility
     $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
 
-    if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
-        m 1hub "Oh!{w=1} Another hairclip!"
-        m 3hua "Thanks, [player]."
+    if store.mas_selspr.get_sel_acs(mas_sprites.ACS_MAP[sprite_name]).unlocked:
+        m 1rksdlb "You already gave me this hairclip, silly!"
 
     else:
-        m 1wuo "Oh!"
-        m 1sub "Is that a hairclip?"
-        m 1hub "That's so cute, thanks [player]!"
+        if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
+            m 1hub "Oh!{w=1} Another hairclip!"
+            m 3hua "Thanks, [player]."
 
-    # must include this check because we cannot for sure know if the acs
-    # exists
-    # also need to not wear it if wearing clothes that are incompatible
-    if hairclip_acs is None or is_wearing_baked_outfit:
-        m 1hua "If you want me to wear it, just ask, okay?"
-
-    else:
-        m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}.{nw}"
-        $ monika_chr.wear_acs(hairclip_acs)
-        m 1hua "There we go."
-
-    # need to make sure we set the selector prompt correctly
-    # only do this if not wearing baked, since the clip is automatically off in this case
-    # so need to make sure when we switch outfits, the prompt is still correct
-    if not is_wearing_baked_outfit:
-        if monika_chr.get_acs_of_type('left-hair-clip'):
-            $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
         else:
-            $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+            m 1wuo "Oh!"
+            m 1sub "Is that a hairclip?"
+            m 1hub "That's so cute, thanks [player]!"
+
+        # must include this check because we cannot for sure know if the acs
+        # exists
+        # also need to not wear it if wearing clothes that are incompatible
+        if hairclip_acs is None or is_wearing_baked_outfit:
+            m 1hua "If you want me to wear it, just ask, okay?"
+
+        else:
+            m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}.{nw}"
+            $ monika_chr.wear_acs(hairclip_acs)
+            m 1hua "There we go."
+
+        # need to make sure we set the selector prompt correctly
+        # only do this if not wearing baked, since the clip is automatically off in this case
+        # so need to make sure when we switch outfits, the prompt is still correct
+        if not is_wearing_baked_outfit:
+            if monika_chr.get_acs_of_type('left-hair-clip'):
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+            else:
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
     $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
+
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
