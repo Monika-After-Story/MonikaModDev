@@ -6,16 +6,55 @@ import os
 import gamedir as GDIR
 import menutils
 
-SPRITE_PATH = [
-    GDIR.REL_PATH_GAME + "sprite-chart-01.rpy",
-    GDIR.REL_PATH_GAME + "sprite-chart.rpy"
+STATIC_CHARTS = [
+    GDIR.REL_PATH_GAME + "sprite-chart-00.rpy",
 ]
+ALIAS_CHARTS = [
+    GDIR.REL_PATH_GAME + "sprite-chart-10.rpy",
+]
+ATL_CHARTS = [
+    GDIR.REL_PATH_GAME + "sprite-chart-20.rpy",
+]
+
+SPRITE_PATH = [
+    GDIR.REL_PATH_GAME + "sprite-chart.rpy",
+]
+SPRITE_PATH.extend(STATIC_CHARTS)
+SPRITE_PATH.extend(ALIAS_CHARTS)
+SPRITE_PATH.extend(ATL_CHARTS)
+
 SAVE_PATH = "zzzz_spritelist"
 SAVE_PATH_D = "zzzz_spritedict"
 SAVE_PATH_IO = GDIR.REL_PATH_GAME + "zzzz_sprite_opt.rpy"
 
 IMG_START = "image monika"
 IMG_OUT = '"monika {0}"'
+
+DYN_DIS = "DynamicDisplayable"
+
+
+def clean_sprite(code):
+    """
+    Cleans the given sprite (removes excess whitespace, colons)
+
+    IN:
+        code - sprite code to clean
+
+    RETURNS:
+        cleaned sprite code
+    """
+    code = code.strip()
+    return code.replace(":","")
+
+
+def is_dyn_line(line):
+    """
+    Checks if the given line is a sprite line with dynamic displayable
+    :param line: line to check
+    :returns: True if the given line is a sprite line, False otherwise.
+    """
+    return is_sprite_line(line) and DYN_DIS in line
+
 
 def is_sprite_line(line):
     """
@@ -34,18 +73,19 @@ def is_sprite_line(line):
     return line.startswith(IMG_START)
 
 
-def clean_sprite(code):
+def pull_dyn_sprite_code(line):
     """
-    Cleans the given sprite (removes excess whitespace, colons)
-
-    IN:
-        code - sprite code to clean
-
-    RETURNS:
-        cleaned sprite code
+    Pulls sprite code from teh given line.
+    Only ones that are monika + dynamic displayable are allowed
+    NOTE: this also removes the _static lines
+    :param line: line topull sprite code
+    :returns: the sprite code we got, or None if not found
     """
-    code = code.strip()
-    return code.replace(":","")
+    if is_dyn_line(line):
+        spcode = clean_sprite(line.split(" ")[2])
+        return spcode.partition("_")[0]
+
+    return None
 
 
 def pull_sprite_code(line):
@@ -84,11 +124,7 @@ def pull_sprite_list(as_dict=False):
 
     for sprfile in SPRITE_PATH:
         with open(os.path.normcase(sprfile), "r") as sprite_file:
-            for line in sprite_file:
-                code = pull_sprite_code(line)
-
-                if code:
-                    sprite_list.append(code)
+            sprite_list.extend(pull_sprite_list_from_file(sprite_file))
 
     if as_dict:
         # do we want a dict instead?
@@ -100,6 +136,30 @@ def pull_sprite_list(as_dict=False):
         return sprite_dict
 
     # otherwise we want the lsit
+    return sprite_list
+
+
+def pull_sprite_list_from_file(sprite_file, dyn_only=False):
+    """
+    Pulls a list of sprite from the given file
+    :param sprite_file: file object to read sprites from
+    :param dyn_only: True will only get the dynamic displayable sprites, False
+        will get all
+    :returns: list of sprite codes
+    """
+    if dyn_only:
+        puller = pull_dyn_sprite_code
+    else:
+        puller = pull_sprite_code
+
+    sprite_list = []
+
+    for line in sprite_file:
+        code = puller(line)
+
+        if code:
+            sprite_list.append(code)
+
     return sprite_list
 
 
