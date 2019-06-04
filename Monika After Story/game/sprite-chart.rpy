@@ -4175,11 +4175,6 @@ init -2 python:
             nose,
             mouth,
 
-            # required standing parts
-            head,
-            left,
-            right,
-
             # optional sitting parts
             lean=None,
             arms="steepling",
@@ -4190,6 +4185,9 @@ init -2 python:
             emote=None,
 
             # optional standing parts
+            head="",
+            left="",
+            right="",
             stock=True,
             single=None
         ):
