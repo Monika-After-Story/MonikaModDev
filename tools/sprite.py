@@ -266,12 +266,53 @@ class StaticSprite(object):
 
         return "".join(lines)
 
-    def spstr(self):
+    def scstr(self):
         """
         Creates the sprite code string for use in ATL statements.
         :returns: sp code string. This is form (monika <code>_static)
         """
         return "monika " + self.spcode + "_static"
+
+    def scstr_nostatic(self):
+        """
+        Similar to scstr, except without the static part
+        """
+        return "monika " + self.spcode
+
+    def scstr_code(self):
+        """
+        Simliar to scstr, except without monika or static
+        """
+        return self.spcode
+
+    @staticmethod
+    def as_scstr(ss_obj):
+        """
+        Staticmethod version of scstr
+        """
+        return ss_obj.scstr()
+
+    @staticmethod
+    def as_scstr_nostatic(ss_obj):
+        """
+        Static method version of scstr_nostatic
+        """
+        return ss_obj.scstr_nostatic()
+
+    @staticmethod
+    def as_scstr_code(ss_obj):
+        """
+        static method version of scstr_code
+        """
+        return ss_obj.scstr_code()
+
+    @staticmethod
+    def lean_tostring(lean_pos):
+        """
+        Converts a leaning position to string
+        """
+        lean, arms = lean_pos
+        return "-".join(["leaning", lean, arms])
 
     def _get_smap(self, mainkey, code, defval):
         """
@@ -328,7 +369,7 @@ class StaticSprite(object):
 
         # 0 - position
         poscode = spcode[0]
-        position = self._get_smap("position", poscode, defval)
+        position = self._get_smap("position", poscode, None)
         if position is None:
             self.invalid = True
             return
@@ -462,7 +503,7 @@ class StaticSprite(object):
             [1] - the number of spots to increas the index by
         """
         # cannot have duplicates
-        if self.nose is not None;
+        if self.nose is not None:
             return False, 0
 
         # next letter must be nose type
