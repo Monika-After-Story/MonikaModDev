@@ -11,7 +11,8 @@ image monika 6rksdlc_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
-    arms="down"
+    arms="down",
+    sweat="def"
 )
 
 image monika 6rktda_static = DynamicDisplayable(
@@ -21,7 +22,8 @@ image monika 6rktda_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smile",
-    arms="down"
+    arms="down",
+    tears="dried"
 )
 
 image monika 6rktdc_static = DynamicDisplayable(
@@ -31,7 +33,8 @@ image monika 6rktdc_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
-    arms="down"
+    arms="down",
+    tears="dried"
 )
 
 image monika 6rktsc_static = DynamicDisplayable(
@@ -41,7 +44,8 @@ image monika 6rktsc_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
-    arms="down"
+    arms="down",
+    tears="streaming"
 )
 
 image monika 6rktuc_static = DynamicDisplayable(
@@ -51,7 +55,8 @@ image monika 6rktuc_static = DynamicDisplayable(
     eyes="right",
     nose="def",
     mouth="smirk",
-    arms="down"
+    arms="down",
+    tears="up"
 )
 
 image monika 6sua_static = DynamicDisplayable(
@@ -91,7 +96,8 @@ image monika 6tftpc_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smirk",
-    arms="down"
+    arms="down",
+    tears="pooled"
 )
 
 image monika 6tkbfu_static = DynamicDisplayable(
@@ -101,7 +107,8 @@ image monika 6tkbfu_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smug",
-    arms="down"
+    arms="down",
+    blush="full"
 )
 
 image monika 6tsbfa_static = DynamicDisplayable(
@@ -111,7 +118,8 @@ image monika 6tsbfa_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smile",
-    arms="down"
+    arms="down",
+    blush="full"
 )
 
 image monika 6tsbsa_static = DynamicDisplayable(
@@ -121,7 +129,8 @@ image monika 6tsbsa_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smile",
-    arms="down"
+    arms="down",
+    blush="shade"
 )
 
 image monika 6tst_static = DynamicDisplayable(
@@ -141,7 +150,8 @@ image monika 6tubfa_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smile",
-    arms="down"
+    arms="down",
+    blush="full"
 )
 
 image monika 6tubsa_static = DynamicDisplayable(
@@ -151,7 +161,8 @@ image monika 6tubsa_static = DynamicDisplayable(
     eyes="smug",
     nose="def",
     mouth="smile",
-    arms="down"
+    arms="down",
+    blush="shade"
 )
 
 image monika 6wfw_static = DynamicDisplayable(
@@ -191,7 +202,8 @@ image monika 6wubfo_static = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="gasp",
-    arms="down"
+    arms="down",
+    blush="full"
 )
 
 image monika 6wubsw_static = DynamicDisplayable(
@@ -201,7 +213,8 @@ image monika 6wubsw_static = DynamicDisplayable(
     eyes="wide",
     nose="def",
     mouth="wide",
-    arms="down"
+    arms="down",
+    blush="shade"
 )
 
 image monika 6wuo_static = DynamicDisplayable(

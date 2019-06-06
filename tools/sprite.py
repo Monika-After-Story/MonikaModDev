@@ -500,14 +500,16 @@ class StaticSprite(object):
             if processor is not None:
                 try:
                     sprite_added, increaseby = processor(spcode, index, prefix)
-                except:
+                except Exception as e:
                     # any sort of exception is a bad state
+                    # TODO Chnage 
                     self.invalid = False
                     return
 
             # if any sprite failed, or we didnt find a prefix
             if not sprite_added:
-                self.invalid = True
+                # TODO change
+                self.invalid = False
                 return
 
             # otherwise, we good to continue
@@ -535,8 +537,9 @@ class StaticSprite(object):
             return False, 0
 
         # next letter must be blush type
-        prefixes.append(spcode[index])
-        blush = self._get_smap("blush", "".join(prefixes), None)
+        fullcode = list(prefixes)
+        fullcode.append(spcode[index])
+        blush = self._get_smap("blush", "".join(fullcode), None)
         if blush is None:
             return False, 0
 
@@ -559,8 +562,9 @@ class StaticSprite(object):
             return False, 0
 
         # next letter must be emote type
-        prefixes.append(spcode[index])
-        emote = self._get_smap("emote", "".join(prefixes), None)
+        fullcode = list(prefixes)
+        fullcode.append(spcode[index])
+        emote = self._get_smap("emote", "".join(fullcode), None)
         if emote is None:
             return False, 0
 
@@ -583,8 +587,9 @@ class StaticSprite(object):
             return False, 0
 
         # next letter must be nose type
-        prefixes.append(spcode[index])
-        nose = self._get_smap("nose", "".join(prefixes), None)
+        fullcode = list(prefixes)
+        fullcode.append(spcode[index])
+        nose = self._get_smap("nose", "".join(fullcode), None)
         if nose is None:
             return False, 0
 
@@ -609,11 +614,12 @@ class StaticSprite(object):
         processor = self.__sub_process_map["s"].get(midfix, None)
 
         if processor is not None:
-            prefixes.append(midfix)
+            fullcode = list(prefixes)
+            fullcode.append(midfix)
             sprite_added, increaseby = processor(
                 spcode,
                 index,
-                *prefixes
+                *fullcode
             )
 
         # if any sprite failed, or we didnt find a midfix
@@ -638,8 +644,9 @@ class StaticSprite(object):
             return False, 0
 
         # next letter must be the sweatdrop type
-        prefixes.append(spcode[index])
-        sweatdrop = self._get_smap("sweat", "".join(prefixes), None)
+        fullcode = list(prefixes)
+        fullcode.append(spcode[index])
+        sweatdrop = self._get_smap("sweat", "".join(fullcode), None)
         if sweatdrop is None:
             return False, 0
 
@@ -662,8 +669,9 @@ class StaticSprite(object):
             return False, 0
 
         # next letter must be the tear type
-        prefixes.append(spcode[index])
-        tears = self._get_smap("tears", "".join(prefixes), None)
+        fullcode = list(prefixes)
+        fullcode.append(spcode[index])
+        tears = self._get_smap("tears", "".join(fullcode), None)
         if tears is None:
             return False, 0
     
