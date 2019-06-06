@@ -147,8 +147,8 @@ class StaticSprite(object):
     _closed_eyes = (
         "closedhappy",
         "closedsad",
-        "winkleft",
-        "winkright",
+#        "winkleft",
+#        "winkright",
     )
 
     _tab = " " * 4
