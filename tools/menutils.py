@@ -198,6 +198,32 @@ def paginate(title, items, per_page=20, str_func=str):
                 # otherwise, quit
                 return
 
+def ask_continue(def_no=True):
+    """
+    Ask user if they would like to continue
+
+    IN:
+        def_no - True will default No, False will default yes
+
+    REUTRNS: True if user continues, False if not
+    """
+    cont_str = "Continue? ({0}/{1}): "
+    if def_no:
+        yes = "y"
+        no = "N"
+    else:
+        yes = "Y"
+        no = "n"
+
+    choice = raw_input(cont_str.format(yes, no)).lower()
+
+    # chekc default 
+    if len(choice) <= 0:
+        return not def_no
+
+    # okay return if equal to yes
+    return choice == "y"
+
 
 def e_pause():
     """

@@ -4324,6 +4324,68 @@ init -2 python:
 # Monika
 define monika_chr = MASMonika()
 
+#### IMAGE START (IMG030)
+# Image are created using a DynamicDisplayable to allow for runtime changes
+# to sprites without having to remake everything. This saves us on image
+# costs.
+#
+# To create a new image, these parts are required:
+#   eyebrows, eyes, nose, mouth (for sitting)
+#   head, left, right OR a single image (for standing)
+#
+# Optional parts for sitting is:
+#   sweat, tears, blush, emote, eyebags
+#
+# Non-leaning poses require an ARMS part.
+# leaning poses require a LEAN part.
+#
+# For more information see mas_drawmonika function
+#
+#### FOLDER IMAGE RULES: (IMG031)
+# To ensure that the images are created correctly, all images must be placed in
+# a specific folder heirarchy.
+#
+# mod_assets/monika/f/<facial expressions>
+# mod_assets/monika/c/<clothing types>/<body/arms/poses>
+# mod_assets/monika/h/<hair types>
+# mod_assets/monika/a/<accessories>
+#
+# All layers must have a night version, which is denoted using the -n suffix.
+# All leaning layers must have a non-leaning fallback
+#
+## FACIAL EXPRESSIONS:
+# Non leaning filenames:
+#   face-{face part type}-{face part name}{-n}.png
+#   (ie: face-mouth-big.png / face-mouth-big-n.png)
+# leaning filenames:
+#   face-leaning-{lean type}-{face part type}-{face part name}{-n}.png
+#   (ie: face-leaning-eyes-sparkle.png / face-leaning-eyes-sparkle-n.png)
+#
+## BODY / POSE:
+# NEW
+# Non leaning:
+#   body-def{-n}.png
+#   arms-{arms name}{-n}.png
+# Leaning:
+#   body-leaning-{lean type}{-n}.png
+#   arms-leaning-{lean type}-{arms pose}{-n}.png
+#
+# OLD:
+# Non leaning filenames / parts:
+#   torso-{hair type}{-n}.png
+#   arms-{arms name}{-n}.png
+#   (ie: torso-def.png / torso-def-n.png)
+#   (ie: arms-def-steepling.png / arms-def-steepling-n.png)
+# Leaning filenames:
+#   torso-leaning-{hair type}-{lean name}{-n}.png
+#   (ie: torso-leaning-def-def.png / torso-leaning-def-def-n.png)
+#
+## HAIR:
+# hair-{hair type}-{front/back}{-n}.png
+#
+
+# NOTE: all sprites moved to sprite-chart-00
+
 ### [IMG032]
 # Image aliases
 

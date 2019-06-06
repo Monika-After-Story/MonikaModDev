@@ -119,6 +119,38 @@ class StaticSprite(object):
         },
     }
 
+    _mod_map = {
+        "tears": {
+            "streaming": (
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright",
+            ),
+            "up": (
+                "closedhappy",
+                "closedsad",
+                "winkleft",
+                "winkright",
+            ),
+            "left": (
+                "closedhappy",
+                "closedsad",
+            ),
+            "right": (
+                "closedhappy",
+                "closedsad",
+            ),
+        },
+    }
+
+    _closed_eyes = (
+        "closedhappy",
+        "closedsad",
+        "winkleft",
+        "winkright",
+    )
+
     _tab = " " * 4
 
     def __init__(self, spcode):
@@ -153,6 +185,7 @@ class StaticSprite(object):
             return ""
 
         cnl = ",\n"
+        qcnl = '",\n'
 
         # add the 100% for sure lines
         lines = [
@@ -166,20 +199,21 @@ class StaticSprite(object):
             "character=monika_chr",
             cnl,
             self._tab,
-            "eyebrows=",
+            'eyebrows="',
             self.eyebrows,
-            cnl,
+            qcnl,
             self._tab,
-            "eyes=",
+            'eyes="',
             self.eyes,
-            cnl,
+            qcnl,
             self._tab,
-            "nose=",
+            'nose="',
             self.nose,
-            cnl,
+            qcnl,
             self._tab,
-            "mouth=",
+            'mouth="',
             self.mouth,
+            '"',
         ]
 
         # now for the position lines 
@@ -189,16 +223,17 @@ class StaticSprite(object):
             lines.extend([
                 cnl,
                 self._tab,
-                "arms=",
+                'arms="',
                 arms,
-                cnl,
+                qcnl,
                 self._tab,
-                "lean=",
+                'lean="',
                 lean,
-                cnl,
+                qcnl,
                 self._tab,
-                "single=",
-                self.single
+                'single="',
+                self.single,
+                '"',
             ])
 
         else:
@@ -206,8 +241,9 @@ class StaticSprite(object):
             lines.extend([
                 cnl,
                 self._tab,
-                "arms=",
-                self.position
+                'arms="',
+                self.position,
+                '"',
             ])
 
             if self.head:
@@ -216,16 +252,17 @@ class StaticSprite(object):
                 lines.extend([
                     cnl,
                     self._tab,
-                    "head=",
+                    'head="',
                     self.head,
-                    cnl,
+                    qcnl,
                     self._tab,
-                    "left=",
+                    'left="',
                     left,
-                    cnl,
+                    qcnl,
                     self._tab,
-                    "right=",
-                    right
+                    'right="',
+                    right,
+                    '"',
                 ])
 
         # now for optional parts
@@ -233,38 +270,63 @@ class StaticSprite(object):
             lines.extend([
                 cnl,
                 self._tab,
-                "blush=",
-                self.blush
+                'blush="',
+                self.blush,
+                '"',
             ])
 
         if self.tears is not None:
+            # NOTE: beause of the issue with tears and eyes, a little
+            # bit of custom handling is required here
+            tm_map = self._mod_map["tears"].get(self.tears, None)
+            if tm_map is not None and self.eyes in tm_map:
+                real_tears = self.tears + self.eyes
+            else:
+                real_tears = self.tears
+
             lines.extend([
                 cnl,
                 self._tab,
-                "tears=",
-                self.tears
+                'tears="',
+                real_tears,
+                '"',
             ])
 
         if self.sweatdrop is not None:
             lines.extend([
                 cnl,
                 self._tab,
-                "sweat=",
-                self.sweatdrop
+                'sweat="',
+                self.sweatdrop,
+                '"'
             ])
 
         if self.emote is not None:
             lines.extend([
                 cnl,
                 self._tab,
-                "emote=",
-                self.emote
+                'emote="',
+                self.emote,
+                '"'
             ])
 
         # done, add final paren
         lines.append("\n)")
 
         return "".join(lines)
+
+    def alias_static(self):
+        """
+        returns a string where this sprite's sprite code just aliases its 
+        static version.
+        """
+        return 'image monika {0} = "{1}"'.format(self.spcode, self.scstr())
+
+    def is_closed_eyes(self):
+        """
+        Returns True if this is a closed eye sprite, False if not
+        """
+        return self.eyes in self._closed_eyes
 
     def scstr(self):
         """
@@ -284,6 +346,13 @@ class StaticSprite(object):
         Simliar to scstr, except without monika or static
         """
         return self.spcode
+
+    @staticmethod
+    def as_alias_static(ss_obj):
+        """
+        Staticmethod version of alias_static
+        """
+        return ss_obj.alias_static()
 
     @staticmethod
     def as_scstr(ss_obj):
@@ -313,6 +382,13 @@ class StaticSprite(object):
         """
         lean, arms = lean_pos
         return "-".join(["leaning", lean, arms])
+
+    @staticmethod
+    def as_is_closed_eyes(ss_obj):
+        """
+        static method vresion of is_closed_eyes
+        """
+        return ss_obj.is_closed_eyes()
 
     def _get_smap(self, mainkey, code, defval):
         """

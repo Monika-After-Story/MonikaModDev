@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import os
+import gamedir as GDIR
 import menutils
 
 import spritepuller as spull
@@ -395,38 +396,110 @@ class FilterSprite(StaticSprite):
         ])
 
 
-def _load_sprites():
+def gen_sprite_files(
+        sprite_db,
+        sprite_db_keys,
+        file_prefix,
+        file_template,
+        file_header,
+        spacing="\n\n",
+        tostring=str,
+        quiet=False,
+        sp_per_file=500,
+        skip_pause=True,
+        skip_continue=True
+):
     """
-    Loads sprite code data so this module can use it.
-    NOTE: if None is returnd, treat as failure
-    :returns: dictionary of the following format:
-        [0] - sprite code (without static)
-        [1] - StaticSprite object
+    Generates sprite files. 
+
+    IN:
+        sprite_db - sprite database
+        sprite_db_keys sprite keys, in order to write out
+        file_prefix - the prefix for each filename
+        file_template - the template for each filename
+        file_header - the header to write at the top of each file
+        spacing - spacing between items
+            (Default: \n\n)
+        tostring - to string function to use (must take a sprite object)
+            (Default: str)
+        quiet - True will supress menus and stdout
+            (Default: False)
+        sp_per_file - max number of sprites allowed per file
+            (Default: 500)
+        skip_pause - True will skip pause at end. False will not
+            (Default: True)
+        skip_continue - True will skip the continue. False will not
+
+    RETURNS: True if successful, False if abort
     """
-    sprite_list = []
+    # first, check if we will go over the max file limit
+    if ( int(len(sprite_db_keys) / sp_per_file) + 1) > spull.MAX_FILE_LIMIT:
+        # always show error messages
+        print(MSG_OVER_FILE_LIMIT.format(
+            len(sprite_db_keys),
+            spull.MAX_FILE_LIMIT
+        ))
+        return False
 
-    # load all static sprites
-    for sprite_filepath in spull.STATIC_CHARTS:
-        with open(os.path.normcase(sprite_filepath), "r") as sprite_file:
-            sprite_list.extend(spull.pull_sprite_list_from_file(
-                sprite_file,
-                True
-            ))
+    # ask user to continue
+    if not (quiet or skip_continue):
+        print(MSG_OVERWRITE.format(file_prefix))
+        if not menutils.ask_continue():
+            return False
 
-    # generate dict of static sprites
-    sprite_db = {}
-    for sprite_code in sprite_list:
-        sprite_obj = StaticSprite(sprite_code)
+    # setup file counts
+    file_num = 0
+    sp_count = 0
 
-        # immediately quit if invalid
-        if sprite_obj.invalid:
-            return None
+    # and file data
+    filename = file_template.format(file_num)
+    filepath = GDIR.REL_PATH_GAME + filename
 
-        # otherwise add
-        sprite_db[sprite_code] = sprite_obj
+    # create thef irst file
+    if not quiet:
+        print(MSG_GEN_FILE.format(filename), end="")
+    output_file = open(os.path.normcase(filepath), "w")
+    output_file.write(file_header)
 
-    return sprite_db
+    # begin loop over sprites
+    for sprite_obj in SortedKeySpriteDBIter(sprite_db, sprite_db_keys):
 
+        if sp_count >= sp_per_file:
+            # over the sprites per file limit. we should make new file.
+
+            # increment counts
+            sp_count = 0
+            file_num += 1
+
+            # close file and say done
+            output_file.close()
+            if not quiet:
+                print("done")
+
+            # setup next file stuff
+            filename = file_template.format(file_num)
+            filepath = GDIR.REL_PATH_GAME + filename
+
+            # open file
+            if not quiet:
+                print(MSG_GEN_FILE.format(filename), end="")
+            output_file = open(os.path.normcase(filepath), "w")
+            output_file.write(file_header)
+
+        # add sprite object to file
+        output_file.write(tostring(sprite_obj))
+        output_file.write(spacing)
+        sp_count += 1
+
+    # finally, close the last file and say done
+    output_file.close()
+    if not quiet:
+        print("done")
+
+        if not skip_pause:
+            menutils.e_pause()
+
+    return True
 
 
 # TODO: pull sprites from the static charts and store them here
@@ -460,6 +533,70 @@ def run():
 
         if choice is not None:
             choice(sprite_db, sprite_db_keys)
+
+
+def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
+    """
+    Generates static sprites, and alises
+
+    IN:
+        quiet - supresses menus and stdout
+        sp_per_file - max number of sprites allowed per file
+    """
+    # ask if okay to overwrite files
+    if not quiet:
+        print("\n" + MSG_OVERWRITE.format(
+            spull.STATIC_PREFIX + ", " + spull.ALIAS_PREFIX
+        ))
+        if not menutils.ask_continue():
+            return
+
+    # generate static sprites
+    if not gen_sprite_files(
+            sprite_db,
+            sprite_db_keys,
+            spull.STATIC_PREFIX,
+            spull.STATIC_TEMPLATE,
+            __SP_STATIC_HEADER,
+            quiet=quiet,
+            sp_per_file=sp_per_file
+    ):
+        return
+
+    # filter alises that are closed eyes
+    static_aliases = filter(
+        StaticSprite.as_is_closed_eyes,
+        SortedKeySpriteDBIter(sprite_db, sprite_db_keys)
+    )
+
+    # now output these to file
+    # NOTE: The aliases will basically NEVER be split into multiple files.
+    #   An alias takes up 1 line, so unless we generate 10k aliases,
+    #   unlikely to need extra files
+
+    # setup file stuff
+    filename = spull.ALIAS_TEMPLATE.format(0)
+    filepath = GDIR.REL_PATH_GAME + filename
+
+    # pirint msg
+    if not quiet:
+        print(MSG_GEN_FILE.format(filename), end="")
+
+    # create file
+    with open(os.path.normcase(filepath), "w") as alias_file:
+
+        # print header
+        alias_file.write(__SP_STATIC_HEADER)
+
+        # loop over aliases
+        for alias in static_aliases:
+            alias_file.write(StaticSprite.as_alias_static(alias))
+            alias_file.write("\n")
+
+    # done, print done
+    if not quiet:
+        print("done")
+        menutils.e_pause()
 
 
 def run_mkspr(sprite_db, sprite_db_keys):
@@ -544,6 +681,7 @@ menu_main = [
 #    ("Search Code", run_srch),
     ("List Codes", run_lstc),
 #    ("Make Sprite", run_mkspr),
+    ("Generate Static Sprites", run_gss),
 ]
 
 menu_lstc = [
@@ -552,3 +690,57 @@ menu_lstc = [
     ("Show Filters", run_lstc_showfilter),
     ("Set Filter", run_lstc_setfilter),
 ]
+
+# strings
+
+MSG_OVERWRITE = (
+    "This will overwrite all sprite chart files that start with: {0}\n"
+)
+
+MSG_OVER_FILE_LIMIT = "\nCannot fit {0} sprites into {1} files. Aborting..."
+MSG_GEN_FILE = "Generating file '{0}'..."
+
+__SP_STATIC_HEADER = """\
+############################ AUTO-GENERATED ###################################
+## DO NOT EDIT THIS FILE                                                     ##
+##                                                                           ##
+## This was auto-generated by the the spritemaker tool                       ##
+###############################################################################
+
+"""
+
+# internal functions
+
+
+def _load_sprites():
+    """
+    Loads sprite code data so this module can use it.
+    NOTE: if None is returnd, treat as failure
+    :returns: dictionary of the following format:
+        [0] - sprite code (without static)
+        [1] - StaticSprite object
+    """
+    sprite_list = []
+
+    # load all static sprites
+    for sprite_filepath in spull.STATIC_CHARTS:
+        with open(os.path.normcase(sprite_filepath), "r") as sprite_file:
+            sprite_list.extend(spull.pull_sprite_list_from_file(
+                sprite_file,
+                True
+            ))
+
+    # generate dict of static sprites
+    sprite_db = {}
+    for sprite_code in sprite_list:
+        sprite_obj = StaticSprite(sprite_code)
+
+        # immediately quit if invalid
+        if sprite_obj.invalid:
+            return None
+
+        # otherwise add
+        sprite_db[sprite_code] = sprite_obj
+
+    return sprite_db
+
