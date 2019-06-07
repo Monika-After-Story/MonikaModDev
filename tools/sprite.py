@@ -154,6 +154,14 @@ class StaticSprite(object):
         "winkright",
     )
 
+    _natural_prefix_order = [
+        "n",
+        "b",
+        "t",
+        "sd",
+        "e",
+    ]
+
     _tab = " " * 4
     _dbl_tab = " " * 8
     _tri_tab = " " * 12
@@ -574,6 +582,7 @@ class StaticSprite(object):
 
         # code parse
         index = 0
+        sorder = []
         while index < len(spcode):
             prefix = spcode[index]
             index += 1
@@ -583,7 +592,12 @@ class StaticSprite(object):
             processor = self.__process_map.get(prefix, None)
             if processor is not None:
                 try:
-                    sprite_added, increaseby = processor(spcode, index, prefix)
+                    sprite_added, increaseby = processor(
+                        spcode,
+                        index,
+                        sorder,
+                        prefix
+                    )
                 except Exception as e:
                     # any sort of exception is a bad state
                     # TODO Chnage 
@@ -598,6 +612,20 @@ class StaticSprite(object):
 
             # otherwise, we good to continue
             index += increaseby
+
+        # now rebuild the spcode so it follows ordering rules
+        if len(sorder) > 0:
+            correct_order = [""] * len(self._natural_prefix_order)
+            for prefix, code in sorder:
+                correct_order.insert(
+                    self._natural_prefix_order.index(prefix),
+                    code
+                )
+
+            # now build the new code
+            self.spcode = (
+                self.spcode[:3] + "".join(correct_order) + self.spcode[-1]
+            )
 
     def _set_defaults(self):
         """
@@ -688,12 +716,14 @@ class StaticSprite(object):
             "\n"
         ])
 
-    def __process_blush(self, spcode, index, *prefixes):
+    def __process_blush(self, spcode, index, sorder, *prefixes):
         """
         Process a blush off the given sprite code at the given index
         :param spcode: the sp code to check
         :param index: the next index to check
         :param prefixes: letters to prefix the code with
+        :param sorder: list. make sure to insert the full code in this list
+            at the correct order
         :returns: Tuple of the following format:
             [0] - True if the resulting code was valid, False if not
             [1] - the number of spots to increase the index by
@@ -711,13 +741,15 @@ class StaticSprite(object):
 
         # otherwise ok
         self.blush = blush
+        sorder.append(("".join(prefixes), "".join(fullcode)))
         return True, 1
 
-    def __process_emote(self, spcode, index, *prefixes):
+    def __process_emote(self, spcode, index, sorder, *prefixes):
         """
         Processe an emote off the given sprite code at the given index
         :param spcode: the spcode to check
         :param index: the next index to check
+        :param sorder: proper ordered codes
         :param prefixes: letters to prefix the code with
         :returns: Tuple of the following format:
             [0] - True if the resulting code was valid, False if not
@@ -736,13 +768,15 @@ class StaticSprite(object):
 
         # otherwise ok
         self.emote = emote
+        sorder.append(("".join(prefixes), "".join(fullcode)))
         return True, 1
 
-    def __process_nose(self, spcode, index, *prefixes):
+    def __process_nose(self, spcode, index, sorder, *prefixes):
         """
         Processes a nose off the given sprite code at the given index
         :param spcode: the spcode to chek
         :param index: the next index to check
+        :param sorder: proper order code
         :param prefixes: letters to prefix the code with
         :returns: Tuple of the following format:
             [0] - True if the resulting code was valid, False if not
@@ -761,13 +795,15 @@ class StaticSprite(object):
 
         # otherwise ok
         self.nose = nose
+        sorder.append(("".join(prefixes), "".join(fullcode)))
         return True, 1
 
-    def __process_s(self, spcode, index, *prefixes):
+    def __process_s(self, spcode, index, sorder, *prefixes):
         """
         Processes the s-prefixed spcodes at the given index
         :param spcode: the sp code to check
         :param index: the next index to check
+        :param sorder: proper corder code
         :param prefixes: letters to prefix the code with
         :returns: Tuple of the following format:
             [0] - True if the resulting code was valid, False if not
@@ -785,6 +821,7 @@ class StaticSprite(object):
             sprite_added, increaseby = processor(
                 spcode,
                 index,
+                sorder,
                 *fullcode
             )
 
@@ -795,11 +832,12 @@ class StaticSprite(object):
         # otherwise, we good to go
         return True, 1 + increaseby
 
-    def __process_sweatdrop(self, spcode, index, *prefixes):
+    def __process_sweatdrop(self, spcode, index, sorder, *prefixes):
         """
         Processes a sweatdrop off the given spcode at the given index
         :param spcode: the spcode to check
         :param index: the next index to check
+        :param sorder: proper corder code
         :param prefixes: letters to prefix the code with
         :returns: Tuple of the following format:
             [0] - True if the sweat drop was valid, False if not
@@ -818,13 +856,15 @@ class StaticSprite(object):
 
         # otherwise ok
         self.sweatdrop = sweatdrop
+        sorder.append(("".join(prefixes), "".join(fullcode)))
         return True, 1
 
-    def __process_tears(self, spcode, index, *prefixes):
+    def __process_tears(self, spcode, index, sorder, *prefixes):
         """
         Processes a tear off the given spcode at the given index
         :param spcode: the spcode to check
         :param index: the next index to check
+        :param sorder: proper order code
         :param prefixes: letters to prefix the code with
         :returns: Tuple of the following format:
             [0] - True if the tears were valid, False if not
@@ -843,6 +883,7 @@ class StaticSprite(object):
     
         # otherwise ok
         self.tears = tears
+        sorder.append(("".join(prefixes), "".join(fullcode)))
         return True, 1
 
     def __swap_eyes(self, eyecode):

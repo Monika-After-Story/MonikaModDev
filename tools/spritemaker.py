@@ -202,6 +202,34 @@ class FilterSprite(StaticSprite):
         return menu
 
     @staticmethod
+    def from_ss(static_spr):
+        """
+        Generates a FilterSprite object from a StaticSprite
+
+        May return None if invalid static sprite
+        """
+        if static_spr.invalid:
+            return None
+
+        filter_spr = FilterSprite()
+        filter_spr.position = static_spr.position
+        filter_spr.eyes = static_spr.eyes
+        filter_spr.eyebrows = static_spr.eyebrows
+        filter_spr.nose = static_spr.nose
+        filter_spr.blush = static_spr.blush
+        filter_spr.tears = static_spr.tears
+        filter_spr.sweatdrop = static_spr.sweatdrop
+        filter_spr.emote = static_spr.emote
+        filter_spr.mouth = static_spr.mouth
+        filter_spr.is_lean = static_spr.is_lean
+        filter_spr.sides = static_spr.sides
+        filter_spr.single = static_spr.single
+        filter_spr.head = static_spr.head
+        filter_spr.spcode = static_spr.spcode
+
+        return filter_spr
+
+    @staticmethod
     def _build_menu(category):
         """
         Builds menu options for a category
@@ -666,7 +694,7 @@ def make_sprite(sprite_db, sprite_db_keys):
     print("\n\n")
 
     # ask to create the sprite
-    if not menutils.ask("Create Sprite"):
+    if not menutils.ask("Create sprite"):
         print("\nSprite discarded.")
         menutils.e_pause()
         return False
@@ -686,6 +714,65 @@ def make_sprite(sprite_db, sprite_db_keys):
     sprite_db[sprite_code] = real_sprite
 
     return True
+
+
+def make_sprite_bc(sprite_db, sprite_db_keys):
+    """
+    Makes sprite using just a code and adds it to sprite database.
+    NOTE: keys should be regenerated after this by the caller
+
+    RETURNS: True if sprite creation successful, False if not
+    """
+    not_valid_code = True
+    sprite_created = False
+    while not_valid_code:
+        menutils.clear_screen()
+        print("\n\n")
+        trycode = raw_input("Enter a sprite code: ")
+
+        # build a static sprite with the code
+        new_sprite = StaticSprite(trycode)
+
+        if new_sprite.invalid:
+            # if invalid, ask user if they want to continue
+            print("\nSprite code {0} is invalid.\n".format(trycode))
+            if not menutils.ask("Try again", def_no=False):
+                return sprite_created
+
+        elif new_sprite.spcode in sprite_db:
+            # check if already exists
+            print("\nSprite code {0} already exists!\n".format(
+                new_sprite.spcode
+            ))
+            if not menutils.ask("Try again", def_no=False):
+                return sprite_created
+
+        else:
+            # valid sprite, means we should show it and ask for confirm
+            filter_spr = FilterSprite.from_ss(new_sprite)
+            print(filter_spr._status(
+                True,
+                "Selected Sprite Settings - " + new_sprite.spcode,
+                True,
+                True
+            ))
+
+            # spacing
+            print("\n\n")
+
+            # ask to create the sprite
+            if not menutils.ask("Create sprite"):
+                print("\nSprite discarded.\n")
+
+            else:
+                # user said yes!
+                # add sprite to db and prompt for more
+                sprite_db[new_sprite.spcode] = new_sprite
+                sprite_created = True
+                print("\nSprite created.\n")
+
+            if not menutils.ask("Create another sprite", def_no=False):
+                return sprite_created
 
 
 ### runners
@@ -828,6 +915,25 @@ def run_mkspr(sprite_db, sprite_db_keys):
     return None
 
 
+def run_mkspr_bc(sprite_db, sprite_db_keys):
+    """
+    Makes a sprite.
+
+    Returns an updated sprite_db_keys, or None if no changes
+    """
+    if make_sprite_bc(sprite_db, sprite_db_keys):
+        # we made some sprites
+
+        # mark that we are dirty and need to regin
+        global _need_to_gen_sprites
+        _need_to_gen_sprites = True
+
+        # return updated keys
+        return sorted(sprite_db.keys())
+
+    return None
+
+
 def run_lstc(sprite_db, sprite_db_keys):
     """
     List codes submenu
@@ -894,7 +1000,8 @@ def run_lstc_setfilter(sprite_db, sprite_db_keys, ss_filter):
 menu_main = [
     ("Sprite Maker", "Option: "),
     ("List Codes", run_lstc),
-    ("Make Sprite", run_mkspr),
+    ("Make Sprite (Interactive)", run_mkspr),
+    ("Make Sprite (By Code)", run_mkspr_bc),
     ("Generate Sprites", run_gss),
 ]
 
