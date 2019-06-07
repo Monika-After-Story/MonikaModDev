@@ -24,10 +24,8 @@ HEADER = """\n\n\
 
 
 MENU_TITLE = "    {0}"
-MENU_ENTRY = "    {0}) {1}"
-MENU_END = """
-   [0] Exit
-"""
+MENU_ENTRY = "   {2}{0}{3} {1}"
+MENU_END = "\n   {0} Exit\n"
 
 PAGE_ENTRY = MENU_TITLE
 PAGE_GOTO = "(G)oto ): "
@@ -46,12 +44,17 @@ __PREV = "p"
 __QUIT = "q"
 
 
-def menu(menu_opts):
+def menu(menu_opts, defindex=None):
     """
     Generates a menu and returns the desired menu action
 
     IN:
         menu_opts - See above for menu formatting
+        defindex - index for teh default (blank enter) value
+            The value at this index is returned if blank is hit.
+            Formatting will also show square brackets around the appropriate
+            piece
+            Default: None (which corresponds to the Exit)
 
     RETURNS:
         the selected menu action
@@ -60,6 +63,24 @@ def menu(menu_opts):
         # a menu must consist of header + prompt entry and at least one
         # menu option
         return None
+
+    # parse a default index
+    try:
+        if defindex is not None and 1 <= defindex < len(menu_opts):
+            defval = menu_opts[defindex][1]
+            footer = MENU_END.format(" 0)")
+
+        else:
+            # if no defindex, null everyting
+            defindex = None
+            defval = None
+            footer = MENU_END.format("[0]")
+
+    except:
+        # if we failed, None everything so we dont do foolish things later
+        defindex = None
+        defval = None
+        footer = MENU_END.format("[0]")
 
     no_sel = True
     while no_sel:
@@ -75,18 +96,26 @@ def menu(menu_opts):
         entries = menu_opts[1:]
         entry_count = 1
         for entry in entries:
-            print(MENU_ENTRY.format(entry_count, entry[0]))
+
+            # determine the default / entry string
+            if entry_count != defindex:
+                entry_str = MENU_ENTRY.format(entry_count, entry[0], " ", ")")
+            else:
+                entry_str = MENU_ENTRY.format(entry_count, entry[0], "[", "]")
+
+            # print the entry
+            print(entry_str)
             entry_count += 1
 
         # print footer
-        print(MENU_END + "\n")
+        print(footer + "\n")
 
         # and then prompt!
         user_input = raw_input(prompt)
 
-        # NOTE: if blank, we just quit
+        # NOTE: if blank, we just return the default value
         if len(user_input) <= 0:
-            return None
+            return defval
 
         try:
             user_input = int(user_input)
@@ -198,6 +227,34 @@ def paginate(title, items, per_page=20, str_func=str):
                 # otherwise, quit
                 return
 
+def ask(question, def_no=True):
+    """
+    Ask user something. Only allows for yes/no selections.
+
+    IN:
+        question - question to ask. a ? and the (y/n) will be applied 
+            automatically.
+        def_no - True will default No, False will default yes
+
+    RETURNS: True if user answers yes, False if no
+    """
+    # determine default option
+    if def_no:
+        yes = "y"
+        no = "N"
+    else:
+        yes = "Y"
+        no = "n"
+
+    choice = raw_input("{0}? ({1}/{2}): ".format(question, yes, no)).lower()
+
+    # check default
+    if len(choice) <= 0:
+        return not def_no
+
+    # otherwise if equal to yes
+    return choice == "y"
+
 def ask_continue(def_no=True):
     """
     Ask user if they would like to continue
@@ -207,23 +264,7 @@ def ask_continue(def_no=True):
 
     REUTRNS: True if user continues, False if not
     """
-    cont_str = "Continue? ({0}/{1}): "
-    if def_no:
-        yes = "y"
-        no = "N"
-    else:
-        yes = "Y"
-        no = "n"
-
-    choice = raw_input(cont_str.format(yes, no)).lower()
-
-    # chekc default 
-    if len(choice) <= 0:
-        return not def_no
-
-    # okay return if equal to yes
-    return choice == "y"
-
+    return ask("Continue", def_no=def_no)
 
 def e_pause():
     """
