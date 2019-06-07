@@ -101,7 +101,6 @@ class FilterSprite(StaticSprite):
             self.MTH: self.__flt_eq_mth,
         }
 
-        self._dbl_tab = self._tab + self._tab
         self._flt_fmt = "{: <12}"
 
         self.menu_flt_set = [
@@ -397,8 +396,7 @@ class FilterSprite(StaticSprite):
 
 
 def gen_sprite_files(
-        sprite_db,
-        sprite_db_keys,
+        sprites,
         file_prefix,
         file_template,
         file_header,
@@ -413,8 +411,7 @@ def gen_sprite_files(
     Generates sprite files. 
 
     IN:
-        sprite_db - sprite database
-        sprite_db_keys sprite keys, in order to write out
+        sprites - the list of sprite objects to generate stuff for
         file_prefix - the prefix for each filename
         file_template - the template for each filename
         file_header - the header to write at the top of each file
@@ -433,10 +430,10 @@ def gen_sprite_files(
     RETURNS: True if successful, False if abort
     """
     # first, check if we will go over the max file limit
-    if ( int(len(sprite_db_keys) / sp_per_file) + 1) > spull.MAX_FILE_LIMIT:
+    if ( int(len(sprites) / sp_per_file) + 1) > spull.MAX_FILE_LIMIT:
         # always show error messages
         print(MSG_OVER_FILE_LIMIT.format(
-            len(sprite_db_keys),
+            len(sprites),
             spull.MAX_FILE_LIMIT
         ))
         return False
@@ -462,7 +459,7 @@ def gen_sprite_files(
     output_file.write(file_header)
 
     # begin loop over sprites
-    for sprite_obj in SortedKeySpriteDBIter(sprite_db, sprite_db_keys):
+    for sprite_obj in sprites:
 
         if sp_count >= sp_per_file:
             # over the sprites per file limit. we should make new file.
@@ -546,15 +543,18 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
     # ask if okay to overwrite files
     if not quiet:
         print("\n" + MSG_OVERWRITE.format(
-            spull.STATIC_PREFIX + ", " + spull.ALIAS_PREFIX
+            ", ".join([
+                spull.STATIC_PREFIX,
+                spull.ALIAS_PREFIX,
+                spull.ATL_PREFIX
+            ])
         ))
         if not menutils.ask_continue():
             return
 
     # generate static sprites
     if not gen_sprite_files(
-            sprite_db,
-            sprite_db_keys,
+            list(SortedKeySpriteDBIter(sprite_db, sprite_db_keys)),
             spull.STATIC_PREFIX,
             spull.STATIC_TEMPLATE,
             __SP_STATIC_HEADER,
@@ -563,39 +563,39 @@ def run_gss(sprite_db, sprite_db_keys, quiet=False, sp_per_file=500):
     ):
         return
 
-    # filter alises that are closed eyes
-    static_aliases = filter(
-        StaticSprite.as_is_closed_eyes,
-        SortedKeySpriteDBIter(sprite_db, sprite_db_keys)
-    )
+    # now for filter sprites
+    if not gen_sprite_files(
+            filter(
+                StaticSprite.as_is_closed_eyes,
+                SortedKeySpriteDBIter(sprite_db, sprite_db_keys)
+            ),
+            spull.ALIAS_PREFIX,
+            spull.ALIAS_TEMPLATE,
+            __SP_STATIC_HEADER,
+            spacing="\n",
+            tostring=StaticSprite.as_alias_static,
+            quiet=quiet,
+            sp_per_file=5000
+    ):
+        return
 
-    # now output these to file
-    # NOTE: The aliases will basically NEVER be split into multiple files.
-    #   An alias takes up 1 line, so unless we generate 10k aliases,
-    #   unlikely to need extra files
-
-    # setup file stuff
-    filename = spull.ALIAS_TEMPLATE.format(0)
-    filepath = GDIR.REL_PATH_GAME + filename
-
-    # pirint msg
-    if not quiet:
-        print(MSG_GEN_FILE.format(filename), end="")
-
-    # create file
-    with open(os.path.normcase(filepath), "w") as alias_file:
-
-        # print header
-        alias_file.write(__SP_STATIC_HEADER)
-
-        # loop over aliases
-        for alias in static_aliases:
-            alias_file.write(StaticSprite.as_alias_static(alias))
-            alias_file.write("\n")
+    # and finally atl sprites
+    if not gen_sprite_files(
+            filter(
+                StaticSprite.as_is_not_closed_eyes,
+                SortedKeySpriteDBIter(sprite_db, sprite_db_keys)
+            ),
+            spull.ATL_PREFIX,
+            spull.ATL_TEMPLATE,
+            __SP_STATIC_HEADER,
+            tostring=StaticSprite.as_atlify,
+            quiet=quiet,
+            sp_per_file=sp_per_file
+    ):
+        return
 
     # done, print done
     if not quiet:
-        print("done")
         menutils.e_pause()
 
 

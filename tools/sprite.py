@@ -147,11 +147,28 @@ class StaticSprite(object):
     _closed_eyes = (
         "closedhappy",
         "closedsad",
-#        "winkleft",
-#        "winkright",
+    )
+
+    _wink_eyes = (
+        "winkleft",
+        "winkright",
     )
 
     _tab = " " * 4
+    _dbl_tab = " " * 8
+    _tri_tab = " " * 12
+    _for_tab = " " * 16
+    
+    _img_monika = "image monika "
+    _q_monika_static = '"monika {0}_static"'
+    _q_monika = '"monika {0}"'
+    _block = "block"
+    _choice = "choice"
+    _repeat = "repeat"
+
+    _cnl = ",\n"
+    _qcnl = '",\n'
+    _onl = ":\n"
 
     def __init__(self, spcode):
         """
@@ -189,27 +206,32 @@ class StaticSprite(object):
 
         # add the 100% for sure lines
         lines = [
-            "image monika ",
+            self._img_monika,
             self.spcode,
             "_static = DynamicDisplayable(\n",
             self._tab,
             "mas_drawmonika",
             cnl,
+
             self._tab,
             "character=monika_chr",
             cnl,
+
             self._tab,
             'eyebrows="',
             self.eyebrows,
             qcnl,
+
             self._tab,
             'eyes="',
             self.eyes,
             qcnl,
+
             self._tab,
             'nose="',
             self.nose,
             qcnl,
+
             self._tab,
             'mouth="',
             self.mouth,
@@ -222,14 +244,17 @@ class StaticSprite(object):
             lean, arms = self.position
             lines.extend([
                 cnl,
+
                 self._tab,
                 'arms="',
                 arms,
                 qcnl,
+
                 self._tab,
                 'lean="',
                 lean,
                 qcnl,
+
                 self._tab,
                 'single="',
                 self.single,
@@ -240,6 +265,7 @@ class StaticSprite(object):
             # otherwise, only have arms and maybe head/sides
             lines.extend([
                 cnl,
+
                 self._tab,
                 'arms="',
                 self.position,
@@ -251,14 +277,17 @@ class StaticSprite(object):
                 left, right = self.sides
                 lines.extend([
                     cnl,
+
                     self._tab,
                     'head="',
                     self.head,
                     qcnl,
+
                     self._tab,
                     'left="',
                     left,
                     qcnl,
+
                     self._tab,
                     'right="',
                     right,
@@ -269,6 +298,7 @@ class StaticSprite(object):
         if self.blush is not None:
             lines.extend([
                 cnl,
+
                 self._tab,
                 'blush="',
                 self.blush,
@@ -286,6 +316,7 @@ class StaticSprite(object):
 
             lines.extend([
                 cnl,
+
                 self._tab,
                 'tears="',
                 real_tears,
@@ -295,6 +326,7 @@ class StaticSprite(object):
         if self.sweatdrop is not None:
             lines.extend([
                 cnl,
+
                 self._tab,
                 'sweat="',
                 self.sweatdrop,
@@ -304,6 +336,7 @@ class StaticSprite(object):
         if self.emote is not None:
             lines.extend([
                 cnl,
+
                 self._tab,
                 'emote="',
                 self.emote,
@@ -322,11 +355,34 @@ class StaticSprite(object):
         """
         return 'image monika {0} = "{1}"'.format(self.spcode, self.scstr())
 
+    def atlify(self):
+        """
+        Creates ATL brsion of this sprite.
+        NOTE: An ATL sprite basically swaps eyes to closed sad.
+        NOTE: winks are silghtly differemt in that they swap eyes to e
+        """
+        if self.is_wink_eyes():
+            return self.__atlify_wink()
+
+        return self.__atlify_closed()
+
     def is_closed_eyes(self):
         """
         Returns True if this is a closed eye sprite, False if not
         """
         return self.eyes in self._closed_eyes
+
+    def is_normal_eyes(self):
+        """
+        Returns True if this is not a closed eye or wink eye, False if either
+        """
+        return not (self.is_closed_eyes() or self.is_wink_eyes())
+
+    def is_wink_eyes(self):
+        """
+        Returns true if this is a wink eye sprite, False if not
+        """
+        return self.eyes in self._wink_eyes
 
     def scstr(self):
         """
@@ -353,6 +409,13 @@ class StaticSprite(object):
         Staticmethod version of alias_static
         """
         return ss_obj.alias_static()
+
+    @staticmethod
+    def as_atlify(ss_obj):
+        """
+        Staticmethod version of atlify
+        """
+        return ss_obj.atlify()
 
     @staticmethod
     def as_scstr(ss_obj):
@@ -389,6 +452,27 @@ class StaticSprite(object):
         static method vresion of is_closed_eyes
         """
         return ss_obj.is_closed_eyes()
+
+    @staticmethod
+    def as_is_not_closed_eyes(ss_obj):
+        """
+        static reversal of is_closed_eyes
+        """
+        return not ss_obj.is_closed_eyes()
+
+    @staticmethod
+    def as_is_normal_eyes(ss_obj):
+        """
+        static method version of is_normal_eyes
+        """
+        return ss_obj.is_normal_eyes()
+
+    @staticmethod
+    def as_is_wink_eyes(ss_obj):
+        """
+        static method version of is_wink_eyes
+        """
+        return ss_obj.is_wink_eyes()
 
     def _get_smap(self, mainkey, code, defval):
         """
@@ -521,6 +605,88 @@ class StaticSprite(object):
         """
         if self.nose is None:
             self.nose = "def"
+
+    def __atlify_closed(self):
+        """
+        Creates closed eye version of an ATL.
+        The ATL'd part is a closedsad version of the spcode.
+
+        RETURNS closed ATL string
+        """
+        return "".join([
+            self._img_monika,
+            self.spcode,
+            self._onl,
+
+            self._tab,
+            self._block,
+            self._onl,
+
+            self._dbl_tab,
+            self._q_monika_static.format(self.spcode),
+            "\n",
+
+            self._dbl_tab,
+            self._block,
+            self._onl,
+
+            self.__build_choice(self._tri_tab, self._for_tab, 3),
+
+            self.__build_choice(self._tri_tab, self._for_tab, 5),
+
+            self.__build_choice(self._tri_tab, self._for_tab, 7),
+
+            self._dbl_tab,
+            self._q_monika_static.format(self.__swap_eyes("d")),
+            "\n",
+
+            self._dbl_tab,
+            "0.05\n",
+
+            self._dbl_tab,
+            self._repeat,
+        ])
+
+    def __atlify_wink(self):
+        """
+        creates wink version of an ATL.
+        the ATL'd part is a normal eyes version of the spcode.
+
+        Returns wink ATL string
+        """
+        return "".join([
+            self._img_monika,
+            self.spcode,
+            self._onl,
+
+            self._tab,
+            self._block,
+            self._onl,
+
+            self._dbl_tab,
+            self._q_monika_static.format(self.spcode),
+            "\n",
+
+            self._dbl_tab,
+            "1\n",
+
+            self._dbl_tab,
+            self._q_monika.format(self.__swap_eyes("e"))
+        ])
+
+    def __build_choice(self, first_indent, sec_indent, num):
+        """
+        Builds a choice with teh appropriate num level
+        """
+        return "".join([
+            first_indent,
+            self._choice,
+            self._onl,
+
+            sec_indent,
+            str(num),
+            "\n"
+        ])
 
     def __process_blush(self, spcode, index, *prefixes):
         """
@@ -679,4 +845,9 @@ class StaticSprite(object):
         self.tears = tears
         return True, 1
 
-
+    def __swap_eyes(self, eyecode):
+        """
+        Returns a version of this sprite's spcode but with the given eyecode
+        instead.
+        """
+        return "".join([self.spcode[0], eyecode, self.spcode[2:]])
