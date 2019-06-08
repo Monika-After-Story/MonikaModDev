@@ -410,6 +410,20 @@ image monika 5ruu:
         0.05
         repeat
 
+image monika 5tsa:
+    block:
+        "monika 5tsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 5dsa_static"
+        0.05
+        repeat
+
 image monika 5tsbfu:
     block:
         "monika 5tsbfu_static"
@@ -491,6 +505,20 @@ image monika 5tubfu:
             choice:
                 7
         "monika 5dubfu_static"
+        0.05
+        repeat
+
+image monika 5wub:
+    block:
+        "monika 5wub_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 5dub_static"
         0.05
         repeat
 
