@@ -1564,7 +1564,7 @@ label monikaroom_greeting_opendoor_locked:
 label monikaroom_greeting_opendoor_locked_tbox:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "So...{w}you're back, [player]."
     else:
         m 6ekc "...Nice to see you again, [player]."
@@ -1599,7 +1599,7 @@ label monikaroom_greeting_opendoor_seen_partone:
         "Your room?":
             m 3hua "That's right!"
     m 3eua "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
-    m 1lksdla "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 1lksdla "However, I can only get in if you tell me 'goodbye' or 'goodnight' before you close the game."
     m 2eub "So please make sure to say that before you leave, okay?"
     m "Anyway..."
 

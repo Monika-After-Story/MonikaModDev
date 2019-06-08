@@ -281,7 +281,7 @@ label monika_changename:
         "No.":
             m 1ekc "Oh, I see..."
             m 1eka "You don't have to be embarrassed, [player]."
-            m 1eua "Just let me know if you had a change of heart, ok?"
+            m 1eua "Just let me know if you had a change of heart, okay?"
     return
 
 default persistent._mas_player_bday = None
@@ -1916,7 +1916,7 @@ label mas_bday_pool_happy_bday:
         m 1ekbfa "I can't thank you enough for loving me this much..."
 
     else:
-        m 1wkb "Aww, [player]!"
+        m 1wkb "Awww, [player]!"
         m 1wub "You remembered my birthday...!"
         m 1wktpa "Oh gosh, I'm so happy that you remembered."
         m 1dktda "I feel like today is going to be such a special day~"

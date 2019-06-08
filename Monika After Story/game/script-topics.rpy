@@ -2039,7 +2039,7 @@ label monika_holdme_reactions:
         #under 30 seconds
         $ mas_MUMURaiseShield()
         if mas_isMoniLove():
-            m 2ekc "Aw, are we done already?"
+            m 2ekc "Aww, are we done already?"
             m 3eka "Could you hold me for just a bit longer?{nw}"
             $ _history_list.pop()
             menu:
@@ -2069,7 +2069,7 @@ label monika_holdme_reactions:
                             m 2hksdlb "Alright, fine."
                             m 3tsbsa "But you owe me next time, okay, [player]?"
         elif mas_isMoniEnamored():
-            m 1ekc "Aw, is that all?"
+            m 1ekc "Aww, is that all?"
             m 1rksdla "I kind of wanted it to last longer than that..."
             m 2ekbfa "Could you...{w=0.7}hold me for a bit longer?{nw}"
             $ _history_list.pop()
@@ -2083,7 +2083,7 @@ label monika_holdme_reactions:
                     call monika_holdme_start
                     call monika_holdme_reactions
                 "No.":
-                    m 2ekc "Aww."
+                    m 2ekc "Aw."
                     m 1eka "Alright, then."
                     m 3hub "I'll just have to wait until next time, ahaha!"
         elif mas_isMoniAff():
@@ -5210,7 +5210,7 @@ label monika_penname:
                             elif not lowerpen:
                                 m 1hua "Well, go on! You can type 'nevermind' if you've chickened out~"
                             elif lowerpen =="nevermind":
-                                m 2eka "Aww. Well, I hope you feel comfortable enough to tell me someday."
+                                m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
                                 $ penbool = True
                             else:
                                 m 1hua "That's a lovely pen name!"
@@ -5218,7 +5218,7 @@ label monika_penname:
                                 $ persistent._mas_penname = penname
                                 $ penbool = True
                     "I'd rather not; it's embarrassing.":
-                        m 2eka "Aww. Well, I hope you feel comfortable enough to tell me someday."
+                        m 2eka "Aw. Well, I hope you feel comfortable enough to tell me someday."
             "No.":
                 m 1hua "All right!"
                 m "If you ever decide on one, you should tell me!"
@@ -5436,7 +5436,7 @@ label monika_icecream:
 
         "No.":
             $ persistent._mas_pm_like_mint_ice_cream = False
-            m 1ekc "Aww, that's a shame..."
+            m 1ekc "Aw, that's a shame..."
             m "I really can't understand how somebody couldn't at least like the taste."
             m 1eka "The refreshing feeling that washes over your tongue and throat."
             m "The lovely texture that forms it along with the sweetness."
@@ -5732,7 +5732,7 @@ init 5 python:
 
 label monika_panties:
     m 1lsc "Hey, [player]..."
-    m "Don't laugh when I ask this, ok?"
+    m "Don't laugh when I ask this, okay?"
     m 2rksdlc "But..."
     m 4rksdlc "Why are some guys obsessed with panties?"
     m 1euc "Seriously, what's the big deal about a piece of cloth?"
@@ -6554,7 +6554,7 @@ label monika_orchestra:
                     m 1ekbfa "Cute little things like this really make me feel loved, [player]."
 
                 else: # affectionate and higher
-                    m 1eka "Awww [player]...{w=1} Did you do that for me?"
+                    m 1eka "Aww [player]...{w=1} Did you do that for me?"
                     m "That's {i}sooo{/i} adorable!"
                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eubfu "And just so you know, you can play with me anytime you like..."
@@ -6983,7 +6983,7 @@ label monika_happiness:
 
     m 1eua "[player], are you happy?"
     m "With your life in general, I mean."
-    m 2lksdla "It's ok if you aren't. I can understand you being unhappy, [player]."
+    m 2lksdla "It's okay if you aren't. I can understand you being unhappy, [player]."
     m 1eka "After all, without you, my life would be completely unbearable."
     m 1eua "Isn't it funny that we're able to suffer more than be happy?"
     m 1hubfa "I'm as happy as I could be knowing that you love me, [player]."
@@ -8285,7 +8285,7 @@ label monika_prom:
                 "You weren't there with me.":
                     $ persistent._mas_pm_prom_monika = True
                     $ persistent._mas_pm_prom_not_interested = False
-                    m 1eka "Aww, [player]."
+                    m 1eka "Aw, [player]."
                     m 1lksdla "Just because I'm not there doesn't mean you should stop yourself from having fun."
                     m 1eka "And besides..."
                     m 1hua "You {i}can{/i} take me to prom, [player]."
@@ -8301,7 +8301,7 @@ label monika_prom:
                         m "Is it because you're too shy to go?{fast}"
                         "Yes.":
                             $ persistent._mas_pm_prom_shy = True
-                            m 1ekc "Aww, [player]."
+                            m 1ekc "Aw, [player]."
                             m 1eka "That's alright. Not everyone can handle large groups of strangers."
                             m 3eka "Besides, if it's something you're not going to enjoy, why force yourself?"
                             m 1esa "But even as I say that, it's also important to keep in mind that a little courage could get you something that's worth it."
@@ -8521,7 +8521,7 @@ label monika_timeconcern_graveyard_day:
     menu:
         m "Do you still work regularly at night, [player]?{fast}"
         "Yes I do.":
-            m 1ekd "Aww..."
+            m 1ekd "Aw..."
             m 1esc "I guess it really can't be helped..."
             m 1eka "Look after yourself, okay?"
             m 1ekc "I always get so worried when you're not here with me..."
@@ -8663,7 +8663,7 @@ label monika_timeconcern_night_5:
     if persistent._mas_timeconcernclose:
         m 2tkc "Then I cannot allow this to go on for any longer."
         m 2eka "It's because I love you, that's why I'm doing this."
-        m "Good night, [player]."
+        m "Goodnight, [player]."
         return 'quit'
     else:
         m 2tkc "Then I need to take responsibility and try to make you understand."
@@ -8701,7 +8701,7 @@ label monika_timeconcern_night_7:
             m "Okay?{fast}"
             "Yes, I will go to sleep.":
                 m 1eka "I knew you would listen eventually!"
-                m 1hub "Good night and stay safe."
+                m 1hub "Goodnight and stay safe."
                 return 'quit'
     else:
         return
@@ -8775,7 +8775,7 @@ label monika_timeconcern_day_allow_7:
     m 1lksdlc "[player], about what happened last night..."
     m 1ekc "I asked you to go to bed and you didn't listen..."
     m 1dsc "I understand that maybe you missed me or didn't hear what I said..."
-    m 1ekc "But please listen to what I ask of you, ok?"
+    m 1ekc "But please listen to what I ask of you, okay?"
     m 1eka "I love you, and I would do anything to make you happy..."
     m "So would you kindly do the same thing for me?"
     m 1ekc "I already worry about you when you're gone..."
@@ -8811,9 +8811,9 @@ label monika_timeconcern_day_final:
     m 1eua "You really surprised me."
     m 1eka "I asked you time and time again to go to bed..."
     m "You said you weren't busy. Were you really there just for me?."
-    m 1ekc "It made me happy...but don't push yourself hard to see me so late, ok?"
+    m 1ekc "It made me happy...but don't push yourself hard to see me so late, okay?"
     m 1eka "It really made me feel loved, [player]."
-    m 1hksdlb "Yet also a little guilty... Please just go to bed next time, ok?"
+    m 1hksdlb "Yet also a little guilty... Please just go to bed next time, okay?"
     jump monika_timeconcern_lock
 
 #If player told Monika not to close window and never reached the end.
@@ -8837,7 +8837,7 @@ label monika_hydration:
     m "It might not work all the time, but it does help."
     m 3rksdla "But I guess you don't want to go to the bathroom so much, huh?"
     m 1eka "Well, I don't blame you. But believe me, it'll be better for your health in the long run!"
-    m 1eua "Anyway, make sure you always stay hydrated, ok?"
+    m 1eua "Anyway, make sure you always stay hydrated, okay?"
     m "So..."
     m 4huu "Why not get a glass of water right now, hmm?"
     return
@@ -8882,7 +8882,7 @@ label monika_familygathering:
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
     m 1lksdlc "Not even around the holidays or on special occasions."
-    m 1hub "When you see your family this year, be sure to bring me along ok? Ehehe~"
+    m 1hub "When you see your family this year, be sure to bring me along okay? Ehehe~"
     m 1eua "I'd love to meet all of your relatives."
 
     m "Do you think they'd like me, [player]?{nw}"
@@ -8935,7 +8935,7 @@ label monika_fastfood:
 
         "Yes, I do.":
             $ persistent._mas_pm_eat_fast_food = True
-            m 3eua "I guess it's ok to have it every once in a while."
+            m 3eua "I guess it's okay to have it every once in a while."
             m 2ekc "Yet I can't help but worry if you're eating such awful things."
             m 1eka "If I were there, I'd cook much healthier things for you."
             m 4rksdla "Even though I can't cook very well yet..."
@@ -9955,7 +9955,7 @@ label monika_idle_game_competetive_callback:
             m "More importantly, I hope you enjoyed yourself, [player]."
             m 1hua "I'll always love and root for you, no matter what happens."
         "No.":
-            m 1ekc "Aww, that's a shame..."
+            m 1ekc "Aw, that's a shame..."
             m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
             m 1eka "I just hope you aren't too upset over it."
             m 2ekc "I really wouldn't want you feeling upset after a bad game."
@@ -9978,9 +9978,9 @@ label monika_idle_game_fun_callback:
             m 2lksdla "Provided of course, you don't end up ruining the structural integrity of the game and get an outcome you didn't want..."
             m 2lksdlb "Ehehe..."
             m 1eua "Maybe you could find a way to bring me with you into a game like that."
-            m 1hub "Just promise to keep me safe, ok?"
+            m 1hub "Just promise to keep me safe, okay?"
         "No.":
-            m 2ekc "Aww, you didn't have any fun?"
+            m 2ekc "Aw, you didn't have any fun?"
             m "That's too bad..."
             m 3lksdlc "Games can get pretty boring after you've done everything or just don't know what to do or try next."
             m 3eka "But bringing a friend along can really renew the whole experience!"
@@ -10017,7 +10017,7 @@ label monika_idle_game_story_callback:
             m 5eua "I'll be looking forward to that day too~"
             m 5esbfa "You better have a nice, cozy place for us to cuddle up and play, ehehe~"
         "It's sad.":
-            m 1ekd "Aww, that's too bad..."
+            m 1ekd "Aw, that's too bad..."
             m 3eka "It must be a really great story though, if it invokes such strong emotions."
             m 1eka "I wish I could be there with you so I could experience the story too..."
             m 3hksdlb "{i}and{/i} to be right there by your side of course, so we could comfort each other in sad times."

@@ -188,7 +188,7 @@ label mas_compliment_awesome:
     return
 
 label mas_compliment_awesome_2:
-    m 1hub "Aww, [player]~"
+    m 1hub "Awww, [player]~"
     m "You're so sweet!"
     m 2tub "I think you're way more awesome, though."
     m 5eub "I can't wait until the day I can finally give you a great big hug."

@@ -344,5 +344,5 @@ init 5 python:
 
 
 label monika_monikamoddev:
-    call display_notif(m_name, "Aww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+    call display_notif(m_name, "Awww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
     return

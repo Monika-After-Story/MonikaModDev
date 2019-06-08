@@ -323,7 +323,7 @@ label mas_piano_hb_fc:
 label mas_piano_hb_prac:
     if mas_isMonikaBirthday():
         if mas_isplayer_bday():
-            m 1eka "Aw, you're trying the Birthday Song on our birthday, [player]!"
+            m 1eka "Aww, you're trying the Birthday Song on our birthday, [player]!"
             m 3hua "Keep trying, I know you can do it!"
         else:
             m 1eua "Thanks for trying to play this one on my birthday!"
