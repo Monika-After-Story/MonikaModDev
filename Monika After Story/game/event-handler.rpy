@@ -1161,9 +1161,9 @@ init python:
     import datetime
 
     def addEvent(
-            event, 
+            event,
             eventdb=None,
-            skipCalendar=False, 
+            skipCalendar=False,
             code="EVE"
         ):
         #
@@ -1861,7 +1861,7 @@ label call_next_event:
         if (
                 not store.mas_globals.in_idle_mode
                 and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
-                and not (event_label.startswith("greeting_") or event_label.startswith("bye_"))
+                and not mas_isRstBlk(event_label)
             ):
             #Create a new notif
             call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")

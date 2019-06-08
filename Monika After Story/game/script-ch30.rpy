@@ -758,6 +758,19 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 morning_flag = False
                 monika_room = "monika_room"
 
+        ## are we hiding monika
+        if not hide_monika:
+            if force_exp is None:
+#                force_exp = "monika idle"
+                if dissolve_all:
+                    force_exp = store.mas_affection._force_exp()
+
+                else:
+                    force_exp = "monika idle"
+
+            if not renpy.showing(force_exp):
+                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+
         # if we onyl want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
             mas_drawSpaceroomMasks(dissolve_masks)
@@ -777,19 +790,6 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 )
                 mas_calShowOverlay()
 
-        ## are we hiding monika
-        if not hide_monika:
-            if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
-
-                else:
-                    force_exp = "monika idle"
-
-            if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
-#            show monika idle at t11 zorder MAS_MONIKA_Z
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -1499,7 +1499,7 @@ label ch30_post_mid_loop_eval:
             $ mas_randchat.setWaitingTime()
 
         window auto
-        
+
 #        python:
 #            if (
 #                    mas_battery_supported
