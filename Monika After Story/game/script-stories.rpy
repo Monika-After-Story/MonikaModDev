@@ -129,7 +129,7 @@ label mas_stories_start(scary=False):
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
 
     # return value?
     if _return:
@@ -377,7 +377,7 @@ init 5 python:
 label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
-    m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 1euc "The Man's hair was turning gray, which the young Wife did not like, as it made him look too old."
     m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
@@ -466,7 +466,7 @@ label mas_scary_story_setup:
     $ mas_changeWeather(mas_weather_rain)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = True
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc')
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
 #    $ songs.current_track = songs.FP_NO_SONG
@@ -506,7 +506,7 @@ label mas_scary_story_cleanup:
     $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc')
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 

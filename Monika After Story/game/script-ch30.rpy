@@ -23,11 +23,11 @@ init -1 python in mas_globals:
     # TRue means show the vignette mask, False means no show
 
     show_lightning = False
-    # True means show lightening, False means do not
+    # True means show lightning, False means do not
 
-    lightning_chance = 6
+    lightning_chance = 16
     lightning_s_chance = 10
-    # lghtning chances
+    # lightning chances
 
     show_s_light = False
     # set to True to show s easter egg.
@@ -199,7 +199,7 @@ init -10 python:
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
-            
+
 
     mas_idle_mailbox = MASIdleMailbox()
 
@@ -700,6 +700,15 @@ init python:
             persistent.game_unlocks[gamename] = True
 
 
+    def mas_check_player_derand():
+        """
+        Checks the player derandom dict for events that are not random and derandoms them
+        """
+        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
+            if ev.random:
+                ev.random = False
+
+
 init 1 python:
     morning_flag = mas_isMorning()
 
@@ -818,11 +827,12 @@ label ch30_main:
     $ m_name = persistent._mas_monika_nickname
     $ delete_all_saves()
     $ persistent.clear[9] = True
-    play music m1 loop # move music out here because of context
+
+    # call reset stuff
+    call ch30_reset
 
     # set monikas outfit to default
     $ monika_chr.reset_outfit(False)
-
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
@@ -851,7 +861,7 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
-    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc")
+    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc_static")
 
     # lets just call the intro instead of pushing it as an event
     # this is way simpler and prevents event loss and other weird inital
@@ -1327,6 +1337,12 @@ label ch30_preloop:
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
  
+    #Unlock windowreact topics
+    $ mas_resetWindowReacts()
+
+    #Then prepare the notifs
+    $ mas_updateFilterDict()
+
     # save here before we enter the loop
     $ renpy.save_persistent()
 
@@ -1421,6 +1437,12 @@ label ch30_visual_skip:
             # run seasonal check
             mas_seasonalCheck()
 
+            #Clear the notifications tray
+            mas_clearNotifs()
+
+            #Now we check if we should queue windowreact evs
+            mas_checkForWindowReacts()
+
             # check if we need to rebulid ev
             if mas_idle_mailbox.get_rebuild_msg():
                 mas_rebuildEventLists()
@@ -1446,12 +1468,10 @@ label ch30_post_mid_loop_eval:
         # Wait 20 to 45 seconds before saying something new
         window hide(config.window_hide_transition)
 
-        # Thunder / lightening if enabled
+        # Thunder / lightning if enabled
         if (
                 store.mas_globals.show_lightning
-                and renpy.random.randint(
-                    1, store.mas_globals.lightning_chance
-                ) == 1
+                and renpy.random.randint(1, store.mas_globals.lightning_chance) == 1
             ):
             if (
                     not persistent._mas_sensitive_mode
@@ -1466,7 +1486,7 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
-        
+
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
@@ -1477,7 +1497,7 @@ label ch30_post_mid_loop_eval:
             jump post_pick_random_topic
         else:
             $ mas_randchat.setWaitingTime()
-        
+
         window auto
         
 #        python:
@@ -1654,24 +1674,32 @@ label ch30_reset:
                 renpy.save_persistent()
 #        mas_is_snowing = mas_isWinter()
 #        if mas_is_snowing:
-#            
+#
 #            mas_lockEVL("monika_rain_start", "EVE")
 #            mas_lockEVL("monika_rain_stop", "EVE")
 #            mas_lockEVL("mas_monika_islands", "EVE")
 #            mas_lockEVL("monika_rain", "EVE")
 #            mas_lockEVL("greeting_ourreality", "GRE")
 
+    #### SPRITES
+
     # reset hair / clothes
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
-    
-    # same with the def ribbon, should always be unlocked
+
+    # def ribbon always unlocked
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
+
+    ## custom sprite objects 
+    python:
+        store.mas_selspr._validate_group_topics()
 
     # monika hair/acs
     $ monika_chr.load(startup=True)
- 
+
+    #### END SPRITES
+
     ## accessory hotfixes
     # mainly to re add accessories that may have been removed for some reason
     # this is likely to occur in crashes / reloads
@@ -1788,6 +1816,18 @@ label ch30_reset:
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
 
+    ## reactions fix
+    python:
+        if persistent._mas_filereacts_just_reacted:
+            queueEvent("mas_reaction_end")
+
+    # set any prompt variants for acs that can be removed here
+    python:
+        if monika_chr.get_acs_of_type('left-hair-clip'):
+            mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        else:
+            mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might
     # undo stuff from above
@@ -1795,5 +1835,8 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+    # make sure nothing the player has derandomed is now random
+    $ mas_check_player_derand()
 
     return

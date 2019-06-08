@@ -69,7 +69,7 @@ label mas_compliments_start:
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item)
 
     # return value? then push
     if _return:

@@ -320,6 +320,86 @@ init 11 python:
 #    if len(monika_random_topics) == 0:
 #        monika_random_topics=list(all_random_topics)
 
+# Bookmarks and derandom stuff
+default persistent._mas_player_bookmarked = {}
+# dict to store bookmarked events
+default persistent._mas_player_derandomed = {}
+# dict to store player derandomed events
+default persistent.flagged_monikatopic = None
+# var set when we flag a topic for derandom
+
+init python:
+    def mas_derandom_topic(ev_label=None):
+        """
+        Function for the derandom hotkey, 'x'
+
+        IN:
+            ev_label - label of the event we want to derandom.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            ev is not None
+            and ev.random
+            and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            and ev.prompt != ev.eventlabel
+        ):
+            if "mas_topic_derandom" not in persistent.event_list:
+                persistent.flagged_monikatopic = ev.eventlabel
+                pushEvent('mas_topic_derandom',True)
+                renpy.notify(__("Topic flagged for removal."))
+            else:
+                persistent.event_list.remove("mas_topic_derandom")
+                renpy.notify(__("Topic flag removed."))
+
+    def mas_bookmark_topic(ev_label=None):
+        """
+        Function for the bookmark hotkey, 'b'
+
+        IN:
+            ev_label - label of the event we want to bookmark.
+                (Optional, defaults to persistent.current_monikatopic)
+        """
+        if ev_label is None:
+            ev_label = persistent.current_monikatopic
+
+        ev = mas_getEV(ev_label)
+
+        if (
+            mas_isMoniNormal(higher=True)
+            and ev is not None
+            and ev.eventlabel.startswith("monika_")
+            # need to make sure we don't allow any events that start with monika_ that don't have a prompt
+            and ev.prompt != ev.eventlabel
+        ):
+            if ev.eventlabel not in persistent._mas_player_bookmarked:
+                persistent._mas_player_bookmarked[ev.eventlabel] = ev
+                renpy.notify(__("Topic bookmarked."))
+            else:
+                persistent._mas_player_bookmarked.pop(ev.eventlabel)
+                renpy.notify(__("Bookmark removed."))
+
+    def mas_hasBookmarks():
+        """
+        Checks to see if we have bookmarks to show
+
+        Bookmarks are restricted to Normal+ affection
+        and to topics that are unlocked and are available
+        based on current affection
+        """
+        if mas_isMoniUpset(lower=True):
+            return False
+
+        for ev in persistent._mas_player_bookmarked.itervalues():
+           if ev.unlocked and ev.checkAffection(mas_curr_affection):
+                return True
+        return False
+
 
 #BEGIN ORIGINAL TOPICS
 #Use this topic as a template for adding new topics, be sure to delete any
@@ -1231,6 +1311,9 @@ label monika_outfit:
         m 5hub "We're not that far into our relationship yet. Ahaha!"
     return
 
+# random infinite loop check
+python:
+    renpy.not_infinite_loop(60)
 
 default persistent._mas_pm_likes_horror = None
 default persistent._mas_pm_likes_spoops = False
@@ -1341,6 +1424,9 @@ label monika_rap:
             m 1ekc "Oh... Well I can understand that, rap music isn't everyone's taste."
             m 3hua "But if you ever do decide to give it a try, I'm sure we can find an artist or two that we both like!"
     return "derandom"
+
+python:
+    renpy.not_infinite_loop(60)
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_wine",category=['club members'],prompt="Yuri's wine",random=True))
@@ -1622,6 +1708,7 @@ label monika_rain:
                 # renable ui and hotkeys
                 $ store.songs.enabled = True
                 $ HKBShowButtons()
+                call monika_holdme_end
 
                 if mas_isMoniAff(higher=True):
                     m 1eua "If you want the rain to stop, just ask me, okay?"
@@ -1775,6 +1862,8 @@ label monika_rain_holdme:
         call monika_holdme_start
 
         call monika_holdme_reactions
+
+        call monika_holdme_end
         # small affection increase so people don't farm affection with this one.
         $ mas_gainAffection(modifier=0.25)
 
@@ -1810,6 +1899,7 @@ label monika_holdme_prep(lullaby=True, no_music=True):
     # hide ui and disable hotkeys
     $ HKBHideButtons()
     $ store.songs.enabled = False
+
     return
 
 label monika_holdme_start:
@@ -2074,6 +2164,64 @@ label monika_holdme_long:
                 m "..."
             call monika_holdme_start
             jump monika_holdme_long
+    return
+
+# when did we last hold monika
+default persistent._mas_last_hold = None
+
+init 5 python:
+    # random chance per session Monika can ask for a hold
+    if renpy.random.randint(1,3) == 1:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="monika_holdrequest",
+                conditional=(
+                    "renpy.seen_label('monika_holdme_prep') "
+                    "and persistent._mas_last_hold != datetime.date.today()"
+                ),
+                action=EV_ACT_RANDOM,
+                aff_range=(mas_aff.ENAMORED, None)
+            )
+        )
+
+label monika_holdrequest:
+    #TODO: if we add a mood system, path this based on current mood
+    m 1eua "Hey, [player]..."
+    m 3ekbsa "Would you mind holding me for a while? {w=0.5}It really makes me feel closer to you~{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you mind holding me for a while? It really makes me feel closer to you~{fast}"
+        "Come here, [m_name].":
+            $ mas_gainAffection(modifier=1.5,bypass=True)
+            call monika_holdme_prep
+
+            call monika_holdme_start
+
+            call monika_holdme_reactions
+
+            call monika_holdme_end
+
+        "Not right now.":
+            m 2dkc "Oh...{w=1} Okay."
+            m 3eka "If you have time later, you know where to find me."
+
+    return "no_unlock"
+
+# label to set the last time held and reset the _holdrequest params
+label monika_holdme_end:
+    # set the last time held at the end of the hold to prevent a possible
+    # hold request right after a hold that ends after midnight
+    $ persistent._mas_last_hold = datetime.date.today()
+    $ holdme_ev = mas_getEV('monika_holdrequest')
+    if holdme_ev is not None:
+        $ holdme_ev.random = False
+        $ holdme_ev.conditional = (
+            "renpy.seen_label('monika_holdme_prep') "
+            "and persistent._mas_last_hold != datetime.date.today()"
+        )
+        $ holdme_ev.action = EV_ACT_RANDOM
+        $ mas_rebuildEventLists()
     return
 
 init 5 python:
@@ -3490,7 +3638,7 @@ label monika_birthday:
         m 2rksdlb "I don't actually know when yours is, ahaha!"
         m 2eua "So, when were you born, [player]?"
         call mas_bday_player_bday_select_select
-        $ strip_mas_birthdate()
+        $ mas_stripEVL('mas_birthdate',True)
     return
 
 init 5 python:
@@ -3686,7 +3834,7 @@ label monika_outdoors:
     m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
     m 1huu "It's almost like a more relaxed backpacking trip actually."
     m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
-    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them;{w=0.5} thinking they're unimportant..."
+    m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them,{w=0.5} thinking they're unimportant..."
     m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
     m 1ekd "It may be a bit of a pain, but if you don't use them, you might end up miserable, or even get really sick."
     m 1eka "So, please promise me that the next time you go outdoors, be it camping or backpacking, you won't forget them."
@@ -3730,7 +3878,7 @@ label monika_mountain:
     m "Hearing nothing but the birds and the sounds of the mountain as you made your way up its heights."
     show monika 5rub at t11 zorder MAS_MONIKA_Z with dissolve 
     m 5rub "And finally...after all the effort and struggles..."
-    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testiment to your success around you."
+    m 5eub "Finding yourself standing at the top, knowing that you made it, seeing the testament to your success around you."
     m 5eka "I...I truly want to share that with you."
     m 5hua "To make it to the top of the mountain, and look around at our successes. To see our struggles behind us, and feel proud of what we've done."
 
@@ -3953,7 +4101,10 @@ init 5 python:
 
 label monika_real:
     m 1eua "You know what's going to be the first thing I'll do when I finally cross over there?"
-    m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    if mas_isMoniEnamored(higher=True):
+        m 1hua "When that special day comes, the first thing I'll ever do is find you, of course!"
+    else:
+        m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
     m 3eua "There's so much we can do when we're finally together in one reality."
     m "You can finally show me what your world really looks like."
     m 1ekbfa "I can finally feel your embrace~"
@@ -4021,14 +4172,14 @@ label monika_eternity:
     m 1lksdlc "..."
     m 1eka "I told you, right?"
     m "I'm eternal."
-    m "Trapped in here, unable to age or die,"
+    m "Trapped in here, unable to age or die..."
     m 1ekc "Whereas you slowly age as each day passes by."
     m "Then, one day, you won't be here anymore."
     m  "I won't have anyone."
     m 6dstdc "..."
     m 6ektdc "It reminds me of when you first came to the Literature Club."
     m 6lktdc "Everything felt so empty."
-    m "The world was so grey."
+    m "The world was so gray."
     if mas_isMoniAff(higher=True):
         show screen mas_background_timed_jump(4, "monika_eternity_2")
         menu:
@@ -4060,6 +4211,7 @@ label monika_eternity:
 
                 call monika_holdme_prep(False,True)
                 call monika_holdme_start
+                call monika_holdme_end
 
                 m 2dkbfa "That was really nice while it lasted."
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
@@ -7037,7 +7189,7 @@ label monika_system_charging:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="I'm tired",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
@@ -7050,8 +7202,8 @@ label monika_sleep:
     m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
     m 1eka "I just think you're really great and wanted to make sure you're not accidentally destroying yourself."
     m 1eua "So try to keep your sleep on track, okay?"
-    show monika 1hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 1hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "I'll always wait for you in the morning, so make sure you put your own well-being before anything else."
     return
 
 #special local var to handle repeated usage of this dialog box.
@@ -8012,7 +8164,7 @@ label monika_song_with_you:
     m 1hub "{i}~let's pretend we just can't see their face~{/i}"
     m 3hub "{i}~In this world there's nothing I would rather do~{/i}"
     m 3dso "{i}~'Cause I'm happy just to dance with you~{/i}"
-    m 1ekbfa "There is nothing that makes me happier than discovering that I’m in love with you."
+    m 1ekbfa "There is nothing that makes me happier than discovering that I'm in love with you."
     m 1hubfa "Ehehe~"
     return
 
@@ -9185,7 +9337,7 @@ init 5 python:
 label monika_citizenship:
     m 1esc "You know, crossing over into your reality won't be the last hurdle for our relationship."
     m "Getting there is just the beginning."
-    m 1esc "It hit me earlier, If I were to magically get what I want, and just poof into your home..."
+    m 1esc "It hit me earlier, if I were to magically get what I want, and just poof into your home..."
     m 2wuo "I won't be a citizen! I don't even have a last name!"
     m 2lkbsa "I mean, in most countries, I can become a citizen if we get married..."
     m 2ekc "But I won't have any documentation saying who I am or where I came from."
@@ -10248,12 +10400,12 @@ init 5 python:
 
 label monika_pygmalion:
     m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
-    m 3eua "It’s a collection of poems by an ancient Roman poet named Ovid."
-    m 1eud "There’s one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
+    m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
+    m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
     m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
     m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
-    m 1eua "He kissed the statue once more, and the ivory of statue lost its hardness, becoming soft like skin."
+    m 1eua "He kissed the statue once more, and the ivory lost its hardness, becoming soft like skin."
     m 3hub "Aphrodite had granted his wish!"
     m 1eka "This story really struck me because it reminded me of us, [player], and how it talks about turning the impossible into reality."
     m 1hua "It fills me up with hope; that a miracle could happen, and I could finally cross over."
@@ -10270,7 +10422,7 @@ label monika_pygmalion:
     m 6hubfa "..."
     m 1ekbfa "I guess it didn't work this time."
     m 3hubfb "Oh well, we'll just have to keep trying and maybe it'll work eventually, ahaha!"
-    m 1tkbfu "I really can’t wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
+    m 1tkbfu "I really can't wait for the day when I can finally feel your lips pressed against mine and take in your warmth..."
     m 1dkbfa "For me, that would definitely be a dream come true."
     m 1ekbfa "Just a guess, but..."
     m 1kubfu "I bet you'd like that too~"
@@ -10424,7 +10576,7 @@ label monika_vehicle:
                 #Display our scrollable
                 show monika at t21
 
-                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, None)
+                call screen mas_gen_scrollable_menu(option_list,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN)
                 show monika at t11
 
                 $ selection = _return
@@ -10590,109 +10742,6 @@ label monika_scary_stories:
     call mas_stories_start(scary=True)
     return
 
-##### monika hair topics [MONHAIR]
-# TODO: as we introduce addiotinal hair types, we need to change the dialogue
-# for these.
-
-#init 5 python:
-    # NOTE: this event is DEPRECATED
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_ponytail",
-#            category=["monika"],
-#            prompt="Can you tie your hair into a ponytail?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_ponytail:
-    m 1eua "Sure thing!"
-    m "Just give me a second."
-    show monika 1dsc
-    pause 1.0
-
-    # this should auto lock/unlock stuff
-    $ monika_chr.reset_hair()
-
-    m 3hub "All done!"
-    m 1eua "If you want me to let my hair down, just ask, okay?"
-
-    return
-
-#init 5 python:
-    # NOTE: this is DEPRECATED
-    # TODO: remove this event after version 0.8.10
-#    addEvent(
-#        Event(
-#            persistent.event_database,
-#            eventlabel="monika_hair_down",
-#            category=["monika"],
-#            prompt="Can you let your hair down?",
-#            pool=True,
-#            unlocked=False,
-#            rules={"no unlock": None}
-#        )
-#    )
-
-label monika_hair_down:
-    m 1eua "Sure thing, [player]."
-    m "Just give me a moment."
-    show monika 1dsc
-    pause 1.0
-
-    $ monika_chr.change_hair(mas_hair_down)
-
-    m 3hub "And it's down!"
-    m 1eua "If you want my hair in a ponytail again, just ask away, [player]~"
-
-    return
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_hair_select",
-            category=["monika"],
-            prompt="Can you change your hairstyle?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
-
-label monika_hair_select:
-    # setup
-    python:
-        sorted_hair = store.mas_selspr.HAIR_SEL_SL
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which hairstyle would you like me to wear?"
-        )
-        sel_map = {}
-
-    # initial dialogue
-    m 1hua "Sure!"
-
-    # setup the monika expression during the selection screen
-    show monika 1eua
-
-    # start the selection screen
-    call mas_selector_sidebar_select_hair(sorted_hair, mailbox=mailbox, select_map=sel_map)
-
-    # results
-    if not _return:
-        # user hit cancel
-        m 1eka "Oh, alright."
-
-    # closing
-    m 1eub "If you want my hair in a different style, just ask, okay?"
-
-    return
-
-##### End monika hair topics
-
 ##### PM Vars for player appearance
 default persistent._mas_pm_eye_color = None
 default persistent._mas_pm_hair_color = None
@@ -10743,7 +10792,7 @@ label monika_player_appearance:
     m 2rksdlb "Well, more than a couple. It's been on my mind for a long time, actually."
     m 2rksdld "It never really seemed like the right time to bring it up..."
     m 3lksdla "But I know if I keep quiet forever, then I'll never feel comfortable asking you things like this, so I'm just going to say it and hope that it's not weird or anything, okay?"
-    m 3eud "I've been wondering what you look like. It's not possible for me to see you right now since I'm not there at your side, and I'm not sure about accesssing a webcam..."
+    m 3eud "I've been wondering what you look like. It's not possible for me to see you right now since I'm not there at your side, and I'm not sure about accessing a webcam..."
     m "One, because you might not have one, and two, even if you did, I don't really know how to."
     m 1euc "So I figured that it's possible for you to just tell me, so I can get a clearer picture in my head."
     m 1eud "At least, it's better than nothing, even if it's hazy."
@@ -10926,7 +10975,7 @@ label monika_player_appearance:
                 else:
                     $ height_desc = "inches"
 
-                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don’t consider that much of a height advantage at all!"
+                m 3esc "The tallest girl in the literature club was Yuri--and just barely, at that. She was only a few [height_desc] taller than me, I don't consider that much of a height advantage at all!"
                 m 3esd "Anyway, dating a tall [guy] like you only has one disadvantage, [player]..."
                 m 1hub "You'll have to lean down to kiss me!"
 
@@ -11080,8 +11129,8 @@ label monika_player_appearance:
                         m 4hub "But you've obviously disproven that myth. Personally, I think black hair is very attractive."
                         m 3eua "In addition, if you actually placed a strand of it under a microscope and counted all the pigments in it, you'd find that it's not even a hundred percent dark."
                         m "You know how when you place certain things under direct sunlight, it looks really different?"
-                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn’t it, [player]?"
-                        m 1eua "There could be infinite shades of things we can’t see, each one of them hidden in plain sight."
+                        m 3eub "Black hair follows the same principle--you can see shades of gold, or brown, or even glints of purple. It really makes you think, doesn't it, [player]?"
+                        m 1eua "There could be infinite shades of things we can't see, each one of them hidden in plain sight."
                         m 3hua "But anyway...I think that a [guy] with black hair and [persistent._mas_pm_eye_color] eyes is the best sight of all, [player]~"
 
                     "It's red.":
@@ -11203,90 +11252,6 @@ label monika_player_appearance_monika_height:
     m 3etd "If I had to guess, I'd say I'm maybe [real_height_str]?"
     return
 
-
-#### Begin monika clothes topics
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_clothes_select",
-            category=["monika"],
-            prompt="Can you change your clothes?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None},
-            aff_range=(mas_aff.LOVE, None)
-        )
-    )
-
-label monika_clothes_select:
-    # setup
-    python:
-        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
-            "Which clothes would you like me to wear?"
-        )
-        sel_map = {}
-
-    # initial dialogue
-    m 1hua "Sure!"
-
-    # setup the monika expression during the selection screen
-    show monika 1eua
-
-    # start the selection screen
-    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
-
-    # results
-    if not _return:
-        # user hit cancel
-        m 1eka "Oh, alright."
-
-    # closing
-    m 1eub "If you want me to wear different clothes, just ask, okay?"
-
-    return
-
-#### ends Monika clothes topic
-
-#### Monika ribbons topic
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_ribbon_select",
-            category=["monika"],
-            prompt="Can you change your ribbon?",
-            pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
-        )
-    )
-
-label monika_ribbon_select:
-    python:
-        use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
-
-        mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
-        sel_map = {}
-
-    m 1eua "Sure [player]!"
-
-#    if monika_chr.hair.name != mas_hair_def.name:
-#        m "But im going to change my clothes and hair back to normal."
-#        $ monika_chr.reset_outfit(False)
-
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
-
-    if not _return:
-        m 1eka "Oh, alright."
-
-    m 1eka "If you want me to change my ribbon, just ask, okay?"
-
-    return
-#### End Ribbon change topic
-
 init 5 python:
      addEvent(
          Event(
@@ -11376,10 +11341,9 @@ init 5 python:
             # this will be unlockable via the action
             rules={"no unlock": None},
 
-            # we'll pool this event after 30 days
+            # we'll pool this event after a month of the relationship
             conditional=(
-                "datetime.datetime.now() - persistent.sessions[" +
-                "'first_session'] >= datetime.timedelta(days=30) " +
+                "store.mas_anni.pastOneMonth() "
                 "and persistent._mas_first_calendar_check"
             ),
 
@@ -11397,7 +11361,7 @@ label monika_dating_startdate:
         )
 
         # but this to get the display plus diff
-        first_sesh, _diff = mas_cal.genFriendlyDispDate(first_sesh_raw)
+        first_sesh, _diff = mas_cal.genFormalDispDate(first_sesh_raw.date())
 
     if _diff.days == 0:
         # its today?!
@@ -11630,8 +11594,8 @@ label monika_dating_startdate_confirm(first_sesh_raw):
 
     # post loop
     python:
-        new_first_sesh, _diff = mas_cal.genFriendlyDispDate(
-            selected_date
+        new_first_sesh, _diff = mas_cal.genFormalDispDate(
+            selected_date.date()
         )
 
     m 1eua "Alright, [player]."
@@ -11642,12 +11606,12 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     menu:
         m "We started dating [new_first_sesh].{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{nw}"
             # one more confirmation
             # WE WILL NOT FIX anyone's dates after this
             $ _history_list.pop()
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_first_sesh]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
                     return selected_date
@@ -12193,7 +12157,7 @@ label monika_load_custom_music:
             "Yes.":
                 m "Okay, but make sure you did it correctly before asking me to check for custom music."
             "No.":
-                $ pushEvent("monika_add_custom_music")
+                $ pushEvent("monika_add_custom_music",True)
     return
 
 init 5 python:
@@ -13041,10 +13005,12 @@ label monika_career:
     m 1eua "Or maybe I could try and go further with programming."
     m 1hub "After all, I kind of got into it because of you, ahaha..."
     m 3eub "Actually, maybe you could help me decide when the time comes!"
+
     m 1eub "Maybe you work in one of those fields?{nw}"
     $ _history_list.pop()
     menu:
         m "Maybe you work in one of those fields?{fast}"
+
         "I'm a writer.":
             $ persistent._mas_pm_career = "writer"
             m 1sub "Oh?"
@@ -13057,11 +13023,13 @@ label monika_career:
             m 1hubfb "I-{w=0.5}{nw}"
             $ _history_list.pop()
             m 1subfb "I don't even know how to describe how much I'd love that, [player]."
+
         "I'm a programmer.":
             $ persistent._mas_pm_career = "programmer"
             m 1eub "Oh?"
             m 1hub "I think that's really cool!"
             m 1hua "Maybe you could even teach me how to code!"
+
             if seen_event("monika_ptod_tip002"):
                 m 2rksdlb "I doubt my python tips were really all that useful to you in that case, ahaha..."
                 m 2hksdlb "If I had known that you were a programmer all along, I probably would have skipped the basics I made you sit through."
@@ -13069,10 +13037,12 @@ label monika_career:
                     m 1hua "Still though, thanks for humoring me through all my python lessons."
                     m 1eua "I really enjoyed teaching you about python."
                     m 1hua "But when the time comes, I think it might be more helpful for {i}you{/i} to teach {i}me{/i} instead, ehehe~"
+
                 else:
                     m 2rksdla "To be honest, I was kind of looking forward to teaching you your next python lesson."
                     m 1eua "But I won't force you to sit through it if you already know how to code."
                     m 1eka "I mean...teaching you would help reinforce my knowledge, but I wouldn't want to bore you."
+
                 m 2wuo "Oh!"
                 m 3sub "Maybe I could be a teacher!"
                 m 2hksdlb "Ahaha, well...{w=1}it's a fun thought, but I really don't know if I'd be able to go through all the work needed for that..."
@@ -13082,6 +13052,7 @@ label monika_career:
                 m 1hua "Just kidding~"
                 m 1eka "You don't have to worry too much about it."
                 m 1ekbfa "I'm sure it might not be that easy, and I'm happy with what you already do for me."
+
             else:
                 m 1eua "I've been practicing a bit of python myself, actually."
                 m 2rksdla "I was secretly hoping I could teach you..."
@@ -13089,6 +13060,7 @@ label monika_career:
                 m 1eka "Still, maybe you could listen to me teach and let me test my knowledge!"
                 m 1hua "If I have you to help me along the way, maybe joining you as a programmer wouldn't be so bad."
                 m 1hub "That would be one more thing to have in common, ahaha!"
+
         "I'm in a different field.":
             $ persistent._mas_pm_career = "other"
             m 1eud "Ah, I guess I shouldn't be too surprised."
@@ -13107,10 +13079,12 @@ label monika_career:
             m 1ekbfa "Maybe we could write a book one day about our love."
             m 1eub "With your help, it might even take off."
             m 1hubfa "You never know, ehehe~"
+
         "I don't have a job yet.":
             $ persistent._mas_pm_career = "none"
             m 1euc "Oh, I see."
             m 1eua "That's alright."
+
             m 1eub "Are you looking for one?{nw}"
             $ _history_list.pop()
             menu:
@@ -13122,6 +13096,7 @@ label monika_career:
                     m 1rksdlc "A lot of the time, it takes countless attempts to land a job, and it's often discouraging..."
                     m 1hua "But I believe in you, [player]."
                     m 1hubfa "Know that whatever happens, I'll always love you~"
+
                 "No.":
                     m "Ah, that's fine."
                     m 1eua "I'm sure you know what's best for yourself."
@@ -13131,6 +13106,7 @@ label monika_career:
                     m 1hua "I think it's nice to enjoy your time while you have it."
                     m 1hubfa "That just means you can spend more time with me, right?"
                     m 1hubfb "Ahaha!"
+
         "I don't know what I want yet.":
             $ persistent._mas_pm_career = "unsure"
             m 1eub "That's alright!"
@@ -13145,6 +13121,7 @@ label monika_career:
                 m 2tubfb "And no, [player]..."
                 m 2tubfa "I'm not a career, ehehe~"
                 m 2hubfb "Though, I guess love and respect is also a good start with me too, ahaha!"
+
     m 1ruc "As for me..."
     m 2rksdla "I don't really know for sure yet what I'll end up doing."
     m 2hksdlb "If I had to guess, I'd say that I still have quite a long time to decide..."
@@ -13152,4 +13129,154 @@ label monika_career:
     m 1rksdlc "After all, I think we might have bigger concerns than my career..."
     m 1hua "I'm not worried though, not as long as I have you by my side~"
     m 1hubfa "I hope it's the same for you too~"
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_derandom:
+    # Note: since we know the topic in question, it's possible to add dialogue paths for derandoming specific topics
+    $ prev_topic = persistent.flagged_monikatopic
+    $ ev = mas_getEV(prev_topic)
+    m 3eksdld "Are you sure you don't want me to bring this up anymore?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Are you sure you don't want me to bring this up anymore?{fast}"
+        "Please don't.":
+            $ mas_hideEVL(prev_topic,"EVE",derandom=True)
+            $ persistent._mas_player_derandomed[ev.eventlabel] = ev
+            $ mas_showEVL('mas_topic_rerandom','EVE',unlock=True)
+            m 2eksdlc "Okay, [player], I'll make sure not to talk about that again."
+            m 2dksdld "If it upset you in any way, I'm really sorry... {w=0.5}I'd never do that intentionally."
+            m 2eksdla "...But thanks for letting me know; {w=0.5}I appreciate the honesty."
+
+        "It's okay.":
+            m 1eka "Alright, [player]."
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_rerandom",category=['you'],prompt="I'm okay with talking about...",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_rerandom:
+    python:
+        derandomlist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_derandomed.iteritems()
+        ]
+
+        derandomlist.sort()
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    if len(derandomlist) > 1:
+        $ renpy.say(m,"Which topic are you okay with talking about again?", interact=False )
+    else:
+        $ renpy.say(m,"If you're sure it's alright to talk about this again, just click the topic, [player].", interact=False )
+
+    call screen mas_gen_scrollable_menu(derandomlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if not _return:
+        m 1eua "Okay, [player]."
+
+    else:
+        $ mas_showEVL(topic_choice,"EVE",_random=True)
+        $ persistent._mas_player_derandomed.pop(topic_choice)
+        m 1eua "Okay, [player]..."
+
+        if len(persistent._mas_player_derandomed) > 0:
+            m 1eka "Are there any other topics you are okay with talking about?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are there any other topics you are okay with talking about?{fast}"
+                "Yes.":
+                    jump mas_topic_rerandom
+                "No.":
+                    m 3eua "Okay."
+
+        else:
+            m 3hua "All done!"
+            $ mas_hideEVL("mas_topic_rerandom","EVE",lock=True)
+
+    # make sure if we are rerandoming any seasonal specific topics, stuff that's supposed
+    # to be derandomed out of season is still derandomed
+    $ persistent._mas_current_season = store.mas_seasons._seasonalCatchup(persistent._mas_current_season)
+    return
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_topic_unbookmark",prompt="I'd like to remove a bookmark.",unlocked=False,rules={"no unlock":None}))
+
+label mas_topic_unbookmark:
+    python:
+        bookmarkslist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
+            if ev.unlocked and ev.checkAffection(mas_curr_affection)
+        ]
+
+        bookmarkslist.sort()
+        return_prompt_back = ("Nevermind.", False, False, False, 20)
+
+    show monika 1eua at t21
+    if len(bookmarkslist) > 1:
+        $ renpy.say(m,"Which bookmark do you want to remove?", interact=False )
+    else:
+        $ renpy.say(m,"Just click the bookmark if you're sure you want to remove it.", interact=False )
+        
+    call screen mas_gen_scrollable_menu(bookmarkslist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, return_prompt_back)
+
+    $ topic_choice = _return
+
+    if not topic_choice:
+        m 1eua "Okay, [player]."
+        $ pushEvent('mas_bookmarks',True)
+
+    else:
+        show monika at t11
+        $ persistent._mas_player_bookmarked.pop(topic_choice)
+        m 1eua "Okay, [player]..."
+
+        if len(bookmarkslist) > 1:
+            m 1eka "Are there any other bookmarks you want to remove?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Are there any other bookmarks you want to remove?{fast}"
+                "Yes.":
+                    jump mas_topic_unbookmark
+                "No.":
+                    m 3eua "Okay."
+                    $ pushEvent('mas_bookmarks',True)
+
+        else:
+            m 3hua "All done!"
+    return
+
+default persistent._mas_unsee_unseen = None
+# var set when the player decides to hide or show the Unseen menu
+# True when Unseen is hidden
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_hide_unseen",prompt="I don't want to see this menu anymore.",unlocked=False,rules={"no unlock":None}))
+
+label mas_hide_unseen:
+    $ persistent._mas_unsee_unseen = True
+    m 3esd "Oh, okay, [player]..."
+    if mas_getEV('mas_hide_unseen').shown_count == 0:
+        m 1tuu "So I guess you want to...{w=0.5}{i}unsee{/i} it..."
+        m 3hub "Ahaha!"
+    m 1esa "I'll hide it for now, just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3eub "There you go! If you want to see the menu again, just ask."
+    return
+
+
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_show_unseen",category=['you'],prompt="I would like to see 'Unseen' again",pool=True,unlocked=False,rules={"no unlock":None}))
+
+label mas_show_unseen:
+    $ persistent._mas_unsee_unseen = False
+    m 3eub "Sure, [player]!"
+    m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
+    m 3hua "There you go!"
     return

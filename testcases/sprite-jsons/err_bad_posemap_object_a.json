@@ -1,0 +1,10 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {
+        "default": 10
+    }
+}
+
