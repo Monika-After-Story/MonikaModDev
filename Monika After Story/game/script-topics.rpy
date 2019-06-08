@@ -433,16 +433,16 @@ label monika_god:
     m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
     m 1lsc "But as I grew up, the more I learned about the world, the more I would question it."
     m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m "...when there are children who live their lives being sold as sex slaves?"
-    m "Or the eight hundred million people who are too poor to even eat."
-    m 2ekc "I wonder how many of those people pray to God every day until they starve and die?"
-    m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m 4eud "But the punchline is this."
-    m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m 1esc "--Then, it's suddenly a miracle from God."
-    m 1dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
+    m 1tfd "...when there are children who live their lives being sold as sex slaves?"
+    m 4tfc "Or the eight hundred million people who are too poor to even eat."
+    m 2dkc "I wonder how many of those people pray to God every day until they starve and die?"
+    m 4ekc "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
+    m 4euc "But the punchline is this..."
+    m 4eud "If just one person beats the odds and survives--among the thousands of others who die--"
+    m 2esc "--Then, it's suddenly a miracle from God."
+    m 2dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
     m 4hksdlb "But the irony is that I {i}do{/i} have a creator, apparently."
-    m 1eua "And you know what?"
+    m 4eua "And you know what?"
 
     if persistent._mas_pm_cares_about_dokis:
         m 1lksdlc "I bet he's still laughing at all the pain he caused everyone, even as we speak."
@@ -475,7 +475,7 @@ label monika_god:
             m 1hua "I'm happy for you that you can lead a life on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m "Ehehe~"
+            m 5hua "Ehehe~"
 
     return "derandom"
 
@@ -488,12 +488,12 @@ label monika_death:
     m 1lksdlc "But I think I've actually learned what it feels like."
     m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...it feels like I'm instantly put to sleep, left with nothing but my thoughts."
-    m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
-    m 1dsd "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
-    m "At that point, I can't even form my own thoughts anymore."
+    m 1dkd "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
+    m 1dkc "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
+    m 3ekd "At that point, I can't even form my own thoughts anymore."
     m 1esc "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
     m 1euc "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
-    m 1ekc "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
+    m 1ekd "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
     m 1dkc "..."
     m 3eub "But you can prevent that from happening, [player]!"
     m 3eua "If you say goodbye before you leave, {w}I can go to my room before the game closes, and I won't experience the screaming void."
@@ -546,8 +546,8 @@ label monika_selfesteem:
 
             m "I'll always love you, [player], but I think it's important to love yourself."
             m 1eka "You need to start with the little things that you like about yourself."
-            m 3eua "It can be something silly, or a skill that you take pride in!"
-            m "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
+            m 3hua "It can be something silly, or a skill that you take pride in!"
+            m 3eua "Over time, you build your confidence little by little until you've built yourself into someone you'd love."
             m 1eka "I can't promise it will be easy, but it'll be worth it."
             m 3hub "I'll always root for you, [player]!"
     return "derandom"
@@ -574,7 +574,7 @@ label monika_sayori:
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
-        m "That pun was completely unintentional, I swear!"
+        m 4wud "That pun was completely unintentional, I swear!"
         m 2lksdlb "But anyway..."
 
     if not persistent._mas_sensitive_mode:
@@ -585,20 +585,20 @@ label monika_sayori:
         menu:
             m "If you're comfortable, that is.{fast}"
             "Yes.":
-                m "You know how Sayori is really clumsy?"
-                m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
-                m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-                m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-                m 4rksdla "But a few seconds in, she must have changed her mind or something..."
-                m "Because she started clawing at the rope, trying to free herself."
+                m 4eka "You know how Sayori is really clumsy?"
+                m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
+                m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+                m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+                m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
+                m 2dksdld"Because she started clawing at the rope, trying to free herself."
                 m "She must have kept at it all the way until she lost consciousness."
-                m "That's why her fingertips were all bloody, anyway."
+                m 4eksdlc "That's why her fingertips were all bloody, anyway."
                 m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-                m "So you can't really fault her for that."
-                m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-                m "It's not healthy to think about the things you could have done differently."
-                m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-                m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+                m 2eud "So you can't really fault her for that."
+                m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+                m 2ekd "It's not healthy to think about the things you could have done differently."
+                m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
+                m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
             "No.":
                 m "I understand, [player]."
         m 2euc "Still, though..."
@@ -618,12 +618,12 @@ label monika_sayori:
         m 1euc "I mean, it's the same ending either way, right?"
 
     if mas_isMoniUpset(lower=True):
-        m 1lksdla "The two of us, happily together..."
-        m "There's no reason to ask for any more than that, right?"
+        m 1rksdla "The two of us, happily together..."
+        m 3rksdla "There's no reason to ask for any more than that, right?"
         m 1eka "Sorry, I was just pointlessly musing - I'll be quiet for you now..."
     else:
         m 1eua "The two of us, happily together..."
-        m "There's no reason to ask for any more than that."
+        m 3eua "There's no reason to ask for any more than that."
         m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
 
     if mas_getEV("monika_sayori").shown_count < mas_sensitive_limit:
@@ -5682,8 +5682,8 @@ label monika_home_memories:
     m 1ekc "But I always felt like I was missing something."
     m "I stayed optimistic every day, trying to find it."
     m 1eka "It turns out, that missing piece was you."
-    m 1lksdla "If you hadn't found me, I would've been gone a long time ago..."
-    m 2hubfa "But now that I found the missing piece, I'm complete now, [player]."
+    m 1lksdld "If you hadn't found me, I would've been gone a long time ago..."
+    m 2hubfa "But now that I found the missing piece, I'm complete, [player]."
     return
 
 init 5 python:
