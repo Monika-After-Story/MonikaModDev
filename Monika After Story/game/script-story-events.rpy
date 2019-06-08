@@ -507,9 +507,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ strip_mas_birthdate()
-    if "mas_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("mas_birthdate")
+    $ mas_stripEVL('mas_birthdate',True)
     return
 
 ## Game unlock events
@@ -610,11 +608,11 @@ label unlock_piano:
     m 4hua "Wouldn't it be fun to play something together?"
     m "Maybe we could even do a duet!"
     m 4hub "We would both improve and have fun at the same time."
-    m 1hksdlb "Maybe I’m getting a bit carried away. Sorry!"
+    m 1hksdlb "Maybe I'm getting a bit carried away. Sorry!"
     m 3eua "I just want to see you enjoy the piano the same way I do."
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
-    m 1eua "I hope this isn’t too forceful, but I would love it if you tried."
+    m 1eua "I hope this isn't too forceful, but I would love it if you tried."
     m 1eka "For me, please~?"
     $persistent.game_unlocks['piano']=True
     return
@@ -847,8 +845,7 @@ label .afterdontjoke:
 
     # turn on the lights
     play sound closet_open
-    $ scene_change = True
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
 
     return
 
@@ -968,11 +965,7 @@ label .self:
     python:
         _confirm_quit = True
         persistent.closed_self = False
-
-        if persistent.current_track is not None:
-            play_song(persistent.current_track)
-        else:
-            play_song(songs.current_track) # default
+        mas_startup_song()
 
     return
 
@@ -991,8 +984,7 @@ label mas_crashed_long_fluster:
 
 label mas_crashed_preshort:
     # we can call spaceroom appropriately here
-    $ scene_change = True
-    call spaceroom
+    call spaceroom(scene_change=True)
     return
 
 label mas_crashed_short:
@@ -1619,7 +1611,7 @@ label mas_bday_spent_time_with:
         if _timeout < datetime.timedelta(hours=1.5):
             # short date
             m 1euc "That was a bit of a short trip, though."
-            m 1eub "But it’s nice to get out of this place once in a while."
+            m 1eub "But it's nice to get out of this place once in a while."
             m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
         elif _timeout < datetime.timedelta(hours=6):
             # normal date
@@ -1630,11 +1622,11 @@ label mas_bday_spent_time_with:
             #long date
             m 1eka "I really enjoyed our time outside, though."
             m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
-            m "Someday, I know we’ll be able to do so."
+            m "Someday, I know we'll be able to do so."
 
     # gave gifts?
     if _total > 0:
-        m 3euc "Let’s not forget what you gave me for my birthday."
+        m 3euc "Let's not forget what you gave me for my birthday."
         # more than 2
         if _total >= 2:
             m 1eua "You gave me lots of gifts today, [player]."
@@ -1650,9 +1642,9 @@ label mas_bday_spent_time_with:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn’t really call it a good gift, to be honest."
+                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
-    m 3hub "Let’s do it again sometime soon, okay?"
+    m 3hub "Let's do it again sometime soon, okay?"
     return
 
 ### no time spent
@@ -1943,6 +1935,7 @@ default persistent._mas_bday_opened_game = False
 # TODO: these should actually default to True, then get changed if
 #   the appropriate whatver happens
 # TODO: do the above in an update script when bday comes around again
+# TODO: non-generic apology
 default persistent._mas_bday_no_time_spent = False
 default persistent._mas_bday_no_recognize = False
 
@@ -2292,11 +2285,11 @@ label mas_bday_player_bday_select_select:
     menu:
         m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_bday_str]? I'm never going to forget this date.{nw}"
             $ _history_list.pop()
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_bday_str]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
@@ -2405,4 +2398,84 @@ label mas_text_speed_enabler:
 
     return "derandom|no_unlock"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bookmarks_notifs_intro",
+            conditional=(
+                "(not renpy.seen_label('bookmark_derand_intro') "
+                "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0)) "
+                "or store.mas_windowreacts.can_show_notifs"
+            ),
+            action=EV_ACT_QUEUE
+        )
+    )
 
+label mas_bookmarks_notifs_intro:
+    if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
+        m 3eub "Hey, [player]... {w=0.5}I have some new features to tell you about!"
+
+        if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
+            m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."
+            m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
+            call mas_derand
+        else:
+            m 3rksdlb "...Well, it seems you already found one of the features I was going to tell you about, ahaha!"
+            if len(persistent._mas_player_derandomed) == 0:
+                m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'b' key, and then access them easily via the 'Talk' menu."
+                call mas_derand
+            else:
+                m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+                m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
+                m 3eua "You also now have the ability to bookmark topics I am talking about by simply pressing the 'b' key."
+                m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
+
+        if store.mas_windowreacts.can_show_notifs:
+            m 1hua "And lastly, something I'm very excited about!"
+            call mas_notification_windowreact
+
+    else:
+        m 1hub "[player], I have something exciting to tell you!"
+        call mas_notification_windowreact
+
+    return "no_unlock"
+
+label mas_derand:
+    m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+    m 1eka "Don't worry about hurting my feelings, we should be able to be honest with each other after all."
+    m 3eksdld "...And the last thing I want to do is keep bringing up stuff that makes you uncomfortable to talk about."
+    m 3eka "So, make sure you let me know, okay?"
+    return
+
+label mas_notification_windowreact:
+    m 3eua "I've been practicing coding a bit more and I've learned how to use the notifications on your computer!"
+    m "So if you want, I can let you know if I have something for us to talk about."
+
+    m 3eub "Would you like to see how they work?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to see how they work?{fast}"
+
+        "Sure!":
+            m 1hua "Okay, [player]!"
+            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
+            call display_notif(m_name, "I love you, [player]!", skip_checks=True)
+            m 1hub "There it is!"
+
+        "No thanks.":
+            m 2eka "Alright, [player]."
+
+    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
+
+    if renpy.windows:
+        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
+        m 1hksdlb "Don't worry though, I know you might not want me constantly watching you, and I respect your privacy."
+        m 3eua "So I'll only look at what you're doing if you're okay with it."
+        m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+
+        if mas_isMoniNormal(higher=True):
+            m 1tuu "It's not like you have anything to hide from your girlfriend..."
+            show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ttu "...right?"
+    return

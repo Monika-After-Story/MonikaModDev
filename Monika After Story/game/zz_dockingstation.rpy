@@ -196,6 +196,7 @@ init -45 python:
 #                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
 
             if not os.path.isdir(self.station):
                 try:
@@ -206,6 +207,7 @@ init -45 python:
                        str(self),
                        repr(e)
                    ))
+                   self.enabled = False
 
 
 
@@ -234,6 +236,9 @@ init -45 python:
                     If check_read is true, then package must also be readable
                 False otherwise
             """
+            if not self.enabled:
+                return False
+
             return self.__check_access(
                 self._trackPackage(package_name),
                 check_read
@@ -258,6 +263,9 @@ init -45 python:
                 sha256 checksum (hexadec) of the given package, or None
                 if error occured
             """
+            if not self.enabled:
+                return None
+
             pkg_slip = self._unpack(package, None, False, True, bs)
 
             # reset the package when done
@@ -278,6 +286,9 @@ init -45 python:
             RETURNS:
                 True if package no exist or was deleted. False otherwise
             """
+            if not self.enabled:
+                return False
+
             if not self.checkForPackage(package_name, False):
                 return True
 
@@ -307,6 +318,9 @@ init -45 python:
 
             RETURNS: list of packages
             """
+            if not self.enabled:
+                return []
+
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
                 ext_filter = "." + ext_filter
@@ -332,6 +346,9 @@ init -45 python:
                     if package is readable and no errors occurred
                 None otherwise
             """
+            if not self.enabled:
+                return None
+
             ### Check access
             if not self.checkForPackage(package_name):
                 return None
@@ -431,6 +448,9 @@ init -45 python:
                 True if package was sent successfully and pkg_slip is False
                 False Otherwise
             """
+            if not self.enabled:
+                return False
+
             mailbox = None
             try:
                 ### open the mailbox
@@ -498,6 +518,9 @@ init -45 python:
                     - return -1
                 0 otherwise (like if error occured)
             """
+            if not self.enabled:
+                return 0
+
             package = None
             contents = None
             try:
@@ -724,6 +747,9 @@ init -45 python:
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
+            if not self.enabled:
+                return None
+
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
@@ -827,6 +853,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or pack):
                 return None
 
@@ -896,6 +925,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or unpack):
                 return None
 
@@ -949,6 +981,9 @@ init -45 python:
                     if check_read is True, returns None
                     otherwise, returns False
             """
+            if not self.enabled:
+                return False
+
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
@@ -2182,7 +2217,7 @@ init 200 python in mas_dockstat:
                 (Default: 1)
         """
         if store.persistent._mas_monika_returned_home is None:
-            hours_out = int(_time_out.seconds / 3600)
+            hours_out = int(_time_out.total_seconds() / 3600)
 
             # you gain 1 per hour, max 5, min 1
             if hours_out > max_hour_out:
@@ -2309,7 +2344,7 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it

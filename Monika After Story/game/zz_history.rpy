@@ -666,6 +666,26 @@ init -815 python in mas_history:
         #_MDA_safeadd(3, 4)
         pass
 
+    # PM
+    # generic pm functions
+    def _pm_holdme_adj_times(elapsed):
+        """
+        Sets the appropraite persistent vars according to the elasped time 
+        for the hold me topic
+        """
+        # never been set before
+        if store.persistent._mas_pm_longest_held_monika is None:
+            store.persistent._mas_pm_longest_held_monika = elapsed
+            store.persistent._mas_pm_total_held_monika = elapsed
+            return
+
+        # otherwise, been set, so we must do comparisons
+        if elapsed > store.persistent._mas_pm_longest_held_monika:
+            store.persistent._mas_pm_longest_held_monika = elapsed
+
+        # also adjust total time
+        store.persistent._mas_pm_total_held_monika += elapsed
+
 
 init -810 python:
     ## Add MASHistorySaver objects here. 
@@ -691,6 +711,7 @@ init -810 python:
     #   exp - (experience) things that have been done to u
     #   op - opinions on things
     #   looks - your physical apperance
+    #   future - things you would want to do
     #   owns - posessions
     store.mas_history.addMHS(MASHistorySaver(
         "pm",
@@ -742,6 +763,8 @@ init -810 python:
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
             "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
+            "_mas_pm_longest_held_monika": "pm.actions.monika.longest_held_time",
+            "_mas_pm_total_held_monika": "pm.actions.monika.total_held_time",
             "_mas_pm_listened_to_grad_speech": "pm.actions.monika.listened_to_grad_speech",
 
             # actions / prom
@@ -827,6 +850,8 @@ init -810 python:
             # op (opinions)
             # op / monika
             "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
+            "_mas_pm_monika_evil": "pm.op.monika.is_evil",
+            "_mas_pm_monika_evil_but_ok": "pm.op.monika.is_evil_but_it_ok",
 
             # looks
             "_mas_pm_shared_appearance": "pm.looks.shared_looks",
@@ -846,6 +871,9 @@ init -810 python:
             # looks / dims (dimensions)
             "_mas_pm_height": "pm.looks.dims.height",
             "_mas_pm_units_height_metric": "pm.looks.dims.height_is_metric",
+
+            # future
+            "_mas_pm_would_come_to_spaceroom": "pm.future.goto_spaceroom",
 
             # owns
             "_mas_pm_owns_car": "pm.owns.car",
