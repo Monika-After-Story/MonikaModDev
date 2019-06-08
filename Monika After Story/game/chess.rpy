@@ -413,8 +413,6 @@ init:
                 lock.release()
             out.close()
 
-        def is_morning():
-            return (datetime.datetime.now().time().hour > 6 and datetime.datetime.now().time().hour < 18)
 
         class ArchitectureError(RuntimeError):
             pass
@@ -1507,12 +1505,14 @@ label mas_chess_new_game_start:
         call mas_chess_dlg_chess_locked from _mas_chess_dclngs
         return
 
+    m "What color would suit you?{nw}"
+    $ _history_list.pop()
     menu:
-        m "What color would suit you?"
+        m "What color would suit you?{fast}"
 
-        "White":
+        "White.":
             $ player_color = ChessDisplayable.COLOR_WHITE
-        "Black":
+        "Black.":
             $ player_color = ChessDisplayable.COLOR_BLACK
         "Let's draw lots!":
             $ choice = random.randint(0, 1) == 0
@@ -1544,10 +1544,6 @@ label mas_chess_game_start:
         if mas_chess.chess_strength[0]:
             persistent.chess_strength = mas_chess.chess_strength[1]
             mas_chess.chess_strength = (False, 0)
-
-    #Regenerate the spaceroom scene
-    #$scene_change=True #Force scene generation
-    #call spaceroom from _call_spaceroom
 
     # DEBUG:
     # uncomment this interaction to allow for a pause
@@ -1602,21 +1598,25 @@ label mas_chess_game_start:
 
     # we only save a game if they put in some effort
     if num_turns > 4:
+        m "Would you like to save this game?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Would you like to save this game?"
-            "Yes":
+            m "Would you like to save this game?{fast}"
+            "Yes.":
                 jump mas_chess_savegame
-            "No":
+            "No.":
                 # TODO: should there be dialogue here?
                 pass
 
 label mas_chess_playagain:
+    m "Do you want to play again?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Do you want to play again?"
+        m "Do you want to play again?{fast}"
 
-        "Yes":
+        "Yes.":
             jump mas_chess_new_game_start
-        "No":
+        "No.":
             pass
 
 label mas_chess_end:
@@ -1776,12 +1776,15 @@ label mas_chess_savegame:
 
         # check if this file exists already
         if is_file_exist:
-            m 1eka "We already have a game named '[save_name]'."
+            m 1eka "We already have a game named '[save_name].'"
+
+            m "Should I overwrite it?{nw}"
+            $ _history_list.pop()
             menu:
-                m "Should I overwrite it?"
-                "Yes":
+                m "Should I overwrite it?{fast}"
+                "Yes.":
                     pass
-                "No":
+                "No.":
                     jump mas_chess_savegame
 
     python:
@@ -1798,7 +1801,7 @@ label mas_chess_savegame:
         # the file path to show is different
         display_file_path = mas_chess.REL_DIR + save_filename
 
-    m 1dsc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+    m 1dsc ".{w=0.5}.{w=0.5}.{nw}"
     m 1hua "I've saved our game in '[display_file_path]'!"
 
     if not renpy.seen_label("mas_chess_pgn_explain"):
@@ -1809,9 +1812,12 @@ label mas_chess_savegame:
 
             if game_result == "*": # ongoing game
                 m 1lksdlb "It's possible to edit this file and change the outcome of the game,{w} but I'm sure you wouldn't do that."
-                m 1eka "Right, [player]?"
+
+                m 1eka "Right, [player]?{nw}"
+                $ _history_list.pop()
                 menu:
-                    "Of course not":
+                    m "Right, [player]?{fast}"
+                    "Of course not.":
                         m 1hua "Yay~"
 
     if game_result == "*":
@@ -1850,14 +1856,13 @@ label mas_chess_dlg_qs_lost:
 
 # quicksave lost start
 label mas_chess_dlg_qs_lost_start:
-    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game,"
-    m "and now I can't open it anymore."
+    m 2lksdlb "Uh, [player]...{w} It seems I messed up in saving our last game, and now I can't open it anymore."
     return
 
 # generic quicksave lost statement
 label mas_chess_dlg_qs_lost_gen:
     m 1lksdlc "I'm sorry..."
-    m "Let's start a new game instead."
+    m 3eksdla "Let's start a new game instead."
     return
 
 # 2nd time quicksave lost statement
@@ -1867,19 +1872,19 @@ label mas_chess_dlg_qs_lost_2:
     show monika 1ekc
     pause 1.0
     m 1dsc "I'll make it up to you..."
-    m 1eua "by starting a new game!"
+    m 3eua "...by starting a new game!"
     return
 
 # 3rd time quicksave lost statement
 label mas_chess_dlg_qs_lost_3:
     m 1lksdlc "I'm so clumsy, [player]...{w} I'm sorry."
-    m "Let's start a new game instead."
+    m 3eksdla "Let's start a new game instead."
     return
 
 # 5th time recurring quicksave lost statement
 label mas_chess_dlg_qs_lost_5r:
     m 2esc "This has happened [qs_gone_count] times now..."
-    m "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
+    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
     m 1esd "Anyway..."
     m "Let's start a new game."
     show monika 1esc
@@ -1897,8 +1902,10 @@ label mas_chess_dlg_qf_lost:
 
     call mas_chess_dlg_qf_lost_start from _mas_chess_dqfls
 
+    m "Did you mess with the saves, [player]?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Did you mess with the saves, [player]?"
+        m "Did you mess with the saves, [player]?{fast}"
         "[mas_chess.DLG_QF_LOST_OFCN_CHOICE]" if mas_chess.DLG_QF_LOST_OFCN_ENABLE:
             call mas_chess_dlg_qf_lost_ofcn_start from _mas_chess_dlgqflostofcnstart
 
@@ -1976,7 +1983,7 @@ label mas_chess_dlg_qf_lost_ofcn_5:
 # 6th time you ofcn monika
 label mas_chess_dlg_qf_lost_ofcn_6:
     # TODO we need to have a separate version of this event if your affection
-    # is high enough. Basically you should only reach the bad end if 
+    # is high enough. Basically you should only reach the bad end if
     # you've been a dick for a while
     # TODO: this makes sense compared to the go_ham event since
     # its just throwing away stuff instead of cheating
@@ -2074,10 +2081,11 @@ label mas_chess_dlg_qf_lost_may_filechecker:
 label mas_chess_dlg_qf_lost_may_3:
     $ persistent._mas_chess_skip_file_checks = True
 
-    m 2ekd "[player]! That's-"
-    m 1esa "Not a problem at all."
-    m "I knew you were going to do this again,"
-    m 1hub "so I kept a backup of our save!"
+    m 2ekd "[player]! That's--"
+    m 2dkc "..."
+    m 1esa "...not a problem at all."
+    m "I knew you were going to do this again..."
+    m 1hub "...so I kept a backup of our save!"
     # TODO: wink here please
     m 1eua "You can't trick me anymore, [player]."
     m "Now let's continue our game."
@@ -2115,9 +2123,9 @@ label mas_chess_dlg_qf_lost_acdnt_start:
 
 # generic accident monika
 label mas_chess_dlg_qf_lost_acdnt_gen:
-    m 1e "[player]..."
+    m 1eka "[player]..."
     m "That's okay.{w} Accidents happen."
-    m 1a "Let's play a new game instead."
+    m 1eua "Let's play a new game instead."
     return
 
 # 2nd accident monika
@@ -2145,12 +2153,13 @@ label mas_chess_dlg_qf_edit:
 
     call mas_chess_dlg_qf_edit_start from _mas_chess_dlgqfeditstart
 
-    show monika 2ekc
+    m 2ekc "Did you edit the save file?{nw}"
+    $ _history_list.pop()
     menu:
-        m "Did you edit the save file?"
-        "Yes":
+        m "Did you edit the save file?{fast}"
+        "Yes.":
             call mas_chess_dlg_qf_edit_y_start from _mas_chess_dlgqfeditystart
-        "No":
+        "No.":
             call mas_chess_dlg_qf_edit_n_start from _mas_chess_dlgqfeditnstart
 
     return _return
@@ -2186,10 +2195,10 @@ label mas_chess_dlg_qf_edit_y_1:
     # we want a timed menu here. Let's give the player 5 seconds to say sorry
     show screen mas_background_timed_jump(5, "mas_chess_dlg_qf_edit_y_1n")
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             hide screen mas_background_timed_jump
             # light affection boost for being honest
-            $ mas_gainAffection(modifier=0.5) 
+            $ mas_gainAffection(modifier=0.5)
             m 1hua "Apology accepted!"
             m 1eua "Luckily, I still remember a little bit of the last game, so we can continue it from there."
             return store.mas_chess.CHESS_GAME_BACKUP
@@ -2277,7 +2286,7 @@ label mas_chess_dlg_qf_edit_n_3:
     # THE ULTIMATE CHOICE
     show screen mas_background_timed_jump(3, "mas_chess_dlg_qf_edit_n_3n")
     menu:
-        "I'm sorry":
+        "I'm sorry.":
             hide screen mas_background_timed_jump
             # light affection boost for apologizing
             $ mas_gainAffection(modifier=0.5)
@@ -2326,15 +2335,15 @@ label mas_chess_dlg_qf_edit_n_3_n:
         persistent.autoload = "mas_chess_go_ham_and_delete_everything"
 
     # TODO: similar to chess disable, we need 2 versions of this. With a certain
-    # amount of affection, you really should get a 2nd chance. 
-    # i think what we can do here is do a large subtract off affection 
+    # amount of affection, you really should get a 2nd chance.
+    # i think what we can do here is do a large subtract off affection
     # (maybe like -200/300 or something) and then if you are below a certain
-    # amount then you get the bad end, otherwise we jump to the 
+    # amount then you get the bad end, otherwise we jump to the
     # 3rd time no edit, sorry label.
     # TODO: actually i'm not 100% sure on this, lets leave it up to debate rn
     # TODO: actaully, we should change some of this dialogue to make it more
     # obvious that the player violated trust
-    # TODO: also we should like do something here where if the player 
+    # TODO: also we should like do something here where if the player
     #  qutis during this time, we delete or jump into some other flow
     m 6ektsc "I can't trust you anymore."
     m "Goodbye, [player].{nw}"
@@ -2469,7 +2478,13 @@ label mas_chess_dlg_game_monika_win_1:
 
 # winning, chess strength 2
 label mas_chess_dlg_game_monika_win_2:
-    m 1hksdlb "I really was going easy on you!"
+    m 1hub "That was really fun, [player]!"
+    m 3eka "No matter the outcome, I always enjoy playing chess with you~"
+    if renpy.random.randint(1,15) == 1:
+        m 3hua "I bet if you keep practicing, you'll be even better than me someday!"
+        if renpy.random.randint(1,20) == 1:
+            m 3rfu "{cps=*2}...Or at least win occasionally.{/cps}{nw}"
+            $ _history_list.pop()
     return
 
 # winning, chess strength 3

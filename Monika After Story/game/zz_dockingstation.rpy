@@ -9,6 +9,8 @@
 #       encode files into sized chunks that will work nicely with file io
 #   - unpacked files are raw files, not encoded
 
+default persistent._mas_pm_taken_monika_out = False
+# True if the user has taken monika out of the spaceroom
 
 init -900 python in mas_ics:
     import os
@@ -19,6 +21,8 @@ init -900 python in mas_ics:
     islands_folder = os.path.normcase(
         renpy.config.basedir + "/game/mod_assets/location/special/"
     )
+
+    # NOTE: these checksums are BEFORE b64 encoding
 
     # Night With Frame
     islands_nwf = (
@@ -40,6 +44,16 @@ init -900 python in mas_ics:
         "83963cf273e9f1939ad2fa604d8dfa1912a8cba38ede7f762d53090783ae8ca4"
     )
 
+    # rain with frame
+    islands_rwf = (
+        "6e13efca7df89d7627f0e9f7b696ec110b40e88b82e70ce1249335246597eab4"
+    )
+
+    # rain without frame
+    islands_rwof = (
+        "435fc21d818dc77b46c93e94c8976eb0702c83b9aa6c4043067f42e8827f27d6"
+    )
+
     # islands dict to map filenames to checksums and real filenames
     # key: filename of b64 encode
     # value: tuple:
@@ -49,7 +63,9 @@ init -900 python in mas_ics:
         "nwf": ("night_with_frame.png", islands_nwf),
         "nwof": ("night_without_frame.png", islands_nwof),
         "dwf": ("with_frame.png", islands_dwf),
-        "dwof": ("without_frame.png", islands_dwof)
+        "dwof": ("without_frame.png", islands_dwof),
+#        "rwf": ("rain_with_frame.png", islands_rwf),
+#        "rwof": ("rain_without_frame.png", islands_rwof)
     }
 
     ########################## SURPRISE BDAY PARTY ############################
@@ -95,12 +111,17 @@ init -900 python in mas_ics:
     # key: filename of b64 encode
     # value: tuple:
     #   [0] - filename to save the image as
-    #   [1] - checksum for that image   
+    #   [1] - checksum for that image
     o31_map = {
         "o31mcg": ("o31_marisa_cg.png", o31_marisa),
         "o31rcg": ("o31_rin_cg.png", o31_rin)
     }
 
+    #################################### RPY ##################################
+    #game folder
+    game_folder = os.path.normcase(
+        renpy.config.basedir + "/game/"
+    )
     ###########################################################################
 
 
@@ -175,6 +196,7 @@ init -45 python:
 #                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
 
             if not os.path.isdir(self.station):
                 try:
@@ -185,6 +207,7 @@ init -45 python:
                        str(self),
                        repr(e)
                    ))
+                   self.enabled = False
 
 
 
@@ -213,6 +236,9 @@ init -45 python:
                     If check_read is true, then package must also be readable
                 False otherwise
             """
+            if not self.enabled:
+                return False
+
             return self.__check_access(
                 self._trackPackage(package_name),
                 check_read
@@ -237,6 +263,9 @@ init -45 python:
                 sha256 checksum (hexadec) of the given package, or None
                 if error occured
             """
+            if not self.enabled:
+                return None
+
             pkg_slip = self._unpack(package, None, False, True, bs)
 
             # reset the package when done
@@ -257,6 +286,9 @@ init -45 python:
             RETURNS:
                 True if package no exist or was deleted. False otherwise
             """
+            if not self.enabled:
+                return False
+
             if not self.checkForPackage(package_name, False):
                 return True
 
@@ -286,6 +318,9 @@ init -45 python:
 
             RETURNS: list of packages
             """
+            if not self.enabled:
+                return []
+
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
                 ext_filter = "." + ext_filter
@@ -311,6 +346,9 @@ init -45 python:
                     if package is readable and no errors occurred
                 None otherwise
             """
+            if not self.enabled:
+                return None
+
             ### Check access
             if not self.checkForPackage(package_name):
                 return None
@@ -410,6 +448,9 @@ init -45 python:
                 True if package was sent successfully and pkg_slip is False
                 False Otherwise
             """
+            if not self.enabled:
+                return False
+
             mailbox = None
             try:
                 ### open the mailbox
@@ -477,6 +518,9 @@ init -45 python:
                     - return -1
                 0 otherwise (like if error occured)
             """
+            if not self.enabled:
+                return 0
+
             package = None
             contents = None
             try:
@@ -703,6 +747,9 @@ init -45 python:
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
+            if not self.enabled:
+                return None
+
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
@@ -806,6 +853,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or pack):
                 return None
 
@@ -875,6 +925,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or unpack):
                 return None
 
@@ -928,6 +981,9 @@ init -45 python:
                     if check_read is True, returns None
                     otherwise, returns False
             """
+            if not self.enabled:
+                return False
+
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
@@ -1207,6 +1263,8 @@ init 200 python in mas_dockstat:
     import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
+    import codecs
+    import re
     import os
     import random
     import datetime
@@ -1221,7 +1279,7 @@ init 200 python in mas_dockstat:
 
     def _buildMetaDataList(_outbuffer):
         """
-        Writes out a pipe-delimeted metadata list tot he given buffer
+        Writes out a pipe-delimeted metadata list to the given buffer
 
         OUT:
             _outbuffer - buffer to write metadata to
@@ -1279,7 +1337,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(cPickle.dumps(store.persistent))
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1455,7 +1513,7 @@ init 200 python in mas_dockstat:
 #            return
 #
 #        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check 
+#        # means we need to double check
 #        checkout_time, checkin_time = getCheckTimes(moni_chksum)
 #
 #        if
@@ -1616,6 +1674,7 @@ init 200 python in mas_dockstat:
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
+        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
         NUM_DELIM = "|num|"
@@ -1679,13 +1738,14 @@ init 200 python in mas_dockstat:
                 blocksize
             )
             moni_tbuffer = fastIO()
+            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
                 moni_tbuffer.write(_line)
             moni_buffer.close()
 
             # now we can prepare to write
-            moni_fbuffer = open(moni_path, "wb")
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
@@ -1962,7 +2022,12 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            return cPickle.loads(str(data_line))
+            #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
+            splitted = data_line.split("|||per|")
+            if(len(splitted)>0):
+                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             mas_utils.writelog(
@@ -1971,41 +2036,33 @@ init 200 python in mas_dockstat:
             return None
 
 
-    def selectReturnHomeGreeting(_type=None):
+    def selectReturnHomeGreeting(gre_type=None):
         """
         Selects the correct Return Home greeting.
-        Return Home-style greetings must have TYPE_GO_SOMEWHERE in the category
 
-        NOTE: this calls mas_getEV, so do NOT run this function prior to
-            runtime
+        If None was selected, we return the default returned home gre
+
+        We also default type to TYPE_GENERIC_RET if no type is given
 
         IN:
-            _type - additional mas_greetings types to search on
+            gre_type - greeting type to find
+                If None, we use TYPE_GENERIC_RET
+                (Default: None)
 
         RETURNS:
             Event object representing the selected greeting
         """
-        if _type is not None:
-            greeting_types = [_type]
-        else:
-            greeting_types = []
+        if gre_type is None:
+            gre_type = mas_greetings.TYPE_GENERIC_RET
 
-        # add the return home type
-        greeting_types.append(mas_greetings.TYPE_GO_SOMEWHERE)
+        sel_gre_ev = mas_greetings.selectGreeting(gre_type)
 
-        # and now we need to find greetings that fit
-        rethome_greetings = store.Event.filterEvents(
-            evhand.greeting_database,
-            unlocked=True,
-            category=(False, greeting_types)
-        )
+        if sel_gre_ev is None:
+            # no selection? return the generic random
+            return store.mas_getEV("greeting_returned_home")
 
-        if len(rethome_greetings) > 0:
-            # if we have at least one from this list, random select
-            return rethome_greetings[random.choice(rethome_greetings.keys())]
-
-        # otherwise, always return the generic random event
-        return store.mas_getEV("greeting_returned_home")
+        # otherwise, return this ev
+        return sel_gre_ev
 
 
     def getCheckTimes(chksum=None):
@@ -2021,7 +2078,7 @@ init 200 python in mas_dockstat:
         RETURNS tuple of the following format:
             [0] - checkout time
             [1] - checkin time
-        If any param is None, then we couldn't find the matching chksum or 
+        If any param is None, then we couldn't find the matching chksum or
         there were no entries
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
@@ -2052,7 +2109,7 @@ init 200 python in mas_dockstat:
 
             else:
                 checkout_time = find_time(checkout_log, chksum)
-           
+
         return (checkout_time, checkin_time)
 
 
@@ -2134,6 +2191,46 @@ init 200 python in mas_dockstat:
             time_out += diffCheckTimes(index)
 
         return time_out
+
+
+    def _ds_aff_for_tout(
+            _time_out,
+            max_hour_out,
+            max_aff_gain,
+            min_aff_gain,
+            aff_mult=1
+            ):
+        """
+        Grants an amount of affection based on time out. This is designed for
+        use ONLY with the returned home greeting.
+
+        NOTE: this also sets the monika_returned_home persistent
+
+        IN:
+            _time_out - timedelta we want to treat as monika being out
+            max_hour_out - how many hours is considered max
+                (anthing OVER this will be maxxed)
+            max_aff_gain - amount of aff to be gained when max+
+            min_aff_gain - smallest amount of aff gain
+            aff_mult - multipler to hours to use as aff gain when between min
+                and max
+                (Default: 1)
+        """
+        if store.persistent._mas_monika_returned_home is None:
+            hours_out = int(_time_out.total_seconds() / 3600)
+
+            # you gain 1 per hour, max 5, min 1
+            if hours_out > max_hour_out:
+                aff_gain = max_aff_gain
+            elif hours_out == 0:
+                aff_gain = min_aff_gain
+            else:
+                aff_gain = hours_out * aff_mult
+
+            store.mas_gainAffection(aff_gain, bypass=True)
+            store.persistent._mas_monika_returned_home = (
+                datetime.datetime.now()
+            )
 
 
 init 205 python in mas_dockstat:
@@ -2233,21 +2330,45 @@ label mas_dockstat_abort_gen:
 
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
+
+    # we are not leaving on player_bday and need to reset these
+    if persistent._mas_player_bday_left_on_bday:
+        $ persistent._mas_player_bday_left_on_bday = False
+        $ persistent._mas_player_bday_date -= 1
+
+    if persistent._mas_f14_on_date:
+        $ persistent._mas_f14_on_date = False
+        $ persistent._mas_f14_date -= 1
     return
 
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it
     $ ed_zorder = MAS_MONIKA_Z - 1
     $ store.mas_sprites.reset_zoom()
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
     show emptydesk zorder ed_zorder at i11
 
-    # show birthday visuals?
-    $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    if mas_isD25Season() and persistent._mas_d25_deco_active:
+        $ store.mas_d25_event.showD25Visuals()
+
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ renpy.show("mas_roses", zorder=10)
+
+    if persistent._mas_player_bday_decor:
+        $ store.mas_player_bday_event.show_player_bday_Visuals()
+
+    # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
+    #   else statment is supposed to be paired with (i.e. mutally exclusive)
+    #   to the if statement regarding the player's bday decor.
+    #   Dont be screwing this up by shoving if statemetns randomly in places.
+    else:
+        # show birthday visuals?
+        $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2320,7 +2441,7 @@ label mas_dockstat_different_monika:
     #   player - player's name
     #   m_name - monika's name
     $ moni_sesh, player, m_name, aff_val, moni_hair, moni_clothes = moni_data
-    $ monika_chr.change_outfit(moni_clothes, moni_hair)
+    $ monika_chr.change_outfit(moni_clothes, moni_hair, False)
 
     # and then we can begin talking
     show monika 1ekd zorder MAS_MONIKA_Z at t11
@@ -2341,7 +2462,10 @@ label mas_dockstat_different_monika:
 
 # found our monika, but we coming from empty desk
 label mas_dockstat_found_monika_from_empty:
+    $ renpy.hide("mas_roses")
     show monika 1eua zorder MAS_MONIKA_Z at t11 with dissolve
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     hide emptydesk
 
     # dont want users using our promises
@@ -2355,20 +2479,28 @@ label mas_dockstat_found_monika:
     $ store.mas_dockstat.retmoni_status = None
     $ store.mas_dockstat.retmoni_data = None
     $ store.mas_dockstat.checkinMonika()
+    $ persistent._mas_pm_taken_monika_out = True
+    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
 
+    if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
+        $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
         if (
-                (store.mas_dockstat.retsbp_status 
+                (store.mas_dockstat.retsbp_status
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
+            # TODO: consider if this forced greeting should be changed to
+            #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 
         else:
             selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
                 persistent._mas_greeting_type
             ).eventlabel
+
+        # TODO: consider running the greeting setup label?
 
         # reset greeting type
         persistent._mas_greeting_type = None
@@ -2385,8 +2517,16 @@ label mas_dockstat_found_monika:
         # o31 re-entry checks
         if mas_isO31() and persistent._mas_o31_in_o31_mode:
             store.mas_globals.show_vignette = True
-            store.mas_globals.show_lightning = True
-            mas_forceRain()
-            mas_lockHair()
+
+            # setup thunder
+            if persistent._mas_likes_rain:
+                mas_weather_thunder.unlocked = True
+                store.mas_weather.saveMWData()
+            mas_changeWeather(mas_weather_thunder)
+
+        # d25 re-entry checks
+        if mas_isD25Season() or persistent._mas_d25_in_d25_mode:
+            #mas_is_snowing = True
+            pass
 
     jump ch30_post_exp_check
