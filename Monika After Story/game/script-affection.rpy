@@ -111,13 +111,13 @@ init -900 python in mas_affection:
 
     # Forced expression map. This is for spaceroom dissolving
     FORCE_EXP_MAP = {
-        BROKEN: "monika 6ckc",
-        DISTRESSED: "monika 6rkc",
-        UPSET: "monika 2efc",
-        NORMAL: "monika 1eua",
-        AFFECTIONATE: "monika 1eua",
-        ENAMORED: "monika 1hua",
-        LOVE: "monika 1hua",
+        BROKEN: "monika 6ckc_static",
+        DISTRESSED: "monika 6rkc_static",
+        UPSET: "monika 2efc_static",
+        NORMAL: "monika 1eua_static",
+        AFFECTIONATE: "monika 1eua_static",
+        ENAMORED: "monika 1hua_static",
+        LOVE: "monika 1hua_static",
     }
 
 
@@ -387,7 +387,7 @@ init -1 python in mas_affection:
 
         if store.mas_isMoniNormal() and store.mas_isBelowZero():
             # special case
-            return "monika 1esc"
+            return "monika 1esc_static"
 
         return FORCE_EXP_MAP.get(curr_aff, "monika idle")
 
