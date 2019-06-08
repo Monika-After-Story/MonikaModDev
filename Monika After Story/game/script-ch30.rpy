@@ -861,7 +861,7 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
-    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc")
+    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc_static")
 
     # lets just call the intro instead of pushing it as an event
     # this is way simpler and prevents event loss and other weird inital
