@@ -1668,6 +1668,20 @@ image monika 1tkx:
         0.05
         repeat
 
+image monika 1tsa:
+    block:
+        "monika 1tsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dsa_static"
+        0.05
+        repeat
+
 image monika 1tsb:
     block:
         "monika 1tsb_static"
@@ -6971,20 +6985,6 @@ image monika 5ekbsa:
             choice:
                 7
         "monika 5dkbsa_static"
-        0.05
-        repeat
-
-image monika 5esbfa:
-    block:
-        "monika 5esbfa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dsbfa_static"
         0.05
         repeat
 
