@@ -14,7 +14,6 @@ image blood splatter1:
     truecenter
     Blood("blood_particle",dripTime=0.5, burstSize=150, burstSpeedX=400.0, burstSpeedY=400.0, numSquirts=15, squirtPower=400, squirtTime=2.0).sm
 
-
 image k_rects_eyes1:
     RectCluster(Solid("#000"), 4, 15, 5).sm
     pos (580, 270)
@@ -100,6 +99,46 @@ image mas_lightning_s:
     3.0
     Null()
 
+image mas_lantern:
+    "mod_assets/other/lantern.png"
+    alpha 0.0
+    block:
+        0.05
+        alpha 1.0
+        0.05
+        alpha 0.0
+        repeat 4
+    alpha 0.0
+
+image mas_stab_wound:
+    "mod_assets/other/stab-wound.png"
+    zoom 0.9
+    easein 1.0 zoom 1.0
+
+image rects_bn1:
+    RectCluster(Solid("#000"), 25, 20, 15).sm
+    rotate 90
+    pos (571, 217)
+    size (20, 25)
+    alpha 0.0
+    easeout 1 alpha 1.0
+
+image rects_bn2:
+    RectCluster(Solid("#000"), 25, 20, 15).sm
+    rotate 90
+    pos (700, 217)
+    size (20, 25)
+    alpha 0.0
+    easeout 1 alpha 1.0
+
+image rects_bn3:
+    RectCluster(Solid("#000"), 4, 15, 5).sm
+    rotate 180
+    pos (636, 302)
+    size (25, 15)
+    alpha 0.0
+    easeout 1 alpha 1.0
+
 transform k_scare:
     tinstant(640)
     ease 1.0 zoom 2.0
@@ -119,11 +158,38 @@ transform mas_kissing(_zoom, _y,time=2.0):
     xcenter 640 yoffset 700 yanchor 1.0
     linear time ypos _y zoom _zoom
 
+transform mas_back_from_kissing(time, y):
+    linear time xcenter 640 yoffset (y) zoom 0.80
+
+
 default persistent._mas_first_kiss = None
 # contains datetime of users's first kiss with monika
 # NOTE: need to add this to calendar
 
-label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
+# mas_kissing_motion_base label
+# Used to do the kiss motion, it takes care of setting persistent._mas_first_kiss
+#
+# IN:
+#     transition - time in seconds used to transition to the actual kiss and then
+#         used for going back to the inital state
+#         (Default: 4.0)
+#     duration -  time in seconds that the screen stays black
+#         (Default: 3.0)
+#     hide_ui - boolean indicating if we shoudl hide the ui
+#         (Default: True)
+#     initial_exp - string indicating the expression Monika will have at the beginning
+#         of the animation
+#         (Default: 6dubfd)
+#     mid_exp - string indicating the expression Monika will have at the middle
+#         of the animation, when moving back to the original postion
+#         (Default: 6tkbfu)
+#     final_exp - string indicating the expression Monika will have at the end
+#         of the animation, when she's done getting back to the original position
+#         (Default: 6tkbfu)
+#     fade_duration - time in seconds spent fading the screen into black
+#         (Default: 1.0)
+label monika_kissing_motion(transition=4.0, duration=2.0, hide_ui=True,
+        initial_exp="6dubfd", mid_exp="6tkbfu", final_exp="6ekbfa", fade_duration=1.0):
     # Note: the hardcoded constants work to give the focus on lips
     # effect these were calculated based on max/min values of the zoom
 
@@ -136,18 +202,19 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
         $ HKBHideButtons()
         $ mas_RaiseShield_core()
     # reset position to i11
-    show monika 6dubfa at i11
+    show monika at i11
     # do the appropriate calculations
     $ _mas_kiss_zoom = 4.9 / mas_sprites.value_zoom
     $ _mas_kiss_y = 2060 - ( 1700  * (mas_sprites.value_zoom - 1.1))
     $ _mas_kiss_y2 = -1320 + (1700 * (mas_sprites.value_zoom - 1.1))
 
     # start the kiss animation
-    show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
+    $ renpy.show("monika {}".format(initial_exp), [mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)])
+    # show monika 6dubfd at mas_kissing(_mas_kiss_zoom,int(_mas_kiss_y),transition)
     # wait until we're done with the animation
     $ renpy.pause(transition)
     # show black scene
-    show black zorder 100 at fade_in
+    show black zorder 100 at fade_in(fade_duration)
     # wait half the time to play the sound effect
     $ renpy.pause(duration/2)
     play sound "mod_assets/sounds/effects/kissing.ogg"
@@ -157,18 +224,24 @@ label monika_kissing_motion(transition=5.0, duration=2.0, hide_ui=True):
     $ renpy.pause(duration/2)
     # hide the black scene
     hide black
-    # trasition back to i11 in 3 secs which is the best time for non slow back off
-    show monika 6tkbfu :
-        linear 3.0 xcenter 640 yoffset (_mas_kiss_y2) zoom 0.80
-    pause 3.0
-    show monika 6ekbfa at i11 with dissolve
+    # trasition back which is the best time for non slow back off
+    $ renpy.show("monika {}".format(mid_exp),[mas_back_from_kissing(transition,_mas_kiss_y2)])
+    pause transition
+    $ renpy.show("monika {}".format(final_exp),[i11()])
+    show monika with dissolve
     if hide_ui:
         if store.mas_globals.dlg_workflow:
             $ mas_MUMUDropShield()
+            $ enable_esc()
         else:
             $ mas_DropShield_core()
         $ HKBShowButtons()
     window auto
+    return
+
+# short kiss version
+label monika_kissing_motion_short:
+    call monika_kissing_motion(duration=0.5, initial_exp="6hua", fade_duration=0.5)
     return
 
 # Zoom Transition label
@@ -208,7 +281,7 @@ label monika_zoom_value_transition(new_zoom,transition=3.0):
     $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause transition
+    $ renpy.pause(transition, hard=True)
     return
 
 # Zoom Transition label #2
@@ -256,7 +329,7 @@ label monika_zoom_fixed_duration_transition(new_zoom,transition=3.0):
     $ _mas_zoom_y_diff = _mas_new_y - _mas_old_y
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause transition
+    $ renpy.pause(transition, hard=True)
     return
 
 # Zoom Transition label #3
@@ -309,7 +382,12 @@ label monika_zoom_transition(new_zoom,transition=3.0):
 
     # do the transition and pause so it force waits for the transition to end
     show monika at mas_smooth_transition
-    pause _mas_transition_time
+    $ renpy.pause(_mas_transition_time, hard=True)
+    return
+
+# Resets to the default zoom level, smoothly.
+label monika_zoom_transition_reset(transition=3.0):
+    call monika_zoom_transition(store.mas_sprites.default_zoom_level, transition)
     return
 
 init python:

@@ -14,8 +14,7 @@ label zz_mas_poemgame_actone:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
-    call spaceroom from _call_spaceroom_mpgo
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "These are your point totals:"
     python:
@@ -40,8 +39,7 @@ label zz_mas_poemgame_acttwo:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
-    call spaceroom from _call_spaceroom_mpgt
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "These are your point totals:"
     python:
@@ -65,7 +63,7 @@ label zz_mas_poemgame_actthr:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
+    call spaceroom(scene_change=True)
 
     return
 
@@ -83,9 +81,8 @@ label zz_mas_poemgame_actthrm:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
     $ _sel_words = testvalues
-    call spaceroom from _call_spaceroom_mpgthrm
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
 
     m "you selected these words:"
@@ -117,9 +114,8 @@ label zz_mas_poemgame_actonept:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
     $ _sel_words = testvalues.pop("words")
-    call spaceroom from _call_spaceroom_mpgop
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "These are your point totals:"
     python:
@@ -173,9 +169,8 @@ label zz_mas_poemgame_dg:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
     $ _sel_words = testvalues
-    call spaceroom from _call_spaceroom_mpgdg
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
 
     m "you selected these words:"
@@ -227,11 +222,10 @@ label zz_mas_poemgame_bgm:
     $ HKBShowButtons()
     # $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
     $ _winner = testvalues[0]
     $ _pts = testvalues[1]
     $ _words = testvalues[2]
-    call spaceroom from _call_spaceroom_mpgbgm
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "[_winner] won with [_pts] pt(s)"
     m "And you selected these words:"
@@ -281,8 +275,7 @@ label zz_mas_poemgame_oneg:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
-    call spaceroom from _call_spaceroom_mponeg
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "These are your point totals:"
     python:
@@ -327,9 +320,8 @@ label zz_mas_poemgame_oc:
     $ HKBShowButtons()
     $ play_song(store.songs.current_track)
     $ store.songs.enabled = True
-    $ scene_change = True
     $ _sel_words = testvalues.pop("words")
-    call spaceroom from _call_spaceroom_mpgoc
+    call spaceroom(scene_change=True)
     m "Hi [player]!"
     m "These are your point totals:"
     python:

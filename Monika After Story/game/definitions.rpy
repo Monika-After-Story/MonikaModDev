@@ -94,6 +94,7 @@ python early:
     #       NOTE: treat diary entries as single paragraphs
     #       (Default: None)
     #   rules - dict of special rules that this event uses for various cases.
+    #       NOTE: this does not get svaed to persistent
     #       NOTE: refer to RULES documentation in event-rules
     #       NOTE: if you set this to None, you will break this forever
     #       (Default: empty dict)
@@ -118,6 +119,9 @@ python early:
     #       NOTE: the tuple items should be AFFECTION STATES.
     #           not using an affection state may break things
     #       (Default: None)
+    #   show_in_idle - True if this Event can be shown during idle
+    #       False if not
+    #       (Default: False)
     class Event(object):
 
         # tuple constants
@@ -136,15 +140,15 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-            "rules":14,
-            "last_seen":15,
-            "years":16,
-            "sensitive":17,
-            "aff_range":18
+            "last_seen":14,
+            "years":15,
+            "sensitive":16,
+            "aff_range":17,
+            "show_in_idle":18,
         }
 
         # name constants
-        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks")
+        N_EVENT_NAMES = ("per_eventdb", "eventlabel", "locks", "rules")
 
         # other constants
         DIARY_LIMIT = 500
@@ -185,7 +189,8 @@ python early:
                 last_seen=None,
                 years=None,
                 sensitive=False,
-                aff_range=None
+                aff_range=None,
+                show_in_idle=False
             ):
 
             # setting up defaults
@@ -263,6 +268,8 @@ python early:
                     datetime.time.min
                 )
 
+            self.rules = rules
+
 
             # this is the data tuple. we assemble it here because we need
             # it in two different flows
@@ -281,11 +288,11 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                rules,
                 last_seen,
                 years,
                 sensitive,
-                aff_range
+                aff_range,
+                show_in_idle
             )
 
             stored_data_row = self.per_eventdb.get(eventlabel, None)
@@ -331,8 +338,11 @@ python early:
                     self.prompt = prompt
                     self.category = category
                     self.diary_entry = diary_entry
-                    self.rules = rules
+#                    self.rules = rules
                     self.years = years
+                    self.sensitive = sensitive
+                    self.aff_range = aff_range
+                    self.show_in_idle = show_in_idle
 
             # new items are added appropriately
             else:
@@ -468,25 +478,29 @@ python early:
             )
 
 
-        def prepareRepeat(self):
+        def prepareRepeat(self, force=False):
             """
             Prepres this event's dates for a repeat.
 
             NOTE: does not check if the event hasnt been reached this year.
 
-            RETURNS: True if this event was repeated, False if not
+            IN:
+                force - If True, we force the years to change
+                    (Default: False)
+
+            RETURNS: True if this event can repeat, False if not
             """
             # sanity check
             if not self.canRepeat():
                 return False
 
-            new_start, new_end, was_changed = Event._yearAdjustEV(self)
+            new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
                 self.start_date = new_start
                 self.end_date = new_end
 
-            return was_changed
+            return True
 
 
         @staticmethod
@@ -494,7 +508,7 @@ python early:
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
-            return ev.prompt.lower()
+            return renpy.substitute(ev.prompt).lower()
 
 
         @staticmethod
@@ -600,16 +614,23 @@ python early:
 
 
         @staticmethod
-        def _yearAdjustEV(ev):
+        def _yearAdjustEV(ev, force=False):
             """
             _yearAdjust, but for an Event object
 
             IN:
                 ev - evnet object to adjust years
+                force - if True, we force years to update
+                    (Default: False)
 
             RETURNS: See _verifyDates
             """
-            return Event._yearAdjust(ev.start_date, ev.end_date, ev.years)
+            return Event._yearAdjust(
+                ev.start_date,
+                ev.end_date,
+                ev.years,
+                force
+            )
 
 
         @staticmethod
@@ -642,25 +663,32 @@ python early:
 
 
         @staticmethod
-        def _yearAdjust(_start, _end, _years):
+        def _yearAdjust(_start, _end, _years, force=False):
             """
             Performs the year adjustment algorithm.
+
+            IN:
+                force - If True, we force year to update
+                    (Default: False)
 
             RETURNS: see _verifyDates
             """
             _now = datetime.datetime.now()
 
             # no changes necessary if we are currently in the zone
-            if _start <= _now < _end:
+            if (_start <= _now < _end) and not force:
                 return (_start, _end, False)
 
             # otherwise, we need to repeat.
             add_yr_fun = store.mas_utils.add_years
 
-            # NOTE this is wrong
-
             if len(_years) == 0:
                 # years is empty list, we are repeat yearly.
+
+                if force:
+                    # force mode means we always update year
+                    return (add_yr_fun(_start, 1), add_yr_fun(_end, 1), True)
+
                 # we only need to check if current works, and if not,
                 # move to one year ahead of current.
                 diff = _now.year - _start.year
@@ -675,11 +703,21 @@ python early:
                 return (add_yr_fun(_start, diff), new_end, True)
 
             # otherwise, we have a list of years, and shoudl determine next
-            new_years = [
-                year
-                for year in _years
-                if year >= _now.year
-            ]
+            if force:
+                # forcing means we should look forward from teh current
+                # year
+                new_years = [
+                    year
+                    for year in _years
+                    if year > _now.year
+                ]
+
+            else:
+                new_years = [
+                    year
+                    for year in _years
+                    if year >= _now.year
+                ]
 
             if len(new_years) == 0:
                 # no repeat years, we have already reached the limit.
@@ -690,6 +728,10 @@ python early:
             # calc diff for the first year in this list
             diff = _now.year - new_years[0]
             new_end = add_yr_fun(_end, diff)
+
+            if force:
+                # force means we should just use this diff right away
+                return (add_yr_fun(_start, diff), new_end, True)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -1191,7 +1233,7 @@ python early:
                     )
 
                     # check if we should repeat
-                    if not ev.prepareRepeat():
+                    if not ev.prepareRepeat(True):
                         # no repeats
                         ev.conditional = None
                         ev.action = None
@@ -1200,8 +1242,10 @@ python early:
 
 
         @staticmethod
-        def _checkRepeatRule(ev, check_time):
+        def _checkRepeatRule(ev, check_time, defval=True):
             """
+            DEPRECATED (remove when farewells is updated)
+
             Checks a single event against its repeat rules, which are evaled
             to a time.
             NOTE: no sanity checks
@@ -1209,18 +1253,24 @@ python early:
             IN:
                 ev - single event to check
                 check_time - datetime used to check time rules
+                defval - defval to pass into the rules
+                    (Default: True)
 
             RETURNS:
                 True if this event passes its repeat rule, False otherwise
             """
             # check if the event contains a MASSelectiveRepeatRule and
             # evaluate it
-            if MASSelectiveRepeatRule.evaluate_rule(check_time, ev):
+            if MASSelectiveRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             # check if the event contains a MASNumericalRepeatRule and
             # evaluate it
-            if MASNumericalRepeatRule.evaluate_rule(check_time, ev):
+            if MASNumericalRepeatRule.evaluate_rule(
+                    check_time, ev, defval=defval
+                ):
                 return True
 
             return False
@@ -1229,6 +1279,8 @@ python early:
         @staticmethod
         def checkRepeatRules(events, check_time=None):
             """
+            DEPRECATED (remove when farewells is updated)
+
             checks the event dict against repeat rules, which are evaluated
             to a time.
 
@@ -1255,7 +1307,7 @@ python early:
 
             # iterate over each event in the given events dict
             for label, event in events.iteritems():
-                if Event._checkRepeatRule(event, check_time):
+                if Event._checkRepeatRule(event, check_time, defval=False):
 
                     if event.monikaWantsThisFirst():
                         return {event.eventlabel: event}
@@ -1265,57 +1317,6 @@ python early:
             # return the available events dict
             return available_events
 
-
-        @staticmethod
-        def _checkGreetingRule(ev):
-            """
-            Checks the given event against its own greeting specific rule.
-
-            IN:
-                ev - event to check
-
-            RETURNS:
-                True if this event passes its repeat rule, False otherwise
-            """
-            return MASGreetingRule.evaluate_rule(ev)
-
-
-        @staticmethod
-        def checkGreetingRules(events):
-            """
-            Checks the event dict (greetings) against their own greeting specific
-            rules, filters out those Events whose rule check return true. As for
-            now the only rule specific is their specific special random chance
-
-            IN:
-                events - dict of events of the following format:
-                    eventlabel: event object
-
-            RETURNS:
-                A filtered dict containing the events that passed their own rules
-
-            """
-            # sanity check
-            if not events or len(events) == 0:
-                return None
-
-            # prepare empty dict to store events that pass their own rules
-            available_events = dict()
-
-            # iterate over each event in the given events dict
-            for label, event in events.iteritems():
-
-                # check if the event contains a MASGreetingRule and evaluate it
-                if Event._checkGreetingRule(event):
-
-                    if event.monikaWantsThisFirst():
-                        return {event.eventlabel: event}
-
-                    # add the event to our available events dict
-                    available_events[label] = event
-
-            # return the available events dict
-            return available_events
 
         @staticmethod
         def _checkFarewellRule(ev):
@@ -2216,6 +2217,8 @@ python early:
 
 # special store that contains powerful (see damaging) functions
 init -1 python in _mas_root:
+    import store
+    import datetime
 
     # redefine this because I can't get access to global functions, also
     # i dont care to find out how
@@ -2333,6 +2336,21 @@ init -1 python in _mas_root:
         renpy.game.persistent._mas_affection["affection"] = 0
 
 
+    def initialSessionData():
+        """
+        Completely resets session data to usable initial values.
+        NOTE: these are not the defaults, but rather what they would be set to
+        on a first load.
+        """
+        store.persistent.sessions = {
+            "last_session_end": None,
+            "current_session_start": datetime.datetime.now(),
+            "total_playtime": datetime.timedelta(seconds=0),
+            "total_sessions": 1,
+            "first_session": datetime.datetime.now()
+        }
+
+
 init -999 python:
     import os
 
@@ -2352,15 +2370,12 @@ init -990 python in mas_utils:
     import os
     import shutil
     import datetime
-
-    # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
-        mas_log = renpy.renpy.log.open("log/mas_log", append=True, flush=True)
-    else:
-        mas_log = renpy.renpy.log.open("log/mas_log")
-
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
+    import codecs
+    import platform
+    import time
+    #import tempfile
+    from os.path import expanduser
+    from renpy.log import LogFile
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -2371,6 +2386,8 @@ init -990 python in mas_utils:
         "{": "{{",
         "[": "[["
     }
+
+
 
     def clean_gui_text(text):
         """
@@ -2584,6 +2601,117 @@ init -990 python in mas_utils:
 
         except:
             return default
+
+    log_error = None
+
+    # mac logging
+    class MASMacLog(LogFile):
+
+        def __init__(self, name, append=False, developer=False, flush=True):
+            """
+            `name`
+                The name of the logfile, without the .txt extension.
+            `append`
+                If true, we will append to the logfile. If false, we will truncate
+                it to an empty file the first time we write to it.
+            `developer`
+                If true, nothing happens if config.developer is not set to True.
+            `flush`
+                Determines if the file is flushed after each write.
+            """
+            LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
+
+
+        def open(self):  # @ReservedAssignment
+
+            if self.file:
+                return True
+
+            if self.file is False:
+                return False
+
+            if self.developer and not renpy.config.developer:
+                return False
+
+            if not renpy.config.log_enable:
+                return False
+
+            try:
+
+                home = expanduser("~")
+                base = os.path.join(home,".MonikaAfterStory/" )
+
+                if base is None:
+                    return False
+
+                fn = os.path.join(base, self.name + ".txt")
+
+                path, filename = os.path.split(fn)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                if self.append:
+                    mode = "a"
+                else:
+                    mode = "w"
+
+                if renpy.config.log_to_stdout:
+                    self.file = real_stdout
+
+                else:
+
+                    try:
+                        self.file = codecs.open(fn, mode, "utf-8")
+                    except:
+                        pass
+
+                if self.append:
+                    self.write('')
+                    self.write('=' * 78)
+                    self.write('')
+
+                self.write("%s", time.ctime())
+                try:
+                    self.write("%s", platform.platform())
+                except:
+                    self.write("Unknown platform.")
+                self.write("%s", renpy.version)
+                self.write("%s %s", renpy.config.name, renpy.config.version)
+                self.write("")
+
+                return True
+
+            except:
+                self.file = False
+                return False
+
+
+    # A map from the log name to a log object.
+    mas_mac_log_cache = { }
+
+    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
+        rv = mas_mac_log_cache.get(name, None)
+
+        if rv is None:
+            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
+            mas_mac_log_cache[name] = rv
+
+        return rv
+
+    def getMASLog(name, append=False, developer=False, flush=False):
+        if renpy.macapp or renpy.macintosh:
+            return macLogOpen(name, append=append, developer=developer, flush=flush)
+        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
+
+
+    # unstable should never delete logs
+    if store.persistent._mas_unstable_mode:
+        mas_log = getMASLog("log/mas_log", append=True, flush=True)
+    else:
+        mas_log = getMASLog("log/mas_log")
+
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
 
 
 init -100 python in mas_utils:
@@ -3487,7 +3615,14 @@ init -1 python:
             boolean indicating if today is a special day.
         """
         # TODO keep adding special days as we add them
-        return mas_isMonikaBirthday() or mas_isO31() or mas_isD25() or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek()) or mas_isNYE()
+        return (
+            mas_isMonikaBirthday()
+            or mas_isO31()
+            or mas_isD25()
+            or (mas_anni.isAnniAny() and not mas_anni.isAnniWeek())
+            or mas_isNYE()
+            or mas_isF14()
+        )
 
     def mas_getNextMonikaBirthday():
         today = datetime.date.today()
@@ -3525,9 +3660,9 @@ init -1 python:
 
 
     def mas_isInDateRange(
-            subject, 
-            _start, 
-            _end, 
+            subject,
+            _start,
+            _end,
             start_inclusive=True,
             end_inclusive=False
         ):
@@ -3570,6 +3705,23 @@ init -1 python:
 
         # otherwise we passed the cases
         return True
+
+
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        if (
+                persistent.sessions is not None
+                and "first_session" in persistent.sessions
+                and type(persistent.sessions["first_session"])
+                    == datetime.datetime
+            ):
+            return persistent.sessions["first_session"]
+
+        return datetime.datetime.now()
 
 
     def get_pos(channel='music'):
@@ -4077,8 +4229,12 @@ init 2 python:
                 Defualts to 4
         """
         # do we even have plushe enabled?
-        if not persistent._mas_acs_enable_quetzalplushie:
+        if not persistent._mas_acs_enable_quetzalplushie or mas_isF14():
+            # run the plushie exit PP in case plushie is no longer enabled
+            mas_acs_quetzalplushie.exit(monika_chr)
             return
+
+
         if renpy.random.randint(1,chance) == 1:
             if persistent._mas_d25_deco_active:
                 #if in d25 mode, it's seasonal, and also norm+
@@ -4086,7 +4242,20 @@ init 2 python:
 
             else:
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
+
+        else:
+            # run the plushie exit PP if plushie is not selected
+            mas_acs_quetzalplushie.exit(monika_chr)
+
         return
+
+
+    def mas_incMoniReload():
+        """
+        Increments the monika reload counter unless its at max
+        """
+        if persistent.monika_reload < 4:
+            persistent.monika_reload += 1
 
 
 
@@ -5302,6 +5471,7 @@ default persistent.event_list = []
 default persistent.event_database = dict()
 default persistent.farewell_database = dict()
 default persistent.greeting_database = dict()
+default persistent._mas_apology_database = dict()
 default persistent.gender = "M" #Assume gender matches the PC
 default persistent.chess_strength = 3
 default persistent.closed_self = False
@@ -5320,7 +5490,6 @@ default persistent._mas_enable_random_repeats = False
 default persistent._mas_first_calendar_check = False
 
 # rain
-default persistent._mas_likes_rain = False
 define mas_is_raining = False
 
 # rain chances
@@ -5330,6 +5499,10 @@ define MAS_RAIN_BROKEN = 70
 
 # snow
 define mas_is_snowing = False
+
+# idle
+default persistent._mas_in_idle_mode = False
+default persistent._mas_idle_data = {}
 
 # music
 #default persistent.current_track = renpy.store.songs.FP_JUST_MONIKA
@@ -5373,7 +5546,6 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
-define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
@@ -5409,24 +5581,30 @@ define mas_randchat_prev = persistent._mas_randchat_freq
 init 1 python in mas_randchat:
     ### random chatter frequencies
 
-    # these numbers are the low end of how many seconds to wait between
+    # these numbers are the lower end of how many seconds to wait between
     # random topics
-    NORMAL = 20
-    OFTEN = 4
-    RARE = 36
-    NEVER = 0
+    OFTEN         = 5 # end 15
+    NORMAL        = 15 # end 45
+    LESS_OFTEN    = 40 # end 120 (2 min)
+    OCCASIONALLY  = 2*60 # end 360 (6 min)
+    RARELY        = 390 # end 1170 (19.5 min)
+    VERY_RARELY   = 20*60 # end 3600 (60 mins)
+    NEVER         = 0
 
-    # this is the added to the low end to get the upper end of seconds
-    SPAN = 24
+    # this is multiplied to the low end to get the upper end of seconds
+    SPAN_MULTIPLIER = 3
 
-    ## to better work with the sliders, we will create a range from 0 to 3
+    ## to better work with the sliders, we will create a range from 0 to 5
     # (inclusive)
     # these values will be utilized in script-ch30 as well as screens
     SLIDER_MAP = {
         0: OFTEN,
         1: NORMAL,
-        2: RARE,
-        3: NEVER
+        2: LESS_OFTEN,
+        3: OCCASIONALLY,
+        4: RARELY,
+        5: VERY_RARELY,
+        6: NEVER
     }
 
     ## slider map for displaying
@@ -5434,13 +5612,17 @@ init 1 python in mas_randchat:
         0: "Often",
         1: "Normal",
         2: "Less Often",
-        3: "Never"
+        3: "Occasionally",
+        4: "Rarely",
+        5: "Very Rarely",
+        6: "Never"
     }
 
     # current frequency times
     # also default to NORMAL, will get recaluated in reset
     rand_low = NORMAL
-    rand_high = NORMAL + SPAN
+    rand_high = NORMAL * SPAN_MULTIPLIER
+    rand_chat_waittime_left = 0
 
     def adjustRandFreq(slider_value):
         """
@@ -5448,7 +5630,7 @@ init 1 python in mas_randchat:
 
         IN:
             slider_value - slider value given from the slider
-                Should be between 0 - 3
+                Should be between 0 - 5
         """
         slider_setting = SLIDER_MAP.get(slider_value, 1)
 
@@ -5458,8 +5640,10 @@ init 1 python in mas_randchat:
         global rand_high
 
         rand_low = slider_setting
-        rand_high = slider_setting + SPAN
+        rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
+
+        setWaitingTime()
 
 
     def getRandChatDisp(slider_value):
@@ -5480,6 +5664,52 @@ init 1 python in mas_randchat:
             return "Never"
 
         return randchat_disp
+
+
+    def setWaitingTime():
+        """
+        Sets up the waiting time for the next random chat, depending on the current random chatter selection.
+        """
+        global rand_chat_waittime_left
+
+        rand_chat_waittime_left = renpy.random.randint(rand_low, rand_high)
+
+
+    def wait():
+        """
+        Pauses renpy for a small amount of seconds.
+        This helps adapting fast to a new random chatter selection.
+        All events before a random chat can also be handled rather than to keep waiting the whole time at once.
+        """
+        global rand_chat_waittime_left
+
+        WAITING_TIME = 5
+
+        if rand_chat_waittime_left > WAITING_TIME:
+            rand_chat_waittime_left -= WAITING_TIME
+            renpy.pause(WAITING_TIME, hard=True)
+
+        elif rand_chat_waittime_left > 0:
+            waitFor = rand_chat_waittime_left
+            rand_chat_waittime_left = 0
+            renpy.pause(waitFor, hard=True)
+
+        else:
+            rand_chat_waittime_left = 0
+            renpy.pause(WAITING_TIME, hard=True)
+
+
+    def waitedLongEnough():
+        """
+        Checks whether the waiting time is up yet.
+
+        RETURNS:
+            boolean to determine whether the wait is over
+        """
+        global rand_chat_waittime_left
+
+        return rand_chat_waittime_left == 0 and rand_low != 0
+
 
 
 # stores that need to be globally available
