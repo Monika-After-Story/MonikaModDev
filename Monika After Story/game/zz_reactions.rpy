@@ -673,7 +673,7 @@ label mas_reaction_gift_starter_generic:
 # TODO: if we need this to be multipled then we do it
 
 label mas_reaction_gift_starter_bday:
-    m 1sublo ".{w=0.7} .{w=0.7} .{w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
@@ -687,7 +687,7 @@ label mas_reaction_gift_starter_bday:
     return
 
 label mas_reaction_gift_starter_neutral:
-    m 1sublo ".{w=0.7} .{w=0.7} .{w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     m 1sua "Now, let's see what's inside?"
@@ -695,7 +695,7 @@ label mas_reaction_gift_starter_neutral:
 
 # d25
 label mas_reaction_gift_starter_d25:
-    m 1sublo ".{w=0.7} .{w=0.7} .{w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
     if mas_getGiftStatsRange(mas_d25g_start,mas_d25+datetime.timedelta(days=1))[0] == 0:
@@ -708,7 +708,7 @@ label mas_reaction_gift_starter_d25:
 
 #f14
 label mas_reaction_gift_starter_f14:
-    m 1sublo ".{w=0.7} .{w=0.7} .{w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if mas_getGiftStatsForDate(mas_f14) == 0:

@@ -2368,13 +2368,11 @@ label mas_text_speed_enabler:
             $ persistent._mas_text_speed_enabled = True
 
             m 1eud "Oh, that's alright."
-            m "Regardless..."
+            m 2dsa "Regardless.{w=0.5}.{w=0.5}.{nw}"
 
     if not persistent._mas_pm_is_fast_reader:
         # this sets the current speed to default monika's speed
         $ preferences.text_cps = 30
-
-    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
 
     $ mas_enableTextSpeed()
 

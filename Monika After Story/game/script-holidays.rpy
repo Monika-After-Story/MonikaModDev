@@ -2064,8 +2064,7 @@ label monika_aiwfc:
             m 3hksdlb "Oh, don't forget about your in game volume too!"
             m 3eka "I really want you to hear this."
 
-        m 1dsc "Anyway..."
-        m 1huu ".{w=1}.{w=1}.{w=1}"
+        m 1huu "Anyway.{w=0.5}.{w=0.5}.{nw}"
     else:
         m 1hub "Sure [player]!"
         m 1eka "I'm happy to sing for you again!"
@@ -3715,7 +3714,7 @@ label mas_player_bday_other_holiday:
 
 # moni singing happy birthday
 label mas_player_bday_moni_sings:
-    m 6dsc ".{w=0.2} .{w=0.2} .{w=0.2}"
+    m 6dsc ".{w=0.2}.{w=0.2}.{w=0.2}"
     m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
     m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
