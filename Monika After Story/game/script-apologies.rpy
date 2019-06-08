@@ -64,6 +64,7 @@ label monika_playerapologizes:
         9: "the game crashing.",
         10: "the game crashing.", #easiest way to handle this w/o overrides
         11: "not listening to your speech.",
+        12: "calling you evil."
     }
 
     #Set the prompt for this...
@@ -180,7 +181,8 @@ label mas_apology_generic:
         8: "not spending time with me on my birthday.",
         9: "the game crashing. I understand it happens sometimes, but don't worry, I'm alright!",
         10: "the game crashing. It really was scary, but I'm just glad you came back to me and made things better.",
-        11: "not listening to my speech. I worked really hard on it."
+        11: "not listening to my speech. I worked really hard on it.",
+        12: "calling me evil. I know you don't really think that."
     }
 
     #If there's no reason to apologize
@@ -210,7 +212,7 @@ label mas_apology_generic:
             m 1hub "That's why I love you, [player]!"
 
     #She knows what you are apologizing for
-    elif mas_apology_reason:
+    elif mas_apology_reason_db.get(mas_apology_reason, False):
         #Set apology_reason
         $ apology_reason = mas_apology_reason_db.get(mas_apology_reason,mas_apology_reason_db[0])
 

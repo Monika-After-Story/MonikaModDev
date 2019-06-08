@@ -129,7 +129,7 @@ label mas_stories_start(scary=False):
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
 
     # return value?
     if _return:
@@ -377,7 +377,7 @@ init 5 python:
 label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
-    m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 1euc "The Man's hair was turning gray, which the young Wife did not like, as it made him look too old."
     m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
@@ -464,12 +464,11 @@ label mas_scary_story_setup:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
     $ mas_changeWeather(mas_weather_rain)
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_masks=True)
-    $ morning_flag = True
-    play music "mod_assets/bgm/happy_story_telling.ogg" loop
-    play background audio.rain fadein 1.0 loop
     if not mas_isO31():
-        show vignette zorder 70
+        $ store.mas_globals.show_vignette = True
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
+    play music "mod_assets/bgm/happy_story_telling.ogg" loop
+
 #    $ songs.current_track = songs.FP_NO_SONG
 #    $ songs.selected_track = songs.FP_NO_SONG
 
@@ -503,13 +502,14 @@ label mas_scary_story_cleanup:
     m 3eua "[story_end_quip]"
     show monika 1dsc
     pause 1.0
-    hide monika_gloomy_room
     $ morning_flag = mas_temp_m_flag
+    $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
-        hide vignette
-    call mas_change_weather(mas_temp_r_flag)
+        $ store.mas_globals.show_vignette = False
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
+
     $ play_song(songs.current_track)
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()

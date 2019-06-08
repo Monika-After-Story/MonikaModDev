@@ -210,7 +210,7 @@ label mas_monikamovie:
         show monika at t21
 
         # call scrollable pane
-        call screen mas_gen_scrollable_menu(listMovies.listOfMovies, MOVIE_AREA, MOVIE_XALIGN, final_item=final_item)
+        call screen mas_gen_scrollable_menu(listMovies.listOfMovies, MOVIE_AREA, MOVIE_XALIGN, final_item)
 
         # move her back to center
         show monika at t11
