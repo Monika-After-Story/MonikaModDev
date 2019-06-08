@@ -4,6 +4,7 @@ import gamedir as GDIR
 GDIR.REL_PATH_GAME = "MonikaModDev/Monika After Story/game/"
 
 import spritechecker as spc
+import spritemaker as spm
 
 bad_codes = spc.check_sprites(False)
 
@@ -18,3 +19,10 @@ if len(bad_codes) > 0:
         )
 
     raise Exception("Invalid sprites found. Run the sprite checker for more info.")
+
+# load sprites
+sprite_db = spm._load_sprites()
+sprite_db_keys = sorted(sprite_db.keys())
+
+# generate sprites
+spm.run_gss(sprite_db, sprite_db_keys, quiet=True)
