@@ -310,7 +310,9 @@ label autoload:
     # finally lets run actions that needed to be run
     $ mas_runDelayedActions(MAS_FC_START)
 
-    jump expression persistent.autoload
+    #jump expression persistent.autoload
+    # NOTE: we should always jump to ch30 instead
+    jump ch30_autoload
 
 label before_main_menu:
     $ config.main_menu_music = audio.t1
@@ -339,6 +341,9 @@ label quit:
         # save current hair / clothes / acs
         monika_chr.save()
 
+        # save weather options
+        store.mas_weather.saveMWData()
+
         # remove special images
         store.mas_island_event.removeImages()
         store.mas_o31_event.removeImages()
@@ -354,3 +359,4 @@ label quit:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return
+

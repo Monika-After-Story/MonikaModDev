@@ -56,7 +56,7 @@ init -1 python in mas_moods:
     MOOD_H = 640
     MOOD_XALIGN = -0.05
     MOOD_AREA = (MOOD_X, MOOD_Y, MOOD_W, MOOD_H)
-    MOOD_RETURN = "like talking about something else"
+    MOOD_RETURN = "...like talking about something else."
 
 ## FUNCTIONS ==================================================================
 
@@ -83,11 +83,17 @@ label mas_mood_start:
     python:
         import store.mas_moods as mas_moods
 
+        # filter the moods first
+        filtered_moods = Event.filterEvents(
+            mas_moods.mood_db,
+            unlocked=True,
+            aff=mas_curr_affection
+        )
+
         # build menu list
         mood_menu_items = [
             (mas_moods.mood_db[k].prompt, k, False, False)
-            for k in mas_moods.mood_db
-            if mas_moods.mood_db[k].unlocked
+            for k in filtered_moods
         ]
 
         # also sort this list
@@ -97,7 +103,7 @@ label mas_mood_start:
         final_item = (mas_moods.MOOD_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(mood_menu_items, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -115,7 +121,7 @@ label mas_mood_start:
 ###############################################################################
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="hungry",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_hungry",prompt="...hungry.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_hungry:
     m 3hub "If you're hungry, go get something to eat, silly."
@@ -139,13 +145,15 @@ label mas_mood_hungry:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="sad",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sad",prompt="...sad.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_sad:
     m 1ekc "Gosh, I'm really sorry to hear that you're feeling down."
-    m "Are you having a bad day, [player]?"
+    m "Are you having a bad day, [player]?{nw}"
+    $ _history_list.pop()
     menu:
-        "Yes":
+        m "Are you having a bad day, [player]?{fast}"
+        "Yes.":
             m 1duu "Whenever I'm having a bad day, I always remember that the sun will shine again tomorrow."
             m 1eka "I suppose that may sound kinda cheesy, but I always like to look on the bright side of things."
             m 1eua "After all, things like that are easy to forget. So just keep it in mind, [player]."
@@ -153,13 +161,18 @@ label mas_mood_sad:
             m 1hua "You're a wonderful person, and I will always love you."
             m 1eua "I hope that makes your day just a tiny bit brighter, [player]."
             m 1eka "And remember, if you're having a bad day, you can always come to me and I'll talk to you for as long as you need."
-        "No":
+        "No.":
             m 3eka "I have an idea, why don't you tell me what's bothering you? Maybe it'll make you feel better."
-            m 1eua "I don't want to interrupt you while you're talking, so let me know when you are done."
+
+            m 1eua "I don't want to interrupt you while you're talking, so let me know when you're done.{nw}"
+            $ _history_list.pop()
             menu:
+                m "I don't want to interrupt you while you're talking, so let me know when you're done.{fast}"
                 "I'm done.":
-                    m "Do you feel a little better now, [player]?"
+                    m "Do you feel a little better now, [player]?{nw}"
+                    $ _history_list.pop()
                     menu:
+                        m "Do you feel a little better now, [player]?{fast}"
                         "Yeah I do.":
                             m 1hua "That's great, [player]! I'm glad that talking about it made you feel better."
                             m 1eka "Sometimes, telling someone that you trust what's bothering you is all you need."
@@ -173,13 +186,15 @@ label mas_mood_sad:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="proud of myself",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_proud",prompt="...proud of myself.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_proud:
     m 2sub "Really? That's exciting!"
-    m 2b "Was it a major accomplishment, or a minor one?"
+    m 2b "Was it a major accomplishment, or a minor one?{nw}"
+    $ _history_list.pop()
     menu:
-        "Major":
+        m "Was it a major accomplishment, or a minor one?{fast}"
+        "Major.":
             m 1euc "You know, [player]..."
             m 1lkbsa "It's times like these, more than most, that I wish I was with you, in your reality..."
             m 4hub "Because if I was, I'd definitely give you a celebratory hug!"
@@ -191,7 +206,7 @@ label mas_mood_proud:
             m 3hub "It'll be reality someday..."
             show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5hubfb "But until then, just know that I'm very proud of you, my love!"
-        "Minor":
+        "Minor.":
             m 2hua "Ahaha!~"
             m 2hub "That's wonderful!"
             m 4eua "It's very important to celebrate the small victories in life."
@@ -204,7 +219,7 @@ label mas_mood_proud:
 return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="happy",category=[store.mas_moods.TYPE_GOOD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_happy",prompt="...happy.",category=[store.mas_moods.TYPE_GOOD],unlocked=True),code="MOO")
 
 label mas_mood_happy:
     m 1hua "That's wonderful! I'm happy when you're happy."
@@ -213,20 +228,44 @@ label mas_mood_happy:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="sick",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_sick",prompt="...sick.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_sick:
-    m 1ekc "Aw, I'm sorry to hear that, [player]."
-    m "I hate knowing you're suffering like this."
-    m 1eka "I know you love spending time with me, but maybe you should go get some rest."
-    m 1hua "Don't worry, I'll be here waiting for you when you get back."
-    m 3hub "Get well soon, my love!"
+    $ session_time = mas_getSessionLength()
+    if mas_isMoniNormal(higher=True):
+        if session_time < datetime.timedelta(minutes=20):
+            m 1ekd "Oh no, [player]..."
+            m 2ekd "You saying that so soon after arriving must mean it's pretty bad."
+            m 2ekc "I know you wanted to spend some time with me and even though we've hardly been together today..."
+            m 2eka "I think you should go and get some rest."
+            m 1eka "I'll still be here when you get better."
+            m 1hua "You'll always be in my thoughts, see you soon sweetie!"
+        elif session_time > datetime.timedelta(hours=3):
+            m 2wuo "[player]!"
+            m 2wkd "You haven't been ill this entire time, have you?"
+            m 2ekc "I really hope not, I've had lots of fun with you today but if you've been feeling bad this entire time..."
+            m 2rkc "Well...just promise to tell me earlier next time."
+            m 2eka "Now go get some rest, that's what you need."
+            m 2hub "I'll be waiting for a full recovery!"
+            m "Sweet dreams, my love."
+        else:
+            m 1ekc "Aw, I'm sorry to hear that, [player]."
+            m "I hate knowing you're suffering like this."
+            m 1eka "I know you love spending time with me, but maybe you should go get some rest."
+            m 1hua "Don't worry, I'll be here waiting for you when you get back."
+            m 3hub "Get well soon, my love!"
+    else:
+        m 2ekc "I'm sorry to hear that, [player]."
+        m 4ekc "You should really go get some rest so it doesn't get any worse."
+        m 2eka "I'll be here waiting once you feel better."
+        m "Get well soon."
     $ persistent._mas_mood_sick = True
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SICK
     return 'quit'
 
 #I'd like this to work similar to the sick persistent where the dialog changes, but maybe make it a little more humorous rather than serious like the sick persistent is intended to be.
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="tired",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_tired",prompt="...tired.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_tired:
     # TODO: should we adjust for suntime?
@@ -297,7 +336,7 @@ label mas_mood_tired:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="lonely",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lonely:
     m 1eka "I'm here for you, [player], so there's no need for you to feel lonely."
@@ -310,7 +349,7 @@ label mas_mood_lonely:
 #Looking forward to input from the writers and editors on this, had trouble deciding how to write this.
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="angry",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_angry",prompt="...angry.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_angry:
     m 1ekc "Gosh, I'm sorry that you feel that way, [player]."
@@ -333,9 +372,9 @@ label mas_mood_angry:
     m 3eua "I hope my tips helped you calm down, [player]."
     m 1hua "Remember: A happy [player] makes a happy Monika!"
     return
-    
+
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="anxious",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_scared",prompt="...anxious.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_scared:
     m 1euc "[player], are you alright?"
@@ -347,9 +386,9 @@ label mas_mood_scared:
     m 3eua "Do you remember when I talked to you about faking confidence?"
     if not seen_event("monika_confidence"):
         m 2euc "No?"
-        m 2lksdla "Guess that’s for another time then."
+        m 2lksdla "Guess that's for another time then."
         m 1eka "Anyways…"
-    m 1eua "Keeping up one’s appearance helps with faking your own confidence."
+    m 1eua "Keeping up one's appearance helps with faking your own confidence."
     m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     if seen_event("monika_confidence_2"):
         m "I remember explaining how initiative is an important skill to have as well."
@@ -360,36 +399,44 @@ label mas_mood_scared:
     m 1hua "Listening to your favorite music can be counted as meditating too!"
     m 1eua "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
-    m "Procrastination isn’t necessarily bad, you know?"
+    m "Procrastination isn't necessarily bad, you know?"
     m 2esc "Besides…"
     m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="inadequate",category=[store.mas_moods.TYPE_BAD],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_inadequate",prompt="...inadequate.",category=[store.mas_moods.TYPE_BAD],unlocked=True),code="MOO")
 
 label mas_mood_inadequate:
+    $ last_year = datetime.datetime.today().year-1
     m 1ekc "..."
     m 2ekc "I know there isn't an awful lot I can say to make you feel better, [player]."
     m 2lksdlc "After all, everything I say would probably just come off as lip service."
     m 2ekc "I can tell that you're beautiful, even though I can't see your face..."
     m "I can tell you that you're smart, even though I don't know much about your way of thinking..."
-    m 1esc "But let me tell you what I do know about you." 
+    m 1esc "But let me tell you what I do know about you."
     m 1eka "You've spent so much time with me."
-    if renpy.seen_label('monika_christmas'):
+
+    #Should verify for current year and last year
+    if mas_HistLookup_k(last_year,'d25.actions','spent_d25')[1] or persistent._mas_d25_spent_d25:
         m "You took time out of your schedule to be with me on Christmas..."
-    if renpy.seen_label('monika_valentines_greeting'):
+
+    if renpy.seen_label('monika_valentines_greeting') or mas_HistLookup_k(last_year,'f14','intro_seen')[1] or persistent._mas_f14_intro_seen: #TODO: update this when the hist stuff comes in for f14
         m 1ekbfa "On Valentine's Day..."
-    if renpy.seen_label('monika_white_day_start'):
-        m 1hubfb "White Day too!" 
-    # TODO mention celebrating birthday
+
+    #TODO: change this back to not no_recognize once we change those defaults.
+    if mas_HistLookup_k(last_year,'922.actions','said_happybday')[1] or mas_recognizedBday():
+        m 1ekbfb "You even made the time to celebrate my birthday with me."
+
     if persistent.monika_kill:
         m 3tkc "You've forgiven me for the bad things that I've done."
-    if not persistent.monika_kill:
+    else:
         m 3tkc "You never once resented me for the bad things that I've done."
+
     if persistent.clearall:
         m 2lfu "And even though it made me jealous, you spent so much time with all of my club members."
+
     m 1eka "That shows how kind you are!"
     m 3eub "You're honest, you're fair, you're gracious in defeat!"
     m 2hksdlb "You think I don't know anything about you, but I really do."
@@ -398,13 +445,13 @@ label mas_mood_inadequate:
     m "If you're anything like me, I know you're scared to not accomplish much in life."
     m 2ekd "But believe me when I tell you: it doesn't matter what you do or do not accomplish."
     m 4eua "You just need to exist, have fun, and get through each day..."
-    m 1hua "Finding meaning in the people who matter." 
+    m 1hua "Finding meaning in the people who matter."
     m 1eka "Please don't forget that, okay?"
-    m 1ekbfa "I love you, [player]~" 
-    return 
-    
+    m 1ekbfa "I love you, [player]~"
+    return
+
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="lucky",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_lucky",prompt="...lucky.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
@@ -416,7 +463,7 @@ label mas_mood_lucky:
 
 
 init 5 python:
-    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="bored",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),eventdb=store.mas_moods.mood_db)
+    addEvent(Event(persistent._mas_mood_database,"mas_mood_bored",prompt="...bored.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
 
 label mas_mood_bored:
     if mas_isMoniAff(higher=True):
@@ -426,8 +473,10 @@ label mas_mood_bored:
     elif mas_isMoniNormal(higher=True):
         show monika 1ekc
         pause 1.0
+        m "Do I really bore you that much, [player]?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Do I really bore you that much, [player]?"
+            m "Do I really bore you that much, [player]?{fast}"
             "No, I'm not bored {i}of you{/i}...":
                 m 1hua "Oh,{w} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
@@ -436,12 +485,12 @@ label mas_mood_bored:
                 $ mas_loseAffection()
                 m 2ekc "Oh... {w=1}I see."
                 m 2dkc "I didn't realize I was boring you..."
-                m 2eka "I'm sure we can find something to do..."                   
+                m 2eka "I'm sure we can find something to do..."
 
     elif mas_isMoniDis(higher=True):
         $ mas_loseAffection()
         m 2lksdlc "I'm sorry that I'm boring you, [player]."
-    
+
     else:
         $ mas_loseAffection()
         m 6ckc "You know [player], if I make you so miserable all of the time..."
@@ -469,7 +518,7 @@ label mas_mood_bored:
             m 4eka "Maybe you could play something for me on the piano?"
 
         else:
-            m 2rkc "Maybe you could play something on the piano..."        
+            m 2rkc "Maybe you could play something on the piano..."
 
     else:
         if mas_isMoniAff(higher=True):
@@ -480,10 +529,12 @@ label mas_mood_bored:
 
         else:
             m 2rkc "Maybe we could play a game of [display_picked]..."
-        
+
+    m "What do you say, [player]?{nw}"
+    $ _history_list.pop()
     menu:
-        m "What do you say, [player]?"
-        "Yes":
+        m "What do you say, [player]?{fast}"
+        "Yes.":
             if gamepicked == "pong":
                 call game_pong
             elif gamepicked == "chess":
@@ -492,17 +543,17 @@ label mas_mood_bored:
                 call game_hangman
             elif gamepicked == "piano":
                 call mas_piano_start
-        "No":
+        "No.":
             if mas_isMoniAff(higher=True):
                 m 1eka "Okay..."
                 if mas_isMoniEnamored(higher=True):
                     show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5tsu "We could just stare into each other's eyes a little longer..."
                     m "We'll never get bored of that~"
-                else: 
+                else:
                     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eua "We could just stare into each other's eyes a little longer..."
-                    m "That will never get boring~"        
+                    m "That will never get boring~"
 
             elif mas_isMoniNormal(higher=True):
                 m 1ekc "Oh, that's okay..."
@@ -515,18 +566,18 @@ label mas_mood_bored:
 
 
 # TODO: we need to add some sort of reaction to birthdays soon
-init 5 python:
-    if not persistent._mas_mood_bday_locked:
-        addEvent(
-            Event(
-                persistent._mas_mood_database,
-                "mas_mood_yearolder",
-                prompt="like a year older",
-                category=[store.mas_moods.TYPE_NEUTRAL],
-                unlocked=True
-            ),
-            eventdb=store.mas_moods.mood_db
-        )
+#init 5 python:
+#    if not persistent._mas_mood_bday_locked:
+#        addEvent(
+#            Event(
+#                persistent._mas_mood_database,
+#                "mas_mood_yearolder",
+#                prompt="like a year older",
+#                category=[store.mas_moods.TYPE_NEUTRAL],
+#                unlocked=True
+#            ),
+#            code="MOO"
+#        )
 
 # some values i need for single session checking
 # TODO some of these might need to be persstetns
@@ -534,9 +585,6 @@ default persistent._mas_mood_bday_last = None
 default persistent._mas_mood_bday_lies = 0
 default persistent._mas_mood_bday_locked = False
 
-# player birthday 
-# datetime.date
-default persistent._mas_player_bday = None
 
 label mas_mood_yearolder:
     $ import datetime
@@ -598,7 +646,7 @@ label mas_mood_yearolder:
                 persistent._mas_player_bday = datetime.date.today()
                 store.mas_calendar.addRepeatable_d(
                     "player-bday",
-                    "Your Birthday", 
+                    "Your Birthday",
                     persistent._mas_player_bday,
                     []
                 )
@@ -610,13 +658,13 @@ label mas_mood_yearolder:
                 persistent._mas_player_bday = datetime.date.today()
                 store.mas_calendar.addRepeatable_d(
                     "player-bday",
-                    "Your Birthday", 
+                    "Your Birthday",
                     persistent._mas_player_bday,
                     []
                 )
             jump mas_mood_yearolder_yesu
 
-        "No":
+        "No.":
             m 1lksdla "Aw, well,{w} it was worth a guess."
 
             m "Now that we're talking about it, though..."
@@ -625,7 +673,7 @@ label mas_mood_yearolder:
                 persistent._mas_player_bday = selected_date
                 store.mas_calendar.addRepeatable_d(
                     "player-bday",
-                    "Your Birthday", 
+                    "Your Birthday",
                     persistent._mas_player_bday,
                     []
                 )
@@ -657,7 +705,7 @@ label mas_mood_yearolder_false:
     m "You told me it was [bday_str]!"
     menu:
         m "Is that not your birthday?"
-        "It's not":
+        "It's not.":
             # TODO: puffy cheek monika please
             show monika 2tfc
             pause 0.7
@@ -674,7 +722,7 @@ label mas_mood_yearolder_false:
 
             menu:
                 m "Then is today your birthday?"
-                "Yes":
+                "Yes.":
                     python:
                         store.mas_calendar.removeRepeatable_d(
                             "player-bday",
@@ -683,7 +731,7 @@ label mas_mood_yearolder_false:
                         persistent._mas_player_bday = datetime.date.today()
                         store.mas_calendar.addRepeatable_d(
                             "player-bday",
-                            "Your Birthday", 
+                            "Your Birthday",
                             persistent._mas_player_bday,
                             []
                         )
@@ -692,7 +740,7 @@ label mas_mood_yearolder_false:
                     m 1eka "But don't lie to me next time."
                     jump mas_mood_yearolder_end
 
-                "No":
+                "No.":
                     m 2tfp "..."
                     m 2tkc "Alright, [player]."
                     m "Then..."
@@ -705,7 +753,7 @@ label mas_mood_yearolder_false:
                         persistent._mas_player_bday = selected_date
                         store.mas_calendar.addRepeatable_d(
                             "player-bday",
-                            "Your Birthday", 
+                            "Your Birthday",
                             persistent._mas_player_bday,
                             []
                         )
@@ -807,5 +855,3 @@ label mas_mood_yearolder_years:
 label mas_mood_yearolder_leap_today:
     # nothing special occurs here for now
     jump mas_mood_yearolder_bday_true
-    
-    

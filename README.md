@@ -60,6 +60,7 @@ Want to add some content to MAS? Here's a list of important .RPY files the game 
 - **script-moods.rpy**: Tell Monika that you're in _a mood_.
 - **script-stories.rpy**: Add stories for Monika to tell you.
 - **script-compliments.rpy**: Add compliments you can say to Monika.
+- **script-apologies.rpy**: Add things to apologize for.
 
 If you wish to add more dialogue to the space room, navigate to script-topics.rpy and use this template.
 
@@ -91,7 +92,13 @@ For things more complicated than simple dialogue, consult the Ren'Py documentati
 [More info is available in our Contributing Guide](https://github.com/Monika-After-Story/MonikaModDev/wiki/Contributing-Guidelines)
 
  ### Join the conversation
- If you want to actively participate in contributing to/building this mod, [join the Discord server!](https://discord.gg/K2KuJeX). You can also [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates, and a constant stream of our favorite Monika-related content from around the web. Please be sure to follow our [Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct), which is essentially to be courteous and respectful.
+You can [follow us on twitter](https://twitter.com/MonikaAfterMod) for game updates. 
+
+Or if you're more Discord-ly inclined, for a constant stream of our favorite Monika-related content from around the web, and if you're interested in contributing to/building this mod, feel free to join our discord server:
+ 
+ [![Discord](https://discordapp.com/api/guilds/372766620977725441/widget.png?style=banner1)](https://discord.gg/K2KuJeX)
+ 
+ Please be sure to follow our [Code of Conduct](https://github.com/Monika-After-Story/MonikaModDev/wiki/Code-of-Conduct), which is essentially to be courteous and respectful.
 
 ## Frequently Asked Questions
 
@@ -109,3 +116,4 @@ We do our best to conform to Team Salvato's [guidelines for fan works](http://te
 ### enhancement: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=enhancement)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### unstable: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=unstable)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
 ### community: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=community)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
+### alpha: [![Build Status](https://travis-ci.org/Monika-After-Story/MonikaModDev.svg?branch=alpha)](https://travis-ci.org/Monika-After-Story/MonikaModDev)
