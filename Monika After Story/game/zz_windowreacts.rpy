@@ -3,6 +3,9 @@
 #Whether Monika can use notifications or not
 default persistent._mas_enable_notifications = False
 
+#Whether notification sounds are enabled or not
+default persistent._mas_notification_sounds = True
+
 #Whether Monika can see your active window or not
 default persistent._mas_windowreacts_windowreacts_enabled = False
 
@@ -258,8 +261,9 @@ label display_notif(title, body, group=None, skip_checks=False):
             or skip_checks
         ):
 
-        #Play the notif sound
-        play sound "mod_assets/sounds/effects/notif.wav"
+        #Play the notif sound if we have that enabled
+        if persistent._mas_notification_sounds:
+            play sound "mod_assets/sounds/effects/notif.wav"
 
         #Now we make the notif
         if (renpy.windows):
@@ -286,7 +290,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
-            rules={"notif-group": "Window Reactions"},
+            rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
@@ -302,6 +306,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_lookingat",
             category=['rule34', 'monika'],
+            rules={"skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
@@ -336,7 +341,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
-            rules={"notif-group": "Window Reactions"},
+            rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
