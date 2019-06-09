@@ -595,6 +595,20 @@ image monika 1dsbsa_static = DynamicDisplayable(
     blush="shade"
 )
 
+image monika 1dsbsd_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
+    arms="steepling",
+    head="r",
+    left="1l",
+    right="1r",
+    blush="shade"
+)
+
 image monika 1dsbso_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2241,6 +2255,17 @@ image monika 1rktsc_static = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 1rsbsd_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="right",
+    nose="def",
+    mouth="small",
+    arms="steepling",
+    blush="shade"
+)
+
 image monika 1rsbssdlu_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -2272,6 +2297,17 @@ image monika 1rssdlb_static = DynamicDisplayable(
     mouth="big",
     arms="steepling",
     sweat="def"
+)
+
+image monika 1rubfb_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="right",
+    nose="def",
+    mouth="big",
+    arms="steepling",
+    blush="full"
 )
 
 image monika 1ruc_static = DynamicDisplayable(
@@ -5508,35 +5544,5 @@ image monika 3dktsc_static = DynamicDisplayable(
     mouth="smirk",
     arms="restleftpointright",
     tears="streamingclosedsad"
-)
-
-image monika 3dku_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smug",
-    arms="restleftpointright"
-)
-
-image monika 3dkx_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="disgust",
-    arms="restleftpointright"
-)
-
-image monika 3dsa_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="mid",
-    eyes="closedsad",
-    nose="def",
-    mouth="smile",
-    arms="restleftpointright"
 )
 

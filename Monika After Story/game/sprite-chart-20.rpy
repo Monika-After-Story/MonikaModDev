@@ -1262,6 +1262,20 @@ image monika 1rktsc:
         0.05
         repeat
 
+image monika 1rsbsd:
+    block:
+        "monika 1rsbsd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dsbsd_static"
+        0.05
+        repeat
+
 image monika 1rsbssdlu:
     block:
         "monika 1rsbssdlu_static"
@@ -1301,6 +1315,20 @@ image monika 1rssdlb:
             choice:
                 7
         "monika 1dssdlb_static"
+        0.05
+        repeat
+
+image monika 1rubfb:
+    block:
+        "monika 1rubfb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubfb_static"
         0.05
         repeat
 
@@ -6957,34 +6985,6 @@ image monika 5ekbla:
             choice:
                 7
         "monika 5dkbla_static"
-        0.05
-        repeat
-
-image monika 5ekbsa:
-    block:
-        "monika 5ekbsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbsa_static"
-        0.05
-        repeat
-
-image monika 5esbfa:
-    block:
-        "monika 5esbfa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dsbfa_static"
         0.05
         repeat
 
