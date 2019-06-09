@@ -74,6 +74,20 @@ image monika 5esbfa:
         0.05
         repeat
 
+image monika 5esbfu:
+    block:
+        "monika 5esbfu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 5dsbfu_static"
+        0.05
+        repeat
+
 image monika 5esu:
     block:
         "monika 5esu_static"
