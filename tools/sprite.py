@@ -669,7 +669,7 @@ class StaticSprite(object):
             "\n",
 
             self._dbl_tab,
-            "0.05\n",
+            "0.06\n",
 
             self._dbl_tab,
             self._repeat,
