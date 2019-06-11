@@ -208,6 +208,21 @@ init python:
         """
         return persistent._mas_enable_notifications and persistent._mas_windowreacts_notif_filters.get(group,False)
 
+    def mas_unlockFailedWRS(ev_label=None):
+        """
+        Unlocks a wrs again provided that it showed, but failed to show (failed checks in the notif label)
+        NOTE: This should only be used for wrs that are only a notification
+
+        IN:
+            ev_label: eventlabel of the wrs
+        """
+        if (
+                ev_label
+                and renpy.has_label(ev_label)
+                and ev_label not in persistent._mas_windowreacts_no_unlock_list
+            ):
+            mas_unlockEVL(ev_label,"WRS")
+
     def mas_tryShowNotificationOSX(title, body):
         """
         Tries to push a notification to the notification center on macOS.
@@ -237,6 +252,9 @@ init python:
 #   body: Notification body text
 #   group: Notification group (for checking if we have this enabled)
 #   skip_checks: Whether or not we skips checks
+#
+#OUT:
+#   bool indicating status (notif shown or not (by check))
 
 label display_notif(title, body, group=None, skip_checks=False):
     #We only show notifications if:
@@ -280,7 +298,9 @@ label display_notif(title, body, group=None, skip_checks=False):
         elif (renpy.linux):
             # The Linux way
             $ mas_tryShowNotificationLinux(renpy.substitute(title),renpy.substitute(body))
-    return
+
+        return True
+    return False
 
 
 #START: Window Reacts
@@ -298,6 +318,10 @@ init 5 python:
 
 label monika_whatwatching:
     call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_whatwatching')
     return
 
 init 5 python:
@@ -350,4 +374,8 @@ init 5 python:
 
 label monika_monikamoddev:
     call display_notif(m_name, "Aww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_monikamoddev')
     return
