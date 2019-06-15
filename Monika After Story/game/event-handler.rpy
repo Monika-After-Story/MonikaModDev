@@ -1584,7 +1584,7 @@ init python:
             [1] - whether or not we need to notify
         """
         if len(persistent.event_list) == 0:
-            return None
+            return None, None
 
         if store.mas_globals.in_idle_mode:
             # idle requires us to loop over the list and find the first
