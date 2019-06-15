@@ -121,7 +121,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name.lower()
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name
 
     def mas_isInActiveWindow(keywords):
         """
