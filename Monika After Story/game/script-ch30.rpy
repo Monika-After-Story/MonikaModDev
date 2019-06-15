@@ -1066,14 +1066,6 @@ label ch30_autoload:
     if persistent._mas_affection["affection"] <= -115:
         jump mas_affection_finalfarewell_start
 
-    # sanitiziing the event_list from bull shit
-    if len(persistent.event_list) > 0:
-        python:
-            persistent.event_list = [
-                ev_label for ev_label in persistent.event_list
-                if renpy.has_label(ev_label)
-            ]
-
     # set this to None for now
     $ selected_greeting = None
 
@@ -1623,8 +1615,7 @@ label ch30_reset:
             if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
                 $ persistent.current_monikatopic = 0
 
-            while "monika_rpy_files" in persistent.event_list:
-                $ persistent.event_list.remove("monika_rpy_files")
+            $ mas_rmallEVL("monika_rpy_files")
 
         elif len(listRpy) != 0:
             $ queueEvent("monika_rpy_files")
@@ -1838,5 +1829,23 @@ label ch30_reset:
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
+
+    # clean up the event list of baka events
+    python:
+        for index in range(len(persistent.event_list)-1, -1, -1):
+            item = persistent.event_list[index]
+
+            # type check
+            if type(item) != tuple:
+                new_data = (item, False)
+            else:
+                new_data = item
+
+            # label check
+            if renpy.has_label(new_data[0]):
+                persistent.event_list[index] = new_data
+
+            else:
+                persistent.event_list.pop(index)
 
     return
