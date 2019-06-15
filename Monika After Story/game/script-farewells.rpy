@@ -1201,7 +1201,7 @@ label bye_prompt_game:
             m 1hubfb "I love you~{w=1}{nw}"
         $ mas_late_farewell = True
     else:
-        if mas_getEV('bye_prompt_game').shown_count == 0:
+    elif mas_getEV('bye_prompt_game').shown_count == 0:
             m 1ekc "You're going to play another game?"
             m 2ekd "Do you really have to leave me to go do that?"
             m 3eka "Can't you just leave me here in the background while you play?{nw}"
@@ -1218,7 +1218,7 @@ label bye_prompt_game:
                     m 3tsb "I might get jealous if you spend too much time somewhere else without me."
                     m 1hua "Anyway, I hope you have fun!"
         else:
-            if renpy.random.randint(1,5) == 1:
+        elif renpy.random.randint(1,5) == 1:
                 m 1ekc "You're leaving to play another game?"
                 m 3eka "You know, don't you think you should spending a little more time with me?"
                 m 1hub "Ahaha, just kidding~"

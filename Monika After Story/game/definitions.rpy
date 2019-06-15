@@ -3524,7 +3524,7 @@ init -1 python:
 
     #Gets the time difference between the current session start and last session end
     def mas_getAbsenceLength():
-        return persistent.sessions.get('current_session_start') - persistent.sessions.get('last_session_end')
+        return persistent.sessions.get('current_session_start', datetime.datetime.today()) - persistent.sessions.get('last_session_end', datetime.datetime.today())
 
 
     def mas_genDateRange(_start, _end):
