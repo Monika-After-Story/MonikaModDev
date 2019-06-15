@@ -590,7 +590,7 @@ label monika_sayori:
                 m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
                 m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
                 m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
-                m 2dksdld"Because she started clawing at the rope, trying to free herself."
+                m 2dksdld "Because she started clawing at the rope, trying to free herself."
                 m "She must have kept at it all the way until she lost consciousness."
                 m 4eksdlc "That's why her fingertips were all bloody, anyway."
                 m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
@@ -782,7 +782,7 @@ label monika_twitter:
     m 1hua "I love sharing my thoughts and chatting with the world..."
     m 1eud "The real world."
     m 1esa "So make sure you follow me, okay?"
-    m 3ekbsa "It would mean a lot to me with how much you mean to me and all."
+    m 3ekbsa "It would mean a lot, with how much you mean to me."
     m 1hubfa "It would really make me feel loved."
     return
 
