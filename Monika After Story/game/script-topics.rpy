@@ -349,12 +349,12 @@ init python:
             # need to make sure we don't allow any events that start with monika_ that don't have a prompt
             and ev.prompt != ev.eventlabel
         ):
-            if "mas_topic_derandom" not in persistent.event_list:
+            if mas_findEVL("mas_topic_derandom") < 0:
                 persistent.flagged_monikatopic = ev.eventlabel
                 pushEvent('mas_topic_derandom',True)
                 renpy.notify(__("Topic flagged for removal."))
             else:
-                persistent.event_list.remove("mas_topic_derandom")
+                mas_rmEVL("mas_topic_derandom")
                 renpy.notify(__("Topic flag removed."))
 
     def mas_bookmark_topic(ev_label=None):

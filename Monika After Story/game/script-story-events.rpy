@@ -485,8 +485,7 @@ label birthdate_set:
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
 
     $ persistent._mas_player_confirmed_bday = True
-    if "calendar_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("calendar_birthdate")
+    $ mas_rmallEVL("calendar_birthdate")
     return
 
 init 5 python:
