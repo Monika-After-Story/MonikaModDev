@@ -558,6 +558,7 @@ init python:
             [0]: sprite type of the sprite
             [1]: sprite name (id) 
             [2]: giftname this sprite is associated with
+            [3]: True if this gift has already been given before
         """
         # given giftname? try and lookup
         if sp_data is not None:
@@ -566,17 +567,20 @@ init python:
                 None
             )
             if giftname is None:
-                return (None, None, None)
+                return (None, None, None, None)
 
-            return (sp_data[0], sp_data[1], giftname)
-
-
-        if len(persistent._mas_filereacts_sprite_reacted) > 0:
+        elif len(persistent._mas_filereacts_sprite_reacted) > 0:
             sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
             giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
-            return (sp_data[0], sp_data[1], giftname)
 
-        return (None, None, None)
+        else:
+            return (None, None, None, None)
+
+        # check if this gift has already been gifted
+        gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
+
+        # return results
+        return (sp_data[0], sp_data[1], giftname, gifted_before)
 
 
     def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
@@ -588,9 +592,10 @@ init python:
             unlock_sel - True will unlock the selector topic, False will not
                 (Default: True)
         """
-        sp_type, sp_name, giftname = sprite_data
+        sp_type, sp_name, giftname, gifted_before = sprite_data
 
         # sanity check
+        # NOTE: gifted_before is not required
         if sp_type is None or sp_name is None or giftname is None:
             return
 
@@ -773,10 +778,12 @@ label mas_reaction_gift_test2:
 
 label mas_reaction_gift_generic_sprite_json:
     $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     python:
         sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
+
+    # TODO: something different if whatever was gifted has been gifted before
 
     m "Aww, [player]!"
     if sprite_str is None:
@@ -816,7 +823,7 @@ label mas_reaction_gift_acs_jmo_hairclip_musicnote:
 label mas_reaction_gift_hairclip(hairclip_name):
     # get sprtie data
     $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
-    $ sprite_type, sprite_name, giftname = sprite_data
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     # get the acs
     $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
@@ -824,36 +831,41 @@ label mas_reaction_gift_hairclip(hairclip_name):
     # check for incompatibility
     $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
 
-    if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
-        m 1hub "Oh!{w=1} Another hairclip!"
-        m 3hua "Thanks, [player]."
+    if gifted_before:
+        m 1rksdlb "You already gave me this hairclip, silly!"
 
     else:
-        m 1wuo "Oh!"
-        m 1sub "Is that a hairclip?"
-        m 1hub "That's so cute, thanks [player]!"
+        if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
+            m 1hub "Oh!{w=1} Another hairclip!"
+            m 3hua "Thanks, [player]."
 
-    # must include this check because we cannot for sure know if the acs
-    # exists
-    # also need to not wear it if wearing clothes that are incompatible
-    if hairclip_acs is None or is_wearing_baked_outfit:
-        m 1hua "If you want me to wear it, just ask, okay?"
-
-    else:
-        m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}."
-        $ monika_chr.wear_acs(hairclip_acs)
-        m 1hua "There we go."
-
-    # need to make sure we set the selector prompt correctly
-    # only do this if not wearing baked, since the clip is automatically off in this case
-    # so need to make sure when we switch outfits, the prompt is still correct
-    if not is_wearing_baked_outfit:
-        if monika_chr.get_acs_of_type('left-hair-clip'):
-            $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
         else:
-            $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+            m 1wuo "Oh!"
+            m 1sub "Is that a hairclip?"
+            m 1hub "That's so cute, thanks [player]!"
+
+        # must include this check because we cannot for sure know if the acs
+        # exists
+        # also need to not wear it if wearing clothes that are incompatible
+        if hairclip_acs is None or is_wearing_baked_outfit:
+            m 1hua "If you want me to wear it, just ask, okay?"
+
+        else:
+            m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}.{nw}"
+            $ monika_chr.wear_acs(hairclip_acs)
+            m 1hua "There we go."
+
+        # need to make sure we set the selector prompt correctly
+        # only do this if not wearing baked, since the clip is automatically off in this case
+        # so need to make sure when we switch outfits, the prompt is still correct
+        if not is_wearing_baked_outfit:
+            if monika_chr.get_acs_of_type('left-hair-clip'):
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+            else:
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
 
     $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
+
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
@@ -1560,6 +1572,64 @@ label mas_reaction_yellowribbon:
     call _mas_reaction_ribbon_helper("mas_reaction_yellowribbon")
     return
 
+# JSON ribbons
+label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_label):
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, ribbon_name)
+        )
+        _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP.get(
+            ribbon_name,
+            mas_acs_ribbon_def
+        )
+        _mas_new_ribbon_color = user_friendly_desc
+
+    call _mas_reaction_ribbon_helper(helper_label)
+
+    python:
+        # giftname is the 3rd item
+        if sprite_data[2] is not None:
+            store.mas_filereacts.delete_file(sprite_data[2])
+            
+        mas_finishSpriteObjInfo(sprite_data)
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_coffee", "coffee colored", "mas_reaction_gift_acs_lanvallime_ribbon_coffee")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_gold:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_gold", "gold", "mas_reaction_gift_acs_lanvallime_ribbon_gold")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_hot_pink", "hot pink", "mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lilac", "lilac", "mas_reaction_gift_acs_lanvallime_ribbon_lilac")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lime_green", "lime green", "mas_reaction_gift_acs_lanvallime_lime_green")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_navy_blue", "navy", "mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_orange:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_orange", "orange", "mas_reaction_gift_acs_lanvallime_ribbon_orange")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_royal_purple", "royal purple", "mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_sky_blue", "sky blue", "mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
+    return
+
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
 
@@ -1576,9 +1646,12 @@ label _mas_reaction_ribbon_helper(label):
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    #we have dlg for repeating ribbons, may as well have it used
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    if gift_ev:
+        # for regular ribbons
+        $ store.mas_filereacts.delete_file(gift_ev.category)
+        #we have dlg for repeating ribbons, may as well have it used
+        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+
     return
 
 label mas_reaction_new_ribbon:
@@ -1632,7 +1705,7 @@ label mas_reaction_new_ribbon:
 
         m 3rksdlc "I really don't have a lot of choices here when it comes to fashion..."
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
-        m 2dsa "In fact, I'll put it on right now.{w=0.5}.{w=0.5}."
+        m 2dsa "In fact, I'll put it on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1657,7 +1730,7 @@ label mas_reaction_new_ribbon:
         if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
-        m 2dsa "I'll put this on right now.{w=0.5}.{w=0.5}."
+        m 2dsa "I'll put this on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1702,7 +1775,7 @@ label mas_reaction_gift_roses:
 
         #We can only have this on poses which use the new sprite set
         if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-            m 2dsa "Hold on.{w=0.5}.{w=0.5}."
+            m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
@@ -1730,7 +1803,7 @@ label mas_reaction_gift_roses:
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
                 if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-                    m 2dsa "Hold on.{w=0.5}.{w=0.5}."
+                    m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 

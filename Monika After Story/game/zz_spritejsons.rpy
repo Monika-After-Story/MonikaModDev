@@ -1814,8 +1814,8 @@ init 189 python in mas_sprites_json:
                 # remove if not in here
                 frs_gifts.pop(giftname)
 
-        # now go through the giftnames and add them if they havent been
-        # unlocked already
+        # now go through the giftnames and update persistent data as well
+        # and add them to reactions
         for giftname in giftname_map:
             if not giftname.startswith("__"):
                 sp_data = giftname_map[giftname]
@@ -1825,12 +1825,11 @@ init 189 python in mas_sprites_json:
                     # alrady unlocked, but overwrite data
                     msj_gifts[sp_data] = giftname
 
-                else:
-                    # not unlocked, add this to the list
-                    frs_gifts[giftname] = sp_data
+                # always add the gift
+                frs_gifts[giftname] = sp_data
 
-                    # and add the gift
-                    _addGift(giftname)
+                # now we always add the gift
+                _addGift(giftname)
 
         writelog(MSG_INFO.format(GR_SUCCESS))
                 

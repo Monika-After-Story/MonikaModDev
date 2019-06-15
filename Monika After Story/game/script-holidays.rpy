@@ -369,7 +369,7 @@ label greeting_o31_marisa:
     else:
         # ASSUMING:
         #   vignette should be enabled
-        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika_1eua')
+        call spaceroom(dissolve_all=True, scene_change=True, force_exp='monika 1eua_static')
 
     m 1eua "Ah!"
     m 1hua "Seems like my spell worked."
@@ -499,7 +499,7 @@ label greeting_o31_rin:
 
         scene black
         pause 2.0
-        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb')
+        call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1hksdlb_static')
         m 1hksdlb "Ahaha, saying that out loud was more embarrassing than I thought..."
 
     else:
@@ -3447,7 +3447,7 @@ label mas_player_bday_knock_no_listen:
 # closed door greet surprise flow
 label mas_player_bday_surprise:
     $ persistent._mas_player_bday_decor = True
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 4hub')
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 4hub_static')
     m 4hub "Surprise!"
     m 4sub "Ahaha! Happy Birthday, [player]!"
 
@@ -3590,8 +3590,7 @@ label mas_player_bday_cake:
             m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
         else:
             m 1ekbfa "I love you, [player]!"
-    if "mas_player_bday_no_restart" in persistent.event_list:
-        $ persistent.event_list.remove("mas_player_bday_no_restart")
+    $ mas_rmallEVL("mas_player_bday_no_restart")
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -3639,7 +3638,7 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
-    if "mas_player_bday_ret_on_bday" in persistent.event_list:
+    if mas_findEVL("mas_player_bday_ret_on_bday") >= 0:
         #TODO: priority rules should be set-up here
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
@@ -3992,7 +3991,7 @@ init -876 python in mas_delact:
         ev.random = False
         ev.unlocked = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4148,7 +4147,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4211,7 +4210,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4267,7 +4266,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4326,7 +4325,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.pool = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4747,8 +4746,7 @@ label mas_gone_over_f14_check:
     if checkout_time is not None and checkout_time.date() < mas_f14:
         $ persistent._mas_f14_spent_f14 = True
         $ persistent._mas_f14_gone_over_f14 = True
-        if "mas_f14_no_time_spent" in persistent.event_list:
-            $ persistent.event_list.remove("mas_f14_no_time_spent")
+        $ mas_rmallEVL("mas_f14_no_time_spent")
     return
 
 label greeting_gone_over_f14:

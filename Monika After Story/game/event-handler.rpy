@@ -27,7 +27,7 @@ init -950 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
-    import __builtin__ 
+    import __builtin__
 
     # special store dedicated to verification of Event-based data
     import datetime
@@ -301,7 +301,8 @@ init 4 python:
         "STY": store.mas_stories.story_database,
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
-        "APL": store.mas_apology.apology_db
+        "APL": store.mas_apology.apology_db,
+        "WRS": store.mas_windowreacts.windowreact_db
     }
 
 
@@ -432,6 +433,24 @@ init 6 python:
         """
         mas_showEVL(ev_label, code, unlock=True)
 
+
+    def mas_stripEVL(ev_label, list_pop=False):
+        """
+        Strips the conditional and action from an event given the label
+        Also removes the event from the event list if present (optional)
+
+        IN:
+            ev_label - label of event to strip
+            list_pop - True if we want to remove the event from the event list
+                (Default: False)
+        """
+        ev = mas_getEV(ev_label)
+        if ev is not None:
+            ev.conditional = None
+            ev.action = None
+
+            if list_pop:
+                mas_rmEVL(ev_label)
 
 python early:
     # FLOW CHECK CONSTANTS
@@ -1142,9 +1161,9 @@ init python:
     import datetime
 
     def addEvent(
-            event, 
+            event,
             eventdb=None,
-            skipCalendar=False, 
+            skipCalendar=False,
             code="EVE"
         ):
         #
@@ -1414,32 +1433,43 @@ init python:
         evhand._lockEventLabel(evlabel, eventdb=eventdb)
 
 
-    def pushEvent(event_label):
-        #
-        # This pushes high priority or time sensitive events onto the top of
-        # the event list
-        #
-        # IN:
-        #   @event_label - a renpy label for the event to be called
-        #
-        # ASSUMES:
-        #   persistent.event_list
+    def pushEvent(event_label, skipeval=False, notify=False):
+        """
+        This pushes high priority or time sensitive events onto the top of
+        the event list
 
-        persistent.event_list.append(event_label)
+        IN:
+            @event_label - a renpy label for the event to be called
+            skipmidloopeval - do we want to skip the mid loop eval to prevent other rogue events
+            from interrupting. (Defaults: False)
+            notify - True will trigger a notification if appropriate. False
+                will not
+
+        ASSUMES:
+            persistent.event_list
+        """
+
+        persistent.event_list.append((event_label, notify))
+
+        if skipeval:
+            mas_idle_mailbox.send_skipmidloopeval()
         return
 
-    def queueEvent(event_label):
-        #
-        # This adds low priority or order-sensitive events onto the bottom of
-        # the event list. This is slow, but rarely called and list should be small.
-        #
-        # IN:
-        #   @event_label - a renpy label for the event to be called
-        #
-        # ASSUMES:
-        #   persistent.event_list
+    def queueEvent(event_label, notify=False):
+        """
+        This adds low priority or order-sensitive events onto the bottom of
+        the event list. This is slow, but rarely called and list should be small.
+        
+        IN:
+            @event_label - a renpy label for the event to be called
+            notify - True will trigger a notification if appropriate, False
+                will not
 
-        persistent.event_list.insert(0,event_label)
+        ASSUMES:
+            persistent.event_list
+        """
+
+        persistent.event_list.insert(0, (event_label, notify))
         return
 
 
@@ -1537,86 +1567,137 @@ init python:
 
 
     def popEvent(remove=True):
-        #
-        # This returns the event name for the next event and makes it the
-        # current_monikatopic
-        #
-        # IN:
-        #   remove = If False, then just return the name of the event but don't
-        #       remove it
-        #
-        # ASSUMES:
-        #   persistent.event_list
-        #   persistent.current_monikatopic
+        """
+        This returns the event name for the next event and makes it the
+        current_monikatopic
 
+        IN:
+            remove = If False, then just return the name of the event but don't
+            remove it
+
+        ASSUMES:
+            persistent.event_list
+            persistent.current_monikatopic
+
+        RETURNS: tuple of the folloiwng format:
+            [0] - event lable of the next event
+            [1] - whether or not we need to notify
+        """
         if len(persistent.event_list) == 0:
-            return None
+            return None, None
 
         if store.mas_globals.in_idle_mode:
             # idle requires us to loop over the list and find the first
             # event available in idle
             ev_found = None
 
-            for ev_label in persistent.event_list:
+            for index in range(len(persistent.event_list)):
+                ev_label, notify = persistent.event_list[index]
                 ev_found = mas_getEV(ev_label)
+
                 if ev_found is not None and ev_found.show_in_idle:
 
                     if remove:
-                        persistent.event_list.remove(ev_label)
+                        mas_rmEVL(ev_label)
 
                     persistent.current_monikatopic = ev_label
-                    return ev_label
+                    return ev_label, notify
 
             # we did not find an idle event
-            return None
+            return None, None
 
         elif remove:
-            event_label = persistent.event_list.pop()
-            persistent.current_monikatopic = event_label
+            ev_data = persistent.event_list.pop()
+            persistent.current_monikatopic = ev_data[0]
         else:
-            event_label = persistent.event_list[-1]
+            ev_data = persistent.event_list[-1]
 
-        return event_label
-
-
-    def removeEventIfExist(event_label):
-        """
-        Removes an event off the event list if it exists
-
-        IN:
-            event_label - label of the event to remove
-        """
-        if event_label in persistent.event_list:
-            persistent.event_list.remove(event_label)
+        return ev_data
 
 
     def seen_event(event_label):
-        #
-        # This checks if an event has either been seen or is already on the
-        # event list.
-        #
-        # IN:
-        #   event_lable = The label for the event to be checked
-        #
-        # ASSUMES:
-        #   persistent.event_list
-        if renpy.seen_label(event_label) or event_label in persistent.event_list:
+        """
+        This checks if an event has either been seen or is already in the
+        event list.
+
+        IN:
+            event_lable = The label for the event to be checked
+
+        ASSUMES:
+            persistent.event_list
+        """
+        if renpy.seen_label(event_label) or mas_inEVL(event_label):
             return True
         else:
             return False
 
 
+    def mas_findEVL(event_label):
+        """
+        Finds index of the given event label in the even tlist
+
+        IN:
+            event_label - event lable to check
+
+        RETURNS: index of the event in teh even tlist, -1 if not found
+        """
+        for index in range(len(persistent.event_list)):
+            if persistent.event_list[index][0] == event_label:
+                return index
+
+        return -1
+
+
+    def mas_inEVL(event_label):
+        """
+        This checks if an event is in the event list
+
+        IN:
+            event_label - event lable to check
+
+        RETURNS: True if in event list, False if not
+        """
+        for ev_data in persistent.event_list:
+            if ev_data[0] == event_label:
+                return True
+
+        return False
+
+
+    def mas_rmEVL(event_label):
+        """
+        REmoves an event from the event list if it exists
+
+        IN:
+            event label to remove
+        """
+        position = mas_findEVL(event_label)
+        if position >= 0:
+            persistent.event_list.pop(position)
+
+
+    def mas_rmallEVL(event_label):
+        """
+        Removes all events with athe given label
+
+        IN:
+            event label to remove
+        """
+        position = mas_findEVL(event_label)
+        while position >= 0:
+            mas_rmEVL(event_label)
+            position = mas_findEVL(event_label)
+
+
     def restartEvent():
-        #
-        # This checks if there is a persistent topic, and if there was push it
-        # back on the stack with a little comment.
-        #
-        # IN:
-        #
+        """
+        This checks if there is a persistent topic, and if there was push it
+        back on the stack with a little comment.
+        """
         if not mas_isRstBlk(persistent.current_monikatopic):
             #don't push greetings back on the stack
             pushEvent(persistent.current_monikatopic)
-            pushEvent('continue_event')
+            pushEvent('continue_event',True)
             persistent.current_monikatopic = 0
         return
 
@@ -1758,7 +1839,7 @@ init 1 python in evhand:
         IN:
             ev - event to push to event stack
         """
-        store.pushEvent(ev.eventlabel)
+        store.pushEvent(ev.eventlabel, notify=True)
 
 
     def actionQueue(ev, **kwargs):
@@ -1768,7 +1849,7 @@ init 1 python in evhand:
         IN:
             ev - event to queue to event stack
         """
-        store.queueEvent(ev.eventlabel)
+        store.queueEvent(ev.eventlabel, notify=True)
 
 
     def actionUnlock(ev, **kwargs):
@@ -1823,13 +1904,25 @@ init 1 python in evhand:
 label call_next_event:
 
 
-    $event_label = popEvent()
+    $ event_label, notify = popEvent()
     if event_label and renpy.has_label(event_label):
 
         if not seen_event(event_label): #Give 15 xp for seeing a new event
             $grant_xp(xp.NEW_EVENT)
 
         $ mas_RaiseShield_dlg()
+
+        $ ev = mas_getEV(event_label)
+
+        if (
+                notify
+                and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
+            ):
+            #Create a new notif
+            if renpy.windows:
+                call display_notif(m_name, random.choice(win_notif_quips), "Topic Alerts")
+            else:
+                call display_notif(m_name, random.choice(other_notif_quips), "Topic Alerts")
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
@@ -1872,6 +1965,7 @@ label call_next_event:
 
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
+                $ mas_clearNotifs()
                 jump _quit
 
         # loop over until all events have been called
@@ -1952,9 +2046,18 @@ label prompt_menu:
         sorted_event_keys = Event.getSortedKeys(unlocked_events,include_none=True)
 
         unseen_events = []
-        for event in sorted_event_keys:
-            if not seen_event(event):
-                unseen_events.append(event)
+        for ev_label in sorted_event_keys:
+            # we exclude 'mas_show_unseen' from the unseen list since it's only unlocked when the unseen menu is hidden
+            # having it added to the unseen list just messes up the counter in the 'mas_show_unseen' prompt
+            if not seen_event(ev_label) and ev_label != "mas_show_unseen":
+                unseen_events.append(ev_label)
+
+        if len(unseen_events) > 0 and persistent._mas_unsee_unseen:
+            mas_showEVL('mas_show_unseen','EVE',unlock=True)
+            unseen_num = len(unseen_events)
+            mas_getEV('mas_show_unseen').prompt = "I would like to see 'Unseen' ([unseen_num]) again"
+        else:
+            mas_hideEVL('mas_show_unseen','EVE',lock=True)
 
         repeatable_events = Event.filterEvents(
             evhand.event_database,
@@ -1962,6 +2065,7 @@ label prompt_menu:
             pool=False,
             aff=mas_curr_affection
         )
+
     #Top level menu
     # NOTE: should we force this to a particualr exp considering that 
     # monika now rotates
@@ -1970,8 +2074,11 @@ label prompt_menu:
     #To make the menu line up right we have to build it up manually
     python:
         talk_menu = []
-        if len(unseen_events)>0:
-            talk_menu.append(("{b}Unseen.{/b}", "unseen"))
+        if len(unseen_events)>0 and not persistent._mas_unsee_unseen:
+            # show unseen if we have unseen events and the player hasn't chosen to hide it
+            talk_menu.append(("{b}Unseen{/b}", "unseen"))
+        if mas_hasBookmarks():
+            talk_menu.append(("Bookmarks","bookmarks"))
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
@@ -1986,6 +2093,9 @@ label prompt_menu:
     if madechoice == "unseen":
         call show_prompt_list(unseen_events) from _call_show_prompt_list
 
+    elif madechoice == "bookmarks":
+        call mas_bookmarks
+
     elif madechoice == "prompt":
         call prompts_categories(True) from _call_prompts_categories
 
@@ -1993,7 +2103,7 @@ label prompt_menu:
         call prompts_categories(False) from _call_prompts_categories_1
 
     elif madechoice == "love":
-        $ pushEvent("monika_love")
+        $ pushEvent("monika_love",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
@@ -2021,7 +2131,11 @@ label show_prompt_list(sorted_event_keys):
         for event in sorted_event_keys:
             prompt_menu_items.append([unlocked_events[event].prompt,event])
 
-    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN)
+    $ nvm_text = "That's enough for now."
+
+    $ remove = (mas_getEV("mas_hide_unseen").prompt, mas_getEV("mas_hide_unseen").eventlabel)
+
+    call screen scrollable_menu(prompt_menu_items, evhand.UNSE_AREA, evhand.UNSE_XALIGN, nvm_text, remove)
 
     $pushEvent(_return)
 
@@ -2180,4 +2294,31 @@ label prompts_categories(pool=True):
             $picked_event = True
             $pushEvent(_return)
 
+    return
+
+# sets up the bookmarks menu
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="mas_bookmarks",unlocked=False,rules={"no unlock":None}))
+
+label mas_bookmarks:
+    show monika idle
+    python:
+        bookmarkedlist = [
+            (renpy.substitute(ev.prompt), ev_label, False, False)
+            for ev_label, ev in persistent._mas_player_bookmarked.iteritems()
+            if ev.unlocked and ev.checkAffection(mas_curr_affection)
+        ]
+
+        bookmarkedlist.sort()
+        remove_bookmark = (mas_getEV('mas_topic_unbookmark').prompt, mas_getEV('mas_topic_unbookmark').eventlabel, False, False, 20)
+        return_prompt_back = ("Nevermind.", False, False, False, 0)
+
+    show monika at t21
+    call screen mas_gen_scrollable_menu(bookmarkedlist,(evhand.UNSE_X, evhand.UNSE_Y, evhand.UNSE_W, 500), evhand.UNSE_XALIGN, remove_bookmark, return_prompt_back)
+    show monika at t11
+
+    $ topic_choice = _return
+
+    if topic_choice:
+        $ pushEvent(topic_choice,True)
     return

@@ -199,7 +199,7 @@ init -10 python:
             Gets skip midloop eval value
             """
             return self.get(self.SKIP_MID_LOOP_EVAL)
-            
+
 
     mas_idle_mailbox = MASIdleMailbox()
 
@@ -700,6 +700,15 @@ init python:
             persistent.game_unlocks[gamename] = True
 
 
+    def mas_check_player_derand():
+        """
+        Checks the player derandom dict for events that are not random and derandoms them
+        """
+        for ev_label, ev in persistent._mas_player_derandomed.iteritems():
+            if ev.random:
+                ev.random = False
+
+
 init 1 python:
     morning_flag = mas_isMorning()
 
@@ -749,6 +758,19 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 morning_flag = False
                 monika_room = "monika_room"
 
+        ## are we hiding monika
+        if not hide_monika:
+            if force_exp is None:
+#                force_exp = "monika idle"
+                if dissolve_all:
+                    force_exp = store.mas_affection._force_exp()
+
+                else:
+                    force_exp = "monika idle"
+
+            if not renpy.showing(force_exp):
+                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+
         # if we onyl want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
             mas_drawSpaceroomMasks(dissolve_masks)
@@ -768,19 +790,6 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 )
                 mas_calShowOverlay()
 
-        ## are we hiding monika
-        if not hide_monika:
-            if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
-
-                else:
-                    force_exp = "monika idle"
-
-            if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
-#            show monika idle at t11 zorder MAS_MONIKA_Z
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -852,7 +861,7 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
-    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc")
+    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc_static")
 
     # lets just call the intro instead of pushing it as an event
     # this is way simpler and prevents event loss and other weird inital
@@ -1056,14 +1065,6 @@ label ch30_autoload:
     # general affection checks that hijack flow
     if persistent._mas_affection["affection"] <= -115:
         jump mas_affection_finalfarewell_start
-
-    # sanitiziing the event_list from bull shit
-    if len(persistent.event_list) > 0:
-        python:
-            persistent.event_list = [
-                ev_label for ev_label in persistent.event_list
-                if renpy.has_label(ev_label)
-            ]
 
     # set this to None for now
     $ selected_greeting = None
@@ -1328,6 +1329,12 @@ label ch30_preloop:
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
  
+    #Unlock windowreact topics
+    $ mas_resetWindowReacts()
+
+    #Then prepare the notifs
+    $ mas_updateFilterDict()
+
     # save here before we enter the loop
     $ renpy.save_persistent()
 
@@ -1422,6 +1429,12 @@ label ch30_visual_skip:
             # run seasonal check
             mas_seasonalCheck()
 
+            #Clear the notifications tray
+            mas_clearNotifs()
+
+            #Now we check if we should queue windowreact evs
+            mas_checkForWindowReacts()
+
             # check if we need to rebulid ev
             if mas_idle_mailbox.get_rebuild_msg():
                 mas_rebuildEventLists()
@@ -1465,7 +1478,7 @@ label ch30_post_mid_loop_eval:
 
             $ pause(0.1)
             play backsound "mod_assets/sounds/amb/thunder.wav"
-        
+
         # Before a random topic can be displayed, a set waiting time needs to pass.
         # The waiting time is set initially, after a random chatter selection and before a random topic is selected.
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
@@ -1476,9 +1489,9 @@ label ch30_post_mid_loop_eval:
             jump post_pick_random_topic
         else:
             $ mas_randchat.setWaitingTime()
-        
+
         window auto
-        
+
 #        python:
 #            if (
 #                    mas_battery_supported
@@ -1602,8 +1615,7 @@ label ch30_reset:
             if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
                 $ persistent.current_monikatopic = 0
 
-            while "monika_rpy_files" in persistent.event_list:
-                $ persistent.event_list.remove("monika_rpy_files")
+            $ mas_rmallEVL("monika_rpy_files")
 
         elif len(listRpy) != 0:
             $ queueEvent("monika_rpy_files")
@@ -1814,5 +1826,26 @@ label ch30_reset:
         if store.mas_dockstat.retmoni_status is not None:
             mas_resetCoffee()
             monika_chr.remove_acs(mas_acs_quetzalplushie)
+
+    # make sure nothing the player has derandomed is now random
+    $ mas_check_player_derand()
+
+    # clean up the event list of baka events
+    python:
+        for index in range(len(persistent.event_list)-1, -1, -1):
+            item = persistent.event_list[index]
+
+            # type check
+            if type(item) != tuple:
+                new_data = (item, False)
+            else:
+                new_data = item
+
+            # label check
+            if renpy.has_label(new_data[0]):
+                persistent.event_list[index] = new_data
+
+            else:
+                persistent.event_list.pop(index)
 
     return
