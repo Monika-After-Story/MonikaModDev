@@ -20,7 +20,7 @@ init -1 python:
         "Enable this to let Monika repeat topics that you have already seen."
     )
     layout.MAS_TT_NOTIF = (
-        "Enabling this will let Monika use your system's notifications "
+        "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
     )
     layout.MAS_TT_NOTIF_SOUND = (
         "If enabled, a custom notification sound will play for Monika's notifications "
