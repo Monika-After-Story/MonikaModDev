@@ -449,15 +449,9 @@ label monika_god:
     else:
         m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
 
-    m 3dsd "What are we to him but props in a scripted play?"
-    m "So, from that perspective..."
-    if mas_isMoniUpset(lower=True):
-        m 1esc "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    else:
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-
+    m 1dsd "What are we to him but props in a scripted play?"
+    m 3euc "So, from that perspective..."
+    m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
     m 1eua "Anyway, do you worship any god, [player]?{nw}"
     $ _history_list.pop()
     menu:
@@ -966,13 +960,12 @@ label monika_listener:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "You're such a good listener, [player]."
     m 5eka "I really love that about you."
-    show monika 2lksdla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 2lksdla "Sometimes I'm afraid that I'm rambling or talking about boring things."
-    m 2lksdld "It makes me kind of self-conscious when I'm having a conversation."
-    m 2eka "But I don't feel that way with you."
-    m 4eka "Like, I don't think anyone else could make me feel this way."
-    m 2eua "You really are special."
-    m 2hua "I don't want anyone to tell you otherwise."
+    m 5lkc "Sometimes I'm afraid that I'm rambling or talking about boring things."
+    m "It makes me kind of self-conscious when I'm having a conversation."
+    m 5eka "But I don't feel that way with you."
+    m 5ekbsa "Like, I don't think anyone else could make me feel this way."
+    m 5hubfu "You really are special."
+    m 5ekbfa "I don't want anyone to tell you otherwise."
     return
 
 init 5 python:
