@@ -619,6 +619,10 @@ label unlock_piano:
 # NOTE: this has beenpartially disabled
 label random_limit_reached:
     $seen_random_limit=True
+
+    #Notif so people don't get stuck here
+    call display_notif(m_name, "Hey [player]...", "Topic Alerts")
+
     python:
         limit_quips = [
             "It seems I'm at a loss on what to say.",
@@ -1295,6 +1299,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1352,6 +1357,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1424,6 +1430,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1481,6 +1488,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
