@@ -110,7 +110,7 @@ init python:
             if not friendly:
                 return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
             else:
-                return GetWindowText(GetForegroundWindow()).lower()
+                return GetWindowText(GetForegroundWindow())
         else:
             #TODO: Mac vers (if possible)
             #NOTE: We return "" so this doesn't rule out notifications
