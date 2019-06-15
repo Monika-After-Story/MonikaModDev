@@ -71,12 +71,22 @@ init python:
             tip.hwnd = None
 
     #List of notif quips (used for topic alerts)
-    notif_quips = [
+    #Windows
+    win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
         "Can you come here for a second?",
         "[player], do you have a second?",
         "I have something to tell you, [player]!",
+        "Do you have a minute, [player]?",
+    ]
+
+    #OSX/Linux
+    other_notif_quips = [
+        "I've got something to talk about, [player]!",
+        "I have something to tell you, [player]!",
+        "Hey [player], I want to tell you something.",
+        "Do you have a minute, [player]?",
     ]
 
     #List of hwnd IDs to destroy
@@ -93,7 +103,7 @@ init python:
         if (
                 renpy.windows
                 and mas_windowreacts.can_show_notifs
-                and persistent._mas_windowreacts_windowreacts_enabled
+                and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
             ):
             from win32gui import GetWindowText, GetForegroundWindow
 
@@ -346,7 +356,6 @@ init 5 python:
         ),
         code="WRS"
     )
-
 
 label monika_monikamoddev:
     call display_notif(m_name, "Aww, are you doing something for me?\nYou're so sweet~",'Window Reactions')

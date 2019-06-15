@@ -27,7 +27,7 @@ init -950 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
-    import __builtin__ 
+    import __builtin__
 
     # special store dedicated to verification of Event-based data
     import datetime
@@ -1839,7 +1839,7 @@ init 1 python in evhand:
         IN:
             ev - event to push to event stack
         """
-        store.pushEvent(ev.eventlabel)
+        store.pushEvent(ev.eventlabel, notify=True)
 
 
     def actionQueue(ev, **kwargs):
@@ -1849,7 +1849,7 @@ init 1 python in evhand:
         IN:
             ev - event to queue to event stack
         """
-        store.queueEvent(ev.eventlabel)
+        store.queueEvent(ev.eventlabel, notify=True)
 
 
     def actionUnlock(ev, **kwargs):
@@ -1915,12 +1915,14 @@ label call_next_event:
         $ ev = mas_getEV(event_label)
 
         if (
-                not store.mas_globals.in_idle_mode
+                notify
                 and ((ev is not None and "skip alert" not in ev.rules) or ev is None)
-                and not (event_label.startswith("greeting_") or event_label.startswith("bye_"))
             ):
             #Create a new notif
-            call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")
+            if renpy.windows:
+                call display_notif(m_name, random.choice(win_notif_quips), "Topic Alerts")
+            else:
+                call display_notif(m_name, random.choice(other_notif_quips), "Topic Alerts")
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0

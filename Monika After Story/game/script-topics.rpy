@@ -120,7 +120,7 @@ init -1 python:
             if persistent._mas_sensitive_mode and sel_ev.sensitive:
                 return
 
-            pushEvent(sel_ev.eventlabel)
+            pushEvent(sel_ev.eventlabel, notify=True)
 #            persistent.random_seen += 1
 
 

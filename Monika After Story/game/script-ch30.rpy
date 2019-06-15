@@ -1545,7 +1545,7 @@ label mas_ch30_select_unseen:
             # no repeats means we should push randomlimit if appropriate,
             # otherwise stay slient
             if not seen_random_limit:
-                $ pushEvent("random_limit_reached")
+                $ pushEvent("random_limit_reached", notify=True)
 
             jump post_pick_random_topic
 
