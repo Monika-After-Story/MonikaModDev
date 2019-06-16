@@ -510,7 +510,7 @@ label mas_scary_story_cleanup:
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
-    $ play_song(songs.current_track)
+    $ play_song(persistent.current_track)
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()
     $ HKBShowButtons()
