@@ -201,40 +201,45 @@ init python:
         def __init__(self):
             super(renpy.Displayable, self).__init__()
             self.boob_click = MASClickZone([
-                (513, 458),
-                (492, 504),
-                (489, 531),
-                (498, 560),
-                (531, 587),
-                (653, 585),
-                (762, 591),
-                (790, 577),
-                (809, 548),
-                (813, 515),
-                (791, 458),
+                (514, 453),
+                (491, 509),
+                (489, 533),
+                (493, 551),
+                (506, 573),
+                (525, 588),
+                (541, 592),
+                (652, 586),
+                (709, 592),
+                (761, 592),
+                (787, 580),
+                (806, 559),
+                (813, 536),
+                (813, 517),
+                (789, 453),
             ])
             self.boob_click._debug_back = True
             self.boob_click._button_down = pygame.MOUSEBUTTONDOWN
 
             self.nose_click = MASClickZone([
-                (630, 239),
-                (624, 250),
+                (629, 240),
+                (623, 252),
                 (629, 258),
-                (632, 250),
+                (633, 252),
             ])
             self.nose_click._debug_back = True
             self.nose_click._button_down = pygame.MOUSEBUTTONDOWN
 
             self.head_click = MASClickZone([
-                (562, 0),
-                (521, 52),
-                (507, 142),
-                (632, 125),
-                (730, 142),
-                (777, 173),
-                (796, 105),
-                (783, 41),
-                (742, 0),
+                (556, 0),
+                (519, 40),
+                (498, 80),
+                (486, 144),
+                (708, 144),
+                (778, 178),
+                (792, 129),
+                (792, 80),
+                (777, 30),
+                (748, 0),
             ])
             self.head_click._debug_back = True
             self.head_click._button_down = pygame.MOUSEBUTTONDOWN
