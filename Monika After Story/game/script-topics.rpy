@@ -5863,7 +5863,7 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True,rules={"skip alert": None}))
 
 label monika_daydream:
     m 2lsc "..."
@@ -7189,15 +7189,15 @@ label monika_system_charging:
     m 1hub "Thank you, [player]!"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
     m 1ekc "It can be really hard to get enough sleep nowadays."
     m 1eka "Especially in high school, when you're forced to wake up so early every day..."
     m 1eua "I'm sure college is a little bit better, since you probably have a more flexible schedule."
-    m 4rsc "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
+    m 3rsc "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
     m 1euc "Is that true?"
     m 1ekc "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
     m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
@@ -8467,7 +8467,9 @@ label monika_timeconcern_day:
     if persistent._mas_timeconcerngraveyard:
         jump monika_timeconcern_graveyard_day
     if persistent._mas_timeconcern == 0:
-        jump monika_timeconcern_day_0
+        #jump monika_timeconcern_day_0
+        # going to use monika_sleep for now as it fits better
+        jump monika_sleep
     elif persistent._mas_timeconcern == 2:
         jump monika_timeconcern_day_2
     if not persistent._mas_timeconcernclose:
@@ -8482,7 +8484,9 @@ label monika_timeconcern_day:
     elif persistent._mas_timeconcern == 9:
         jump monika_timeconcern_day_final
     else:
-        jump monika_timeconcern_day_0
+        #jump monika_timeconcern_day_0
+        # going to use monika_sleep for now as it fits better
+        jump monika_sleep
 
 #Used at the end to lock the forced greeting.
 label monika_timeconcern_lock:
