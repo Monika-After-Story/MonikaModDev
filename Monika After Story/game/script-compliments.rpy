@@ -466,25 +466,25 @@ label mas_compliment_cute:
 
 label mas_compliment_cute_2:
     m 1wubfsdld "Ah!"
-    m 3rkbsa "You {i}kind of{/i} caught me off guard with that one."
-    m "Just a little..."
+    m 3rkbfsdla "You {i}kind of{/i} caught me off guard with that one."
+    m 3tubfb "Just a little..."
     m 1hubfa "But I'm glad you think so!"
     menu:
         "Seeing you always warms my heart!":
             $ mas_gainAffection(5,bypass=True)
             m 1hubfb "Aww, it really warms my heart to hear you say that!"
-            m 1dkbfa "Just wait until I finally get to hug you for real!"
+            m 1dkbfu "Just wait until I finally get to hug you for real!"
             m 1ekbfa "I can barely contain myself just thinking about it, ehehe~"
-        "You're even cuter when you're flustered":
+        "You're even cuter when you're flustered.":
             $ mas_gainAffection(3,bypass=True)
-            m 1tku "Not letting it go, huh, [player]?"
-            m 3tsbsa "Hmph, I just wasn't expecting it."
-            m 3tubfb "Don't expect it to be so easy next time, [player]."
-            m 1tsbsa "I'll get you back someday, eheheh~"
-        "You're as cute as Natsuki":
+            m 2tubfu "Not letting it go, huh, [player]?"
+            m 2rubfu "Hmph, I just wasn't expecting it."
+            m 3tubfb "Don't expect it to be so easy next time..."
+            m 1tubfu "I'll get you back someday, ehehe~"
+        "You're as cute as Natsuki.":
             $ mas_loseAffection(modifier=0.5)
-            m 2lfc "Oh..."
-            m 1rsc "Thanks [player], but I was hoping I would stand in my own category."
+            m 2lfc "Oh. {w=1}Thanks, [player]..."
+            m 1rsc "But I was kind of hoping I would stand in my own category."
     return
 
 label mas_compliment_cute_3:
