@@ -3,6 +3,9 @@
 #Whether Monika can use notifications or not
 default persistent._mas_enable_notifications = False
 
+#Whether notification sounds are enabled or not
+default persistent._mas_notification_sounds = True
+
 #Whether Monika can see your active window or not
 default persistent._mas_windowreacts_windowreacts_enabled = False
 
@@ -68,12 +71,22 @@ init python:
             tip.hwnd = None
 
     #List of notif quips (used for topic alerts)
-    notif_quips = [
+    #Windows
+    win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
         "Can you come here for a second?",
         "[player], do you have a second?",
         "I have something to tell you, [player]!",
+        "Do you have a minute, [player]?",
+    ]
+
+    #OSX/Linux
+    other_notif_quips = [
+        "I've got something to talk about, [player]!",
+        "I have something to tell you, [player]!",
+        "Hey [player], I want to tell you something.",
+        "Do you have a minute, [player]?",
     ]
 
     #List of hwnd IDs to destroy
@@ -90,14 +103,14 @@ init python:
         if (
                 renpy.windows
                 and mas_windowreacts.can_show_notifs
-                and persistent._mas_windowreacts_windowreacts_enabled
+                and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
             ):
             from win32gui import GetWindowText, GetForegroundWindow
 
             if not friendly:
                 return GetWindowText(GetForegroundWindow()).lower().replace(" ","")
             else:
-                return GetWindowText(GetForegroundWindow()).lower()
+                return GetWindowText(GetForegroundWindow())
         else:
             #TODO: Mac vers (if possible)
             #NOTE: We return "" so this doesn't rule out notifications
@@ -108,7 +121,7 @@ init python:
         Checks if MAS is the focused window
         """
         #TODO: Mac vers (if possible)
-        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name.lower()
+        return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name
 
     def mas_isInActiveWindow(keywords):
         """
@@ -205,6 +218,21 @@ init python:
         """
         return persistent._mas_enable_notifications and persistent._mas_windowreacts_notif_filters.get(group,False)
 
+    def mas_unlockFailedWRS(ev_label=None):
+        """
+        Unlocks a wrs again provided that it showed, but failed to show (failed checks in the notif label)
+        NOTE: This should only be used for wrs that are only a notification
+
+        IN:
+            ev_label: eventlabel of the wrs
+        """
+        if (
+                ev_label
+                and renpy.has_label(ev_label)
+                and ev_label not in persistent._mas_windowreacts_no_unlock_list
+            ):
+            mas_unlockEVL(ev_label,"WRS")
+
     def mas_tryShowNotificationOSX(title, body):
         """
         Tries to push a notification to the notification center on macOS.
@@ -234,6 +262,9 @@ init python:
 #   body: Notification body text
 #   group: Notification group (for checking if we have this enabled)
 #   skip_checks: Whether or not we skips checks
+#
+#OUT:
+#   bool indicating status (notif shown or not (by check))
 
 label display_notif(title, body, group=None, skip_checks=False):
     #We only show notifications if:
@@ -258,8 +289,9 @@ label display_notif(title, body, group=None, skip_checks=False):
             or skip_checks
         ):
 
-        #Play the notif sound
-        play sound "mod_assets/sounds/effects/notif.wav"
+        #Play the notif sound if we have that enabled
+        if persistent._mas_notification_sounds:
+            play sound "mod_assets/sounds/effects/notif.wav"
 
         #Now we make the notif
         if (renpy.windows):
@@ -276,7 +308,9 @@ label display_notif(title, body, group=None, skip_checks=False):
         elif (renpy.linux):
             # The Linux way
             $ mas_tryShowNotificationLinux(renpy.substitute(title),renpy.substitute(body))
-    return
+
+        return True
+    return False
 
 
 #START: Window Reacts
@@ -286,7 +320,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
-            rules={"notif-group": "Window Reactions"},
+            rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
@@ -294,6 +328,10 @@ init 5 python:
 
 label monika_whatwatching:
     call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_whatwatching')
     return
 
 init 5 python:
@@ -302,6 +340,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_lookingat",
             category=['rule34', 'monika'],
+            rules={"skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
@@ -336,13 +375,16 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
-            rules={"notif-group": "Window Reactions"},
+            rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
     )
 
-
 label monika_monikamoddev:
     call display_notif(m_name, "Aww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_monikamoddev')
     return

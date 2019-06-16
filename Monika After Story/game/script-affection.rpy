@@ -111,13 +111,13 @@ init -900 python in mas_affection:
 
     # Forced expression map. This is for spaceroom dissolving
     FORCE_EXP_MAP = {
-        BROKEN: "monika 6ckc",
-        DISTRESSED: "monika 6rkc",
-        UPSET: "monika 2efc",
-        NORMAL: "monika 1eua",
-        AFFECTIONATE: "monika 1eua",
-        ENAMORED: "monika 1hua",
-        LOVE: "monika 1hua",
+        BROKEN: "monika 6ckc_static",
+        DISTRESSED: "monika 6rkc_static",
+        UPSET: "monika 2efc_static",
+        NORMAL: "monika 1eua_static",
+        AFFECTIONATE: "monika 1eua_static",
+        ENAMORED: "monika 1hua_static",
+        LOVE: "monika 1hua_static",
     }
 
 
@@ -387,7 +387,7 @@ init -1 python in mas_affection:
 
         if store.mas_isMoniNormal() and store.mas_isBelowZero():
             # special case
-            return "monika 1esc"
+            return "monika 1esc_static"
 
         return FORCE_EXP_MAP.get(curr_aff, "monika idle")
 
@@ -1765,21 +1765,21 @@ init 20 python:
         # If affection level between -15 and -20 and you haven't seen the label before, push this event where Monika mentions she's a little upset with the player.
         # This is an indicator you are heading in a negative direction.
         if curr_affection <= -15 and not seen_event("mas_affection_upsetwarn"):
-            queueEvent("mas_affection_upsetwarn")
+            queueEvent("mas_affection_upsetwarn", notify=True)
 
         # If affection level between 15 and 20 and you haven't seen the label before, push this event where Monika mentions she's really enjoying spending time with you.
         # This is an indicator you are heading in a positive direction.
         elif 15 <= curr_affection and not seen_event("mas_affection_happynotif"):
-            queueEvent("mas_affection_happynotif")
+            queueEvent("mas_affection_happynotif", notify=True)
 
         # If affection level is greater than 100 and you haven't seen the label yet, push this event where Monika will allow you to give her a nick name.
         elif curr_affection >= 100 and not seen_event("monika_affection_nickname"):
-            queueEvent("monika_affection_nickname")
+            queueEvent("monika_affection_nickname", notify=True)
 
         # If affection level is less than -50 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
-                queueEvent("mas_affection_apology")
+                queueEvent("mas_affection_apology", notify=True)
         # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
         elif curr_affection <= -100 and not seen_event("greeting_tears"):
             mas_unlockEVL("greeting_tears", "GRE")
