@@ -6,7 +6,7 @@
 #
 # Some thoughts:
 #   the extras menu is a grid screen showed when the eExtras menu option is
-#   activated. 
+#   activated.
 #
 # TOC:
 # EXM010 - ZOOM stuff
@@ -14,7 +14,7 @@
 
 
 init python:
-  
+
     # extras menu function
     def mas_open_extra_menu():
         """
@@ -104,12 +104,18 @@ label mas_extra_menu_close:
         call mas_extra_menu_zoom_callback
 
     # re-enable overlays
-    $ mas_DropShield_core()
+    if store.mas_globals.in_idle_mode:
+        $ mas_coreToIdleShield()
+    else:
+        $ mas_DropShield_core()
+
+    show monika idle
 
     jump ch30_loop
 
 label mas_idle_loop:
     pause 10.0
+    $ renpy.not_infinite_loop(60)
     jump mas_idle_loop
 
 default persistent._mas_opened_extra_menu = False
@@ -172,7 +178,7 @@ label mas_extra_menu_zoom_callback:
             $ persistent._mas_pm_zoomed_out = True
 
     elif mas_sprites.zoom_level == mas_sprites.max_zoom:
-        
+
         if (
                 aff_larger_than_zero
                 and not persistent._mas_pm_zoomed_in_max
@@ -183,7 +189,7 @@ label mas_extra_menu_zoom_callback:
             $ persistent._mas_pm_zoomed_in = True
 
     elif mas_sprites.zoom_level > mas_sprites.default_zoom_level:
-        
+
         if (
                 aff_larger_than_zero
                 and not persistent._mas_pm_zoomed_in
@@ -217,14 +223,7 @@ label mas_extra_menu_zoom_in_max_first_time:
 ################################# EXTRA MENU STUFF ############################
 # [EXM900]
 
-# trasnform for the modebar show
-transform mas_modebar_tr_show:
-    xpos 1280 xanchor 0 ypos 10 yanchor 0
-    easein 0.7 xpos 1210 
 
-transform mas_modebar_tr_hide:
-    xpos 1210 xanchor 0 ypos 10 yanchor 0
-    easeout 0.7 xpos 1280 
 
 style mas_mbs_vbox is vbox
 style mas_mbs_button is button
@@ -347,7 +346,7 @@ screen mas_extramenu_area():
 
         # close button
         textbutton _("Close"):
-            area (61, 594, 120, 35) 
+            area (61, 594, 120, 35)
             style "hkb_button"
             action Jump("mas_extra_menu_close")
 
@@ -375,9 +374,3 @@ screen mas_extramenu_area():
                     style "mas_adjust_vbar"
                     xalign 0.5
                 $ store.mas_sprites.adjust_zoom()
-
-
-
-
-
-
