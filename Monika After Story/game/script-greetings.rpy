@@ -3404,5 +3404,5 @@ label greeting_rent:
     m 2hua "..." 
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
     show monika 5lsbfu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lsbfu "Although, I don't mind how long you stay here, ehehe~."
+    m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
