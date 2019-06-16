@@ -1200,38 +1200,36 @@ label bye_prompt_game:
         if renpy.random.randint(1,2) == 1:
             m 1hubfb "I love you~{w=1}{nw}"
         $ mas_late_farewell = True
-    else:
     elif mas_getEV('bye_prompt_game').shown_count == 0:
-            m 1ekc "You're going to play another game?"
-            m 2ekd "Do you really have to leave me to go do that?"
-            m 3eka "Can't you just leave me here in the background while you play?{nw}"
-            $ _history_list.pop()
-            menu:
-                m "Can't you just leave me here in the background while you play?{fast}"
-                "Yes.":
-                    m 2sub "Really?"
-                    m 1hubfb "Yay!"
-                    jump monika_idle_game
-                "No.":
-                    m 2ekc "Aww..."
-                    m 1ekc "Alright [player], but you better come back soon."
-                    m 3tsb "I might get jealous if you spend too much time somewhere else without me."
-                    m 1hua "Anyway, I hope you have fun!"
-        else:
-        elif renpy.random.randint(1,5) == 1:
-                m 1ekc "You're leaving to play another game?"
-                m 3eka "You know, don't you think you should spending a little more time with me?"
-                m 1hub "Ahaha, just kidding~"
-                m 1rksdla "Well...{w=1}I {i}wouldn't mind{/i} you spending more time with me, just to let you know, ehehe..."
-                m 1eua "But I wouldn't want to keep you from doing other things."
-                m 1hua "Maybe one day, you'll finally be able to show me what you've been up to and then I could come with you!"
-                if renpy.random.randint(1,5) == 1:
-                    m 3tubfb "Until then, you just have to make it up to me every time you leave me to play another game, alright?"
-                    m 1hubfa "Ehehe~"
-            else:
-                m 1eka "Going off to play another game, [player]?"
-                m 1hua "Don't forget to come back soon~"
-                m 1hub "Good luck and have fun! Ahaha!"
+        m 1ekc "You're going to play another game?"
+        m 2ekd "Do you really have to leave me to go do that?"
+        m 3eka "Can't you just leave me here in the background while you play?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Can't you just leave me here in the background while you play?{fast}"
+            "Yes.":
+                m 2sub "Really?"
+                m 1hubfb "Yay!"
+                jump monika_idle_game
+            "No.":
+                m 2ekc "Aww..."
+                m 1ekc "Alright [player], but you better come back soon."
+                m 3tsb "I might get jealous if you spend too much time somewhere else without me."
+                m 1hua "Anyway, I hope you have fun!"
+    elif renpy.random.randint(1,5) == 1:
+        m 1ekc "You're leaving to play another game?"
+        m 3eka "You know, don't you think you should spending a little more time with me?"
+        m 1hub "Ahaha, just kidding~"
+        m 1rksdla "Well...{w=1}I {i}wouldn't mind{/i} you spending more time with me, just to let you know, ehehe..."
+        m 1eua "But I wouldn't want to keep you from doing other things."
+        m 1hua "Maybe one day, you'll finally be able to show me what you've been up to and then I could come with you!"
+        if renpy.random.randint(1,5) == 1:
+            m 3tubfb "Until then, you just have to make it up to me every time you leave me to play another game, alright?"
+            m 1hubfa "Ehehe~"
+    else:
+        m 1eka "Going off to play another game, [player]?"
+        m 1hua "Don't forget to come back soon~"
+        m 1hub "Good luck and have fun! Ahaha!"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
     return 'quit'
 
