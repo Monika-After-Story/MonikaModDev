@@ -3590,8 +3590,7 @@ label mas_player_bday_cake:
             m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
         else:
             m 1ekbfa "I love you, [player]!"
-    if "mas_player_bday_no_restart" in persistent.event_list:
-        $ persistent.event_list.remove("mas_player_bday_no_restart")
+    $ mas_rmallEVL("mas_player_bday_no_restart")
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -3639,7 +3638,7 @@ init 5 python:
     )
 
 label mas_player_bday_no_restart:
-    if "mas_player_bday_ret_on_bday" in persistent.event_list:
+    if mas_findEVL("mas_player_bday_ret_on_bday") >= 0:
         #TODO: priority rules should be set-up here
         return
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
@@ -3992,7 +3991,7 @@ init -876 python in mas_delact:
         ev.random = False
         ev.unlocked = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4148,7 +4147,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4211,7 +4210,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4267,7 +4266,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.random = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4326,7 +4325,7 @@ init -876 python in mas_delact:
         ev.unlocked = False
         ev.pool = False
         store.mas_idle_mailbox.send_rebuild_msg()
-        store.removeEventIfExist(ev.eventlabel)
+        store.mas_rmEVL(ev.eventlabel)
         return True
 
 
@@ -4747,8 +4746,7 @@ label mas_gone_over_f14_check:
     if checkout_time is not None and checkout_time.date() < mas_f14:
         $ persistent._mas_f14_spent_f14 = True
         $ persistent._mas_f14_gone_over_f14 = True
-        if "mas_f14_no_time_spent" in persistent.event_list:
-            $ persistent.event_list.remove("mas_f14_no_time_spent")
+        $ mas_rmallEVL("mas_f14_no_time_spent")
     return
 
 label greeting_gone_over_f14:

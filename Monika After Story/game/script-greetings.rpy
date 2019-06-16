@@ -1107,8 +1107,7 @@ label i_greeting_monikaroom:
     $ has_listened = False
 
     # need to remove this in case the player quits the special player bday greet before the party and doesn't return until the next day
-    if "mas_player_bday_no_restart" in persistent.event_list:
-        $ persistent.event_list.remove("mas_player_bday_no_restart")
+    $ mas_rmallEVL("mas_player_bday_no_restart")
 
     # FALL THROUGH
 label monikaroom_greeting_choice:
