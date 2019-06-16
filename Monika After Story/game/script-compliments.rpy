@@ -451,7 +451,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_cute",
-            prompt="... You're cute!",
+            prompt="You're cute!",
             unlocked=True
         ),
         eventdb=store.mas_compliments.compliment_database
