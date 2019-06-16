@@ -1773,7 +1773,7 @@ init python:
             "first-kiss",
             "Our First Kiss",
             persistent._mas_first_kiss,
-            []
+            [persistent._mas_first_kiss.year]
         )
 
 # Using init 2 so we can have access to the season dates
@@ -1989,7 +1989,7 @@ label _first_time_calendar_use:
 
     $ persistent._mas_first_calendar_check = True
 
-    if mas_in_idle_mode:
+    if store.mas_globals.in_idle_mode:
         # IDLe only enables talk extra and music
         $ store.hkb_button.talk_enabled = True
         $ store.hkb_button.extra_enabled = True

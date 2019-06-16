@@ -19,6 +19,28 @@ default persistent._mas_filereacts_historic = dict()
 default persistent._mas_filereacts_last_reacted_date = None
 # stores the last date gifts were received so we can clear _mas_filereacts_reacted_map
 
+default persistent._mas_filereacts_sprite_gifts = {}
+# contains sprite gifts that are currently available. aka not already unlocked
+# key: giftname to react to
+# value: tuple of the following format:
+#   [0] - sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
+#   [1] - id of the sprite object this gift unlocks.
+#
+# NOTE: THIS IS REVERSE MAPPING OF HOW JSON GIFTS AND SPRITE REACTED WORK
+#
+# NOTE: contains sprite gifts before being unlocked. When its unlocked,
+#   they move to _mas_sprites_json_gifted_sprites
+
+default persistent._mas_filereacts_sprite_reacted = {}
+# list of sprite reactions. This MUST be handled via the sprite reaction/setup
+# labels. DO NOT ACCESS DIRECTLY. Use the helper function
+# key:  tuple of the following format:
+#   [0]: sprite type (0 - ACS, 1 - HAIR, 2 - CLOTHES)
+#   [1]: id of the sprite objec this gift unlocks (name) != display name
+# value: giftname
+
+# TODO: need a generic reaction for finding a new ACS/HAIR/CLOTHES
+
 init 800 python:
     if len(persistent._mas_filereacts_failed_map) > 0:
         store.mas_filereacts.delete_all(persistent._mas_filereacts_failed_map)
@@ -149,8 +171,8 @@ init -1 python in mas_filereacts:
         # otherwise we found some potential gifts
         gifts_found = list()
         # now lets lowercase this list whie also buliding a map of files
-        for _gift in raw_gifts:
-            gift_name, ext, garbage = _gift.partition(GIFT_EXT)
+        for mas_gift in raw_gifts:
+            gift_name, ext, garbage = mas_gift.partition(GIFT_EXT)
             c_gift_name = gift_name.lower()
             if (
                     c_gift_name not in
@@ -161,8 +183,8 @@ init -1 python in mas_filereacts:
                         store.persistent._mas_filereacts_stop_map
                 ):
                 gifts_found.append(c_gift_name)
-                found_map[c_gift_name] = _gift
-                store.persistent._mas_filereacts_reacted_map[c_gift_name] = _gift
+                found_map[c_gift_name] = mas_gift
+                store.persistent._mas_filereacts_reacted_map[c_gift_name] = mas_gift
 
         # then sort the list
         gifts_found.sort()
@@ -177,27 +199,68 @@ init -1 python in mas_filereacts:
         # otherwise, we need to do this more carefully
         found_reacts = list()
         for index in range(len(gifts_found)-1, -1, -1):
-            _gift = gifts_found[index]
-            reaction = filereact_map.get(_gift, None)
+            mas_gift = gifts_found[index]
+            reaction = filereact_map.get(mas_gift, None)
 
-            if _gift is not None and reaction is not None:
+            if mas_gift is not None and reaction is not None:
                 # remove from the list and add to found
                 # TODO add to the persistent react map today
-                gifts_found.pop()
+                gifts_found.pop(index)
                 found_reacts.append(reaction.eventlabel)
                 found_reacts.append(gift_connectors.quip()[1])
 
-        # add in the generic gift reactions
-        generic_reacts = list()
+                # if a special sprite gift, add to the per list matching
+                # sprite objects with data.
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+        # generic sprite object gifts treated differently
+        sprite_object_reacts = []
         if len(gifts_found) > 0:
-            for _gift in gifts_found:
+            for index in range(len(gifts_found)-1, -1, -1):
+                mas_gift = gifts_found[index]
+
+                sp_data = store.persistent._mas_filereacts_sprite_gifts.get(
+                    mas_gift,
+                    None
+                )
+                if sp_data is not None:
+                    gifts_found.pop(index)
+                    store.persistent._mas_filereacts_sprite_reacted[sp_data] = (
+                        mas_gift
+                    )
+
+                    # add the generic react
+                    sprite_object_reacts.append(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+                    sprite_object_reacts.append(gift_connectors.quip()[1])
+
+                    # stats for today
+                    _register_received_gift(
+                        "mas_reaction_gift_generic_sprite_json"
+                    )
+
+        # extend the list
+        sprite_object_reacts.extend(found_reacts)
+
+        # add in the generic gift reactions
+        generic_reacts = []
+        if len(gifts_found) > 0:
+            for mas_gift in gifts_found:
                 generic_reacts.append("mas_reaction_gift_generic")
                 generic_reacts.append(gift_connectors.quip()[1])
                 # keep stats for today
                 _register_received_gift("mas_reaction_gift_generic")
 
 
-        generic_reacts.extend(found_reacts)
+        generic_reacts.extend(sprite_object_reacts)
 
         # gotta remove the extra
         if len(generic_reacts) > 0:
@@ -479,6 +542,88 @@ init python:
 
         return (totalGifts,goodGifts,neutralGifts,badGifts)
 
+
+    def mas_getSpriteObjInfo(sp_data=None):
+        """
+        Returns sprite info from the sprite reactions list.
+
+        IN:
+            sp_data - tuple of the following format:
+                [0] - sprite type
+                [1] - sprite name
+                If None, we use pseudo random select from sprite reacts
+                (Default: None)
+
+        REUTRNS: tuple of the folling format:
+            [0]: sprite type of the sprite
+            [1]: sprite name (id) 
+            [2]: giftname this sprite is associated with
+            [3]: True if this gift has already been given before
+        """
+        # given giftname? try and lookup
+        if sp_data is not None:
+            giftname = persistent._mas_filereacts_sprite_reacted.get(
+                sp_data,
+                None
+            )
+            if giftname is None:
+                return (None, None, None, None)
+
+        elif len(persistent._mas_filereacts_sprite_reacted) > 0:
+            sp_data = persistent._mas_filereacts_sprite_reacted.keys()[0]
+            giftname = persistent._mas_filereacts_sprite_reacted[sp_data]
+
+        else:
+            return (None, None, None, None)
+
+        # check if this gift has already been gifted
+        gifted_before = sp_data in persistent._mas_sprites_json_gifted_sprites
+
+        # return results
+        return (sp_data[0], sp_data[1], giftname, gifted_before)
+
+
+    def mas_finishSpriteObjInfo(sprite_data, unlock_sel=True):
+        """
+        Finishes the sprite object with the given data.
+
+        IN:
+            sprite_data - sprite data tuple from getSpriteObjInfo
+            unlock_sel - True will unlock the selector topic, False will not
+                (Default: True)
+        """
+        sp_type, sp_name, giftname, gifted_before = sprite_data
+
+        # sanity check
+        # NOTE: gifted_before is not required
+        if sp_type is None or sp_name is None or giftname is None:
+            return
+
+        sp_data = (sp_type, sp_name)
+        
+        if sp_data in persistent._mas_filereacts_sprite_reacted:
+            persistent._mas_filereacts_sprite_reacted.pop(sp_data)
+
+        if giftname in persistent._mas_filereacts_sprite_gifts:
+            persistent._mas_sprites_json_gifted_sprites[sp_data] = giftname
+
+        else:
+            # since we have the data, we can add it ourselves if its missing
+            # for some reason.
+            persistent._mas_sprites_json_gifted_sprites[sp_data] = (
+                giftname
+            )
+
+        # unlock the selectable for this sprite object
+        store.mas_selspr.json_sprite_unlock(
+            store.mas_sprites.get_sprite(sp_type, sp_name),
+            unlock_label=unlock_sel
+        )
+
+        # save persistent
+        renpy.save_persistent()
+
+
 ### CONNECTORS [RCT000]
 
 # none here!
@@ -593,19 +738,19 @@ label mas_reaction_generic:
 label mas_reaction_gift_generic:
     if random.randint(1,2) == 1:
         m 1esd "[player], are you trying to give me something?"
-        m 1rssdlb "I found it, but I can’t bring it here..."
-        m "I can’t seem to read it well enough."
-        m 3esa "But that’s alright!"
-        m 1esa "It’s the thought that counts after all, right?"
+        m 1rssdlb "I found it, but I can't bring it here..."
+        m "I can't seem to read it well enough."
+        m 3esa "But that's alright!"
+        m 1esa "It's the thought that counts after all, right?"
         m "Thanks for being so thoughtful, [player]~"
     else:
         m 2dkd "{i}*sigh*{/i}"
-        m 4ekc "I’m sorry, [player]."
-        m 1ekd "I know you’re trying to give me something."
-        m 2rksdld "But for some reason I can’t read the file."
-        m 3euc "Don’t get me wrong, however."
+        m 4ekc "I'm sorry, [player]."
+        m 1ekd "I know you're trying to give me something."
+        m 2rksdld "But for some reason I can't read the file."
+        m 3euc "Don't get me wrong, however."
         m 3eka "I still appreciate that you tried giving something to me."
-        m 1hub "And for that, I’m thankful~"
+        m 1hub "And for that, I'm thankful~"
     $ store.mas_filereacts.delete_file(None)
     return
 
@@ -629,6 +774,105 @@ label mas_reaction_gift_test2:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
+## GENERIC SPRITE OBJECT JSONS
+
+label mas_reaction_gift_generic_sprite_json:
+    $ sprite_data = mas_getSpriteObjInfo()
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    python:
+        sprite_str = store.mas_sprites_json.SP_UF_STR.get(sprite_type, None)
+
+    # TODO: something different if whatever was gifted has been gifted before
+
+    m "Aww, [player]!"
+    if sprite_str is None:
+        if giftname is not None:
+            m 1hua "You're so sweet!"
+            m 1eua "Thanks for giving me this [giftname]!"
+            m 1ekbsa "You really love to spoil me, don't you."
+            m 1hubfa "Ehehe!"
+
+        else:
+            m 3eub "Thanks for this!"
+
+    else:
+        m 1hua "Thanks for this [sprite_str], [player]!"
+        m 3hub "I can't wait to try it on!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+## Hair clip reactions
+
+label mas_reaction_gift_acs_jmo_hairclip_cherry:
+    call mas_reaction_gift_hairclip("jmo_hairclip_cherry")
+    return
+
+label mas_reaction_gift_acs_jmo_hairclip_heart:
+    call mas_reaction_gift_hairclip("jmo_hairclip_heart")
+    return
+
+label mas_reaction_gift_acs_jmo_hairclip_musicnote:
+    call mas_reaction_gift_hairclip("jmo_hairclip_musicnote")
+    return
+
+# hairclip
+label mas_reaction_gift_hairclip(hairclip_name):
+    # get sprtie data
+    $ sprite_data = mas_getSpriteObjInfo((store.mas_sprites.SP_ACS, hairclip_name))
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    # get the acs
+    $ hairclip_acs = store.mas_sprites.get_sprite(sprite_type, sprite_name)
+
+    # check for incompatibility
+    $ is_wearing_baked_outfit = monika_chr.is_wearing_clothes_with_exprop("baked outfit")
+
+    if gifted_before:
+        m 1rksdlb "You already gave me this hairclip, silly!"
+
+    else:
+        if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
+            m 1hub "Oh!{w=1} Another hairclip!"
+            m 3hua "Thanks, [player]."
+
+        else:
+            m 1wuo "Oh!"
+            m 1sub "Is that a hairclip?"
+            m 1hub "That's so cute, thanks [player]!"
+
+        # must include this check because we cannot for sure know if the acs
+        # exists
+        # also need to not wear it if wearing clothes that are incompatible
+        if hairclip_acs is None or is_wearing_baked_outfit:
+            m 1hua "If you want me to wear it, just ask, okay?"
+
+        else:
+            m 2dsa "Just give me a second to put it on.{w=0.5}.{w=0.5}.{nw}"
+            $ monika_chr.wear_acs(hairclip_acs)
+            m 1hua "There we go."
+
+        # need to make sure we set the selector prompt correctly
+        # only do this if not wearing baked, since the clip is automatically off in this case
+        # so need to make sure when we switch outfits, the prompt is still correct
+        if not is_wearing_baked_outfit:
+            if monika_chr.get_acs_of_type('left-hair-clip'):
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+            else:
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+
+    $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
+
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+## End hairclip reactions
+
+
 ## coffee vars
 # NOTE: this is just for reference, check sprite-chart for inits
 # persistent._mas_acs_enable_coffee
@@ -640,7 +884,7 @@ init 5 python:
 label mas_reaction_gift_coffee:
 
     m 1euc "Hmm?"
-    $ store.mas_sprites.reset_zoom()
+
     m 1euc "Oh,{w} is this coffee?"
     $ mas_receivedGift("mas_reaction_gift_coffee")
 
@@ -651,12 +895,16 @@ label mas_reaction_gift_coffee:
         m "Thank you so much, [player]!"
 
     else:
-        show emptydesk at i11 zorder 9
         $ mas_gainAffection(modifier=2, bypass=True)
 
         m 1hua "Now I can finally make some!"
         m "Thank you so much, [player]!"
         m "Why don't I go ahead and make a cup right now?"
+
+        $ curr_zoom = store.mas_sprites.zoom_level
+        call monika_zoom_transition_reset(1.0)
+        show emptydesk at i11 zorder 9
+
         m 1eua "I'd like to share the first with you, after all."
 
         # monika is off screen
@@ -669,8 +917,13 @@ label mas_reaction_gift_coffee:
         show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
         hide emptydesk
 
+        # 1 second wait so dissolve is complete before zooming
+        $ renpy.pause(0.5, hard=True)
+        call monika_zoom_transition(curr_zoom, 1.0)
+
         # monika back on screen
         m 1eua "I'll let that brew for a few minutes."
+
         $ mas_brewCoffee()
         $ persistent._mas_acs_enable_coffee = True
         $ persistent._mas_coffee_been_given = True
@@ -695,9 +948,9 @@ label mas_reaction_quetzal_plush:
             $ monika_chr.wear_acs(mas_acs_quetzalplushie)
 
         $ persistent._mas_acs_enable_quetzalplushie = True
-        m 1sub "It’s a quetzal!"
+        m 1sub "It's a quetzal!"
         m "Oh my gosh, thanks a lot, [player]!"
-        m 1eua "I did mention that I’d like to have a quetzal as a pet..."
+        m 1eua "I did mention that I'd like to have a quetzal as a pet..."
         m 1rud "But I would never force the poor thing to stay."
         m 1hua "And now you gave me the next closest thing!"
         m 1hub "This makes me so happy!"
@@ -740,7 +993,7 @@ label mas_reaction_promisering:
                 m 1wkbltpa "I'm sorry, [player], I just..."
                 m 1dkbltpa "...I'm so happy...{w=0.5}You just gave me your promise..."
                 m "Your promise that we'll be for each other,{w=0.1} and no one else...{w=0.3}forever..."
-                m 3lkbltpa "Know that I’ll cherish it."
+                m 3lkbltpa "Know that I'll cherish it."
                 m 3dkbltpa "Always."
                 m 1skbltpa "This makes me so happy!"
 
@@ -760,7 +1013,7 @@ label mas_reaction_promisering:
                     m "Even more that you gave it to me on this special day..."
 
                 m 1dkbltpb "Aha, sorry for crying, [player]..."
-                m 1skbltda "I’m just really, really happy right now."
+                m 1skbltda "I'm just really, really happy right now."
                 m 1dkbla "Thank you."
                 m "I love you, [player]."
                 m "More than anything else in this fleeting world."
@@ -815,12 +1068,12 @@ init 5 python:
     addReaction("mas_reaction_plush", "plushie", is_good=True)
 
 label mas_reaction_plush:
-    m 1wud "What’s this, [player]?"
+    m 1wud "What's this, [player]?"
     m "Are you trying to give me a plushie?"
     m 1rksdlb "I appreciate the thought, but..."
-    m 1ekd "For some reason, I can’t seem to bring it here."
+    m 1ekd "For some reason, I can't seem to bring it here."
     m 1rkc "I wish I could..."
-    m 1hua "But don’t worry, [player]!"
+    m 1hua "But don't worry, [player]!"
     m 1hub "Ehehe~"
     m 1hua "Thank you for trying!"
     $ mas_receivedGift("mas_reaction_plush") # while unsuccessful counts
@@ -833,16 +1086,16 @@ init 5 python:
 
 label mas_reaction_bday_cake:
     if not mas_isMonikaBirthday():
-        $ mas_loseAffection(3)
-        m 1rksdlb "Today is not my birthday, did you forget when it is, [player]?"
+        $ mas_loseAffection(3, reason=7)
+        m 1ltsdlc "Today's not my birthday,{w=1} did you forget when it is, [player]?"
     else:
         $ mas_gainAffection(modifier=2, bypass=True)
         m 1wud "Oh, [player]..."
         m "A...birthday cake?"
         m 3sub "Gosh, this is so sweet of you!"
         m 1hub "I really love this a lot!"
-        m 1dkbfa "I’ll save it for now"
-        m 3hua "I can’t wait to try it later!"
+        m 1dkbfa "I'll save it for now"
+        m 3hua "I can't wait to try it later!"
         m 1dsc "But..."
         m 3ekbfa "I wish we could eat it together..."
         m 1dkbfa "A birthday cake is for sharing, after all~"
@@ -862,10 +1115,10 @@ init 5 python:
 label mas_reaction_cupcake:
     m 1wud "Is that a...cupcake?"
     m 3hub "Wow, thanks [player]!"
-    m 3euc "Come to think of it, I’ve been meaning to make some cupcakes myself."
+    m 3euc "Come to think of it, I've been meaning to make some cupcakes myself."
     m 1eua "I wanted to learn how to bake good pastries like Natsuki did."
-    m 1rksdlb "Buuut I’ve yet to make a kitchen to use!"
-    m 3eub "Maybe in the future once I get better at programming, I’ll be able to make one here."
+    m 1rksdlb "Buuut I've yet to make a kitchen to use!"
+    m 3eub "Maybe in the future once I get better at programming, I'll be able to make one here."
     m 5hubfa "Would be nice to have another hobby other than writing, ehehe~"
     $ mas_receivedGift("mas_reaction_cupcake")
     $ gift_ev = mas_getEV("mas_reaction_cupcake")
@@ -879,10 +1132,10 @@ label mas_reaction_knife:
     m 1euc "...?"
     m 1wud "Is that...a knife?"
     m 2wfc "Why would you want to give me that?"
-    m 2wfd "I don’t need this here!"
+    m 2wfd "I don't need this here!"
     m 3tfc "...Someone else, maybe."
     m 1dfc "..."
-    m 1rsc "I’m not taking this, [player]."
+    m 1rsc "I'm not taking this, [player]."
     m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
     $ mas_receivedGift("mas_reaction_knife") # while technically she didn't accept this one counts
     $ gift_ev = mas_getEV("mas_reaction_knife")
@@ -1051,16 +1304,24 @@ label mas_reaction_hotchocolate:
         if persistent._mas_coffee_cup_done is not None:
             m 3eua "I'll be sure to have some later!"
         else:
-            $ store.mas_sprites.reset_zoom()
+            $ curr_zoom = store.mas_sprites.zoom_level
+            call monika_zoom_transition_reset(1.0)
             show emptydesk at i11 zorder 9
+
             m 3eua "In fact, I think I'll make some right now!"
+
             hide monika with dissolve
             pause 5.0
             show monika 1eua at i11 zorder MAS_MONIKA_Z with dissolve
             hide emptydesk
-            $ mas_brewHotChoc()
+
+            # 1 second wait so dissolve is complete before zooming
+            $ renpy.pause(0.5, hard=True)
+            call monika_zoom_transition(curr_zoom, 1.0)
 
             m 1hua "There, it'll be ready in a few minutes."
+
+            $ mas_brewHotChoc()
 
         $ persistent._mas_acs_enable_hotchoc = True
         $ persistent._mas_c_hotchoc_been_given = True
@@ -1091,7 +1352,7 @@ label mas_reaction_fudge:
 
     else:
         m 1wuo "...even more fudge?"
-        m 3rksdla "I still haven’t finished the last batch you gave me, [player]..."
+        m 3rksdla "I still haven't finished the last batch you gave me, [player]..."
         m 3eksdla "...maybe later, okay?"
 
     $ mas_receivedGift("mas_reaction_fudge")
@@ -1113,19 +1374,19 @@ label mas_reaction_christmascookies:
         $ persistent._mas_d25_already_gifted_cookies = True
         $ mas_gainAffection(5, bypass=True)
         m 3hua "Christmas cookies!"
-        m 1eua "I just love Christmas cookies! They’re always so sweet...and pretty to look at, too..."
+        m 1eua "I just love Christmas cookies! They're always so sweet...and pretty to look at, too..."
         m "...cut into holiday shapes like snowmen, reindeer, and Christmas trees..."
-        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious{w=0.2}--icing!"
+        m 3eub "...and usually decorated with beautiful--{w=0.2}and delicious--{w=0.2}icing!"
         m 3hua "Thank you, [player]~"
 
     elif times_cookies_given == 1:
         m 1wuo "...another batch of Christmas cookies!"
-        m 3wuo "That’s a whole lot of cookies, [player]!"
-        m 3rksdlb "I’m going to be eating cookies forever, ahaha!"
+        m 3wuo "That's a whole lot of cookies, [player]!"
+        m 3rksdlb "I'm going to be eating cookies forever, ahaha!"
 
     else:
         m 3wuo "...even more Christmas cookies?"
-        m 3rksdla "I still haven’t finished the last batch, [player]!"
+        m 3rksdla "I still haven't finished the last batch, [player]!"
         m 3eksdla "You can give me more after I finish these, okay?"
 
     $ mas_receivedGift("mas_reaction_christmascookies")
@@ -1311,6 +1572,64 @@ label mas_reaction_yellowribbon:
     call _mas_reaction_ribbon_helper("mas_reaction_yellowribbon")
     return
 
+# JSON ribbons
+label mas_reaction_json_ribbon_base(ribbon_name, user_friendly_desc, helper_label):
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, ribbon_name)
+        )
+        _mas_gifted_ribbon_acs = mas_sprites.ACS_MAP.get(
+            ribbon_name,
+            mas_acs_ribbon_def
+        )
+        _mas_new_ribbon_color = user_friendly_desc
+
+    call _mas_reaction_ribbon_helper(helper_label)
+
+    python:
+        # giftname is the 3rd item
+        if sprite_data[2] is not None:
+            store.mas_filereacts.delete_file(sprite_data[2])
+            
+        mas_finishSpriteObjInfo(sprite_data)
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_coffee:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_coffee", "coffee colored", "mas_reaction_gift_acs_lanvallime_ribbon_coffee")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_gold:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_gold", "gold", "mas_reaction_gift_acs_lanvallime_ribbon_gold")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_hot_pink:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_hot_pink", "hot pink", "mas_reaction_gift_acs_lanvallime_ribbon_hot_pink")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_lilac:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lilac", "lilac", "mas_reaction_gift_acs_lanvallime_ribbon_lilac")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_lime_green:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_lime_green", "lime green", "mas_reaction_gift_acs_lanvallime_lime_green")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_navy_blue:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_navy_blue", "navy", "mas_reaction_gift_acs_lanvallime_ribbon_navy_blue")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_orange:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_orange", "orange", "mas_reaction_gift_acs_lanvallime_ribbon_orange")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_royal_purple:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_royal_purple", "royal purple", "mas_reaction_gift_acs_lanvallime_ribbon_royal_purple")
+    return
+
+label mas_reaction_gift_acs_lanvallime_ribbon_sky_blue:
+    call mas_reaction_json_ribbon_base("lanvallime_ribbon_sky_blue", "sky blue", "mas_reaction_gift_acs_lanvallime_ribbon_sky_blue")
+    return
+
 #specific to this, since we need to verify if the player actually gave a ribbon.
 default persistent._mas_current_gifted_ribbons = 0
 
@@ -1327,9 +1646,12 @@ label _mas_reaction_ribbon_helper(label):
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    #we have dlg for repeating ribbons, may as well have it used
-    $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+    if gift_ev:
+        # for regular ribbons
+        $ store.mas_filereacts.delete_file(gift_ev.category)
+        #we have dlg for repeating ribbons, may as well have it used
+        $ persistent._mas_filereacts_reacted_map.pop(gift_ev.category,None)
+
     return
 
 label mas_reaction_new_ribbon:
@@ -1383,9 +1705,7 @@ label mas_reaction_new_ribbon:
 
         m 3rksdlc "I really don't have a lot of choices here when it comes to fashion..."
         m 3eka "...so being able to change my ribbon color is such a nice change of pace."
-        m 3eua "In fact, I'll put it on right now..."
-        show monika 1dsc
-        pause 1.0
+        m 2dsa "In fact, I'll put it on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1410,9 +1730,7 @@ label mas_reaction_new_ribbon:
         if _mas_new_ribbon_color == "green" or _mas_new_ribbon_color == "emerald":
             m 1tub "...Just like my eyes!"
 
-        m 3eua "I’ll put this on right now..."
-        show monika 1dsc
-        pause 1.0
+        m 2dsa "I'll put this on right now.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_selspr.unlock_acs(_mas_gifted_ribbon_acs)
         $ _ribbon_prepare_hair()
         $ monika_chr.wear_acs(_mas_gifted_ribbon_acs)
@@ -1457,10 +1775,7 @@ label mas_reaction_gift_roses:
 
         #We can only have this on poses which use the new sprite set
         if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-            m 4eua "Hold on..."
-            show monika 1esc
-            pause 1.0
-
+            m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
             $ monika_chr.wear_acs(mas_acs_ear_rose)
             m 1hub "Ehehe, there! Doesn't it look pretty on me?"
 
@@ -1488,10 +1803,7 @@ label mas_reaction_gift_roses:
             #Random chance (unless f14) for her to do the ear rose thing
             if (mas_isSpecialDay() and renpy.random.randint(1,2) == 1) or (renpy.random.randint(1,4) == 1) or mas_isF14():
                 if monika_chr.clothes == mas_clothes_def or monika_chr.clothes == mas_clothes_sundress_white:
-                    m 4eua "Hold on..."
-                    show monika 1esc
-                    pause 1.0
-
+                    m 2dsa "Hold on.{w=0.5}.{w=0.5}.{nw}"
                     $ monika_chr.wear_acs(mas_acs_ear_rose)
                     m 1hub "Ehehe~"
 

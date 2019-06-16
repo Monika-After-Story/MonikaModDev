@@ -121,10 +121,10 @@ label mas_piano_songchoice:
     $ pnml = None
 
     if len(song_list) > 0:
-        show monika 1eua
-
+        m 1eua "Did you want to play a song or play on your own, [player]?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Did you want to play a song or play on your own, [player]?"
+            m "Did you want to play a song or play on your own, [player]?{fast}"
             "Play a song.":
                 m "Which song?"
                 show monika at t21
@@ -198,9 +198,10 @@ label mas_piano_setupstart:
 
     # No-hits dont get to try again
     if post_piano != "mas_piano_result_none":
-        show monika 1eua
+        m 1eua "Would you like to play again?{nw}"
+        $ _history_list.pop()
         menu:
-            m "Would you like to play again?"
+            m "Would you like to play again?{fast}"
             "Yes.":
                 jump mas_piano_loopstart
             "No.":
@@ -288,7 +289,7 @@ label mas_piano_hb_fail:
     elif mas_isplayer_bday():
         m 1eka "That's okay, [player]!"
         m 3hub "It was a neat idea to play that on your birthday while I sung along!"
-        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!" 
+        m 1hua "I'm sure if you keep practicing you'll be able to do it perfectly!"
     else:
         m 1lksdla "..."
         m 1lksdlb "You did your best, [player]..."
@@ -377,7 +378,7 @@ label mas_piano_yr_prac:
 init -3 python in mas_piano_keys:
     import pygame # we need this for keymaps
     import os
-    log = renpy.renpy.log.open("log/pnm")
+    log = renpy.store.mas_utils.getMASLog("log/pnm")
 
     from store.mas_utils import tryparseint, tryparsefloat
 

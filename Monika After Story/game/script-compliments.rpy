@@ -22,7 +22,7 @@ init -1 python in mas_compliments:
     COMPLIMENT_H = 640
     COMPLIMENT_XALIGN = -0.15
     COMPLIMENT_AREA = (COMPLIMENT_X, COMPLIMENT_Y, COMPLIMENT_W, COMPLIMENT_H)
-    COMPLIMENT_RETURN = "Oh nevermind"
+    COMPLIMENT_RETURN = "Oh nevermind."
     compliment_database = dict()
 
     thanking_quips = [
@@ -69,7 +69,7 @@ label mas_compliments_start:
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(compliments_menu_items, mas_compliments.COMPLIMENT_AREA, mas_compliments.COMPLIMENT_XALIGN, final_item)
 
     # return value? then push
     if _return:
@@ -86,7 +86,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_beautiful",
-            prompt="... You're beautiful!",
+            prompt="You're beautiful!",
             unlocked=True
         ),
         code="CMP")
@@ -106,7 +106,7 @@ label mas_compliment_beautiful_2:
     menu:
         "You're the most beautiful person to me, too.":
             $ mas_gainAffection(5,bypass=True)
-            m 1hub "Ehehehe~"
+            m 1hub "Ehehe~"
             m "I love you so much, [player]!"
         "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5)
@@ -120,7 +120,7 @@ label mas_compliment_beautiful_3:
     python:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
-    m 1hubfa "Hehehe~"
+    m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
     return
@@ -130,7 +130,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_eyes",
-            prompt="... I love your eyes!",
+            prompt="I love your eyes!",
             unlocked=True
         ),
         code="CMP"
@@ -174,7 +174,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_awesome",
-            prompt="... You're awesome!",
+            prompt="You're awesome!",
             unlocked=True
         ),
         code="CMP"
@@ -225,7 +225,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_intelligent",
-            prompt="... You're really intelligent!",
+            prompt="You're really intelligent!",
             unlocked=True
         ),
         code="CMP"
@@ -269,7 +269,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_hair",
-            prompt="... I love your hair!",
+            prompt="I love your hair!",
             unlocked=True
         ),code="CMP"
     )
@@ -319,7 +319,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_fit",
-            prompt="... I love your dedication to fitness!",
+            prompt="I love your dedication to fitness!",
             unlocked=True
         ),
         code="CMP"
@@ -366,7 +366,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_thanks",
-            prompt="... Thanks for being there for me!",
+            prompt="Thanks for being there for me!",
             unlocked=True,
             aff_range=(mas_aff.ENAMORED, None)
         ),
@@ -389,7 +389,7 @@ label mas_compliment_thanks:
             m "No matter what the future may have for us both..."
             m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
         "Yeah.":
-            m 1hub "Hehehe~"
+            m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
 
     if not mas_isMoniLove():
@@ -401,7 +401,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_smile",
-            prompt="... I love your smile!",
+            prompt="I love your smile!",
             unlocked=True
         ),
         code="CMP"
@@ -435,7 +435,33 @@ label mas_compliment_smile_3:
         thanks_quip = renpy.substitute(thanks_quip)
     m 1eub "[thanks_quip]"
     m 1hua "I'll keep smiling just for you!"
-    m "Hehehe~"
+    m "Ehehe~"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_hero",
+            prompt="You're my hero!",
+            unlocked=True,
+            aff_range=(mas_aff.LOVE, None)
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_hero:
+    $ mas_gainAffection()
+    m 1wubfsdld "H-{w=0.3}huh?"
+    m "I'm your hero?"
+    m 2rkbfsdlb "[player]...{w=1.5} I'm not sure what you mean..."
+    m 2ekbfb "You're the one who stuck with me for all this time.{w=1} I should be thanking you, really."
+    m 1hubfa "Well, if I've somehow helped you, then I couldn't be happier~"
+    m 3ekbfa "You've helped me in every way possible, so how could I not return the favor by being there for you whenever you need support?"
+    show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfa "You'll always be my hero, after all~"
+    m 5hubfb "I love you and I'll always believe in you!"
+    m 5ekbfa "I hope you never forget that, [player]~"
     return
 
 init 5 python:
@@ -443,7 +469,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_chess",
-            prompt="... You’re awesome at chess!",
+            prompt="You're awesome at chess!",
             unlocked=False,
             conditional="renpy.seen_label('mas_chess_game_start')",
             action=EV_ACT_UNLOCK
@@ -474,7 +500,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_pong",
-            prompt="... You’re awesome at pong!",
+            prompt="You're awesome at pong!",
             unlocked=False,
             conditional="renpy.seen_label('game_pong')",
             action=EV_ACT_UNLOCK
@@ -518,7 +544,7 @@ init 5 python:
         Event(
             persistent._mas_compliments_database,
             eventlabel="mas_compliment_bestgirl",
-            prompt="... You're the best girl!",
+            prompt="You're the best girl!",
             unlocked=True
         ),
         code="CMP"
