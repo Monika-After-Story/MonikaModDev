@@ -504,8 +504,8 @@ label mas_compliment_cute_2:
         "Seeing you always warms my heart!":
             $ mas_gainAffection(5,bypass=True)
             m 1hubfb "Aww, it really warms my heart to hear you say that!"
-            m 1dkbfu "Just wait until I finally get to hug you for real!"
-            m 1ekbfa "I can barely contain myself just thinking about it, ehehe~"
+            m 1dkbfu "...Almost as much as when I picture us finally being together in the same reality."
+            m 1ekbfa "I can barely contain myself just imagining that special day~"
         "You're even cuter when you're flustered.":
             $ mas_gainAffection(3,bypass=True)
             m 2tubfu "Not letting it go, huh, [player]?"
