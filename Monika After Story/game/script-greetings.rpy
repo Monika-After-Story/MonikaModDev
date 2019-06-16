@@ -3398,7 +3398,7 @@ init 5 python:
     )
 
 label greeting_rent:
-    m 1eub "Welcome back dear!"
+    m 1eub "Welcome back, dear!"
     m 2tub "You know, you spend so much time here that I should start charging you for rent."
     m 2tku "Or would you rather pay a mortgage?"
     m 2hua "..." 
