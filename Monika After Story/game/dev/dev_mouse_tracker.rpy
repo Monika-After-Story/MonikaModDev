@@ -198,51 +198,34 @@ label dev_hold_still_monika:
 
 init python:
     class MASClickZoneTester(renpy.Displayable):
+
         def __init__(self):
             super(renpy.Displayable, self).__init__()
-            self.boob_click = MASClickZone([
-                (514, 453),
-                (491, 509),
-                (489, 533),
-                (493, 551),
-                (506, 573),
-                (525, 588),
-                (541, 592),
-                (652, 586),
-                (709, 592),
-                (761, 592),
-                (787, 580),
-                (806, 559),
-                (813, 536),
-                (813, 517),
-                (789, 453),
-            ])
+
+            self.build_zones()
+
+        def build_zones(self):
+            import store.mas_interactions_boop as mib
+            zoom_level = store.mas_sprites.zoom_level
+
+            self.boob_click = MASClickZone(
+                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_CHEST)
+            )
             self.boob_click._debug_back = True
             self.boob_click._button_down = pygame.MOUSEBUTTONDOWN
 
-            self.nose_click = MASClickZone([
-                (629, 240),
-                (623, 252),
-                (629, 258),
-                (633, 252),
-            ])
+            self.nose_click = MASClickZone(
+                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_NOSE)
+            )
             self.nose_click._debug_back = True
             self.nose_click._button_down = pygame.MOUSEBUTTONDOWN
 
-            self.head_click = MASClickZone([
-                (556, 0),
-                (519, 40),
-                (498, 80),
-                (486, 144),
-                (708, 144),
-                (778, 178),
-                (792, 129),
-                (792, 80),
-                (777, 30),
-                (748, 0),
-            ])
+            self.head_click = MASClickZone(
+                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_HEAD)
+            )
             self.head_click._debug_back = True
             self.head_click._button_down = pygame.MOUSEBUTTONDOWN
+
 
         def render(self, width, height, st, at):
             r = renpy.Render(width, height)
@@ -255,19 +238,38 @@ init python:
             return r
 
         def event(self, ev, x, y, st):
-            if ev.type == pygame.KEYDOWN and ev.key == pygame.K_q:
-                # quit when user hits q
-                return True
+            if ev.type == pygame.KEYUP: 
 
-            boob_click = self.boob_click.event(ev, x, y, st)
-            nose_click = self.nose_click.event(ev, x, y, st)
-            head_click = self.head_click.event(ev, x, y, st)
-            if (
-                    boob_click is not None
-                    or nose_click is not None
-                    or head_click is not None
-            ):
-                renpy.play(gui.activate_sound, channel="sound")
+                if ev.key == pygame.K_q:
+                    # quit when user hits q
+                    return True
+
+                if ev.key == pygame.K_DOWN:
+                    if store.mas_sprites.zoom_level > 0:
+                        store.mas_sprites.zoom_level -= 1
+                        store.mas_sprites.adjust_zoom()
+                        self.build_zones()
+                        renpy.redraw(self, 0.0)
+                        renpy.restart_interaction()
+
+                elif ev.key == pygame.K_UP:
+                    if store.mas_sprites.zoom_level < 20:
+                        store.mas_sprites.zoom_level += 1
+                        store.mas_sprites.adjust_zoom()
+                        self.build_zones()
+                        renpy.redraw(self, 0.0)
+                        renpy.restart_interaction()
+
+            else:
+                boob_click = self.boob_click.event(ev, x, y, st)
+                nose_click = self.nose_click.event(ev, x, y, st)
+                head_click = self.head_click.event(ev, x, y, st)
+                if (
+                        boob_click is not None
+                        or nose_click is not None
+                        or head_click is not None
+                ):
+                    renpy.play(gui.activate_sound, channel="sound")
 
 
 
@@ -284,7 +286,7 @@ init 5 python:
     )
 
 label dev_clickzone_tests:
-    
+
     m 1eua "I am reset zoom"
     $ store.mas_sprites.reset_zoom()
     m 6eua "ok, remember q is quit"

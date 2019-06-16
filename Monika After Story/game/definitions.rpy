@@ -3254,6 +3254,7 @@ init -100 python in mas_utils:
     import ctypes
     import random
     import os
+    import math
     from cStringIO import StringIO as fastIO
 
     __FLIMIT = 1000000
@@ -3398,6 +3399,36 @@ init -100 python in mas_utils:
             second=0,
             microsecond=0
         )
+
+
+    def normalize_points(points, offsets, add=True):
+        """
+        normalizes a list of points using the given offsets
+
+        IN:
+            points - list of points to normalize
+            offsets - Tuple of the following format:
+                [0] - amount to offset x coords
+                [1] - amount to offset y coords
+            add - True will add offsets, False will subtract offsets
+
+        RETURNS: list of normalized points
+        """
+        normal_pts = []
+
+        # setup offsets
+        xoffset, yoffset = offsets
+        if not add:
+            xoffset *= -1
+            yoffset *= -1
+
+        for xcoord, ycoord in points:
+            normal_pts.append((
+                xcoord + xoffset,
+                ycoord + yoffset
+            ))
+
+        return normal_pts
 
 
     def _EVgenY(_start, _end, current, for_start):
