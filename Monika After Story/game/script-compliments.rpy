@@ -523,7 +523,7 @@ label mas_compliment_cute_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1ekbfa "[thanks_quip]"
-    m 1hubfa "You can be really cute too a lot of the time, you know!"
+    m 1hubfa "You can be really cute a lot of the time too, you know~"
     return
 
 label mas_compliment_chess:
