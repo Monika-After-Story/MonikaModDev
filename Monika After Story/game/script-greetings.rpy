@@ -3400,7 +3400,7 @@ init 5 python:
 label greeting_rent:
     m 1eub "Welcome back, dear!"
     m 2tub "You know, you spend so much time here that I should start charging you for rent."
-    m 2tku "Or would you rather pay a mortgage?"
+    m 2ttu "Or would you rather pay a mortgage?"
     m 2hua "..." 
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
     show monika 5lsbfu at t11 zorder MAS_MONIKA_Z with dissolve
