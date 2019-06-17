@@ -9,6 +9,9 @@
 #   pool - True means the farewell is shown in the goodbye list. Prompt
 #       is used in this case.
 
+#Flag to mark if the player stayed up late last night. Kept as a generic name in case it can be used on other farewells/greetings
+default persistent.mas_late_farewell = False
+
 init -1 python in mas_farewells:
 
     # custom farewell functions
@@ -1166,9 +1169,6 @@ label bye_going_somewhere_leavemenu:
                 m 2lud "All right, then..."
 
     return
-
-#Flag to mark if the player stayed up late last night. Kept as a generic name in case it can be used on other farewells/greetings
-default persistent.mas_late_farewell = False
 
 default persistent._mas_pm_gamed_late = 0
 # number of times player runs play another game farewell really late

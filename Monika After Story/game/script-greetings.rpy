@@ -3436,7 +3436,7 @@ init 5 python:
 #   we can get in pm vars here. It's just too variable.
 
 label greeting_back_from_game:
-    if persistent.mas_late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
+    if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
         if mas_isMNtoSR(_now):
             m 2euc "[player]?"
@@ -3518,7 +3518,6 @@ label greeting_back_from_game:
             m 1hubfa "Ehehe, you better~"
             show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tubfu "Especially after leaving me for another game last night."
-        $ persistent.mas_late_farewell = False
     #If you didn't stay up late in the first place, normal usage
     #gone for under 2 hours
     elif mas_getAbsenceLength() < datetime.timedelta(hours=2):
@@ -3660,7 +3659,7 @@ init 5 python:
 
 label greeting_back_from_eat:
     $ _now = datetime.datetime.now().time()
-    if persistent.mas_late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
+    if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         m 1eud "Oh?"
         m 1eub "[player], you came back!"
         m 3rksdla "You know you should really probably get some sleep, right?"
