@@ -3431,6 +3431,10 @@ init 5 python:
         eventdb=evhand.greeting_database
     )
 
+# NOTE: in case someone asks, because the farewell for this greeting does not
+#   implore that the player returns after gaming, there is nothing substiantial
+#   we can get in pm vars here. It's just too variable.
+
 label greeting_back_from_game:
     if persistent.mas_late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
         $ _now = datetime.datetime.now().time()
@@ -3514,7 +3518,7 @@ label greeting_back_from_game:
             m 1hubfa "Ehehe, you better~"
             show monika 5tubfu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tubfu "Especially after leaving me for another game last night."
-        $ mas_late_farewell = False
+        $ persistent.mas_late_farewell = False
     #If you didn't stay up late in the first place, normal usage
     #gone for under 2 hours
     elif mas_getAbsenceLength() < datetime.timedelta(hours=2):
