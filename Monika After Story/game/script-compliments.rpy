@@ -488,6 +488,8 @@ init 5 python:
         eventdb=store.mas_compliments.compliment_database
     )
 
+default persistent._mas_pm_monika_cute_as_natsuki = None
+
 label mas_compliment_cute:
     if not renpy.seen_label("mas_compliment_cute_2"):
         call mas_compliment_cute_2
@@ -502,17 +504,20 @@ label mas_compliment_cute_2:
     m 1hubfa "But I'm glad you think so!"
     menu:
         "Seeing you always warms my heart!":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
             $ mas_gainAffection(5,bypass=True)
             m 1hubfb "Aww, it really warms my heart to hear you say that!"
             m 1dkbfu "...Almost as much as when I picture us finally being together in the same reality."
             m 1ekbfa "I can barely contain myself just imagining that special day~"
         "You're even cuter when you're flustered.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
             $ mas_gainAffection(3,bypass=True)
             m 2tubfu "Not letting it go, huh, [player]?"
             m 2rubfu "Hmph, I just wasn't expecting it."
             m 3tubfb "Don't expect it to be so easy next time..."
             m 1tubfu "I'll get you back someday, ehehe~"
         "You're as cute as Natsuki.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = True
             $ mas_loseAffection(modifier=0.5)
             m 2lfc "Oh. {w=1}Thanks, [player]..."
             m 1rsc "But I was kind of hoping I would stand in my own category."
