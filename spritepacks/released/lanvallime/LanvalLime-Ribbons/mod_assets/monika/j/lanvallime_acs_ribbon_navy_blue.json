@@ -17,10 +17,10 @@
         "thumb": "lanvallime_ribbon_navy_blue",
         "group": "ribbon",
         "hover_dlg": [
-            "Reminds me of a clear evening sky."
+            "Are you a fan of the water, [player]?"
         ],
         "select_dlg": [
-            "Dark blue is such a lovely color!"
+            "You always keep my heart afloat~"
         ]
     },
     "giftname": "navyblueribbon"
