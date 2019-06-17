@@ -485,8 +485,7 @@ label birthdate_set:
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
 
     $ persistent._mas_player_confirmed_bday = True
-    if "calendar_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("calendar_birthdate")
+    $ mas_rmallEVL("calendar_birthdate")
     return
 
 init 5 python:
@@ -620,6 +619,10 @@ label unlock_piano:
 # NOTE: this has beenpartially disabled
 label random_limit_reached:
     $seen_random_limit=True
+
+    #Notif so people don't get stuck here
+    call display_notif(m_name, "Hey [player]...", "Topic Alerts")
+
     python:
         limit_quips = [
             "It seems I'm at a loss on what to say.",
@@ -1296,13 +1299,14 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
 
 label mas_coffee_finished_brewing:
 
-    if not store.mas_globals.in_idle_mode:
+    if mas_isFocused() and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1312,8 +1316,8 @@ label mas_coffee_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
-        # idle pauses 
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
+        # idle pauses
         m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1337,7 +1341,7 @@ label mas_coffee_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1353,6 +1357,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1362,7 +1367,7 @@ label mas_coffee_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
 
-    if not store.mas_globals.in_idle_mode:
+    if mas_isFocused() and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1371,7 +1376,7 @@ label mas_coffee_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
@@ -1407,7 +1412,7 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1425,13 +1430,14 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
 
 label mas_c_hotchoc_finished_brewing:
 
-    if not store.mas_globals.in_idle_mode:
+    if mas_isFocused() and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1441,7 +1447,7 @@ label mas_c_hotchoc_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1465,7 +1471,7 @@ label mas_c_hotchoc_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1482,6 +1488,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1491,7 +1498,7 @@ label mas_c_hotchoc_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
 
-    if not store.mas_globals.in_idle_mode:
+    if mas_isFocused() and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1500,7 +1507,7 @@ label mas_c_hotchoc_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
@@ -1537,7 +1544,7 @@ label mas_c_hotchoc_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or not mas_isFocused():
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -2437,7 +2444,7 @@ label mas_bookmarks_notifs_intro:
         m 1hub "[player], I have something exciting to tell you!"
         call mas_notification_windowreact
 
-    return "no unlock"
+    return "no_unlock"
 
 label mas_derand:
     m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
@@ -2468,7 +2475,8 @@ label mas_notification_windowreact:
 
     if renpy.windows:
         m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
-        m 1hksdlb "Don't worry though, I know you might not want me constantly watching you, and I respect your privacy."
+        m 3eub "So if I have something to talk about while I'm in the background, I can let you know!"
+        m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
         m 3eua "So I'll only look at what you're doing if you're okay with it."
         m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
 

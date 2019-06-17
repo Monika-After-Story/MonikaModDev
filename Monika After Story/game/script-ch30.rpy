@@ -758,6 +758,19 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 morning_flag = False
                 monika_room = "monika_room"
 
+        ## are we hiding monika
+        if not hide_monika:
+            if force_exp is None:
+#                force_exp = "monika idle"
+                if dissolve_all:
+                    force_exp = store.mas_affection._force_exp()
+
+                else:
+                    force_exp = "monika idle"
+
+            if not renpy.showing(force_exp):
+                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+
         # if we onyl want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
             mas_drawSpaceroomMasks(dissolve_masks)
@@ -777,19 +790,6 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 )
                 mas_calShowOverlay()
 
-        ## are we hiding monika
-        if not hide_monika:
-            if force_exp is None:
-#                force_exp = "monika idle"
-                if dissolve_all:
-                    force_exp = store.mas_affection._force_exp()
-
-                else:
-                    force_exp = "monika idle"
-
-            if not renpy.showing(force_exp):
-                renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z) 
-#            show monika idle at t11 zorder MAS_MONIKA_Z
 
     # vignette
     if store.mas_globals.show_vignette:
@@ -861,7 +861,7 @@ label ch30_main:
 
     # 3 - keymaps are disabled (default)
 
-    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc")
+    call spaceroom(scene_change=True,dissolve_all=True, force_exp="monika 6dsc_static")
 
     # lets just call the intro instead of pushing it as an event
     # this is way simpler and prevents event loss and other weird inital
@@ -1065,14 +1065,6 @@ label ch30_autoload:
     # general affection checks that hijack flow
     if persistent._mas_affection["affection"] <= -115:
         jump mas_affection_finalfarewell_start
-
-    # sanitiziing the event_list from bull shit
-    if len(persistent.event_list) > 0:
-        python:
-            persistent.event_list = [
-                ev_label for ev_label in persistent.event_list
-                if renpy.has_label(ev_label)
-            ]
 
     # set this to None for now
     $ selected_greeting = None
@@ -1496,13 +1488,10 @@ label ch30_post_mid_loop_eval:
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
-            if not store.mas_globals.in_idle_mode:
-                #Create a new notif
-                call display_notif(m_name, random.choice(notif_quips), "Topic Alerts")
             $ mas_randchat.setWaitingTime()
 
         window auto
-        
+
 #        python:
 #            if (
 #                    mas_battery_supported
@@ -1626,8 +1615,7 @@ label ch30_reset:
             if len(listRpy) == 0 and persistent.current_monikatopic == "monika_rpy_files":
                 $ persistent.current_monikatopic = 0
 
-            while "monika_rpy_files" in persistent.event_list:
-                $ persistent.event_list.remove("monika_rpy_files")
+            $ mas_rmallEVL("monika_rpy_files")
 
         elif len(listRpy) != 0:
             $ queueEvent("monika_rpy_files")
@@ -1841,5 +1829,23 @@ label ch30_reset:
 
     # make sure nothing the player has derandomed is now random
     $ mas_check_player_derand()
+
+    # clean up the event list of baka events
+    python:
+        for index in range(len(persistent.event_list)-1, -1, -1):
+            item = persistent.event_list[index]
+
+            # type check
+            if type(item) != tuple:
+                new_data = (item, False)
+            else:
+                new_data = item
+
+            # label check
+            if renpy.has_label(new_data[0]):
+                persistent.event_list[index] = new_data
+
+            else:
+                persistent.event_list.pop(index)
 
     return
