@@ -199,29 +199,30 @@ label dev_hold_still_monika:
 init python:
     class MASClickZoneTester(renpy.Displayable):
 
+        import store.mas_interactions_boop as mib
+
         def __init__(self):
             super(renpy.Displayable, self).__init__()
-
+            self.chest = self.mib.ZONE_CHEST
             self.build_zones()
 
         def build_zones(self):
-            import store.mas_interactions_boop as mib
             zoom_level = store.mas_sprites.zoom_level
 
             self.boob_click = MASClickZone(
-                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_CHEST)
+                self.mib.vertex_list_from_zoom(zoom_level, self.chest)
             )
             self.boob_click._debug_back = True
             self.boob_click._button_down = pygame.MOUSEBUTTONDOWN
 
             self.nose_click = MASClickZone(
-                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_NOSE)
+                self.mib.vertex_list_from_zoom(zoom_level, self.mib.ZONE_NOSE)
             )
             self.nose_click._debug_back = True
             self.nose_click._button_down = pygame.MOUSEBUTTONDOWN
 
             self.head_click = MASClickZone(
-                mib.vertex_list_from_zoom(zoom_level, mib.ZONE_HEAD)
+                self.mib.vertex_list_from_zoom(zoom_level, self.mib.ZONE_HEAD)
             )
             self.head_click._debug_back = True
             self.head_click._button_down = pygame.MOUSEBUTTONDOWN
@@ -258,6 +259,22 @@ init python:
                         store.mas_sprites.adjust_zoom()
                         self.build_zones()
                         renpy.redraw(self, 0.0)
+                        renpy.restart_interaction()
+
+                elif ev.key == pygame.K_p:
+                    # switch pose
+                    if self.chest == self.mib.ZONE_CHEST:
+                        self.chest = self.mib.ZONE_CHEST_1
+                        self.build_zones()
+                        renpy.redraw(self, 0.0)
+                        renpy.show("monika 1eua")
+                        renpy.restart_interaction()
+
+                    else:
+                        self.chest = self.mib.ZONE_CHEST
+                        self.build_zones()
+                        renpy.redraw(self, 0.0)
+                        renpy.show("monika 6eua")
                         renpy.restart_interaction()
 
             else:
