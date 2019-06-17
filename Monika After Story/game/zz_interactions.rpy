@@ -83,12 +83,9 @@ init -10 python in mas_interactions_boop:
 
     # speciality constants
     FOCAL_POINT = (640, 750)
-#    FOCAL_POINT_UP = (640, 850)
-#    FOCAL_POINT_UP = (640, 690)
     FOCAL_POINT_UP = (640, 740)
 
     ZOOM_INC_PER = 0.04
-
 
     def vertex_list_from_zoom(zoom_level, zone_enum):
         """
@@ -104,100 +101,103 @@ init -10 python in mas_interactions_boop:
         if zone_enum not in ZONE_ENUMS:
             return []
 
-        if zoom_level > mas_sprites.default_zoom_level:
-            #pass
-            # TODO: do function for zoom up
-            # NOTE: temporary debug here
-            return _vx_list_zoom_in(zoom_level, zone_enum)
+        if zoom_level == mas_sprites.default_zoom_level:
+            return cz_map[zone_enum]
 
-        elif zoom_level < mas_sprites.default_zoom_level:
-            return _vx_list_zoom_out(zoom_level, zone_enum)
-
-        # otherwise, we want the defaults
-        return cz_map[zone_enum]
+        # otherwise, modify the vertex list
+        return _vx_list_zoom(
+            zoom_level,
+            zone_enum,
+            zoom_level < mas_sprites.default_zoom_level
+        )
 
 
     # internal
 
 
-    def _vx_list_zoom_in(zoom_level, zone_enum):
+    def _vx_list_zoom(zoom_level, zone_enum, zoom_out):
         """
-        Generates vertex list for zooming in (zone leve less than default)
+        Generates vertex list for zooming.
 
         IN:
-            zoom_level
-        """
-        zoom_diff = zoom_level - mas_sprites.default_zoom_level
-        # zooming in increaes distance to focal point by 4%
-        percent_inc = zoom_diff * ZOOM_INC_PER
-
-        # now process all pts
-        pts = cz_map[zone_enum]
-        vx_list = []
-        for xcoord, ycoord in pts:
-            # first, normalize the pt to origin
-            xcoord -= FOCAL_POINT[0]
-            ycoord -= (FOCAL_POINT_UP[1] - (zoom_diff * mas_sprites.y_step))
-
-            # now convert the pt into polar coords
-            radius, angle = cmath.polar(complex(xcoord, ycoord))
-
-            # modify the radius by the appropraite percent val
-            radius += (radius * percent_inc)
-
-            # convert the new polar coord back into regular coords
-            coords = cmath.rect(radius, angle)
-
-            # unnormalize to get the real x, y and save
-            vx_list.append((
-                int(coords.real + FOCAL_POINT[0]),
-                int(coords.imag + FOCAL_POINT_UP[1])
-            ))
-
-        # return the modified vertexes
-        return vx_list
-
-
-    
-    def _vx_list_zoom_out(zoom_level, zone_enum):
-        """
-        Generates vertex list for zooming out (zoom level less than default)
-
-        IN:
-            zoom_level - zoom level to generate vertex list
+            zoom_level zoom level to generate vertex list for
             zone_enum - zone enum to get vertex list for
+            zoom_out - True if we are zooming out, False if zooming in
 
-        RETURNS: list of vertexes
+        RETURNS: list of vertexes 
         """
-        # zooming out decreases distance to focal point by 4%
-        percent_dec = -1 * (
-            (mas_sprites.default_zoom_level - zoom_level) * ZOOM_INC_PER
-        )
+        # NOTE: methodology:
+        #   Basically, zoom increases/decreases by 0.05 per level. Using that,
+        #   the amount the image increases or decreases compared to the default
+        #   zoom level can be deteremined. This was figured to be the
+        #   distance between the zoom level and the default zoom multiplied by
+        #   4%. I.e: zoom level 0 is 12% smaller than zoom level 3 (3-0 * 4%). 
+        #   Zoom level 10 is 28% larger than zoom level 3 (10-3 * 4%).
+        #
+        #   Zooming also generally resovles around a focal point.
+        #   Once that focal point is determined the distance between that
+        #   point and other points will always increase by the same factor as
+        #   the total image. ie: the distance from the focal to point A at
+        #   zoom level 10 is 28% larger than at zoom level 3. Same goes for
+        #   the distance at zoom level 0 being 12% smaller than at
+        #   zoom level 3. 
+        #
+        #   Distances to points can be modified easily by converting regular
+        #   coordinates to polar coordinates, which keeps direction separate
+        #   from distance. After modifying the distance, the polar coords are
+        #   reconverted back into regular coords, which now have been properly
+        #   zoomed.
+        #   
+        #   Since the focal point is NOT the origin, the points are normalized
+        #   to the origin using the focal point before distance modification.
+        #   Then they are unnormalized back into regular coords appropraite
+        #   to the actual image.
+        #   
+        #   NOTE: Zooming in also modifies the focal point by a factor *
+        #       a y_step, which is a number of pixels to move the image down
+        #       the screen per zoom level. The focal point in this case must
+        #       be modified before normalizing other points with it, but the
+        #       modification should NOT be reversed when unnormalizing.
+        #       This is because of the nature that the image is moved down
+        #       a certain number of pixels, and such the points must be moved
+        #       down with this offset as well.
+
+        # setup diff between zooming in and out
+        if zoom_out:
+            zoom_diff = mas_sprites.default_zoom_level - zoom_level
+            per_mod = -1 * (zoom_diff * ZOOM_INC_PER)
+            xfc, yfc = FOCAL_POINT
+            yfc_offset = 0
+
+        else:
+            zoom_diff = zoom_level - mas_sprites.default_zoom_level
+            per_mod = zoom_diff * ZOOM_INC_PER
+            xfc, yfc = FOCAL_POINT_UP
+            yfc_offset = -1 * zoom_diff * mas_sprites.y_step
 
         # now process all pts
         pts = cz_map[zone_enum]
         vx_list = []
         for xcoord, ycoord in pts:
             # first, normalize the pt to origin
-            xcoord -= FOCAL_POINT[0]
-            ycoord -= FOCAL_POINT[1]
+            xcoord -= xfc
+            ycoord -= (yfc + yfc_offset)
 
             # now convert the pt into polar coords
             radius, angle = cmath.polar(complex(xcoord, ycoord))
 
             # modify the radius by the appropraite percent val
-            radius += (radius * percent_dec)
+            radius += (radius * per_mod)
 
             # convert the new polar coord back into regular coords
             coords = cmath.rect(radius, angle)
 
             # unnormalize to get the real x, y and save
             vx_list.append((
-                int(coords.real + FOCAL_POINT[0]),
-                int(coords.imag + FOCAL_POINT[1])
+                int(coords.real + xfc),
+                int(coords.imag + yfc)
             ))
 
-        # return the modified vertexes
         return vx_list
 
 
