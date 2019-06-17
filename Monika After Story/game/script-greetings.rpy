@@ -3416,3 +3416,24 @@ label greeting_ghost:
     call mas_ghost_monika
 
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_rent",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_rent:
+    m 1eub "Welcome back, dear!"
+    m 2tub "You know, you spend so much time here that I should start charging you for rent."
+    m 2ttu "Or would you rather pay a mortgage?"
+    m 2hua "..." 
+    m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
+    return
