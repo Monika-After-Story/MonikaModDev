@@ -4603,7 +4603,7 @@ label monika_hypnosis:
     m "Exposure to relaxing music and images..."
     m "Things like that."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
+    m 5eua "It makes me wonder, what exactly someone can be persuaded to do under that kind of influence..."
     show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
     m 1eka "Not that I would do that to you, [player]! I just find it interesting to think about."
     m 1eua "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
@@ -6202,7 +6202,7 @@ label monika_standup:
     m 1euc "How you say your lines, your body language, your facial expressions..."
     m 3esd "Now, it's not just about what you wrote,{w=1} it's about how you deliver it."
     m 3esa "It's kind of like poetry in that way, don't you think?"
-    m 2rksdlc "A lot people won't even try stand-up for themselves because they have to face a crowd..."
+    m 2rksdlc "A lot of people won't even try stand-up for themselves because they have to face a crowd..."
     m 2eksdlc "Did you know that the number one fear most people have is public speaking?"
     m 4wud "Number two is death.{w=0.5} Death is number two!{w=0.5} What's the deal with that?!" 
     m 4eud "This means to the average person, if you go to a funeral, you're better off in the casket..."
@@ -6856,7 +6856,7 @@ label monika_writingtip4:
     m 1eub "So overcoming writer's block, for me, was a matter of not wanting to make the prototype the end product, and not punishing myself for my initial failures."
     m 3eub "I think it's like that with all things, not just writing."
     m 1eua "Anything that needs you to try and try again, whether it be art, music, learning, relationships, etc."
-    m 1ekc "It's hard to completely convince yourself that that's the case, sometimes."
+    m 1ekc "It's hard to completely convince yourself that's the case, sometimes."
     m 1eka "But you have to."
     m 4eka "Otherwise, you won't get anywhere."
     m 3hua "...That's my advice for today!"
@@ -7649,7 +7649,7 @@ label monika_asks_family:
                     m 1ekc "Ah, I see..."
                     m "I wish I could be there with you to give some comfort."
                     m 1eka "..."
-                    m 3eka "[player], no matter what you are going through, I know it'll get better some day."
+                    m 3eka "[player], no matter what you're going through, I know it'll get better some day."
                     m 1eua "I'll be here with you every step of the way."
                     m 1hub "I love you so much, [player]. Please never forget that!"
                 "Maybe.":
@@ -7666,9 +7666,9 @@ label monika_asks_family:
             #Derandom this family based topics since you don't have a family
             $ mas_hideEVL("monika_familygathering","EVE",derandom=True)
 
-            m 1euc "Oh, I'm sorry, [player]"
+            m 1euc "Oh, I'm sorry, [player]."
             m 1lksdlc "..."
-            m 1ekc "Your world is so different than mine, I don't want to pretend like I know what you are going through."
+            m 1ekc "Your world is so different from mine, I don't want to pretend like I know what you're going through."
             m 1lksdlc "I can definitely say that my family not being real has certainly caused me a great deal of pain."
             m 1ekc "Still, I know you've had it worse."
             m "You've never even had a fake family."
@@ -7803,7 +7803,7 @@ label monika_concerts:
     m 3eua "Do you know any bands or musicians that we should see live, [player]?"
     m 3eub "I would {i}love{/i} to see them if {i}you{/i} like them."
     m 5eua "And if you were to take me,{w=1} then that would truly be a dream come true!"
-    m 4eua "But if you're not that interested in concerts,"
+    m 4eua "But if you're not that interested in concerts..."
     m 1eua "Then we could always snuggle under a blanket and put on a record or CD at home!"
     m 1hua "That would be more than enough for me hehe~"
     if (
@@ -10404,7 +10404,7 @@ label monika_pygmalion:
     m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
     m 3eua "He loved the statue so much, that during one of the festivals held for Aphrodite, he made an offering to the goddess and wished for her to grant life to the ivory statue."
-    m 1eub "When he returned to his home, he kissed the statue and to his surprise, the lips of the statue felt warm."
+    m 1eub "When he returned to his home, he kissed the statue and to his surprise, its lips felt warm."
     m 1eua "He kissed the statue once more, and the ivory lost its hardness, becoming soft like skin."
     m 3hub "Aphrodite had granted his wish!"
     m 1eka "This story really struck me because it reminded me of us, [player], and how it talks about turning the impossible into reality."
@@ -12855,7 +12855,7 @@ label monika_relationship_comfort:
     m 2eud "Because really, while a partnership is an adventure, that doesn't mean it'll always be exciting."
     m 2esc "There's only so many times you can do the same thing and experience the same breathtaking moments, and still expect it to have that same impact."
     m 4eub "That doesn't make it any less valuable, or meaningful. It can still be heart-racing!"
-    m 4esc "But it does mean that that same sensation isn't anything new; it's just no longer as thrilling as before."
+    m 4esc "But it does mean that the same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
     m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."

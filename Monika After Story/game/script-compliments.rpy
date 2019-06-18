@@ -246,7 +246,7 @@ label mas_compliment_intelligent_2:
         "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
             m "I love you so much, [player]!"
-            m "We'll have a lifetime of self improvement together!"
+            m "We'll have a lifetime of self-improvement together!"
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
@@ -261,7 +261,7 @@ label mas_compliment_intelligent_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1ekbfa "[thanks_quip]"
-    m 1hub "Remember that we'll have a lifetime of self improvement together!"
+    m 1hub "Remember that we'll have a lifetime of self-improvement together!"
     return
 
 init 5 python:

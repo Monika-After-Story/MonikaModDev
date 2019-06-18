@@ -837,7 +837,7 @@ init 5 python:
     )
 
 label greeting_hamlet:
-    m 4esc "To be, or not to be, that is the question..."
+    m 4esc "'{i}To be, or not to be, that is the question...{/i}'"
     m 1wuo "Oh, there you are. I was killing some time, ehehe~"
     m 1lksdlb "I wasn't expecting to see you so soon."
     return
