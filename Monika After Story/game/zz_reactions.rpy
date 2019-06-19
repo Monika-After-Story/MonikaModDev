@@ -744,7 +744,7 @@ label mas_reaction_gift_generic:
         m 1esa "It's the thought that counts after all, right?"
         m "Thanks for being so thoughtful, [player]~"
     else:
-        m 2dkd "{i}*sigh*{/i}"
+        m 2dkd "{i}*Sigh*{/i}"
         m 4ekc "I'm sorry, [player]."
         m 1ekd "I know you're trying to give me something."
         m 2rksdld "But for some reason I can't read the file."
