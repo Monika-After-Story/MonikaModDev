@@ -3832,8 +3832,8 @@ init 5 python:
 
 label monika_outdoors:
     m 1eua "Do you ever go camping, [player]?"
-    m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
-    m 1huu "It's almost like a more relaxed backpacking trip actually."
+    m 3eub "It's a wonderful way to relax, get some fresh air, and see the parks around you!"
+    m 1huu "It's almost like a more relaxed backpacking trip, actually."
     m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
     m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them,{w=0.5} thinking they're unimportant..."
     m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
