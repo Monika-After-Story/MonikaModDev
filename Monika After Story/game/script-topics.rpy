@@ -6285,18 +6285,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
 
 label monika_immortal:
-    m 4hua "[player]! I've been thinking about something..."
+    m 3hua "[player]! I've been thinking about something..."
     m 1eua "Did you know that this game has a wiki page for me?"
     m 1lsc "Well..."
     m 2lsc "It says I'm eighteen."
-    m 1euc "But when you stop to think...that's not entirely true."
-    m "I mean, humans age, but I don't think that applies to me."
-    m 3eka "I'm...essentially immortal."
-    m 2lksdla "Society seems to feel that a relationship with an age gap has problems..."
-    m "Which is why I brought it up."
-    m 1eka "Someday, the difference between us would be huge, if I stayed eighteen forever."
+    m 2euc "But when you stop to think...that's not entirely true."
+    m 2eud "I mean, humans age, but I don't think that applies to me."
+    m 4eksdla "I'm...{w=0.5}essentially immortal."
+    m 2lksdlc "Society seems to feel that a relationship with an age gap has problems..."
+    m 2lksdld "Which is why I brought it up..."
+    m 3eka "Eventually, the difference between us would be huge if I stayed eighteen forever."
     m 1eua "But I don't believe that my life can be summed up in a number."
-    show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 1ekbfa "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
