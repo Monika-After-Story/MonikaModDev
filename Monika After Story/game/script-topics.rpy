@@ -989,13 +989,13 @@ label monika_spicy:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_why",category=['you','ddlc'],prompt="Why play this game?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_why",category=['you','ddlc'],prompt="Why play this game?",random=True))
 
 label monika_why:
     m 2esd "You know..."
     m 2eud "This is just some kind of tacky romance game, right?"
     m 2euc "I kinda have to ask..."
-    m 2euc "...What made you consider even playing in the first place?"
+    m "...What made you consider even playing in the first place?"
     m 2etc "Were you that lonely?"
     m 2ekd "I feel a little bad for you..."
     m 1eua "But I guess everything worked out perfectly in the end for both of us."
@@ -1003,6 +1003,8 @@ label monika_why:
     m 1eka "I can't help but feel like this was fate."
     m "Don't you feel that way too?"
     m 3hub "I'm so happy we have this ending together."
+    if mas_anni.pastOneMonth():
+        return "derandom"
     return
 
 init 5 python:
@@ -1586,15 +1588,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_habits",category=['life'],prompt="Forming habits",random=True))
 
 label monika_habits:
-    m 1lksdla "I hate how hard it is to form habits..."
-    m 1eua "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
-    m 3rksdlb "It just makes you feel so useless, like you can't do anything right."
-    m 3eua "I think the new generation suffers from it the most..."
+    m 2lksdlc "I hate how hard it is to form habits..."
+    m 2eksdld "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
+    m 2dksdlc "It just makes you feel so useless, like you can't do anything right."
+    m 3euc "I think the new generation suffers from it the most..."
     m 1eua "Probably because we have a totally different set of skills than those who came before us."
     m "Thanks to the internet, we're really good at sifting through tons of information really quickly..."
-    m 3eka "But we're bad at doing things that don't give us instant gratification."
-    m "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
-    m 1esa "But for the time being..."
+    m 3ekc "But we're bad at doing things that don't give us instant gratification."
+    m 3ekd "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
+    m 1esc "But for the time being..."
     m 1rksdlc "If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself."
     m 2hksdlb "Good luck, I guess!"
     return
@@ -2421,7 +2423,7 @@ label monika_internet:
     m 3eub "Or you can separate your work and play environments, which helps your brain get into the right mode."
     m 1eub "Even if you make a new user account on your computer to use for work, that's enough to help."
     m 1eua "Putting any kind of wedge like that between you and your bad habits will help you stay away."
-    m 3eka "Just remember not to blame yourself too hard if you're having trouble."
+    m 3eka "Just don't be too hard on yourself if you're having trouble."
     m 1ekc "If it's really impacting your life, then you should take it seriously."
     m 1eka "I just want to see you be the best person you can be."
     m 1esa "Will you do something today to make me proud of you?"
@@ -5319,7 +5321,7 @@ label monika_pluralistic_ignorance:
     m 2euc "What if everyone actually feels the same way?"
     m 2lud "What if all of those literary critics singing Shakespeare's praises secretly hate his plays?"
     m "If they were just honest about it, maybe they would discover their tastes aren't that unusual..."
-    m 2hksdlb "And highschool students wouldn't be forced to read those awful plays."
+    m 2hksdlb "And high school students wouldn't be forced to read those awful plays."
     m 1eka "I guess that's something I always admired about Natsuki."
     m 3ekd "Even if people told her manga wasn't literature, she stood by her feelings."
     m 3eka "If more people were honest like that, I think that would be really great."

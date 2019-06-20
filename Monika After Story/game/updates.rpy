@@ -312,6 +312,12 @@ label v0_9_5(version="v0_9_5"):
         if persistent._mas_likes_rain:
             mas_unlockEVL("monika_rain_holdme", "EVE")
 
+        # move monika_why from pool to random, and derand after one month if seen
+        why_ev = mas_getEV('monika_why')
+        if why_ev is not None:
+            why_ev.pool = False
+            if not renpy.seen_label('monika_why') or not mas_anni.pastOneMonth():
+                why_ev.random = True
     return
 
 # 0.9.4
