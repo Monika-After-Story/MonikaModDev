@@ -9781,7 +9781,7 @@ label monika_grad_speech_ignored_lock:
         $mas_loseAffection(modifier=10)
         m 6dstsc "..."
         m 6ektsc "[player]?{w=0.5} You...{w=0.5}you weren't...{w=0.5}listening...{w=0.5}again?{w=1}{nw}"
-         m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5}but...{w=0.5}twice?{w=1}{nw}"
+        m 6dstsc "I...{w=0.5} I thought last time it was unavoidable...{w=0.5}but...{w=0.5}twice?{w=1}{nw}"
          m 6ektsc "You knew how much...{w=0.5}how much this meant to me...{w=1}{nw}"
         m "Am I really...{w=0.5} that boring to you?{w=1}{nw}"
         m 6lktdc "Please...{w=1} don't ask me to recite it again...{w=1}{nw}"
