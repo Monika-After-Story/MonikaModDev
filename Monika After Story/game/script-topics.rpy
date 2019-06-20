@@ -27,7 +27,7 @@ init -2 python in mas_topics:
     S_TOP_SEEN = 0.2
 
     # limit to how many top seen until we move to most seen alg
-    S_TOP_LIMIT = 0.7
+    S_TOP_LIMIT = 0.3
 
     # selection weights (out of 100)
     UNSEEN = 50
