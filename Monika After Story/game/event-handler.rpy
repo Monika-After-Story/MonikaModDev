@@ -939,7 +939,7 @@ init -1 python in evhand:
 
     # time stuff
     import datetime
-    LAST_SEEN_DELTA = datetime.timedelta(hours=6)
+    LAST_SEEN_DELTA = datetime.timedelta(hours=3)
 
     # restart topic blacklist
     # TODO: consider an addEvent param instead
