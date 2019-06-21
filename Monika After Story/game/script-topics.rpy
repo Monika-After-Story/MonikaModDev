@@ -5485,12 +5485,11 @@ label monika_sayhappybirthday:
     #TODO: temporary m_name reset for this
     # TODO: someone on the writing team make the following dialogue better
     # also make the expressions more approriate and add support for standing
-    m 1hub "Happy birthday!"
-    m 1lksdla "Oh, you wanted me to say happy birthday to {i}someone else{/i}."
-    m 1eua "I understand."
+    m 3hub "Of course, [player]!"
     while not done:
+        show monika 1eua
         # arbitary max name limit
-        $ bday_name = renpy.input("What is their name?",allow=letters_only,length=40).strip()
+        $ bday_name = renpy.input("What's their name?",allow=letters_only,length=40).strip()
         # ensuring proper name checks
         $ same_name = bday_name.upper() == player.upper()
         if bday_name == "":
@@ -5498,7 +5497,7 @@ label monika_sayhappybirthday:
             m 1lksdlb "I don't think that's a name."
             m 1hub "Try again!"
         elif same_name:
-            m 1wuo "Oh wow, someone with the same name as you."
+            m 1wuo "Oh wow, someone with the same name as you!"
             $ same_name = True
             $ done = True
         else:
@@ -5526,9 +5525,9 @@ label monika_sayhappybirthday:
                     # NOTE: if we want to comment on (valid) age, put it here.
                     # I'm not too sure on what to have monika say in these cases.
                     $ done = True
-            m "Okay"
+            m "Okay."
         "No.":
-            m "Okay"
+            m "Okay."
     $ bday_name = bday_name.title() # ensure proper title case
 
     m 1eua "Is [bday_name] here with you?{nw}"
@@ -7859,20 +7858,21 @@ label monika_explain:
     m 4eka "...don't judge our relationship."
     m 1eka "Even if it is different."
     m 1dsc "..."
-    m 1dubssdru "...Phew!"
+    m 1dubssdlu "...Phew!"
     m 1lksdlb "That was a real mouthful!"
-    m 1eka "How did I do, [player]?{nw}"
+    m 1eksdla "So, how'd it go, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "How did I do, [player]?{fast}"
-        "You did a good job.":
-            m 1hub "Thank you!"
-            m 1eua "I just hope whoever that was understands our relationship better."
-        "You did badly.":
-            m 1ekc "Oh."
-            m "I'm sorry I didn't do a good job at explaining..."
-            m 1eka "I'll make sure to try harder next time."
-            m 1hua "Still doesn't change the fact that I love you, though~"
+        m "So, how'd it go, [player]?{fast}"
+        "It went well!":
+            m 1hub "Great!"
+            m 3hua "I'm so glad I was able to help someone understand our relationship a little better!"
+        "It went badly.":
+            m 1dkc "Oh."
+            m 1ekd "Well...{w=1} I guess we can't really expect {i}everyone{/i} to understand our relationship..."
+            m 3rkc "Looking at it from the outside, it {i}is{/i} rather unconventional."
+            m 3eka "But in the end, it doesn't matter who approves of our relationship or not..."
+            m 1hua "As long as we love each other, that's all that counts~"
     return
 
 # do you live near beach
