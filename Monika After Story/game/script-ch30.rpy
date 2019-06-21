@@ -1564,14 +1564,18 @@ label mas_ch30_select_seen:
         # rebuild the event lists
         $ mas_rev_seen, mas_rev_mostseen = mas_buildSeenEventLists()
 
-        # all topics seen within last seen delta, push random seen limit
-        # if not already.
-        if (
-                len(mas_rev_seen) == 0
-                and len(mas_rev_mostseen) == 0
-                and not seen_random_limit
-        ):
-            $ pushEvent("random_limit_reached")
+        if len(mas_rev_seen) == 0:
+            if len(mas_rev_mostseen) > 0:
+                # jump to most seen if we have any left
+                jump mas_ch30_select_mostseen
+
+            if len(mas_rev_mostseen) == 0 and not seen_random_limit:
+                # all topics seen within last seen delta, push random seen 
+                # limit if not already.
+                $ pushEvent("random_limit_reached")
+                jump post_pick_random_topic
+            
+            # if still no events, just jump to idle loop
             jump post_pick_random_topic
 
     $ mas_randomSelectAndPush(mas_rev_seen)
