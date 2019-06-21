@@ -2304,7 +2304,7 @@ label bye_d25_first_time_out:
 
 #second time out on d25
 label bye_d25_second_time_out:
-    m 1wud "Wow, we're going somewhere {i}else,{/i} [player]?"
+    m 1wud "Wow, we're going somewhere {i}else{/i}, [player]?"
     m 3wud "You really must have a lot of people you need to visit..."
     m 3sua "...or maybe you just have lots of special plans for us today!"
     m 1hua "But either way, thank you for thinking of me and bringing me along~"
@@ -3744,7 +3744,7 @@ label bye_player_bday:
         m 1sub "I always love going out with you, but it's so much more special going out on your birthday..."
         m 1skbla "I'm sure we'll have a lovely time~"
     else:
-        m 1wub "Wow, you want to go out {i}again,{/i} [player]?"
+        m 1wub "Wow, you want to go out {i}again{/i}, [player]?"
         m 1skbla "I just love that you want to spend so much time with me on your special day!"
     $ persistent._mas_player_bday_left_on_bday = True
     jump bye_going_somewhere_post_aff_check

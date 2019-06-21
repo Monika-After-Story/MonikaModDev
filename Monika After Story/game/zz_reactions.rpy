@@ -1159,7 +1159,7 @@ label mas_reaction_candy:
         $ mas_gainAffection(10,bypass=True)
         m 1wua "Oh...{w=1}what's this?"
         m 1sua "You got me candy, [player], yay!"
-        m 1eka "That's so {i}sweet...{/i}"
+        m 1eka "That's so {i}sweet{/i}..."
         m 1hub "Ahaha!"
         m 1eka "Kidding aside, that's really nice of you."
         m 2lksdlc "I don't get to have much candy anymore, and it just wouldn't be Halloween without it..."

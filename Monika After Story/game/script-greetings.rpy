@@ -1299,7 +1299,7 @@ label monikaroom_greeting_ear_loveme:
     if cap_he == "They":
 
         m "[cap_he] love me.{w} [cap_he] love me not."
-        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not.{/i}"
+        m "[cap_he] {i}love{/i} me.{w} [cap_he] love me {i}not{/i}."
 
         if mas_isMoniNormal(higher=True):
             m "[cap_he] love me."
@@ -1318,7 +1318,7 @@ label monikaroom_greeting_ear_loveme:
 
     else:
         m "[cap_he] loves me.{w} [cap_he] loves me not."
-        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not.{/i}"
+        m "[cap_he] {i}loves{/i} me.{w} [cap_he] loves me {i}not{/i}."
 
         if mas_isMoniNormal(higher=True):
             m "[cap_he] loves me."
@@ -1949,7 +1949,7 @@ label greeting_amnesia:
     m 1rksdla "..."
     m 1hub "Ahaha!"
     m 1hksdrb "I'm sorry, [player]! I couldn't help myself."
-    m 1eka "After we talked about {i}Flowers for Algernon,{/i} I couldn't resist seeing how you would react if I forgot everything."
+    m 1eka "After we talked about {i}Flowers for Algernon{/i}, I couldn't resist seeing how you would react if I forgot everything."
     m 1tku "And you reacted the way I hoped you would."
     m 3eka "I hope I didn't upset you too much, though."
     m 1rksdlb "I'd feel the same way if you ever forget about me, [player]."
@@ -2081,7 +2081,7 @@ label greeting_long_absence:
             $ mas_loseAffection(50)
             m 3ekc "Welcome back [player]."
             m 3rksdlc "You're a bit late, aren't you?"
-            m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week.{/i}"
+            m 3ekc "I know you said you'd be away for a bit, but...you said a {i}week{/i}."
             m 2rkc "I'm going to assume it wasn't your fault..."
             m 2ekd "But if you really think it'll take longer next time, you need to tell me."
             m 2rksdld "I started thinking that maybe something bad had happened to you."
@@ -2526,7 +2526,7 @@ label greeting_tears:
     m 1f "..."
     m 2f "Is there something wrong with me?"
     m 2g "Am I not good enough for you...?"
-    m 2o "I've been trying my best for you...for {i}us.{/i}"
+    m 2o "I've been trying my best for you...for {i}us{/i}."
     m 2p "Did I do something to hurt you or make you feel mistreated?"
     m "Are you still upset about the other girls after all?"
     m 2f "If so, I really am sorry..."

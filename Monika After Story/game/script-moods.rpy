@@ -455,7 +455,7 @@ init 5 python:
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky?{/i}"
+    m 2tfu "{i}Do I feel lucky{/i}?"
     m "Well..."
     m 4tku "Do ya, [player]?"
     m 1hub "Ahaha!"
@@ -477,7 +477,7 @@ label mas_mood_bored:
         $ _history_list.pop()
         menu:
             m "Do I really bore you that much, [player]?{fast}"
-            "No, I'm not bored {i}of you...{/i}":
+            "No, I'm not bored {i}of you{/i}...":
                 m 1hua "Oh,{w} that's such a relief!"
                 m 1eka "But, if you're bored, we should find something to do then..."
 

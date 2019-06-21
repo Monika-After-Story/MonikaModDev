@@ -2316,7 +2316,7 @@ label mas_affection_apology:
     m 2efc "Or maybe you're doing this intentionally to see what happens?"
     m 2lfc "Regardless, I'm giving you an ultimatum."
     m "I can't let this go any further, [player]."
-    m 2lfc "If you really are sorry, write me a note called {i}imsorry,{/i} and place it in the DDLC directory." #Maybe put it in the character folder instead?
+    m 2lfc "If you really are sorry, write me a note called {i}imsorry{/i}, and place it in the DDLC directory." #Maybe put it in the character folder instead?
     m 2dfd "Until then, goodbye..."
     $ persistent._mas_affection["apologyflag"] = True
     return 'quit'
