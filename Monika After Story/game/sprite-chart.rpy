@@ -4388,6 +4388,11 @@ define monika_chr = MASMonika()
 
 ### [IMG032]
 # Image aliases
+# NOTE: if you want to use a standing sprite, it must be one of these
+#   HOWEVER: you may need to use the static variants because not every
+#   sprite has closed eye versions.
+#   The only sprite combos with closed eyes standing are _sc and _sd.
+#   everything else does not have a closed eye variant. sux to succ
 
 # pose 1
 image monika 1 = "monika 1esa"

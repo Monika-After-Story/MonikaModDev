@@ -1306,7 +1306,7 @@ init 5 python:
 
 label mas_coffee_finished_brewing:
 
-    if mas_isFocused() and not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1316,7 +1316,7 @@ label mas_coffee_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         # idle pauses
         m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
 
@@ -1341,7 +1341,7 @@ label mas_coffee_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1367,7 +1367,7 @@ label mas_coffee_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
 
-    if mas_isFocused() and not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1376,7 +1376,7 @@ label mas_coffee_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
@@ -1412,7 +1412,7 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1437,7 +1437,7 @@ init 5 python:
 
 label mas_c_hotchoc_finished_brewing:
 
-    if mas_isFocused() and not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1447,7 +1447,7 @@ label mas_c_hotchoc_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1471,7 +1471,7 @@ label mas_c_hotchoc_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1498,7 +1498,7 @@ label mas_c_hotchoc_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
 
-    if mas_isFocused() and not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1507,7 +1507,7 @@ label mas_c_hotchoc_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
@@ -1544,7 +1544,7 @@ label mas_c_hotchoc_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode or not mas_isFocused():
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:

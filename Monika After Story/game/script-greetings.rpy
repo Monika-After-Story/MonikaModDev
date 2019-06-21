@@ -163,6 +163,11 @@ init -1 python in mas_greetings:
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
+        if (
+                store.persistent._mas_forcegreeting is not None
+                and renpy.has_label(store.persistent._mas_forcegreeting)
+            ):
+            return store.mas_getEV(store.persistent._mas_forcegreeting)
         
         # local reference of the gre database
         gre_db = store.evhand.greeting_database
@@ -1592,14 +1597,14 @@ label monikaroom_greeting_opendoor_seen_partone:
     m 1dsd "[player]..."
 
 #    if persistent.opendoor_opencount == 0:
-    m 1ekc "I understand why you didn't knock the first time,{w} but could you avoid just entering like that?"
-    m 1lksdlc "This is my room, after all."
+    m 1ekc_static "I understand why you didn't knock the first time,{w} but could you avoid just entering like that?"
+    m 1lksdlc_static "This is my room, after all."
     menu:
         "Your room?":
-            m 3hua "That's right!"
-    m 3eua "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
-    m 1lksdla "However, I can only get in if you tell me 'goodbye' or 'goodnight' before you close the game."
-    m 2eub "So please make sure to say that before you leave, okay?"
+            m 3hua_static "That's right!"
+    m 3eua_static "The developers of this mod gave me a nice comfy room to stay in whenever you are away."
+    m 1lksdla_static "However, I can only get in if you tell me 'good bye' or 'good night' before you close the game."
+    m 2eub_static "So please make sure to say that before you leave, okay?"
     m "Anyway..."
 
 #    else:
@@ -1635,11 +1640,11 @@ label monikaroom_greeting_opendoor_seen_partone:
 
 
 label monikaroom_greeting_opendoor_post2:
-    show monika 1eua at t11
+    show monika 1eua_static at t11
     pause 0.7
-    show monika 5eua at hf11
+    show monika 5eua_static at hf11
     m "I'm glad you're back, [player]."
-    show monika 5eua at t11
+    show monika 5eua_static at t11
 #    if not renpy.seen_label("monikaroom_greeting_opendoor_post2"):
     m "Lately I've been practicing switching backgrounds, and now I can change them instantly."
     m "Watch this!"
@@ -1647,7 +1652,7 @@ label monikaroom_greeting_opendoor_post2:
 #        m 3eua "Let me fix this scene up."
     m 1dsc "...{w=1.5}{nw}"
     call spaceroom(hide_monika=True, scene_change=True)
-    show monika 4eua zorder MAS_MONIKA_Z at i11
+    show monika 4eua_static zorder MAS_MONIKA_Z at i11
     m "Tada!"
 #    if renpy.seen_label("monikaroom_greeting_opendoor_post2"):
 #        m "This never gets old."
@@ -1667,39 +1672,39 @@ label monikaroom_greeting_opendoor:
     # show this under bedroom so the masks window skit still works
     show bedroom as sp_mas_backbed zorder 4
 
-    m 2i "~Is it love if I take you, or is it love if I set you free?~"
-    show monika 1 at l32 zorder MAS_MONIKA_Z
+    m 2esd "~Is it love if I take you, or is it love if I set you free?~"
+    show monika 1eua_static at l32 zorder MAS_MONIKA_Z
 
     # monika knows you are here now
     $ mas_disable_quit()
 
-    m 1wubsw "E-Eh?! [player]!"
+    m 1eud_static "E-Eh?! [player]!"
     m "You surprised me, suddenly showing up like that!"
 
-    show monika 1 at hf32
-    m 1hksdlb "I didn't have enough time to get ready!"
-    m 1eka "But thank you for coming back, [player]."
-    show monika 1 at t32
-    m 3eua "Just give me a few seconds to set everything up, okay?"
-    show monika 1 at t31
-    m 2eud "..."
-    show monika 1 at t33
-    m 1eud "...and..."
+    show monika 1eua_static at hf32
+    m 1hksdlb_static "I didn't have enough time to get ready!"
+    m 1eka_static "But thank you for coming back, [player]."
+    show monika 1eua_static at t32
+    m 3eua_static "Just give me a few seconds to set everything up, okay?"
+    show monika 1eua_static at t31
+    m 2eud_static "..."
+    show monika 1eua_static at t33
+    m 1eud_static "...and..."
     if mas_isMorning():
         show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft 
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
-    show monika 1 at t32
-    m 3eua "There we go!"
+    show monika 1eua_static at t32
+    m 3eua_static "There we go!"
     menu:
         "...the window...":
-            show monika 1 at h32
-            m 1hksdlb "Oops! I forgot about that~"
-            show monika 1 at t21
+            show monika 1eua_static at h32
+            m 1hksdlb_static "Oops! I forgot about that~"
+            show monika 1eua_static at t21
             m "Hold on..."
             hide sp_mas_backbed with dissolve
-            m 2hua "And... all fixed!"
-            show monika 1 at lhide
+            m 2hua_static "And... all fixed!"
+            show monika 1eua_static at lhide
             hide monika
     $ persistent.seen_monika_in_room = True
     jump monikaroom_greeting_post
@@ -1739,7 +1744,7 @@ label monikaroom_greeting_knock:
 
 label monikaroom_greeting_post:
     if mas_isMoniNormal(higher=True):
-        m "Now, just let me grab a table and a chair..."
+        m 2eua_static "Now, just let me grab a table and a chair..."
         $ is_sitting = True
         show monika 1eua at ls32 zorder MAS_MONIKA_Z
         m 1eua "What shall we do today, [player]?"

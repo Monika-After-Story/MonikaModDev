@@ -93,6 +93,12 @@ init python:
     destroy_list = list()
 
     #START: Utility methods
+    def mas_canCheckActiveWindow():
+        """
+        Checks if we can check the active window (simplifies conditionals)
+        """
+        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
@@ -103,7 +109,7 @@ init python:
         if (
                 renpy.windows
                 and mas_windowreacts.can_show_notifs
-                and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+                and mas_canCheckActiveWindow()
             ):
             from win32gui import GetWindowText, GetForegroundWindow
 
