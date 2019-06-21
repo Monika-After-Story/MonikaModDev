@@ -8731,7 +8731,7 @@ label monika_timeconcern_night_finalfollowup:
 #Every night after, based on seeing the day version first before it.
 label monika_timeconcern_night_after:
     m 1tkc "Up late again, [player]?"
-    m 1dfc "{i}*Sigh*{/i}..."
+    m 1dfc "{i}*sigh*{/i}..."
     m 2lfc "I won't even try to convince you to sleep again..."
     m 2tfd "You're surprisingly stubborn!"
     m 1eka "Still, do be careful, alright?"
@@ -12049,13 +12049,13 @@ label monika_bad_facts_2:
     m 2ekc "Hm? This doesn't sound right..."
     m 2tkd "It says here that different areas of the tongue taste different flavors."
     m 2tfd "One area for bitter tastes, another for sweet..."
-    m 2dfd "{i}*Sigh*{/i}{w} For the love of--"
+    m 2dfd "{i}*sigh*{/i}{w} For the love of--"
     m 2rfd "--only children would believe this."
     return
 
 label monika_bad_facts_3:
-    m 2dsc "{i}*Inhale*{/i}"
-    m 2dsd "{i}*Exhale*{/i}"
+    m 2dsc "{i}*inhale*{/i}"
+    m 2dsd "{i}*exhale*{/i}"
     m 2esc "'Vaccines cause autism...'"
     m "Just wow."
     m "That's not even funny, and if they're serious, it's long since been disproven."
