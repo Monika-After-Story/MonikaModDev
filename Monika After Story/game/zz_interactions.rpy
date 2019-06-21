@@ -209,3 +209,23 @@ init python:
 
         
         testing = 10
+
+
+
+
+
+label mas_nose_boop_launch:
+
+    # because monika idle causes issues, monika will jump to 6eua
+    # there literally is nothing that can be done about this.
+    show monika 6eua
+
+
+    # drop shields
+    $ mas_DropShield_core()
+
+    show monika idle
+
+    # when done with monika game, we return to ch30 loop
+    jump ch30_loop
+
