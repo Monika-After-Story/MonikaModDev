@@ -819,6 +819,85 @@ init -5 python in mas_sprites:
 
     # special mas monika functions
 
+
+    def clothes_exit_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs pre clothes change code. This code is ran prior to clothes being
+        changed and prior to exit prog point
+
+        IN:
+            temp_space - temporary dictionary space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        pass
+
+
+    def clothes_exit_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after exit prog point is ran, before the actual change.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        desired_ribbon = prev_cloth.getprop("desired-ribbon")
+        if (
+                desired_ribbon is not None
+                and desired_ribbon in ACS_MAP
+                and moni_chr.is_wearing_hair_with_exprop("ribbon")
+        ):
+            temp_ribbon = temp_storage.get("hair.ribbon", None)
+            if temp_ribbon is None:
+                moni_chr.remove_acs(ACS_MAP[desired_ribbon])
+
+            else:
+                _acs_wear_if_wearing_acs(
+                    moni_chr,
+                    ACS_MAP[desired_ribbon],
+                    temp_ribbon
+                )
+
+
+    def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after change, before entry prog point.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        pass
+
+
+    def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after entry prog point
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        desired_ribbon = new_cloth.getprop("desired-ribbon")
+        if (
+                desired_ribbon is not None
+                and desired_ribbon in ACS_MAP
+                and moni_chr.is_wearing_hair_with_exprop("ribbon")
+        ):
+            prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon != store.mas_acs_ribbon_blank:
+                temp_storage["hair.ribbon"] = prev_ribbon
+
+            moni_chr.wear_acs(ACS_MAP[desired_ribbon])
+
+    
     
     def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
         """
@@ -2545,10 +2624,54 @@ init -2 python:
             if self.lock_clothes and not startup:
                 return
 
+            # setup temp space
+            temp_space = {
+                "by_user": by_user,
+                "startup": startup,
+            }
+
             prev_cloth = self.clothes
+
+            # run pre clothes change logic
+            store.mas_sprites.clothes_exit_pre_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # exit point
             self.clothes.exit(self, new_clothes=new_cloth)
+
+            # post exit, pre change
+            store.mas_sprites.clothes_exit_pst_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # change
             self.clothes = new_cloth
+
+            # post change, pre entry
+            store.mas_sprites.clothes_entry_pre_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # entry point
             self.clothes.entry(self, prev_clothes=prev_cloth)
+
+            # post entry point
+            store.mas_sprites.clothes_entry_pst_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
@@ -3668,6 +3791,17 @@ init -2 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+
+        def getprop(self, prop, defval=None):
+            """
+            Gets the exprop
+
+            IN:
+                prop - prop to get
+                defval - default value to return if prop not found
+            """
+            return self.ex_props.get(prop, defval)
 
     
         def gettype(self):

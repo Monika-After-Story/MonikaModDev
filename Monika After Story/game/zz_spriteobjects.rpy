@@ -404,13 +404,6 @@ init -2 python in mas_sprites:
             p6=None
         )
 
-        # wearing a ribbon? switch to the wine ribbon always
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
-            if prev_ribbon != store.mas_acs_ribbon_blank:
-                temp_storage["hair.ribbon"] = prev_ribbon
-            _moni_chr.wear_acs(store.mas_acs_ribbon_wine)
-
         # NOTE: revaluate if this looks bad on santa
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
@@ -423,13 +416,6 @@ init -2 python in mas_sprites:
         santa_map = temp_storage.get("clothes.santa", None)
         if santa_map is not None:
             store.mas_acs_promisering.pose_map = santa_map
-
-        # go back to previous ribbon if wearing wine ribbon
-        _acs_wear_if_wearing_acs(
-            _moni_chr,
-            store.mas_acs_ribbon_wine,
-            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-        )
 
         # TODO: need to add ex prop checking and more
         # so we can rmeove bare acs
@@ -464,6 +450,7 @@ init -2 python in mas_sprites:
         #We need to unlock/random monika_plushie since the plush is active
         store.mas_showEVL('monika_plushie','EVE',_random=True)
 
+
     def _acs_quetzalplushie_exit(_moni_chr, **kwargs):
         """
         Exit programming point for quetzal plushie acs
@@ -476,6 +463,7 @@ init -2 python in mas_sprites:
 
         #Since no more plush, we need to lock/derandom monika_plushie
         store.mas_hideEVL('monika_plushie','EVE',derandom=True)
+
 
     def _acs_quetzalplushie_santahat_entry(_moni_chr, **kwargs):
         """
@@ -695,6 +683,10 @@ init -1 python:
     #
     # NOTE: see IMG015 for info about the fallback system
     #
+    # NOTE: exprops
+    #   desired-ribbon: name of the ribbon that this outfit will try to wear
+    #       may be overriden by user
+    #
     # NOTE: template
     ### HUMAN UNDERSTANDABLE NAME OF THIS CLOTHES
     ## clothesidentifiername
@@ -835,7 +827,10 @@ init -1 python:
         },
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
-        exit_pp=store.mas_sprites._clothes_santa_exit
+        exit_pp=store.mas_sprites._clothes_santa_exit,
+        ex_props={
+            "desired-ribbon": "ribbon_wine",
+        },
     )
     store.mas_sprites.init_clothes(mas_clothes_santa)
     store.mas_selspr.init_selectable_clothes(
