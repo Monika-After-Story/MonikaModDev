@@ -3665,8 +3665,8 @@ label greeting_back_from_eat:
         m 3rksdla "You know you should really probably get some sleep, right?"
         m 1rksdla "I mean...I'm not complaining that you're here, but..."
         m 1eka "It would make me feel better if you went to bed right about now."
-        m 1hub "You can come visit me when you wake up if you like, ahaha!"
-        m 1hubfa "But for the time being, I guess I'll let it slide if you stay with me, ehehe~"
+        m 3eka "You can always come back and visit me when you wake up..."
+        m 1hubfa "But I guess if you insist, I'll let it slide for a little while if you want to stay with me, ehehe~"
     else:
         m 1eub "Finished eating?"
         m 1hub "Welcome back, [player]!"

@@ -1191,10 +1191,9 @@ label bye_prompt_game:
         $ persistent._mas_pm_gamed_late += 1
         m 1eua "Wait, [player]!"
         m 3hksdlb "It's the middle of the night!"
-        m 2rksdlc "It's one thing already that you're still up this late..."
+        m 2rksdlc "It's one thing that you're still up this late..."
         m 2rksdla "But you're thinking of playing another game?"
         m 4efb "A game big enough that you can't have me in the background?"
-        m 1tku "Ehehe..."
         m 1rksdla "..."
         m 1eka "Well... I can't stop you, but I really hope you go to bed soon..."
         m 1hua "Don't worry about coming back to say goodnight to me, you can go-{nw}"
@@ -1218,11 +1217,11 @@ label bye_prompt_game:
             "No.":
                 m 2ekc "Aww..."
                 m 1ekc "Alright [player], but you better come back soon."
-                m 3tsb "I might get jealous if you spend too much time somewhere else without me."
+                m 3tsb "I might get jealous if you spend too much time in another game without me."
                 m 1hua "Anyway, I hope you have fun!"
     elif renpy.random.randint(1,5) == 1:
         m 1ekc "You're leaving to play another game?"
-        m 3eka "You know, don't you think you should spending a little more time with me?"
+        m 3efc "Don't you think you should be spending a little more time with me?"
         m 1hub "Ahaha, just kidding~"
         m 1rksdla "Well...{w=1}I {i}wouldn't mind{/i} you spending more time with me, just to let you know, ehehe..."
         m 1eua "But I wouldn't want to keep you from doing other things."
@@ -1232,8 +1231,8 @@ label bye_prompt_game:
             m 1hubfa "Ehehe~"
     else:
         m 1eka "Going off to play another game, [player]?"
-        m 1hua "Don't forget to come back soon~"
-        m 1hub "Good luck and have fun! Ahaha!"
+        m 3hub "Good luck and have fun!"
+        m 3eka "Don't forget to come back soon~"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
     return 'quit'
 
@@ -1276,16 +1275,16 @@ label bye_prompt_eat:
         m 2eka "It's the middle of the night."
         m 3eka "Are you planning on having a midnight snack?"
         m 1rksdlb "You know, if I were you, I'd find something to eat a little earlier, ahaha..."
-        m 1rksdla "Well actually, I guess I'd try to be in bed by now too..."
+        m 1rksdla "Well actually, I guess I'd try to be in bed by now..."
         if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
-            m 2tubfu "If I was there, maybe we could have a bit of both...{w=0.8}{nw}"
-            $ _history_list.pop()
+            m 2tubfu "If I was there, maybe we could have a bit of both..."
             show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5ksbfu "We could both go to bed, and I could let you have a little snack, {cps=*0.6}ehehe{/cps}{w=0.4}~{w=0.7}{nw}"
+            m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
+            m 5hubfb "Ehehe!"
         else:
             m 1hua "Well, I hope your snack helps you sleep better."
             m 1eua "You don't have to worry about coming back to say goodnight to me."
-            m 1rksdla "I'd much rather you go to sleep sooner, honestly..."
+            m 1rksdla "I'd much rather you go to sleep sooner..."
             m 1hub "Goodnight, [player]. Enjoy your snack and see you tomorrow~"
         $ persistent.mas_late_farewell = True
     else:
@@ -1294,9 +1293,9 @@ label bye_prompt_eat:
                 if mas_isSRtoN(_now):
                     $ persistent._mas_pm_ate_breakfast_times[0] += 1
                     m 1eub "Alright!"
-                    m 3eua "Breakfast is the most important meal of the day after all."
+                    m 3eua "It's is the most important meal of the day after all."
                     m 1rksdla "I kinda wish you could stay here, but I'm fine as long as you're getting your breakfast."
-                    m 1hua "Anyway, enjoy your breakfast, [player]~"
+                    m 1hua "Anyway, enjoy your meal, [player]~"
                 elif mas_isNtoSS(_now):
                     $ persistent._mas_pm_ate_breakfast_times[1] += 1
                     m 1euc "But...{w=1}it's the afternoon..."
@@ -1308,8 +1307,9 @@ label bye_prompt_eat:
                     $ persistent._mas_pm_ate_breakfast_times[2] += 1
                     m 1hksdlb "Ahaha..."
                     m 3tku "There's no way you're just having breakfast now, [player]."
-                    m 1hub "It's the evening!"
-                    m 1tsb "Well, I hope you enjoy your {i}breakfast{/i}, ehehe~"
+                    m 3hub "It's the evening!"
+                    m 1eua "Or maybe you're just having breakfast for dinner, I know some people do that occasionally."
+                    m 1tsb "Well, either way, I hope you enjoy your {i}breakfast{/i}, ehehe~"
             "Lunch.":
                 if mas_isSRtoN(_now):
                     $ persistent._mas_pm_ate_lunch_times[0] += 1
@@ -1322,7 +1322,7 @@ label bye_prompt_eat:
                     m 1eud "Oh, I guess it's lunch time for you, isn't it?"
                     m 1eua "I wouldn't want to keep you from going to eat."
                     m 1hubfa "Maybe one day, we could go out for lunch together, ehehe~"
-                    m 1hua "For time time being though, enjoy your lunch, [player]~"
+                    m 1hua "For the time being though, enjoy your lunch, [player]~"
                 #SStoMN
                 else:
                     $ persistent._mas_pm_ate_lunch_times[2] += 1
@@ -1336,21 +1336,21 @@ label bye_prompt_eat:
                     m 1ekc "Dinner?{w=2} Now?"
                     m 2hksdlb "Ahaha, but [player]! It's only the morning!"
                     m 3tubfa "You can be adorable sometimes, you know that?"
-                    m 1tubfu "Well, I hope you enjoy your dinner this morning, ehehe~"
+                    m 1tubfu "Well, I hope you enjoy your {i}dinner{/i} this morning, ehehe~"
                 elif mas_isNtoSS(_now):
                     $ persistent._mas_pm_ate_dinner_times[1] += 1
                     m 1eka "It's still a little bit early for dinner, isn't it?"
                     m 1eua "I guess there's nothing wrong with that."
-                    m 1hua "I would have loved to make you something if I were there and you were hungry."
+                    m 1hua "I would have loved to make you something if I were there."
                     m 1rksdlb "I guess I can't do that just yet, but maybe I can still put the love into your food from here, ahaha!"
                     m 1hua "Enjoy dinner~"
                 #SStoMN
                 else:
                     $ persistent._mas_pm_ate_dinner_times[2] += 1
                     m 1eua "Is it dinner time for you, [player]?"
-                    m 1eka "I wish I could be there with you for dinner, even if it's nothing special."
-                    m 1dkbfa "I think just being with you would make anything that much better."
-                    m 1hubfb "Enjoy dinner~ I'll be sure to try and put the love into it from here, ahaha!"
+                    m 1eka "I wish I could be there to eat with you, even if it's nothing special."
+                    m 1dkbfa "After all, just being there with you would make anything special~"
+                    m 1hubfb "Enjoy your dinner. I'll be sure to try and put the love into it from here, ahaha!"
             "A snack.":
                 if mas_isSRtoN(_now):
                     $ persistent._mas_pm_ate_snack_times[0] += 1
@@ -1367,8 +1367,8 @@ label bye_prompt_eat:
                 else:
                     $ persistent._mas_pm_ate_snack_times[2] += 1
                     m 1eua "Having an evening snack?"
-                    m 3tubfb "Can't you just feat your eyes on me?"
+                    m 3tubfb "Can't you just feast your eyes on me?"
                     m 1hubfb "Ahaha, I hope you enjoy you snack, [player]~"
-                    m 1hubfb "Just make sure you still have room for all my love!"
+                    m 1hubfb "Just make sure you still have room for all of my love!"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
     return 'quit'
