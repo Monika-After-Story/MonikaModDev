@@ -2845,7 +2845,7 @@ init 5 python:
 label monika_ribbon_select:
     python:
         # if we are not using a force ribbon hair, add a remover.
-        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
+#        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
 
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
@@ -2859,7 +2859,7 @@ label monika_ribbon_select:
 #        $ monika_chr.reset_outfit(False)
 
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=use_remover)
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
 
     if not _return:
         m 1eka "Oh, alright."

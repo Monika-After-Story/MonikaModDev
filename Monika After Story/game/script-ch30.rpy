@@ -1677,7 +1677,7 @@ label ch30_reset:
     # reset hair / clothes
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
-    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
+#    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
 
     # def ribbon always unlocked

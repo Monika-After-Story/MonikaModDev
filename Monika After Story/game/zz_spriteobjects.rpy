@@ -628,17 +628,17 @@ init -1 python:
             "ribbon-off": True,
         }
     )
-    store.mas_sprites.init_hair(mas_hair_ponytail)
-    store.mas_selspr.init_selectable_hair(
-        mas_hair_ponytail,
-        "Ponytail (No Ribbon)",
-        "ponytail",
-        "hair",
-        select_dlg=[
-            "I AM WITHOUT LIMITS"
-        ]
-    )
-    store.mas_selspr.unlock_hair(mas_hair_ponytail)
+#    store.mas_sprites.init_hair(mas_hair_ponytail)
+#    store.mas_selspr.init_selectable_hair(
+#        mas_hair_ponytail,
+#        "Ponytail (No Ribbon)",
+#        "ponytail",
+ #       "hair",
+ #       select_dlg=[
+ #           "I AM WITHOUT LIMITS"
+ #       ]
+ #   )
+ #   store.mas_selspr.unlock_hair(mas_hair_ponytail)
 
     ### BUN WITH RIBBON
     ## bun
