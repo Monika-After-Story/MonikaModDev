@@ -817,6 +817,88 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
+    # special mas monika functions
+
+    
+    def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs pre hair change code. This code is ran prior to hair being
+        changed and prior to exit prog point.
+
+        IN:
+            temp_space - temporary dictionary space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after exit prog point is ran, before the actual change.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_entry_pre_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after change, before entry prog point.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            preV_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_entry_pst_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after entry prog point
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        if new_hair.hasprop("ribbon"):
+            # new hair is enabled for ribbon
+
+            if new_hair.hasprop("force-ribbon"):
+                # force ribbon means that we need to force a ribbon
+                _acs_wear_if_not_wearing_type(
+                    moni_chr,
+                    "ribbon",
+                    temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
+                )
+
+            if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
+                # unlock selector for ribbons if you have more than one
+                store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+
+        else:
+            # new hair not enabled for ribbon
+
+            prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon is not None:
+                # currently wearing ribbon? take it off
+                if prev_ribbon != store.mas_acs_ribbon_blank:
+                    temp_storage["hair.ribbon"] = prev_ribbon
+                moni_chr.remove_acs(prev_ribbon)
+
+            # lock ribbon select
+            store.mas_lockEVL("monika_ribbon_select", "EVE")
+
+
     # sprite maker functions
 
 
@@ -2471,10 +2553,54 @@ init -2 python:
             if self.lock_hair and not startup:
                 return
 
+            # setup temp space
+            temp_space = {
+                "by_user": by_user,
+                "startup": startup,
+            }
+
             prev_hair = self.hair
+
+            # run pre hair change logic
+            store.mas_sprites.hair_exit_pre_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # exit point
             self.hair.exit(self, new_hair=new_hair)
+
+            # post exit , pre hair change
+            store.mas_sprites.hair_exit_pst_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # change
             self.hair = new_hair
+
+            # post change, pre entry
+            store.mas_sprites.hair_entry_pre_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # entry point
             self.hair.entry(self, prev_hair=prev_hair)
+
+            # post entry point
+            store.mas_sprites.hair_entry_pst_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
 
             if by_user is not None:
                 persistent._mas_force_hair = bool(by_user)

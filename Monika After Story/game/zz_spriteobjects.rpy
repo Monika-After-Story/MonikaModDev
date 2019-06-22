@@ -133,17 +133,7 @@ init -2 python in mas_sprites:
         """
         Entry programming point for ponytail
         """
-        # wear a ribbon, we do this always to enforce monika's ribbon as a
-        # separate acs.
-        _acs_wear_if_not_wearing_type(
-            _moni_chr,
-            "ribbon",
-            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-        )
-
-        if not _moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
-            #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        pass
 
 
     def _hair_def_exit(_moni_chr, **kwargs):
@@ -157,16 +147,7 @@ init -2 python in mas_sprites:
         """
         Entry programming point for hair down
         """
-        # if wearing a ribbon, take it off
-        # NOTE: we save the ribbon in temp storage as a courtesy
-        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
-        if prev_ribbon is not None:
-            if prev_ribbon != store.mas_acs_ribbon_blank:
-                temp_storage["hair.ribbon" ] = prev_ribbon
-            _moni_chr.remove_acs(prev_ribbon)
-
-        # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
+        pass
 
 
     def _hair_down_exit(_moni_chr, **kwargs):
@@ -180,17 +161,7 @@ init -2 python in mas_sprites:
         """
         Entry programming point for hair bun
         """
-        # wear a ribbon, we do this always to enforce monika's ribbon as a
-        # separate acs.
-        _acs_wear_if_not_wearing_type(
-            _moni_chr,
-            "ribbon",
-            temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
-        )
-
-        if not _moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
-            #Unlock the selector for ribbons since you now have more than one (if you only had def before)
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        pass
 
 
     ######### CLOTHES [SPR020] ###########
@@ -554,6 +525,11 @@ init -1 python:
     #   This means that steepling MUST exist for the fallback system to work
     #   perfectly.
     #
+    # NOTE: valid exprops
+    #   ribbon - True if this works with ribobn. False or not set if not
+    #   force-ribbon - True if ribbon shoudl be forcibly worn when this hair
+    #       is work. False or not set if not
+    #
     # NOTE: template:
     ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
     ## hairidentifiername
@@ -570,17 +546,18 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        entry_pp=store.mas_sprites._hair_def_entry,
-        exit_pp=store.mas_sprites._hair_def_exit,
+#        entry_pp=store.mas_sprites._hair_def_entry,
+#        exit_pp=store.mas_sprites._hair_def_exit,
         ex_props={
-            "ribbon": True
+            "ribbon": True,
+            "force-ribbon": True
         }
     )
     store.mas_sprites.init_hair(mas_hair_def)
     store.mas_selspr.init_selectable_hair(
         mas_hair_def,
         "Ponytail",
-        "ponytail",
+        "def",
         "hair",
         select_dlg=[
             "Do you like my ribbon, [player]?"
@@ -599,8 +576,8 @@ init -1 python:
             default=True,
             use_reg_for_l=True
         ),
-        entry_pp=store.mas_sprites._hair_down_entry,
-        exit_pp=store.mas_sprites._hair_down_exit,
+#        entry_pp=store.mas_sprites._hair_down_entry,
+#        exit_pp=store.mas_sprites._hair_down_exit,
 #        split=False
     )
     store.mas_sprites.init_hair(mas_hair_down)
@@ -611,6 +588,32 @@ init -1 python:
         "hair",
         select_dlg=[
             "Feels nice to let my hair down..."
+        ]
+    )
+
+    ### PONYTAIL (NO RIBBON)
+    ## ponytail
+    # Monika's pony tail without a ribbon
+    # thanks Orca
+    mas_hair_ponytail = MASHair(
+        "ponytail",
+        "def",  # uses default hair
+        MASPoseMap(
+            default = True,
+            use_reg_for_l=True,
+        ),
+        ex_props={
+            "ribbon": True
+        }
+    )
+    store.mas_sprites.init_hair(mas_hair_ponytail)
+    store.mas_selspr.init_selectable_hair(
+        mas_hair_ponytail,
+        "Ponytail (No Ribbon)",
+        "ponytail",
+        "hair",
+        select_dlg=[
+            "I AM WITHOUT LIMITS"
         ]
     )
 
