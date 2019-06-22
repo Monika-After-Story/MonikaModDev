@@ -876,23 +876,28 @@ init -5 python in mas_sprites:
             # new hair is enabled for ribbon
 
             if new_hair.hasprop("force-ribbon"):
+                temp_ribbon = temp_storage.get("hair.ribbon", None)
 
                 # dont force ribbon on startup
-                if not startup:
+                if not startup and temp_ribbon is not None:
                     # force ribbon means that we need to force a ribbon
                     _acs_wear_if_not_wearing_type(
                         moni_chr,
                         "ribbon",
-                        temp_storage.get(
-                            "hair.ribbon",
-                            store.mas_acs_ribbon_def
-                        )
+                        temp_ribbon
+#                        temp_storage.get(
+#                            "hair.ribbon",
+#                            store.mas_acs_ribbon_def
+#                        )
                     )
 
                 # also change name of the ribbon select prompt
                 ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
                 if ribbon_sel_ev is not None:
-                    ribbon_sel_ev.prompt = "Can you change your ribbon?"
+                    if moni_chr.is_wearing_acs_type("ribbon"):
+                        ribbon_sel_ev.prompt = "Can you change your ribbon?"
+                    else:
+                        ribbon_sel_ev.prompt = "Can you wear a ribbon?"
 
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle

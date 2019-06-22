@@ -100,10 +100,12 @@ init -2 python in mas_sprites:
             _moni_chr - MASMonika object
         """
         prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+
+        # always save ribbon even if not wearing one (so ok to save None)
+        if prev_ribbon != store.mas_acs_ribbon_blank:
+            temp_storage["hair.ribbon"] = prev_ribbon
+
         if prev_ribbon is not None:
-            # currently wearing ribbon? take it off
-            if prev_ribbon != store.mas_acs_ribbon_blank:
-                temp_storage["hair.ribbon"] = prev_ribbon
             _moni_chr.remove_acs(prev_ribbon)
 
         # lock ribbon select

@@ -833,6 +833,8 @@ label ch30_main:
 
     # set monikas outfit to default
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
+
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
