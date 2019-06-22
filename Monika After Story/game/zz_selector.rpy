@@ -2844,6 +2844,9 @@ init 5 python:
 
 label monika_ribbon_select:
     python:
+        # if we are not using a force ribbon hair, add a remover.
+        use_remover = not monika_chr.is_wearing_hair_with_exprop("force-ribbon")
+
         use_acs = store.mas_selspr.filter_acs(True, group="ribbon")
 
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox("Which ribbon would you like me to wear?")
@@ -2855,12 +2858,26 @@ label monika_ribbon_select:
 #        m "But im going to change my clothes and hair back to normal."
 #        $ monika_chr.reset_outfit(False)
 
-    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map)
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=use_remover)
 
     if not _return:
         m 1eka "Oh, alright."
 
-    m 1eka "If you want me to change my ribbon, just ask, okay?"
+    # set appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type("ribbon"):
+        $ ribbon_prompt = "Can you change your ribbon?"
+        $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
+
+    else:
+        $ ribbon_prompt = "Can you wear a ribbon?"
+        $ ribbon_dlg = "If you want me to wear a ribbon again, just ask, okay?"
+
+    $ ribbon_sel_ev = mas_getEV("monika_ribbon_select")
+    if ribbon_sel_ev is not None:
+        $ ribbon_sel_ev.prompt = ribbon_prompt
+
+    m 1eka "[ribbon_dlg]"
 
     return
 #### End Ribbon change topic
@@ -2901,7 +2918,7 @@ label monika_hairclip_select:
         $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
         m 1eka "If you want me to change my hairclip, just ask, okay?"
     else:
-        $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+        $ mas_getEV("monika_hairclip_select").prompt = "Can you wear a hairclip?"
         m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return

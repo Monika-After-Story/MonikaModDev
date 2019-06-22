@@ -881,22 +881,27 @@ init -5 python in mas_sprites:
                     temp_storage.get("hair.ribbon", store.mas_acs_ribbon_def)
                 )
 
+                # also change name of the ribbon select prompt
+                ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
+                if ribbon_sel_ev is not None:
+                    ribbon_sel_ev.prompt = "Can you change your ribbon?"
+
+            elif new_hair.hasprop("ribbon-off"):
+                # take ribbon off for this hairstyle
+                _acs_ribbon_save_and_remove(moni_chr)
+                
+                # also change name of the ribbon select prompt
+                ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
+                if ribbon_sel_ev is not None:
+                    ribbon_sel_ev.prompt = "Can you wear a ribbon?"
+
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
         else:
             # new hair not enabled for ribbon
-
-            prev_ribbon = moni_chr.get_acs_of_type("ribbon")
-            if prev_ribbon is not None:
-                # currently wearing ribbon? take it off
-                if prev_ribbon != store.mas_acs_ribbon_blank:
-                    temp_storage["hair.ribbon"] = prev_ribbon
-                moni_chr.remove_acs(prev_ribbon)
-
-            # lock ribbon select
-            store.mas_lockEVL("monika_ribbon_select", "EVE")
+            _acs_ribbon_save_and_remove(moni_chr)
 
 
     # sprite maker functions
@@ -2794,6 +2799,18 @@ init -2 python:
             RETURNS: True if wearing clothes with the exprop, False if not
             """
             return self.clothes.hasprop(exprop)
+
+
+        def is_wearing_hair_with_exprop(self, exprop):
+            """
+            Checks if we are currently wearing hair with the given exprop
+
+            IN:
+                exprop - extend property to check
+
+            RETURNS: True if wearing hair with the exprop, False if not
+            """
+            return self.hair.hasprop(exprop)
 
 
         def load(self, startup=False):

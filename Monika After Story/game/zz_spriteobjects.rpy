@@ -92,6 +92,24 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(acs_to_wear)
 
 
+    def _acs_ribbon_save_and_remove(_moni_chr):
+        """
+        Removes ribbon acs and aves them to temp storage.
+
+        IN:
+            _moni_chr - MASMonika object
+        """
+        prev_ribbon = _moni_chr.get_acs_of_type("ribbon")
+        if prev_ribbon is not None:
+            # currently wearing ribbon? take it off
+            if prev_ribbon != store.mas_acs_ribbon_blank:
+                temp_storage["hair.ribbon"] = prev_ribbon
+            _moni_chr.remove_acs(prev_ribbon)
+
+        # lock ribbon select
+        store.mas_lockEVL("monika_ribbon_select", "EVE")
+
+
     def _acs_save_and_remove_exprop(_moni_chr, exprop, key, lock_topics):
         """
         Removes acs with given exprop, saving them to temp storage with
@@ -529,6 +547,8 @@ init -1 python:
     #   ribbon - True if this works with ribobn. False or not set if not
     #   force-ribbon - True if ribbon shoudl be forcibly worn when this hair
     #       is work. False or not set if not
+    #   ribbon-off - True if wearing this hair should take off the ribbon.
+    #       This should only be used with ribbon. force-ribbon takes predence
     #
     # NOTE: template:
     ### HUMAN UNDERSTANDABLE NAME OF HAIR STYLE
@@ -602,8 +622,10 @@ init -1 python:
             default = True,
             use_reg_for_l=True,
         ),
+#        entry_pp=store.mas_sprites._hair_ponytail_entry,
         ex_props={
-            "ribbon": True
+            "ribbon": True,
+            "ribbon-off": True,
         }
     )
     store.mas_sprites.init_hair(mas_hair_ponytail)
@@ -616,6 +638,7 @@ init -1 python:
             "I AM WITHOUT LIMITS"
         ]
     )
+    store.mas_selspr.unlock_hair(mas_hair_ponytail)
 
     ### BUN WITH RIBBON
     ## bun

@@ -862,7 +862,7 @@ label mas_reaction_gift_hairclip(hairclip_name):
             if monika_chr.get_acs_of_type('left-hair-clip'):
                 $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
             else:
-                $ mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+                $ mas_getEV("monika_hairclip_select").prompt = "Can you wear a hairclip?"
 
     $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
 
