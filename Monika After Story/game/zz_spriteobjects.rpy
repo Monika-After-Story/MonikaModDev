@@ -547,8 +547,8 @@ init -1 python:
     #
     # NOTE: valid exprops
     #   ribbon - True if this works with ribobn. False or not set if not
-    #   force-ribbon - True if ribbon shoudl be forcibly worn when this hair
-    #       is work. False or not set if not
+    #   ribbon-restore - Set if this hair should restore previously saved
+    #       ribbon if found
     #   ribbon-off - True if wearing this hair should take off the ribbon.
     #       This should only be used with ribbon. force-ribbon takes predence
     #
@@ -572,7 +572,7 @@ init -1 python:
 #        exit_pp=store.mas_sprites._hair_def_exit,
         ex_props={
             "ribbon": True,
-            "force-ribbon": True
+            "ribbon-restore": True
         }
     )
     store.mas_sprites.init_hair(mas_hair_def)

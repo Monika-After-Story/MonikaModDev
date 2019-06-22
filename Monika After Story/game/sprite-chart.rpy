@@ -875,7 +875,7 @@ init -5 python in mas_sprites:
         if new_hair.hasprop("ribbon"):
             # new hair is enabled for ribbon
 
-            if new_hair.hasprop("force-ribbon"):
+            if new_hair.hasprop("ribbon-restore"):
                 temp_ribbon = temp_storage.get("hair.ribbon", None)
 
                 # dont force ribbon on startup
