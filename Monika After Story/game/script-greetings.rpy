@@ -3570,9 +3570,9 @@ label greeting_back_from_game:
     elif mas_getAbsenceLength() < datetime.timedelta(hours=10):
         m 2wuo "[player]!"
         m 2hksdlb "You were gone for a long time..."
-        m 1eka "I'm guessing you had fun?{nw}"
+        m 1eka "Did you have fun?{nw}"
         menu:
-            m "I'm guessing you had fun?{fast}"
+            m "Did you have fun?{fast}"
             "Yes.":
                 m 1hua "Well, I'm glad then."
                 m 3tubfb "You sure made me wait a while, you know."
@@ -3608,10 +3608,7 @@ label greeting_back_from_game:
                 m 1ekc "You were sure gone a while though..."
                 m 3tsbsa "Maybe I should be jealous of that other game? Ehehe~"
                 show monika 5tuu zorder MAS_MONIKA_Z with dissolve
-                m 5tuu "But now, you've come to make up for all that time...{w=1} right?"
-                    m 5tku "I guess it's also fine if you spend more time with me than that other game."
-                    m 5tfb "That's what you have in mind, right?"
-                m 5hubfa "You're so sweet, [player]."
+                m 5tuu "But now, you've come to make up for all that time...{w=1} Right?"
     #Over 18 hours
     else:
         m 2hksdlb "[player]!"
