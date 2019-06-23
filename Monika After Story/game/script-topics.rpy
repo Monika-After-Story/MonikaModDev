@@ -3209,7 +3209,7 @@ label monika_love:
             "You are my sunshine after all.",
             "You're all I truly care about!",
             "Your happiness is my happiness!",
-            "You're the best partner I could ever want!",
+            "You're the best partner I could ever ask for!",
             "My future is brighter with you in it.",
             "You're everything I could ever hope for.",
             "You make my heart skip a beat everytime I think about you!",
