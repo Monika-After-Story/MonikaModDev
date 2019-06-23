@@ -1339,18 +1339,11 @@ label bye_prompt_eat:
                     m 1tubfu "Well, I hope you enjoy your {i}dinner{/i} this morning, ehehe~"
                 elif mas_isNtoSS(_now):
                     $ persistent._mas_pm_ate_dinner_times[1] += 1
-                    m 1eka "It's still a little bit early for dinner, isn't it?"
-                    m 1eua "I guess there's nothing wrong with that."
-                    m 1hua "I would have loved to make you something if I were there."
-                    m 1rksdlb "I guess I can't do that just yet, but maybe I can still put the love into your food from here, ahaha!"
-                    m 1hua "Enjoy dinner~"
+                    call bye_dinner_noon_to_mn
                 #SStoMN
                 else:
                     $ persistent._mas_pm_ate_dinner_times[2] += 1
-                    m 1eua "Is it dinner time for you, [player]?"
-                    m 1eka "I wish I could be there to eat with you, even if it's nothing special."
-                    m 1dkbfa "After all, just being there with you would make anything special~"
-                    m 1hubfb "Enjoy your dinner. I'll be sure to try and put the love into it from here, ahaha!"
+                    call bye_dinner_noon_to_mn
             "A snack.":
                 if mas_isSRtoN(_now):
                     $ persistent._mas_pm_ate_snack_times[0] += 1
@@ -1372,3 +1365,10 @@ label bye_prompt_eat:
                     m 1hubfb "Just make sure you still have room for all of my love!"
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
     return 'quit'
+
+label bye_dinner_noon_to_mn:
+    m 1eua "Is it dinner time for you, [player]?"
+    m 1eka "I wish I could be there to eat with you, even if it's nothing special."
+    m 1dkbfa "After all, just being there with you would make anything special~"
+    m 1hubfb "Enjoy your dinner. I'll be sure to try and put the love into it from here, ahaha!"
+    return
