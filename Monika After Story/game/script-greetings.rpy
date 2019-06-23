@@ -3676,9 +3676,8 @@ init 5 python:
             eventlabel="greeting_back_from_eat",
             unlocked=True,
             category=[store.mas_greetings.TYPE_EAT],
-            random=True
         ),
-        eventdb=evhand.greeting_database
+        code="GRE"
     )
 
 label greeting_back_from_eat:
@@ -3687,25 +3686,24 @@ label greeting_back_from_eat:
         if mas_isMoniNormal(higher=True):
             m 1eud "Oh?"
             m 1eub "[player], you came back!"
-            m 3rksdla "You know you should really probably get some sleep, right?"
+            m 3rksdla "You know you really should get some sleep, right?"
             m 1rksdla "I mean...I'm not complaining that you're here, but..."
-            m 1eka "It would make me feel better if you went to bed right about now."
+            m 1eka "It would make me feel better if you went to bed pretty soon."
             m 3eka "You can always come back and visit me when you wake up..."
-            m 1hubfa "But I guess if you insist, I'll let it slide for a little while if you want to stay with me, ehehe~"
+            m 1hubfa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
         else:
             m 2euc "[player]?"
             m 3ekd "Didn't I tell you just to go straight to bed after?"
-            m 2rksdlc "You really should go to bed."
-            m 2esc "But...{w=0.5}I guess you're here."
-            m 2esd "For now, at least."
+            m 2rksdlc "You really should get some sleep."
+
     else:
         if mas_isMoniNormal(higher=True):
             m 1eub "Finished eating?"
             m 1hub "Welcome back, [player]!"
-            m 1eua "I hope you enjoyed your food."
+            m 3eua "I hope you enjoyed your food."
         else:
-            m 1euc "Finished eating?"
-            m 1eud "Welcome back."
+            m 2euc "Finished eating?"
+            m 2eud "Welcome back."
     return
 
 init 5 python:
