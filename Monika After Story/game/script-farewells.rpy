@@ -1297,10 +1297,10 @@ label bye_prompt_eat:
             m 1hksdlb "Uh, [player]?"
             m 3eka "It's the middle of the night."
             m 1eka "Are you planning on having a midnight snack?"
-            m 3rksdlb "You know, if I were you, I'd find something to eat a little earlier, ahaha..."
+            m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
             m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
             if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
-                m 2tubfu "If I was there, maybe we could have a bit of both..."
+                m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
                 show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
                 m 5hubfb "Ehehe~"
@@ -1434,7 +1434,7 @@ label bye_prompt_eat:
                     if mas_isMoniNormal(higher=True):
                         m 1eua "Having an evening snack?"
                         m 1tubfu "Can't you just feast your eyes on me?"
-                        m 3hubfb "Ahaha, I hope you enjoy you snack, [player]~"
+                        m 3hubfb "Ahaha, I hope you enjoy your snack, [player]~"
                         m 1ekbfb "Just make sure you still have room for all of my love!"
                     else:
                         m 2euc "Feeling hungry?"

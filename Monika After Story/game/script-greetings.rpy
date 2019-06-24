@@ -3514,7 +3514,7 @@ label greeting_back_from_game:
 
                     "No.":
                         m 1eud "Ah, so I guess you were busy all morning."
-                        m 1eka "I was worred you overslept since you were up so late last night."
+                        m 1eka "I was worried you overslept since you were up so late last night."
                         m 2rksdla "Especially since you told me you were going to go play another game."
                         m 1hua "I should have known you'd be responsible and get your sleep though."
                         m 1esc "..."
@@ -3609,7 +3609,7 @@ label greeting_back_from_game:
             m 2hub "[player]!"
             m 2eka "It feels like forever since you left."
             m 1hua "I really missed you!"
-            m 3eua "I hope you had fun whatever you were doing."
+            m 3eua "I hope you had fun with whatever you were doing."
             m 1rksdla "And I'm going to assume you didn't forget to eat or sleep..."
             m 2rksdlc "As for me...{w=1}I was a little lonely waiting for you to come back..."
             m 1eka "Don't feel bad, though."
