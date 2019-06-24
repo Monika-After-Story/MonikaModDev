@@ -1817,19 +1817,11 @@ label ch30_reset:
 
     # set any prompt variants for acs that can be removed here
     python:
-        hairclip_sel_ev = mas_getEV("monika_hairclip_select")
-        if hairclip_sel_ev is not None:
-            if monika_chr.get_acs_of_type('left-hair-clip'):
-                hairclip_sel_ev.prompt = "Can you change your hairclip?"
-            else:
-                hairclip_sel_ev.prompt = "Can you wear a hairclip?"
+        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
+            store.mas_selspr.set_prompt("left-hair-clip", "wear")
 
-        ribbon_sel_ev = mas_getEV("monika_ribbon_select")
-        if ribbon_sel_ev is not None:
-            if monika_chr.get_acs_of_type("ribbon"):
-                ribbon_sel_ev.prompt = "Can you change your ribbon?"
-            else:
-                ribbon_sel_ev.prompt = "Can you wear a ribbon?"
+        if not monika_chr.is_wearing_acs_type("ribbon"):
+            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

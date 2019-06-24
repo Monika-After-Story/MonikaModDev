@@ -820,6 +820,59 @@ init -5 python in mas_sprites:
     # special mas monika functions
 
 
+    def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs before mux type acs are removed
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after mux type acs removed, before insertion 
+
+        IN:
+            temp space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_entry_pre_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after insertion, before entry pooint
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASmonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_entry_pst_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after entry point
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        if new_acs.acs_type == "ribbon":
+            store.mas_selspr.set_prompt("ribbon", "change")
+
+
     def clothes_exit_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
         """
         Runs pre clothes change code. This code is ran prior to clothes being
@@ -979,12 +1032,10 @@ init -5 python in mas_sprites:
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
 
             # also change name of the ribbon select prompt
-            ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
-            if ribbon_sel_ev is not None:
-                if moni_chr.is_wearing_acs_type("ribbon"):
-                    ribbon_sel_ev.prompt = "Can you change your ribbon?"
-                else:
-                    ribbon_sel_ev.prompt = "Can you wear a ribbon?"
+            if moni_chr.is_wearing_acs_type("ribbon"):
+                store.mas_selspr.set_prompt("ribbon", "change")
+            else:
+                store.mas_selspr.set_prompt("ribbon", "wear")
 
         else:
             # new hair not enabled for ribbon
@@ -3317,11 +3368,31 @@ init -2 python:
                 return
 
             acs_list = self.__get_acs(acs_type)
+            temp_space = {
+                "acs_list": acs_list,
+            }
 
             if acs_list is not None and accessory not in acs_list:
+
+                # run pre exclusion code
+                store.mas_sprites.acs_wear_mux_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run mutual exclusion for acs
                 if accessory.mux_type is not None:
                     self.remove_acs_mux(accessory.mux_type)
+
+                # run post exclusion code
+                store.mas_sprites.acs_wear_mux_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
@@ -3332,8 +3403,24 @@ init -2 python:
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
 
+                # run pre entry
+                store.mas_sprites.acs_wear_entry_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run programming point for acs
                 accessory.entry(self)
+
+                # run post entry
+                store.mas_sprites.acs_wear_entry_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
 
         def wear_acs_pre(self, acs):

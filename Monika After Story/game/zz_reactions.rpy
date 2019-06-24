@@ -860,9 +860,9 @@ label mas_reaction_gift_hairclip(hairclip_name):
         # so need to make sure when we switch outfits, the prompt is still correct
         if not is_wearing_baked_outfit:
             if monika_chr.get_acs_of_type('left-hair-clip'):
-                $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+                $ store.mas_selspr.set_prompt("left-hair-clip", "change")
             else:
-                $ mas_getEV("monika_hairclip_select").prompt = "Can you wear a hairclip?"
+                $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
 
     $ mas_finishSpriteObjInfo(sprite_data, unlock_sel=not is_wearing_baked_outfit)
 

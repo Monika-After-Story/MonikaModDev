@@ -14,6 +14,70 @@ default persistent._mas_selspr_acs_db = {}
 default persistent._mas_selspr_hair_db = {}
 default persistent._mas_selspr_clothes_db = {}
 
+init -100 python in mas_selspr:
+    import store
+    import store.mas_utils as mas_utils
+
+    # prompt constants go here
+    PROMPT_MAP = {
+        "clothes": {
+            "_ev": "monika_clothes_select",
+            "change": "Can you change your clothes?",
+        },
+        "hair": {
+            "_ev": "monika_hair_select",
+            "change": "Can you change your hairstyle?",
+        },
+        "left-hair-clip": {
+            "_ev": "monika_hairclip_select",
+            "change": "Can you change your hairclip?",
+            "wear": "Can you wear a hairclip?",
+        },
+        "ribbon": {
+            "_ev": "monika_ribbon_select",
+            "change": "Can you change your ribbon?",
+            "wear": "Can you wear a ribbon?",
+        },
+    }
+
+    
+    def get_prompt(key, prompt_key="change"):
+        """
+        Gets prompt with the given key and prompt key
+
+        IN:
+            key - select key
+            prompt_key - key to get prompt
+
+        RETURNS: prompt. "" if invalid
+        """
+        if prompt_key == "_ev":
+            return ""
+
+        return PROMPT_MAP.get(key, {}).get(prompt_key, "")
+
+
+    def set_prompt(key, prompt_key="change"):
+        """
+        Sets prompt of ev with the given key with one associatd with given
+        prompt key.
+
+        IN:
+            key - select key
+            prompt_key - key to get propmt. if _ev, then no change
+        """
+        if prompt_key == "_ev":
+            return
+
+        prompt_data = PROMPT_MAP.get(key, {})
+
+        ev = store.mas_getEV(prompt_data.get("_ev", None))
+        prompt = prompt_data.get(prompt_key, None)
+
+        if ev is not None and prompt is not None:
+            ev.prompt = prompt
+
+
 init -20 python:
 
     class MASSelectableSprite(object):
@@ -354,8 +418,6 @@ init -20 python:
 
 
 init -10 python in mas_selspr:
-    import store
-    import store.mas_utils as mas_utils
 
     # mailbox constants
     MB_DISP = "disp_text"
@@ -2687,7 +2749,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_clothes_select",
             category=["appearance"],
-            prompt="Can you change your clothes?",
+            prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
             unlocked=False,
             rules={"no unlock": None},
@@ -2791,7 +2853,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_hair_select",
             category=["appearance"],
-            prompt="Can you change your hairstyle?",
+            prompt=store.mas_selspr.get_prompt("hair", "change"),
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
@@ -2835,7 +2897,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_ribbon_select",
             category=["appearance"],
-            prompt="Can you change your ribbon?",
+            prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
             unlocked=False,
             rules={"no unlock": None}
@@ -2866,16 +2928,14 @@ label monika_ribbon_select:
 
     # set appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("ribbon"):
-        $ ribbon_prompt = "Can you change your ribbon?"
+        $ ribbon_prompt_key = "change"
         $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
 
     else:
-        $ ribbon_prompt = "Can you wear a ribbon?"
+        $ ribbon_prompt_key = "wear"
         $ ribbon_dlg = "If you want me to wear a ribbon again, just ask, okay?"
 
-    $ ribbon_sel_ev = mas_getEV("monika_ribbon_select")
-    if ribbon_sel_ev is not None:
-        $ ribbon_sel_ev.prompt = ribbon_prompt
+    $ store.mas_selspr.set_prompt("ribbon", ribbon_prompt_key)
 
     m 1eka "[ribbon_dlg]"
 
@@ -2889,7 +2949,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="monika_hairclip_select",
             category=["appearance"],
-            prompt="Can you change your hairclip?",
+            prompt=store.mas_selspr.get_prompt("left-hair-clip", "change"),
             pool=True,
             unlocked=False,
             rules={"no unlock": None},
@@ -2915,10 +2975,10 @@ label monika_hairclip_select:
 
     # set the appropriate prompt and dialogue
     if monika_chr.get_acs_of_type('left-hair-clip'):
-        $ mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
+        $ store.mas_selspr.set_prompt("left-hair-clip", "change")
         m 1eka "If you want me to change my hairclip, just ask, okay?"
     else:
-        $ mas_getEV("monika_hairclip_select").prompt = "Can you wear a hairclip?"
+        $ store.mas_selspr.set_prompt("left-hair-clip", "wear")
         m 1eka "If you want me to wear a hairclip again, just ask, okay?"
 
     return
