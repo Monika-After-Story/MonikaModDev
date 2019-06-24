@@ -1684,6 +1684,8 @@ init -5 python in mas_sprites:
             isnight,
             acs_pre_list,
             acs_bbh_list,
+            acs_bba_list,
+            acs_bab_list,
             acs_bfh_list,
             acs_afh_list,
             acs_mid_list,
@@ -1712,7 +1714,11 @@ init -5 python in mas_sprites:
             acs_pre_list - sorted list of MASAccessories to draw prior to body
             acs_bbh_list - sroted list of MASAccessories to draw between back
                 hair and body
-            acs_bfh_list - sorted list of MASAccessories to draw between body
+            acs_bba_list - sorted list of MASAccessories to draw between 
+                body and back arms
+            acs_bab_list - sorted list of MASAccessories to draw between
+                back arms and boobs
+            acs_bfh_list - sorted list of MASAccessories to draw between boobs
                 and front hair
             acs_afh_list - sorted list of MASAccessories to draw between front
                 hair and face
@@ -1832,6 +1838,7 @@ init -5 python in mas_sprites:
             #sprite_str_list.extend(loc_build_tup)
 
             # 4. body
+            # TODO: change to body-0
             _ms_body_nh(
                 sprite_str_list,
                 loc_build_str,
@@ -1846,7 +1853,35 @@ init -5 python in mas_sprites:
             # 5. Table
             _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
-            # 6. pre-front hair acs
+            # 6. between body and back arms acs
+            _ms_accessory_list(
+                sprite_str_list,
+                loc_build_str,
+                acs_bba_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # 7. arms-0
+            # TODO
+
+            # 8. between back arms and boobs acs
+            _ms_accessory_list(
+                sprite_str_list,
+                loc_build_str,
+                acs_bab_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # 9. body-1
+            # TODO
+
+            # 10. pre-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1860,7 +1895,7 @@ init -5 python in mas_sprites:
             # position setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 7. front-hair
+            # 11. front-hair
             _ms_hair(
                 sprite_str_list,
                 loc_build_str,
@@ -1870,7 +1905,7 @@ init -5 python in mas_sprites:
                 lean
             )
 
-            # 8. post-front hair acs
+            # 12. post-front hair acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1884,7 +1919,7 @@ init -5 python in mas_sprites:
             # position setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 9. face
+            # 13. face
             _ms_face(
                 sprite_str_list,
                 loc_build_str,
@@ -1902,7 +1937,7 @@ init -5 python in mas_sprites:
             )
 
 
-            # 10. between body and arms acs
+            # 14. between body and arms acs
             _ms_accessorylist(
                 sprite_str_list,
                 loc_build_str,
@@ -1915,7 +1950,7 @@ init -5 python in mas_sprites:
 
             #sprite_str_list.extend(loc_build_tup)
 
-            # 11. arms
+            # 15. arms
             _ms_arms_nh(
                 sprite_str_list,
                 loc_build_str,
@@ -1927,6 +1962,7 @@ init -5 python in mas_sprites:
 
         else:
             # in thise case, 2,6 are skipped.
+            # TODO: big todo
 
             # 4. body
             _ms_body(
@@ -2027,7 +2063,7 @@ init -5 python in mas_sprites:
                 )
 
 
-        # 12. after arms acs
+        # 16. after arms acs
         _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
@@ -4406,6 +4442,8 @@ init -2 python:
         # gather accessories
         acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
         acs_bbh_list = character.acs.get(MASMonika.BBH_ACS, [])
+        acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
+        acs_bab_list = character.acs.get(MASMonika.BAB_ACS, [])
         acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
         acs_afh_list = character.acs.get(MASMonika.AFH_ACS, [])
         acs_mid_list = character.acs.get(MASMonika.MID_ACS, [])
@@ -4461,6 +4499,8 @@ init -2 python:
                 not morning_flag,
                 acs_pre_list,
                 acs_bbh_list,
+                acs_bba_list,
+                acs_bab_list,
                 acs_bfh_list,
                 acs_afh_list,
                 acs_mid_list,
