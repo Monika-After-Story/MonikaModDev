@@ -970,26 +970,21 @@ init -5 python in mas_sprites:
 #                        )
                     )
 
-                # also change name of the ribbon select prompt
-                ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
-                if ribbon_sel_ev is not None:
-                    if moni_chr.is_wearing_acs_type("ribbon"):
-                        ribbon_sel_ev.prompt = "Can you change your ribbon?"
-                    else:
-                        ribbon_sel_ev.prompt = "Can you wear a ribbon?"
-
             elif new_hair.hasprop("ribbon-off"):
                 # take ribbon off for this hairstyle
                 _acs_ribbon_save_and_remove(moni_chr)
-                
-                # also change name of the ribbon select prompt
-                ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
-                if ribbon_sel_ev is not None:
-                    ribbon_sel_ev.prompt = "Can you wear a ribbon?"
 
             if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
                 # unlock selector for ribbons if you have more than one
                 store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+
+            # also change name of the ribbon select prompt
+            ribbon_sel_ev = store.mas_getEV("monika_ribbon_select")
+            if ribbon_sel_ev is not None:
+                if moni_chr.is_wearing_acs_type("ribbon"):
+                    ribbon_sel_ev.prompt = "Can you change your ribbon?"
+                else:
+                    ribbon_sel_ev.prompt = "Can you wear a ribbon?"
 
         else:
             # new hair not enabled for ribbon

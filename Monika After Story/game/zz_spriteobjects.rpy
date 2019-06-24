@@ -570,7 +570,7 @@ init -1 python:
         "def",
         "hair",
         select_dlg=[
-            "Do you like my ribbon, [player]?"
+            "Do you like my ponytail, [player]?"
         ]
     )
     store.mas_selspr.unlock_hair(mas_hair_def)
