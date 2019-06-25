@@ -53,6 +53,19 @@ init -2 python in mas_sprites:
                 _moni_chr.wear_acs(acs_item)
 
 
+    def _acs_wear_if_in_tempstorage_s(_moni_chr, key):
+        """
+        Wears a single acs in tempstorage at the given key, if any.
+
+        IN:
+            _moni_chr - MASMonika object
+            key - key in tempstorage
+        """
+        acs_item = temp_storage.get(key, None)
+        if acs_item is not None:
+            _moni_chr.wear_acs(acs_item)
+
+
     def _acs_wear_if_wearing_acs(_moni_chr, acs, acs_to_wear):
         """
         Wears the given acs if wearing another acs.
@@ -274,7 +287,7 @@ init -2 python in mas_sprites:
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
  
         # wear ribbon if in tempstorage
-        _acs_wear_if_in_tempstorage(_moni_chr, "hair.ribbon")
+        _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
 
         # NOTE: disregard below
         # wear previous ribbon if we are wearing blank ribbon
@@ -376,7 +389,7 @@ init -2 python in mas_sprites:
 #            store.mase_unlockEVL("greeting_hairdown", "GRE")
 
         # wear previous ribbon if we have any in storage
-        _acs_wear_if_in_tempstorage(_moni_chr, "hair.ribbon")
+        _acs_wear_if_in_tempstorage_s(_moni_chr, "hair.ribbon")
 #        _acs_wear_if_wearing_type(
 #            _moni_chr,
 #            "ribbon",
