@@ -57,6 +57,18 @@ init -100 python in mas_selspr:
         return PROMPT_MAP.get(key, {}).get(prompt_key, "")
 
 
+    def in_prompt_map(key): 
+        """
+        Checks if a key is in the prompt select map
+
+        IN:
+            key - select key to check
+
+        RETURNS: True if in the map, FAlse if not
+        """
+        return key in PROMPT_MAP
+
+
     def set_prompt(key, prompt_key="change"):
         """
         Sets prompt of ev with the given key with one associatd with given
@@ -2928,14 +2940,14 @@ label monika_ribbon_select:
 
     # set appropriate prompt and dialogue
     if monika_chr.get_acs_of_type("ribbon"):
-        $ ribbon_prompt_key = "change"
+#        $ ribbon_prompt_key = "change"
         $ ribbon_dlg = "If you want me to change my ribbon, just ask, okay?"
 
     else:
-        $ ribbon_prompt_key = "wear"
+#        $ ribbon_prompt_key = "wear"
         $ ribbon_dlg = "If you want me to wear a ribbon again, just ask, okay?"
 
-    $ store.mas_selspr.set_prompt("ribbon", ribbon_prompt_key)
+#    $ store.mas_selspr.set_prompt("ribbon", ribbon_prompt_key)
 
     m 1eka "[ribbon_dlg]"
 

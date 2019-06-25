@@ -820,6 +820,33 @@ init -5 python in mas_sprites:
     # special mas monika functions
 
 
+    def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs before exit point runs for acs
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc - acs location to rm this acs from
+        """
+        pass
+
+
+    def acs_rm_exit_pst_change(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs after exit point runs runs for acs
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc -  acs location to rm this acs from
+        """
+        if store.mas_selspr.in_prompt_map(rm_acs.acs_type):
+            store.mas_selspr.set_prompt(rm_acs.acs_type, "wear")
+
+
     def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
         """
         Runs before mux type acs are removed
@@ -869,8 +896,8 @@ init -5 python in mas_sprites:
             new_acs - acs we are adding
             acs_loc - acs location to wear this acs
         """
-        if new_acs.acs_type == "ribbon":
-            store.mas_selspr.set_prompt("ribbon", "change")
+        if store.mas_selspr.in_prompt_map(new_acs.acs_type):
+            store.mas_selspr.set_prompt(new_acs.acs_type, "change")
 
 
     def clothes_exit_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
@@ -3121,10 +3148,30 @@ init -2 python:
                 return
 
             acs_list = self.__get_acs(acs_type)
+            temp_space = {
+                "acs_list": acs_list,
+            }
 
             if acs_list is not None and accessory in acs_list:
+
+                # run pre exit point code
+                store.mas_sprites.acs_rm_exit_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run programming point
                 accessory.exit(self)
+
+                # run post exit code
+                store.mas_sprites.acs_rm_exit_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
                 # cleanup blacklist
                 if accessory.name in self.lean_acs_blacklist:
