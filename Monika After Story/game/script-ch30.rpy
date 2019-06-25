@@ -740,6 +740,8 @@ init 1 python:
 #       (Default: None)
 label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None):
 
+    with None
+
     if scene_change:
         scene black
 
@@ -770,6 +772,9 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
 
             if not renpy.showing(force_exp):
                 renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+
+                if not dissolve_all:
+                    renpy.with_statement(None)
 
         # if we onyl want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
