@@ -15,7 +15,7 @@ image monika 5eka:
             choice:
                 7
         "monika 5dka_static"
-        0.05
+        0.06
         repeat
 
 image monika 5ekbfa:
@@ -29,7 +29,7 @@ image monika 5ekbfa:
             choice:
                 7
         "monika 5dkbfa_static"
-        0.05
+        0.06
         repeat
 
 image monika 5ekbla:
@@ -43,7 +43,7 @@ image monika 5ekbla:
             choice:
                 7
         "monika 5dkbla_static"
-        0.05
+        0.06
         repeat
 
 image monika 5ekbsa:
@@ -57,7 +57,7 @@ image monika 5ekbsa:
             choice:
                 7
         "monika 5dkbsa_static"
-        0.05
+        0.06
         repeat
 
 image monika 5esbfa:
@@ -71,7 +71,7 @@ image monika 5esbfa:
             choice:
                 7
         "monika 5dsbfa_static"
-        0.05
+        0.06
         repeat
 
 image monika 5esbfu:
@@ -85,7 +85,7 @@ image monika 5esbfu:
             choice:
                 7
         "monika 5dsbfu_static"
-        0.05
+        0.06
         repeat
 
 image monika 5esu:
@@ -511,7 +511,7 @@ image monika 5tsa:
             choice:
                 7
         "monika 5dsa_static"
-        0.05
+        0.06
         repeat
 
 image monika 5tsbfu:
@@ -609,7 +609,7 @@ image monika 5wub:
             choice:
                 7
         "monika 5dub_static"
-        0.05
+        0.06
         repeat
 
 image monika 5wubfw:

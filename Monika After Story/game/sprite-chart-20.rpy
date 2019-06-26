@@ -29,7 +29,7 @@ image monika 1cuu:
             choice:
                 7
         "monika 1duu_static"
-        0.05
+        0.06
         repeat
 
 image monika 1efb:
@@ -1693,7 +1693,7 @@ image monika 1tsa:
             choice:
                 7
         "monika 1dsa_static"
-        0.05
+        0.06
         repeat
 
 image monika 1tsb:
@@ -2589,7 +2589,7 @@ image monika 2euo:
             choice:
                 7
         "monika 2duo_static"
-        0.05
+        0.06
         repeat
 
 image monika 2lfb:
@@ -5291,7 +5291,7 @@ image monika 3tubfa:
             choice:
                 7
         "monika 3dubfa_static"
-        0.05
+        0.06
         repeat
 
 image monika 3tubfb:
@@ -5319,7 +5319,7 @@ image monika 3tubfu:
             choice:
                 7
         "monika 3dubfu_static"
-        0.05
+        0.06
         repeat
 
 image monika 3tuu:
