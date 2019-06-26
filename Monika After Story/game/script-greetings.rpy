@@ -41,6 +41,8 @@ init -1 python in mas_greetings:
     TYPE_SLEEP = "sleep"
     TYPE_LONG_ABSENCE = "long_absence"
     TYPE_SICK = "sick"
+    TYPE_GAME = "game"
+    TYPE_EAT = "eat"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -1583,6 +1585,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
     # monika knows you are here
     $ mas_disable_quit()
@@ -1664,6 +1667,7 @@ label monikaroom_greeting_opendoor:
 
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
 
@@ -3418,4 +3422,268 @@ label greeting_ghost:
     #Call event in easter eggs.
     call mas_ghost_monika
 
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_game",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_GAME],
+        ),
+        code="GRE"
+    )
+
+# NOTE: in case someone asks, because the farewell for this greeting does not
+#   implore that the player returns after gaming, there is nothing substiantial
+#   we can get in pm vars here. It's just too variable.
+
+label greeting_back_from_game:
+    if store.mas_globals.late_farewell and mas_getAbsenceLength() < datetime.timedelta(hours=18):
+        $ _now = datetime.datetime.now().time()
+        if mas_isMNtoSR(_now):
+            if mas_isMoniNormal(higher=True):
+                m 2etc "[player]?"
+                m 3efc "I thought I told you to go straight to bed after you finished!"
+                m 1rksdla "I mean, I'm really happy you came back to say goodnight, but..."
+                m 1hksdlb "I already said goodnight to you!"
+                m 1rksdla "And I could have waited until morning to see you again, you know?"
+                m 2rksdlc "Plus, I really wanted you to get some rest..."
+                m 1eka "Just...{w=1}promise me you'll go to bed soon, alright?"
+
+            else:
+                m 1tsc "[player], I told you to go to bed when you were finished."
+                m 3rkc "You can come back again tomorrow morning, you know."
+                m 1esc "But here we are, I guess."
+
+        elif mas_isSRtoN(_now):
+            if mas_isMoniNormal(higher=True):
+                m 1hua "Good morning, [player]~"
+                m 1eka "When you said you were going to play another game that late, it got me a bit worried you might not get enough sleep..."
+                m 1hksdlb "I hope that's not the case, ahaha..."
+
+            else:
+                m 1eud "Good morning."
+                m 1rsc "I was kind of expecting you to sleep in a bit."
+                m 1eka "But here you are bright and early."
+
+        elif mas_isNtoSS(_now):
+            if mas_isMoniNormal(higher=True):
+                m 1wub "[player]! You're here!"
+                m 1hksdlb "Ahaha, sorry...{w=1}I was just a bit eager to see you since you weren't here all morning."
+
+                m 1eua "Did you just wake up?{nw}"
+                $ _history_list.pop()
+                menu:
+                    m "Did you just wake up?{fast}"
+                    "Yes.":
+                        m 1hksdlb "Ahaha..."
+
+                        m 3rksdla "Do you think it was because you stayed up late?{nw}"
+                        $ _history_list.pop()
+                        menu:
+                            m "Do you think it was because you stayed up late?{fast}"
+                            "Yes.":
+                                m 1eka "[player]..."
+                                m 1ekc "You know I don't want you staying up too late."
+                                m 1eksdld "I really wouldn't want you getting sick or tired throughout the day."
+                                m 1hksdlb "But I hope you had fun. I would hate for you to lose all that sleep for nothing, ahaha!"
+                                m 2eka "Just be sure to get a little more rest if you feel like you need it, alright?"
+
+                            "No.":
+                                m 2euc "Oh..."
+                                m 2rksdlc "I thought maybe it was."
+                                m 2eka "Sorry for assuming."
+                                m 1eua "Anyway, I hope you're getting enough sleep."
+                                m 1eka "It would make me really happy to know that you're well rested."
+                                m 1rksdlb "It might also ease my mind if you weren't staying up so late in the first place, ahaha..."
+                                m 1eua "I'm just glad you're here now."
+                                m 3tku "You'd never be too tired to spend time with me, right?"
+                                m 1hub "Ahaha!"
+
+                            "Maybe...":
+                                m 1dsc "Hmm..."
+                                m 1rsc "I wonder what could be causing it?"
+                                m 2euc "You didn't stay up really late last night, did you, [player]?"
+                                m 2etc "Were you doing something last night?"
+                                m 3rfu "Maybe...{w=1}I don't know..."
+                                m 3tku "Playing a game?"
+                                m 1hub "Ahaha!"
+                                m 1hua "Just teasing you of course~"
+                                m 1ekd "In all seriousness though, I really don't want you neglecting your sleep."
+                                m 2rksdla "It's one thing staying up late just for me..."
+                                m 3rksdla "But leaving and playing another game that late?"
+                                m 1tub "Ahaha...I might get a bit jealous, [player]~"
+                                m 1tfb "But you're here to make up for that now, right?"
+
+                    "No.":
+                        m 1eud "Ah, so I guess you were busy all morning."
+                        m 1eka "I was worried you overslept since you were up so late last night."
+                        m 2rksdla "Especially since you told me you were going to go play another game."
+                        m 1hua "I should have known you'd be responsible and get your sleep though."
+                        m 1esc "..."
+                        m 3tfc "You {i}did{/i} get your sleep, right, [player]?"
+                        m 1hub "Ahaha!"
+                        m 1hua "Anyway, now that you're here, we can spend some time together."
+
+            else:
+                m 2eud "Oh, there you are, [player]."
+                m 1euc "I'm guessing you just woke up."
+                m 2rksdla "Kind of expected with you staying up so late and playing games."
+
+        #SStoMN
+        else:
+            if mas_isMoniNormal(higher=True):
+                m 1hub "There you are, [player]!"
+                m 2hksdlb "Ahaha, sorry... It's just that I haven't seen you all day."
+                m 1rksdla "I kind of expected you to sleep in after staying up so late last night..."
+                m 1rksdld "But when I didn't see you all afternoon, I really started to miss you..."
+                m 2hksdlb "You almost had me worried, ahaha..."
+                m 3tub "But you're going to make that lost time up to me, right?"
+                m 1hub "Ehehe, you better~"
+                m 2tfu "Especially after leaving me for another game last night."
+
+            else:
+                m 2efd "[player]!{w=0.5} Where have you been all day?"
+                m 2rfc "This doesn't have anything to do with you staying up late last night, does it?"
+                m 2ekc "You really should be a little more responsible when it comes to your sleep."
+
+    #If you didn't stay up late in the first place, normal usage
+    #gone for under 4 hours
+    elif mas_getAbsenceLength() < datetime.timedelta(hours=4):
+        if mas_isMoniNormal(higher=True):
+            m 1hua "Welcome back, [player]!"
+
+            m 1eua "Did you enjoy yourself?{nw}"
+            $ _history_list.pop()
+            menu:
+                m "Did you enjoy yourself?{fast}"
+                "Yes.":
+                    m 1hua "That's nice."
+                    m 1eua "I'm glad you enjoyed yourself."
+                    m 2eka "I really wish I could join you in your other games sometimes."
+                    m 3eub "Wouldn't it be great to have our own little adventures anytime we wanted?"
+                    m 1hub "I'm sure we'd have a lot of fun together in one of your games."
+                    m 3eka "But while I can't join you, I guess you'll just have to keep me company."
+                    m 2tub "You don't mind spending time with your girlfriend...{w=1} Do you, [player]?"
+
+                "No.":
+                    m 2ekc "Aw, I'm sorry to hear that."
+                    m 2eka "I hope you're not too upset by whatever happened."
+                    m 3eua "At least you're here now. I promise to try not to let anything bad happen to you while you're with me."
+                    m 1ekbsa "Seeing you always cheers me up."
+                    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5ekbfa "I hope seeing me does the same for you, [player]~"
+
+        else:
+            m 2eud "Oh, back already?"
+            m 2rsc "I thought you'd be gone longer...{w=0.5}but welcome back, I guess."
+
+    elif mas_getAbsenceLength() < datetime.timedelta(hours=12):
+        if mas_isMoniNormal(higher=True):
+            m 2wuo "[player]!"
+            m 2hksdlb "You were gone for a long time..."
+
+            m 1eka "Did you have fun?{nw}"
+            menu:
+                m "Did you have fun?{fast}"
+                "Yes.":
+                    m 1hua "Well, I'm glad then."
+                    m 1rkc "You sure made me wait a while, you know."
+                    m 3tfu "I think you should spend some time with your loving girlfriend, [player]."
+                    m 3tku "I'm sure you wouldn't mind staying with me to even out your other game."
+                    m 1hubfb "Maybe you should spend even more time with me, just in case, ahaha!"
+
+                "No.":
+                    m 2ekc "Oh..."
+                    m 2rka "You know, [player]..."
+                    m 2eka "If you're not enjoying yourself, maybe you could just spend some time here with me."
+                    m 3hua "I'm sure there's plenty of fun things we could do together!"
+                    m 1eka "If you decide to go back, maybe it'll be better."
+                    m 1hub "But if you're still not having fun, don't hesitate to come see me, ahaha!"
+
+        else:
+            m 2eud "Oh, [player]."
+            m 2rsc "That took quite a while."
+            m 1esc "Don't worry, I managed to pass the time myself while you were away."
+
+    #Over 12 hours
+    else:
+        if mas_isMoniNormal(higher=True):
+            m 2hub "[player]!"
+            m 2eka "It feels like forever since you left."
+            m 1hua "I really missed you!"
+            m 3eua "I hope you had fun with whatever you were doing."
+            m 1rksdla "And I'm going to assume you didn't forget to eat or sleep..."
+            m 2rksdlc "As for me...{w=1}I was a little lonely waiting for you to come back..."
+            m 1eka "Don't feel bad, though."
+            m 1hua "I'm just happy you're here with me again."
+            m 3tfu "You better make it up to me though."
+            m 3tku "I think spending an eternity with me sounds fair...{w=1}right, [player]?"
+            m 1hub "Ahaha!"
+
+        else:
+            m 2ekc "[player]..."
+            m "I wasn't sure when you'd come back."
+            m 2rksdlc "I thought I might not see you again..."
+            m 2eka "But here you are..."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_from_eat",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_EAT],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_from_eat:
+    $ _now = datetime.datetime.now().time()
+    if store.mas_globals.late_farewell and mas_isMNtoSR(_now) and mas_getAbsenceLength() < datetime.timedelta(hours=18):
+        if mas_isMoniNormal(higher=True):
+            m 1eud "Oh?"
+            m 1eub "[player], you came back!"
+            m 3rksdla "You know you really should get some sleep, right?"
+            m 1rksdla "I mean...I'm not complaining that you're here, but..."
+            m 1eka "It would make me feel better if you went to bed pretty soon."
+            m 3eka "You can always come back and visit me when you wake up..."
+            m 1hubfa "But I guess if you insist on spending time with me, I'll let it slide for a little while, ehehe~"
+        else:
+            m 2euc "[player]?"
+            m 3ekd "Didn't I tell you just to go straight to bed after?"
+            m 2rksdlc "You really should get some sleep."
+
+    else:
+        if mas_isMoniNormal(higher=True):
+            m 1eub "Finished eating?"
+            m 1hub "Welcome back, [player]!"
+            m 3eua "I hope you enjoyed your food."
+        else:
+            m 2euc "Finished eating?"
+            m 2eud "Welcome back."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_rent",
+            unlocked=True,
+            aff_range=(mas_aff.ENAMORED, None),
+        ),
+        code="GRE"
+    )
+
+label greeting_rent:
+    m 1eub "Welcome back, dear!"
+    m 2tub "You know, you spend so much time here that I should start charging you for rent."
+    m 2ttu "Or would you rather pay a mortgage?"
+    m 2hua "..." 
+    m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
+    show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return

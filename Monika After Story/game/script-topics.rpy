@@ -12986,6 +12986,37 @@ label monika_enjoyingspring:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_unknown",category=['psychology'],prompt="Fear of the unknown",random=True))
+
+label monika_unknown:
+    m 2esc "Hey, [player]..."
+    m 2eud "Did you know that a lot of people are afraid of the dark?"
+    m 3eud "Even though it's often dismissed as a childish fear, it's not that uncommon for adults to suffer from it as well."
+    m 4eub "Fear of the dark, called 'nyctophobia', is usually caused by the mind's exaggerated guess of what may be hiding in the shadows, rather than darkness itself."
+    m 4eua "We're scared because we don't know what's there...{w=1}even if it's usually nothing."
+    m 3eka "...And I'm not just talking about monsters under the bed, or menacing silhouettes...{w=1} Try moving in a dark room."
+    m 3eud "You'll find that you're instinctively being more careful of where you step so you don't hurt yourself."
+    m 3esd "It makes sense;{w=0.5} humans have learned to be wary of the unknown in order to survive."
+    m 3esc "You know, like being cautious around strangers, or thinking twice before jumping into unfamiliar situations."
+    m 3dsd "'{i}Better the devil you know than the devil you don't.{/i}'"
+    m 3rksdlc "But even if that frame of thinking has helped people survive for hundreds of thousands of years, I think it can also do a lot of harm nowadays."
+    m 1rksdld "Like how some people are unsatisfied with their jobs but are too afraid to quit..."
+    m 1eksdlc "Most of them can't afford to lose their source of income, so quitting isn't an option."
+    m 3rksdlc "Plus, having to go through interviews again, finding a job that pays enough, changing your routine..."
+    m 3rksdld "It just seems like it's easier being miserable because it's more comfortable,{w=0.5} even if they'd be much happier in the long run."
+    if mas_isMoniDis(lower=True):
+        m 2dkc "...I guess it's also true that couples might stay in unhappy relationships out of fear of being alone."
+        m 2rksdlc "I mean, I kind of understand where they're coming from, but still..."
+        m 2rksdld "Things can always get better.{w=1} Right?"
+        m 1eksdlc "A-anyway..."
+    m 3ekc "Maybe if they saw the options available to them, they'd be more willing to embrace change."
+    m 1dkc "...Not that making that kind of decision is easy, or even safe."
+    if mas_isMoniNormal(higher=True):
+        m 1eka "Just know that if you ever decide to make that sort of change, I'll support you every step of the way."
+        m 1hubfa "I love you, [player]. I'll always be rooting for you~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
