@@ -13186,7 +13186,7 @@ label monika_songwriting:
     m 4eub "You know, I used to write songs all the time in my sophmore years. I used to be pretty good!"
     m 3eksdla "But, I guess it's been a while, huh?"
     m 3eub "Anyway..."
-    m 1esb "You know, I think it'd pretty cool if you ever dedicated a song to someone."
+    m 1esb "You know, I think it'd be pretty cool if you ever dedicated a song to someone."
     m 1hub "Especially if that person is me, ehehe!"
     m 4eub "We could even turn it into a duet!"
     m 1eub "I can't wait to be able to sing with you when I come to your world!"
