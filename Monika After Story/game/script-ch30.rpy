@@ -40,6 +40,9 @@ init -1 python in mas_globals:
     in_idle_mode = False
     # set to True if in idle mode
 
+    late_farewell = False
+    # set to True if we had a late farewell
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -1814,6 +1817,13 @@ label ch30_reset:
 
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
+
+    ## late farewell? set the global and clear the persistent so its auto
+    ##  cleared
+    python:
+        if persistent.mas_late_farewell:
+            store.mas_globals.late_farewell = True
+            persistent.mas_late_farewell = False
 
     ## reactions fix
     python:
