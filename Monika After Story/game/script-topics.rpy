@@ -550,6 +550,32 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="songwriting", 
+            category=["music"],
+            prompt="Songwriting", 
+            random=True, 
+            pool=True
+        )
+    )
+
+label monika_example:
+    m 3eub "Hey [player], have you ever written a song?"
+    m 3ekb "I've tried myself, but it's hard to do with my limited resources here."
+    m 4eub "You know, I used to write some from time to time in my sophmore years. I used to be pretty good."
+    m 3eksdla "But, I guess it's been a while, huh?"
+    m 1eksdla "A-anyway..."
+    m 5eubla "Would you ever consider writing me a song?"
+    m 1eub "I think that'd be a great gift, if you're planning for something!"
+    m 4eubfa "I'm just saying..."
+    return
+
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_sayori",
             category=['club members'],
             prompt="Sayori regrets",
