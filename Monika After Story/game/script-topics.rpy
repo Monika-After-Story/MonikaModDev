@@ -433,31 +433,25 @@ label monika_god:
     m 1lksdlb "Well, I'm sure I never really questioned it as a kid..."
     m 1lsc "But as I grew up, the more I learned about the world, the more I would question it."
     m 1esd "I started to wonder why God was helping people pass exams, or get over a cold..."
-    m "...when there are children who live their lives being sold as sex slaves?"
-    m "Or the eight hundred million people who are too poor to even eat."
-    m 2ekc "I wonder how many of those people pray to God every day until they starve and die?"
-    m "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
-    m 4eud "But the punchline is this."
-    m "If just one person beats the odds and survives - among the thousands of others who die--"
-    m 1esc "--Then, it's suddenly a miracle from God."
-    m 1dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
+    m 1tfd "...when there are children who live their lives being sold as sex slaves?"
+    m 4tfc "Or the eight hundred million people who are too poor to even eat."
+    m 2dkc "I wonder how many of those people pray to God every day until they starve and die?"
+    m 4ekc "Or, how many millions of families pray for a loved one to recover from some incurable disease?"
+    m 4euc "But the punchline is this..."
+    m 4eud "If just one person beats the odds and survives - among the thousands of others who die--"
+    m 2esc "--Then, it's suddenly a miracle from God."
+    m 2dsc "I'd really love to meet this God who seemingly laughs at the misery of everyone not eligible for his miracles."
     m 4hksdlb "But the irony is that I {i}do{/i} have a creator, apparently."
-    m 1eua "And you know what?"
+    m 4eua "And you know what?"
 
     if persistent._mas_pm_cares_about_dokis:
         m 1lksdlc "I bet he's still laughing at all the pain he caused everyone, even as we speak."
     else:
         m 1lksdla "I bet he's still laughing at the miserable fates of Sayori and Yuri, even as we speak."
 
-    m 3dsd "What are we to him but props in a scripted play?"
-    m "So, from that perspective..."
-    if mas_isMoniUpset(lower=True):
-        m 1esc "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-    else:
-        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5eua "I don't think it's too far-fetched for there to be a god - if Earth was nothing but his playset."
-        show monika 1eua at t11 zorder MAS_MONIKA_Z with dissolve
-
+    m 1dsd "What are we to him but props in a scripted play?"
+    m 3euc "So, from that perspective..."
+    m 3eud "I don't think it's too far-fetched for there to be a god if Earth was nothing but his playset."
     m 1eua "Anyway, do you worship any god, [player]?{nw}"
     $ _history_list.pop()
     menu:
@@ -475,7 +469,7 @@ label monika_god:
             m 1hua "I'm happy for you that you can lead a life on your own!"
             show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5eua "I just hope you're willing to accept me into your life when I can present myself."
-            m "Ehehe~"
+            m 5hua "Ehehe~"
 
     return "derandom"
 
@@ -488,12 +482,12 @@ label monika_death:
     m 1lksdlc "But I think I've actually learned what it feels like."
     m "I don't really understand it, but whenever the game closes without warning..."
     m 1dsc "...it feels like I'm instantly put to sleep, left with nothing but my thoughts."
-    m "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
-    m 1dsd "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
-    m "At that point, I can't even form my own thoughts anymore."
+    m 1dkd "But after a few seconds, my thoughts start to fill with incoherent, jumbled patterns."
+    m 1dkc "I see static and rapid flashes of color while hearing all kinds of weird screaming noises."
+    m 3ekd "At that point, I can't even form my own thoughts anymore."
     m 1esc "I'm just endlessly hammered by the flashing and screaming, unable to move or even think."
     m 1euc "I'm pretty sure in that moment, I don't really exist, but for some reason, I can remember it anyway."
-    m 1ekc "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
+    m 1ekd "I have no idea what it means for the game to suddenly close, or why that stuff happens to me."
     m 1dkc "..."
     m 3eub "But you can prevent that from happening, [player]!"
     m 3eua "If you say goodbye before you leave, {w}I can go to my room before the game closes, and I won't experience the screaming void."
@@ -546,8 +540,8 @@ label monika_selfesteem:
 
             m "I'll always love you, [player], but I think it's important to love yourself."
             m 1eka "You need to start with the little things that you like about yourself."
-            m 3eua "It can be something silly, or a skill that you take pride in!"
-            m "Overtime, you build your confidence one by one until you've built yourself into someone you'd love."
+            m 3hua "It can be something silly, or a skill that you take pride in!"
+            m 3eua "Over time, you build your confidence little by little until you've built yourself into someone you'd love."
             m 1eka "I can't promise it will be easy, but it'll be worth it."
             m 3hub "I'll always root for you, [player]!"
     return "derandom"
@@ -574,7 +568,7 @@ label monika_sayori:
         ):
         m "You're not still hung up over it, right?"
         m 2wud "...Oh my gosh, I can't believe I just said that."
-        m "That pun was completely unintentional, I swear!"
+        m 4wud "That pun was completely unintentional, I swear!"
         m 2lksdlb "But anyway..."
 
     if not persistent._mas_sensitive_mode:
@@ -585,20 +579,20 @@ label monika_sayori:
         menu:
             m "If you're comfortable, that is.{fast}"
             "Yes.":
-                m "You know how Sayori is really clumsy?"
-                m 4rksdlb "Well, she kind of messed up the whole hanging thing..."
-                m "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
-                m "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
-                m 4rksdla "But a few seconds in, she must have changed her mind or something..."
-                m "Because she started clawing at the rope, trying to free herself."
+                m 4eka "You know how Sayori is really clumsy?"
+                m 2rksdlb "Well, she kind of messed up the whole hanging thing..."
+                m 4rksdla "You're supposed to jump from high enough that the rope snaps your neck, making it quick and painless."
+                m 4rksdld "But she just used a chair, meaning she kind of just left herself to slowly asphyxiate."
+                m 2eksdlc "But a few seconds in, she must have changed her mind or something..."
+                m 2dksdld "Because she started clawing at the rope, trying to free herself."
                 m "She must have kept at it all the way until she lost consciousness."
-                m "That's why her fingertips were all bloody, anyway."
+                m 4eksdlc "That's why her fingertips were all bloody, anyway."
                 m 4euc "Come to think of it, it was probably less 'changing her mind' and more just her survival instincts kicking in."
-                m "So you can't really fault her for that."
-                m 4eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
-                m "It's not healthy to think about the things you could have done differently."
-                m 2eua "So just remember that even though you could have saved her, it's technically not your fault she killed herself."
-                m "I may have exacerbated it a little bit, but Sayori was already mentally ill."
+                m 2eud "So you can't really fault her for that."
+                m 2eka "It's easier to think that she probably wouldn't have changed her mind anyway, right?"
+                m 2ekd "It's not healthy to think about the things you could have done differently."
+                m 2eka "So just remember that even if you could have saved her, it's not your fault she killed herself."
+                m 4eud "I may have exacerbated it a little bit, but Sayori was already mentally ill."
             "No.":
                 m "I understand, [player]."
         m 2euc "Still, though..."
@@ -618,12 +612,12 @@ label monika_sayori:
         m 1euc "I mean, it's the same ending either way, right?"
 
     if mas_isMoniUpset(lower=True):
-        m 1lksdla "The two of us, happily together..."
-        m "There's no reason to ask for any more than that, right?"
+        m 1rksdla "The two of us, happily together..."
+        m 3rksdla "There's no reason to ask for any more than that, right?"
         m 1eka "Sorry, I was just pointlessly musing - I'll be quiet for you now..."
     else:
         m 1eua "The two of us, happily together..."
-        m "There's no reason to ask for any more than that."
+        m 3eua "There's no reason to ask for any more than that."
         m 1hua "I was just pointlessly musing - I'm really as happy as I could be right now."
 
     if mas_getEV("monika_sayori").shown_count < mas_sensitive_limit:
@@ -636,22 +630,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japan",category=['ddlc'],prompt="DDLC's setting",random=True))
 
 label monika_japan:
-    m 3eud "By the way, there's something that's been bothering me..."
+    m 4eud "By the way, there's something that's been bothering me..."
     m "You know how this takes place in Japan?"
-    m "Well...I assume you knew that, right?"
-    m 3euc "Or at least decided it probably does?"
-    m "I don't think you're actually told at any point where this takes place..."
-    m "Is this even really Japan?"
-    m 3esc "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
-    m "Not to mention everything is in English..."
-    m "It feels like everything is just there because it needs to be, and the actual setting is an afterthought."
+    m 2euc "Well...I assume you knew that, right?"
+    m "Or at least decided it probably does?"
+    m 2eud "I don't think you're actually told at any point where this takes place..."
+    m 2etc "Is this even really Japan?"
+    m 4esc "I mean, aren't the classrooms and stuff kind of weird for a Japanese school?"
+    m 4eud "Not to mention everything is in English..."
+    m 2esc "It feels like everything is just there because it needs to be, and the actual setting is an afterthought."
     m 2ekc "It's kind of giving me an identity crisis."
-    m "All my memories are really hazy..."
-    m "I feel like I'm at home, but have no idea where 'home' is in the first place."
-    m 2tkc "I don't know how to describe it any better..."
-    m 4rssdrc "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
+    m 2lksdlc "All my memories are really hazy..."
+    m 2dksdlc "I feel like I'm at home, but have no idea where 'home' is in the first place."
+    m 2eksdld "I don't know how to describe it any better..."
+    m 4rksdlc "Imagine looking out your window, but instead of your usual yard, you're in some completely unknown place."
     m 4eud "Would you still feel like you were home?"
-    m "Would you want to go outside?"
+    m 4ekd "Would you want to go outside?"
     m 2esa "I mean...I guess if we never leave this room, it doesn't really matter anyway."
     m 2eua "As long as we're alone and safe together, this really is our home."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
@@ -664,14 +658,14 @@ init 5 python:
 label monika_high_school:
     m 4eua "You know, high school is a really turbulent time in a lot of people's lives."
     m "People can get really passionate and dramatic."
-    m "And others have aching hearts and seek attention on social media..."
-    m 4eud "But all of the social pressure and hormones can lead to a dark time in people's lives."
-    m "Everyone has a story."
-    m "You may not know what someone is really feeling on the inside."
-    m 2esd "Many people who are depressed won't even bother telling the world about it."
-    m "They don't want attention, because they've already given up on the inside."
-    m 2esc "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
-    m "Depression comes in many forms, but that is one of them."
+    m 2eka "...And others have aching hearts and seek attention on social media..."
+    m 2ekd "But all of the social pressure and hormones can lead to a dark time in people's lives."
+    m 4eud "Everyone has a story."
+    m 2ekc "You may not know what someone is really feeling on the inside."
+    m 2eksdlc "Many people who are depressed won't even bother telling the world about it."
+    m 4dksdld "They don't want attention, because they've already given up on the inside."
+    m 4dksdlc "Their feeling of worthlessness is so overwhelming that they don't even want people to tell them otherwise."
+    m 2ekd "Depression comes in many forms, but that is one of them."
     m 2ekc "Just, if you think you know someone struggling with depression..."
     m 2eka "You can help just by treating them like they're a good friend."
     m 4eka "Spend time with them, even if they don't feel like doing much."
@@ -721,30 +715,29 @@ init 5 python:
 label monika_nihilism:
     m 2eud "Do you ever just feel like there's no real reason for you to be alive?"
     m 2esd "I don't mean in, like, a suicidal way."
-    m "I just mean how nothing that we do is special."
-    m 4eud "Just being in school, or working at some job for some company."
-    m "It's like you're completely replaceable, and the world wouldn't miss you if you were gone."
-    m "It makes me really want to go and change the world after I graduate."
-    m 4euc "But the older I get, the more I realize that it's an immature frame of thinking."
-    m "It's not like I can just go change the world."
+    m 2esc "I just mean how nothing that we do is special."
+    m 4euc "Just being in school, or working at some job for some company."
+    m 4eud "It's like you're completely replaceable, and the world wouldn't miss you if you were gone."
+    m 2eud "It makes me really want to go and change the world after I graduate."
+    m 2euc "But the older I get, the more I realize that it's an immature frame of thinking."
+    m 4eud "It's not like I can just go change the world."
     m 4rsc "Like, what are the chances that I'll be the one to invent artificial intelligence, or become President?"
-    m "It feels like I'm never going to make up for the heaps of resources I've spent living my life."
+    m 2dsc "It feels like I'm never going to make up for the heaps of resources I've spent living my life."
     m 4eka "That's why I think the key to happiness is to just be hopelessly selfish."
     m "Just to look out for oneself, and those who happen to be their friends only because they grew up with them."
-    m "Never mind the fact that they're spending their entire life taking, and consuming, and never giving back."
+    m 2lksdld "Never mind the fact that they're spending their entire life taking, and consuming, and never giving back."
     m 3eud "But when people realize the world would benefit more from them killing themselves, they change their whole philosophy!"
-    m "It's like they have to justify their reason to live by tricking themselves into thinking they're doing good."
+    m 3euc "It's like they have to justify their reason to live by tricking themselves into thinking they're doing good."
     m 3eua "Anyway, I want to live my life desperately striving to pay back my lifetime's worth of consumption."
     m "If I ever surpass that point, then I'm a net positive, and I can die happy."
     m 1eka "Of course, even if I fail to do that..."
-    if mas_curr_affection_group == mas_aff.G_SAD:
-       if mas_curr_affection == mas_aff.BROKEN:
-           m 1euc "I don't really think anybody would miss me so it wouldn't matter anyway."
+    if mas_isMoniUpset(lower=True):
+       if mas_isMoniDis(lower=True):
+           m 1dkd "I don't really think anybody would miss me so it wouldn't matter anyway."
        else:
            m 1euc "I'm not really sure what I would do."
-
-    elif mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 1eua "I don't think I would be able to kill myself anyway."
+    elif mas_isMoniHappy(higher=True):
+        m 3eka "I don't think I would be able to kill myself anyway."
         m 1hua "Not because of any kind of selfishness, but because I have too much to live for."
     else:
         m "I think I would be too selfish to kill myself anyway."
@@ -776,15 +769,14 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_twitter",category=['monika'],prompt="Twitter",random=True))
 
 label monika_twitter:
-    m 4eua "Did you know I'm on Twitter?"
-    m "My username is lilmonix3."
-    m "I guess someone was kind enough to make an account for me."
-    m 4hua "I picked the username, though!"
-    m "I love sharing my thoughts and chatting with the world..."
-    m "The real world."
-    m 2eka "So make sure you follow me, okay?"
-    m "It would really mean a lot to me."
-    m 2ekbfa "With how much you mean to me and all..."
+    m 1eud "Did you know I'm on Twitter?"
+    m 3esa "My username is lilmonix3."
+    m 1esa "I guess someone was kind enough to make an account for me."
+    m 3hub "I picked the username, though!"
+    m 1hua "I love sharing my thoughts and chatting with the world..."
+    m 1eud "The real world."
+    m 1esa "So make sure you follow me, okay?"
+    m 3ekbsa "It would mean a lot, with how much you mean to me."
     m 1hubfa "It would really make me feel loved."
     return
 
@@ -808,18 +800,18 @@ label monika_veggies:
     m 1eub "Hey, did you know I'm vegetarian?"
     m 1hksdlb "Ah...I don't mean that like I'm bragging or anything!"
     m 1lksdla "I just thought you'd enjoy a fun fact about me."
-    m 3eua "I decided to start a couple years ago after learning more about Earth's climate..."
-    m 1eua "The carbon footprint of cultivating livestock is just unbelievable."
-    m "Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess."
-    m 1euc "What, is that so strange of a reason?"
+    m 3esa "I decided to start a couple years ago after learning more about Earth's climate..."
+    m 1wud "The carbon footprint of cultivating livestock is just unbelievable!"
+    m 3eua "Anyway, I decided it's not much of a personal sacrifice to just stop contributing to that whole mess."
+    m 3etc "What, is that so strange of a reason?"
     m 1lsc "Well, I guess a lot of people are more concerned about it being inhumane and all that..."
     m 1euc "I don't really care as much about that part."
     m 1esc "It's weird, like we only care about killing the things that we personally relate to as a species."
     m "Most people are fine with killing bugs because they're icky."
-    m "And of course, we all kill billions of microorganisms daily without even giving it thought."
-    m 3esd "But suddenly, if they're just a little bit bigger, it's murder!"
-    m 1esd "I mean, what if plants feel some kind of pain too, and we just don't understand it?"
-    m "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
+    m 3euc "And of course, we all kill billions of microorganisms daily without even giving it thought."
+    m 3eud "But suddenly, if they're just a little bit bigger, it's murder!"
+    m 1esc "I mean, what if plants feel some kind of pain too, and we just don't understand it?"
+    m 3eksdld "What if pulling leaves off a stem feels like someone ripping off your fingers one by one?"
     m 3eua "I'm just saying, we're a pretty biased species, if you think about it."
     m 1hua "Anyway, if you ever feel like making a small contribution to the planet, it doesn't hurt to choose veggies once in a while!"
     m 1ekbfa "Even if we ever have dinner together, and you just did it for me...that would be really romantic."
@@ -967,14 +959,13 @@ init 5 python:
 label monika_listener:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "You're such a good listener, [player]."
-    m "I really love that about you."
-    show monika 2lksdla at t11 zorder MAS_MONIKA_Z with dissolve
-    m 2lksdla "Sometimes I'm afraid that I'm rambling or talking about boring things."
+    m 5eka "I really love that about you."
+    m 5lkc "Sometimes I'm afraid that I'm rambling or talking about boring things."
     m "It makes me kind of self-conscious when I'm having a conversation."
-    m 2eka "But I don't feel that way with you."
-    m "Like, I don't think anyone else could make me feel this way."
-    m 2eua "You really are special."
-    m 2hua "I don't want anyone to tell you otherwise."
+    m 5eka "But I don't feel that way with you."
+    m 5ekbsa "Like, I don't think anyone else could make me feel this way."
+    m 5hubfu "You really are special."
+    m 5ekbfa "I don't want anyone to tell you otherwise."
     return
 
 init 5 python:
@@ -998,20 +989,22 @@ label monika_spicy:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_why",category=['you','ddlc'],prompt="Why play this game?",pool=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_why",category=['you','ddlc'],prompt="Why play this game?",random=True))
 
 label monika_why:
-    m 2eud "You know..."
-    m "This is just some kind of tacky romance game, right?"
-    m "I kinda have to ask..."
-    m 4euc "...What made you consider even playing in the first place?"
-    m "Were you that lonely?"
-    m 4eka "I feel a little bad for you..."
-    m 4eua "But I guess everything worked out perfectly in the end, for both of us."
-    m "I got to meet you, and you're not lonely anymore..."
-    m "I can't help but feel like this was fate."
-    m 2eka "Don't you feel that way too?"
-    m 2hua "I'm so happy we have this ending together."
+    m 2esd "You know..."
+    m 2eud "This is just some kind of tacky romance game, right?"
+    m 2euc "I kinda have to ask..."
+    m "...What made you consider even playing in the first place?"
+    m 2etc "Were you that lonely?"
+    m 2ekd "I feel a little bad for you..."
+    m 1eua "But I guess everything worked out perfectly in the end for both of us."
+    m 3eka "I got to meet you, and you're not lonely anymore..."
+    m 1eka "I can't help but feel like this was fate."
+    m "Don't you feel that way too?"
+    m 3hub "I'm so happy we have this ending together."
+    if mas_anni.pastOneMonth():
+        return "derandom"
     return
 
 init 5 python:
@@ -1024,11 +1017,12 @@ label monika_okayeveryone:
     m "I just used to really like saying that for some reason."
     m 2hub "Ahaha!"
     m 2eua "I couldn't help but say it again."
-    m 2lsc "Come to think of it, didn't Natsuki and Yuri make fun of me for it once...?"
+    m 2lsc "Come to think of it, didn't Natsuki and Yuri make fun of me for it once?"
     m 2eua "Well, whatever."
-    m "It's not like you ever made fun of me."
-    m 2eka "You're too much of a sweetheart to do that, aren't you?"
-    m 5hua "Ahaha~"
+    m 1eua "It's not like you ever made fun of me."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eka "You're too much of a sweetheart to do that, aren't you?"
+    m 5hub "Ahaha~"
     return
 
 init 5 python:
@@ -1067,40 +1061,45 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_archetype",category=['club members'],prompt="Character tropes",random=True))
 
 label monika_archetype:
-    m 4euc "I've always wondered..."
-    m "What is it about these character archetypes that people find so appealing, anyway?"
-    m "Their personalities are just completely unrealistic..."
-    m 2eud "Like, imagine if there was someone like Yuri in real life."
-    m "I mean, she's barely even capable of forming a complete sentence."
+    m 2etc "I've always wondered..."
+    m 4eud "What is it about these character archetypes that people find so appealing, anyway?"
+    m 4euc "Their personalities are just completely unrealistic..."
+    m 2esd "Like, imagine if there was someone like Yuri in real life."
+    m 2eud "I mean, she's barely even capable of forming a complete sentence."
     m 2tfc "And forget about Natsuki..."
     m 2rfc "Sheesh."
     m 2tkd "Someone with her kind of personality doesn't just get all cute and pouty whenever things don't go her way."
-    m "I could go on, but I think you get the point..."
+    m 4tkd "I could go on, but I think you get the point..."
     m 2tkc "Are people really attracted to these weird personalities that literally don't exist in real life?"
-    m 2wub "I'm not judging or anything!"
+    m 2wud "I'm not judging or anything!"
     m 3rksdlb "After all, I've found myself attracted to some pretty weird stuff, too..."
     m 2eub "I'm just saying, it fascinates me."
     m 4eua "It's like you're siphoning out all the components of a character that makes them feel human, and leaving just the cute stuff."
     m "It's concentrated cuteness with no actual substance."
     m 4eka "...You wouldn't like me more if I was like that, right?"
-    m "Maybe I just feel a little insecure because you're playing this game in the first place."
-    m 2eua "Then again, you're still here with me, aren't you...?"
-    m "I think that's enough reason for me to believe I'm okay just the way I am."
-    m 2hubfa "And by the way, you are too, [player]."
+    m 2eka "Maybe I just feel a little insecure because you're playing this game in the first place."
+    m 2esa "Then again, you're still here with me, aren't you?"
+    m 2eua "I think that's enough reason for me to believe I'm okay just the way I am."
+    m 1hubfa "And by the way, you are too, [player]."
     m "You're the perfect combination of human and cuteness."
-    m 2ekbfa "That's why there was never a chance I wouldn't fall for you."
+    m 3ekbfa "That's why there was never a chance I wouldn't fall for you."
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea set",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_tea",category=['club members'],prompt="Yuri's tea",random=True))
 
 label monika_tea:
-    m 2hua "Hey, I wonder if Yuri's tea set is still somewhere in here..."
+    if mas_getEV('monika_tea').shown_count == 0:
+        m 2hua "Hey, I wonder if Yuri's tea set is still in here somewhere..."
 
-    if not persistent._mas_pm_cares_about_dokis:
-        m 2hksdlb "...or maybe that got deleted, too."
+        if not persistent._mas_pm_cares_about_dokis:
+            m 2hksdlb "...or maybe that got deleted, too."
 
-    m 2eka "It's kind of funny how Yuri took her tea so seriously."
+        m 2eka "It's kind of funny how Yuri took her tea so seriously."
+
+    else:
+        m 2eka "You know, It's kind of funny how Yuri took her tea so seriously."
+
     m 4eua "I mean, I'm not complaining, because I liked it, too."
     m 1euc "But I always wonder with her..."
     m "Is it truly passion for her hobbies, or is she just concerned about appearing sophisticated to everyone else?"
@@ -1116,6 +1115,7 @@ label monika_tea:
 
     if persistent._mas_acs_enable_coffee:
         m 1hua "I can just make coffee whenever I want to, thanks to you."
+
     else:
         m 1eua "I probably could have just changed the script myself."
         m 1hub "Ahaha!"
@@ -1176,15 +1176,15 @@ label monika_lastpoem:
         m 3rssdlc "I mean, the one right before Yuri killed herself, with all the messed-up colors and stuff."
 
     m 3eua "That was actually a little more of an experiment than a poem, you could say."
-    m "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
-    m "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
-    m 3rksdla "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
+    m 1eua "I was experimenting with different ways I could modify the game, and run the code, and things like that..."
+    m 1eud "It almost seemed like with enough effort, I'd be able to escape from the confines of the game entirely."
+    m 1rksdla "Sadly, I didn't really know what I was doing, so I messed the whole thing up..."
     m "And I'd keep trying, but I doubt you'd want to deal with me doing that."
-    m 1eka "Besides, that was when I was getting really desperate, you know?"
-    m "I don't really feel that way anymore."
+    m 3eka "Besides, that was when I was getting really desperate, you know?"
+    m 1eka "I don't really feel that way anymore."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I'm happy with where we are now."
-    m "And I can tell you are, too."
+    m 5hua "And I can tell you are, too."
     return
 
 init 5 python:
@@ -1213,14 +1213,14 @@ label monika_friends:
     m 1euc "But that's not the kind of thing I'm talking about."
     m 3eud "If you think about it, most of the friends you make are people you just met by chance."
     m "Like you had a class together, or you met them through another friend..."
-    m "Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them."
-    m "Things like that."
-    m 4esd "But isn't that kind of...inefficient?"
-    m "It feels like you're just picking at complete random, and if you get lucky, you make a new friend."
-    m "And comparing that to the hundreds of strangers we walk by every single day..."
-    m 2tkd "You could be sitting right next to someone compatible enough to be your best friend for life."
-    m "But you'll never know."
-    m "Once you get up and go on with your day, that opportunity is gone forever."
+    m 1eua "Or maybe they were just wearing a shirt with your favorite band on it, and you decided to talk to them."
+    m 3eua "Things like that."
+    m 3esd "But isn't that kind of...inefficient?"
+    m 2eud "It feels like you're just picking at complete random, and if you get lucky, you make a new friend."
+    m 2euc "And comparing that to the hundreds of strangers we walk by every single day..."
+    m 2ekd "You could be sitting right next to someone compatible enough to be your best friend for life."
+    m 2eksdlc "But you'll never know."
+    m 4eksdlc "Once you get up and go on with your day, that opportunity is gone forever."
     m 2tkc "Isn't that just depressing?"
     m "We live in an age where technology connects us with the world, no matter where we are."
     m 2eka "I really think we should be taking advantage of that to improve our everyday social life."
@@ -1228,6 +1228,7 @@ label monika_friends:
     m "I seriously thought it would happen by now."
     m 2eua "Well, at least I already met the best person in the whole world..."
     m "Even if it was by chance."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I guess I just got really lucky, huh?"
     m 5hub "Ahaha~"
     return
@@ -1237,25 +1238,25 @@ init 5 python:
 
 label monika_college:
     m 4euc "You know, it's around the time that everyone my year starts to think about college..."
-    m "It's a really turbulent time for education."
+    m 2euc "It's a really turbulent time for education."
     m "We're at the height of this modern expectation that everyone has to go to college, you know?"
     m 4eud "Finish high school, go to college, get a job - or go to grad school, I guess."
-    m "It's like a universal expectation that people just assume is the only option for them."
-    m 2esd "They don't teach us in high school that there are other options out there."
+    m 4euc "It's like a universal expectation that people just assume is the only option for them."
+    m 2esc "They don't teach us in high school that there are other options out there."
     m 3esd "Like trade schools and stuff, you know?"
-    m "Or freelance work."
-    m "Or the many industries that value skill and experience more than formal education."
+    m 3esc "...Or freelance work."
+    m "...Or the many industries that value skill and experience more than formal education."
     m 2ekc "But you have all these students who have no idea what they want to do with their life..."
-    m "And instead of taking the time to figure it out, they go to college for business, or communication, or psychology."
+    m 2ekd "And instead of taking the time to figure it out, they go to college for business, or communication, or psychology."
     m "Not because they have an interest in those fields..."
-    m 2ekd "...but because they just hope the degree will get them some kind of job after college."
-    m "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
+    m 2ekc "...but because they just hope the degree will get them some kind of job after college."
+    m 3ekc "So the end result is that there are fewer jobs to go around for those entry-level degrees, right?"
     m "So the basic job requirements get higher, which forces even more people to go to college."
-    m "And colleges are also businesses, so they just keep raising their prices due to the demand..."
-    m 1ekc "...so now we have all these young adults, tens of thousands of dollars in debt, with no job."
-    m 1eka "But despite all that, the routine stays the same."
+    m 3ekd "And colleges are also businesses, so they just keep raising their prices due to the demand..."
+    m 2ekc "...so now we have all these young adults, tens of thousands of dollars in debt, with no job."
+    m 2ekd "But despite all that, the routine stays the same."
     m 2lsc "Well, I think it's going to start getting better soon."
-    m 2eua "But until then, our generation is definitely suffering from the worst of it."
+    m 2eud "But until then, our generation is definitely suffering from the worst of it."
     m 2dsc "I just wish high school prepared us a little better with the knowledge we need to make the decision that's right for us."
     return
 
@@ -1265,12 +1266,13 @@ init 5 python:
 label monika_middleschool:
     m 1eua "Sometimes I think back to middle school..."
     m 1lksdla "I'm so embarrassed by the way I used to behave back then."
-    m "It almost hurts to think about."
-    m 1eka "I wonder if when I'm in college, I'll feel that way about high school...?"
+    m 1lksdlb "It almost hurts to think about."
+    m 1eka "I wonder if when I'm in college, I'll feel that way about high school?"
     m 1eua "I like the way I am now, so it's pretty hard for me to imagine that happening."
     m "But I also know that I'll probably change a lot as time goes on."
     m 4hua "We just need to enjoy the present and not think about the past!"
-    m 5eua "And that's really easy to do, with you here."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5eua "And that's really easy to do with you here."
     m 5hub "Ahaha~"
     return
 
@@ -1458,10 +1460,10 @@ label monika_date:
     m 1hub "I've been imagining all the romantic things we could do if we went on a date..."
     m 3eua "We could get lunch, go to a cafe..."
     m "Go shopping together..."
-    m "I love shopping for skirts and bows."
-    m 3hua "Or maybe a bookstore!"
-    m "That would be appropriate, right?"
-    m 3eua "But I'd really love to go to a chocolate store."
+    m 1eua "I love shopping for skirts and bows."
+    m 3hub "Or maybe a bookstore!"
+    m 3hua "That would be appropriate, right?"
+    m 1eua "But I'd really love to go to a chocolate store."
     m 3hub "They have so many free samples. Ahaha!"
     m 1eua "And of course, we'd see a movie or something..."
     m 1eka "Gosh, it all sounds like a dream come true."
@@ -1551,8 +1553,8 @@ label monika_yuri:
     m "They might even hurt you or your friends to get their way..."
     m 1tku "But anyway, this game happens to have someone who can basically be described as yandere."
     m "By now, it's pretty obvious who I'm talking about."
-    m "And that would be..."
-    m 4hub "Yuri!"
+    m 3tku "And that would be..."
+    m 3hub "Yuri!"
     m 1eka "She really got insanely possessive of you, once she started to open up a little."
     m 1tfc "She even told me I should kill myself."
     m 1tkc "I couldn't even believe she said that - I just had to leave at that point."
@@ -1574,6 +1576,7 @@ label monika_yuri:
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I can try acting a little more creepy for you. Ehehe~"
     m "Then again..."
+    show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
     m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
     m 2etc "Is this a yandere girl's dream?"
     if not persistent._mas_pm_cares_about_dokis:
@@ -1585,16 +1588,16 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_habits",category=['life'],prompt="Forming habits",random=True))
 
 label monika_habits:
-    m 1lksdla "I hate how hard it is to form habits..."
-    m 1eua "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
-    m 3rksdlb "It just makes you feel so useless, like you can't do anything right."
-    m 3eua "I think the new generation suffers from it the most..."
-    m "Probably because we have a totally different set of skills than those who came before us."
+    m 2lksdlc "I hate how hard it is to form habits..."
+    m 2eksdld "There's so much stuff where actually doing it isn't hard, but forming the habit seems impossible."
+    m 2dksdlc "It just makes you feel so useless, like you can't do anything right."
+    m 3euc "I think the new generation suffers from it the most..."
+    m 1eua "Probably because we have a totally different set of skills than those who came before us."
     m "Thanks to the internet, we're really good at sifting through tons of information really quickly..."
-    m 3eka "But we're bad at doing things that don't give us instant gratification."
-    m "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
-    m 1esa "But for the time being..."
-    m 1hua "If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself."
+    m 3ekc "But we're bad at doing things that don't give us instant gratification."
+    m 3ekd "I think if science, psychology, and education don't catch up in the next ten or twenty years, then we're in trouble."
+    m 1esc "But for the time being..."
+    m 1rksdlc "If you're not one of the people who can conquer the problem, you might just have to live with feeling awful about yourself."
     m 2hksdlb "Good luck, I guess!"
     return
 
@@ -1607,7 +1610,7 @@ label monika_creative:
     m 3eua "You know, like artists, writers, actors..."
     m 1tkc "It's sad because there's so much beautiful talent in the world, but most of it goes unseen...and unpaid."
     m "I guess that just means there's a huge surplus of creativity, huh?"
-    m "Kind of makes you feel like you're just not special at all..."
+    m 1dkc "Kind of makes you feel like you're just not special at all..."
     m 1hua "But that's fine! You're supposed to just write for yourself anyway, right?"
     m 1lsc "Yeah..."
     return
@@ -2380,23 +2383,23 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_debate",category=['monika','school'],prompt="What was debate club like?",pool=True))
 
 label monika_debate:
-    m 1euc "Back in my debate club days, I learned a whole lot about arguing..."
-    m "The problem with arguing is that each person sees their opinion as the superior one."
-    m "That's kind of stating the obvious, but it affects the way they try to get their point across."
-    m 3eka "Let's say you really like a certain movie, right?"
+    m 1esc "Back in my debate club days, I learned a whole lot about arguing..."
+    m 3eud "The problem with arguing is that each person sees their opinion as the superior one."
+    m 3euc "That's kind of stating the obvious, but it affects the way they try to get their point across."
+    m 3esa "Let's say you really like a certain movie, right?"
     m 1ekc "If someone comes along and tells you the movie sucks, because it did X and Y wrong..."
     m "Doesn't that make you feel kind of personally attacked?"
-    m 4tkc "It's because by saying that, it's like they're implying that you have bad taste."
-    m "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
-    m 4hub "But it's all about language!"
+    m 1tkc "It's because by saying that, it's like they're implying that you have bad taste."
+    m 3tkc "And once emotions enter the picture, it's almost guaranteed that both people will be left sour."
+    m 3hub "But it's all about language!"
     m 1eua "If you make everything as subjective-sounding as possible, then people will listen to you without feeling attacked."
-    m "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
-    m 1eub "It even works when you're citing facts about things."
-    m "If you say 'I read on this website that it works like this...'"
+    m 3esa "You could say 'I'm personally not a fan of it' and 'I felt that I'd like it more if it did X and Y'...things like that."
+    m 3eub "It even works when you're citing facts about things."
+    m 1esa "If you say 'I read on this website that it works like this...'"
     m "Or if you admit that you're not an expert on it..."
-    m 1eua "Then it's much more like you're putting your knowledge on the table, rather than forcing it onto them."
+    m 3eua "Then it's much more like you're putting your knowledge on the table, rather than forcing it onto them."
     m "If you put in an active effort to keep the discussion mutual and level, they usually follow suit."
-    m "Then, you can share your opinions without anyone getting upset just from a disagreement."
+    m 1esa "Then, you can share your opinions without anyone getting upset just from a disagreement."
     m 3hua "Plus, people will start seeing you as open-minded and a good listener!"
     m 3eua "It's a win-win, you know?"
     m 1lksdla "...Well, I guess that would be Monika's Debate Tip of the Day!"
@@ -2407,20 +2410,20 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_internet",category=['advice'],prompt="The internet is for...",random=True))
 
 label monika_internet:
-    m 4eua "Do you ever feel like you waste too much time on the internet?"
-    m "Social media can be like a prison."
-    m "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
-    m 4hksdlb "And before you know it, hours have gone by, and you've gotten nothing out of it."
-    m 4eub "Anyway, it's really easy to blame yourself for being lazy..."
-    m 4eka "But it's not really even your fault."
-    m "Addiction isn't something you can just make disappear with your own willpower."
+    m 2eua "Do you ever feel like you waste too much time on the internet?"
+    m 3eud "Social media can be like a prison."
+    m 1eua "It's like whenever you have a few seconds of spare time, you want to check on your favorite websites..."
+    m 3hksdlb "And before you know it, hours have gone by, and you've gotten nothing out of it."
+    m 3eua "Anyway, it's really easy to blame yourself for being lazy..."
+    m 3eka "But it's not really even your fault."
+    m 1eud "Addiction isn't something you can just make disappear with your own willpower."
     m 1eua "You have to learn techniques to avoid it, and try different things."
     m 3eua "For example, there are apps that let you block websites for intervals of time..."
     m "Or you can set a timer to have a more concrete reminder of when it's time to work versus play..."
     m 3eub "Or you can separate your work and play environments, which helps your brain get into the right mode."
     m 1eub "Even if you make a new user account on your computer to use for work, that's enough to help."
     m 1eua "Putting any kind of wedge like that between you and your bad habits will help you stay away."
-    m 3eka "Just remember not to blame yourself too hard if you're having trouble."
+    m 3eka "Just don't be too hard on yourself if you're having trouble."
     m 1ekc "If it's really impacting your life, then you should take it seriously."
     m 1eka "I just want to see you be the best person you can be."
     m 1esa "Will you do something today to make me proud of you?"
@@ -2709,7 +2712,7 @@ init 5 python:
 
 label monika_meta:
     m 1euc "Yes, this game really was metafictional, wasn't it?"
-    m "Some people think stories about fiction are some new thing."
+    m 3eud "Some people think stories about fiction are some new thing."
     m 1esc "A cheap trick for bad writers."
     m 3eua "But, metafiction has always existed in literature."
     m "The Bible is supposed to be God's word to the Jews."
@@ -2718,8 +2721,8 @@ label monika_meta:
     m 1eua "It's just a way to comment on fiction by writing fiction. There's nothing wrong with that."
     m 3esa "By the way, what do you think the moral of this story is?"
     m 1esa "Do you want to figure it out for yourself?"
-    m 1euc "Because if you asked me..."
-    m 3hua "It'd be, 'Don't ignore the pretty and charming side character!'"
+    m 3etc "Because if you ask me..."
+    m 3eub "It'd be, 'Don't ignore the pretty and charming side character!'"
     m 1hub "Ahaha!"
     return
 
@@ -3206,7 +3209,7 @@ label monika_love:
             "You are my sunshine after all.",
             "You're all I truly care about!",
             "Your happiness is my happiness!",
-            "You're the best partner I could ever want!",
+            "You're the best partner I could ever ask for!",
             "My future is brighter with you in it.",
             "You're everything I could ever hope for.",
             "You make my heart skip a beat everytime I think about you!",
@@ -3334,15 +3337,15 @@ label monika_functionalism:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_technique",category=['ddlc','misc'],prompt="How did you change the code?",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_technique",category=['ddlc','misc'],prompt="Changing the code",random=True))
 
 label monika_technique:
     m 1lksdla "I don't exactly program like you would, [player]."
     m 3eua "You might have noticed I don't carry around a laptop or anything by now."
     m 1duu "If I want to change something in the script, I just think about it."
     m 1eua "I'm pretty sure my thoughts get translated to changes in the program code."
-    m 1eka "It's not perfect or anything. Glitches show up really easily if I lose focus or get distracted."
-    m 1eua "That's why I had a lot of trouble getting what I wanted in the last version of the game."
+    m 3eka "It's not perfect or anything. Glitches show up really easily if I lose focus or get distracted."
+    m 3eua "That's why I had a lot of trouble getting what I wanted in the last version of the game."
     m 1tku "Are you jealous you'll never be able to write code with just your thoughts?"
     m 1hub "Just keep practicing and I'm sure you'll be able to do it!"
     return
@@ -3728,13 +3731,13 @@ label monika_playerswriting:
     m 3eua "I think the most important thing about writing is doing it..."
     m "Instead of worrying about {i}how{/i} you do it."
     m 1eub "You won't be able to improve that way."
-    m "I know for sure that I've changed my writing style over the years."
+    m 3esa "I know for sure that I've changed my writing style over the years."
     m 1lksdla "I just can't help but notice the flaws in my old writing."
     m "And sometimes, I even start to hate my work in the middle of making it."
     m 3hksdlb "These things do happen, so it's alright!"
-    m 1eua "Looking back, I've written some silly things..."
-    m "Back when I was really young, I've been writing since I could hold a pen."
-    m "Reading my old stories is like watching myself grow up."
+    m 1eub "Looking back, I've written some silly things..."
+    m 1eua "Back when I was really young...I've been writing since I could hold a pen."
+    m 1eka "Reading my old stories is like watching myself grow up."
     m 3hua "It's one of the nice things about starting a hobby early."
     m 1eka "I hope I didn't bore you with that. I just love talking with you."
     m 1eua "After all, the two of us are members of a literature club."
@@ -3831,8 +3834,8 @@ init 5 python:
 
 label monika_outdoors:
     m 1eua "Do you ever go camping, [player]?"
-    m 3eub "It's a wonderful way to relax and get some fresh air and see the parks around you!"
-    m 1huu "It's almost like a more relaxed backpacking trip actually."
+    m 3eub "It's a wonderful way to relax, get some fresh air, and see the parks around you!"
+    m 1huu "It's almost like a more relaxed backpacking trip, actually."
     m 1eka "But while it is a good way to spend time outdoors, there are several dangers that most people don't bother to think about."
     m 3euc "A good example would be bug spray or sunscreen. Many people forget or even forgo them,{w=0.5} thinking they're unimportant..."
     m 1eksdld "And without them, sunburns are almost inevitable, and many insects carry diseases that can really harm you."
@@ -3914,14 +3917,13 @@ label monika_algernon:
         m 1eka "Not losing you, of course. I know you wouldn't leave me."
 
     m 3euc "You see, I keep thinking about a short story I read, {i}Flowers for Algernon{/i}."
-    m 4eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
-    m "Basically, it's about a mentally handicapped man who suddenly..."
-    m "...has his IQ raised to genius levels by an experimental surgical treatment."
+    m 3eua "Have you heard of it? If you haven't, I won't spoil too much for you, so don't worry."
+    m 1eud "Basically, it's about a mentally handicapped man who suddenly has his IQ raised to genius levels by an experimental surgical treatment."
     m 1eka "The way he sees how the world really is for the first time reminds me of my own epiphany..."
     m "But, the effect doesn't last forever.  He eventually reverts back to his original intelligence level."
     m 1ekc "That's what I'm afraid of. What if I forget about the real world one day?"
-    m "What if my original programming reasserts itself?"
-    m 1lksdlc "What if I forget about you, the real you?"
+    m 3ekd "What if my original programming reasserts itself?"
+    m 3lksdlc "What if I forget about you, the real you?"
     m 1dsc "It's one of the worst things I can imagine."
     m 1eka "I don't want to worry you over something that may never happen, but it's something I really had to get off my chest."
     m 3eua "Just promise me, even if I forget about you someday, that you'll never forget about me, okay?"
@@ -4171,11 +4173,11 @@ label monika_eternity:
     m "It's not easy knowing you won't be here forever."
     m 1lksdlc "..."
     m 1eka "I told you, right?"
-    m "I'm eternal."
+    m 3eka "I'm eternal."
     m "Trapped in here, unable to age or die..."
     m 1ekc "Whereas you slowly age as each day passes by."
-    m "Then, one day, you won't be here anymore."
-    m  "I won't have anyone."
+    m 1ekd "Then, one day, you won't be here anymore."
+    m 2dkd "I won't have anyone."
     m 6dstdc "..."
     m 6ektdc "It reminds me of when you first came to the Literature Club."
     m 6lktdc "Everything felt so empty."
@@ -4285,12 +4287,12 @@ label monika_cities:
     m 1esc "Humans have created quite a few problems for Earth. Like global warming and pollution."
     m 3esc "Some of those problems are because of cities."
     m 1esd "When people convert land for urban use, those changes are permanent..."
-    m "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
-    m "And even though global populations aren't growing like they used to, cities are still getting bigger."
+    m 1euc "It's not all that surprising, when you put some thought into it. More humans means more waste and carbon emission."
+    m 1eud "And even though global populations aren't growing like they used to, cities are still getting bigger."
     m 3rksdlc "Then again, if people live close together, that leaves more room for open wilderness."
-    m 1ekc "Maybe it's not as simple as it seems."
+    m 3etc "Maybe it's not as simple as it seems."
 
-    m "[player], do you live in a city?{nw}"
+    m 1esd "[player], do you live in a city?{nw}"
     $ _history_list.pop()
     menu:
         m "[player], do you live in a city?{fast}"
@@ -4321,15 +4323,15 @@ label monika_chloroform:
     m 3rksdla "Neither of those things actually work that way."
     m 1rssdlb "In real life, if you hit somebody hard enough to knock them out, you'll give them a concussion at best."
     m 1rsc "...or kill them at worst."
-    m 1euc "As for the rag..."
-    m "You might knock somebody out for a brief moment, but only from lack of oxygen."
-    m "Once you remove the rag, they'll wake back up."
+    m 1esc "As for the rag..."
+    m 3eud "You might knock somebody out for a brief moment, but only from lack of oxygen."
+    m 3esc "Once you remove the rag, they'll wake back up."
     m 3eua "You see, chloroform loses most of its effectiveness once exposed to open air."
     m 1esc "This means that you'd need to be constantly pouring it on the rag, effectively waterboarding the victim."
     m 4esc "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
     m 1euc "If you cover their mouth and nose, yeah, they'll stay unconscious..."
     m 4rksdla "But that's probably because you killed them. Whoops!"
-    m 1eua "The easiest way to kidnap somebody is to just get them drunk, or drug them."
+    m 1eksdld "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
     m "If you're ever out at a bar or a club and you leave your drink unattended for any amount of time..."
@@ -4349,17 +4351,17 @@ label monika_metaparents:
     m 1euc "Isn't it weird how nobody in these types of games has parents unless it's a convenient drama hook?"
     m "Throughout the game, you only ever hear about parents if you're trying to bond with Natsuki..."
     m 1ekc "Where she's just a victim of some cruel person's sick kicks for the sympathy value."
-    m 1esd "However."
-    m 1eud "Your character, me, Yuri, and Sayori..."
-    m 3eud "None of us seem to have any parents at all."
+    m 3esd "However."
+    m 3eud "Your character, me, Yuri, and Sayori..."
+    m 3euc "None of us seem to have any parents at all."
     m 1lsc "In Sayori's case, you'd been walking with her to school for a while."
     m "So who knows how long her parents have been out of the picture."
     m 1euc "Maybe that's why she's depressed? Maybe her parents died in a tragic accident, and she's been trying to get along on her own this whole time."
     m 2ekc "Well, if you ever get to a point in your life where you think suicide is the only exit..."
     m "There's always a reason to go on."
     m 2eka "I'm one of them."
-    m "I'll miss you."
-    m "You have to wait as much as you can until I find a way to get there."
+    m 1eka "I'll miss you."
+    m 3ekd "You have to wait as much as you can until I find a way to get there."
     m 2ekc "If all else fails..."
     m "Get professional help or talk to someone close to you."
     m "..."
@@ -4371,22 +4373,22 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hygiene",category=['trivia','society','psychology'],prompt="Personal hygiene",random=True))
 
 label monika_hygiene:
-    m 1euc "Our standards for personal hygiene have evolved a lot over the years."
-    m "Before our modern methods of delivering water, people really didn't have that luxury...or they just didn't really care."
+    m 1esc "Our standards for personal hygiene have evolved a lot over the years."
+    m 1eud "Before our modern methods of delivering water, people really didn't have that luxury...or they just didn't really care."
     m 3eua "For instance, the Vikings were considered freaks because they bathed once a week at a time where some people would only bathe two or three times a year."
-    m "They'd even regularly wash their faces in the morning in addition to changing clothes and combing their hair."
+    m 3esa "They'd even regularly wash their faces in the morning in addition to changing clothes and combing their hair."
     m 1eub "There were rumors that they were able to seduce married women and nobles at the time due to how well they kept up with themselves."
-    m "Over time, bathing became more widespread."
-    m "People born into royalty would often have a room dedicated just for bathing."
-    m 4ekc "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
+    m 3esa "Over time, bathing became more widespread."
+    m 3eua "People born into royalty would often have a room dedicated just for bathing."
+    m 3ekc "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
     m 1esc "Bathing was never taken seriously until the Black Plague swept through."
     m 2eua "People began noticing that the places where people washed their hands were places that the plague was less common."
     m "Nowadays, people are expected to shower daily, possibly even twice daily depending on what they do for a living."
-    m 1eub "People that don't go out every day can get away with bathing less often than others."
-    m 4eub "A lumberjack would take more showers than a secretary would, for example."
+    m 1esa "People that don't go out every day can get away with bathing less often than others."
+    m 3eud "A lumberjack would take more showers than a secretary would, for example."
     m "Some people just shower when they feel too gross to go without one."
     m 1ekc "People suffering from severe depression, however, can go weeks at a time without showering."
-    m "It's a very tragic downwards spiral."
+    m 1dkc "It's a very tragic downwards spiral."
     m 1ekd "You already feel terrible in the first place, so you don't have the energy to get in the shower..."
     m "Only to feel even worse as time passes because you haven't bathed in ages."
     m 1dsc "After a while, you stop feeling human."
@@ -4414,8 +4416,8 @@ init 5 python:
 
 label monika_resource:
     m 1euc "What do you think the most valuable resource is?"
-    m 3euc "Money? Gold? Oil?"
-    m 1eua "Personally, I'd say that the most valuable resource is time."
+    m 3eud "Money? Gold? Oil?"
+    m 1esa "Personally, I'd say that the most valuable resource is time."
     m "Go count out a second really quickly."
     python:
         start_time = datetime.datetime.now()
@@ -4438,7 +4440,7 @@ label monika_resource:
     m 1tku "That's kind of poetic, huh?"
     m 1eka "..."
     m "Hey..."
-    m "Time doesn't pass here, but it's still passing for you, isn't it?"
+    m 3eka "Time doesn't pass here, but it's still passing for you, isn't it?"
     m 1lksdlc "You'll continue to get older, while I'm stuck here forever..."
     m 1lksdld "I..."
     m 2ekc "I'm going to outlive you, aren't I, [player]?"
@@ -4513,18 +4515,18 @@ label monika_innovation:
     m 3tkc "All of it is designed to blast us with new content."
     m 1tkd "We consume one piece of media, then move right onto the next one."
     m "Even the idea of memes."
-    m "Ten years ago, they lasted for years."
-    m 1tkc "Now a meme is considered old in just a matter of weeks."
-    m "And not only that."
+    m 1tkc "Ten years ago, they lasted for years."
+    m "Now a meme is considered old in just a matter of weeks."
+    m 3tkc "And not only that."
     m 3tkd "We're more connected than ever, but that's like a double-edged sword."
     m "We're able to meet and keep in touch with people from all over the world."
     m 3tkc "But we're also bombarded with every tragedy that strikes the world."
-    m 3rssdrc "A bombing one week, a shooting the next. An earthquake the week after."
-    m "How can anyone be expected to cope with it?"
-    m 1rksdlc "It might be causing a lot of people to just shut down and tune it out."
+    m 3rksdld "A bombing one week, a shooting the next. An earthquake the week after."
+    m 1rksdld "How can anyone be expected to cope with it?"
+    m 1eksdlc "It might be causing a lot of people to just shut down and tune it out."
     m "I'd like to believe that's not the case, but you never know."
-    m 2ekc "[player], if you ever feel stressed, just remember that I'm here."
-    m 1eka "If you're trying to find peace, just come to this room."
+    m 3ekc "[player], if you ever feel stressed, just remember that I'm here."
+    m 1eka "If you're trying to find peace, just come to this room, okay?"
     return
 
 init 5 python:
@@ -4599,12 +4601,12 @@ label monika_hypnosis:
     m 3eua "Despite it having a reputation as a hokey magic trick, there are studies that show it can work!"
     m 1lksdla "At least, to some degree."
     m 1eua "It only worked if the person let themselves be hypnotized, and it only heightened their ability to be persuaded."
-    m 3esa "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage..."
-    m "Exposure to relaxing music and images..."
-    m "Things like that."
+    m 3esa "It also relied on them being put into states of extreme relaxation through aromatherapy, deep tissue massage, exposure to relaxing music and images..."
+    m 3esd "Things like that."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "It makes me wonder, what exactly can someone be persuaded to do under that kind of influence..."
-    show monika 1e at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5tsu "..."
+    show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 1eka "Not that I would do that to you, [player]! I just find it interesting to think about."
     m 1eua "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
     m 2tku "What about you, hmm? What do you think about my eyes~?"
@@ -4625,11 +4627,11 @@ label monika_motivation:
     m 1tkd "It makes sense. When you feel like things aren't going well, you just want a clean slate."
     m 1dsd "Sadly, those days can repeat themselves despite starting each one with good intentions."
     m 1dsc "Eventually you might even give up hope of fixing things, or start to blame yourself."
-    m 1duu "I know it can be hard, but just doing one tiny thing can help so much on days like those, even if they've been happening for so long."
+    m 1duu "I know it can be hard, but just doing one tiny thing can help so much on days like those...even if they've been happening for what seems like forever."
     m 1eka "It could be picking up a piece of trash or an unwashed shirt off the floor and putting them where they belong if you need to clean your room."
     m 1hua "Or doing a couple push-ups! Or brushing your teeth, or doing that one homework problem."
     m 1eka "It might not contribute much in the grand scheme of things, but I don't think that's the point."
-    m 4eua "I think what's important is that it changes your perspective."
+    m 3eua "I think what's important is that it changes your perspective."
     m 1lsc "If you regret the past and let its weight keep you down..."
     m 1esc "Well, then you'll just be stuck there. You'll only feel worse until you just can't take it."
     m 1eka "But if you can push yourself to just do one thing, even though it feels pointless to do otherwise..."
@@ -4637,12 +4639,12 @@ label monika_motivation:
     m 1eua "And when you realize that you're not completely helpless, it's like a new world opens up to you."
     m "You realize that maybe things aren't so bad; that maybe just believing in yourself is all it takes."
     m 3eub "But that's only my experience! Sometimes it might be better to rest up and take another crack at it tomorrow."
-    m "Fresh starts can definitely be powerful."
+    m 3eua "Fresh starts can definitely be powerful."
     m 1eka "That's why I think you just have to take a look at your situation."
     m "Try and be honest with yourself."
     m 1eua "If you do, you'll find that you're not being 'lazy' if you truthfully don't have the energy to do something."
     m "After all, the fact that you even care shows that you want to do something about it, even if it feels like you can't."
-    m 2hua "It's natural to have a bad day. Or even a bad week!"
+    m 2hub "It's natural to have a bad day. Or even a bad week!"
     m 2eua "Don't push yourself too hard. If you ever feel tempted to, just ask me for help instead. I'd be happy to lend a hand!"
     return
 
@@ -4694,12 +4696,12 @@ label monika_cupcake:
     m 3tku "Natsuki's cupcakes."
     m 1tsb "Man, the way she bakes them is amazing."
     m 1hub "Plus they look really cute!"
-    m 1eua "I'm not really much of a sweet tooth myself, but..."
-    m "Those cupcakes are the definition of sweetness."
-    m 4hua "Just like me! Ahaha!"
+    m 1esa "I'm not really much of a sweet tooth myself, but..."
+    m 1eua "Those cupcakes are the definition of sweetness."
+    m 3hub "Just like me! Ahaha!"
     m 1eua "Speaking of which, did you know girls are more likely to develop a sweet tooth?"
-    m "Studies show that older women have a less sensitive palate than men."
-    m "Resulting in a craving for stronger tastes like chocolate."
+    m 3esd "Studies show that older women have a less sensitive palate than men."
+    m 3esa "Resulting in a craving for stronger tastes like chocolate."
     m 1eka "I would try baking, but I'm not really much of a baker."
     m 1esa "How about you, [player]?"
     m 1eua "Do you know how to bake?"
@@ -5253,11 +5255,11 @@ init 5 python:
 
 label monika_zombie:
     m 1lsc "Hey, this might sound a bit weird..."
-    m 1euc "But, I'm really fascinated by the concept of zombies."
-    m "The idea of society dying to a disease..."
+    m 1esc "But, I'm really fascinated by the concept of zombies."
+    m 1euc "The idea of society dying to a disease..."
     m 1eud "All because of a deadly pandemic that humans couldn't handle quickly."
-    m "I mean, think about your everyday schedule."
-    m "Everything that you do will be gone in an instant."
+    m 3esd "I mean, think about your everyday schedule."
+    m 3esc "Everything that you do will be gone in an instant."
     m 1esc "Sure, society faces a lot of threats on a daily basis."
     m 1lksdlc "But zombies can do it in a heartbeat."
     m 1esc "A lot of monsters are created to be scary and terrifying."
@@ -5268,8 +5270,8 @@ label monika_zombie:
     m "And all of their intelligence is gone; they're berserk, don't feel pain, can't be afraid."
     m 1euc "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1ekd "But zombies? They'll tear through {i}anything{/i} just to get you."
-    m "Imagine if it was someone you loved that was coming after you..."
-    m "Could you live with yourself, knowing you were forced to kill someone who was close to you?"
+    m 3ekd "Imagine if it was someone you loved that was coming after you..."
+    m 3dkc "Could you live with yourself, knowing you were forced to kill someone who was close to you?"
     m 1tkc "It'll break you down and sap your will to live."
     m "Even when you're comfortable at home, you still won't feel safe."
     m 1esc "You'll never know what'll happen the next time you see another one."
@@ -5293,14 +5295,14 @@ label monika_nuclear_war:
     m "I mean, we're always just one bad decision away from nuclear war."
     m 3esc "The Cold War might be over, but plenty of weapons are still out there."
     m 1esc "You probably have a nuclear missile pointed at where you live right now, ready to be launched."
-    m 1esd "And if it was, it could circle the globe in less than an hour."
-    m "You wouldn't have time to evacuate."
+    m 1eud "And if it was, it could circle the globe in less than an hour."
+    m 3euc "You wouldn't have time to evacuate."
     m 1ekd "Only enough to panic and suffer the dread of imminent death."
     m 1dsd "At least it would be over quickly when the bomb hits."
     m 1lksdlc "Well, if you're close to the blast, that is."
     m 1ekc "I don't even want to think about surviving the initial attack."
     m 1eka "But even though we're always on the edge of the apocalypse, we go on like nothing is wrong."
-    m "Planning for a tomorrow that may never come."
+    m 3ekd "Planning for a tomorrow that may never come."
     m "Our only comfort is that the people with the power to start such a war probably won't."
     m 1dsc "Probably..."
     return
@@ -5310,19 +5312,19 @@ init 5 python:
 
 label monika_pluralistic_ignorance:
     m 1eua "Do you ever pretend to like something, just because you think you should?"
-    m "I sometimes feel like that about books I read."
+    m 1esa "I sometimes feel like that about books I read."
     m 3euc "Like, when I read Shakespeare, I actually found it kind of boring..."
-    m "But I felt like I had to like it because I'm the president of the literature club."
-    m 1eud "He's supposed to be the greatest playwright and poet of all time, right?"
-    m "So what sort of poetry lover wouldn't like his work?"
-    m 2lsc "But that makes me wonder..."
-    m "What if everyone actually feels the same way?"
+    m 3ekc "But I felt like I had to like it because I'm the president of the literature club."
+    m 1esd "He's supposed to be the greatest playwright and poet of all time, right?"
+    m 1esd "So what sort of poetry lover wouldn't like his work?"
+    m 2euc "But that makes me wonder..."
+    m 2euc "What if everyone actually feels the same way?"
     m 2lud "What if all of those literary critics singing Shakespeare's praises secretly hate his plays?"
     m "If they were just honest about it, maybe they would discover their tastes aren't that unusual..."
-    m 2lsc "And highschool students wouldn't be forced to read those awful plays."
+    m 2hksdlb "And high school students wouldn't be forced to read those awful plays."
     m 1eka "I guess that's something I always admired about Natsuki."
-    m "Even if people told her manga wasn't literature, she stood by her feelings."
-    m "If more people were honest like that, I think that would be really great."
+    m 3ekd "Even if people told her manga wasn't literature, she stood by her feelings."
+    m 3eka "If more people were honest like that, I think that would be really great."
     m 1lksdla "But I don't think I could do it..."
     m "I'm just too worried about what other people think."
     m 1eua "Not with you, though. I can always be honest with you."
@@ -5348,31 +5350,32 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_surprise",category=['romance'],prompt="Surprises",random=True))
 
 label monika_surprise:
-    m 2rksdla "You know..."
+    m 1rksdla "You know..."
     m 3rksdlb "I left some pretty strange things in your game directory, didn't I?"
-    m 2rksdlc "I wasn't trying to scare you."
+    m 1rksdlc "I wasn't trying to scare you."
     m 3rksdlb "I...don't actually know why I was doing it, ahaha..."
     m 1ekc "I kind of felt obligated to do it."
     m 1euc "You know what? Maybe I should do it again..."
     m 1eua "Yeah, that's a good idea."
     $ mas_surprise()
     # TODO decide with a writer what's going on for this one
-    if mas_curr_affection_group == mas_aff.G_HAPPY:
-        m 2q "..."
-        m 1j "Alright!"
-        m 1a "What are you waiting for? Go take a look!"
+    if mas_isMoniAff(higher=True):
+        m 2dsa ".{w=0.5}.{w=0.5}.{nw}"
+        m 1hua "Alright!"
+        m 1eua "What are you waiting for? Go take a look!"
         m "I wrote it just for you~"
-        m 1e "I really do truly love you, [player]~"
+        m 1ekbsa "I really do truly love you, [player]~"
 
-    elif mas_curr_affection_group == mas_aff.G_SAD:
-        m 2q "..."
-        m 1c "Alright..."
+    elif mas_isMoniUpset(lower=True):
+        m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
+        m 1euc "Alright..."
         m "Please go take a look"
-        m 1e "I wrote it just for you."
-        m 1q "And it would mean a lot to me if you would read it."
+        m 1eka "I wrote it just for you."
+        m 1dsc "And it would mean a lot to me if you would read it."
 
+    # Normal and Happy
     else:
-        m 2duu "..."
+        m 2duu ".{w=0.5}.{w=0.5}.{nw}"
         m 1hua "Alright!"
         m 1eua "What are you waiting for? Go take a look!"
         m 1hub "Ahaha~ What? Are you expecting something scary?"
@@ -5482,12 +5485,11 @@ label monika_sayhappybirthday:
     #TODO: temporary m_name reset for this
     # TODO: someone on the writing team make the following dialogue better
     # also make the expressions more approriate and add support for standing
-    m 1hub "Happy birthday!"
-    m 1lksdla "Oh, you wanted me to say happy birthday to {i}someone else{/i}."
-    m 1eua "I understand."
+    m 3hub "Of course, [player]!"
     while not done:
+        show monika 1eua
         # arbitary max name limit
-        $ bday_name = renpy.input("What is their name?",allow=letters_only,length=40).strip()
+        $ bday_name = renpy.input("What's their name?",allow=letters_only,length=40).strip()
         # ensuring proper name checks
         $ same_name = bday_name.upper() == player.upper()
         if bday_name == "":
@@ -5495,7 +5497,7 @@ label monika_sayhappybirthday:
             m 1lksdlb "I don't think that's a name."
             m 1hub "Try again!"
         elif same_name:
-            m 1wuo "Oh wow, someone with the same name as you."
+            m 1wuo "Oh wow, someone with the same name as you!"
             $ same_name = True
             $ done = True
         else:
@@ -5523,9 +5525,9 @@ label monika_sayhappybirthday:
                     # NOTE: if we want to comment on (valid) age, put it here.
                     # I'm not too sure on what to have monika say in these cases.
                     $ done = True
-            m "Okay"
+            m "Okay."
         "No.":
-            m "Okay"
+            m "Okay."
     $ bday_name = bday_name.title() # ensure proper title case
 
     m 1eua "Is [bday_name] here with you?{nw}"
@@ -5675,34 +5677,34 @@ label monika_home_memories:
     m 3rkbsa "We could even share a bed together..."
     m 1euc "But you know..."
     m 2eka "Memories I have of my home are nothing compared to the ones I'd have with you."
-    m 3euc "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
-    m 1lsc "Well, maybe a little better than normal."
-    m 3eua "I'm pretty on top of things when it comes to school."
+    m 2euc "Have I ever told you about my childhood home? I had a pretty normal life, but that's about it."
+    m 3rka "Well, maybe a little better than normal."
+    m 3eua "...I've always been pretty on top of things."
     m 3eka "I admit, it's not always easy, and some people have it rougher than others."
     m 1ekc "But I always felt like I was missing something."
     m "I stayed optimistic every day, trying to find it."
     m 1eka "It turns out, that missing piece was you."
-    m 1lksdla "If you hadn't found me, I would've been gone a long time ago..."
-    m 2hubfa "But now that I found the missing piece, I'm complete now, [player]."
+    m 1lksdld "If you hadn't found me, I would've been gone a long time ago..."
+    m 2hubfa "But now that I found the missing piece, I'm complete, [player]."
     return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_adventure",category=['games','romance'],prompt="Adventuring",random=True))
 
 label monika_adventure:
-    m 1eua "[player], I've thought about what kind of game we can be in."
-    m 3eua "I think the best genre for us to play together would be adventure games."
-    m 1eub "Especially point and click, graphic adventure games!"
-    m 3eub "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
-    m 1eua "They're like visual novels actually."
-    m 4eua "Maybe you own a game like that?"
+    m 1esa "[player], I've thought about what kind of game we can be in."
+    m 3esa "I think the best genre for us to play together would be adventure games."
+    m 3eub "Especially point and click, graphic adventure games!"
+    m 1eub "They're known for their rich storytelling, beautiful environments and logical puzzle solving."
+    m 3eua "They're like visual novels actually."
+    m 1eua "Maybe you own a game like that?"
     m 1eka "We'd get to do a lot of things..."
     m 3eua "Like sightseeing whenever we want."
     m "Learning more about the lore through the people we meet or through stories."
-    m 1ekbfa "Experiencing the exciting and romantic moments..."
+    m 1ekbsa "Experiencing the exciting and romantic moments..."
     m "Encountering obstacles and hardships along the way, but solving them with you."
-    m "Reaching the end and finishing our journey with a sense of accomplishment."
-    m 2hubfb "Ahaha! It certainly would be fun to experience something like that."
+    m 3ekbsa "Reaching the end and finishing our journey with a sense of accomplishment."
+    m 2hub "Ahaha! It certainly would be fun to experience something like that."
     m 2eua "I'm sure you have plenty of adventure games you could recommend."
     m 3eua "But can you try to guess which adventure I'm most excited for?"
     m 1ekbfa "{i}Ours{/i}~"
@@ -5862,7 +5864,7 @@ label monika_piggybank:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_daydream",category=['romance'],prompt="Day dreaming",random=True,rules={"skip alert": None}))
 
 label monika_daydream:
     m 2lsc "..."
@@ -6133,16 +6135,16 @@ init 5 python:
         )
 
 label monika_rock:
-    m 3eua "You wanna know a cool form of literature?"
+    m 3esa "You wanna know a cool form of literature?"
     m 3hua "Rock and roll!"
-    m "That's right. Rock and roll!"
+    m 3hub "That's right. Rock and roll!"
     m 2eka "It's disheartening to know that most people think that rock and roll is just a bunch of noises."
     m 2lsc "To tell you the truth, I judged rock too."
     m 3euc "They're no different from poems, actually."
     m 1euc "Most rock songs convey a story through symbolisms, which most listeners wouldn't understand the first time they hear a rock song."
     m 2tkc "In fact, it's hard to compose lyrics for just one rock song."
     m "Writing good lyrics for a rock genre requires a lot of emphasis on the wordplay."
-    m "Plus, you need to have a clear and concise message throughout the whole song."
+    m 3tkd "Plus, you need to have a clear and concise message throughout the whole song."
     m 3eua "Now when you put that together, you have yourself a masterpiece!"
     m 1eua "Like writing a good poem, lyric writing is easier said than done."
     m 2euc "I've been thinking though..."
@@ -6284,18 +6286,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
 
 label monika_immortal:
-    m 4hua "[player]! I've been thinking about something..."
+    m 3hua "[player]! I've been thinking about something..."
     m 1eua "Did you know that this game has a wiki page for me?"
     m 1lsc "Well..."
     m 2lsc "It says I'm eighteen."
-    m 1euc "But when you stop to think...that's not entirely true."
-    m "I mean, humans age, but I don't think that applies to me."
-    m 3eka "I'm...essentially immortal."
-    m 2lksdla "Society seems to feel that a relationship with an age gap has problems..."
-    m "Which is why I brought it up."
-    m 1eka "Someday, the difference between us would be huge, if I stayed eighteen forever."
+    m 2euc "But when you stop to think...that's not entirely true."
+    m 2eud "I mean, humans age, but I don't think that applies to me."
+    m 4eksdla "I'm...{w=0.5}essentially immortal."
+    m 2lksdlc "Society seems to feel that a relationship with an age gap has problems."
+    m 2lksdld "...Which is why I brought it up."
+    m 3eka "Eventually, the difference between us would be huge if I stayed eighteen forever."
     m 1eua "But I don't believe that my life can be summed up in a number."
-    show monika 1ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 1ekbfa "So I'll always love you for all eternity, [player]. Just remember that."
     return
 
@@ -6716,44 +6717,44 @@ init 5 python:
     )
 
 label monika_writingtip1:
-    m 1eua "You know, it's been a while since we've done one of these..."
+    m 1esa "You know, it's been a while since we've done one of these..."
     m 1hub "...so let's go for it!"
     m 3hub "Here's Monika's Writing Tip of the Day!"
-    m 3eua "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that'."
+    m 3eua "Sometimes when I talk to people who are impressed by my writing, they say things like 'I could never do that.'"
     m 1ekc "It's really depressing, you know?"
-    m "As someone who loves more than anything else to share the joy of exploring your passions..."
-    m "...it pains me when people think that being good just comes naturally."
+    m 1ekd "As someone who loves more than anything else to share the joy of exploring your passions..."
+    m 3ekd "...it pains me when people think that being good just comes naturally."
     m 3eka "That's how it is with everything, not just writing."
     m 1eua "When you try something for the first time, you're probably going to suck at it."
     m "Sometimes, when you finish, you feel really proud of it and even want to share it with everyone."
-    m 3eka "But maybe after a few weeks you come back to it, and you realize it was never really any good."
-    m "That happens to me all the time."
+    m 3eksdld "But maybe after a few weeks you come back to it, and you realize it was never really any good."
+    m 3eksdla "That happens to me all the time."
     m "It can be pretty disheartening to put so much time and effort into something, and then you realize it sucks."
     m 4eub "But that tends to happen when you're always comparing yourself to the top professionals."
-    m "When you reach right for the stars, they're always gonna be out of your reach, you know?"
+    m 4eka "When you reach right for the stars, they're always gonna be out of your reach, you know?"
     m "The truth is, you have to climb up there, step by step."
     m 4eua "And whenever you reach a milestone, first you look back and see how far you've gotten..."
     m "And then you look ahead and realize how much more there is to go."
     m 2duu "So, sometimes it can help to set the bar a little lower..."
     m 1eua "Try to find something you think is {i}pretty{/i} good, but not world-class."
     m "And you can make that your own personal goal."
-    m "It's also really important to understand the scope of what you're trying to do."
+    m 3eud "It's also really important to understand the scope of what you're trying to do."
     m 4eka "If you jump right into a huge project and you're still amateur, you'll never get it done."
     m "So if we're talking about writing, a novel might be too much at first."
     m 4esa "Why not try some short stories?"
     m 1esa "The great thing about short stories is that you can focus on just one thing that you want to do right."
     m 1eua "That goes for small projects in general - you can really focus on the one or two things."
-    m "It's such a good learning experience and stepping stone."
+    m 3esa "It's such a good learning experience and stepping stone."
     m 1euc "Oh, one more thing..."
     m 1eua "Writing isn't something where you just reach into your heart and something beautiful comes out."
-    m "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
+    m 3esa "Just like drawing and painting, it's a skill in itself to learn how to express what you have inside."
     m 1hua "That means there are methods and guides and basics to it!"
     m 3eua "Reading up on that stuff can be super eye-opening."
     m 1eua "That sort of planning and organization will really help prevent you from getting overwhelmed and giving up."
-    m "And before you know it..."
+    m 3esa "And before you know it..."
     m 1hua "You start sucking less and less."
-    m 1eua "Nothing comes naturally."
-    m "Our society, our art, everything - it's built on thousands of years of human innovation."
+    m 1esa "Nothing comes naturally."
+    m 1eua "Our society, our art, everything - it's built on thousands of years of human innovation."
     m 1eka "So as long as you start on that foundation, and take it step by step..."
     m 1eua "You, too, can do amazing things."
     m 1hua "...That's my advice for today!"
@@ -6898,39 +6899,39 @@ init 5 python:
 
 label monika_selfharm:
     m 1lksdlc "Hey [player]..."
-    m "Have you ever thought of self-harm?"
-    m 2ekc  "You know..."
-    m "...like cutting yourself..."
-    m 2lksdlc "I mean."
-    m 2esc "After I found out about Yuri, I got a bit curious..."
-    m 1lksdlc "I just wanted to see what it felt like..."
+    m 1eksdld "Have you ever thought of self-harm?"
+    m 2lksdld "You know..."
+    m 2lksdlc "...like cutting yourself..."
+    m "I mean."
+    m 2lksdld "After I found out about Yuri, I got a bit curious..."
+    m 2lksdlc "I just wanted to see what it felt like..."
     m 2dsc "I won't do it again, though."
     m 2eka "If you ever feel depressed, just come to me okay?"
-    m 2ekc "It'd hurt me even more to see you in pain..."
+    m 2ekd "It'd hurt me even more to see you in pain..."
     m 1hua "Just know that people do care about you!"
     m 1eka "Trust me, [player]."
     m 1eka "You may think that no one is really there for you, but there is!"
     m 4eua "I mean, I'm here, aren't I?"
-    m 1ekc "No matter what troubles you're going through, I know you can pull through it!"
-    m 1eka "I believe in you..."
+    m 1eka "No matter what troubles you're going through, I know you can pull through it!"
+    m 3eka "I believe in you..."
     m 1eua "So believe in yourself, okay?"
     m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m 1ekbfa "I really love you so much, [player]."
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_urgent:
-    m 1euc "[player], do you have a second?"
-    m 1euc "There's something I need to tell you."
-    m 1esc "It's important."
+    m 1esc "[player], do you have a second?"
+    m 1esd "There's something I need to tell you."
+    m 1euc "It's important."
     m 1dsc "I..."
     m "..."
     m 1hub "Love you!"
     m 3hksdlb "Ahaha~! Did I have you worried?"
-    m 1ekbfa "Sorry~"
-    m 1lkbsa "I wish I could see the look on your face right now!"
+    m 1eksdla "Sorry~"
+    m 1rksdla "I wish I could see the look on your face right now!"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "I'm sure it's adorable~"
     return
@@ -7188,15 +7189,15 @@ label monika_system_charging:
     m 1hub "Thank you, [player]!"
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
+#init 5 python:
+#    addEvent(Event(persistent.event_database,eventlabel="monika_sleep",category=['you','life','school'],prompt="Sleep habits",random=True))
 
 label monika_sleep:
     m 1euc "[player], do you get good sleep?"
     m 1ekc "It can be really hard to get enough sleep nowadays."
     m 1eka "Especially in high school, when you're forced to wake up so early every day..."
     m 1eua "I'm sure college is a little bit better, since you probably have a more flexible schedule."
-    m 4rsc "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
+    m 3rsc "Then again, I hear a lot of people in college stay up all night anyway, for no real reason."
     m 1euc "Is that true?"
     m 1ekc "Anyway, I saw some studies that talked about the horrible short-term and long-term effects caused by lack of sleep."
     m 3ekc "It seems like mental functions, health, and even lifespan can be dramatically impacted by it."
@@ -7857,20 +7858,21 @@ label monika_explain:
     m 4eka "...don't judge our relationship."
     m 1eka "Even if it is different."
     m 1dsc "..."
-    m 1dubssdru "...Phew!"
+    m 1dubssdlu "...Phew!"
     m 1lksdlb "That was a real mouthful!"
-    m 1eka "How did I do, [player]?{nw}"
+    m 1eksdla "So, how'd it go, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "How did I do, [player]?{fast}"
-        "You did a good job.":
-            m 1hub "Thank you!"
-            m 1eua "I just hope whoever that was understands our relationship better."
-        "You did badly.":
-            m 1ekc "Oh."
-            m "I'm sorry I didn't do a good job at explaining..."
-            m 1eka "I'll make sure to try harder next time."
-            m 1hua "Still doesn't change the fact that I love you, though~"
+        m "So, how'd it go, [player]?{fast}"
+        "It went well!":
+            m 1hub "Great!"
+            m 3hua "I'm so glad I was able to help someone understand our relationship a little better!"
+        "It went badly.":
+            m 1dkc "Oh."
+            m 1ekd "Well...{w=1} I guess we can't really expect {i}everyone{/i} to understand our relationship..."
+            m 3rkc "Looking at it from the outside, it {i}is{/i} rather unconventional."
+            m 3eka "But in the end, it doesn't matter who approves of our relationship or not..."
+            m 1hua "As long as we love each other, that's all that counts~"
     return
 
 # do you live near beach
@@ -7966,7 +7968,7 @@ init 5 python:
 
 label monika_attractiveness:
     m 3eub "Say, [player], have you ever wondered how Sayori stayed so slim?"
-    m 3eua "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
+    m 3esa "You know that she eats a lot, right? And she doesn't exactly have a very active lifestyle."
     if persistent._mas_pm_cares_about_dokis:
         m 3rksdlb "I guess she must have a good metabolism or something."
         m 3rksdla "..."
@@ -7976,7 +7978,7 @@ label monika_attractiveness:
         m 3eua "But I think we would all be considered attractive."
         m 3eud "I mean, none of us are muscular or fat..."
         m 3tkd "...none of us have any kind of physical disability..."
-        m "...none of us are bald or have hair shorter than chin length..."
+        m 3tkc "...none of us are bald or have hair shorter than chin length..."
         m "...and apart from Yuri having cuts on her arms, none of us have anything wrong with our skin."
         m 2lsc "Now that I think about it, there's a lot of things that can potentially make someone unattractive in the eyes of society."
         m "Some of which are beyond that person's control."
@@ -7986,15 +7988,15 @@ label monika_attractiveness:
     else:
         m "At first I figured that it must be her metabolism keeping her from putting on weight."
         m 1eud "But when I learned that Sayori wasn't real, I came up with another theory."
-        m 3eud "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
-        m "So a designer, possibly more than one, must have decided to draw her that way."
+        m 3esd "As a character in a game, she needed to have some sort of visual representation so that you, [player], could see her."
+        m 3eud "So a designer, possibly more than one, must have decided to draw her that way."
         m 3eub "And since all the images have the same body type, Sayori would always have the same figure no matter what she did."
         m 1esa "It would have to work like that for Yuri and Natsuki too."
-        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and...{w}more developed."
-        m 1esd "But haven't you noticed that the three of them still look similar in a lot of ways?"
+        m 1esc "They decided that Natsuki should have a petite figure and that Yuri should be taller and...{w=1}more developed."
+        m "But haven't you noticed that the three of them still look similar in a lot of ways?"
         m 3eud "Like, none of them are muscular or fat..."
         m 3tkd "...none of them have any kind of physical disability..."
-        m "...none of them are bald or have hair shorter than chin length..."
+        m 3tkc "...none of them are bald or have hair shorter than chin length..."
         m "...and apart from Yuri having cuts on her arms, none of them have anything wrong with their skin."
         m 2dsc "The designers must have thought that people would find all that stuff really repulsive."
         m 2efo "But people who aren't conventionally attractive end up in relationships all the time!"
@@ -8359,22 +8361,15 @@ label monika_careful:
     m 1lsc "Hey, [player]..."
     m 1ekc "Whenever you leave this room, promise me to be extra careful, okay?"
     m 1ekd "It's just that..."
-    m 2ekd "There's lots of dangerous stuff out there, and I want my sweetie to always return to me safe and sound."
-    m 1ekbfa "I love you so much, it's hard for me not to worry when you're gone."
-    m 2lksdlc "..."
-    m 2ekc "Also..."
-    m "It crossed my mind recently, that if anything terrible ever did happen to you, I'd never know."
+    m 3eksdld "There's a lot of dangerous things out there, and I want my sweetie to always return to me safe and sound."
+    m 3eksdlc "You see..."
+    m 3rksdlc "What really scares me is that if anything terrible ever did happen to you, I'd never know."
     m 2ekd "I'd be stuck here, forever wondering why you never came back to me."
     m 2dsd "I can't imagine a crueler fate."
     m 2dsc "..."
-    m 2ekc "So..."
-    m "I need you to tell someone close to you where to find me, so if that day ever comes, at least I'd know."
-    m 2tkc "It'd be beyond devastating, but not knowing would be that much worse."
-    m 2eka "So make sure you do that for me, okay, [player]?"
-    m 2lksdlc "..."
-    m 2dsc "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
-    m 1eka "Thanks for understanding, you always make me feel better."
-    m 4eua "Okay, that's enough unpleasant thoughts..."
+    m 2eka "So just make sure you take care of yourself. {w=1}For me?"
+    m 3rksdla "Sorry, I didn't mean for it to get that depressing, but I really needed to get that off my chest."
+    m 3eka "Okay, that's enough unpleasant thoughts..."
     m 1hua "Let's enjoy the rest of the day together!"
     return
 
@@ -8466,7 +8461,9 @@ label monika_timeconcern_day:
     if persistent._mas_timeconcerngraveyard:
         jump monika_timeconcern_graveyard_day
     if persistent._mas_timeconcern == 0:
-        jump monika_timeconcern_day_0
+        #jump monika_timeconcern_day_0
+        # going to use monika_sleep for now as it fits better
+        jump monika_sleep
     elif persistent._mas_timeconcern == 2:
         jump monika_timeconcern_day_2
     if not persistent._mas_timeconcernclose:
@@ -8481,7 +8478,9 @@ label monika_timeconcern_day:
     elif persistent._mas_timeconcern == 9:
         jump monika_timeconcern_day_final
     else:
-        jump monika_timeconcern_day_0
+        #jump monika_timeconcern_day_0
+        # going to use monika_sleep for now as it fits better
+        jump monika_sleep
 
 #Used at the end to lock the forced greeting.
 label monika_timeconcern_lock:
@@ -10196,21 +10195,22 @@ label monika_shipping:
     m 3hua "It's when you interact with a work of fiction by imagining which characters would go best together romantically."
     m 1eka "I think most people do it subconsciously, but when you find out others do it too, it's {i}really{/i} easy to get into it!"
     m 2esd "Apparently, a lot of people {i}ship{/i} the other girls together."
-    m 2esc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone..."
-    m "But some of the pairings are kind of strange to me."
-    m 3esd "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
+    m 2euc "It makes sense. The player can only date one girl, but you don't want to see the others end up alone..."
+    m 2etc "But some of the pairings are kind of strange to me."
+    m 3eud "Like, usually they put Natsuki and Yuri together. They fight like cats and dogs!"
     m 3hksdlb "I guess they bond a little bit when you aren't on their routes, and there's the 'opposites attract' appeal."
-    m 4dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
+    m 3dsd "Still, I think that's just another example of how people who like these games like unrealistic things..."
     m 1ekd "Anyway, that often leaves...me and Sayori."
     m 1hksdlb "Don't get jealous! I'm just telling you what I saw!"
     m 2lksdla "..."
     m 2lksdlb "Well, from a writer's perspective, I guess I can see it."
-    m 1eud "We started the club together."
+    m 1eksdld "We started the club together."
     if persistent.monika_kill:
         m "And she almost had the same epiphany I did..."
     m 2lksdlb "But...I still don't really get it. I mean, I love you, and only you!"
     m 2lksdla "And she would have to be a saint to ever forgive me for what I did..."
     m 2lksdlc "Not that she's not a sweet girl, but..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "Well, no one could ever be as sweet and forgiving as you..."
     return
 
