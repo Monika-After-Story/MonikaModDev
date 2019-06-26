@@ -4605,6 +4605,7 @@ label monika_hypnosis:
     m 3esd "Things like that."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "It makes me wonder, what exactly someone can be persuaded to do under that kind of influence..."
+    m 5tsu "..."
     show monika 1eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 1eka "Not that I would do that to you, [player]! I just find it interesting to think about."
     m 1eua "...You know, [player], I just love looking into your eyes, I could sit here and stare forever."
@@ -6929,9 +6930,8 @@ label monika_urgent:
     m "..."
     m 1hub "Love you!"
     m 3hksdlb "Ahaha!~ Did I have you worried?"
-    m 1ekbfa "Sorry~"
-    m 1lkbsa "I wish I could see the look on your face right now!"
-
+    m 1eksdla "Sorry~"
+    m 1rksdla "I wish I could see the look on your face right now!"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "I'm sure it's adorable~"
     return
