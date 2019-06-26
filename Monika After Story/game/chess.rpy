@@ -1884,7 +1884,7 @@ label mas_chess_dlg_qs_lost_3:
 # 5th time recurring quicksave lost statement
 label mas_chess_dlg_qs_lost_5r:
     m 2esc "This has happened [qs_gone_count] times now..."
-    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}.{w=1}"
+    m 2tsc "I wonder if this is a side effect of {cps=*0.75}{i}someone{/i}{/cps} trying to edit the saves.{w=1}.{w=1}."
     m 1esd "Anyway..."
     m "Let's start a new game."
     show monika 1esc
