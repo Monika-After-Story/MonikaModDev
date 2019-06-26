@@ -40,6 +40,9 @@ init -1 python in mas_globals:
     in_idle_mode = False
     # set to True if in idle mode
 
+    late_farewell = False
+    # set to True if we had a late farewell
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -740,6 +743,8 @@ init 1 python:
 #       (Default: None)
 label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None):
 
+    with None
+
     if scene_change:
         scene black
 
@@ -770,6 +775,9 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
 
             if not renpy.showing(force_exp):
                 renpy.show(force_exp, at_list=[t11], zorder=MAS_MONIKA_Z)
+
+                if not dissolve_all:
+                    renpy.with_statement(None)
 
         # if we onyl want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
@@ -833,6 +841,8 @@ label ch30_main:
 
     # set monikas outfit to default
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
+
     # so other flows are aware that we are in intro
     $ mas_in_intro_flow = True
 
@@ -1564,6 +1574,20 @@ label mas_ch30_select_seen:
         # rebuild the event lists
         $ mas_rev_seen, mas_rev_mostseen = mas_buildSeenEventLists()
 
+        if len(mas_rev_seen) == 0:
+            if len(mas_rev_mostseen) > 0:
+                # jump to most seen if we have any left
+                jump mas_ch30_select_mostseen
+
+            if len(mas_rev_mostseen) == 0 and not seen_random_limit:
+                # all topics seen within last seen delta, push random seen 
+                # limit if not already.
+                $ pushEvent("random_limit_reached")
+                jump post_pick_random_topic
+            
+            # if still no events, just jump to idle loop
+            jump post_pick_random_topic
+
     $ mas_randomSelectAndPush(mas_rev_seen)
 
     jump post_pick_random_topic
@@ -1682,6 +1706,7 @@ label ch30_reset:
     # reset hair / clothes
     # the default options should always be available.
     $ store.mas_selspr.unlock_hair(mas_hair_def)
+#    $ store.mas_selspr.unlock_hair(mas_hair_ponytail)
     $ store.mas_selspr.unlock_clothes(mas_clothes_def)
 
     # def ribbon always unlocked
@@ -1812,6 +1837,13 @@ label ch30_reset:
         if not mas_isD25Season():
             persistent._mas_d25_deco_active = False
 
+    ## late farewell? set the global and clear the persistent so its auto
+    ##  cleared
+    python:
+        if persistent.mas_late_farewell:
+            store.mas_globals.late_farewell = True
+            persistent.mas_late_farewell = False
+
     ## reactions fix
     python:
         if persistent._mas_filereacts_just_reacted:
@@ -1819,10 +1851,11 @@ label ch30_reset:
 
     # set any prompt variants for acs that can be removed here
     python:
-        if monika_chr.get_acs_of_type('left-hair-clip'):
-            mas_getEV("monika_hairclip_select").prompt = "Can you change your hairclip?"
-        else:
-            mas_getEV("monika_hairclip_select").prompt = "Can you put on a hairclip?"
+        if not monika_chr.is_wearing_acs_type("left-hair-clip"):
+            store.mas_selspr.set_prompt("left-hair-clip", "wear")
+
+        if not monika_chr.is_wearing_acs_type("ribbon"):
+            store.mas_selspr.set_prompt("ribbon", "wear")
 
     ## certain things may need to be reset if we took monika out
     # NOTE: this should be at the end of this label, much of this code might

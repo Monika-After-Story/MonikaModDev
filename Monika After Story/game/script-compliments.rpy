@@ -188,7 +188,7 @@ label mas_compliment_awesome:
     return
 
 label mas_compliment_awesome_2:
-    m 1hub "Aww, [player]~"
+    m 1hub "Awww, [player]~"
     m "You're so sweet!"
     m 2tub "I think you're way more awesome, though."
     m 5eub "I can't wait until the day I can finally give you a great big hug."
@@ -246,7 +246,7 @@ label mas_compliment_intelligent_2:
         "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
             m "I love you so much, [player]!"
-            m "We'll have a lifetime of self improvement together!"
+            m "We'll have a lifetime of self-improvement together!"
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
@@ -261,7 +261,7 @@ label mas_compliment_intelligent_3:
         thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
         thanks_quip = renpy.substitute(thanks_quip)
     m 1ekbfa "[thanks_quip]"
-    m 1hub "Remember that we'll have a lifetime of self improvement together!"
+    m 1hub "Remember that we'll have a lifetime of self-improvement together!"
     return
 
 init 5 python:
@@ -476,6 +476,60 @@ init 5 python:
         ),
         code="CMP"
     )
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_cute",
+            prompt="You're cute!",
+            unlocked=True
+        ),
+        eventdb=store.mas_compliments.compliment_database
+    )
+
+default persistent._mas_pm_monika_cute_as_natsuki = None
+
+label mas_compliment_cute:
+    if not renpy.seen_label("mas_compliment_cute_2"):
+        call mas_compliment_cute_2
+    else:
+        call mas_compliment_cute_3
+    return
+
+label mas_compliment_cute_2:
+    m 1wubfsdld "Ah!"
+    m 3rkbfsdla "You {i}kind of{/i} caught me off guard with that one."
+    m 3tubfb "Just a little..."
+    m 1hubfa "But I'm glad you think so!"
+    menu:
+        "Seeing you always warms my heart!":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
+            $ mas_gainAffection(5,bypass=True)
+            m 1hubfb "Aww, it really warms my heart to hear you say that!"
+            m 1dkbfu "...Almost as much as when I picture us finally being together in the same reality."
+            m 1ekbfa "I can barely contain myself just imagining that special day~"
+        "You're even cuter when you're flustered.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = False
+            $ mas_gainAffection(3,bypass=True)
+            m 2tubfu "Not letting it go, huh, [player]?"
+            m 2rubfu "Hmph, I just wasn't expecting it."
+            m 3tubfb "Don't expect it to be so easy next time..."
+            m 1tubfu "I'll get you back someday, ehehe~"
+        "You're as cute as Natsuki.":
+            $ persistent._mas_pm_monika_cute_as_natsuki = True
+            $ mas_loseAffection(modifier=0.5)
+            m 2lfc "Oh. {w=1}Thanks, [player]..."
+            m 1rsc "But I was kind of hoping I would stand in my own category."
+    return
+
+label mas_compliment_cute_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1ekbfa "[thanks_quip]"
+    m 1hubfa "You can be really cute a lot of the time too, you know~"
+    return
 
 label mas_compliment_chess:
     m 1eub "Thanks, [player]."

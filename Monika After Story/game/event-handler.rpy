@@ -954,6 +954,11 @@ init -1 python in evhand:
         "monika_rain_holdme",
     ]
 
+    # idle topic whitelist
+    IDLE_WHITELIST = [
+        "unlock_prompt",
+    ]
+
     # as well as special functions
     def addIfNew(items, pool):
         #
@@ -1595,7 +1600,10 @@ init python:
                 ev_label, notify = persistent.event_list[index]
                 ev_found = mas_getEV(ev_label)
 
-                if ev_found is not None and ev_found.show_in_idle:
+                if (
+                        (ev_found is not None and ev_found.show_in_idle)
+                        or ev_label in evhand.IDLE_WHITELIST
+                    ):
 
                     if remove:
                         mas_rmEVL(ev_label)
@@ -1978,6 +1986,7 @@ label call_next_event:
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
     else:
         $ mas_DropShield_dlg()

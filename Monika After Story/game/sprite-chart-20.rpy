@@ -18,6 +18,20 @@ image monika 1cua:
         0.06
         repeat
 
+image monika 1cuu:
+    block:
+        "monika 1cuu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1duu_static"
+        0.06
+        repeat
+
 image monika 1efb:
     block:
         "monika 1efb_static"
@@ -1668,6 +1682,20 @@ image monika 1tkx:
         0.06
         repeat
 
+image monika 1tsa:
+    block:
+        "monika 1tsa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dsa_static"
+        0.06
+        repeat
+
 image monika 1tsb:
     block:
         "monika 1tsb_static"
@@ -2547,6 +2575,20 @@ image monika 2eud:
             choice:
                 7
         "monika 2dud_static"
+        0.06
+        repeat
+
+image monika 2euo:
+    block:
+        "monika 2euo_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2duo_static"
         0.06
         repeat
 
@@ -5238,6 +5280,20 @@ image monika 3tub:
         0.06
         repeat
 
+image monika 3tubfa:
+    block:
+        "monika 3tubfa_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dubfa_static"
+        0.06
+        repeat
+
 image monika 3tubfb:
     block:
         "monika 3tubfb_static"
@@ -5249,6 +5305,20 @@ image monika 3tubfb:
             choice:
                 7
         "monika 3dubfb_static"
+        0.06
+        repeat
+
+image monika 3tubfu:
+    block:
+        "monika 3tubfu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 3dubfu_static"
         0.06
         repeat
 
@@ -6915,76 +6985,6 @@ image monika 5efa:
             choice:
                 7
         "monika 5dfa_static"
-        0.06
-        repeat
-
-image monika 5eka:
-    block:
-        "monika 5eka_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dka_static"
-        0.06
-        repeat
-
-image monika 5ekbfa:
-    block:
-        "monika 5ekbfa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbfa_static"
-        0.06
-        repeat
-
-image monika 5ekbla:
-    block:
-        "monika 5ekbla_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbla_static"
-        0.06
-        repeat
-
-image monika 5ekbsa:
-    block:
-        "monika 5ekbsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbsa_static"
-        0.06
-        repeat
-
-image monika 5esbfa:
-    block:
-        "monika 5esbfa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dsbfa_static"
         0.06
         repeat
 
