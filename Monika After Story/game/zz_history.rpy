@@ -760,6 +760,16 @@ init -810 python:
             "_mas_pm_accomplished_resolutions": "pm.actions.did_new_years_resolutions",
             "_mas_pm_has_bullied_people": "pm.actions.bullied_people",
 
+            # actions / games
+            "_mas_pm_gamed_late": "pm.actions.games.gamed_late",
+
+            # actions / food
+            "_mas_pm_ate_breakfast_times": "pm.actions.food.breakfast_times",
+            "_mas_pm_ate_lunch_times": "pm.actions.food.lunch_times",
+            "_mas_pm_ate_dinner_times": "pm.actions.food.dinner_times",
+            "_mas_pm_ate_snack_times": "pm.actions.food.snack_times",
+            "_mas_pm_ate_late_times": "pm.actions.food.late_times",
+
             # actions / monika
             "_mas_pm_d25_mistletoe_kiss": "pm.actions.monika.mistletoe_kiss",
             "_mas_pm_taken_monika_out": "pm.actions.monika.taken_out_of_sp",
@@ -852,6 +862,7 @@ init -810 python:
             "_mas_pm_monika_deletion_justice": "pm.op.monika.delmoni_justified",
             "_mas_pm_monika_evil": "pm.op.monika.is_evil",
             "_mas_pm_monika_evil_but_ok": "pm.op.monika.is_evil_but_it_ok",
+            "_mas_pm_monika_cute_as_natsuki": "pm.op.monika.is_cute_as_natsuki",
 
             # looks
             "_mas_pm_shared_appearance": "pm.looks.shared_looks",

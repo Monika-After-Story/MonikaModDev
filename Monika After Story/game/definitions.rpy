@@ -15,6 +15,10 @@ python early:
     # this is now global
     import datetime
 
+    # uncomment when needed
+    import traceback
+    _dev_tb_list = []
+
 
 # uncomment this if you want syntax highlighting support on vim
 # init -1 python:
@@ -4081,8 +4085,15 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+
+    #Gets the length of the current session
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
+
+
+    #Gets the time difference between the current session start and last session end
+    def mas_getAbsenceLength():
+        return persistent.sessions.get('current_session_start', datetime.datetime.today()) - persistent.sessions.get('last_session_end', datetime.datetime.today())
 
 
     def mas_genDateRange(_start, _end):

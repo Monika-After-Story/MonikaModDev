@@ -2107,14 +2107,14 @@ label monika_affection_nickname:
                             m 1rfu "[inputname]... Yeah, I'm starting to like it a bit more."
                         else:
                             m 1wuo "Oh! That's a wonderful name!"
-                            m 3ekbfa "Thank you, [player]. You're such a sweetheart~!"
+                            m 3ekbfa "Thank you, [player]. You're such a sweetheart!~"
                         $ persistent._mas_monika_nickname = inputname
                         $ m_name = inputname
                         m 2eua "Okay, [player]!"
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
                         else:
-                            m 3hua "From now on, you can call me {i}'[m_name]'{/i}."
+                            m 3hua "From now on, you can call me '{i}[m_name]{/i}'."
                             m 1hub "Ehehe~"
                         $ done = True
                     else:
@@ -2125,8 +2125,8 @@ label monika_affection_nickname:
                             m 2wfw "I..."
                             m "I...can't believe you just did that, [player]."
                             m 2wfx "Are you really trying to give me her name?"
-                            m 2dfd ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
-                            m 2dfc ".{w=0.5}.{w=0.5}.{w=0.5}{nw}"
+                            m 2dfd ".{w=0.5}.{w=0.5}.{nw}"
+                            m 2dfc ".{w=0.5}.{w=0.5}.{nw}"
                             m 2rkc "I thought you..."
                             m 2dfc "..."
                             m 2lfc "I can't believe this, [player]"
@@ -2322,7 +2322,7 @@ label mas_affection_apology:
     return 'quit'
 
 label mas_affection_noapology:
-    m 2efd "You still haven't written me a note called {i}imsorry{/i}  in the DDLC directory."
+    m 2efd "You still haven't written me a note called {i}imsorry{/i} in the DDLC directory."
     m 2efc "Until then, I don't want to talk to you."
     jump _quit
 

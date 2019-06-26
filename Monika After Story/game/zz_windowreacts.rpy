@@ -93,6 +93,12 @@ init python:
     destroy_list = list()
 
     #START: Utility methods
+    def mas_canCheckActiveWindow():
+        """
+        Checks if we can check the active window (simplifies conditionals)
+        """
+        return persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications
+
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
@@ -103,7 +109,7 @@ init python:
         if (
                 renpy.windows
                 and mas_windowreacts.can_show_notifs
-                and (persistent._mas_windowreacts_windowreacts_enabled or persistent._mas_enable_notifications)
+                and mas_canCheckActiveWindow()
             ):
             from win32gui import GetWindowText, GetForegroundWindow
 
@@ -382,7 +388,7 @@ init 5 python:
     )
 
 label monika_monikamoddev:
-    call display_notif(m_name, "Aww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+    call display_notif(m_name, "Awww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:

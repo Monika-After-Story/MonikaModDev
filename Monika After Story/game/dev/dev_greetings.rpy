@@ -7,6 +7,7 @@ init python:
     if persistent._mas_fastgreeting is None:
         persistent._mas_fastgreeting = config.developer
 
+
 init 5 python:
     ev_rules = {}
     ev_rules.update(MASNumericalRepeatRule.create_rule(repeat=EV_NUM_RULE_YEAR))

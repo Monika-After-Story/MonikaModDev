@@ -9,6 +9,9 @@
 #   pool - True means the farewell is shown in the goodbye list. Prompt
 #       is used in this case.
 
+#Flag to mark if the player stayed up late last night. Kept as a generic name in case it can be used on other farewells/greetings
+default persistent.mas_late_farewell = False
+
 init -1 python in mas_farewells:
 
     # custom farewell functions
@@ -186,7 +189,7 @@ init 5 python:
     del rules
 
 label bye_leaving_already:
-    m 1tkc "Aww, leaving already?"
+    m 1tkc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
@@ -353,7 +356,7 @@ label bye_prompt_to_class:
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
-            m 1eub "Aww, going already?"
+            m 1eub "Aw, going already?"
             m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [player]."
             m 2eka "You're so sweet for seeing me even when you have so little time."
@@ -409,7 +412,7 @@ label bye_prompt_to_work:
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
-            m 2eka "Aww, okay! Just checking in on me before heading out?"
+            m 2eka "Aw, okay! Just checking in on me before heading out?"
             m 3eka "You must be really short on time if you're leaving already."
             m "It was really sweet of you to see me, even when you're so busy!"
             m 3hub "Work hard, [player]! Make me proud!"
@@ -490,7 +493,7 @@ label bye_prompt_sleep:
         if mas_isMoniNormal(higher=True):
             m 1eua "Alright, [player]."
             m 3eka "But you should sleep a little earlier next time."
-            m 1hua "Anyway, good night!"
+            m 1hua "Anyway, goodnight!"
 
         elif mas_isMoniUpset():
             m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
@@ -588,8 +591,8 @@ label bye_prompt_sleep:
                     m "Thanks, [player]."
                     return
                 "Sorry, I'm really tired.":
-                    m 1eka "Aww, that's okay."
-                    m 1hua "Good night, [player]."
+                    m 1eka "Aw, that's okay."
+                    m 1hua "Goodnight, [player]."
                 # TODO: now that is tied we may also add more dialogue?
                 "No.":
                     $ mas_loseAffection()
@@ -746,7 +749,7 @@ label bye_goodnight:
     if mas_isMoniNormal(higher=True):
         m 1eua "Goodnight, [player]."
         m 1eka "I'll see you tomorrow, okay?"
-        m "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
+        m 3eka "Remember, 'Sleep tight, and don't let the bedbugs bite', ehehe."
         m 1ekbfa "I love you~"
 
     elif mas_isMoniUpset():
@@ -778,7 +781,7 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    m 1ekc "Aww...that's pretty saddening..."
+    m 1ekc "Aw...that's pretty saddening..."
     m 1eka "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
@@ -802,7 +805,7 @@ label bye_long_absence:
         "A week.":
             $ persistent._mas_absence_choice = "week"
             m 3euc "Yeah...that's about what I expected."
-            m 2lksdla "I {i}think{/i} I'll be ok waiting that long for you."
+            m 2lksdla "I {i}think{/i} I'll be okay waiting that long for you."
             m 1eub "Just come back to me as soon as you can, alright, my love?"
             m 3hua "I'm sure you'll make me proud!"
         "A couple of weeks.":
@@ -1137,7 +1140,7 @@ label bye_going_somewhere_leavemenu:
 
     else:
         # otherwise affection and higher:
-        m 2ekp "Aww..."
+        m 2ekp "Aw..."
         m 1hub "Fine, but you better take me next time!"
 
     m "Are you still going to go?"
@@ -1165,4 +1168,287 @@ label bye_going_somewhere_leavemenu:
                 # otherwise, upset and below
                 m 2lud "All right, then..."
 
+    return
+
+default persistent._mas_pm_gamed_late = 0
+# number of times player runs play another game farewell really late
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_game",
+            unlocked=True,
+            prompt="I'm going to play another game.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_game:
+    $ _now = datetime.datetime.now().time()
+    if mas_getEV('bye_prompt_game').shown_count == 0:
+        m 2ekc "You're going to play another game?"
+        m 4ekd "Do you really have to leave me to go do that?"
+        m 2eud "Can't you just leave me here in the background while you play?{nw}"
+        $ _history_list.pop()
+        menu:
+            m "Can't you just leave me here in the background while you play?{fast}"
+            "Yes.":
+                if mas_isMoniNormal(higher=True):
+                    m 3sub "Really?"
+                    m 1hubfb "Yay!"
+                else:
+                    m 2eka "Okay..."
+                jump monika_idle_game
+            "No.":
+                if mas_isMoniNormal(higher=True):
+                    m 2ekc "Aww..."
+                    m 3ekc "Alright [player], but you better come back soon."
+                    m 3tsb "I might get jealous if you spend too much time in another game without me."
+                    m 1hua "Anyway, I hope you have fun!"
+                else:
+                    m 2euc "Enjoy your game, then."
+                    m 2esd "I'll be here."
+
+    elif mas_isMNtoSR(_now):
+        $ persistent._mas_pm_gamed_late += 1
+        if mas_isMoniNormal(higher=True):
+            m 3wud "Wait, [player]!"
+            m 3hksdlb "It's the middle of the night!"
+            m 2rksdlc "It's one thing that you're still up this late..."
+            m 2rksdld "But you're thinking of playing another game?"
+            m 4tfu "....A game big enough that you can't have me in the background..."
+            m 1eka "Well... {w=1}I can't stop you, but I really hope you go to bed soon..."
+            m 1hua "Don't worry about coming back to say goodnight to me, you can go-{nw}"
+            $ _history_list.pop()
+            m 1eub "Don't worry about coming back to say goodnight to me,{fast} you {i}should{/i} go right to bed when you're finished."
+            m 3hua "Have fun, and goodnight, [player]!"
+            if renpy.random.randint(1,2) == 1:
+                m 1hubfb "I love you~{w=1}{nw}"
+        else:
+            m 2efd "[player], it's the middle of the night!"
+            m 4rfc "Really...it's this late already, and you're going to play another game?"
+            m 2dsd "{i}*sigh*{/i}... I know I can't stop you, but please just go straight to bed when you're finished, alright?"
+            m 2dsc "Goodnight."
+        $ persistent.mas_late_farewell = True
+
+    elif mas_isMoniUpset(lower=True):
+        m 2euc "Again?"
+        m 2eud "Alright then. Goodbye, [player]."
+
+    elif renpy.random.randint(1,10) == 1:
+        m 1ekc "You're leaving to play another game?"
+        m 3efc "Don't you think you should be spending a little more time with me?"
+        m 2efc "..."
+        m 2dfc "..."
+        m 2dfu "..."
+        m 4hub "Ahaha, just kidding~"
+        m 1rksdla "Well...{w=1} I {i}wouldn't mind{/i} spending more time with you..."
+        m 3eua "But I also don't want to keep you from doing other things."
+        m 1hua "Maybe one day you'll finally be able to show me what you've been up to and then I can come with you!"
+        if renpy.random.randint(1,5) == 1:
+            m 3tubfu "Until then, you just have to make it up to me every time you leave me to play another game, alright?"
+            m 1hubfa "Ehehe~"
+
+    else:
+        m 1eka "Going off to play another game, [player]?"
+        m 3hub "Good luck and have fun!"
+        m 3eka "Don't forget to come back soon~"
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_GAME
+    return 'quit'
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_eat",
+            unlocked=True,
+            prompt="I'm going to go eat...",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+default persistent._mas_pm_ate_breakfast_times = [0, 0, 0]
+# number of times you ate breakfast at certain times
+#   [0] - sunrise to noon
+#   [1] - noon to sunset
+#   [2] - sunset to midnight
+
+default persistent._mas_pm_ate_lunch_times = [0, 0, 0]
+# number of times you ate lunch at certain times
+
+default persistent._mas_pm_ate_dinner_times = [0, 0, 0]
+# number of times you ate dinner at certain times
+
+default persistent._mas_pm_ate_snack_times = [0, 0, 0]
+# number of times you ate snack at certain times
+
+default persistent._mas_pm_ate_late_times = 0
+# number of times you ate really late (midnight to sunrise)
+
+
+label bye_prompt_eat:
+    $ _now = datetime.datetime.now().time()
+    if mas_isMNtoSR(_now):
+        $ persistent._mas_pm_ate_late_times += 1
+        if mas_isMoniNormal(higher=True):
+            m 1hksdlb "Uh, [player]?"
+            m 3eka "It's the middle of the night."
+            m 1eka "Are you planning on having a midnight snack?"
+            m 3rksdlb "If I were you, I'd find something to eat a little earlier, ahaha..."
+            m 3rksdla "Of course...{w=1}I'd also try to be in bed by now..."
+            if renpy.random.randint(1,25) == 1 and mas_isMoniLove(higher=True):
+                m 2tubfu "You know, if I were there, maybe we could have a bit of both..."
+                show monika 5ksbfu at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5ksbfu "We could go to bed, and then - {w=1}you know what, nevermind..."
+                m 5hubfb "Ehehe~"
+            else:
+                m 1hua "Well, I hope your snack helps you sleep."
+                m 1eua "...And don't worry about coming back to say goodnight to me..."
+                m 3rksdla "I'd much rather you get to sleep sooner."
+                m 1hub "Goodnight, [player]. Enjoy your snack and see you tomorrow~"
+        else:
+            m 2euc "But it's the middle of the night..."
+            m 4ekc "You should really go to bed, you know."
+            m 4eud "...Try to go straight to bed when you're finished."
+            m 2euc "Anyway, I guess I'll see you tomorrow..."
+        $ persistent.mas_late_farewell = True
+
+    else:
+        menu:
+            "Breakfast.":
+                if mas_isSRtoN(_now):
+                    $ persistent._mas_pm_ate_breakfast_times[0] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1eub "Alright!"
+                        m 3eua "It's the most important meal of the day after all."
+                        m 1rksdla "I wish you could stay, but I'm fine as long as you're getting your breakfast."
+                        m 1hua "Anyway, enjoy your meal, [player]~"
+                    else:
+                        m 2eud "Oh, right, you should probably get breakfast."
+                        m 2rksdlc "I wouldn't want you to have an empty stomach..."
+                        m 2ekc "I'll be here when you get back."
+                elif mas_isNtoSS(_now):
+                    $ persistent._mas_pm_ate_breakfast_times[1] += 1
+                    m 3euc "But...{w=1}it's the afternoon..."
+                    if mas_isMoniNormal(higher=True):
+                        m 3ekc "Did you miss breakfast?"
+                        m 1rksdla "Well... I should probably let you go eat before you get too hungry..."
+                        m 1hksdlb "I hope you enjoy your late breakfast!"
+                    else:
+                        m 2ekc "You missed breakfast, didn't you?"
+                        m 2rksdld "{i}*sigh*{/i}... You should probably go get something to eat."
+                        m 2ekd "Go on... I'll be here when you get back."
+                #SStoMN
+                else:
+                    $ persistent._mas_pm_ate_breakfast_times[2] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1hksdlb "Ahaha..."
+                        m 3tku "There's no way you're just having breakfast now, [player]."
+                        m 3hub "It's the evening!"
+                        m 1eua "Or maybe you're just having breakfast for dinner; I know some people do that occasionally."
+                        m 1tsb "Well, either way, I hope you enjoy your '{i}breakfast{/i}', ehehe~"
+                    else:
+                        m 2euc "..."
+                        m 4eud "So...you're having a snack."
+                        m 2rksdla "Alright, I won't judge."
+                        m 2eka "Enjoy your food."
+            "Lunch.":
+                if mas_isSRtoN(_now):
+                    $ persistent._mas_pm_ate_lunch_times[0] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1eua "Having an early lunch, [player]?"
+                        m 3hua "Nothing wrong with that. If you're hungry, you're hungry."
+                        m 1hub "I hope you enjoy your lunch!"
+                    else:
+                        m 2rksdlc "It's a bit early for lunch..."
+                        m 4ekc "If you're hungry, are you sure you're eating well?"
+                        m 2eka "I hope you enjoy your meal, at least."
+                elif mas_isNtoSS(_now):
+                    $ persistent._mas_pm_ate_lunch_times[1] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1eud "Oh, I guess it's lunch time for you, isn't it?"
+                        m 3eua "I wouldn't want to keep you from eating."
+                        m 3hub "Maybe one day, we could go out for lunch together!"
+                        m 1hua "For the time being though, enjoy your lunch, [player]~"
+                    else:
+                        m 2eud "Oh, it's lunch time, isn't it?"
+                        m 2euc "Enjoy your lunch."
+                #SStoMN
+                else:
+                    $ persistent._mas_pm_ate_lunch_times[2] += 1
+                    m 1euc "Lunch?"
+                    m 1rksdlc "It's a little late for lunch if you ask me."
+                    m 3ekd "Still, if you haven't had it yet, you should go get some."
+                    if mas_isMoniNormal(higher=True):
+                        m 1hua "I'd make you something if I were there, but until then, I hope you enjoy your meal~"
+                    else:
+                        m 2ekc "But...{w=1}maybe eat a little earlier next time..."
+            "Dinner.":
+                if mas_isSRtoN(_now):
+                    $ persistent._mas_pm_ate_dinner_times[0] += 1
+                    m 2ekc "Dinner?{w=2} Now?"
+                    if mas_isMoniNormal(higher=True):
+                        m 2hksdlb "Ahaha, but [player]! It's only the morning!"
+                        m 3tua "You can be adorable sometimes, you know that?"
+                        m 1tuu "Well, I hope you enjoy your '{i}dinner{/i}' this morning, ehehe~"
+                    else:
+                        m 2rksdld "You can't be serious, [player]..."
+                        m 2euc "Well, whatever you're having, I hope you enjoy it."
+                elif mas_isNtoSS(_now):
+                    $ persistent._mas_pm_ate_dinner_times[1] += 1
+                    # use the same dialogue from noon to midnight to account for
+                    # a wide range of dinner times while also getting accurate
+                    # data for future use
+                    call bye_dinner_noon_to_mn
+                #SStoMN
+                else:
+                    $ persistent._mas_pm_ate_dinner_times[2] += 1
+                    call bye_dinner_noon_to_mn
+            "A snack.":
+                if mas_isSRtoN(_now):
+                    $ persistent._mas_pm_ate_snack_times[0] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1hua "Ehehe, breakfast not enough for you today, [player]?"
+                        m 3eua "It's important to make sure you satisfy your hunger in the morning."
+                        m 3eub "I'm glad you're looking out for yourself~"
+                        m 1hua "Have a nice snack~"
+                    else:
+                        m 2tsc "Didn't eat enough breakfast?"
+                        m 4esd "You should make sure you get enough to eat, you know."
+                        m 2euc "Enjoy your snack, [player]."
+                elif mas_isNtoSS(_now):
+                    $ persistent._mas_pm_ate_snack_times[1] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 3eua "Feeling a bit hungry?"
+                        m 1eka "I'd make you something if I could..."
+                        m 1hua "Since I can't exactly do that yet, I hope you get something nice to eat~"
+                    else:
+                        m 2euc "Do you really need to leave to get a snack?"
+                        m 2rksdlc "Well... {w=1}I hope it's a good one at least."
+                #SStoMN
+                else:
+                    $ persistent._mas_pm_ate_snack_times[2] += 1
+                    if mas_isMoniNormal(higher=True):
+                        m 1eua "Having an evening snack?"
+                        m 1tubfu "Can't you just feast your eyes on me?"
+                        m 3hubfb "Ahaha, I hope you enjoy your snack, [player]~"
+                        m 1ekbfb "Just make sure you still have room for all of my love!"
+                    else:
+                        m 2euc "Feeling hungry?"
+                        m 2eud "Enjoy your snack."
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_EAT
+    return 'quit'
+
+label bye_dinner_noon_to_mn:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "Is it dinner time for you, [player]?"
+        m 1eka "I wish I could be there to eat with you, even if it's nothing special."
+        m 3dkbsa "After all, just being there with you would make anything special~"
+        m 3hubfb "Enjoy your dinner. I'll be sure to try and put some love into it from here, ahaha!"
+    else:
+        m 2euc "I guess it's dinner time for you."
+        m 2esd "Well...{w=1}enjoy."
     return
