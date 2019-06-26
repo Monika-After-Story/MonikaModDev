@@ -13183,7 +13183,7 @@ init 5 python:
 label monika_songwriting:
     m 3eub "Hey [player], have you ever written a song?"
     m 3eua "I've tried myself, and it's pretty fun. It takes a bit of time to do, but the end product is definitely worth it!"
-    m 4eub "You know, I used to write songs all the time in my sophmore years. I used to be pretty good!"
+    m 4eub "You know, I used to write songs all the time in my sophomore years. I used to be pretty good!"
     m 3eksdla "But, I guess it's been a while, huh?"
     m 3eub "Anyway..."
     m 1esb "You know, I think it'd be pretty cool if you ever dedicated a song to someone."
