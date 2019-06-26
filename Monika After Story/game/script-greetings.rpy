@@ -1580,6 +1580,7 @@ label monikaroom_greeting_opendoor_seen_partone:
 
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
     # monika knows you are here
     $ mas_disable_quit()
@@ -1661,6 +1662,7 @@ label monikaroom_greeting_opendoor:
 
     # reset outfit since standing is stock
     $ monika_chr.reset_outfit(False)
+    $ monika_chr.wear_acs(mas_acs_ribbon_def)
 
     call spaceroom(start_bg="bedroom",hide_monika=True, dissolve_all=True)
 

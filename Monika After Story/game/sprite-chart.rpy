@@ -817,6 +817,258 @@ init -5 python in mas_sprites:
         return sprite_map.get(sprite_name, None)
 
 
+    # special mas monika functions
+
+
+    def acs_rm_exit_pre_change(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs before exit point runs for acs
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc - acs location to rm this acs from
+        """
+        pass
+
+
+    def acs_rm_exit_pst_change(temp_space, moni_chr, rm_acs, acs_loc):
+        """
+        Runs after exit point runs runs for acs
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            rm_acs - acs we are removing
+            acs_loc -  acs location to rm this acs from
+        """
+        if store.mas_selspr.in_prompt_map(rm_acs.acs_type):
+            store.mas_selspr.set_prompt(rm_acs.acs_type, "wear")
+
+
+    def acs_wear_mux_pre_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs before mux type acs are removed
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_mux_pst_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after mux type acs removed, before insertion 
+
+        IN:
+            temp space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_entry_pre_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after insertion, before entry pooint
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASmonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        pass
+
+
+    def acs_wear_entry_pst_change(temp_space, moni_chr, new_acs, acs_loc):
+        """
+        Runs after entry point
+
+        IN:
+            temp_space - temp space
+            moni_chr - MASMonika object
+            new_acs - acs we are adding
+            acs_loc - acs location to wear this acs
+        """
+        if store.mas_selspr.in_prompt_map(new_acs.acs_type):
+            store.mas_selspr.set_prompt(new_acs.acs_type, "change")
+
+
+    def clothes_exit_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs pre clothes change code. This code is ran prior to clothes being
+        changed and prior to exit prog point
+
+        IN:
+            temp_space - temporary dictionary space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        pass
+
+
+    def clothes_exit_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after exit prog point is ran, before the actual change.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        desired_ribbon = prev_cloth.getprop("desired-ribbon")
+        if (
+                desired_ribbon is not None
+                and desired_ribbon in ACS_MAP
+                and moni_chr.is_wearing_hair_with_exprop("ribbon")
+        ):
+            temp_ribbon = temp_storage.get("hair.ribbon", None)
+            if temp_ribbon is None:
+                moni_chr.remove_acs(ACS_MAP[desired_ribbon])
+
+            else:
+                _acs_wear_if_wearing_acs(
+                    moni_chr,
+                    ACS_MAP[desired_ribbon],
+                    temp_ribbon
+                )
+
+
+    def clothes_entry_pre_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after change, before entry prog point.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        pass
+
+
+    def clothes_entry_pst_change(temp_space, moni_chr, prev_cloth, new_cloth):
+        """
+        Runs after entry prog point
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_cloth - current clothes
+            new_cloth - clothes we are changing to
+        """
+        desired_ribbon = new_cloth.getprop("desired-ribbon")
+        if (
+                desired_ribbon is not None
+                and desired_ribbon in ACS_MAP
+                and moni_chr.is_wearing_hair_with_exprop("ribbon")
+        ):
+            prev_ribbon = moni_chr.get_acs_of_type("ribbon")
+            if prev_ribbon != store.mas_acs_ribbon_blank:
+                temp_storage["hair.ribbon"] = prev_ribbon
+
+            moni_chr.wear_acs(ACS_MAP[desired_ribbon])
+
+    
+    
+    def hair_exit_pre_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs pre hair change code. This code is ran prior to hair being
+        changed and prior to exit prog point.
+
+        IN:
+            temp_space - temporary dictionary space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_exit_pst_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after exit prog point is ran, before the actual change.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_entry_pre_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after change, before entry prog point.
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            preV_hair - current hair
+            new_hair - hair we are changing to
+        """
+        pass
+
+
+    def hair_entry_pst_change(temp_space, moni_chr, prev_hair, new_hair):
+        """
+        Runs after entry prog point
+
+        IN:
+            temp_space - temp dict space
+            moni_chr - MASMonika object
+            prev_hair - current hair
+            new_hair - hair we are changing to
+        """
+        startup = temp_space.get("startup", False)
+
+        if new_hair.hasprop("ribbon"):
+            # new hair is enabled for ribbon
+
+            if new_hair.hasprop("ribbon-restore"):
+                temp_ribbon = temp_storage.get("hair.ribbon", None)
+
+                # dont force ribbon on startup
+                if not startup and temp_ribbon is not None:
+                    # force ribbon means that we need to force a ribbon
+                    _acs_wear_if_not_wearing_type(
+                        moni_chr,
+                        "ribbon",
+                        temp_ribbon
+#                        temp_storage.get(
+#                            "hair.ribbon",
+#                            store.mas_acs_ribbon_def
+#                        )
+                    )
+
+            elif new_hair.hasprop("ribbon-off"):
+                # take ribbon off for this hairstyle
+                _acs_ribbon_save_and_remove(moni_chr)
+
+            if not moni_chr.is_wearing_clothes_with_exprop("baked outfit"):
+                # unlock selector for ribbons if you have more than one
+                store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+
+            # also change name of the ribbon select prompt
+            if moni_chr.is_wearing_acs_type("ribbon"):
+                store.mas_selspr.set_prompt("ribbon", "change")
+            else:
+                store.mas_selspr.set_prompt("ribbon", "wear")
+
+        else:
+            # new hair not enabled for ribbon
+            _acs_ribbon_save_and_remove(moni_chr)
+
+
     # sprite maker functions
 
 
@@ -2500,10 +2752,54 @@ init -2 python:
             if self.lock_clothes and not startup:
                 return
 
+            # setup temp space
+            temp_space = {
+                "by_user": by_user,
+                "startup": startup,
+            }
+
             prev_cloth = self.clothes
+
+            # run pre clothes change logic
+            store.mas_sprites.clothes_exit_pre_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # exit point
             self.clothes.exit(self, new_clothes=new_cloth)
+
+            # post exit, pre change
+            store.mas_sprites.clothes_exit_pst_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # change
             self.clothes = new_cloth
+
+            # post change, pre entry
+            store.mas_sprites.clothes_entry_pre_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
+
+            # entry point
             self.clothes.entry(self, prev_clothes=prev_cloth)
+
+            # post entry point
+            store.mas_sprites.clothes_entry_pst_change(
+                temp_space,
+                self,
+                prev_cloth,
+                new_cloth
+            )
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
@@ -2526,10 +2822,54 @@ init -2 python:
             if self.lock_hair and not startup:
                 return
 
+            # setup temp space
+            temp_space = {
+                "by_user": by_user,
+                "startup": startup,
+            }
+
             prev_hair = self.hair
+
+            # run pre hair change logic
+            store.mas_sprites.hair_exit_pre_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # exit point
             self.hair.exit(self, new_hair=new_hair)
+
+            # post exit , pre hair change
+            store.mas_sprites.hair_exit_pst_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # change
             self.hair = new_hair
+
+            # post change, pre entry
+            store.mas_sprites.hair_entry_pre_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
+
+            # entry point
             self.hair.entry(self, prev_hair=prev_hair)
+
+            # post entry point
+            store.mas_sprites.hair_entry_pst_change(
+                temp_space,
+                self,
+                prev_hair,
+                new_hair
+            )
 
             if by_user is not None:
                 persistent._mas_force_hair = bool(by_user)
@@ -2725,6 +3065,18 @@ init -2 python:
             return self.clothes.hasprop(exprop)
 
 
+        def is_wearing_hair_with_exprop(self, exprop):
+            """
+            Checks if we are currently wearing hair with the given exprop
+
+            IN:
+                exprop - extend property to check
+
+            RETURNS: True if wearing hair with the exprop, False if not
+            """
+            return self.hair.hasprop(exprop)
+
+
         def load(self, startup=False):
             """
             Loads hair/clothes/accessories from persistent.
@@ -2851,10 +3203,30 @@ init -2 python:
                 return
 
             acs_list = self.__get_acs(acs_type)
+            temp_space = {
+                "acs_list": acs_list,
+            }
 
             if acs_list is not None and accessory in acs_list:
+
+                # run pre exit point code
+                store.mas_sprites.acs_rm_exit_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run programming point
                 accessory.exit(self)
+
+                # run post exit code
+                store.mas_sprites.acs_rm_exit_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
                 # cleanup blacklist
                 if accessory.name in self.lean_acs_blacklist:
@@ -3098,11 +3470,31 @@ init -2 python:
                 return
 
             acs_list = self.__get_acs(acs_type)
+            temp_space = {
+                "acs_list": acs_list,
+            }
 
             if acs_list is not None and accessory not in acs_list:
+
+                # run pre exclusion code
+                store.mas_sprites.acs_wear_mux_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run mutual exclusion for acs
                 if accessory.mux_type is not None:
                     self.remove_acs_mux(accessory.mux_type)
+
+                # run post exclusion code
+                store.mas_sprites.acs_wear_mux_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
                 # now insert the acs
                 mas_insertSort(acs_list, accessory, MASAccessory.get_priority)
@@ -3113,8 +3505,24 @@ init -2 python:
                 if accessory.name in mas_sprites.lean_acs_blacklist:
                     self.lean_acs_blacklist.append(accessory.name)
 
+                # run pre entry
+                store.mas_sprites.acs_wear_entry_pre_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
+
                 # run programming point for acs
                 accessory.entry(self)
+
+                # run post entry
+                store.mas_sprites.acs_wear_entry_pst_change(
+                    temp_space,
+                    self,
+                    accessory,
+                    acs_type
+                )
 
 
         def wear_acs_pre(self, acs):
@@ -3567,6 +3975,17 @@ init -2 python:
             """
             if self.exit_pp is not None:
                 self.exit_pp(_monika_chr, **kwargs)
+
+
+        def getprop(self, prop, defval=None):
+            """
+            Gets the exprop
+
+            IN:
+                prop - prop to get
+                defval - default value to return if prop not found
+            """
+            return self.ex_props.get(prop, defval)
 
     
         def gettype(self):
