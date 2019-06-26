@@ -546,31 +546,6 @@ label monika_selfesteem:
             m 3hub "I'll always root for you, [player]!"
     return "derandom"
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="songwriting", 
-            category=["music"],
-            prompt="Songwriting", 
-            random=True, 
-            pool=True
-        )
-    )
-
-label monika_example:
-    m 3eub "Hey [player], have you ever written a song?"
-    m 3ekb "I've tried myself, but it's hard to do with my limited resources here."
-    m 4eub "You know, I used to write some from time to time in my sophmore years. I used to be pretty good."
-    m 3eksdla "But, I guess it's been a while, huh?"
-    m 1eksdla "A-anyway..."
-    m 5eubla "Would you ever consider writing me a song?"
-    m 1eub "I think that'd be a great gift, if you're planning for something!"
-    m 4eubfa "I'm just saying..."
-    return
-
-
-
 
 init 5 python:
     addEvent(
@@ -13191,3 +13166,30 @@ label mas_show_unseen:
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_songwriting", 
+            category=["music"],
+            prompt="Songwriting", 
+            random=True, 
+            pool=True
+        )
+    )
+
+label monika_songwriting:
+    m 3eub "Hey [player], have you ever written a song?"
+    m 3eua "I've tried myself, and it's pretty fun. It takes a bit of time to do, but the end product is definitely worth it!"
+    m 4eub "You know, I used to write songs all the time in my sophmore years. I used to be pretty good!"
+    m 3eksdla "But, I guess it's been a while, huh?"
+    m 3eub "Anyway..."
+    m 1esb "You know, I think it'd pretty cool if you ever dedicated a song to someone."
+    m 5eublb "Especially if that person is me, ehehe!"
+    m 4eub "We could even turn it into a duet!"
+    m 1eub "I can't wait to be able to sing with you when I come to your world!"
+    return
+
+
