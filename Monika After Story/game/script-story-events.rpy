@@ -196,7 +196,7 @@ label preferredname:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh... Okay then, if you say so."
@@ -276,12 +276,12 @@ label monika_changename:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player],'{/i} ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh, I see..."
             m 1eka "You don't have to be embarrassed, [player]."
-            m 1eua "Just let me know if you had a change of heart, ok?"
+            m 1eua "Just let me know if you had a change of heart, okay?"
     return
 
 default persistent._mas_player_bday = None
@@ -612,7 +612,7 @@ label unlock_piano:
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
-    m 1eka "For me, please~?"
+    m 1eka "For me, please?~"
     $persistent.game_unlocks['piano']=True
     return
 
@@ -1642,14 +1642,14 @@ label mas_bday_spent_time_with:
                 m 3hub "Most of them were really good and I really like them a lot!"
             # bads > than good
             else:
-                m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+                m 3rksdld "Though most of them were...{w}{i}questionable{/i}."
         else:
             # if good_gifts equal to 1
             if _good == 1:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
+                m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
     m 3hub "Let's do it again sometime soon, okay?"
     return
@@ -1923,7 +1923,7 @@ label mas_bday_pool_happy_bday:
         m 1ekbfa "I can't thank you enough for loving me this much..."
 
     else:
-        m 1wkb "Aww, [player]!"
+        m 1wkb "Awww, [player]!"
         m 1wub "You remembered my birthday...!"
         m 1wktpa "Oh gosh, I'm so happy that you remembered."
         m 1dktda "I feel like today is going to be such a special day~"
@@ -2375,13 +2375,11 @@ label mas_text_speed_enabler:
             $ persistent._mas_text_speed_enabled = True
 
             m 1eud "Oh, that's alright."
-            m "Regardless..."
+            m 2dsa "Regardless.{w=0.5}.{w=0.5}.{nw}"
 
     if not persistent._mas_pm_is_fast_reader:
         # this sets the current speed to default monika's speed
         $ preferences.text_cps = 30
-
-    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
 
     $ mas_enableTextSpeed()
 
@@ -2421,7 +2419,7 @@ init 5 python:
 
 label mas_bookmarks_notifs_intro:
     if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
-        m 3eub "Hey, [player]... {w=0.5}I have some new features to tell you about!"
+        m 3eub "Hey, [player]...{w=0.5} I have some new features to tell you about!"
 
         if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
             m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."

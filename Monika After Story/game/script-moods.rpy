@@ -141,7 +141,7 @@ label mas_mood_hungry:
     m 2lksdla "I don't want you to feel like I'm nagging when I say these kind of things, [player]."
     m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
-    m 1hua "Which means more time for us to spend together~!"
+    m 1hua "Which means more time for us to spend together!~"
     return
 
 init 5 python:
@@ -387,7 +387,7 @@ label mas_mood_scared:
     if not seen_event("monika_confidence"):
         m 2euc "No?"
         m 2lksdla "Guess that's for another time then."
-        m 1eka "Anyways…"
+        m 1eka "Anyway..."
     m 1eua "Keeping up one's appearance helps with faking your own confidence."
     m 3eua "And to do so, you need to maintain your heart rate by taking a deep breath until you calm down."
     if seen_event("monika_confidence_2"):
@@ -400,7 +400,7 @@ label mas_mood_scared:
     m 3eub "I'm serious!"
     m 3eua "You can try setting aside your work and do something else in the meantime."
     m "Procrastination isn't {i}always{/i} bad, you know?"
-    m 2esc "Besides…"
+    m 2esc "Besides..."
     m 2ekbfa "Your loving girlfriend believes in you, so you can face that anxiety head-on!"
     m 1hubfa "There's nothing to worry about when we're together forever~"
     return
@@ -455,7 +455,7 @@ init 5 python:
 
 label mas_mood_lucky:
     m 2tfc "You gotta ask yourself."
-    m 2tfu "{i}Do I feel lucky?{/i}"
+    m 2tfu "{i}Do I feel lucky{/i}?"
     m "Well..."
     m 4tku "Do ya, [player]?"
     m 1hub "Ahaha!"
@@ -483,7 +483,7 @@ label mas_mood_bored:
 
             "Well...":
                 $ mas_loseAffection()
-                m 2ekc "Oh... {w=1}I see."
+                m 2ekc "Oh...{w=1} I see."
                 m 2dkc "I didn't realize I was boring you..."
                 m 2eka "I'm sure we can find something to do..."
 

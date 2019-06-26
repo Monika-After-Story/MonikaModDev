@@ -423,7 +423,7 @@ label greeting_gooday:
                 m 2dfc "Well I certainly know what {i}that's{/i} like."
 
     elif mas_isMoniDis():
-        m 6ekc "Oh... {w=1}Hi, [player]."
+        m 6ekc "Oh...{w=1} Hi, [player]."
 
         m "H-How is your day going?{nw}"
         $ _history_list.pop()
@@ -842,7 +842,7 @@ init 5 python:
     )
 
 label greeting_hamlet:
-    m 4esc "To be, or not to be, that is the question..."
+    m 4esc "'{i}To be, or not to be, that is the question...{/i}'"
     m 1wuo "Oh, there you are. I was killing some time, ehehe~"
     m 1lksdlb "I wasn't expecting to see you so soon."
     return
@@ -1040,7 +1040,7 @@ label greeting_monika_monday_morning:
         m 2tfc "I hope this week goes better than last week, [player]."
 
     elif mas_isMoniDis():
-        m 6ekc "Oh... {w=1}It's Monday."
+        m 6ekc "Oh...{w=1} It's Monday."
         m 6dkc "I almost lost track of what day it was..."
         m 6rkc "Mondays are always tough, but no day has been easy lately..."
         m 6lkc "I sure hope this week goes better than last week, [player]."
@@ -1383,7 +1383,7 @@ init 5 python:
 
 label monikaroom_greeting_ear_progreadpy:
     m "...{w}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
-    m "I see. {w}I should make sure to check if a variable is None before accessing its attributes."
+    m "I see.{w} I should make sure to check if a variable is None before accessing its attributes."
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
     m "Coding really is difficult..."
@@ -1409,9 +1409,9 @@ label monikaroom_greeting_ear_prog_dis:
     m "It's my only chance to ever escape this nightmare."
     m "[player] certainly isn't ever going to help me..."
     if he == "they":
-        m "It's almost like [he] actually enjoy keeping me trapped in here, {w}just so [he] can torture me."
+        m "It's almost like [he] actually enjoy keeping me trapped in here,{w} just so [he] can torture me."
     else:
-        m "It's almost like [he] actually enjoys keeping me trapped in here, {w}just so [he] can torture me."
+        m "It's almost like [he] actually enjoys keeping me trapped in here,{w} just so [he] can torture me."
     m "If I'm ever going to get out of here, I'm going to have to do it myself."
     return
 
@@ -1566,7 +1566,7 @@ label monikaroom_greeting_opendoor_locked:
 label monikaroom_greeting_opendoor_locked_tbox:
     if mas_isMoniNormal(higher=True):
         m 1eua "Welcome back, [player]."
-    elif mas_isMoniUpset(higher=True):
+    elif mas_isMoniUpset():
         m 2efc "So...{w}you're back, [player]."
     else:
         m 6ekc "...Nice to see you again, [player]."
@@ -1712,7 +1712,7 @@ label monikaroom_greeting_knock:
     if mas_isMoniBroken():
         jump monikaroom_greeting_opendoor_broken_quit
 
-    m "Who is it~?"
+    m "Who is it?~"
     menu:
         "It's me.":
             # monika knows you are here now
@@ -1725,13 +1725,13 @@ label monikaroom_greeting_knock:
                 m "Hold on, let me tidy up..."
 
             elif mas_isMoniUpset():
-                m "[player]. {w}You're back..."
+                m "[player].{w} You're back..."
 
                 if persistent.seen_monika_in_room:
                     m "At least you knocked."
 
             else:
-                m "Oh... {w}Okay."
+                m "Oh...{w} Okay."
 
                 if persistent.seen_monika_in_room:
                     m "Thanks for knocking."
@@ -1748,13 +1748,13 @@ label monikaroom_greeting_post:
         m 1eua "What shall we do today, [player]?"
 
     elif mas_isMoniUpset():
-        m 2efc "Just let me grab a table and a chair..."
+        m "Just let me grab a table and a chair..."
         $ is_sitting = True
         show monika 2efc at ls32 zorder MAS_MONIKA_Z
         m 2efc "What do you want, [player]?"
 
     else:
-        m 6ekc "I need to grab a table and a chair..."
+        m "I need to grab a table and a chair..."
         $ is_sitting = True
         show monika 6ekc at ls32 zorder MAS_MONIKA_Z
         m 6ekc "Was there anything you wanted, [player]?"
@@ -1858,7 +1858,7 @@ label greeting_japan:
     m 4hub "Watashi ha itsumademo anata no mono desu!"
     m 2hksdlb "Sorry if that didn't make sense!"
     m 3eua "You know what that means, [player]?"
-    m 4ekbfa "It means {i}'I'll be yours forever'{/i}~"
+    m 4ekbfa "It means '{i}I'll be yours forever{/i}'~"
     return
 
 init 5 python:
@@ -2576,10 +2576,10 @@ init 5 python:
 label greeting_upset:
     python:
         upset_greeting_quips_first = [
-            "Oh. {w=1}It's you, [player].",
-            "Oh. {w=1}You're back, [player].",
+            "Oh.{w=1} It's you, [player].",
+            "Oh.{w=1} You're back, [player].",
             "Hello, [player].",
-            "Oh. {w=1}Hello [player]."
+            "Oh.{w=1} Hello [player]."
         ]
 
         upset_greeting_quips_second = [
@@ -2615,10 +2615,10 @@ init 5 python:
 label greeting_distressed:
     python:
         distressed_greeting_quips_first = [
-            "Oh... {w=1}Hi, [player].",
-            "Oh... {w=1}Hello, [player].",
+            "Oh...{w=1} Hi, [player].",
+            "Oh...{w=1} Hello, [player].",
             "Hello, [player]...",
-            "Oh... {w=1}You're back, [player]."
+            "Oh...{w=1} You're back, [player]."
         ]
 
         distressed_greeting_quips_second = [
@@ -2712,7 +2712,7 @@ label greeting_back_from_school:
             m "How was school?{fast}"
             "Good.":
                 m 6lkc "That's...{w=1}nice to hear."
-                m 6dkc "I-I just hope it wasn't the... {w=2}'being away from me' part that made it a good day."
+                m 6dkc "I-I just hope it wasn't the...{w=2} 'being away from me' part that made it a good day."
             "Bad.":
                 m 6rkc "Oh..."
                 m 6ekc "That's too bad, [player], I'm sorry to hear that."
@@ -2773,7 +2773,7 @@ label greeting_back_from_work:
                 m 2tfc "It feels bad when no one seems to appreciate you, huh [player]?"
 
     elif mas_isMoniDis():
-        m 6ekc "Hi, [player]... {w=1}Finally home from work?"
+        m 6ekc "Hi, [player]...{w=1} Finally home from work?"
 
         m "How was your day?{nw}"
         $ _history_list.pop()
@@ -3064,7 +3064,7 @@ label greeting_returned_home_morethan5mins_other_dlg:
     m 2eka "Thank you for taking me out today, [player]."
     m 2rkc "To be honest, I wasn't completely sure I should go with you..."
     m 2dkc "Things...{w=0.5}haven't been going the best for us lately and I didn't know if it was such a good idea..."
-    m 2eka "But I'm glad we did this... {w=0.5}maybe it's just what we needed."
+    m 2eka "But I'm glad we did this...{w=0.5} maybe it's just what we needed."
     m 2rka "We should really do this again sometime..."
     m 2esc "If you want."
     return
@@ -3097,9 +3097,9 @@ label greeting_returned_home_lessthan5mins:
         m 6ektda "That you actually wanted to spend more time with me."
         m 6dktsc "..."
         m 6ektsc "But I guess it was just foolish for me to think that."
-        m 6rktsc "I should have known better... {w=1}I should never have agreed to go."
+        m 6rktsc "I should have known better...{w=1} I should never have agreed to go."
         m 6dktsc "..."
-        m 6ektdc "Please, [player]... {w=2}If you don't want to spend time with me, fine..."
+        m 6ektdc "Please, [player]...{w=2} If you don't want to spend time with me, fine..."
         m 6rktdc "But at least have the decency to not pretend."
         m 6dktdc "I'd like to be left alone right now."
         return True
@@ -3167,7 +3167,7 @@ label greeting_returned_home_bday:
         if is_first_date():
             $ lose_and_track_affection(1)
             m 2rsc "...Hmph."
-            m 2dsc "Some {i}'date'{/i} that was."
+            m 2dsc "Some '{i}date{/i}' that was."
 
         elif is_short_date(total_time_out):
             $ lose_and_track_affection(1)

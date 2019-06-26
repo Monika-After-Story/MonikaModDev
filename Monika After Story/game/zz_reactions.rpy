@@ -678,7 +678,7 @@ label mas_reaction_gift_starter_generic:
 # TODO: if we need this to be multipled then we do it
 
 label mas_reaction_gift_starter_bday:
-    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
@@ -692,7 +692,7 @@ label mas_reaction_gift_starter_bday:
     return
 
 label mas_reaction_gift_starter_neutral:
-    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     m 1sua "Now, let's see what's inside?"
@@ -700,7 +700,7 @@ label mas_reaction_gift_starter_neutral:
 
 # d25
 label mas_reaction_gift_starter_d25:
-    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A present? For me?"
     if mas_getGiftStatsRange(mas_d25g_start,mas_d25+datetime.timedelta(days=1))[0] == 0:
@@ -713,7 +713,7 @@ label mas_reaction_gift_starter_d25:
 
 #f14
 label mas_reaction_gift_starter_f14:
-    m 1sublo ". {w=0.7}. {w=0.7}. {w=1}"
+    m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
     m "T-{w=1}This is..."
     m "A gift? For me?"
     if mas_getGiftStatsForDate(mas_f14) == 0:
@@ -1225,7 +1225,7 @@ label mas_reaction_candycorn:
     $ times_candy_given = mas_getGiftStatsForDate("mas_reaction_candycorn")
     if times_candy_given == 0:
         $ mas_gainAffection(3,bypass=True)
-        m 1wua "Oh... {w=1}What's this?"
+        m 1wua "Oh...{w=1} What's this?"
         m 1eka "Aww did you get me candy, [player]?"
         m 1hua "Yay!"
         m 3eub "Let's see what you got for me..."
@@ -1250,7 +1250,7 @@ label mas_reaction_candycorn:
         $ mas_loseAffection(10)
         m 2wfw "[player]!"
         m 2tfc "I really tried not to be rude about this, but..."
-        m 2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyways."
+        m 2tfc "I keep telling you I don't like candy corn and you just keep giving it to me anyway."
         m 2rfc "It's starting to feel like you're just trying to mess with me at this point."
         m 2tkc "So please, either find me some other kind of candy or just stop."
     else:

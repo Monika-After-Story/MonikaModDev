@@ -186,7 +186,7 @@ init 5 python:
     del rules
 
 label bye_leaving_already:
-    m 1tkc "Aww, leaving already?"
+    m 1tkc "Aw, leaving already?"
     m 1eka "It's really sad whenever you have to go..."
     m 3eua "Just be sure to come back as soon as you can, okay?"
     m "I love you so much, [player]. Stay safe!"
@@ -353,7 +353,7 @@ label bye_prompt_to_class:
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
-            m 1eub "Aww, going already?"
+            m 1eub "Aw, going already?"
             m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [player]."
             m 2eka "You're so sweet for seeing me even when you have so little time."
@@ -409,7 +409,7 @@ label bye_prompt_to_work:
     $ session_time = mas_getSessionLength()
     if mas_isMoniNormal(higher=True):
         if session_time < datetime.timedelta(minutes=20):
-            m 2eka "Aww, okay! Just checking in on me before heading out?"
+            m 2eka "Aw, okay! Just checking in on me before heading out?"
             m 3eka "You must be really short on time if you're leaving already."
             m "It was really sweet of you to see me, even when you're so busy!"
             m 3hub "Work hard, [player]! Make me proud!"
@@ -490,7 +490,7 @@ label bye_prompt_sleep:
         if mas_isMoniNormal(higher=True):
             m 1eua "Alright, [player]."
             m 3eka "But you should sleep a little earlier next time."
-            m 1hua "Anyway, good night!"
+            m 1hua "Anyway, goodnight!"
 
         elif mas_isMoniUpset():
             m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
@@ -588,8 +588,8 @@ label bye_prompt_sleep:
                     m "Thanks, [player]."
                     return
                 "Sorry, I'm really tired.":
-                    m 1eka "Aww, that's okay."
-                    m 1hua "Good night, [player]."
+                    m 1eka "Aw, that's okay."
+                    m 1hua "Goodnight, [player]."
                 # TODO: now that is tied we may also add more dialogue?
                 "No.":
                     $ mas_loseAffection()
@@ -778,7 +778,7 @@ label bye_long_absence:
     if mas_absence_counter:
         jump bye_long_absence_2
     $ persistent._mas_long_absence = True
-    m 1ekc "Aww...that's pretty saddening..."
+    m 1ekc "Aw...that's pretty saddening..."
     m 1eka "I really am going to miss you [player]!"
     m 3rksdla "I'm not really sure what I'm going to do with myself while you're gone..."
     m 3esa "Thank you for warning me first, though. It really does help."
@@ -802,7 +802,7 @@ label bye_long_absence:
         "A week.":
             $ persistent._mas_absence_choice = "week"
             m 3euc "Yeah...that's about what I expected."
-            m 2lksdla "I {i}think{/i} I'll be ok waiting that long for you."
+            m 2lksdla "I {i}think{/i} I'll be okay waiting that long for you."
             m 1eub "Just come back to me as soon as you can, alright, my love?"
             m 3hua "I'm sure you'll make me proud!"
         "A couple of weeks.":
@@ -1137,7 +1137,7 @@ label bye_going_somewhere_leavemenu:
 
     else:
         # otherwise affection and higher:
-        m 2ekp "Aww..."
+        m 2ekp "Aw..."
         m 1hub "Fine, but you better take me next time!"
 
     m "Are you still going to go?"
