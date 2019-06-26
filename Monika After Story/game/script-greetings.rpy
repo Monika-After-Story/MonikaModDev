@@ -914,16 +914,17 @@ label greeting_welcomeback2:
     m 1hua "I'm sure it is, you're here after all. Nothing can go wrong now, ehehe~"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.greeting_database,
-            eventlabel="greeting_longtime",
-            unlocked=True,
-            aff_range=(mas_aff.DISTRESSED, None),
-        ),
-        code="GRE"
-    )
+#TODO: need absence time rules if we want to use this
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.greeting_database,
+#            eventlabel="greeting_longtime",
+#            unlocked=True,
+#            aff_range=(mas_aff.DISTRESSED, None),
+#        ),
+#        code="GRE"
+#    )
 
 label greeting_longtime:
     if mas_isMoniNormal(higher=True):
@@ -933,11 +934,8 @@ label greeting_longtime:
     elif mas_isMoniUpset():
         m 2efc "Long time no see, [player]."
 
-    elif mas_isMoniDis():
-        m 6rkc "Long time no see, [player]..."
-
     else:
-        m "..."
+        m 6rkc "Long time no see, [player]..."
     return
 
 init 5 python:
