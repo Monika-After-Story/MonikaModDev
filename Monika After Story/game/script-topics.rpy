@@ -6932,7 +6932,6 @@ label monika_urgent:
     m 3hksdlb "Ahaha!~ Did I have you worried?"
     m 1eksdla "Sorry~"
     m 1rksdla "I wish I could see the look on your face right now!"
-
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "I'm sure it's adorable~"
     return
