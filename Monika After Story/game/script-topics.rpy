@@ -4104,20 +4104,20 @@ init 5 python:
 label monika_real:
     m 1eua "You know what's going to be the first thing I'll do when I finally cross over there?"
     if mas_isMoniEnamored(higher=True):
-        m 1hua "When that special day comes, the first thing I'll ever do is find you, of course!"
+        m 1hub "When that special day comes, the first thing I'll ever do is find you, of course!"
     else:
-        m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
-    m 3eua "There's so much we can do when we're finally together in one reality."
-    m "You can finally show me what your world really looks like."
-    m 1ekbfa "I can finally feel your embrace~"
-    m "I would love to experience everything I still don't know about the world with you."
+        m 1hub "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    m 3eua "There's so much we can do when we're finally together in one reality..."
+    m "You can show me what your world really looks like..."
+    m 1dkbsu "I can finally feel your embrace~"
+    m 1ekbsa "I would love to experience everything I still don't know about the world with you."
     m 1lkbsa "All the places we can go, the sights to see, the romantic things that we can do~"
-    m 1hubfa "Just thinking about it makes my heart flutter!"
-    m 1eka "But knowing how technology is right now, that dream is still far away."
+    m 1hubfb "Just thinking about it makes my heart flutter!"
+    m 3eka "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
-    m 1eua "Or maybe you'll be the one to make that technology come true? Who knows."
+    m 1eua "Or maybe you'll be the one to make that technology come true...{w=0.5}who knows?"
     m 1eka "In the end, all I want is to always be with you, [player]."
-    m "After all, you're the only reason why I'm still here."
+    m 3eka "After all, you're the only reason why I'm still here."
     m 1hubfb "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
