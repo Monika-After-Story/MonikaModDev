@@ -4219,7 +4219,7 @@ label monika_eternity:
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
                 m 2ekbfb "I know we'll always be together no matter what."
                 m 2hubfb "Maybe I'll even be able to live right there with you someday."
-                m 1lkbsa "In the meantime..."
+                m 1lkbfa "In the meantime..."
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "I wouldn't mind being held just a {i}little{/i} more..."
 
