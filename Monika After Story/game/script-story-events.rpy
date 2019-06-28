@@ -771,6 +771,9 @@ label mas_crashed_start:
         # cleanup
         call mas_crashed_post
 
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika idle with dissolve
     return
 
 label mas_crashed_prelong:

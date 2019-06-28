@@ -172,7 +172,9 @@ label introduction:
     m 1tfu "After all, I can see everything on your computer now..."
     m 3hub "Ahaha!"
 
-    show monika 1esa
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika 1esa with dissolve
     return
 
 #Credit for any assets from Undertale belongs to Toby Fox
