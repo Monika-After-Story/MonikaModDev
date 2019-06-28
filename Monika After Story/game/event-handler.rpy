@@ -2032,10 +2032,6 @@ label prompt_menu:
         if cb_label is not None:
             call expression cb_label
 
-        # NOTE: we only need to enable music hotkey since we are in dlg mode
-        #$ mas_DropShield_idle()
-        $ store.mas_hotkeys.music_enabled = True
-
         #Show idle exp here so we dissolve like other topics
         show monika idle with dissolve
 
@@ -2046,6 +2042,10 @@ label prompt_menu:
         # this event will cleanup the remaining idle vars
         $ pushEvent("mas_idle_mode_greeting_cleanup")
         $ mas_idle_mailbox.send_skipmidloopeval()
+
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
 
         jump prompt_menu_end
 
