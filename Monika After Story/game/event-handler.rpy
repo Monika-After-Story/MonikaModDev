@@ -1986,7 +1986,7 @@ label call_next_event:
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
+        show monika idle at t11 zorder MAS_MONIKA_Z
 
     else:
         $ mas_DropShield_dlg()
@@ -2032,6 +2032,13 @@ label prompt_menu:
         if cb_label is not None:
             call expression cb_label
 
+        # NOTE: we only need to enable music hotkey since we are in dlg mode
+        #$ mas_DropShield_idle()
+        $ store.mas_hotkeys.music_enabled = True
+
+        #Show idle exp here so we dissolve like other topics
+        show monika idle with dissolve
+
         # clean up idle stuff
         $ persistent._mas_greeting_type = None
         $ store.mas_globals.in_idle_mode = False
@@ -2039,10 +2046,6 @@ label prompt_menu:
         # this event will cleanup the remaining idle vars
         $ pushEvent("mas_idle_mode_greeting_cleanup")
         $ mas_idle_mailbox.send_skipmidloopeval()
-
-        # NOTE: we only need to enable music hotkey since we are in dlg mode
-        #$ mas_DropShield_idle()
-        $ store.mas_hotkeys.music_enabled = True
 
         jump prompt_menu_end
 
