@@ -1678,15 +1678,15 @@ label ch30_reset:
                 mood_ev.unlocked = True
 
     # enabel snowing if its winter
-    python:
-        # TODO: snowing should also be controlled if you like it or not
-        if mas_isWinter():
-            if mas_is_snowing and not mas_weather_snow.unlocked:
-                mas_weather_snow.unlocked = True
-                store.mas_weather.saveMWData()
-                
-                mas_unlockEVL("monika_change_weather", "EVE")
-                renpy.save_persistent()
+#    python:
+#        # TODO: snowing should also be controlled if you like it or not
+#        if mas_isWinter():
+#            if mas_is_snowing and not mas_weather_snow.unlocked:
+#                mas_weather_snow.unlocked = True
+#                store.mas_weather.saveMWData()
+#
+#                mas_unlockEVL("monika_change_weather", "EVE")
+#                renpy.save_persistent()
 #        mas_is_snowing = mas_isWinter()
 #        if mas_is_snowing:
 #
