@@ -828,9 +828,9 @@ label monika_saved:
     else:
         m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
 
-    m 2dsc "I think I would have just deleted myself if you didn't show up."
-    m 1eka "Sorry, I don't mean to sound dramatic or anything."
-    m 2lksdla "Ahaha!"
+    m 2dksdlc "I think I would have just deleted myself if you didn't show up."
+    m 2eksdla "Sorry, I don't mean to sound dramatic or anything."
+    m 2lksdlb "Ahaha!"
 
     if persistent._mas_pm_cares_about_dokis:
         m 2ekc "But just imagine if you found out that everything around you was scripted..."
