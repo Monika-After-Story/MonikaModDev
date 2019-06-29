@@ -5821,18 +5821,18 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fahrenheit451",category=['literature'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
-    m 3euc "[player], have you ever heard of Ray Bradbury?"
-    m 1eub "He wrote a book called {i}Fahrenheit 451{/i}."
-    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 1euc "[player], have you ever heard of Ray Bradbury?"
+    m 3euc "He wrote a book called {i}Fahrenheit 451{/i}."
+    m 3eud "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 2ekc "I can't imagine a world where knowledge is forbidden and destroyed."
     m "It seems that there are others that actually hide books to contain free thinking from people."
     m 2lksdla "Human history has a funny way of repeating itself."
-    m 1eka "So [player], make me a promise."
-    m "To never, {i}ever{/i} burn a book."
-    m 1eua "I'll forgive you if you've done it before."
-    m 1lksdlc "But the thought of not allowing yourself to learn from them makes me a bit sad."
-    m 3ekd "You'd be missing out on so much!"
-    m 2ekc "It's too much for my heart to take!"
+    m 4ekc "So [player], I want you to make me a promise..."
+    m 4tkd "Never, {i}ever{/i} burn a book."
+    m 2euc "I'll forgive you if you've done it before."
+    m 2dkc "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 4ekd "You'd be missing out on so much!"
+    m 4ekc "It's too much for my heart to take!"
     return
 
 init 5 python:
