@@ -1499,9 +1499,9 @@ label monika_kiss:
         show monika 6ekbfa
         $ renpy.say(m, kiss_quip)
 
+        window hide
         menu:
             "I love you too, [m_name]~":
-                hide window
                 show monika 6ekbfa
                 pause 2.0
 
