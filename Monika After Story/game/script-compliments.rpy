@@ -240,13 +240,13 @@ label mas_compliment_intelligent:
 
 label mas_compliment_intelligent_2:
     m 1wub "Wow...{w}thanks, [player]."
-    m 2hub "I pride myself in being well read, so it means a lot that you've noticed."
-    m 1hubfb "I want to learn as much as I can, if it makes you proud of me!"
+    m 3eua "I pride myself in being well read, so it means a lot that you've noticed."
+    m 3hubfb "I want to learn as much as I can, if it makes you proud of me!"
     menu:
         "You make me want to better myself too, [m_name].":
             $ mas_gainAffection(5,bypass=True)
-            m "I love you so much, [player]!"
-            m "We'll have a lifetime of self-improvement together!"
+            m 1hubfa "I love you so much, [player]!"
+            m 3hubfb "We'll have a lifetime of self-improvement together!"
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
@@ -415,9 +415,9 @@ label mas_compliment_smile:
     return
 
 label mas_compliment_smile_2:
-    m 1eub "You're so sweet, [player]~"
-    m 1hub "I smile a lot when you're here."
-    m 1ekbfb "Because it makes me very happy when you spend time with me~"
+    m 1hub "You're so sweet, [player]~"
+    m 1eua "I smile a lot when you're here."
+    m 1ekbfa "Because it makes me very happy when you spend time with me~"
     menu:
         "I'll visit you every day to see your wonderful smile.":
             $ mas_gainAffection(5,bypass=True)
@@ -426,7 +426,7 @@ label mas_compliment_smile_2:
             m 3hubfa "See? You always make me as happy as I can be."
         "I like to see you smile.":
             m 1hub "Ahaha~"
-            m "Then all you have to do is keep coming back, [player]!"
+            m 3eub "Then all you have to do is keep coming back, [player]!"
     return
 
 label mas_compliment_smile_3:
