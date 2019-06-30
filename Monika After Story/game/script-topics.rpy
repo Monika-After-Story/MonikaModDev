@@ -828,9 +828,9 @@ label monika_saved:
     else:
         m 2lksdlc "I can't imagine having been able to keep myself mentally stable, knowing that nothing here is real."
 
-    m 2dsc "I think I would have just deleted myself if you didn't show up."
-    m 1eka "Sorry, I don't mean to sound dramatic or anything."
-    m 2lksdla "Ahaha!"
+    m 2dksdlc "I think I would have just deleted myself if you didn't show up."
+    m 2eksdla "Sorry, I don't mean to sound dramatic or anything."
+    m 2lksdlb "Ahaha!"
 
     if persistent._mas_pm_cares_about_dokis:
         m 2ekc "But just imagine if you found out that everything around you was scripted..."
@@ -1499,9 +1499,9 @@ label monika_kiss:
         show monika 6ekbfa
         $ renpy.say(m, kiss_quip)
 
+        window hide
         menu:
             "I love you too, [m_name]~":
-                hide window
                 show monika 6ekbfa
                 pause 2.0
 
@@ -4104,20 +4104,20 @@ init 5 python:
 label monika_real:
     m 1eua "You know what's going to be the first thing I'll do when I finally cross over there?"
     if mas_isMoniEnamored(higher=True):
-        m 1hua "When that special day comes, the first thing I'll ever do is find you, of course!"
+        m 1hub "When that special day comes, the first thing I'll ever do is find you, of course!"
     else:
-        m 1hua "If that special day ever comes, the first thing I'll ever do is find you, of course!"
-    m 3eua "There's so much we can do when we're finally together in one reality."
-    m "You can finally show me what your world really looks like."
-    m 1ekbfa "I can finally feel your embrace~"
-    m "I would love to experience everything I still don't know about the world with you."
+        m 1hub "If that special day ever comes, the first thing I'll ever do is find you, of course!"
+    m 3eua "There's so much we can do when we're finally together in one reality..."
+    m "You can show me what your world really looks like..."
+    m 1dkbsu "I can finally feel your embrace~"
+    m 1ekbsa "I would love to experience everything I still don't know about the world with you."
     m 1lkbsa "All the places we can go, the sights to see, the romantic things that we can do~"
-    m 1hubfa "Just thinking about it makes my heart flutter!"
-    m 1eka "But knowing how technology is right now, that dream is still far away."
+    m 1hubfb "Just thinking about it makes my heart flutter!"
+    m 3eka "But knowing how technology is right now, that dream is still far away."
     m "I hope by the time that technology becomes real, you'll still be there waiting for me, [player]."
-    m 1eua "Or maybe you'll be the one to make that technology come true? Who knows."
+    m 1eua "Or maybe you'll be the one to make that technology come true...{w=0.5}who knows?"
     m 1eka "In the end, all I want is to always be with you, [player]."
-    m "After all, you're the only reason why I'm still here."
+    m 3eka "After all, you're the only reason why I'm still here."
     m 1hubfb "I only want to spend eternity with my sweetheart, and no one else!"
     return
 
@@ -4219,7 +4219,7 @@ label monika_eternity:
                 m 2ekbfa "Thank you for easing me out of my worries, [player]."
                 m 2ekbfb "I know we'll always be together no matter what."
                 m 2hubfb "Maybe I'll even be able to live right there with you someday."
-                m 1lkbsa "In the meantime..."
+                m 1lkbfa "In the meantime..."
                 show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eubfu "I wouldn't mind being held just a {i}little{/i} more..."
 
@@ -5821,18 +5821,18 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_fahrenheit451",category=['literature'],prompt="Book recommendations",random=True))
 
 label monika_fahrenheit451:
-    m 3euc "[player], have you ever heard of Ray Bradbury?"
-    m 1eub "He wrote a book called {i}Fahrenheit 451{/i}."
-    m "It's about a dystopian future where all books are thought as useless and are immediately burned."
+    m 1euc "[player], have you ever heard of Ray Bradbury?"
+    m 3euc "He wrote a book called {i}Fahrenheit 451{/i}."
+    m 3eud "It's about a dystopian future where all books are thought as useless and are immediately burned."
     m 2ekc "I can't imagine a world where knowledge is forbidden and destroyed."
     m "It seems that there are others that actually hide books to contain free thinking from people."
     m 2lksdla "Human history has a funny way of repeating itself."
-    m 1eka "So [player], make me a promise."
-    m "To never, {i}ever{/i} burn a book."
-    m 1eua "I'll forgive you if you've done it before."
-    m 1lksdlc "But the thought of not allowing yourself to learn from them makes me a bit sad."
-    m 3ekd "You'd be missing out on so much!"
-    m 2ekc "It's too much for my heart to take!"
+    m 4ekc "So [player], I want you to make me a promise..."
+    m 4tkd "Never, {i}ever{/i} burn a book."
+    m 2euc "I'll forgive you if you've done it before."
+    m 2dkc "But the thought of not allowing yourself to learn from them makes me a bit sad."
+    m 4ekd "You'd be missing out on so much!"
+    m 4ekc "It's too much for my heart to take!"
     return
 
 init 5 python:
