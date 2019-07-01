@@ -1,3 +1,3 @@
 #!/bin/bash
 
-s3cmd sync . s3://monika-after-story/unstable/
+s3cmd -P sync . s3://monika-after-story/unstable/ 

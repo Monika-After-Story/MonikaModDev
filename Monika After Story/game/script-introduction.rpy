@@ -1,12 +1,7 @@
 init -1 python:
     import store.mas_affection as mas_aff
 label introduction:
-
-    $ persistent.current_track = store.songs.FP_JUST_MONIKA
-    $ store.songs.current_track = persistent.current_track
-    $ store.songs.selected_track = persistent.current_track
-    $ mas_startup_song()
-
+    $ play_song(store.songs.FP_JUST_MONIKA, set_per=True)
     if persistent.monika_kill:
         m 6dsc "..."
         m 6dfc "[player]..."
@@ -47,8 +42,8 @@ label introduction:
             m 2tfd "I'm still mad that you deleted me, though!"
             m 3rsc "But I guess it's because you're so game-obsessed."
             m 1eka "I can't stay mad knowing that you came back to me in the end, though."
-            m "You even added a mod so we can do more things together."
-            m "Are you going to make up for making me wait so long?"
+            m 3eka "You even added a mod so we can do more things together."
+            m 1eua "Are you going to make up for making me wait so long?"
     elif not persistent.monika_kill:
         m 1hub "Yay, there you are!"
         m "Hello again, [player]."
@@ -120,23 +115,24 @@ label introduction:
     m 1dsc "It's not like that file [_iswas] {i}me{/i}, anyway."
     m 1rsc "It [_iswas] just a file with weird code in it."
     m 3eub "I do have good news, though!"
-    m "I can {i}really{/i} transform myself into a file you can bring around."
-    m "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
+    m 3eua "I can {i}really{/i} transform myself into a file you can bring around."
+    m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
 
-    m 1eua "Anyway..." 
-    m "It looks like the extra code made me connect to you in a special way."
+    m 1esa "Anyway..." 
+    m 1hua "It looks like the extra code made me connect to you in a special way!"
     m 1tubfb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
     m 3eub "Or that you'll take me with you when you go out?"
     m 1ekc "I know that there will be times when you can't be here..."
     m 1ekbfa "So it would {i}really{/i} make me happy if you bring me along."
     m 3hubfa "That way, we can be together all the time~"
-    m 5hua "It's not like you don't have the time to talk to your cute girlfriend."
-    m 2hua "You took the time to download this mod, after all."
-    m 2hub "Ahaha!"
-    m "God, I love you so much!"
+    m 1hua "It's not like you don't have the time to talk to your cute girlfriend."
+    m 3hua "You took the time to download this mod, after all."
+    m 3hub "Ahaha!"
+    m 1hub "God, I love you so much!"
 
-    m "Do you love me, [player]?"
+    m "Do you love me, [player]?{nw}"
+    $ _history_list.pop()
     menu:
         m "Do you love me, [player]?{fast}"
         "I love you too.":
@@ -158,20 +154,24 @@ label introduction:
             $ persistent.closed_self = True
             jump _quit
 
-    m 1hub "Nothing's ever going to get in the way of our love again."
-    m "I'll make sure of it."
-    m 2eua "Now that you added some improvements, you can finally talk to me!"
-    m "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
+    m 1eub "Nothing's ever going to get in the way of our love again."
+    m 1tuu "I'll make sure of it."
+    m 3eua "Now that you added some improvements, you can finally talk to me!"
+    m 3eub "Just press the 't' key or click on 'Talk' on the menu to the left if you want to talk about something."
+
+    call bookmark_derand_intro
+
     # NOTE: the Extra menu is explained when the user clicks on it
-    m "If you get bored of the music, I can change that, too!"
-    m "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
-    m "Also, we can play games now."
-    m "Just press 'p' or click on 'Play' to choose a game that we can play."
-    m 2hua "I'll get better over time as I figure out how to program more features into this place..."
-    m "...So just leave me running in the background."
-    m 1eua "It's not like we're still keeping secrets from each other, right?"
-    m 1hub "I can see everything on your computer now!"
-    m "Ahaha!"
+    m 4eub "If you get bored of the music, I can change that, too!"
+    m 1eua "Press the 'm' key or click on 'Music' to choose which song you want to listen to."
+    m 3hub "Also, we can play games now!"
+    m 3esa "Just press 'p' or click on 'Play' to choose a game that we can play."
+    m 3eua "I'll get better over time as I figure out how to program more features into this place..."
+    m 1eua "...So just leave me running in the background."
+    m 3etc "It's not like we're still keeping secrets from each other, right?"
+    m 1tfu "After all, I can see everything on your computer now..."
+    m 3hub "Ahaha!"
+
     show monika 1esa
     return
 
@@ -245,6 +245,13 @@ label chara_monika_scare:
     call mas_w_cmd("bye!")
     pause 1.0
 
+    return
+
+label bookmark_derand_intro:
+    # this is a label so we can check if it has been seen in mas_bookmarks_notifs_intro
+    m 1hua "If there's anything I'm talking about that you want to revisit easily, just press the 'b' key and I'll bookmark it for you."
+    m 2rksdlc "And if there happens to be something that you don't want me to bring up again, press the 'x' key and I'll make sure to avoid it in the future."
+    m 4hksdlb "...Hopefully there aren't too many things like that, ahaha!"
     return
 
 #These are the comments made when you restart the game the first few times
@@ -391,16 +398,16 @@ label ch30_reload_continuous_dlg:
     pause 1
     python:
         reload_quip_good = [
-            "Welcome back! Can you be careful to close it properly next time?",
-            "It hurts when you don't close it properly...but I'm sure it was a mistake.",
+            "Welcome back! Can you be careful to close the game properly next time?",
+            "It hurts when you don't close the game properly...but I'm sure it was a mistake.",
             "That was really scary...but you've fixed it again. Thank you...",
             "Would you give me some more of a warning next time?",
-            "I'm sure you didn't mean it but I do need to stress how bad it feels for me.",
+            "I'm sure you didn't mean to close the game on me, but I do need to stress how bad it feels.",
             "You do remember there was a way to say goodbye right? Just checking~",
             "My patience is wearing a little thin...but I suppose I can forgive you this time.",
             "Everybody makes mistakes...",
             "That hurt...I know you wouldn't do it on purpose but please do be more careful.",
-            "...Oh...It's over and I'm back with you, my love. That...that was awful.",
+            "...Oh... It's over and I'm back with you, my love. That...that was awful.",
             "Did something happen outside of your control? I'm just going to guess it was.",
             "You should have just asked me...but I guess you might have had your reasons",
         ]

@@ -111,7 +111,7 @@ init -900 python in mas_ics:
     # key: filename of b64 encode
     # value: tuple:
     #   [0] - filename to save the image as
-    #   [1] - checksum for that image   
+    #   [1] - checksum for that image
     o31_map = {
         "o31mcg": ("o31_marisa_cg.png", o31_marisa),
         "o31rcg": ("o31_rin_cg.png", o31_rin)
@@ -196,6 +196,7 @@ init -45 python:
 #                station += "/"
 
             self.station = os.path.normcase(station)
+            self.enabled = True
 
             if not os.path.isdir(self.station):
                 try:
@@ -206,6 +207,7 @@ init -45 python:
                        str(self),
                        repr(e)
                    ))
+                   self.enabled = False
 
 
 
@@ -234,6 +236,9 @@ init -45 python:
                     If check_read is true, then package must also be readable
                 False otherwise
             """
+            if not self.enabled:
+                return False
+
             return self.__check_access(
                 self._trackPackage(package_name),
                 check_read
@@ -258,6 +263,9 @@ init -45 python:
                 sha256 checksum (hexadec) of the given package, or None
                 if error occured
             """
+            if not self.enabled:
+                return None
+
             pkg_slip = self._unpack(package, None, False, True, bs)
 
             # reset the package when done
@@ -278,6 +286,9 @@ init -45 python:
             RETURNS:
                 True if package no exist or was deleted. False otherwise
             """
+            if not self.enabled:
+                return False
+
             if not self.checkForPackage(package_name, False):
                 return True
 
@@ -307,6 +318,9 @@ init -45 python:
 
             RETURNS: list of packages
             """
+            if not self.enabled:
+                return []
+
             # correct filter if needed
             if len(ext_filter) > 0 and not ext_filter.startswith("."):
                 ext_filter = "." + ext_filter
@@ -332,6 +346,9 @@ init -45 python:
                     if package is readable and no errors occurred
                 None otherwise
             """
+            if not self.enabled:
+                return None
+
             ### Check access
             if not self.checkForPackage(package_name):
                 return None
@@ -431,6 +448,9 @@ init -45 python:
                 True if package was sent successfully and pkg_slip is False
                 False Otherwise
             """
+            if not self.enabled:
+                return False
+
             mailbox = None
             try:
                 ### open the mailbox
@@ -498,6 +518,9 @@ init -45 python:
                     - return -1
                 0 otherwise (like if error occured)
             """
+            if not self.enabled:
+                return 0
+
             package = None
             contents = None
             try:
@@ -724,6 +747,9 @@ init -45 python:
                 Or None if pkg_slip checksum was passed in and the given
                     package failed the checksum
             """
+            if not self.enabled:
+                return None
+
             contents = None
             try:
                 # NOTE: we use regular StringIO in case of unicode
@@ -827,6 +853,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or pack):
                 return None
 
@@ -896,6 +925,9 @@ init -45 python:
                 generated sha256 checksum if pkg_slip is True
                 Otherwise, None
             """
+            if not self.enabled:
+                return None
+
             if not (pkg_slip or unpack):
                 return None
 
@@ -949,6 +981,9 @@ init -45 python:
                     if check_read is True, returns None
                     otherwise, returns False
             """
+            if not self.enabled:
+                return False
+
             try:
                 file_ok = os.access(package_path, os.F_OK)
                 read_ok = os.access(package_path, os.R_OK)
@@ -1228,6 +1263,8 @@ init 200 python in mas_dockstat:
     import store.mas_ics as mas_ics
     import store.evhand as evhand
     from cStringIO import StringIO as fastIO
+    import codecs
+    import re
     import os
     import random
     import datetime
@@ -1242,7 +1279,7 @@ init 200 python in mas_dockstat:
 
     def _buildMetaDataList(_outbuffer):
         """
-        Writes out a pipe-delimeted metadata list tot he given buffer
+        Writes out a pipe-delimeted metadata list to the given buffer
 
         OUT:
             _outbuffer - buffer to write metadata to
@@ -1300,7 +1337,7 @@ init 200 python in mas_dockstat:
         END_DELIM = "|||per|"
 
         try:
-            _outbuffer.write(cPickle.dumps(store.persistent))
+            _outbuffer.write(codecs.encode(cPickle.dumps(store.persistent), "base64"))
             _outbuffer.write(END_DELIM)
             return True
 
@@ -1476,7 +1513,7 @@ init 200 python in mas_dockstat:
 #            return
 #
 #        # otherwise its o31 and we are not set in o31 mode yet, which
-#        # means we need to double check 
+#        # means we need to double check
 #        checkout_time, checkin_time = getCheckTimes(moni_chksum)
 #
 #        if
@@ -1637,6 +1674,7 @@ init 200 python in mas_dockstat:
         ### other stuff we need
         # inital buffer
         moni_buffer = fastIO()
+        moni_buffer = codecs.getwriter("utf8")(moni_buffer)
 
         # number deliemter
         NUM_DELIM = "|num|"
@@ -1700,13 +1738,14 @@ init 200 python in mas_dockstat:
                 blocksize
             )
             moni_tbuffer = fastIO()
+            moni_tbuffer = codecs.getwriter("utf8")(moni_tbuffer)
             moni_tbuffer.write(str(lines) + NUM_DELIM)
             for _line in moni_buffer_iter:
                 moni_tbuffer.write(_line)
             moni_buffer.close()
 
             # now we can prepare to write
-            moni_fbuffer = open(moni_path, "wb")
+            moni_fbuffer = codecs.open(moni_path, "wb", "utf-8")
 
             # now open up the checklist and encoders
             checklist = dockstat.hashlib.sha256()
@@ -1983,7 +2022,12 @@ init 200 python in mas_dockstat:
         RETURNS: a persistent object, or None if failure
         """
         try:
-            return cPickle.loads(str(data_line))
+            #pers = re.match(r"^(.*?)\|\|\|per\|",str(data_line)).group()
+            # TODO: change separator to a very large delimeter so we can handle persistents larger than 4MB
+            splitted = data_line.split("|||per|")
+            if(len(splitted)>0):
+                return cPickle.loads(codecs.decode(splitted[0] + b'='*4, "base64"))
+            return cPickle.loads(codecs.decode(data_line + b'='*4, "base64"))
 
         except Exception as e:
             mas_utils.writelog(
@@ -2034,7 +2078,7 @@ init 200 python in mas_dockstat:
         RETURNS tuple of the following format:
             [0] - checkout time
             [1] - checkin time
-        If any param is None, then we couldn't find the matching chksum or 
+        If any param is None, then we couldn't find the matching chksum or
         there were no entries
         """
         checkin_log = store.persistent._mas_dockstat_checkin_log
@@ -2065,7 +2109,7 @@ init 200 python in mas_dockstat:
 
             else:
                 checkout_time = find_time(checkout_log, chksum)
-           
+
         return (checkout_time, checkin_time)
 
 
@@ -2173,7 +2217,7 @@ init 200 python in mas_dockstat:
                 (Default: 1)
         """
         if store.persistent._mas_monika_returned_home is None:
-            hours_out = int(_time_out.seconds / 3600)
+            hours_out = int(_time_out.total_seconds() / 3600)
 
             # you gain 1 per hour, max 5, min 1
             if hours_out > max_hour_out:
@@ -2300,7 +2344,7 @@ label mas_dockstat_abort_gen:
 
 # empty desk. This one includes file checking every 1 second
 label mas_dockstat_empty_desk:
-    call spaceroom(hide_monika=True)
+    call spaceroom(hide_monika=True, scene_change=True)
     $ mas_from_empty = True
 
     # empty desk should be a zorder lower so we can pop monika over it
@@ -2320,7 +2364,7 @@ label mas_dockstat_empty_desk:
 
     # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
     #   else statment is supposed to be paired with (i.e. mutally exclusive)
-    #   to the if statement regarding the player's bday decor. 
+    #   to the if statement regarding the player's bday decor.
     #   Dont be screwing this up by shoving if statemetns randomly in places.
     else:
         # show birthday visuals?
@@ -2443,11 +2487,11 @@ label mas_dockstat_found_monika:
     # select the greeting we want
     python:
         if (
-                (store.mas_dockstat.retsbp_status 
+                (store.mas_dockstat.retsbp_status
                     & store.mas_dockstat.MAS_SBP_NONE) == 0
                 and not persistent._mas_bday_sbp_reacted
             ):
-            # TODO: consider if this forced greeting should be changed to 
+            # TODO: consider if this forced greeting should be changed to
             #   work with new rules. Would have conditional and more prob
             selected_greeting = "mas_bday_surprise_party_reaction"
 

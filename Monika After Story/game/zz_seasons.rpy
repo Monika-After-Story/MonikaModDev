@@ -16,7 +16,7 @@ default persistent._mas_current_season = 0
 
 init -1 python:
 
-    def mas_isSpring(_date=datetime.date.today()):
+    def mas_isSpring(_date=None):
         """
         Checks if given date is during spring
         iff none passed in, then we assume today
@@ -26,6 +26,9 @@ init -1 python:
         RETURNS:
             boolean showing whether or not it's spring right now
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         _date = _date.replace(datetime.date.today().year)
 
         if persistent._mas_pm_live_south_hemisphere:
@@ -33,7 +36,7 @@ init -1 python:
         else:
             return mas_spring_equinox <= _date < mas_summer_solstice
 
-    def mas_isSummer(_date=datetime.date.today()):
+    def mas_isSummer(_date=None):
         """
         Checks if given date is during summer
         iff none passed in, then we assume today
@@ -43,6 +46,9 @@ init -1 python:
         RETURNS:
             boolean showing whether or not it's summer right now
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         _date = _date.replace(datetime.date.today().year)
 
         if persistent._mas_pm_live_south_hemisphere:
@@ -50,7 +56,7 @@ init -1 python:
         else:
             return mas_summer_solstice <= _date < mas_fall_equinox
 
-    def mas_isFall(_date=datetime.date.today()):
+    def mas_isFall(_date=None):
         """
         Checks if given date is during fall
         iff none passed in, then we assume today
@@ -60,6 +66,9 @@ init -1 python:
         RETURNS:
             boolean showing whether or not it's fall right now
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         _date = _date.replace(datetime.date.today().year)
 
         if persistent._mas_pm_live_south_hemisphere:
@@ -67,7 +76,7 @@ init -1 python:
         else:
             return mas_fall_equinox <= _date < mas_winter_solstice
 
-    def mas_isWinter(_date=datetime.date.today()):
+    def mas_isWinter(_date=None):
         """
         Checks if given date is during winter
         iff none passed in, then we assume today
@@ -77,6 +86,9 @@ init -1 python:
         RETURNS:
             boolean showing whether or not it's winter right now
         """
+        if _date is None:
+            _date = datetime.date.today()
+
         _date = _date.replace(datetime.date.today().year)
 
         if persistent._mas_pm_live_south_hemisphere:
@@ -103,6 +115,9 @@ init 10 python in mas_seasons:
         Programming point for spring
         """
 
+        # show spring topics
+        store.mas_showEVL("monika_enjoyingspring", "EVE", _random=True)
+
         # hide winter topics
         store.mas_hideEVL("monika_snow", "EVE", derandom=True)
         store.mas_hideEVL("monika_sledding", "EVE", derandom=True)
@@ -119,6 +134,10 @@ init 10 python in mas_seasons:
         """
         Programming point for summer
         """
+        
+        # disable spring topics
+        store.mas_hideEVL("monika_enjoyingspring", "EVE", derandom=True)
+        
         # disbale hot choc
         store.persistent._mas_acs_enable_hotchoc = False
 
