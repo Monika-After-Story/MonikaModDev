@@ -973,7 +973,7 @@ label pick_a_game:
             pass
 #            m "Alright. Maybe later?"
 
-    show monika at tinstant zorder MAS_MONIKA_Z
+    show monika idle at tinstant zorder MAS_MONIKA_Z with dissolve
 
     $ mas_DropShield_dlg()
 
@@ -1641,7 +1641,7 @@ label ch30_reset:
 
             $ mas_rmallEVL("monika_rpy_files")
 
-        elif len(listRpy) != 0:
+        elif len(listRpy) != 0 and not mas_inEVL("monika_rpy_files"):
             $ queueEvent("monika_rpy_files")
 
         $ del rpyCheckStation

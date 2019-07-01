@@ -1981,7 +1981,7 @@ label call_next_event:
             jump call_next_event
 
         # return to normal pose
-        show monika idle at t11 zorder MAS_MONIKA_Z
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
@@ -2031,6 +2031,9 @@ label prompt_menu:
         # only call label if it exists
         if cb_label is not None:
             call expression cb_label
+
+        #Show idle exp here so we dissolve like other topics
+        show monika idle with dissolve
 
         # clean up idle stuff
         $ persistent._mas_greeting_type = None
