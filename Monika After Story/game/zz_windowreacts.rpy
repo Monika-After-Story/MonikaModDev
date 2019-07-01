@@ -75,15 +75,11 @@ init python:
             import subprocess
             subprocess.call(['notify-send', '--version'])
         except OSError as e:
-            if e.errno == os.errno.ENOENT:
-                #Command wasn't found
-                store.mas_windowreacts.can_show_notifs = False
-                store.mas_utils.writelog(
-                    "[WARNING]: notify-send not found, disabling notifications.\n"
-                )
-            else:
-                #Some other error happened, what was it?
-                raise e
+            #Command wasn't found
+            store.mas_windowreacts.can_show_notifs = False
+            store.mas_utils.writelog(
+                "[WARNING]: notify-send not found, disabling notifications.\n"
+            )
 
     #List of notif quips (used for topic alerts)
     #Windows
