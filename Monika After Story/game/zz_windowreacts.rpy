@@ -70,6 +70,21 @@ init python:
             #Now we set the hwnd of this temporarily
             tip.hwnd = None
 
+    elif renpy.linux:
+        try:
+            import subprocess
+            subprocess.call(['notify-send', '--version'])
+        except OSError as e:
+            if e.errno == os.errno.ENOENT:
+                #Command wasn't found
+                store.mas_windowreacts.can_show_notifs = False
+                store.mas_utils.writelog(
+                    "[WARNING]: notify-send not found, disabling notifications.\n"
+                )
+            else:
+                #Some other error happened, what was it?
+                raise e
+
     #List of notif quips (used for topic alerts)
     #Windows
     win_notif_quips = [
