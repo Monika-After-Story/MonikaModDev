@@ -3781,12 +3781,15 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if monika_chr.hair.name != "def":
+    if monika_chr.get_acs_of_type('ribbon') is None:
         m 1eua "Do you miss my ribbon, [player]?"
-        m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
-        return
 
-    if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
+        if monika_chr.hair.name != "def":
+            m 1hua "I can change my hairstyle and wear one whenever you want me to~"
+        else:
+            m 1hua "If you'd like me to wear one again, just ask~"
+
+    elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
         m 3eub "Have you ever wondered why I wear this ribbon, [player]?"
         m 3eua "It doesn't hold sentimental value to me or anything."
         m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
