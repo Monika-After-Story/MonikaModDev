@@ -199,7 +199,7 @@ label dev_hold_still_monika:
 init python:
     class MASClickZoneTester(renpy.Displayable):
 
-        import store.mas_interactions_boop as mib
+        import store.mas_interactions as mib
 
         def __init__(self):
             super(renpy.Displayable, self).__init__()

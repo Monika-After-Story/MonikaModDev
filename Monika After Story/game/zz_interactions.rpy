@@ -8,7 +8,7 @@
 #### BOOP
 
 
-init -10 python in mas_interactions_boop:
+init -10 python in mas_interactions:
 
     import cmath
 
@@ -86,6 +86,7 @@ init -10 python in mas_interactions_boop:
     FOCAL_POINT_UP = (640, 740)
 
     ZOOM_INC_PER = 0.04
+
 
     def vertex_list_from_zoom(zoom_level, zone_enum):
         """
@@ -201,16 +202,22 @@ init -10 python in mas_interactions_boop:
         return vx_list
 
 
-init python:
+init -9 python:
 
+    class MASBoopInteractable(MASInteractable):
+        """
+        Interactable for nose booping
+        """
+        import store.mas_interactions as smi
 
-    class MASInteractableDisplayable(renpy.Displayable):
-        # TODO
+        def __init__(self, chest_open):
+            """
+            contstructor
 
-        
-        testing = 10
-
-
+            IN:
+                chest_open - true if the chest is fully open at start
+            """
+            # the current zoom level effects what zones we get
 
 
 
