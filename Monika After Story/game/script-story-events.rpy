@@ -2458,12 +2458,12 @@ label mas_notification_windowreact:
     m "So if you want, I can let you know if I have something for us to talk about."
 
     if not store.mas_windowreacts.can_show_notifs:
-        m 3dkc "Wait a minute..."
-        m 3rssdlb "I can't seem to run notifications on your computer."
+        m 3dkc "Well, almost..."
+        m 3rssdlb "I can't run notifications on your computer."
         if renpy.linux:
-            m 1esc "I think that you're missing the notify-send command..."
+            m 1esc "Right now, you're missing the notify-send command..."
             m "Without that, I can't send you any notifications!"
-            m 1esd "So, [player], could you please try to install that for me?"
+            m 1esd "So, [player], could you please install that for me?"
         return
 
     m 3eub "Would you like to see how they work?{nw}"
