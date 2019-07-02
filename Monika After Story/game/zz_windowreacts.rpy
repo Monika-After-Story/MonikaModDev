@@ -428,7 +428,7 @@ init 5 python:
     )
 
 label monika_monikatwitter:
-    call display_notif(m_name, "so you are checking my twitter,\nsee anything you want to talk about [player]?",'Window Reactions')
+    call display_notif(m_name, "so you are checking my twitter ,\nsee anything you want to talk about [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
