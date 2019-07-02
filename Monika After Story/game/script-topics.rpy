@@ -3787,7 +3787,7 @@ label monika_ribbon:
         if monika_chr.hair.name != "def":
             m 3hua "I can change my hairstyle and wear one whenever you want me to~"
         else:
-            m 3hua "If you'd like me to wear one again, just ask~"
+            m 3hua "If you'd like me to wear one again, just ask, okay?~"
 
     elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
         m 1eub "Have you ever wondered why I wear this ribbon, [player]?"
