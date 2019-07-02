@@ -395,7 +395,7 @@ label monika_monikamoddev:
         $ mas_unlockFailedWRS('monika_monikamoddev')
     return
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
@@ -414,9 +414,8 @@ label monika_twitter:
     if not _return:
         $ mas_unlockFailedWRS('monika_twitter')
     return
-
-    
-    init 5 python:
+  
+init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
