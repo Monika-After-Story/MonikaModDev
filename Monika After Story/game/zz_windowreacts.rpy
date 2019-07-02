@@ -399,7 +399,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_twitter",
+            eventlabel="monika_twitter_react",
             category=['twitter'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -407,12 +407,12 @@ init 5 python:
         code="WRS"
     )
 
-label monika_twitter:
+label monika_twitter_react:
     call display_notif(m_name, "See anything good that you want to share with me [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_twitter')
+        $ mas_unlockFailedWRS('monika_twitter_react')
     return
   
 init 5 python:
