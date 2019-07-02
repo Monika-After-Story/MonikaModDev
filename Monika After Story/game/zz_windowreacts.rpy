@@ -324,7 +324,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_whatwatching",
+            eventlabel="mas_wrs_whatwatching",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -332,19 +332,19 @@ init 5 python:
         code="WRS"
     )
 
-label monika_whatwatching:
+label mas_wrs_whatwatching:
     call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_whatwatching')
+        $ mas_unlockFailedWRS('mas_wrs_whatwatching')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_lookingat",
+            eventlabel="mas_wrs_lookingat",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -352,7 +352,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_lookingat:
+label mas_wrs_lookingat:
     call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
 
     $ choice = random.randint(1,10)
@@ -379,7 +379,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_monikamoddev",
+            eventlabel="mas_wrs_monikamoddev",
             category=['monikamoddev'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -387,19 +387,19 @@ init 5 python:
         code="WRS"
     )
 
-label monika_monikamoddev:
+label mas_wrs_monikamoddev:
     call display_notif(m_name, "Awww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_monikamoddev')
+        $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
     
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_twitter_react",
+            eventlabel="mas_wrs_twitter",
             category=['twitter'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -407,19 +407,19 @@ init 5 python:
         code="WRS"
     )
 
-label monika_twitter_react:
+label mas_wrs_twitter:
     call display_notif(m_name, "See anything you want to share with me, [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_twitter_react')
+        $ mas_unlockFailedWRS('mas_wrs_twitter')
     return
   
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_monikatwitter",
+            eventlabel="mas_wrs_monikatwitter",
             category=['twitter', 'lilmonix3'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -427,11 +427,11 @@ init 5 python:
         code="WRS"
     )
 
-label monika_monikatwitter:
+label mas_wrs_monikatwitter:
     call display_notif(m_name, "I see you're checking my twitter, [player].\nSee anything you want to talk about?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_monikatwitter')
+        $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
     return
 
