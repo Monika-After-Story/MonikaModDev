@@ -394,3 +394,45 @@ label monika_monikamoddev:
     if not _return:
         $ mas_unlockFailedWRS('monika_monikamoddev')
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="monika_twitter",
+            category=['twitter'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label monika_twitter:
+    call display_notif(m_name, "See anything good that you want to share with me [player]?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_twitter')
+    return
+
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="monika_monikatwitter",
+            category=['twitter', 'lilmonix3'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label monika_monikatwitter:
+    call display_notif(m_name, "so you are checking my twitter,\nsee anything you want to talk about [player]?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_monikatwitter')
+    return
+
