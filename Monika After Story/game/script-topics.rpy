@@ -3785,13 +3785,13 @@ label monika_ribbon:
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
-            m 1hua "I can change my hairstyle and wear one whenever you want me to~"
+            m 3hua "I can change my hairstyle and wear one whenever you want me to~"
         else:
-            m 1hua "If you'd like me to wear one again, just ask~"
+            m 3hua "If you'd like me to wear one again, just ask~"
 
     elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
-        m 3eub "Have you ever wondered why I wear this ribbon, [player]?"
-        m 3eua "It doesn't hold sentimental value to me or anything."
+        m 1eub "Have you ever wondered why I wear this ribbon, [player]?"
+        m 1eua "It doesn't hold sentimental value to me or anything."
         m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
         m "It makes me look more unique."
         m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
