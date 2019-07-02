@@ -3781,7 +3781,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if monika_chr.is_wearing_acs_type('ribbon'):
+    if not monika_chr.is_wearing_acs_type('ribbon'):
         m 1eua "Do you miss my ribbon, [player]?"
 
         if monika_chr.hair.name != "def":
