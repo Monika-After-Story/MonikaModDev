@@ -408,7 +408,7 @@ init 5 python:
     )
 
 label monika_twitter_react:
-    call display_notif(m_name, "See anything good that you want to share with me [player]?",'Window Reactions')
+    call display_notif(m_name, "See anything you want to share with me, [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
