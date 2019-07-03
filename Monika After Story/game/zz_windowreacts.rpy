@@ -358,7 +358,7 @@ label mas_wrs_duolingo
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('notif_duolingo')
+        $ mas_unlockFailedWRS('mas_wrs_duolingo')
     return
 
 init 5 python:
