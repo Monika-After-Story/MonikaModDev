@@ -345,7 +345,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="notif_duolingo",
+            eventlabel="mas_wrs_duolingo",
             category=['duolingo'],
             rules={"skip alert": None},
             show_in_idle=True
