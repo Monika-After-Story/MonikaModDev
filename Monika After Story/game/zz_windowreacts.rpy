@@ -338,7 +338,7 @@ label mas_wrs_pinterest
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('monika_pinterest')
+        $ mas_unlockFailedWRS('mas_wrs_pinterest')
     return
 
 init 5 python:
