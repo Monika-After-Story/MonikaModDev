@@ -365,7 +365,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="notif_wikipedia",
+            eventlabel="mas_wrs_wikipedia",
             category=['wikipedia'],
             rules={"skip alert": None},
             show_in_idle=True
