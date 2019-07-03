@@ -378,7 +378,7 @@ label mas_wrs_wikipedia
 
     #Unlock again if we failed
     if not _return:
-        $ mas_unlockFailedWRS('notif_wikipedia')
+        $ mas_unlockFailedWRS('mas_wrs_wikipedia')
     return
 
 init 5 python:
