@@ -385,21 +385,6 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="reddit_rule34",
-            category=['reddit', 'ddlcrule34'],
-            rules={"skip alert": None},
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-label reddit_rule34:
-    call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
