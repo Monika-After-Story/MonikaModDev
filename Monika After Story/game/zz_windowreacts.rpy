@@ -381,7 +381,6 @@ label notif_wikipedia
         $ mas_unlockFailedWRS('notif_wikipedia')
     return
 
-
 init 5 python:
     addEvent(
         Event(
@@ -428,7 +427,6 @@ init 5 python:
         ),
         code="WRS"
     )
-
 
 label monika_whatwatching:
     call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
