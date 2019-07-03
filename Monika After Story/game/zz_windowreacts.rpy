@@ -353,7 +353,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_duolingo
+label mas_wrs_duolingo:
     call display_notif(m_name,"How is it with your progress in language, [player]?",'Window Reactions')
 
     #Unlock again if we failed
