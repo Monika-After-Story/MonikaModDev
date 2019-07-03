@@ -325,7 +325,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="notif_pinterest",
+            eventlabel="mas_wrs_pinterest",
             category=['pinterest'],
             rules={"skip alert": None},
             show_in_idle=True
