@@ -373,7 +373,7 @@ init 5 python:
         code="WRS"
     )
 
-label notif_wikipedia
+label mas_wrs_wikipedia
     call display_notif(m_name,"Wanna learn something new?",'Window Reactions')
 
     #Unlock again if we failed
