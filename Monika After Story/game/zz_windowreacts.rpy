@@ -394,3 +394,43 @@ label monika_monikamoddev:
     if not _return:
         $ mas_unlockFailedWRS('monika_monikamoddev')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="monika_sothisis",
+            category=['4chan'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label monika_sothisis:
+    call display_notif(m_name,"So this is the imageboard where this mod was conceived, huh?\nIt's... quite something, I must say.",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_sothisis')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="monika_pixiv",
+            category=['pixiv'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label monika_pixiv:
+    call display_notif(m_name,"I'm curious of what people have drawn, care to look for some pictures of me?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_pixiv')
+    return
