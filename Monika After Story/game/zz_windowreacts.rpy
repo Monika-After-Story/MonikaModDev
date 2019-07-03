@@ -333,7 +333,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_pinterest
+label mas_wrs_pinterest:
     call display_notif(m_name,"Something new today?",'Window Reactions')
 
     #Unlock again if we failed
