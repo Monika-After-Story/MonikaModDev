@@ -396,26 +396,6 @@ init 5 python:
 label reddit_rule34:
     call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
 
-    $ choice = random.randint(1,10)
-    if choice == 1:
-        $ queueEvent('monika_nsfw')
-
-    elif choice == 2:
-        $ queueEvent('monika_pleasure')
-
-    elif choice < 4:
-        show monika 1rsbssdlu
-        pause 5.0
-
-    elif choice < 7:
-        show monika 2tuu
-        pause 5.0
-
-    else:
-        show monika 2ttu
-        pause 5.0
-    return
-
 init 5 python:
     addEvent(
         Event(
