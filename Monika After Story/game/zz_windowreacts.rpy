@@ -77,8 +77,9 @@ init python:
         "Are you there, [player]?",
         "Can you come here for a second?",
         "[player], do you have a second?",
-        "I have something to tell you, [player]!",
         "Do you have a minute, [player]?",
+        "I have something to tell you, [player]!",
+        "I've got something to talk about, [player]!",
     ]
 
     #OSX/Linux
@@ -249,7 +250,7 @@ init python:
             body: notification body
         """
         os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
-    
+
     def mas_tryShowNotificationLinux(title, body):
         """
         Tries to push a notification to the notification center on Linux.
@@ -324,6 +325,102 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
+            eventlabel="notif_pinterest",
+            category=['pinterest'],
+            rules={"skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label notif_pinterest
+    call display_notif(m_name,"Something new today?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('monika_pinterest')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="notif_duolingo",
+            category=['duolingo'],
+            rules={"skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label notif_duolingo
+    call display_notif(m_name,"How is it with your progress in language, [player]?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('notif_duolingo')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="notif_wikipedia",
+            category=['wikipedia'],
+            rules={"skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label notif_wikipedia
+    call display_notif(m_name,"Wanna learn something new?",'Window Reactions')
+
+    #Unlock again if we failed
+    if not _return:
+        $ mas_unlockFailedWRS('notif_wikipedia')
+    return
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="reddit_rule34",
+            category=['reddit', 'ddlcrule34'],
+            rules={"skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label reddit_rule34:
+    call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
+
+    $ choice = random.randint(1,10)
+    if choice == 1:
+        $ queueEvent('monika_nsfw')
+
+    elif choice == 2:
+        $ queueEvent('monika_pleasure')
+
+    elif choice < 4:
+        show monika 1rsbssdlu
+        pause 5.0
+
+    elif choice < 7:
+        show monika 2tuu
+        pause 5.0
+
+    else:
+        show monika 2ttu
+        pause 5.0
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
             eventlabel="monika_whatwatching",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
@@ -331,6 +428,7 @@ init 5 python:
         ),
         code="WRS"
     )
+
 
 label monika_whatwatching:
     call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
