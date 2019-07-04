@@ -504,7 +504,7 @@ label greeting_o31_rin:
 
     else:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
-        m 1hub "Hi [player]!"
+        m 1hub "Hi, [player]!"
         hide emptydesk
         m 3hub "Do you like my costume?"
 
