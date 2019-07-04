@@ -428,7 +428,7 @@ init 5 python:
     )
 
 label mas_wrs_pixiv:
-    call display_notif(m_name,"I'm curious of what people have drawn, care to look for some pictures of me?",'Window Reactions')
+    call display_notif(m_name,"I'm curious to see what people have drawn, care to look for some pictures of me, [player]?",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
