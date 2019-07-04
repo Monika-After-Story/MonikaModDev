@@ -13034,6 +13034,7 @@ label monika_althistory:
     m "A Roman historian named Livy contemplated a scenario in his history book, '{i}Ab Urbe Condita Libri{/i}', where Alexander the Great decided to expand north instead of Persia."
     m "One of the better known contemporary examples is Robert Harris' detective novel '{i}Fatherland{/i}' which depicts a world where the Third Reich won the Second World War."
     m "Each of these works are characterized by having one or multiple points of divergence from original timeline, which influence many other subsequent events."
+    m "This ultimately leads to the butterfly effect, which negates the existence of many other events, since the circumstances behind them may simply no longer exist."
     m "That makes me wonder... if some major events went differently in your world, would this game still be created?"
     m "Even so, the entire concept could be entirely different... perhaps I wouldn't be able to have my epiphany like I did or even not exist at all."
     m "That means we wouldn't be able to meet, either. It's a terrifying thought..."
