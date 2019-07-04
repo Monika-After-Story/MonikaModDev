@@ -13017,6 +13017,33 @@ label monika_unknown:
     return
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel='monika_althistory',
+            prompt="Alternate history",
+            category=['literature','media'],
+            random=True
+        )
+    )
+
+label monika_althistory:
+    m "Say, [player], are you familiar with the concept of alternate history?"
+    m "It's a genre of speculative fiction that focuses on 'what if' scenarios where a certain event at a critical point of history happened differently."
+    m "While the genre itself became popular only recently, the first known example dates back to the times of Ancient Rome..."
+    m "A Roman historian named Livy contemplated a scenario in his history book, Ab Urbe Condita Libri, where Alexander the Great decided to expand north instead of Persia."
+    m "One of the better known contemporary examples is Robert Harris' detective novel Vaterland which depicts a world where the Third Reich won the Second World War."
+    m "Each of these works are characterized by having one or multiple points of divergence from original timeline, which influence many other subsequent events."
+    m "That makes me wonder... if some major events went differently in your world, would this game still be created?"
+    m "Even so, the entire concept could be entirely different... perhaps I wouldn't be able to have my epiphany like I did or even not exist at all."
+    m "That means we wouldn't be able to meet, either. It's a terrifying thought..."
+    m "But here we are, you and I spending time together~"
+    m "Aside from being separated through realities, I'm really happy we're able to do so."
+    m "With that in mind, I can certainly say this is the best timeline!"
+    m "Ehehe~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
