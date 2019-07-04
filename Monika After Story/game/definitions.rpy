@@ -3420,7 +3420,7 @@ init -1 python:
                 (Default: 0)
 
         RETURNS:
-            True if the given tim eis within the bounds of the given hour/min
+            True if the given time is within the bounds of the given hour/min
             and Noon, False otherwise
         """
         return mas_isAnytoST(_time, _hour, _min, 12*60)
@@ -4009,25 +4009,25 @@ init 2 python:
         return
 
 
-    # NOTE: the hot choc logic is literally the same as coffee but with diff
-    # vars. We srs need to do consumable framework
+    # NOTE: the hot chocolate logic is literally the same as coffee but with different
+    # variables. We seriously need to do consumable framework
     # TODO: consumable framework before we do anymore related
     def mas_isHotChocTime(_time=None):
         """
-        Checks if its hot chocolate time for monika
+        Checks if it's hot chocolate time for monika
 
         IN:
             _time - time to check
                 If None, we use current time
-                (Defualt: None)
+                (Default: None)
 
         RETURNS:
-            true if its hot chocolate time, false if not
+            true if it's hot chocolate time, false if not
         """
         if _time is None:
             _time = datetime.datetime.now()
 
-        # monika drinks coffee between 6 am and noon
+        # monika drinks hot chocolate between 6 am and noon
         return (
             store.mas_coffee.HOTCHOC_TIME_START
             <= _time.hour <
@@ -4074,9 +4074,9 @@ init 2 python:
         drinking hot chocolate (hot chocolate finished drinking event)
 
         IN:
-            _start_time - time to start dirnking hot chocolate
+            _start_time - time to start drinking hot chocolate
                 If None, we use now
-                (Defualt: now)
+                (Default: now)
         """
         if _start_time is None:
             _start_time = datetime.datetime.now()
