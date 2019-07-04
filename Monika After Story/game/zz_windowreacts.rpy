@@ -408,7 +408,7 @@ init 5 python:
     )
 
 label mas_wrs_4chan:
-    call display_notif(m_name,"So this is the place where this mod all started, huh?\nIt's...really quite something.",'Window Reactions')
+    call display_notif(m_name,"So this is the place where this all started, huh?\nIt's...really quite something.",'Window Reactions')
 
     #Unlock again if we failed
     if not _return:
