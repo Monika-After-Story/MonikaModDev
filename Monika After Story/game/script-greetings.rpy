@@ -1003,7 +1003,7 @@ init 5 python:
     )
 
 label greeting_surprised:
-    m 1wuo "Oh, hello [player]!"
+    m 1wuo "Oh, hello, [player]!"
     m 1lksdlb "Sorry, you surprised me a little."
     m 1eua "How've you been?"
     return
@@ -2254,7 +2254,7 @@ label greeting_long_absence:
             m 1hua "Let's enjoy the rest of the day together."
 
         elif persistent._mas_absence_choice == "unknown":
-            m 1hua "Hello [player]!"
+            m 1hua "Hello, [player]!"
             m 3eka "Been busy the past few weeks?"
             m 1eka "Thanks for warning me that you would be gone."
             m 3ekd "I would be worried sick otherwise."
@@ -2584,7 +2584,7 @@ label greeting_upset:
             "Oh.{w=1} It's you, [player].",
             "Oh.{w=1} You're back, [player].",
             "Hello, [player].",
-            "Oh.{w=1} Hello [player]."
+            "Oh.{w=1} Hello, [player]."
         ]
 
         upset_greeting_quips_second = [

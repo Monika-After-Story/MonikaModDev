@@ -292,7 +292,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label mas_birthdate:
-    m 1euc "Hey [player], I've been thinking..."
+    m 1euc "Hey, [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
         $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
@@ -499,7 +499,7 @@ init 5 python:
     )
 
 label calendar_birthdate:
-    m 1lksdla "Hey [player]..."
+    m 1lksdla "Hey, [player]..."
     m 3eksdla "You may have noticed that my calendar was pretty empty..."
     m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
     m 3hub "Your birthday, ahaha!"
@@ -621,7 +621,7 @@ label random_limit_reached:
     $seen_random_limit=True
 
     #Notif so people don't get stuck here
-    call display_notif(m_name, "Hey [player]...", "Topic Alerts")
+    call display_notif(m_name, "Hey, [player]...", "Topic Alerts")
 
     python:
         limit_quips = [
@@ -2142,7 +2142,7 @@ label mas_steam_install_detected:
     $ filestruct = renpy.config.basedir[renpy.config.basedir.rfind('/') + 1:]
 
     if renpy.seen_label("mas_updater_steam_issue"):
-        m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
+        m 1ekd "Hey, [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
         m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
 
     else:
@@ -2359,7 +2359,7 @@ default persistent._mas_pm_is_fast_reader = None
 # True if fast reader, False if not
 
 label mas_text_speed_enabler:
-    m 1eua "Hey [player], I was wondering..."
+    m 1eua "Hey, [player], I was wondering..."
 
     m "Are you a fast reader?{nw}"
     $ _history_list.pop()

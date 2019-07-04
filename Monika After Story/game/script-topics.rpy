@@ -5389,7 +5389,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
 
 label monika_completionist:
-    m 1euc "Hey [player], this is a random question, but..."
+    m 1euc "Hey, [player], this is a random question, but..."
     m "What do you play video games for?"
     m 1eua "Like, what makes you keep playing?"
     m 3eua "Personally, I consider myself a bit of a completionist."
@@ -5420,7 +5420,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_icecream",category=['you'],prompt="Favorite ice cream",random=True))
 
 label monika_icecream:
-    m 3eua "Hey [player], what's your favorite kind of ice cream?"
+    m 3eua "Hey, [player], what's your favorite kind of ice cream?"
     m 4rksdla "And no, I'm not a type of ice cream, ehehe~"
     m 2hua "Personally, I just can't get enough of mint flavored ice cream!"
 
@@ -6901,7 +6901,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self-harm",random=True))
 
 label monika_selfharm:
-    m 1lksdlc "Hey [player]..."
+    m 1lksdlc "Hey, [player]..."
     m 1eksdld "Have you ever thought of self-harm?"
     m 2lksdld "You know..."
     m 2lksdlc "...like cutting yourself..."
@@ -7731,7 +7731,7 @@ label monika_concerts:
     # genres and the concert just referencing back to that?
     # this topic is starting to get too complicated
 
-    m 1euc "Hey [player], I've been thinking about something we could do together one day..."
+    m 1euc "Hey, [player], I've been thinking about something we could do together one day..."
     if (
             renpy.seen_label("monika_jazz")
             and renpy.seen_label("monika_orchestra")
@@ -8048,7 +8048,7 @@ label monika_timetravel:
     $ todays_date, todays_diff = store.mas_calendar.genFormalDispDate(datetime.date.today())
     $ one_year_later, year_later_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),1))
     $ one_year_earlier, year_earlier_diff = store.mas_calendar.genFormalDispDate(store.mas_utils.add_years(datetime.date.today(),-1))
-    m 3eub "Hey [player], you've heard of time travel, right?"
+    m 3eub "Hey, [player], you've heard of time travel, right?"
     m 1esb "It's a very common idea in stories with each author having their own take on it."
     m 1eua "How travelling in time works, whether or not you can change the past, what the consequences are for doing so..."
     m 1eub "It all differs from story to story."
@@ -9373,7 +9373,7 @@ default persistent._mas_pm_currently_bullied = None
 # True if currently being bullied, False if not
 
 label monika_bullying:
-    m 2ekc "Hey [player], there's something I want to talk to you about..."
+    m 2ekc "Hey, [player], there's something I want to talk to you about..."
     m 4ekc "I'm sure you've heard a lot about it lately, but bullying has become a real problem in today's society, especially among kids."
     m 4dkd "Some people are bullied every day until the point they just can't take it anymore."
     m 2rsc "Often times, bullying is dismissed by the people who have the ability to stop it as just...{w=0.5}'{i}kids being kids.{/i}'"
@@ -9515,7 +9515,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_procrastination",category=['advice'],prompt="Procrastination",random=True))
 
 label monika_procrastination:
-    m 1euc "Hey [player], have you ever had something to do that you found really boring..."
+    m 1euc "Hey, [player], have you ever had something to do that you found really boring..."
     m 3ekd "That rather than taking a lot of time to do it, you just keep putting it off?"
     m 3eud "Well, when you have a task to do like that, I find it's best to just do it as soon as possible and get it done."
     m 2tkc "When you put stuff off like that, it'll always be in the back of your mind."
@@ -10402,7 +10402,7 @@ init 5 python:
     )
 
 label monika_pygmalion:
-    m 1eua "Hey [player], have you ever read {i}The Metamorphoses{/i}?"
+    m 1eua "Hey, [player], have you ever read {i}The Metamorphoses{/i}?"
     m 3eua "It's a collection of poems by an ancient Roman poet named Ovid."
     m 1eud "There's one poem that really struck me, called {i}The Story of Pygmalion and the Statue.{/i}"
     m 1eua "It tells the story of a sculptor, Pygmalion, who fell in love with an ivory statue that he had sculpted."
@@ -12479,7 +12479,7 @@ init 5 python:
     )
 
 label monika_sledding:
-    m 1eua "Hey [player], do you know what would be fun to do together?"
+    m 1eua "Hey, [player], do you know what would be fun to do together?"
     m 3hub "Sledding!"
 
     if persistent._mas_pm_gets_snow is False:
@@ -12650,7 +12650,7 @@ init 5 python:
     )
 
 label monika_hemispheres:
-    m 1euc "Hey [player], I've been wondering..."
+    m 1euc "Hey, [player], I've been wondering..."
     m 1eua "Which hemisphere do you live in?"
     m 1eka "I know it's kind of a strange question..."
     m 3hub "But it gives me a better idea of how things work around you."
@@ -12816,7 +12816,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_robotbody",category=['monika','technology'],prompt="Robot Body",random=True))
 
 label monika_robotbody:
-    m 2euc "Hey [player], I've been thinking a lot about how I would be able to cross over into your reality..."
+    m 2euc "Hey, [player], I've been thinking a lot about how I would be able to cross over into your reality..."
     m 3eud "It hit me earlier that technology in the future would probably allow me to be uploaded into a mechanical body, rather than a human body like yours."
     m 1dkc "It makes me a little sad that I might not be a human like you are."
     m 1dkd "...And if not, I might not be treated like one either."
@@ -12894,7 +12894,7 @@ init 5 python:
     )
 
 label monika_sleigh:
-    m 3eub "Hey [player], a nice thought just crossed my mind..."
+    m 3eub "Hey, [player], a nice thought just crossed my mind..."
     m 1eua "Have you ever heard of carriage rides?"
     m 3hub "When I get out of here, we should totally go on one!"
     m "Oh, I bet it would be magical!"

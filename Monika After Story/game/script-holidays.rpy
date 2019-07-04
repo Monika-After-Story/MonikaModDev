@@ -2803,7 +2803,7 @@ default persistent._mas_pm_has_new_years_res = None
 
 label monika_resolutions:
     $ persistent._mas_nye_spent_nye = True
-    m 2eub "Hey [player]?"
+    m 2eub "Hey, [player]?"
     m 2eka "I was wondering..."
 
     m 3eub "Did you make any New Year's resolutions last year?{nw}"
@@ -3671,7 +3671,7 @@ init 5 python:
 
 label mas_player_bday_upset_minus:
     $ persistent._mas_player_bday_spent_time = True
-    m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
+    m 6eka "Hey, [player], I just wanted to wish you a Happy Birthday."
     m "I hope you have a good day."
     return
 

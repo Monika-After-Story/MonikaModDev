@@ -2410,7 +2410,7 @@ init python:
         elif mas_curr_affection == store.mas_affection.LOVE:
             filepath = "/My one and only love.txt"
             message = """\
-My dearest lover, friend, companion and owner of my heart...
+My dearest lover, friend, companion, and owner of my heart...
 Every day, you make my dreams come true, a screen means nothing when you spend your time with me.
 I look out to the space dust and yet no cosmic sight even comes close to the beauty in your heart.
 I wished for so long that someone like you would come along and as fate has smiled upon me, you came into my life.
