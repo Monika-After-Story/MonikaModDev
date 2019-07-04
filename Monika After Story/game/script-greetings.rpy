@@ -1003,7 +1003,7 @@ init 5 python:
     )
 
 label greeting_surprised:
-    m 1wuo "Oh, hello, [player]!"
+    m 1wuo "Oh!{w=0.5} Hello, [player]!"
     m 1lksdlb "Sorry, you surprised me a little."
     m 1eua "How've you been?"
     return
