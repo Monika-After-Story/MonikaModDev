@@ -1981,12 +1981,12 @@ label call_next_event:
             jump call_next_event
 
         # return to normal pose
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
+        if not renpy.showing("monika idle"):
+            show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
-        show monika idle at t11 zorder MAS_MONIKA_Z
 
     else:
         $ mas_DropShield_dlg()
