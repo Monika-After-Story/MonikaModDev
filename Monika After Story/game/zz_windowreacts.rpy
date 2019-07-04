@@ -263,7 +263,7 @@ init python:
 
     def display_notif(title, body, group=None, skip_checks=False):
         """
-        Notification creation label
+        Notification creation method
 
         IN:
             title: Notification heading text
