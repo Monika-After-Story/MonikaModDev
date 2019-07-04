@@ -347,7 +347,7 @@ init 5 python:
             persistent._mas_windowreacts_database,
             eventlabel="mas_wrs_duolingo",
             category=['duolingo'],
-            rules={"skip alert": None},
+            rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
