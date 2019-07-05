@@ -561,3 +561,46 @@ label mas_compliment_bestgirl:
     m 5ekbfa "But if you ask me, you made the right choice."
     m 5hubfa "...and I'll be forever grateful that you did~"
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_kind",
+            prompt="... You're really kind!",
+            unlocked=True
+        ),
+        code="CMP"
+    )
+
+label mas_compliment_kind:
+    if not renpy.seen_label("mas_compliment_kind_2"):
+        call mas_compliment_kind_2
+    else:
+        call mas_compliment_kind_3
+    return
+
+label mas_compliment_kind_2:
+    m 1wub "Wow...{w}thanks, [player]."
+    m 2hub "I've been trying to be as nice as I can, so it means a lot that you've noticed."
+    m 1hubfb "I want to be as kind as I can, if it makes you happy to be with me!"
+    menu:
+        "You make me feel loved and cared about, [m_name].":
+            $ mas_gainAffection(5,bypass=True)
+            m "I love you so much, [player]!"
+            m "We'll have a lifetime of being happy together!"
+        "I'll always be happy to be with you.":
+            $ mas_gainAffection(3,bypass=True)
+            m 1ekbfa "[player]..."
+        "You make me feel like a total jerk sometimes.":
+            $ mas_loseAffection(modifier=0.5)
+            m 1wkbsc "..."
+            m 2lkbsc "I'm sorry, that wasn't my intention..."
+    return
+label mas_compliment_kind_3:
+    python:
+        thanks_quip = renpy.random.choice(store.mas_compliments.thanking_quips)
+        thanks_quip = renpy.substitute(thanks_quip)
+    m 1ekbfa "[thanks_quip]"
+    m 1hub "Remember that I'll always be here to cheer you up!"
+    return
