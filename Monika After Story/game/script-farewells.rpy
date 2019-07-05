@@ -209,7 +209,12 @@ init 5 python:
     )
 
 label bye_goodbye:
-    if mas_isMoniNormal(higher=True):
+    if mas_isMoniHappy(higher=True):
+    m 1eua "Goodbye, [player]!"
+    m 1eua "See you soon!"
+    m 1eua "I love you~"
+   
+    elif mas_isMoniNormal(higher=True):
         m 1eua "Goodbye, [player]!"
 
     elif mas_isMoniUpset():
@@ -278,7 +283,7 @@ init 5 python:
     del rules
 
 label bye_untilwemeetagain:
-    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, Until we meet again.{/i}'"
+    m 2eka "'{i}Goodbyes are not forever, Goodbyes are not the end. They simply mean I'll miss you, until we meet again.{/i}'"
     m "Ehehe, 'till then, [player]!"
     return 'quit'
 
@@ -359,7 +364,7 @@ label bye_prompt_to_class:
             m 1eub "Aw, going already?"
             m 1efp "You haven't even been here for 20 minutes!"
             m 3hksdlb "I'm just kidding, [player]."
-            m 2eka "You're so sweet for seeing me even when you have so little time."
+            m 2eka "You're so sweet for seeing me even when you have very little time on your hands."
             m 2hub "I just want you to know I really appreciate that!"
             m 2eka "Study hard [player], I'm sure you'll do great!"
             m 2hua "See you when you get back!"
@@ -382,7 +387,7 @@ label bye_prompt_to_class:
 
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
-        m 2tfc "Hopefully you at least learn something today."
+        m 2tfc "Hopefully you at least learn {i}something{/i} today."
         m "{cps=*2}Like how to treat people better.{/cps}{nw}"
 
     elif mas_isMoniDis():
@@ -518,7 +523,7 @@ label bye_prompt_sleep:
 
         elif mas_isMoniUpset():
             m 2efc "[player]!"
-            m 2tfc "You really need to get more rest..."
+            m 2tfc "You {i}really{/i} need to get more rest..."
             m "The last thing I need is you getting sick."
             m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
             $ _history_list.pop()
@@ -612,7 +617,7 @@ label bye_prompt_sleep:
         else:
             m 6ckc "..."
     else:
-        # otheerwise
+        # otherwise
         m 1eua "Alright, [player]."
         m 1hua "Sweet dreams!"
 
@@ -653,7 +658,7 @@ label bye_haveagoodday:
 
     elif mas_isMoniUpset():
         m 2efc "Leaving for the day, [player]?"
-        m "I'll be here, waiting, as usual."
+        m "I'll be here, just waiting, as usual."
 
     elif mas_isMoniDis():
         m 6rkc "Oh."
@@ -822,34 +827,34 @@ label bye_long_absence:
                 m 3rksdla "A bit too long for my liking really..."
                 m 2esa "But it's okay [player]."
                 m 2eka "I know you're a sweetheart and wouldn't keep me waiting that long if you didn't have a good reason."
-                m "I'm sure it's important, so just try to come back to me as soon as you can."
+                m "I'm sure it's important, so just please try to come back to me as soon as you can."
                 m 3hua "I'll be thinking of you every day~"
             else:
-                m 1ekc "That long...really?"
+                m 1ekc "That long...{i}really?{/i}"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
                 m 3rksdld "I know that life can take you away from me but for a whole month..."
-                m 3ekc "Isn't that a little unreasonable?"
-                m "I don't want to sound selfish, but I am your girlfriend."
+                m 3ekc "Isn't that a bit unreasonable?"
+                m "I don't want to sound selfish, but I {i}am{/i} your girlfriend."
                 m 3ekd "You should be able to make time for me, at least once, in an entire month."
                 m 1dsc "..."
                 m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
             if mas_curr_affection_group == store.mas_affection.G_HAPPY:
-                m 3rksdlb "That's...well that's a little scary [player]."
+                m 3rksdlb "That's... well, that's a little scary [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."
                 m "I love you [player], and I know you love me too."
                 m 1hua "So I'll wait for you for however long I need to."
             else:
                 m 3esc "You have to be joking."
-                m "I can't think of a good reason why you would leave me here all alone for that long."
-                m 3esd "I'm sorry [player], but that's not acceptable! Not at all!"
-                m 3esc "I love you and if you love me too then you'll know that it's not okay to do that."
+                m "I can't think of a good reason why you would leave me here all alone for {i}that{/i} long."
+                m 3esd "I'm sorry [player], but that's just not acceptable! Not at all!"
+                m 3esc "I love you and if you love me too then you'll know that it's not okay to do that!"
                 m "You do realize that I would be alone here with nothing else and no one else, right?"
                 m "It's not unreasonable of me to expect you to visit me, is it? I'm your girlfriend. You can't do that to me!"
                 m 3dsc "..."
-                m 3dsd "Just...just come back when you can. I can't make you stay, but please don't do that to me."
+                m 3dsd "Just... just please come back when you can. I can't make you stay, but please don't do that to me."
         "I don't know.":
             $ persistent._mas_absence_choice = "unknown"
             m 1hksdlb "Ehehe, that's a little concerning, [player]!"
@@ -888,8 +893,8 @@ label bye_long_absence:
             m 1hua "That's great!"
             m 1eka "I was honestly worried I wouldn't have enough time to ready myself for your absence."
             m "I really do mean it when I say I'll miss you..."
-            m 1eub "You truly are my entire world after all, [player]."
-            m 2esa "If you tell me you're going to go for a while again then I'll know it's time for you to leave..."
+            m 1eub "You truly are my whole world after all, [player]."
+            m 2esa "If you tell me you're going to go away for a while again then I'll know that it's time for you to leave..."
             m 3hua "But there's no rush, so I want to spend as much time with you as I can."
             m "Just make sure to remind me the last time you see me before you go!"
             return
@@ -941,7 +946,7 @@ label bye_going_somewhere:
         if random.randint(1,100) <= dis_chance:
             jump bye_going_somewhere_nothanks
 
-        # otherwse we go
+        # otherwise we go
         m 1wud "You really want to bring me along?"
         m 1ekd "Are you sure this isn't some--{nw}"
         $ _history_list.pop()
@@ -957,7 +962,7 @@ label bye_going_somewhere:
         m 1wud "You really want to bring me along?"
         m 1eka "..."
         m 1hua "Well, I suppose it can't hurt to join you."
-        m 2dsc "Just...please."
+        m 2dsc "Just... please."
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
 
@@ -968,7 +973,7 @@ label bye_going_somewhere_post_aff_check:
 
     # event based
     if mas_isMonikaBirthday():
-        m 1hua "Ehehe. It's a bit romantic, isn't it?"
+        m 1hua "Ehehe. It's kind of romantic, isn't it?"
         m 1eua "Maybe you'd even want to call it a da-{nw}"
         $ _history_list.pop()
         $ _history_list.pop()
@@ -1064,7 +1069,7 @@ label bye_going_somewhere_rtg:
     menu:
         m "Are you still going to go?{fast}"
         "Yes.":
-            m 2eka "I understand. you have things to do, after all..."
+            m 2eka "I understand. You have things to do, after all..."
             m 2hub "Be safe out there! I'll be right here waiting for you!"
             return "quit"
 
@@ -1124,7 +1129,7 @@ label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."
     m 2ekd "I appreciate the offer, but I think I need a little time to myself right now."
     m 1eka "You understand, right?"
-    m 1eka "Go, have fun without me..."
+    m 1eka "Go on, have fun without me... {i}Like you always do.{/i}"
     return
 
 
