@@ -13038,7 +13038,7 @@ label monika_althistory:
     m "The book is set in alternate 1964 and follows the story of a Kripo detective who is investigating the murder of a high-ranking Nazi Party official..."
     m "As he uncovers more details, he realizes that he is caught up in a political scandal involving senior NSDAP officials who are apparently being murdered under staged circumstances."
     m "He ultimately discovers the truth behind the murders and the culprit is revealed to be Reinhard Heydrich, now leader of the SS, and he ordered the murders to cover up the Holocaust."
-    m "In our timeline, Heydrich was critically wounded in Prague by Czechoslovak assassins in 1942. This is an earliest point of divergence from the original timeline in the story."
+    m "In our timeline, Heydrich was fatally wounded in Prague by Czechoslovak assassins in 1942. This is an earliest point of divergence from the original timeline in the story."
     m "As the murderer is highly placed in the tyrannical government, it is him who ends up becoming the one pursuing and arresting the detective, not the other way around."
     m "As for what the points of divergence are, they are points where a major event differs from the original timeline, and it carries significant ramifications on subsequent events."
     m "This ultimately leads to the butterfly effect, which negates the existence of many other events, as the circumstances behind them may simply no longer exist."
