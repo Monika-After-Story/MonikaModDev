@@ -973,7 +973,8 @@ label pick_a_game:
             pass
 #            m "Alright. Maybe later?"
 
-    show monika idle at tinstant zorder MAS_MONIKA_Z with dissolve
+    if not renpy.showing("monika_idle"):
+        show monika idle at tinstant zorder MAS_MONIKA_Z with dissolve
 
     $ mas_DropShield_dlg()
 
