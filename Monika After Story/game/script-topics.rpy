@@ -5245,7 +5245,7 @@ label monika_penname:
                 m 1hua "I see! Do you want to tell me your new pen name?"
                 jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
-    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and wordplay in particular."
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
