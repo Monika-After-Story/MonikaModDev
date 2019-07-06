@@ -1928,9 +1928,9 @@ label call_next_event:
             ):
             #Create a new notif
             if renpy.windows:
-                $ display_notif(m_name, win_notif_quips, "Topic Alerts")
+                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                $ display_notif(m_name, other_notif_quips, "Topic Alerts")
+                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0

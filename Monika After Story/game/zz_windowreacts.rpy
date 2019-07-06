@@ -72,7 +72,7 @@ init python:
 
     #List of notif quips (used for topic alerts)
     #Windows
-    win_notif_quips = [
+    mas_win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
         "Can you come here for a second?",
@@ -82,7 +82,7 @@ init python:
     ]
 
     #OSX/Linux
-    other_notif_quips = [
+    mas_other_notif_quips = [
         "I've got something to talk about, [player]!",
         "I have something to tell you, [player]!",
         "Hey [player], I want to tell you something.",
