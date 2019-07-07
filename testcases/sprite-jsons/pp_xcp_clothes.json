@@ -1,0 +1,9 @@
+{
+    "type": 2,
+    "name": "_testingxcp",
+    "img_sit": "def",
+    "pose_map": {
+        "default": true,
+        "use_reg_for_l": true
+    }
+}

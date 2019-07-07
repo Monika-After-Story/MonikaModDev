@@ -1,0 +1,11 @@
+{
+    "dryrun": true,
+    "type": 0,
+    "name": "test",
+    "img_sit": "test",
+    "pose_map": {},
+    "select_info": {
+        "thumb": "test",
+        "group": "test"
+    }
+}

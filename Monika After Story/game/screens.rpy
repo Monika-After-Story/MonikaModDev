@@ -6,6 +6,35 @@ init -1 python:
     layout.QUIT_YES = "Please don't close the game on me!"
     layout.QUIT_NO = "Thank you, [player]!\nLet's spend more time together~"
 
+    # tooltips
+    layout.MAS_TT_SENS_MODE = (
+        "Sensitive mode removes content that may be disturbing, offensive, "
+        " or considered tasteless."
+    )
+    layout.MAS_TT_UNSTABLE = (
+        "Unstable mode downloads updates from the experimental unstable "
+        "branch of development. It is HIGHLY recommended to make a backup "
+        "of your persistents before enabling this mode."
+    )
+    layout.MAS_TT_REPEAT = (
+        "Enable this to let Monika repeat topics that you have already seen."
+    )
+    layout.MAS_TT_NOTIF = (
+        "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
+    )
+    layout.MAS_TT_NOTIF_SOUND = (
+        "If enabled, a custom notification sound will play for Monika's notifications "
+    )
+    layout.MAS_TT_G_NOTIF = (
+        "Enables notifications for the selected group."
+    )
+    layout.MAS_TT_ACTV_WND = (
+        "Enabling this will allow Monika to see your active window "
+        "and offer some comments based on what you're doing."
+    )
+
+
+
 
 init python in mas_layout:
     import store
@@ -17,7 +46,7 @@ init python in mas_layout:
     UNSTABLE = (
         "WARNING: Enabling unstable mode will download updates from the " +
         "experimental unstable branch. It is HIGHLY recommended to make a " +
-        "backup of your persistent before enabling this mode. Please report " +
+        "backup of your persistents before enabling this mode. Please report " +
         "issues found here with an [[UNSTABLE] tag."
     )
 
@@ -508,14 +537,23 @@ screen quick_menu():
             yalign 0.995
 
             #textbutton _("Back") action Rollback()
-            textbutton _("History") action ShowMenu('history')
+
+#            textbutton _("History") action ShowMenu('history')
+            textbutton _("History") action Function(_mas_quick_menu_cb, "history")
+
             textbutton _("Skip") action Skip() alternate Skip(fast=True, confirm=True)
             textbutton _("Auto") action Preference("auto-forward", "toggle")
-            textbutton _("Save") action ShowMenu('save')
-            textbutton _("Load") action ShowMenu('load')
+
+#            textbutton _("Save") action ShowMenu('save')
+            textbutton _("Save") action Function(_mas_quick_menu_cb, "save")
+
+#            textbutton _("Load") action ShowMenu('load')
+            textbutton _("Load") action Function(_mas_quick_menu_cb, "load")
             #textbutton _("Q.Save") action QuickSave()
             #textbutton _("Q.Load") action QuickLoad()
-            textbutton _("Settings") action ShowMenu('preferences')
+
+#            textbutton _("Settings") action ShowMenu("preferences")
+            textbutton _("Settings") action Function(_mas_quick_menu_cb, "preferences")
 
 
 ## This code ensures that the quick_menu screen is displayed in-game, whenever
@@ -584,6 +622,9 @@ screen navigation():
             textbutton _("Main Menu") action NullAction(), Show(screen="dialog", message="No need to go back there.\nYou'll just end up back here so don't worry.", ok_action=Hide("dialog"))
 
         textbutton _("Settings") action [ShowMenu("preferences"), SensitiveIf(renpy.get_screen("preferences") == None)]
+
+        if store.mas_windowreacts.can_show_notifs and not main_menu:
+            textbutton _("Alerts") action [ShowMenu("notif_settings"), SensitiveIf(renpy.get_screen("notif_settings") == None)]
 
         #textbutton _("About") action ShowMenu("about")
 
@@ -1050,6 +1091,8 @@ screen preferences():
     else:
         $ cols = 4
 
+    default tooltip = Tooltip("")
+
     use game_menu(_("Settings"), scroll="viewport"):
 
         vbox:
@@ -1066,18 +1109,18 @@ screen preferences():
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
 
-                vbox:
-                    style_prefix "check"
-                    label _("Skip")
-                    textbutton _("Unseen Text") action Preference("skip", "toggle")
-                    textbutton _("After Choices") action Preference("after choices", "toggle")
+#                vbox:
+#                    style_prefix "check"
+#                    label _("Skip")
+#                    textbutton _("Unseen Text") action Preference("skip", "toggle")
+#                    textbutton _("After Choices") action Preference("after choices", "toggle")
                     #textbutton _("Transitions") action InvertSelected(Preference("transitions", "toggle"))
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
                     style_prefix "check"
                     label _("Graphics")
-                    textbutton _("Disable Animation") action [Preference("video sprites", "toggle"), Function(renpy.call, "spaceroom")]
+                    textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
 
@@ -1093,12 +1136,25 @@ screen preferences():
                         textbutton _("Unstable"):
                             action [Show(screen="dialog", message=layout.UNSTABLE, ok_action=Hide(screen="dialog")), SetField(persistent, "_mas_unstable_mode", True)]
                             selected persistent._mas_unstable_mode
+                            hovered tooltip.Action(layout.MAS_TT_UNSTABLE)
 
-                    textbutton _("Repeat Topics") action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                    textbutton _("Repeat Topics"):
+                        action ToggleField(persistent,"_mas_enable_random_repeats", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_REPEAT)
 
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
+                vbox:
+                    style_prefix "check"
+                    label _(" ")
+                    textbutton _("Sensitive Mode"):
+                        action ToggleField(persistent, "_mas_sensitive_mode", True, False)
+                        hovered tooltip.Action(layout.MAS_TT_SENS_MODE)
 
+                    if renpy.windows and store.mas_windowreacts.can_show_notifs:
+                        textbutton _("Window Reacts"):
+                            action ToggleField(persistent, "_mas_windowreacts_windowreacts_enabled", True, False)
+                            hovered tooltip.Action(layout.MAS_TT_ACTV_WND)
 
             null height (4 * gui.pref_spacing)
 
@@ -1199,7 +1255,12 @@ screen preferences():
                         label _("[[ " + rc_display + " ]")
 
                     bar value FieldValue(persistent, "_mas_randchat_freq",
-                    range=3, style="slider")
+                    range=6, style="slider")
+
+                    hbox:
+                        label _("Ambient Volume")
+
+                    bar value Preference("mixer amb volume")
 
 
                 vbox:
@@ -1207,7 +1268,7 @@ screen preferences():
                     label _("Text Speed")
 
                     #bar value Preference("text speed")
-                    bar value FieldValue(_preferences, "text_cps", range=180, max_is_zero=False, style="slider", offset=20)
+                    bar value FieldValue(_preferences, "text_cps", range=170, max_is_zero=False, style="slider", offset=30)
 
                     label _("Auto-Forward Time")
 
@@ -1259,11 +1320,18 @@ screen preferences():
                     style "navigation_button"
 
 
+    text tooltip.value:
+        xalign 0.0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
+#        layout "greedy"
+#        text_align 0.5
+#        xmaximum 650
 
     text "v[config.version]":
-                xalign 1.0 yalign 1.0
-                xoffset -10 yoffset -10
-                style "main_menu_version"
+        xalign 1.0 yalign 0.0
+        xoffset -10 
+        style "main_menu_version"
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
@@ -1343,6 +1411,48 @@ style slider_button_text:
 style slider_vbox:
     xsize 450
 
+##Notifications Settings Screen
+screen notif_settings():
+    tag menu
+
+    use game_menu(("Alerts"), scroll="viewport"):
+
+        default tooltip = Tooltip("")
+
+        vbox:
+            style_prefix "check"
+            hbox:
+                spacing 25
+                textbutton _("Use Notifications"):
+                    action ToggleField(persistent, "_mas_enable_notifications")
+                    selected persistent._mas_enable_notifications
+                    hovered tooltip.Action(layout.MAS_TT_NOTIF)
+
+                textbutton _("Sounds"):
+                    action ToggleField(persistent, "_mas_notification_sounds")
+                    selected persistent._mas_notification_sounds
+                    hovered tooltip.Action(layout.MAS_TT_NOTIF_SOUND)
+
+            label _("Alert Filters")
+
+        hbox:
+            style_prefix "check"
+            box_wrap True
+            spacing 25
+
+            #Dynamically populate this
+            for item in persistent._mas_windowreacts_notif_filters:
+                if item != "Window Reactions" or persistent._mas_windowreacts_windowreacts_enabled:
+                    textbutton _(item):
+                        action ToggleDict(persistent._mas_windowreacts_notif_filters, item)
+                        selected persistent._mas_windowreacts_notif_filters.get(item)
+                        hovered tooltip.Action(layout.MAS_TT_G_NOTIF)
+
+
+    text tooltip.value:
+        xalign 0 yalign 1.0
+        xoffset 300 yoffset -10
+        style "main_menu_version"
 
 ## History screen ##############################################################
 ##
@@ -1381,7 +1491,7 @@ screen history():
                         if "color" in h.who_args:
                             text_color h.who_args["color"]
 
-                text h.what
+                text h.what.replace("[","[[")
 
         if not _history_list:
             label _("The dialogue history is empty.")
@@ -2163,7 +2273,7 @@ screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, ri
                         textbutton _("That's enough for now.") action Return(False)
 
 # the regular scrollabe menu
-screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enough for now."):
+screen scrollable_menu(items, display_area, scroll_align, nvm_text, remove=None):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -2191,6 +2301,10 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 
                     null height 20
 
+                    if remove:
+                        # in case we want the option to hide this menu
+                        textbutton _(remove[0]) action Return(remove[1])
+
                     textbutton _(nvm_text) action Return(False)
 
 # more general scrollable menu. This one takes the following params:
@@ -2208,7 +2322,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 #           [2]: width of menu
 #           [3]: height of menu
 #   scroll_align - alignment of vertical scrollbar
-#   final_item - represents the final (usually quit item) of the menu
+#   *args - represents the final (usually quit) item(s) of the menu
 #       tuple of the following format:
 #           [0]: text of the button
 #           [1]: return value of the button
@@ -2217,7 +2331,7 @@ screen scrollable_menu(items, display_area, scroll_align, nvm_text="That's enoug
 #           [4]: integer spacing between this button and the regular buttons
 #               NOTE: must be >= 0
 #       (Default: None)
-screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=None):
+screen mas_gen_scrollable_menu(items, display_area, scroll_align, *args):
         style_prefix "scrollable_menu"
 
         fixed:
@@ -2243,18 +2357,18 @@ screen mas_gen_scrollable_menu(items, display_area, scroll_align, final_item=Non
                                 style "scrollable_menu_special_button"
                             action Return(item_value)
 
-                    if final_item:
-                        if final_item[4] > 0:
-                            null height final_item[4]
+                    for final_items in args:
+                        if final_items[4] > 0:
+                            null height final_items[4]
 
-                        textbutton _(final_item[0]):
-                            if final_item[2] and final_item[3]:
+                        textbutton _(final_items[0]):
+                            if final_items[2] and final_items[3]:
                                 style "scrollable_menu_crazy_button"
-                            elif final_item[2]:
+                            elif final_items[2]:
                                 style "scrollable_menu_new_button"
-                            elif final_item[3]:
+                            elif final_items[3]:
                                 style "scrollable_menu_special_button"
-                            action Return(final_item[1])
+                            action Return(final_items[1])
 
 # background timed jump screen
 # NOTE: caller is responsible for hiding this screen
@@ -2321,3 +2435,23 @@ init python:
                 return True
 
             raise renpy.IgnoreEvent()
+
+# Partial generic showpoem screen
+# IN:
+#   _poem - Poem object to show
+#   paper - type of paper to use as background
+#   _styletext - text style to use as a string
+screen mas_generic_poem(_poem, paper="paper", _styletext="monika_text"):
+    style_prefix "poem"
+    vbox:
+        add paper
+    viewport id "vp":
+        child_size (710, None)
+        mousewheel True
+        draggable True
+        has vbox
+        null height 40
+        text "[_poem.title]\n\n[_poem.text]" style _styletext
+        null height 100
+    vbar value YScrollValue(viewport="vp") style "poem_vbar"
+
