@@ -2726,16 +2726,17 @@ label monika_meta:
     m 1hub "Ahaha!"
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel='monika_programming',
-            prompt="Is it hard to code?",
-            category=['monika','misc'],
-            pool=True,
-        )
-    )
+# this topic has been rendered pretty much useless by ptod
+#init 5 python:
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel='monika_programming',
+#            prompt="Is it hard to code?",
+#            category=['monika','misc'],
+#            pool=True,
+#        )
+#    )
 
 label monika_programming:
     m 3eka "It wasn't easy for me to learn programming."

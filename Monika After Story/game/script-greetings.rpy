@@ -1725,7 +1725,7 @@ label monikaroom_greeting_knock:
                 m "[player]! I'm so happy that you're back!"
 
                 if persistent.seen_monika_in_room:
-                    m "And thank you for knocking first."
+                    m "And thank you for knocking first~"
                 m "Hold on, let me tidy up..."
 
             elif mas_isMoniUpset():
@@ -3057,7 +3057,7 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
-    m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+    m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
