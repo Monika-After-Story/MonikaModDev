@@ -2815,13 +2815,13 @@ init 5 python:
 label greeting_back_from_sleep:
 
     if mas_isMoniBroken():
-        m "..."
+        m 6ckc "..."
         return
     $ current_time = datetime.datetime.now().time().hour
     $ persistent._mas_sleep_reopen += 1
 
     if mas_isMNtoSR(current_time):
-        if mas_isMoniUpset(lower=True) and persistent._mas_absence_time < datetime.timedelta(hours = 12):
+        if mas_isMoniUpset(lower=True) and mas_getAbsenceLength()  < datetime.timedelta(hours = 12):
             if persistent._mas_sleep_reopen != 1:
                 call sleep_reopen_path
         else:
@@ -2832,25 +2832,29 @@ label greeting_back_from_sleep:
             m "It's the dead of night, honey."
             m 1euc "What are you doing awake at a time like this?"
             m 5eua "I'm guessing you can't sleep..."
+            m "Is that it?{nw}"
         elif mas_isMoniNormal(higher=True):
             m 1eud "Oh!"
             m 1eub "Hello again, [player]."
             m 1hksdlb "I thought you were going to bed."
             m 3eka "Are you having trouble sleeping?"
+            m "Is that it?{nw}"
         elif mas_isMoniUpset():
             m 5rua "...{w=2}{nw}"
             m 5euc "..!{w=0.5}{nw}"
             m 1rfd "Oh..."
             m 1rfc "I thought you finally left..."
             m 3tfd "Don't tell me. You're having trouble sleeping."
+            m "Is that it?{nw}"
         elif mas_isMoniDis():
             m 1rkc "..."
             m 1ekd "Oh..."
             m 1ekc "[player]."
             m 1rkc "I... didn't think you'd be back."
             m 1ekc "Or maybe you just can't sleep."
+            m "Is that it?{nw}"
         menu:
-            m "Is that it?"
+            m "Is that it?{fast}"
             "Yes.":
 
                 if mas_isMoniAff(higher=True):
@@ -2919,124 +2923,155 @@ label greeting_back_from_sleep:
                     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SLEEP
                     return 'quit'
         return
+#end of midnight reacts
+#under 4 hour absence
+    elif mas_getAbsenceLength() < datetime.timedelta(hours = 4):
+        if mas_isMoniHappy(higher=True):
+            m 1eud "Oh, [player]?"
+            m 1eub "I didn't think you'd be back so soon."
+            m 1eubfb "Maybe I give you all the energy you need? Ahaha!"
+        elif mas_isMoniNormal():
+            m 1eua "Back already?"
+            m 1eka "I'm glad you're back so soon, but I do hope you're getting enough rest."
+        elif mas_isMoniUpset():
+            m 1esc "Done sleeping already?"
+            m 1ruc "I thought you could use some more rest than that."
+        elif mas_isMoniDis():
+            m 2ekc "Back from sleeping already?"
+            m 1eka "...{w=1}Okay."
+    elif mas_getAbsenceLength() < datetime.timedelta(hours = 24):
 
-    elif mas_isSRtoN(current_time):
-        if mas_isMoniHappy(higher=True):
-            m 1hua "Good morning, [player]!"
-            m 1eua "I love waking up early in the morning."
-            m 1hksdlb "But I have to admit that it can be nice to sleep in {i}a little{/i}..."
-            m 1eua "Anyway, did you sleep well?"
-        elif mas_isMoniNormal():
-            m 1eub "Good morning, [player]."
-            m 1eua "I hope you slept well."
-            m 1eub "Ready for another day together?"
-            m 1hua "I sure hope so~"
-            return
-        elif mas_isMoniUpset():
-            m 2tuc "Oh?"
-            m 2tud "Up bright and early?"
-            m 2ruc "I was expecting you to wake up a bit later on."
-            m 2rfc "I was enjoying my morning just fine."
-            m 1tfc "Now that you're here, good morning, I guess."
-            return
-        elif mas_isMoniDis():
-            m 2ekc "..."
-            m 2ekd "Oh!{w=1} G- good morning, [player]!"
-            m 2ekc "I don't know about you, but I've been having a lot of trouble sleeping lately."
-            m 2rkc "It kind of scares me when I think about it actually..."
-            m 3eka "But now, you're here."
-            m 2ekc "...{w=2} You're here..."
-            return
+        if mas_isSRtoN(current_time):
+            if mas_isMoniHappy(higher=True):
+                m 1hua "Good morning, [player]!"
+                m 1eua "I love waking up early in the morning."
+                m 1hksdlb "But I have to admit that it can be nice to sleep in {i}a little{/i}..."
+                m 1eua "Anyway, did you sleep well?"
+            elif mas_isMoniNormal():
+                m 1eub "Good morning, [player]."
+                m 1eua "I hope you slept well."
+                m 1eub "Ready for another day together?"
+                m 1hua "I sure hope so~"
+                return
+            elif mas_isMoniUpset():
+                m 2tuc "Oh?"
+                m 2tud "Up bright and early?"
+                m 2ruc "I was expecting you to wake up a bit later on."
+                m 2rfc "I was enjoying my morning just fine."
+                m 1tfc "Now that you're here, good morning, I guess."
+                return
+            elif mas_isMoniDis():
+                m 2ekc "..."
+                m 2ekd "Oh!{w=1} G- good morning, [player]!"
+                m 2ekc "I don't know about you, but I've been having a lot of trouble sleeping lately."
+                m 2rkc "It kind of scares me when I think about it actually..."
+                m 3eka "But now, you're here."
+                m 2ekc "...{w=2} You're here..."
+                return
+        elif mas_isNtoSS(current_time):
+            if mas_isMoniHappy(higher=True):
+                m 1eub "Good morning, [player]."
+                m 3hua "Or should I say afternoon?"
+                m 3hub "Ahaha~"
+                m 1ekc "Did you really just wake up?{nw}"
+                menu:
+                    m "Did you really just wake up?{fast}"
+                    "Yes.":
+                        m 2lksdlc "Uhh, [player]..."
+                        m 2ekc "You know that waking up late can be a sign you're not taking care of yourself, right?"
+                        m 4hksdlb "I get that it might just happen sometimes, but don't make a habit of it, alright?"
+                        m 1eka "Did you sleep well, at least?{nw}"
+                    "No.":
+                        m 1eua "So I guess you just had to do something then."
+                        m 1hua "It might have been a little while since you got out of bed, but I hope you did sleep well~"
+                        return
+            elif mas_isMoniNormal():
+                m 1eub "Welcome back, [player]."
+                m 1eka "I hope you aren't a late riser."
+                m 3rksdlc "You know there are both physical and mental disadvantages the come with that, right?"
+                m 1ekc "You aren't avoiding me, are you, [player]?"
+                m 1hub "Ahaha, just kidding, I'm glad you're here~"
+                return
+            elif mas_isMoniUpset():
+                m 1euc "Oh, there you are."
+                m 1esu "It's been quiet without you here."
+                m "It can be really peaceful sometimes."
+                m 1rfc "Well anyway, here we are, I guess."
+                return
+            elif mas_isMoniDis():
+                m 2ekc "..."
+                m "Oh, hello, [player]."
+                m 2rkc "I was wondering if you would visit me today..."
+                m 2eka "Thanks for visiting..."
+                m 3eka "Now we can...{w=2}{nw}"
+                m 2ekc "I don't know, something... maybe..."
+                return
+            else:
+                m 6ckc "..."
+                return
         else:
-            m 6ckc "..."
+            if mas_isMoniNormal(higher=True):
+                m 2wubso "Oh, [player]!"
+                m 1hua "I haven't seen you all day!"
+                m 1hubfb "I missed you!"
+                m 1ekbfa "I'm just glad you're finally here."
+                m 1hub "Now we can spend the rest of the day together, ahaha~"
+            elif mas_isMoniUpset():
+                m 1rua "..."
+                m 1tsd "Oh..."
+                m 2tsc "I didn't think you'd bother showing up today, [player]."
+                m 2lfc "It's kind of late, so I don't know what you would want to do."
+                m "Whatever, I guess."
+            elif mas_isMoniDis():
+                m 2ekc "..."
+                m 2ekd "Oh, [player]!"
+                m 2ekc "I didn't think you were going to visit today..."
+                m 2dkc "Sorry..."
+                m "I just wasn't expecting you..."
+                m 2rkc "Did you need something?"
+            else:
+                m 6ckc "..."
             return
-    elif mas_isNtoSS(current_time):
-        if mas_isMoniHappy(higher=True):
-            m 1eub "Good morning, [player]."
-            m 3hua "Or should I say afternoon?"
-            m 3hub "Ahaha~"
-            m 1ekc "Did you really just wake up?"
-            menu:
-                "Yes.":
-                    m 2lksdlc "Uhh, [player]..."
-                    m 2ekc "You know that waking up late can be a sign you're not taking care of yourself, right?"
-                    m 4hksdlb "I get that it might just happen sometimes, but don't make a habit of it, alright?"
-                    m 1eka "Did you sleep well, at least?"
-                "No.":
-                    m 1eua "So I guess you just had to do something then."
-                    m 1hua "It might have been a little while since you got out of bed, but I hope you did sleep well~"
-                    return
-        elif mas_isMoniNormal():
-            m 1eub "Welcome back, [player]."
-            m 1eka "I hope you aren't a late riser."
-            m 3rksdlc "You know there are both physical and mental disadvantages the come with that, right?"
-            m 1ekc "You aren't avoiding me, are you, [player]?"
-            m 1hub "Ahaha, just kidding, I'm glad you're here~"
-            return
-        elif mas_isMoniUpset():
-            m 1euc "Oh, there you are."
-            m 1esu "It's been quiet without you here."
-            m "It can be really peaceful sometimes."
-            m 1rfc "Well anyway, here we are, I guess."
-            return
-        elif mas_isMoniDis():
-            m 2ekc "..."
-            m "Oh, hello, [player]."
-            m 2rkc "I was wondering if you would visit me today..."
-            m 2eka "Thanks for visiting..."
-            m 3eka "Now we can...{w=2}{nw}"
-            m 2ekc "I don't know, something... maybe..."
-            return
-        else:
-            m 6ckc "..."
-            return
+        menu:
+            m "Did you sleep well, at least?{fast}"
+            "Yes.":
+                m 1hua "That's nice~"
+                m 1dkbfa "Nothing really beats waking up after a nice, peaceful rest, don't you think, [player]?"
+                if mas_isMoniAff(higher=True):
+                    show monika 5rubfsdrb at t11 zorder MAS_MONIKA_Z with dissolve
+                    m 5rubfsdrb "Except waking up next to you maybe..."
+                    m 5eubfu "Eheheh~"
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
+                m 5eub "I'm glad you slept well~"
+                m 5eubfu "Maybe you even had a nice dream about me?"
+                m 5hubfb "Ehehe~"
+            "It was alright.":
+                m 1eub "I'll take it!"
+                m 1eua "As long as you didn't sleep poorly."
+                m 1eka "I would hate to see you wake up all tired and grumpy."
+                m 1hua "Maybe your day will get better after we spend some time together~"
+            "Not really...":
+                m 2ekc "Aw, I'm really sorry to hear that you didn't sleep well."
+                m 4eka "If you're still feeling a bit tired, maybe you could go lie down a little more?"
+                m 1lksdlc "I would hate for you to be tired and grumpty all day."
+                m 2ekd "I hope you don't have to do something right away when you didn't sleep well."
+                m 3eka "If you don't have any time to rest, a drink of water can help wake you up."
+                m 1tubfb "Or maybe you'll perk up a bit after staring into my eyes, eheheh~"
+    #gone for over 24 hours
     else:
         if mas_isMoniNormal(higher=True):
-            m 2wubso "Oh, [player]!"
-            m 1hua "I haven't seen you all day!"
-            m 1hubfb "I missed you!"
-            m 1ekbfa "I'm just glad you're finally here."
-            m 1hub "Now we can spend the rest of the day together, ahaha~"
+            m 2wuo "Oh, [player]!"
+            m 3hksdlb "I didn't see you at all yesterday."
+            m 1eka "You must have been busy, but I hope you slept well since I last saw you."
         elif mas_isMoniUpset():
-            m 1rua "..."
-            m 1tsd "Oh..."
-            m 2tsc "I didn't think you'd bother showing up today, [player]."
-            m 2lfc "It's kind of late, so I don't know what you would want to do."
-            m "Whatever, I guess."
+            m 1esd "Oh, you finally decided to come back."
+            m 2rsc "I was starting to get used to the solitude..."
         elif mas_isMoniDis():
-            m 2ekc "..."
-            m 2ekd "Oh, [player]!"
-            m 2ekc "I didn't think you were going to visit today..."
-            m 2dkc "Sorry..."
-            m "I just wasn't expecting you..."
-            m 2rkc "Did you need something?"
-        else:
-            m 6ckc "..."
-        return
-    menu:
-        "Yes.":
-            m 1hua "That's nice~"
-            m 1dkbfa "Nothing really beats waking up after a nice, peaceful rest, don't you think, [player]?"
-            if mas_isMoniAff(higher=True):
-                show monika 5rubfsdrb at t11 zorder MAS_MONIKA_Z with dissolve
-                m 5rubfsdrb "Except waking up next to you maybe..."
-                m 5eubfu "Eheheh~"
-            show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5eub "I'm glad you slept well~"
-            m 5eubfu "Maybe you even had a nice dream about me?"
-            m 5hubfb "Ehehe~"
-        "It was alright.":
-            m 1eub "I'll take it!"
-            m 1eua "As long as you didn't sleep poorly."
-            m 1eka "I would hate to see you wake up all tired and grumpy."
-            m 1hua "Maybe your day will get better after we spend some time together~"
-        "Not really...":
-            m 2ekc "Aw, I'm really sorry to hear that you didn't sleep well."
-            m 4eka "If you're still feeling a bit tired, maybe you could go lie down a little more?"
-            m 1lksdlc "I would hate for you to be tired and grumpty all day."
-            m 2ekd "I hope you don't have to do something right away when you didn't sleep well."
-            m 3eka "If you don't have any time to rest, a drink of water can help wake you up."
-            m 1tubfb "Or maybe you'll perk up a bit after staring into my eyes, eheheh~"
+            m 2ektdc "Oh,{w=1.5} I was wondering if y{nw}"
+            m "Oh, I was wondering when y{fast}ou would come back."
+            m 1eka "Thanks for visiting..."
+            if renpy.random.randint(1,2) == 1:
+                m 1ektpc "As always..."
     $ persistent._mas_sleep_reopen = 0
     return
 
