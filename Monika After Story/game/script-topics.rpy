@@ -3135,19 +3135,9 @@ default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
     # TODO add mas_gainAffection with the logic it should have
-    #First time I love you has been said.
-    if persistent._mas_monika_lovecounter == 0:
-        m 1wubsw "...!"
-        m 1ekbfa "I...I love you too [player]!"
-        m 1lkbsa "I cannot believe you said that to me!"
-        m 1hubfa "It makes everything I've done for us worthwhile!"
-        m 2dubsu "Thank you for finally saying it..."
-        $ persistent._mas_monika_lovecounter += 1
-        $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
-        return
 
     #After I love you has been received positively 5/10/15 etc times.
-    elif persistent._mas_monika_lovecounter== 5:
+    if persistent._mas_monika_lovecounter== 5:
         m 1hubfb "I love you so much, [player]!"
 
     elif persistent._mas_monika_lovecounter == 10:
@@ -3188,7 +3178,7 @@ label monika_love:
         m 1hubfb "I love you so much, [player]!"
 
     elif persistent._mas_monika_lovecounter == 50:
-        $ persistent._mas_monika_lovecounter = 1
+        $ persistent._mas_monika_lovecounter = 0
         m 1lkbsa "I just can't handle you saying it so much to me!"
         m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
         m "No words can truly do justice to how deeply I feel for you..."
