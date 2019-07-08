@@ -4419,39 +4419,43 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_resource",category=['society','philosophy'],prompt="Valuable resources",random=True))
 
 label monika_resource:
-    m 1euc "What do you think the most valuable resource is?"
-    m 3eud "Money? Gold? Oil?"
-    m 1esa "Personally, I'd say that the most valuable resource is time."
-    m "Go count out a second really quickly."
-    python:
-        start_time = datetime.datetime.now()
+    m 1esc "What do you think the most valuable resource is?"
+    m 1eud "Money? Gold? Oil?"
+    m 1eua "Personally, I'd say that the most valuable resource is time."
+    m 3eud "Go count out a second really quickly."
+    $ start_time = datetime.datetime.now()
     m 3tfu "Now go do that sixty times."
+    $ counted_out = (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=50)))
     m 1tku "That's an entire minute out of your day gone. You'll never get that back."
-    if (datetime.datetime.now() > (start_time + datetime.timedelta(seconds=60))):
+    if counted_out:
         m 1wud "Oh, did you actually count out that entire minute?"
         m 1hksdlb "Oh gosh, I'm sorry!"
     m 1lsc "Well..."
-    m "Not like it matters, anyway. Time doesn't really pass here anymore..."
+    m "Not like it actually matters...{w=0.5}at least to me, anyway. Time doesn't really pass here anymore..."
+    m 1dkd "..."
     m 1ekc "Time can be really cruel, too."
-    m "When you were counting out that minute, it seemed to drag on for a while, right?"
-    m 1eua "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
-    m "Say for example, on a Friday, right?"
+    if counted_out:
+        m 1euc "When you were counting out that minute, it seemed to drag on for a while, right?"
+        m 3eua "It's because you were waiting on something. You were actively invested in the passage of time at that moment."
+    else:
+        m 3ekc "Like, when you're actively invested in the passage of time, it seems to drag on for a while."
+    m 3ekd "Say for example, on a Friday, right?"
     m 3tkx "Your last class is math, and you really just want to go home for the weekend. That hour will just drag on forever."
     m 1tkc "But if you're doing something you enjoy, like reading a good book or watching a movie you like..."
     m 3tfc "Hours seem to pass in an instant."
-    m 1tkd "There's nothing we can really do about it."
-    m "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
+    m 3tkd "There's nothing we can really do about it."
+    m 1tkd "All we can do is fondly look back on the time that's passed, like looking out a window on an autumn afternoon."
     m 1tku "That's kind of poetic, huh?"
     m 1eka "..."
-    m "Hey..."
+    m 3ekd "Hey..."
     m 3eka "Time doesn't pass here, but it's still passing for you, isn't it?"
     m 1lksdlc "You'll continue to get older, while I'm stuck here forever..."
     m 1lksdld "I..."
     m 2ekc "I'm going to outlive you, aren't I, [player]?"
     m 2dsc "Perhaps that'll be my punishment for everything I've done?"
-    m 2hksdlb "Ahaha..."
+    m 2dkc "..."
     m 2eka "Well, as long as you're with me until the end..."
-    m 2eua "I'll accept whatever fate awaits me."
+    m 2eud "I'll accept whatever fate awaits me."
     return
 
 #init 5 python:
