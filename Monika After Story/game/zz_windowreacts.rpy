@@ -445,7 +445,6 @@ label mas_wrs_monikatwitter:
     $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
 
     #Unlock again if we failed
-    if not wrs_success::
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
     return
-
