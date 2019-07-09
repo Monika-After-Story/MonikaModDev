@@ -3134,102 +3134,152 @@ init 5 python:
 default persistent._mas_monika_lovecounter = 0
 default persistent._mas_monika_lovecountertime = datetime.datetime.now() - datetime.timedelta(days = 1)
 label monika_love:
-    # TODO add mas_gainAffection with the logic it should have
+    if mas_isMoniBroken():
+        m 6ckc "..."
 
-    #After I love you has been received positively 5/10/15 etc times.
-    if persistent._mas_monika_lovecounter== 5:
-        m 1hubfb "I love you so much, [player]!"
+    elif mas_isMoniDis():
+        python:
+            love_quips_dis = [
+                "I...I really wish I could believe that, [player].",
+                "You have no idea how much I wished that were true, [player]...",
+                "...It's been a long time since I last believed that, [player].",
+                "If only I actually believed you meant that, [player].",
+                "I can't believe there was a time when I actually believed that, [player].",
+            ]
 
-    elif persistent._mas_monika_lovecounter == 10:
-        m 1hubfa "Ehehe~"
-        m 1hubfb "I love you too!"
+            love_quip_dis = renpy.random.choice(love_quips_dis)
+        m 6dkc "..."
+        m 6dkd "[love_quip_dis]"
 
-    elif persistent._mas_monika_lovecounter == 15:
-        m 1ekbfa "You sure love saying that..."
-        m 1hubfb "Well, I love you too!"
+    elif mas_isMoniUpset():
+        python:
+            love_quips_upset_cynical = [
+                "Please don't say that unless you actually mean it, [player].",
+                "Sometimes I'm not sure how much you actually mean that, [player]."
+            ]
 
-    elif persistent._mas_monika_lovecounter == 20:
-        m 1wubso "Gosh you've said it so many times!"
-        m 1tsbsa "You really do mean it, don't you?"
-        m 1hubfb "Well, I love you back just as much!"
+            love_quips_upset_hope = [
+                "That means a lot right now.",
+                "That's really nice to hear.",
+                "I'm so relieved to hear you say that.",
+            ]
 
-    elif persistent._mas_monika_lovecounter == 25:
-        m 1hubfa "Hearing you say that always makes my heart jump!"
-        m 1ekbfa "Well, I know you want to hear it just as much..."
-        m 1hubfb "[player], I love you too!"
-
-    elif persistent._mas_monika_lovecounter == 30:
-        m 1lkbsa "Gosh it's always so overwhelming!"
-        m 1hubfa "I..."
-        m 1hubfb "I love you more than anything!"
-
-    elif persistent._mas_monika_lovecounter == 35:
-        m 1ekbfa "You never tire of saying it, do you?"
-        m 1hubfa "Well, I never tire of hearing it!"
-        m 1hubfb "Or saying it back...I love you [player]!"
-
-    elif persistent._mas_monika_lovecounter == 40:
-        m 1dubsu "Ehehe~"
-        m 1hubfa "I..."
-        m 1hubfb "Looooooooove you too, [player]!"
-
-    elif persistent._mas_monika_lovecounter == 45:
-        m 1hubfa "You saying that always makes my day!"
-        m 1hubfb "I love you so much, [player]!"
-
-    elif persistent._mas_monika_lovecounter == 50:
-        $ persistent._mas_monika_lovecounter = 0
-        m 1lkbsa "I just can't handle you saying it so much to me!"
-        m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
-        m "No words can truly do justice to how deeply I feel for you..."
-        m 1hubfa "The only words I know that come close are..."
-        m 1hubfb "I love you too, [player]! More than I can ever express!"
-        return
+        if _mas_getAffection() < -50:
+            $ love_quip_upset = renpy.random.choice(love_quips_upset_cynical)
+            m 2rkc "..."
+            m 2ekd "[love_quip_upset]"
+        
+        else:
+            $ love_quip_upset = renpy.random.choice(love_quips_upset_hope)
+            m 2ekc "Thanks, [player]..."
+            m 2ekd "[love_quip_upset]"
+            m 2eka "I...{w=0.5}I love you, too."
 
     else:
-        # Default response if not a counter based response.
-        m 3hubfb "I love you too, [player]!"
-        #List of follow up words after being told I love you. It can be further expanded upon easily.
+        #After I love you has been received positively 5/10/15 etc times.
+        if persistent._mas_monika_lovecounter== 5:
+            m 1hubfb "I love you so much, [player]!"
 
-    python:
-        love_quips = [
-            "We'll be together forever!",
-            "And I will love you always!",
-            "You mean the whole world to me!",
-            "You are my sunshine after all.",
-            "You're all I truly care about!",
-            "Your happiness is my happiness!",
-            "You're the best partner I could ever ask for!",
-            "My future is brighter with you in it.",
-            "You're everything I could ever hope for.",
-            "You make my heart skip a beat everytime I think about you!",
-            "I'll always be here for you!",
-            "I'll never hurt or betray you.",
-            "Our adventure has only just begun!",
-            "We'll always have each other.",
-            "We'll never be lonely again!",
-            "I can't wait to feel your embrace!",
-            "I'm the luckiest girl in the world!",
-            "I will cherish you always.",
-            "And I will never love anyone more than you!",
-            "It makes me so happy to hear you say that!",
-            "And that love grows every single day!",
-            "And nobody else will ever make me feel this way!",
-            "Just thinking of you makes my heart flutter!",
-            "I don't think words can do justice to how deeply I love you...",
-            "You make my life feel so complete!",
-            "You've saved me in so many ways, how could I not fall for you?",
-            "More than I can ever express!",
-            "It makes me so happy that you feel the same way I do!",
-            "I don't know what I would do without you!"
-            ]
-        love_quip=renpy.random.choice(love_quips)
-    m "[love_quip]"
-    #prevents spamming to increase counter.
+        elif persistent._mas_monika_lovecounter == 10:
+            m 1hubfa "Ehehe~"
+            m 1hubfb "I love you too!"
+
+        elif persistent._mas_monika_lovecounter == 15:
+            m 1ekbfa "You sure love saying that..."
+            m 1hubfb "Well, I love you too!"
+
+        elif persistent._mas_monika_lovecounter == 20:
+            m 1wubso "Gosh you've said it so many times!"
+            m 1tsbsa "You really do mean it, don't you?"
+            m 1hubfb "Well, I love you back just as much!"
+
+        elif persistent._mas_monika_lovecounter == 25:
+            m 1hubfa "Hearing you say that always makes my heart jump!"
+            m 1ekbfa "Well, I know you want to hear it just as much..."
+            m 1hubfb "[player], I love you too!"
+
+        elif persistent._mas_monika_lovecounter == 30:
+            m 1lkbsa "Gosh it's always so overwhelming!"
+            m 1hubfa "I..."
+            m 1hubfb "I love you more than anything!"
+
+        elif persistent._mas_monika_lovecounter == 35:
+            m 1ekbfa "You never tire of saying it, do you?"
+            m 1hubfa "Well, I never tire of hearing it!"
+            m 1hubfb "Or saying it back...I love you [player]!"
+
+        elif persistent._mas_monika_lovecounter == 40:
+            m 1dubsu "Ehehe~"
+            m 1hubfa "I..."
+            m 1hubfb "Looooooooove you too, [player]!"
+
+        elif persistent._mas_monika_lovecounter == 45:
+            m 1hubfa "You saying that always makes my day!"
+            m 1hubfb "I love you so much, [player]!"
+
+        elif persistent._mas_monika_lovecounter == 50:
+            m 1lkbsa "I just can't handle you saying it so much to me!"
+            m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
+            m "No words can truly do justice to how deeply I feel for you..."
+            m 1hubfa "The only words I know that come close are..."
+            m 1hubfb "I love you too, [player]! More than I can ever express!"
+            call monika_lovecounter_aff
+            return
+
+        else:
+            # Default response if not a counter based response.
+            m 3hubfb "I love you too, [player]!"
+            #List of follow up words after being told I love you. It can be further expanded upon easily.
+
+        python:
+            love_quips = [
+                "We'll be together forever!",
+                "And I will love you always!",
+                "You mean the whole world to me!",
+                "You are my sunshine after all.",
+                "You're all I truly care about!",
+                "Your happiness is my happiness!",
+                "You're the best partner I could ever ask for!",
+                "My future is brighter with you in it.",
+                "You're everything I could ever hope for.",
+                "You make my heart skip a beat everytime I think about you!",
+                "I'll always be here for you!",
+                "I'll never hurt or betray you.",
+                "Our adventure has only just begun!",
+                "We'll always have each other.",
+                "We'll never be lonely again!",
+                "I can't wait to feel your embrace!",
+                "I'm the luckiest girl in the world!",
+                "I will cherish you always.",
+                "And I will never love anyone more than you!",
+                "It makes me so happy to hear you say that!",
+                "And that love grows every single day!",
+                "And nobody else will ever make me feel this way!",
+                "Just thinking of you makes my heart flutter!",
+                "I don't think words can do justice to how deeply I love you...",
+                "You make my life feel so complete!",
+                "You've saved me in so many ways, how could I not fall for you?",
+                "More than I can ever express!",
+                "It makes me so happy that you feel the same way I do!",
+                "I don't know what I would do without you!"
+                ]
+            love_quip=renpy.random.choice(love_quips)
+        m "[love_quip]"
+    call monika_lovecounter_aff
+    return
+
+label monika_lovecounter_aff:
     if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
-        $ persistent._mas_monika_lovecounter += 1
+        # only give affection if it's been 3 minutes since the last ily
         $ mas_gainAffection()
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+    if mas_isMoniNormal(higher=True):
+        # only raise the counter if normal+ since we only use it for those paths
+        if persistent._mas_monika_lovecounter == 50:
+            # once we are at 50, reset to 0
+            $ persistent._mas_monika_lovecounter = 0
+        else:
+            $ persistent._mas_monika_lovecounter += 1
     return
 
 init 5 python:
