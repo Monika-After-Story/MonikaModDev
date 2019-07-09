@@ -72,7 +72,7 @@ init python:
 
     #List of notif quips (used for topic alerts)
     #Windows
-    win_notif_quips = [
+    mas_win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
         "Can you come here for a second?",
@@ -82,7 +82,7 @@ init python:
     ]
 
     #OSX/Linux
-    other_notif_quips = [
+    mas_other_notif_quips = [
         "I've got something to talk about, [player]!",
         "I have something to tell you, [player]!",
         "Hey [player], I want to tell you something.",
@@ -102,7 +102,6 @@ init python:
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
-
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
@@ -132,7 +131,6 @@ init python:
     def mas_isInActiveWindow(keywords):
         """
         Checks if ALL keywords are in the active window name
-
         IN:
             List of keywords
         """
@@ -179,7 +177,6 @@ init python:
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """
         Runs through events in the windowreact_db to unlock them
-
         IN:
             List of ev_labels to exclude from being unlocked
         """
@@ -198,7 +195,6 @@ init python:
     def mas_addBlacklistReact(ev_label):
         """
         Adds the given ev_label to the no unlock list
-
         IN:
             ev_label: eventlabel to add to the no unlock list
         """
@@ -208,7 +204,6 @@ init python:
     def mas_removeBlacklistReact(ev_label):
         """
         Removes the given ev_label to the no unlock list if exists
-
         IN:
             ev_label: eventlabel to remove from the no unlock list
         """
@@ -218,7 +213,6 @@ init python:
     def mas_notifsEnabledForGroup(group):
         """
         Checks if notifications are enabled, and if enabled for the specified group
-
         IN:
             group: notification group to check
         """
@@ -228,7 +222,6 @@ init python:
         """
         Unlocks a wrs again provided that it showed, but failed to show (failed checks in the notif label)
         NOTE: This should only be used for wrs that are only a notification
-
         IN:
             ev_label: eventlabel of the wrs
         """
@@ -243,7 +236,6 @@ init python:
         """
         Tries to push a notification to the notification center on macOS.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
@@ -254,69 +246,66 @@ init python:
         """
         Tries to push a notification to the notification center on Linux.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
         """
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
+    def display_notif(title, body, group=None, skip_checks=False):
+        """
+        Notification creation method
+        IN:
+            title: Notification heading text
+            body: A list of items which would go in the notif body (one is picked at random)
+            group: Notification group (for checking if we have this enabled)
+            skip_checks: Whether or not we skips checks
+        OUT:
+            bool indicating status (notif shown or not (by check))
+        NOTE:
+            We only show notifications if:
+                1. We are able to show notifs
+                2. MAS isn't the active window
+                3. User allows them
+                4. And if the notification group is enabled
+                OR if we skip checks. BUT this should only be used for introductory or testing purposes.
+        """
 
-#Notification creation label
-#IN:
-#   title: Notification heading text
-#   body: Notification body text
-#   group: Notification group (for checking if we have this enabled)
-#   skip_checks: Whether or not we skips checks
-#
-#OUT:
-#   bool indicating status (notif shown or not (by check))
+        #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
+        if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
+            persistent._mas_windowreacts_notif_filters[group] = False
 
-label display_notif(title, body, group=None, skip_checks=False):
-    #We only show notifications if:
-    #We are able to show notifs
-    #MAS isn't the active window
-    #User allows them
-    #And if the notification group is enabled
+        if (
+                (
+                    mas_windowreacts.can_show_notifs
+                    and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
+                    and mas_notifsEnabledForGroup(group)
+                )
+                or skip_checks
+            ):
 
-    #OR if we skip checks
-    #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
+            #Play the notif sound if we have that enabled
+            if persistent._mas_notification_sounds:
+                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
 
-    #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
-    if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
-        $ persistent._mas_windowreacts_notif_filters[group] = False
+            #Now we make the notif
+            if (renpy.windows):
+                # The Windows way
+                tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-    if (
-            (
-                mas_windowreacts.can_show_notifs
-                and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
-                and mas_notifsEnabledForGroup(group)
-            )
-            or skip_checks
-        ):
+                #We need the IDs of the notifs to delete them from the tray
+                destroy_list.append(tip.hwnd)
 
-        #Play the notif sound if we have that enabled
-        if persistent._mas_notification_sounds:
-            play sound "mod_assets/sounds/effects/notif.wav"
+            elif (renpy.macintosh):
+                # The macOS way
+                mas_tryShowNotificationOSX(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-        #Now we make the notif
-        if (renpy.windows):
-            # The Windows way
-            $ tip.showWindow(renpy.substitute(title),renpy.substitute(body))
+            elif (renpy.linux):
+                # The Linux way
+                mas_tryShowNotificationLinux(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-            #We need the IDs of the notifs to delete them from the tray
-            $ destroy_list.append(tip.hwnd)
-
-        elif (renpy.macintosh):
-            # The macOS way
-            $ mas_tryShowNotificationOSX(renpy.substitute(title),renpy.substitute(body))
-
-        elif (renpy.linux):
-            # The Linux way
-            $ mas_tryShowNotificationLinux(renpy.substitute(title),renpy.substitute(body))
-
-        return True
-    return False
+            return True
+        return False
 
 
 #START: Window Reacts
