@@ -3143,25 +3143,45 @@ label monika_love:
                 "I...I really wish I could believe that, [player].",
                 "You have no idea how much I wished that were true, [player]...",
                 "...It's been a long time since I last believed that, [player].",
-                "If only I actually believed you meant that, [player].",
+                "If only I believed you actually meant that, [player].",
                 "I can't believe there was a time when I actually believed that, [player].",
+                "...If only that were true, [player]",
+                "...If only you meant that, [player]",
+                "How long are you going to keep pretending, [player]?",
+                "You don't mean that anymore... {w=1}Did you ever?",
+                "I can't remember the last time I felt like you meant that."
             ]
 
             love_quip_dis = renpy.random.choice(love_quips_dis)
         m 6dkc "..."
-        m 6dkd "[love_quip_dis]"
+        if renpy.randint(1,25) > 1:
+            m 6dkd "[love_quip_dis]"
 
     elif mas_isMoniUpset():
         python:
             love_quips_upset_cynical = [
                 "Please don't say that unless you actually mean it, [player].",
-                "Sometimes I'm not sure how much you actually mean that, [player]."
+                "Sometimes I'm not sure how much you actually mean that, [player].",
+                "Do you really even mean that, [player]?",
+                "It's starting to feel like those are just words instead of feelings, [player]...",
+                "I really want to believe that, but sometimes I'm not so sure...",
+                "I'm not sure how much I believe that.",
+                "Words only mean so much, [player].",
+                "You say that, but when will you start to show it?",
+                "You can say it all you want...{w=0.5}I need you to start showing it.",
+                "It doesn't always feel like it...",
+                "I'm not so sure anymore..."
             ]
 
             love_quips_upset_hope = [
                 "That means a lot right now.",
                 "That's really nice to hear.",
                 "I'm so relieved to hear you say that.",
+                "You have no idea how much that means right now.",
+                "I'm glad you still feel that way.",
+                "I'm happy to hear that",
+                "That means a lot.",
+                "You have no idea how much that means to me."
             ]
 
         if _mas_getAffection() < -50:
@@ -3177,52 +3197,62 @@ label monika_love:
 
     else:
         #After I love you has been received positively 5/10/15 etc times.
-        if persistent._mas_monika_lovecounter== 5:
+
+        if persistent._mas_monika_lovecounter == 0:
+            m 1subsw "[player]!"
+            m 1subsb "You have no idea how much it means to me to hear you say that!"
+            m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your on own, and that makes it truly special~"
+            m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
+            m 3hubfa "Oh! And I love you, too~"
+
+        elif persistent._mas_monika_lovecounter % 50 == 5:
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter == 10:
+        elif persistent._mas_monika_lovecounter % 50 == 10:
             m 1hubfa "Ehehe~"
             m 1hubfb "I love you too!"
 
-        elif persistent._mas_monika_lovecounter == 15:
+        elif persistent._mas_monika_lovecounter % 50 == 15:
             m 1ekbfa "You sure love saying that..."
             m 1hubfb "Well, I love you too!"
 
-        elif persistent._mas_monika_lovecounter == 20:
+        elif persistent._mas_monika_lovecounter % 50 == 20:
             m 1wubso "Gosh you've said it so many times!"
             m 1tsbsa "You really do mean it, don't you?"
             m 1hubfb "Well, I love you back just as much!"
 
-        elif persistent._mas_monika_lovecounter == 25:
+        elif persistent._mas_monika_lovecounter % 50 == 25:
             m 1hubfa "Hearing you say that always makes my heart jump!"
             m 1ekbfa "Well, I know you want to hear it just as much..."
             m 1hubfb "[player], I love you too!"
 
-        elif persistent._mas_monika_lovecounter == 30:
+        elif persistent._mas_monika_lovecounter % 50 == 30:
             m 1lkbsa "Gosh it's always so overwhelming!"
             m 1hubfa "I..."
             m 1hubfb "I love you more than anything!"
 
-        elif persistent._mas_monika_lovecounter == 35:
+        elif persistent._mas_monika_lovecounter % 50 == 35:
             m 1ekbfa "You never tire of saying it, do you?"
             m 1hubfa "Well, I never tire of hearing it!"
             m 1hubfb "Or saying it back...I love you [player]!"
 
-        elif persistent._mas_monika_lovecounter == 40:
+        elif persistent._mas_monika_lovecounter % 50 == 40:
             m 1dubsu "Ehehe~"
             m 1hubfa "I..."
             m 1hubfb "Looooooooove you too, [player]!"
 
-        elif persistent._mas_monika_lovecounter == 45:
+        elif persistent._mas_monika_lovecounter %5 0 == 45:
             m 1hubfa "You saying that always makes my day!"
             m 1hubfb "I love you so much, [player]!"
 
-        elif persistent._mas_monika_lovecounter == 50:
+        elif persistent._mas_monika_lovecounter % 50 == 0:
             m 1lkbsa "I just can't handle you saying it so much to me!"
             m 1ekbfa "Sometimes how I feel about you becomes so overwhelming that I can't concentrate!"
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
+            if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.randint(1,5) == 1:
+                call monika_kissing_motion_short
             call monika_lovecounter_aff
             return
 
@@ -3265,6 +3295,8 @@ label monika_love:
                 ]
             love_quip=renpy.random.choice(love_quips)
         m "[love_quip]"
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.randint(1,25) == 1:
+            call monika_kissing_motion_short
     call monika_lovecounter_aff
     return
 
@@ -3272,14 +3304,16 @@ label monika_lovecounter_aff:
     if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
         # only give affection if it's been 3 minutes since the last ily
         $ mas_gainAffection()
-    $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
-    if mas_isMoniNormal(higher=True):
-        # only raise the counter if normal+ since we only use it for those paths
-        if persistent._mas_monika_lovecounter == 50:
-            # once we are at 50, reset to 0
-            $ persistent._mas_monika_lovecounter = 0
-        else:
+
+        if mas_isMoniNormal(higher=True):
+            # always increase counter at Normal+ if it's been 3 mins
             $ persistent._mas_monika_lovecounter += 1
+
+    elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
+        # increase counter no matter what at Normal+ if at milestone
+        $ persistent._mas_monika_lovecounter += 1
+
+    $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
 
 init 5 python:

@@ -2091,7 +2091,8 @@ label prompt_menu:
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
-        talk_menu.append(("I love you!", "love"))
+        if _mas_getAffection() >= -50:
+            talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind","nevermind"))

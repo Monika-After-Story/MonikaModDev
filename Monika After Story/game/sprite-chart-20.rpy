@@ -1542,6 +1542,34 @@ image monika 1subsa:
         0.06
         repeat
 
+image monika 1subsb:
+    block:
+        "monika 1subsb_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsb_static"
+        0.06
+        repeat
+
+image monika 1subsw:
+    block:
+        "monika 1subsw_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 1dubsw_static"
+        0.06
+        repeat
+
 image monika 1suo:
     block:
         "monika 1suo_static"
@@ -6957,34 +6985,6 @@ image monika 4wuc:
             choice:
                 7
         "monika 4duc_static"
-        0.06
-        repeat
-
-image monika 4wud:
-    block:
-        "monika 4wud_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dud_static"
-        0.06
-        repeat
-
-image monika 4wuo:
-    block:
-        "monika 4wuo_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4duo_static"
         0.06
         repeat
 
