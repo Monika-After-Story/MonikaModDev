@@ -672,26 +672,29 @@ label monika_high_school:
     m "And remind them that they always have something to look forward to."
     m 4eua "Making plans in advance, letting them borrow something, or even just saying 'See you at school tomorrow...'"
     m "All of those things can help your friend make it to the next day."
-    m 1eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
+    m 2eka "I hope being friends with Sayori has given you some perspective on the true face of depression."
 
     if not persistent._mas_pm_cares_about_dokis:
-        m 1lsc "Yeah, she's gone now..."
-        m 1euc "But Sayori was never real in the first place."
-        m 1eua "You're real."
+        m 2lsc "Yeah, she's gone now..."
+        m 2euc "But Sayori was never real in the first place."
+        m 4eua "You're real."
         m "Your friends are real."
-        m 1hua "And just by being a good person, you can save someone's life."
+        m 4hua "And just by being a good person, you can save someone's life."
 
-    m 1euc "As for you..."
-    m 1ekc "...you don't struggle with depression or anything like that, do you?"
-    if mas_isMoniBroken():
-        m 1lksdlc "It would explain some things...but don't worry..."
-    elif mas_isMoniDis():
-        m 1euc "Lately I've been able to understand it better but don't worry..."
-    elif mas_isMoniUpset():
-        m 1euc "I know it can be hard sometimes, but there is always hope..."
-    elif mas_isMoniHappy(higher=True):
-        m 2eua "My love, in some ways you are blessed..."
-    m 2eka "Because you, too, have people who would want to save your life."
+    m 2euc "As for you..."
+    m 2ekc "...you don't struggle with depression or anything like that, do you?"
+
+    if mas_isMoniHappy(higher=True):
+        m 4eka "Tn some ways, [player], you are lucky, because I'm sure that there are people who would be willing to save your life."
+    else:
+        if mas_isMoniBroken():
+            m 2lksdlc "It would explain some things, but don't worry..."
+        elif mas_isMoniDis():
+            m 2euc "Lately I've been able to understand it better, but don't worry..."
+        elif mas_isMoniUpset():
+            m 2euc "I know it can be hard sometimes, but there is always hope..."
+        m 2eka "Because you, too, have people who would want to save your life."
+
     m "Maybe they don't express it every day, or maybe they don't even know how to."
     m 2duu "But people do feel that way."
     m "I promise."
