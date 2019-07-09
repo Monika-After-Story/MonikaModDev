@@ -322,7 +322,7 @@ init 5 python:
     )
 
 label mas_wrs_youtube:
-   $ wrs_success = display_notif(
+    $ wrs_success = display_notif(
         m_name,
         [
             "What are you watching, [player]?",
@@ -340,9 +340,9 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_r34m",
+            eventlabel="monika_lookingat",
             category=['rule34', 'monika'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
+            rules={"skip alert": None},
             show_in_idle=True
         ),
         code="WRS"
@@ -397,7 +397,7 @@ label mas_wrs_monikamoddev:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
-    
+
 init 5 python:
     addEvent(
         Event(
@@ -431,7 +431,7 @@ init 5 python:
     )
 
 label mas_wrs_monikatwitter:
-    $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
+     $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
 
     #Unlock again if we failed
     if not wrs_success:
