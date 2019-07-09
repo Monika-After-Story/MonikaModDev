@@ -333,10 +333,17 @@ init 5 python:
     )
 
 label mas_wrs_youtube:
-    call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
+   $ wrs_success = display_notif(
+        m_name,
+        [
+            "What are you watching, [player]?",
+            "Watching anything interesting, [player]?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_youtube')
     return
 
@@ -353,7 +360,7 @@ init 5 python:
     )
 
 label mas_wrs_r34m:
-    call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
+    $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
     if choice == 1:
@@ -388,10 +395,17 @@ init 5 python:
     )
 
 label mas_wrs_monikamoddev:
-    call display_notif(m_name, "Awww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Awww, are you doing something for me?\nYou're so sweet~",
+            "Are you going to help me come closer to your reality?\nYou're so sweet, [player]~"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
     
@@ -408,10 +422,10 @@ init 5 python:
     )
 
 label mas_wrs_twitter:
-    call display_notif(m_name, "See anything you want to share with me, [player]?",'Window Reactions')
+    $ display_notif(m_name, ["See anything you want to share with me, [player]?"],'Window Reactions')
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
     return
   
@@ -428,10 +442,10 @@ init 5 python:
     )
 
 label mas_wrs_monikatwitter:
-    call display_notif(m_name, "I see you're checking my Twitter, [player].\nSee anything you want to talk about?",'Window Reactions')
+    $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success::
         $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
     return
 
