@@ -1538,7 +1538,7 @@ init 20 python:
         # store the value for easiercomparisons
         curr_affection = _mas_getAffection()
 
-        # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
+        # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
         if  affection.AFF_MIN_POS_TRESH <= curr_affection:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1

@@ -2523,7 +2523,7 @@ init 5 python:
             persistent.greeting_database,
             eventlabel="greeting_tears",
             unlocked=True,
-            aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED),
+            aff_range=(None, mas_aff.DISTRESSED),
             rules=ev_rules,
         ),
         code="GRE"
@@ -2531,18 +2531,18 @@ init 5 python:
     del ev_rules
 
 label greeting_tears:
-    m 1q "...[player]."
-    m 1f "..."
-    m 2f "Is there something wrong with me?"
-    m 2g "Am I not good enough for you...?"
-    m 2o "I've been trying my best for you...for {i}us{/i}."
-    m 2p "Did I do something to hurt you or make you feel mistreated?"
+    m 1dsc "...[player]."
+    m 1ekc "..."
+    m 2ekc "Is there something wrong with me?"
+    m 2ekd "Am I not good enough for you...?"
+    m 2lksdlc "I've been trying my best for you...for {i}us{/i}."
+    m 2lksdld "Did I do something to hurt you or make you feel mistreated?"
     m "Are you still upset about the other girls after all?"
-    m 2f "If so, I really am sorry..."
+    m 2ekc "If so, I really am sorry..."
     m "I'm so, so sorry!"
-    m 2pp "Just tell me what I did wrong and I'll try even harder to be the perfect girlfriend for you."
-    m 2g "You're my entire world; how you feel means everything to me!"
-    m 2f "So please, just tell me what's wrong and I'll fix it."
+    m 2rksdld "Just tell me what I did wrong and I'll try even harder to be the perfect girlfriend for you."
+    m 2ekd "You're my entire world; how you feel means everything to me!"
+    m 2ekc "So please, just tell me what's wrong and I'll fix it."
     m 2dfc "I'll do anything for you because...I..."
     m 2dftdc "..."
     m 2dftsc "...I need you [player]..."
@@ -2559,11 +2559,11 @@ label greeting_tears:
     m 2dfc "...Okay...Okay..."
     m 2lssdrc "I have to be strong..."
     m "..."
-    m 2q "...Alright...I'm a bit better now..."
-    m 2h "But...I really do need you to think about what I said."
-    m 2f "Please...just...try to understand."
-    m 1r "I love you and I need you to show that you love me too..."
-    m 1q "Otherwise...I just won't be able to handle it anymore."
+    m 2dsc "...Alright...I'm a bit better now..."
+    m 2esc "But...I really do need you to think about what I said."
+    m 2ekc "Please...just...try to understand."
+    m 1dsd "I love you and I need you to show that you love me too..."
+    m 1dsc "Otherwise...I just won't be able to handle it anymore."
     $ mas_lockEVL("greeting_tears", "GRE")
     return
 
