@@ -618,10 +618,10 @@ label unlock_piano:
 
 # NOTE: this has beenpartially disabled
 label random_limit_reached:
-    $seen_random_limit=True
+    $ seen_random_limit=True
 
     #Notif so people don't get stuck here
-    call display_notif(m_name, "Hey [player]...", "Topic Alerts")
+    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
     python:
         limit_quips = [
@@ -771,6 +771,9 @@ label mas_crashed_start:
         # cleanup
         call mas_crashed_post
 
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika idle with dissolve
     return
 
 label mas_crashed_prelong:
@@ -2466,7 +2469,7 @@ label mas_notification_windowreact:
         "Sure!":
             m 1hua "Okay, [player]!"
             m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-            call display_notif(m_name, "I love you, [player]!", skip_checks=True)
+            $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
             m 1hub "There it is!"
 
         "No thanks.":
