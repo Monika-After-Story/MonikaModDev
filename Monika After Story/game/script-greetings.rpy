@@ -2522,7 +2522,8 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_tears",
-            unlocked=False,
+            unlocked=True,
+            aff_range=(mas_aff.DISTRESSED, mas_aff.DISTRESSED),
             rules=ev_rules,
         ),
         code="GRE"
