@@ -415,11 +415,15 @@ init 5 python:
     )
 
 label mas_wrs_twitter:
-    $ display_notif(
-        m_name, 
+    $ temp_line = renpy.substitute("I love you, [player].")
+    $ temp_len = len(temp_line)
+
+    $ wrs_success = display_notif(
+        m_name,
         [
-            "See anything you want to share with me, [player]?"
-            "What are you looking at, [player]?"
+            "See anything you want to share with me, [player]?",
+            "Anything interesting to share, [player]?",
+            "280 characters? I only need [temp_len]...\n[temp_line]"
         ],
         'Window Reactions'
     )
@@ -442,11 +446,12 @@ init 5 python:
     )
 
 label mas_wrs_monikatwitter:
-    $ display_notif(
+    $ wrs_success = display_notif(
         m_name,
         [
-            "I see you're checking my Twitter, [player].\nSee anything you want to talk about?"
-            "I don't update my Twittwer very often.\nBut we can talk all we want whenever you feel like it [player]."
+            "Are you here to confess your love for me to the entire world, [player]?",
+            "You're not spying on me, are you?\nAhaha, just kidding~",
+            "I don't care how many followers I have as long as I have you~"
         ],
         'Window Reactions'
     )
