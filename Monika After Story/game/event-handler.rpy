@@ -1976,6 +1976,9 @@ label call_next_event:
                 $ mas_clearNotifs()
                 jump _quit
 
+            if "love" in ret_items:
+                $ persistent._mas_last_monika_ily = datetime.datetime.now()
+
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
             jump call_next_event
@@ -2092,7 +2095,10 @@ label prompt_menu:
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
         if _mas_getAffection() >= -50:
-            talk_menu.append(("I love you!", "love"))
+            if persistent._mas_last_monika_ily is not None and (datetime.datetime.now() - persistent._mas_last_monika_ily) <= datetime.timedelta(0,15):
+                talk_menu.append(("I love you, too!","love_too"))
+            else:
+                talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind","nevermind"))
@@ -2114,6 +2120,9 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",True)
+
+    elif madechoice == "love_too":
+        $ pushEvent("monika_love_too")
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start
