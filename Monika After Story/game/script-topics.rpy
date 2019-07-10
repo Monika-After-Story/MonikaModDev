@@ -3336,6 +3336,9 @@ label monika_love_too:
         $ mas_gainAffection()
 
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+
+    # Reset to None so only one ily2 per instance
+    $ persistent._mas_last_monika_ily = None
     return
 
 init 5 python:
