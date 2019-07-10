@@ -2029,7 +2029,7 @@ label mas_d25_spent_time_monika:
     elif mas_isMoniAff():
         m 5ekbfa "I love you so much, [player]~"
     # Normal and happy
-    else
+    else:
         m 1hubfa "I love you, [player]~"
     return "love"
 

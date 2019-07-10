@@ -2690,7 +2690,7 @@ label greeting_back_from_school:
                 m "I'm sorry to hear that."
                 m 1eka "Just remember that no matter what happens, I'll be here for you."
                 m 1ekbfa "I love you so, so much."
-            return "love"
+        return "love"
 
     elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
