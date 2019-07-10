@@ -437,55 +437,6 @@ init -5 python in mas_sprites:
 
     # special mas sprite classes
 
-    class PoseArms(object):
-        """
-        representation of a pose's arms. This is to simplify pose management
-        """
-
-        def __init__(self, left=None, right=None, both=None):
-            """
-            constructor.
-            Each item below should be a tuple:
-                [0] - string name of the arm/arms
-                [1] - True if has back, False if not
-                [2] - True if has front, False if not
-
-            IN:
-                left - left arm to use
-                right - right arm to use
-                both - both arms to use
-            """
-            self._init_props()
-
-            if both is not None:
-                self.both, self.both_front, self.both_back = both
-
-            else:
-                self.left, self.left_front, self.left_back = left
-                self.right, self.right_front, self.right_back = right
-
-        def _init_props(self):
-            """
-            Initializes props
-            """
-            self.both = None
-            self.both_front = None
-            self.both_back = None
-            self.left = None
-            self.left_front = None
-            self.left_back = None
-            self.right = None
-            self.right_front = None
-            self.right_back = None
-
-        def build_arms(self, sprite_list, clothing, arms, n_suffix, front):
-            """
-            Builds arm strings and adds to sprite list
-            NOTE: only adds arm parts, not composition
-
-            IN:
-            """
-            pass
             
 
     # zoom adjuster
@@ -1356,6 +1307,30 @@ init -5 python in mas_sprites:
 
         # add final part
 #        sprite_list.append('")')
+
+    
+    def _ms_arms_nh_wbase(
+            sprite_list,
+            loc_str,
+            clothing,
+            lean,
+            arms,
+            n_suffix,
+            bcode
+        ):
+        """
+        Adds arms string, no hair, with base
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            lean - lean type
+            arms - arms type
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        pass
 
 
     def _ms_arms_nh_up(sprite_list, loc_str, clothing, arms, n_suffix):
@@ -3980,6 +3955,72 @@ init -2 python:
 #
 #    skin_huearray = [skin_hue1,skin_hue2,skin_hue3]
 
+
+    class MASPoseArms(object):
+        """
+        representation of a pose's arms. This is to simplify pose management
+
+        PROPERTIES:
+            both - string name used if a pose has both arms as a layer
+                set to None to not use this. This also takes priority.
+            both_front - True if both has a front layer (1)
+            both_back - True if both has a back layer (0)
+            left - string name used if pose has a left arm as a layer
+                set to None to not use this. Not used if both is set.
+            left_front - True if left has a front layer (1)
+            left_back - True if left has a back layer (0)
+            right - string name used if pose has a back arm as a layer
+                set to None to not use this. Not used if both is set.
+            right_front - True if right has a front layer (1)
+            right_back - True if right has a back layer (0)
+        """
+
+        def __init__(self, left=None, right=None, both=None):
+            """
+            constructor.
+            Each item below should be a tuple:
+                [0] - string name of the arm/arms
+                [1] - True if has back, False if not
+                [2] - True if has front, False if not
+
+            IN:
+                left - left arm to use
+                right - right arm to use
+                both - both arms to use
+            """
+            self._init_props()
+
+            if both is not None:
+                self.both, self.both_front, self.both_back = both
+
+            else:
+                self.left, self.left_front, self.left_back = left
+                self.right, self.right_front, self.right_back = right
+
+        def _init_props(self):
+            """
+            Initializes props
+            """
+            self.both = None
+            self.both_front = None
+            self.both_back = None
+            self.left = None
+            self.left_front = None
+            self.left_back = None
+            self.right = None
+            self.right_front = None
+            self.right_back = None
+
+        def build_arms(self, sprite_list, clothing, arms, n_suffix, front):
+            """
+            Builds arm strings and adds to sprite list
+            NOTE: only adds arm parts, not composition
+
+            IN:
+            """
+            pass
+
+
     # pose map helps map poses to an image
     class MASPoseMap(renpy.store.object):
         """
@@ -4007,10 +4048,30 @@ init -2 python:
             "p6",
         )
 
+        MPM_TYPE_ED = 0
+        # enable/disbale mode
+        # each pose should be True/False
+        # True enables the pose, False disables.
+
+        MPM_TYPE_FB = 1
+        # fallback mode
+        # each pose should be a string of the pose to actually use
+        # the strings should be pose names (steepling/crossed/etc...)
+
+        MPM_TYPE_AS = 2
+        # arm split mode
+        # each pose should contain one of the following strings:
+        #   "0", "1", "", "*"
+        # See MASAccessory for more info
+
+        MPM_TYPE_PA = 3
+        # pose arms mode
+        # each pose should contain None or a MASPoseArms object
 
         def __init__(self,
                 # NOTE: when updating params, make sure to modify param name
                 #   lists above accordingly.
+                mpm_type=0,
                 default=None,
                 l_default=None,
                 use_reg_for_l=False,
@@ -4027,9 +4088,9 @@ init -2 python:
             If None is passed in for any var, we assume that no image should
             be shown for that pose
 
-            NOTE: all defaults are None
-
             IN:
+                mpm_type - MASPoseMap type of this posemap
+                    Default is 0 (enable/disble mode)
                 default - default pose id to use for poses that are not
                     specified (aka are None).
                 l_default - default pose id to use for lean poses that are not
@@ -4072,6 +4133,8 @@ init -2 python:
             self.__all_map = {}
             self.__all_map.update(self.map)
             self.__all_map.update(self.l_map)
+
+            self._mpm_type = mpm_type
 
 
         def __set_posedefs(self, pose_dict, _def):
@@ -4121,6 +4184,7 @@ init -2 python:
 
             RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
+            # TODO: including handling the mpm type
             isbad = False
 
             if is_acs:
@@ -4533,7 +4597,7 @@ init -2 python:
                         arms-0 for this pose
                     "1" - sprite has "-1" version, and should be used for
                         arms-1 for this pose
-                    ""  - sprite does not have any arm version for this pose
+                    "" - sprite does not have any arm version for this pose
                     "*" - sprite has both "-0" and "-1" version, and both
                         should be used for this pose
 
@@ -4881,6 +4945,8 @@ init -2 python:
                 hair name properties.
                 use "all" to signify a default hair style for all mappings that
                 are not found.
+            pose_arms - MASPoseMap object representing the arm layers used
+                for poses
 
         SEE MASSpriteFallbackBase for inherited properties
         """
@@ -4897,7 +4963,8 @@ init -2 python:
                 hair_map={},
                 entry_pp=None,
                 exit_pp=None,
-                ex_props={}
+                ex_props={},
+                pose_arms=None
             ):
             """
             MASClothes constructor
@@ -4933,6 +5000,8 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
+                pose_arms - MASPoseMap object represneting the arm layers
+                    for poses
             """
             super(MASClothes, self).__init__(
                 name,
@@ -4948,6 +5017,7 @@ init -2 python:
             self.__sp_type = store.mas_sprites_json.SP_CLOTHES
 
             self.hair_map = hair_map
+            self.pose_arms = pose_arms
 
             # add defaults if we need them
             if "all" in hair_map:
@@ -5004,6 +5074,7 @@ init -2 python:
             # NOTE: JSONs will NOT support non-split hair.
             #   aka ONLY CASE 1 IS SUPPORTED
             to_verify = []
+            # TODO: include handling of the pose_arms
 
             # starting with body types
             to_verify.append(store.mas_sprites.BS_BODY_U.format(
