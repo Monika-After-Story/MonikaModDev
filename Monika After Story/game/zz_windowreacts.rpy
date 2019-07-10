@@ -317,7 +317,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_youtube",
+            eventlabel="monika_whatwatching",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -325,7 +325,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_youtube:
+label monika_whatwatching:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -337,14 +337,14 @@ label mas_wrs_youtube:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_youtube')
+        $ mas_unlockFailedWRS('monika_whatwatching')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_r34m",
+            eventlabel="monika_lookingat",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -352,7 +352,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_r34m:
+label monika_lookingat:
     $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
@@ -379,7 +379,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="mas_wrs_monikamoddev",
+            eventlabel="monika_monikamoddev",
             category=['monikamoddev'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -387,7 +387,7 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_monikamoddev:
+label monika_monikamoddev:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -399,7 +399,7 @@ label mas_wrs_monikamoddev:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
+        $ mas_unlockFailedWRS('monika_monikamoddev')
     return
 
 init 5 python:
