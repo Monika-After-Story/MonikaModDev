@@ -355,7 +355,7 @@ label monika_mas_wrs_duolingo:
         m_name,
         [
             "How is it with your progress in language, [player]?",
-            "You make me proud of you today?"
+            "You make me proud of you today, [player]?"
         ],
         'Window Reactions'
     )
@@ -392,19 +392,6 @@ label monika_mas_wrs_wikipedia:
         $ mas_unlockFailedWRS('mas_wrs_wikipedia')
     return
 
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_windowreacts_database,
-            eventlabel="monika_whatwatching",
-            category=['youtube'],
-            rules={"notif-group": "Window Reactions", "skip alert": None},
-            show_in_idle=True
-        ),
-        code="WRS"
-    )
-
-#START: Window Reacts
 init 5 python:
     addEvent(
         Event(
