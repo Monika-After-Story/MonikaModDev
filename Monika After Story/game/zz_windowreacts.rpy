@@ -255,19 +255,23 @@ init python:
     def display_notif(title, body, group=None, skip_checks=False):
         """
         Notification creation method
+
         IN:
             title: Notification heading text
             body: A list of items which would go in the notif body (one is picked at random)
             group: Notification group (for checking if we have this enabled)
             skip_checks: Whether or not we skips checks
+
         OUT:
             bool indicating status (notif shown or not (by check))
+
         NOTE:
             We only show notifications if:
                 1. We are able to show notifs
                 2. MAS isn't the active window
                 3. User allows them
                 4. And if the notification group is enabled
+
                 OR if we skip checks. BUT this should only be used for introductory or testing purposes.
         """
 
@@ -340,7 +344,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_lookingat",
+            eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -431,7 +435,7 @@ init 5 python:
     )
 
 label mas_wrs_monikatwitter:
-     $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
+    $ display_notif(m_name, ["I see you're checking my Twitter, [player].\nSee anything you want to talk about?"],'Window Reactions')
 
     #Unlock again if we failed
     if not wrs_success:
