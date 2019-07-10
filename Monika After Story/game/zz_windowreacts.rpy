@@ -249,7 +249,7 @@ init python:
             body: notification body
         """
         os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
-    
+
     def mas_tryShowNotificationLinux(title, body):
         """
         Tries to push a notification to the notification center on Linux.
@@ -326,7 +326,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_whatwatching",
+            eventlabel="mas_wrs_youtube",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -334,7 +334,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_whatwatching:
+label mas_wrs_youtube:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -346,14 +346,14 @@ label monika_whatwatching:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_whatwatching')
+        $ mas_unlockFailedWRS('mas_wrs_youtube')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_lookingat",
+            eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -361,7 +361,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_lookingat:
+label mas_wrs_r34m:
     $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
@@ -388,7 +388,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_monikamoddev",
+            eventlabel="mas_wrs_monikamoddev",
             category=['monikamoddev'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -396,7 +396,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_monikamoddev:
+label mas_wrs_monikamoddev:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -408,5 +408,5 @@ label monika_monikamoddev:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_monikamoddev')
+        $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
