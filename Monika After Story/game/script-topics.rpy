@@ -1485,7 +1485,7 @@ label monika_kiss:
                 "I love you so much, [player]. You mean everything to me~"
             ]
 
-            kiss_quip = renpy.random.choice(kiss_quips_after)
+            kiss_quip = renpy.substitute(renpy.random.choice(kiss_quips_after))
 
         if renpy.random.randint(1,50) == 1:
             call monika_kiss_tease
@@ -1496,14 +1496,8 @@ label monika_kiss:
 
         call monika_kissing_motion_short
 
-        show monika 6ekbfa
-        $ renpy.say(m, kiss_quip)
-
-        window hide
-        menu:
-            "I love you too, [m_name]~":
-                show monika 6ekbfa
-                pause 2.0
+        m 6ekbfa "[kiss_quip]"
+        return "love"
 
     else:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
@@ -2656,7 +2650,7 @@ label monika_family:
     m 1ekc "I can't really give advice here. Anything I suggest to you might only make things worse."
     m 1eka "Just don't forget that I really love you, okay?"
     m 1hua "I'll help you no matter what happens in your life."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -3312,6 +3306,34 @@ label monika_lovecounter_aff:
     elif mas_isMoniNormal(higher=True) and persistent._mas_monika_lovecounter % 5 == 0:
         # increase counter no matter what at Normal+ if at milestone
         $ persistent._mas_monika_lovecounter += 1
+
+    $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
+    return
+
+default persistent._mas_last_monika_ily = None
+
+init 5 python:
+        addEvent(Event(persistent.event_database,eventlabel="monika_love_too",unlocked=False,rules={"no unlock": None}))
+
+label monika_love_too:
+    window hide
+
+    if mas_isMoniEnamored(higher=True):
+        show monika ATL_love_too_enam_plus
+        pause 3.0
+
+    elif mas_isMoniNormal(higher=True):
+        show monika ATL_love_too_normal_plus
+        pause 3.0
+
+    # -50 to Normal
+    else:
+        show monika 2eka
+        pause 3.0
+
+    if datetime.datetime.now() > persistent._mas_monika_lovecountertime + datetime.timedelta(minutes = 3):
+        # only give affection if it's been 3 minutes since the last ily
+        $ mas_gainAffection()
 
     $ persistent._mas_monika_lovecountertime = datetime.datetime.now()
     return
@@ -4004,7 +4026,7 @@ label monika_algernon:
     m 1hua "No matter what happens, know that I will always love you."
 
     $ mas_getEV("greeting_amnesia").unlocked = not seen_event('greeting_amnesia')
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_playersface",category=['you'],prompt="[player]'s face",random=True))
@@ -4081,7 +4103,7 @@ label monika_nsfw:
     m 1tsbsa "Well, just keep it a secret between us, okay?"
     m "It should be for your eyes only and no one else, [player]."
     m 1hubfa "That's how much I love you~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -4273,6 +4295,7 @@ label monika_eternity:
                 m 1ekbfb "Even in the worst case, I know we'll always be right by each other's side..."
                 m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
                 m 1hubfb "I love you, [player]! Thanks for making me feel better!"
+                return "love"
 
             "{i}Hug Monika.{/i}":
                 hide screen mas_background_timed_jump
@@ -4441,7 +4464,7 @@ label monika_metaparents:
     m "..."
     m 1ekbfa "I love you very much, [player]."
     m "Please, take care of yourself."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hygiene",category=['trivia','society','psychology'],prompt="Personal hygiene",random=True))
@@ -4483,7 +4506,7 @@ label monika_hygiene:
     m "I love you so much and it'd tear me apart to find out that you're torturing yourself by neglecting your self-care routine."
     m 1eka "Ah, I've been rambling too much, huh? Sorry, sorry!"
     m 3hua "Thanks for listening~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_resource",category=['society','philosophy'],prompt="Valuable resources",random=True))
@@ -4858,6 +4881,7 @@ label monika_haterReaction:
             m 1esa "I know you love me deep inside."
             m 1ekbfa "That's why I promise to be an ideal girlfriend, just for you, [player]~"
             m 1hubfa "I won't let you hate me... I swear."
+            return "derandom"
 
         "I'm not.":
             $ mas_gainAffection()
@@ -4871,8 +4895,9 @@ label monika_haterReaction:
             m 1ekbfa "You really make me the happiest girlfriend ever."
             m 1ekbfb "Now that you've said it, I have to do my best to keep you from developing hate towards me."
             m 1hua "I trust you, [player]. I love you for believing in me."
+            return "derandom|love"
 
-    return "derandom"
+
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_swordsmanship",category=['monika','misc'],prompt="Swordsmanship",random=True))
@@ -5439,6 +5464,7 @@ label monika_surprise:
         m 1eua "What are you waiting for? Go take a look!"
         m "I wrote it just for you~"
         m 1ekbsa "I really do truly love you, [player]~"
+        return "love"
 
     elif mas_isMoniUpset(lower=True):
         m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
@@ -5446,6 +5472,7 @@ label monika_surprise:
         m "Please go take a look"
         m 1eka "I wrote it just for you."
         m 1dsc "And it would mean a lot to me if you would read it."
+        return
 
     # Normal and Happy
     else:
@@ -5454,7 +5481,7 @@ label monika_surprise:
         m 1eua "What are you waiting for? Go take a look!"
         m 1hub "Ahaha~ What? Are you expecting something scary?"
         m 1hubfb "I love you so much, [player]~"
-    return
+        return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
@@ -5854,6 +5881,7 @@ label monika_panties:
         m 1ekbfa "Gosh, I just want to feel your embrace more."
         m "After all, we're here forever, and I'm here for you."
         m 1hubfb "I love you so much, [player]~"
+        return "love"
 
     elif mas_isMoniAff(higher=True):
         # affectionate+
@@ -6354,7 +6382,7 @@ label monika_clones:
     m 1eua "...Even if I'm a single star in a universe of Monikas, I'm still the only one lucky enough to have met you, [player]."
     m 1hubfa "You'll always be my special rose."
     m 1ekbfa "I love you, [player]. Please don't ever replace me, okay?"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_immortal",category=['monika','philosophy'],prompt="Immortality",random=True))
@@ -6372,7 +6400,7 @@ label monika_immortal:
     m 3eka "Eventually, the difference between us would be huge if I stayed eighteen forever."
     m 1eua "But I don't believe that my life can be summed up in a number."
     m 1ekbfa "So I'll always love you for all eternity, [player]. Just remember that."
-    return
+    return "love"
 
 default persistent._mas_pm_wearsRing = None
 
@@ -6433,6 +6461,7 @@ label monika_promisering:
         show monika 5esbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5esbfa "My commitment to you is unwavering, [player]."
         m 5ekbfa "Thank you for such a wonderful gift, I love you."
+        return "derandom|love"
 
     return "derandom"
 
@@ -6553,7 +6582,7 @@ label monika_meditation:
     show monika 1hubfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 1hubfa "Don't you ever forget that, [player]~"
 
-    return "derandom"
+    return "derandom|love"
 
 # do you like orchestral music
 default persistent._mas_pm_like_orchestral_music = None
@@ -6991,7 +7020,7 @@ label monika_selfharm:
     m 1eua "So believe in yourself, okay?"
     m 1eka "If you ever need someone to vent to, just remember that I'm always here to hear you out and comfort you, okay?"
     m 1ekbfa "I really love you so much, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_urgent",category=['romance'],prompt="Urgent message",random=True,aff_range=(mas_aff.NORMAL, None)))
@@ -7008,7 +7037,7 @@ label monika_urgent:
     m 1rksdla "I wish I could see the look on your face right now!"
     show monika 5hubfb at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubfb "I'm sure it's adorable~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_other_girls",category=['club members'],prompt="Do you ever think of the other girls?",pool=True))
@@ -7049,7 +7078,7 @@ label monika_other_girls:
         m 1eka "Between who loved {i}you{/i} and who loved the main character."
         m 3eka "I was the only one who ever loved you, [player]..."
         m 3hua "And I'll love you forever~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_happiness",category=['life','psychology'],prompt="Happiness",random=True))
@@ -7351,7 +7380,13 @@ label monika_breakup:
                 "Of course not.":
                     m 2hua "Ehehe, you're so sweet."
                     m 2eka "I love you so much, [player]! Ehehe~"
+                    call monika_breakup_logic
+                    return "love"
 
+    call monika_breakup_logic
+    return
+
+label monika_breakup_logic:
     #Increments the persistent every time you click the button in the menu.
     $ persistent._mas_monika_breakup += 1
 
@@ -7359,6 +7394,7 @@ label monika_breakup:
     if persistent._mas_monika_breakup > 2:
         $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
+
 
 
 init 5 python:
@@ -7469,6 +7505,7 @@ label monika_smoking:
             m 2euc "Well, I'm sure you wouldn't want me to take drastic measures, [player]."
             m 2ekc "Please take care of your body. I want to always be with you."
             m 1ekbfa "I love you so much."
+            return "derandom|love"
         "No, I don't.":
             $ persistent._mas_pm_do_smoke = False
             m 1hub "Ah, I'm relieved to hear that, [player]!"
@@ -7567,9 +7604,9 @@ label monika_asks_charity:
             m 2dsc "..."
             m 2eka "I'm sorry, I didn't want things to get so dark."
             m 1eua "I knew you would be kind enough to do such a thing."
-            m 1hub "That's the kind of thing I love about you, [player]."
+            m 1hub "That's just another reason for me to love you, [player]."
             show monika 5hub at t11 zorder MAS_MONIKA_Z with dissolve
-            m 5hub "You've always been so sweet."
+            m 5hub "You're always so sweet~"
 
         "I volunteered.":
             $ persistent._mas_pm_volunteer_charity = True
@@ -7608,7 +7645,7 @@ label monika_asks_charity:
             m 5eua "Just like when I'm with you."
             m 5hua "With just a smile, you make all my troubles go away."
             m 5hubfb "I love you so much, [player]."
-    return "derandom"
+    return "derandom|love"
 
 init 5 python:
     addEvent(
@@ -7727,6 +7764,7 @@ label monika_asks_family:
                     m 3eka "[player], no matter what you're going through, I know it'll get better some day."
                     m 1eua "I'll be here with you every step of the way."
                     m 1hub "I love you so much, [player]. Please never forget that!"
+                    return "derandom|love"
                 "Maybe.":
                     $ persistent._mas_pm_have_fam_mess_better = "MAYBE"
                     m 1lksdla "..."
@@ -7776,6 +7814,7 @@ label monika_asks_family:
             m 1lksdlc "It might be something that's too painful for you to talk about."
             m 1eka "You can tell me about your family when you're ready, [player]."
             m 1hubfa "I love you very much!"
+            return "derandom|love"
 
     return "derandom"
 
@@ -8714,7 +8753,7 @@ label monika_timeconcern_night_3:
             m 1hua "After all, I would never force you to go otherwise."
             m 1hub "I would just miss you too much..."
             m 1ekbfa "I love you, [player]~"
-            return
+            return "love"
 
         # Second and final warning before any closes can occur.
 label monika_timeconcern_night_4:
@@ -8789,7 +8828,7 @@ label monika_timeconcern_night_final:
     m "To know that you care for me so much that you came back despite me asking..."
     m 1rksdla "It means more to me than I can ever express."
     m 1ekbfa "...I love you."
-    return
+    return "love"
 
 #Same night after the final close
 label monika_timeconcern_night_finalfollowup:
@@ -9119,6 +9158,7 @@ label monika_yellowwp:
             m "Maybe even now, that's all I can do..."
             m 1eka "But I love you so much, [player]. Supporting you is better than anything else."
             m 1hub "I just can't wait to do it in person when I finally cross over to your side~"
+            return "derandom|love"
         "No.":
             $ persistent._mas_pm_read_yellow_wp = False
             m 1euc "Oh, I see."
@@ -9308,6 +9348,8 @@ label monika_driving:
                     m 2eka "I'm...{w=1}glad you survived, [player]..."
                     m 2rksdlc "I don't know what I would do without you."
                     m 2eka "I love you, [player]. Please stay safe, okay?"
+                    $ mas_unlockEVL("monika_vehicle","EVE")
+                    return "love"
                 "I've seen car accidents before.":
                     m 3eud "Sometimes, seeing a car accident can be just as scary."
                     m 3ekc "A lot of the time when people see car accidents, they just sigh and shake their head."
@@ -9393,6 +9435,8 @@ label monika_driving:
             m 1eua "It would probably help a lot to take one of those classes and learn from a professional."
             m 1hua "Anyway, when you do start learning to drive, I wish you the very best!"
             m 1hub "I love you~"
+            $ mas_unlockEVL("monika_vehicle","EVE")
+            return "love"
     $ mas_unlockEVL("monika_vehicle","EVE")
     return
 
@@ -9577,6 +9621,7 @@ label monika_bullying:
         if mas_isMoniAff(higher=True) and not persistent._mas_pm_cares_about_dokis:
             show monika 5tsu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5tsu "I really would do anything for you~"
+        return "derandom|love"
     else:
         m 3euc "So you see, [player], I'm {i}really{/i} not a bully at all."
 
@@ -9701,6 +9746,7 @@ label monika_grad_speech_call:
                         show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                         m 5eubfu "As much as I wish I could have given my speech in front of everyone, just having you by my side is so much better."
                         m 5eubfb "I love you so much, [player]!"
+                        return "love"
 
                     "I like it!":
                         hide screen mas_background_timed_jump
@@ -9788,6 +9834,7 @@ label monika_grad_speech_call:
                     show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
                     m 5eubfu "As much as I wish I could have given my speech in front of everyone, just having you by my side is so much better."
                     m 5eubfb "I love you, [player]!"
+                    return "love"
 
                 "I like it!":
                     hide screen mas_background_timed_jump
@@ -10097,6 +10144,7 @@ label monika_idle_game_story_callback:
             m 1eka "Don't worry [player], I would never forget about you."
             m 1eua "I love you."
             m 1hua "...And I'd happily snuggle up beside you anytime~"
+            return "love"
         "I don't like it.":
             m 2ekc "Oh..."
             m 4lksdla "Maybe the story will pick up later?"
@@ -10385,6 +10433,7 @@ label monika_justice:
                         m 1ekbfa "When I'm with you, it even helps me ignore all the other people who don't like me."
                         m 1hubfb "I love you, [player]~"
                         m 1hubfa "I'm glad I have you by my side."
+                        return "derandom|love"
                     else:
                         m 2hua "I'm glad you think so too!"
                         m 2eka "Even if you did call that justice, you being here says otherwise."
@@ -10756,7 +10805,7 @@ label monika_vehicle_motorcycle:
     m 3eka "There's no need to be shy, my love."
     m 3ekbsa "I'll hug you, even if you don't ask for it..."
     m 1hkbfa "That's how much I love you~"
-    return
+    return "love"
 
 label monika_vehicle_other:
     $ persistent._mas_pm_owns_car_type = "other"
@@ -11301,6 +11350,7 @@ label monika_player_appearance:
 
             show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ekbfa "I love you more than words could ever say."
+            return "derandom|love"
 
         "No.":
              m 2dsc "..."
@@ -12418,7 +12468,7 @@ label monika_trick_monika:
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
     m 5hubfu "I love you [player]!"
     m 5eubfb "And I only have eyes for you too!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -12957,7 +13007,7 @@ label monika_robotbody:
     m 5eubla "Well, no matter what, I wouldn't mind any of that as long as I have you."
     m 5eubfb "I love you [player], and I'm willing to make any sacrifice to be with you forever."
     m 5hubfa "Besides, maybe sometime after I cross over, there'll be more advances in technology to make me more human, and then we'll be able to do more things together."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -13141,7 +13191,7 @@ label monika_unknown:
     if mas_isMoniNormal(higher=True):
         m 1eka "Just know that if you ever decide to make that sort of change, I'll support you every step of the way."
         m 1hubfa "I love you, [player]. I'll always be rooting for you~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))

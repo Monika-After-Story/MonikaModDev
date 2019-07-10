@@ -191,7 +191,7 @@ label mas_monika_cherry_blossom3:
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
-    return
+    return "love"
 
 label mas_monika_cherry_blossom4:
     m "You know what'd be nice to drink under the Cherry Blossom tree?"
