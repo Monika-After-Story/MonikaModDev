@@ -333,6 +333,7 @@ label v0_9_6(version="v0_9_6"):
                 # erase this topic
                 mas_eraseTopic(old_ev_label, persistent.event_database)
 
+        # this doesn't need to be locked by default anymore with the new greet code
         if not seen_event("greeting_tears"):
             mas_unlockEVL("greeting_tears", "GRE")
     return
