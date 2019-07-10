@@ -77,9 +77,8 @@ init python:
         "Are you there, [player]?",
         "Can you come here for a second?",
         "[player], do you have a second?",
-        "Do you have a minute, [player]?",
         "I have something to tell you, [player]!",
-        "I've got something to talk about, [player]!",
+        "Do you have a minute, [player]?",
     ]
 
     #OSX/Linux
@@ -103,7 +102,6 @@ init python:
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
-
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
@@ -133,7 +131,6 @@ init python:
     def mas_isInActiveWindow(keywords):
         """
         Checks if ALL keywords are in the active window name
-
         IN:
             List of keywords
         """
@@ -180,7 +177,6 @@ init python:
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """
         Runs through events in the windowreact_db to unlock them
-
         IN:
             List of ev_labels to exclude from being unlocked
         """
@@ -199,7 +195,6 @@ init python:
     def mas_addBlacklistReact(ev_label):
         """
         Adds the given ev_label to the no unlock list
-
         IN:
             ev_label: eventlabel to add to the no unlock list
         """
@@ -209,7 +204,6 @@ init python:
     def mas_removeBlacklistReact(ev_label):
         """
         Removes the given ev_label to the no unlock list if exists
-
         IN:
             ev_label: eventlabel to remove from the no unlock list
         """
@@ -219,7 +213,6 @@ init python:
     def mas_notifsEnabledForGroup(group):
         """
         Checks if notifications are enabled, and if enabled for the specified group
-
         IN:
             group: notification group to check
         """
@@ -229,7 +222,6 @@ init python:
         """
         Unlocks a wrs again provided that it showed, but failed to show (failed checks in the notif label)
         NOTE: This should only be used for wrs that are only a notification
-
         IN:
             ev_label: eventlabel of the wrs
         """
@@ -244,7 +236,6 @@ init python:
         """
         Tries to push a notification to the notification center on macOS.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
@@ -255,7 +246,6 @@ init python:
         """
         Tries to push a notification to the notification center on Linux.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
@@ -265,23 +255,19 @@ init python:
     def display_notif(title, body, group=None, skip_checks=False):
         """
         Notification creation method
-
         IN:
             title: Notification heading text
             body: A list of items which would go in the notif body (one is picked at random)
             group: Notification group (for checking if we have this enabled)
             skip_checks: Whether or not we skips checks
-
         OUT:
             bool indicating status (notif shown or not (by check))
-
         NOTE:
             We only show notifications if:
                 1. We are able to show notifs
                 2. MAS isn't the active window
                 3. User allows them
                 4. And if the notification group is enabled
-
                 OR if we skip checks. BUT this should only be used for introductory or testing purposes.
         """
 
@@ -335,8 +321,16 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_pinterest:
-    call display_notif(m_name,"Something new today?",'Window Reactions')
+label monika_mas_wrs_pinterest:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Something new today, [player]?",
+            "Something interesting, [player]?"
+            "Something unusual?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
     if not _return:
@@ -355,8 +349,15 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_duolingo:
-    call display_notif(m_name,"How is it with your progress in language, [player]?",'Window Reactions')
+label monika_mas_wrs_duolingo:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "How is it with your progress in language, [player]?",
+            "You make me proud of you today?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
     if not _return:
@@ -375,8 +376,15 @@ init 5 python:
         code="WRS"
     )
 
-label mas_wrs_wikipedia:
-    call display_notif(m_name,"Wanna learn something new?",'Window Reactions')
+label monika_mas_wrs_wikipedia:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Wanna learn something new?",
+            "Trying to find something you don't know, [player]?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
     if not _return:
@@ -395,7 +403,20 @@ init 5 python:
         code="WRS"
     )
 
-label monika_whatwatching:
+#START: Window Reacts
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_youtube",
+            category=['youtube'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_youtube:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -407,14 +428,14 @@ label monika_whatwatching:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_whatwatching')
+        $ mas_unlockFailedWRS('mas_wrs_youtube')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_lookingat",
+            eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -422,7 +443,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_lookingat:
+label mas_wrs_r34m:
     $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
@@ -449,7 +470,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_monikamoddev",
+            eventlabel="mas_wrs_monikamoddev",
             category=['monikamoddev'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -457,7 +478,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_monikamoddev:
+label mas_wrs_monikamoddev:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -469,5 +490,5 @@ label monika_monikamoddev:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_monikamoddev')
+        $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
