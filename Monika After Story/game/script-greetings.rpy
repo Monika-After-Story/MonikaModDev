@@ -2367,6 +2367,7 @@ label greeting_long_absence:
             m 1hubfb "You really are kind-hearted!"
             show monika 3eub
     m "Remind me if you're going away again, okay?"
+    show monika idle with dissolve
     jump ch30_loop
 
 #Time Concern
