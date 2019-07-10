@@ -79,6 +79,7 @@ init python:
         "[player], do you have a second?",
         "I have something to tell you, [player]!",
         "Do you have a minute, [player]?",
+        "I've got something to talk about, [player]!",
     ]
 
     #OSX/Linux
