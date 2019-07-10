@@ -2593,15 +2593,13 @@ label greeting_upset:
             "Do you want something?",
         ]
 
-    $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
+    $ upset_quip1 = renpy.substitute(renpy.random.choice(upset_greeting_quips_first))
 
-    # use renpy say so you can use text tags
-    show monika 2efc
-    $ renpy.say(m, upset_quip1)
+    m 2efc "[upset_quip1]"
 
     if renpy.random.randint(1,4) != 1:
-        $ upset_quip2 = renpy.random.choice(upset_greeting_quips_second)
-        $ renpy.say(m, upset_quip2)
+        $ upset_quip2 = renpy.substitute(renpy.random.choice(upset_greeting_quips_second))
+        m "[upset_quip2]"
 
     return
 
@@ -2633,15 +2631,13 @@ label greeting_distressed:
             "I hope things start going better soon.",
         ]
 
-    $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
+    $ distressed_quip1 = renpy.substitute(renpy.random.choice(distressed_greeting_quips_first))
 
-    show monika 6ekc
-    $ renpy.say(m, distressed_quip1)
+    m 6ekc "[distressed_quip1]"
 
     if renpy.random.randint(1,4) != 1:
-        $ distressed_quip2 = renpy.random.choice(distressed_greeting_quips_second)
-        show monika 6rkc
-        $ renpy.say(m, distressed_quip2)
+        $ distressed_quip2 = renpy.substitute(renpy.random.choice(distressed_greeting_quips_second))
+        m 6rkc "[distressed_quip2]"
 
     return
 

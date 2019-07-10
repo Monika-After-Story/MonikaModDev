@@ -3151,10 +3151,9 @@ label monika_love:
                 "You don't mean that anymore... {w=1}Did you ever?",
                 "I can't remember the last time I felt like you meant that."
             ]
-
-            love_quip_dis = renpy.random.choice(love_quips_dis)
+            love_quip_dis = renpy.substitute(renpy.random.choice(love_quips_dis))
         m 6dkc "..."
-        if renpy.randint(1,25) > 1:
+        if renpy.random.randint(1,25) > 1:
             m 6dkd "[love_quip_dis]"
 
     elif mas_isMoniUpset():
@@ -3185,25 +3184,26 @@ label monika_love:
             ]
 
         if _mas_getAffection() < -50:
-            $ love_quip_upset = renpy.random.choice(love_quips_upset_cynical)
+            $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_cynical))
             m 2rkc "..."
             m 2ekd "[love_quip_upset]"
-        
+
         else:
-            $ love_quip_upset = renpy.random.choice(love_quips_upset_hope)
+            $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_hope))
             m 2ekc "Thanks, [player]..."
             m 2ekd "[love_quip_upset]"
             m 2eka "I...{w=0.5}I love you, too."
 
     else:
         #After I love you has been received positively 5/10/15 etc times.
-
         if persistent._mas_monika_lovecounter == 0:
             m 1subsw "[player]!"
             m 1subsb "You have no idea how much it means to me to hear you say that!"
             m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your on own, and that makes it truly special~"
             m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
             m 3hubfa "Oh! And I love you, too~"
+            call monika_lovecounter_aff
+            return
 
         elif persistent._mas_monika_lovecounter % 50 == 5:
             m 1hubfb "I love you so much, [player]!"
@@ -3241,7 +3241,7 @@ label monika_love:
             m 1hubfa "I..."
             m 1hubfb "Looooooooove you too, [player]!"
 
-        elif persistent._mas_monika_lovecounter %5 0 == 45:
+        elif persistent._mas_monika_lovecounter % 50 == 45:
             m 1hubfa "You saying that always makes my day!"
             m 1hubfb "I love you so much, [player]!"
 
@@ -3251,7 +3251,7 @@ label monika_love:
             m "No words can truly do justice to how deeply I feel for you..."
             m 1hubfa "The only words I know that come close are..."
             m 1hubfb "I love you too, [player]! More than I can ever express!"
-            if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.randint(1,5) == 1:
+            if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,5) == 1:
                 call monika_kissing_motion_short
             call monika_lovecounter_aff
             return
@@ -3295,7 +3295,7 @@ label monika_love:
                 ]
             love_quip=renpy.random.choice(love_quips)
         m "[love_quip]"
-        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.randint(1,25) == 1:
+        if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss and renpy.random.randint(1,25) == 1:
             call monika_kissing_motion_short
     call monika_lovecounter_aff
     return
