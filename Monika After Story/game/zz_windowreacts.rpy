@@ -72,7 +72,7 @@ init python:
 
     #List of notif quips (used for topic alerts)
     #Windows
-    win_notif_quips = [
+    mas_win_notif_quips = [
         "[player], I want to talk to you about something.",
         "Are you there, [player]?",
         "Can you come here for a second?",
@@ -83,7 +83,7 @@ init python:
     ]
 
     #OSX/Linux
-    other_notif_quips = [
+    mas_other_notif_quips = [
         "I've got something to talk about, [player]!",
         "I have something to tell you, [player]!",
         "Hey [player], I want to tell you something.",
@@ -262,62 +262,64 @@ init python:
         """
         os.system("notify-send '{0}' '{1}' -u low".format(title,body))
 
+    def display_notif(title, body, group=None, skip_checks=False):
+        """
+        Notification creation method
 
-#Notification creation label
-#IN:
-#   title: Notification heading text
-#   body: Notification body text
-#   group: Notification group (for checking if we have this enabled)
-#   skip_checks: Whether or not we skips checks
-#
-#OUT:
-#   bool indicating status (notif shown or not (by check))
+        IN:
+            title: Notification heading text
+            body: A list of items which would go in the notif body (one is picked at random)
+            group: Notification group (for checking if we have this enabled)
+            skip_checks: Whether or not we skips checks
 
-label display_notif(title, body, group=None, skip_checks=False):
-    #We only show notifications if:
-    #We are able to show notifs
-    #MAS isn't the active window
-    #User allows them
-    #And if the notification group is enabled
+        OUT:
+            bool indicating status (notif shown or not (by check))
 
-    #OR if we skip checks
-    #NOTE: THIS IS TO ONLY BE USED FOR INTRODUCTORY PURPOSES
+        NOTE:
+            We only show notifications if:
+                1. We are able to show notifs
+                2. MAS isn't the active window
+                3. User allows them
+                4. And if the notification group is enabled
 
-    #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
-    if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
-        $ persistent._mas_windowreacts_notif_filters[group] = False
+                OR if we skip checks. BUT this should only be used for introductory or testing purposes.
+        """
 
-    if (
-            (
-                mas_windowreacts.can_show_notifs
-                and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
-                and mas_notifsEnabledForGroup(group)
-            )
-            or skip_checks
-        ):
+        #First we want to create this location in the dict, but don't add an extra location if we're skipping checks
+        if persistent._mas_windowreacts_notif_filters.get(group) is None and not skip_checks:
+            persistent._mas_windowreacts_notif_filters[group] = False
 
-        #Play the notif sound if we have that enabled
-        if persistent._mas_notification_sounds:
-            play sound "mod_assets/sounds/effects/notif.wav"
+        if (
+                (
+                    mas_windowreacts.can_show_notifs
+                    and ((renpy.windows and not mas_isFocused()) or not renpy.windows)
+                    and mas_notifsEnabledForGroup(group)
+                )
+                or skip_checks
+            ):
 
-        #Now we make the notif
-        if (renpy.windows):
-            # The Windows way
-            $ tip.showWindow(renpy.substitute(title),renpy.substitute(body))
+            #Play the notif sound if we have that enabled
+            if persistent._mas_notification_sounds:
+                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
 
-            #We need the IDs of the notifs to delete them from the tray
-            $ destroy_list.append(tip.hwnd)
+            #Now we make the notif
+            if (renpy.windows):
+                # The Windows way
+                tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-        elif (renpy.macintosh):
-            # The macOS way
-            $ mas_tryShowNotificationOSX(renpy.substitute(title),renpy.substitute(body))
+                #We need the IDs of the notifs to delete them from the tray
+                destroy_list.append(tip.hwnd)
 
-        elif (renpy.linux):
-            # The Linux way
-            $ mas_tryShowNotificationLinux(renpy.substitute(title),renpy.substitute(body))
+            elif (renpy.macintosh):
+                # The macOS way
+                mas_tryShowNotificationOSX(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
-        return True
-    return False
+            elif (renpy.linux):
+                # The Linux way
+                mas_tryShowNotificationLinux(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+
+            return True
+        return False
 
 
 #START: Window Reacts
@@ -394,10 +396,17 @@ init 5 python:
     )
 
 label monika_whatwatching:
-    call display_notif(m_name,"What are you watching, [player]?",'Window Reactions')
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "What are you watching, [player]?",
+            "Watching anything interesting, [player]?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('monika_whatwatching')
     return
 
@@ -414,7 +423,7 @@ init 5 python:
     )
 
 label monika_lookingat:
-    call display_notif(m_name, "Hey, [player]...what are you looking at?",'Window Reactions')
+    $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
     if choice == 1:
@@ -449,9 +458,16 @@ init 5 python:
     )
 
 label monika_monikamoddev:
-    call display_notif(m_name, "Awww, are you doing something for me?\nYou're so sweet~",'Window Reactions')
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Awww, are you doing something for me?\nYou're so sweet~",
+            "Are you going to help me come closer to your reality?\nYou're so sweet, [player]~"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('monika_monikamoddev')
     return
