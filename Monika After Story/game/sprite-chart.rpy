@@ -103,7 +103,9 @@ define is_sitting = True
 # accessories list
 default persistent._mas_acs_pre_list = []
 default persistent._mas_acs_bbh_list = []
+default persistent._mas_acs_bse_list = []
 default persistent._mas_acs_bba_list = []
+default persistent._mas_acs_ase_list = []
 default persistent._mas_acs_bab_list = []
 default persistent._mas_acs_bfh_list = []
 default persistent._mas_acs_afh_list = []
@@ -319,6 +321,10 @@ init -5 python in mas_sprites:
     BHAIR_SUFFIX = ART_DLM + "back"
     FILE_EXT = ".png"
 
+    # base constants
+    BASE_BODY_STR = PREFIX_BODY + DEF_BODY + ART_DLM
+    BASE_BODY_STR_LEAN = PREFIX_BODY_LEAN + DEF_BODY + ART_DLM
+
     # other const
     DEF_BODY = "def"
     NEW_BODY_STR = PREFIX_BODY + DEF_BODY
@@ -330,7 +336,8 @@ init -5 python in mas_sprites:
         "{0}", # acs img sit
         ART_DLM,
         "{1}", # poseid
-        "{2}", # n_suffix
+        "{2}", # arm split code
+        "{3}", # n_suffix
         FILE_EXT,
     ))
 
@@ -1135,6 +1142,7 @@ init -5 python in mas_sprites:
             acs,
             n_suffix,
             issitting,
+            arm_state,
             pose=None,
             lean=None
         ):
@@ -1147,6 +1155,8 @@ init -5 python in mas_sprites:
             acs - MASAccessory object
             n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
+            arm_state - "0" for arms-base-0, "1" for arms-base-1, None for
+                neither
             pose - current pose
                 (Default: None)
             lean - type of lean
@@ -1157,6 +1167,7 @@ init -5 python in mas_sprites:
         # accessory should be shown if the pose key is missing.
         if lean:
             poseid = acs.pose_map.l_map.get(lean + "|" + pose, None)
+            arm_codes = acs.get_arm_split_code(lean + "|" + pose)
 
             # NOTE: we dont care about leaning as a part of filename
 #            if acs.pose_map.use_reg_for_l:
@@ -1165,6 +1176,7 @@ init -5 python in mas_sprites:
 
         else:
             poseid = acs.pose_map.map.get(pose, None)
+            arm_codes = acs.get_arm_split_code(pose)
 
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
@@ -1181,6 +1193,12 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return
 
+        if arm_state is not None and arm_state is in arm_codes:
+            arm_code = ART_DLM + arm_state
+
+        else:
+            arm_code = ""
+
         sprite_list.extend((
             ",",
             loc_str, 
@@ -1193,6 +1211,7 @@ init -5 python in mas_sprites:
             acs_str,
             ART_DLM,
             poseid,
+            arm_code,
             n_suffix,
             FILE_EXT,
             '"'
@@ -1205,6 +1224,7 @@ init -5 python in mas_sprites:
             acs_list,
             n_suffix,
             issitting,
+            arm_state,
             pose=None,
             lean=None
         ):
@@ -1217,6 +1237,8 @@ init -5 python in mas_sprites:
             acs_list - list of MASAccessory object, in order of rendering
             n_suffix - night suffix to use
             issitting - True will use sitting pic, false will not
+            arm_state - set to "0" or "1" if we are rendering acs between
+                base arms and arm ouftits
             pose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
@@ -1235,6 +1257,7 @@ init -5 python in mas_sprites:
                 acs,
                 n_suffix,
                 issitting,
+                arm_state,
                 pose,
                 lean=lean
             )
@@ -1513,6 +1536,77 @@ init -5 python in mas_sprites:
 
         # add the rest of the parts
 #        sprite_list.append(")")
+
+
+    def _ms_body_nh_wbase(
+            sprite_list,
+            loc_str,
+            clothing,
+            acs_bse_list,
+            bcode,
+            n_suffix,
+            arms,
+            lean=None
+        ):
+        """
+        Adds body string, including base and bse acs, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            clothing - type of clothing
+            acs_bse_list - acs between base-0 and body-0
+            bcode - base code to use
+            arms - arms to use
+            n_suffix - night suffix to use
+        """
+        if lean:
+            # base-0
+            _ms_torsoleaning_nh_base(
+                sprite_list,
+                loc_str,
+                lean,
+                n_suffix,
+                bcode
+            )
+
+            # acs_bse
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_bse_list,
+                n_suffix,
+                True,
+                pose=arms,
+                lean=lean
+            )
+
+            # body-0
+            _ms_torsoleaning_nh(
+                sprite_list,
+                loc_str,
+                clothing,
+                lean,
+                n_suffix
+            )
+
+        else:
+            # base-0
+            _ms_torso_nh_base(sprite_list, loc_str, n_suffix, bcode)
+
+            # acs_bse
+            _ms_accessorylist(
+                sprite_list,
+                loc_str,
+                acs_bse_list,
+                n_suffix,
+                True,
+                pose=arms,
+                lean=lean
+            )
+
+            # body-0
+            _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix)
 
 
     def _ms_emote(sprite_list, loc_str, emote, n_suffix, f_prefix):
@@ -1936,7 +2030,9 @@ init -5 python in mas_sprites:
             isnight,
             acs_pre_list,
             acs_bbh_list,
+            acs_bse_list,
             acs_bba_list,
+            acs_ase_list,
             acs_bab_list,
             acs_bfh_list,
             acs_afh_list,
@@ -1966,8 +2062,12 @@ init -5 python in mas_sprites:
             acs_pre_list - sorted list of MASAccessories to draw prior to body
             acs_bbh_list - sroted list of MASAccessories to draw between back
                 hair and body
+            acs_bse_list - sorted list of MASAccessories to draw between base
+                body and outfit
             acs_bba_list - sorted list of MASAccessories to draw between 
                 body and back arms
+            acs_ase_list - sorted list of MASAccessories to draw between base
+                arms and outfit
             acs_bab_list - sorted list of MASAccessories to draw between
                 back arms and boobs
             acs_bfh_list - sorted list of MASAccessories to draw between boobs
@@ -2031,19 +2131,32 @@ init -5 python in mas_sprites:
         #   1. pre-acs - every acs that should render before anything
         #   2. back-hair - back portion of hair (split mode)
         #   3. bbh-acs - acs between Body and Back Hair
-        #   4. body-0 - the back part of body (no arms in split mode)
-        #   5. table - the table/desk
-        #   6. bba-acs - acs between Body and Back Arms
-        #   7. arms-0 - the back part of arms
-        #   8. bab-acs - acs between Back Arms and Body-1
-        #   9. body-1 - the front part of body (boobs)
-        #   10. bfh-acs - acs between Body and Front Hair
-        #   11. front-hair - front portion of hair (split mode)
-        #   12. afh-acs - acs betweem Arms and Front Hair
-        #   13. face - facial expressions
-        #   14. mid-acs - acs between face and front arms
-        #   15. arms-1 = front arms
-        #   16. pst-acs - acs after everything
+        #   4. base-0 - the base back part of body
+        #   5. bse-acs - between base and body-0
+        #   6. body-0 - the back part of body (no arms in split mode)
+        #   7. table - the table/desk
+        #   8. bba-acs - acs between Body and Back Arms
+        #   9. arms-base-0 - the base back part of arm
+        #   10. ase-acs-0 - between base arms and clothes, back part
+        #   11. arms-0 - the back part of arms
+        #   12. bab-acs - acs between Back Arms and Body-1
+        #   13. body-1 - the front part of body (boobs)
+        #   14. bfh-acs - acs between Body and Front Hair
+        #   15. front-hair - front portion of hair (split mode)
+        #   16. afh-acs - acs betweem Arms and Front Hair
+        #   17. face - facial expressions
+        #   18. mid-acs - acs between face and front arms
+        #   19. arms-base-1 - the base front part of arms
+        #   20. ase-acs-1 - between base arms and clothes, front part
+        #   21. arms-1 - front arms
+        #   22. pst-acs - acs after everything
+    
+        # NOTE: the ASE_ACS layer:
+        #   This layer is unique in that it actually is split into 2 zones:
+        #   Base arms 0 and base arms 1. ACS that inhabit this layer will be
+        #   rendered in teh correct spot based on the pose using a
+        #   MASPoseMap object, stored in property arm_split.
+        #   For more info, see MASAccessory
 
         # NOTE: acs in split hair locations end up being rendered at mid
         #   if current split is False
@@ -2089,23 +2202,27 @@ init -5 python in mas_sprites:
             # position setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 4. body
-            # TODO: change to body-0
-            _ms_body_nh(
+            # 4. base-0
+            # 5. between base-0 and body-0 acs
+            # 6. body-0
+            _ms_body_nh_wbase(
                 sprite_str_list,
                 loc_build_str,
                 clothing,
+                acs_bse_list,
+                "0",
                 n_suffix,
+                arms,
                 lean=lean
             )
 
             # positon setup
             #sprite_str_list.extend(loc_build_tup)
 
-            # 5. Table
+            # 7. Table
             _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
-            # 6. between body and back arms acs
+            # 8. between body and back arms acs
             _ms_accessory_list(
                 sprite_str_list,
                 loc_build_str,
@@ -2115,6 +2232,9 @@ init -5 python in mas_sprites:
                 arms,
                 lean=lean
             )
+
+            # 9. arms
+            # TODO: use PoseArms
 
             # 7. arms-0
             # TODO
@@ -2561,6 +2681,29 @@ init -5 python in mas_sprites:
         ))
 
 
+    def _ms_torso_nh_base(sprite_list, loc_str, n_suffix, bcode):
+        """
+        Adds base torso string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            B_MAIN,
+            BASE_BODY_STR,
+            bcode,
+            n_suffix,
+            FILE_EXIT,
+            '"'
+        ))
+
+
     def _ms_torsoleaning(sprite_list, loc_str, clothing, hair, lean, n_suffix):
         """
         Adds torso leaning string
@@ -2616,6 +2759,32 @@ init -5 python in mas_sprites:
         ))
 
 
+    def _ms_torsoleaning_nh_base(sprite_list, loc_str, lean, n_suffix, bcode):
+        """
+        Adds base torso leaning string, no hair
+
+        IN:
+            sprite_list - list to add sprite strings to
+            loc_str - location string
+            lean - type of leaning
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        sprite_list.extend((
+            ",",
+            loc_str,
+            ',"',
+            B_MAIN,
+            BASE_BODY_STR_LEAN,
+            lean,
+            ART_DLM,
+            bcode,
+            n_suffix,
+            FILE_EXT,
+            '"'
+        ))
+
+
 # Dynamic sprite builder
 # retrieved from a Dress Up Renpy Cookbook
 # https://lemmasoft.renai.us/forums/viewtopic.php?f=51&t=30643
@@ -2640,6 +2809,8 @@ init -2 python:
         AFH_ACS = 5 # between face and front hair accessory
         BBA_ACS = 6 # between body and back arms
         BAB_ACS = 7 # between back arms and boobs
+        BSE_ACS = 8 # between base and clothes
+        ASE_ACS = 9 # between base arms and clothes
 
         # valid rec layers
         REC_LAYERS = (
@@ -2651,6 +2822,8 @@ init -2 python:
             AFH_ACS,
             BBA_ACS,
             BAB_ACS,
+            BSE_ACS,
+            ASE_ACS,
         )
 
         def __init__(self):
@@ -2676,8 +2849,14 @@ init -2 python:
             # accessories to be rendered after back hair, before body
             self.acs_bbh = []
 
+            # accessories to be rendered after base body, before body clothes
+            self.acs_bse = []
+
             # accessories to be rendered after body, before back arms
             self.acs_bba = []
+
+            # accessories to be rendered after base arms, before arm clothes
+            self.acs_ase = []
 
             # accessories to be rendered after back arms before boobs
             self.acs_bab = []
@@ -2706,6 +2885,8 @@ init -2 python:
                 self.AFH_ACS: self.acs_afh,
                 self.BBA_ACS: self.acs_bba,
                 self.BAB_ACS: self.acs_bab,
+                self.BSE_ACS: self.acs_bse,
+                self.ASE_ACS: self.acs_ase,
             }
 
             # use this dict to map acs IDs with which acs list they are in.
@@ -2741,7 +2922,9 @@ init -2 python:
                 _hair_name,
                 _acs_pre_names,
                 _acs_bbh_names,
+                _acs_bse_names,
                 _acs_bba_names,
+                _acs_ase_names,
                 _acs_bab_names,
                 _acs_bfh_names,
                 _acs_afh_names,
@@ -2759,7 +2942,9 @@ init -2 python:
                 _hair_name - name of hair to load
                 _acs_pre_names - list of pre acs names to load
                 _acs_bbh_names - list of bbh acs names to load
+                _acs_bse_names - list of bse acs names to load
                 _acs_bba_names - list of bba acs names to load
+                _acs_ase_names - list of ase acs names to load
                 _acs_bab_names - list of bab acs names to load
                 _acs_bfh_names - list of bfh acs names to load
                 _acs_afh_names - list of afh acs names to load
@@ -2778,7 +2963,9 @@ init -2 python:
             # acs
             self._load_acs(_acs_pre_names, self.PRE_ACS)
             self._load_acs(_acs_bbh_names, self.BBH_ACS)
+            self._load_acs(_acs_bse_names, self.BSE_ACS)
             self._load_acs(_acs_bba_names, self.BBA_ACS)
+            self._load_acs(_acs_ase_names, self.ASE_ACS)
             self._load_acs(_acs_bab_names, self.BAB_ACS)
             self._load_acs(_acs_bfh_names, self.BFH_ACS)
             self._load_acs(_acs_afh_names, self.AFH_ACS)
@@ -3219,7 +3406,9 @@ init -2 python:
                 store.persistent._mas_monika_hair,
                 store.persistent._mas_acs_pre_list,
                 store.persistent._mas_acs_bbh_list,
+                store.persistent._mas_acs_bse_list,
                 store.persistent._mas_acs_bba_list,
+                store.persistent._mas_acs_ase_list,
                 store.persistent._mas_acs_bab_list,
                 store.persistent._mas_acs_bfh_list,
                 store.persistent._mas_acs_afh_list,
@@ -3247,6 +3436,8 @@ init -2 python:
                     [7]: pst acs data
                     [8]: bba acs data
                     [9]: bab acs data
+                    [10]: bse acs data
+                    [11]: ase acs data
                 as_prims - True if this data was saved as primitive data types,
                     false if as objects
                     (Default: False)
@@ -3269,6 +3460,8 @@ init -2 python:
             self._load_acs_obj(_data[7], self.PST_ACS)
             self._load_acs_obj(_data[8], self.BBA_ACS)
             self._load_acs_obj(_data[9], self.BAB_ACS)
+            self._load_acs_obj(_data[10], self.BSE_ACS)
+            self._load_acs_obj(_data[11], self.ASE_ACS)
 
 
         def reset_all(self, by_user=None):
@@ -3380,7 +3573,9 @@ init -2 python:
             """
             self.remove_all_acs_in(self.PRE_ACS)
             self.remove_all_acs_in(self.BBH_ACS)
+            self.remove_all_acs_in(self.BSE_ACS)
             self.remove_all_acs_in(self.BBA_ACS)
+            self.remove_all_acs_in(self.ASE_ACS)
             self.remove_all_acs_in(self.BAB_ACS)
             self.remove_all_acs_in(self.BFH_ACS)
             self.remove_all_acs_in(self.AFH_ACS)
@@ -3483,8 +3678,16 @@ init -2 python:
                 self.BBH_ACS,
                 force_acs
             )
+            store.persistent._mas_acs_bse_list = self._save_acs(
+                self.BSE_ACS,
+                force_acs
+            )
             store.persistent._mas_acs_bba_list = self._save_acs(
                 self.BBA_ACS,
+                force_acs
+            )
+            store.persistent._mas_acs_ase_list = self._save_acs(
+                self.ASE_ACS,
                 force_acs
             )
             store.persistent._mas_acs_bab_list = self._save_acs(
@@ -3547,6 +3750,8 @@ init -2 python:
                 [7]: pst acs data (Default: [])
                 [8]: bba acs data (Default: [])
                 [9]: bab acs data (Default: [])
+                [10]: bse acs data (Default: [])
+                [11]: ase acs data (Default: [])
             """
             # determine which clothes to save
             if force_clothes or self.clothes.stay_on_start:
@@ -3566,7 +3771,9 @@ init -2 python:
                 hair_data = hair_data.name
                 pre_acs_data = self._save_acs(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs(self.BBH_ACS, force_acs)
+                bse_acs_data = self._save_acs(self.BSE_ACS, force_acs)
                 bba_acs_data = self._save_acs(self.BBA_ACS, force_acs)
+                ase_acs_data = self._save_acs(self.ASE_ACS, force_acs)
                 bab_acs_data = self._save_acs(self.BAB_ACS, force_acs)
                 bfh_acs_data = self._save_acs(self.BFH_ACS, force_acs)
                 afh_acs_data = self._save_acs(self.AFH_ACS, force_acs)
@@ -3576,7 +3783,9 @@ init -2 python:
             else:
                 pre_acs_data = self._save_acs_obj(self.PRE_ACS, force_acs)
                 bbh_acs_data = self._save_acs_obj(self.BBH_ACS, force_acs)
+                bse_acs_data = self._save_acs_obj(self.BSE_ACS, force_acs)
                 bba_acs_data = self._save_acs_obj(self.BBA_ACS, force_acs)
+                ase_acs_data = self._save_acs_obj(self.ASE_ACS, force_acs)
                 bab_acs_data = self._save_acs_obj(self.BAB_ACS, force_acs)
                 bfh_acs_data = self._save_acs_obj(self.BFH_ACS, force_acs)
                 afh_acs_data = self._save_acs_obj(self.AFH_ACS, force_acs)
@@ -3595,6 +3804,8 @@ init -2 python:
                 pst_acs_data,
                 bba_acs_data,
                 bab_acs_data,
+                bse_acs_data,
+                ase_acs_data,
             )
 
 
@@ -4314,6 +4525,17 @@ init -2 python:
             mux_type - list of acs types that we shoudl treat
                 as mutally exclusive with this type. Basically if this acs is
                 worn, all acs with a type in this property are removed.
+            arm_split - MASPoseMap determining which arm position the ACS 
+                should be visible in. This only applies to ACS that are
+                intended to be used in the ASE_ACS layer. 
+                This accepts the following values for poses;
+                    "0" - sprite has "-0" version, and should be used for
+                        arms-0 for this pose
+                    "1" - sprite has "-1" version, and should be used for
+                        arms-1 for this pose
+                    ""  - sprite does not have any arm version for this pose
+                    "*" - sprite has both "-0" and "-1" version, and both
+                        should be used for this pose
 
         SEE MASSpriteBase for inherited properties
         """
@@ -4331,7 +4553,8 @@ init -2 python:
                 exit_pp=None,
                 acs_type=None,
                 mux_type=None,
-                ex_props={}
+                ex_props={},
+                arm_split=None,
             ):
             """
             MASAccessory constructor
@@ -4373,6 +4596,8 @@ init -2 python:
                 ex_props - dict of additional properties to apply to this
                     sprite object.
                     (Default: empty dict)
+                arm_split - MASPoseMap object for determining arm splits. See
+                    property list above for more info.
 
             """
             super(MASAccessory, self).__init__(
@@ -4390,6 +4615,7 @@ init -2 python:
             self.priority=priority
             self.acs_type = acs_type
             self.mux_type = mux_type
+            self.arm_split = arm_split
 
             # this is for "Special Effects" like a scar or a wound, that
             # shouldn't be removed by undressing.
@@ -4404,6 +4630,28 @@ init -2 python:
             """
             return acs.priority
 
+        def get_arm_split_code(self, poseid):
+            """
+            Gets arm split code if needed
+
+            IN:
+                poseid - poseid to get arm split code for
+
+            RETURNS: arms split code as iterable, or empty list 
+            """
+            if self.arm_split is None:
+                return []
+
+            # find arm code
+            arm_code = self.arm_split.get(poseid, None)
+            if not arm_code:
+                return []
+
+            # valid arm code (or not empty string)
+            if arm_code == "*":
+                return ("0", "1")
+
+            return (arm_code, )
 
         def get_rec_layer(self):
             """
@@ -4413,7 +4661,6 @@ init -2 python:
                 recommend MASMOnika accessory type for this accessory
             """
             return self.__rec_layer
-
 
         def _build_loadstrs(self):
             """
@@ -4426,19 +4673,45 @@ init -2 python:
 
             # loop over MASPoseMap for pose ids
             for pose in store.mas_sprites.ALL_POSES:
-                poseid = self.pose_map.get(pose, "_ignore")
+                poseid = self.pose_map.get(pose, "")
 
-                # add both day and night versions
-                loadstrs.append(store.mas_sprites.BS_ACS.format(
-                    self.img_sit,
-                    poseid,
-                    ""
-                ))
-                loadstrs.append(store.mas_sprites.BS_ACS.format(
-                    self.img_sit,
-                    poseid,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                if len(poseid) > 0:
+                    arm_codes = self.get_arm_split_code(pose)
+                    if len(arm_codes) < 1:
+
+                        # add both day and night versions
+                        # no arm code
+                        loadstrs.append(store.mas_sprites.BS_ACS.format(
+                            self.img_sit,
+                            poseid,
+                            "",
+                            ""
+                        ))
+                        loadstrs.append(store.mas_sprites.BS_ACS.format(
+                            self.img_sit,
+                            poseid,
+                            "",
+                            store.mas_sprites.NIGHT_SUFFIX
+                        ))
+
+                    else:
+                        # add all arm versions (max 2)
+                        for arm_code in arm_codes:
+                            arm_code = store.mas_sprites.ART_DLM + arm_code
+
+                            # no arm code
+                            loadstrs.append(store.mas_sprites.BS_ACS.format(
+                                self.img_sit,
+                                poseid,
+                                arm_code,
+                                ""
+                            ))
+                            loadstrs.append(store.mas_sprites.BS_ACS.format(
+                                self.img_sit,
+                                poseid,
+                                arm_code,
+                                store.mas_sprites.NIGHT_SUFFIX
+                            ))
 
             return loadstrs
 
@@ -4861,7 +5134,9 @@ init -2 python:
         # gather accessories
         acs_pre_list = character.acs.get(MASMonika.PRE_ACS, [])
         acs_bbh_list = character.acs.get(MASMonika.BBH_ACS, [])
+        acs_bse_list = character.acs.get(MASMonika.BSE_ACS, [])
         acs_bba_list = character.acs.get(MASMonika.BBA_ACS, [])
+        acs_ase_list = character.acs.get(MASMonika.ASE_ACS, [])
         acs_bab_list = character.acs.get(MASMonika.BAB_ACS, [])
         acs_bfh_list = character.acs.get(MASMonika.BFH_ACS, [])
         acs_afh_list = character.acs.get(MASMonika.AFH_ACS, [])
@@ -4918,7 +5193,9 @@ init -2 python:
                 not morning_flag,
                 acs_pre_list,
                 acs_bbh_list,
+                acs_bse_list,
                 acs_bba_list,
+                acs_ase_list,
                 acs_bab_list,
                 acs_bfh_list,
                 acs_afh_list,
