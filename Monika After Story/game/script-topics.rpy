@@ -3177,7 +3177,7 @@ label monika_love:
                 "You have no idea how much that means to me."
             ]
 
-        if _mas_getAffection() < -50:
+        if _mas_getAffection() <= -50:
             $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_cynical))
             m 2rkc "..."
             m 2ekd "[love_quip_upset]"
