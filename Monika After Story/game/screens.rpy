@@ -20,7 +20,7 @@ init -1 python:
         "Enable this to let Monika repeat topics that you have already seen."
     )
     layout.MAS_TT_NOTIF = (
-        "Enabling this will let Monika use your system's notifications "
+        "Enabling this will let Monika use your system's notifications and check if MAS is your active window "
     )
     layout.MAS_TT_NOTIF_SOUND = (
         "If enabled, a custom notification sound will play for Monika's notifications "
@@ -1324,11 +1324,14 @@ screen preferences():
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
         style "main_menu_version"
+#        layout "greedy"
+#        text_align 0.5
+#        xmaximum 650
 
     text "v[config.version]":
-                xalign 1.0 yalign 1.0
-                xoffset -10 yoffset -10
-                style "main_menu_version"
+        xalign 1.0 yalign 0.0
+        xoffset -10 
+        style "main_menu_version"
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text

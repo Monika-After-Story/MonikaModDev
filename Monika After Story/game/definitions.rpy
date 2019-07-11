@@ -15,6 +15,10 @@ python early:
     # this is now global
     import datetime
 
+    # uncomment when needed
+    import traceback
+    _dev_tb_list = []
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -3516,8 +3520,15 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+
+    #Gets the length of the current session
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
+
+
+    #Gets the time difference between the current session start and last session end
+    def mas_getAbsenceLength():
+        return persistent.sessions.get('current_session_start', datetime.datetime.today()) - persistent.sessions.get('last_session_end', datetime.datetime.today())
 
 
     def mas_genDateRange(_start, _end):
@@ -3889,8 +3900,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_coffee_brew_time = None
         persistent._mas_coffee_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupCoffeeLogic():
@@ -3937,7 +3948,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkCoffee(persistent._mas_coffee_brew_time)
 
                     if not still_drink(persistent._mas_coffee_cup_done):
@@ -3957,7 +3968,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_coffee_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_mug):
@@ -4109,8 +4120,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_c_hotchoc_brew_time = None
         persistent._mas_c_hotchoc_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupHotChocLogic():
@@ -4158,7 +4169,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
 
                     if not still_drink(persistent._mas_c_hotchoc_cup_done):
@@ -4178,7 +4189,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_c_hotchoc_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):

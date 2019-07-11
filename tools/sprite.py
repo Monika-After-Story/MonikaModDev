@@ -392,6 +392,22 @@ class StaticSprite(object):
         """
         return self.eyes in self._wink_eyes
 
+    def make_atl(self):
+        """
+        MAKES atl version of this sprite. 
+
+        RETURNS: the atl STaticSprite, or None if we didnt need to make one
+        """
+        if self.is_normal_eyes():
+            # normal eyes require cloesd sad
+            return StaticSprite(self.__swap_eyes("d"))
+
+        if self.is_wink_eyes():
+            # wink eyes require normal 
+            return StaticSprite(self.__swap_eyes("e"))
+
+        return None
+
     def scstr(self):
         """
         Creates the sprite code string for use in ATL statements.
@@ -669,7 +685,7 @@ class StaticSprite(object):
             "\n",
 
             self._dbl_tab,
-            "0.05\n",
+            "0.06\n",
 
             self._dbl_tab,
             self._repeat,
