@@ -13197,7 +13197,8 @@ label monika_unknown:
     if mas_isMoniNormal(higher=True):
         m 1eka "Just know that if you ever decide to make that sort of change, I'll support you every step of the way."
         m 1hubfa "I love you, [player]. I'll always be rooting for you~"
-    return "love"
+        return "love"
+    return
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
