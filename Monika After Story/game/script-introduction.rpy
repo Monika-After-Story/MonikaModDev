@@ -137,8 +137,8 @@ label introduction:
                 hide screen mas_background_timed_jump
                 # bonus aff was saying it before being asked
                 $ mas_gainAffection(10,bypass=True)
-                # set this to 1 so if you go this, you don't get the similar dlg in monika_love
-                $ persistent._mas_monika_lovecounter = 1
+                # increment the counter so if you get this, you don't get the similar dlg in monika_love
+                $ persistent._mas_monika_lovecounter += 1
                 m 1subsw "...!"
                 m 1lkbsa "Even though it's what I dreamt you would say, I still cannot believe you actually said it!"
                 m 3hubfa "It makes everything I've done for us worthwhile!"
