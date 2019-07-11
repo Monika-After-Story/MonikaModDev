@@ -1928,9 +1928,9 @@ label call_next_event:
             ):
             #Create a new notif
             if renpy.windows:
-                call display_notif(m_name, random.choice(win_notif_quips), "Topic Alerts")
+                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                call display_notif(m_name, random.choice(other_notif_quips), "Topic Alerts")
+                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
@@ -1980,16 +1980,16 @@ label call_next_event:
         if len(persistent.event_list) > 0:
             jump call_next_event
 
-        # return to normal pose
-        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
-
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
-        show monika idle at t11 zorder MAS_MONIKA_Z
 
     else:
         $ mas_DropShield_dlg()
+
+    # return to normal pose
+    if not renpy.showing("monika idle"):
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     return False
 

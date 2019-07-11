@@ -109,7 +109,7 @@ label mas_extra_menu_close:
     else:
         $ mas_DropShield_core()
 
-    show monika idle with dissolve
+    show monika idle
 
     jump ch30_loop
 
