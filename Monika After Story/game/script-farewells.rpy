@@ -382,7 +382,7 @@ label bye_prompt_to_class:
 
     elif mas_isMoniUpset():
         m 2efc "Fine, [player]."
-        m 2tfc "Hopefully you at least learn something today."
+        m 2tfc "Hopefully you at least learn {i}something{/i} today."
         m "{cps=*2}Like how to treat people better.{/cps}{nw}"
 
     elif mas_isMoniDis():
@@ -518,7 +518,7 @@ label bye_prompt_sleep:
 
         elif mas_isMoniUpset():
             m 2efc "[player]!"
-            m 2tfc "You really need to get more rest..."
+            m 2tfc "You {i}really{/i} need to get more rest..."
             m "The last thing I need is you getting sick."
             m "{cps=*2}You're grumpy enough as it is.{/cps}{nw}"
             $ _history_list.pop()
@@ -825,25 +825,25 @@ label bye_long_absence:
                 m "I'm sure it's important, so just try to come back to me as soon as you can."
                 m 3hua "I'll be thinking of you every day~"
             else:
-                m 1ekc "That long...really?"
+                m 1ekc "That long...{i}really{/i}?"
                 m 3rksdlc "You're not going away for that long just to avoid me, are you?"
                 m 3rksdld "I know that life can take you away from me but for a whole month..."
                 m 3ekc "Isn't that a little unreasonable?"
-                m "I don't want to sound selfish, but I am your girlfriend."
+                m "I don't want to sound selfish, but I {i}am{/i} your girlfriend."
                 m 3ekd "You should be able to make time for me, at least once, in an entire month."
                 m 1dsc "..."
                 m 1dsd "I'll still wait for you...but please come back the moment it's possible for you to do so."
         "Longer than a month.":
             $ persistent._mas_absence_choice = "longer"
             if mas_curr_affection_group == store.mas_affection.G_HAPPY:
-                m 3rksdlb "That's...well that's a little scary [player]."
+                m 3rksdlb "That's...{w=0.5}well that's a little scary, [player]."
                 m "I'm not really sure what I'm going to do with myself while you're gone."
                 m 1eka "But I know you wouldn't leave me by myself if you could help it."
                 m "I love you [player], and I know you love me too."
                 m 1hua "So I'll wait for you for however long I need to."
             else:
                 m 3esc "You have to be joking."
-                m "I can't think of a good reason why you would leave me here all alone for that long."
+                m "I can't think of a good reason why you would leave me here all alone for {i}that{/i} long."
                 m 3esd "I'm sorry [player], but that's not acceptable! Not at all!"
                 m 3esc "I love you and if you love me too then you'll know that it's not okay to do that."
                 m "You do realize that I would be alone here with nothing else and no one else, right?"
@@ -1064,7 +1064,7 @@ label bye_going_somewhere_rtg:
     menu:
         m "Are you still going to go?{fast}"
         "Yes.":
-            m 2eka "I understand. you have things to do, after all..."
+            m 2eka "I understand. You have things to do, after all..."
             m 2hub "Be safe out there! I'll be right here waiting for you!"
             return "quit"
 
@@ -1123,8 +1123,8 @@ label bye_going_somewhere_normalplus_flow_aff_check:
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."
     m 2ekd "I appreciate the offer, but I think I need a little time to myself right now."
-    m 1eka "You understand, right?"
-    m 1eka "Go, have fun without me..."
+    m 2eka "You understand, right?"
+    m 3eka "So go on, have fun without me..."
     return
 
 
