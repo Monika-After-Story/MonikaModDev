@@ -322,7 +322,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_mas_wrs_pinterest:
+label mas_wrs_pinterest:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -350,12 +350,12 @@ init 5 python:
         code="WRS"
     )
 
-label monika_mas_wrs_duolingo:
+label mas_wrs_duolingo:
     $ wrs_success = display_notif(
         m_name,
         [
             "How is it with your progress in language, [player]?",
-            "You make me proud of you today, [player]?"
+            "You'll make me proud of you today, [player]?"
         ],
         'Window Reactions'
     )
@@ -377,7 +377,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_mas_wrs_wikipedia:
+label mas_wrs_wikipedia:
     $ wrs_success = display_notif(
         m_name,
         [
