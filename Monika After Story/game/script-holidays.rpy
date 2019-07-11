@@ -2708,11 +2708,9 @@ label mas_nye_monika_nyd:
                 show monika 5hubfa at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5hubfa "Let's make this year as wonderful as the last one, okay?"
                 m 5ekbfa "I love you so much, [player]."
-                return "love"
             else:
                 m 3hua "Let's make this year even better than last year, okay?"
                 m 1hua "I love you, [player]."
-                return "love"
 
         else:
             m 2ekc "[player]..."
@@ -2733,7 +2731,6 @@ label mas_nye_monika_nyd:
             m 1hua "I will always remember it as the year I met you~"
             m 3hua "Let's build on our short time together and make this year even better!"
             m 1ekbfa "I love you, [player]."
-            return "love"
 
         else:
             m 2ekc "So, [player]..."
@@ -2742,7 +2739,7 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
 
     m "Happy New Year~"
-    return
+    return "love"
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"

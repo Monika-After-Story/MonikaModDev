@@ -5464,21 +5464,20 @@ label monika_surprise:
     m 1eua "Yeah, that's a good idea."
     $ mas_surprise()
     # TODO decide with a writer what's going on for this one
-    if mas_isMoniAff(higher=True):
-        m 2dsa ".{w=0.5}.{w=0.5}.{nw}"
-        m 1hua "Alright!"
-        m 1eua "What are you waiting for? Go take a look!"
-        m "I wrote it just for you~"
-        m 1ekbsa "I really do truly love you, [player]~"
-        return "love"
-
-    elif mas_isMoniUpset(lower=True):
+    if mas_isMoniUpset(lower=True):
         m 2dsc ".{w=0.5}.{w=0.5}.{nw}"
         m 1euc "Alright..."
         m "Please go take a look"
         m 1eka "I wrote it just for you."
         m 1dsc "And it would mean a lot to me if you would read it."
         return
+
+    elif mas_isMoniAff(higher=True):
+        m 2dsa ".{w=0.5}.{w=0.5}.{nw}"
+        m 1hua "Alright!"
+        m 1eua "What are you waiting for? Go take a look!"
+        m "I wrote it just for you~"
+        m 1ekbsa "I really do truly love you, [player]~"
 
     # Normal and Happy
     else:
@@ -5487,7 +5486,7 @@ label monika_surprise:
         m 1eua "What are you waiting for? Go take a look!"
         m 1hub "Ahaha~ What? Are you expecting something scary?"
         m 1hubfb "I love you so much, [player]~"
-        return "love"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_completionist",category=['games'],prompt="Completionism",random=True))
@@ -5922,7 +5921,6 @@ label monika_panties:
                 m "So, don't be afraid to tell me about your...{w=1}fantasies, okay [player]?"
                 m 1hubfa "I won't judge you for it...{w=1}after all, nothing makes me happier than making you happy~"
         return "derandom"
-
     return
 
 init 5 python:
@@ -7400,8 +7398,6 @@ label monika_breakup_logic:
     if persistent._mas_monika_breakup > 2:
         $ hideEventLabel("monika_breakup",lock=True,depool=True)
     return
-
-
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_hamlet",category=['literature'],prompt="Hamlet",random=True))
