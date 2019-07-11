@@ -102,7 +102,6 @@ init python:
     def mas_getActiveWindow(friendly=False):
         """
         Gets the active window name
-
         IN:
             friendly: whether or not the active window name is returned in a state usable by the user
         """
@@ -132,7 +131,6 @@ init python:
     def mas_isInActiveWindow(keywords):
         """
         Checks if ALL keywords are in the active window name
-
         IN:
             List of keywords
         """
@@ -179,7 +177,6 @@ init python:
     def mas_resetWindowReacts(excluded=persistent._mas_windowreacts_no_unlock_list):
         """
         Runs through events in the windowreact_db to unlock them
-
         IN:
             List of ev_labels to exclude from being unlocked
         """
@@ -198,7 +195,6 @@ init python:
     def mas_addBlacklistReact(ev_label):
         """
         Adds the given ev_label to the no unlock list
-
         IN:
             ev_label: eventlabel to add to the no unlock list
         """
@@ -208,7 +204,6 @@ init python:
     def mas_removeBlacklistReact(ev_label):
         """
         Removes the given ev_label to the no unlock list if exists
-
         IN:
             ev_label: eventlabel to remove from the no unlock list
         """
@@ -218,7 +213,6 @@ init python:
     def mas_notifsEnabledForGroup(group):
         """
         Checks if notifications are enabled, and if enabled for the specified group
-
         IN:
             group: notification group to check
         """
@@ -228,7 +222,6 @@ init python:
         """
         Unlocks a wrs again provided that it showed, but failed to show (failed checks in the notif label)
         NOTE: This should only be used for wrs that are only a notification
-
         IN:
             ev_label: eventlabel of the wrs
         """
@@ -243,7 +236,6 @@ init python:
         """
         Tries to push a notification to the notification center on macOS.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
@@ -254,7 +246,6 @@ init python:
         """
         Tries to push a notification to the notification center on Linux.
         If it can't it should fail silently to the user.
-
         IN:
             title: notification title
             body: notification body
@@ -409,4 +400,63 @@ label monika_monikamoddev:
     #Unlock again if we failed
     if not wrs_success:
         $ mas_unlockFailedWRS('monika_monikamoddev')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_twitter",
+            category=['twitter'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_twitter:
+    $ temp_line = renpy.substitute("I love you, [player].")
+    $ temp_len = len(temp_line)
+
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "See anything you want to share with me, [player]?",
+            "Anything interesting to share, [player]?",
+            "280 characters? I only need [temp_len]...\n[temp_line]"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_twitter')
+    return
+  
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_monikatwitter",
+            category=['twitter', 'lilmonix3'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_monikatwitter:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Are you here to confess your love for me to the entire world, [player]?",
+            "You're not spying on me, are you?\nAhaha, just kidding~",
+            "I don't care how many followers I have as long as I have you~"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_monikatwitter')
     return

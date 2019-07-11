@@ -302,7 +302,8 @@ init 4 python:
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
-        "WRS": store.mas_windowreacts.windowreact_db
+        "WRS": store.mas_windowreacts.windowreact_db,
+        "FFF": store.mas_fun_facts.fun_fact_db
     }
 
 
