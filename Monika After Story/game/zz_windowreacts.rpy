@@ -326,15 +326,15 @@ label mas_wrs_pinterest:
     $ wrs_success = display_notif(
         m_name,
         [
-            "Something new today, [player]?",
-            "Something interesting, [player]?"
-            "Something unusual?"
+            "Anything new today, [player]?",
+            "Anything interesting, [player]?",
+            "See anything you like?"
         ],
         'Window Reactions'
     )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_pinterest')
     return
 
@@ -354,14 +354,15 @@ label mas_wrs_duolingo:
     $ wrs_success = display_notif(
         m_name,
         [
-            "How is it with your progress in language, [player]?",
-            "You'll make me proud of you today, [player]?"
+            "Learning new ways to say 'I love you,' [player]?",
+            "Learning a new language, [player]?",
+            "What language are you learning, [player]?"
         ],
         'Window Reactions'
     )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_duolingo')
     return
 
@@ -378,17 +379,33 @@ init 5 python:
     )
 
 label mas_wrs_wikipedia:
+    $ wikipedia_reacts = [
+        "Learning something new, [player]?",
+        "Doing a bit of research, [player]?"
+    ]
+
+    #Items in here will get the wiki article you're looking at for reacts.
+    python:
+        wind_name = mas_getActiveWindow(friendly=True)
+        try:
+            cutoff_index = wind_name.index(" - Wikipedia")
+
+            #If we're still here, we didn't value error
+            #Now we get the article
+            wiki_article = wind_name[:cutoff_index]
+            wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
+
+        except:
+            pass
+
     $ wrs_success = display_notif(
         m_name,
-        [
-            "Wanna learn something new?",
-            "Trying to find something you don't know, [player]?"
-        ],
+        wikipedia_reacts,
         'Window Reactions'
     )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_wikipedia')
     return
 
