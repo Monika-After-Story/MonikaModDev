@@ -3323,7 +3323,7 @@ label monika_love_too:
         pause 3.0
 
     elif mas_isMoniNormal(higher=True):
-        show monika ATL_love_too_normal_plus
+        show monika ATL_love_too_norm_plus
         pause 3.0
 
     # -50 to Normal
