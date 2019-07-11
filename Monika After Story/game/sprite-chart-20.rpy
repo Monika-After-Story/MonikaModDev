@@ -1696,20 +1696,6 @@ image monika 1tsa:
         0.06
         repeat
 
-image monika 1tsa:
-    block:
-        "monika 1tsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 1dsa_static"
-        0.05
-        repeat
-
 image monika 1tsb:
     block:
         "monika 1tsb_static"
@@ -6999,66 +6985,6 @@ image monika 5efa:
             choice:
                 7
         "monika 5dfa_static"
-<<<<<<< HEAD
-        0.05
-        repeat
-
-image monika 5eka:
-    block:
-        "monika 5eka_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dka_static"
-        0.05
-        repeat
-
-image monika 5ekbfa:
-    block:
-        "monika 5ekbfa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbfa_static"
-        0.05
-        repeat
-
-image monika 5ekbla:
-    block:
-        "monika 5ekbla_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbla_static"
-        0.05
-        repeat
-
-image monika 5ekbsa:
-    block:
-        "monika 5ekbsa_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 5dkbsa_static"
-        0.05
-=======
         0.06
->>>>>>> content
         repeat
 

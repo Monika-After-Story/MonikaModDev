@@ -5543,35 +5543,3 @@ image monika 3dksdrb_static = DynamicDisplayable(
     sweat="right"
 )
 
-image monika 3dktda_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smile",
-    arms="restleftpointright",
-    tears="dried"
-)
-
-image monika 3dktsc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    arms="restleftpointright",
-    tears="streamingclosedsad"
-)
-
-image monika 3dku_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smug",
-    arms="restleftpointright"
-)
-
