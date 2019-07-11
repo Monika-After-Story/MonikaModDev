@@ -2098,7 +2098,7 @@ label prompt_menu:
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
-        if _mas_getAffection() >= -50:
+        if _mas_getAffection() > -50:
             if persistent._mas_last_monika_ily is not None and (datetime.datetime.now() - persistent._mas_last_monika_ily) <= datetime.timedelta(0,10):
                 talk_menu.append(("I love you, too!","love_too"))
             else:
