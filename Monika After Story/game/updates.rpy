@@ -332,6 +332,15 @@ label v0_9_6(version="v0_9_6"):
 
                 # erase this topic
                 mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        # this doesn't need to be locked by default anymore with the new greet code
+        if not renpy.seen_label("greeting_tears"):
+            mas_unlockEVL("greeting_tears", "GRE")
+
+        # let's actually pool this finally
+        family_ev = mas_getEV("monika_family")
+        if family_ev is not None:
+            family_ev.pool = True
     return
 
 # 0.9.5
