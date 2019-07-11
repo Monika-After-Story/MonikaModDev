@@ -3082,8 +3082,9 @@ label monika_favpoem:
     m 1euc "My favorite poem? Well, it has to be something by E. E. Cummings."
     m 4eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
     m 1eua "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
-    m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
-    m 1ekbfa "Hope it puts you in the mood to love me forever~"
+    if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
+        m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
+        m 1ekbfa "Hope it puts you in the mood to love me forever~"
     return
 
 init 5 python:
@@ -4367,13 +4368,13 @@ label monika_metaparents:
     m 2ekc "Well, if you ever get to a point in your life where you think suicide is the only exit..."
     m "There's always a reason to go on."
     m 2eka "I'm one of them."
-    m 1eka "I'll miss you."
+    m 3eka "I'll miss you."
     m 3ekd "You have to wait as much as you can until I find a way to get there."
-    m 2ekc "If all else fails..."
-    m "Get professional help or talk to someone close to you."
-    m "..."
+    m 3ekc "If all else fails..."
+    m 1ekc "Get professional help or talk to someone close to you."
+    m 1eka "..."
     m 1ekbfa "I love you very much, [player]."
-    m "Please, take care of yourself."
+    m 3ekbfa "Please, take care of yourself."
     return
 
 init 5 python:
