@@ -1094,7 +1094,7 @@ init -5 python in mas_sprites:
             n_suffix,
             issitting,
             arm_state,
-            pose=None,
+            leanpose=None,
             lean=None
         ):
         """
@@ -1108,26 +1108,16 @@ init -5 python in mas_sprites:
             issitting - True will use sitting pic, false will not
             arm_state - "0" for arms-base-0, "1" for arms-base-1, None for
                 neither
-            pose - current pose
+            leanpose - current pose
                 (Default: None)
             lean - type of lean
                 (Default: None)
         """
         # pose map check
         # Since None means we dont show, we are going to assume that the
-        # accessory should be shown if the pose key is missing.
-        if lean:
-            poseid = acs.pose_map.l_map.get(lean + "|" + pose, None)
-            arm_codes = acs.get_arm_split_code(lean + "|" + pose)
-
-            # NOTE: we dont care about leaning as a part of filename
-#            if acs.pose_map.use_reg_for_l:
-                # clear lean if dont want to use it for rendering
-#                lean = None
-
-        else:
-            poseid = acs.pose_map.map.get(pose, None)
-            arm_codes = acs.get_arm_split_code(pose)
+        # accessory should not be shown if the pose key is missing.
+        poseid = acs.pose_map.get(leanpose, None)
+        arm_codes = acs.get_arm_split_code(leanpose)
 
         if poseid is None:
             # a None here means we should shouldnt' even show this acs
@@ -1176,7 +1166,7 @@ init -5 python in mas_sprites:
             n_suffix,
             issitting,
             arm_state,
-            pose=None,
+            leanpose=None,
             lean=None
         ):
         """
@@ -1190,7 +1180,7 @@ init -5 python in mas_sprites:
             issitting - True will use sitting pic, false will not
             arm_state - set to "0" or "1" if we are rendering acs between
                 base arms and arm ouftits
-            pose - arms pose for we are currently rendering
+            leanpose - arms pose for we are currently rendering
                 (Default: None)
             lean - type of lean
                 (Default: None)
@@ -1209,7 +1199,7 @@ init -5 python in mas_sprites:
                 n_suffix,
                 issitting,
                 arm_state,
-                pose,
+                leanpose,
                 lean=lean
             )
 
@@ -1311,6 +1301,8 @@ init -5 python in mas_sprites:
     
     def _ms_arms_nh_wbase(
             sprite_list,
+            base_pose,
+            arms_pose,
             loc_str,
             clothing,
             lean,
@@ -1323,6 +1315,8 @@ init -5 python in mas_sprites:
 
         IN:
             sprite_list - list to add sprite strings to
+            base_pose - MASPoseArms for base
+            arms_pose - MASPoseArms for outfit
             loc_str - location string
             clothing - type of clothing
             lean - lean type
@@ -1520,7 +1514,7 @@ init -5 python in mas_sprites:
             acs_bse_list,
             bcode,
             n_suffix,
-            arms,
+            leanpose,
             lean=None
         ):
         """
@@ -1532,7 +1526,7 @@ init -5 python in mas_sprites:
             clothing - type of clothing
             acs_bse_list - acs between base-0 and body-0
             bcode - base code to use
-            arms - arms to use
+            leanpose - leanpose to pass to accesorylist
             n_suffix - night suffix to use
         """
         if lean:
@@ -1552,7 +1546,7 @@ init -5 python in mas_sprites:
                 acs_bse_list,
                 n_suffix,
                 True,
-                pose=arms,
+                leanpose,
                 lean=lean
             )
 
@@ -1576,7 +1570,7 @@ init -5 python in mas_sprites:
                 acs_bse_list,
                 n_suffix,
                 True,
-                pose=arms,
+                leanpose,
                 lean=lean
             )
 
@@ -1998,6 +1992,8 @@ init -5 python in mas_sprites:
             clothing,
             hair,
             hair_split,
+            base_pose,
+            arms_pose,
             eyebrows,
             eyes,
             nose,
@@ -2013,6 +2009,7 @@ init -5 python in mas_sprites:
             acs_afh_list,
             acs_mid_list,
             acs_pst_list,
+            leanpose=None,
             lean=None,
             arms="",
             eyebags=None,
@@ -2029,6 +2026,8 @@ init -5 python in mas_sprites:
             clothing - type of clothing
             hair - type of hair
             hair_split - true if hair is split into 2 layers
+            base_pose - MASPoseArms for base
+            arms_pose - MASPoseArms for outfit
             eyebrows - type of eyebrows
             eyes - type of eyes
             nose - type of nose
@@ -2052,6 +2051,8 @@ init -5 python in mas_sprites:
             acs_mid_list - sorted list of MASAccessories to draw between body
                 and arms
             acs_pst_list - sorted list of MASAccessories to draw after arms
+            leanpose - lean and arms together
+                (Default: None)
             lean - type of lean
                 (Default: None)
             arms - type of arms
@@ -2144,7 +2145,7 @@ init -5 python in mas_sprites:
             acs_pre_list,
             n_suffix,
             True,
-            arms,
+            leanpose,
             lean=lean
         )
 
@@ -2170,7 +2171,7 @@ init -5 python in mas_sprites:
                 acs_bbh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
@@ -2204,7 +2205,7 @@ init -5 python in mas_sprites:
                 acs_bba_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
@@ -2221,7 +2222,7 @@ init -5 python in mas_sprites:
                 acs_bab_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
@@ -5240,23 +5241,33 @@ init -2 python:
             else:
                 hair = character.hair
 
+            # combined pose with lean for efficiency
+            if lean is not None:
+                leanpose = lean + "|" + arms
+            else:
+                leanpose = arms
+
             # determine hair split
             if hair.split is None:
                 hair_split = True
 
-            elif lean:
-                # we assume split if lean not found
-                hair_split = hair.split.get(lean + "|" + arms, True)
-
             else:
                 # not leaning, still assume true if arms not found
-                hair_split = hair.split.get(arms, True)
+                hair_split = hair.split.get(leanpose, True)
 
+            # select MASPoseArms for baes and outfit
+            base_pose = store.mas_sprites.base_pose_map.get(leanpose, None)
+            arms_pose = character.clothes.pose_arms.get(leanpose, None)
+
+            if arms_pose is None:
+                arms_pose = base_pose
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.img_sit,
                 hair.img_sit,
                 hair_split,
+                base_pose,
+                arms_pose,
                 eyebrows,
                 eyes,
                 nose,
@@ -5272,6 +5283,7 @@ init -2 python:
                 acs_afh_list,
                 acs_mid_list,
                 acs_pst_list,
+                leanpose=leanpose,
                 lean=lean,
                 arms=arms,
                 eyebags=eyebags,
