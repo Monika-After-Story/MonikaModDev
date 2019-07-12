@@ -2114,7 +2114,7 @@ label monika_affection_nickname:
                         if m_name == "Monika":
                             m 1hua "I'll go back to my name, then."
                         else:
-                            m 3hua "From now on, you can call me '{i}[m_name]{/i}'."
+                            m 3hua "From now on, you can call me '{i}[m_name]{/i}.'"
                             m 1hub "Ehehe~"
                         $ done = True
                     else:

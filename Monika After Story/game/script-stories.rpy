@@ -276,7 +276,7 @@ label mas_story_tyrant:
     m 3eud "The Cock defended his action by saying this was for the benefit of men, as it wakes them for labor."
     m 1tfb "The Cat replied, 'you abound in apologies, but it's time for breakfast.'"
     m 1hksdrb "At that he made a meal of the Cock."
-    m 3eua "The moral of this story is that: 'Tyrants need no excuse'."
+    m 3eua "The moral of this story is that: 'Tyrants need no excuse.'"
     m 1hua "I hope you enjoyed this little story, [player]~"
     return
 
@@ -291,7 +291,7 @@ label mas_story_despise:
     m 1eua "Drawing back a few paces, he took a run and a jump, and just missed the bunch."
     m 3eub "Turning round again with a one,{w=1.0} two,{w=1.0} three,{w=1.0} he jumped up, but with no greater success."
     m 3tkc "Again and again he tried after the tempting morsel, but at last had to give it up, and walked away with his nose in the air, saying: 'I am sure they are sour.'"
-    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get'."
+    m 1hksdrb "The moral of this story is that: 'It is easy to despise what you cannot get.'"
     m 1eua "I hope you liked it, [player]~"
     return
 
@@ -309,7 +309,7 @@ label mas_story_lies:
     m 1ekc "The boy cried out 'Wolf, Wolf!' still louder than before."
     m 4efd "But this time the villagers, who had been fooled twice before, thought the boy was again lying, and nobody came to his aid."
     m 2dsc "So the Wolf made a good meal of the boy's flock."
-    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth'."
+    m 2esc "The moral of this story is that: 'Liars are not believed even when they speak the truth.'"
     m 1hksdlb "You shouldn't worry about it, [player]..."
     m 3hua "You'd never lie to me, right?"
     m 1hub "Ehehe~"
@@ -329,7 +329,7 @@ label mas_story_grasshoper:
     m 1hfb "'Why bother about winter?' said the Grasshopper; 'we have plenty of food now!'"
     m 3eua "The Ant went on its way."
     m 1dsc "When winter came, the Grasshopper had no food and found itself dying of hunger, while it saw the ants distributing corn and grain from the stores they had collected in the summer."
-    m 3hua "The moral of this story is that: 'There's a time for work and a time for play'."
+    m 3hua "The moral of this story is that: 'There's a time for work and a time for play.'"
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
     return
@@ -382,7 +382,7 @@ label mas_story_gray_hair:
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
     m 3hksdlb "The Man soon found himself entirely bald."
-    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
+    m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield.'"
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
@@ -399,7 +399,7 @@ label mas_story_fisherman:
     m 3ekd "'Please spare me, Mr. Fisherman! I am so small it is not worth while to carry me home. When I am bigger, I shall make you a much better meal!'"
     m 1eud "But the Fisherman quickly put the fish into his basket."
     m 3tfu "'How foolish I should be,' he said, 'to throw you back. However small you may be, you are better than nothing at all.'"
-    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise'."
+    m 3esa "The moral of this story is that: 'A small gain is worth more than a large promise.'"
     m 1hub "I hope you enjoyed this little story, [player]~"
     return
 

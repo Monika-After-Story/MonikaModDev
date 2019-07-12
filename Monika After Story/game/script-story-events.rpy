@@ -141,7 +141,7 @@ label preferredname:
     m 1esa "Is '[player]' really your name?"
     if renpy.windows and currentuser.lower() == player.lower():
         m 3esa "I mean, it's the same as your computer's name..."
-        m 1eua "You're using '[currentuser]' and '[player]'."
+        m 1eua "You're using '[currentuser]' and '[player].'"
         m "Either that or you must really like that pseudonym."
 
     m "Do you want me to call you something else?{nw}"
@@ -654,7 +654,7 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
+            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
             # TODO: this really should be a smug or wink face
             m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
             $ _history_list.pop()
@@ -663,7 +663,7 @@ label mas_random_ask:
             return True
         "No.":
             m 1eka "I see."
-            m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics'."
+            m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
             return
 
@@ -2195,7 +2195,7 @@ label monika_rpy_files:
             menu:
                 m "Do you want me to delete them for you, [player]?{fast}"
 
-                "Yes please":
+                "Yes, please.":
                     m "Sure thing, [player]."
                     python:
                         store.mas_ptod.rst_cn()
@@ -2221,7 +2221,7 @@ label monika_rpy_files:
                     hide screen mas_py_console_teaching
                     show monika at t11
 
-                "No thanks":
+                "No, thanks.":
                     m 2rksdlc "Alright, [player]. I hope you know what you're doing."
                     m 2eka "Please be careful."
                     $ persistent._mas_pm_has_rpy = True
