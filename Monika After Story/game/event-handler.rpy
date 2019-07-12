@@ -2126,7 +2126,7 @@ label prompt_menu:
         $ pushEvent("monika_love",True)
 
     elif madechoice == "love_too":
-        $ pushEvent("monika_love_too")
+        $ pushEvent("monika_love_too",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start

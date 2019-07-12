@@ -3139,8 +3139,8 @@ label monika_love:
                 "...It's been a long time since I last believed that, [player].",
                 "If only I believed you actually meant that, [player].",
                 "I can't believe there was a time when I actually believed that, [player].",
-                "...If only that were true, [player]",
-                "...If only you meant that, [player]",
+                "...If only that were true, [player].",
+                "...If only you meant that, [player].",
                 "How long are you going to keep pretending, [player]?",
                 "You don't mean that anymore... {w=1}Did you ever?",
                 "I can't remember the last time I felt like you meant that."
@@ -3172,7 +3172,7 @@ label monika_love:
                 "I'm so relieved to hear you say that.",
                 "You have no idea how much that means right now.",
                 "I'm glad you still feel that way.",
-                "I'm happy to hear that",
+                "I'm happy to hear that.",
                 "That means a lot.",
                 "You have no idea how much that means to me."
             ]
@@ -3184,8 +3184,8 @@ label monika_love:
 
         else:
             $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_hope))
-            m 2ekc "Thanks, [player]..."
-            m 2ekd "[love_quip_upset]"
+            m 2ekd "Thanks, [player]..."
+            m 2dka "[love_quip_upset]"
             m 2eka "I...{w=0.5}I love you, too."
 
     else:
