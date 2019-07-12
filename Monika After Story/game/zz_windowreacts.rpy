@@ -79,6 +79,7 @@ init python:
         "[player], do you have a second?",
         "I have something to tell you, [player]!",
         "Do you have a minute, [player]?",
+        "I've got something to talk about, [player]!",
     ]
 
     #OSX/Linux
@@ -241,7 +242,7 @@ init python:
             body: notification body
         """
         os.system('osascript -e \'display notification "{0}" with title "{1}"\''.format(body,title))
-    
+
     def mas_tryShowNotificationLinux(title, body):
         """
         Tries to push a notification to the notification center on Linux.
@@ -255,23 +256,19 @@ init python:
     def display_notif(title, body, group=None, skip_checks=False):
         """
         Notification creation method
-
         IN:
             title: Notification heading text
             body: A list of items which would go in the notif body (one is picked at random)
             group: Notification group (for checking if we have this enabled)
             skip_checks: Whether or not we skips checks
-
         OUT:
             bool indicating status (notif shown or not (by check))
-
         NOTE:
             We only show notifications if:
                 1. We are able to show notifs
                 2. MAS isn't the active window
                 3. User allows them
                 4. And if the notification group is enabled
-
                 OR if we skip checks. BUT this should only be used for introductory or testing purposes.
         """
 
@@ -317,7 +314,106 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_whatwatching",
+            eventlabel="mas_wrs_pinterest",
+            category=['pinterest'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_pinterest:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Anything new today, [player]?",
+            "Anything interesting, [player]?",
+            "See anything you like?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_pinterest')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_duolingo",
+            category=['duolingo'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_duolingo:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Learning new ways to say 'I love you,' [player]?",
+            "Learning a new language, [player]?",
+            "What language are you learning, [player]?"
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_duolingo')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_wikipedia",
+            category=['wikipedia'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_wikipedia:
+    $ wikipedia_reacts = [
+        "Learning something new, [player]?",
+        "Doing a bit of research, [player]?"
+    ]
+
+    #Items in here will get the wiki article you're looking at for reacts.
+    python:
+        wind_name = mas_getActiveWindow(friendly=True)
+        try:
+            cutoff_index = wind_name.index(" - Wikipedia")
+
+            #If we're still here, we didn't value error
+            #Now we get the article
+            wiki_article = wind_name[:cutoff_index]
+            wikipedia_reacts.append(renpy.substitute("'[wiki_article]'...\nSeems interesting, [player]."))
+
+        except:
+            pass
+
+    $ wrs_success = display_notif(
+        m_name,
+        wikipedia_reacts,
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_wikipedia')
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_youtube",
             category=['youtube'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -325,7 +421,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_whatwatching:
+label mas_wrs_youtube:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -337,14 +433,14 @@ label monika_whatwatching:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_whatwatching')
+        $ mas_unlockFailedWRS('mas_wrs_youtube')
     return
 
 init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_lookingat",
+            eventlabel="mas_wrs_r34m",
             category=['rule34', 'monika'],
             rules={"skip alert": None},
             show_in_idle=True
@@ -352,7 +448,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_lookingat:
+label mas_wrs_r34m:
     $ display_notif(m_name, ["Hey, [player]...what are you looking at?"],'Window Reactions')
 
     $ choice = random.randint(1,10)
@@ -379,7 +475,7 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_windowreacts_database,
-            eventlabel="monika_monikamoddev",
+            eventlabel="mas_wrs_monikamoddev",
             category=['monikamoddev'],
             rules={"notif-group": "Window Reactions", "skip alert": None},
             show_in_idle=True
@@ -387,7 +483,7 @@ init 5 python:
         code="WRS"
     )
 
-label monika_monikamoddev:
+label mas_wrs_monikamoddev:
     $ wrs_success = display_notif(
         m_name,
         [
@@ -399,7 +495,7 @@ label monika_monikamoddev:
 
     #Unlock again if we failed
     if not wrs_success:
-        $ mas_unlockFailedWRS('monika_monikamoddev')
+        $ mas_unlockFailedWRS('mas_wrs_monikamoddev')
     return
 
 init 5 python:
