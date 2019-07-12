@@ -845,6 +845,10 @@ init -810 python:
 
             # likes / dokis
             "_mas_pm_cares_about_dokis": "pm.likes.dokis.cares_about_them",
+            "_mas_pm_likes_yuri_for": "pm.likes.dokis.yuri_reasons",
+            "_mas_pm_likes_sayori_for": "pm.likes.dokis.sayori_reasons",
+            "_mas_pm_likes_natsuki_for": "pm.likes.dokis.natsuki_reasons",
+            "_mas_pm_only_likes_monika": "pm.likes.dokis.only_monika",
 
             # knowledge
             # knowledge / lang
