@@ -12127,7 +12127,7 @@ label monika_trick_natsuki_norealreason:
     m 2eud "That's... a little surprising."
     m 2lksdla "I would have thought it would have been Sayori or Yuri."
     m 1eud "Do you feel like you connect with her because of her hobbies?"
-    m 3euc "Or perhaps you feel a bit of pity because of her home situatuion?"
+    m 3euc "Or perhaps you feel a bit of pity because of her home situation?"
     m 2lud "Well I guess I'm dismissing her personality a little bit, assertiveness is an admirable trait after all."
     m 3euc "To be confident and stand by what you like isn't always easy when others judge you for it."
     m 3rksdla "I'm sometimes even a little bit jealous of her ability to display confidence."
