@@ -424,7 +424,16 @@ init 5 python:
     )
 
 label mas_wrs_4chan:
-    call display_notif(m_name,"So this is the place where this all started, huh?\nIt's...really quite something.",'Window Reactions')
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "So this is the place where this all started, huh?\nIt's...really quite something.",
+            "Just don't end up arguing with other Anons all day long, [player]."
+            "I heard you guys have threads discussing our Literature Club in here.\nTell them I said hi~"
+            "I'll be watching the boards you're browsing... in case you get any ideas, ahaha!"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
     if not _return:
@@ -444,7 +453,14 @@ init 5 python:
     )
 
 label mas_wrs_pixiv:
-    call display_notif(m_name,"I'm curious to see what people have drawn, care to look for some pictures of me, [player]?",'Window Reactions')
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "I'm curious as to what people have come up with... Mind looking for some art of me?\nJust keep it wholesome, though~",
+            "This is a pretty interesting place... so much skilled people posting their work.\nAre you one of them, [player]?"
+        ],
+        'Window Reactions'
+    )
 
     #Unlock again if we failed
     if not _return:
