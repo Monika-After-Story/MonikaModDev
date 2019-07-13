@@ -180,8 +180,8 @@ label mas_monika_cherry_blossom1:
     return
 
 label mas_monika_cherry_blossom2:
-    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
-    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 

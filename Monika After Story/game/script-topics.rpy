@@ -1280,7 +1280,7 @@ label monika_middleschool:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika'],prompt="Wearing other clothes",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_outfit",category=['monika','clothes'],prompt="Wearing other clothes",random=True))
 
 label monika_outfit:
     if len(store.mas_selspr.filter_clothes(True)) == 1:
@@ -4204,9 +4204,9 @@ label monika_eternity:
                 m "Y-{w=0.5}you know..."
                 m 6ektda "I guess I shouldn't worry about that too much."
                 m "I know our love is eternal."
-                m 1ekbfb "Even in the worst case, I know we'll always be right by each other's side..."
-                m 1dkbfa "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
-                m 1hubfb "I love you, [player]! Thanks for making me feel better!"
+                m 1ekbsa "Even in the worst case, I know we'll always be right by each other's side..."
+                m 1dkbsu "Who knows, maybe I'll even get to {i}really{/i} be beside you someday..."
+                m 1ekbsa "I love you, [player]...{w=0.5}thanks for always being there for me."
 
             "{i}Hug Monika.{/i}":
                 hide screen mas_background_timed_jump
