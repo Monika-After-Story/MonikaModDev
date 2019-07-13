@@ -191,6 +191,8 @@ label mas_monika_cherry_blossom3:
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
+    # we'll set this manually due to the ineffectiveness of using a return key here
+    $ persistent._mas_last_monika_ily = datetime.datetime.now()
     return
 
 label mas_monika_cherry_blossom4:
