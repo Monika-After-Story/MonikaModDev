@@ -311,15 +311,22 @@ label v0_9_6(version="v0_9_6"):
         ev_label_list = [
             ("monika_whatwatching","mas_wrs_youtube"),
             ("monika_lookingat","mas_wrs_r34m"),
-            ("monika_monikamoddev","mas_wrs_monikamoddev")
+            ("monika_monikamoddev","mas_wrs_monikamoddev"),
+            ("mas_scary_story_o_tei","mas_story_o_tei"),
+            ("mas_story_grasshoper","mas_story_grasshopper")
         ]
         #NOTE:
-        #We only really want the shown count and last seen. Nothing else mattress
+        #We only really want the shown count and last seen (and unlocked for the stories). Nothing else mattress
         for old_ev_label, new_ev_label in ev_label_list:
             ev = mas_getEV(new_ev_label)
             if old_ev_label in persistent._mas_windowreacts_database:
                 old_ev = Event(
                     persistent._mas_windowreacts_database,
+                    old_ev_label
+                )
+            elif old_ev_label in persistent._mas_story_database:
+                old_ev = Event(
+                    persistent._mas_story_database,
                     old_ev_label
                 )
             else:
@@ -328,6 +335,7 @@ label v0_9_6(version="v0_9_6"):
             if ev is not None and old_ev is not None:
                 ev.shown_count = old_ev.shown_count
                 ev.last_seen = old_ev.last_seen
+                ev.unlocked = old_ev.unlocked
                 mas_transferTopicSeen(old_ev_label, new_ev_label)
 
                 # erase this topic
