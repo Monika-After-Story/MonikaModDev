@@ -3593,7 +3593,9 @@ label mas_player_bday_cake:
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
-    return "love"
+    # "love" return key won't work here, so we'll set this manually
+    $ persistent._mas_last_monika_ily = datetime.datetime.now()
+    return
 
 # event for if you went on a date pre-bday and return on bday
 init 5 python:
