@@ -429,7 +429,7 @@ label mas_wrs_4chan:
         [
             "So this is the place where this all started, huh?\nIt's...really quite something.",
             "Just don't end up arguing with other Anons all day long, [player]."
-            "I heard you guys have threads discussing our Literature Club in here.\nTell them I said hi~"
+            "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~"
             "I'll be watching the boards you're browsing in case you get any ideas, ahaha!"
         ],
         'Window Reactions'
