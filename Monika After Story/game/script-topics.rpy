@@ -10706,7 +10706,8 @@ label monika_vehicle:
 
                 $ selection = _return
 
-                call expression selection
+                jump expression selection
+                # use jump instead of call for use of the "love" return key
 
             "No.":
                 $ persistent._mas_pm_owns_car = False
@@ -12058,7 +12059,8 @@ label monika_trick_2:
         "Natsuki.":
             call monika_trick_natsuki
         "Monika.":
-            call monika_trick_monika
+            jump monika_trick_monika
+            # jump this path so we can use the "love" return key
 
     return "derandom"
 
@@ -12115,7 +12117,7 @@ label monika_trick_monika:
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
     m 5hubfu "I love you [player]!"
     m 5eubfb "And I only have eyes for you too!"
-    return "love"
+    return "derandom|love"
 
 init 5 python:
     addEvent(
