@@ -342,9 +342,6 @@ label v0_9_6(version="v0_9_6"):
         if family_ev is not None:
             family_ev.pool = True
 
-        #Fix the ribbon select to be unlocked if we're in something which supports ribbons
-        if not monika_chr.is_wearing_clothes_with_exprop("baked outfit") and monika_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(store.mas_sprites_json.SP_ACS, "ribbon")
     return
 
 # 0.9.5
