@@ -473,7 +473,7 @@ init -10 python in mas_selspr:
     #   [0] - topic label
     #   [2] - number of items before unlocking
     GRP_TOPIC_MAP = {
-        "ribbon": ("monika_ribbon_select", 2),
+        "ribbon": ("monika_ribbon_select", 1),
         "left-hair-clip": ("monika_hairclip_select", 1),
     }
 
@@ -2911,8 +2911,8 @@ init 5 python:
             category=["appearance"],
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
-            unlocked=False,
-            rules={"no unlock": None}
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 

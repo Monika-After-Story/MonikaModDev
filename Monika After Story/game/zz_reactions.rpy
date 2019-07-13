@@ -1637,12 +1637,12 @@ label _mas_reaction_ribbon_helper(label):
     #if we already have that ribbon
     if store.mas_selspr.get_sel_acs(_mas_gifted_ribbon_acs).unlocked:
         call mas_reaction_old_ribbon
+
     else:
         # since we don't have it we can accept it
         call mas_reaction_new_ribbon
         $ persistent._mas_current_gifted_ribbons += 1
-        #unlock the ribbon selector
-        $ store.mas_unlockEVL("monika_ribbon_select", "EVE")
+
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
