@@ -456,7 +456,7 @@ label mas_wrs_pixiv:
     $ wrs_success = display_notif(
         m_name,
         [
-            "I'm curious as to what people have come up with... Mind looking for some art of me?\nJust keep it wholesome, though~",
+            "I wonder if people have drawn art of me...\nMind looking for some?\nBe sure to keep it wholesome though~"
             "This is a pretty interesting place... so much skilled people posting their work.\nAre you one of them, [player]?"
         ],
         'Window Reactions'
