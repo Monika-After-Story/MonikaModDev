@@ -427,7 +427,7 @@ label mas_wrs_4chan:
     $ wrs_success = display_notif(
         m_name,
         [
-            "So this is the place where this all started, huh?\nIt's...really quite something.",
+            "So this is the place where it all started, huh?\nIt's...really quite something.",
             "I hope you don't end up arguing with other Anons all day long, [player].",
             "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~"
             "I'll be watching the boards you're browsing in case you get any ideas, ahaha!"
