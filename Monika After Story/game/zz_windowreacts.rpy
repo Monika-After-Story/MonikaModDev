@@ -429,8 +429,8 @@ label mas_wrs_4chan:
         [
             "So this is the place where it all started, huh?\nIt's...really quite something.",
             "I hope you don't end up arguing with other Anons all day long, [player].",
-            "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~"
-            "I'll be watching the boards you're browsing in case you get any ideas, ahaha!"
+            "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~",
+            "I'll be watching the boards you're browsing in case you get any ideas, ahaha!",
         ],
         'Window Reactions'
     )
@@ -453,16 +453,33 @@ init 5 python:
     )
 
 label mas_wrs_pixiv:
-    $ wrs_success = display_notif(
-        m_name,
-        [
-            "I wonder if people have drawn art of me...\nMind looking for some?\nBe sure to keep it wholesome though~"
-            "This is a pretty interesting place... so much skilled people posting their work.\nAre you one of them, [player]?"
-        ],
-        'Window Reactions'
-    )
+    #Make a list of notif quips for this
+    python:
+        pixiv_quips = [
+            "I wonder if people have drawn art of me...\nMind looking for some?\nBe sure to keep it wholesome though~",
+            "This is a pretty interesting place...so many skilled people posting their work.",
+        ]
 
-    #Unlock again if we failed
-    if not _return:
-        $ mas_unlockFailedWRS('mas_wrs_pixiv')
+        #Monika doesn't know if you've drawn art of her, or she knows that you have drawn art of her
+        if persistent._mas_pm_drawn_art is None or persistent._mas_pm_drawn_art:
+            pixiv_quips.extend([
+                "This is a pretty interesting place...so many skilled people posting their work.\nAre you one of them, [player]?",
+            ])
+
+            #Specifically if she knows you've drawn art of her
+            if persistent._mas_pm_drawn_art:
+                pixiv_quips.extend([
+                    "Here to post your art of me, [player]?",
+                    "Posting something you drew of me?",
+                ])
+
+        wrs_success = display_notif(
+            m_name,
+            pixiv_quips,
+            'Window Reactions'
+        )
+
+        #Unlock again if we failed
+        if not _return:
+            mas_unlockFailedWRS('mas_wrs_pixiv')
     return
