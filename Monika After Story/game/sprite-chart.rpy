@@ -1305,8 +1305,9 @@ init -5 python in mas_sprites:
             arms_pose,
             loc_str,
             clothing,
+            acs_ase_list,
+            leanpose,
             lean,
-            arms,
             n_suffix,
             bcode
         ):
@@ -1319,8 +1320,9 @@ init -5 python in mas_sprites:
             arms_pose - MASPoseArms for outfit
             loc_str - location string
             clothing - type of clothing
-            lean - lean type
-            arms - arms type
+            acs_ase_list - acs between arms-base-0 and arms-0
+            leanpose - leanpose to pass to accessorylist
+            lean - lean to use
             n_suffix - night suffix to use
             bcode - base code to use
         """
@@ -1351,6 +1353,36 @@ init -5 python in mas_sprites:
             FILE_EXT,
             '"',
         ))
+
+
+    def _ms_arms_nh_up_base(
+            sprite_list,
+            base_pose,
+            loc_str,
+            leanpose,
+            n_suffix
+    ):
+        """
+        Adds arms base string
+
+        IN:
+            sprite_list - list to add sprite strings to
+            base_pose - MASPoseArms for base
+            loc_str - location string
+            leanpose - leanpose to use
+            n_suffix - night suffix to use
+        """
+#        base_arms_prefix = (
+#            ",",
+#            loc_str,
+#            ',"',
+#            B_MAIN,
+#            PREFIX_ARMS,
+#        base_pose.build_arms(
+#            sprite_list,
+#            [
+        # TODO
+        pass
 
 
     def _ms_arms_nh_leaning(
@@ -2209,8 +2241,10 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # 9. arms
-            # TODO: use PoseArms
+            # 9. arms-base-0
+            # 10. between arms-base-0 and arms-0 acs
+            # 11. arms-0
+            # TODO
 
             # 7. arms-0
             # TODO
@@ -3998,6 +4032,36 @@ init -2 python:
                 self.left, self.left_front, self.left_back = left
                 self.right, self.right_front, self.right_back = right
 
+        @staticmethod
+        def _add_if_needed(
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+                arm_str,
+                arm_front,
+                arm_back
+        ):
+            """
+            Adds an arm string to the sprite list if needed
+
+            IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of stirngs to prefix each arm with
+                suffix_list - list of string sto suffix each arm with
+                front - True if rendering front, False if back
+                arm_str - arm string to add
+                arm_front - True if this arm string has a front
+                arm_back - True if this arm string has a back
+            """
+            if front:
+                if arm_front:
+                    sprite_list.extend((prefix, arm_str, suffix))
+
+            else:
+                if arm_back:
+                    sprite_list.extend((prefix, arm_str, suffix))
+
         def _init_props(self):
             """
             Initializes props
@@ -4012,14 +4076,53 @@ init -2 python:
             self.right_front = None
             self.right_back = None
 
-        def build_arms(self, sprite_list, clothing, arms, n_suffix, front):
+        def build_arms(self, sprite_list, prefix_list, suffix_list, front):
             """
             Builds arm strings and adds to sprite list
             NOTE: only adds arm parts, not composition
 
             IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of strings to prefix each arm with
+                suffix_list - list of stirngs to suffix each arm with
+                front - True if we are rendering front, False if back
             """
-            pass
+            if self.both is not None:
+                # we are rendering for both arms
+                MASPoseArms._add_if_needed(
+                    sprite_list,
+                    prefix_list,
+                    suffix,
+                    front,
+                    self.both,
+                    self.both_front,
+                    self.both_back
+                )
+
+            else:
+                # we are rendering left and right
+
+                if self.left is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix,
+                        suffix,
+                        front,
+                        self.left,
+                        self.left_front,
+                        self.left_back
+                    )
+
+                if self.right is not None:
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix,
+                        suffix,
+                        front,
+                        self.right,
+                        self.right_front,
+                        self.right_back
+                    )
 
 
     # pose map helps map poses to an image
