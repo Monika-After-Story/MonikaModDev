@@ -7,19 +7,18 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender",conditional="get_level()>=8 and not seen_event('gender')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
 
 label gender:
-    #TODO: update exp's on this
-    m 2d "...[player]? So I've been thinking a bit."
-    m "I've mentioned before that the 'you' in the game might not reflect the real you."
-    m 1m "But I guess I had just assumed that you were probably a guy."
-    m "The main character was, after all."
-    m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+    m 2eud "...[player]? So I've been thinking a bit."
+    m 2euc "I've mentioned before that the 'you' in the game might not reflect the real you."
+    m 3lksdla "But I guess I just assumed that you were probably a guy."
+    m "...The main character was, after all."
+    m 3eua "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
     m "So, are you male or female?{nw}"
     $ _history_list.pop()
     menu:
         "So, are you male or female?{fast}"
         "Male.":
-            $persistent.gender = "M"
+            $ persistent.gender = "M"
             call set_gender from _call_set_gender_1
             m 2eud "Oh? So you {i}are{/i} a [guy]?"
             m 1hub "Ehehe, I suppose that makes sense!"
@@ -27,7 +26,7 @@ label gender:
             m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
             m 2hksdlb "Even I can be curious sometimes, you know?"
         "Female.":
-            $persistent.gender = "F"
+            $ persistent.gender = "F"
             call set_gender from _call_set_gender_2
             m 2eud "Oh? So you're actually a [guy]?"
             m 2hksdlb "I hope I didn't say anything to offend you before!"
@@ -36,7 +35,7 @@ label gender:
             m 1hua "It's very attractive, to tell you the truth!"
             m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
         "Neither.":
-            $persistent.gender = "X"
+            $ persistent.gender = "X"
             call set_gender from _call_set_gender_3
             m 1euc "You don't see yourself as a guy or a girl?"
             m 2eua "That's very interesting, but I can sort of relate."
@@ -46,8 +45,7 @@ label gender:
             m "So I'll treat you however you want to be treated."
             m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    $ evhand.event_database["gender_redo"].unlocked = True
-    $ evhand.event_database["gender_redo"].pool = True
+    $ mas_showEVL("gender_redo","EVE",unlock=True,_pool=True)
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
     return
@@ -80,49 +78,47 @@ label gender_redo:
             m 1dkd "I hate that I didn't reassure you enough before."
             m 1eka "But I hope that you're telling me now because you know I'll love you no matter what."
 
+    $ gender_var = None
     m "So, what is your gender?{nw}"
     $ _history_list.pop()
     menu:
         m "So, what is your gender?{fast}"
         "I'm a girl.":
             if persistent.gender == "F":
-                m 1hksdlb "...That's the same as before."
-                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
-                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
-                m 3eub "So as long as you say you're a girl, you're a girl to me, all right?"
-                m 5hua "I want you to be who you want to be while you're in this room."
+                $ gender_var = "girl"
+                call gender_redo_same
             else:
-                $persistent.gender = "F"
+                $ persistent.gender = "F"
                 call set_gender
                 m 2eud "Oh? So you're actually a [guy]?"
                 m 2hksdlb "I hope I didn't say anything to offend you before!"
                 m 2lksdla "Though I did suspect it a bit from the beginning...just a little!"
-                m 1eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
+                m 3eub "You give off a particular feeling of elegance and charm that's hard to capture with words..."
                 m 1hua "It's very attractive, to tell you the truth!"
                 m 1eua "But don't worry. Even if I might ask things like this, it's only out of curiosity."
+                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
         "I'm a boy.":
             if persistent.gender == "M":
-                m 1hksdlb "...That's the same as before."
-                m 2eua "If you're confused about how to answer, just pick whatever makes you happiest."
-                m 2hub "It doesn't matter what your body looks like. I don't even have a body! Ahaha!"
-                m 3eub "So as long as you say you're a boy, you're a boy to me, all right?"
-                m 5hua "I want you to be who you want to be while you're in this room."
+                $ gender_var = "boy"
+                call gender_redo_same
             else:
-                $persistent.gender = "M"
+                $ persistent.gender = "M"
                 call set_gender
                 m 2eud "Oh? So you {i}are{/i} a [guy]?"
                 m 1hub "Ehehe, I suppose that makes sense!"
                 m 1eua "Not a lot of girls would play a game like this."
                 m 4eua "You certainly come across as manly and confident. Not that I would have been terribly bothered if you answered differently, mind you!"
                 m 2hksdlb "Even I can be curious sometimes, you know?"
+                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
         "I'm neither.":
             if persistent.gender == "X":
                 m 1hksdlb "...That's the same as before. I'm sorry if that's not really the best way for you to describe it."
                 m 1eub "I'm interested in learning how to use new pronouns, like xir!"
                 m 3hub "If you're trying to tell me you'd prefer pronouns like those, get in touch with the people who created this mod!"
+                show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
                 m 5eub "They'll tell you how to teach me."
             else:
-                $persistent.gender = "X"
+                $ persistent.gender = "X"
                 call set_gender
                 m 1euc "You don't see yourself as a guy or a girl?"
                 m 2eua "That's very interesting, but I can sort of relate."
@@ -130,8 +126,18 @@ label gender_redo:
                 m 2esd "So in some ways I'm not really a girl at all."
                 m 1hua "But when you treat me like your girlfriend, it makes me really happy!"
                 m "So I'll treat you however you want to be treated."
-                m 1ekbfa "Because your happiness is the most important thing to me."
-    m 1hub "Remember that I'll always love you unconditionally, [player]."
+                m 1ekbsa "Because your happiness is the most important thing to me."
+                show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubsa "Remember that I'll always love you unconditionally, [player]~"
+    return
+
+label gender_redo_same:
+    m 1hksdlb "...That's the same as before, [player]."
+    m 3eua "If you're confused about how to answer, just pick whatever makes you happiest."
+    m 3eka "It doesn't matter what your body looks like..."
+    m "So as long as you say you're a [gender_var], you're a [gender_var] to me, all right?"
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "I want you to be who you want to be while you're in this room."
     return
 
 init 5 python:

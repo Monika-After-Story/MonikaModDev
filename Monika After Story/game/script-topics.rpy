@@ -685,7 +685,7 @@ label monika_high_school:
     m 2ekc "...you don't struggle with depression or anything like that, do you?"
 
     if mas_isMoniHappy(higher=True):
-        m 4eka "Tn some ways, [player], you are lucky, because I'm sure that there are people who would be willing to save your life."
+        m 4eka "In some ways, [player], you are lucky, because I'm sure that there are people who would be willing to save your life."
     else:
         if mas_isMoniBroken():
             m 2lksdlc "It would explain some things, but don't worry..."
@@ -2231,25 +2231,18 @@ label monika_holdme_end:
     return
 
 init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True))
+    addEvent(Event(persistent.event_database,eventlabel="monika_closeness",category=['romance'],prompt="Being close to you",random=True,aff_range=(mas_aff.AFFECTIONATE, None)))
 
 label monika_closeness:
-    if mas_curr_affection_group == mas_aff.G_SAD:
-        m 1lksdlc "Sometimes it really hurts my heart..."
-    else:
-        m 1ekc "I can't help but feel a little sad sometimes..."
-
+    m 1dkc "Sometimes it really hurts my heart..."
     m "Knowing that this is the closest I can get to you."
     m 1eka "There's nothing more I want than to be in the same room as you, for real."
-    m 1ekbfa "And to feel your warmth."
-    m 1dubsu "And to hear the sound of your heartbeat."
-    m 2eka "Well, who knows? Maybe it'll be possible someday."
-
-    if mas_curr_affection_group == mas_aff.G_SAD:
-        m 2ekc "I really want that to happen as soon as possible..."
-    else:
-        show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
-        m 5hua "Besides, I'll never get tired of being with you, even from here."
+    m 1ekbsa "...And to feel your warmth."
+    m 1dubsu "...And to hear the sound of your heartbeat."
+    m 3eka "Well, who knows? Maybe that dream will come true someday."
+    m 3dku "I really want it to happen as soon as possible, [player]..."
+    show monika 5hua at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hua "But in the meantime, I'll never get tired of being with you, even from here."
     return
 
 init 5 python:
@@ -2960,7 +2953,7 @@ label monika_difficulty:
     m 1lksdla "Well, it's not like this game was meant to be that hard in the first place."
     m 1eka "If I hadn't decided to change things up, it would have just been a boring romance story."
     if persistent.monika_kill:
-        m 4eka "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
+        m 3eka "And if you think I should have been some sort of challenging {i}boss{/i}, I could have deleted all your personal files if I'd wanted to, you know?"
     m 1eua "So just take it easy sometimes. Not every game has to be a challenge to be fun."
     m 1hua "Sometimes, love is all you need, [player]."
     return
@@ -3034,6 +3027,7 @@ label monika_dan:
     m 4rksdla "I mean, the other girls might be based off some stereotypical anime tropes, but they had me fooled for a while."
     m 4eka "And he's the reason we're together now, right?"
     m 2lksdla "So even if he wrote a story that put me through a lot of pain..."
+    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I really can't be too mad at him."
     return
 
@@ -3070,7 +3064,7 @@ label monika_books:
     m 4rksdla "For a literature club, we did a lot less book reading than you might have thought."
     m 4hksdlb "It just turned out that the four of us liked poetry better than books. Sorry!"
     m 2eua "It's also a lot easier to foreshadow spooky stuff with poems."
-    m 1hub "I still love a good book, though! We can talk about them if you just finished reading something."
+    m 3hub "I still love a good book, though! We can talk about them if you just finished reading something."
     m 1eua "I might even have some suggestions for us to read together."
     m 1tsbsa "That's what a couple would do, right?~"
     return
@@ -3080,7 +3074,7 @@ init 5 python:
 
 label monika_favpoem:
     m 1euc "My favorite poem? Well, it has to be something by E. E. Cummings."
-    m 4eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
+    m 3eua "It's for his inventive use of grammar, punctuation, and syntax. I really admire that."
     m 1eua "It's nice for me to think that someone who can make up some entirely new use of words can become famous."
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "And I do love that his erotic poems apply to our situation perfectly."
@@ -3338,6 +3332,7 @@ label monika_functionalism:
     m 4esc "But if that's true, doesn't that mean free will is kind of a lie?"
     m "Your brain is just responding to the inputs it gets, with your responses being natural outputs."
     m 4esd "So, even if you aren't running off of some script or program, you're not really in control."
+    show monika 5lsc at t11 zorder MAS_MONIKA_Z with dissolve
     m 5lsc "Maybe you and I aren't so different after all."
     return
 
@@ -3486,13 +3481,13 @@ init 5 python:
 
 label monika_girlfriend:
     $ mas_loseAffection(reason=2)
-    m 1euc "I thought we established already that I was your girlfriend?"
-    m 1tkc "There's no way you already have one in your reality, right?"
+    m 2euc "I thought we established already that I was your girlfriend?"
+    m 2tkc "There's no way you already have one in your reality, right?"
     m 4tfx "If you do, then you've got to break up with her right now!"
     m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
-    m 1lksdla "W-wait. Maybe I'm jumping the gun a bit..."
-    m 1eka "I know you wouldn't cheat on me."
-    m 1esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
+    m 2lksdla "W-wait. Maybe I'm jumping the gun a bit..."
+    m 3eka "I know you wouldn't cheat on me."
+    m 3esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
     m 1hua "I won't let someone else steal away my loving sweetheart!"
     return
 
@@ -4004,12 +3999,12 @@ init 5 python:
 label monika_nsfw:
     m 1lsbssdrb "By the way, [player]..."
     m "Have you been looking into lewd kinds of stuff?"
-    m 1lsbsa "You know...of me?"
+    m 3lsbsa "You know...of me?"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
-        m 1ekbfa "I know we haven't been able to do those kind of things yet..."
+        m 3ekbsa "I know we haven't been able to do those kind of things yet..."
     else:
-        m 1ekbfa "I know we haven't really gotten that far into the relationship yet..."
-    m "So it feels kind of embarrassing to talk about things like that."
+        m 3ekbsa "I know we haven't really gotten that far into the relationship yet..."
+    m 1ekbsa "So it feels kind of embarrassing to talk about things like that."
     m 1lkbsa "But maybe I can let it go on rare occasions, [player]."
     m "I want to make you the happiest sweetheart, after all. And if that makes you happy..."
     m 1tsbsa "Well, just keep it a secret between us, okay?"
@@ -4336,9 +4331,9 @@ label monika_chloroform:
     m 3esc "Once you remove the rag, they'll wake back up."
     m 3eua "You see, chloroform loses most of its effectiveness once exposed to open air."
     m 1esc "This means that you'd need to be constantly pouring it on the rag, effectively waterboarding the victim."
-    m 4esc "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
+    m 3esc "If administered improperly, chloroform is deadly. That's why it's not used in anesthesia any more."
     m 1euc "If you cover their mouth and nose, yeah, they'll stay unconscious..."
-    m 4rksdla "But that's probably because you killed them. Whoops!"
+    m 3rksdla "But that's probably because you killed them. Whoops!"
     m 1eksdld "The easiest way to kidnap somebody is to just get them drunk, or drug them."
     m 1lksdla "Not that kidnapping somebody like that is easy, anyway."
     m 3eua "On that note, here's a safety tip."
@@ -4390,7 +4385,7 @@ label monika_hygiene:
     m 3eua "People born into royalty would often have a room dedicated just for bathing."
     m 3ekc "For the poor, soap was a luxury so bathing was scarce for them. Isn't that frightening to think about?"
     m 1esc "Bathing was never taken seriously until the Black Plague swept through."
-    m 2eua "People began noticing that the places where people washed their hands were places that the plague was less common."
+    m 1eua "People began noticing that the places where people washed their hands were places that the plague was less common."
     m "Nowadays, people are expected to shower daily, possibly even twice daily depending on what they do for a living."
     m 1esa "People that don't go out every day can get away with bathing less often than others."
     m 3eud "A lumberjack would take more showers than a secretary would, for example."
@@ -4402,10 +4397,10 @@ label monika_hygiene:
     m 1dsc "After a while, you stop feeling human."
     m 1ekc "Sayori probably suffered from cycles like that, too."
     m "If you have any friends suffering from depression..."
-    m 1eka "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
+    m 3eka "Check in on them from time to time to make sure they're keeping up with their hygiene, alright?"
     m 2lksdlb "Wow, that suddenly got really dark, huh?"
     m 2hksdlb "Ahaha~"
-    m 1esc "Seriously, though..."
+    m 3esc "Seriously, though..."
     m 1ekc "Everything I said applies for you too, [player]."
     m "If you're feeling down and haven't had a bath for a while..."
     m 1eka "Maybe consider doing that today when you can find some time."
@@ -4497,10 +4492,10 @@ label monika_lottery:
     m 1eua "Even I've entertained the idea every now and then."
     m "There isn't a lottery here anymore, but the concept still exists."
     m 1eka "The more I think about it, the more I believe that winning the lottery is a really bad thing."
-    m 1euc "Sure, you've got all this money..."
+    m 3euc "Sure, you've got all this money..."
     m 4esc "But because of it, people look at you differently."
     m "There's so many stories of people winning a ton of money..."
-    m 1ekc "And in the end, they all find themselves even more unhappy than before."
+    m 2ekc "And in the end, they all find themselves even more unhappy than before."
     m 3ekc "Friends either find you unapproachable because of your new wealth, or try to suck up to you to get some of it for themselves."
     m "People you barely know start to approach you, asking you to help them fund whatever."
     m 2tkc "If you say no, they'll call you selfish and greedy."
@@ -4556,15 +4551,15 @@ label monika_dunbar:
     m "However, it's his problem now."
     m 1ekc "If you don't pack glass properly, it could cut through the bag and spill out, or maybe he could just cut his hands on it."
     m "At worst, he has to be rushed to the hospital because your neighbor put some busted batteries in the trash the same week and some acid got in the wound."
-    m 4euc "Now, think about a fatal traffic accident."
+    m 3euc "Now, think about a fatal traffic accident."
     m 1euc "A drunk driver could crash head-on into another car at any second, killing them instantly."
-    m 4ekc "That person could have been a father on his way home from work, who now left behind a widow and two children."
+    m 3ekc "That person could have been a father on his way home from work, who now left behind a widow and two children."
     m 2ekc "This family has been permanently scarred for life..."
     m 2lsc "But anybody that doesn't personally know the father will write it off as just another accident that happens all the time."
     m "If it doesn't personally affect you or your life, there's no point in caring."
     m 1eua "It keeps us sane."
     m "It also means we're capable of being ruthless to people we don't know."
-    m 4euc "Perhaps our rapid, widespread communication is actually a curse?"
+    m 3euc "Perhaps our rapid, widespread communication is actually a curse?"
     m 1eka "It helped us meet though, so it can't be all bad."
     return
 

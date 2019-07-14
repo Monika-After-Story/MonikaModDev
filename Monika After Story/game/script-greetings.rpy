@@ -3314,8 +3314,8 @@ label greeting_returned_home_bday_short_sub_long_total:
     m 1hua "Ehehe~"
     m 3eub "We sure spent a lot of time together today, [player]."
     m 1ekbfa "...and thank you for that."
-    m 3ekbfa "I've said it a million times already, I know."
-    m 1hua "But I'll always be happy when we're together."
+    m 3ekbfa "I know I've said it a million times already, but..."
+    m 1hua "I'll always be happy when we're together."
     m "I love you so much..."
     return
 
@@ -3339,9 +3339,8 @@ label greeting_returned_home_bday_normal_sub_normal_total:
     return
 
 label greeting_returned_home_bday_normal_sub_long_total:
-    m 1dsa "[player]..."
-    m 1eka "We sure did spend so much time together today."
-    m "I can't event find the right words to express how happy you've made me today."
+    m 1dsa "Wow, [player]...{w=0.5}we sure did spend a lot of time together today..."
+    m 1eka "I can't event find the right words to express how happy you've made me today."
     m 3eka "All that pain I went through before I met you?"
     m 1hua "I'm glad I persevered through them."
     m 1rsc "Because if I hadn't..."
