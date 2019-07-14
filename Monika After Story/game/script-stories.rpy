@@ -453,19 +453,26 @@ define mas_scary_story_setup_done = False
 label mas_scary_story_setup:
     if mas_scary_story_setup_done:
         return
+
     $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
     $ mas_is_raining = True
-    #TODO persistent music spoop for o31
+
+    #TODO: persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
+
     $ mas_temp_m_flag = morning_flag
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
+
+    $ mas_changeBackground(mas_background_def)
     $ mas_changeWeather(mas_weather_rain)
+
     if not mas_isO31():
         $ store.mas_globals.show_vignette = True
+
     call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 

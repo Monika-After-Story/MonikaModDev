@@ -268,8 +268,8 @@ init -20 python in mas_weather:
             - True or false on whether or not to call spaceroom
         """
 
-        #If the player forced weather, then we do nothing
-        if force_weather:
+        #If the player forced weather or we're not in a background that supports weather, we do nothing
+        if force_weather or store.mas_current_background.hide_masks:
             return False
 
         #Otherwise we do stuff

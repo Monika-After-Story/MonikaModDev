@@ -741,7 +741,7 @@ init 1 python:
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None):
+label spaceroom(start_bg=None, hide_mask=store.mas_current_background.hide_masks, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=store.mas_current_background.hide_calendar, day_bg=store.mas_current_background.image_day, night_bg=store.mas_current_background.image_night):
 
     with None
 
@@ -756,12 +756,12 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         if mas_isMorning():
             if not morning_flag or scene_change:
                 morning_flag = True
-                monika_room = "monika_day_room"
+                monika_room = day_bg
 
         else:
             if morning_flag or scene_change:
                 morning_flag = False
-                monika_room = "monika_room"
+                monika_room = night_bg
 
         ## are we hiding monika
         if not hide_monika:
@@ -779,12 +779,12 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                 if not dissolve_all:
                     renpy.with_statement(None)
 
-        # if we onyl want to dissolve masks, then we dissolve now
+        # if we only want to dissolve masks, then we dissolve now
         if not dissolve_all and not hide_mask:
             mas_drawSpaceroomMasks(dissolve_masks)
 
         # actual room check
-        # are we using a custom bg or not
+        # are we using a custom start bg or not
         if start_bg:
             if not renpy.showing(start_bg):
                 renpy.show(start_bg, tag="sp_mas_room", zorder=MAS_BACKGROUND_Z)
@@ -796,7 +796,9 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
                     tag="sp_mas_room",
                     zorder=MAS_BACKGROUND_Z
                 )
-                mas_calShowOverlay()
+                #Show calendar if it's supported
+                if not hide_calendar:
+                    mas_calShowOverlay()
 
 
     # vignette
