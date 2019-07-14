@@ -341,7 +341,6 @@ label v0_9_6(version="v0_9_6"):
         family_ev = mas_getEV("monika_family")
         if family_ev is not None:
             family_ev.pool = True
-
     return
 
 # 0.9.5

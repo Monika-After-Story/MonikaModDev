@@ -2911,7 +2911,8 @@ init 5 python:
             category=["appearance"],
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
-            unlocked=True,
+            unlocked=False,
+            rules={"no unlock": None}
         )
     )
 
