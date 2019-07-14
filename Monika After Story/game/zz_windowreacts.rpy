@@ -149,10 +149,10 @@ init python:
         #Otherwise, let's get the active window
         active_window = mas_getActiveWindow()
 
-        if not non_inclusive:
-            return len([s for s in keywords if s.lower() not in active_window]) == 0
-        else:
+        if non_inclusive:
             return len([s for s in keywords if s.lower() in active_window]) > 0
+        else:
+            return len([s for s in keywords if s.lower() not in active_window]) == 0
 
     def mas_clearNotifs():
         """
