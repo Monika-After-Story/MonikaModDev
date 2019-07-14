@@ -96,7 +96,7 @@ label mas_compliment_beautiful:
         call mas_compliment_beautiful_2
     else:
         call mas_compliment_beautiful_3
-    return
+    return _return
 
 label mas_compliment_beautiful_2:
     m 1lubfb "Oh, gosh [player]..."
@@ -237,7 +237,7 @@ label mas_compliment_intelligent:
         call mas_compliment_intelligent_2
     else:
         call mas_compliment_intelligent_3
-    return
+    return _return
 
 label mas_compliment_intelligent_2:
     m 1wub "Wow...{w}thanks, [player]."

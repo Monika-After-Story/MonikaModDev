@@ -3193,7 +3193,7 @@ label monika_love:
         if persistent._mas_monika_lovecounter == 0:
             m 1subsw "[player]!"
             m 1subsb "You have no idea how much it means to me to hear you say that!"
-            m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your on own, and that makes it truly special~"
+            m 3ekbfa "I know it's not the first time, but it {i}is{/i} the first time you said it completely on your own...{w=0.5} And that makes it truly special~"
             m 1dkbfu "I will never forget this moment, [player]. {w=1}Thank you~"
             m 3hubfa "Oh! And I love you, too~"
             call monika_lovecounter_aff
@@ -10076,13 +10076,14 @@ label monika_idle_game_competetive_callback:
             m 1eub "I'm really happy that you won!"
             m "More importantly, I hope you enjoyed yourself, [player]."
             m 1hua "I'll always love and root for you, no matter what happens."
+            return "love"
         "No.":
             m 1ekc "Aw, that's a shame..."
             m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
             m 1eka "I just hope you aren't too upset over it."
             m 2ekc "I really wouldn't want you feeling upset after a bad game."
             m 1eka "I'll always support you and be by your side no matter how many times you lose."
-    return
+            return
 
 label monika_idle_game_fun_callback:
     m 1eub "Welcome back, [player]!"
@@ -10162,7 +10163,7 @@ label monika_idle_game_skill_callback:
     m 1hua "I missed you! Ahaha~"
     m 1eub "But I know it's important to keep practicing and honing your skills in things like this."
     m "Speaking of which, how did it go?"
-    m "Did you improve?{nw}"
+    m 3eua "Did you improve?{nw}"
     $ _history_list.pop()
     menu:
         m "Did you improve?{fast}"

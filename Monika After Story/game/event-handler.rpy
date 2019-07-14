@@ -2036,6 +2036,10 @@ label prompt_menu:
         if cb_label is not None:
             call expression cb_label
 
+        # allows our sub labels to utilize return keys like "love"
+        if "love" in _return:
+            $ persistent._mas_last_monika_ily = datetime.datetime.now()
+
         #Show idle exp here so we dissolve like other topics
         show monika idle with dissolve
 
