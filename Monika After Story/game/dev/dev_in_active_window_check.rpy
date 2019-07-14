@@ -31,6 +31,6 @@ label monika_inActiveWindowCheck:
     m 1eua "Okay, I'll pause for 3 seconds, switch to the window and then I'll tell you if those keywords were in there."
     pause 3.0
     $ ActiveWindow = mas_getActiveWindow(True)
-    $ inActiveWindow = mas_isInActiveWindow(atv_wnd_keys, non_inclusive)
+    $ inActiveWindow = mas_isInActiveWindow(active_window_keys, non_inclusive)
     m 1hua "Okay, your active window was: [ActiveWindow], and your keys returned [inActiveWindow]."
     return
