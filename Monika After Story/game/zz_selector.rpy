@@ -2912,7 +2912,6 @@ init 5 python:
             prompt=store.mas_selspr.get_prompt("ribbon", "change"),
             pool=True,
             unlocked=True,
-            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
