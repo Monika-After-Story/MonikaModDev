@@ -102,6 +102,8 @@ label mas_monika_islands:
     # text used for the window
     $ _mas_toggle_frame_text = "Close Window"
 
+    $ key_store = None
+
     # shimeji flag
     $ _mas_island_shimeji = False
 
