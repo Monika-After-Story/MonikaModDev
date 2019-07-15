@@ -326,8 +326,11 @@ label v0_9_6(version="v0_9_6"):
                 old_ev = None
 
             if ev is not None and old_ev is not None:
-                ev.shown_count = old_ev.shown_count
-                ev.last_seen = old_ev.last_seen
+                ev.shown_count += old_ev.shown_count
+
+                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                    ev.last_seen = old_ev.last_seen
+
                 mas_transferTopicSeen(old_ev_label, new_ev_label)
 
                 # erase this topic
