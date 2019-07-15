@@ -1538,14 +1538,10 @@ init 20 python:
         # store the value for easiercomparisons
         curr_affection = _mas_getAffection()
 
-        # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
-        if  affection.AFF_MIN_POS_TRESH <= curr_affection < affection.AFF_MAX_POS_TRESH:
+        # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
+        if  affection.AFF_MIN_POS_TRESH <= curr_affection:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
-
-        # If affection is more than AFF_MAX_TRESH, update good exp. Simulates increasing affection.
-        elif curr_affection >= affection.AFF_MAX_POS_TRESH:
-            persistent._mas_affection["goodexp"] = 3
 
         # If affection is between AFF_MAX_NEG_TRESH and AFF_MIN_NEG_TRESH, update both exps. Simulates erosion of affection.
         elif affection.AFF_MAX_NEG_TRESH < curr_affection <= affection.AFF_MIN_NEG_TRESH:
@@ -1780,9 +1776,6 @@ init 20 python:
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
                 queueEvent("mas_affection_apology", notify=True)
-        # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
-        elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            mas_unlockEVL("greeting_tears", "GRE")
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
