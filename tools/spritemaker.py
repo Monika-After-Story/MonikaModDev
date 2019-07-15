@@ -704,10 +704,10 @@ def make_sprite(sprite_db, sprite_db_keys):
     real_sprite = StaticSprite(sprite_code)
 
     # now determine if we need an atl variant
-    atl_sprite = real_sprite.make_atl
+    atl_sprite = real_sprite.make_atl()
 
     # print and abort if errors occured
-    if real_sprite.invalid or atl_sprite.invalid:
+    if real_sprite.invalid or (atl_sprite is not None and atl_sprite.invalid):
         menutils.clear_screen()
         print("\n\nError making this sprite. Notify devs to fix.")
         menutils.e_pause()
@@ -740,7 +740,7 @@ def make_sprite_bc(sprite_db, sprite_db_keys):
         # and atl version
         atl_sprite = new_sprite.make_atl()
 
-        if new_sprite.invalid or atl_sprite.invalid:
+        if new_sprite.invalid or (atl_sprite is not None and atl_sprite.invalid):
             # if invalid, ask user if they want to continue
             print("\nSprite code {0} is invalid.\n".format(trycode))
             if not menutils.ask("Try again", def_no=False):

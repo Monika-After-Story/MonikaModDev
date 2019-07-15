@@ -468,24 +468,11 @@ init 5 python:
     addEvent(
         Event(
             persistent._mas_compliments_database,
-            eventlabel="mas_compliment_chess",
-            prompt="You're awesome at chess!",
-            unlocked=False,
-            conditional="renpy.seen_label('mas_chess_game_start')",
-            action=EV_ACT_UNLOCK
-        ),
-        code="CMP"
-    )
-
-init 5 python:
-    addEvent(
-        Event(
-            persistent._mas_compliments_database,
             eventlabel="mas_compliment_cute",
             prompt="You're cute!",
             unlocked=True
         ),
-        eventdb=store.mas_compliments.compliment_database
+        code="CMP"
     )
 
 default persistent._mas_pm_monika_cute_as_natsuki = None
@@ -530,6 +517,19 @@ label mas_compliment_cute_3:
     m 1ekbfa "[thanks_quip]"
     m 1hubfa "You can be really cute a lot of the time too, you know~"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_compliments_database,
+            eventlabel="mas_compliment_chess",
+            prompt="You're awesome at chess!",
+            unlocked=False,
+            conditional="renpy.seen_label('mas_chess_game_start')",
+            action=EV_ACT_UNLOCK
+        ),
+        code="CMP"
+    )
 
 label mas_compliment_chess:
     m 1eub "Thanks, [player]."
