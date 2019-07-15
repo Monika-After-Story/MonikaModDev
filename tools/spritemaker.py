@@ -715,7 +715,9 @@ def make_sprite(sprite_db, sprite_db_keys):
 
     # otherwise we ok
     sprite_db[real_sprite.spcode] = real_sprite
-    sprite_db[atl_sprite.spcode] = atl_sprite
+
+    if atl_sprite is not None:
+        sprite_db[atl_sprite.spcode] = atl_sprite
 
     return True
 
@@ -775,7 +777,10 @@ def make_sprite_bc(sprite_db, sprite_db_keys):
                 # user said yes!
                 # add sprite to db and prompt for more
                 sprite_db[new_sprite.spcode] = new_sprite
-                sprite_db[atl_sprite.spcode] = atl_sprite
+
+                if atl_sprite is not None:
+                    sprite_db[atl_sprite.spcode] = atl_sprite
+
                 sprite_created = True
                 print("\nSprite created.\n")
 
