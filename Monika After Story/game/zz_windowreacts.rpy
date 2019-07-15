@@ -129,14 +129,29 @@ init python:
         #TODO: Mac vers (if possible)
         return store.mas_windowreacts.can_show_notifs and mas_getActiveWindow(True) == config.name
 
-    def mas_isInActiveWindow(keywords):
+    def mas_isInActiveWindow(keywords, non_inclusive=False):
         """
         Checks if ALL keywords are in the active window name
         IN:
-            List of keywords
+            keywords:
+                List of keywords to check for
+
+            non_inclusive:
+                Whether or the not the list is checked non-inclusively
+                (Default: False)
         """
+
+        #Don't do work if we don't have to
+        if not store.mas_windowreacts.can_show_notifs:
+            return False
+
+        #Otherwise, let's get the active window
         active_window = mas_getActiveWindow()
-        return store.mas_windowreacts.can_show_notifs and len([s for s in keywords if s.lower() not in active_window]) == 0
+
+        if non_inclusive:
+            return len([s for s in keywords if s.lower() in active_window]) > 0
+        else:
+            return len([s for s in keywords if s.lower() not in active_window]) == 0
 
     def mas_clearNotifs():
         """
@@ -157,7 +172,7 @@ init python:
 
         for ev_label, ev in mas_windowreacts.windowreact_db.iteritems():
             if (
-                    (mas_isInActiveWindow(ev.category) and ev.unlocked and ev.checkAffection(mas_curr_affection))
+                    (mas_isInActiveWindow(ev.category, "non inclusive" in ev.rules) and ev.unlocked and ev.checkAffection(mas_curr_affection))
                     and ((not store.mas_globals.in_idle_mode) or (store.mas_globals.in_idle_mode and ev.show_in_idle))
                     and ("notif-group" not in ev.rules or mas_notifsEnabledForGroup(ev.rules.get("notif-group")))
                 ):
