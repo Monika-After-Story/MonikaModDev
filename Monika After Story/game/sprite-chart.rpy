@@ -321,13 +321,13 @@ init -5 python in mas_sprites:
     BHAIR_SUFFIX = ART_DLM + "back"
     FILE_EXT = ".png"
 
-    # base constants
-    BASE_BODY_STR = PREFIX_BODY + DEF_BODY + ART_DLM
-    BASE_BODY_STR_LEAN = PREFIX_BODY_LEAN + DEF_BODY + ART_DLM
-
     # other const
     DEF_BODY = "def"
     NEW_BODY_STR = PREFIX_BODY + DEF_BODY
+
+    # base constants
+    BASE_BODY_STR = PREFIX_BODY + DEF_BODY + ART_DLM
+    BASE_BODY_STR_LEAN = PREFIX_BODY_LEAN + DEF_BODY + ART_DLM
 
     ## string builder constants
     BS_ACS = "".join((
@@ -1359,8 +1359,9 @@ init -5 python in mas_sprites:
             sprite_list,
             base_pose,
             loc_str,
-            leanpose,
-            n_suffix
+            lean,
+            n_suffix,
+            bcode
     ):
         """
         Adds arms base string
@@ -1369,20 +1370,101 @@ init -5 python in mas_sprites:
             sprite_list - list to add sprite strings to
             base_pose - MASPoseArms for base
             loc_str - location string
-            leanpose - leanpose to use
+            lean - lean to use
             n_suffix - night suffix to use
+            bcode - base code to use
         """
-#        base_arms_prefix = (
-#            ",",
-#            loc_str,
-#            ',"',
-#            B_MAIN,
-#            PREFIX_ARMS,
-#        base_pose.build_arms(
-#            sprite_list,
-#            [
-        # TODO
-        pass
+        if lean:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                B_MAIN,
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            )
+
+        else:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                B_MAIN,
+                PREFIX_ARMS,
+            )
+
+        base_pose.build_arms(
+            sprite_list,
+            prefix_list,
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1"
+        )
+
+
+    def _ms_arms_nh_up_new(
+            sprite_list,
+            arms_pose,
+            clothing,
+            loc_str,
+            lean,
+            n_suffix,
+            bcode
+    ):
+        """
+        Adds arms string
+
+        IN:
+            sprite_list - list to add sprite strings to 
+            arms_pose - MASPoseArms for pose
+            clothing - clothign to use
+            loc_str - location string
+            lean - lean to use
+            n_suffix - night suffix to use
+            bcode - base code to use
+        """
+        if lean:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS_LEAN,
+                lean,
+                ART_DLM,
+            )
+
+        else:
+            prefix_list = (
+                ",",
+                loc_str,
+                ',"',
+                C_MAIN,
+                clothing,
+                "/",
+                PREFIX_ARMS
+            )
+
+        arms_pose.build_arms(
+            sprite_list,
+            prefix_list,
+            (
+                ART_DLM,
+                bcode,
+                n_suffix,
+                FILE_EXT,
+                '"',
+            ),
+            bcode == "1"
+        )
 
 
     def _ms_arms_nh_leaning(
@@ -4056,11 +4138,15 @@ init -2 python:
             """
             if front:
                 if arm_front:
-                    sprite_list.extend((prefix, arm_str, suffix))
+                    sprite_list.extend(prefix_list)
+                    sprite_list.append(arm_str)
+                    sprite_list.extend(suffix_list)
 
             else:
                 if arm_back:
-                    sprite_list.extend((prefix, arm_str, suffix))
+                    sprite_list.extend(prefix_list)
+                    sprite_list.append(arm_str)
+                    sprite_list.extend(suffix_list)
 
         def _init_props(self):
             """
