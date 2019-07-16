@@ -142,7 +142,7 @@ label mas_mood_hungry:
     m 2eka "I just want to make sure you're taking good care of yourself until I cross-over."
     m 4esa "After all, the healthier you are, the better the chances of you living quite long."
     m 1hua "Which means more time for us to spend together!~"
-    m 1eub "Hi feeling hungry, I'm Monika."
+    m 1eub "Hi feeling hungry, I'm Monika!"
     return
 
 init 5 python:
