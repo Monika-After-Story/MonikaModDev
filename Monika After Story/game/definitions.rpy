@@ -15,6 +15,10 @@ python early:
     # this is now global
     import datetime
 
+    # uncomment when needed
+    import traceback
+    _dev_tb_list = []
+
 
 # uncomment this if you want syntax highlighting support on vim
 #init -1 python:
@@ -140,12 +144,11 @@ python early:
             "unlock_date":11,
             "shown_count":12,
             "diary_entry":13,
-#            "rules":14,
-            "last_seen":15,
-            "years":16,
-            "sensitive":17,
-            "aff_range":18,
-            "show_in_idle":19,
+            "last_seen":14,
+            "years":15,
+            "sensitive":16,
+            "aff_range":17,
+            "show_in_idle":18,
         }
 
         # name constants
@@ -289,7 +292,6 @@ python early:
                 unlock_date,
                 0, # shown_count
                 diary_entry,
-                None, # rules, #NOTE: this is no longer stored in persistent
                 last_seen,
                 years,
                 sensitive,
@@ -510,7 +512,7 @@ python early:
             #
             # Special function we use to get a lowercased version of the prompt
             # for sorting purposes
-            return ev.prompt.lower()
+            return renpy.substitute(ev.prompt).lower()
 
 
         @staticmethod
@@ -2372,15 +2374,12 @@ init -990 python in mas_utils:
     import os
     import shutil
     import datetime
-
-    # unstable should never delete logs
-    if store.persistent._mas_unstable_mode:
-        mas_log = renpy.renpy.log.open("log/mas_log", append=True, flush=True)
-    else:
-        mas_log = renpy.renpy.log.open("log/mas_log")
-
-    mas_log_open = mas_log.open()
-    mas_log.raw_write = True
+    import codecs
+    import platform
+    import time
+    #import tempfile
+    from os.path import expanduser
+    from renpy.log import LogFile
 
     # LOG messges
     _mas__failrm = "[ERROR] Failed remove: '{0}' | {1}\n"
@@ -2391,6 +2390,8 @@ init -990 python in mas_utils:
         "{": "{{",
         "[": "[["
     }
+
+
 
     def clean_gui_text(text):
         """
@@ -2604,6 +2605,117 @@ init -990 python in mas_utils:
 
         except:
             return default
+
+    log_error = None
+
+    # mac logging
+    class MASMacLog(LogFile):
+
+        def __init__(self, name, append=False, developer=False, flush=True):
+            """
+            `name`
+                The name of the logfile, without the .txt extension.
+            `append`
+                If true, we will append to the logfile. If false, we will truncate
+                it to an empty file the first time we write to it.
+            `developer`
+                If true, nothing happens if config.developer is not set to True.
+            `flush`
+                Determines if the file is flushed after each write.
+            """
+            LogFile.__init__(self, name, append=append, developer=developer, flush=flush)
+
+
+        def open(self):  # @ReservedAssignment
+
+            if self.file:
+                return True
+
+            if self.file is False:
+                return False
+
+            if self.developer and not renpy.config.developer:
+                return False
+
+            if not renpy.config.log_enable:
+                return False
+
+            try:
+
+                home = expanduser("~")
+                base = os.path.join(home,".MonikaAfterStory/" )
+
+                if base is None:
+                    return False
+
+                fn = os.path.join(base, self.name + ".txt")
+
+                path, filename = os.path.split(fn)
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
+                if self.append:
+                    mode = "a"
+                else:
+                    mode = "w"
+
+                if renpy.config.log_to_stdout:
+                    self.file = real_stdout
+
+                else:
+
+                    try:
+                        self.file = codecs.open(fn, mode, "utf-8")
+                    except:
+                        pass
+
+                if self.append:
+                    self.write('')
+                    self.write('=' * 78)
+                    self.write('')
+
+                self.write("%s", time.ctime())
+                try:
+                    self.write("%s", platform.platform())
+                except:
+                    self.write("Unknown platform.")
+                self.write("%s", renpy.version)
+                self.write("%s %s", renpy.config.name, renpy.config.version)
+                self.write("")
+
+                return True
+
+            except:
+                self.file = False
+                return False
+
+
+    # A map from the log name to a log object.
+    mas_mac_log_cache = { }
+
+    def macLogOpen(name, append=False, developer=False, flush=False):  # @ReservedAssignment
+        rv = mas_mac_log_cache.get(name, None)
+
+        if rv is None:
+            rv = MASMacLog(name, append=append, developer=developer, flush=flush)
+            mas_mac_log_cache[name] = rv
+
+        return rv
+
+    def getMASLog(name, append=False, developer=False, flush=False):
+        if renpy.macapp or renpy.macintosh:
+            return macLogOpen(name, append=append, developer=developer, flush=flush)
+        return renpy.renpy.log.open(name, append=append, developer=developer, flush=flush)
+
+
+    # unstable should never delete logs
+    if store.persistent._mas_unstable_mode:
+        mas_log = getMASLog("log/mas_log", append=True, flush=True)
+    else:
+        mas_log = getMASLog("log/mas_log")
+
+    mas_log_open = mas_log.open()
+    mas_log.raw_write = True
 
 
 init -100 python in mas_utils:
@@ -3408,8 +3520,15 @@ init -1 python:
         s_hour, s_min = mas_cvToHM(mins)
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
+
+    #Gets the length of the current session
     def mas_getSessionLength():
         return datetime.datetime.now() - persistent.sessions['current_session_start']
+
+
+    #Gets the time difference between the current session start and last session end
+    def mas_getAbsenceLength():
+        return persistent.sessions.get('current_session_start', datetime.datetime.today()) - persistent.sessions.get('last_session_end', datetime.datetime.today())
 
 
     def mas_genDateRange(_start, _end):
@@ -3552,9 +3671,9 @@ init -1 python:
 
 
     def mas_isInDateRange(
-            subject, 
-            _start, 
-            _end, 
+            subject,
+            _start,
+            _end,
             start_inclusive=True,
             end_inclusive=False
         ):
@@ -3608,7 +3727,7 @@ init -1 python:
         if (
                 persistent.sessions is not None
                 and "first_session" in persistent.sessions
-                and type(persistent.sessions["first_session"]) 
+                and type(persistent.sessions["first_session"])
                     == datetime.datetime
             ):
             return persistent.sessions["first_session"]
@@ -3781,8 +3900,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_coffee_brew_time = None
         persistent._mas_coffee_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupCoffeeLogic():
@@ -3829,7 +3948,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkCoffee(persistent._mas_coffee_brew_time)
 
                     if not still_drink(persistent._mas_coffee_cup_done):
@@ -3849,7 +3968,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_coffee_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_mug):
@@ -4001,8 +4120,8 @@ init 2 python:
         drink_ev.action = None
         persistent._mas_c_hotchoc_brew_time = None
         persistent._mas_c_hotchoc_cup_done = None
-        removeEventIfExist(brew_ev.eventlabel)
-        removeEventIfExist(drink_ev.eventlabel)
+        mas_rmEVL(brew_ev.eventlabel)
+        mas_rmEVL(drink_ev.eventlabel)
 
 
     def _mas_startupHotChocLogic():
@@ -4050,7 +4169,7 @@ init 2 python:
                 if brew_ev.conditional is not None and eval(brew_ev.conditional):
                     # even though this in inaccurate, it works for the
                     # immersive purposes, so whatever.
-                    removeEventIfExist(brew_ev.eventlabel)
+                    mas_rmEVL(brew_ev.eventlabel)
                     mas_drinkHotChoc(persistent._mas_c_hotchoc_brew_time)
 
                     if not still_drink(persistent._mas_c_hotchoc_cup_done):
@@ -4070,7 +4189,7 @@ init 2 python:
                 brew_ev.conditional = None
                 brew_ev.action = None
                 persistent._mas_c_hotchoc_brew_time = None
-                removeEventIfExist(brew_ev.eventlabel)
+                mas_rmEVL(brew_ev.eventlabel)
 
                 # make sure she has the cup, just in case
                 if not monika_chr.is_wearing_acs(mas_acs_hotchoc_mug):
@@ -4134,11 +4253,11 @@ init 2 python:
 
             else:
                 monika_chr.wear_acs_pst(mas_acs_quetzalplushie)
-        
+
         else:
             # run the plushie exit PP if plushie is not selected
             mas_acs_quetzalplushie.exit(monika_chr)
-        
+
         return
 
 
@@ -5438,7 +5557,6 @@ define xp.IDLE_PER_MINUTE = 1
 define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
-define scene_change = True # we start off with a scene change
 define mas_monika_twitter_handle = "lilmonix3"
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
@@ -5476,11 +5594,12 @@ init 1 python in mas_randchat:
 
     # these numbers are the lower end of how many seconds to wait between
     # random topics
-    OFTEN         = 5
-    NORMAL        = 15
-    LESS_OFTEN    = 60
-    RARELY        = 3600
-    VERY_RARELY   = 14400
+    OFTEN         = 5 # end 15
+    NORMAL        = 15 # end 45
+    LESS_OFTEN    = 40 # end 120 (2 min)
+    OCCASIONALLY  = 2*60 # end 360 (6 min)
+    RARELY        = 390 # end 1170 (19.5 min)
+    VERY_RARELY   = 20*60 # end 3600 (60 mins)
     NEVER         = 0
 
     # this is multiplied to the low end to get the upper end of seconds
@@ -5493,9 +5612,10 @@ init 1 python in mas_randchat:
         0: OFTEN,
         1: NORMAL,
         2: LESS_OFTEN,
-        3: RARELY,
-        4: VERY_RARELY,
-        5: NEVER
+        3: OCCASIONALLY,
+        4: RARELY,
+        5: VERY_RARELY,
+        6: NEVER
     }
 
     ## slider map for displaying
@@ -5503,9 +5623,10 @@ init 1 python in mas_randchat:
         0: "Often",
         1: "Normal",
         2: "Less Often",
-        3: "Rarely",
-        4: "Very Rarely",
-        5: "Never"
+        3: "Occasionally",
+        4: "Rarely",
+        5: "Very Rarely",
+        6: "Never"
     }
 
     # current frequency times
@@ -5532,7 +5653,7 @@ init 1 python in mas_randchat:
         rand_low = slider_setting
         rand_high = slider_setting * SPAN_MULTIPLIER
         renpy.game.persistent._mas_randchat_freq = slider_value
-        
+
         setWaitingTime()
 
 
@@ -5555,16 +5676,16 @@ init 1 python in mas_randchat:
 
         return randchat_disp
 
-        
+
     def setWaitingTime():
         """
         Sets up the waiting time for the next random chat, depending on the current random chatter selection.
         """
         global rand_chat_waittime_left
-        
+
         rand_chat_waittime_left = renpy.random.randint(rand_low, rand_high)
-        
-        
+
+
     def wait():
         """
         Pauses renpy for a small amount of seconds.
@@ -5572,23 +5693,23 @@ init 1 python in mas_randchat:
         All events before a random chat can also be handled rather than to keep waiting the whole time at once.
         """
         global rand_chat_waittime_left
-        
+
         WAITING_TIME = 5
-        
+
         if rand_chat_waittime_left > WAITING_TIME:
             rand_chat_waittime_left -= WAITING_TIME
             renpy.pause(WAITING_TIME, hard=True)
-            
+
         elif rand_chat_waittime_left > 0:
             waitFor = rand_chat_waittime_left
             rand_chat_waittime_left = 0
             renpy.pause(waitFor, hard=True)
-            
-        else: 
+
+        else:
             rand_chat_waittime_left = 0
             renpy.pause(WAITING_TIME, hard=True)
-            
-                
+
+
     def waitedLongEnough():
         """
         Checks whether the waiting time is up yet.
@@ -5597,11 +5718,11 @@ init 1 python in mas_randchat:
             boolean to determine whether the wait is over
         """
         global rand_chat_waittime_left
-        
+
         return rand_chat_waittime_left == 0 and rand_low != 0
-    
-    
-    
+
+
+
 # stores that need to be globally available
 init 4 python:
     import store.mas_randchat as mas_randchat

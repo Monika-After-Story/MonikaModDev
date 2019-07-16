@@ -359,3 +359,4 @@ label quit:
             store.mas_utils.trydel(mas_docking_station._trackPackage("monika"))
 
     return
+
