@@ -424,6 +424,7 @@ init 5 python:
     )
 
 label mas_wrs_4chan:
+    #TODO: consider adding reactions for /vg/ and /ddlc/
     $ wrs_success = display_notif(
         m_name,
         [
