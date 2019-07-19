@@ -96,7 +96,7 @@ label mas_compliment_beautiful:
         call mas_compliment_beautiful_2
     else:
         call mas_compliment_beautiful_3
-    return _return
+    return
 
 label mas_compliment_beautiful_2:
     m 1lubfb "Oh, gosh [player]..."
@@ -108,7 +108,8 @@ label mas_compliment_beautiful_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ehehe~"
             m "I love you so much, [player]!"
-            return "love"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
@@ -237,7 +238,7 @@ label mas_compliment_intelligent:
         call mas_compliment_intelligent_2
     else:
         call mas_compliment_intelligent_3
-    return _return
+    return
 
 label mas_compliment_intelligent_2:
     m 1wub "Wow...{w}thanks, [player]."
@@ -248,7 +249,8 @@ label mas_compliment_intelligent_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hubfa "I love you so much, [player]!"
             m 3hubfb "We'll have a lifetime of self-improvement together!"
-            return "love"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."

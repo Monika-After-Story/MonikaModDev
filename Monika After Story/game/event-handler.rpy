@@ -1972,13 +1972,13 @@ label call_next_event:
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
+            if "love" in ret_items:
+                $ mas_ILY()
+
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
                 jump _quit
-
-            if "love" in ret_items:
-                $ persistent._mas_last_monika_ily = datetime.datetime.now()
 
         # loop over until all events have been called
         if len(persistent.event_list) > 0:
@@ -2035,10 +2035,6 @@ label prompt_menu:
         # only call label if it exists
         if cb_label is not None:
             call expression cb_label
-
-        # allows our sub labels to utilize return keys like "love"
-        if _return is not None and "love" in _return:
-            $ persistent._mas_last_monika_ily = datetime.datetime.now()
 
         #Show idle exp here so we dissolve like other topics
         show monika idle with dissolve
@@ -2103,7 +2099,7 @@ label prompt_menu:
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
         if _mas_getAffection() > -50:
-            if persistent._mas_last_monika_ily is not None and (datetime.datetime.now() - persistent._mas_last_monika_ily) <= datetime.timedelta(0,10):
+            if mas_passedILY(pass_time=datetime.timedelta(0,10)):
                 talk_menu.append(("I love you, too!","love_too"))
             else:
                 talk_menu.append(("I love you!", "love"))

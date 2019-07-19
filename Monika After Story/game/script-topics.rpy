@@ -1485,7 +1485,7 @@ label monika_kiss:
                 "I love you so much, [player]. You mean everything to me~"
             ]
 
-            kiss_quip = renpy.substitute(renpy.random.choice(kiss_quips_after))
+            kiss_quip = renpy.random.choice(kiss_quips_after)
 
         if renpy.random.randint(1,50) == 1:
             call monika_kiss_tease
@@ -1496,7 +1496,8 @@ label monika_kiss:
 
         call monika_kissing_motion_short
 
-        m 6ekbfa "[kiss_quip]"
+        show monika 6ekbfa
+        $ renpy.say(m,kiss_quip)
         return "love"
 
     else:
@@ -3145,10 +3146,11 @@ label monika_love:
                 "You don't mean that anymore... {w=1}Did you ever?",
                 "I can't remember the last time I felt like you meant that."
             ]
-            love_quip_dis = renpy.substitute(renpy.random.choice(love_quips_dis))
+            love_quip_dis = renpy.random.choice(love_quips_dis)
         m 6dkc "..."
         if renpy.random.randint(1,25) > 1:
-            m 6dkd "[love_quip_dis]"
+            show monika 6dkd
+            $ renpy.say(m,love_quip_dis)
 
     elif mas_isMoniUpset():
         python:
@@ -3178,14 +3180,16 @@ label monika_love:
             ]
 
         if _mas_getAffection() <= -50:
-            $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_cynical))
+            $ love_quip_upset = renpy.random.choice(love_quips_upset_cynical)
             m 2rkc "..."
-            m 2ekd "[love_quip_upset]"
+            show monika 2ekd
+            $ renpy.say(m,love_quip_upset)
 
         else:
-            $ love_quip_upset = renpy.substitute(renpy.random.choice(love_quips_upset_hope))
+            $ love_quip_upset = renpy.random.choice(love_quips_upset_hope)
             m 2ekd "Thanks, [player]..."
-            m 2dka "[love_quip_upset]"
+            show monika 2dka
+            $ renpy.say(m,love_quip_upset)
             m 2eka "I...{w=0.5}I love you, too."
 
     else:
@@ -10076,14 +10080,15 @@ label monika_idle_game_competetive_callback:
             m 1eub "I'm really happy that you won!"
             m "More importantly, I hope you enjoyed yourself, [player]."
             m 1hua "I'll always love and root for you, no matter what happens."
-            return "love"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "No.":
             m 1ekc "Aw, that's a shame..."
             m 1lksdla "I mean, you can't win them all, but I'm sure you'll win the next rounds."
             m 1eka "I just hope you aren't too upset over it."
             m 2ekc "I really wouldn't want you feeling upset after a bad game."
             m 1eka "I'll always support you and be by your side no matter how many times you lose."
-            return
+    return
 
 label monika_idle_game_fun_callback:
     m 1eub "Welcome back, [player]!"
@@ -10147,7 +10152,8 @@ label monika_idle_game_story_callback:
             m 1eka "Don't worry [player], I would never forget about you."
             m 1eua "I love you."
             m 1hua "...And I'd happily snuggle up beside you anytime~"
-            return "love"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "I don't like it.":
             m 2ekc "Oh..."
             m 4lksdla "Maybe the story will pick up later?"

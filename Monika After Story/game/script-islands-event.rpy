@@ -102,8 +102,6 @@ label mas_monika_islands:
     # text used for the window
     $ _mas_toggle_frame_text = "Close Window"
 
-    $ key_store = None
-
     # shimeji flag
     $ _mas_island_shimeji = False
 
@@ -123,8 +121,6 @@ label mas_monika_islands:
         if _return:
             # call label if we have one
             call expression _return
-            # need this for our "love" return key to be valid
-            $ key_store = _return
         else:
             # player wants to quit the event
             $ _mas_island_keep_going = False
@@ -138,7 +134,7 @@ label mas_monika_islands:
     $ store.mas_hotkeys.no_window_hiding = False
 
     m 1eua "I hope you liked it, [player]~"
-    return key_store
+    return
 
 label mas_monika_upsidedownisland:
     m "Oh, that."
@@ -171,8 +167,7 @@ label mas_monika_cherry_blossom_tree:
 
             renpy.call(renpy.random.choice(_mas_cherry_blossom_events))
 
-    # return _return here so our "love" key works
-    return _return
+    return
 
 label mas_monika_cherry_blossom1:
     m "It's a beautiful tree, isn't it?"
@@ -196,7 +191,9 @@ label mas_monika_cherry_blossom3:
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
-    return "love"
+    # manually handle the "love" return key
+    $ mas_ILY()
+    return
 
 label mas_monika_cherry_blossom4:
     m "You know what'd be nice to drink under the Cherry Blossom tree?"
