@@ -507,6 +507,8 @@ label calendar_birthdate:
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
     $ mas_stripEVL('mas_birthdate',True)
+    $ mas_HKBDropShield()
+    $ mas_calDropOverlayShield()
     return
 
 ## Game unlock events
