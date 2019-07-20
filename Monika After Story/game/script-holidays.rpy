@@ -3404,6 +3404,11 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
 
+    elif persistent._mas_player_bday_in_player_bday_mode and len(mas_selspr.filter_clothes(True)) > 1:
+        # keep the clothes selector unlocked while it's player bday/unlock if we've added an outfit since the party
+        $ mas_unlockEVL("monika_clothes_select", "EVE")
+        $ mas_getEV("monika_clothes_select").aff_range = (mas_aff.NORMAL, None)
+
     if mas_isO31():
         return
     else:
@@ -3565,8 +3570,20 @@ label mas_player_bday_cake:
     call monika_zoom_transition(mas_temp_zoom_level,1.0)
 
     pause 0.5
+
+    # unlock the clothes selector
+    if len(mas_selspr.filter_clothes(True)) > 1:
+        # we do this even at love just in case the player drops below today
+        # they can still use the selector for their bday
+        $ mas_unlockEVL("monika_clothes_select", "EVE")
+        $ mas_getEV("monika_clothes_select").aff_range = (mas_aff.NORMAL, None)
+    if mas_isMoniEnamored(lower=True) and mas_getEV("monika_clothes_select").unlocked:
+        # only give this dialogue at enam and lower since people at love already have this
+        m 4eub "Oh! Also, just ask and I'll wear any outfit you'd like today, [player]!"
+        m 4hua "I really want to make your day as special as possible~"
+
     m 6dkbsu "..."
-    m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
+    m 6ekbsu "I...{w=0.5}I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr().month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
     if mas_isMoniEnamored(higher=True):
