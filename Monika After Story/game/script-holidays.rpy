@@ -3350,11 +3350,16 @@ init -11 python:
         else:
             return store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
-    def clothes_sel_special_unlock(aff_range=None):
-        if aff_range is None:
-            aff_range = (mas_aff.NORMAL, None)
+    def mas_clothes_sel_special_unlock(affrange=None):
+        """
+        unlocks the clothes selector for special occassions
+        IN:
+            affrange - the affection range we want to unlock the clothes selector for
+        """
+        if affrange is None:
+            affrange = (mas_aff.NORMAL, None)
         mas_unlockEVL("monika_clothes_select", "EVE")
-        mas_getEV("monika_clothes_select").aff_range = aff_range
+        mas_getEV("monika_clothes_select").aff_range = affrange
 
 init -810 python:
     # MASHistorySaver for player_bday
@@ -3414,7 +3419,7 @@ label mas_player_bday_autoload_check:
 
     elif persistent._mas_player_bday_in_player_bday_mode and len(mas_selspr.filter_clothes(True)) > 1:
         # keep the clothes selector unlocked while it's player bday/unlock if we've added an outfit since the party
-        $ clothes_sel_special_unlock()
+        $ mas_clothes_sel_special_unlock()
 
     if mas_isO31():
         return
@@ -3582,7 +3587,7 @@ label mas_player_bday_cake:
     if len(mas_selspr.filter_clothes(True)) > 1:
         # we do this even at love just in case the player drops below today
         # they can still use the selector for their bday
-        $ clothes_sel_special_unlock()
+        $ mas_clothes_sel_special_unlock()
         if mas_isMoniEnamored(lower=True):
             # only give this dialogue at enam and lower since people at love already have this
             m 4eub "Oh! Also, just ask and I'll wear any outfit you'd like today, [player]!"
