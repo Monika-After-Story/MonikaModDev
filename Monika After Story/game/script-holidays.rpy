@@ -3350,6 +3350,12 @@ init -11 python:
         else:
             return store.mas_utils.add_years(persistent._mas_player_bday,_date.year-persistent._mas_player_bday.year)
 
+    def clothes_sel_special_unlock(aff_range=None):
+        if aff_range is None:
+            aff_range = (mas_aff.NORMAL, None)
+        mas_unlockEVL("monika_clothes_select", "EVE")
+        mas_getEV("monika_clothes_select").aff_range = aff_range
+
 init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
@@ -3383,10 +3389,10 @@ init -11 python in mas_player_bday_event:
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
-            not persistent._mas_player_bday_in_player_bday_mode 
+            not persistent._mas_player_bday_in_player_bday_mode
             and persistent._mas_player_confirmed_bday 
             and mas_isMoniNormal(higher=True) 
-            and not persistent._mas_player_bday_spent_time 
+            and not persistent._mas_player_bday_spent_time
             and not mas_isD25() 
             and not mas_isO31()
             and not mas_isF14()
@@ -3403,11 +3409,12 @@ label mas_player_bday_autoload_check:
         $ persistent._mas_player_bday_decor = False
         $ persistent._mas_player_bday_in_player_bday_mode = False
         $ mas_lockEVL("bye_player_bday", "BYE")
+        if mas_isMoniEnamored(lower=True):
+            $ monika_chr.reset_clothes(False)
 
     elif persistent._mas_player_bday_in_player_bday_mode and len(mas_selspr.filter_clothes(True)) > 1:
         # keep the clothes selector unlocked while it's player bday/unlock if we've added an outfit since the party
-        $ mas_unlockEVL("monika_clothes_select", "EVE")
-        $ mas_getEV("monika_clothes_select").aff_range = (mas_aff.NORMAL, None)
+        $ clothes_sel_special_unlock()
 
     if mas_isO31():
         return
@@ -3575,8 +3582,7 @@ label mas_player_bday_cake:
     if len(mas_selspr.filter_clothes(True)) > 1:
         # we do this even at love just in case the player drops below today
         # they can still use the selector for their bday
-        $ mas_unlockEVL("monika_clothes_select", "EVE")
-        $ mas_getEV("monika_clothes_select").aff_range = (mas_aff.NORMAL, None)
+        $ clothes_sel_special_unlock()
         if mas_isMoniEnamored(lower=True):
             # only give this dialogue at enam and lower since people at love already have this
             m 4eub "Oh! Also, just ask and I'll wear any outfit you'd like today, [player]!"
@@ -3854,10 +3860,10 @@ label return_home_post_player_bday:
         $ persistent._mas_player_bday_decor = False
         m 3rksdla "Oh...it's not your birthday anymore..."
         m 3hksdlb "We should probably take these decorations down now, ahaha!"
-        m 3eka "Just give me one second..."
-        show monika 1dsc
-        pause 2.0
+        m 3dka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
         $ store.mas_player_bday_event.hide_player_bday_Visuals()
+        if mas_isMoniEnamored(lower=True):
+            $ monika_chr.reset_clothes(False)
         m 3eua "There we go!"
         if not persistent._mas_f14_gone_over_f14:
             m 1hua "Now, let's enjoy the day together, [player]~"

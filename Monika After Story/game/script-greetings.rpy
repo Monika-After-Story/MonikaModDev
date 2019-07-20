@@ -2979,6 +2979,10 @@ label greeting_returned_home:
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
     # event checks
+    if mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode and len(mas_selspr.filter_clothes(True)) > 1:
+        # make sure we do this since we skip the autoload check
+        $ clothes_sel_special_unlock()
+
     if mas_isMonikaBirthday():
         jump greeting_returned_home_bday
 
