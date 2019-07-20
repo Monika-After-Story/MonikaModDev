@@ -3577,10 +3577,10 @@ label mas_player_bday_cake:
         # they can still use the selector for their bday
         $ mas_unlockEVL("monika_clothes_select", "EVE")
         $ mas_getEV("monika_clothes_select").aff_range = (mas_aff.NORMAL, None)
-    if mas_isMoniEnamored(lower=True) and mas_getEV("monika_clothes_select").unlocked:
-        # only give this dialogue at enam and lower since people at love already have this
-        m 4eub "Oh! Also, just ask and I'll wear any outfit you'd like today, [player]!"
-        m 4hua "I really want to make your day as special as possible~"
+        if mas_isMoniEnamored(lower=True):
+            # only give this dialogue at enam and lower since people at love already have this
+            m 4eub "Oh! Also, just ask and I'll wear any outfit you'd like today, [player]!"
+            m 4hua "I really want to make your day as special as possible~"
 
     m 6dkbsu "..."
     m 6ekbsu "I...{w=0.5}I also made a card for you, [player]. I hope you like it..."
