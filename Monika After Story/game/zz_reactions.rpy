@@ -614,15 +614,22 @@ init python:
                 giftname
             )
 
-        # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(
-            store.mas_sprites.get_sprite(sp_type, sp_name),
-            unlock_label=unlock_sel
-        )
+        # unlock appropriate for selectors depending on sprite type
+        if sp_type == store.mas_sprites.SP_ACS:
+            # unlock the selectable for this sprite object
+            store.mas_selspr.json_sprite_unlock(
+                store.mas_sprites.get_sprite(sp_type, sp_name),
+                unlock_label=unlock_sel
+            )
 
-        # make sure we use our special unlock if the gift is given on player bday
-        if persistent._mas_player_bday_in_player_bday_mode and mas_isplayer_bday() and sp_type == 2 and unlock_sel:
-            mas_clothes_sel_special_unlock()
+        elif sp_type == store.mas_sprites.SP_CLOTHES:
+            # make sure we use our special unlock if the gift is given on player bday
+            if (
+                    persistent._mas_player_bday_in_player_bday_mode
+                    and mas_isplayer_bday()
+                    and unlock_sel
+            ):
+                mas_clothes_sel_special_unlock()
 
         # save persistent
         renpy.save_persistent()
