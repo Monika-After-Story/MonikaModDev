@@ -3355,6 +3355,7 @@ init -11 python:
         unlocks the clothes selector for special occassions
         IN:
             affrange - the affection range we want to unlock the clothes selector for
+                default is Normal+
         """
         if affrange is None:
             affrange = (mas_aff.NORMAL, None)

@@ -620,6 +620,10 @@ init python:
             unlock_label=unlock_sel
         )
 
+        # make sure we use our special unlock if the gift is given on player bday
+        if persistent._mas_player_bday_in_player_bday_mode and mas_isplayer_bday() and sp_type == 2 and unlock_sel:
+            mas_clothes_sel_special_unlock()
+
         # save persistent
         renpy.save_persistent()
 
