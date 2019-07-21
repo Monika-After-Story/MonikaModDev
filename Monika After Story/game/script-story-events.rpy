@@ -499,7 +499,6 @@ init 5 python:
     )
 
 label calendar_birthdate:
-    $ mas_MUMUDropShield()
     m 1lksdla "Hey [player]..."
     m 3eksdla "You may have noticed that my calendar was pretty empty..."
     m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
