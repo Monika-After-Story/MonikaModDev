@@ -499,6 +499,7 @@ init 5 python:
     )
 
 label calendar_birthdate:
+    $ mas_MUMUDropShield()
     m 1lksdla "Hey [player]..."
     m 3eksdla "You may have noticed that my calendar was pretty empty..."
     m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
@@ -507,8 +508,6 @@ label calendar_birthdate:
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
     $ mas_stripEVL('mas_birthdate',True)
-    $ mas_HKBDropShield()
-    $ mas_calDropOverlayShield()
     return
 
 ## Game unlock events
