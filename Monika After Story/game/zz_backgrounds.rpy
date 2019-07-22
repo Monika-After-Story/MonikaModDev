@@ -10,8 +10,14 @@ init -10 python:
         PROPERTIES:
             background_id - the id which defines this bg
             prompt - button label for the bg
-            image_day - the day background image object
-            image_night - the night background image object
+            image_day - the image tag for the day background image object
+            image_night - the image tag for the night background image object
+            image_rain_day - the image tag for the background while raining during the day
+            image_rain_night - the image tag for the background while it's raining during the night
+            image_overcast_day - the image tag for the background while it's overcast during the day
+            image_overcast_night - the image tag for the background while it's overcast during the night
+            image_snow_day - the image tag for the background while it's snowing during the day
+            image_snow_night - the image tag for the background while it's snowing during the night
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
             hide_table - whether or not we want to have the table present
@@ -27,6 +33,12 @@ init -10 python:
             prompt,
             image_day,
             image_night,
+            image_rain_day=None,
+            image_rain_night=None,
+            image_overcast_day=None,
+            image_overcast_night=None,
+            image_snow_day=None,
+            image_snow_night=None,
             hide_calendar=False,
             hide_masks=False,
             hide_table=False,
@@ -52,6 +64,30 @@ init -10 python:
                 image_night:
                     the renpy.image object we use for this bg during the night
                     NOTE: Mandatory
+
+                image_rain_day:
+                    the image tag we use for the background while it's raining (day)
+                    (Default: None, not required)
+
+                image_rain_night:
+                    the image tag we use for the background while it's raining (night)
+                    (Default: None, not required)
+
+                image_overcast_day:
+                    the image tag we use for the background while it's overcast (day)
+                    (Default: None, not required)
+
+                image_overcast_night:
+                    the image tag we use for the background while it's overcast (night)
+                    (Default: None, not required)
+
+                image_snow_day:
+                    the image tag we use for the background while it's snowing (day)
+                    (Default: None, not required)
+
+                image_snow_night:
+                    the image tag we use for the background while it's snowing (night)
+                    (Default: None, not required)
 
                 hide_calendar:
                     whether or not we want to display the calendar
@@ -87,6 +123,41 @@ init -10 python:
                 self.prompt = prompt
                 self.image_day = image_day
                 self.image_night = image_night
+
+                #Handle rain BGs
+                if image_rain_day:
+                    self.image_rain_day = image_rain_day
+                else:
+                    self.image_rain_day = image_day
+
+                if image_rain_night:
+                    self.image_rain_night = image_rain_night
+                else:
+                    self.image_rain_night = image_night
+
+                #Overcast handling
+                if image_overcast_day:
+                    self.image_overcast_day = image_overcast_day
+                else:
+                    self.image_overcast_day = image_day
+
+                if image_overcast_night:
+                    self.image_overcast_night = image_overcast_night
+                else:
+                    self.image_overcast_night = image_night
+
+                #Snow handling
+                if image_snow_day:
+                    self.image_snow_day = image_snow_day
+                else:
+                    self.image_snow_day = image_day
+
+                if image_rain_night:
+                    self.image_snow_night = image_snow_night
+                else:
+                    self.image_snow_night = image_night
+
+                #Then the other props
                 self.hide_calendar = hide_calendar
                 self.hide_masks = hide_masks
                 self.hide_table = hide_table
@@ -150,6 +221,30 @@ init -10 python:
                 [0]: unlocked property
             """
             return (self.unlocked,)
+
+        def getDayRoom(self):
+            """
+            Returns the day masks to use given the conditions/availablity of present assets
+            """
+            if store.mas_is_raining:
+                return self.image_rain_day
+            elif store.mas_is_overcast:
+                return self.image_overcast_day
+            elif store.mas_is_snowing:
+                return self.image_snow_day
+            return self.image_day
+
+        def getNightRoom(self):
+            """
+            Returns the night masks to use given the conditions/availablity of present assets
+            """
+            if store.mas_is_raining:
+                return self.image_rain_night
+            elif store.mas_is_overcast:
+                return self.image_overcast_night
+            elif store.mas_is_snowing:
+                return self.image_snow_night
+            return self.image_night
 
 
 #Helper methods and such
@@ -279,6 +374,9 @@ init -1 python:
         "monika_day_room",
         "monika_room",
 
+        #Rain Day/Night
+        "monika_rain_room",
+
         #Def room should always be unlocked
         unlocked=True,
 
@@ -379,7 +477,7 @@ label monika_change_background_loop:
     # finally change the background
     $ mas_changeBackground(sel_background)
 
-    if sel_background.skip_masks:
+    if sel_background.hide_masks:
         $ mas_weather.temp_weather_storage = mas_current_weather
         $ mas_changeWeather(mas_weather_def)
         $ mas_lockEVL("monika_change_weather", "EVE")

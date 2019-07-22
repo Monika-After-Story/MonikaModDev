@@ -3,19 +3,19 @@
 
 ### spaceroom weather art
 
-image room_mask = Movie(
+image def_weather_day = Movie(
     channel="window_1",
-    play="mod_assets/window/spaceroom/window_1.webm",
+    play="mod_assets/window/def_day_mask.mp4",
     mask=None
 )
-image room_mask_fb = "mod_assets/window/spaceroom/window_1_fallback.png"
+image def_weather_day_fb = "mod_assets/window/def_day_mask_fb.png"
 
-image room_mask2 = Movie(
+image def_weather_night = Movie(
     channel="window_2",
-    play="mod_assets/window/spaceroom/window_2.webm",
+    play="mod_assets/window/def_night_mask.mp4",
     mask=None
 )
-image room_mask2_fb = "mod_assets/window/spaceroom/window_2_fallback.png"
+image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
 image room_mask3 = Movie(
     channel="window_3",
@@ -456,11 +456,15 @@ init -20 python in mas_weather:
 
 
     def _weather_overcast_entry(_old):
+        #Set this to True so our bg changer can update the room accordingly
+        mas_is_overcast = True
         #Lock islands
         store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
 
 
     def _weather_overcast_exit(_new):
+        #Set this false so the bg sel can adjust properly
+        mas_is_overcast = False
         #Unlock islands
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (
@@ -482,10 +486,8 @@ init -10 python:
             weather_id - Id that defines this weather object
             prompt - button label for this weater
             unlocked - determines if this weather is unlocked/selectable
-            sp_left_day - image tag for spaceroom's left window in day time
-            sp_right_day - image tag for spaceroom's right window in day time
-            sp_left_night - image tag for spaceroom's left window in nighttime
-            sp_right_night - image tag for spaceroom's right window in night
+            sp_day - image tag for windows in day time
+            sp_night - image tag for windows in nighttime
             isbg_wf_day - image PATH for islands bg daytime with frame
             isbg_wof_day = image PATH for islands bg daytime without frame
             isbg_wf_night - image PATH for island bg nighttime with frame
@@ -503,10 +505,8 @@ init -10 python:
                 self, 
                 weather_id,
                 prompt,
-                sp_left_day,
-                sp_right_day,
-                sp_left_night=None,
-                sp_right_night=None,
+                sp_day,
+                sp_night=None,
                 isbg_wf_day=None,
                 isbg_wof_day=None,
                 isbg_wf_night=None,
@@ -522,17 +522,12 @@ init -10 python:
                 weather_id - id that defines this weather object
                     NOTE: must be unique
                 prompt - button label for this weathe robject
-                sp_left_day - image tag for spaceroom's left window in daytime
-                sp_right_day - image tag for spaceroom's right window in daytime
+                sp_day - image tag for spaceroom's left window in daytime
                 unlocked - True if this weather object starts unlocked,
                     False otherwise
                     (Default: False)
-                sp_left_night - image tag for spaceroom's left window in night
-                    If None, we use left_day for this
-                    (Default: None)
-                sp_right_night - image tag ofr spaceroom's right window in
-                    night
-                    If None, we use right_day for this
+                sp_night - image tag for spaceroom's left window in night
+                    If None, we use sp_day for this
                     (Default: None)
                 isbg_wf_day - image PATH for islands bg daytime with frame
                     (Default: None)
@@ -557,10 +552,8 @@ init -10 python:
 
             self.weather_id = weather_id
             self.prompt = prompt
-            self.sp_left_day = sp_left_day
-            self.sp_right_day = sp_right_day
-            self.sp_left_night = sp_left_night
-            self.sp_right_night = sp_right_night
+            self.sp_day = sp_day
+            self.sp_night = sp_night
             self.isbg_wf_day = isbg_wf_day
             self.isbg_wof_day = isbg_wof_day
             self.isbg_wf_night = isbg_wf_night
@@ -570,11 +563,8 @@ init -10 python:
             self.exit_pp = exit_pp
 
             # clean day/night
-            if sp_left_night is None:
-                self.sp_left_night = sp_left_day
-
-            if sp_right_night is None:
-                self.sp_right_night = sp_right_day
+            if sp_night is None:
+                self.sp_night = sp_day
 
             # clean islands
             if isbg_wf_night is None:
@@ -634,14 +624,13 @@ init -10 python:
             IN:
                 day - True if we want day time masks
 
-            RETURNS tuple of following format:
-                [0]: left window mask
-                [1]: right window mask
+            RETURNS:
+                image tag for the corresponding mask to use
             """
             if day:
-                return (self.sp_left_day, self.sp_right_day)
+                return self.sp_day
 
-            return (self.sp_left_night, self.sp_right_night)
+            return self.sp_night
 
 
         def isbg_window(self, day, no_frame):
@@ -685,12 +674,10 @@ init -1 python:
         "Default",
 
         # sp day
-        "room_mask3",
-        "room_mask4",
+        "def_weather_day",
 
         # sp night
-        "room_mask",
-        "room_mask2",
+        "def_weather_night",
 
         # islands bg day
         "mod_assets/location/special/with_frame.png",
@@ -710,11 +697,11 @@ init -1 python:
 
         # sp day and night
         "rain_mask_left",
-        "rain_mask_right",
+        #"rain_mask_right",
 
         # sp night
         "night_rain_mask_left",
-        "night_rain_mask_right",
+        #"night_rain_mask_right",
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
@@ -732,11 +719,9 @@ init -1 python:
 
         # sp day
         "snow_mask_day_left",
-        "snow_mask_day_right",
 
         # sp night
         "snow_mask_night_left",
-        "snow_mask_night_right",
 
         entry_pp=store.mas_weather._weather_snow_entry,
         exit_pp=store.mas_weather._weather_snow_exit
@@ -749,11 +734,9 @@ init -1 python:
 
         # sp day and night
         "rain_mask_left",
-        "rain_mask_right",
 
         # sp night
         "night_rain_mask_left",
-        "night_rain_mask_right",
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
@@ -770,11 +753,9 @@ init -1 python:
 
         # sp day
         "overcast_mask_left",
-        "overcast_mask_right",
 
         # sp night
         "overcast_mask_left_night",
-        "overcast_mask_right_night",
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",

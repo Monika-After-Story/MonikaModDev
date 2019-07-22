@@ -406,21 +406,18 @@ init python:
             mas_is_raining
             mas_is_snowing
         """
-        # hide the existing masks
+        # hide the existing mask
         renpy.hide("rm")
-        renpy.hide("rm2")
 
         # get current weather masks
-        left_w, right_w = mas_current_weather.sp_window(morning_flag)
+        mask = mas_current_weather.sp_window(morning_flag)
 
         # should we use fallbacks instead?
         if persistent._mas_disable_animations:
-            left_w += "_fb"
-            right_w += "_fb"
+            mask += "_fb"
 
-        # now show the masks
-        renpy.show(left_w, at_list=[spaceroom_window_left], tag="rm")
-        renpy.show(right_w, at_list=[spaceroom_window_right], tag="rm2")
+        # now show the mask
+        renpy.show(mask, tag="rm")
 
         if dissolve_masks:
             renpy.with_statement(Dissolve(1.0))
@@ -741,7 +738,7 @@ init 1 python:
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=store.mas_current_background.hide_masks, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=store.mas_current_background.hide_calendar, day_bg=store.mas_current_background.image_day, night_bg=store.mas_current_background.image_night):
+label spaceroom(start_bg=None, hide_mask=store.mas_current_background.hide_masks, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=store.mas_current_background.hide_calendar, day_bg=store.mas_current_background.getDayRoom(), night_bg=store.mas_current_background.getNightRoom()):
 
     with None
 
