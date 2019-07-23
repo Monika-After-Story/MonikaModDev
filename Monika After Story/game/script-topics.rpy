@@ -12688,7 +12688,7 @@ label monika_enjoyingspring:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanesefood",category=['misc'],prompt="Japanese food",random=True))
-	
+
 label monika_japanesefood:
     m 2eua "Hey [player], have you ever eaten some kind of japanese food?"
     m 2eua "There is a lot of variety when talking about that kind of stuff."
@@ -12699,10 +12699,10 @@ label monika_japanesefood:
     m 1hsu "On the other hand they also seem to prepare a lot of Sweets made of different flavours!"
     m 1nsu "You should check them if you are interested about the topic~"
     return
-	
+
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_vr",category=['technology'],prompt="Virtual reality",random=True))
-	
+
 label monika_vr:
     m 4eua "[player], do you know about those virtual reality headsets that are out there in the market?
     m 4eua "They offer the possibility of entering the game the player wants with that gadget."
@@ -12716,7 +12716,7 @@ label monika_vr:
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_sensations",category=['monika'],prompt="Sensations",random=True))
-	
+
 label monika_sensations:
     m 5lsc "You know... Since I discovered that everything that surrounds me is unreal I have been thinking..."
     m 5lsc "I surely lack the experience of feeling a lot of... sensations, right?
