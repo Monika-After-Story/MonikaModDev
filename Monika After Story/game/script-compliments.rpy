@@ -33,7 +33,8 @@ init -1 python in mas_compliments:
         "You always make me feel special, [player].",
         "Aww, [player]~",
         "Thanks, [player]!",
-        "You always flatter me, [player]."
+        "You always flatter me, [player].",
+        "You always find a way to make me blush, [player]!"
         ]
 
 
