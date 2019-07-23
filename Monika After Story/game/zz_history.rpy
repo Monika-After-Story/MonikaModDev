@@ -382,6 +382,8 @@ init -850 python:
                 NOTE: this is changed automatically when saving is done
                 NOTE: the trigger's year is what we use to determine where to
                     save the historical data
+            start_dt - datetime that this MHS starts covering
+            end_dt - datetime that this MHS stops covering (exclusive)
             mapping - mapping of persistent variable names to historical data
                 keys
             use_year_before - True means that when saving data, we should use
@@ -405,6 +407,8 @@ init -850 python:
         def __init__(self, 
                 mhs_id,
                 trigger,
+                start_dt,
+                end_dt,
                 mapping,
                 use_year_before=False,
                 dont_reset=False,
@@ -463,6 +467,8 @@ init -850 python:
                     MASHistorySaver.first_sesh = None
 
             self.id = mhs_id
+            self.start_dt = start_dt
+            self.end_dt = end_dt
             self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
             self.mapping = mapping
