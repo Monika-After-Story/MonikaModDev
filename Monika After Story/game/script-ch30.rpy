@@ -1366,12 +1366,14 @@ label ch30_loop:
     python:
         should_dissolve_all = mas_shouldChangeTime()
         should_dissolve_masks = (
-            mas_weather.weatherProgress() 
+            mas_weather.weatherProgress()
             and mas_isMoniNormal(higher=True)
         )
 
-    call spaceroom(dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
+    #This should be set back to false so we're not constantly scene changing
+    $ mas_weather.should_scene_change = False
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 

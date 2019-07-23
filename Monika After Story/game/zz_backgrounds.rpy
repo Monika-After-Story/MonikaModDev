@@ -246,6 +246,22 @@ init -10 python:
                 return self.image_snow_night
             return self.image_night
 
+        def hasWeatherRoom(self):
+            """
+            Returns true if the current background has an alternate bg for the current weather
+            """
+            #First we get the mask we're using
+            if store.mas_isMorning():
+                mask = self.getDayRoom()
+            else:
+                mask = self.getNightRoom()
+
+            if store.mas_is_raining or store.mas_is_overcast or store.mas_is_snowing:
+                return (
+                    (store.mas_isMorning() and mask != self.image_day)
+                    or (not store.mas_isMorning() and mask != self.image_night)
+                )
+
 
 #Helper methods and such
 init -20 python in mas_background:
@@ -375,7 +391,11 @@ init -1 python:
         "monika_room",
 
         #Rain Day/Night
-        "monika_rain_room",
+        image_rain_day="monika_rain_room",
+
+        image_overcast_day="monika_rain_room",
+
+        image_snow_day="monika_rain_room",
 
         #Def room should always be unlocked
         unlocked=True,
@@ -390,6 +410,7 @@ init -1 python:
 #Spaceroom
 image monika_day_room = "mod_assets/location/spaceroom/spaceroom.png"
 image monika_room = "mod_assets/location/spaceroom/spaceroom-n.png"
+image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
 
 #START: Location Selector
 init 5 python:

@@ -5,31 +5,26 @@
 
 image def_weather_day = Movie(
     channel="window_1",
-    play="mod_assets/window/def_day_mask.mp4",
+    play="mod_assets/window/def_day_mask.webm",
     mask=None
 )
 image def_weather_day_fb = "mod_assets/window/def_day_mask_fb.png"
 
+#Thanks Trilasent
 image def_weather_night = Movie(
     channel="window_2",
-    play="mod_assets/window/def_night_mask.mp4",
+    play="mod_assets/window/def_night_mask.webm",
     mask=None
 )
 image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
-image room_mask3 = Movie(
+#Thanks LegendKiller21
+image rain_mask = Movie(
     channel="window_3",
-    play="mod_assets/window/spaceroom/window_3.webm",
+    play="mod_assets/window/rain_mask.webm",
     mask=None
 )
-image room_mask3_fb = "mod_assets/window/spaceroom/window_3_fallback.png"
-
-image room_mask4 = Movie(
-    channel="window_4",
-    play="mod_assets/window/spaceroom/window_4.webm",
-    mask=None
-)
-image room_mask4_fb = "mod_assets/window/spaceroom/window_4_fallback.png"
+image room_mask3_fb = "mod_assets/window/rain_mask_fb.png"
 
 # big thanks to sebastianN01 for the rain art & multimokia for the night rain!
 image rain_mask_left = Movie(
@@ -150,7 +145,7 @@ default persistent._mas_should_rain_today = None
 
 #Loading at init 0 because of season functions
 init python in mas_weather:
-
+    should_scene_change = False
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
@@ -256,7 +251,7 @@ init -20 python in mas_weather:
 #        NOTE: this does not check affection.
 #        """
 #        return (
-#            store.persistent._mas_weather_rain_happened 
+#            store.persistent._mas_weather_rain_happened
 #            or store.persistent._mas_weather_snow_happened
 #        )
 
@@ -276,16 +271,21 @@ init -20 python in mas_weather:
         global weather_change_time
         #Set a time for startup
         if not weather_change_time:
-            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(5,30))
 
         elif weather_change_time < datetime.datetime.now():
             #Need to set a new check time
-            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(5,30))
 
             #Change weather
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
                 store.mas_changeWeather(new_weather)
+                #If the weather changed to anything which needs it, or we changed back to def, we need to scene change
+                #TODO: FIX SCENE CHANGE BACK TO DEF
+                if store.mas_current_background.hasWeatherRoom() or new_weather == store.mas_weather_def:
+                    should_scene_change = True
+
                 #Play the rumble in the back to indicate thunder
                 if new_weather == store.mas_weather_thunder:
                     renpy.play("mod_assets/sounds/amb/thunder_1.wav",channel="backsound")
@@ -457,14 +457,16 @@ init -20 python in mas_weather:
 
     def _weather_overcast_entry(_old):
         #Set this to True so our bg changer can update the room accordingly
-        mas_is_overcast = True
+        store.mas_is_overcast = True
+
         #Lock islands
         store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
 
 
     def _weather_overcast_exit(_new):
         #Set this false so the bg sel can adjust properly
-        mas_is_overcast = False
+        store.mas_is_overcast = False
+
         #Unlock islands
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (
@@ -696,11 +698,10 @@ init -1 python:
         "Rain",
 
         # sp day and night
-        "rain_mask_left",
-        #"rain_mask_right",
+        "rain_mask",
 
         # sp night
-        "night_rain_mask_left",
+        "rain_mask",
         #"night_rain_mask_right",
 
         # islands bg day and night
@@ -832,10 +833,14 @@ label mas_change_weather(new_weather, by_user=None):
     # set new weather and force change
     $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
-    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc_static")
+
+    #NOTE: We do this before the spaceroom call because of vars which need to be set
+    #Prior to the drawing of the spaceroom (so we can pick the right room to use)
 
     # call entry programming point
     $ mas_current_weather.entry(old_weather)
+
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp="monika 1dsc_static")
 
     return
 
