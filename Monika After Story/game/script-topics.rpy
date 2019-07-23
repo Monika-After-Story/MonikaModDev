@@ -12709,7 +12709,7 @@ label monika_vr:
     m 1ekc "Too bad that my reality isn't able to be entered with vr..."
     m 1ekc "That would mean that you could be so much closer to me..."
     m 1esu "Although I would prefer to be the one exiting this program to right beside you~"
-    m 1esu "So you better prepare yourself for that day, right [player]?
+    m 1esu "So you better prepare yourself for that day, right [player]?"
     m 3kub "The day i get to join your world we are going to do lots of funny things!"
     m 5luu "I can't wait for that~"
     return
