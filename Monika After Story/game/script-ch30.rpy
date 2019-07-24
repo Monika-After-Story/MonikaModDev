@@ -1,6 +1,6 @@
 default persistent.monika_reload = 0
 default persistent.tried_skip = False
-default persistent.monika_kill = True #Assume non-merging players killed monika. #Maybe add topic - "Did you deleted her?"
+default persistent.monika_kill = True #Assume non-merging players killed monika.
 default persistent.rejected_monika = None
 default initial_monika_file_check = None
 define modoorg.CHANCE = 20
