@@ -232,7 +232,7 @@ label mas_apology_generic:
         m 2tkd "What you did wasn't funny, [player]."
         m 2dkd "Please be more considerate about my feelings in the future."
     elif:
-        m 2dsd "It's isn't funny, [player]."
+        m 2dsd "That wasn't funny, [player]."
         m 2dsd "Please...{w=0.3} don't play with my feelings like that alright?"
     #We only want this for actual apology reasons. Not the 0 case or the None case.
     if mas_apology_reason:
