@@ -866,8 +866,7 @@ init 15 python in mas_affection:
 
         ## HAPPY quips
         quips = [
-            "What would you like to talk about?"
-            "Let's talk if you want."
+            "What would you like to talk about?",
         ]
         save_quips(HAPPY, quips)
 
@@ -954,8 +953,7 @@ init 15 python in mas_affection:
         quips = [
             "...Which game?",
             "Okay...whatever, choose a game.",
-            "Fine, pick a game.",
-            "Ok, choose game already."
+            "Fine, pick a game."
         ]
         save_quips(UPSET, quips)
 
