@@ -3231,7 +3231,8 @@ label monika_love:
             "You've saved me in so many ways, how could I not fall for you?",
             "More than I can ever express!",
             "It makes me so happy that you feel the same way I do!",
-            "I don't know what I would do without you!"
+            "I don't know what I would do without you!",
+            "You mean everything to me!"
             ]
         love_quip=renpy.random.choice(love_quips)
     m "[love_quip]"

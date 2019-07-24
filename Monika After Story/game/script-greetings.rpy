@@ -2631,6 +2631,7 @@ label greeting_distressed:
             "Hopefully we can enjoy our time together.",
             "I wasn't expecting you.",
             "I hope things start going better soon.",
+            "I thought you forgot about me."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)
