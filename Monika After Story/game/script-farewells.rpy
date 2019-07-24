@@ -337,8 +337,7 @@ label bye_going_to_sleep:
     # TODO:
     # can monika sleep with you?
     # via flashdrive or something
-    # Maybe just add: "I'm going to sleep with you via flashdrive" or smtng like that?
-    # And Moni says "Alright let me get ready." for example.
+
     return 'quit'
 
 init 5 python:
