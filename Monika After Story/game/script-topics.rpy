@@ -12690,7 +12690,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_japanesefood",category=['misc'],prompt="Japanese food",random=True))
 
 label monika_japanesefood:
-    m 2eua "Hey [player], have you ever eaten some kind of japanese food?"
+    m 2eua "Hey [player], have you ever eaten some kind of Japanese food?"
     m 2eua "There's a lot of variety when talking about that kind of stuff."
     m 3eua "For example, you might know about typical ones like sushi, or ramen."
     m 3eua "But did you know that there are actually a lot more of them?"
