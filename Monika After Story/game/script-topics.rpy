@@ -3781,14 +3781,17 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_ribbon",category=['monika'],prompt="Ribbons",random=True))
 
 label monika_ribbon:
-    if monika_chr.hair.name != "def":
+    if not monika_chr.is_wearing_acs_type('ribbon'):
         m 1eua "Do you miss my ribbon, [player]?"
-        m 1hua "I can change my hairstyle whenever you want me to, ehehe~"
-        return
 
-    if monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
-        m 3eub "Have you ever wondered why I wear this ribbon, [player]?"
-        m 3eua "It doesn't hold sentimental value to me or anything."
+        if monika_chr.hair.name != "def":
+            m 3hua "I can change my hairstyle and wear one whenever you want me to~"
+        else:
+            m 3hua "If you'd like me to wear one again, just ask, okay?~"
+
+    elif monika_chr.get_acs_of_type('ribbon') == mas_acs_ribbon_def:
+        m 1eub "Have you ever wondered why I wear this ribbon, [player]?"
+        m 1eua "It doesn't hold sentimental value to me or anything."
         m 3hua "I just wear it because I'm pretty sure nobody else will wear a big, poofy ribbon."
         m "It makes me look more unique."
         m 3tku "You know the world's fictional if you see a girl wearing a giant ribbon, right?"
@@ -11638,6 +11641,59 @@ label monika_dating_startdate_confirm(first_sesh_raw):
     jump monika_dating_startdate_confirm.loopstart
 
 init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_first_sight_love",
+            category=["romance"],
+            prompt="Love at first sight",
+            random=True
+        )
+    )
+
+label monika_first_sight_love:
+    m 1eud "Have you ever thought about the concept of love at first sight?"
+    m 3euc "Like, seeing someone for the first time, and instantly knowing they're the love of your life?"
+    m 2lsc "I think it's one of the more...{w=0.5}ridiculous concepts to grasp."
+    m 2lksdlc "I mean, you can't know who a person truly is just by looking at them once."
+    m 2tkd "It's not like you've ever talked to them, had lunch, or hung out together."
+    m 2lksdlc "You don't even know what their interests and hobbies are..."
+    m 2dksdld "They could be really boring or just be a mean and horrible person..."
+    m 3eud "That's why I think we shouldn't {i}just{/i} use our eyes to tell if someone is the perfect partner for us."
+    if mas_isMoniAff(higher=True):
+        m 1eka "And I guess that's kind of how I fell in love with you..."
+        m 3eua "It's not like I could see you after all."
+        show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+        m 5ekbfa "I fell in love with you for who you are, [player]."
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_anime_art",
+            category=["misc"],
+            prompt="Anime art style",
+            random=True
+        )
+    )
+
+label monika_anime_art:
+    m 1eua "Have you ever thought about anime art styles?"
+    m 3rksdla "I'm sure Natsuki would be an expert on this, given her obsession with manga and all..."
+    m 3eub "Anyway, there's a lot of interesting things about the art style."
+    m 1eua "It's freeform, like my poems, which makes a lot of the art really unique..."
+    m 3eua "From the beautiful scenery, to the amazing characters..."
+    m 1hub "It's just really impressive to look at!"
+    m 2esc "Though being a freefrom art style...{w=0.5}a lot of details tend to look a little unrealistic."
+    m 3rsc "While it lets a lot of artworks explore new possibilities, it can also make some details look weird..."
+    m 3rssdlc "Like how a characters eyes can be so big, how small their noses are, or how their hair can be in strange lengths, shapes, and sizes..."
+    m 2rksdlc "Not to mention...{w=1}large chests."
+    m 2euc "If I looked more realistic, I certainly wouldn't have those attributes."
+    m 1eua "But I guess that lack of realism is where the true beauty of the art style really comes from."
+    return
+
+init 5 python:
      addEvent(Event(persistent.event_database,eventlabel="monika_whydoyouloveme",category=['monika','romance'],prompt="Why do you love me?",pool=True))
 
 label monika_whydoyouloveme:
@@ -12080,7 +12136,8 @@ label monika_bad_facts_4:
     return
 
 init 5 python:
-    addEvent(
+
+addEvent(
         Event(
             persistent.event_database,
             eventlabel="monika_add_custom_music",
