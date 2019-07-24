@@ -964,7 +964,7 @@ init 15 python in mas_affection:
             "What would you like to play?",
             "What did you have in mind?",
             "Anything specific you'd like to play?",
-            "What do you want to play?"
+            "What would you like to play?"
         ]
         save_quips(NORMAL, quips)
 
