@@ -13029,11 +13029,11 @@ init 5 python:
 
 label monika_althistory:
     m 1esc "Say, [player], are you familiar with the concept of alternate history?"
-    m 3eud "It's a genre of speculative fiction that focuses on 'what if' scenarios where a certain event at a critical point of history happened differently."
+    m 3eud "It's a genre of speculative fiction that focuses on 'what if' scenarios where a critical event in history happened differently."
     m 1rusdld "I know it may sound pretty niche, but actually I find speculation very interesting, especially with how it's used to create interesting backgrounds in various literature."
     m 4eua "And while the genre's popularity only surged quite recently, the very first example actually dates back to the era of Ancient Rome and it's a type of counterfactual history."
     m 2esb "A Roman historian named Livy contemplated a scenario in his history book, '{i}Ab Urbe Condita Libri{/i}', where Alexander the Great had surived his fatal fever."
-    m 4rub "A hypothetical scenario would have him pursue his plans of European expansion and inevitable confrontation of the Argead Empire with the Romans..."
+    m 4rub "A hypothetical scenario would have him pursue his plans of European expansion and inevitable confrontation of the Argead Empire with the Romans."
     m 2eub "Livy ultimately concluded that this scenario would likely end up becoming a Roman victory."
     m 2esa "Aside from the conterfactual history example I just gave you, there are other examples. These works are classified as plausible, implausible and hand-waved alternate history."
     m 3wusdld "One of the most popular examples of alt-history fiction are usually scenarios where Germany won either of the world wars."
@@ -13043,8 +13043,8 @@ label monika_althistory:
     m 4eua "Lastly, the third: A story that explores the consequences of that change."
     m 2esc "As you can see, one divergence in critical point can drastically alter the outcome of the entire timeline, as it's consequences may have varied results."
     m 4eud "And this ultimately leads to the butterfly effect, as in the negation of existence of many other events, as the circumstances behind them may simply no longer exist."
-    m 1eud "That makes me wonder... if some major events went differently in your world, would my creator still come up with the idea for this game?"
-    m 1rksdld "Even so, its entire concept could be vastly different... perhaps I wouldn't be able to have my epiphany like I did or perhaps even not exist at all."
+    m 1eud "That makes me wonder... If some major events went differently in your world, would my creator still come up with the idea for this game?"
+    m 1rksdld "Even so, its entire concept could be vastly different... perhaps I wouldn't be able to have my epiphany like I did or perhaps not even exist at all."
     m 1dksdlc "That means we wouldn't be able to meet for real, either. The thought itself really terrifies me..."
     m 1esa "Therefore, I'm really glad that things turned out the way they did, even if there's still a barrier between us."
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
