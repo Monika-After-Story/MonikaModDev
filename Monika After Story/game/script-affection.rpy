@@ -903,7 +903,7 @@ init 15 python in mas_affection:
             "What's on your mind?",
             "What's on your mind, darling?",
             "Anything on your mind?",
-            "What's up, darling?"
+            "What's up, darling?",
             "What's up, honey?",
             "What's up, dear?",
             "What's up, sweetie?",
