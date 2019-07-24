@@ -840,7 +840,9 @@ init 15 python in mas_affection:
             "If you want to talk, go ahead.",
             "We can talk if you really want to.",
             "Are you sure you want to talk to me?",
-            "You actually want to talk to me?"
+            "You actually want to talk to me?",
+            "Alright... if you want to talk with me.",
+            "You sure you want to talk?"
         ]
         save_quips(DISTRESSED, quips)
 
@@ -857,13 +859,15 @@ init 15 python in mas_affection:
 
         ## NORMAL quips
         quips = [
-            "What would you like to talk about?"
+            "What would you like to talk about?",
+            "Is there something you want to talk about?"
         ]
         save_quips(NORMAL, quips)
 
         ## HAPPY quips
         quips = [
             "What would you like to talk about?"
+            "Let's talk if you want."
         ]
         save_quips(HAPPY, quips)
 
@@ -899,13 +903,16 @@ init 15 python in mas_affection:
             "What's on your mind?",
             "What's on your mind, darling?",
             "Anything on your mind?",
+            "What's up, darling?"
             "What's up, honey?",
             "What's up, dear?",
             "What's up, sweetie?",
+            "What's up, [player]?",
 #            "What's up?",
             "Yes, sweetheart?",
             "Yes, honey?",
             "Yes, dear?",
+            "Yes, my love?"
             "^_^",
             "<3",
             "Anything you'd like to talk about?",
@@ -938,7 +945,8 @@ init 15 python in mas_affection:
             "...Fine.",
             "I guess we can play a game.",
             "I guess, if you really want to.",
-            "I suppose a game would be fine."
+            "I suppose a game would be fine.",
+            "...Yes...why not?"
         ]
         save_quips(DISTRESSED, quips)
 
@@ -946,7 +954,8 @@ init 15 python in mas_affection:
         quips = [
             "...Which game?",
             "Okay...whatever, choose a game.",
-            "Fine, pick a game."
+            "Fine, pick a game.",
+            "Ok, choose game already."
         ]
         save_quips(UPSET, quips)
 
@@ -954,7 +963,8 @@ init 15 python in mas_affection:
         quips = [
             "What would you like to play?",
             "What did you have in mind?",
-            "Anything specific you'd like to play?"
+            "Anything specific you'd like to play?",
+            "What do you want to play?"
         ]
         save_quips(NORMAL, quips)
 
@@ -980,7 +990,8 @@ init 15 python in mas_affection:
             "Choose anything you like, [player].",
             "Pick anything you like, [player].",
             "Choose anything you like, honey.",
-            "Pick anything you like, sweetheart."
+            "Pick anything you like, sweetheart.",
+            "Choose anything you like, sweetie."
         ]
         save_quips(ENAMORED, quips)
 
@@ -988,6 +999,7 @@ init 15 python in mas_affection:
         quips = [
             "What would you like to play? <3",
             "Choose anything you like, honey.",
+            "Choose anything you like, sweetie.",
             "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",

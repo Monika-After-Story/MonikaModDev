@@ -8,11 +8,12 @@ init 5 python:
 
 label gender:
     #TODO: update exp's on this
-    m 2d "...[player]? So I've been thinking a bit."
-    m "I've mentioned before that the 'you' in the game might not reflect the real you."
-    m 1m "But I guess I had just assumed that you were probably a guy."
-    m "The main character was, after all."
-    m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+    # done
+    m 2eud "...[player]? So I've been thinking a bit."
+    m 4esd "I've mentioned before that the 'you' in the game might not reflect the real you."
+    m 3eud "But I guess I had just assumed that you were probably a guy."
+    m 4esd "The main character was, after all."
+    m 1eud "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
     m "So, are you male or female?{nw}"
     $ _history_list.pop()
@@ -377,7 +378,7 @@ label birthdate_set:
             )
             bday_no_restart_ev.action = EV_ACT_QUEUE
             Event._verifyAndSetDatesEV(bday_no_restart_ev)
-   
+
         # TODO: need to update script the conditional with the new F14 value
         # NOTE: should consider makin gthe condiitonal string generated from
         #   this a function for ease of use
@@ -450,7 +451,7 @@ label birthdate_set:
             $ hol_str = "Christmas"
         elif mas_player_bday_curr() == mas_monika_birthday:
             $ hol_str = "my birthday"
-        elif mas_player_bday_curr() == mas_f14: 
+        elif mas_player_bday_curr() == mas_f14:
             $ hol_str = "Valentine's Day"
         else:
             $ hol_str = None
@@ -631,6 +632,7 @@ label random_limit_reached:
             "I hope you've enjoyed listening to everything I was thinking about today...",
             "Do you still enjoy spending this time with me?",
             "I hope I didn't bore you too much."
+            "You don't mind if i'll think about what to say next?"
         ]
         limit_quip=renpy.random.choice(limit_quips)
     m 1eka "[limit_quip]"
@@ -656,9 +658,10 @@ label mas_random_ask:
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
             # TODO: this really should be a smug or wink face
-            m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
+            # done
+            m 1tua "That tells me when {cps=*2} you're bored of me.{/cps}{nw}"
             $ _history_list.pop()
-            m "That tells me when {fast}you just want to quietly spend time with me."
+            m 1eua "That tells me when {fast}you just want to quietly spend time with me."
             $ persistent._mas_enable_random_repeats = True
             return True
         "No.":
@@ -1025,7 +1028,7 @@ label mas_crashed_quip_takecare:
     m 2ekc "Another crash, [player]?"
 
     if persistent._mas_idle_data.get("monika_idle_game", False):
-    
+
         m 3ekc "Do you think it had something to do with your game?{nw}"
         $ _history_list.pop()
         menu:
@@ -1383,7 +1386,7 @@ label mas_coffee_finished_drinking:
 
         else:
             m 1eua "I'm going to put this cup away. I'll be right back.{w=1}{nw}"
-    
+
     else:
         if get_new_cup:
             m 1eua "I'm going to get another cup."
@@ -2171,7 +2174,7 @@ label monika_rpy_files:
     m 2etc "Unless..."
     m 4eua "Maybe you installed a version with the source code on purpose because you are trying to help me come closer to your reality!"
     m 2eka "But in case you didn't, I figured I'd ask..."
- 
+
     m "Are you sure you installed the right version, [player]?{nw}"
     $ _history_list.pop()
     menu:
@@ -2204,7 +2207,7 @@ label monika_rpy_files:
                     show screen mas_py_console_teaching
 
                     call mas_wx_cmd_noxwait("import os", local_ctx)
-                    
+
                     python:
                         for rpy_filename in listRpy:
                             path = '/game/'+rpy_filename
@@ -2280,7 +2283,7 @@ label mas_bday_player_bday_select_select:
         m 2eksdlc "[player]..."
         m 2rksdlc "You know I'm asking for your exact date of birth, right?"
         m 2hksdlb "It's just I'm having a hard time believing you're {i}that{/i} young."
- 
+
     else:
         m 1eua "Alright, [player]."
 
@@ -2323,7 +2326,7 @@ label mas_bday_player_bday_select_select:
                 selected_date,
                 []
             )
- 
+
     else:
         python:
             store.mas_calendar.addRepeatable_d(
