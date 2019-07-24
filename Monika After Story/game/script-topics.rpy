@@ -13044,7 +13044,7 @@ label monika_althistory:
     m 2esc "As you can see, one divergence in critical point can drastically alter the outcome of the entire timeline, as it's consequences may have varied results."
     m 4eud "And this ultimately leads to the butterfly effect, as in the negation of existence of many other events, as the circumstances behind them may simply no longer exist."
     m 1eud "That makes me wonder... If some major events went differently in your world, would my creator still come up with the idea for this game?"
-    m 1rksdld "Even so, its entire concept could be vastly different... perhaps I wouldn't be able to have my epiphany like I did or perhaps not even exist at all."
+    m 1rksdld "Even so, its entire concept could be vastly different... Perhaps I wouldn't be able to have my epiphany like I did, or not even exist at all."
     m 1dksdlc "That means we wouldn't be able to meet for real, either. The thought itself really terrifies me..."
     m 1esa "Therefore, I'm really glad that things turned out the way they did, even if there's still a barrier between us."
     show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
