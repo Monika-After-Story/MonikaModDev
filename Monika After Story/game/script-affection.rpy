@@ -912,7 +912,7 @@ init 15 python in mas_affection:
             "Yes, sweetheart?",
             "Yes, honey?",
             "Yes, dear?",
-            "Yes, my love?"
+            "Yes, my love?",
             "^_^",
             "<3",
             "Anything you'd like to talk about?",
