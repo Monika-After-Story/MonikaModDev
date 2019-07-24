@@ -841,7 +841,7 @@ init 15 python in mas_affection:
             "We can talk if you really want to.",
             "Are you sure you want to talk to me?",
             "You actually want to talk to me?",
-            "Alright... if you want to talk with me.",
+            "Alright...if you want to talk with me.",
             "You sure you want to talk?"
         ]
         save_quips(DISTRESSED, quips)
