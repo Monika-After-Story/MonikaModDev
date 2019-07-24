@@ -510,9 +510,7 @@ init -850 python:
             RETURNS: _trigger with the correct year
             """
             _now = datetime.datetime.now()
-            _temp_trigger = _trigger.replace(year=_now.year)
-
-            
+            _temp_trigger = _trigger.replace(year=_now.year) 
 
             if _now > _temp_trigger:
                 # trigger has already past, set the trigger for next year
@@ -536,6 +534,30 @@ init -850 python:
             
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
+
+        def inRange(self, check_dt):
+            """
+            Checks if the given dt is within range of this MHS's range time
+            NOTE: if an MHS is continuous, then we are ALWAYS in range
+            NOTE: we are also currently only checking the month/day props
+                If we want to take year into acct, then this function will need
+                to be changed
+
+            IN:
+                check_dt - dateime to check 
+
+            RETURNS: True if in range, False if not
+            """
+            if self.isContinuous():
+                return True
+
+            return (
+                self.start_dt.replace(year=check_dt.year)
+                    <= check_dt 
+                    < self.end_dt.replace(year=check_dt.year
+                        + (self.end_dt.year - self.start_dt.year)
+                    )
+            )
 
         def isContinuous(self):
             """
@@ -564,11 +586,17 @@ init -850 python:
                 first_sesh = _now
 
             if (
-                    _trigger.year > (_now.year + 1)
+#                    (not self.isContinuous() and self.inRange(_now))
+                    # NOTE: the above line is heavily flawed, don tuse yet
+                    False
+                    or _trigger.year > (_now.year + 1)
                     or _trigger <= first_sesh
                 ):
-                # if the trigger year is at least 2 years beyond current, its
-                # definitely a time travel issue.
+                # if the current dt is within the active range of this MHS
+                # then the event this covers is ongoing and we need to reset
+                #
+                # or if the trigger year is at least 2 years beyond current, 
+                # its definitely a time travel issue.
                 #
                 # or if the trigger is before or same date as the first session
                 # then we should move it into the future
@@ -920,9 +948,8 @@ init -810 python:
     #   not together, they will be here.
     store.mas_history.addMHS(MASHistorySaver(
         "922",
-        datetime.datetime(2018, 9, 30),
-        # TODO: change trigger to bette rdate
-#        datetime.datetime(2020, 1, 6), 
+        #datetime.datetime(2018, 9, 30),
+        datetime.datetime(2020, 1, 6), 
         {
             "_mas_bday_opened_game": "922.actions.opened_game",
             "_mas_bday_no_time_spent": "922.actions.no_time_spent",
@@ -937,7 +964,10 @@ init -810 python:
             "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
             "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
         },
-        exit_pp=store.mas_history._bday_exit_pp
+        use_year_before=True,
+        exit_pp=store.mas_history._bday_exit_pp,
+        start_dt=datetime.datetime(2019, 9, 22),
+        end_dt=datetime.datetime(2019, 9, 24)
     ))
 
     # AFFection

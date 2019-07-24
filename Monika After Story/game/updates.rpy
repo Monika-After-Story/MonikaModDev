@@ -305,8 +305,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.9.6
-label v0_9_6(version="v0_9_6"):
+# 0.10.0
+label v0_10_0(version="v0_10_0"):
     python:
         ev_label_list = [
             ("monika_whatwatching","mas_wrs_youtube"),
@@ -344,6 +344,35 @@ label v0_9_6(version="v0_9_6"):
         family_ev = mas_getEV("monika_family")
         if family_ev is not None:
             family_ev.pool = True
+
+        # MHS checking
+        mhs_922 = store.mas_history.getMHS("922")
+        if (
+                mhs_922 is not None 
+                and mhs_922.trigger.month == 9
+                and mhs_922.trigger.day == 30
+        ):
+            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_922.use_year_before = True
+
+        mhs_pbday = store.mas_history.getMHS("player_bday")
+        if (
+                mhs_pbday is not None:
+                and mhs_pbday.trigger.month == 1
+                and mhs_pbday.trigger.day == 1
+        ):
+            # TODO: determine appropriate trigger date based on
+            #   player bday
+            # also set appropriate range
+            pass
+
+        mhs_o31 = store.has_history.getMHS("o31")
+
+
+
+        # always save mhs
+        store.mas_history.saveMHSData()
+            
     return
 
 # 0.9.5

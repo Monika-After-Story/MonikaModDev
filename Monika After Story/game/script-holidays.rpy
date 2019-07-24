@@ -77,9 +77,9 @@ init -810 python:
     # MASHistorySaver for o31
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
-        datetime.datetime(2018, 11, 2),
+        #datetime.datetime(2018, 11, 2),
         # change trigger to better date
-#        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 6),
         {
             # TODO: we should have a spent time var here
 
@@ -102,8 +102,12 @@ init -810 python:
             "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
-        }
+        },
 #        exit_pp=store.mas_history._o31_exit_pp
+        start_dt=datetime.datetime(2019, 10, 31),
+
+        # end is 1 day out in case of an overnight trick or treat
+        end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
 init -10 python:
@@ -975,7 +979,9 @@ init -810 python:
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp
+        exit_pp=store.mas_history._d25s_exit_pp,
+        start_dt=datetime.datetime(2019, 12, 1),
+        end_dt=datetime.datetime(2019, 12, 31)
     ))
 
 
@@ -2550,7 +2556,9 @@ init -810 python:
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
-        use_year_before=True
+        use_year_before=True,
+        start_dt=datetime.datetime(2019, 12, 31),
+        end_dt=datetime.datetime(2020, 1, 6)
         # TODO: programming points probably
     ))
 
@@ -3354,7 +3362,12 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
-        datetime.datetime(2020, 1, 1),
+        #datetime.datetime(2020, 1, 1),
+        # NOTE: this needs to be moved ahead if on player bday on certain day:
+        #   If Jan 7 - set to Jan 5
+        #   If Jan 6 - set to Jan 4
+        #   If Jan 5 - set to Jan 3
+        datetime.datetime(2020, 1, 6),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
@@ -3362,6 +3375,8 @@ init -810 python:
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
         },
         use_year_before=True,
+        # NOTE: the start and end dt needs to be chnaged depending on the
+        #   player bday
     ))
 
 init -11 python in mas_player_bday_event:
