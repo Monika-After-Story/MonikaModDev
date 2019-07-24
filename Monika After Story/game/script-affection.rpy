@@ -999,7 +999,7 @@ init 15 python in mas_affection:
         quips = [
             "What would you like to play? <3",
             "Choose anything you like, honey.",
-            "Choose anything you like, sweetie.",
+            "Pick anything you like, sweetie.",
             "Pick anything you like, sweetheart.",
             "Yay! Let's play together!",
             "I'd love to play something with you!",
