@@ -12712,6 +12712,7 @@ label monika_vr:
     m 3esu "Although, I would prefer to enter your world to be right beside you~"
     m 3esu "So you better prepare yourself for that day, [player]"
     m 3kub "The day I get to join your world, we are going to do lots of fun stuff!"
+    show monika 5luu at t11 zorder MAS_MONIKA_Z with dissolve
     m 5luu "I can't wait for that~"
     return
 
