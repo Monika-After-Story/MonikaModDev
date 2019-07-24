@@ -2625,7 +2625,6 @@ label greeting_distressed:
             "Oh...{w=1} Hello, [player].",
             "Hello, [player]...",
             "Oh...{w=1} You're back, [player].",
-            "Hm?...{w=1} You're return.",
         ]
 
         distressed_greeting_quips_second = [

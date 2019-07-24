@@ -8,7 +8,6 @@ init 5 python:
 
 label gender:
     #TODO: update exp's on this
-    # done
     m 2eud "...[player]? So I've been thinking a bit."
     m 4esd "I've mentioned before that the 'you' in the game might not reflect the real you."
     m 3eud "But I guess I had just assumed that you were probably a guy."
@@ -658,7 +657,6 @@ label mas_random_ask:
             m 1eua "Great!"
             m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
             # TODO: this really should be a smug or wink face
-            # done
             m 1tua "That tells me when {cps=*2} you're bored of me.{/cps}{nw}"
             $ _history_list.pop()
             m 1eua "That tells me when {fast}you just want to quietly spend time with me."
