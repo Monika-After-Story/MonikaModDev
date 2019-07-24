@@ -2586,7 +2586,6 @@ label greeting_upset:
             "Oh.{w=1} You're back, [player].",
             "Hello, [player].",
             "Oh.{w=1} Hello, [player].",
-            "So...{w=1} you're back.",
         ]
 
         upset_greeting_quips_second = [
