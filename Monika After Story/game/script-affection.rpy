@@ -991,7 +991,7 @@ init 15 python in mas_affection:
             "Pick anything you like, [player].",
             "Choose anything you like, honey.",
             "Pick anything you like, sweetheart.",
-            "Choose anything you like, sweetie."
+            "Pick anything you like, sweetie."
         ]
         save_quips(ENAMORED, quips)
 
