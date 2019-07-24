@@ -394,7 +394,6 @@ label bye_prompt_to_class:
         m 6ckc "..."
     # TODO:
     # can monika join u at schools?
-    #
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
