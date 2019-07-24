@@ -13047,6 +13047,7 @@ label monika_althistory:
     m 1rksdld "Even so, its entire concept could be vastly different... perhaps I wouldn't be able to have my epiphany like I did or perhaps even not exist at all."
     m 1dksdlc "That means we wouldn't be able to meet for real, either. The thought itself really terrifies me..."
     m 1esa "Therefore, I'm really glad that things turned out the way they did, even if there's still a barrier between us."
+    show monika 5eub at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eub "With that in mind, I can certainly say this is the best timeline!"
     m 5hub "Ahaha!"
     return
