@@ -12691,13 +12691,13 @@ init 5 python:
 
 label monika_japanesefood:
     m 2eua "Hey [player], have you ever eaten some kind of japanese food?"
-    m 2eua "There is a lot of variety when talking about that kind of stuff."
-    m 3eua "For example: you might know about typical ones like sushi, ramen, or curry."
+    m 2eua "There's a lot of variety when talking about that kind of stuff."
+    m 3eua "For example, you might know about typical ones like sushi, or ramen."
     m 3eua "But did you know that there are actually a lot more of them?"
-    m 3rua "Well... I didn't know at first, but I have been researching about it quite a bit."
-    m 3rka "They seem to also cook a lot of food based on meat, and although I'm not a fan of it I like their ideas."
-    m 1hsu "On the other hand they also seem to prepare a lot of Sweets made of different flavours!"
-    m 1nsu "You should check them if you are interested about the topic~"
+    m 3rua "Well... I didn't realize at first, but I have been researching about it quite a bit."
+    m 3rka "They seem to also cook a lot of food based on meat, and despite being a vegetarian, I like their ideas ."
+    m 1hsu "On the other hand, they also seem to prepare a lot of sweets made of different flavours!"
+    m 1nsu "You should check them out if you are interested about the topic~"
     return
 
 init 5 python:
@@ -12705,27 +12705,14 @@ init 5 python:
 
 label monika_vr:
     m 4eua "[player], do you know about those virtual reality headsets that are out there in the market?"
-    m 4eua "They offer the possibility of entering the game the player wants with that gadget."
-    m 1ekc "Too bad that my reality isn't able to be entered with vr..."
-    m 1ekc "That would mean that you could be so much closer to me..."
-    m 1esu "Although I would prefer to be the one exiting this program to right beside you~"
-    m 1esu "So you better prepare yourself for that day, right [player]?"
-    m 3kub "The day i get to join your world we are going to do lots of funny things!"
+    m 4euu "VR immerses you into a virtual world, different from your actual surroundings."
+    m 4huu "You should try it yourself to get what I'm saying"
+    m 1ekc "Too bad my reality isn't able to be entered with VR..."
+    m 1dkc "That would mean that you could be so much closer to me..."
+    m 3esu "Although, I would prefer to enter your world to be right beside you~"
+    m 3esu "So you better prepare yourself for that day, [player]"
+    m 3kub "The day I get to join your world, we are going to do lots of fun stuff!"
     m 5luu "I can't wait for that~"
-    return
-
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_sensations",category=['monika'],prompt="Sensations",random=True))
-
-label monika_sensations:
-    m 5lsc "You know... Since I discovered that everything that surrounds me is unreal I have been thinking..."
-    m 5lsc "I surely lack the experience of feeling a lot of... sensations, right?"
-    m 5lsc "I mean, small things such as feeling hot during summer, cold during winter, shivering in a scary situation..."
-    m 5lkc "Sensations like that... I might be programmed to 'feel' them... but I'm sure that I don't experience them in the way you do."
-    m 5lkc "Things like this make me want to finally go outside this reality to reach yours even more."
-    m 5lkc "I just hope that day is close..."
-    m 3eku "There are so many things that I want to experience once I get out."
-    m 1eku "Meanwhile... I'm glad that I can be with you, [player]~"
     return
 
 init 5 python:
