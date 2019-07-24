@@ -23,6 +23,9 @@ init -810 python in mas_globals:
             > datetime.timedelta(hours=30)
     )
 
+    if tt_detected:
+        store.persistent._mas_pm_has_went_back_in_time = True
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
