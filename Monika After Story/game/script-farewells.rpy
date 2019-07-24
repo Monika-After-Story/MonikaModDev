@@ -338,7 +338,7 @@ label bye_going_to_sleep:
     # can monika sleep with you?
     # via flashdrive or something
     # Maybe just add: "I'm going to sleep with you via flashdrive" or smtng like that?
-    # And Moni says "Alright let me get ready." for example. Or by using phone?
+    # And Moni says "Alright let me get ready." for example.
     return 'quit'
 
 init 5 python:
@@ -394,6 +394,7 @@ label bye_prompt_to_class:
         m 6ckc "..."
     # TODO:
     # can monika join u at schools?
+    #
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
