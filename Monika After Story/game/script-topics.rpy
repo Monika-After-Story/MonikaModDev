@@ -12695,7 +12695,7 @@ label monika_japanesefood:
     m 3eua "For example, you might know about typical ones like sushi, or ramen."
     m 3eua "But did you know that there are actually a lot more of them?"
     m 3rua "Well... I didn't realize at first, but I have been researching about it quite a bit."
-    m 3rka "They seem to also cook a lot of food based on meat, and despite being a vegetarian, I like their ideas ."
+    m 3rka "They seem to also cook a lot of food based on meat, and despite being a vegetarian, I like their ideas."
     m 1hsu "On the other hand, they also seem to prepare a lot of sweets made of different flavours!"
     m 1nsu "You should check them out if you are interested about the topic~"
     return
@@ -12712,8 +12712,8 @@ label monika_vr:
     m 3esu "Although, I would prefer to enter your world to be right beside you~"
     m 3esu "So you better prepare yourself for that day, [player]"
     m 3kub "The day I get to join your world, we are going to do lots of fun stuff!"
-    show monika 5luu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5luu "I can't wait for that~"
+    show monika 5lublu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5lublu "I can't wait for that~"
     return
 
 init 5 python:
