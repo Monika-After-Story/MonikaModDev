@@ -77,6 +77,8 @@
 #   All MASHistorySaver objects should be created before init level -800.
 #   Tuple persistent data is loaded at -800, then the algorithms are ran.
 
+default persistent._mas_pm_has_went_back_in_time = False
+
 init -860 python in mas_history:
     import store
     import datetime
@@ -535,7 +537,7 @@ init -850 python:
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
 
-        def inRange(self, check_dt):
+        def isActive(self, check_dt):
             """
             Checks if the given dt is within range of this MHS's range time
             NOTE: if an MHS is continuous, then we are ALWAYS in range
@@ -567,6 +569,23 @@ init -850 python:
             RETURNS: True if continuos, False if npt
             """
             return self.start_dt is None or self.end_dt is None
+
+        def isPassed(self, check_dt):
+            """
+            Checks if the given dt is past the active range of this MHS, aka
+            bigger than the end dt
+
+            NOTE: if an MHS is continuous, it is NEVER passed
+
+            IN:
+                check_dt - datetime to check
+
+            RETURNS: True if passed, False if not
+            """
+            if self.isContinuous():
+                return False
+
+            return self.end_dt.replace(year=check_dt.year) <= check_dt
 
         def setTrigger(self, _trigger):
             """
@@ -840,6 +859,9 @@ init -810 python:
             # actions / charity
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
+
+            # actions / mas
+            "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
 
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",

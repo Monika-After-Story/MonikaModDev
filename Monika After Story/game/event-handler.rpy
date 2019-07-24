@@ -23,7 +23,7 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -950 python in mas_ev_data_ver:
+init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
@@ -31,7 +31,6 @@ init -950 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
-    import store
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -138,6 +137,9 @@ init -950 python in mas_ev_data_ver:
             """
             return self.verifier(value, self.allow_none)
 
+
+init -950 python in mas_ev_data_ver:
+    import store
 
     # map data to tuples
     _verify_map = {

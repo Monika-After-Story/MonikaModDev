@@ -13,6 +13,16 @@ default persistent._mas_disable_animations = False
 # affection hotfix for dates
 default persistent._mas_bday_date_affection_fix = False
 
+init -810 python in mas_globals:
+    import datetime
+    import store
+
+    # we set the time travel global here
+    tt_detected = (
+        store.mas_getLastSeshEnd() - datetime.datetime.now()
+            > datetime.timedelta(hours=30)
+    )
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
@@ -710,6 +720,13 @@ init python:
         for ev_label, ev in persistent._mas_player_derandomed.iteritems():
             if ev.random:
                 ev.random = False
+
+
+    def mas_TTDetected():
+        """
+        Checks if time travel was detected
+        """
+        return mas_globals.tt_detected
 
 
 init 1 python:
