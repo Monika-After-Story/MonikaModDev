@@ -337,7 +337,8 @@ label bye_going_to_sleep:
     # TODO:
     # can monika sleep with you?
     # via flashdrive or something
-
+    # Maybe just add: "I'm going to sleep with you via flashdrive" or smtng like that? 
+    # And Moni says "Alright let me get ready." for example.
     return 'quit'
 
 init 5 python:
@@ -393,6 +394,7 @@ label bye_prompt_to_class:
         m 6ckc "..."
     # TODO:
     # can monika join u at schools?
+    #
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_SCHOOL
     return 'quit'
 
@@ -498,6 +500,9 @@ label bye_prompt_sleep:
         elif mas_isMoniUpset():
             m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
             m "Goodnight."
+
+        else:
+            m 2efc "Goodnight."
 
         elif mas_isMoniDis():
             m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."

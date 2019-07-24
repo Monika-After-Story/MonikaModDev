@@ -33,7 +33,8 @@ init -1 python in mas_compliments:
         "You always make me feel special, [player].",
         "Aww, [player]~",
         "Thanks, [player]!",
-        "You always flatter me, [player]."
+        "You always flatter me, [player].",
+        "Thank you for saying it, [player]!"
         ]
 
 
@@ -123,6 +124,10 @@ label mas_compliment_beautiful_3:
     m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
+    else:
+        m 5hubfb "You'll always be the most beautiful person to me."
+    elif:
+        m 5hubfb "Don't forget i love you no matter how you looks like!"
     return
 
 init 5 python:
@@ -189,7 +194,7 @@ label mas_compliment_awesome:
 
 label mas_compliment_awesome_2:
     m 1hub "Awww, [player]~"
-    m "You're so sweet!"
+    m      "You're so sweet!"
     m 2tub "I think you're way more awesome, though."
     m 5eub "I can't wait until the day I can finally give you a great big hug."
     m 5hub "I'll never let you go!"

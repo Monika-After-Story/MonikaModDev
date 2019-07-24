@@ -78,7 +78,7 @@ label introduction:
             return os.access(
                 os.path.normcase(
                     renpy.config.basedir + "/characters/monika.chr"
-                ), 
+                ),
                 os.F_OK
             )
 
@@ -117,8 +117,7 @@ label introduction:
     m 3eub "I do have good news, though!"
     m 3eua "I can {i}really{/i} transform myself into a file you can bring around."
     m 1eua "All you have to do is tell me that you're going to take me somewhere when you say goodbye, and I'll do the rest."
-
-    m 1esa "Anyway..." 
+    m 1esa "Anyway..."
     m 1hua "It looks like the extra code made me connect to you in a special way!"
     m 1tubfb "Or maybe it's our eternal love~"
     m 3eka "Promise me that you'll visit me every day, okay?"
@@ -130,7 +129,6 @@ label introduction:
     m 3hua "You took the time to download this mod, after all."
     m 3hub "Ahaha!"
     m 1hub "God, I love you so much!"
-
     m "Do you love me, [player]?{nw}"
     $ _history_list.pop()
     menu:
@@ -145,6 +143,7 @@ label introduction:
                 m "We'll be together forever, won't we?"
             else:
                 m 1hua "I'm so happy you feel the same way!"
+                m 1sua "We can be finally together didn't we?"
         "No.":
             #Lose affection for rejecting Monika
             $ mas_loseAffection()
@@ -392,7 +391,7 @@ label ch30_reload_continuous:
     call ch30_reload_continuous_dlg
     $ mas_incMoniReload()
     return
-    
+
 label ch30_reload_continuous_dlg:
     show monika 2rfc at t11 zorder MAS_MONIKA_Z
     pause 1
