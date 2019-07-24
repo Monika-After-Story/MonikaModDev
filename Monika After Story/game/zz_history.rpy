@@ -382,8 +382,6 @@ init -850 python:
                 NOTE: this is changed automatically when saving is done
                 NOTE: the trigger's year is what we use to determine where to
                     save the historical data
-            start_dt - datetime that this MHS starts covering
-            end_dt - datetime that this MHS stops covering (exclusive)
             mapping - mapping of persistent variable names to historical data
                 keys
             use_year_before - True means that when saving data, we should use
@@ -398,6 +396,8 @@ init -850 python:
                 self is passed to this
             trigger_pp - programming point called to update trigger with
                 instead of the default year+1
+            start_dt - datetime that this MHS starts covering
+            end_dt - datetime that this MHS stops covering (exclusive)
         """
         import store.mas_history as mas_history
 
@@ -407,14 +407,14 @@ init -850 python:
         def __init__(self, 
                 mhs_id,
                 trigger,
-                start_dt,
-                end_dt,
                 mapping,
                 use_year_before=False,
                 dont_reset=False,
                 entry_pp=None,
                 exit_pp=None,
-                trigger_pp=None
+                trigger_pp=None,
+                start_dt=None,
+                end_dt=None
             ):
             """
             Constructor
@@ -449,6 +449,10 @@ init -850 python:
                     trigger when updating trigger, and the returned datetime 
                     is used as the new trigger.
                     (Default: None)
+                start_dt - datetime that this MHs starts covering
+                    if None, then we assume this MHs is continuous
+                end_dt - datetime that this MHS stops covering
+                    if None, then we assume this MHS is continous
             """
             # sanity checks
             if mhs_id in self.mas_history.mhs_db:
@@ -508,6 +512,8 @@ init -850 python:
             _now = datetime.datetime.now()
             _temp_trigger = _trigger.replace(year=_now.year)
 
+            
+
             if _now > _temp_trigger:
                 # trigger has already past, set the trigger for next year
                 return _trigger.replace(year=_now.year + 1)
@@ -531,6 +537,14 @@ init -850 python:
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
 
+        def isContinuous(self):
+            """
+            Checks if this MHS is continuous.
+            An MHS is continuous if it does not have datetime ranges.
+
+            RETURNS: True if continuos, False if npt
+            """
+            return self.start_dt is None or self.end_dt is None
 
         def setTrigger(self, _trigger):
             """
