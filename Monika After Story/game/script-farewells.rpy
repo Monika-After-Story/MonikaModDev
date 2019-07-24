@@ -499,9 +499,6 @@ label bye_prompt_sleep:
             m 2efc "Maybe you'd be in a better mood if you went to bed at a better time..."
             m "Goodnight."
 
-        else:
-            m 2efc "Goodnight."
-
         elif mas_isMoniDis():
             m 6rkc "Maybe you should start going to bed a littler earlier, [player]..."
             m 6dkc "It might make you--{w=1}us--{w=1}happier."

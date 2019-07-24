@@ -902,8 +902,6 @@ label ch30_main:
 
 label continue_event:
     m "Now, where was I..."
-    elif:
-        m "Alright, where I stopped?..."
 
     return
 

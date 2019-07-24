@@ -124,10 +124,6 @@ label mas_compliment_beautiful_3:
     m 1hubfa "Ehehe~"
     m 1ekbfa "[thanks_quip]"
     m 5hubfb "Never forget that you're the most beautiful person in the world to me."
-    else:
-        m 5hubfb "You'll always be the most beautiful person to me."
-    elif:
-        m 5hubfb "Don't forget i love you no matter how you looks like!"
     return
 
 init 5 python:
