@@ -860,7 +860,7 @@ init 15 python in mas_affection:
         ## NORMAL quips
         quips = [
             "What would you like to talk about?",
-            "Is there something you want to talk about?"
+            "Is there something you'd like to talk about?"
         ]
         save_quips(NORMAL, quips)
 
