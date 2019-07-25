@@ -404,7 +404,7 @@ init -1 python:
 
         image_overcast_day="monika_rain_room",
 
-        image_snow_day="monika_rain_room",
+        image_snow_day="monika_snow_room",
 
         #Def room should always be unlocked
         unlocked=True,
@@ -420,6 +420,7 @@ init -1 python:
 image monika_day_room = "mod_assets/location/spaceroom/spaceroom.png"
 image monika_room = "mod_assets/location/spaceroom/spaceroom-n.png"
 image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
+image monika_snow_room = "mod_assets/location/spaceroom/spaceroom_snow.png"
 
 #START: Location Selector
 init 5 python:
