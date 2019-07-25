@@ -498,7 +498,7 @@ label mas_scary_story_cleanup:
             "Did I scare you, [player]?",
             "How was it?",
             "Well?",
-            "So...{w=0.5} did it scared you?"
+            "So...{w=0.5}did it scare you?"
         ]
         story_end_quip=renpy.substitute(renpy.random.choice(story_end_quips))
 
