@@ -77,7 +77,6 @@ init -1 python in mas_greetings:
         ):
         """
         Filters a greeting for the given type, among other things.
-
         IN:
             ev - ev to filter
             curr_pri - current loweset priority to compare to
@@ -86,7 +85,6 @@ init -1 python in mas_greetings:
             gre_type - type of greeting we want. We just do a basic
                 in check for category. We no longer do combinations
                 (Default: None)
-
         RETURNS:
             True if this ev passes the filter, False otherwise
         """
@@ -154,14 +152,12 @@ init -1 python in mas_greetings:
         """
         Selects a greeting to be used. This evaluates rules and stuff
         appropriately.
-
         IN:
             gre_type - greeting type to use
                 (Default: None)
             check_time - time to use when doing date checks
                 If None, we use current datetime
                 (Default: None)
-
         RETURNS:
             a single greeting (as an Event) that we want to use
         """
@@ -2631,7 +2627,6 @@ label greeting_distressed:
             "Hopefully we can enjoy our time together.",
             "I wasn't expecting you.",
             "I hope things start going better soon.",
-            "I thought you forgot about me."
         ]
 
     $ distressed_quip1 = renpy.random.choice(distressed_greeting_quips_first)

@@ -8,11 +8,11 @@ init 5 python:
 
 label gender:
     #TODO: update exp's on this
-    m 2eud "...[player]? So I've been thinking a bit."
-    m 4esd "I've mentioned before that the 'you' in the game might not reflect the real you."
-    m 3eud "But I guess I had just assumed that you were probably a guy."
-    m 4esd "The main character was, after all."
-    m 1eud "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
+    m 2d "...[player]? So I've been thinking a bit."
+    m "I've mentioned before that the 'you' in the game might not reflect the real you."
+    m 1m "But I guess I had just assumed that you were probably a guy."
+    m "The main character was, after all."
+    m 1a "But if I'm going to be your girlfriend, I should probably know at least this much about the real you."
 
     m "So, are you male or female?{nw}"
     $ _history_list.pop()

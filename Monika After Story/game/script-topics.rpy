@@ -10119,6 +10119,7 @@ label monika_idle_game_quick_callback:
         m 1dsc "Anyway..."
         m 1eka "I missed you and I'm glad you're finally back, [player]."
         m "I hope I don't have to wait such a long couple of minutes next time, ehehe."
+
     return
 
 init 5 python:
