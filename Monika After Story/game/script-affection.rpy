@@ -1891,6 +1891,7 @@ label monika_affection_nickname:
             "criminal",
             "cruel",
             "cunt",
+            "cum",
             "crazy",
             "damn",
             "demon",
@@ -1938,6 +1939,7 @@ label monika_affection_nickname:
             "loser",
             "maniac",
             "mad",
+            "masochist",
             "milf",
             "monster",
             "moron",
@@ -1983,6 +1985,8 @@ label monika_affection_nickname:
             "soil",
             "stink",
             "stupid",
+            "sperm",
+            "semen",
             "tampon",
             "teabag",
             "terrible",
@@ -2041,7 +2045,7 @@ label monika_affection_nickname:
             "my love",
             "queen",
             "fluffy",
-            "dear",
+            "pretty",
         ]
 
         # mom list
