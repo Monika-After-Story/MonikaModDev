@@ -1358,15 +1358,19 @@ label ch30_loop:
     $ quick_menu = True
 
     python:
-        should_dissolve_all = mas_shouldChangeTime()
         should_dissolve_masks = (
             mas_weather.weatherProgress()
             and mas_isMoniNormal(higher=True)
         )
 
+        should_dissolve_all = (
+            mas_shouldChangeTime()
+            or mas_weather.should_dissolve_all
+        )
+
     #NOTE: putting the scene change condition directly in here because
     #It doesn't like being in the python block
-    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all or mas_weather.should_scene_change, dissolve_masks=should_dissolve_masks)
+    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
     #This should be set back to false so we're not constantly scene changing
     $ mas_weather.should_scene_change = False

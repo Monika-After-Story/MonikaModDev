@@ -464,17 +464,11 @@ init -20 python in mas_weather:
 
 
     def _weather_overcast_entry(_old):
-        #Set this to True so our bg changer can update the room accordingly
-        store.mas_is_overcast = True
-
         #Lock islands
         store.mas_lockEVL("mas_monika_islands", "EVE") # TODO: island rain art (same will work for overcast, really)
 
 
     def _weather_overcast_exit(_new):
-        #Set this false so the bg sel can adjust properly
-        store.mas_is_overcast = False
-
         #Unlock islands
         islands_ev = store.mas_getEV("mas_monika_islands")
         if (

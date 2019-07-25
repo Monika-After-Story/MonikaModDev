@@ -5508,9 +5508,6 @@ define MAS_RAIN_UPSET = 25
 define MAS_RAIN_DIS = 40
 define MAS_RAIN_BROKEN = 70
 
-#overcast
-define mas_is_overcast = False
-
 # snow
 define mas_is_snowing = False
 
