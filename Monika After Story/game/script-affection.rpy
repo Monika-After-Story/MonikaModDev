@@ -866,7 +866,7 @@ init 15 python in mas_affection:
 
         ## HAPPY quips
         quips = [
-            "What would you like to talk about?",
+            "What would you like to talk about?"
         ]
         save_quips(HAPPY, quips)
 
