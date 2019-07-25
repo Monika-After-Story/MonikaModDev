@@ -11724,7 +11724,6 @@ label monika_stoicism:
 
     return
 
-init 5 python:
     addEvent(
         Event(
             persistent.event_database,
