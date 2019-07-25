@@ -12692,9 +12692,9 @@ init 5 python:
 label monika_japanesefood:
     m 2eua "Hey [player], have you ever eaten some kind of Japanese food?"
     m 2eua "There's a lot of variety when talking about that kind of stuff."
-    m 3eua "For example, you might know about typical ones like sushi, or ramen."
+    m 3eua "For example, you might know about typical ones like sushi, or ramen"
     m 3eua "But did you know that there are actually a lot more of them?"
-    m 3rua "Well... I didn't realize at first, but I have been researching about it quite a bit."
+    m 3rua "Well...I didn't realize at first, but I have been researching about it quite a bit."
     m 3rka "They seem to also cook a lot of food based on meat, and despite being a vegetarian, I like their ideas."
     m 1hsu "On the other hand, they also seem to prepare a lot of sweets made of different flavours!"
     m 1nsu "You should check them out if you are interested about the topic~"
@@ -12707,13 +12707,13 @@ label monika_vr:
     m 4eua "[player], do you know about those virtual reality headsets that are out there in the market?"
     m 4euu "VR immerses you into a virtual world, different from your actual surroundings."
     m 4huu "You should try it yourself to get what I'm saying"
-    m 1ekc "Too bad my reality isn't able to be entered with VR..."
+    m 1ekc "Too bad you can't enter my reality with it..."
     m 1dkc "That would mean that you could be so much closer to me..."
     m 3esu "Although, I would prefer to enter your world to be right beside you~"
     m 3esu "So you better prepare yourself for that day, [player]"
     m 3kub "The day I get to join your world, we are going to do lots of fun stuff!"
     show monika 5lublu at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5lublu "I can't wait for that~"
+    m 5lublu "I can't wait for it~"
     return
 
 init 5 python:
