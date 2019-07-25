@@ -26,6 +26,7 @@ init -10 python:
             exit_pp - exit programming points
         """
         import store.mas_background as mas_background
+        import store.mas_weather as mas_weather
 
         def __init__(
             self,
@@ -222,45 +223,53 @@ init -10 python:
             """
             return (self.unlocked,)
 
-        def getDayRoom(self):
+        def getDayRoom(self, weather=None):
             """
             Returns the day masks to use given the conditions/availablity of present assets
             """
-            if store.mas_is_raining:
+            if weather is None:
+                weather = store.mas_current_weather
+
+            if weather.precip_type == mas_weather.PRECIP_TYPE_RAIN:
                 return self.image_rain_day
-            elif store.mas_is_overcast:
+            elif weather.precip_type == mas_weather.PRECIP_TYPE_OVERCAST:
                 return self.image_overcast_day
-            elif store.mas_is_snowing:
+            elif weather.precip_type == mas_weather.PRECIP_TYPE_SNOW:
                 return self.image_snow_day
             return self.image_day
 
-        def getNightRoom(self):
+        def getNightRoom(self, weather=None):
             """
             Returns the night masks to use given the conditions/availablity of present assets
             """
-            if store.mas_is_raining:
+            if weather is None:
+                weather = store.mas_current_weather
+
+            if weather.precip_type == mas_weather.PRECIP_TYPE_RAIN:
                 return self.image_rain_night
-            elif store.mas_is_overcast:
+            elif weather.precip_type == mas_weather.PRECIP_TYPE_OVERCAST:
                 return self.image_overcast_night
-            elif store.mas_is_snowing:
+            elif weather.precip_type == mas_weather.PRECIP_TYPE_SNOW:
                 return self.image_snow_night
             return self.image_night
 
-        def hasWeatherRoom(self):
+        def getRoomForTime(self, weather=None):
             """
-            Returns true if the current background has an alternate bg for the current weather
-            """
-            #First we get the mask we're using
-            if store.mas_isMorning():
-                mask = self.getDayRoom()
-            else:
-                mask = self.getNightRoom()
+            Gets the room for the current time
 
-            if store.mas_is_raining or store.mas_is_overcast or store.mas_is_snowing:
-                return (
-                    (store.mas_isMorning() and mask != self.image_day)
-                    or (not store.mas_isMorning() and mask != self.image_night)
-                )
+            IN:
+                weather - get the room bg for the time and weather
+                (Default: current weather)
+            """
+            if weather is None:
+                weather = store.mas_current_weather
+            if store.mas_isMorning():
+                return self.getDayRoom(weather)
+            return self.getNightRoom(weather)
+
+        def isChangingRoom(self, old_weather, new_weather):
+            return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
+
 
 
 #Helper methods and such

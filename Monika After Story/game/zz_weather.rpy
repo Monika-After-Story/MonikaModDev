@@ -19,41 +19,36 @@ image def_weather_night = Movie(
 image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
 #Thanks LegendKiller21
-image rain_mask = Movie(
+image rain_weather_day = Movie(
     channel="window_3",
-    play="mod_assets/window/rain_mask.webm",
+    play="mod_assets/window/rain_day_mask.mp4",
     mask=None
 )
-image room_mask3_fb = "mod_assets/window/rain_mask_fb.png"
+image rain_weather_day_fb = "mod_assets/window/rain_day_mask_fb.png"
 
-# big thanks to sebastianN01 for the rain art & multimokia for the night rain!
-image rain_mask_left = Movie(
+#Thanks LegendKiller21
+image rain_weather_night = Movie(
+    channel="window_4",
+    play="mod_assets/window/rain_night_mask.mp4",
+    mask=None
+)
+image rain_weather_night_fb = "mod_assets/window/rain_night_mask_fb.png"
+
+#Thanks LegendKiller21
+image overcast_weather_day = Movie(
     channel="window_5",
-    play="mod_assets/window/spaceroom/window_5.webm",
+    play="mod_assets/window/overcast_day_mask.mp4",
     mask=None
 )
-image rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_fallback.png"
+image overcast_weather_day_fb = "mod_assets/window/overcast_day_mask_fb.png"
 
-image rain_mask_right = Movie(
+#Thanks LegendKiller21
+image overcast_weather_night = Movie(
     channel="window_6",
-    play="mod_assets/window/spaceroom/window_6.webm",
+    play="mod_assets/window/overcast_night_mask.mp4",
     mask=None
 )
-image rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_fallback.png"
-
-image night_rain_mask_left = Movie(
-    channel="window_5",
-    play="mod_assets/window/spaceroom/window_5_night_rain.mp4",
-    mask=None
-)
-image night_rain_mask_left_fb = "mod_assets/window/spaceroom/window_5_night_rain_fb.png"
-
-image night_rain_mask_right = Movie(
-    channel="window_6",
-    play="mod_assets/window/spaceroom/window_6_night_rain.mp4",
-    mask=None
-)
-image night_rain_mask_right_fb = "mod_assets/window/spaceroom/window_6_night_rain_fb.png"
+image overcast_weather_night_fb = "mod_assets/window/overcast_night_mask_fb.png"
 
 # big thanks to Zer0mniac for fixing the snow
 image snow_mask_night_left = Movie(
@@ -145,7 +140,7 @@ default persistent._mas_should_rain_today = None
 
 #Loading at init 0 because of season functions
 init python in mas_weather:
-    should_scene_change = False
+
     def shouldRainToday():
 
         #Is it a new day? If so, we should see if it should rain today
@@ -241,8 +236,17 @@ init -20 python in mas_weather:
     # NOTE: just reference MOOD's numbers
     WEAT_RETURN = "Nevermind"
 
-    weather_change_time = None
     #Stores the time at which weather should change
+    weather_change_time = None
+
+    #Precipitation type constants
+    PRECIP_TYPE_DEF = "def"
+    PRECIP_TYPE_RAIN = "rain"
+    PRECIP_TYPE_OVERCAST = "overcast"
+    PRECIP_TYPE_SNOW = "snow"
+
+    #Whether or not we should scene change
+    should_scene_change = False
 
 #    def canChangeWeather():
 #        """
@@ -269,22 +273,23 @@ init -20 python in mas_weather:
 
         #Otherwise we do stuff
         global weather_change_time
+        global should_scene_change
         #Set a time for startup
         if not weather_change_time:
-            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(5,30))
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
         elif weather_change_time < datetime.datetime.now():
             #Need to set a new check time
-            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(5,30))
+            weather_change_time = datetime.datetime.now() + datetime.timedelta(0,random.randint(1800,5400))
 
             #Change weather
             new_weather = store.mas_shouldRain()
             if new_weather is not None and new_weather != store.mas_current_weather:
+                #Let's see if we need to scene change
+                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, new_weather)
+
+                #Now we change weather
                 store.mas_changeWeather(new_weather)
-                #If the weather changed to anything which needs it, or we changed back to def, we need to scene change
-                #TODO: FIX SCENE CHANGE BACK TO DEF
-                if store.mas_current_background.hasWeatherRoom() or new_weather == store.mas_weather_def:
-                    should_scene_change = True
 
                 #Play the rumble in the back to indicate thunder
                 if new_weather == store.mas_weather_thunder:
@@ -292,6 +297,9 @@ init -20 python in mas_weather:
                 return True
 
             elif store.mas_current_weather != store.mas_weather_def:
+                #Let's see if we need to scene change
+                should_scene_change = store.mas_current_background.isChangingRoom(store.mas_current_weather, store.mas_weather_def)
+
                 store.mas_changeWeather(store.mas_weather_def)
                 return True
 
@@ -478,7 +486,6 @@ init -20 python in mas_weather:
 
 
 init -10 python:
-
     # weather class
     class MASWeather(object):
         """
@@ -490,6 +497,7 @@ init -10 python:
             unlocked - determines if this weather is unlocked/selectable
             sp_day - image tag for windows in day time
             sp_night - image tag for windows in nighttime
+            precip_type - type of precipitation (to use for the room type)
             isbg_wf_day - image PATH for islands bg daytime with frame
             isbg_wof_day = image PATH for islands bg daytime without frame
             isbg_wf_night - image PATH for island bg nighttime with frame
@@ -509,6 +517,7 @@ init -10 python:
                 prompt,
                 sp_day,
                 sp_night=None,
+                precip_type=store.mas_weather.PRECIP_TYPE_DEF,
                 isbg_wf_day=None,
                 isbg_wof_day=None,
                 isbg_wf_night=None,
@@ -531,6 +540,8 @@ init -10 python:
                 sp_night - image tag for spaceroom's left window in night
                     If None, we use sp_day for this
                     (Default: None)
+                precip_type - type of precipitation, def, rain, overcast, or snow
+                    (Default: def)
                 isbg_wf_day - image PATH for islands bg daytime with frame
                     (Default: None)
                 isbg_wof_day = image PATH for islands bg daytime without frame
@@ -556,6 +567,7 @@ init -10 python:
             self.prompt = prompt
             self.sp_day = sp_day
             self.sp_night = sp_night
+            self.precip_type = precip_type
             self.isbg_wf_day = isbg_wf_day
             self.isbg_wof_day = isbg_wof_day
             self.isbg_wf_night = isbg_wf_night
@@ -681,13 +693,15 @@ init -1 python:
         # sp night
         "def_weather_night",
 
+        precip_type=store.mas_weather.PRECIP_TYPE_DEF,
+
         # islands bg day
-        "mod_assets/location/special/with_frame.png",
-        "mod_assets/location/special/without_frame.png",
+        isbg_wf_day="mod_assets/location/special/with_frame.png",
+        isbg_wof_day="mod_assets/location/special/without_frame.png",
 
         # islands bg night
-        "mod_assets/location/special/night_with_frame.png",
-        "mod_assets/location/special/night_without_frame.png",
+        isbg_wf_night="mod_assets/location/special/night_with_frame.png",
+        isbg_wof_night="mod_assets/location/special/night_without_frame.png",
 
         unlocked=True
     )
@@ -698,11 +712,12 @@ init -1 python:
         "Rain",
 
         # sp day and night
-        "rain_mask",
+        "rain_day_mask",
 
         # sp night
-        "rain_mask",
-        #"night_rain_mask_right",
+        "rain_night_mask",
+
+        precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
@@ -724,6 +739,8 @@ init -1 python:
         # sp night
         "snow_mask_night_left",
 
+        precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
+
         entry_pp=store.mas_weather._weather_snow_entry,
         exit_pp=store.mas_weather._weather_snow_exit
     )
@@ -734,10 +751,12 @@ init -1 python:
         "Thunder/Lightning",
 
         # sp day and night
-        "rain_mask_left",
+        "rain_day_mask",
 
         # sp night
-        "night_rain_mask_left",
+        "rain_night_mask",
+
+        precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",
@@ -753,10 +772,12 @@ init -1 python:
         "Overcast",
 
         # sp day
-        "overcast_mask_left",
+        "overcast_weather_day",
 
         # sp night
-        "overcast_mask_left_night",
+        "overcast_weather_night",
+
+        precip_type=store.mas_weather.PRECIP_TYPE_OVERCAST,
 
         # islands bg day and night
         isbg_wf_day="mod_assets/location/special/rain_with_frame.png",

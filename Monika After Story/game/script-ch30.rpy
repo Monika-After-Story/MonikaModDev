@@ -258,14 +258,6 @@ image monika_body_glitch2:
 
 image room_glitch = "images/cg/monika/monika_bg_glitch.png"
 
-
-# spaceroom window positions
-transform spaceroom_window_left:
-    size (320, 180) pos (30, 200)
-
-transform spaceroom_window_right:
-    size (320, 180) pos (935, 200)
-
 init python:
 
     import subprocess
@@ -820,6 +812,8 @@ label spaceroom(start_bg=None, hide_mask=store.mas_current_background.hide_masks
     # dissolving everything means dissolve last
     if dissolve_all and not hide_mask:
         $ mas_drawSpaceroomMasks(dissolve_all)
+    elif dissolve_all:
+        $ renpy.with_statement(Dissolve(1.0))
 
     return
 
@@ -1370,10 +1364,13 @@ label ch30_loop:
             and mas_isMoniNormal(higher=True)
         )
 
-    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
+    #NOTE: putting the scene change condition directly in here because
+    #It doesn't like being in the python block
+    call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all or mas_weather.should_scene_change, dissolve_masks=should_dissolve_masks)
 
     #This should be set back to false so we're not constantly scene changing
     $ mas_weather.should_scene_change = False
+
 #    if should_dissolve_masks:
 #        show monika idle at t11 zorder MAS_MONIKA_Z
 
