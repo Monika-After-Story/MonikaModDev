@@ -3419,7 +3419,7 @@ init -11 python in mas_player_bday_event:
         if new_date < _now.date():
             # new date before today, set to next year
             curr_year += 1
-            new_date = d_pbdate.replace(year=curr_year)
+            new_date = d_pbday.replace(year=curr_year)
 
         # now modify day accordingly
         if d_pbday.month == 1 and 5 <= d_pbday.day <= 7:
@@ -3429,13 +3429,13 @@ init -11 python in mas_player_bday_event:
             new_dt = datetime.datetime(curr_year, 1, 6)
 
         # setup ranges
-        new_sdt = new_dt.replace(day=d_pbday.day)
+        new_sdt = new_dt.replace(month=d_pbday.month, day=d_pbday.day)
         new_edt = new_sdt + datetime.timedelta(days=2)
 
         # modify mhs
         mhs_pbday.start_dt = new_sdt
         mhs_pbday.end_dt = new_edt
-        mas_pbday.use_year_before = new_dt.date() < new_date
+        mhs_pbday.use_year_before = new_dt.date() < new_date
         mhs_pbday.setTrigger(new_dt)
 
 
