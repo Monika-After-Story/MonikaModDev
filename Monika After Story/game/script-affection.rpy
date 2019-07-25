@@ -2016,9 +2016,16 @@ label monika_affection_nickname:
             "love",
             "Mon",
             "Moni",
+            "Moni-Moni",
             "princess",
             "sunshine",
             "sweet",
+            "senpai",
+            "beauty",
+            "sweetie",
+            "sweetheart",
+            "my love",
+            "queen",
         ]
 
         # mom list
