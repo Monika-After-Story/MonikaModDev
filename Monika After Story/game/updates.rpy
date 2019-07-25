@@ -357,18 +357,22 @@ label v0_10_0(version="v0_10_0"):
 
         mhs_pbday = store.mas_history.getMHS("player_bday")
         if (
-                mhs_pbday is not None:
+                mhs_pbday is not None
                 and mhs_pbday.trigger.month == 1
                 and mhs_pbday.trigger.day == 1
         ):
-            # TODO: determine appropriate trigger date based on
-            #   player bday
-            # also set appropriate range
-            pass
+            store.mas_player_bday_event.correct_pbday_mhs(
+                persistent._mas_player_bday
+            )
 
         mhs_o31 = store.has_history.getMHS("o31")
-
-
+        if (
+                mhs_o31 is not None
+                and mhs_o31.trigger.month == 11
+                and mhs_o31.trigger.day == 2
+        ):
+            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_o31.use_year_before = True
 
         # always save mhs
         store.mas_history.saveMHSData()

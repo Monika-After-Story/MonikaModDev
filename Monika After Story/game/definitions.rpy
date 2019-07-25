@@ -3217,6 +3217,12 @@ init -985 python:
         )
 
 
+    def mas_TTDetected():
+        """
+        Checks if time travel was detected
+        NOTE: TT detection occurs at init -890
+        """
+        return store.mas_globals.tt_detected
 
 
 init -1 python:

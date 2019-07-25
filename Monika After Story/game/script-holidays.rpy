@@ -103,6 +103,7 @@ init -810 python:
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
         },
+        use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
         start_dt=datetime.datetime(2019, 10, 31),
 
@@ -3380,6 +3381,8 @@ init -810 python:
     ))
 
 init -11 python in mas_player_bday_event:
+    import datetime
+    import store.mas_history as mas_history
 
     def show_player_bday_Visuals():
         """
@@ -3388,12 +3391,53 @@ init -11 python in mas_player_bday_event:
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
+
     def hide_player_bday_Visuals():
         """
         Hides player_bday visuals
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+
+
+    def correct_pbday_mhs(d_pbday):
+        """
+        fixes the pbday mhs usin gthe given date as pbday
+
+        IN:
+            d_pbday - player birthdate
+        """
+        # get mhs
+        mhs_pbday = mas_history.getMHS("player_bday")
+        if mhs_pbday is None:
+            return
+
+        # determine correct year
+        _now = datetime.datetime.now()
+        curr_year = _now.year
+        new_date = d_pbday.replace(year=curr_year)
+        if new_date < _now.date():
+            # new date before today, set to next year
+            curr_year += 1
+            new_date = d_pbdate.replace(year=curr_year)
+
+        # now modify day accordingly
+        if d_pbday.month == 1 and 5 <= d_pbday.day <= 7:
+            new_dt = datetime.datetime(curr_year, 1, d_pbday.day - 2)
+
+        else:
+            new_dt = datetime.datetime(curr_year, 1, 6)
+
+        # setup ranges
+        new_sdt = new_dt.replace(day=d_pbday.day)
+        new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # modify mhs
+        mhs_pbday.start_dt = new_sdt
+        mhs_pbday.end_dt = new_edt
+        mas_pbday.use_year_before = new_dt.date() < new_date
+        mhs_pbday.setTrigger(new_dt)
+
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
@@ -3942,7 +3986,9 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp
+        exit_pp=store.mas_history._f14_exit_pp,
+        start_dt=datetime.datetime(2020, 2, 13),
+        end_dt=datetime.datetime(2020, 2, 15)
     ))
 
 label mas_f14_autoload_check:

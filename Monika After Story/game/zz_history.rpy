@@ -570,6 +570,20 @@ init -850 python:
             """
             return self.start_dt is None or self.end_dt is None
 
+        def isFuture(self, check_dt):
+            """
+            Checks if the given dt is before the active range of this MHS
+
+            IN:
+                check_dt - dateime to check
+
+            RETURNS: True if future, False if not
+            """
+            if self.isContinuous():
+                return False
+
+            return check_dt < self.start_dt.replace(year=check_dt.year)
+
         def isPassed(self, check_dt):
             """
             Checks if the given dt is past the active range of this MHS, aka
@@ -605,14 +619,16 @@ init -850 python:
                 first_sesh = _now
 
             if (
-#                    (not self.isContinuous() and self.inRange(_now))
-                    # NOTE: the above line is heavily flawed, don tuse yet
-                    False
+                    (
+                        mas_TTDetected()
+                        and not self.isContinuous()
+                        and not self.isPassed(_now)
+                    )
                     or _trigger.year > (_now.year + 1)
                     or _trigger <= first_sesh
                 ):
-                # if the current dt is within the active range of this MHS
-                # then the event this covers is ongoing and we need to reset
+                # if time travel occured and the event is ongoing or in
+                # the future
                 #
                 # or if the trigger year is at least 2 years beyond current, 
                 # its definitely a time travel issue.
