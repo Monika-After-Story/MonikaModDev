@@ -1365,7 +1365,7 @@ label ch30_loop:
 
         should_dissolve_all = (
             mas_shouldChangeTime()
-            or mas_weather.should_dissolve_all
+            or mas_weather.should_scene_change
         )
 
     #NOTE: putting the scene change condition directly in here because
