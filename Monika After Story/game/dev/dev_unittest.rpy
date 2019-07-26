@@ -6,11 +6,20 @@ init -1 python in mas_dev_unit_tests:
 
     unit_tests = [
         ("JSON - MASPoseMap", "dev_unit_test_json_masposemap", False, False),
+        ("MASHistorySaver", "dev_unit_test_mhs", False, False),
     ]
 
 init 10 python in mas_dev_unit_tests:
     from store.mas_moods import MOOD_AREA, MOOD_XALIGN
 
+
+label dev_unit_tests_show_pass:
+    m 1hua "passed"
+    return
+
+label dev_unit_tests_show_fail:
+    m 1ektsc "!!!FAILED!!!"
+    return 
 
 label dev_unit_tests_show_msgs(msg_list, format_text=False):
     $ index = 0
@@ -21,6 +30,46 @@ label dev_unit_tests_show_msgs(msg_list, format_text=False):
         m 1eua "[this_msg]"
         $ _history_list.pop()
         $ index += 1
+    return
+
+
+label dev_unit_tests_assertEqual(expected, actual):
+    if expected == actual:
+        call dev_unit_tests_show_pass
+    else:
+        call dev_unit_tests_show_fail
+    return
+
+
+label dev_unit_tests_assertIsNone(actual):
+    if actual is None:
+        call dev_unit_tests_show_pass
+    else:
+        call dev_unit_tests_show_fail
+    return 
+
+
+label dev_unit_tests_assertIsNotNone(actual):
+    if actual is not None:
+        call dev_unit_tests_show_pass
+    else:
+        call dev_unit_tests_show_fail
+    return
+
+
+label dev_unit_tests_assertTrue(actual):
+    if actual:
+        call dev_unit_tests_show_pass
+    else:
+        call dev_unit_tests_show_fail
+    return
+
+
+label dev_unit_tests_assertFalse(actual):
+    if actual:
+        call dev_unit_tests_show_fail
+    else:
+        call dev_unit_tests_show_pass
     return
 
 
@@ -185,3 +234,59 @@ label dev_unit_test_json_masposemap:
     return
             
 
+label dev_unit_test_mhs:
+    python:
+        def gen_fresh_mhs():
+            return MASHistorySaver("testing", datetime.datetime.now(), {})
+
+    m "CONSTRUCTOR:"
+    python:
+        test_mhs = gen_fresh_mhs()
+    call dev_unit_tests_assertEqual("testing", test_mhs.mhs_id)
+
+    m "getSortKey"
+    python:
+        dt_test = test_mhs.trigger
+        sortkey = MASHistorySaver.getSortKey(test_mhs)
+    call dev_unit_tests_assertEqual(dt_test, sortkey)
+
+    m "correctTriggerYear|future same year"
+    python:
+        dt_test = datetime.datetime.now() + datetime.timedelta(days=1)
+        correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
+    call dev_unit_tests_assertEqual(dt_test, correct_trig)
+
+    m "correctTriggerYear|future diff year"
+
+    m "correctTriggerYear|past same year"
+    python:
+        dt_test = datetime.datetime.now() - datetime.timedelta(days=1)
+        correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
+        dt_test = dt_test.replace(year=dt_test.year + 1)
+    call dev_unit_tests_assertEqual(dt_test, correct_trig)
+
+    m "fromTuple|(<future dt>, True)"
+    python:
+        test_data = (
+            datetime.datetime.now() + datetime.timedelta(days=1),
+            True
+        )
+        test_mhs = gen_fresh_mhs()
+        test_mhs.fromTuple(test_data)
+    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
+    call dev_unit_tests_assertTrue(test_mhs.use_year_before)
+
+    m "fromTuple|(<future dt>, False)"
+    python:
+        test_data = (
+            datetime.datetime.now() + datetime.timedelta(days=1),
+            False
+        )
+        test_mhs = gen_fresh_mhs()
+        test_mhs.fromTuple(test_data)
+    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
+    call dev_unit_tests_assertFalse(test_mhs.use_year_before)
+
+    m "fromTuple|(<past dt>, 
+
+    return
