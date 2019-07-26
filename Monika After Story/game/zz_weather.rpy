@@ -18,7 +18,7 @@ image def_weather_night = Movie(
 )
 image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
-#Thanks LegendKiller21
+#Thanks LegendKiller21/Orca
 image rain_weather_day = Movie(
     channel="window_3",
     play="mod_assets/window/rain_day_mask.mp4",
@@ -26,7 +26,7 @@ image rain_weather_day = Movie(
 )
 image rain_weather_day_fb = "mod_assets/window/rain_day_mask_fb.png"
 
-#Thanks LegendKiller21
+#Thanks LegendKiller21/Orca
 image rain_weather_night = Movie(
     channel="window_4",
     play="mod_assets/window/rain_night_mask.mp4",
@@ -34,7 +34,7 @@ image rain_weather_night = Movie(
 )
 image rain_weather_night_fb = "mod_assets/window/rain_night_mask_fb.png"
 
-#Thanks LegendKiller21
+#Thanks LegendKiller21/Orca
 image overcast_weather_day = Movie(
     channel="window_5",
     play="mod_assets/window/overcast_day_mask.mp4",
@@ -42,7 +42,7 @@ image overcast_weather_day = Movie(
 )
 image overcast_weather_day_fb = "mod_assets/window/overcast_day_mask_fb.png"
 
-#Thanks LegendKiller21
+#Thanks LegendKiller21/Orca
 image overcast_weather_night = Movie(
     channel="window_6",
     play="mod_assets/window/overcast_night_mask.mp4",
@@ -706,10 +706,10 @@ init -1 python:
         "Rain",
 
         # sp day and night
-        "rain_day_mask",
+        "rain_weather_day",
 
         # sp night
-        "rain_night_mask",
+        "rain_weather_night",
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 

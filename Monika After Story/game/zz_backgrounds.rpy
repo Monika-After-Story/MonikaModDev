@@ -119,59 +119,54 @@ init -10 python:
             if background_id in self.mas_background.BACKGROUND_MAP:
                 raise Exception("duplicate background ID")
 
-            if mas_background.areBGsLoadable(background_id):
-                self.background_id = background_id
-                self.prompt = prompt
-                self.image_day = image_day
-                self.image_night = image_night
+            self.background_id = background_id
+            self.prompt = prompt
+            self.image_day = image_day
+            self.image_night = image_night
 
-                #Handle rain BGs
-                if image_rain_day:
-                    self.image_rain_day = image_rain_day
-                else:
-                    self.image_rain_day = image_day
-
-                if image_rain_night:
-                    self.image_rain_night = image_rain_night
-                else:
-                    self.image_rain_night = image_night
-
-                #Overcast handling
-                if image_overcast_day:
-                    self.image_overcast_day = image_overcast_day
-                else:
-                    self.image_overcast_day = image_day
-
-                if image_overcast_night:
-                    self.image_overcast_night = image_overcast_night
-                else:
-                    self.image_overcast_night = image_night
-
-                #Snow handling
-                if image_snow_day:
-                    self.image_snow_day = image_snow_day
-                else:
-                    self.image_snow_day = image_day
-
-                if image_rain_night:
-                    self.image_snow_night = image_snow_night
-                else:
-                    self.image_snow_night = image_night
-
-                #Then the other props
-                self.hide_calendar = hide_calendar
-                self.hide_masks = hide_masks
-                self.hide_table = hide_table
-                self.unlocked = unlocked
-                self.entry_pp = entry_pp
-                self.exit_pp = exit_pp
-
-                # add to background map
-                self.mas_background.BACKGROUND_MAP[background_id] = self
-
+            #Handle rain BGs
+            if image_rain_day:
+                self.image_rain_day = image_rain_day
             else:
-                #Silently fail this, but log it.
-                store.mas_utils.writelog("[ERROR]: Failed to load background: " + prompt + ". Files are missing.")
+                self.image_rain_day = image_day
+
+            if image_rain_night:
+                self.image_rain_night = image_rain_night
+            else:
+                self.image_rain_night = image_night
+
+            #Overcast handling
+            if image_overcast_day:
+                self.image_overcast_day = image_overcast_day
+            else:
+                self.image_overcast_day = image_day
+
+            if image_overcast_night:
+                self.image_overcast_night = image_overcast_night
+            else:
+                self.image_overcast_night = image_night
+
+            #Snow handling
+            if image_snow_day:
+                self.image_snow_day = image_snow_day
+            else:
+                self.image_snow_day = image_day
+
+            if image_snow_night:
+                self.image_snow_night = image_snow_night
+            else:
+                self.image_snow_night = image_night
+
+            #Then the other props
+            self.hide_calendar = hide_calendar
+            self.hide_masks = hide_masks
+            self.hide_table = hide_table
+            self.unlocked = unlocked
+            self.entry_pp = entry_pp
+            self.exit_pp = exit_pp
+
+            # add to background map
+            self.mas_background.BACKGROUND_MAP[background_id] = self
 
 
         def __eq__(self, other):
@@ -276,28 +271,6 @@ init -10 python:
 init -20 python in mas_background:
     BACKGROUND_MAP = {}
     BACKGROUND_RETURN = "Nevermind"
-
-    def buildBGPaths(background_id, night=False):
-        """
-        Builds the path to the bg images
-
-        IN:
-            background_id:
-                The filename expected
-
-            night:
-                Whether or not to get the night version
-        """
-        pfx = "mod_assets/location/" + background_id + "/"
-        if night:
-            return pfx + background_id + "-n.png"
-        return pfx + background_id + ".png"
-
-    def areBGsLoadable(background_id):
-        """
-        Checks if we can load the bgs
-        """
-        return renpy.loadable(buildBGPaths(background_id)) and renpy.loadable(buildBGPaths(background_id,True))
 
     def loadMBGData():
         """
@@ -404,7 +377,8 @@ init -1 python:
 
         image_overcast_day="monika_rain_room",
 
-        image_snow_day="monika_snow_room",
+        image_snow_day="monika_snow_room_day",
+        image_snow_night="monika_snow_room_night",
 
         #Def room should always be unlocked
         unlocked=True,
@@ -419,8 +393,11 @@ init -1 python:
 #Spaceroom
 image monika_day_room = "mod_assets/location/spaceroom/spaceroom.png"
 image monika_room = "mod_assets/location/spaceroom/spaceroom-n.png"
+#Thanks Orca
 image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
-image monika_snow_room = "mod_assets/location/spaceroom/spaceroom_snow.png"
+#Thanks Velius/Orca
+image monika_snow_room_day = "mod_assets/location/spaceroom/spaceroom_snow.png"
+image monika_snow_room_night = "mod_assets/location/spaceroom/spaceroom_snow-n.png"
 
 #START: Location Selector
 init 5 python:
