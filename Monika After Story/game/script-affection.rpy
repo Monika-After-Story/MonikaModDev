@@ -1899,6 +1899,7 @@ label monika_affection_nickname:
             "cunt",
             "cum",
             "crazy",
+            "cheater",
             "damn",
             "demon",
             "dick",

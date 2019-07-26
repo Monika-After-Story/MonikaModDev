@@ -179,7 +179,9 @@ init 1 python in mas_chess:
         "Tch-",
         "Winning isn't everything, you know...",
         "Ahaha,{w} I was just letting you win since you keep losing so much.",
-        "Oh, you won.{w} I should have taken this game seriously, then."
+        "Oh, you won.{w} I should have taken this game seriously, then.",
+        "I was just easy on you.",
+        "Did you used a{w} 'Solver'{w} or you're cheating?"
         # TODO: look into more of these
     )
 
@@ -196,7 +198,8 @@ init 1 python in mas_chess:
     # 1k expressions
     _monika_wins_line_quips = (
         "Ahaha, do you even know how to play chess?", # use this for surrenders too
-        "Are you {i}that{/i} bad? I wasn't even taking this game seriously."
+        "Are you {i}that{/i} bad? I wasn't even taking this game seriously.",
+        "Are you even {i}trying{/i} to beat me?",
     )
 
     # generate label quips
