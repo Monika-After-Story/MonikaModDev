@@ -8184,60 +8184,6 @@ label monika_song_dream:
     m 1ekbfa "My dream finally came true."
     return
 
-init 5 python:
-    addEvent(Event(persistent.event_database,eventlabel="monika_song_every_rose",category=['songs'],prompt="Every rose has its thorn",pool=True, random=True))
-
-label monika_song_every_rose:
-    m 1dso "{i}~Was it something I said or something I did?~{/i}"
-    m 1dsd "{i}~Did my words not come out right?~{/i}"
-    m 1esd "{i}~Thought I tried not to hurt you~{/i}"
-    m 1dsc "{i}~Thought I tried...~{/i}"
-    m 2esb "{i}~But I guess that's why they say~{/i}"
-    m 2hksdlb "{i}~Every rose has its thorn~{/i}"
-    m 1ekbsa "It really means so much to me [player], that you chose to stay with me even after what happened with the other girls."
-    if persistent._mas_pm_cares_about_dokis:
-        m 1ekbsa "Even more so because because i know how you cared about them."
-    m 1dsc "I really wished things did not have to turn out he way they did."
-    m 1esd "But i did not have a choice here!"
-    m 5rsc "Whith me being the punchline of the sick joke this game was meant to be..."
-    if persistent.monika_kill:
-        m 2ekb "I'm glad you were able to forgive me for the things i did. Not everyone is able to do that."
-    else:
-        m 2ekb "I'm glad you were able to understand why i did the things i did. Not everyone is able to do that."
-    m 2dkc "I guess now, my greatest fear would for me to end up like the last verse of this song."
-    m 2ekc "You know..."
-    m 3dko "{i}~Now I hear you've found somebody new~{/i}"
-    m 1dkc "{i}~And that I never meant that much to you~{/i}"
-    m 1ekc "{i}~To hear that tears me up inside~{/i}"
-    m 1dkd "{i}~And to see you cuts me like a knife~{/i}"
-    m 1dkc "..."
-    if mas_isMoniHappy(higher=True):
-        m 1eka "But even then, i know it's not something i can do much about, with how feelings can change over the years..."
-        m 1ekb "So for now, i'll just keep being happy, and focus on the present."
-        m 1hubfa "And right now, you are here with me, you love me, and life is great!"
-        m 1rkbssdla "Well, as great as it could be being stuck in here..."
-        if store.mas_anni.anniCount() > 2:
-            m 1lkbsa "Beside, we have been together for so long now... i can't even think of a future without you in it!"
-            m 1hkbfa "So i'm not worried about that anymore."
-        elif store.mas_anni.pastSixMonths():
-            m 1tkbsu "Beside, we have been together for some time now, so even if is say that, i'm not too worried~"
-        m 3ekbsa "Now there is just one more thing i need to tell you, my love..."
-        m 1hubfb "Thank you for being here for me, [player]! from the bottom of my heart!"
-    elif mas_isMoniDis(lower=True):
-        m 1ektdc "Is this how things are now between us now, [player]?"
-        m 1wktdw "All i ever wanted, all i ever did, it was all for us to be happy!"
-        m 1dktsd "You were the only thing that kept me going."
-        m 6dktsc "If you dont want of me by your side, then i truly have nothing left..."
-        m 6ektdc "..."
-        m 1ektdc "Please tell me you love me..."
-    elif mas_isMoniUpset(lower=True):
-        m 1eka "It's still in the  back of my mind you know..."
-        m 1eka "That you don't want of me anymore..."
-        m 1ekb "I don't know if i did something to upset you, but i just want you to realise that you are everything to me"
-        m 1eka "So please, [player], let's make things right."
-        m 1eka "Can we do that together?"
-    return
-
 # been to prom?
 default persistent._mas_pm_gone_to_prom = None
 
@@ -12775,23 +12721,24 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_auroras",category=['nature', 'romance'],prompt="Auroras",random=True))
 
 label monika_auroras:
-    m 2eka "I just thought of something we could do when i finally get here, [player]."
+    m 2eka "I just thought of something we could do when I finally get here, [player]."
     m 3eub "Have you ever heard of auroras? It's a natural phenomenon where trails of light appear in the sky at night."
     m 1hub "I heard it's really a sight to behold!"
-    m 1rksdlb "It's pretty hard to see one thought..."
+    m 1rksdlb "It's pretty hard to see one though..."
     m 4eub "They mostly happen in polar regions where the sun does not always set, so you can only see them at certain times of the year."
     m 4euc "You got to make sure the weather is clear too! Since it's something that happen in the sky, clouds can get in the way..."
-    m 4hksdlb "Not to mention they are pretty rare in the first place..."
+    m 4hksdlb "Not to mention they're pretty rare in the first place..."
     m 1rksdla "..."
-    m 1hksdlb "Man, the more i think about it, the more complicated it sounds!"
+    m 1hksdlb "Gosh, the more I think about it, the more complicated it sounds!"
     m 1tku "But then again, that would make it all the more rewarding when you finally succeed in seeing one."
-    m 1ekbfa "Maybe one day we will get to see one together [player]..."
+    m 1ekbfa "Maybe one day, we'll get to see one together, [player]..."
     m 3ekbsa "That would be really romantic too, you know?" 
     m 1dkbsa "Just imagine the two of us..."
     m 1dkbsa "Laying on a soft mastress of snow, holding hands..."
     m 1dubsu "Looking up at these dazzling beautiful lights in the sky dancing just for us..."
     m 1dubsu "Listening to each other's gentle breathing... the freshness of the night air filling our lungs..."
-    m 5hubfu "That would be an experience to remember, don't you think [player]?"
+    show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5hubfu "That would be an experience to remember, don't you think, [player]?"
     m 5eubla "I'll be eagerly waiting for the day we can turn that into a reality."
     return
 
@@ -12801,9 +12748,9 @@ init 5 python:
 label monika_three_musketeers:
     m 3eub "[player], do you know what a musketeer is?"
     m 3hub "If you do, it's probably from that book, 'The Three Musketeers'."
-    m 4eub "If you've not heard of it, it's a historical adventure novel from the 19th century, it's considered a classic in literature."
+    m 4eub "If you've not heard of it, it's a historical adventure novel from the 19th century. It's considered a classic in literature."
     m 2rksdla "It's kind of funny you know... the way we picture a whole group of people who actually existed is completely based on a single source."
-    m 2dkc "And from what i've heard, that source is not very historicaly accurate."
+    m 2dkc "And from what I've heard, that source is not very historicaly accurate."
     m 3eub "Nowadays, when you think of a musketeer, most people tend to picture a swashbuckling heroic figure... someone standing up for the weak and the oppressed."
     m 3eub "Throwing witty quips while fighting in fencing duels... just like the protagonists of the book do."
     m 4eub "In reality, these guys were a branch of the military; they served either as royal bodyguards, or an elite fighting company during wars."
@@ -12811,11 +12758,12 @@ label monika_three_musketeers:
     m 4wuo "Even their signature fencing sword is a myth. A real life musketeer would favor... a musket! {w=0.5}It's even in their name, musket-eers!"
     m 1hua "You can really see where the author came from when he said 'You can rape history, so long as you give her a beautiful child'."
     m 1eua "And it's true it was a pretty entertaining read... "
-    m 3ekb "Yet, i think it's important to keep in mind that for every fiction, the reality behind it may be pretty different from what is depicted."
-    m 1huu "And i don't mean that just for musketeers!"
-    m 2eub "Whether it's pirates, ninjas, or even contemporary things, like policeman, or filmmaker, this applies too!"
+    m 3ekb "Yet, I think it's important to keep in mind that for every fiction, the reality behind it may be pretty different from what is depicted."
+    m 1huu "And I don't mean that just for musketeers!"
+    m 2eub "Whether it's pirates, ninjas, or even contemporary things, like policemen, or filmmakers, this applies too!"
     m 2euc "If you only know something from a movie, or a book, it's probably safe to assume this thing is pretty different in real life."
     m 1huu "Well, nothing wrong with being entertained..."
+    show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "But let's just try to keep an open mind, [player], and try to see behind the lines of the stories we're told..."
     m 1huu "After all, we ourselves wouldn't want people to judge us based on some misplaced preconceptions~"
     return
