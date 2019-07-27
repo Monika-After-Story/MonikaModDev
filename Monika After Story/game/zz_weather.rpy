@@ -3,22 +3,21 @@
 
 ### spaceroom weather art
 
+#Big thanks to Legendkiller21/Orca/Velius for helping out with these
 image def_weather_day = Movie(
     channel="window_1",
-    play="mod_assets/window/def_day_mask.webm",
+    play="mod_assets/window/def_day_mask.mp4",
     mask=None
 )
 image def_weather_day_fb = "mod_assets/window/def_day_mask_fb.png"
 
-#Thanks Trilasent
 image def_weather_night = Movie(
     channel="window_2",
-    play="mod_assets/window/def_night_mask.webm",
+    play="mod_assets/window/def_night_mask.mp4",
     mask=None
 )
 image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
-#Thanks LegendKiller21/Orca
 image rain_weather_day = Movie(
     channel="window_3",
     play="mod_assets/window/rain_day_mask.mp4",
@@ -26,7 +25,6 @@ image rain_weather_day = Movie(
 )
 image rain_weather_day_fb = "mod_assets/window/rain_day_mask_fb.png"
 
-#Thanks LegendKiller21/Orca
 image rain_weather_night = Movie(
     channel="window_4",
     play="mod_assets/window/rain_night_mask.mp4",
@@ -34,7 +32,6 @@ image rain_weather_night = Movie(
 )
 image rain_weather_night_fb = "mod_assets/window/rain_night_mask_fb.png"
 
-#Thanks LegendKiller21/Orca
 image overcast_weather_day = Movie(
     channel="window_5",
     play="mod_assets/window/overcast_day_mask.mp4",
@@ -42,7 +39,6 @@ image overcast_weather_day = Movie(
 )
 image overcast_weather_day_fb = "mod_assets/window/overcast_day_mask_fb.png"
 
-#Thanks LegendKiller21/Orca
 image overcast_weather_night = Movie(
     channel="window_6",
     play="mod_assets/window/overcast_night_mask.mp4",
@@ -50,63 +46,20 @@ image overcast_weather_night = Movie(
 )
 image overcast_weather_night_fb = "mod_assets/window/overcast_night_mask_fb.png"
 
-# big thanks to Zer0mniac for fixing the snow
-image snow_mask_night_left = Movie(
+image snow_weather_day = Movie(
     channel="window_7",
-    play="mod_assets/window/spaceroom/window_7.webm",
+    play="mod_assets/window/snow_day_mask.mp4",
     mask=None
 )
-image snow_mask_night_left_fb = "mod_assets/window/spaceroom/window_7_fallback.png"
+image snow_weather_day_fb = "mod_assets/window/snow_day_mask_fb.png"
 
-image snow_mask_night_right = Movie(
+image snow_weather_night = Movie(
     channel="window_8",
-    play="mod_assets/window/spaceroom/window_8.webm",
+    play="mod_assets/window/snow_night_mask.mp4",
     mask=None
 )
-image snow_mask_night_right_fb = "mod_assets/window/spaceroom/window_8_fallback.png"
+image overcast_mask_left_fb = "mod_assets/window/snow_night_mask_fb.png"
 
-image snow_mask_day_left = Movie(
-    channel="window_9",
-    play="mod_assets/window/spaceroom/window_9.webm",
-    mask=None
-)
-image snow_mask_day_left_fb = "mod_assets/window/spaceroom/window_9_fallback.png"
-
-image snow_mask_day_right = Movie(
-    channel="window_10",
-    play="mod_assets/window/spaceroom/window_10.webm",
-    mask=None
-)
-image snow_mask_day_right_fb = "mod_assets/window/spaceroom/window_10_fallback.png"
-
-#Thanks multimokia for the overcast masks
-image overcast_mask_left = Movie(
-    channel="window_5",
-    play="mod_assets/window/spaceroom/overcast_mask_left.mp4",
-    mask=None
-)
-image overcast_mask_left_fb = "mod_assets/window/spaceroom/overcast_mask_left_fb.png"
-
-image overcast_mask_right = Movie(
-    channel="window_6",
-    play="mod_assets/window/spaceroom/overcast_mask_right.mp4",
-    mask=None
-)
-image overcast_mask_right_fb = "mod_assets/window/spaceroom/overcast_mask_right_fb.png"
-
-image overcast_mask_left_night = Movie(
-    channel="window_5",
-    play="mod_assets/window/spaceroom/overcast_mask_left_night.mp4",
-    mask=None
-)
-image overcast_mask_left_night_fb = "mod_assets/window/spaceroom/overcast_mask_left_night_fb.png"
-
-image overcast_mask_right_night = Movie(
-    channel="window_6",
-    play="mod_assets/window/spaceroom/overcast_mask_right_night.mp4",
-    mask=None
-)
-image overcast_mask_right_night_fb = "mod_assets/window/spaceroom/overcast_mask_right_night_fb.png"
 
 ## end spaceroom weather art
 
@@ -728,10 +681,10 @@ init -1 python:
         "Snow",
 
         # sp day
-        "snow_mask_day_left",
+        "snow_weather_day",
 
         # sp night
-        "snow_mask_night_left",
+        "snow_weather_night",
 
         precip_type=store.mas_weather.PRECIP_TYPE_SNOW,
 
@@ -745,10 +698,10 @@ init -1 python:
         "Thunder/Lightning",
 
         # sp day and night
-        "rain_day_mask",
+        "rain_weather_day",
 
         # sp night
-        "rain_night_mask",
+        "rain_weather_night",
 
         precip_type=store.mas_weather.PRECIP_TYPE_RAIN,
 

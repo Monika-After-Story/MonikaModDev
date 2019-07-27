@@ -399,21 +399,22 @@ image monika_rain_room = "mod_assets/location/spaceroom/spaceroom_rain.png"
 image monika_snow_room_day = "mod_assets/location/spaceroom/spaceroom_snow.png"
 image monika_snow_room_night = "mod_assets/location/spaceroom/spaceroom_snow-n.png"
 
+#TODO: locking/unlocking of this based on other backgrounds
 #START: Location Selector
-init 5 python:
-    # available only if moni affection is affectionate+
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="monika_change_background",
-            category=["location"],
-            prompt="Can we go somewhere else?",
-            pool=True,
-            unlocked=True,
-            rules={"no unlock": None},
-            aff_range=(mas_aff.AFFECTIONATE, None)
-        )
-    )
+#init 5 python:
+#    # available only if moni affection is affectionate+
+#    addEvent(
+#        Event(
+#            persistent.event_database,
+#            eventlabel="monika_change_background",
+#            category=["location"],
+#            prompt="Can we go somewhere else?",
+#            pool=True,
+#            unlocked=False,
+#            rules={"no unlock": None},
+#            aff_range=(mas_aff.AFFECTIONATE, None)
+#        )
+#    )
 
 label monika_change_background:
 
