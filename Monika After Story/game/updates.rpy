@@ -305,6 +305,47 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.9.6
+label v0_9_6(version="v0_9_6"):
+    python:
+        ev_label_list = [
+            ("monika_whatwatching","mas_wrs_youtube"),
+            ("monika_lookingat","mas_wrs_r34m"),
+            ("monika_monikamoddev","mas_wrs_monikamoddev")
+        ]
+        #NOTE:
+        #We only really want the shown count and last seen. Nothing else mattress
+        for old_ev_label, new_ev_label in ev_label_list:
+            ev = mas_getEV(new_ev_label)
+            if old_ev_label in persistent._mas_windowreacts_database:
+                old_ev = Event(
+                    persistent._mas_windowreacts_database,
+                    old_ev_label
+                )
+            else:
+                old_ev = None
+
+            if ev is not None and old_ev is not None:
+                ev.shown_count += old_ev.shown_count
+
+                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                    ev.last_seen = old_ev.last_seen
+
+                mas_transferTopicSeen(old_ev_label, new_ev_label)
+
+                # erase this topic
+                mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        # this doesn't need to be locked by default anymore with the new greet code
+        if not renpy.seen_label("greeting_tears"):
+            mas_unlockEVL("greeting_tears", "GRE")
+
+        # let's actually pool this finally
+        family_ev = mas_getEV("monika_family")
+        if family_ev is not None:
+            family_ev.pool = True
+    return
+
 # 0.9.5
 label v0_9_5(version="v0_9_5"):
     python:
