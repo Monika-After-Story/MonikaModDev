@@ -13095,7 +13095,7 @@ label monika_althistory:
     m 3eub "The second: there is a change in a critical point of history, which is commonly referred to as the '{i}Point of Divergence{/i}', or PoD for short."
     m 4eua "Lastly, the third: A story that explores the consequences of that change."
     m 2esc "As you can see, one divergence in a critical point can drastically alter the outcome of the entire timeline, as its consequences may have varied results."
-    m 4eud "And this ultimately leads to the butterfly effect, as in some things simply not existing anymore, as the circumstances behind them may simply no longer exist."
+    m 4eud "And this ultimately leads to the butterfly effect, as in some things simply not happening anymore, as the circumstances behind them may simply no longer exist."
     m 1eud "That makes me wonder... If some major events went differently in your world, would my creator still have come up with the idea for this game?"
     m 1rksdld "Even so, its entire concept could be vastly different... Perhaps I wouldn't be able to have my epiphany like I did... if I even exist at all."
     m 1dksdlc "That means we wouldn't be able to meet for real, either. The thought itself really terrifies me..."
