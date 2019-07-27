@@ -620,6 +620,11 @@ init python:
             unlock_label=unlock_sel
         )
 
+        # unlock the gifted clothes selector and add clothes to gifted_clothes list
+        if sp_type == store.mas_sprites.SP_CLOTHES and sp_name is not None:
+            gifted_clothes.append(mas_selspr.CLOTH_SEL_MAP[sp_name])
+            mas_unlockEVL("monika_gifted_clothes_select", "EVE")
+
         # save persistent
         renpy.save_persistent()
 

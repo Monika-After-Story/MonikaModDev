@@ -2644,8 +2644,8 @@ init -2 python:
             """
             # clothes and hair
             self.change_outfit(
-                store.mas_sprites.CLOTH_MAP[_clothes_name],
-                store.mas_sprites.HAIR_MAP[_hair_name],
+                store.mas_sprites.CLOTH_MAP.get(_clothes_name, store.mas_clothes_def),
+                store.mas_sprites.HAIR_MAP.get(_hair_name, store.mas_hair_def),
                 startup=startup
             )
 

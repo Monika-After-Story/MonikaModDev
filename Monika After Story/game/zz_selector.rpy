@@ -2797,6 +2797,65 @@ label monika_clothes_select:
 
     return
 
+init 200 python:
+    # list of event clothes
+    event_clothes = [
+        mas_selspr.CLOTH_SEL_MAP["sundress_white"],
+        mas_selspr.CLOTH_SEL_MAP["santa"],
+        mas_selspr.CLOTH_SEL_MAP["rin"],
+        mas_selspr.CLOTH_SEL_MAP["marisa"]
+    ]
+
+    # need to get a list of clothes that have been gifted
+    # so we will get a list of all clothes and then remove the event_clothes
+    gifted_clothes = mas_selspr.filter_clothes(True)
+
+    for i in event_clothes:
+        if i in gifted_clothes:
+            gifted_clothes.remove(i)
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_gifted_clothes_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("clothes", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, mas_aff.ENAMORED)
+        )
+    )
+
+label monika_gifted_clothes_select:
+    # setup
+    python:
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which clothes would you like me to wear?"
+        )
+        sel_map = {}
+
+    # initial dialogue
+    m 1hua "Sure!"
+
+    # setup the monika expression during the selection screen
+    show monika 1eua
+
+    # start the selection screen
+    call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
+
+    # results
+    if not _return:
+        # user hit cancel
+        m 1eka "Oh, alright."
+
+    # closing
+    m 1eub "If you want me to wear different clothes, just ask, okay?"
+
+    return
+
+
 #### ends Monika clothes topic
 
 ##### monika hair topics [MONHAIR]

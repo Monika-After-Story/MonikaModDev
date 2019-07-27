@@ -500,6 +500,12 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # unlock wardrobe for gifted clothes if we have more than 1 (since def is always here)
+        if len(store.gifted_clothes) > 1:
+            store.mas_unlockEVL("monika_gifted_clothes_select", "EVE")
+        else:
+            # if clothes have been removed, lock
+            store.mas_lockEVL("monika_gifted_clothes_select", "EVE")
 
     def _happyToNormal():
         """
