@@ -42,7 +42,6 @@ init -10 python:
             image_snow_night=None,
             hide_calendar=False,
             hide_masks=False,
-            hide_table=False,
             unlocked=False,
             entry_pp=None,
             exit_pp=None
@@ -96,11 +95,6 @@ init -10 python:
 
                 hide_masks:
                     weather or not we want to show the windows
-                    (Default: False)
-
-                hide_table:
-                    whether or not we want to hide the table
-                    NOTE: currently has no effect
                     (Default: False)
 
                 unlocked:
@@ -160,7 +154,6 @@ init -10 python:
             #Then the other props
             self.hide_calendar = hide_calendar
             self.hide_masks = hide_masks
-            self.hide_table = hide_table
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
