@@ -13083,7 +13083,7 @@ init 5 python:
 label monika_althistory:
     m 1esc "Say, [player], are you familiar with the concept of alternate history?"
     m 3eud "It's a genre of speculative fiction that focuses on 'what if' scenarios where a critical event in history happened differently."
-    m 1rusdld "I know it may sound pretty niche, but I actually find this kind of speculation very interesting, especially with how it's used to create interesting backgrounds in various literature."
+    m 1rusdld "I know it may sound pretty niche, but I actually find this kind of speculation very interesting, especially with how it's used to create interesting backgrounds in various pieces of literature."
     m 4eua "And while the genre's popularity only surged quite recently, the very first example actually dates back to the era of Ancient Rome and it's a type of counterfactual history."
     m 2esb "A Roman historian named Livy contemplated a scenario in his history book, '{i}Ab Urbe Condita Libri{/i}', where Alexander the Great had surived his fatal fever."
     m 4rub "A hypothetical scenario would have him pursue his plans of European expansion and inevitable confrontation of the Argead Empire with the Romans."
