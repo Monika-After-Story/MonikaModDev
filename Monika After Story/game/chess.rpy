@@ -2564,8 +2564,6 @@ label mas_chess_dlg_game_monika_win_20:
 # monika win by early surrender dialogue start
 label mas_chess_dlg_game_monika_win_surr_pre:
     m 1eka "Come on, don't give up so easily."
-else:
-    m 1ekd "Don't want to play chess?"
     return
 
 # main monika win by earlt surrenders label
