@@ -302,7 +302,8 @@ init 4 python:
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
-        "WRS": store.mas_windowreacts.windowreact_db
+        "WRS": store.mas_windowreacts.windowreact_db,
+        "FFF": store.mas_fun_facts.fun_fact_db
     }
 
 
@@ -1928,9 +1929,9 @@ label call_next_event:
             ):
             #Create a new notif
             if renpy.windows:
-                call display_notif(m_name, random.choice(win_notif_quips), "Topic Alerts")
+                $ display_notif(m_name, mas_win_notif_quips, "Topic Alerts")
             else:
-                call display_notif(m_name, random.choice(other_notif_quips), "Topic Alerts")
+                $ display_notif(m_name, mas_other_notif_quips, "Topic Alerts")
 
         call expression event_label from _call_expression
         $ persistent.current_monikatopic=0
@@ -1971,6 +1972,9 @@ label call_next_event:
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
+            if "love" in ret_items:
+                $ mas_ILY()
+
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
@@ -1980,16 +1984,16 @@ label call_next_event:
         if len(persistent.event_list) > 0:
             jump call_next_event
 
-        # return to normal pose
-        show monika idle at t11 zorder MAS_MONIKA_Z
-
     if store.mas_globals.in_idle_mode:
         # idle mode should transition shields
         $ mas_dlgToIdleShield()
-        show monika idle at t11 zorder MAS_MONIKA_Z
 
     else:
         $ mas_DropShield_dlg()
+
+    # return to normal pose
+    if not renpy.showing("monika idle"):
+        show monika idle at t11 zorder MAS_MONIKA_Z with dissolve
 
     return False
 
@@ -2031,6 +2035,9 @@ label prompt_menu:
         # only call label if it exists
         if cb_label is not None:
             call expression cb_label
+
+        #Show idle exp here so we dissolve like other topics
+        show monika idle with dissolve
 
         # clean up idle stuff
         $ persistent._mas_greeting_type = None
@@ -2091,7 +2098,11 @@ label prompt_menu:
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
-        talk_menu.append(("I love you!", "love"))
+        if _mas_getAffection() > -50:
+            if mas_passedILY(pass_time=datetime.timedelta(0,10)):
+                talk_menu.append(("I love you, too!","love_too"))
+            else:
+                talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind","nevermind"))
@@ -2113,6 +2124,9 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",True)
+
+    elif madechoice == "love_too":
+        $ pushEvent("monika_love_too",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start

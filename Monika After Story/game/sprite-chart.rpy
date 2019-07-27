@@ -5211,6 +5211,55 @@ image monika ATL_love:
 
         repeat
 
+# random exps for love_too at normal thru aff
+image monika ATL_love_too_norm_plus:
+    block:
+        choice:
+            "monika 1hua"
+        choice:
+            "monika 1huu"
+        choice:
+            "monika 1ekbsu"
+        choice:
+            "monika 1ekbsa"
+        choice:
+            "monika 1dkbsu"
+        choice:
+            "monika 1dubsu"
+        choice:
+            "monika 1dkbsa"
+        choice:
+            "monika 5ekbsa"
+        choice:
+            "monika 5esu"
+        choice:
+            "monika 5eka"
+
+# random exps for love_too at enam+
+image monika ATL_love_too_enam_plus:
+    block:
+        choice 0.05:
+            "monika 1sua"
+        choice 0.05:
+            "monika 1subsa"
+        choice 0.10:
+            "monika 1hua"
+        choice 0.10:
+            "monika 1huu"
+        choice 0.10:
+            "monika 1ekbsu"
+        choice 0.10:
+            "monika 1ekbsa"
+        choice 0.10:
+            "monika 1dkbsu"
+        choice 0.10:
+            "monika 1dubsu"
+        choice 0.10:
+            "monika 1dkbsa"
+        choice 0.10:
+            "monika 5ekbsa"
+        choice 0.10:
+            "monika 5esu"
 
 ### [IMG050]
 # condition-switched images for old school image selecting
