@@ -108,6 +108,8 @@ label mas_compliment_beautiful_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hub "Ehehe~"
             m "I love you so much, [player]!"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "You're in my top ten.":
             $ mas_loseAffection(modifier=0.5)
             m 3hksdrb "...?"
@@ -247,6 +249,8 @@ label mas_compliment_intelligent_2:
             $ mas_gainAffection(5,bypass=True)
             m 1hubfa "I love you so much, [player]!"
             m 3hubfb "We'll have a lifetime of self-improvement together!"
+            # manually handle the "love" return key
+            $ mas_ILY()
         "I'll always be proud of you.":
             $ mas_gainAffection(3,bypass=True)
             m 1ekbfa "[player]..."
@@ -387,14 +391,14 @@ label mas_compliment_thanks:
             m 1ekbsa "[player]..."
             m 1dubsu "Nothing makes me happier than hearing that coming from you."
             m "No matter what the future may have for us both..."
-            m 1ekbfa "Know that I'll always be here for you!"# really need a second opinion on this answer
+            m 1ekbfa "Know that I'll always love you and be here for you!"# really need a second opinion on this answer
         "Yeah.":
             m 1hub "Ehehe~"
             m 1eub "I love you, [player]."
 
     if not mas_isMoniLove():
-        $ lockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-    return
+        $ mas_lockEVL("mas_compliment_thanks", "CMP")
+    return "love"
 
 init 5 python:
     addEvent(
@@ -462,7 +466,7 @@ label mas_compliment_hero:
     m 5hubfa "You'll always be my hero, after all~"
     m 5hubfb "I love you and I'll always believe in you!"
     m 5ekbfa "I hope you never forget that, [player]~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(

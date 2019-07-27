@@ -136,7 +136,7 @@ label mas_fun_facts_3:
     m 1hksdlb "I'll have a real fact next time, don't you worry~"
     #No end for this fact since it ends itself
     $ persistent._mas_funfactfun = True
-    return
+    return "love"
 
 init 5 python:
     addEvent(

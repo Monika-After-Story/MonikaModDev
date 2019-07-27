@@ -2183,7 +2183,7 @@ label mas_affection_happynotif:
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
     show monika idle with dissolve
-    return
+    return "love"
 
 
 define mas_finalfarewell_mode = False
