@@ -332,7 +332,7 @@ label mas_story_grasshoper:
     m 3hua "The moral of this story is that: 'There's a time for work and a time for play'."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
@@ -386,7 +386,7 @@ label mas_story_gray_hair:
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
