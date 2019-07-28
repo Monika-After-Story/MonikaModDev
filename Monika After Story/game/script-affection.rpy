@@ -503,8 +503,8 @@ init 15 python in mas_affection:
         # unlock wardrobe for gifted clothes if we have more than 1 (since def is always here)
         if len(store.gifted_clothes) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
-        else:
-            # if clothes have been removed, lock
+        # if all gifted clothes have been removed and we are wearing def, lock
+        elif persistent._mas_monika_clothes is "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
 
@@ -522,7 +522,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # if wearing def, lock clothes selector
-        if store.monika_chr.clothes == store.mas_clothes_def:
+        if persistent._mas_monika_clothes is "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
 
@@ -615,7 +615,8 @@ init 15 python in mas_affection:
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
-        else:
+        # locks if nothing available and we are wearing def
+        elif persistent._mas_monika_clothes is "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
 
@@ -635,7 +636,7 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # if only def in gifted clothes and wearing def, lock clothes selector
-        if len(store.gifted_clothes) == 1 and store.monika_chr.clothes == store.mas_clothes_def:
+        if len(store.gifted_clothes) == 1 and (persistent._mas_monika_clothes is "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP):
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
 
