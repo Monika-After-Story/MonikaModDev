@@ -50,7 +50,7 @@ label gender:
     $ evhand.event_database["gender_redo"].pool = True
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
@@ -132,7 +132,7 @@ label gender_redo:
                 m "So I'll treat you however you want to be treated."
                 m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
@@ -2184,6 +2184,7 @@ label monika_rpy_files:
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
+            return "love"
 
         "No.":
             m "I see."
