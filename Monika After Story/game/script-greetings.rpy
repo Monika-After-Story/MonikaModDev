@@ -989,7 +989,7 @@ label greeting_glitch:
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -1033,6 +1033,7 @@ label greeting_monika_monday_morning:
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
         m "I love you so much, [player]~"
+        return "love"
 
     elif mas_isMoniUpset():
         m 2tfc "Another Monday morning."
@@ -2597,7 +2598,6 @@ label greeting_upset:
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
 
-    # use renpy say so you can use text tags
     show monika 2efc
     $ renpy.say(m, upset_quip1)
 
@@ -2694,6 +2694,7 @@ label greeting_back_from_school:
                 m "I'm sorry to hear that."
                 m 1eka "Just remember that no matter what happens, I'll be here for you."
                 m 1ekbfa "I love you so, so much."
+        return "love"
 
     elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
@@ -2762,6 +2763,7 @@ label greeting_back_from_work:
                 m "I'm sorry you had a bad work day..."
                 m 4eka "Just remember that I'm here when you need me, okay?"
                 m 1hubfa "I love you so much, [player]."
+                return "love"
 
     elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
@@ -2856,7 +2858,7 @@ label greeting_siat:
     m 2rkbfsdlu "..."
     m 3hubfb "Ahaha! Nevermind."
     m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
-    return
+    return "love"
 
 init 5 python:
     if not mas_cannot_decode_islands:
@@ -3317,7 +3319,7 @@ label greeting_returned_home_bday_short_sub_long_total:
     m 3ekbfa "I've said it a million times already, I know."
     m 1hua "But I'll always be happy when we're together."
     m "I love you so much..."
-    return
+    return "love"
 
 label greeting_returned_home_bday_normal_first:
     m 1sua "That was fun, [player]!"
@@ -3326,7 +3328,7 @@ label greeting_returned_home_bday_normal_first:
     m "I really enjoyed the time we spent together."
     m 1wua "Thank you for indulging me."
     m 1hua "I love you~"
-    return
+    return "love"
 
 label greeting_returned_home_bday_normal_sub_normal_total:
     m 1ekbfa "Ahaha..."
@@ -3349,7 +3351,7 @@ label greeting_returned_home_bday_normal_sub_long_total:
     m 1dkbfa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
     m 1ekbfb "I love you so much, [player]."
     m "Let's continue making each other happy~"
-    return
+    return "love"
 
 label greeting_returned_home_bday_long_sub:
     m 1dsc "..."
@@ -3370,7 +3372,7 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
