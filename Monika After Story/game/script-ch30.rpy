@@ -31,8 +31,6 @@ init -1 python in mas_globals:
 
     show_s_light = False
     # set to True to show s easter egg.
-    # NOTE: set to True during o31, and also during sayori easter egg
-    # TODO: need to this
 
     text_speed_enabled = False
     # set to True if text speed is enabled
@@ -1616,8 +1614,8 @@ label ch30_end:
 label ch30_reset:
 
     python:
-        # name eggs
-        if persistent.playername.lower() == "sayori":
+        # name/o31 eggs
+        if persistent.playername.lower() == "sayori" or store.mas_isO31():
             store.mas_globals.show_s_light = True
     
     python:
