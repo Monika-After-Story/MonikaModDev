@@ -20,7 +20,6 @@ init -10 python:
             image_snow_night - the image tag for the background while it's snowing during the night
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
-            hide_table - whether or not we want to have the table present
             unlocked - whether or not this background is unlocked
             entry_pp - entry programming points for bgs
             exit_pp - exit programming points
