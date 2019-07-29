@@ -521,9 +521,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
-        # if wearing def, lock clothes selector
-        if persistent._mas_monika_clothes == "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
-            store.mas_lockEVL("monika_clothes_select", "EVE")
+        # if not wearing def, change to def
+        # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
+        if persistent._mas_monika_clothes != "def":
+            store.pushEvent("mas_change_to_def",True)
 
 
     def _happyToAff():

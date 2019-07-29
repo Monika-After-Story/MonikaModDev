@@ -2781,6 +2781,7 @@ init 5 python:
             pool=True,
             unlocked=False,
             rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 

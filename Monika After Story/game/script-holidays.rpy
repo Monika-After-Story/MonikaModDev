@@ -4082,14 +4082,11 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_in_f14_mode = True
         m 3wub "Oh!"
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
-        window hide
-        show monika 1dsa
-        pause 1.0
+
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
-        pause 0.5
+        $ outfit = "sundress_white"
+        call mas_clothes_change
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."

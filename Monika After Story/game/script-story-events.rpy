@@ -2489,3 +2489,44 @@ label mas_notification_windowreact:
             show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ttu "...right?"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_change_to_def",
+            unlocked=False
+        )
+    )
+
+label mas_change_to_def:
+    m 1eka "Hey [player], I miss my old school uniform..."
+    m 3eka "I'm just going to go change, be right back..."
+    
+    $ outfit = "def"
+    call mas_clothes_change
+
+    m "Okay, what else should we do today?"
+
+    # remove from event list in case PP and ch30 both push
+    $ mas_rmallEVL("mas_change_to_def")
+    return "no_unlock"
+
+label mas_clothes_change:
+    window hide
+
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset (1.0)
+    show emptydesk zorder 9 at i11
+
+    hide monika with dissolve
+
+    $ monika_chr.change_clothes(store.mas_sprites.CLOTH_MAP[outfit])
+    $ monika_chr.save()
+    pause 4.0
+    show monika 1eua zorder MAS_MONIKA_Z at i11 with dissolve
+    hide emptydesk
+
+    pause 0.5
+    call monika_zoom_transition (curr_zoom, 1.0)
+    return
