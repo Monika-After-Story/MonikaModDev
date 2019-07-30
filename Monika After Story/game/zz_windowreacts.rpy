@@ -593,6 +593,7 @@ label mas_wrs_4chan:
             "I hope you don't end up arguing with other Anons all day long, [player].",
             "I heard there's threads discussing the Literature Club in here.\nTell them I said hi~",
             "I'll be watching the boards you're browsing in case you get any ideas, ahaha!",
+            "I Recommend you stay away from /pol/, [player]. Nasty people tend to post there.",
         ],
         'Window Reactions'
     )
