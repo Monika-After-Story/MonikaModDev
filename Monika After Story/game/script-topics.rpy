@@ -9010,8 +9010,8 @@ label monika_travelling:
             show monika 5lua at t11 zorder MAS_MONIKA_Z with dissolve
             m 5lua "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
             if persistent._mas_pm_driving_can_drive:
-            m 5tsu "Now that I remember... You know how to drive, dont't you?"
-            m 5hublb "I hope that you will take me to a lot of cool places!"
+                m 5tsu "Now that I remember... You know how to drive, dont't you?"
+                m 5hublb "I hope that you will take me to a lot of cool places!"
             
         "Not really.":
             $ persistent._mas_likestravelling = False
