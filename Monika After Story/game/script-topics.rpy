@@ -9044,7 +9044,7 @@ label monika_metamorphosis:
     m 4eku "It's a psychological novella that narrates the story of it's protagonist, who one day wakes up at morning, and finds himself transformed into a huge insect!"
     m 4esu "The whole plot revolves around his daily situation, trying to adapt himself to the all the consequences of having such a new body."
     m 3eku "And although it's not the happiest story, I would recommend you reading it. It's the type of books that really makes you think outside the box."
-    m 3eub "So if you ever have the time and chance to read it you should totally do it! 
+    m 3eub "So if you ever have the time and chance to read it you should totally do it!"
     m 3eua "Perhaps...we could even read it together."
     m 1hublb "I don't mind reading it again if it's with you this time, my love~"
     return
@@ -9165,6 +9165,7 @@ label monika_betrayal:
             m 3ekc "Whatever happened, you have to make sure to never to that again, alright?"
             m "You have to promise me."
             m "Trust is not something to play with."
+            m "Try to keep that in mind."
 
         "No, I haven't betrayed anyone.":
             $ persistent._mas_didplayerbetray = False
