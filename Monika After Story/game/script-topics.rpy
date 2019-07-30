@@ -9015,7 +9015,7 @@ label monika_travelling:
             
         "Not really.":
             $ persistent._mas_likestravelling = False
-            m 1eka "Aww, that's okey, [player]~"
+            m 1eka "Aww, that's okay, [player]~"
             m 3huu "I wouldn't mind staying at home with you during vacations."
             m 3esb "Just by having the oportunity to be together in your reality I would feel pleased."
             m 3lsa "Although we might have to find some activities to keep ourselves entertained."
