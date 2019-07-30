@@ -9104,7 +9104,7 @@ label monika_osu:
             $ persistent._mas_knowsosu = True
             m 1huu "Really? That's great~"
             m 1luu "I didn't know you knew about those kinds of games."
-            m 3esb "Do you play it everyday? Also, I got surprised when I saw my song in the game"
+            m 3esb "Do you play it everyday? Also, I got surprised when I saw my song in the game."
             m "Maybe playing it would allow you to become better at piano."
             m 3huu "Seeing that sort of improvements would make me so happy~"
             m 3ttu "I just hope that you don't end up forgetting me because of it."
@@ -9116,7 +9116,7 @@ label monika_osu:
             m 2kublu "Really? Well consider yourself lucky! Because I'm about to explain the game to you~"
             m 3esu "'Osu!' is a rhythm game in which the objective is to click the circles that appear on screen following the rhythm of the music that plays."
             m 2eku "It may seem simple, but rhythm games are known for having steep learning curves and being addictive."
-            m "There are also other gamemodes to play, like taiko, catch the beat, and mania. But I won't spoil them for you"
+            m "There are also other gamemodes to play, like taiko, catch the beat, and mania. But I won't spoil them for you."
             m 4tub "You could try it if you want to, but be careful not to forget me when you get absorbed into the game~"
             show monika 5lsblb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5lsblb "Although I shouldn't be the one talking about that. After all...I'm the one having my eyes on you all the time~"
