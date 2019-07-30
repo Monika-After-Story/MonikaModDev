@@ -9124,7 +9124,7 @@ label monika_osu:
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_planets",category=['misc'],prompt="Earthlike Planets",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_earthlikeplanets",category=['misc'],prompt="Earthlike Planets",random=True))
 
 label monika_earthlikeplanets:
     m 1lua "Have you ever wondered how lucky we all are?"
