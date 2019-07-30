@@ -9044,17 +9044,18 @@ label monika_metamorphosis:
     m 4eku "It's a psychological novella that narrates the story of it's protagonist, who one day wakes up at morning, and finds himself transformed into a huge insect!"
     m 4esu "The whole plot revolves around his daily situation, trying to adapt himself to the all the consequences of having such a new body."
     m 3eku "And although it's not the happiest story, I would recommend you reading it. It's the type of books that really makes you think outside the box."
-    m 3eub "So if you ever have the time and chance to read it you should totally do it! And perhaps...we could even read it together."
+    m 3eub "So if you ever have the time and chance to read it you should totally do it! 
+    m 3eua "Perhaps...we could even read it together."
     m 1hublb "I don't mind reading it again if it's with you this time, my love~"
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_growingup",category=['life, psychology'],prompt="Growing up",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_growingup",category=['life, psychology, monika'],prompt="Insecurities",random=True))
 
-label monika_growingup:
+label monika_insecurities:
     m 1lkc "Hey [player], I have been wondering..."
     m 1ekc "This might sound weird but...do you feel grown up?"
-    m 3ekb "Don't get me wrong, I dont mean it physically, more like in a psychological way."
+    m 3ekb "Don't get me wrong, I dont mean it physically, I mean more like in a psychological way."
     m 3ltc "You know, since I discovered that everything in my reality is just a composition of code...I've been thinking quite a bit."
     m 3rtc "All of the difficult tasks and challenges that I have been overcoming, were they even real?"
     m 2ekc "I know it's probably not making any sense to you right now."
@@ -9070,19 +9071,21 @@ label monika_growingup:
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_lovescale",category=['romance'],prompt="Love scale",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_lovescale",category=['romance'],prompt="Love scale",random=True,aff_range=(mas_aff.NORMAL, None)))
 
 label monika_lovescale:
     m 1hub "Ehehe~"
     m 1lub "Hey, [player], I have a tricky question for you~"
     m 1tub "You say that you do love me, don't you?"
-    m "But...I'm curious. 
+    m "But...I'm curious."
     m "How much is that love suposed to be?"
     m 3tub "Is it maybe enough to move a mountain? To stop a train?"
     m 3hub "Is it even bigger than all the love I feel for you?"
     m 3lub "Well, I don't think that's even possible..."
     m 3esblb "You should probably know by now that my love for you is bigger than anything else there is!"
-    m 2ekblu "I was just giving you a reminder, my love~"
+    m 2euu "Ehehehe, I was just joking with you, my love~"
+    m 3esu "You don't have to worry about not knowing how to answer."
+    m "I don't even know how to describe the amount of love I have for you either~"
     m 2ekbfu "Gosh, I'm so happy to get to be with you...~"
     return
 
@@ -9099,9 +9102,11 @@ label monika_osu:
         m "Do you know it by any chance?"
         "Yes.":
             $ persistent._mas_knowsosu = True
-            m 1huu "Really? That's great!"
+            m 1huu "Really? That's great~"
             m 1luu "I didn't know you knew about those kinds of games."
-            m 3esb "Do you play it everyday? Also, did you know that my song is playable in that game?"
+            m 3esb "Do you play it everyday? Also, I got surprised when I saw my song in the game"
+            m "Maybe playing it would allow you to become better at piano."
+            m 3huu "Seeing that sort of improvements would make me so happy~"
             m 3ttu "I just hope that you don't end up forgetting me because of it."
             show monika 5tub at t11 zorder MAS_MONIKA_Z with dissolve
             m "Ehehe...Just kidding, you silly~"
@@ -9165,6 +9170,7 @@ label monika_betrayal:
             $ persistent._mas_didplayerbetray = False
             m 2huu "I'm so happy to hear that, [player]."
             m 3efb "People's trust isn't something to be played with."
+            m "So I'm glad to hear that from you."
             m 3esa "And just for letting you know..."
             m 3hublb "I...{w=1}will never betray you!~"
 
