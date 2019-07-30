@@ -9001,8 +9001,8 @@ label monika_travelling:
         m "Do you like travelling around the world, [player]?"
         "Yes.":
             $ persistent._mas_likestravelling = True
-            m xxx "That's great! I'm so glad you like doing it."
-            m 1hua "It's one of the things I wanna do the most when I finally get out of this world."
+            m 1hua "That's great! I'm so glad you like doing it."
+            m "It's one of the things I wanna do the most when I finally get out of this world."
             m 4esu "There's so much out there that I haven't been able to see yet..."
             m 1esb "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
             m 3hsb "Important cities, monuments, and even the different types of societies and cultures out there."
@@ -9015,8 +9015,8 @@ label monika_travelling:
             
         "Not really.":
             $ persistent._mas_likestravelling = False
-            m xxx "Oww, that's okey, [player]~"
-            m xxx "I wouldn't mind staying at home with you during vacations."
+            m 1eka "Oww, that's okey, [player]~"
+            m 3huu "I wouldn't mind staying at home with you during vacations."
 return
 
 init 5 python:
@@ -9066,23 +9066,24 @@ label monika_growingup:
     m 5eka "Ehehe...sorry [player], I think I might be getting too carried away with this."
     m 5ekb "I shouldn't be thinking so much about it, Should I?"
     m 5huu "All that matters right now is that I get to stay with you, [player]."
-    m 5euu "Don't ever leave me, please~"
+    m 5euu "Don't ever leave me, please."
     return
 
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_lovescale",category=['romance'],prompt="Love scale",random=True))
 
 label monika_lovescale:
-    m 1hub "ehehe~"
+    m 1hub "Ehehe~"
     m 1lub "Hey, [player], I have a tricky question for you~"
-    m 1tub "You say that you do love me, dont you?"
-    m "But...Im curious. How much is that love suposed to be?"
+    m 1tub "You say that you do love me, don't you?"
+    m "But...I'm curious. 
+    m "How much is that love suposed to be?"
     m 3tub "Is it maybe enough to move a mountain? To stop a train?"
     m 3hub "Is it even bigger than all the love I feel for you?"
     m 3lub "Well, I don't think that's even possible..."
     m 3esblb "You should probably know by now that my love for you is bigger than anything else there is!"
     m 2ekblu "I was just giving you a reminder, my love~"
-    m 2ekbfu "Gosh, I am so happy to get to be with you...~"
+    m 2ekbfu "Gosh, I'm so happy to get to be with you...~"
     return
 
 default persistent._mas_knowsosu = None
@@ -9091,7 +9092,7 @@ init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_osu",category=['games'],prompt="Osu!",random=True))
 
 label monika_osu:
-    m 4eua "You know, a while ago I was wandering around when I found a game called 'osu!'."
+    m 4eua "You know, a while ago I was wandering around when I found a game called 'Osu!'."
     m 4esu "Do you know it by any chance?"
     $ _history_list.pop()
     menu: 
@@ -9099,7 +9100,7 @@ label monika_osu:
         "Yes.":
             $ persistent._mas_knowsosu = True
             m 1huu "Really? That's great!"
-            m 1luu "I didn't know you were into that kind of games."
+            m 1luu "I didn't know you knew about those kinds of games."
             m 3esb "Do you play it everyday? Also, did you know that my song is playable in that game?"
             m 3ttu "I just hope that you don't end up forgetting me because of it."
             show monika 5tub at t11 zorder MAS_MONIKA_Z with dissolve
@@ -9108,24 +9109,25 @@ label monika_osu:
         "No.":
             $ persistent._mas_knowsosu = False
             m 2kublu "Really? Well consider yourself lucky! Because I'm about to explain the game to you~"
-            m 3esu "'Osu!' is a rhythm game in which the objective is to touch the circles that appear on screen following the rhythm of the music that plays"
-            m 2eku "It may seem simple, but rhythm games are know for having steep learning curves and being addictive."
+            m 3esu "'Osu!' is a rhythm game in which the objective is to click the circles that appear on screen following the rhythm of the music that plays."
+            m 2eku "It may seem simple, but rhythm games are known for having steep learning curves and being addictive."
+            m "There are also other gamemodes to play, like taiko, catch the beat, and mania. But I won't spoil them for you"
             m 4tub "You could try it if you want to, but be careful not to forget me when you get absorbed into the game~"
             show monika 5lsblb at t11 zorder MAS_MONIKA_Z with dissolve
-            m "Although I shouldn't be the one talking about that. After all...I'm the one having my eyes on you all the time~"
+            m 5lsblb "Although I shouldn't be the one talking about that. After all...I'm the one having my eyes on you all the time~"
             m 5ekbfu "Ehehe~ I love you so much, [player]."
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_planets",category=['misc'],prompt="Planets",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_planets",category=['misc'],prompt="Earthlike Planets",random=True))
 
-label monika_planets:
+label monika_earthlikeplanets:
     m 1lua "Have you ever wondered how lucky we all are?"
     m 4esa "If you think about it, the possibilities of having an existing planet that is suitable for human life are quite sparse."
-    m 4eka "Most of the celestial bodies out there don't even support any kind of human activity."
-    m 4eku "Some of them have little to no gravity, no oxygen, or not even terrain were to stand on!"
-    m 1eku "Yet, here we are, in planet Earth."
-    m 1hub "Isn't that great? You should be feeling lucky right now just for being alive!"
+    m 4eka "Most of the celestial bodies out there don't support any kind of human activity."
+    m 4eku "Some of them have little to no gravity, no oxygen, or not even terrain to stand on."
+    m 1eku "Yet, here we are, on planet Earth."
+    m 1hub "Isn't that great? You should be feeling lucky right now just for being alive."
     m 2euu "It's almost like life itself gave us the oportunity to live..."
     m 3esb "You better remember that next time you are feeling down, [player]!"
     m 3tsb "Or... You could also come to me and allow me to lift your mood~"
@@ -9139,35 +9141,40 @@ init 5 python:
 
 label monika_betrayal:
     m 1eka "...Say, [player]?"
-    m 1lka "Something came to my mind right now."
+    m 1lka "Something came to my mind just now."
     m 1eka "Have you ever betrayed someone by any means?"
     m 4eka "I don't mean to 'betray' little promises with friends that could even be considered jokes."
-    m 4eku "I mean it in a real way... You know, breaking the confidence someone had with you because you did something terrible to them."
-    m "You don't have to answer if you don't want to, it's completely understandable."
+    m 4eku "I mean it in a real way... You know, breaking the trust someone had with you because you did something terrible to them."
+    m "You don't have to answer if you don't want to. It's completely understandable."
     $ _history_list.pop()
     menu:
         m "You don't have to answer if you don't want to, it's completely understandable."
         "Yes, I have betrayed someone.":
             $ persistent._mas_didplayerbetray = True
             m 2ekc "..."
-            m "It's alright, [player]"
+            m "It's alright, [player]."
             m 3ekc "I know you probably didn't mean to do that."
             m 3ekb "We all mess up sometimes, don't we?"
-            m 3esb "It's not like I'm going to hate you for what you did, you silly~"
+            m "Maybe you didn't do it on purpose."
+            m "Or...maybe you did."
+            m 3ekc "Whatever happened, you have to make sure to never to that again, alright?"
+            m "You have to promise me."
+            m "Trust is not something to play with."
 
         "No, I haven't betrayed anyone.":
             $ persistent._mas_didplayerbetray = False
-            m 2huu "I'm happy to hear that, [player]."
-            m 3efb "People's trust isn't something to be played with!"
+            m 2huu "I'm so happy to hear that, [player]."
+            m 3efb "People's trust isn't something to be played with."
             m 3esa "And just for letting you know..."
-            m 3hublb "I...{w=2}will never betray you!~"
+            m 3hublb "I...{w=1}will never betray you!~"
 
         "...":
             m 2ekc "It's alright, [player]."
             m "I won't force you to say anything."
-            m 3ekc "What kind of girlfriend would I be if I did that?"
-            m 3ekb "Ehehehe...Let's just forget this topic existed in first place."
-    return
+            m "I understand it's a deep topic to talk about, so I won't push you out of respect."
+            m 3ekc "Besides, what kind of girlfriend would I be if I did that?"
+            m 3ekb "Let's just try to forget this conversation existed in first place."
+    return "derandom"
         
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_photography",category=['misc'],prompt="Photography",random=True))
