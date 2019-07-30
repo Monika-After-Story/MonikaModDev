@@ -4274,6 +4274,7 @@ init -2 python:
 
             else:
                 # we are rendering left and right
+                # TODO: need to prefix the arm strinsg right right or left
 
                 if self.left is not None:
                     MASPoseArms._add_if_needed(
