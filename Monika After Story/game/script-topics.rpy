@@ -9050,7 +9050,7 @@ label monika_metamorphosis:
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_growingup",category=['life, psychology, monika'],prompt="Insecurities",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_insecurities",category=['life, psychology, monika'],prompt="Insecurities",random=True))
 
 label monika_insecurities:
     m 1lkc "Hey [player], I have been wondering..."
