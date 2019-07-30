@@ -8967,10 +8967,10 @@ init 5 python:
 
 label monika_themepark:
     m 3eua "Hey, [player]!"
-    m "Have you ever been to a theme park?"
+    m "Have you ever been to a theme park?{nw}"
     $ _history_list.pop()
     menu:
-        m "Have you ever been to a theme park?"
+        m "Have you ever been to a theme park?{fast}"
         "Yes.":
             $ persistent._mas_hasbeentothemepark = True
             m 1hub "Really? That's great!"
@@ -8995,10 +8995,10 @@ init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['life'],prompt="Travelling",random=True))
 
 label monika_travelling:
-    m 1esa "Do you like travelling around the world, [player]?"
+    m 1esa "Do you like travelling around the world, [player]?{nw}"
     $ _history_list.pop()
     menu:
-        m "Do you like travelling around the world, [player]?"
+        m "Do you like travelling around the world, [player]?{fast}"
         "Yes.":
             $ persistent._mas_likestravelling = True
             m 1hua "That's great! I'm so glad you like doing it."
@@ -9015,8 +9015,15 @@ label monika_travelling:
             
         "Not really.":
             $ persistent._mas_likestravelling = False
-            m 1eka "Oww, that's okey, [player]~"
+            m 1eka "Aww, that's okey, [player]~"
             m 3huu "I wouldn't mind staying at home with you during vacations."
+            m 3esb "Just by having the oportunity to be together in your reality I would feel pleased."
+            m 3lsa "Although we might have to find some activities to keep ourselves entertained."
+            m "How about playing the piano or writing poems together?"
+            m 3lsbla "We could even spend the days cuddling up together while we read a book."
+            show monika 5hubfu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5hubfu "Doesn't that sound like a dream?"
+            m "Ehehe~"
 return
 
 init 5 python:
@@ -9024,7 +9031,7 @@ init 5 python:
 
 label monika_desert:
     m 1eua "[player], have you ever been in a desert?"
-    m 1euu "I know this question is sudden, but it came out the blue."
+    m 1euu "I know this question is sudden, but it just came to my mind."
     m 3hsb "Did you know that deserts are quite unique in their own way? Although they don't offer a lot of positive factors."
     m 4eub "Their temperatures vary between extreme hot during daytime and freezing cold at night."
     m "In addition, their average rainfall is quite low, making living there a hard task for humans."
@@ -9050,12 +9057,11 @@ label monika_metamorphosis:
     return
 
 init 5 python:
-   addEvent(Event(persistent.event_database,eventlabel="monika_insecurities",category=['life, psychology, monika'],prompt="Insecurities",random=True))
+   addEvent(Event(persistent.event_database,eventlabel="monika_simulated_hardships",category=['life, psychology, monika'],prompt="Simulated hardships",random=True))
 
-label monika_insecurities:
+label monika_simulated_hardships:
     m 1lkc "Hey [player], I have been wondering..."
-    m 1ekc "This might sound weird but...do you feel grown up?"
-    m 3ekb "Don't get me wrong, I dont mean it physically, I mean more like in a psychological way."
+    m 1ekc "This might sound weird but...do you feel accomplished in your life?"
     m 3ltc "You know, since I discovered that everything in my reality is just a composition of code...I've been thinking quite a bit."
     m 3rtc "All of the difficult tasks and challenges that I have been overcoming, were they even real?"
     m 2ekc "I know it's probably not making any sense to you right now."
@@ -9067,7 +9073,6 @@ label monika_insecurities:
     m 5eka "Ehehe...sorry [player], I think I might be getting too carried away with this."
     m 5ekb "I shouldn't be thinking so much about it, Should I?"
     m 5huu "All that matters right now is that I get to stay with you, [player]."
-    m 5euu "Don't ever leave me, please."
     return
 
 init 5 python:
@@ -9078,12 +9083,12 @@ label monika_lovescale:
     m 1lub "Hey, [player], I have a tricky question for you~"
     m 1tub "You say that you do love me, don't you?"
     m "But...I'm curious."
-    m "How much is that love suposed to be?"
+    m "How much exactly?"
     m 3tub "Is it maybe enough to move a mountain? To stop a train?"
     m 3hub "Is it even bigger than all the love I feel for you?"
     m 3lub "Well, I don't think that's even possible..."
     m 3esblb "You should probably know by now that my love for you is bigger than anything else there is!"
-    m 2euu "Ehehehe, I was just joking with you, my love~"
+    m 2euu "Ehehe, I was just joking with you, my love~"
     m 3esu "You don't have to worry about not knowing how to answer."
     m "I don't even know how to describe the amount of love I have for you either~"
     m 2ekbfu "Gosh, I'm so happy to get to be with you...~"
@@ -9096,10 +9101,10 @@ init 5 python:
 
 label monika_osu:
     m 4eua "You know, a while ago I was wandering around when I found a game called 'Osu!'."
-    m 4esu "Do you know it by any chance?"
+    m 4esu "Do you know it by any chance?{nw}"
     $ _history_list.pop()
     menu: 
-        m "Do you know it by any chance?"
+        m "Do you know it by any chance?{fast}"
         "Yes.":
             $ persistent._mas_knowsosu = True
             m 1huu "Really? That's great~"
@@ -9109,14 +9114,14 @@ label monika_osu:
             m 3huu "Seeing that sort of improvements would make me so happy~"
             m 3ttu "I just hope that you don't end up forgetting me because of it."
             show monika 5tub at t11 zorder MAS_MONIKA_Z with dissolve
-            m "Ehehe...Just kidding, you silly~"
+            m 5tub "Ehehe...Just kidding, you silly~"
 
         "No.":
             $ persistent._mas_knowsosu = False
             m 2kublu "Really? Well consider yourself lucky! Because I'm about to explain the game to you~"
             m 3esu "'Osu!' is a rhythm game in which the objective is to click the circles that appear on screen following the rhythm of the music that plays."
             m 2eku "It may seem simple, but rhythm games are known for having steep learning curves and being addictive."
-            m "There are also other gamemodes to play, like taiko, catch the beat, and mania. But I won't spoil them for you."
+            m "There are also other game modes to play, like taiko, catch the beat, and mania, but I won't spoil them for you."
             m 4tub "You could try it if you want to, but be careful not to forget me when you get absorbed into the game~"
             show monika 5lsblb at t11 zorder MAS_MONIKA_Z with dissolve
             m 5lsblb "Although I shouldn't be the one talking about that. After all...I'm the one having my eyes on you all the time~"
@@ -9130,7 +9135,7 @@ label monika_earthlikeplanets:
     m 1lua "Have you ever wondered how lucky we all are?"
     m 4esa "If you think about it, the possibilities of having an existing planet that is suitable for human life are quite sparse."
     m 4eka "Most of the celestial bodies out there don't support any kind of human activity."
-    m 4eku "Some of them have little to no gravity, no oxygen, or not even terrain to stand on."
+    m 4eku "Some of them have little to no gravity, no oxygen, or even terrain to stand on."
     m 1eku "Yet, here we are, on planet Earth."
     m 1hub "Isn't that great? You should be feeling lucky right now just for being alive."
     m 2euu "It's almost like life itself gave us the oportunity to live..."
@@ -9150,10 +9155,10 @@ label monika_betrayal:
     m 1eka "Have you ever betrayed someone by any means?"
     m 4eka "I don't mean to 'betray' little promises with friends that could even be considered jokes."
     m 4eku "I mean it in a real way... You know, breaking the trust someone had with you because you did something terrible to them."
-    m "You don't have to answer if you don't want to. It's completely understandable."
+    m "You don't have to answer if you don't want to. It's completely understandable.{nw}"
     $ _history_list.pop()
     menu:
-        m "You don't have to answer if you don't want to, it's completely understandable."
+        m "You don't have to answer if you don't want to, it's completely understandable.{fast}"
         "Yes, I have betrayed someone.":
             $ persistent._mas_didplayerbetray = True
             m 2ekc "..."
@@ -9161,8 +9166,8 @@ label monika_betrayal:
             m 3ekc "I know you probably didn't mean to do that."
             m 3ekb "We all mess up sometimes, don't we?"
             m "Maybe you didn't do it on purpose."
-            m "Or...maybe you did."
-            m 3ekc "Whatever happened, you have to make sure to never to that again, alright?"
+            m "Maybe the situation pushed you into doing it in some way."
+            m 3ekc "Whatever happened, you have to make sure to never do that again, alright?"
             m "You have to promise me."
             m "Trust is not something to play with."
             m "Try to keep that in mind."
@@ -9172,13 +9177,13 @@ label monika_betrayal:
             m 2huu "I'm so happy to hear that, [player]."
             m 3efb "People's trust isn't something to be played with."
             m "So I'm glad to hear that from you."
-            m 3esa "And just for letting you know..."
-            m 3hublb "I...{w=1}will never betray you!~"
+            m 3esa "And just so you know..."
+            m 3hublb "I...{w=1}would never betray you, [player]~."
 
         "...":
             m 2ekc "It's alright, [player]."
             m "I won't force you to say anything."
-            m "I understand it's a deep topic to talk about, so I won't push you out of respect."
+            m "I understand it's a deep topic to talk about, so I won't push you."
             m 3ekc "Besides, what kind of girlfriend would I be if I did that?"
             m 3ekb "Let's just try to forget this conversation existed in first place."
     return "derandom"
@@ -9193,7 +9198,7 @@ label monika_photography:
     m "The more I research it, the more I like it."
     m 3lsu "For example, did you know that the first photograph was taken using a box with a hole in it as a camera?"
     m "Lenses weren't introduced until much later."
-    m 3esb "Also, the firsts ways of photography reveal relied on a series of special liquids to do the task."
+    m 3esb "Also, early photography relied on a series of special liquids to work."
     m 3hsb "Surely, old photos were much harder to take than modern ones, don't you think?"
     m 1esa "Maybe one day I could take photography as my new hobby, it would be really interesting."
     m 1euu "But for now...I'll focus on literature, and on you, my love~"
