@@ -8974,37 +8974,50 @@ label monika_themepark:
         "Yes.":
             $ persistent._mas_hasbeentothemepark = True
             m 1hub "Really? That's great!"
-            m 1lsu "I've never been to one, but I'd really like to"
+            m 1lsu "I've never been to one, but I'd really like to."
 
         "No.":
             $ persistent._mas_hasbeentothemepark = False
             m 1hub "Really? You don't know what you're missing!"
-            m 1lsu "Although I haven't been to one either...but I'd really like to"
+            m 1lsu "Although I haven't been to one either...but I'd really like to."
     m 3esu "What if we arrange a date to a theme park for the future?"
     m 3esb "Wouldn't that be great?"
     m 3hub "Thrilling roller coasters, water rides, drop towers..."
     m 3rsbsu "And maybe even a romantic Ferris wheel ride~"
     show monika 5lsbsa at t11 zorder MAS_MONIKA_Z with dissolve
-    m "Ehehe~, I think I'm getting a bit carried, but..."
-    m 5esbfu "I just can't help it when it comes to thinking about being together with you, [player]"
+    m 5lsbsa "Ehehe~, I think I'm getting a bit carried away, but..."
+    m 5esbfu "I just can't help it when it comes to thinking about being together with you, [player]~"
     return
+
+default persistent._mas_likestravelling = None
 
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_travelling",category=['life'],prompt="Travelling",random=True))
 
 label monika_travelling:
-    m 1esa "Have you travelled to a lot of places, [player]?"
-    m 1hua "It's one of the things I wanna do the most when I finally get out of this world."
-    m 4esu "There's so much out there that I haven't been able to see yet..."
-    m 1esb "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
-    m 3hsb "Important cities, monuments, even the different types of societies and cultures out there."
-    m 3hsb "I want to see everything that is to be seen"
-    show monika 5lua at t11 zorder MAS_MONIKA_Z with dissolve
-    m "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
-    if persistent._mas_pm_driving_can_drive:
-        m 5tsu "Now that I remember...You know how to drive, dont't you?"
-        m 5hublb "I hope that you will carry me to a lot of cool places!"
-    return
+    m 1esa "Do you like travelling around the world, [player]?"
+    $ _history_list.pop()
+    menu:
+        m "Do you like travelling around the world, [player]?"
+        "Yes.":
+            $ persistent._mas_likestravelling = True
+            m xxx "That's great! I'm so glad you like doing it."
+            m 1hua "It's one of the things I wanna do the most when I finally get out of this world."
+            m 4esu "There's so much out there that I haven't been able to see yet..."
+            m 1esb "Don't get me wrong, I've read a lot about your world, but I want to take a look at it in person."
+            m 3hsb "Important cities, monuments, and even the different types of societies and cultures out there."
+            m 3hsb "I want to see everything that is to be seen."
+            show monika 5lua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5lua "And I'm sure that exploring the world would be much funnier having you next to me, [player]~"
+            if persistent._mas_pm_driving_can_drive:
+            m 5tsu "Now that I remember... You know how to drive, dont't you?"
+            m 5hublb "I hope that you will take me to a lot of cool places!"
+            
+        "Not really.":
+            $ persistent._mas_likestravelling = False
+            m xxx "Oww, that's okey, [player]~"
+            m xxx "I wouldn't mind staying at home with you during vacations."
+return
 
 init 5 python:
    addEvent(Event(persistent.event_database,eventlabel="monika_desert",category=['misc'],prompt="Deserts",random=True))
@@ -9014,12 +9027,12 @@ label monika_desert:
     m 1euu "I know this question is sudden, but it came out the blue."
     m 3hsb "Did you know that deserts are quite unique in their own way? Although they don't offer a lot of positive factors."
     m 4eub "Their temperatures vary between extreme hot during daytime and freezing cold at night."
-    m "As an addition, their average rainfall is quite low, making living there a hard task for humans."
+    m "In addition, their average rainfall is quite low, making living there a hard task for humans."
     m 3eku "Still, their surface is a great spot for a solar power generation, plus oil is commonly found beneath all that sand, so deserts are not as bad as they seem."
-    m 1lku "Anyways...ehehe, I think I got carried a bit with all this information"
+    m 1lku "Anyways...ehehe, I think I got carried a bit with all this information."
     m 1esc "Just one more thing, [player]. If you ever travel to a desert don't forget to always carry water with you, alright?"
     show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve
-    m "I wouldn't want to know that the person who I love the most suffers from extreme heat and dehydration in such a place."
+    m 5lkc "I wouldn't want to know that the person who I love the most suffers from extreme heat and dehydration in such a place."
     m 5hub "Don't forget to take care of yourself, my love~"
     return
 
@@ -9040,19 +9053,20 @@ init 5 python:
 
 label monika_growingup:
     m 1lkc "Hey [player], I have been wondering..."
-    m 1ekc "This might sound weird but...Do you feel grown up?"
+    m 1ekc "This might sound weird but...do you feel grown up?"
     m 3ekb "Don't get me wrong, I dont mean it physically, more like in a psychological way."
-    m 3ltc "You know, since I discovered that everything in my reality is just a composition of codes...I have been thinking quite a bit."
-    m 3rtc "All of the difficult tasks and challenges that I have been overcoming, Where they even real?"
+    m 3ltc "You know, since I discovered that everything in my reality is just a composition of code...I've been thinking quite a bit."
+    m 3rtc "All of the difficult tasks and challenges that I have been overcoming, were they even real?"
     m 2ekc "I know it's probably not making any sense to you right now."
     m 2dkc "Well, not to me at least. It's just bugging me so much."
-    m 2tkp "What if all of those challenges were programed to be there? And if so... What if they were prepared to be beaten?"
+    m 2tkp "What if all of those challenges were programed to be there? If so... What if they were designed to be beaten?"
     m 2tkc "Would that be considered the same as overcoming a real problem?"
+    show monika 5lkc at t11 zorder MAS_MONIKA_Z with dissolve
     m 5lkc "Would that mean that I haven't really overcome anything so far in my life?"
-    m 5eka "Ehehe...sorry [player], I think I might be getting too carried with this."
+    m 5eka "Ehehe...sorry [player], I think I might be getting too carried away with this."
     m 5ekb "I shouldn't be thinking so much about it, Should I?"
-    m 5huu "All that matters right now is that I get to stay with you, [player]"
-    m 5euu "Don't ever leave me, okey?~"
+    m 5huu "All that matters right now is that I get to stay with you, [player]."
+    m 5euu "Don't ever leave me, please~"
     return
 
 init 5 python:
@@ -9161,12 +9175,12 @@ init 5 python:
 label monika_photography:
     m 1eua "...Say, [player]?"
     m 1esa "Do you happen to know about photography?"
-    m 3esu "It has become an interestic topic for me."
-    m "The more I research about it the more I like it."
+    m 3esu "It has become an interesting topic for me."
+    m "The more I research it, the more I like it."
     m 3lsu "For example, did you know that the first photograph was taken using a box with a hole in it as a camera?"
     m "Lenses weren't introduced until much later."
-    m 3esb "Also, the firsts mechanisms of photography reveal were based on a series of special liquids were the picture needed to be introduced during a certain amount of time"
-    m 3hsb "Surely, old photos were much harder to take than modern ones, Don't you think?"
+    m 3esb "Also, the firsts ways of photography reveal relied on a series of special liquids to do the task."
+    m 3hsb "Surely, old photos were much harder to take than modern ones, don't you think?"
     m 1esa "Maybe one day I could take photography as my new hobby, it would be really interesting."
     m 1euu "But for now...I'll focus on literature, and on you, my love~"
     return
