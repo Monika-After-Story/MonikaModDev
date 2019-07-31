@@ -3671,7 +3671,7 @@ init 5 python:
 
 label mas_player_bday_upset_minus:
     $ persistent._mas_player_bday_spent_time = True
-    m 6eka "Hey, [player], I just wanted to wish you a Happy Birthday."
+    m 6eka "Hey [player], I just wanted to wish you a Happy Birthday."
     m "I hope you have a good day."
     return
 

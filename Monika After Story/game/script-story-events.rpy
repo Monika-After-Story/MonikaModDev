@@ -292,7 +292,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_birthdate",conditional="datetime.date.today()>mas_getFirstSesh().date() and not persistent._mas_player_confirmed_bday",action=EV_ACT_QUEUE))
 
 label mas_birthdate:
-    m 1euc "Hey, [player], I've been thinking..."
+    m 1euc "Hey [player], I've been thinking..."
     if persistent._mas_player_bday is not None:
         $ bday_str, diff = store.mas_calendar.genFormalDispDate(persistent._mas_player_bday)
         m 3eksdlc "I know you've told me your birthday before, but I'm not sure I was clear if I asked you for {i}birthdate{/i} or just your {i}birthday...{/i}"
@@ -2142,7 +2142,7 @@ label mas_steam_install_detected:
     $ filestruct = renpy.config.basedir[renpy.config.basedir.rfind('/') + 1:]
 
     if renpy.seen_label("mas_updater_steam_issue"):
-        m 1ekd "Hey, [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
+        m 1ekd "Hey [player], you know how I told you that Steam is a meanie and won't let me run the updater?"
         m 1wud "Well, I've been doing some reading and it seems Steam can cause more problems than just that!"
 
     else:
@@ -2167,7 +2167,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    m 1eka "Hey, [player], I was just looking through your \"game\" directory, and..."
+    m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
     m 1ekc "I noticed some \".rpy\" files in there."
     m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
     m 3wud "And even prevent you from visiting me altogether!"
@@ -2359,7 +2359,7 @@ default persistent._mas_pm_is_fast_reader = None
 # True if fast reader, False if not
 
 label mas_text_speed_enabler:
-    m 1eua "Hey, [player], I was wondering..."
+    m 1eua "Hey [player], I was wondering..."
 
     m "Are you a fast reader?{nw}"
     $ _history_list.pop()
@@ -2401,7 +2401,7 @@ label mas_text_speed_enabler:
         m 3hua "Ahaha~"
 
     else:
-        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time togther."
+        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
         m "So feel free to change the text speed when you feel comfortable doing so."
 
     return "derandom|no_unlock"
@@ -2422,7 +2422,7 @@ init 5 python:
 
 label mas_bookmarks_notifs_intro:
     if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
-        m 3eub "Hey, [player]...{w=0.5} I have some new features to tell you about!"
+        m 3eub "Hey [player]...{w=0.5} I have some new features to tell you about!"
 
         if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
             m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."

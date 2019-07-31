@@ -85,7 +85,7 @@ init python:
     mas_other_notif_quips = [
         "I've got something to talk about, [player]!",
         "I have something to tell you, [player]!",
-        "Hey, [player], I want to tell you something.",
+        "Hey [player], I want to tell you something.",
         "Do you have a minute, [player]?",
     ]
 

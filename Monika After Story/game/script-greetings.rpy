@@ -669,7 +669,7 @@ init 5 python:
     )
 
 label greeting_visit5:
-    m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
+    m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
     return
