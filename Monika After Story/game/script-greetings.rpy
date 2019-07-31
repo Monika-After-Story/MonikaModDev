@@ -2186,8 +2186,7 @@ label greeting_long_absence:
             m 1rksdlb  "You're back a little bit earlier than I thought you would be..."
             m 3hua "Welcome back, my love!"
             m 3eka "I know it's been quite a while, so I'm sure you've been busy."
-            m 1eua "I'd love to hear abput everything you've done."
-            m 1hub "I want to know all what's happened to you."
+            m 1eua "I'd love to hear about everything you've done."
             show monika 1hua
 
         elif persistent._mas_absence_choice == "unknown":
