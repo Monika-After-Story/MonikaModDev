@@ -598,7 +598,7 @@ label mas_wrs_4chan:
     )
 
     #Unlock again if we failed
-    if not _return:
+    if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_4chan')
     return
 
@@ -642,6 +642,6 @@ label mas_wrs_pixiv:
         )
 
         #Unlock again if we failed
-        if not _return:
+        if not wrs_success:
             mas_unlockFailedWRS('mas_wrs_pixiv')
     return
