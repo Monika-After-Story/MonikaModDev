@@ -20,28 +20,28 @@ image def_weather_night_fb = "mod_assets/window/def_night_mask_fb.png"
 
 image rain_weather_day = Movie(
     channel="window_3",
-    play="mod_assets/window/rain_day_mask.mp4",
+    play="mod_assets/window/rain_day_mask.mpg",
     mask=None
 )
 image rain_weather_day_fb = "mod_assets/window/rain_day_mask_fb.png"
 
 image rain_weather_night = Movie(
     channel="window_4",
-    play="mod_assets/window/rain_night_mask.mp4",
+    play="mod_assets/window/rain_night_mask.mpg",
     mask=None
 )
 image rain_weather_night_fb = "mod_assets/window/rain_night_mask_fb.png"
 
 image overcast_weather_day = Movie(
     channel="window_5",
-    play="mod_assets/window/overcast_day_mask.mp4",
+    play="mod_assets/window/overcast_day_mask.mpg",
     mask=None
 )
 image overcast_weather_day_fb = "mod_assets/window/overcast_day_mask_fb.png"
 
 image overcast_weather_night = Movie(
     channel="window_6",
-    play="mod_assets/window/overcast_night_mask.mp4",
+    play="mod_assets/window/overcast_night_mask.mpg",
     mask=None
 )
 image overcast_weather_night_fb = "mod_assets/window/overcast_night_mask_fb.png"
@@ -58,7 +58,7 @@ image snow_weather_night = Movie(
     play="mod_assets/window/snow_night_mask.mp4",
     mask=None
 )
-image overcast_mask_left_fb = "mod_assets/window/snow_night_mask_fb.png"
+image snow_weather_night_fb = "mod_assets/window/snow_night_mask_fb.png"
 
 
 ## end spaceroom weather art
