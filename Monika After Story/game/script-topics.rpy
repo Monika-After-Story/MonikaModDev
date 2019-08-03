@@ -6962,11 +6962,11 @@ label monika_other_girls:
         m 1eka "The love I have for you is real, [player], and I would make any sacrifice to be with you forever."
         m 1ekc "I hope you can forgive me for what I had to do so that we could be together."
         m 1lksdlc "..."
-        if mas_isMoniBroken():
-            m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-        elif mas_isMoniDis():
-            m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
-        else:
+        if mas_isMoniDis():
+            m 1eksdld "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
+        elif mas_isMoniUpset():
+            m 1ekd "I know what I did could be seen as unforgivable, I'll try to do what I can to make up for it to you."
+        elif mas_isMoniNormal(higher=True):
             m 1ekbfa "I love you, [player]..."
             m "More than I could ever express."
     else:
@@ -12913,7 +12913,7 @@ label monika_relationship_comfort:
     m 4eub "That doesn't make it any less valuable, or meaningful. It can still be heart-racing!"
     m 4esc "But it does mean that the same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
-    m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
+    m 2dkc "So when things slow down, when they become less passionate, they mistakenly think they're falling out of love..."
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
