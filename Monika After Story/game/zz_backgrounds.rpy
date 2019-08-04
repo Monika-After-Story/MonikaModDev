@@ -20,6 +20,7 @@ init -10 python:
             image_snow_night - the image tag for the background while it's snowing during the night
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
+            disable_progressive - weather or not we disable progesssive weather
             unlocked - whether or not this background is unlocked
             entry_pp - entry programming points for bgs
             exit_pp - exit programming points
@@ -41,6 +42,7 @@ init -10 python:
             image_snow_night=None,
             hide_calendar=False,
             hide_masks=False,
+            disable_progressive=None,
             unlocked=False,
             entry_pp=None,
             exit_pp=None
@@ -95,6 +97,10 @@ init -10 python:
                 hide_masks:
                     weather or not we want to show the windows
                     (Default: False)
+
+                disable_progressive:
+                    weather or not we want to disable progressive weather
+                    (Default: None, if hide masks is true and this is not provided, we assume True, otherwise False)
 
                 unlocked:
                     whether or not this background starts unlocked
@@ -153,6 +159,13 @@ init -10 python:
             #Then the other props
             self.hide_calendar = hide_calendar
             self.hide_masks = hide_masks
+
+            #Progressive handling
+            if disable_progressive is None:
+                self.disable_progressive = hide_masks
+            else:
+                self.disable_progressive = disable_progressive
+
             self.unlocked = unlocked
             self.entry_pp = entry_pp
             self.exit_pp = exit_pp
