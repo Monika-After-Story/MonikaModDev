@@ -300,6 +300,8 @@ init -5 python in mas_sprites:
     PREFIX_HAIR_LEAN = "hair-leaning" + ART_DLM
     PREFIX_ARMS = "arms" + ART_DLM
     PREFIX_ARMS_LEAN = "arms-leaning" + ART_DLM
+    PREFIX_ARMS_LEFT = "left" + ART_DLM
+    PREFIX_ARMS_RIGHT = "right" + ART_DLM
     PREFIX_FACE = "face" + ART_DLM
     PREFIX_FACE_LEAN = "face-leaning" + ART_DLM
     PREFIX_ACS = "acs" + ART_DLM
@@ -1134,7 +1136,7 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return
 
-        if arm_state is not None and arm_state is in arm_codes:
+        if arm_state is not None and arm_state in arm_codes:
             arm_code = ART_DLM + arm_state
 
         else:
@@ -2487,7 +2489,7 @@ init -5 python in mas_sprites:
         _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
         # 8. between body and back arms acs
-        _ms_accessory_list(
+        _ms_accessorylist(
             sprite_str_list,
             loc_build_str,
             acs_bba_list,
@@ -2878,7 +2880,7 @@ init -5 python in mas_sprites:
             BASE_BODY_STR,
             bcode,
             n_suffix,
-            FILE_EXIT,
+            FILE_EXT,
             '"'
         ))
 
@@ -2954,7 +2956,7 @@ init -5 python in mas_sprites:
             loc_str,
             ',"',
             B_MAIN,
-            BASE_BODY_STR_LEAN,
+            PREFIX_BODY_LEAN,
             lean,
             ART_DLM,
             bcode,
@@ -4189,17 +4191,27 @@ init -2 python:
 
             IN:
                 left - left arm to use
+                    "left-" is prfixed to the arm string
                 right - right arm to use
+                    "right-" is prefixed to the arm string
                 both - both arms to use
             """
             self._init_props()
 
             if both is not None:
-                self.both, self.both_front, self.both_back = both
+                self.both, self.both_back, self.both_front = both
 
             else:
-                self.left, self.left_front, self.left_back = left
-                self.right, self.right_front, self.right_back = right
+                if left is not None:
+                    self.left, self.left_back, self.left_front = left
+                    self.left = store.mas_sprites.PREFIX_ARMS_LEFT + self.left
+
+                if right is not None:
+                    self.right, self.right_back, self.right_front = right
+                    self.right = (
+                        store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
+                    )
+
 
         @staticmethod
         def _add_if_needed(
@@ -4265,7 +4277,7 @@ init -2 python:
                 MASPoseArms._add_if_needed(
                     sprite_list,
                     prefix_list,
-                    suffix,
+                    suffix_list,
                     front,
                     self.both,
                     self.both_front,
@@ -4274,13 +4286,12 @@ init -2 python:
 
             else:
                 # we are rendering left and right
-                # TODO: need to prefix the arm strinsg right right or left
 
                 if self.left is not None:
                     MASPoseArms._add_if_needed(
                         sprite_list,
-                        prefix,
-                        suffix,
+                        prefix_list,
+                        suffix_list,
                         front,
                         self.left,
                         self.left_front,
@@ -4290,8 +4301,8 @@ init -2 python:
                 if self.right is not None:
                     MASPoseArms._add_if_needed(
                         sprite_list,
-                        prefix,
-                        suffix,
+                        prefix_list,
+                        suffix_list,
                         front,
                         self.right,
                         self.right_front,
@@ -5533,11 +5544,15 @@ init -2 python:
                 hair_split = hair.split.get(leanpose, True)
 
             # select MASPoseArms for baes and outfit
-            base_pose = store.mas_sprites.base_pose_map.get(leanpose, None)
-            arms_pose = character.clothes.pose_arms.get(leanpose, None)
-
+            base_pose = store.mas_sprites.base_pose_arms_map.get(
+                leanpose,
+                None
+            )
+            arms_pose = character.clothes.pose_arms
             if arms_pose is None:
                 arms_pose = base_pose
+            else:
+                arms_pose = arms_pose.get(leanpose, base_pose)
 
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.img_sit,
@@ -5587,6 +5602,42 @@ init -2 python:
             # custom standing mode
 
         return eval(cmd),None # Unless you're using animations, you can set refresh rate to None
+
+init -1 python in mas_sprites:
+    # initialization of the base arms poes map
+    base_pose_arms_map = {
+        
+        # steepling
+        POSES[0]: store.MASPoseArms(both=("steepling", False, True)),
+
+        # crossed
+        POSES[1]: store.MASPoseArms(both=("crossed", True, True)),
+
+        # restleftpointright
+        POSES[2]: store.MASPoseArms(
+            left=("rest", False, True),
+            right=("restpoint", False, True)
+        ),
+
+        # point right
+        POSES[3]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("point", True, False)
+        ),
+
+        # down
+        POSES[4]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("down", True, False)
+        ),
+
+        # leaning def
+        L_POSES[0]: store.MASPoseArms(
+            left=("def", False, True),
+            right=("def", True, True)
+        ),
+
+    }
 
 # Monika
 define monika_chr = MASMonika()
