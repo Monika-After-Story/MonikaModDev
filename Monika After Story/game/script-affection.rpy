@@ -507,6 +507,9 @@ init 15 python in mas_affection:
         elif persistent._mas_monika_clothes == "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
+        # remove change to def outfit event in case it's been pushed
+        store.mas_rmallEVL("mas_change_to_def")
+
 
     def _happyToNormal():
         """

@@ -2500,6 +2500,11 @@ init 5 python:
     )
 
 label mas_change_to_def:
+    # sanity check for an extremely rare case where player dropped below happy
+    # closed game before this was pushed and then deleted json before next load
+    if store.monika_chr.clothes == store.mas_clothes_def:
+        return
+
     m 1eka "Hey [player], I miss my old school uniform..."
     m 3eka "I'm just going to go change, be right back..."
     
