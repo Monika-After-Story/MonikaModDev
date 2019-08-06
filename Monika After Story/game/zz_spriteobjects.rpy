@@ -994,7 +994,16 @@ init -1 python:
         mux_type=["wrist-bracelet"],
         ex_props={
             "bare wrist": True,
-        }
+        },
+        rec_layer=MASMonika.ASE_ACS,
+        arm_split=MASPoseMap(
+            default="",
+            p1="1",
+            p2="0",
+            p3="1",
+            p4="0",
+            p5="1"
+        )
     )
     store.mas_sprites.init_acs(mas_acs_hairties_bracelet_brown)
 
@@ -1051,7 +1060,7 @@ init -1 python:
         ex_props={
             "bare collar": True,
         },
-        rec_layer=MASMonika.BFH_ACS
+        #rec_layer=MASMonika.BSE_ACS
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
 

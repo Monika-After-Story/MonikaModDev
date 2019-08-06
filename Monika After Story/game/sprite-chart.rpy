@@ -1136,8 +1136,13 @@ init -5 python in mas_sprites:
             # standing string is null or None
             return
 
-        if arm_state is not None and arm_state in arm_codes:
-            arm_code = ART_DLM + arm_state
+        if arm_state is not None:
+            
+            if arm_state in arm_codes:
+                arm_code = ART_DLM + arm_state
+            else:
+                # we should not render
+                return
 
         else:
             arm_code = ""
@@ -1848,7 +1853,8 @@ init -5 python in mas_sprites:
                 loc_str,
                 clothing,
                 lean,
-                n_suffix
+                n_suffix,
+                bcode
             )
 
         else:
@@ -1868,7 +1874,7 @@ init -5 python in mas_sprites:
             )
 
             # body-0
-            _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix)
+            _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode)
 
 
     def _ms_emote(sprite_list, loc_str, emote, n_suffix, f_prefix):
@@ -2838,7 +2844,7 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix):
+    def _ms_torso_nh(sprite_list, loc_str, clothing, n_suffix, bcode):
         """
         Adds torso string, no hair
 
@@ -2847,6 +2853,7 @@ init -5 python in mas_sprites:
             loc_str - location string
             clothing - type of clothing
             n_suffix - night suffix to use
+            bcode - base code to use
         """
         sprite_list.extend((
             ",",
@@ -2856,6 +2863,8 @@ init -5 python in mas_sprites:
             clothing,
             "/",
             NEW_BODY_STR,
+            ART_DLM,
+            bcode,
             n_suffix,
             FILE_EXT,
             '"'
@@ -2914,7 +2923,14 @@ init -5 python in mas_sprites:
         ))
 
 
-    def _ms_torsoleaning_nh(sprite_list, loc_str, clothing, lean, n_suffix):
+    def _ms_torsoleaning_nh(
+            sprite_list,
+            loc_str,
+            clothing,
+            lean,
+            n_suffix,
+            bcode
+        ):
         """
         Adds torso leaning string, no hair
 
@@ -2924,6 +2940,7 @@ init -5 python in mas_sprites:
             clothing - type of clothing
             lean - type of leaning
             n_suffix - night suffix to use
+            bcode - base code to use
         """
         sprite_list.extend((
             ",",
@@ -2934,6 +2951,8 @@ init -5 python in mas_sprites:
             "/",
             PREFIX_BODY_LEAN,
             lean,
+            ART_DLM,
+            bcode,
             n_suffix,
             FILE_EXT,
             '"'
