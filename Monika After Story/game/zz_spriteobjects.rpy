@@ -1060,7 +1060,10 @@ init -1 python:
         ex_props={
             "bare collar": True,
         },
-        #rec_layer=MASMonika.BSE_ACS
+        rec_layer=MASMonika.BSE_ACS,
+        arm_split=MASPoseMap(
+            default="0"
+        )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
 
