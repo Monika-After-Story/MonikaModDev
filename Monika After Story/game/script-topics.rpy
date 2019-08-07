@@ -1369,15 +1369,16 @@ label monika_horror:
     m "It really needs to etch them deeply into the story and characters, and just mess with your mind."
     m 2eua "In my opinion, there's nothing more creepy than things just being slightly off."
     m "Like if you set up a bunch of expectations on what the story is going to be about..."
-    m 4tfu "...and then, you just start inverting things and pulling the pieces apart."
-    m 1tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
+    m 3tfu "...and then, you just start inverting things and pulling the pieces apart."
+    m 3tfb "So even though the story doesn't feel like it's trying to be scary, the reader feels really deeply unsettled."
     m "Like they know that something horribly wrong is hiding beneath the cracks, just waiting to surface."
     m 2lksdla "God, just thinking about it gives me the chills."
     m 3eua "That's the kind of horror I can really appreciate."
-    m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
-    m 1eka "Ahaha, don't worry."
-    m 1hua "I won't make you read any horror stories anytime soon."
-    m 1hubfa "I can't really complain if we just stick with the romance~"
+    if not persistent._mas_pm_likes_horror:
+        m 1eua "But I guess you're the kind of person who plays cute romance games, right?"
+        m 1eka "Ahaha, don't worry."
+        m 1hua "I won't make you read any horror stories anytime soon."
+        m 1hubfa "I can't really complain if we just stick with the romance~"
     return "derandom"
 
 # do you like rap
@@ -1947,9 +1948,7 @@ label monika_holdme_reactions:
             show monika 2hkbfsdlb at t11 zorder MAS_MONIKA_Z with dissolve
             m 2hkbfsdlb "Oh, whoops, I guess I'm still a little dreamy..."
             if renpy.random.randint(1,4) == 1:
-                m 1kubfu "At least {i}one{/i} of my dreams came true, though.{w=0.4}{nw}"
-                $ _history_list.pop()
-                m 1tubfu "At least {i}one{/i} of my dreams came true, though.{fast}"
+                m 1kubfu "At least {i}one{/i} of my dreams came true, though."
             else:
                 m 1ekbfb "At least {i}one{/i} of my dreams came true, though."
             m 1hubfb "Ehehe~"
@@ -5263,18 +5262,17 @@ init 5 python:
 label monika_zombie:
     m 1lsc "Hey, this might sound a bit weird..."
     m 1esc "But, I'm really fascinated by the concept of zombies."
-    m 1euc "The idea of society dying to a disease..."
-    m 1eud "All because of a deadly pandemic that humans couldn't handle quickly."
+    m 1euc "The idea of society dying to a disease, all because of a deadly pandemic that humans couldn't handle quickly."
     m 3esd "I mean, think about your everyday schedule."
     m 3esc "Everything that you do will be gone in an instant."
-    m 1esc "Sure, society faces a lot of threats on a daily basis."
+    m 1esc "Sure, society faces a lot of threats on a daily basis..."
     m 1lksdlc "But zombies can do it in a heartbeat."
     m 1esc "A lot of monsters are created to be scary and terrifying."
     m 1ekc "Zombies, however, are more realistic and actually pose a danger."
-    m 3ekc "You might be able to kill one or a few of them by yourself."
-    m 2ekc "But when there's a horde of them coming after you, you'll get overwhelmed easily."
+    m 3ekc "You might be able to kill one or a few of them by yourself..."
+    m "But when there's a horde of them coming after you, you'll get overwhelmed easily."
     m 1lksdld "You don't get that same feeling with other monsters."
-    m "And all of their intelligence is gone; they're berserk, don't feel pain, can't be afraid."
+    m "All of their intelligence is gone; they're berserk, don't feel pain, can't be afraid..."
     m 1euc "When you exploit a weakness of a monster, they become scared of you and run away."
     m 1ekd "But zombies? They'll tear through {i}anything{/i} just to get you."
     m 3ekd "Imagine if it was someone you loved that was coming after you..."
@@ -5290,7 +5288,7 @@ label monika_zombie:
     m "There's no way I could kill you for my own safety..."
     m 2lksdlb "Ahaha..."
     m 2lssdlb "I'm thinking way too much about this."
-    m 1eua "Well, regardless, if anything bad were to happen..."
+    m 3eua "Well, regardless, if anything bad were to happen..."
     m 2hua "I'll be by your side forever~"
     return
 
@@ -7725,7 +7723,14 @@ init 5 python:
             eventlabel="monika_concerts",
             category=['media',"music"],
             prompt="Music concerts",
-            random=True
+            conditional=(
+                "renpy.seen_label('monika_jazz') "
+                "and renpy.seen_label('monika_orchestra') "
+                "and renpy.seen_label('monika_rock') "
+                "and renpy.seen_label('monika_vocaloid') "
+                "and renpy.seen_label('monika_rap')"
+            )
+            action=EV_ACT_RANDOM
         )
     )
 
@@ -7736,15 +7741,8 @@ label monika_concerts:
     # this topic is starting to get too complicated
 
     m 1euc "Hey [player], I've been thinking about something we could do together one day..."
-    if (
-            renpy.seen_label("monika_jazz")
-            and renpy.seen_label("monika_orchestra")
-            and renpy.seen_label("monika_rock")
-            and renpy.seen_label("monika_vocaloid")
-            and renpy.seen_label("monika_rap")
-        ):
-        m 1eud "You know how I like different forms of music?"
-        m 1hua "Well..."
+    m 1eud "You know how I like different forms of music?"
+    m 1hua "Well..."
     m 3eub "Why don't we go to a concert?"
     m 1eub "I hear that the atmosphere at a concert can really make you feel alive!"
 

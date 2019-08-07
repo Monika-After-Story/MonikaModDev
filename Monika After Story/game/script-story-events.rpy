@@ -205,12 +205,12 @@ label preferredname:
                         m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
                     $ done = True
         "No.":
-            m 1ekc "Oh... Okay then, if you say so."
-            m 1eka "Just tell me whenever you change your mind, [player]."
+            m 1eka "Oh... Okay then, if you say so."
+            m 3eka "Just tell me if you change your mind, [player]."
             $ done = True
 
     #Unlock prompt to change name again
-    $evhand.event_database["monika_changename"].unlocked = True
+    $ evhand.event_database["monika_changename"].unlocked = True
     $ evhand.event_database["monika_changename"].pool = True
     $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
     return
