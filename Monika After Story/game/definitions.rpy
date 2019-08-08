@@ -5774,3 +5774,32 @@ label set_gender:
 
 style jpn_text:
     font "mod_assets/font/mplus-2p-regular.ttf"
+
+# functions related to ily2
+init python:
+    def mas_passedILY(pass_time, check_time=None):
+        '''
+        Checks whether we are within the appropriate time since the last time
+        Monika told the player 'ily' which is stored in persistent._mas_last_monika_ily
+        IN:
+            pass_time - a timedelta corresponding to the time limit we want to check against
+            check_time - the time at which we want to check, will typically be datetime.datetime.now()
+                which is the default
+
+        RETURNS:
+            boolean indicating if we are within the time limit
+        '''
+        if check_time is None:
+            check_time = datetime.datetime.now()
+        return persistent._mas_last_monika_ily is not None and (check_time - persistent._mas_last_monika_ily) <= pass_time
+
+    def mas_ILY(set_time=None):
+        '''
+        Sets persistent._mas_last_monika_ily (the last time Monika said ily) to a given time
+        IN:
+            set_time - the time we want to set persistent._mas_last_monika_ily to
+                defaults to datetime.datetime.now()
+        '''
+        if set_time is None:
+            set_time = datetime.datetime.now()
+        persistent._mas_last_monika_ily = set_time

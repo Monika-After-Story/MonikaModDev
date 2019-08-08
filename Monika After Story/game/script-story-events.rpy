@@ -48,7 +48,7 @@ label gender:
     $ mas_showEVL("gender_redo","EVE",unlock=True,_pool=True)
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
@@ -129,7 +129,7 @@ label gender_redo:
                 m 1ekbsa "Because your happiness is the most important thing to me."
                 show monika 5hubsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5hubsa "Remember that I'll always love you unconditionally, [player]~"
-    return
+    return "love"
 
 label gender_redo_same:
     m 1hksdlb "...That's the same as before, [player]."
@@ -2190,6 +2190,7 @@ label monika_rpy_files:
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
+            return "love"
 
         "No.":
             m "I see."
