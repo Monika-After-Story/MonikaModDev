@@ -1356,16 +1356,18 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # arms-0
-            _ms_arms_nh_leaning_arms(
-                sprite_list,
-                clothing,
-                arms_pose,
-                loc_str,
-                lean,
-                n_suffix,
-                bcode
-            )
+            if arms_pose is not None:
+                # arms-0
+                _ms_arms_nh_leaning_arms(
+                    sprite_list,
+                    clothing,
+                    base_pose,
+                    arms_pose,
+                    loc_str,
+                    lean,
+                    n_suffix,
+                    bcode
+                )
 
         else:
             # arms-base-0
@@ -1389,15 +1391,17 @@ init -5 python in mas_sprites:
                 lean=lean
             )
 
-            # arms-0
-            _ms_arms_nh_up_arms(
-                sprite_list,
-                clothing,
-                arms_pose,
-                loc_str,
-                n_suffix,
-                bcode
-            )
+            if arms_pose is not None:
+                # arms-0
+                _ms_arms_nh_up_arms(
+                    sprite_list,
+                    clothing,
+                    base_pose,
+                    arms_pose,
+                    loc_str,
+                    n_suffix,
+                    bcode
+                )
 
 
     def _ms_arms_nh_up(sprite_list, loc_str, clothing, arms, n_suffix):
@@ -1429,6 +1433,7 @@ init -5 python in mas_sprites:
     def _ms_arms_nh_up_arms(
             sprite_list,
             clothing,
+            base_pose,
             arms_pose,
             loc_str,
             n_suffix,
@@ -1440,12 +1445,13 @@ init -5 python in mas_sprites:
         IN:
             sprite_list - list to add sprite strings to
             clothing - clotjhing to use
+            base_poes - MASPoseArms for base
             arms_pose - MASPoseArms for arms
             loc_str - location string
             n_suffix - night suffix
             bcode - base code
         """
-        arms_pose.build_arms(
+        store.MASPoseArms.build_arms_sp_str(
             sprite_list,
             (
                 ",",
@@ -1463,7 +1469,9 @@ init -5 python in mas_sprites:
                 FILE_EXT,
                 '"',
             ),
-            bcode == "1"
+            bcode == "1",
+            arms_pose,
+            base_pose
         )
 
 
@@ -1643,6 +1651,7 @@ init -5 python in mas_sprites:
     def _ms_arms_nh_leaning_arms(
             sprite_list,
             clothing,
+            base_pose,
             arms_pose,
             loc_str,
             lean, 
@@ -1655,13 +1664,14 @@ init -5 python in mas_sprites:
         IN:
             sprite_list - list to add sprite strings to
             clothing - clothing to use
+            base_pose - MASPoseArms for base
             arms_pose - MASPoseArms for arms
             loc_str - locaiton string to use
             lean - lean to use
             n_suffix - night suffix to use
             bcode - base code
         """
-        arms_pose.build_arms(
+        store.MASPoseArms.build_arms_sp_str(
             sprite_list,
             (
                 ",",
@@ -1681,7 +1691,9 @@ init -5 python in mas_sprites:
                 FILE_EXT,
                 '"',
             ),
-            bcode == "1"
+            bcode == "1",
+            arms_pose,
+            base_pose
         )
 
 
@@ -4185,6 +4197,22 @@ init -2 python:
         """
         representation of a pose's arms. This is to simplify pose management
 
+        Each pose is either a both or a left/right combo.
+        Both represntes both arms as a single image, left/right are obviously
+        separate layers for each arm. 
+
+        If both/left/right is set as a tuple with a string item as the first
+        item, the pose is assumed to have an image layer associated with
+        this pose. 
+
+        If both/left/right is set to None, the pose is assumed to NOT have
+        any image layers associated with this pose.
+
+        If both/left/right is set to a tuple with the integer constant
+        USE_BASE as the fist item, this pose is assumed to use the base
+        MASPoseArms as a guide for finding image layers associated with
+        this pose.
+
         PROPERTIES:
             both - string name used if a pose has both arms as a layer
                 set to None to not use this. This also takes priority.
@@ -4199,6 +4227,7 @@ init -2 python:
             right_front - True if right has a front layer (1)
             right_back - True if right has a back layer (0)
         """
+        USE_BASE = 100
 
         def __init__(self, left=None, right=None, both=None):
             """
@@ -4223,14 +4252,19 @@ init -2 python:
             else:
                 if left is not None:
                     self.left, self.left_back, self.left_front = left
-                    self.left = store.mas_sprites.PREFIX_ARMS_LEFT + self.left
+
+                    if self.left != self.USE_BASE:
+                        self.left = (
+                            store.mas_sprites.PREFIX_ARMS_LEFT + self.left
+                        )
 
                 if right is not None:
                     self.right, self.right_back, self.right_front = right
-                    self.right = (
-                        store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
-                    )
 
+                    if self.right != self.USE_BASE:
+                        self.right = (
+                            store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
+                        )
 
         @staticmethod
         def _add_if_needed(
@@ -4280,10 +4314,97 @@ init -2 python:
             self.right_front = None
             self.right_back = None
 
-        def build_arms(self, sprite_list, prefix_list, suffix_list, front):
+        @staticmethod
+        def build_arms_sp_str(
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+                arms_pose,
+                base_pose
+        ):
+            """
+            Builds arm sprite string, using base when appropriate.
+
+            IN:
+                sprite_list - list to add sprite strings to
+                prefix_list - list of strings to prefix each arm with
+                suffix_list - list of strings to suffix each arm with
+                front - True if we are rendering front, False if back
+                arms_pose - the MASPoseArms object we are building arm string
+                    for
+                base_pose - the base MASPoseArms object to use as base if
+                    needed
+            """
+            if arms_pose.both is not None:
+                # we are rendering for both arms
+
+                if arms_pose.both == MASPoseArms.USE_BASE:
+                    # then we should be using base as guide
+                    use_pose = base_pose
+
+                else:
+                    use_pose = arms_pose
+
+                MASPoseArms._add_if_needed(
+                    sprite_list,
+                    prefix_list,
+                    suffix_list,
+                    front,
+                    use_pose.both,
+                    use_pose.both_front,
+                    use_pose.both_back
+                )
+
+            else:
+                # we are rendering left and right
+
+                if arms_pose.left is not None:
+                    if arms_pose.left == MASPoseArms.USE_BASE:
+                        # use base as guide
+                        use_pose = base_pose
+
+                    else:
+                        use_pose = arms_pose
+
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        use_pose.left,
+                        use_pose.left_front,
+                        use_pose.left_back
+                    )
+
+                if arms_pose.right is not None:
+                    if arms_pose.right == MASPoseArms.USE_BASE:
+                        use_pose = base_pose
+
+                    else:
+                        use_pose = arms_pose
+
+                    MASPoseArms._add_if_needed(
+                        sprite_list,
+                        prefix_list,
+                        suffix_list,
+                        front,
+                        use_pose.right,
+                        use_pose.right_front,
+                        use_pose.right_back
+                    )
+                            
+        def build_arms(
+                self, 
+                sprite_list,
+                prefix_list,
+                suffix_list,
+                front,
+        ):
             """
             Builds arm strings and adds to sprite list
             NOTE: only adds arm parts, not composition
+            NOTE: meant for load testing
 
             IN:
                 sprite_list - list to add sprite strings to
@@ -5309,7 +5430,9 @@ init -2 python:
                     sprite object.
                     (Default: empty dict)
                 pose_arms - MASPoseMap object represneting the arm layers
-                    for poses
+                    for poses. If None is passed, we assume use the base
+                    layers as a guide
+                    (Default: None)
             """
             super(MASClothes, self).__init__(
                 name,

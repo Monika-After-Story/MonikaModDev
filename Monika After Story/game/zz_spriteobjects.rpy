@@ -742,7 +742,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_def_entry,
+        entry_pp=store.mas_sprites._clothes_def_entry
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
     store.mas_selspr.init_selectable_clothes(
@@ -899,6 +899,10 @@ init -1 python:
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_sundress_white_entry,
         exit_pp=store.mas_sprites._clothes_sundress_white_exit,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
     store.mas_selspr.init_selectable_clothes(
@@ -1062,7 +1066,8 @@ init -1 python:
         },
         rec_layer=MASMonika.BSE_ACS,
         arm_split=MASPoseMap(
-            default="0"
+            default="0",
+            use_reg_for_l=True
         )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
