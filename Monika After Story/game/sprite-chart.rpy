@@ -2496,7 +2496,7 @@ init -5 python in mas_sprites:
             acs_bse_list,
             "0",
             n_suffix,
-            arms,
+            leanpose,
             lean=lean
         )
 
