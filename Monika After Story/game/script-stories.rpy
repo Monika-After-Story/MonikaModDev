@@ -457,6 +457,8 @@ label mas_scary_story_setup:
     $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
+    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
+    $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
 
     #TODO: persistent music spoop for o31
@@ -473,7 +475,7 @@ label mas_scary_story_setup:
     if not mas_isO31():
         $ store.mas_globals.show_vignette = True
 
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
+    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
 #    $ songs.current_track = songs.FP_NO_SONG
@@ -513,7 +515,7 @@ label mas_scary_story_cleanup:
     $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
+    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
