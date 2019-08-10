@@ -88,9 +88,10 @@ class StaticSprite(object):
             "o": "gasp",
             "u": "smug",
             "w": "wide",
-            "x": "disgust",
+            "x": "angry",
             "p": "pout",
-            "t": "triangle"
+            "t": "triangle",
+            "g": "disgust",
         },
         "single": { # everything else will be 3b
             "a": "3a",

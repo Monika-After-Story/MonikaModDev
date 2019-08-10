@@ -80,9 +80,10 @@
 #   o - gasp / open mouth (gasp)
 #   u - smug (smug)
 #   w - wide / open mouth (wide)
-#   x - disgust / grit teeth (disgust)
+#   x - angery (angry)
 #   p - tsundere/ puffy cheek (pout)
 #   t - triangle (triangle)
+#   g - disgust/uwah (disgust)
 #
 # For example, the expression code 1sub is:
 #   1 - resting on hands pose
