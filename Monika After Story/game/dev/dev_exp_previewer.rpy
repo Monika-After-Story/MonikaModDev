@@ -186,7 +186,7 @@ init 999 python:
                 "x": "angry",
                 "p": "pout",
                 "t": "triangle",
-                "g": "disgust",
+#                "g": "disgust",
             }
         }
 
@@ -272,7 +272,7 @@ init 999 python:
                 "x": "Grit Teeth",
                 "p": "Pout",
                 "t": "Triangle",
-                "g": "Disgust",
+#                "g": "Disgust",
             },
             "time": {
                 0: "Day",
@@ -404,7 +404,7 @@ init 999 python:
                 "x",
                 "p",
                 "t",
-                "g",
+#                "g",
             ],
             "time": [
                 0,
