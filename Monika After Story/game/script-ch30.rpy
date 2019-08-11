@@ -205,7 +205,6 @@ init -10 python:
     mas_idle_mailbox = MASIdleMailbox()
 
 
-image blue_sky = "mod_assets/blue_sky.jpg"
 image monika_room_highlight:
     "images/cg/monika/monika_room_highlight.png"
     function monika_alpha

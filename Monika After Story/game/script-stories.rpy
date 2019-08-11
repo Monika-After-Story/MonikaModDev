@@ -515,7 +515,7 @@ label mas_scary_story_cleanup:
     $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
