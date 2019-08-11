@@ -210,8 +210,7 @@ label preferredname:
             $ done = True
 
     #Unlock prompt to change name again
-    $ evhand.event_database["monika_changename"].unlocked = True
-    $ evhand.event_database["monika_changename"].pool = True
+    $ mas_showEVL("monika_changename","EVE",unlock=True,_pool=True)
     $ persistent._seen_ever["monika_changename"] = True # dont want this in unseen
     return
 
