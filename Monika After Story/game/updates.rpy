@@ -312,8 +312,7 @@ label v0_9_6(version="v0_9_6"):
             ("monika_whatwatching","mas_wrs_youtube"),
             ("monika_lookingat","mas_wrs_r34m"),
             ("monika_monikamoddev","mas_wrs_monikamoddev"),
-            ("mas_scary_story_o_tei","mas_story_o_tei"),
-            ("mas_story_grasshoper","mas_story_grasshopper")
+            ("mas_scary_story_o_tei","mas_story_o_tei")
         ]
         #NOTE:
         #We only really want the shown count and last seen (and unlocked for the stories). Nothing else mattress
@@ -353,6 +352,20 @@ label v0_9_6(version="v0_9_6"):
         family_ev = mas_getEV("monika_family")
         if family_ev is not None:
             family_ev.pool = True
+
+        # keep this from showing until we've talked about music
+        concert_ev = mas_getEV("monika_concerts")
+        if concert_ev is not None and concert_ev.shown_count == 0:
+            concert_ev.random = False
+            concert_ev.conditional = (
+                "renpy.seen_label('monika_jazz') "
+                "and renpy.seen_label('monika_orchestra') "
+                "and renpy.seen_label('monika_rock') "
+                "and renpy.seen_label('monika_vocaloid') "
+                "and renpy.seen_label('monika_rap')"
+            )
+            concert_ev.action = EV_ACT_RANDOM
+
     return
 
 # 0.9.5

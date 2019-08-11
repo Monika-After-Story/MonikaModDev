@@ -317,10 +317,10 @@ label mas_story_lies:
     return
 
 init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshopper",
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_grasshoper",
         prompt="The Grasshopper",unlocked=False),code="STY")
 
-label mas_story_grasshopper:
+label mas_story_grasshoper:
     call mas_story_begin
     m 1eua "One summer's day, a Grasshopper was hopping about, chirping and singing to its heart's content."
     m "An Ant passed by, bearing an ear of corn he was taking to the nest."
@@ -568,8 +568,8 @@ label mas_scary_story_hunter:
     m 1esd "He was soon approached by a salesman, who kept his face covered."
     m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
-    m "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
-    m 1euc "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
+    m 1euc "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
+    m "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
     m 3eud "It wasn't long before the hunter used up all six bullets."
     m 1esc "On his next hunt, the hunter saw a wild boar, the largest he had ever seen. It was too great of a prey to pass up on."
     m 1euc "He loaded the last bullet hoping to take down the beast..."
@@ -578,10 +578,10 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w}or so he would."
+    m 1dsd "...{w=1}or so he would."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
-    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
-    m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
+    m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
     m 1euc "After a short way, he looked behind him to see if she was following him any longer..."
