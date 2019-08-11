@@ -7845,7 +7845,7 @@ init 5 python:
                 "and renpy.seen_label('monika_rock') "
                 "and renpy.seen_label('monika_vocaloid') "
                 "and renpy.seen_label('monika_rap')"
-            )
+            ),
             action=EV_ACT_RANDOM
         )
     )
