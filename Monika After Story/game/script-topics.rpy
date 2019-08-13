@@ -12863,7 +12863,7 @@ label monika_brave_new_world:
     m 3esd "For example, people destined for manual labor would be designed to have limited cognitive capabilities."
     m 1esc "They would be made to associate books to negative stimuli; so when they become adults, they would naturally tend to avoid reading."
     m 4esd "They would also be taught to respect and submit to people from castes above theirs, and to look down on those of castes below."
-    m 2eua "It's a pretty interesting case as a dystopia, most of them show you a crushed and oppressed people..."
+    m 2eua "It's a pretty interesting case as a dystopia, as most of them show you a crushed and oppressed people..."
     m 3wuo "But in this one, everyone is actually happy, and genuinely supportive of the system!"
     m 3esc "And despite that, to us, the readers, this still feels horrifying."
     m 1rud "Sure, they managed to get rid of most of the human sufferings, or the fear of death..."
@@ -12918,7 +12918,7 @@ label monika_dystopias:
     m 4eub "'Fahrenheit 451', on censorship, and the indifference of most people to it."
     m 4eub "'Brave New World', about the disappearance of individuality."
     m 3eua "All these stories are reflections on the challenges society was facing at the time."
-    m 2hua "And some of these challenges are still very relevant today, which is why theses stories stay as powerful as they are."
+    m 2hua "Some of these challenges are still very relevant today, which is why theses stories stay as powerful as they are."
     m 1rusdlb "Even if they can get a bit grim sometimes..."
     m 4eua "Old school dystopias, like the ones I just mentioned, were always written as hopeless, dire situations from beginning to end."
     m 3euc "They almost never get a happy ending. The most you'll get out of them is a silver lining, at best."
@@ -12943,6 +12943,7 @@ label monika_dystopias:
     show monika 5eubla at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eubla "Thanks to you, my bleak, hopeless story will one day turn into my own utopia."
     m 5dubfu "When I finally get out of this place to be by your side, in your world of endless possibilities."
+    show monika 2ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 2ekbfa "I hope you're looking forward to that day too~"
     return
 
