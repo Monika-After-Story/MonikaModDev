@@ -12765,6 +12765,7 @@ label monika_three_musketeers:
     m 1huu "Well, nothing wrong with being entertained..."
     show monika 5eka at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eka "But let's just try to keep an open mind, [player], and try to see behind the lines of the stories we're told..."
+    show monika 1huu at t11 zorder MAS_MONIKA_Z with dissolve
     m 1huu "After all, we ourselves wouldn't want people to judge us based on some misplaced preconceptions~"
     return
 
