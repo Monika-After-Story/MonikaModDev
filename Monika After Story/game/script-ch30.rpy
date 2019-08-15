@@ -1193,13 +1193,15 @@ label mas_ch30_post_holiday_check:
                 # only crashed greeting.
                 # NOTE: we shouldnt actually have to do this ever, but
                 #   its here as a sanity check
-                sel_greeting_ev = mas_getEV("mas_crashed_start")
+                if not mas_inEVL("mas_crashed_start"):
+                    sel_greeting_ev = mas_getEV("mas_crashed_start")
 
             elif forced_quit:
                 # if we just forced quit, then we want to select the only
                 # reload greeting.
                 # NOTE: again, shouldnt have to do this, but its sanity checks
-                sel_greeting_ev = mas_getEV("ch30_reload_delegate")
+                if not mas_inEVL("ch30_reload_delegate"):
+                    sel_greeting_ev = mas_getEV("ch30_reload_delegate")
 
 
         # NOTE: this MUST be an if. it may be True if we crashed but
