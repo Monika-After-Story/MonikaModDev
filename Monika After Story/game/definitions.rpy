@@ -3614,8 +3614,6 @@ init -1 python:
         )
 
 
-    def mas_isMonikaBirthday():
-        return datetime.date.today() == mas_monika_birthday
 
 
     def mas_isSpecialDay():
@@ -3634,37 +3632,6 @@ init -1 python:
             or mas_isNYE()
             or mas_isF14()
         )
-
-    def mas_getNextMonikaBirthday():
-        today = datetime.date.today()
-        if mas_monika_birthday < today:
-            return datetime.date(
-                today.year + 1,
-                mas_monika_birthday.month,
-                mas_monika_birthday.day
-            )
-        return mas_monika_birthday
-
-
-    def mas_recognizedBday(_date=None):
-        """
-        Checks if the user recognized monika's birthday at all.
-
-        TODO: this is one-shot. we need to make this generic to future bdays
-
-        RETURNS:
-            True if the user recoginzed monika's birthday, False otherwise
-        """
-        if _date is None:
-            _date = mas_monika_birthday
-
-        return (
-            mas_generateGiftsReport(_date)[0] > 0
-            or persistent._mas_bday_date_count > 0
-            or persistent._mas_bday_sbp_reacted
-            or persistent._mas_bday_said_happybday
-        )
-
 
     def mas_maxPlaytime():
         return datetime.datetime.now() - datetime.datetime(2017, 9, 22)
@@ -5558,7 +5525,6 @@ define xp.IDLE_XP_MAX = 120
 define xp.NEW_EVENT = 15
 define mas_skip_visuals = False # renaming the variable since it's no longer limited to room greeting
 define mas_monika_twitter_handle = "lilmonix3"
-define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
 # sensitive mode enabler
 default persistent._mas_sensitive_mode = False
