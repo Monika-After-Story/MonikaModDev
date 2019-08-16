@@ -4830,6 +4830,7 @@ init 5 python:
             conditional=(
                 "persistent._mas_bday_spent_bday "
                 "and not persistent._mas_bday_time_spent_seen"
+            ),
             action=EV_ACT_QUEUE,
             start_date=datetime.combine(mas_monika_birthday, datetime.time(20)),
             end_date=datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1))),
