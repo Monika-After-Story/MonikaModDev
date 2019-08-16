@@ -5220,7 +5220,7 @@ init 5 python:
                 "and not persistent._mas_bday_no_recognize "
                 "and not persistent._mas_bday_nts_seen "
             ),
-            action=EV_ACT_QUEUE
+            action=EV_ACT_QUEUE,
             start_date=mas_monika_birthday+datetime.timedelta(1),
             end_date=mas_monika_birthday+datetime.timedelta(8),
             years=[]
