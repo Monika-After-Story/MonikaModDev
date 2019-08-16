@@ -4833,7 +4833,7 @@ init 5 python:
             ),
             action=EV_ACT_QUEUE,
             start_date=datetime.combine(mas_monika_birthday, datetime.time(20)),
-            end_date=datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1))),
+            end_date=datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1)),
             years=[]
         ),
         skipCalendar=True
