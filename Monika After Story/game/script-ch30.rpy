@@ -724,9 +724,27 @@ init 1 python:
 #       NOTE: this must be a string
 #       NOTE: if passed in, this will override aff-based exps from dissolving.
 #       (Default: None)
-label spaceroom(start_bg=None, hide_mask=store.mas_current_background.hide_masks, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=store.mas_current_background.hide_calendar, day_bg=store.mas_current_background.getDayRoom(), night_bg=store.mas_current_background.getNightRoom()):
+#   day_bg - the room we'll be showing during the day
+#       NOTE: must be string
+#       NOTE: if passed in, it will override the current background day_bg
+#       (Default: None)
+#   night_bg - the room we'll be showing during the night
+#       NOTE: must be string
+#       NOTE: if passed in, it will override the current background night_bg
+#       (Default: None)
+label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=False, dissolve_masks=False, scene_change=False, force_exp=None, hide_calendar=None, day_bg=None, night_bg=None):
 
     with None
+
+    #Get all of the params
+    if hide_mask is None:
+        $ hide_mask = store.mas_current_background.hide_masks
+    if hide_calendar is None:
+        $ hide_calendar = store.mas_current_background.hide_calendar
+    if day_bg is None:
+        $ day_bg = store.mas_current_background.getDayRoom()
+    if night_bg is None:
+        $ night_bg = store.mas_current_background.getNightRoom()
 
     if scene_change:
         scene black
