@@ -4085,8 +4085,8 @@ label mas_f14_monika_valentines_intro:
 
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ outfit = "sundress_white"
-        call mas_clothes_change
+        call mas_clothes_change("sundress_white")
+
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."

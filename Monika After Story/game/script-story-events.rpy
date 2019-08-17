@@ -2503,13 +2503,12 @@ label mas_change_to_def:
     # sanity check for an extremely rare case where player dropped below happy
     # closed game before this was pushed and then deleted json before next load
     if store.monika_chr.clothes == store.mas_clothes_def:
-        return
+        return "no_unlock"
 
     m 1eka "Hey [player], I miss my old school uniform..."
     m 3eka "I'm just going to go change, be right back..."
     
-    $ outfit = "def"
-    call mas_clothes_change
+    call mas_clothes_change()
 
     m "Okay, what else should we do today?"
 
@@ -2517,7 +2516,11 @@ label mas_change_to_def:
     $ mas_rmallEVL("mas_change_to_def")
     return "no_unlock"
 
-label mas_clothes_change:
+label mas_clothes_change(outfit=None):
+    # use def as the default outfit to change to
+    if outfit is None:
+        $ outfit = "def"
+
     window hide
 
     $ curr_zoom = store.mas_sprites.zoom_level
