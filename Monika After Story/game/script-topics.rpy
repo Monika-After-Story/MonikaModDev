@@ -1575,7 +1575,7 @@ label monika_yuri:
     m 5eua "I can try acting a little more creepy for you. Ehehe~"
     $ _history_list.pop()
     menu:
-        m 5eua "I can try acting a little more creepy for you. Ehehe~"
+        m "I can try acting a little more creepy for you. Ehehe~"
         "Actually... I'm into yanderes":
             $ persistent._mas_pm_likes_yanderes = 1
             m 1sub "Now that I'm hearing that I'm quite surprised you prefer me over Yuri"
