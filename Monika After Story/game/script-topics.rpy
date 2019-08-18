@@ -1590,7 +1590,7 @@ label monika_yuri:
             show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
             m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
             m 1cua "Other than the girls in your reality... "
-            m 1wub "Remember, that I see what you're doing, [player]".
+            m 1wub "Remember, that I see what you're doing, [player]."
             m 1eua "Ehehe~"
         "No":
             $ persistent._mas_pm_likes_yanderes = 0
