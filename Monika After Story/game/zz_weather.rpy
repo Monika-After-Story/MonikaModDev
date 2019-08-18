@@ -201,6 +201,9 @@ init -20 python in mas_weather:
     #Whether or not we should scene change
     should_scene_change = False
 
+    #Keep a temp store of weather here for if we're changing backgrounds
+    temp_weather_storage = None
+
 #    def canChangeWeather():
 #        """
 #        Returns true if the user can change weather

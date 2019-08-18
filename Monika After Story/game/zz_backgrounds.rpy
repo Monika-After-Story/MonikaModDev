@@ -10,14 +10,7 @@ init -10 python:
         PROPERTIES:
             background_id - the id which defines this bg
             prompt - button label for the bg
-            image_day - the image tag for the day background image object
-            image_night - the image tag for the night background image object
-            image_rain_day - the image tag for the background while raining during the day
-            image_rain_night - the image tag for the background while it's raining during the night
-            image_overcast_day - the image tag for the background while it's overcast during the day
-            image_overcast_night - the image tag for the background while it's overcast during the night
-            image_snow_day - the image tag for the background while it's snowing during the day
-            image_snow_night - the image tag for the background while it's snowing during the night
+            img_map - Dict mapping all images for the bgs, keys are precip types (See MASWeather)
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
             disable_progressive - weather or not we disable progesssive weather
@@ -123,38 +116,17 @@ init -10 python:
             self.image_day = image_day
             self.image_night = image_night
 
-            #Handle rain BGs
-            if image_rain_day:
-                self.image_rain_day = image_rain_day
-            else:
-                self.image_rain_day = image_day
 
-            if image_rain_night:
-                self.image_rain_night = image_rain_night
-            else:
-                self.image_rain_night = image_night
-
-            #Overcast handling
-            if image_overcast_day:
-                self.image_overcast_day = image_overcast_day
-            else:
-                self.image_overcast_day = image_day
-
-            if image_overcast_night:
-                self.image_overcast_night = image_overcast_night
-            else:
-                self.image_overcast_night = image_night
-
-            #Snow handling
-            if image_snow_day:
-                self.image_snow_day = image_snow_day
-            else:
-                self.image_snow_day = image_day
-
-            if image_snow_night:
-                self.image_snow_night = image_snow_night
-            else:
-                self.image_snow_night = image_night
+            self.image_map = {
+                #Def
+                mas_weather.PRECIP_TYPE_DEF: (image_day, image_night),
+                #Rain
+                mas_weather.PRECIP_TYPE_RAIN: (image_rain_day if image_rain_day else image_day, image_rain_night if image_rain_night else image_night),
+                #Overcast
+                mas_weather.PRECIP_TYPE_OVERCAST: (image_overcast_day if image_overcast_day else image_day, image_overcast_night if image_overcast_night else image_night),
+                #Snow
+                mas_weather.PRECIP_TYPE_SNOW: (image_snow_day if image_snow_day else image_day, image_snow_night if image_snow_night else image_night)
+            }
 
             #Then the other props
             self.hide_calendar = hide_calendar
@@ -230,13 +202,7 @@ init -10 python:
             if weather is None:
                 weather = store.mas_current_weather
 
-            if weather.precip_type == mas_weather.PRECIP_TYPE_RAIN:
-                return self.image_rain_day
-            elif weather.precip_type == mas_weather.PRECIP_TYPE_OVERCAST:
-                return self.image_overcast_day
-            elif weather.precip_type == mas_weather.PRECIP_TYPE_SNOW:
-                return self.image_snow_day
-            return self.image_day
+            return self.image_map[weather.precip_type][0]
 
         def getNightRoom(self, weather=None):
             """
@@ -245,13 +211,7 @@ init -10 python:
             if weather is None:
                 weather = store.mas_current_weather
 
-            if weather.precip_type == mas_weather.PRECIP_TYPE_RAIN:
-                return self.image_rain_night
-            elif weather.precip_type == mas_weather.PRECIP_TYPE_OVERCAST:
-                return self.image_overcast_night
-            elif weather.precip_type == mas_weather.PRECIP_TYPE_SNOW:
-                return self.image_snow_night
-            return self.image_night
+            return self.image_map[weather.precip_type][1]
 
         def getRoomForTime(self, weather=None):
             """
@@ -268,12 +228,17 @@ init -10 python:
             return self.getNightRoom(weather)
 
         def isChangingRoom(self, old_weather, new_weather):
+            """
+            If the room has a different look for the new weather we're going into, the room is "changing" and we need to flag this to
+            scene change and dissolve the spaceroom in the spaceroom label
+            """
             return self.getRoomForTime(old_weather) != self.getRoomForTime(new_weather)
 
 
 
 #Helper methods and such
 init -20 python in mas_background:
+    import store
     BACKGROUND_MAP = {}
     BACKGROUND_RETURN = "Nevermind"
 
@@ -298,6 +263,15 @@ init -20 python in mas_background:
         for mbg_id, mbg_obj in BACKGROUND_MAP.iteritems():
             store.persistent._mas_background_MBGdata[mbg_id] = mbg_obj.toTuple()
 
+    def getUnlockedBGCount():
+        """
+        Gets the number of unlocked backgrounds
+        """
+        unlocked_count = 0
+        for mbg_obj in BACKGROUND_MAP.itervalues():
+            unlocked_count += int(mbg_obj.unlocked)
+
+        return unlocked_count
 
 #START: BG change functions
 init 800 python:
@@ -338,13 +312,8 @@ init 800 python:
     mas_current_background = None
     mas_setBackground(mas_background_def)
 
-    #Make sure the bg selector is only available with the right amount of bgs unlocked
-    if len([
-        (mbg_obj.prompt, mbg_obj, False, False)
-        for mbg_id, mbg_obj in mas_background.BACKGROUND_MAP.iteritems()
-        if mbg_obj.unlocked
-        ]
-        ) < 2:
+    #Make sure the bg selector is only available with at least 2 bgs unlocked
+    if mas_background.getUnlockedBGCount() < 2:
         mas_lockEVL("monika_change_background","EVE")
 
 #START: Programming points
@@ -474,9 +443,11 @@ label monika_change_background_loop:
         m "Try again~"
         jump monika_change_background_loop
 
-    $ skip_outro = False
-    $ skip_leadin = False
+    call mas_background_change(sel_background)
+    return
 
+#Generic background changing label, can be used if we wanted a sort of story related change
+label mas_background_change(new_bg, skip_leadin=False, skip_outro=False):
     # otherwise, we can change the background now
     if not skip_leadin:
         m 1eua "Alright!"
@@ -489,9 +460,10 @@ label monika_change_background_loop:
     pause 2.0
 
     # finally change the background
-    $ mas_changeBackground(sel_background)
+    $ mas_changeBackground(new_bg)
 
-    if sel_background.hide_masks:
+    #If we've disabled progressive and hidden masks, then we shouldn't allow weather change
+    if new_bg.disable_progressive and new_bg.hide_masks:
         $ mas_weather.temp_weather_storage = mas_current_weather
         $ mas_changeWeather(mas_weather_def)
         $ mas_lockEVL("monika_change_weather", "EVE")
@@ -508,6 +480,7 @@ label monika_change_background_loop:
             else:
                 $ mas_changeWeather(mas_weather_def)
 
+        #Then we unlock the weather sel here
         $ mas_unlockEVL("monika_change_weather", "EVE")
 
     call spaceroom(scene_change=True, dissolve_all=True)
