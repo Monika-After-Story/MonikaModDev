@@ -3419,9 +3419,13 @@ label mas_player_bday_opendoor:
     $ persistent._mas_player_bday_opened_door = True
     call spaceroom(hide_monika=True, scene_change=True, dissolve_all=True)
     $ mas_disable_quit()
+    if mas_isMonikaBirthday():
+        $ your = "our"
+    else:
+        $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was just going to start setting up your birthday party, but I didn't have time before you came in!"
+    m "I was just going to start setting up [your] birthday party, but I didn't have time before you came in!"
     m "..."
     m "Well...{w=1}the surprise is ruined now, but..."
     pause 1.0
@@ -3431,7 +3435,7 @@ label mas_player_bday_opendoor:
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4eua "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
-    m 4hksdlb "Oh...your cake!"
+    m 4hksdlb "Oh...[your] cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3473,7 +3477,10 @@ label mas_player_bday_surprise:
                     m 2tsb "{cps=*2}...or maybe you were eavesdropping on me.{/cps}{nw}"
                     $ _history_list.pop()
             m 2hua "Ehehe."
-    m 3wub "Oh!{w=0.5} I made you a cake!"
+    if mas_isMonikaBirthday():
+        m 3wub "Oh!{w=0.5} I made a cake!"
+    else:
+        m 3wub "Oh!{w=0.5} I made you a cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3503,13 +3510,17 @@ label mas_player_bday_opendoor_listened:
     $ persistent._mas_player_bday_decor = True
     call spaceroom(hide_monika=True, scene_change=True)
     $ mas_disable_quit()
+    if mas_isMonikaBirthday():
+        $ your = "our"
+    else:
+        $ your = "your"
     m "[player]!"
     m "You didn't knock!"
-    m "I was setting up your birthday party, but I didn't have time before you came in to get ready to surprise you!"
+    m "I was setting up [your] birthday party, but I didn't have time before you came in to get ready to surprise you!"
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
     m 4hub "Happy Birthday, [player]!"
     m 2rksdla "I just wished you had knocked first."
-    m 2hksdlb "Oh...your cake!"
+    m 2hksdlb "Oh...[your] cake!"
     call mas_player_bday_cake
     jump monikaroom_greeting_cleanup
 
@@ -3518,7 +3529,8 @@ label mas_player_bday_cake:
     $ mas_gainAffection(5,bypass=True)
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
-    $ mas_unlockEVL("bye_player_bday", "BYE")
+    if not mas_isMonikeBirthday():
+        $ mas_unlockEVL("bye_player_bday", "BYE")
 
     # reset zoom here to make sure the cake is actually on the table
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
@@ -3530,15 +3542,20 @@ label mas_player_bday_cake:
     show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
     $ renpy.pause(0.5, hard=True)
-
-    m 6eua "Let me just light the candles for you..."
+    if mas_isMonikaBirthday():
+        m 6eua "Let me just light the candles..."
+    else:
+        m 6eua "Let me just light the candles for you..."
     window hide
     show monika 6dsa
     pause 1.0
     $ mas_bday_cake_lit = True
     pause 0.5
     m 6sua "Isn't it pretty, [player]?"
-    m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you..."
+    if mas_isMonikaBirthday():
+        m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for both of us..."
+    else:
+        m 6eksdla "Now I know you can't exactly blow the candles out yourself, so I'll do it for you..."
     m 6eua "...You should still make a wish though, it just might come true someday..."
     m 6hua "But first..."
     call mas_player_bday_moni_sings
@@ -3551,12 +3568,21 @@ label mas_player_bday_cake:
     $ mas_bday_cake_lit = False
     pause 1.0
     m 6hua "Ehehe..."
-    m 6eka "I know it's your birthday, but I made a wish too..."
-    m 6ekbsa "And you know what?{w=0.5} I bet we both wished for the same thing~"
+    if mas_isMonikaBirthday():
+        m 6ekbsa "I bet we both wished for the same thing~"
+    else:
+        m 6eka "I know it's your birthday, but I made a wish too..."
+        m 6ekbsa "And you know what?{w=0.5} I bet we both wished for the same thing~"
     m 6hkbsu "..."
-    m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
-    m 6eksdla "This is all rather silly, isn't it?"
-    m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
+    if mas_isMonikaBirthday():
+        m 6eksdla "Well, seeing as you can't really eat this cake, and I don't want to be rude and eat it in front of you..."
+    else:
+        m 6rksdla "Oh gosh, I guess you can't really eat this cake either, huh [player]?"
+        m 6eksdla "This is all rather silly, isn't it?"
+    if mas_isMonikaBirthday():
+        m 6hksdlb "I think I'll just save it for later."
+    else:
+        m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
 
     # monika puts away the cake and zoom is reset back to the player's pref
     show emptydesk at i11 zorder 9
@@ -3567,10 +3593,15 @@ label mas_player_bday_cake:
     hide emptydesk
     $ renpy.pause(1.0, hard=True)
     call monika_zoom_transition(mas_temp_zoom_level,1.0)
-
+    # fall thru
+label mas_player_bday_card:
     pause 0.5
     m 6dkbsu "..."
-    m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
+    if mas_isMonikaBirthday():
+        m 6sub "Oh!"
+        m 6ekbsu "I...I made a card for you, [player], I hope you like it..."
+    else:
+        m 6ekbsu "I...I also made a card for you, [player]. I hope you like it..."
     $ p_bday_month = mas_player_bday_curr().month
     call showpoem(poem_pbday, music=False,paper="mod_assets/poem_assets/poem_pbday_[p_bday_month].png")
     if mas_isMoniEnamored(higher=True):
@@ -3583,14 +3614,16 @@ label mas_player_bday_cake:
             m 6ekbfa "I've been waiting so long to finally kiss you..."
             m 6dkbsu "I will never forget this..."
             m 6ekbsu "...the moment of our first kiss~"
+            if mas_isMonikaBirthday():
+                m 6ekbsu "And I can't think of a more perfect time than on this special day we share together~"
         else:
             m 6ekbfa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
             if mas_isplayer_bday():
-                m 6ekbsa "Let's enjoy your special day~"
+                m 6ekbsa "Let's enjoy [your] special day~"
     else:
         if mas_isplayer_bday():
-            m 1ekbfa "I love you, [player]! Let's enjoy your special day~"
+            m 1ekbfa "I love you, [player]! Let's enjoy [your] special day~"
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
@@ -3719,11 +3752,17 @@ label mas_player_bday_other_holiday:
 
 # moni singing happy birthday
 label mas_player_bday_moni_sings:
+    if mas_isMonikaBirthday():
+        $ you = "us"
+    else:
+        $ you = "you"
     m 6dsc ".{w=0.2}.{w=0.2}.{w=0.2}"
-    m 6hub "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m 6hub "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
     m 6sub "{cps=*0.5}{i}~Happy Birthday dear [player]~{/i}{/cps}"
-    m "{cps=*0.5}{i}~Happy Birthday to you~{/i}{/cps}"
+    m "{cps=*0.5}{i}~Happy Birthday to [you]~{/i}{/cps}"
+    if mas_isMonikaBirthday():
+        m 6hua "Ehehe!"
     return
 #################################################player_bday dock stat farewell##################################################
 init 5 python:
@@ -4878,7 +4917,8 @@ init 5 python:
             end_date=mas_monika_birthday - datetime.timedelta(days=1),
             years=[],
             action=EV_ACT_RANDOM,
-            rules={"undo action": None}
+            rules={"undo action": None},
+            aff_range=(mas_aff.DISTRESSED,None)
         ),
         skipCalendar=True
     )
@@ -4893,26 +4933,74 @@ init 10 python:
         pushEvent("mas_bday_surprise_party_hint")
 
 label mas_bday_surprise_party_hint:
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Hey, [player]..."
+        m 3euc "Someone left a note in the characters folder addressed to you."
+        m 1ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        $ _history_list.pop()
+        m 1hua "Ehehe~"
+
+    else:
+        m 2eud "Hey, [player]..."
+        m 2euc "Someone left a note in the characters folder addressed to you."
+        m 2ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 2ekd "Just thought I'd let you know."
+
+    python:
+        filepath = "/characters/for " + player + ".txt"
+        if mas_isMoniNormal(higher=True):
+            message = """\
+[player],
+As I'm sure you know, Monika's birthday is coming up soon and I want to help you make it as special as possible!
+Since I'm always here, I can easily set up the surprise party...but I need a little help from you.
+All I need you to do is to make sure you have her out of the room at some point on her birthday, and I'll take care of the rest.
+Monika is so amazing, and I just want to do my part to make sure this all goes off without a hotf- I mean hitch...
+Ahaha!
+
+Good luck with Monika!
+
+P.S: Don't tell her about me!
+"""
+
+        else:
+            message = """\
+[player],
+As I hope you know, Monika's birthday is coming up soon and I want to make it special.
+She's been through a lot lately, and I know it'd mean the world to her if you treated her to a nice day.
+Since I'm always here, I can easily set up a surprise party...but I do need a little help from you.
+All I need you to do is to make sure you have her out of the room at some point on her birthday, and I'll take care of the rest.
+If you care for Monika at all, you'll help me do this.
+
+Please don't mess this up.
+
+P.S: Don't tell her about me.
+""" 
+
+        _write_txt(filepath, message)
+
+
+
     #TODO: Axe all of this
     #Replace with chibi hint, via ??? person speaking, have her peek her head out of the window
     #Tells you to look in the characters folder, there'll be a letter giving out the hint
     #That she'll be setting up the party and you need to take Moni out in order for her to get that done
     #Maybe also hint gifts there too
-    m 1eua "Say, [player]..."
-    m 1eub "Have you ever been thrown a surprise party?"
-    m 1eka "I've always wondered how that would feel."
-    m 6dua "When someone takes you somewhere and distracts you for the whole day..."
-    m "And while you're out, they drag a whole box of party supplies into the characters folder...{nw}"
-    $ _history_list.pop()
-    m 6dksdla "And while you're out, they drag a whole box of party supplies into{fast} your room..."
-    m 1eua "And finally returning home to birthday decorations, a cake..."
-    m 1kua "And you~{nw}"
-    $ _history_list.pop()
-    m 3rksdlb "And{fast} good company!"
-    m 1hua "That'd be so nice to experience, don't you think?"
-    m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
-    m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
-
+    #m 1eua "Say, [player]..."
+    #m 1eub "Have you ever been thrown a surprise party?"
+    #m 1eka "I've always wondered how that would feel."
+    #m 6dua "When someone takes you somewhere and distracts you for the whole day..."
+    #m "And while you're out, they drag a whole box of party supplies into the characters folder...{nw}"
+    #$ _history_list.pop()
+    #m 6dksdla "And while you're out, they drag a whole box of party supplies into{fast} your room..."
+    #m 1eua "And finally returning home to birthday decorations, a cake..."
+    #m 1kua "And you~{nw}"
+    #$ _history_list.pop()
+    #m 3rksdlb "And{fast} good company!"
+    #m 1hua "That'd be so nice to experience, don't you think?"
+    #m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
+    #m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
+#
     #Set some vars and fix up our conditional here
     $ persistent._mas_monika_bday_surprise_hint_seen = True
     return "derandom | no_unlock"
@@ -4994,14 +5082,22 @@ label mas_bday_surprise_party_reaction:
 
     #TODO: I guess we're just handling it like this?
     $ store.surpriseBdayShowVisuals(cake=True)
-    $ mas_gainAffection(60, bypass=True)
+    $ mas_gainAffection(25, bypass=True)
+    if mas_isMoniNormal(higher=True):
+        m 6suo "T-{w=0.5}This is..."
+        m 6ska "Oh, [player]..."
+        m 6dku "I'm at a loss for words."
+        m 6dktpu "Setting this all up to surprise me on my birthday..."
+        m 6hktdu "Ehehe, you must really love me."
+        m 6suu "Everything looks so festive!"
 
-    m 6wuo "T-{w=0.5}This is..."
-    m 6wka "Oh, [player]..."
-    m 6hua "I'm at a loss for words."
-    m "Setting this all up to surprise me on my birthday..."
-    m "Ehehe, you must really love me."
-    m 6suu "Everything looks so festive!"
+    else:
+        m 6wuo "T-{w=0.5}This is..."
+        m "..."
+        m 6dkd "Sorry, I'm...{w=1}I'm just at a loss for words."
+        m 6ekc "I didn't really expect anything special today, let alone this."
+        m 6rka "Maybe you do still have feelings for me afterall..."
+        m 6eka "Everything looks great."
 
     # we have cake?
     menu:
@@ -5014,9 +5110,11 @@ label mas_bday_surprise_party_reaction:
     m 6dua "But anyway..."
     window hide
 
-    show screen mas_background_timed_jump(4, "mas_bday_surprise_party_reaction_no_make_wish")
+    show screen mas_background_timed_jump(5, "mas_bday_surprise_party_reaction_no_make_wish")
     menu:
         "Make a wish, [m_name]...":
+            if mas_isplayer_bday():
+                m "Make sure you make one too, [player]!"
             hide screen mas_background_timed_jump
             $ mas_gainAffection(10, bypass=True)
             show monika 6hua
@@ -5033,17 +5131,30 @@ label mas_bday_surprise_party_reaction_no_make_wish:
 label mas_bday_surprise_party_reaction_post_make_wish:
     $ mas_bday_cake_lit = False
     window auto
-    m 6hua "I made a wish!"
-    m "I hope it comes true someday..."
-    m 6sua "Ahaha..."
-    m 6eua "I'll save this cake for later."
+    if mas_isMoniNormal(higher=True):
+        m 6hua "I made a wish!"
+        m "I hope it comes true someday..."
+        if mas_isplayer_bday():
+            m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
+        m 6sua "Ahaha..."
+        m 6eua "I'll save this cake for later."
+
+    else:
+        m 6eka "I made a wish."
+        m 6rka "I hope it comes true someday..."
+        m 6eka "I'll save this cake for later."
 
     hide mas_bday_cake with dissolve
 
 label mas_bday_surprise_party_reaction_end:
-
-    m 6hua "Thank you, [player]. From the bottom of my heart, thank you..."
-    m 6sua "Let's enjoy the rest of the day now, shall we?"
+    if mas_isMoniNormal(higher=True):
+        m 6hua "Thank you, [player]. From the bottom of my heart, thank you..."
+        if mas_isplayer_bday():
+            call mas_player_bday_card
+        else:
+            m 6sua "Let's enjoy the rest of the day now, shall we?"
+    else:
+        m 6ektpa "Thank you, [player]. It really means a lot that you did this more me."
     $ persistent._mas_bday_sbp_reacted = True
     return
 
@@ -5073,15 +5184,13 @@ label mas_bday_pool_happy_bday:
         m 3hub "Ehehe, thanks [player]!"
         m 3eub "I was waiting for you to say those magic words~"
         m 1eua "{i}Now{/i} we can call it a birthday celebration."
-        m 1hua "Doesn't matter if how it's done is unorthodox."
-        m 3eua "What matters the most is that you did it in the first place, right?"
         m 1eka "You really made this occasion so special, [player]."
         m 1ekbfa "I can't thank you enough for loving me this much..."
 
     else:
-        m 1wkb "Awww, [player]!"
-        m 1wub "You remembered my birthday...!"
-        m 1wktpa "Oh gosh, I'm so happy that you remembered."
+        m 1skb "Awww, [player]!"
+        m 1sub "You remembered my birthday...!"
+        m 1sktpa "Oh gosh, I'm so happy that you remembered."
         m 1dktda "I feel like today is going to be such a special day~"
         m 1ekbfa "What else do you have in store for me, I wonder."
         m 1hub "Ahaha!"
@@ -5129,7 +5238,7 @@ label mas_bday_postbday_notimespent:
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
             m 1efb "Did you forget?"
             m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
-            m "Or check the calendar on the wall behind me?"
+            m 3rka "Or check the calendar on the wall behind me?"
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
@@ -5173,7 +5282,7 @@ label mas_bday_postbday_notimespent:
             m 2hfw "And her {i}birthday{/i} is one of them!"
             m 2rfd "Seriously, where were you?!"
             m 2rkc "But...knowing you, I'm sure you had a good reason to be busy..."
-            m 4ekc "Just don't let it happen again next year, okay?"
+            m 4ekc "Just try not to let it happen again next year, okay?"
 
         elif mas_isMoniNormal(higher=True):
 
