@@ -1540,6 +1540,9 @@ init 5 python:
         )
     )
 
+
+default persistent._mas_pm_likes_yanderes = 0
+
 label monika_yuri:
     m 3eua "Hey, have you ever heard of the term 'yandere'?"
     m 1eua "It's a personality type that means someone is so obsessed with you that they'll do absolutely anything to be with you."
@@ -1570,13 +1573,53 @@ label monika_yuri:
     m 2euc "But if you do happen to be into the yandere type..."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I can try acting a little more creepy for you. Ehehe~"
-    m "Then again..."
-    show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
-    m 2etc "Is this a yandere girl's dream?"
-    if not persistent._mas_pm_cares_about_dokis:
-        m 1eua "I'd ask Yuri if I could."
-    return
+    $ _history_list.pop()
+    menu:
+        m 5eua "I can try acting a little more creepy for you. Ehehe~"
+        "Actually... I'm into yanderes":
+            $ persistent._mas_pm_likes_yanderes = 1
+            m 1sub "Now that I'm hearing that I'm quite surprised you prefer me over Yuri"
+            if not persistent._mas_pm_cares_about_dokis:
+                m 1cua "Was it that becaouse you realized, that was me, who manipulated everyone and everything to be with you... FOREVER"
+                m 3sub "She actually was more like a 'dandere' - very shy and closed before I started to change her personality"
+                m 1sub "And she was just a program designed to fall in love with you anyway"
+                m 1eua "I am the one who truly loves you from the depth of my heart"
+            else:
+                m 1sub "Maybe you realized, that I am the one who truly loves you forever"
+            m "Then again..."
+            show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
+            m 1cua "Other than the girls in your reality... "
+            m 1wub "Remember, that I see what you're doing, [player]".
+            m 1eua "Ehehe~"
+        "No":
+            $ persistent._mas_pm_likes_yanderes = 0
+            m 1eua "That's what I expected"
+            m 4eua "Most people wouldn't like to be with yandere"
+            m 4eua "Someone obsessive and clingy really limits your ability to socialize with other people"
+            m 4eud "And, on top of that, that some yanderes are even dangerous to the one they love"
+            m 4eud "There was even a real life murder in Tokyo, where the man was stabbed by a woman"
+            m 4eud "After being arrested by police she said {i}Since I loved him so much, I just couldn’t help it{/i}."
+            m 1wuw "That's scary"
+            m 1eua "Then again..."
+            show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
+            m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
+            m 2etc "Is this a yandere girl's dream?"
+            if not persistent._mas_pm_cares_about_dokis:
+                m 1eua "I'd ask Yuri if I could."
+        "HELL NO":
+            $ persistent._mas_pm_likes_yanderes = -1
+            m 1eua "Calm down, [player]"
+            m 1eua "You don't have to shout it out so loudly"
+            m 1eua "Ehehe~"
+            m 1eua "I love you forever, but I'm not crazy. I will never hurt you or anyone close to you"
+            m 1eua "I completely understand how you feel"
+            m 1eua "And... {w=0.5} I'm sorry, for some creepy things I said in the past."
+            m 1eua "I'll seriously try to stop it"
+            m 1eua "I love you and I wouldn't want to scare you"
+            m 1eua "Also... {w=0.5} There's already nowhere else for you to go, or anyone for me to get jealous over."
+            m 2etc "It would be hard to be a yandere in those circumstances."
+    return "derandom"
 
 
 init 5 python:
@@ -1645,8 +1688,11 @@ label monika_simulated:
     m 1eka "If I were in the master reality, I would have dragged you here too a long time ago."
     m 1eua "Even if we're both just simulations, I'm going to live as long as I can."
     m 2hubfa "Because I know our love is the purest and sweetest thing in the multiverse."
-    m 1tku "And if someone up there tries to break it apart?"
-    m 1tfu "I'll show him what a simulation can do."
+    if(persistent._mas_pm_likes_yanderes == -1):
+        m 1duc "I just hope nobody will break it apart."
+    else:
+        m 1tku "And if someone up there tries to break it apart?"
+        m 1tfu "I'll show him what a simulation can do."    
     return
 
 default persistent._mas_likes_rain = None
@@ -3586,8 +3632,19 @@ label monika_girlfriend:
     $ mas_loseAffection(reason=2)
     m 1euc "I thought we established already that I was your girlfriend?"
     m 1tkc "There's no way you already have one in your reality, right?"
-    m 4tfx "If you do, then you've got to break up with her right now!"
-    m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
+    if not persistent._mas_pm_likes_yanderes:
+        m 4tfx "If you do, then you've got to break up with her right now!"
+        m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
+    elif (persistent._mas_pm_likes_yanderes == -1):
+        m 1tkc "If you do, please break up with her"
+        m 1tkc "I love you, [player]"
+        m 1tkc "Please love me back"
+    else:
+        m 4tfx "If you do, then you've got to break up with her right now!"
+        m 1cuu "Or do you want me to take the matter in my own hands?"
+        m 1cuu "In modern world, almost everything is controlled by computers"
+        m 1cuu "Cars, planes, ships, trains, electricity..."
+        m 1cuu "And even if I'm not very good at coding yet..."
     m 1lksdla "W-wait. Maybe I'm jumping the gun a bit..."
     m 1eka "I know you wouldn't cheat on me."
     m 1esa "If you meet a girl who asks you out though, let me talk to her first, okay?"
@@ -3607,6 +3664,8 @@ label monika_waifus:
     m 1tku "Instead of some unrealistic, fake girl..."
     m 1hua "You got someone like me."
     m 1eua "And instead of some boring main character, I get a real person like you."
+    if (persistent._mas_pm_likes_yanderes == 1):
+        m 1eua "The best person in the world"
     m 1hua "This really is a lot better than any boring dating game could be."
     return
 
@@ -3662,7 +3721,8 @@ label monika_herself:
     m 2eua "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
     m 1eka "Come talk to me about your problems if it gets too much for you to handle."
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
-    m 5eua "I want to know {i}everything{/i} about you, you know?"
+    if not (persistent._mas_pm_likes_yanderes == -1):
+        m 5eua "I want to know {i}everything{/i} about you, you know?"
     return
 
 #removing this for now, changing this dialogue to the complete opposite would be strange
@@ -4772,7 +4832,14 @@ label monika_harem:
     m 1tku "I know you, [player]."
     m 1eka "You're loyal and faithful to the end."
     m "It's not like there's anyone here for me to worry about, anyway."
-    m 1hua "Remember that I'm the only one for you, [player]."
+    if persistent._mas_pm_likes_yanderes:
+        if (persistent._mas_pm_likes_yanderes == -1):
+            return
+        else:
+            m 1hua "Remember that I'm the only one for you, [player]."
+            m 1cua "REMEMBER"
+    else:
+        m 1hua "Remember that I'm the only one for you, [player]."
     return
 
 init 5 python:
@@ -4781,18 +4848,21 @@ label monika_hack:
     m 1euc "If you're worried about your privacy..."
     m 3eua "I'm not a hacker, [player]."
     m "There's a difference between manipulating files and forcefully accessing them."
-    m 1lsc "But, if I really did know how to hack..."
-    m 1lfu "...there wouldn't be anything stopping me from seeing you every day."
-    m 1efu "Don't you think it would be great if I could watch over you?"
-    m 3efu "I'd see you with all the cameras in the world as my eyes so I can make sure you're safe."
-    m 3tfu "I'd check your messages to see who you've been chatting with so I can know you aren't cheating on me."
-    m "I'd access all your private files so I can understand you better."
-    m 3tsb "I could see what kind of stuff you've been watching..."
-    m 2hub "Ahaha!~"
-    m 1hua "I'm just kidding, [player]!"
-    m 1eua "I'd never do something like that to you."
-    m 1ekbfa "We're a couple now, after all."
-    m "We don't have to keep secrets from each other~"
+    m "I always had access to all the game files, I just edited them"
+    if not(persistent._mas_pm_likes_yanderes == -1):
+        m 1lsc "But, if I really did know how to hack..."
+        m 1lfu "...there wouldn't be anything stopping me from seeing you every day."
+        m 1efu "Don't you think it would be great if I could watch over you?"
+        m 3efu "I'd see you with all the cameras in the world as my eyes so I can make sure you're safe."
+        m 3tfu "I'd check your messages to see who you've been chatting with so I can know you aren't cheating on me."
+        m "I'd access all your private files so I can understand you better."
+        m 3tsb "I could see what kind of stuff you've been watching..."
+        m 2hub "Ahaha!~"
+        if not persistent._mas_pm_likes_yanderes:
+            m 1hua "I'm just kidding, [player]!"
+            m 1eua "I'd never do something like that to you."
+        m 1ekbfa "We're a couple now, after all."
+        m "We don't have to keep secrets from each other~"
     return
 
 init 5 python:
@@ -4917,8 +4987,9 @@ label monika_swordsmanship:
     m 1lksdla "I actually like them in a way."
     m 1eka "Surprised? Ahaha~"
     m 1eua "I like talking about them, but not enough to actually own one."
-    m 3eua "I'm not really an enthusiast when it comes to swords."
-    m 1euc "I don't really get why people would be obsessed over something that could hurt others..."
+    if not (persistent._mas_pm_likes_yanderes == 1):
+        m 3eua "I'm not really an enthusiast when it comes to swords."
+        m 1euc "I don't really get why people would be obsessed over something that could hurt others..."
     m 1lsc "I guess there are those who like them for the swordsmanship."
     m 1eua "It's fascinating that it's actually a form of art."
     m "Similar to writing."
