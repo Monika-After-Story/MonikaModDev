@@ -55,9 +55,6 @@ init 970 python:
         # do check for monika existence
         store.mas_dockstat.init_findMonika(mas_docking_station)
 
-        # check surprise party
-        store.mas_dockstat.surpriseBdayCheck(mas_docking_station)
-
         # check if coming from TT
         store.mas_o31_event.mas_return_from_tt = (
             store.mas_o31_event.isTTGreeting()
@@ -805,7 +802,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
 
     # bday stuff (this checks itself)
     if persistent._mas_bday_sbp_reacted:
-        $ store.mas_dockstat.surpriseBdayShowVisuals()
+        $ store.surpriseBdayShowVisuals()
 
     # d25 seasonal
     if persistent._mas_d25_deco_active:
@@ -1106,6 +1103,9 @@ label mas_ch30_post_retmoni_check:
 
     if mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
+
+    if mas_isMonikaBirthday() or persistent._mas_922_in_922_mode:
+        jump mas_bday_autoload_check
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -1881,5 +1881,8 @@ label ch30_reset:
 
             else:
                 persistent.event_list.pop(index)
+
+    #Now we undo actions for evs which need them undone
+    $ mas_undoEVActions()
 
     return

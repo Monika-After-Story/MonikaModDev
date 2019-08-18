@@ -1519,134 +1519,6 @@ init 200 python in mas_dockstat:
 #        if
 
 
-
-    def surpriseBdayCheck(dockstat):
-        """
-        Checks for surprise party files in the given docking station.
-        Returns a bit set of surprise party states
-
-        Also sets the dockstat retsbp status var
-
-        IN:
-            dockstat - the docking station to check surprise party files
-
-        RETURNS:
-            MAS_SBP bit constants
-        """
-        global retsbp_status
-        if not store.mas_isMonikaBirthday():
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        ret_val = (
-            packageCheck(
-                dockstat,
-                "cake",
-                mas_ics.sbp_cake,
-                MAS_SBP_CAKE,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "banners",
-                mas_ics.sbp_banners,
-                MAS_SBP_BANR,
-                0,
-                False
-            )
-            | packageCheck(
-                dockstat,
-                "balloons",
-                mas_ics.sbp_balloons,
-                MAS_SBP_BLON,
-                0,
-                False
-            )
-        )
-
-        if ret_val == 0:
-            retsbp_status = MAS_SBP_NONE
-            return MAS_SBP_NONE
-
-        retsbp_status = ret_val
-        return ret_val
-
-
-    def surpriseBdayShowVisuals(_status=None, bday_bypass=False):
-        """
-        Checks status and shows bday visuals if we need to
-
-        IN:
-            _status - status to use when checking. If None, we check status
-                ourselves.
-                (Default: None)
-            bday_bypass - set to True to bypass birthday check
-                (Defalt: False)
-        """
-        if not bday_bypass and not store.mas_isMonikaBirthday():
-            return
-
-        if _status is None:
-            _status = surpriseBdayCheck(store.mas_docking_station)
-
-        if (_status & MAS_SBP_NONE) > 0:
-            surpriseBdayHideVisuals()
-            return
-
-        # otherwise we have visuals to show
-        if (
-                (_status & MAS_SBP_CAKE) > 0
-                and not store.persistent._mas_bday_sbp_reacted
-            ):
-            store.persistent._mas_bday_sbp_found_cake = True
-            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
-        else:
-            renpy.hide("mas_bday_cake")
-
-        if (_status & MAS_SBP_BANR) > 0:
-            store.persistent._mas_bday_sbp_found_banners = True
-            renpy.show("mas_bday_banners", zorder=7)
-        else:
-            renpy.hide("mas_bday_banners")
-
-        if (_status & MAS_SBP_BLON) > 0:
-            store.persistent._mas_bday_sbp_found_balloons = True
-            renpy.show("mas_bday_balloons", zorder=8)
-        else:
-            renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayHideVisuals():
-        """
-        Hides all visuals for surprise party
-        """
-        renpy.hide("mas_bday_cake")
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
-
-
-    def surpriseBdayIsCake():
-        """
-        Returns true if cake was found, False otherwise
-        """
-        return (retsbp_status & MAS_SBP_CAKE) > 0
-
-
-    def surpriseBdayIsBanners():
-        """
-        Returns true if banners were found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BANR) > 0
-
-
-    def surpriseBdayIsBalloon():
-        """
-        Returns true if balloon was found, false otherwise
-        """
-        return (retsbp_status & MAS_SBP_BLON) > 0
-
-
     def generateMonika(dockstat):
         """
         Generates / writes a monika blob file.
@@ -2331,7 +2203,7 @@ label mas_dockstat_abort_gen:
     # attempt to abort the promise
     $ store.mas_dockstat.abortGenPromise()
 
-    # we are not leaving on player_bday and need to reset these
+    # we are not leaving and need to reset these
     if persistent._mas_player_bday_left_on_bday:
         $ persistent._mas_player_bday_left_on_bday = False
         $ persistent._mas_player_bday_date -= 1
@@ -2339,6 +2211,10 @@ label mas_dockstat_abort_gen:
     if persistent._mas_f14_on_date:
         $ persistent._mas_f14_on_date = False
         $ persistent._mas_f14_date -= 1
+
+    if persistent._mas_monika_bday_on_date:
+        $ persistent._mas_monika_bday_on_date = False
+        $ persistent._mas_monika_bday_date -= 1
     return
 
 
@@ -2359,16 +2235,14 @@ label mas_dockstat_empty_desk:
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
-    if persistent._mas_player_bday_decor:
+    if persistent._mas_bday_sbp_reacted:
+        $ store.surpriseBdayShowVisuals()
+
+    #NOTE: elif'd so we don't try and show two types of visuals here
+    elif persistent._mas_player_bday_decor:
         $ store.mas_player_bday_event.show_player_bday_Visuals()
 
-    # NOTE: STOP PUTTING IFS BEFORE THIS ELSE. I believe we decided that this
-    #   else statment is supposed to be paired with (i.e. mutally exclusive)
-    #   to the if statement regarding the player's bday decor.
-    #   Dont be screwing this up by shoving if statemetns randomly in places.
-    else:
-        # show birthday visuals?
-        $ store.mas_dockstat.surpriseBdayShowVisuals(store.mas_dockstat.retsbp_status)
+    # NOTE: No.
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2391,7 +2265,7 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    $ store.mas_dockstat.surpriseBdayShowVisuals()
+    $ store.surpriseBdayShowVisuals()
 
     # check for monika
     if promise.done():

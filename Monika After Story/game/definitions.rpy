@@ -39,6 +39,23 @@ python early:
         EV_ACT_POOL
     ]
 
+    def mas_undoEVActions():
+        """
+        Iterates thru events, those with the rule "undo action" will have their actions reversed
+        if their actions are unlock or random.
+        """
+        for ev in store.mas_all_ev_db.itervalues():
+            #NOTE: this needs to explicitly be False.
+            if "undo action" in ev.rules and ev.isWithinRange() == False:
+                act = ev.action
+
+                #Now we undo these actions
+                if act == EV_ACT_UNLOCK:
+                    ev.unlocked=False
+                elif act == EV_ACT_RANDOM:
+                    ev.random=False
+                #NOTE: we don't add the rest since there's no reason to undo those.
+
     # custom event exceptions
     class EventException(Exception):
         def __init__(self, _msg):
@@ -506,6 +523,11 @@ python early:
 
             return True
 
+        def isWithinRange(self):
+            #No range if both or either of these are none
+            if not (self.start_date or self.end_date):
+                return None
+            return self.start_date <= datetime.datetime.now() < self.end_date
 
         @staticmethod
         def getSortPrompt(ev):

@@ -1082,32 +1082,6 @@ label mas_reaction_plush:
     return
 
 init 5 python:
-    addReaction("mas_reaction_bday_cake", "birthdaycake")
-
-label mas_reaction_bday_cake:
-    if not mas_isMonikaBirthday():
-        $ mas_loseAffection(3, reason=7)
-        m 1ltsdlc "Today's not my birthday,{w=1} did you forget when it is, [player]?"
-    else:
-        $ mas_gainAffection(modifier=2, bypass=True)
-        m 1wud "Oh, [player]..."
-        m "A...birthday cake?"
-        m 3sub "Gosh, this is so sweet of you!"
-        m 1hub "I really love this a lot!"
-        m 1dkbfa "I'll save it for now"
-        m 3hua "I can't wait to try it later!"
-        m 1dsc "But..."
-        m 3ekbfa "I wish we could eat it together..."
-        m 1dkbfa "A birthday cake is for sharing, after all~"
-        m 1ekbfa "Thank you for this, [player]."
-        $ mas_receivedGift("mas_reaction_bday_cake")
-        if mas_isMoniAff(higher=True):
-            m 3hubfb "I love you! Ehehe~"
-    $ gift_ev = mas_getEV("mas_reaction_bday_cake")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
-
-init 5 python:
     addReaction("mas_reaction_cupcake", "cupcake", is_good=True)
     #Not sure why this was a bad gift. Dialogue doesn't reflect it being bad
     #plus, Monika said she wants either Natsuki's cupcakes or the player's
