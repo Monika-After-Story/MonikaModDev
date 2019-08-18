@@ -622,7 +622,7 @@ init python:
 
         # unlock the gifted clothes selector and add clothes to gifted_clothes list
         if sp_type == store.mas_sprites.SP_CLOTHES and sp_name is not None:
-            gifted_clothes.append(mas_selspr.CLOTH_SEL_MAP[sp_name])
+            store.mas_selspr.gifted_clothes.append(store.mas_selspr.CLOTH_SEL_MAP[sp_name])
             mas_unlockEVL("monika_clothes_select", "EVE")
 
         # save persistent

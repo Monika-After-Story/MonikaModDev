@@ -2754,22 +2754,22 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
 # [MONSEL]
 
 #### Begin monika clothes topics
-init 200 python:
+init 200 python in mas_selspr:
     # list of event clothes
     event_clothes = [
-        mas_selspr.CLOTH_SEL_MAP["sundress_white"],
-        mas_selspr.CLOTH_SEL_MAP["santa"],
-        mas_selspr.CLOTH_SEL_MAP["rin"],
-        mas_selspr.CLOTH_SEL_MAP["marisa"]
+        CLOTH_SEL_MAP["sundress_white"],
+        CLOTH_SEL_MAP["santa"],
+        CLOTH_SEL_MAP["rin"],
+        CLOTH_SEL_MAP["marisa"]
     ]
 
     # need to get a list of clothes that have been gifted
     # so we will get a list of all clothes and then remove the event_clothes
-    gifted_clothes = mas_selspr.filter_clothes(True)
+    gifted_clothes = filter_clothes(True)
 
-    for i in event_clothes:
-        if i in gifted_clothes:
-            gifted_clothes.remove(i)
+    for cloth_sel_obj in event_clothes:
+        if cloth_sel_obj in gifted_clothes:
+            gifted_clothes.remove(cloth_sel_obj)
 
 init 5 python:
     addEvent(
@@ -2794,7 +2794,7 @@ label monika_clothes_select:
         )
         sel_map = {}
 
-        def_clothes = [mas_selspr.CLOTH_SEL_MAP["def"]]
+        gift_clothes = store.mas_selspr.gifted_clothes
 
     # initial dialogue
     m 1hua "Sure!"
@@ -2807,16 +2807,13 @@ label monika_clothes_select:
         # for Love, all unlocked clothes are available
         call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
 
-    elif (mas_isMoniEnamored(lower=True) and len(gifted_clothes) == 1) or mas_isMoniNormal(lower=True):
-        # if we drop out of a req affection level and are trapped in non-def, leave sel unlocked
-        # with only def available
-        call mas_selector_sidebar_select_clothes(def_clothes, mailbox=mailbox, select_map=sel_map)
-        if _return:
-            # lock once we put on def
-            $ store.mas_lockEVL("monika_clothes_select", "EVE")
     else:
-        # from Happy thru Enam, with at least one gifted outfit
-        call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
+        # below Love, only gifted clothes (and def) are available
+        call mas_selector_sidebar_select_clothes(gift_clothes, mailbox=mailbox, select_map=sel_map)
+
+        if _return and len(gift_clothes) == 1:
+            # lock once we put on def if def is all that is available
+            $ store.mas_lockEVL("monika_clothes_select", "EVE")
 
     # results
     if not _return:
