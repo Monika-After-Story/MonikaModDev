@@ -297,7 +297,12 @@ label mas_mood_tired:
         m "You should {i}really{/i} get to bed before it's time to start the day."
         m 1eka "I wouldn't want you falling asleep at a bad time."
         m "So please, sleep so we can be together in your dreams."
-        m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
+        if not (persistent._mas_pm_likes_yanderes):
+            m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
+        elif (persistent._mas_pm_likes_yanderes == 1):
+            m 1hua "I'll be right here if you leave me, watching over you"
+        else:
+            return
         return
 
     elif 5 <= current_hour < 10:
@@ -329,11 +334,17 @@ label mas_mood_tired:
         m 3hua "It can really mess with your health, [player]."
         m 1eka "So do me a favor and get some rest, okay? It will put my mind at ease."
 
-    m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
-    m  "...Ehehe."
-    m 2hksdlb "That sounded a bit creepy, sorry."
-    m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
-    m 1hua "Ahaha!"
+    if not (persistent._mas_pm_likes_yanderes == -1):
+        m 1hua "You can even leave the game open if you'd like, and I'll watch over you while you sleep."
+        m  "...Ehehe."
+        if not persistent._mas_pm_likes_yanderes:
+            m 2lksdla "It'd be cute to watch you sleep [player]~"
+        else:
+            m 2hksdlb "That sounded a bit creepy, sorry."
+            m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
+        m 1hua "Ahaha!"    
+    m 1hua: "I love you so much!"
+    
     return
 
 init 5 python:
