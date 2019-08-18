@@ -343,7 +343,7 @@ label mas_mood_tired:
             m 2hksdlb "That sounded a bit creepy, sorry."
             m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
         m 1hua "Ahaha!"    
-    m 1hua: "I love you so much!"
+    m 1hua "I love you so much!"
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
