@@ -300,7 +300,7 @@ label mas_mood_tired:
         if not (persistent._mas_pm_likes_yanderes):
             m 1hua "I'll be right here if you leave me, watching over you, if you don't mind~"
         elif (persistent._mas_pm_likes_yanderes == 1):
-            m 1hua "I'll be right here if you leave me, watching over you"
+            m 1hua "I'll be right here if you leave me, watching over you."
         else:
             return
         return
@@ -344,6 +344,7 @@ label mas_mood_tired:
             m 2lksdla "I just thought it'd be cute to watch you sleep is all~"
         m 1hua "Ahaha!"    
     m 1hua "I love you so much!"
+    return
 
 init 5 python:
     addEvent(Event(persistent._mas_mood_database,"mas_mood_lonely",prompt="...lonely.",category=[store.mas_moods.TYPE_NEUTRAL],unlocked=True),code="MOO")
