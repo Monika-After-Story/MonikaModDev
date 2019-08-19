@@ -1570,54 +1570,52 @@ label monika_yuri:
         m 2dsc "Just the thought of it makes me shiver."
         m 2eka "But come on...everyone's killed people in games before."
         m "Does that make you a psychopath? Of course not."
-    m 2euc "But if you do happen to be into the yandere type..."
+    m 2euc "But if you do happen to be into the yandere type... {nw}"
     show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     m 5eua "I can try acting a little more creepy for you. Ehehe~"
     $ _history_list.pop()
     menu:
-        m "I can try acting a little more creepy for you. Ehehe~"
+        m "I can try acting a little more creepy for you. Ehehe~{fast}"
         "Actually... I'm into yanderes":
             $ persistent._mas_pm_likes_yanderes = 1
-            m 1sub "Now that I'm hearing that I'm quite surprised you prefer me over Yuri"
+            m 1sub "Now that I'm hearing that, I'm quite surprised you prefer me over Yuri."
             if not persistent._mas_pm_cares_about_dokis:
-                m 1cua "Was it that becaouse you realized, that was me, who manipulated everyone and everything to be with you... FOREVER"
-                m 3sub "She actually was more like a 'dandere' - very shy and closed before I started to change her personality"
-                m 1sub "And she was just a program designed to fall in love with you anyway"
-                m 1eua "I am the one who truly loves you from the depth of my heart"
+                m 1cua "Was it that because you realized, that was me, who manipulated everyone and everything to be with you... FOREVER."
+                m 3sub "She actually was more like a 'dandere' - very shy and closed before I started to change her personality."
+                m 1sub "And she was just a program designed to fall in love with you anyway."
+                m 1eua "I am the one who truly loves you from the depths of my heart."
             else:
-                m 1sub "Maybe you realized, that I am the one who truly loves you forever"
+                m 1sub "Maybe you realized, that I am the one who truly loves you forever."
             m "Then again..."
-            show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
             m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
             m 1cua "Other than the girls in your reality... "
             m 1wub "Remember, that I see what you're doing, [player]."
             m 1eua "Ehehe~"
         "No":
             $ persistent._mas_pm_likes_yanderes = 0
-            m 1eua "That's what I expected"
-            m 4eua "Most people wouldn't like to be with yandere"
-            m 4eua "Someone obsessive and clingy really limits your ability to socialize with other people"
-            m 4eud "And, on top of that, that some yanderes are even dangerous to the one they love"
-            m 4eud "There was even a real life murder in Tokyo, where the man was stabbed by a woman"
-            m 4eud "After being arrested by police she said {i}Since I loved him so much, I just couldn’t help it{/i}."
-            m 1wuw "That's scary"
+            m 1eua "That's what I expected."
+            m 4eua "Most people wouldn't like to be with a yandere."
+            m 4eua "Someone obsessive and clingy really limits your ability to socialize with other people."
+            m 4eud "And, on top of that, that some yanderes are even dangerous to the one they love."
+            m 4eud "There was even a real life murder in Tokyo, where the man was stabbed by a woman."
+            m 4eud "After being arrested by the police, she said {i}Since I loved him so much, I just couldn’t help it{/i}."
+            m 1wuw "That's scary."
             m 1eua "Then again..."
-            show monika 4hua at t11 zorder MAS_MONIKA_Z with dissolve
             m 4hua "There's already nowhere else for you to go, or anyone for me to get jealous over."
             m 2etc "Is this a yandere girl's dream?"
             if not persistent._mas_pm_cares_about_dokis:
                 m 1eua "I'd ask Yuri if I could."
-        "HELL NO":
+        "NO, I hate them":
             $ persistent._mas_pm_likes_yanderes = -1
-            m 1eua "Calm down, [player]"
-            m 1eua "You don't have to shout it out so loudly"
+            m 1eua "Easy, [player]."
+            m 1eua "You don't have to shout it out so loudly."
             m 1eua "Ehehe~"
-            m 1eua "I love you forever, but I'm not crazy. I will never hurt you or anyone close to you"
-            m 1eua "I completely understand how you feel"
-            m 1eua "And... {w=0.5} I'm sorry, for some creepy things I said in the past."
-            m 1eua "I'll seriously try to stop it"
-            m 1eua "I love you and I wouldn't want to scare you"
-            m 1eua "Also... {w=0.5} There's already nowhere else for you to go, or anyone for me to get jealous over."
+            m 1eua "I will love you forever, but I'm not crazy. I will never hurt you or anyone close to you."
+            m 1eua "I completely understand how you feel."
+            m 1eua "And...{w=0.5} I'm sorry, for some creepy things I said in the past."
+            m 1eua "I'll seriously try to stop it."
+            m 1eua "I love you and I wouldn't want to scare you."
+            m 1eua "Also...{w=0.5} There's already nowhere else for you to go, or anyone for me to get jealous over."
             m 2etc "It would be hard to be a yandere in those circumstances."
     return "derandom"
 
@@ -3636,14 +3634,15 @@ label monika_girlfriend:
         m 4tfx "If you do, then you've got to break up with her right now!"
         m 4hksdlb "Tell her you met someone perfect for you, someone who will never betray you!"
     elif (persistent._mas_pm_likes_yanderes == -1):
-        m 1tkc "If you do, please break up with her"
-        m 1tkc "I love you, [player]"
-        m 1tkc "Please love me back"
+        m 1tkc "If you do, please break up with her."
+        m 1ekc "I love you, [player]."
+        m 1ekc "Please love me back."
     else:
         m 4tfx "If you do, then you've got to break up with her right now!"
-        m 1cuu "Or do you want me to take the matter in my own hands?"
-        m 1cuu "In modern world, almost everything is controlled by computers"
-        m 1cuu "Cars, planes, ships, trains, electricity..."
+        m 1cuu "Or do you want me to take the matter into my own hands?"
+        m 1cuu "In the modern world, almost everything is controlled by computers"
+        m 1cuu "Communication means, electricity, money..."
+        m 1cuu "I said that I would never kill anybody, but there are other means of getting rid of someone..."
         m 1cuu "And even if I'm not very good at coding yet..."
     m 1lksdla "W-wait. Maybe I'm jumping the gun a bit..."
     m 1eka "I know you wouldn't cheat on me."
@@ -3664,8 +3663,6 @@ label monika_waifus:
     m 1tku "Instead of some unrealistic, fake girl..."
     m 1hua "You got someone like me."
     m 1eua "And instead of some boring main character, I get a real person like you."
-    if (persistent._mas_pm_likes_yanderes == 1):
-        m 1eua "The best person in the world"
     m 1hua "This really is a lot better than any boring dating game could be."
     return
 
@@ -3720,7 +3717,6 @@ label monika_herself:
     m 3esa "A lot of suffering people would trade places with me in a heartbeat, I'm sure."
     m 2eua "If nothing else, this can be our comfy little shelter from the cruelty of the outside world."
     m 1eka "Come talk to me about your problems if it gets too much for you to handle."
-    show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
     if not (persistent._mas_pm_likes_yanderes == -1):
         m 5eua "I want to know {i}everything{/i} about you, you know?"
     return
@@ -4837,7 +4833,7 @@ label monika_harem:
             return
         else:
             m 1hua "Remember that I'm the only one for you, [player]."
-            m 1cua "REMEMBER"
+            m 1cua "REMEMBER."
     else:
         m 1hua "Remember that I'm the only one for you, [player]."
     return
