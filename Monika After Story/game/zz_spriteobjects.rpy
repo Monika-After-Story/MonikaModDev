@@ -586,7 +586,7 @@ init -1 python:
     ### PONYTAIL WITH RIBBON (default)
     ## def
     # Monika's default hairstyle, aka the ponytail
-    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO
+    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO/Orca
     mas_hair_def = MASHair(
         "def",
         "def",
@@ -616,7 +616,7 @@ init -1 python:
     ### DOWN
     ## down
     # Hair is down, not tied up
-    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO
+    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO/Orca
     mas_hair_down = MASHair(
         "down",
         "down",
