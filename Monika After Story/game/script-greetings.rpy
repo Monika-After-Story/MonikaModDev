@@ -43,6 +43,7 @@ init -1 python in mas_greetings:
     TYPE_SICK = "sick"
     TYPE_GAME = "game"
     TYPE_EAT = "eat"
+    TYPE_CHORES = "chores"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -3691,3 +3692,23 @@ label greeting_rent:
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
+    
+    init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_housework",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_CHORES],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_housework:
+    if mas_isMoniNormal(higher=True):
+            m 1eub "All done, [player]?"
+            m 1hub "Let’s spend some more time together."
+    else:
+            m 1esc "Welcome back, [player]."
+    return
+
