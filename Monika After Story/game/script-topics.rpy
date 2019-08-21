@@ -12870,7 +12870,7 @@ label monika_althistory:
     m 4rub "A hypothetical scenario would have him pursue his plans of European expansion and inevitable confrontation of the Argead Empire with the Romans."
     m 2eub "Livy ultimately concluded that this scenario would likely end up becoming a Roman victory."
     m 2esa "Aside from the counterfactual history example I just gave you, there are other examples. These works are classified as plausible, implausible and hand-waved alternate history."
-    m 3wusdld "One of the most popular examples of alt-history fiction are usually scenarios where Germany won either of the world wars."
+    m 3wusdld "One of the most popular examples of alt-history fiction are usually dystopian scenarios where Germany won World War Two."
     m 1eua "All of these works are characterized by three common elements..."
     m 3eua "The first element: the background history is the same as the real world."
     m 3eub "The second: there is a change in a critical point of history, which is commonly referred to as the '{i}Point of Divergence{/i}', or PoD for short."
