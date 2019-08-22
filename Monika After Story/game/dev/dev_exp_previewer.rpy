@@ -163,8 +163,8 @@ init 999 python:
                 "td": "dried",
                 "tp": "pooled",
                 "tu": "up",
-                "tl": "left",
-                "tr": "right",
+#                "tl": "left",
+#                "tr": "right",
 #                "th": "closedhappy",
 #                "tc": "closedsad",
             },
@@ -379,8 +379,8 @@ init 999 python:
                 "td",
                 "tp",
                 "tu",
-                "tl",
-                "tr",
+#                "tl",
+#                "tr",
 #                "th",
 #                "tc",
             ],
@@ -429,13 +429,8 @@ init 999 python:
                     "winkleft",
                     "winkright",
                 ),
-                "left": (
+                "pooled": (
                     "closedhappy",
-                    "closedsad",
-                ),
-                "right": (
-                    "closedhappy",
-                    "closedsad",
                 ),
             },
         }
