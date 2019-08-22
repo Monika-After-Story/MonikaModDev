@@ -9,6 +9,178 @@ init -1 python in mas_dev_unit_tests:
         ("MASHistorySaver", "dev_unit_test_mhs", False, False),
     ]
 
+    class MASUnitTest(object):
+        """
+        Simple class to represent a test
+        """
+
+        def __init__(self, test_name, outcome, expected, actual):
+            """
+            Constructor for a MASUnitTest
+
+            IN:
+                test_name - name of the test
+                outcome - outcome of the test (True or false)
+                expected - expected value of the test
+                actual - actual value of the test
+            """
+            self.test_name = test_name
+            self.outcome = outcome
+            self.expected = expected
+            self.actual = actual
+
+        def __str__(self):
+            """
+            toString. Format is:
+            <testname>: (pass/FAIL) | <expected> -> <actual>
+            """
+            if self.outcome:
+                pass_str = "pass"
+            else:
+                pass_str = "FAIL"
+
+            return "{0}: {1} | {2} -> {3}".format(
+                str(self.test_name),
+                pass_str,
+                str(self.expected)
+                str(self.actual)
+            )
+
+        def failed(self):
+            """
+            Returns True if this test failed, false if passsed
+            """
+            return not self.outcome
+
+        def passed(self):
+            """
+            Returns True if this test passed, false if failed
+            """
+            return self.outcome
+
+    class MASUnitTester(object):
+        """
+        Simple class for running asserts
+        """
+
+        def __init__(self):
+            self.setupTests()
+
+        def __str__(self):
+            return "\n".join(self.tests)
+
+        def assertEqual(self, expected, actual):
+            """
+            Asserts if the two items are equal
+
+            IN:
+                expected - expected value
+                actual - actual value
+            """
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                expected == actual,
+                expected,
+                actual
+            ))
+
+        def assertFalse(self, actual):
+            """
+            Asserts if the given value is False
+
+            IN:
+                actual - value to check
+            """
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                not bool(actual),
+                False,
+                bool(actual)
+            ))
+
+        def assertIsNone(self, actual):
+            """
+            Asserts if the given item is None
+
+            IN:
+                actual - value to check
+            """
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                actual is None,
+                None,
+                actual
+            ))
+
+        def assertIsNotNone(self, actual);
+            """
+            Asserts if the given item is not None
+
+            IN:
+                actual - value to check
+            """
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                actual is not None,
+                "not None",
+                actual
+            ))
+
+        def assertTrue(self, actual):
+            """
+            Asserts if the given value is True
+
+            IN:
+                actual - value to check
+            """
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                bool(actual),
+                True,
+                bool(actual)
+            ))
+
+        def cleanTest(self):
+            """
+            Cleans up the last test
+            """
+            self.test_name = ""
+
+        def concludeTests(self):
+            """
+            Concludes testing by sorting tests by results
+
+            RETURNS:
+                tuple of the following format:
+                [0] - list of passed tests
+                [1] - list of failed tests
+            """
+            passed_tests = []
+            failed_tests = []
+            for test in self.tests:
+                if test.passed():
+                    passed_tests.append(test)
+                else:
+                    failed_tests.append(test)
+
+            return passed_tests, failed_tests
+
+        def prepareTest(self, test_name):
+            """
+            Prepares a test by setting test name
+
+            IN:
+                test_name - name of next test
+            """
+            self.test_name = test_name
+
+        def setupTests(self):
+            """
+            Sets up testing
+            """
+            self.test_name = ""
+            self.tests = []
+
 init 10 python in mas_dev_unit_tests:
     from store.mas_moods import MOOD_AREA, MOOD_XALIGN
 
@@ -30,46 +202,6 @@ label dev_unit_tests_show_msgs(msg_list, format_text=False):
         m 1eua "[this_msg]"
         $ _history_list.pop()
         $ index += 1
-    return
-
-
-label dev_unit_tests_assertEqual(expected, actual):
-    if expected == actual:
-        call dev_unit_tests_show_pass
-    else:
-        call dev_unit_tests_show_fail
-    return
-
-
-label dev_unit_tests_assertIsNone(actual):
-    if actual is None:
-        call dev_unit_tests_show_pass
-    else:
-        call dev_unit_tests_show_fail
-    return 
-
-
-label dev_unit_tests_assertIsNotNone(actual):
-    if actual is not None:
-        call dev_unit_tests_show_pass
-    else:
-        call dev_unit_tests_show_fail
-    return
-
-
-label dev_unit_tests_assertTrue(actual):
-    if actual:
-        call dev_unit_tests_show_pass
-    else:
-        call dev_unit_tests_show_fail
-    return
-
-
-label dev_unit_tests_assertFalse(actual):
-    if actual:
-        call dev_unit_tests_show_fail
-    else:
-        call dev_unit_tests_show_pass
     return
 
 
@@ -235,125 +367,181 @@ label dev_unit_test_json_masposemap:
             
 
 label dev_unit_test_mhs:
+    m "Running Tests..."
     python:
+        import copy
         def gen_fresh_mhs():
             return MASHistorySaver("testing", datetime.datetime.now(), {})
 
-    m "CONSTRUCTOR:"
-    python:
-        test_mhs = gen_fresh_mhs()
-    call dev_unit_tests_assertEqual("testing", test_mhs.mhs_id)
+        mhs_tester = store.mas_dev_unit_tests.MASUnitTester()
 
-    m "getSortKey"
-    python:
+        mhs_tester.prepareTest("CONSTRUCTOR")
+        test_mhs = gen_fresh_mhs()
+        mhs_tester.assertEqual("testing", test_mhs.mhs_id)
+
+        mhs_tester.prepareTest("getSortKey")
+        test_mhs = gen_fresh_mhs()
         dt_test = test_mhs.trigger
         sortkey = MASHistorySaver.getSortKey(test_mhs)
-    call dev_unit_tests_assertEqual(dt_test, sortkey)
+        mhs_tester.assertEqual(dt_test, sortkey)
 
-    m "correctTriggerYear|future same year"
-    python:
+        mhs_tester.prepareTest("correctTriggerYear|future same year")
         dt_test = datetime.datetime.now() + datetime.timedelta(days=1)
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
-    call dev_unit_tests_assertEqual(dt_test, correct_trig)
+        mhs_tester.assertEqual(dt_test, correct_trig)
 
-    m "correctTriggerYear|future diff year"
-
-    m "correctTriggerYear|past same year"
-    python:
-        dt_test = datetime.datetime.now() - datetime.timedelta(days=1)
+        mhs_tester.prepareTest("correctTriggerYear|future diff year (1)")
+        dt_test = datetime.datetime.now() + datetime.timdelta(days=1)
+        expected = copy.deepcopy(dt_test)
+        dt_test = dt_test.replace(year=dt_test.year+1)
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
-        dt_test = dt_test.replace(year=dt_test.year + 1)
-    call dev_unit_tests_assertEqual(dt_test, correct_trig)
+        mhs_tester.assertEqual(expected, correct_trig)
 
-    m "fromTuple|(<future dt>, True)"
-    python:
+        mhs_tester.prepareTest("correctTriggerYear|future diff year (5)")
+        dt_test = datetime.datetime.now() + datetime.timedelta(days=1)
+        expected = copy.deepcopy(dt_test)
+        dt_test = dt_test.replcae(year=dt_test.year+5)
+        correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
+        mhs_tester.assertEqual(expected, correct_trig)
+
+        mhs_tester.prepareTest("correctTriggerYear|past same year")
+        dt_test = datetime.datetime.now() - datetime.timedelta(days=1)
+        expected = dt_test.replace(year=dt_test.year + 1)
+        correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
+        mhs_tester.assertEqual(expected, correct_trig)
+
+        mhs_tester.prepareTest("correctTriggerYear|past diff year")
+        dt_test = datetime.datetime.now() - datetime.timedelta(days=1)
+        expected = dt_test.replace(year=dt_test.year + 1)
+        dt_test = dt_test.replace(year=dt_test.year - 3)
+        correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
+        mhs_tester.assertEqual(expected, correct_trig)
+
+        mhs_tester.prepareTest("fromTuple|(<future dt>, True)")
         test_data = (
             datetime.datetime.now() + datetime.timedelta(days=1),
             True
         )
         test_mhs = gen_fresh_mhs()
         test_mhs.fromTuple(test_data)
-    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
-    call dev_unit_tests_assertTrue(test_mhs.use_year_before)
+        mhs_tester.assertEqual(test_data[0], test_mhs.trigger)
+        mhs_tester.assertTrue(test_mhs.use_year_before)
 
-    m "fromTuple|(<future dt>, False)"
-    python:
-        test_data = (
-            datetime.datetime.now() + datetime.timedelta(days=1),
-            False
-        )
-        test_mhs = gen_fresh_mhs()
-        test_mhs.fromTuple(test_data)
-    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
-    call dev_unit_tests_assertFalse(test_mhs.use_year_before)
+
+#    m "fromTuple|(<future dt>, True)"
+#    python:
+#        test_data = (
+#            datetime.datetime.now() + datetime.timedelta(days=1),
+#            True
+#        )
+#        test_mhs = gen_fresh_mhs()
+#        test_mhs.fromTuple(test_data)
+#    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
+#    call dev_unit_tests_assertTrue(test_mhs.use_year_before)
+#
+#    m "fromTuple|(<future dt>, False)"
+#    python:
+#        test_data = (
+#            datetime.datetime.now() + datetime.timedelta(days=1),
+#            False
+#        )
+#        test_mhs = gen_fresh_mhs()
+#        test_mhs.fromTuple(test_data)
+#    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
+#    call dev_unit_tests_assertFalse(test_mhs.use_year_before)
 
 #    m "fromTuple|(<past dt>, True)"
 ##    python:
  #       testdat
 
-    m "isActive|continuous"
-    python:
+        mhs_tester.prepareTest("isActive|continuous")
         test_mhs = gen_fresh_mhs()
         test_dt = datetime.datetime.now()
-    call dev_unit_tests_assertTrue(test_mhs.isActive(test_dt))
+        mhs_tester.assertTrue(test_mhs.isActive(test_dt))
 
-    m "isActive|check_dt in range"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt in range")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 22)
         check_dt = datetime.datetime(2018, 4, 21)
-    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+        mhs_tester.assertTrue(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt not in range"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt in range, incl start")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertTrue(test_mhs.isActive(check_dt))
+
+        mhs_tester.prepareTest("isActive|check_dt not in range")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 22)
         check_dt = datetime.datetime(2018, 3, 10)
-    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+        mhs_tester.assertFalse(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt in range, diff year"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt not in range, excl end")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 22)
+        mhs_tester.assertFalse(test_mhs.isActive(check_dt))
+
+        mhs_tester.prepareTest("isActive|check_dt in range, diff year")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 22)
         check_dt = datetime.datetime(2017, 4, 21)
-    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+        mhs_tester.assertTrue(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt not in range, diff year"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt not in range, diff year")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 22)
         check_dt = datetime.datetime(2017, 3, 10)
-    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+        mhs_tester.assertFalse(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt in range, yearprev, ny wrap"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt in range, yearprev, ny wrap")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 12, 30)
         test_mhs.end_dt = datetime.datetime(2019, 1, 2)
         check_dt = datetime.datetime(2018, 12, 31)
-    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+        mhs_tester.assertTrue(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt not in range, year prev, ny wrap"
-    python:
+        mhs_tester.prepareTest(
+            "isActive|check_dt not in range, year prev, ny wrap"
+        )
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 12, 30)
         test_mhs.end_dt = datetime.datetime(2019, 1, 2)
         check_dt = datetime.datetime(2018, 12, 10)
-    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+        mhs_tester.assertFalse(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt in range, yearfut, ny wrap"
-    python:
+        mhs_tester.prepareTest("isActive|check_dt in range, yearfut, ny wrap")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 12, 30)
         test_mhs.end_dt = datetime.datetime(2019, 1, 2)
         check_dt = datetime.datetime(2019, 1, 1)
-    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+        mhs_tester.assertTrue(test_mhs.isActive(check_dt))
 
-    m "isActive|check_dt
+        mhs_tester.prepareTest(
+            "isActive|check_dt not in range, year fut, ny wrap"
+        )
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 12, 30)
+        test_mhs.end_dt = datetime.datetime(2019, 1, 2)
+        check_dt = datetime.datetime(2019, 1, 3)
+        mhs_tester.assertFalse(test_mhs.isActive(check_dt))
+
+        mhs_tester.prepareTest("isContinuous|both dt None")
+        test_mhs = gen_fresh_mhs()
+        mhs_tester.assertTrue(test_mhs.isContinuous())
+
+        mhs_tester.prepareTest("isContinuous|start dt None")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.end_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertTrue(test_mhs.isContinuous())
+
 
 
 
