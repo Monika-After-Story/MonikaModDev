@@ -1453,7 +1453,7 @@ label bye_dinner_noon_to_mn:
         m 2esd "Well...{w=1}enjoy."
     return
     
-    init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.farewell_database,
