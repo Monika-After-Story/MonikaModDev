@@ -3693,7 +3693,7 @@ label greeting_rent:
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
     return
     
-     init 5 python:
+init 5 python:
     addEvent(
         Event(
             persistent.greeting_database,
