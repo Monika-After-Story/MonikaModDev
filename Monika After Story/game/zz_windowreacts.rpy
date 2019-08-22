@@ -664,7 +664,7 @@ label mas_wrs_reddit:
         [
             "Have you found any good posts, [player]?",
             "Browsing Reddit? Just make sure you don’t spend all day looking at memes, okay?",
-            “Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding [player]”,
+            "Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding [player]",
         ],
         'Window Reactions'
     )
