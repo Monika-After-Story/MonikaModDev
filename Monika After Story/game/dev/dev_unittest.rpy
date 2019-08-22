@@ -287,6 +287,77 @@ label dev_unit_test_mhs:
     call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
     call dev_unit_tests_assertFalse(test_mhs.use_year_before)
 
-    m "fromTuple|(<past dt>, 
+#    m "fromTuple|(<past dt>, True)"
+##    python:
+ #       testdat
+
+    m "isActive|continuous"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_dt = datetime.datetime.now()
+    call dev_unit_tests_assertTrue(test_mhs.isActive(test_dt))
+
+    m "isActive|check_dt in range"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 21)
+    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt not in range"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 3, 10)
+    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt in range, diff year"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2017, 4, 21)
+    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt not in range, diff year"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2017, 3, 10)
+    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt in range, yearprev, ny wrap"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 12, 30)
+        test_mhs.end_dt = datetime.datetime(2019, 1, 2)
+        check_dt = datetime.datetime(2018, 12, 31)
+    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt not in range, year prev, ny wrap"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 12, 30)
+        test_mhs.end_dt = datetime.datetime(2019, 1, 2)
+        check_dt = datetime.datetime(2018, 12, 10)
+    call dev_unit_tests_assertFalse(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt in range, yearfut, ny wrap"
+    python:
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 12, 30)
+        test_mhs.end_dt = datetime.datetime(2019, 1, 2)
+        check_dt = datetime.datetime(2019, 1, 1)
+    call dev_unit_tests_assertTrue(test_mhs.isActive(check_dt))
+
+    m "isActive|check_dt
+
+
+
+
+
 
     return
