@@ -3,6 +3,7 @@
 
 init -1 python in mas_dev_unit_tests:
     import store
+    import store.mas_ev_data_ver as medv
 
     unit_tests = [
         ("JSON - MASPoseMap", "dev_unit_test_json_masposemap", False, False),
@@ -123,6 +124,52 @@ init -1 python in mas_dev_unit_tests:
                 self.test_name,
                 actual is not None,
                 "not None",
+                actual
+            ))
+
+        def assertListEqual(self, expected, actual):
+            """
+            Asserts if two lists are equal and contain equal items.
+
+            if expected/actual are not list, assert Equal is used.
+            This is recursive.
+
+            IN:
+                expected - expected value
+                actual - actual value
+            """
+            exp_is_list = medv._verify_list(expected, False)
+            act_is_list = medv._verify_list(actual, False)
+
+            if act_is_list:
+                if exp_is_list:
+
+                    # lengths must be the same
+                    if len(expected) == len(actual):
+                        for index in range(len(expected)):
+                            self.assertListEqual(
+                                expected[index],
+                                actual[index]
+                            )
+                        return
+
+                    # if lenghts not same, def not equal
+                    # NOTE: fall to after if
+
+                # if only one is iterable, then def not equal
+                # NOTE: fall through to after if
+
+            elif not exp_is_list:
+                # both expected and actual are not lists
+                self.assertEqual(expected, actual)
+
+            # we get here if:
+            #   - lengths are not the seame
+            #   - only 1 item is list
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                False,
+                expected,
                 actual
             ))
 
@@ -417,6 +464,14 @@ label dev_unit_test_mhs:
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
         mhs_tester.assertEqual(expected, correct_trig)
 
+        # TODO: frumTyple
+        #   CASES:
+        #   1 - same as case 1 for setTrigger
+        #   2 - same as case 2 for setTrigger
+        #   3 - same as case 3 for setTrigger
+        #   4 - same as case 4 for setTrigger
+        #   5 - dont include item[1] -> use_year_before not set
+
         mhs_tester.prepareTest("fromTuple|(<future dt>, True)")
         test_data = (
             datetime.datetime.now() + datetime.timedelta(days=1),
@@ -542,6 +597,108 @@ label dev_unit_test_mhs:
         test_mhs.end_dt = datetime.datetime(2018, 4, 20)
         mhs_tester.assertTrue(test_mhs.isContinuous())
 
+        mhs_tester.prepareTest("isContinuous|end dt None")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertTrue(test_mhs.isContinuous())
+
+        mhs_tester.prepareTest("isContinuous|both dt not None")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 21)
+        mhs_tester.assertFalse(test_mhs.isConinuous())
+
+        mhs_tester.prepareTest("isPassed|continuous")
+        test_mhs = gen_fresh_mhs()
+        check_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest("isPassed|check_dt before end_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest("isPassed|check_dt before end_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2020, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest("isPassed|check_dt after end_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 5, 20)
+        mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest("isPassed|check_dt after end_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2015, 5, 20)
+        mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest"isPassed|check_dt on end_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 22)
+        mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
+
+        mhs_tester.prepareTest("isPassed|check_dt on end_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2014, 4, 22)
+        mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
+
+        # TODO: setTrigger
+        #   Cases:
+        #   1 - trigger <= first_sesh -> trigger year is corrected
+        #   2 - trigger.year > now.year + 1 -> trigger yera is corrected
+        #   3 - TT detected + not continuous + not passed(now) -> trigger year is corrected
+        #   4 - none of the above cases are True -> trigger year is unchanged
+        mhs_tester.prepareTest("setTrigger|trigger <= first_sesh")
+        test_now = datetime.datetime.now()
+        prev_tt = store.mas_globals.tt_detected
+        store.mas_globals.tt_detected = False
+        prev_fs = MASHistorySaver.first_sesh
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(years=1)
+        # TODO
+        test_mhs = gen_fresh_mhs()
+        test_dt = mas_getFirstSesh() - datetime.timedelta(days=1)
+        test_mhs.setTrigger(test_dt)
+        expected = test_dt.replace(year=datetime.datetime.now().year + 1)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        store.mas_globals.tt_detected = prev_tt
+
+        # TODO
+        mhs_tester.prepareTest("setTrigger|trigger <= first_sesh, same dt")
+        prev_tt = store.mas_globals.tt_detected
+        store.mas_globals.tt_detected = False
+        test_mhs = gen_fresh_mhs()
+        test_dt = mas_getFirstSesh()
+        test_mhs.setTrigger(test_dt)
+        expected = test_dt.replace(year=datetime.datetime.now().year + 1)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        store.mas_globals.tt_detected = prev_tt
+
+        mhs_tester.prepareTest("setTrigger|trigger.year > now.year + 1")
+        
+        mhs_tester.prepareTest("setTrigger|TT detected + not continuous + not passed")
+
+        mhs_tester.prepareTest("setTrigger|unchanged trigger")
+
+        mhs_tester.prepareTest("isTuple")
+        test_mhs = gen_fresh_mhs()
+        test_data = (
+            test_mhs.trigger,
+            test_mhs.use_year_before
+        )
+        mhs_tester.assertEqual(test_data, test_mhs.toTuple())
 
 
 
