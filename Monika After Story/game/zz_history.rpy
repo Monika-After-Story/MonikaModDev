@@ -599,7 +599,12 @@ init -850 python:
             if self.isContinuous():
                 return False
 
-            return self.end_dt.replace(year=check_dt.year) <= check_dt
+            return (
+                self.end_dt.replace(year=check_dt.year + 
+                    (self.end_dt.year - self.start_dt.year)
+                )
+                <= check_dt
+            )
 
         def setTrigger(self, _trigger):
             """
