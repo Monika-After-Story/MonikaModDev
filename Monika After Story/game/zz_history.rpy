@@ -553,12 +553,17 @@ init -850 python:
             if self.isContinuous():
                 return True
 
+            if self.start_dt.year != self.end_dt.year:
+                return (
+                    (self.start_dt.replace(year=check_dt.year) <= check_dt)
+                    or (check_dt < self.end_dt.replace(year=check_dt.year))
+                )
+           
+            # else check regular range
             return (
                 self.start_dt.replace(year=check_dt.year)
-                    <= check_dt 
-                    < self.end_dt.replace(year=check_dt.year
-                        + (self.end_dt.year - self.start_dt.year)
-                    )
+                <= check_dt 
+                < self.end_dt.replace(year=check_dt.year)
             )
 
         def isContinuous(self):
@@ -599,12 +604,7 @@ init -850 python:
             if self.isContinuous():
                 return False
 
-            return (
-                self.end_dt.replace(year=check_dt.year + 
-                    (self.end_dt.year - self.start_dt.year)
-                )
-                <= check_dt
-            )
+            return self.end_dt.replace(year=check_dt.year) <= check_dt
 
         def setTrigger(self, _trigger):
             """

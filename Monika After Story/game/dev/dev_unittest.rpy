@@ -43,7 +43,7 @@ init -1 python in mas_dev_unit_tests:
             return "{0}: {1} | {2} -> {3}".format(
                 str(self.test_name),
                 pass_str,
-                str(self.expected)
+                str(self.expected),
                 str(self.actual)
             )
 
@@ -113,7 +113,7 @@ init -1 python in mas_dev_unit_tests:
                 actual
             ))
 
-        def assertIsNotNone(self, actual);
+        def assertIsNotNone(self, actual):
             """
             Asserts if the given item is not None
 
@@ -248,6 +248,15 @@ label dev_unit_tests_show_msgs(msg_list, format_text=False):
             $ this_msg = renpy.substitute(this_msg)
         m 1eua "[this_msg]"
         $ _history_list.pop()
+        $ index += 1
+    return
+
+
+label dev_unit_tests_show_items(item_list):
+    $ index = 0
+    while index < len(item_list):
+        $ this_msg = str(item_list[index])
+        m 1eua "[this_msg]"
         $ index += 1
     return
 
@@ -424,7 +433,7 @@ label dev_unit_test_mhs:
 
         mhs_tester.prepareTest("CONSTRUCTOR")
         test_mhs = gen_fresh_mhs()
-        mhs_tester.assertEqual("testing", test_mhs.mhs_id)
+        mhs_tester.assertEqual("testing", test_mhs.id)
 
         mhs_tester.prepareTest("getSortKey")
         test_mhs = gen_fresh_mhs()
@@ -438,7 +447,7 @@ label dev_unit_test_mhs:
         mhs_tester.assertEqual(dt_test, correct_trig)
 
         mhs_tester.prepareTest("correctTriggerYear|future diff year (1)")
-        dt_test = datetime.datetime.now() + datetime.timdelta(days=1)
+        dt_test = datetime.datetime.now() + datetime.timedelta(days=1)
         expected = copy.deepcopy(dt_test)
         dt_test = dt_test.replace(year=dt_test.year+1)
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
@@ -447,7 +456,7 @@ label dev_unit_test_mhs:
         mhs_tester.prepareTest("correctTriggerYear|future diff year (5)")
         dt_test = datetime.datetime.now() + datetime.timedelta(days=1)
         expected = copy.deepcopy(dt_test)
-        dt_test = dt_test.replcae(year=dt_test.year+5)
+        dt_test = dt_test.replace(year=dt_test.year+5)
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
         mhs_tester.assertEqual(expected, correct_trig)
 
@@ -464,50 +473,37 @@ label dev_unit_test_mhs:
         correct_trig = MASHistorySaver.correctTriggerYear(dt_test)
         mhs_tester.assertEqual(expected, correct_trig)
 
-        # TODO: frumTyple
-        #   CASES:
-        #   1 - same as case 1 for setTrigger
-        #   2 - same as case 2 for setTrigger
-        #   3 - same as case 3 for setTrigger
-        #   4 - same as case 4 for setTrigger
-        #   5 - dont include item[1] -> use_year_before not set
-
-        mhs_tester.prepareTest("fromTuple|(<future dt>, True)")
-        test_data = (
-            datetime.datetime.now() + datetime.timedelta(days=1),
-            True
+        mhs_tester.prepareTest("fromTuple|(<standard dt>, True)")
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
         )
+        store.mas_globals.tt_detected = False
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=100)
+        test_data = (test_now + datetime.timedelta(days=1), True)
         test_mhs = gen_fresh_mhs()
         test_mhs.fromTuple(test_data)
         mhs_tester.assertEqual(test_data[0], test_mhs.trigger)
         mhs_tester.assertTrue(test_mhs.use_year_before)
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
 
-
-#    m "fromTuple|(<future dt>, True)"
-#    python:
-#        test_data = (
-#            datetime.datetime.now() + datetime.timedelta(days=1),
-#            True
-#        )
-#        test_mhs = gen_fresh_mhs()
-#        test_mhs.fromTuple(test_data)
-#    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
-#    call dev_unit_tests_assertTrue(test_mhs.use_year_before)
-#
-#    m "fromTuple|(<future dt>, False)"
-#    python:
-#        test_data = (
-#            datetime.datetime.now() + datetime.timedelta(days=1),
-#            False
-#        )
-#        test_mhs = gen_fresh_mhs()
-#        test_mhs.fromTuple(test_data)
-#    call dev_unit_tests_assertEqual(test_data[0], test_mhs.trigger)
-#    call dev_unit_tests_assertFalse(test_mhs.use_year_before)
-
-#    m "fromTuple|(<past dt>, True)"
-##    python:
- #       testdat
+        mhs_tester.prepareTest("fromTuple|(<standard dt>,)")
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = False
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=100)
+        test_data = (test_now + datetime.timedelta(days=1),)
+        test_mhs = gen_fresh_mhs()
+        test_mhs.fromTuple(test_data)
+        mhs_tester.assertEqual(test_data[0], test_mhs.trigger)
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]       
 
         mhs_tester.prepareTest("isActive|continuous")
         test_mhs = gen_fresh_mhs()
@@ -606,7 +602,54 @@ label dev_unit_test_mhs:
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 21)
-        mhs_tester.assertFalse(test_mhs.isConinuous())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+
+        mhs_tester.prepareTest("isFuture|continuous")
+        test_mhs = gen_fresh_mhs()
+        check_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt before start_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 18)
+        mhs_tester.assertTrue(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt before start_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2020, 4, 18)
+        mhs_tester.assertTrue(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt after start_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 5, 20)
+        mhs_tester.assertFalse(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt after start_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2014, 5, 20)
+        mhs_tester.assertFalse(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt on start_dt, same year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2018, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isFuture(check_dt))
+
+        mhs_tester.prepareTest("isFuture|check_dt on start_dt, diff year")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 4, 22)
+        check_dt = datetime.datetime(2014, 4, 20)
+        mhs_tester.assertFalse(test_mhs.isFuture(check_dt))
 
         mhs_tester.prepareTest("isPassed|continuous")
         test_mhs = gen_fresh_mhs()
@@ -641,7 +684,7 @@ label dev_unit_test_mhs:
         check_dt = datetime.datetime(2015, 5, 20)
         mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
 
-        mhs_tester.prepareTest"isPassed|check_dt on end_dt, same year")
+        mhs_tester.prepareTest("isPassed|check_dt on end_dt, same year")
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = datetime.datetime(2018, 4, 20)
         test_mhs.end_dt = datetime.datetime(2018, 4, 22)
@@ -655,7 +698,7 @@ label dev_unit_test_mhs:
         check_dt = datetime.datetime(2014, 4, 22)
         mhs_tester.assertTrue(test_mhs.isPassed(check_dt))
 
-        # TODO: setTrigger
+        # Set Trigger
         #   Cases:
         #   1 - trigger <= first_sesh -> trigger year is corrected
         #   2 - trigger.year > now.year + 1 -> trigger yera is corrected
@@ -721,11 +764,26 @@ label dev_unit_test_mhs:
         test_mhs.start_dt = test_now - datetime.timedelta(days=50)
         test_mhs.end_dt = test_now + datetime.timedelta(days=10)
         test_dt = test_now + datetime.timedelta(days=1)
-        #test_dt = test_dt.replace(year=test_now.year + 1)
-        #TODO
-
+        test_mhs.setTrigger(test_dt)
+        expected = MASHistorySaver.correctTriggerYear(test_dt)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
 
         mhs_tester.prepareTest("setTrigger|unchanged trigger")
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = False
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=100)
+        test_mhs = gen_fresh_mhs()
+        test_dt = test_now + datetime.timedelta(days=10)
+        test_mhs.setTrigger(test_dt)
+        mhs_tester.assertEqual(test_dt, test_mhs.trigger)
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
 
         mhs_tester.prepareTest("isTuple")
         test_mhs = gen_fresh_mhs()
@@ -735,9 +793,14 @@ label dev_unit_test_mhs:
         )
         mhs_tester.assertEqual(test_data, test_mhs.toTuple())
 
+        passed, failed = mhs_tester.concludeTests()
+        failed_test_count = len(failed)
 
+    if failed_test_count > 0:
+        m 1ektsc "[failed_test_count] test failed."
+        call dev_unit_tests_show_items(failed)
 
-
-
+    else:
+        m 1hua "All tests passed!"
 
     return
