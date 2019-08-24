@@ -261,6 +261,21 @@ label dev_unit_tests_show_items(item_list):
     return
 
 
+label dev_unit_tests_finish_test(mhs_tester):
+    python:
+        passed, failed = mhs_tester.concludeTests()
+        failed_test_count = len(failed)
+
+    if failed_test_count > 0:
+        m 1ektsc "[failed_test_count] test failed."
+        call dev_unit_tests_show_items(failed)
+
+    else:
+        m 1hua "All tests passed!"
+
+    return
+
+
 init 5 python:
     addEvent(
         Event(
@@ -793,14 +808,6 @@ label dev_unit_test_mhs:
         )
         mhs_tester.assertEqual(test_data, test_mhs.toTuple())
 
-        passed, failed = mhs_tester.concludeTests()
-        failed_test_count = len(failed)
-
-    if failed_test_count > 0:
-        m 1ektsc "[failed_test_count] test failed."
-        call dev_unit_tests_show_items(failed)
-
-    else:
-        m 1hua "All tests passed!"
+    call dev_unit_tests_finish_test(mhs_tester)
 
     return
