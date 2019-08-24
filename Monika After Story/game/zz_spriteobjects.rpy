@@ -224,7 +224,7 @@ init -2 python in mas_sprites:
             p2=None,
             p3="1",
             p4=None,
-            p5="5old",
+            p5=None,
             p6=None
         )
 
@@ -424,9 +424,9 @@ init -2 python in mas_sprites:
         temp_storage["clothes.santa"] = store.mas_acs_promisering.pose_map
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
-            p2="7",
+            p2=None,
             p3="1",
-            p4=None,
+            p4="1",
             p5=None,
             p6=None
         )
@@ -770,6 +770,7 @@ init -1 python:
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
+            p5="steepling",
             p6="down"
         ),
         fallback=True,
@@ -810,6 +811,7 @@ init -1 python:
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
+            p5="steepling",
             p6="down"
         ),
         fallback=True,

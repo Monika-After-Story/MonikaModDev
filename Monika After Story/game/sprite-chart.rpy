@@ -2301,7 +2301,7 @@ init -5 python in mas_sprites:
     def _ms_sitting(
             clothing,
             hair,
-            hair_split,
+            is_baked,
             base_pose,
             arms_pose,
             eyebrows,
@@ -2335,7 +2335,7 @@ init -5 python in mas_sprites:
         IN:
             clothing - type of clothing
             hair - type of hair
-            hair_split - true if hair is split into 2 layers
+            is_baked - True if this is a baked outfit, False if not
             base_pose - MASPoseArms for base
             arms_pose - MASPoseArms for outfit
             eyebrows - type of eyebrows
@@ -2396,23 +2396,6 @@ init -5 python in mas_sprites:
             LOC_REG,
         ]
 
-        ## NOTE: render order:
-        #   1. pre-acs - every acs that should render before the body
-        #   2. back-hair - back portion of hair (split mode)
-        #   3. post-back-hair-acs - acs that should render after back hair, but
-        #       before body (split mode)
-        #   4. body - the actual body (does not include arms in split mode)
-        #   5. table - the table/desk
-        #   6. pre-front-hair-acs - acs that should render after body, but
-        #       before front hair (split mode)
-        #   7. front-hair - front portion of hair (split mode)
-        #   8. front-hair-face acs - acs that should render after front hair
-        #       but before face (split mode)
-        #   9. face - face expressions
-        #   10. mid - acs that render between body and arms
-        #   11. arms - arms (split mode, lean mode)
-        #   12. post-acs - acs that should render after basically everything
-
         # NOTE: render order (new):
         #   1. pre-acs - every acs that should render before anything
         #   2. back-hair - back portion of hair (split mode)
@@ -2438,6 +2421,18 @@ init -5 python in mas_sprites:
         #   22. ase-acs-1 - between base arms and clothes, front part
         #   23. arms-1 - front arms
         #   24. pst-acs - acs after everything
+
+        # NOTE: render order (baked)
+        #   1. pre-acs - every acs that should render before anything
+        #   *2. body - baked body
+        #   7. table - the table/desk
+        #   3. bbh-acs - acs between Body and Back hair
+        #   16. bfh-acs - acs between body and front hair
+        #   18. afh-acs - acs between front hair and arms
+        #   19. face - facial expressions
+        #   20. mid-acs - acs between face and front arms
+        #   *21. arms-nh - baked arms
+        #   24. pst-acs - acs after everything
     
         # NOTE: the ASE_ACS layer:
         #   This layer is unique in that it actually is split into 2 zones:
@@ -2461,177 +2456,266 @@ init -5 python in mas_sprites:
             lean=lean
         )
 
-        # 2. back-hair
-        _ms_hair(
-            sprite_str_list,
-            loc_build_str,
-            hair,
-            n_suffix,
-            False,
-            lean
-        )
+        if is_baked:
+            
+            # *2. body
+            _ms_body(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                hair,
+                n_suffix,
+                lean=lean,
+                arms=leanpose
+            )
 
-        # 3. post back hair acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_bbh_list,
-            n_suffix,
-            True,
-            leanpose,
-            lean=lean
-        )
+            # 7. table
+            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
-        # position setup
-        #sprite_str_list.extend(loc_build_tup)
+            # 3. post back hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bbh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
 
-        # 4. base-0
-        # 5. between base-0 and body-0 acs
-        # 6. body-0
-        _ms_body_nh_wbase(
-            sprite_str_list,
-            loc_build_str,
-            clothing,
-            acs_bse_list,
-            "0",
-            n_suffix,
-            leanpose,
-            lean=lean
-        )
+            # 16. between body-1 and front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bfh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
 
-        # positon setup
-        #sprite_str_list.extend(loc_build_tup)
+            # 18. post-front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
 
-        # 7. Table
-        _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
+            # 19. face
+            _ms_face(
+                sprite_str_list,
+                loc_build_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
 
-        # 8. between body and back arms acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_bba_list,
-            n_suffix,
-            True,
-            leanpose,
-            lean=lean
-        )
+            # 20. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
 
-        # 9. arms-base-0
-        # 10. between arms-base-0 and arms-0 acs
-        # 11. arms-0
-        _ms_arms_nh_wbase(
-            sprite_str_list,
-            base_pose,
-            arms_pose,
-            loc_build_str,
-            clothing,
-            acs_ase_list,
-            leanpose,
-            lean,
-            n_suffix,
-            "0"
-        )
+            # *21. arms
+            _ms_arms_nh(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                None,
+                leanpose,
+                n_suffix
+            )
 
-        # 12: between arms-0 and body-1 acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_bab_list,
-            n_suffix,
-            True,
-            leanpose,
-            lean=lean
-        )
+        else:
 
-        # 13. base-1
-        # 14. between base-1 and body-1 acs
-        # 15. body-1
-        _ms_body_nh_wbase(
-            sprite_str_list,
-            loc_build_str,
-            clothing,
-            acs_bse_list,
-            "1",
-            n_suffix,
-            arms,
-            lean=lean
-        )
+            # 2. back-hair
+            _ms_hair(
+                sprite_str_list,
+                loc_build_str,
+                hair,
+                n_suffix,
+                False,
+                lean
+            )
 
-        # 16. between body-1 and front hair acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_bfh_list,
-            n_suffix,
-            True,
-            leanpose,
-            lean=lean
-        )
+            # 3. post back hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bbh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
 
-        # 17. front-hair
-        _ms_hair(
-            sprite_str_list,
-            loc_build_str,
-            hair,
-            n_suffix,
-            True,
-            lean
-        )
+            # position setup
+            #sprite_str_list.extend(loc_build_tup)
 
-        # 18. post-front hair acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_afh_list,
-            n_suffix,
-            True,
-            arms,
-            lean=lean
-        )
+            # 4. base-0
+            # 5. between base-0 and body-0 acs
+            # 6. body-0
+            _ms_body_nh_wbase(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                acs_bse_list,
+                "0",
+                n_suffix,
+                leanpose,
+                lean=lean
+            )
 
-        # 19. face
-        _ms_face(
-            sprite_str_list,
-            loc_build_str,
-            eyebrows,
-            eyes,
-            nose,
-            mouth,
-            n_suffix,
-            lean=lean,
-            eyebags=eyebags,
-            sweat=sweat,
-            blush=blush,
-            tears=tears,
-            emote=emote
-        )
+            # positon setup
+            #sprite_str_list.extend(loc_build_tup)
 
-        # 20. between body and arms acs
-        _ms_accessorylist(
-            sprite_str_list,
-            loc_build_str,
-            acs_mid_list,
-            n_suffix,
-            True,
-            leanpose,
-            lean=lean
-        )
+            # 7. Table
+            _ms_table(sprite_str_list, loc_build_str, table, n_suffix)
 
-        # 21. arms-base-1 
-        # 22. between arms-base and arms acs
-        # 23. arms-1
-        _ms_arms_nh_wbase(
-            sprite_str_list,
-            base_pose,
-            arms_pose,
-            loc_build_str,
-            clothing,
-            acs_ase_list,
-            leanpose,
-            lean,
-            n_suffix,
-            "1"
-        )
+            # 8. between body and back arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bba_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 9. arms-base-0
+            # 10. between arms-base-0 and arms-0 acs
+            # 11. arms-0
+            _ms_arms_nh_wbase(
+                sprite_str_list,
+                base_pose,
+                arms_pose,
+                loc_build_str,
+                clothing,
+                acs_ase_list,
+                leanpose,
+                lean,
+                n_suffix,
+                "0"
+            )
+
+            # 12: between arms-0 and body-1 acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bab_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 13. base-1
+            # 14. between base-1 and body-1 acs
+            # 15. body-1
+            _ms_body_nh_wbase(
+                sprite_str_list,
+                loc_build_str,
+                clothing,
+                acs_bse_list,
+                "1",
+                n_suffix,
+                arms,
+                lean=lean
+            )
+
+            # 16. between body-1 and front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_bfh_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 17. front-hair
+            _ms_hair(
+                sprite_str_list,
+                loc_build_str,
+                hair,
+                n_suffix,
+                True,
+                lean
+            )
+
+            # 18. post-front hair acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_afh_list,
+                n_suffix,
+                True,
+                arms,
+                lean=lean
+            )
+
+            # 19. face
+            _ms_face(
+                sprite_str_list,
+                loc_build_str,
+                eyebrows,
+                eyes,
+                nose,
+                mouth,
+                n_suffix,
+                lean=lean,
+                eyebags=eyebags,
+                sweat=sweat,
+                blush=blush,
+                tears=tears,
+                emote=emote
+            )
+
+            # 20. between body and arms acs
+            _ms_accessorylist(
+                sprite_str_list,
+                loc_build_str,
+                acs_mid_list,
+                n_suffix,
+                True,
+                leanpose,
+                lean=lean
+            )
+
+            # 21. arms-base-1 
+            # 22. between arms-base and arms acs
+            # 23. arms-1
+            _ms_arms_nh_wbase(
+                sprite_str_list,
+                base_pose,
+                arms_pose,
+                loc_build_str,
+                clothing,
+                acs_ase_list,
+                leanpose,
+                lean,
+                n_suffix,
+                "1"
+            )
 
         # 24. after arms acs
         _ms_accessorylist(
@@ -5677,12 +5761,13 @@ init -2 python:
                 leanpose = arms
 
             # determine hair split
-            if hair.split is None:
-                hair_split = True
-
-            else:
-                # not leaning, still assume true if arms not found
-                hair_split = hair.split.get(leanpose, True)
+            is_baked = character.clothes.hasprop("baked outfit")
+#            if character.clothes.hasprop("baked outfit"):
+#                hair_split = True
+#
+#            else:
+#                # not leaning, still assume true if arms not found
+#                hair_split = hair.split.get(leanpose, True)
 
             # select MASPoseArms for baes and outfit
             base_pose = store.mas_sprites.base_pose_arms_map.get(
@@ -5698,7 +5783,7 @@ init -2 python:
             cmd = store.mas_sprites._ms_sitting(
                 character.clothes.img_sit,
                 hair.img_sit,
-                hair_split,
+                is_baked,
                 base_pose,
                 arms_pose,
                 eyebrows,
