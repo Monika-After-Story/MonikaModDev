@@ -334,6 +334,7 @@ init -21 python in mas_sprites_json:
     ## MASPoseMap
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
     MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
+    MPM_BAD_TYPE = "invalid mpm_type '{0}'"
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"

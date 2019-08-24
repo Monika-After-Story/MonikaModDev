@@ -4476,6 +4476,21 @@ init -2 python:
                         use_pose.right_front,
                         use_pose.right_back
                     )
+
+        @staticmethod
+        def fromJSON(cls, json_obj, errs, warns):
+            """
+            Builds a MASPoseArms object given a JSON format of it
+
+            IN:
+                json_obj - json object to parse
+
+            OUT:
+                errs - list to save error message to
+                warns - list to save warning messages to
+
+            RETURNS: MASPoseArms object built using the JSON, or None if failed
+            """
                             
         def build_arms(
                 self, 
@@ -4551,7 +4566,7 @@ init -2 python:
         CONS_PARAM_NAMES = (
             "default", 
             "l_default",
-            "use_reg_for_l",
+#            "use_reg_for_l",
             "p1",
             "p2",
             "p3",
@@ -4587,6 +4602,16 @@ init -2 python:
         # image code mode
         # each pose is a string that determines the code to use
         # NOTE: somewhat identical to FB mode in data held
+
+        MPM_TYPES = (
+            MPM_TYPE_ED,
+            MPM_TYPE_FB,
+            MPM_TYPE_AS,
+            MPM_TYPE_PA,
+            MPM_TYPE_IC
+        )
+
+        MPM_AS_DATA = ("0", "1", "", "*")
 
         def __init__(self,
                 # NOTE: when updating params, make sure to modify param name
@@ -4656,7 +4681,6 @@ init -2 python:
 
             self._mpm_type = mpm_type
 
-
         def __set_posedefs(self, pose_dict, _def):
             """
             Sets pose defaults
@@ -4669,6 +4693,18 @@ init -2 python:
                 if pose_dict[k] is None:
                     pose_dict[k] = _def
 
+        @staticmethod
+        def _verify_mpm_as(value, allow_none=None):
+            """
+            Verifies if the given value is a valid arm split item
+
+            IN:
+                value - value to verify
+                allow_none - ununsed
+
+            RETURNS: True if verified, False if not
+            """
+            return value in MASPoseMap.MPM_AS_DATA
 
         def get(self, pose, defval):
             """
@@ -4684,19 +4720,13 @@ init -2 python:
             """
             return self.__all_map.get(pose, defval)
 
-
         @classmethod
-        def fromJSON(cls, json_obj, is_acs, is_fallback, errs, warns):
+        def fromJSON(cls, json_obj, errs, warns):
             """
             Builds a MASPoseMap given a JSON format of it
 
             IN:
                 json_obj - json object to parse
-                is_acs - True if the MASPoseMap should be built with acs
-                    in mind, False otherwise.
-                is_fallback - True if the MASPoseMap should be built with
-                    fallback mode in mind, False otherwise.
-                    NOTE: if is_acs is True, this is ignored
 
             OUT:
                 errs - list to save error message to
@@ -4704,11 +4734,58 @@ init -2 python:
 
             RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
-            # TODO: including handling the mpm type
-            isbad = False
+            # verify mpm type
+            mpm_type = json_obj.get("mpm_type", None):
+            if mpm_type is None:
+                errs.append(cls.msj.MSG_ERR_IDD.format(
+                    cls.msj.REQ_MISS.format("mpm_type")
+                ))
+                return None
 
-            if is_acs:
-                is_fallback = False
+            if cls.msj._verify_int(mpm_type, allow_none=False):
+                errs.append(cls.msj.MSG_ERR_IDD.format(
+                    cls.msj.BAD_TYPE.format("mpm_type", int, type(mpm_type))
+                ))
+                return None
+
+            if mpm_type not in cls.MPM_TYPES:
+                errs.append(cls.msj.MSG_ERR_IDD.format(
+                    cls.msj.MPM_BAD_TYPE.format(mpm_type)
+                ))
+                return None
+
+            # verify use_reg_for_l
+            use_reg_for_l = json_obj.get("use_reg_for_l", None):
+            if use_reg_for_l is not None:
+                if cls.msj._verify_bool(use_reg_for_l, allow_none=False):
+                    errs.append(cls.msj.MSG_ERR_IDD.format(
+                        cls.msj.BAD_TYPE.format(
+                            "use_reg_for_l",
+                            str, 
+                            type(use_reg_for_l)
+                        )
+                    ))
+                    return None
+
+            # select the appropriate verifier based on type
+            if mpm_type == cls.MPM_TYPE_ED:
+                verifier = cls.msj._verify_bool
+
+            elif mpm_type == cls.MPM_TYPE_FB:
+                verifier = cls.msj._verify_pose
+
+            elif mpm_type == cls.MPM_TYPE_AS:
+                verifier = MASPoseMap._verify_mpm_as
+
+            elif mpm_type == cls.MPM_TYPE_PA:
+                #verifier = cls.ms
+                # TODO:
+                pass
+            else:
+                # IC
+                verifier = cls.msj._verify_str
+
+            
 
             # go through the json object and validate everything
             for prop_name in json_obj.keys():
