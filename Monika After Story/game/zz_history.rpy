@@ -627,7 +627,7 @@ init -850 python:
                     (
                         mas_TTDetected()
                         and not self.isContinuous()
-                        and not self.isPassed(_now)
+                        and (self.isFuture(_now) or self.isActive(_now))
                     )
                     or _trigger.year > (_now.year + 1)
                     or _trigger <= first_sesh
