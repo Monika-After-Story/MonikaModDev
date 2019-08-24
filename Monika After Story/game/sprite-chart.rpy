@@ -4560,6 +4560,9 @@ init -2 python:
             "p6",
         )
 
+        # NOTE: type codes are not used internally. they are for sprite jsons
+        #   only.
+
         MPM_TYPE_ED = 0
         # enable/disbale mode
         # each pose should be True/False
@@ -4579,6 +4582,11 @@ init -2 python:
         MPM_TYPE_PA = 3
         # pose arms mode
         # each pose should contain None or a MASPoseArms object
+
+        MPM_TYPE_IC = 4
+        # image code mode
+        # each pose is a string that determines the code to use
+        # NOTE: somewhat identical to FB mode in data held
 
         def __init__(self,
                 # NOTE: when updating params, make sure to modify param name
