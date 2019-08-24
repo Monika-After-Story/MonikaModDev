@@ -55,6 +55,10 @@ init -999 python in mas_ev_data_ver:
         return _verify_item(val, datetime.datetime, allow_none)
 
 
+    def _verify_dt_nn(val):
+        return _verify_dt(val, False)
+
+
     def _verify_evact(val, allow_none=True):
         if val is None:
             return allow_none

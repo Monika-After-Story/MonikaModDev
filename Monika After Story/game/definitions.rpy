@@ -3166,7 +3166,7 @@ init -985 python:
         return _now - store.mas_utils.pdget(
             "current_session_start",
             persistent.sessions,
-            validator=store.mas_ev_data_ver._verify_dt,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=_now
         )
 
@@ -3188,7 +3188,7 @@ init -985 python:
         return store.mas_utils.pdget(
             "current_session_start",
             persistent.sessions,
-            validator=store.mas_ev_data_ver._verify_dt,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=mas_getFirstSesh()
         )
 
@@ -3202,7 +3202,7 @@ init -985 python:
         return store.mas_utils.pdget(
             "first_session",
             persistent.sessions,
-            validator=store.mas_ev_data_ver._verify_dt,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=datetime.datetime.now()
         )
 
@@ -3215,7 +3215,7 @@ init -985 python:
         return store.mas_utils.pdget(
             "last_session_end",
             persistent.sessions,
-            validator=store.mas_ev_data_ver._verify_dt,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
             defval=mas_getFirstSesh()
         )
 
