@@ -801,7 +801,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         show vignette zorder 70
 
     # bday stuff (this checks itself)
-    if persistent._mas_bday_sbp_reacted:
+    if persistent._mas_922_in_922_mode:
         $ store.surpriseBdayShowVisuals()
 
     # d25 seasonal
@@ -1104,11 +1104,13 @@ label mas_ch30_post_retmoni_check:
     if mas_isF14() or persistent._mas_f14_in_f14_mode:
         jump mas_f14_autoload_check
 
+    #NOTE: This has priority because of the opendoor greet
+    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
+        jump mas_player_bday_autoload_check
+
     if mas_isMonikaBirthday() or persistent._mas_922_in_922_mode:
         jump mas_bday_autoload_check
 
-    if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
-        jump mas_player_bday_autoload_check
 
 
 label mas_ch30_post_holiday_check:

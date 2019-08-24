@@ -287,6 +287,9 @@ init -1 python in mas_filereacts:
             return "mas_reaction_gift_starter_bday"
         elif store.mas_isD25Gift():
             return "mas_reaction_gift_starter_d25"
+        elif store.mas_isF14():
+            return "mas_reaction_gift_starter_f14"
+
         return "mas_reaction_gift_starter_neutral"
 
     def _core_delete(_filename, _map):
@@ -679,13 +682,14 @@ label mas_reaction_gift_starter_generic:
 
 label mas_reaction_gift_starter_bday:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
-    m "T-{w=1}This is..."
-    m "A gift? For me?"
+    m "T-{w=0.5}This is..."
     if len(persistent._mas_filereacts_historic[datetime.date.today().year,9,22]) == 0:
+        m "A gift? For me?"
         m 1hka "I..."
         m 1hua "I've often thought about getting presents from you on my birthday..."
         m "But actually getting one is like a dream come true..."
     else:
+        m "Another gift?{w=0.5} For me?"
         m 1eka "This really is a dream come true, [player]"
     m 1sua "Now, what's inside?"
     m 1suo "Oh, it's..."
@@ -693,7 +697,7 @@ label mas_reaction_gift_starter_bday:
 
 label mas_reaction_gift_starter_neutral:
     m 1sublo ".{w=0.7}.{w=0.7}.{w=1}"
-    m "T-{w=1}This is..."
+    m "T-{w=0.5}This is..."
     m "A gift? For me?"
     m 1sua "Now, let's see what's inside?"
     return

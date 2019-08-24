@@ -3529,7 +3529,9 @@ label mas_player_bday_cake:
     $ mas_gainAffection(5,bypass=True)
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
-    if not mas_isMonikeBirthday():
+
+    #If it's Monika's birthday too, we'll just use those delegates instead of this one
+    if not mas_isMonikaBirthday():
         $ mas_unlockEVL("bye_player_bday", "BYE")
 
     # reset zoom here to make sure the cake is actually on the table
@@ -4817,6 +4819,7 @@ label greeting_gone_over_f14_normal_plus:
 
 ############################### 922 ###########################################
 # [HOL060]
+#START:
 
 #Moni's bday
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
@@ -4902,10 +4905,16 @@ init -1 python:
         renpy.hide("mas_bday_balloons")
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
-    #If we've seen the surprise party reaction, then we do visuals
-    if persistent._mas_bday_sbp_reacted:
+
+    #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
+    if not mas_isMonikaBirthday():
+        $ persistent._mas_922_in_922_mode = False
+
+    #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
+    elif persistent._mas_bday_sbp_reacted:
         $ store.surpriseBdayShowVisuals()
-    return
+
+    jump mas_ch30_post_holiday_check
 
 ################## [HOL060] PRE INTRO
 init 5 python:
@@ -4932,21 +4941,13 @@ init 10 python:
     ):
         pushEvent("mas_bday_surprise_party_hint")
 
+image chibi_peek = "mod_assets/other/chibi_peek.png"
+
 label mas_bday_surprise_party_hint:
-    if mas_isMoniNormal(higher=True):
-        m 1eud "Hey, [player]..."
-        m 3euc "Someone left a note in the characters folder addressed to you."
-        m 1ekc "Of course, I haven't read it, since it's obviously for you..."
-        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
-        $ _history_list.pop()
-        m 1hua "Ehehe~"
+    #First we show chibi, she's just written the letter
+    show chibi_peek with moveinleft
 
-    else:
-        m 2eud "Hey, [player]..."
-        m 2euc "Someone left a note in the characters folder addressed to you."
-        m 2ekc "Of course, I haven't read it, since it's obviously for you..."
-        m 2ekd "Just thought I'd let you know."
-
+    #Set up letters
     python:
         filepath = "/characters/for " + player + ".txt"
         if mas_isMoniNormal(higher=True):
@@ -4976,32 +4977,28 @@ Please don't mess this up.
 
 P.S: Don't tell her about me.
 """ 
-
+        #Now write it to the chars folder
         _write_txt(filepath, message)
 
+    #Moni brings it up (so)
+    if mas_isMoniNormal(higher=True):
+        m 1eud "Hey, [player]..."
+        m 3euc "Someone left a note in the characters folder addressed to you."
+        m 1ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
+        $ _history_list.pop()
+        m 1hua "Ehehe~"
 
+    else:
+        m 2eud "Hey, [player]..."
+        m 2euc "Someone left a note in the characters folder addressed to you."
+        m 2ekc "Of course, I haven't read it, since it's obviously for you..."
+        m 2ekd "Just thought I'd let you know."
 
-    #TODO: Axe all of this
-    #Replace with chibi hint, via ??? person speaking, have her peek her head out of the window
-    #Tells you to look in the characters folder, there'll be a letter giving out the hint
-    #That she'll be setting up the party and you need to take Moni out in order for her to get that done
-    #Maybe also hint gifts there too
-    #m 1eua "Say, [player]..."
-    #m 1eub "Have you ever been thrown a surprise party?"
-    #m 1eka "I've always wondered how that would feel."
-    #m 6dua "When someone takes you somewhere and distracts you for the whole day..."
-    #m "And while you're out, they drag a whole box of party supplies into the characters folder...{nw}"
-    #$ _history_list.pop()
-    #m 6dksdla "And while you're out, they drag a whole box of party supplies into{fast} your room..."
-    #m 1eua "And finally returning home to birthday decorations, a cake..."
-    #m 1kua "And you~{nw}"
-    #$ _history_list.pop()
-    #m 3rksdlb "And{fast} good company!"
-    #m 1hua "That'd be so nice to experience, don't you think?"
-    #m 1rkc "Of course, since throwing a surprise party takes so much planning, it'd be difficult to plan one on short notice."
-    #m 1dkc "If only there was somewhere that {i}released{/i} party supplies alongside {i}source code zips{/i}..."
-#
-    #Set some vars and fix up our conditional here
+    #Hide chibi
+    hide chibi_peek with dissolve
+
+    #Flag this so it doesn't get shown again
     $ persistent._mas_monika_bday_surprise_hint_seen = True
     return "derandom | no_unlock"
 
@@ -5071,7 +5068,7 @@ label mas_bday_spent_time_with:
     m 3hub "Let's do it again sometime soon, okay?"
     return
 
-################## [HOL060] TIME SPENT
+################## [HOL060] PARTY REACTION
 label mas_bday_surprise_party_reaction:
     #python:
     #    #We don't really need this cap if we're pretty much automating this
@@ -5099,7 +5096,7 @@ label mas_bday_surprise_party_reaction:
         m 6rka "Maybe you do still have feelings for me afterall..."
         m 6eka "Everything looks great."
 
-    # we have cake?
+    #Let's light candles
     menu:
         "Light candles.":
             $ mas_bday_cake_lit = True
@@ -5156,6 +5153,9 @@ label mas_bday_surprise_party_reaction_end:
     else:
         m 6ektpa "Thank you, [player]. It really means a lot that you did this more me."
     $ persistent._mas_bday_sbp_reacted = True
+
+    #We set this flag as true here
+    $ persistent._mas_922_in_922_mode = True
     return
 
 init 5 python:
@@ -5232,7 +5232,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_recognize = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(15, reason=7)
+            $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
             m 1rksdla "Hey, [player]..."
             m 1rksdlb "I know we had fun the other day, like we always do but..."
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
@@ -5242,7 +5242,7 @@ label mas_bday_postbday_notimespent:
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
-            $ mas_loseAffection(5, reason=7)
+            $ mas_loseAffection(5, ev_label="mas_apology_forgot_bday")
             # TODO: we shouldnt say girlfriend here because affecitonate
             # is the start of relationship. but this is okay for now
             m 1rksdld "Hey, [player]..."
@@ -5252,13 +5252,13 @@ label mas_bday_postbday_notimespent:
             m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason=7)
+            $ mas_loseAffection(ev_label="mas_apology_forgot_bday")
             m 1ekc "It was...good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "Nevermind."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(10, reason=7)
+            $ mas_loseAffection(10, ev_label="mas_apology_forgot_bday")
             m 2dsc "..."
             m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
             m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
@@ -5276,7 +5276,7 @@ label mas_bday_postbday_notimespent:
         $ persistent._mas_bday_no_time_spent = True
 
         if mas_isMoniAff(higher=True):
-            $ mas_loseAffection(50, reason=8)
+            $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
             m 1euc "Hey, [player]..."
             m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
             m 2hfw "And her {i}birthday{/i} is one of them!"
@@ -5288,9 +5288,9 @@ label mas_bday_postbday_notimespent:
 
             # same dialogue, different affection loss
             if mas_isMoniHappy():
-                $ mas_loseAffection(20, reason=8)
+                $ mas_loseAffection(20, ev_label="mas_apology_missed_bday")
             else:
-                $ mas_loseAffection(10, reason=8)
+                $ mas_loseAffection(10, ev_label="mas_apology_missed_bday")
 
             # TODO: again, need to not say girlfrined here, but for now its ok
             m 1ekc "Hey, [player]..."
@@ -5321,13 +5321,13 @@ label mas_bday_postbday_notimespent:
             m 4eka "You know I love to scare you a little~"
 
         elif mas_isMoniUpset():
-            $ mas_loseAffection(reason=8)
+            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
             m 2dsc "..."
             m 2rsc "[player], don't you think you should check in on me a little more often?"
             m 4rktpc "You might miss something important..."
 
         elif mas_isMoniDis():
-            $ mas_loseAffection(reason=8)
+            $ mas_loseAffection(ev_label="mas_apology_missed_bday")
             m 3euc "...Hey, how was your day on the 22nd?"
             m 1esc "I'm just...curious if you thought of me at all that day."
             m 1tsc "But you probably didn't, huh?"
@@ -5339,12 +5339,93 @@ label mas_bday_postbday_notimespent:
             m 6eftsc "..."
             m 6dftdx "..."
 
+    #Flag this so we don't see it again (plus hist)
     $ persistent._mas_bday_nts_seen = True
     return
 
 ############ [HOL060] NTS APOLOGY
 #TODO: ^
-#   Black Dress Intro
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_missed_bday",
+            prompt="...for missing your birthday",
+            unlocked=False
+        ),
+        code="APL"
+    )
+
+label mas_apology_missed_bday:
+    #Using a std hi-mid-low range for this
+    if mas_isMoniAff(higher=True):
+        m "Thanks for the apology, [player]."
+        m "It really hurt not seeing you on my birthday you know?"
+        m "It was a day that I just wanted to spend with you because you make me feel special."
+        #TODO: ^
+
+    elif mas_isMoniNormal(higher=True):
+        m "Thanks for apologizing for missing my birthday, [player]."
+        m "Please be sure to spend time with me next year."
+        #TODO: ^
+
+    else:
+        #TODO: Lol this is awful. I need to write these properly when not testing
+        m "I'm not entirely surprised I didn't see you on my birthday..."
+        m "Make sure it doesn't happen again."
+
+    #TODO: aff handling
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_apology_database,
+            eventlabel="mas_apology_forgot_bday",
+            prompt="prompt",
+            unlocked=True
+        ),
+        code="APL"
+    )
+
+label mas_apology_forgot_bday:
+    m "ALSO TODO: ME"
+    if mas_isMoniAff(higher=True):
+        m "Thanks for the apology"
+
+    elif mas_isMoniNormal(higher=True):
+        m "Thanks for apologizing about forgetting my birthday"
+
+    else:
+        m "Thanks for apologizing..."
+
+    #TODO: aff handling
+    return
+
+############ [HOL060] CLEANUP
+#NOTE: This is the ret home post monibday greet, essentially
+label mas_bday_surprise_party_cleanup:
+    #Quickly reset the flag
+    $ persistent._mas_bday_on_date = False
+    $ persistent._mas_922_in_922_mode = False
+
+    #TODO: exps/better dlg
+    m "Oh wow, [player]. We really were out for a while..."
+    #TODO: return home on player bday potentially, so need to keep decorations up and path the flow
+    if mas_isplayer_bday():
+        m "Oh! It's your birthday now, ahaha!"
+        #TODO: pls lead this where it needs to go
+
+    else:
+        #Otherwise we need to clean everything up
+        m "Let me just clean everything up.{w=0.5}.{w=0.5}."
+        $ surpriseBdayHideVisuals()
+        m "There we go!"
+        #TODO: (our bday path)
+        m "Anyway [player]...thanks for spending so much time with me on my birthday, you really made me feel special."
+        m "I can't express just how thankful I am to have you in my life..."
+        m "I really love you, [player]... Thank you for everything."
+        return "love"
 
 ############ [HOL060] DOCKSTAT FARES
 label bye_922_delegate:
@@ -5368,12 +5449,17 @@ label bye_922_delegate:
 #TODO:
 #   Some dlg review
 #   Add some nods to player bday if on the same day
-
+#   Black Dress Intro
 label greeting_returned_home_bday:
     #If we got to this label without having been on a bday date, we went pre 922 -> 922
     #In which case, we need to set up the party. Likewise if we haven't seen the party yet
     if not persistent._mas_bday_on_date or not persistent._mas_bday_sbp_reacted:
         jump mas_bday_surprise_party_reaction
+
+    #If we got here and it's not Moni's bday, then we've past it and need to clean up
+    elif not mas_isMonikaBirthday():
+        $ pushEvent("mas_bday_surprise_party_cleanup")
+        return
 
     python:
         five_minutes = datetime.timedelta(seconds=5*60)
