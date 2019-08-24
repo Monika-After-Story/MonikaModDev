@@ -12130,6 +12130,61 @@ init 5 python:
     addEvent(
         Event(
             persistent.event_database,
+            eventlabel="player_red_poems",
+            category=["literature"],
+            prompt="Red poetry",
+            random=True
+        )
+    )
+
+default persistent._mas_red_poetry = None
+#True if player likes poems, false if not
+label player_red_poems:
+    m 2eub "Say [player]...
+    m 2eua "You know that I like poetry, but I was wondering something."
+    menu:
+        m 2eua "Did you read poems often before meeting me?"
+        "Sure, I did":
+            $ persistent._mas_red_poetry = True
+            $ mas_gainAffection()
+            m 2sub "Really!"
+            m 2hub "That makes me so happy!"
+            m 2hua "And really, I mean it, not a lot of people read poetry, you know."
+        "Nah, I didn't"
+            $ persistent._mas_red_poetry = False
+            m 2eka "Oh, too bad..."
+            m 2eua "I just hope I made you love poetry a little more."
+            m 2hua "You know, not a lot of people read poems, or even like them, so I don't mind."
+    m 2euc "In fact, poetry is considered as something too difficult to understand sometimes..."
+    m 2eud "But on the opposite, others think that it's just adding pretty words next to each other!"
+    m 2dkc "But it's not, poetry is more than that. You have to put yourself in it."
+    m 2tkc "Without his spleen, Baudelaire wouldn't be Beaudelaire..."
+    m 2ekd "And without my feelings for you, my poems would'nt be the same."
+    m 2eka "Love, grief, anger, passion, all these feelings bring the words alive."
+    m 2hua "And that makes a simple text become a poem!"
+    m 2hua "That's why I love poetry.
+    if persistent._mas_red_poetry:
+        m 5eua "Gosh, just knowing that you red poems too..."
+        m 5hua "It makes me fall deeper in love with you."
+        m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
+        m 5dka "Sharing poems, writing new ones, just you and I...
+        m 5hub "Sounds like a dream to me!"
+    else:
+        m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
+        m 5hua "I want to share with you my favorite poems."
+        m 5dka "Reading poems just and I, me on your chest, feeling your warm."
+        m 5hua "And why not, maybe write new ones..."
+        m 5hub "Sounds like a dream to me!"
+    return "derandom"
+    
+
+
+
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
             eventlabel="monika_cares_about_dokis",
             category=["monika", "club members"],
             prompt="Insensitive Comments",
