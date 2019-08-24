@@ -2422,12 +2422,15 @@ init -990 python in mas_utils:
                 (Default: None)
             defval - default value to return if could not get from dict
         """
-        if (
-                table is not None
-                and key in table
-                and (validator is not None and validator(table[key]))
-        ):
-            return table[key]
+        if table is not None and key in table:
+
+            item = table[key]
+
+            if validator is None:
+                return item
+
+            if validator(table[key]):
+                return item
 
         return defval
 
