@@ -854,10 +854,11 @@ init -1 python:
 #        ),
         MASPoseMap(
             p1="steepling",
-            p2="crossed",
+            p2="steepling",
             p3="restleftpointright",
-            p4="pointright",
-            p6="down"
+            p4="restleftpointright",
+            p5="steepling",
+            p6="steepling"
         ),
         fallback=True,
         hair_map={
