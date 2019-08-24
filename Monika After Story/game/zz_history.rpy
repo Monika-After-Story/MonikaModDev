@@ -77,6 +77,8 @@
 #   All MASHistorySaver objects should be created before init level -800.
 #   Tuple persistent data is loaded at -800, then the algorithms are ran.
 
+default persistent._mas_pm_has_went_back_in_time = False
+
 init -860 python in mas_history:
     import store
     import datetime
@@ -396,6 +398,8 @@ init -850 python:
                 self is passed to this
             trigger_pp - programming point called to update trigger with
                 instead of the default year+1
+            start_dt - datetime that this MHS starts covering
+            end_dt - datetime that this MHS stops covering (exclusive)
         """
         import store.mas_history as mas_history
 
@@ -410,7 +414,9 @@ init -850 python:
                 dont_reset=False,
                 entry_pp=None,
                 exit_pp=None,
-                trigger_pp=None
+                trigger_pp=None,
+                start_dt=None,
+                end_dt=None
             ):
             """
             Constructor
@@ -445,6 +451,10 @@ init -850 python:
                     trigger when updating trigger, and the returned datetime 
                     is used as the new trigger.
                     (Default: None)
+                start_dt - datetime that this MHs starts covering
+                    if None, then we assume this MHs is continuous
+                end_dt - datetime that this MHS stops covering
+                    if None, then we assume this MHS is continous
             """
             # sanity checks
             if mhs_id in self.mas_history.mhs_db:
@@ -463,6 +473,8 @@ init -850 python:
                     MASHistorySaver.first_sesh = None
 
             self.id = mhs_id
+            self.start_dt = start_dt
+            self.end_dt = end_dt
             self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
             self.mapping = mapping
@@ -500,7 +512,7 @@ init -850 python:
             RETURNS: _trigger with the correct year
             """
             _now = datetime.datetime.now()
-            _temp_trigger = _trigger.replace(year=_now.year)
+            _temp_trigger = _trigger.replace(year=_now.year) 
 
             if _now > _temp_trigger:
                 # trigger has already past, set the trigger for next year
@@ -525,6 +537,74 @@ init -850 python:
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
 
+        def isActive(self, check_dt):
+            """
+            Checks if the given dt is within range of this MHS's range time
+            NOTE: if an MHS is continuous, then we are ALWAYS in range
+            NOTE: we are also currently only checking the month/day props
+                If we want to take year into acct, then this function will need
+                to be changed
+
+            IN:
+                check_dt - dateime to check 
+
+            RETURNS: True if in range, False if not
+            """
+            if self.isContinuous():
+                return True
+
+            if self.start_dt.year != self.end_dt.year:
+                return (
+                    (self.start_dt.replace(year=check_dt.year) <= check_dt)
+                    or (check_dt < self.end_dt.replace(year=check_dt.year))
+                )
+           
+            # else check regular range
+            return (
+                self.start_dt.replace(year=check_dt.year)
+                <= check_dt 
+                < self.end_dt.replace(year=check_dt.year)
+            )
+
+        def isContinuous(self):
+            """
+            Checks if this MHS is continuous.
+            An MHS is continuous if it does not have datetime ranges.
+
+            RETURNS: True if continuos, False if npt
+            """
+            return self.start_dt is None or self.end_dt is None
+
+        def isFuture(self, check_dt):
+            """
+            Checks if the given dt is before the active range of this MHS
+
+            IN:
+                check_dt - dateime to check
+
+            RETURNS: True if future, False if not
+            """
+            if self.isContinuous():
+                return False
+
+            return check_dt < self.start_dt.replace(year=check_dt.year)
+
+        def isPassed(self, check_dt):
+            """
+            Checks if the given dt is past the active range of this MHS, aka
+            bigger than the end dt
+
+            NOTE: if an MHS is continuous, it is NEVER passed
+
+            IN:
+                check_dt - datetime to check
+
+            RETURNS: True if passed, False if not
+            """
+            if self.isContinuous():
+                return False
+
+            return self.end_dt.replace(year=check_dt.year) <= check_dt
 
         def setTrigger(self, _trigger):
             """
@@ -544,11 +624,19 @@ init -850 python:
                 first_sesh = _now
 
             if (
-                    _trigger.year > (_now.year + 1)
+                    (
+                        mas_TTDetected()
+                        and not self.isContinuous()
+                        and (self.isFuture(_now) or self.isActive(_now))
+                    )
+                    or _trigger.year > (_now.year + 1)
                     or _trigger <= first_sesh
                 ):
-                # if the trigger year is at least 2 years beyond current, its
-                # definitely a time travel issue.
+                # if time travel occured and the event is ongoing or in
+                # the future
+                #
+                # or if the trigger year is at least 2 years beyond current, 
+                # its definitely a time travel issue.
                 #
                 # or if the trigger is before or same date as the first session
                 # then we should move it into the future
@@ -793,6 +881,9 @@ init -810 python:
             "_mas_pm_donate_charity": "pm.actions.charity.donated",
             "_mas_pm_donate_volunteer_charity": "pm.actions.charity.volunteered",
 
+            # actions / mas
+            "_mas_pm_has_went_back_in_time": "pm.actions.mas.went_back_in_time",
+
             # actions / mas / music
             "_mas_pm_added_custom_bgm": "pm.actions.mas.music.added_custom_bgm",
 
@@ -900,9 +991,8 @@ init -810 python:
     #   not together, they will be here.
     store.mas_history.addMHS(MASHistorySaver(
         "922",
-        datetime.datetime(2018, 9, 30),
-        # TODO: change trigger to bette rdate
-#        datetime.datetime(2020, 1, 6), 
+        #datetime.datetime(2018, 9, 30),
+        datetime.datetime(2020, 1, 6), 
         {
             "_mas_bday_opened_game": "922.actions.opened_game",
             "_mas_bday_no_time_spent": "922.actions.no_time_spent",
@@ -917,7 +1007,10 @@ init -810 python:
             "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
             "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons"
         },
-        exit_pp=store.mas_history._bday_exit_pp
+        use_year_before=True,
+        exit_pp=store.mas_history._bday_exit_pp,
+        start_dt=datetime.datetime(2019, 9, 22),
+        end_dt=datetime.datetime(2019, 9, 24)
     ))
 
     # AFFection

@@ -77,9 +77,9 @@ init -810 python:
     # MASHistorySaver for o31
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
-        datetime.datetime(2018, 11, 2),
+        #datetime.datetime(2018, 11, 2),
         # change trigger to better date
-#        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 6),
         {
             # TODO: we should have a spent time var here
 
@@ -102,8 +102,13 @@ init -810 python:
             "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
-        }
+        },
+        use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
+        start_dt=datetime.datetime(2019, 10, 31),
+
+        # end is 1 day out in case of an overnight trick or treat
+        end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
 init -10 python:
@@ -975,7 +980,9 @@ init -810 python:
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp
+        exit_pp=store.mas_history._d25s_exit_pp,
+        start_dt=datetime.datetime(2019, 12, 1),
+        end_dt=datetime.datetime(2019, 12, 31)
     ))
 
 
@@ -2553,7 +2560,9 @@ init -810 python:
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
-        use_year_before=True
+        use_year_before=True,
+        start_dt=datetime.datetime(2019, 12, 31),
+        end_dt=datetime.datetime(2020, 1, 6)
         # TODO: programming points probably
     ))
 
@@ -3357,7 +3366,12 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
-        datetime.datetime(2020, 1, 1),
+        #datetime.datetime(2020, 1, 1),
+        # NOTE: this needs to be moved ahead if on player bday on certain day:
+        #   If Jan 7 - set to Jan 5
+        #   If Jan 6 - set to Jan 4
+        #   If Jan 5 - set to Jan 3
+        datetime.datetime(2020, 1, 6),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
@@ -3365,9 +3379,13 @@ init -810 python:
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
         },
         use_year_before=True,
+        # NOTE: the start and end dt needs to be chnaged depending on the
+        #   player bday
     ))
 
 init -11 python in mas_player_bday_event:
+    import datetime
+    import store.mas_history as mas_history
 
     def show_player_bday_Visuals():
         """
@@ -3376,12 +3394,53 @@ init -11 python in mas_player_bday_event:
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
+
     def hide_player_bday_Visuals():
         """
         Hides player_bday visuals
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+
+
+    def correct_pbday_mhs(d_pbday):
+        """
+        fixes the pbday mhs usin gthe given date as pbday
+
+        IN:
+            d_pbday - player birthdate
+        """
+        # get mhs
+        mhs_pbday = mas_history.getMHS("player_bday")
+        if mhs_pbday is None:
+            return
+
+        # determine correct year
+        _now = datetime.datetime.now()
+        curr_year = _now.year
+        new_date = d_pbday.replace(year=curr_year)
+        if new_date < _now.date():
+            # new date before today, set to next year
+            curr_year += 1
+            new_date = d_pbday.replace(year=curr_year)
+
+        # now modify day accordingly
+        if d_pbday.month == 1 and 5 <= d_pbday.day <= 7:
+            new_dt = datetime.datetime(curr_year, 1, d_pbday.day - 2)
+
+        else:
+            new_dt = datetime.datetime(curr_year, 1, 6)
+
+        # setup ranges
+        new_sdt = new_dt.replace(month=d_pbday.month, day=d_pbday.day)
+        new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # modify mhs
+        mhs_pbday.start_dt = new_sdt
+        mhs_pbday.end_dt = new_edt
+        mhs_pbday.use_year_before = new_dt.date() < new_date
+        mhs_pbday.setTrigger(new_dt)
+
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
@@ -3932,7 +3991,9 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp
+        exit_pp=store.mas_history._f14_exit_pp,
+        start_dt=datetime.datetime(2020, 2, 13),
+        end_dt=datetime.datetime(2020, 2, 15)
     ))
 
 label mas_f14_autoload_check:

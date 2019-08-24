@@ -13,6 +13,19 @@ default persistent._mas_disable_animations = False
 # affection hotfix for dates
 default persistent._mas_bday_date_affection_fix = False
 
+init -890 python in mas_globals:
+    import datetime
+    import store
+
+    # we set the time travel global here
+    tt_detected = (
+        store.mas_getLastSeshEnd() - datetime.datetime.now()
+            > datetime.timedelta(hours=30)
+    )
+
+    if tt_detected:
+        store.persistent._mas_pm_has_went_back_in_time = True
+
 init -1 python in mas_globals:
     # global that are not actually globals.
 
