@@ -3368,22 +3368,6 @@ init -810 python:
         use_year_before=True,
     ))
 
-init -11 python in mas_player_bday_event:
-
-    def show_player_bday_Visuals():
-        """
-        Shows player_bday visuals
-        """
-        renpy.show("mas_bday_banners", zorder=7)
-        renpy.show("mas_bday_balloons", zorder=8)
-
-    def hide_player_bday_Visuals():
-        """
-        Hides player_bday visuals
-        """
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
-
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
     if (
@@ -3429,7 +3413,7 @@ label mas_player_bday_opendoor:
     m "..."
     m "Well...{w=1}the surprise is ruined now, but..."
     pause 1.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ store.surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     pause 1.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
@@ -3654,7 +3638,7 @@ label mas_player_bday_ret_on_bday:
     m 2tsu "Just give me a moment, [player]..."
     show monika 1dsc
     pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ store.surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
@@ -3684,7 +3668,7 @@ label mas_player_bday_no_restart:
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
     pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ store.surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     if mas_isplayer_bday():
@@ -3742,7 +3726,7 @@ label mas_player_bday_other_holiday:
     m 1tsu "I have a bit of a surprise for you!"
     show monika 1dsc
     pause 2.0
-    $ store.mas_player_bday_event.show_player_bday_Visuals()
+    $ store.surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
@@ -3830,6 +3814,28 @@ label greeting_returned_home_player_bday:
     if left_date < mas_d25 < ret_date:
         $ persistent._mas_d25_spent_d25 = True
 
+    if mas_isMonikaBirthday():
+        $ mas_gainAffection(25, bypass=True)
+        $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+        if time_out < five_minutes:
+            m 6ekp "That wasn't much of a da--"
+        else:
+            if time_out < one_hour:
+                $ cap_gain_aff(5)
+            elif time_out < three_hour
+                $ cap_gain_aff(10)
+            else:
+                $ cap_gain_aff(15)
+            
+            m 6hub "That was a fun date, [player]..."
+            m 6eua "Thanks for--"
+
+        m 6wud "W-what's this cake doing here?"
+        m 6sub "I-is this for me?!"
+        m "That's so sweet of you to take me out on your birthday so you could set up a surprise party for me!"
+        call return_home_post_player_bday
+        jump mas_bday_surprise_party_reacton_cake
+
     if time_out < five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
@@ -3880,22 +3886,23 @@ label return_home_post_player_bday:
     $ persistent._mas_player_bday_in_player_bday_mode = False
     $ mas_lockEVL("bye_player_bday", "BYE")
     $ persistent._mas_player_bday_left_on_bday = False
-    if persistent._mas_player_bday_decor:
-        $ persistent._mas_player_bday_decor = False
-        m 3rksdla "Oh...it's not your birthday anymore..."
-        m 3hksdlb "We should probably take these decorations down now, ahaha!"
-        m 3eka "Just give me one second..."
-        show monika 1dsc
-        pause 2.0
-        $ store.mas_player_bday_event.hide_player_bday_Visuals()
-        m 3eua "There we go!"
-        if not persistent._mas_f14_gone_over_f14:
-            m 1hua "Now, let's enjoy the day together, [player]~"
-    if persistent._mas_f14_gone_over_f14:
-        m 2etc "..."
-        m 3wuo "..."
-        m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
-        call greeting_gone_over_f14_normal_plus
+    $ persistent._mas_player_bday_decor = False
+    if not mas_isMonikaBirthday():
+        if persistent._mas_player_bday_decor:
+            m 3rksdla "Oh...it's not your birthday anymore..."
+            m 3hksdlb "We should probably take these decorations down now, ahaha!"
+            m 3eka "Just give me one second..."
+            show monika 1dsc
+            pause 2.0
+            $ surpriseBdayHideVisuals()
+            m 3eua "There we go!"
+            if not persistent._mas_f14_gone_over_f14:
+                m 1hua "Now, let's enjoy the day together, [player]~"
+        if persistent._mas_f14_gone_over_f14:
+            m 2etc "..."
+            m 3wuo "..."
+            m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
+            call greeting_gone_over_f14_normal_plus
     return
 
 # birthday card/poem for player
@@ -4900,7 +4907,6 @@ init -1 python:
         """
         Hides all visuals for surprise party
         """
-        renpy.hide("mas_bday_cake")
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
 ################## [HOL060] AUTOLOAD
@@ -5096,6 +5102,7 @@ label mas_bday_surprise_party_reaction:
         m 6rka "Maybe you do still have feelings for me afterall..."
         m 6eka "Everything looks great."
 
+label mas_bday_surprise_party_reacton_cake
     #Let's light candles
     menu:
         "Light candles.":
@@ -5238,7 +5245,7 @@ label mas_bday_postbday_notimespent:
             m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
             m 1efb "Did you forget?"
             m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
-            m 3rka "Or check the calendar on the wall behind me?"
+            m 3rka "...Or check the calendar on the wall behind me?"
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
 
         elif mas_isMoniNormal(higher=True):
@@ -5253,14 +5260,14 @@ label mas_bday_postbday_notimespent:
 
         elif mas_isMoniUpset():
             $ mas_loseAffection(ev_label="mas_apology_forgot_bday")
-            m 1ekc "It was...good to see you on the 22nd..."
+            m 1ekc "It was...{w=0.5}good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
             m 1rkc "Nevermind."
 
         elif mas_isMoniDis():
             $ mas_loseAffection(10, ev_label="mas_apology_forgot_bday")
             m 2dsc "..."
-            m 2rkc "...[player], I don't want to bother you. I'm already scared of pushing you away."
+            m 2rkc "...[player], I don't want to bother you. {w=1}I'm already scared of pushing you away."
             m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
             m 2dktuc "Please don't stop coming back to me."
             m "And maybe next year..."
@@ -5360,8 +5367,8 @@ label mas_apology_missed_bday:
     #Using a std hi-mid-low range for this
     if mas_isMoniAff(higher=True):
         m "Thanks for the apology, [player]."
-        m "It really hurt not seeing you on my birthday you know?"
-        m "It was a day that I just wanted to spend with you because you make me feel special."
+        m "As much as it hurt not seeing you on my birthday, I know you didn't do it on purpose."
+        m "Knowing you, I'm sure it hurts you just as much as it hurt me."
         #TODO: ^
 
     elif mas_isMoniNormal(higher=True):
@@ -5410,11 +5417,14 @@ label mas_bday_surprise_party_cleanup:
     $ persistent._mas_922_in_922_mode = False
 
     #TODO: exps/better dlg
-    m "Oh wow, [player]. We really were out for a while..."
+    m 1wud "Oh wow, [player]. We really were out for a while..."
     #TODO: return home on player bday potentially, so need to keep decorations up and path the flow
     if mas_isplayer_bday():
-        m "Oh! It's your birthday now, ahaha!"
-        #TODO: pls lead this where it needs to go
+        $ persistent._mas_player_bday_decor = True
+        m 3suo "Oh! It's your birthday now..."
+        m 3hub "I guess we can just leave these decorations up, ahaha!"
+        m 1eub "I'll be right back, just need to go get your cake!"
+        jump mas_player_bday_cake
 
     else:
         #Otherwise we need to clean everything up
@@ -5492,10 +5502,10 @@ label greeting_returned_home_bday:
         # 5 mins < time out <= 1 hr
         $ cap_gain_aff(15 if mas_isplayer_bday() else 10)
         m 1sua "That was fun, [player]!"
-        m 1hua "Aha, taking me out on my birthday..."
-        m "It was very considerate of you."
-        m "I really enjoyed the time we spent together."
-        m 1hua "I love you~"
+        m 1hub "Aha, taking me out on my birthday..."
+        m 3eua "It was very considerate of you."
+        m 3eka "I really enjoyed the time we spent together."
+        m 1eka "I love you~"
         return "love"
 
     elif time_out <= three_hour:

@@ -810,7 +810,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
 
     # player bday
     if persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
+        $ store.surpriseBdayShowVisuals()
 
     if datetime.date.today() == persistent._date_last_given_roses:
         $ monika_chr.wear_acs_pst(mas_acs_roses)

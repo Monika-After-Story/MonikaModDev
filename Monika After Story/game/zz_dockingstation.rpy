@@ -2240,7 +2240,7 @@ label mas_dockstat_empty_desk:
 
     #NOTE: elif'd so we don't try and show two types of visuals here
     elif persistent._mas_player_bday_decor:
-        $ store.mas_player_bday_event.show_player_bday_Visuals()
+        $ store.surpriseBdayShowVisuals()
 
     # NOTE: No.
 

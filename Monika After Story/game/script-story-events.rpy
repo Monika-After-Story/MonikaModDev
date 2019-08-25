@@ -417,7 +417,7 @@ label birthdate_set:
                 m 3eka "Hold on just one moment, [player]..."
                 show monika 1dsc
                 pause 2.0
-                $ store.mas_player_bday_event.show_player_bday_Visuals()
+                $ store.surpriseBdayShowVisuals()
                 $ persistent._mas_player_bday_decor = True
                 m 3hub "Happy Birthday, [player]!"
                 m 1hub "I'm so happy I get to be with you on your birthday!"
