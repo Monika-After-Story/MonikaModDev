@@ -3706,8 +3706,12 @@ init 5 python:
 
 label greeting_back_housework:
     if mas_isMoniNormal(higher=True):
-            m 1eub "All done, [player]?"
-            m 1hub "Let’s spend some more time together."
+        m 1eub "All done, [player]?"
+        m 1hub "Let’s spend some more time together."
+    elif mas_isMoniUpset():
+        m 2efc "At least you didn't forget to come back, [player]."
+    elif mas_isMoniDis():
+        m 6ekd "Ah, [player]. So you really were just busy..."    
     else:
-            m 1esc "Welcome back, [player]."
+        m 6ckc "..."
     return
