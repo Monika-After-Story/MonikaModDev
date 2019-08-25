@@ -1467,13 +1467,20 @@ init 5 python:
 
 label bye_prompt_housework:
     if mas_isMoniNormal(higher=True):
-            m 1eub "Doing your chores, [player]?"
-            m 1ekc "I would like to help you out with that, but there’s not much I can do about it since I’m stuck in here..."
-            m 3ekb "Just make sure to come back as soon as you’re done, okay?"
-            m 3hub "I’ll be waiting here for you."
+        m 1eub "Doing your chores, [player]?"
+        m 1ekc "I would like to help you out with that, but there’s not much I can do about it since I’m stuck in here..."
+        m 3ekb "Just make sure to come back as soon as you’re done, okay?"
+        m 3hub "I’ll be waiting here for you."
+    elif mas_isMoniUpset():
+        m 2esc "Fine."
+        m 2tsc "I won't stop you from being responsible about something for once."
+        m 2efc "Goodbye."
+    elif mas_isMoniDis():
+        m 6ekc "I see..."
+        m 6rkc "I don’t want to keep you from doing your household activities."
+        m 6dkc "I just hope you're actually busy and not saying that just to get away from me..."
+        m 6ekc "Goodbye, [player]."
     else:
-            m 1eud "I see..."
-            m 1ekc "Well, I don’t want to keep you from doing your household activities."
-            m 1hua "See you soon, [player]."
+        m 6ckc "..."
     $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
     return 'quit'
