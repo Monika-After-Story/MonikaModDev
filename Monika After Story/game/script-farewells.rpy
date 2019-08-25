@@ -1473,7 +1473,9 @@ label bye_prompt_housework:
         m 3hub "I’ll be waiting here for you."
     elif mas_isMoniUpset():
         m 2esc "Fine."
-        m 2tsc "I won't stop you from being responsible about something for once."
+        m 2tsc "At least you're doing something responsible."
+        m 2tfc "{cps=*2}...For once.{/cps}{nw}"
+        $ _history_list.pop()        
         m 2efc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."
