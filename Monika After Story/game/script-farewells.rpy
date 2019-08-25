@@ -1479,7 +1479,7 @@ label bye_prompt_housework:
         m 2efc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."
-        m 6rkc "I don’t want to keep you from doing your household activities."
+        m 6rkc "I don’t want to keep you from completing your household responsibilities."
         m 6dkc "I just hope you're actually busy and not saying that just to get away from me..."
         m 6ekc "Goodbye, [player]."
     else:
