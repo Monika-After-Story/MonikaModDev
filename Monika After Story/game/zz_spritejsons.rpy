@@ -235,7 +235,7 @@ init -21 python in mas_sprites_json:
 
     # these imports are for the classes
     from store.mas_ev_data_ver import _verify_bool, _verify_str, \
-        _verify_int, _verify_list
+        _verify_int, _verify_list, _verify_dict
 
     log = mas_utils.getMASLog("log/spj")
     log_open = log.open()
@@ -341,6 +341,12 @@ init -21 python in mas_sprites_json:
     MPM_ACS_DEF = "acs default pose not set"
     MPM_ACS_DEF_L = "acs leaning default pose not set"
     MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
+
+    ## MASPoseArms
+    MPA_LOADING = "loading MASPoseArms in '{0}'..."
+    MPA_SUCCESS = "MASPoseArms '{0}' loaded successfully!"
+    MPA_NO_DATA = "no MASPoseArms data found"
+    MPA_BOTH_OVER = "'both' data found. 'left' and 'right' will be discarded."
 
     ## Hair Map
     HM_LOADING = "loading hair_map..."
@@ -519,8 +525,17 @@ init 189 python in mas_sprites_json:
     import store.mas_sprites as sms
     import store.mas_selspr as sml
 
+    # msg log constants
+    MSG_INFO_T = 0
+    MSG_WARN_T = 1
+    MSG_ERR_T = 2
 
     # other constants
+    MSG_INFO_IDD = "        [info]: {0}\n"
+    MSG_WARN_IDD = "        [Warning!]: {0}\n"
+    MSG_ERR_IDD = "        [!ERROR!]: {0}\n"
+
+    # 
     MSG_INFO_IDD = "        [info]: {0}\n"
     MSG_WARN_IDD = "        [Warning!]: {0}\n"
     MSG_ERR_IDD = "        [!ERROR!]: {0}\n"

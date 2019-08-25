@@ -1360,7 +1360,6 @@ init -5 python in mas_sprites:
                 _ms_arms_nh_leaning_arms(
                     sprite_list,
                     clothing,
-                    base_pose,
                     arms_pose,
                     loc_str,
                     lean,
@@ -1395,7 +1394,6 @@ init -5 python in mas_sprites:
                 _ms_arms_nh_up_arms(
                     sprite_list,
                     clothing,
-                    base_pose,
                     arms_pose,
                     loc_str,
                     n_suffix,
@@ -1432,7 +1430,6 @@ init -5 python in mas_sprites:
     def _ms_arms_nh_up_arms(
             sprite_list,
             clothing,
-            base_pose,
             arms_pose,
             loc_str,
             n_suffix,
@@ -1444,7 +1441,6 @@ init -5 python in mas_sprites:
         IN:
             sprite_list - list to add sprite strings to
             clothing - clotjhing to use
-            base_poes - MASPoseArms for base
             arms_pose - MASPoseArms for arms
             loc_str - location string
             n_suffix - night suffix
@@ -1469,8 +1465,7 @@ init -5 python in mas_sprites:
                 '"',
             ),
             bcode == "1",
-            arms_pose,
-            base_pose
+            arms_pose
         )
 
 
@@ -1650,7 +1645,6 @@ init -5 python in mas_sprites:
     def _ms_arms_nh_leaning_arms(
             sprite_list,
             clothing,
-            base_pose,
             arms_pose,
             loc_str,
             lean, 
@@ -1663,7 +1657,6 @@ init -5 python in mas_sprites:
         IN:
             sprite_list - list to add sprite strings to
             clothing - clothing to use
-            base_pose - MASPoseArms for base
             arms_pose - MASPoseArms for arms
             loc_str - locaiton string to use
             lean - lean to use
@@ -1691,8 +1684,7 @@ init -5 python in mas_sprites:
                 '"',
             ),
             bcode == "1",
-            arms_pose,
-            base_pose
+            arms_pose
         )
 
 
@@ -4291,11 +4283,6 @@ init -2 python:
         If both/left/right is set to None, the pose is assumed to NOT have
         any image layers associated with this pose.
 
-        If both/left/right is set to a tuple with the integer constant
-        USE_BASE as the fist item, this pose is assumed to use the base
-        MASPoseArms as a guide for finding image layers associated with
-        this pose.
-
         PROPERTIES:
             both - string name used if a pose has both arms as a layer
                 set to None to not use this. This also takes priority.
@@ -4310,7 +4297,25 @@ init -2 python:
             right_front - True if right has a front layer (1)
             right_back - True if right has a back layer (0)
         """
-        USE_BASE = 100
+        import store.mas_sprite_json as msj
+
+        J_NAME_BOTH = (
+            "both",
+            "bback",
+            "bfront",
+        )
+
+        J_NAME_LEFT = (
+            "left",
+            "lback",
+            "lfront",
+        )
+
+        J_NAME_RIGHT = (
+            "right",
+            "rback"
+            "rfront",
+        )
 
         def __init__(self, left=None, right=None, both=None):
             """
@@ -4335,19 +4340,13 @@ init -2 python:
             else:
                 if left is not None:
                     self.left, self.left_back, self.left_front = left
-
-                    if self.left != self.USE_BASE:
-                        self.left = (
-                            store.mas_sprites.PREFIX_ARMS_LEFT + self.left
-                        )
+                    self.left = store.mas_sprites.PREFIX_ARMS_LEFT + self.left
 
                 if right is not None:
                     self.right, self.right_back, self.right_front = right
-
-                    if self.right != self.USE_BASE:
-                        self.right = (
-                            store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
-                        )
+                    self.right = (
+                        store.mas_sprites.PREFIX_ARMS_RIGHT + self.right
+                    )
 
         @staticmethod
         def _add_if_needed(
@@ -4403,8 +4402,7 @@ init -2 python:
                 prefix_list,
                 suffix_list,
                 front,
-                arms_pose,
-                base_pose
+                arms_pose
         ):
             """
             Builds arm sprite string, using base when appropriate.
@@ -4416,81 +4414,203 @@ init -2 python:
                 front - True if we are rendering front, False if back
                 arms_pose - the MASPoseArms object we are building arm string
                     for
-                base_pose - the base MASPoseArms object to use as base if
-                    needed
             """
             if arms_pose.both is not None:
                 # we are rendering for both arms
-
-                if arms_pose.both == MASPoseArms.USE_BASE:
-                    # then we should be using base as guide
-                    use_pose = base_pose
-
-                else:
-                    use_pose = arms_pose
-
                 MASPoseArms._add_if_needed(
                     sprite_list,
                     prefix_list,
                     suffix_list,
                     front,
-                    use_pose.both,
-                    use_pose.both_front,
-                    use_pose.both_back
+                    arms_pose.both,
+                    arms_pose.both_front,
+                    arms_pose.both_back
                 )
 
             else:
                 # we are rendering left and right
 
                 if arms_pose.left is not None:
-                    if arms_pose.left == MASPoseArms.USE_BASE:
-                        # use base as guide
-                        use_pose = base_pose
-
-                    else:
-                        use_pose = arms_pose
-
                     MASPoseArms._add_if_needed(
                         sprite_list,
                         prefix_list,
                         suffix_list,
                         front,
-                        use_pose.left,
-                        use_pose.left_front,
-                        use_pose.left_back
+                        arms_pose.left,
+                        arms_pose.left_front,
+                        arms_pose.left_back
                     )
 
                 if arms_pose.right is not None:
-                    if arms_pose.right == MASPoseArms.USE_BASE:
-                        use_pose = base_pose
-
-                    else:
-                        use_pose = arms_pose
-
                     MASPoseArms._add_if_needed(
                         sprite_list,
                         prefix_list,
                         suffix_list,
                         front,
-                        use_pose.right,
-                        use_pose.right_front,
-                        use_pose.right_back
+                        arms_pose.right,
+                        arms_pose.right_front,
+                        arms_pose.right_back
                     )
 
         @staticmethod
-        def fromJSON(cls, json_obj, errs, warns):
+        def _fromJSON_parseJGroup(json_obj, j_group, msg_log, ind_lvl):
+            """
+            Parses a group of parameters for this pose arms
+
+            IN:
+                json_obj - json object to parse
+                j_group - list of arguments to parse
+                ind_lvl - indent level
+
+            OUT:
+                msg_log - list to save messages to
+
+            RETURNS: tuple of arguments ready for MASPoseArms, or None if
+                failed.
+            """
+            prop_name, prop_back, prop_front = j_group
+            is_bad = False
+            
+            if prop_name not in json_obj:
+                # item shouldn't exist
+                if prop_front in json_obj:
+                    json_obj.pop(prop_front)
+                if prop_back in json_obj:
+                    json_obj.pop(prop_back)
+                return None
+
+            name_str = json_obj.pop(prop_name)
+            if name_str is None:
+                # this item was set to not show.
+                if prop_front in json_obj:
+                    json_obj.pop(prop_front)
+                if prop_back in json_obj:
+                    json_obj.pop(prop_back)
+                return None
+
+            # otherwise, we will try to parse everything
+            if not MASPoseArms.msj._verify_str(name_str):
+                # type check is a warning and a fail
+                # NOTE: is not error because possible to work if other
+                #   tuples are set
+                msg_log.append((
+                    MASPoseArms.msj.MSG_WARN_T,
+                    ind_lvl,
+                    MASPoseArms.msj.BAD_TYPE.format(
+                        prop_name,
+                        str,
+                        type(name_str)
+                    )
+                ))
+                is_bad = True
+
+            if prop_back in json_obj:
+                back = json_obj.pop(prop_back)
+                if not MASPoseArms.msj._verify_bool(back, allow_none=True):
+                    # bad back type means return None
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.BAD_TYPE.format(
+                            prop_back,
+                            bool,
+                            type(back)
+                        )
+                    ))
+                    is_bad = True
+
+            else:
+                back = False
+
+            if prop_front in json_obj:
+                front = json_obj.pop(prop_front)
+                if not MASPoseArms.msj._verify_bool(front, allow_none=True):
+                    # bad front type means return None
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        ind_lvl,
+                        MASPoseArms.msj.BAD_TYPE.format(
+                            prop_front,
+                            bool,
+                            type(front)
+                        )
+                    ))
+                    is_bad = True
+            else:
+                front = False
+
+            if is_bad:
+                return None
+
+            # otherwise, we good, return the tuple
+            return name_str, bool(back), bool(front)
+
+        @staticmethod
+        def fromJSON(json_obj, msg_log, ind_lvl):
             """
             Builds a MASPoseArms object given a JSON format of it
 
             IN:
                 json_obj - json object to parse
+                ind_lvl - indent level
 
             OUT:
-                errs - list to save error message to
-                warns - list to save warning messages to
+                msg_log - list to save messages to
 
-            RETURNS: MASPoseArms object built using the JSON, or None if failed
+            RETURNS: MASPoseArms object built using the JSON, or 
+                None if failed
             """
+            inner_ind_lvl = ind_lvl + 1
+
+            # parse all data, then decide what to do
+            both_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_BOTH,
+                msg_log,
+                inner_ind_lvl
+            )
+            left_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_LEFT,
+                msg_log,
+                inner_ind_lvl
+            )
+
+            right_data = MASPoseArms._fromJSON_parseJGroup(
+                json_obj,
+                MASPoseArms.J_NAME_RIGHT,
+                msg_log,
+                inner_ind_lvl
+            )
+
+            if both_data is None:
+                # if neither left or right data exists, then we should warn
+                if left_data is None and right_data is None:
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        inner_ind_lvl,
+                        MASPoseArms.msj.MPA_NO_DATA
+                    ))
+
+            else:
+                # otherwise, both-data exists. If left or right exist, warn
+                # that they wont be used
+                if left_data is not None or right_data is not None:
+                    msg_log.append((
+                        MASPoseArms.msj.MSG_WARN_T,
+                        inner_ind_lvl,
+                        MASPoseArms.msj.MPA_BOTH_OVER
+                    ))
+
+                left_data = None
+                right_data = None
+
+            # return the MASPoseArms.
+            return MASPoseArms=(
+                left=left_data,
+                right=right_data,
+                both=both_data
+            )
                             
         def build_arms(
                 self, 
@@ -4721,71 +4841,108 @@ init -2 python:
             return self.__all_map.get(pose, defval)
 
         @classmethod
-        def fromJSON(cls, json_obj, errs, warns):
+        def fromJSON(cls, json_obj, msg_log, ind_lvl):
             """
             Builds a MASPoseMap given a JSON format of it
 
             IN:
                 json_obj - json object to parse
+                ind_lvl - indent lvl
 
             OUT:
-                errs - list to save error message to
-                warns - list to save warning messages to
+                msg_log - list to add messages to
 
-            RETURNS: MASPoseMap object built using the JSON, or None if failed
+            RETURNS: tuple of the following format:
+                [0] - True if error occured, False if not
+                [1] - MASPoseMap object built using the JSON, or None if failed
             """
-            # verify mpm type
-            mpm_type = json_obj.get("mpm_type", None):
-            if mpm_type is None:
-                errs.append(cls.msj.MSG_ERR_IDD.format(
-                    cls.msj.REQ_MISS.format("mpm_type")
-                ))
-                return None
+            outer_ind_lvl = ind_lvl
+            inner_ind_lvl = ind_lvl + 1
+            mpm_prop = "mpm_type"
+            urfl_prop = "use_reg_for_l"
+            mpm_data = {}
 
-            if cls.msj._verify_int(mpm_type, allow_none=False):
-                errs.append(cls.msj.MSG_ERR_IDD.format(
-                    cls.msj.BAD_TYPE.format("mpm_type", int, type(mpm_type))
+            # verify mpm type
+            if mpm_prop not in json_obj:
+                msg_log.append((
+                    cls.msj.MSG_ERR_T, 
+                    inner_ind_lvl,
+                    cls.msj.REQ_MISS.format(mpm_prop)
                 ))
-                return None
+                return True, None
+
+            mpm_type = json_obj.pop(mpm_prop)
+
+            if not cls.msj._verify_int(mpm_type, allow_none=False):
+                errs.append((
+                    cls.msj.MSG_ERR_T,
+                    inner_ind_lvl,
+                    cls.msj.BAD_TYPE.format(mpm_prop, int, type(mpm_type))
+                ))
+                return True, None
 
             if mpm_type not in cls.MPM_TYPES:
-                errs.append(cls.msj.MSG_ERR_IDD.format(
+                errs.append((
+                    cls.msj.MSG_ERR_T,
+                    inner_ind_lvl,
                     cls.msj.MPM_BAD_TYPE.format(mpm_type)
                 ))
-                return None
+                return True, None
+
+            mpm_data[mpm_prop] = mpm_type
 
             # verify use_reg_for_l
-            use_reg_for_l = json_obj.get("use_reg_for_l", None):
-            if use_reg_for_l is not None:
-                if cls.msj._verify_bool(use_reg_for_l, allow_none=False):
-                    errs.append(cls.msj.MSG_ERR_IDD.format(
+            if urfl_prop in json_obj:
+                use_reg_for_l = json_obj.pop(urfl_prop)
+                if not cls.msj._verify_bool(use_reg_for_l, allow_none=False):
+                    errs.append((
+                        cls.msj.MSG_ERR_T:  
+                        inner_ind_lvl,
                         cls.msj.BAD_TYPE.format(
-                            "use_reg_for_l",
+                            urfl_prop,
                             str, 
                             type(use_reg_for_l)
                         )
                     ))
-                    return None
+                    return True, None
 
-            # select the appropriate verifier based on type
-            if mpm_type == cls.MPM_TYPE_ED:
-                verifier = cls.msj._verify_bool
+                mpm_data[urfl_prop] = use_reg_for_l
 
-            elif mpm_type == cls.MPM_TYPE_FB:
-                verifier = cls.msj._verify_pose
+            else:
+                use_reg_for_l = None
+
+            # set vars based on type
+            # verifier - function to verify the data
+            #   if None, no verification done
+            # parse - function to parse the data
+            #   if None, use standard var setting
+            if mpm_type == cls.MPM_TYPE_IC:
+                # more ACS, means more image code usage
+                verifier = cls.msj._verify_str
+                parser = None
 
             elif mpm_type == cls.MPM_TYPE_AS:
+                # more ACS, more arm splits
                 verifier = MASPoseMap._verify_mpm_as
+                parser = None
+
+            elif mpm_type == cls.MPM_TYPE_FB:
+                # clothes with fallbacks is pretty common
+                verifier = cls.msj._verify_pose
+                parser = None
 
             elif mpm_type == cls.MPM_TYPE_PA:
-                #verifier = cls.ms
-                # TODO:
-                pass
-            else:
-                # IC
-                verifier = cls.msj._verify_str
+                # pose arms potentially common
+                verifier = cls.msj._verify_dict
+                parser = MASPoseArms.fromJSON
 
-            
+            else:
+                # ED
+                # enabledisable is rarely used
+                verifier = cls.msj._verify_bool
+                parser = None
+
+           # TODO:  everything below here
 
             # go through the json object and validate everything
             for prop_name in json_obj.keys():
@@ -5854,6 +6011,15 @@ init -2 python:
 #                # not leaning, still assume true if arms not found
 #                hair_split = hair.split.get(leanpose, True)
 
+            # MASPoseArms rules:
+            #   1. If the pose_arms property in clothes is None, then we assume
+            #   that the clothes follows the base pose rules.
+            #   2. If the pose_arms property contains a MASPoseMap, and the 
+            #   corresponding pose in that map is None, then we assume that
+            #   the clothes does NOT have layers for this pose.
+            #   3. If a both/left/right str item in a MASPoseArms is None,
+            #   then we assume that that particular piece of a posemap does
+            #   NOT have layers for this pose.
             # select MASPoseArms for baes and outfit
             base_pose = store.mas_sprites.base_pose_arms_map.get(
                 leanpose,

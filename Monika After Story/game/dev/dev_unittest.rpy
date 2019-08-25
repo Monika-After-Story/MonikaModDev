@@ -7,6 +7,13 @@ init -1 python in mas_dev_unit_tests:
 
     unit_tests = [
         ("JSON - MASPoseMap", "dev_unit_test_json_masposemap", False, False),
+        ("JSON - MASPoseArms", "dev_unit_test_json_masposearms", False, False),
+        (
+            "JSON - MASPoseArms - JGroup",
+            "dev_unit_test_json_masposearms_jgroup",
+            False,
+            False
+        ),
         ("MASHistorySaver", "dev_unit_test_mhs", False, False),
     ]
 
@@ -70,6 +77,16 @@ init -1 python in mas_dev_unit_tests:
         def __str__(self):
             return "\n".join(self.tests)
 
+        def assertDictEqual(self, expected, actual):
+            """
+            Asserts if two dicts are equal and contain equal items
+
+            If expected/actual are not dict, assertListEqual is used
+            this is recursive.
+            """
+            # TODO
+            pass
+
         def assertEqual(self, expected, actual):
             """
             Asserts if the two items are equal
@@ -78,6 +95,7 @@ init -1 python in mas_dev_unit_tests:
                 expected - expected value
                 actual - actual value
             """
+            # TODO: make this delgate to the correct assertEqual
             self.tests.append(MASUnitTest(
                 self.test_name,
                 expected == actual,
@@ -432,6 +450,51 @@ label dev_unit_test_json_masposemap:
             if len(msgs) > 0:
                 renpy.say(m, "with messages:")
                 renpy.call_in_new_context("dev_unit_tests_show_msgs", msgs)
+
+    return
+
+
+label dev_unit_test_json_masposearms:
+    python:
+        def gen_data(jgroup, jdata):
+            data = {}
+            for index in range(len(jgroup)):
+                data[jgroup[index]] = jdata[index]
+            return data
+
+        def gen_both(bdata):
+            return gen_data(MASPoseArms.J_NAME_BOTH, bdata)
+
+        def gen_left(ldata):
+            return gen_data(MASPoseArms.J_NAME_LEFT, ldata)
+
+        def gen_right(rdata):
+            return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)
+
+        bargs = MASPoseArms.J_NAME_BOTH
+        largs = MASPoseArms.J_NAME_LEFT
+        rargs = MASPoseArms.J_NAME_RIGHT
+    return
+
+
+label dev_unit_test_json_masposearms_jgroup:
+    m "Running Tests..."
+    python:
+        def gen_data(jgroup, jdata):
+            data = {}
+            for index in range(len(jgroup)):
+                data[jgroup[index]] = jdata[index]
+            return data
+
+        prop_name = "prop_name"
+        prop_back = "prop_back"
+        prop_front = "prop_front"
+        prop_args = (prop_name, prop_back, prop_front)
+        mpa_tester = MASUnitTester()
+
+        mpa_tester.prepareTest("prop_name not exist")
+        test_data = gen_data(prop_args, (1, 2, 3))
+        test_data.pop(prop_name)
 
 
     return
