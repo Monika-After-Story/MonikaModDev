@@ -16,7 +16,7 @@ label gender:
     m "So, are you male or female?{nw}"
     $ _history_list.pop()
     menu:
-        "So, are you male or female?{fast}"
+        m "So, are you male or female?{fast}"
         "Male.":
             $ persistent.gender = "M"
             call set_gender from _call_set_gender_1
