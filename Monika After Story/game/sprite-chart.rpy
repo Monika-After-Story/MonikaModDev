@@ -2804,6 +2804,9 @@ init -2 python:
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
 
+            # always save confirming
+            store.monika_chr.save()
+            renpy.save_persistent()
 
         def change_hair(self, new_hair, by_user=None, startup=False):
             """

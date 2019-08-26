@@ -3944,7 +3944,6 @@ label mas_f14_autoload_check:
         $ persistent._mas_f14_in_f14_mode = True
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
         $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
 
     elif not mas_isF14():
         #We want to lock and derandom/depool all of the f14 labels if it's not f14

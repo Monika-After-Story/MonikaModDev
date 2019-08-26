@@ -2530,7 +2530,7 @@ label mas_clothes_change(outfit=None):
     hide monika with dissolve
 
     $ monika_chr.change_clothes(store.mas_sprites.CLOTH_MAP[outfit])
-    $ monika_chr.save()
+
     pause 4.0
     show monika 1eua zorder MAS_MONIKA_Z at i11 with dissolve
     hide emptydesk
