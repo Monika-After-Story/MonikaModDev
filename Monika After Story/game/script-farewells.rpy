@@ -1041,6 +1041,11 @@ label bye_going_somewhere_rtg:
                 store.mas_greetings.TYPE_GENERIC_RET
             )
 
+        #If bday + enam+, we use this fare
+        if mas_isMoniEnamored(higher=True) and mas_isMonikaBirthday() and not renpy.seen_label("mas_bday_bd_outro"):
+            jump mas_bday_bd_outro
+
+        #Otherwise we just use the normal outro
         m 1eua "I'm ready to go."
         return "quit"
 
