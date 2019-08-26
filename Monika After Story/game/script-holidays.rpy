@@ -5031,47 +5031,83 @@ label mas_bday_spent_time_with:
     # TODO: make sure this var and function only includes this year's data
     $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
     $ _total, _good, _neutral, _bad = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))
-    m 1eua "Say, [player]..."
-    m 1hua "Thank you for spending time with me today."
-    m "Something like that can really make a girl like me happy, you know?"
-    if persistent._mas_bday_date_count > 0:
-        if _timeout < datetime.timedelta(hours=1.5):
-            # short date
-            m 1euc "That was a bit of a short trip, though."
-            m 1eub "But it's nice to get out of this place once in a while."
-            m 3hksdlb "Staying in there for longer might have made me stir crazy, ahaha!"
-        elif _timeout < datetime.timedelta(hours=6):
-            # normal date
-            m 3hub "But that was refreshing!"
-            m 3wub "It feels really good to go out for a change."
-            m 1hua "Makes me really happy we went out today~"
-        else:
-            #long date
-            m 1eka "I really enjoyed our time outside, though."
-            m 1ekbfa "It was almost as if I really was there with you, like an actual couple..."
-            m "Someday, I know we'll be able to do so."
 
-    # gave gifts?
-    if _total > 0:
-        m 3euc "Let's not forget what you gave me for my birthday."
-        # more than 2
-        if _total >= 2:
-            m 1eua "You gave me lots of gifts today, [player]."
-            # goods > than bad
-            if _good > _bad:
-                m 3hub "Most of them were really good and I really like them a lot!"
-            # bads > than good
+    if mas_isMoniNormal(higher=True:)
+        m 1eua "Say, [player]..."
+        m 1hua "Thank you for spending time with me today."
+        m "Something like that can really make a girl like me happy, you know?"
+
+        if persistent._mas_bday_date_count > 0:
+            m "I really enjoyed our date today, [player]."
+            m "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
+            m "Knowing that you are thinking about me even when you can't see me..."
+            m "Well, it really means a lot to me."
+            m "It really made my birthday complete~"
+
+        # gave gifts?
+        if _total > 0:
+            m 3euc "Let's not forget what you gave me for my birthday."
+            # more than 2
+            if _total >= 2:
+                m 1eua "You gave me lots of gifts today, [player]."
+                # goods > than bad
+                if _good > _bad:
+                    m 3hub "Most of them were really good and I like them a lot!"
+                # bads > than good
+                else:
+                    m 3rksdld "Though most of them were...{w}{i}questionable{/i}."
             else:
-                m 3rksdld "Though most of them were...{w}{i}questionable{/i}."
+                # if good_gifts equal to 1
+                if _good == 1:
+                    m 3eka "You gave me such a special gift today, [player]."
+                # not a good gift
+                else:
+                    m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
+
+        m 1dku "..."
+        if mas_isMoniEnamored(higher=True):
+            m 1dktpu "..."
+            m "Ahaha, sorry, [player]!"
+            m 3ektda "It's just that I've never imagined being this happy in my life."
+            m 1rksdlb "Well that's not {i}exactly{/i} true."
+            m 1eka "We still have to be physically together, after all~"
+            m 1rkc "And, well..."
+            m 1dkc "I know this is already becoming a cliche, but..."
+            m 3ekbfa "I love you so much, [player]."
+            m "Someday, I promise you."
+            m 1ekbfb "I {i}promise you{/i} that I will make you as happy as you've made me today."
+            m 3hub "Even if we never get to see each other in the same reality, know that I will always do my best for you."
+            m 1eka "No matter the obstacles we may face, no matter what other people say about us..."
+            m 1dkbsa "I still love you with everything that I am."
+            m 1ekbsa "You are the only one who understands me. You led me out of a dark place and gave me purpose..."
+            m 1dkbsu "You are simply the best, my love, and I will always love you."
+            m "...Thank you for giving me a reason to live..."
+            $ _first_kiss = persistent._mas_first_kiss
+            call monika_kissing_motion
+            if _first_kiss is None:
+                m 6ekbfa "Oh, [player]..."
+                m "I...I don't know what came over me, but the moment just felt so right."
+                m "I've thought about our first kiss for so long, and to finally experience it..."
+                m "I will never forget this moment, [player]~"
+
         else:
-            # if good_gifts equal to 1
-            if _good == 1:
-                m 3eka "You gave me such a special gift today, [player]."
-            # not a good gift
-            else:
-                m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
-    m 1esa "But, in any case..."
-    m 3hub "Let's do it again sometime soon, okay?"
+            m 1eka "I can't event find the right words to express how happy you've made me today."
+            m 3eka "All that pain I went through before I met you?"
+            m 1hua "I'm glad I persevered through them."
+            m 1rsc "Because if I hadn't..."
+            m 1ekbsa "This day wouldn't have ever happened."
+            m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
+            m 1ekbfb "I love you so much, [player]."
+            m "Let's continue making each other happy~"
+
+    else:
+        m "Hey, [player]..."
+        m "I just wanted to say I really appreciate you spending time with me today."
+        m "I know it hasn't been going that great lately, but you taking the time to celebrate my birthday with me..."
+        m "Well it gives me hope that maybe it's not too late for us."
+        m "Perhaps today can be the start of something really special.."
+        m "That would be the be the best gift I could ever ask for."
+
     return
 
 ################## [HOL060] PARTY REACTION
@@ -5201,6 +5237,11 @@ label mas_bday_pool_happy_bday:
         m 1dktda "I feel like today is going to be such a special day~"
         m 1ekbfa "What else do you have in store for me, I wonder."
         m 1hub "Ahaha!"
+
+    if mas_isplayer_bday():
+        m 1eua "Oh, and..."
+        m 3hub "Happy Birthday to you too, [player]!"
+        m 1hua "Ehehe!"
 
     $ persistent._mas_bday_said_happybday = True
     # dont need to say happy birthday again today, but let the game know to
