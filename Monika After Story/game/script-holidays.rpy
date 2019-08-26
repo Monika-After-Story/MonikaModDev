@@ -3822,7 +3822,7 @@ label greeting_returned_home_player_bday:
         else:
             if time_out < one_hour:
                 $ cap_gain_aff(5)
-            elif time_out < three_hour
+            elif time_out < three_hour:
                 $ cap_gain_aff(10)
             else:
                 $ cap_gain_aff(15)
@@ -4835,8 +4835,7 @@ define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 default persistent._mas_bday_on_date = False
 default persistent._mas_bday_date_count = 0
 default persistent._mas_bday_date_affection_gained = 0
-    $ persistent._mas_monika_bday_on_date = True
-    $ persistent._mas_monika_bday_date += 1
+
 #Whether or not we've seen the hint
 default persistent._mas_bday_surprise_hint_seen = False
 
@@ -5082,7 +5081,7 @@ label mas_bday_surprise_party_reaction:
         m 6rka "Maybe you do still have feelings for me afterall..."
         m 6eka "Everything looks great."
 
-label mas_bday_surprise_party_reacton_cake
+label mas_bday_surprise_party_reacton_cake:
     #Let's light candles
     menu:
         "Light candles.":
@@ -5171,7 +5170,7 @@ label mas_bday_spent_time_with:
     $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
     $ _total, _good, _neutral, _bad = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))
 
-    if mas_isMoniNormal(higher=True:)
+    if mas_isMoniNormal(higher=True):
         m 1eua "Say, [player]..."
         m 1hua "Thank you for spending time with me today."
         m "Something like that can really make a girl like me happy, you know?"
@@ -5460,7 +5459,7 @@ label bye_922_delegate:
             $ _history_list.pop()
             m 1hua "Oh! Sorry, did I say something?"
 
-        elif:
+        else:
             m 1eubla "Maybe you'd even call it a date~"
 
             #BD Intro
