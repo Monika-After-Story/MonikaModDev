@@ -503,6 +503,7 @@ init 15 python in mas_affection:
         # unlock wardrobe for gifted clothes if we have more than 1 (since def is always here)
         if len(store.mas_selspr.gifted_clothes) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
+            store.mas_removeDelayedAction(16)
 
         else:
             # if all gifted clothes have been removed and we are wearing def, lock
@@ -621,6 +622,7 @@ init 15 python in mas_affection:
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
+            store.mas_removeDelayedAction(16)
 
         else:
             # locks if nothing available and we are wearing def
