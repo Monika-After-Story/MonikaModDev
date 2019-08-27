@@ -3412,31 +3412,36 @@ init -11 python in mas_player_bday_event:
         if mhs_pbday is None:
             return
 
+        # first, setup the reset date to be 3 days after the bday
+        pbday_dt = datetime.datetime.combine(d_pbday, datetime.time())
+
         # determine correct year
         _now = datetime.datetime.now()
         curr_year = _now.year
-        new_date = d_pbday.replace(year=curr_year)
-        if new_date < _now.date():
+        new_dt = pbday_dt.replace(year=curr_year)
+        if new_dt < _now:
             # new date before today, set to next year
             curr_year += 1
-            new_date = d_pbday.replace(year=curr_year)
+            new_dt = pbday_dt.replace(year=curr_year)
 
-        # now modify day accordingly
-        if d_pbday.month == 1 and 5 <= d_pbday.day <= 7:
-            new_dt = datetime.datetime(curr_year, 1, d_pbday.day - 2)
-
-        else:
-            new_dt = datetime.datetime(curr_year, 1, 6)
+        # set the reset/trigger date
+        reset_dt = pbday_dt + datetime.timedelta(days=3)
 
         # setup ranges
-        new_sdt = new_dt.replace(month=d_pbday.month, day=d_pbday.day)
+        new_sdt = new_dt
         new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # NOTE: the mhs will end 2 days after the bday. The day after end_dt
+        #   is when we save
 
         # modify mhs
         mhs_pbday.start_dt = new_sdt
         mhs_pbday.end_dt = new_edt
-        mhs_pbday.use_year_before = new_dt.date() < new_date
-        mhs_pbday.setTrigger(new_dt)
+        mhs_pbday.use_year_before = (
+            d_pbday.month == 12
+            and d_pbday.day in (29, 30, 31)
+        )
+        mhs_pbday.setTrigger(reset_dt)
 
 
 label mas_player_bday_autoload_check:
