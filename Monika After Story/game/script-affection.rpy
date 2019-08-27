@@ -503,9 +503,11 @@ init 15 python in mas_affection:
         # unlock wardrobe for gifted clothes if we have more than 1 (since def is always here)
         if len(store.mas_selspr.gifted_clothes) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
-        # if all gifted clothes have been removed and we are wearing def, lock
-        elif persistent._mas_monika_clothes == "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
-            store.mas_lockEVL("monika_clothes_select", "EVE")
+
+        else:
+            # if all gifted clothes have been removed and we are wearing def, lock
+            # since monika_chr isnt set yet, push checking this until runtime idle
+            store.mas_addDelayedAction(16)
 
         # remove change to def outfit event in case it's been pushed
         store.mas_rmallEVL("mas_change_to_def")
@@ -526,7 +528,7 @@ init 15 python in mas_affection:
 
         # if not wearing def, change to def
         # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
-        if persistent._mas_monika_clothes != "def":
+        if store.monika_chr.clothes != store.mas_clothes_def:
             store.pushEvent("mas_change_to_def",True)
 
 
@@ -619,9 +621,12 @@ init 15 python in mas_affection:
         # unlocks wardrobe if we have more than one clothes available
         if len(mas_selspr.filter_clothes(True)) > 1:
             store.mas_unlockEVL("monika_clothes_select", "EVE")
-        # locks if nothing available and we are wearing def
-        elif persistent._mas_monika_clothes == "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP:
-            store.mas_lockEVL("monika_clothes_select", "EVE")
+
+        else:
+            # locks if nothing available and we are wearing def
+            # again, not sure if monika_chr available yet, so push this check
+            #   to idle
+            store.mas_addDelayedAction(16)
 
 
         # always rebuild randos
@@ -640,7 +645,13 @@ init 15 python in mas_affection:
         store.mas_idle_mailbox.send_rebuild_msg()
 
         # if only def in gifted clothes and wearing def, lock clothes selector
-        if len(store.mas_selspr.gifted_clothes) == 1 and (persistent._mas_monika_clothes == "def" or persistent._mas_monika_clothes not in mas_selspr.CLOTH_SEL_MAP):
+        # NOTE: during init, we always are going from normal to an aff lvl,
+        #   so we could never hit this function (which is going toward normal)
+        #   in init. Therefore, monika_chr is safe to use
+        if (
+                len(store.mas_selspr.gifted_clothes) == 1
+                and store.monika_chr.clothes == store.mas_clothes_def
+        ):
             store.mas_lockEVL("monika_clothes_select", "EVE")
 
 
