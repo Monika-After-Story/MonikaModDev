@@ -2502,7 +2502,7 @@ init 5 python:
 label mas_change_to_def:
     # sanity check for an extremely rare case where player dropped below happy
     # closed game before this was pushed and then deleted json before next load
-    if store.monika_chr.clothes == store.mas_clothes_def:
+    if monika_chr.clothes == mas_clothes_def:
         return "no_unlock"
 
     m 1eka "Hey [player], I miss my old school uniform..."
@@ -2516,10 +2516,14 @@ label mas_change_to_def:
     $ mas_rmallEVL("mas_change_to_def")
     return "no_unlock"
 
+# Changes clothes to the given outfit.
+#   IN:
+#       outfit - the MASClothes object to change outfit to
+#           If None is passed, the uniform is used
 label mas_clothes_change(outfit=None):
     # use def as the default outfit to change to
     if outfit is None:
-        $ outfit = "def"
+        $ outfit = mas_clothes_def
 
     window hide
 
@@ -2529,7 +2533,9 @@ label mas_clothes_change(outfit=None):
 
     hide monika with dissolve
 
-    $ monika_chr.change_clothes(store.mas_sprites.CLOTH_MAP[outfit])
+    $ monika_chr.change_clothes(outfit)
+    $ monika_chr.save()
+    $ renpy.save_persistent()
 
     pause 4.0
     show monika 1eua zorder MAS_MONIKA_Z at i11 with dissolve

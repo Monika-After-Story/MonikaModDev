@@ -600,6 +600,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
+        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name),
         
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
@@ -615,15 +616,18 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(
-            store.mas_sprites.get_sprite(sp_type, sp_name),
-            unlock_label=unlock_sel
-        )
+        store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
 
         # unlock the gifted clothes selector and add clothes to gifted_clothes list
-        if sp_type == store.mas_sprites.SP_CLOTHES and sp_name is not None:
-            store.mas_selspr.gifted_clothes.append(store.mas_selspr.CLOTH_SEL_MAP[sp_name])
-            mas_unlockEVL("monika_clothes_select", "EVE")
+        if sp_type == store.mas_sprites.SP_CLOTHES and sp_obj is not None:
+            sp_sel = store.mas_selspr.get_sel_clothes(sp_obj)
+            if sp_sel is not None:
+                store.mas_insertSort(
+                    store.mas_selspr.gifted_clothes,
+                    sp_sel,
+                    store.mas_selspr.selectable_key
+                )
+                mas_unlockEVL("monika_clothes_select", "EVE")
 
         # save persistent
         renpy.save_persistent()

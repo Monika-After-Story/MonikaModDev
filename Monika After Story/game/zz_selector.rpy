@@ -2788,13 +2788,10 @@ init 5 python:
 label monika_clothes_select:
     # setup
     python:
-        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
         sel_map = {}
-
-        gift_clothes = store.mas_selspr.gifted_clothes
 
     # initial dialogue
     m 1hua "Sure!"
@@ -2805,9 +2802,11 @@ label monika_clothes_select:
     # start the selection screen
     if mas_isMoniLove():
         # for Love, all unlocked clothes are available
-        call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+        call mas_selector_sidebar_select_clothes(store.mas_selspr.CLOTH_SEL_SL, mailbox=mailbox, select_map=sel_map)
 
     else:
+        gift_clothes = store.mas_selspr.gifted_clothes
+
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gift_clothes, mailbox=mailbox, select_map=sel_map)
 
