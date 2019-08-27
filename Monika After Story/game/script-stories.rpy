@@ -129,7 +129,7 @@ label mas_stories_start(scary=False):
     show monika at t21
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(stories_menu_items, mas_stories.STORY_AREA, mas_stories.STORY_XALIGN, final_item)
 
     # return value?
     if _return:
@@ -332,7 +332,7 @@ label mas_story_grasshoper:
     m 3hua "The moral of this story is that: 'There's a time for work and a time for play'."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
@@ -377,7 +377,7 @@ init 5 python:
 label mas_story_gray_hair:
     call mas_story_begin
     m 1eua "In the old days, a middle-aged Man had one wife that was old and one that was young; each loved him and desired nothing more than to earn his affection."
-    m 1euc "The Man's hair was turning grey, which the young Wife did not like, as it made him look too old."
+    m 1euc "The Man's hair was turning gray, which the young Wife did not like, as it made him look too old."
     m 3rksdla "So, every night she picked out the white hairs."
     m 3euc "But, the elder Wife did not like to be mistaken for his mother."
     m 1eud "So, every morning she picked out as many of the black hairs as she could."
@@ -385,8 +385,8 @@ label mas_story_gray_hair:
     m 1hua "The moral of this story is that: 'Yield to all and you will soon have nothing to yield'."
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
-    m 1hksdlb "Ehehe, I love you~!"
-    return
+    m 1hksdlb "Ehehe, I love you!~"
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
@@ -412,7 +412,7 @@ label mas_story_ravel:
     m 3euc "Once, an elderly man was sitting alone on a dark path."
     m 1euc "He had forgotten both where he was traveling to, and who he was."
     m "Suddenly, he looked up to see an elderly woman before him."
-    m 1tfu "She grinned toothlessly and with a cackle, spoke: 'Now your *third* wish. What will it be?'"
+    m 1tfu "She grinned toothlessly and with a cackle, spoke: 'Now your {i}third{/i} wish. What will it be?'"
     m 3eud "'Third wish?' The man was baffled. 'How can it be a third wish if I haven't had a first and second wish?'"
     m 1tfd "'You've had two wishes already,' the hag said, 'but your second wish was for me to return everything to the way it was before you had made your first wish.'"
     m 3tku "'That's why you remember nothing: because everything is the way it was before you made any wishes.'"
@@ -466,7 +466,7 @@ label mas_scary_story_setup:
     $ mas_changeWeather(mas_weather_rain)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = True
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc')
+    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
 #    $ songs.current_track = songs.FP_NO_SONG
@@ -506,11 +506,11 @@ label mas_scary_story_cleanup:
     $ mas_changeWeather(mas_temp_r_flag)
     if not mas_isO31():
         $ store.mas_globals.show_vignette = False
-    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc')
+    call spaceroom(scene_change=True, dissolve_all=True, force_exp='monika 1dsc_static')
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
-    $ play_song(songs.current_track)
+    $ play_song(None, 1.0)
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()
     $ HKBShowButtons()
@@ -545,8 +545,8 @@ label mas_scary_story_hunter:
     m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
-    m 1euc "After a short way, he looked behind him to see if she was following him any longer."
-    m 1wkd "To his horror, not only had he not further his distance, but she had gained on him significantly."
+    m 1euc "After a short way, he looked behind him to see if she was following him any longer..."
+    m 1wkd "...and to his horror,{w=1} he saw that she had gained on him significantly."
     m 3wkd "In his state of fear, he failed to avoid the branch that was ahead of him, promptly dismounting the hunter from his steed and down to the cold ground."
     m 4dsc "His attention wasn't on his horse however, as the creature loped away without him."
     show emptydesk at i11 zorder 9
@@ -698,7 +698,7 @@ label mas_scary_story_mujina:
     call mas_scary_story_setup
     m 1esc "One night at a late hour, an old merchant was walking down a road heading home after a long day of selling his wares."
     m 3esc "The road he travelled on led to a large hill that was very dark and secluded at night so many travelers tended to avoid the area."
-    m "The man was tired, however, and decided to take the road anyways since it would get him home quicker."
+    m "The man was tired, however, and decided to take the road anyway since it would get him home quicker."
     m "On the one side of the hill was an old moat that was quite deep."
     m 3eud "As he went along, he noticed a woman crouching by the moat, all alone and weeping bitterly."
     m "Although the man was exhausted, he feared the woman intended to throw herself into the water, so he stopped."

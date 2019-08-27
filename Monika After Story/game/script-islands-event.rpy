@@ -142,7 +142,7 @@ label mas_monika_upsidedownisland:
     m "Well...I was about to fix it until I took another good look at it."
     m "It looks surreal, doesn't it?"
     m "I just feel like there's something special about it."
-    m "It's just… mesmerizing."
+    m "It's just...mesmerizing."
     return
 
 label mas_monika_glitchedmess:
@@ -191,6 +191,8 @@ label mas_monika_cherry_blossom3:
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
+    # manually handle the "love" return key
+    $ mas_ILY()
     return
 
 label mas_monika_cherry_blossom4:
@@ -327,7 +329,7 @@ label mas_island_bookshelf:
 
 label mas_island_bookshelf1:
     m "Some of my favorite books are in there."
-    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i} and a few others."
+    m "{i}Fahrenheit 451{/i}, {i}Hard-Boiled Wonderland{/i}, {i}Nineteen Eighty-Four{/i}, and a few others."
     m "Maybe we can read them together sometime~"
     return
 

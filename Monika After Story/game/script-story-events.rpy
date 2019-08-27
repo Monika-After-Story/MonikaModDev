@@ -50,7 +50,7 @@ label gender:
     $ evhand.event_database["gender_redo"].pool = True
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
@@ -132,7 +132,7 @@ label gender_redo:
                 m "So I'll treat you however you want to be treated."
                 m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
@@ -196,7 +196,7 @@ label preferredname:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player]'{/i}, ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh... Okay then, if you say so."
@@ -276,12 +276,12 @@ label monika_changename:
                         m 1hua "But it's fine by me if that's what you want me to call you~"
                     else:
                         m 1eub "Ok then!"
-                        m 3eub "From now on, I'll call you {i}'[player],'{/i} ehehe~"
+                        m 3eub "From now on, I'll call you '{i}[player]{/i}', ehehe~"
                     $ done = True
         "No.":
             m 1ekc "Oh, I see..."
             m 1eka "You don't have to be embarrassed, [player]."
-            m 1eua "Just let me know if you had a change of heart, ok?"
+            m 1eua "Just let me know if you had a change of heart, okay?"
     return
 
 default persistent._mas_player_bday = None
@@ -485,8 +485,7 @@ label birthdate_set:
         m 3hua "We'll just have to celebrate your birthday on March 1st on non-leap years then, [player]."
 
     $ persistent._mas_player_confirmed_bday = True
-    if "calendar_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("calendar_birthdate")
+    $ mas_rmallEVL("calendar_birthdate")
     return
 
 init 5 python:
@@ -507,9 +506,7 @@ label calendar_birthdate:
     m 1eka "If we're going to be in a relationship, it's something I really ought to know..."
     m 1eud "So [player], when were you born?"
     call mas_bday_player_bday_select_select
-    $ strip_mas_birthdate()
-    if "mas_birthdate" in persistent.event_list:
-        $ persistent.event_list.remove("mas_birthdate")
+    $ mas_stripEVL('mas_birthdate',True)
     return
 
 ## Game unlock events
@@ -615,13 +612,17 @@ label unlock_piano:
     m "To feel the passion I have for it."
     m 3hua "It's a wonderful feeling."
     m 1eua "I hope this isn't too forceful, but I would love it if you tried."
-    m 1eka "For me, please~?"
+    m 1eka "For me, please?~"
     $persistent.game_unlocks['piano']=True
     return
 
 # NOTE: this has beenpartially disabled
 label random_limit_reached:
-    $seen_random_limit=True
+    $ seen_random_limit=True
+
+    #Notif so people don't get stuck here
+    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
+
     python:
         limit_quips = [
             "It seems I'm at a loss on what to say.",
@@ -770,6 +771,9 @@ label mas_crashed_start:
         # cleanup
         call mas_crashed_post
 
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika idle with dissolve
     return
 
 label mas_crashed_prelong:
@@ -1298,13 +1302,14 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
 
 label mas_coffee_finished_brewing:
 
-    if not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, coffee's done."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1314,8 +1319,8 @@ label mas_coffee_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
-        # idle pauses 
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
+        # idle pauses
         m 1eua "I'm going to grab some coffee. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1339,7 +1344,7 @@ label mas_coffee_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1355,6 +1360,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_coffee_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1364,7 +1370,7 @@ label mas_coffee_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isCoffeeTime()
 
-    if not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my coffee."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1373,7 +1379,7 @@ label mas_coffee_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of coffee. I'll be right back.{w=1}{nw}"
@@ -1409,7 +1415,7 @@ label mas_coffee_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1427,13 +1433,14 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_brewing",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
 
 label mas_c_hotchoc_finished_brewing:
 
-    if not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, my hot chocolate is ready."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1443,7 +1450,7 @@ label mas_c_hotchoc_finished_brewing:
     # this line is here so we dont it looks better when we hide monika
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1eua "I'm going to grab some hot chocolate. I'll be right back.{w=1}{nw}"
 
     else:
@@ -1467,7 +1474,7 @@ label mas_c_hotchoc_finished_brewing:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1484,6 +1491,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_c_hotchoc_finished_drinking",
             show_in_idle=True,
+            rules={"skip alert": None}
         )
     )
 
@@ -1493,7 +1501,7 @@ label mas_c_hotchoc_finished_drinking:
     # monika only gets a new cup between 6am and noon
     $ get_new_cup = mas_isHotChocTime()
 
-    if not store.mas_globals.in_idle_mode:
+    if (not mas_canCheckActiveWindow() or mas_isFocused()) and not store.mas_globals.in_idle_mode:
         m 1esd "Oh, I've finished my hot chocolate."
 
     #moving this here so she uses this line to 'pull her chair back'
@@ -1502,7 +1510,7 @@ label mas_c_hotchoc_finished_drinking:
 
     show emptydesk at i11 zorder 9
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         if get_new_cup:
             # its currently morning, monika should get another drink
             m 1eua "I'm going to get another cup of hot chocolate. I'll be right back.{w=1}{nw}"
@@ -1539,7 +1547,7 @@ label mas_c_hotchoc_finished_drinking:
     $ renpy.pause(0.5, hard=True)
     call monika_zoom_transition(curr_zoom, 1.0)
 
-    if store.mas_globals.in_idle_mode:
+    if store.mas_globals.in_idle_mode or (mas_canCheckActiveWindow() and not mas_isFocused()):
         m 1hua "Back!{w=1.5}{nw}"
 
     else:
@@ -1637,14 +1645,14 @@ label mas_bday_spent_time_with:
                 m 3hub "Most of them were really good and I really like them a lot!"
             # bads > than good
             else:
-                m 3rksdld "Though most of them were…{w}{i}questionable{/i}."
+                m 3rksdld "Though most of them were...{w}{i}questionable{/i}."
         else:
             # if good_gifts equal to 1
             if _good == 1:
                 m 3eka "You gave me such a special gift today, [player]."
             # not a good gift
             else:
-                m 2dsc "I…{w}wouldn't really call it a good gift, to be honest."
+                m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
     m 1esa "But, in any case..."
     m 3hub "Let's do it again sometime soon, okay?"
     return
@@ -1918,7 +1926,7 @@ label mas_bday_pool_happy_bday:
         m 1ekbfa "I can't thank you enough for loving me this much..."
 
     else:
-        m 1wkb "Aww, [player]!"
+        m 1wkb "Awww, [player]!"
         m 1wub "You remembered my birthday...!"
         m 1wktpa "Oh gosh, I'm so happy that you remembered."
         m 1dktda "I feel like today is going to be such a special day~"
@@ -2176,6 +2184,7 @@ label monika_rpy_files:
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
+            return "love"
 
         "No.":
             m "I see."
@@ -2287,11 +2296,11 @@ label mas_bday_player_bday_select_select:
     menu:
         m "Your birthdate is [new_bday_str]?{fast}"
         "Yes.":
-            m 1eka "Are you sure? I'm never going to forget this date.{nw}"
+            m 1eka "Are you sure it's [new_bday_str]? I'm never going to forget this date.{nw}"
             $ _history_list.pop()
             # one more confirmation
             menu:
-                m "Are you sure? I'm never going to forget this date.{fast}"
+                m "Are you sure it's [new_bday_str]? I'm never going to forget this date.{fast}"
                 "Yes, I'm sure!":
                     m 1hua "Then it's settled!"
 
@@ -2370,13 +2379,11 @@ label mas_text_speed_enabler:
             $ persistent._mas_text_speed_enabled = True
 
             m 1eud "Oh, that's alright."
-            m "Regardless..."
+            m 2dsa "Regardless.{w=0.5}.{w=0.5}.{nw}"
 
     if not persistent._mas_pm_is_fast_reader:
         # this sets the current speed to default monika's speed
         $ preferences.text_cps = 30
-
-    m 6dsa ".{w=1}.{w=1}.{w=1}{nw}"
 
     $ mas_enableTextSpeed()
 
@@ -2400,4 +2407,85 @@ label mas_text_speed_enabler:
 
     return "derandom|no_unlock"
 
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bookmarks_notifs_intro",
+            conditional=(
+                "(not renpy.seen_label('bookmark_derand_intro') "
+                "and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0)) "
+                "or store.mas_windowreacts.can_show_notifs"
+            ),
+            action=EV_ACT_QUEUE
+        )
+    )
 
+label mas_bookmarks_notifs_intro:
+    if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
+        m 3eub "Hey, [player]...{w=0.5} I have some new features to tell you about!"
+
+        if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
+            m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."
+            m 3eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu!"
+            call mas_derand
+        else:
+            m 3rksdlb "...Well, it seems you already found one of the features I was going to tell you about, ahaha!"
+            if len(persistent._mas_player_derandomed) == 0:
+                m 3eua "As you've seen, you now have the ability to bookmark topics I talk about simply by pressing the 'b' key, and then access them easily via the 'Talk' menu."
+                call mas_derand
+            else:
+                m 1eua "As you've seen, you can now let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+                m 3eud "You can always be honest with me, so make sure you keep telling me if anything we talk about makes you uncomfortable, okay?"
+                m 3eua "You also now have the ability to bookmark topics I am talking about by simply pressing the 'b' key."
+                m 1eub "Any topics you bookmark will be easily accessible simply by going to the 'Talk' menu."
+
+        if store.mas_windowreacts.can_show_notifs:
+            m 1hua "And lastly, something I'm very excited about!"
+            call mas_notification_windowreact
+
+    else:
+        m 1hub "[player], I have something exciting to tell you!"
+        call mas_notification_windowreact
+
+    return "no_unlock"
+
+label mas_derand:
+    m 1eua "You can also let me know of any topics that you don't like me bringing up by pressing the 'x' key during the conversation."
+    m 1eka "Don't worry about hurting my feelings, we should be able to be honest with each other after all."
+    m 3eksdld "...And the last thing I want to do is keep bringing up stuff that makes you uncomfortable to talk about."
+    m 3eka "So, make sure you let me know, okay?"
+    return
+
+label mas_notification_windowreact:
+    m 3eua "I've been practicing coding a bit more and I've learned how to use the notifications on your computer!"
+    m "So if you want, I can let you know if I have something for us to talk about."
+
+    m 3eub "Would you like to see how they work?{nw}"
+    $ _history_list.pop()
+    menu:
+        m "Would you like to see how they work?{fast}"
+
+        "Sure!":
+            m 1hua "Okay, [player]!"
+            m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
+            $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
+            m 1hub "There it is!"
+
+        "No thanks.":
+            m 2eka "Alright, [player]."
+
+    m 3eua "If you want me to notify you, just head over to the 'Alerts' tab in the settings menu and turn them on, along with what you'd like to be notified for."
+
+    if renpy.windows:
+        m 3rksdla "Also, since you're using Windows...I now know how to check what your active window is..."
+        m 3eub "So if I have something to talk about while I'm in the background, I can let you know!"
+        m 3hksdlb "And don't worry, I know you might not want me constantly watching you, and I respect your privacy."
+        m 3eua "So I'll only look at what you're doing if you're okay with it."
+        m 2eua "If you enable 'Window Reacts' in the settings menu, that'll tell me you're fine with me looking around."
+
+        if mas_isMoniNormal(higher=True):
+            m 1tuu "It's not like you have anything to hide from your girlfriend..."
+            show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
+            m 5ttu "...right?"
+    return

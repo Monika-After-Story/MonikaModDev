@@ -26,6 +26,9 @@ init 4 python:
         # clearing this to prevent crash
         persistent.monika_topic = None
 
+        # reset this on release to show unseen
+        persistent._mas_unsee_unseen = False
+
 #default persistent._mas_084_hotfix_farewellbug = None
 
 # post many things, but not late update script appropriate
@@ -302,6 +305,62 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
+# 0.9.6
+label v0_9_6(version="v0_9_6"):
+    python:
+        ev_label_list = [
+            ("monika_whatwatching","mas_wrs_youtube"),
+            ("monika_lookingat","mas_wrs_r34m"),
+            ("monika_monikamoddev","mas_wrs_monikamoddev")
+        ]
+        #NOTE:
+        #We only really want the shown count and last seen. Nothing else mattress
+        for old_ev_label, new_ev_label in ev_label_list:
+            ev = mas_getEV(new_ev_label)
+            if old_ev_label in persistent._mas_windowreacts_database:
+                old_ev = Event(
+                    persistent._mas_windowreacts_database,
+                    old_ev_label
+                )
+            else:
+                old_ev = None
+
+            if ev is not None and old_ev is not None:
+                ev.shown_count += old_ev.shown_count
+
+                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                    ev.last_seen = old_ev.last_seen
+
+                mas_transferTopicSeen(old_ev_label, new_ev_label)
+
+                # erase this topic
+                mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        # this doesn't need to be locked by default anymore with the new greet code
+        if not renpy.seen_label("greeting_tears"):
+            mas_unlockEVL("greeting_tears", "GRE")
+
+        # let's actually pool this finally
+        family_ev = mas_getEV("monika_family")
+        if family_ev is not None:
+            family_ev.pool = True
+    return
+
+# 0.9.5
+label v0_9_5(version="v0_9_5"):
+    python:
+        #Actually unlock the holdme topic since we removed the unlock for this when weather change became a thing
+        if persistent._mas_likes_rain:
+            mas_unlockEVL("monika_rain_holdme", "EVE")
+
+        # move monika_why from pool to random, and derand after one month if seen
+        why_ev = mas_getEV('monika_why')
+        if why_ev is not None:
+            why_ev.pool = False
+            if not renpy.seen_label('monika_why') or not mas_anni.pastOneMonth():
+                why_ev.random = True
+    return
+
 # 0.9.4
 label v0_9_4(version="v0_9_4"):
     python:
@@ -314,6 +373,12 @@ label v0_9_4(version="v0_9_4"):
         if mas_getEV('monika_ptod_tip001').unlocked:
             # check to see if tip 001 is unlocked, since 000 is the only way to unlock 001
             mas_hideEVL("monika_ptod_tip000", "EVE", lock=True)
+
+        # unlock outfit if already seen before
+        outfit_ev = mas_getEV("monika_outfit")
+        if outfit_ev is not None and renpy.seen_label(outfit_ev.eventlabel):
+            outfit_ev.unlocked = True
+
     return 
 
 # 0.9.2

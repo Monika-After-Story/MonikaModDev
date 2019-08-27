@@ -237,7 +237,7 @@ label monika_ptod_tip002:
     call mas_wx_cmd("type('This is a string in single quotes')", local_ctx)
     call mas_wx_cmd('type("And this is a string in double quotes")', local_ctx)
 
-    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it basically is the same thing."
+    m 1eksdlb "I know the interpreter says {i}unicode{/i}, but for what we're doing, it's basically the same thing."
     m 1eua "Strings can also be created with three double quotes (\"\"\"), but these are treated differently than regular strings.{w} I'll talk about them another day."
 
     ### booleans
@@ -400,7 +400,7 @@ label monika_ptod_tip005:
         m 1eub "Well, today I'm going into more detail about booleans and how they relate to making comparisons between values."
 
     m 1eua "Booleans are commonly used in deciding what code to run or setting a flag to note if something happened or not."
-    m "When we do comparisons, each expression is evaluted to a boolean."
+    m "When we do comparisons, each expression is evaluated to a boolean."
 
     if tip_ev.last_seen is None:
         m 1eksdlb "This probably makes no sense right now, so I'll pull up the console and show you some examples."

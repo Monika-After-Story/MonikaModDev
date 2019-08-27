@@ -401,6 +401,11 @@ init -20 python in mas_weather:
         # lock islands
         store.mas_lockEVL("mas_monika_islands", "EVE")
 
+        #Unlock snow weather (It should only be winter to get this anyway, because of progressive weather/startup weather)
+        if not store.mas_weather_snow.unlocked:
+            store.mas_weather_snow.unlocked = True
+            saveMWData()
+
         # TODO: lock islands greeting as well
 
 
@@ -846,7 +851,7 @@ label mas_change_weather(new_weather, by_user=None):
     # set new weather and force change
     $ old_weather = mas_current_weather
     $ mas_current_weather = new_weather
-    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc")
+    call spaceroom(dissolve_masks=True, force_exp="monika 1dsc_static")
 
     # call entry programming point
     $ mas_current_weather.entry(old_weather)
@@ -907,7 +912,7 @@ label monika_change_weather_loop:
         final_item = (mas_weather.WEAT_RETURN, False, False, False, 20)
 
     # call scrollable pane
-    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item=final_item)
+    call screen mas_gen_scrollable_menu(weathers, mas_moods.MOOD_AREA, mas_moods.MOOD_XALIGN, final_item)
 
     $ sel_weather = _return
 
@@ -922,8 +927,8 @@ label monika_change_weather_loop:
     elif sel_weather == "auto":
         if mas_weather.force_weather:
             m 1hub "Sure!"
-            m 1dsc "Just give me a second..."
-            pause 1.0
+            m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
+
             #Set to false and return since nothing more needs to be done
             $ mas_weather.force_weather = False
             m 1eua "There we go!"
@@ -959,9 +964,7 @@ label monika_change_weather_loop:
 
     if not skip_leadin:
         m 1eua "Alright!"
-        m 1dsc "Just give me a second...{w=1.0}{nw}"
-
-    pause 1.0
+        m 1dsc "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
 
     # finally change the weather
     call mas_change_weather(sel_weather,by_user=True)
