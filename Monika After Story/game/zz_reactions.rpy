@@ -600,7 +600,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
-        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name),
+        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name)
         
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
