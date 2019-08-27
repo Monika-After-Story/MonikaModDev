@@ -3823,18 +3823,29 @@ label greeting_returned_home_player_bday:
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
-            ret_year = checkin_time.year
             left_date = checkout_time.date()
             ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+
+            # are we returning after the mhs reset
+            ret_diff_year = ret_date >= (mas_player_bday_curr(left_date) + datetime.timedelta(days=3))
+
+            # were we gone over d25
+            #TODO: do this for the rest of the holidays
+            if left_date < mas_d25 < ret_date:
+                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                    persistent._mas_d25_spent_d25 = True
+                else:
+                    persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
+
         else:
             left_year = None
-            ret_year = None
-            left_year_aff = None
             left_date = None
             ret_date = None
+            left_year_aff = None
+            ret_diff_year = None
+
         add_points = False
-        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
@@ -3843,9 +3854,6 @@ label greeting_returned_home_player_bday:
             if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-
-    if left_date < mas_d25 < ret_date:
-        $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
         $ mas_loseAffection()
