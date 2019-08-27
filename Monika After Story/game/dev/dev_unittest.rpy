@@ -77,6 +77,55 @@ init -1 python in mas_dev_unit_tests:
         def __str__(self):
             return "\n".join(self.tests)
 
+        def _assertDictEqual(self, expected, actual):
+            """
+            Asserts if two dicts are equal and contain equal items
+
+            If expected/actual are not dict, assertListEqual is used
+            this is recursive.
+            """
+            # TODO
+            pass
+
+        def _assertListEqual(self, expected, actual):
+            """
+            Internal list assertion. Assumes that the given items are lists.
+
+            IN:
+                expected - expected value
+                actual - actual value
+            """
+
+                    # lengths must be the same
+                    if len(expected) == len(actual):
+                        for index in range(len(expected)):
+                            self.assertListEqual(
+                                expected[index],
+                                actual[index]
+                            )
+                        return
+
+                    # if lenghts not same, def not equal
+                    # NOTE: fall to after if
+
+                # if only one is iterable, then def not equal
+                # NOTE: fall through to after if
+
+            elif not exp_is_list:
+                # both expected and actual are not lists
+                self.assertEqual(expected, actual)
+
+            # we get here if:
+            #   - lengths are not the seame
+            #   - only 1 item is list
+            self.tests.append(MASUnitTest(
+                self.test_name,
+                False,
+                expected,
+                actual
+            ))
+
+
         def assertDictEqual(self, expected, actual):
             """
             Asserts if two dicts are equal and contain equal items
@@ -95,7 +144,18 @@ init -1 python in mas_dev_unit_tests:
                 expected - expected value
                 actual - actual value
             """
-            # TODO: make this delgate to the correct assertEqual
+            # First, delegate to the correct type
+            if medv._verify_dict(expected, False):
+                if medv._verify_dict(actual, False):
+                    self.assertDictEqual(expected, actual)
+                    return
+
+            elif medv._verify_list(expected, False):
+                if medv._verify_list(actual, False):
+                    self.assertListEqual(expected, actual)
+                    return
+
+            # otherwise, we compare the two directly
             self.tests.append(MASUnitTest(
                 self.test_name,
                 expected == actual,
@@ -147,10 +207,9 @@ init -1 python in mas_dev_unit_tests:
 
         def assertListEqual(self, expected, actual):
             """
-            Asserts if two lists are equal and contain equal items.
+            Asserts if two lists are equal and contain equal items
 
-            if expected/actual are not list, assert Equal is used.
-            This is recursive.
+            if expected/actual are not list, we use assertEqual.
 
             IN:
                 expected - expected value
@@ -161,35 +220,12 @@ init -1 python in mas_dev_unit_tests:
 
             if act_is_list:
                 if exp_is_list:
+                    self._assertListEqual(expected, actual)
+                    return
 
-                    # lengths must be the same
-                    if len(expected) == len(actual):
-                        for index in range(len(expected)):
-                            self.assertListEqual(
-                                expected[index],
-                                actual[index]
-                            )
-                        return
-
-                    # if lenghts not same, def not equal
-                    # NOTE: fall to after if
-
-                # if only one is iterable, then def not equal
-                # NOTE: fall through to after if
-
-            elif not exp_is_list:
-                # both expected and actual are not lists
-                self.assertEqual(expected, actual)
-
-            # we get here if:
-            #   - lengths are not the seame
-            #   - only 1 item is list
-            self.tests.append(MASUnitTest(
-                self.test_name,
-                False,
-                expected,
-                actual
-            ))
+            # otherwise, use assertEqual, which should fail in most
+            # circumstances
+            self.assertEqual(expected, actual)
 
         def assertTrue(self, actual):
             """
