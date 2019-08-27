@@ -673,3 +673,29 @@ label mas_wrs_reddit:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_reddit')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_depression",
+            category=['betterhelp'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_depression:
+    $  wrs_success = display_notif(m_name, ["[player], are you alright?"],'Window Reactions')
+
+    $ choice = random.randint(1,2)
+    if choice == 1:
+        $ queueEvent('monika_mentalillness')
+
+    else:
+        $ queueEvent('monika_selfharm')
+
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_depression')
+    return
