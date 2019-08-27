@@ -2805,7 +2805,7 @@ label monika_clothes_select:
         call mas_selector_sidebar_select_clothes(store.mas_selspr.CLOTH_SEL_SL, mailbox=mailbox, select_map=sel_map)
 
     else:
-        gift_clothes = store.mas_selspr.gifted_clothes
+        $ gift_clothes = store.mas_selspr.gifted_clothes
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gift_clothes, mailbox=mailbox, select_map=sel_map)
