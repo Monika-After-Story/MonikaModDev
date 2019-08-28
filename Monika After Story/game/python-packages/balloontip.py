@@ -48,8 +48,10 @@ class WindowsBalloonTip:
 
             #If we got here, that means we had no issue making the notif
             return True
-        #Something went wrong, need to flag this to not make a sound
-        return False
+
+        except:
+            #Something went wrong, need to flag this to not make a sound
+            return False
 
     def OnDestroy(self, hwnd, msg, wparam, lparam):
         nid = (self.hwnd, 0)
