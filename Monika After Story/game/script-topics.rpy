@@ -12140,7 +12140,7 @@ init 5 python:
 default persistent._mas_red_poetry = None
 #True if player likes poems, false if not
 label player_red_poems:
-    m 2eub "Say [player]...
+    m 2eub "Say [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
     menu:
         m 2eua "Did you read poems often before meeting me?"
@@ -12169,12 +12169,14 @@ label player_red_poems:
         m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
         m 5dka "Sharing poems, writing new ones, just you and I...
         m 5hub "Sounds like a dream to me!"
+        
     else:
         m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
         m 5hua "I want to share with you my favorite poems."
         m 5dka "Reading poems just and I, me on your chest, feeling your warm."
         m 5hua "And why not, maybe write new ones..."
         m 5hub "Sounds like a dream to me!"
+        
     return "derandom"
     
 
