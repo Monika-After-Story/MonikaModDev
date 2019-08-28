@@ -300,14 +300,13 @@ init python:
                 or skip_checks
             ):
 
-            #Play the notif sound if we have that enabled
-            if persistent._mas_notification_sounds:
-                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+            #We keep this flag so we know whether or not the notif was sent successfully (NOTE: weassume True because only windows can 'fail')
+            notif_success = True
 
             #Now we make the notif
             if (renpy.windows):
-                # The Windows way
-                tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
+                # The Windows way, notif_success is adjusted if need be
+                notif_success = tip.showWindow(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
                 #We need the IDs of the notifs to delete them from the tray
                 destroy_list.append(tip.hwnd)
@@ -320,6 +319,9 @@ init python:
                 # The Linux way
                 mas_tryShowNotificationLinux(renpy.substitute(title), renpy.substitute(renpy.random.choice(body)))
 
+            #Play the notif sound if we have that enabled and notif was successful
+            if persistent._mas_notification_sounds and notif_success:
+                renpy.sound.play("mod_assets/sounds/effects/notif.wav")
             return True
         return False
 
@@ -543,7 +545,7 @@ label mas_wrs_twitter:
     if not wrs_success:
         $ mas_unlockFailedWRS('mas_wrs_twitter')
     return
-  
+
 init 5 python:
     addEvent(
         Event(
