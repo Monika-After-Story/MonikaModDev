@@ -22,7 +22,7 @@ init -1 python in mas_dev_unit_tests:
         Simple class to represent a test
         """
 
-        def __init__(self, test_name, outcome, expected, actual):
+        def __init__(self, test_name, outcome, expected, actual, ovrstr=None):
             """
             Constructor for a MASUnitTest
 
@@ -31,11 +31,14 @@ init -1 python in mas_dev_unit_tests:
                 outcome - outcome of the test (True or false)
                 expected - expected value of the test
                 actual - actual value of the test
+                ovrstr - if passed, then we display this instead of
+                    the standard expected/actual string
             """
             self.test_name = test_name
             self.outcome = outcome
             self.expected = expected
             self.actual = actual
+            self.ovrstr = ovrstr
 
         def __str__(self):
             """
@@ -47,11 +50,18 @@ init -1 python in mas_dev_unit_tests:
             else:
                 pass_str = "FAIL"
 
-            return "{0}: {1} | {2} -> {3}".format(
+            if self.ovrstr is None:
+                ea_str = "{0} -> {1}".format(
+                    str(self.expected),
+                    str(self.actual)
+                )
+            else:
+                ea_str = ovrstr
+
+            return "{0}: {1} | {2}".format(
                 str(self.test_name),
                 pass_str,
-                str(self.expected),
-                str(self.actual)
+                ea_str
             )
 
         def failed(self):
@@ -70,6 +80,9 @@ init -1 python in mas_dev_unit_tests:
         """
         Simple class for running asserts
         """
+        LEN_STR = "len mismatch: expected {0} -> actual {1}"
+        KEY_STR = "expected key {0}, not found in actual"
+        KEY_STR_A = "extra keys found in actual: {0}"
 
         def __init__(self):
             self.setupTests()
@@ -79,13 +92,56 @@ init -1 python in mas_dev_unit_tests:
 
         def _assertDictEqual(self, expected, actual):
             """
-            Asserts if two dicts are equal and contain equal items
+            Internal dict assertion. Assumes that given items are dicts.
 
-            If expected/actual are not dict, assertListEqual is used
-            this is recursive.
+            IN:
+                expected - expected value
+                actual - actual value
+
+            RETURNS: True if equal, False if not
             """
-            # TODO
-            pass
+            # lengths must be the same
+            if len(expected) != len(actual):
+                self.tests.append(MASUnitTest(
+                    self.test_name,
+                    False,
+                    expected,
+                    actual,
+                    ovrstr=self.LEN_STR.format(len(expected), len(actual))
+                ))
+                return False
+
+            # now check keys + values 
+            a_keys = sorted(actual.keys())
+            for e_key in expected:
+                
+                if e_key not in a_keys:
+                    self.tests.append(MASUnitTest(
+                        self.test_name,
+                        False,
+                        e_key,
+                        None,
+                        ovrstr=self.KEY_STR.format(e_key)
+                    ))
+                    return False
+
+                # pop key off 
+                a_keys.remove(e_key)
+                if not self.assertEqual(expected[e_key], actual[e_key]):
+                    return False
+
+            # if any keys remain in a, then we had a mismatch 
+            if len(a_keys) > 0:
+                self.tests.append(MASUnitTest(
+                    self.test_name,
+                    False,
+                    expected,
+                    actual,
+                    ovrstr=self.KEY_STR_A.format(a_keys)
+                ))
+                return False
+
+            return True
 
         def _assertListEqual(self, expected, actual):
             """
@@ -94,37 +150,26 @@ init -1 python in mas_dev_unit_tests:
             IN:
                 expected - expected value
                 actual - actual value
+
+            RETURNS: True if equal, False if not
             """
+            # lengths must be the same
+            if len(expected) != len(actual):
+                self.tests.append(MASUnitTest(
+                    self.test_name,
+                    False,
+                    expected,
+                    actual,
+                    ovrstr=self.LEN_STR.format(len(expected), len(actual))
+                ))
+                return False
 
-                    # lengths must be the same
-                    if len(expected) == len(actual):
-                        for index in range(len(expected)):
-                            self.assertListEqual(
-                                expected[index],
-                                actual[index]
-                            )
-                        return
+            # otherwise check each element
+            for index in range(len(expected)):
+                if not self.assertEqual(expected[index], actual[index]):
+                    return False
 
-                    # if lenghts not same, def not equal
-                    # NOTE: fall to after if
-
-                # if only one is iterable, then def not equal
-                # NOTE: fall through to after if
-
-            elif not exp_is_list:
-                # both expected and actual are not lists
-                self.assertEqual(expected, actual)
-
-            # we get here if:
-            #   - lengths are not the seame
-            #   - only 1 item is list
-            self.tests.append(MASUnitTest(
-                self.test_name,
-                False,
-                expected,
-                actual
-            ))
-
+            return True
 
         def assertDictEqual(self, expected, actual):
             """
@@ -133,8 +178,14 @@ init -1 python in mas_dev_unit_tests:
             If expected/actual are not dict, assertListEqual is used
             this is recursive.
             """
-            # TODO
-            pass
+            if (
+                    medv._verify_dict(expected, False)
+                    and medv._verify_dict(actual, False)
+            ):
+                return self._assertDictEqual(expected, actual)
+
+            # otherwise use assEqual
+            return self.assertEqual(expected, actual)
 
         def assertEqual(self, expected, actual):
             """
@@ -143,25 +194,31 @@ init -1 python in mas_dev_unit_tests:
             IN:
                 expected - expected value
                 actual - actual value
+
+            RETURNS: True if equal, False if not
             """
             # First, delegate to the correct type
-            if medv._verify_dict(expected, False):
-                if medv._verify_dict(actual, False):
-                    self.assertDictEqual(expected, actual)
-                    return
+            if (
+                    medv._verify_dict(expected, False)
+                    and medv._verify_dict(actual, False)
+            ):
+                return self._assertDictEqual(expected, actual)
 
-            elif medv._verify_list(expected, False):
-                if medv._verify_list(actual, False):
-                    self.assertListEqual(expected, actual)
-                    return
+            elif (
+                    medv._verify_list(expected, False)
+                    and medv._verify_list(actual, False)
+            ):
+                return self._assertListEqual(expected, actual)
 
             # otherwise, we compare the two directly
+            outcome = expected == actual
             self.tests.append(MASUnitTest(
                 self.test_name,
-                expected == actual,
+                outcome,
                 expected,
                 actual
             ))
+            return outcome
 
         def assertFalse(self, actual):
             """
@@ -169,13 +226,17 @@ init -1 python in mas_dev_unit_tests:
 
             IN:
                 actual - value to check
+
+            RETURNS: True if False, False if not
             """
+            outcome = not bool(actual)
             self.tests.append(MASUnitTest(
                 self.test_name,
-                not bool(actual),
+                outcome,
                 False,
                 bool(actual)
             ))
+            return outcome
 
         def assertIsNone(self, actual):
             """
@@ -183,13 +244,17 @@ init -1 python in mas_dev_unit_tests:
 
             IN:
                 actual - value to check
+
+            RETURNS: True if None, False if not
             """
+            outcome = actual is None
             self.tests.append(MASUnitTest(
                 self.test_name,
-                actual is None,
+                outcome,
                 None,
                 actual
             ))
+            return outcome
 
         def assertIsNotNone(self, actual):
             """
@@ -197,13 +262,17 @@ init -1 python in mas_dev_unit_tests:
 
             IN:
                 actual - value to check
+
+            RETURNS: True if not None, False if None
             """
+            outcome = actual is not None
             self.tests.append(MASUnitTest(
                 self.test_name,
-                actual is not None,
+                outcome,
                 "not None",
                 actual
             ))
+            return outcome
 
         def assertListEqual(self, expected, actual):
             """
@@ -214,18 +283,18 @@ init -1 python in mas_dev_unit_tests:
             IN:
                 expected - expected value
                 actual - actual value
-            """
-            exp_is_list = medv._verify_list(expected, False)
-            act_is_list = medv._verify_list(actual, False)
 
-            if act_is_list:
-                if exp_is_list:
-                    self._assertListEqual(expected, actual)
-                    return
+            RETURNS: True if equal, False if not
+            """
+            if (
+                    medv._verify_list(expected, False)
+                    and medv._verify_list(actual, False)
+            ):
+                return self._assertListEqual(expected, actual)
 
             # otherwise, use assertEqual, which should fail in most
             # circumstances
-            self.assertEqual(expected, actual)
+            return self.assertEqual(expected, actual)
 
         def assertTrue(self, actual):
             """
@@ -233,13 +302,17 @@ init -1 python in mas_dev_unit_tests:
 
             IN:
                 actual - value to check
+
+            RETURNS: True if True, False if not
             """
+            outcome = bool(actual)
             self.tests.append(MASUnitTest(
                 self.test_name,
-                bool(actual),
+                outcome,
                 True,
                 bool(actual)
             ))
+            return outcome
 
         def cleanTest(self):
             """
@@ -531,7 +604,117 @@ label dev_unit_test_json_masposearms_jgroup:
         mpa_tester.prepareTest("prop_name not exist")
         test_data = gen_data(prop_args, (1, 2, 3))
         test_data.pop(prop_name)
+        mpa_tester.assertIsNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
 
+        mpa_tester.prepareTest("prop_name is None")
+        test_data = gen_data(prop_args, (None, 2, 3))
+        mpa_tester.assertIsNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("prop_name is not str")
+        test_data = gen_data(prop_args, (1, True, False))
+        mpa_tester.assertIsNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("prop_back is not bool")
+        test_data = gen_data(prop_args, ("test", 1, False))
+        mpa_tester.assertIsNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("prop_front is not bool")
+        test_data = gen_data(prop_args, ("test", True, 1))
+        mpa_tester.assertIsNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("valid props, MASPoseArms created")
+        test_data = gen_data(prop_args, ("test", True, False))
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("valid props, no back, MASPoseArms created")
+        test_data = gen_data(prop_args, ("test", True, False))
+        test_data.pop(prop_back)
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
+        test_data = gen_data(props_args, ("test", True, False))
+        test_data.pop(prop_front)
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_teste
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
+        test_data = gen_data(props_args, ("test", True, False))
+        test_data.pop(prop_front)
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            test_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(0, len(test_data))
+
+        mpa_tester.prepareTest("valid props, MASPoseArms created, extra props")
+        test_data = gen_data(props_args, ("test", True, False))
+        ex_data = { "extra": 123 }
+        test_data.update(ex_data)
+        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+            teste_data,
+            prop_args,
+            [],
+            0
+        ))
+        mpa_tester.assertEqual(ex_data, test_data)
+
+    call dev_unit_tests_finish_test(mpa_tester)
 
     return
             

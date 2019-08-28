@@ -4297,7 +4297,7 @@ init -2 python:
             right_front - True if right has a front layer (1)
             right_back - True if right has a back layer (0)
         """
-        import store.mas_sprite_json as msj
+        import store.mas_sprites_json as msj
 
         J_NAME_BOTH = (
             "both",
@@ -4606,7 +4606,7 @@ init -2 python:
                 right_data = None
 
             # return the MASPoseArms.
-            return MASPoseArms=(
+            return MASPoseArms(
                 left=left_data,
                 right=right_data,
                 both=both_data
@@ -4896,7 +4896,7 @@ init -2 python:
                 use_reg_for_l = json_obj.pop(urfl_prop)
                 if not cls.msj._verify_bool(use_reg_for_l, allow_none=False):
                     errs.append((
-                        cls.msj.MSG_ERR_T:  
+                        cls.msj.MSG_ERR_T,
                         inner_ind_lvl,
                         cls.msj.BAD_TYPE.format(
                             urfl_prop,
