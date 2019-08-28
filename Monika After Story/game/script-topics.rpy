@@ -12142,8 +12142,9 @@ default persistent._mas_red_poetry = None
 label player_red_poems:
     m 2eub "Say [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
+    m 2eua "Did you read poems often before meeting me?{nw}"
     menu:
-        m 2eua "Did you read poems often before meeting me?"
+        m "Did you read poems often before meeting me?{fast}"
         "Sure, I did":
             $ persistent._mas_red_poetry = True
             $ mas_gainAffection()
