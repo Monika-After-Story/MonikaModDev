@@ -365,7 +365,7 @@ label v0_10_0(version="v0_10_0"):
                 persistent._mas_player_bday
             )
 
-        mhs_o31 = store.has_history.getMHS("o31")
+        mhs_o31 = store.mas_history.getMHS("o31")
         if (
                 mhs_o31 is not None
                 and mhs_o31.trigger.month == 11
