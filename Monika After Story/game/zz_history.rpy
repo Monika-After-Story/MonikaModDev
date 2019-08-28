@@ -623,19 +623,28 @@ init -850 python:
             if first_sesh is None:
                 first_sesh = _now
 
+            trigger_year_diff = _trigger.year - _now.year
+
             if (
                     (
                         mas_TTDetected()
-                        and not self.isContinuous()
-                        and (self.isFuture(_now) or self.isActive(_now))
+                        and not self.isContinuous() 
+                        and (
+                            self.isFuture(_now)
+                            or self.isActive(_now)
+                            or (self.use_year_before + trigger_year_diff > 2)
+                        )
                     )
-                    or _trigger.year > (_now.year + 1)
+                    or (self.isContinuous() and trigger_year_diff > 1)
                     or _trigger <= first_sesh
                 ):
-                # if time travel occured and the event is ongoing or in
-                # the future
+                # if time travel occured and the event is:
+                #   ongoing,
+                #   in the future.
+                #   or at least 3 years beyond current
                 #
-                # or if the trigger year is at least 2 years beyond current, 
+                # or if the trigger year is at least 2 years beyond current
+                #   for a continuous event
                 # its definitely a time travel issue.
                 #
                 # or if the trigger is before or same date as the first session
