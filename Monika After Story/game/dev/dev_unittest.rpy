@@ -599,7 +599,7 @@ label dev_unit_test_json_masposearms_jgroup:
         prop_back = "prop_back"
         prop_front = "prop_front"
         prop_args = (prop_name, prop_back, prop_front)
-        mpa_tester = MASUnitTester()
+        mpa_tester = store.mas_dev_unit_tests.MASUnitTester()
 
         mpa_tester.prepareTest("prop_name not exist")
         test_data = gen_data(prop_args, (1, 2, 3))
@@ -674,15 +674,8 @@ label dev_unit_test_json_masposearms_jgroup:
         mpa_tester.assertEqual(0, len(test_data))
 
         mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
-        test_data = gen_data(props_args, ("test", True, False))
+        test_data = gen_data(prop_args, ("test", True, False))
         test_data.pop(prop_front)
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
-            test_data,
-            prop_args,
-            [],
-            0
-        ))
-        mpa_teste
         mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
             test_data,
             prop_args,
@@ -692,7 +685,7 @@ label dev_unit_test_json_masposearms_jgroup:
         mpa_tester.assertEqual(0, len(test_data))
 
         mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
-        test_data = gen_data(props_args, ("test", True, False))
+        test_data = gen_data(prop_args, ("test", True, False))
         test_data.pop(prop_front)
         mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
             test_data,
@@ -703,11 +696,11 @@ label dev_unit_test_json_masposearms_jgroup:
         mpa_tester.assertEqual(0, len(test_data))
 
         mpa_tester.prepareTest("valid props, MASPoseArms created, extra props")
-        test_data = gen_data(props_args, ("test", True, False))
+        test_data = gen_data(prop_args, ("test", True, False))
         ex_data = { "extra": 123 }
         test_data.update(ex_data)
         mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
-            teste_data,
+            test_data,
             prop_args,
             [],
             0
