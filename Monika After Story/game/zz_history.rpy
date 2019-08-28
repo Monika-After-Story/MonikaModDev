@@ -632,7 +632,7 @@ init -850 python:
                         and (
                             self.isFuture(_now)
                             or self.isActive(_now)
-                            or (self.use_year_before + trigger_year_diff > 2)
+                            or (self.use_year_before and trigger_year_diff > 2)
                         )
                     )
                     or (self.isContinuous() and trigger_year_diff > 1)
