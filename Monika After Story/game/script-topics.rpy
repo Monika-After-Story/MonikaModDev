@@ -12151,7 +12151,7 @@ label player_red_poems:
             m 2sub "Really!"
             m 2hub "That makes me so happy!"
             m 2hua "And really, I mean it, not a lot of people read poetry, you know."
-        "Nah, I didn't":
+        "Not really":
             $ persistent._mas_red_poetry = False
             m 2eka "Oh, too bad..."
             m 2eua "I just hope I made you love poetry a little more."
@@ -12161,10 +12161,11 @@ label player_red_poems:
     m 2dkc "But it's not, poetry is more than that. You have to put yourself in it."
     m 2tkc "Without his spleen, Baudelaire wouldn't be Beaudelaire..."
     m 2ekd "And without my feelings for you, my poems would'nt be the same."
-    m 2eka "Love, grief, anger, passion, all these feelings bring the words alive."
+    m 2eka "Love, grief, anger, passion, all these feelings bring the words to life."
     m 2hua "And that makes a simple text become a poem!"
     m 2hua "That's why I love poetry."
     if persistent._mas_red_poetry:
+        show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "Gosh, just knowing that you red poems too..."
         m 5hua "It makes me fall deeper in love with you."
         m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
@@ -12172,17 +12173,14 @@ label player_red_poems:
         m 5hub "Sounds like a dream to me!"
         
     else:
+        show monika 5eubfu at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
-        m 5hua "I want to share with you my favorite poems."
+        m 5hua "I want to share my favorite poems with you."
         m 5dka "Reading poems just and I, me on your chest, feeling your warm."
-        m 5hua "And why not, maybe write new ones..."
+         m 5hua "And why not, maybe we can even write together and complement each other's creativity..."
         m 5hub "Sounds like a dream to me!"
         
     return "derandom"
-    
-
-
-
 
 init 5 python:
     addEvent(
