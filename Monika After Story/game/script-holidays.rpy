@@ -3413,7 +3413,7 @@ label mas_player_bday_opendoor:
     m "..."
     m "Well...{w=1}the surprise is ruined now, but..."
     pause 1.0
-    $ store.surpriseBdayShowVisuals()
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     pause 1.0
     show monika 1eua at ls32 zorder MAS_MONIKA_Z
@@ -3638,7 +3638,7 @@ label mas_player_bday_ret_on_bday:
     m 2tsu "Just give me a moment, [player]..."
     show monika 1dsc
     pause 2.0
-    $ store.surpriseBdayShowVisuals()
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
@@ -3668,7 +3668,7 @@ label mas_player_bday_no_restart:
     m 3rksdla "Well [player], I was hoping to do something a little more fun, but you've been so sweet and haven't left all day long, so..."
     show monika 1dsc
     pause 2.0
-    $ store.surpriseBdayShowVisuals()
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     if mas_isplayer_bday():
@@ -3726,7 +3726,7 @@ label mas_player_bday_other_holiday:
     m 1tsu "I have a bit of a surprise for you!"
     show monika 1dsc
     pause 2.0
-    $ store.surpriseBdayShowVisuals()
+    $ store.mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3hub "Happy Birthday, [player]!"
     m 3rksdla "I hope you didn't think that just because your birthday falls on [holiday_var] that I'd forget about it..."
@@ -3894,7 +3894,7 @@ label return_home_post_player_bday:
             m 3eka "Just give me one second..."
             show monika 1dsc
             pause 2.0
-            $ surpriseBdayHideVisuals()
+            $ mas_surpriseBdayHideVisuals()
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
                 m 1hua "Now, let's enjoy the day together, [player]~"
@@ -4843,21 +4843,26 @@ default persistent._mas_bday_surprise_hint_seen = False
 default persistent._mas_bday_sbp_aff_given = 0
 default persistent._mas_bday_spent_bday = None
 default persistent._mas_bday_time_spent_seen = None
+default persistent._mas_bday_confirmed_party = False
 
 #Time spent tracking
 default persistent._mas_bday_opened_game = False
-#TODO: update script these to be True
+#TODO: update script these to be True (what's the vers number for this again lol?)
+#if datetime.date.today() < mas_monika_birthday:
+#   persistent._mas_bday_no_time_spent = True
+#   persistent._mas_bday_no_recognize = True
 default persistent._mas_bday_no_time_spent = True
 default persistent._mas_bday_no_recognize = True
 default persistent._mas_bday_nts_seen = False
 
 ### happy birthday pool topic
 default persistent._mas_bday_said_happybday = False
-#TODO: probably don't need this var V
-default persistent._mas_bday_need_to_reset_bday = False
-# TODO: non-generic apology
-init -1 python:
 
+############### [HOL060]: HISTORY
+#TODO: ^
+
+############### [HOL060]: METHODS
+init -1 python:
     def mas_isMonikaBirthday():
         return datetime.date.today() == mas_monika_birthday
 
@@ -4893,7 +4898,7 @@ init -1 python:
             or persistent._mas_bday_said_happybday
         )
 
-    def surpriseBdayShowVisuals(cake=False):
+    def mas_surpriseBdayShowVisuals(cake=False):
         """
         Shows bday surprise party visuals
         """
@@ -4903,22 +4908,58 @@ init -1 python:
         renpy.show("mas_bday_balloons", zorder=8)
 
 
-    def surpriseBdayHideVisuals():
+    def mas_surpriseBdayHideVisuals():
         """
         Hides all visuals for surprise party
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+
+    def mas_confirmedParty():
+        """
+        Checks if the player has confirmed the party
+        """
+        #If this is confirmed already, then we just return true, since confirmed
+        if persistent._mas_bday_confirmed_party:
+            return True
+
+        #Otherwise, we need to check if the file exists (we're going to make this as foolproof as possible)
+        #Step 1, get the characters folder contents
+        char_dir_files = store.mas_docking_station.getPackageList()
+
+        #Step 2, We need to remove the extensions
+        for file in char_dir_files:
+            temp_filename = file[:file.index('.')] if "." in file else file
+
+            #Step 3, check if the filename is present
+            if "TODO:supersecretfilename" == temp_filename:
+                #If we got here: Step 4, file exists so flag and delete
+                persistent._mas_bday_confirmed_party = True
+                store.mas_docking_station.destroyPackage(file)
+
+                #Step 5a, return true since party is confirmed
+                return True
+
+        #Otherwise, Step 5b, no previous confirm and file doesn't exist, so party is not confirmed. return false
+        return False
+
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
-
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
     if not mas_isMonikaBirthday():
         $ persistent._mas_922_in_922_mode = False
 
     #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
     elif persistent._mas_bday_sbp_reacted:
-        $ store.surpriseBdayShowVisuals()
+        $ store.mas_surpriseBdayShowVisuals()
+
+    #It's Moni's bday! If we're here that means we're spending time with her, so:
+    $ persistent._mas_bday_no_time_spent = False
+
+    #Have we recogized bday?
+    if mas_recognizedBday():
+        $ persistent._mas_bday_no_recognize = False
+
 
     jump mas_ch30_post_holiday_check
 
@@ -5062,7 +5103,7 @@ label mas_bday_pool_happy_bday:
 ################## [HOL060] PARTY REACTION
 label mas_bday_surprise_party_reaction:
     #Setup visuals, with cake
-    $ store.surpriseBdayShowVisuals(cake=True)
+    $ store.mas_surpriseBdayShowVisuals(cake=True)
     #+25 aff for following through and getting the party
     $ mas_gainAffection(25, bypass=True)
     if mas_isMoniNormal(higher=True):
@@ -5477,6 +5518,7 @@ label bye_922_delegate:
 
 label mas_bday_bd_outro:
     #TODO: Unlock bd here, dlg review/exp review
+    #TODO: ADD THIS TO THE LIST OF BLACKLISTED OUTFITS
     m 3tka "Well [player]?"
     m 1hua "What do you think?"
     m 1ekbla "I've always loved this outfit, and I've always dreamed of a date with you, wearing this..."
@@ -5490,11 +5532,14 @@ label mas_bday_bd_outro:
 #TODO:
 #   Some dlg review
 #   ~~Add some nods to player bday if on the same day~~
-#   Black Dress Intro
+#   ~~Black Dress Intro~~
 label greeting_returned_home_bday:
     #If we got to this label without having been on a bday date, we went pre 922 -> 922
-    #In which case, we need to set up the party. Likewise if we haven't seen the party yet
-    if not persistent._mas_bday_on_date or not persistent._mas_bday_sbp_reacted:
+    #In which case, we need to set up the party (if confirmed). Likewise if we haven't seen the party yet
+    if (
+        (not persistent._mas_bday_on_date or not persistent._mas_bday_sbp_reacted)
+        and mas_confirmedParty()
+    ):
         jump mas_bday_surprise_party_reaction
 
     python:
@@ -5515,7 +5560,7 @@ label greeting_returned_home_bday:
                 amount = persistent._mas_bday_date_affection_gained - cap
                 mas_gainAffection(amount, bypass=True)
 
-    #Get points and then clean everyting up
+    #Get points and then clean everyting up, it's no longer moni-bday so we should flow here instead
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
         $ persistent._mas_922_in_922_mode = False
@@ -5537,7 +5582,7 @@ label greeting_returned_home_bday:
             $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
             m "Let me just clean everything up.{w=0.5}.{w=0.5}."
-            $ surpriseBdayHideVisuals()
+            $ mas_surpriseBdayHideVisuals()
             m "There we go!"
 
             if checkout_time.date() != mas_monika_birthday:
@@ -5549,6 +5594,9 @@ label greeting_returned_home_bday:
                 m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
                 m 1ekbfa "I hope I helped to make your day as special as you made mine."
                 m "Thanks for an amazing birthay. I love you~"
+
+            #TODO: lead these into a time spent, likewise set up a pre-922 -> post 922 check which leads into a variation of time spent
+            # ^ also make sure to set time spent and bday celebrated as true in this path
             return "love"
 
     #Otherwise we go thru the normal dialogue for returning home on moni_bday
