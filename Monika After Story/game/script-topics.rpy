@@ -12131,7 +12131,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="player_red_poems",
-            category=["literature"],
+            category=['literature'],
             prompt="Red poetry",
             random=True
         )
