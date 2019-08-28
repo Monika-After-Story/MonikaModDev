@@ -420,9 +420,13 @@ label dev_unit_tests:
     $ final_item = ("RETURN", False, False, False, 20)
     call screen mas_gen_scrollable_menu(store.mas_dev_unit_tests.unit_tests, store.mas_dev_unit_tests.MOOD_AREA, store.mas_dev_unit_tests.MOOD_XALIGN, final_item)
 
-    if _return and renpy.has_label(_return):
+    if _return == "RETURN":
+        return
+
+    if renpy.has_label(_return):
         call expression _return
         m 1tuu "Unit test over"
+        jump dev_unit_tests
 
     return
 
@@ -583,6 +587,39 @@ label dev_unit_test_json_masposearms:
         bargs = MASPoseArms.J_NAME_BOTH
         largs = MASPoseArms.J_NAME_LEFT
         rargs = MASPoseArms.J_NAME_RIGHT
+        mpa_tester = store.mas_dev_unit_tests.MASUnitTester()
+        
+        mpa_tester.prepareTest("no data passed")
+        test_data = {}
+        actual = MASPoseArms.fromJSON(test_data, [], 0)
+        mpa_tester.assertIsNone(actual.both)
+        mpa_tester.assertIsNone(actual.both_back)
+        mpa_tester.assertIsNone(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsnone(actual.right_front)
+
+        mpa_tester.prepareTest("no data passed, extra props")
+        test_data = {}
+        ex_data = {
+            "extra": 123
+        }
+        test_data.update(ex_data)
+        actual = MASPoseArms.fromJson(test_data, [], 0)
+        mpa_tester.assertIsNone(actual.both)
+        mpa_tester.assertIsNone(actual.both_back)
+        mpa_tester.assertIsNone(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsnone(actual.right_front)
+        mpa_tester.assertEqual(ex_data, test_data)
+
     return
 
 
@@ -652,59 +689,58 @@ label dev_unit_test_json_masposearms_jgroup:
         ))
         mpa_tester.assertEqual(0, len(test_data))
 
-        mpa_tester.prepareTest("valid props, MASPoseArms created")
-        test_data = gen_data(prop_args, ("test", True, False))
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+        mpa_tester.prepareTest("valid props, data created")
+        expected = ("test", True, False)
+        test_data = gen_data(prop_args, expected)
+        actual = MASPoseArms._fromJSON_parseJGroup(
             test_data,
             prop_args,
             [],
             0
-        ))
+        )
+        mpa_tester.assertEqual(expected, actual)
         mpa_tester.assertEqual(0, len(test_data))
 
-        mpa_tester.prepareTest("valid props, no back, MASPoseArms created")
-        test_data = gen_data(prop_args, ("test", True, False))
+        mpa_tester.prepareTest("valid props, no back, data created")
+        test_data = gen_data(prop_args, ("test", True, True))
         test_data.pop(prop_back)
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+        expected = ("test", False, True)
+        actual = MASPoseArms._fromJSON_parseJGroup(
             test_data,
             prop_args,
             [],
             0
-        ))
+        )
+        mpa_tester.assertEqual(expected, actual)
         mpa_tester.assertEqual(0, len(test_data))
 
-        mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
-        test_data = gen_data(prop_args, ("test", True, False))
+        mpa_tester.prepareTest("valid props, no front,data created")
+        test_data = gen_data(prop_args, ("test", True, True))
         test_data.pop(prop_front)
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+        expected = ("test", True, False)
+        actual = MASPoseArms._fromJSON_parseJGroup(
             test_data,
             prop_args,
             [],
             0
-        ))
+        )
+        mpa_tester.assertEqual(expected, actual)
         mpa_tester.assertEqual(0, len(test_data))
 
-        mpa_tester.prepareTest("valid props, no front, MASPoseArms created")
-        test_data = gen_data(prop_args, ("test", True, False))
-        test_data.pop(prop_front)
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
-            test_data,
-            prop_args,
-            [],
-            0
-        ))
-        mpa_tester.assertEqual(0, len(test_data))
-
-        mpa_tester.prepareTest("valid props, MASPoseArms created, extra props")
-        test_data = gen_data(prop_args, ("test", True, False))
-        ex_data = { "extra": 123 }
+        mpa_tester.prepareTest("valid props, data created, extra props")
+        expected = ("test", True, False)
+        test_data = gen_data(prop_args, expected)
+        ex_data = {
+            "extra": 123
+        }
         test_data.update(ex_data)
-        mpa_tester.assertIsNotNone(MASPoseArms._fromJSON_parseJGroup(
+        actual = MASPoseArms._fromJSON_parseJGroup(
             test_data,
             prop_args,
             [],
             0
-        ))
+        )
+        mpa_tester.assertEqual(expected, actual)
         mpa_tester.assertEqual(ex_data, test_data)
 
     call dev_unit_tests_finish_test(mpa_tester)

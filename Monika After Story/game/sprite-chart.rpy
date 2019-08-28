@@ -4605,6 +4605,15 @@ init -2 python:
                 left_data = None
                 right_data = None
 
+            # now warn for extra props
+            for ex_prop in json_obj.keys():
+                json_obj.pop(ex_prop)
+                msg_log.append((
+                    MASPoseArms.msj.MSG_WARN_T,
+                    inner_ind_lvl,
+                    MASPoseARms.msj.EXTRA_PROP.format(ex_prop)
+                ))
+
             # return the MASPoseArms.
             return MASPoseArms(
                 left=left_data,
