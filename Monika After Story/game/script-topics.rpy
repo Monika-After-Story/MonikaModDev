@@ -5246,7 +5246,7 @@ label monika_penname:
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     if seen_event("mas_monika_1984"):
-        m "If you remember me talking about George Orwell, that was also a pen name which he adopted in 1933 for his first novel {i}Down and Out in Paris and London{/i}."
+        m "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933 for his first publication named {i}Down and Out in Paris and London{/i}."
         m "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways as alternatives."
         m "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
