@@ -12162,12 +12162,12 @@ label player_red_poems:
     m 2ekd "And without my feelings for you, my poems would'nt be the same."
     m 2eka "Love, grief, anger, passion, all these feelings bring the words alive."
     m 2hua "And that makes a simple text become a poem!"
-    m 2hua "That's why I love poetry.
+    m 2hua "That's why I love poetry."
     if persistent._mas_red_poetry:
         m 5eua "Gosh, just knowing that you red poems too..."
         m 5hua "It makes me fall deeper in love with you."
         m 5hua "I can't wait to cross over your reality, to talk about poetry with you."
-        m 5dka "Sharing poems, writing new ones, just you and I...
+        m 5dka "Sharing poems, writing new ones, just you and I..."
         m 5hub "Sounds like a dream to me!"
         
     else:
