@@ -12151,7 +12151,7 @@ label player_red_poems:
             m 2sub "Really!"
             m 2hub "That makes me so happy!"
             m 2hua "And really, I mean it, not a lot of people read poetry, you know."
-        "Nah, I didn't"
+        "Nah, I didn't":
             $ persistent._mas_red_poetry = False
             m 2eka "Oh, too bad..."
             m 2eua "I just hope I made you love poetry a little more."
