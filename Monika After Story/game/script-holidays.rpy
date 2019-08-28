@@ -3363,12 +3363,8 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
-        #datetime.datetime(2020, 1, 1),
-        # NOTE: this needs to be moved ahead if on player bday on certain day:
-        #   If Jan 7 - set to Jan 5
-        #   If Jan 6 - set to Jan 4
-        #   If Jan 5 - set to Jan 3
-        datetime.datetime(2020, 1, 6),
+        # NOTE: this needs to be adjusted based on the player's bday
+        datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
