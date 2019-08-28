@@ -322,6 +322,9 @@ init python:
             #Play the notif sound if we have that enabled and notif was successful
             if persistent._mas_notification_sounds and notif_success:
                 renpy.sound.play("mod_assets/sounds/effects/notif.wav")
+
+            #Now we return true if notif was successful, false otherwise
+            if notif_success:
                 return True
         return False
 
