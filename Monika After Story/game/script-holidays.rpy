@@ -2024,12 +2024,14 @@ label mas_d25_spent_time_monika:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
+        return
 
-    elif mas_isMoniAff(higher=True):
+    elif mas_isMoniAff():
         m 5ekbfa "I love you so much, [player]~"
-    elif mas_isMoniNormal(higher=True):
+    # Normal and happy
+    else:
         m 1hubfa "I love you, [player]~"
-    return
+    return "love"
 
 
 #NOTE, if you're running with config.developer being True, timing WILL be off on the song
@@ -2086,7 +2088,7 @@ label monika_aiwfc:
         m 1ekbfa "I love you."
 
     play music curr_song fadein 1.0
-    return
+    return "love"
 
 label monika_aiwfc_song:
     # TODO: consider doing something where we can use lyric bar and style
@@ -2209,6 +2211,7 @@ label mas_d25_postd25_notimespent:
         m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
         m 1eka "All I want is to be close to you, [player]..."
         m 3ekbfa "I love you~"
+        return "love"
 
     elif mas_isMoniNormal(higher=True):
         $ mas_loseAffection(5, reason=6)
@@ -2736,7 +2739,7 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
 
     m "Happy New Year~"
-    return
+    return "love"
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
@@ -3065,14 +3068,14 @@ label monika_nye_year_review:
                 m 5hubfb "Let's make this year better than the last."
 
         else:
-            m "Let's make this year the best we can, [player]."
+            m "Let's make this year the best we can, [player]. I love you~"
     else:
         m 1dsa "Thank you for deciding to let go of the past, and start over."
         m 1eka "I think if we just try, we can make this work, [player]."
         m "Let's make this year great for each other."
         m 1ekbfa "I love you."
 
-    return "derandom"
+    return "derandom|love"
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
@@ -3180,7 +3183,7 @@ label greeting_nye_prefw:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "I love you, [player]."
-    return
+    return "love"
 
 label greeting_nye_infw:
     #if within firework time:
@@ -3189,7 +3192,7 @@ label greeting_nye_infw:
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
-    return
+    return "love"
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
 
@@ -3590,6 +3593,8 @@ label mas_player_bday_cake:
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
+    # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
+    $ mas_ILY()
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -4031,7 +4036,7 @@ label mas_pf14_monika_lovey_dovey:
     #Add the delayed action to remove itself
     $ mas_addDelayedAction(11)
 
-    return "derandom|no_unlock"
+    return "derandom|no_unlock|love"
 
 #######################[HOL050] INTRO:
 
@@ -4116,7 +4121,7 @@ label mas_f14_monika_valentines_intro:
 
     #We have now seen the intro
     $ persistent._mas_f14_intro_seen = True
-    return "rebuild_ev"
+    return "rebuild_ev|love"
 
 #######################[HOL050] TOPICS
 
@@ -4457,6 +4462,7 @@ label mas_f14_monika_spent_time_with:
         m 1ekbfa "Thank you for always being by my side."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+        return "love"
 
     else:
         m 1eka "Thank you for being by my side."

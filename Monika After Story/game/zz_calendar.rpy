@@ -1985,7 +1985,7 @@ label _first_time_calendar_use:
     m 1eua "Feel free to check the calendar whenever you want."
     m 1lksdla "Except for when I'm in the middle of talking, of course."
 
-    show monika idle
+    show monika idle with dissolve
 
     $ persistent._mas_first_calendar_check = True
 
@@ -1997,7 +1997,8 @@ label _first_time_calendar_use:
 
     # push calendar birthdate for users without any birthdate
     elif persistent._mas_player_bday is None:
-        $ pushEvent("calendar_birthdate")
+        $ pushEvent("calendar_birthdate",True)
+        $ mas_MUMUDropShield()
 
     else:
         $ mas_HKBDropShield()

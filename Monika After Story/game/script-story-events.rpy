@@ -50,7 +50,7 @@ label gender:
     $ evhand.event_database["gender_redo"].pool = True
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
@@ -132,7 +132,7 @@ label gender_redo:
                 m "So I'll treat you however you want to be treated."
                 m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
@@ -618,10 +618,10 @@ label unlock_piano:
 
 # NOTE: this has beenpartially disabled
 label random_limit_reached:
-    $seen_random_limit=True
+    $ seen_random_limit=True
 
     #Notif so people don't get stuck here
-    call display_notif(m_name, "Hey [player]...", "Topic Alerts")
+    $ display_notif(m_name, ["Hey [player]..."], "Topic Alerts")
 
     python:
         limit_quips = [
@@ -771,6 +771,9 @@ label mas_crashed_start:
         # cleanup
         call mas_crashed_post
 
+    #Only dissolve if needed
+    if len(persistent.event_list) == 0:
+        show monika idle with dissolve
     return
 
 label mas_crashed_prelong:
@@ -2181,6 +2184,7 @@ label monika_rpy_files:
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
+            return "love"
 
         "No.":
             m "I see."
@@ -2465,7 +2469,7 @@ label mas_notification_windowreact:
         "Sure!":
             m 1hua "Okay, [player]!"
             m 2dsa "Just give me a second to make a notification.{w=0.5}.{w=0.5}.{nw}"
-            call display_notif(m_name, "I love you, [player]!", skip_checks=True)
+            $ display_notif(m_name, ["I love you, [player]!"], skip_checks=True)
             m 1hub "There it is!"
 
         "No thanks.":
