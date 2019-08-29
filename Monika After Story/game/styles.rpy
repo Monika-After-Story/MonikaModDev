@@ -110,9 +110,39 @@ init python:
         #Reset the global flag
         store.mas_globals.change_textbox = True
 
+#START: Settings menu helpers
+init python in mas_settings:
+    _persistent = renpy.game.persistent
+    import store
+    def _auto_mode_toggle():
+        """
+        Handles the toggling of fields so the menu options become mutually exclusive
+        """
+        #We're disablng this so we only set it false
+        if _persistent._mas_auto_mode_enabled:
+            _persistent._mas_auto_mode_enabled = False
+            if not store.morning_flag:
+                store.mas_darkMode(True)
+
+        #But here we need to also switch the other button since this is mutually exclusive
+        else:
+            _persistent._mas_auto_mode_enabled = True
+            _persistent._mas_dark_mode_enabled = False
+
+    def _dark_mode_toggle():
+        """
+        Handles the toggling of fields so the menu options become mutually exclusive
+        """
+        if _persistent._mas_dark_mode_enabled:
+            _persistent._mas_dark_mode_enabled = False
+
+        else:
+            _persistent._mas_dark_mode_enabled = True
+            _persistent._mas_auto_mode_enabled = False
+        renpy.restart_interaction()
+
 
 #START: Extras Menu Styles
-
 style mas_adjust_vbar_def:
     xsize 18
     base_bar Frame("gui/scrollbar/vertical_poem_bar.png", tile=False)

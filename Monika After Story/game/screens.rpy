@@ -1104,7 +1104,7 @@ screen preferences():
                 if renpy.variant("pc"):
 
                     vbox:
-                        style_prefix "radio"
+                        style_prefix ("radio" if not mas_globals.dark_mode else "radio_dark")
                         label _("Display")
                         textbutton _("Window") action Preference("display", "window")
                         textbutton _("Fullscreen") action Preference("display", "fullscreen")
@@ -1118,14 +1118,22 @@ screen preferences():
 
                 #Disable/Enable space animation AND lens flair in room
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _("Graphics")
                     textbutton _("Disable Animation") action ToggleField(persistent, "_mas_disable_animations")
                     textbutton _("Change Renderer") action Function(renpy.call_in_new_context, "mas_gmenu_start")
 
+                    #Handle buttons
+                    textbutton _("Dark UI"):
+                        action [Function(mas_darkMode, persistent._mas_dark_mode_enabled), Function(mas_settings._dark_mode_toggle)]
+                        selected persistent._mas_dark_mode_enabled
+                    textbutton _("Day/Night UI"):
+                        action [Function(mas_darkMode, morning_flag), Function(mas_settings._auto_mode_toggle)]
+                        selected persistent._mas_auto_mode_enabled
+
 
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _("Gameplay")
                     if persistent._mas_unstable_mode:
                         textbutton _("Unstable"):
@@ -1145,7 +1153,7 @@ screen preferences():
                 ## Additional vboxes of type "radio_pref" or "check_pref" can be
                 ## added here, to add additional creator-defined preferences.
                 vbox:
-                    style_prefix "check"
+                    style_prefix ("check" if not mas_globals.dark_mode else "check_dark" )
                     label _(" ")
                     textbutton _("Sensitive Mode"):
                         action ToggleField(persistent, "_mas_sensitive_mode", True, False)
@@ -1313,17 +1321,17 @@ screen preferences():
             hbox:
                 textbutton _("Update Version"):
                     action Function(renpy.call_in_new_context, 'forced_update_now')
-                    style "navigation_button"
+                    style ("navigation_button" if not mas_globals.dark_mode else "navigation_dark_button")
 
                 textbutton _("Import DDLC Save Data"):
                     action Function(renpy.call_in_new_context, 'import_ddlc_persistent_in_settings')
-                    style "navigation_button"
+                    style ("navigation_button" if not mas_globals.dark_mode else "navigation_dark_button")
 
 
     text tooltip.value:
         xalign 0.0 yalign 1.0
         xoffset 300 yoffset -10
-        style "main_menu_version"
+        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
 #        layout "greedy"
 #        text_align 0.5
 #        xmaximum 650
@@ -1331,7 +1339,7 @@ screen preferences():
     text "v[config.version]":
         xalign 1.0 yalign 0.0
         xoffset -10
-        style "main_menu_version"
+        style ("main_menu_version_def" if not mas_globals.dark_mode else "main_menu_version_dark")
 
 style pref_label is gui_label
 style pref_label_text is gui_label_text
