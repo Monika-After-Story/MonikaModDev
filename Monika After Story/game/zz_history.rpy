@@ -629,22 +629,17 @@ init -850 python:
                     (
                         mas_TTDetected()
                         and not self.isContinuous() 
-                        and (
-                            self.isFuture(_now)
-                            or self.isActive(_now)
-                            or (self.use_year_before and trigger_year_diff > 2)
-                        )
+                        and (self.isFuture(_now) or self.isActive(_now))
+#                            or (self.use_year_before and trigger_year_diff > 2)
                     )
-                    or (self.isContinuous() and trigger_year_diff > 1)
+#                    or (self.isContinuous() and trigger_year_diff > 1)
+                    or trigger_year_diff > 1
                     or _trigger <= first_sesh
                 ):
                 # if time travel occured and the event is:
-                #   ongoing,
-                #   in the future.
-                #   or at least 3 years beyond current
+                #   ongoing or in the future.
                 #
                 # or if the trigger year is at least 2 years beyond current
-                #   for a continuous event
                 # its definitely a time travel issue.
                 #
                 # or if the trigger is before or same date as the first session
@@ -654,6 +649,12 @@ init -850 python:
                 # in teh current year or will happen this year so we can 
                 # both prevent overwrites and save data when we need to.
                 self.trigger = MASHistorySaver.correctTriggerYear(_trigger)
+
+                # if we are dealing with a use_year_before, then actually
+                # we need to add another year because of the weird trigger
+                # mechanics.
+                if self.use_year_before:
+                    self.trigger = self.trigger.replace(year=self.trigger.year + 1)
 
             else:
                 # otherwise, no issues with the new trigger
