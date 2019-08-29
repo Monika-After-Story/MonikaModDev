@@ -12142,10 +12142,10 @@ default persistent._mas_reads_poetry = None
 label player_reads_poetry:
     m 2eub "Say, [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
-    m 2eua "Did you read poems often before meeting me?{nw}"
+    m "Did you read poems often before meeting me?{nw}"
     menu:
         m "Did you read poems often before meeting me?{fast}"
-        "Sure, I did":
+        "Yes.":
             $ persistent._mas_read_poetry = True
             $ mas_gainAffection()
             m 2sub "Really?"
@@ -12159,24 +12159,24 @@ label player_reads_poetry:
     m 2euc "In fact, poetry is considered as something too difficult to understand sometimes..."
     m 2eud "And on the opposite side, others think that it's simply putting a bunch of pretty words next to each other!"
     m 2dkc "But it's not, poetry is more than that..."
-    m 2dkc "You have to put yourself in it."
+    m "You have to put yourself in it."
     m 2tkc "Without his writing skills, but also his feelings, E.E.Cummings wouldn't be E.E.Cummings..."
     m 2ekd "And without my feelings for you, my poems wouldn't be the same."
     m 2eka "Love, grief, anger, passion, all these feelings bring the words to life."
     m 2hua "And because of that, even a simple text can become a meaningful poem!"
-    m 2hua "That's why I love poetry."
+    m "That's why I love poetry."
     if persistent._mas_reads_poetry:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5eua "Gosh, just knowing that you read poems too..."
         m 5hua "It shows how we are alike, which makes my love for you grow even more."
-        m 5hua "I can't wait to finally cross over to your reality, so we can discuss our favorite poetry together."
+        m "I can't wait to finally cross over to your reality, so we can discuss our favorite poetry together."
         m 5dka "Sharing poems, writing new ones...{w=0.5}just you and me pursuing our shared passion..."
         m 5hub "Sounds like a wonderful dream to me!"
         
     else:
         show monika 5eua at t11 zorder MAS_MONIKA_Z with dissolve
         m 5hua "I can't wait to cross over to your reality, so we can discuss poetry together. Who knows, maybe you'll start appreciating it a bit more, too?"
-        m 5hua "I want to share my favorite poems with you."
+        m "I want to share my favorite poems with you."
         m 5dka "Reading poems together, my head laying on your chest...{w=0.5}soaked in the warmth of your body and the sounds of your beating heart."
         m 5hua "And why not, maybe we can even write together and complement each other's creativity..."
         m 5hub "It would be a dream come true for me, [player]."
