@@ -591,7 +591,8 @@ label dev_unit_test_json_masposearms:
         
         mpa_tester.prepareTest("no data passed")
         test_data = {}
-        actual = MASPoseArms.fromJSON(test_data, [], 0)
+        log = []
+        actual = MASPoseArms.fromJSON(test_data, log, 0)
         mpa_tester.assertIsNone(actual.both)
         mpa_tester.assertIsNone(actual.both_back)
         mpa_tester.assertIsNone(actual.both_front)
@@ -600,15 +601,17 @@ label dev_unit_test_json_masposearms:
         mpa_tester.assertIsNone(actual.left_front)
         mpa_tester.assertIsNone(actual.right)
         mpa_tester.assertIsNone(actual.right_back)
-        mpa_tester.assertIsnone(actual.right_front)
+        mpa_tester.assertIsNone(actual.right_front)
+        mpa_tester.assertEqual(1, len(log))
 
         mpa_tester.prepareTest("no data passed, extra props")
         test_data = {}
+        log = []
         ex_data = {
             "extra": 123
         }
         test_data.update(ex_data)
-        actual = MASPoseArms.fromJson(test_data, [], 0)
+        actual = MASPoseArms.fromJson(test_data, log, 0)
         mpa_tester.assertIsNone(actual.both)
         mpa_tester.assertIsNone(actual.both_back)
         mpa_tester.assertIsNone(actual.both_front)
@@ -617,8 +620,101 @@ label dev_unit_test_json_masposearms:
         mpa_tester.assertIsNone(actual.left_front)
         mpa_tester.assertIsNone(actual.right)
         mpa_tester.assertIsNone(actual.right_back)
-        mpa_tester.assertIsnone(actual.right_front)
+        mpa_tester.assertIsNone(actual.right_front)
         mpa_tester.assertEqual(ex_data, test_data)
+        mpa_tester.assertEqual(2, len(log))
+
+        mpa_tester.prepareTest("both data passed")
+        bname = "test"
+        log = []
+        test_data = gen_both((bname, True, True))
+        actual = MASPoseArms.fromJSON(test_data, log, 0)
+        mpa_tester.assertEqual(bname, actual.both)
+        mpa_tester.assertTrue(actual.both_back)
+        mpa_tester.assertTrue(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsNone(actual.right_front)
+        mpa_tester.assertEqual({}, test_data)
+        mpa_tester.assertEqual(0, len(log))
+
+        mpa_tester.prepareTest("left data passed")
+        log = []
+        lname = "test"
+        expected = store.mas_sprites.PREFIX_ARMS_LEFT + lname
+        test_data = gen_left((lname, True, True))
+        actual = MASPoseArms.fromJson(test_data, log, 0)
+        mpa_tester.assertIsNone(actual.both)
+        mpa_tester.assertIsNone(actual.both_back)
+        mpa_tester.assertIsNone(actual.both_front)
+        mpa_tester.assertEqual(expected, actual.left)
+        mpa_tester.assertTrue(actual.left_back)
+        mpa_tester.assertTrue(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsNone(actual.right_front)
+        mpa_tester.assertEqual({}, test_data)
+        mpa_tester.assertEqual(0, len(log))
+
+        mpa_tester.prepareTest("right data passed")
+        log = []
+        rname = "test"
+        expected = store.mas_sprites.PREFIX_ARMS_RIGHT + rname
+        test_data = gen_right((rname, True, True))
+        actual = MASPoseArms.fromJson(test_data, log, 0)
+        mpa_tester.assertIsNone(actual.both)
+        mpa_tester.assertIsNone(actual.both_back)
+        mpa_tester.assertIsNone(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertEqual(expected, actual.right)
+        mpa_tester.assertTrue(actual.right_back)
+        mpa_tester.assertTrue(actual.right_front)
+        mpa_tester.assertEqual({}, test_data)
+        mpa_tester.assertEqual(0, len(log))
+
+        mpa_tester.prepareTest("both + left data passed")
+        log = []
+        bname = "test"
+        lname = "test"
+        test_data = gen_both((bname, True, True))
+        test_data.update(gen_left((lname, True, True))
+        actual = MASPoseArms.fromJSON(test_data, log, 0)
+        mpa_tester.assertEqual(bname, actual.back)
+        mpa_tester.assertTrue(actual.both_back)
+        mpa_tester.assertTrue(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsNone(actual.right_front)
+        mpa_tester.assertEqual({}, test_data)
+        mpa_tester.assertEqual(1, len(log))
+
+        mpa_tester.prepareTest("both + right data passed")
+        log = []
+        bname = "test"
+        rname = "test"
+        test_data = gen_both((bname, True, True))
+        test_data.update(gen_right((rname, True, True))
+        actual = MASPoseArms.fromJSON(test_data, log, 0)
+        mpa_tester.assertEqual(bname, actual.back)
+        mpa_tester.assertTrue(actual.both_back)
+        mpa_tester.assertTrue(actual.both_front)
+        mpa_tester.assertIsNone(actual.left)
+        mpa_tester.assertIsNone(actual.left_back)
+        mpa_tester.assertIsNone(actual.left_front)
+        mpa_tester.assertIsNone(actual.right)
+        mpa_tester.assertIsNone(actual.right_back)
+        mpa_tester.assertIsNone(actual.right_front)
+        mpa_tester.assertEqual({}, test_dta)
+        mpa_tester.assertEqual(1, len(log))
+
 
     return
 
