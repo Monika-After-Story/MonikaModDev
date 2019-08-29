@@ -12151,7 +12151,7 @@ label player_reads_poetry:
             m 2sub "Really?"
             m 2hub "That makes me so happy!"
             m 2hua "And really, I mean it, since not a lot of people nowadays read poetry, you know."
-        "Not really":
+        "Not really.":
             $ persistent._mas_reads_poetry = False
             m 2eka "Oh, that's too bad..."
             m 2eua "I just hope I made you appreciate poetry a little more."
