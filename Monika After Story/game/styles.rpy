@@ -26,7 +26,7 @@ init python:
         """
 
         #Light handling
-        if mas_globals.dark_mode:
+        if not mas_globals.dark_mode:
             return filestring
 
         #Dark handling
