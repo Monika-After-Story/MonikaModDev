@@ -623,19 +623,21 @@ init -850 python:
             if first_sesh is None:
                 first_sesh = _now
 
-            trigger_year_diff = _trigger.year - _now.year
+            trigger_year_ahead = _trigger.year - _now.year > 1
+            tt_happen_mhs_future = (
+                mas_TTDetected()
+                and not self.isContinuous() 
+                and (self.isFuture(_now) or self.isActive(_now))
+            )
+            impossible_trigger = _trigger <= first_sesh
 
             if (
-                    (
-                        mas_TTDetected()
-                        and not self.isContinuous() 
-                        and (self.isFuture(_now) or self.isActive(_now))
-#                            or (self.use_year_before and trigger_year_diff > 2)
-                    )
-#                    or (self.isContinuous() and trigger_year_diff > 1)
-                    or trigger_year_diff > 1
-                    or _trigger <= first_sesh
-                ):
+                    tt_happen_mhs_future
+                    or trigger_year_ahead
+                    or impossible_trigger
+            #                    or (self.isContinuous() and trigger_year_diff > 1)
+            #        or _trigger <= first_sesh
+            ):
                 # if time travel occured and the event is:
                 #   ongoing or in the future.
                 #
@@ -653,7 +655,11 @@ init -850 python:
                 # if we are dealing with a use_year_before, then actually
                 # we need to add another year because of the weird trigger
                 # mechanics.
-                if self.use_year_before:
+                if (
+                        self.use_year_before
+                        and not tt_happen_mhs_future
+                        and not impossible_trigger
+                ):
                     self.trigger = self.trigger.replace(year=self.trigger.year + 1)
 
             else:
