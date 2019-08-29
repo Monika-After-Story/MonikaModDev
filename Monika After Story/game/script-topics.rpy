@@ -13016,7 +13016,7 @@ label monika_writing_idle:
     m 1eub "Oh! You're going to go write?"
     m 1hub "That's amazing to hear, [player]!"
     m 3eua "I'm glad to hear that you're working to improve your skills."
-    m 3eub "Maybe once you've got some writing done, you could share it with me! I'd love to read some of your writing, [player]"
+    m 3eub "Maybe once you've got some writing done, you could share it with me! I'd love to read some of your writing, [player]."
     m 1eub "For now, though, I'll let you get to it! Just let me know when you're done writing."
     m 1hua "I'll be here~"
 
