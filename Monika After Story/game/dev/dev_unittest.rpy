@@ -737,6 +737,7 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -753,6 +754,7 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -769,6 +771,7 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -789,6 +792,9 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertTrue(test_mhs.isFuture(test_now))
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -809,6 +815,10 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertTrue(test_mhs.isActive(test_now))
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -832,6 +842,12 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        mhs_tester.assertTrue(test_mhs.use_year_before)
+        mhs_tester.assertTrue(test_dt.year-test_now.year > 2)
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -855,6 +871,12 @@ label dev_unit_test_mhs:
         test_mhs.use_year_before = True
         test_mhs.setTrigger(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        mhs_tester.assertTrue(test_mhs.use_year_before)
+        mhs_tester.assertFalse(test_dt.year-test_now.year > 2)
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -870,6 +892,7 @@ label dev_unit_test_mhs:
         test_dt = test_now + datetime.timedelta(days=10)
         test_mhs.setTrigger(test_dt)
         mhs_tester.assertEqual(test_dt, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
