@@ -475,8 +475,8 @@ init -850 python:
             self.id = mhs_id
             self.start_dt = start_dt
             self.end_dt = end_dt
-            self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
+            self.setTrigger(trigger)  # use the set function for cleansing
             self.mapping = mapping
             self.dont_reset = dont_reset
             self.entry_pp = entry_pp
