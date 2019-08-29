@@ -12142,16 +12142,16 @@ default persistent._mas_reads_poetry = None
 label player_reads_poetry:
     m 2eub "Say, [player]..."
     m 2eua "You know that I like poetry, but I was wondering something."
-    m "Did you read poems often before meeting me?{nw}"
+    m "Did you often read poems before you joined the Literature Club?{nw}"
     menu:
-        m "Did you read poems often before meeting me?{fast}"
+        m "Did you often read poems before you joined the Literature Club?{fast}"
         "Yes.":
             $ persistent._mas_read_poetry = True
             $ mas_gainAffection()
             m 2sub "Really?"
             m 2hub "That makes me so happy!"
-            m 2hua "And really, I mean it, since not a lot of people nowadays read poetry, you know."
-        "Not really.":
+            m 2hua "And really, I mean it. Not a lot of people nowadays read poetry, you know."
+        "No.":
             $ persistent._mas_reads_poetry = False
             m 2eka "Oh, that's too bad..."
             m 2eua "I just hope I made you appreciate poetry a little more."
