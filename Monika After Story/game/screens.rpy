@@ -314,7 +314,7 @@ screen say(who, what):
     # If there's a side image, display it above the text. Do not display
     # on the phone variant - there's no room.
     if not renpy.variant("small"):
-        add SideImage() xalign 0.0 yalign 1.0
+        add SideImage() xalign (0.0 if not mas_globals.dark_mode else 2.5) yalign (1.0 if not mas_globals.dark_mode else 2.5)
 
     use quick_menu
 
@@ -1709,19 +1709,17 @@ style history_label_text:
 ## http://www.renpy.org/doc/html/screen_special.html#confirm
 
 screen name_input(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
-    add "gui/overlay/confirm.png"
     key "K_RETURN" action [Play("sound", gui.activate_sound), ok_action]
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1740,18 +1738,15 @@ screen name_input(message, ok_action):
                 textbutton _("OK") action ok_action
 
 screen dialog(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1768,18 +1763,15 @@ screen dialog(message, ok_action):
                 textbutton _("OK") action ok_action
 
 screen quit_dialog(message, ok_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1803,18 +1795,15 @@ image confirm_glitch:
     repeat
 
 screen confirm(message, yes_action, no_action):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
     zorder 200
 
     style_prefix "confirm"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
@@ -1843,8 +1832,6 @@ screen confirm(message, yes_action, no_action):
     #key "game_menu" action no_action
 
 
-
-
 style confirm_frame is gui_frame
 style confirm_prompt is gui_prompt
 style confirm_prompt_text is gui_prompt_text
@@ -1871,8 +1858,8 @@ style confirm_button:
 style confirm_button_text is navigation_button_text:
     properties gui.button_text_properties("confirm_button")
 
-##Updating screen
 
+##Updating screen
 screen update_check(ok_action,cancel_action,mode):
 
     ## Ensure other screens do not get input while this screen is displayed.
@@ -1881,7 +1868,6 @@ screen update_check(ok_action,cancel_action,mode):
     zorder 200
 
     style_prefix "update_check"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
@@ -1936,22 +1922,18 @@ style update_check_button_text is confirm_button_text
 ## This is the screen called when the game needs to update versions
 ##
 screen updater:
-
     modal True
 
     style_prefix "updater"
 
     frame:
-
         has side "t c b":
             spacing gui._scale(10)
 
         label _("Updater")
 
         fixed:
-
             vbox:
-
                 if u.state == u.ERROR:
                     text _("An error has occured:")
                 elif u.state == u.CHECKING:
@@ -1982,10 +1964,9 @@ screen updater:
 
                 if u.progress is not None:
                     null height gui._scale(10)
-                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff") thumb None
+                    bar value u.progress range 1.0 left_bar Solid("#cc6699") right_bar Solid("#ffffff" if not mas_globals.dark_mode else "#13060d") thumb None
 
         hbox:
-
             spacing gui._scale(25)
 
             if u.can_proceed:
@@ -2208,9 +2189,9 @@ style twopane_scrollable_menu_special_button is twopane_scrollable_menu_button
 style twopane_scrollable_menu_special_button_text is twopane_scrollable_menu_button_text:
     bold True
 
+
 #scrollable_menu selection screen
 #This screen is based on work from the tutorial menu selection by haloff1
-
 screen twopane_scrollable_menu(prev_items, main_items, left_area, left_align, right_area, right_align, cat_length):
     style_prefix ("twopane_scrollable_menu" if not mas_globals.dark_mode else "twopane_scrollable_menu_dark")
 
@@ -2386,7 +2367,6 @@ screen mas_generic_restart:
     zorder 200
 
     style_prefix "confirm"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:

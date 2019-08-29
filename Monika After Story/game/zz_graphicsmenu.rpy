@@ -432,7 +432,6 @@ label mas_gmenu_confirm_context:
 
 # confirmation screen for renderer selection
 screen mas_gmenu_confirm(sel_rend):
-
     ## Ensure other screens do not get input while this screen is displayed.
     modal True
 
@@ -443,7 +442,6 @@ screen mas_gmenu_confirm(sel_rend):
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5

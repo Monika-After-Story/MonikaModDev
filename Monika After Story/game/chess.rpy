@@ -2900,11 +2900,9 @@ screen mas_chess_confirm():
     zorder 200
 
     style_prefix "confirm"
-
     add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
-
         vbox:
             xalign .5
             yalign .5
