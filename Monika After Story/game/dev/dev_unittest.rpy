@@ -826,9 +826,8 @@ label dev_unit_test_mhs:
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = test_now - datetime.timedelta(days=5)
         test_mhs.end_dt = test_now - datetime.timedelta(days=3)
-        test_dt = test_now - datetime.timedelta(days=1)
-        test_dt = test_dt.replace(year=test_now.year+2)
-        test_mhs.trigger = test_dt
+        test_dt = test_now + datetime.timedelta(days=10)
+        test_dt = test_dt.replace(year=test_now.year+3)
         test_mhs.use_year_before = True
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
@@ -850,12 +849,11 @@ label dev_unit_test_mhs:
         test_mhs = gen_fresh_mhs()
         test_mhs.start_dt = test_now - datetime.timedelta(days=5)
         test_mhs.end_dt = test_now - datetime.timedelta(days=3)
-        test_dt = test_now - datetime.timedelta(days=1)
-        test_dt = test_dt.replace(year=test_now.year+1)
-        test_mhs.trigger = test_dt
+        test_dt = test_now + datetime.timedelta(days=10)
+        test_dt = test_dt.replace(year=test_now.year+2)
+        expected = test_dt
         test_mhs.use_year_before = True
         test_mhs.setTrigger(test_dt)
-        expected = test_dt
         mhs_tester.assertEqual(expected, test_mhs.trigger)
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
