@@ -1914,7 +1914,7 @@ label mas_show_calendar_detail(items,area,align,first_item,final_item):
 #       if None there won't be any mask
 #   frame - route to the image used as backround for the list
 screen mas_calendar_events_scrollable_list(items, display_area, scroll_align, first_item=None, final_item=None, mask="#000000B2", frame="mod_assets/calendar/calendar_bg.png"):
-        style_prefix "scrollable_menu"
+        style_prefix ("scrollable_menu" if not mas_globals.dark_mode else "scrollable_menu_dark")
 
         zorder 51
 

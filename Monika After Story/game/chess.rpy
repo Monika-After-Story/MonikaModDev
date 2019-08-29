@@ -2901,7 +2901,7 @@ screen mas_chess_confirm():
 
     style_prefix "confirm"
 
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
 

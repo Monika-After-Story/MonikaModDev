@@ -15,7 +15,7 @@ init python in mas_gmenu:
     sel_rend = ""
 
 init -1 python:
-    
+
     # custom graphics menu
     class MASGraphicsMenu(renpy.Displayable):
         """
@@ -267,7 +267,7 @@ init -1 python:
 
             # current render display text
             _renderer = self.RENDER_MAP.get(
-                self.curr_renderer, 
+                self.curr_renderer,
                 self.RENDER_UNK
             )
 
@@ -323,7 +323,7 @@ init -1 python:
 
         def _button_select(self, ev, x, y, st):
             """
-            Goes through the list of buttons and return the first non-None 
+            Goes through the list of buttons and return the first non-None
             value returned
 
             RETURNS:
@@ -405,7 +405,7 @@ init -1 python:
 
                         return sel_rend
 
-                    # otherwise, user selected a renderer, display the 
+                    # otherwise, user selected a renderer, display the
                     # confirmation screen
                     store.mas_gmenu.sel_rend = self.RENDER_MAP.get(
                         sel_rend,
@@ -440,7 +440,7 @@ screen mas_gmenu_confirm(sel_rend):
 
     style_prefix "confirm"
 
-    add "gui/overlay/confirm.png"
+    add mas_getTimeFile("gui/overlay/confirm.png")
 
     frame:
 
@@ -462,7 +462,7 @@ screen mas_gmenu_confirm(sel_rend):
 
 # gmenu flow start
 label mas_gmenu_start:
-    
+
     # first, retrieve teh current rendeer
     $ curr_render = renpy.config.renderer
 
@@ -478,7 +478,7 @@ label mas_gmenu_start:
             env_var = 'RENPY_RENDERER="{0}"'
 
             if sel_render == "auto":
-                # auto pick render, which means we should just remove the 
+                # auto pick render, which means we should just remove the
                 # env file
                 try:
                     os.remove(env_file)
