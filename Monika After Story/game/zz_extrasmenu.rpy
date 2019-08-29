@@ -347,26 +347,23 @@ screen mas_extramenu_area():
         # close button
         textbutton _("Close"):
             area (61, 594, 120, 35)
-            style "hkb_button"
+            style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
             action Jump("mas_extra_menu_close")
 
         # zoom control
         frame:
             area (195, 450, 80, 255)
-            background Frame("mod_assets/frames/trans_pink2pxborder100.png", left=Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4))
-
+            background Frame(mas_getTimeFile("mod_assets/frames/trans_pink2pxborder100.png"), left=((Borders(2, 2, 2, 2, pad_top=2, pad_bottom=4)) if not mas_globals.dark_mode else Borders(3, 3, 3, 3, pad_top=2, pad_bottom=4)))
             vbox:
-                spacing 2
-
+                spacing (2 if not mas_globals.dark_mode else 3)
                 label "Zoom":
-                    style "hkb_button_text"
-
+                    style ("hkb_button_text" if not mas_globals.dark_mode else "hkb_dark_button_text")
                 # resets the zoom value back to default
                 textbutton _("Reset"):
                     style "mas_adjustable_button"
-                    xsize 70
-                    ysize 35
-                    xalign 0.5
+                    xsize 72
+                    ysize (35 if not mas_globals.dark_mode else 40)
+                    xalign 0.3
                     action SetField(store.mas_sprites, "zoom_level", store.mas_sprites.default_zoom_level)
 
                 # actual slider for adjusting zoom

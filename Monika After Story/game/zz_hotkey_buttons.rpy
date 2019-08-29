@@ -168,8 +168,7 @@ style hkb_text is default:
 screen hkb_overlay():
 
     zorder 50
-
-    style_prefix "hkb"
+    style_prefix ("hkb" if not mas_globals.dark_mode else "hkb_dark")
 
     vbox:
         xpos 0.05
@@ -179,46 +178,45 @@ screen hkb_overlay():
 #        yalign 0.95
 
         if store.hkb_button.talk_enabled:
-            textbutton _("Talk") action Function(show_dialogue_box)
+            textbutton _("Talk") action Function(show_dialogue_box) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
         else:
             frame:
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
+                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
                 text "Talk"
 
 
         if store.hkb_button.extra_enabled:
-            textbutton _("Extra") action Function(mas_open_extra_menu)
+            textbutton _("Extra") action Function(mas_open_extra_menu) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
         else:
             frame:
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
+                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
                 text "Extra"
 
 
         if store.hkb_button.music_enabled:
-            textbutton _("Music") action Function(select_music)
+            textbutton _("Music") action Function(select_music) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
         else:
             frame:
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
+                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
                 text "Music"
 
-
         if store.hkb_button.play_enabled:
-            textbutton _("Play") action Function(pick_game)
+            textbutton _("Play") action Function(pick_game) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
         else:
             frame:
                 ypadding 5
                 xsize 120
 
-                background Image("mod_assets/hkb_disabled_background.png")
+                background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
                 text "Play"
 
 
