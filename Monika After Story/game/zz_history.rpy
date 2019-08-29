@@ -521,7 +521,6 @@ init -850 python:
             # trigger has NOT passed yet, set the trigger for this year
             return _temp_trigger
 
-
         def fromTuple(self, data_tuple):
             """
             Loads data from the data tuple
@@ -532,10 +531,11 @@ init -850 python:
                     [1]: use_year_before 
                         - check for existence before loading
             """
-            self.setTrigger(data_tuple[0])
-            
+            # this should be ahead since setTrigger uses this now
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
+
+            self.setTrigger(data_tuple[0])
 
         def isActive(self, check_dt):
             """
