@@ -767,7 +767,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         if persistent._mas_auto_mode_enabled:
             mas_darkMode(morning_flag)
         else:
-            mas_darkMode(not persistent._mas_dark_mode_enabled, change_textbox)
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
 
         ## are we hiding monika
         if not hide_monika:
