@@ -133,7 +133,7 @@ init -10 python:
         # True if we want idle to skip mid loop eval once
 
         # end keys
-       
+
 
         def __init__(self):
             """
@@ -314,7 +314,7 @@ init python:
     mas_battery_supported = battery.is_supported()
 
     # we need a new music channel for background audio (like rain!)
-    # this uses the amb (ambient) mixer. 
+    # this uses the amb (ambient) mixer.
     renpy.music.register_channel(
         "background",
         mixer="amb",
@@ -694,7 +694,7 @@ init python:
 
     def mas_unlockGame(gamename):
         """
-        Unlocks the given game. 
+        Unlocks the given game.
 
         IN:
             gamename - name of the game to unlock
@@ -762,6 +762,12 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
             if morning_flag or scene_change:
                 morning_flag = False
                 monika_room = "monika_room"
+
+        #What ui are we using
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag, change_textbox)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled, change_textbox)
 
         ## are we hiding monika
         if not hide_monika:
@@ -850,7 +856,7 @@ label ch30_main:
     if mas_isO31():
         $ persistent._mas_o31_in_o31_mode = True
         $ store.mas_globals.show_vignette = True
-        
+
         # setup thunder
         if persistent._mas_likes_rain:
             $ mas_weather_thunder.unlocked = True
@@ -1151,7 +1157,7 @@ label mas_ch30_post_holiday_check:
             and not persistent._mas_sensitive_mode
         ):
         call yuri_name_scare from _call_yuri_name_scare
-        
+
         # this skips greeting algs
         jump ch30_post_greeting_check
 
@@ -1189,7 +1195,7 @@ label mas_ch30_post_holiday_check:
                 mas_resetIdleMode()
 
             if just_crashed:
-                # but if we just crashed, then we want to select the 
+                # but if we just crashed, then we want to select the
                 # only crashed greeting.
                 # NOTE: we shouldnt actually have to do this ever, but
                 #   its here as a sanity check
@@ -1203,7 +1209,7 @@ label mas_ch30_post_holiday_check:
 
 
         # NOTE: this MUST be an if. it may be True if we crashed but
-        #   didnt get a greeting to show. 
+        #   didnt get a greeting to show.
         if sel_greeting_ev is not None:
             selected_greeting = sel_greeting_ev.eventlabel
 
@@ -1217,7 +1223,7 @@ label mas_ch30_post_holiday_check:
             if setup_label is not None and renpy.has_label(setup_label):
                 gre_cb_label = setup_label
 
-    
+
     # call pre-post greeting check setup label
     if gre_cb_label is not None:
         call expression gre_cb_label
@@ -1339,7 +1345,7 @@ label ch30_preloop:
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
- 
+
     #Unlock windowreact topics
     $ mas_resetWindowReacts()
 
@@ -1367,7 +1373,7 @@ label ch30_loop:
     python:
         should_dissolve_all = mas_shouldChangeTime()
         should_dissolve_masks = (
-            mas_weather.weatherProgress() 
+            mas_weather.weatherProgress()
             and mas_isMoniNormal(higher=True)
         )
 
@@ -1495,7 +1501,7 @@ label ch30_post_mid_loop_eval:
         # If the waiting time is not over after waiting a short period of time, the preloop is restarted.
 
         $ mas_randchat.wait()
-        
+
         if not mas_randchat.waitedLongEnough():
             jump post_pick_random_topic
         else:
@@ -1581,11 +1587,11 @@ label mas_ch30_select_seen:
                 jump mas_ch30_select_mostseen
 
             if len(mas_rev_mostseen) == 0 and not seen_random_limit:
-                # all topics seen within last seen delta, push random seen 
+                # all topics seen within last seen delta, push random seen
                 # limit if not already.
                 $ pushEvent("random_limit_reached")
                 jump post_pick_random_topic
-            
+
             # if still no events, just jump to idle loop
             jump post_pick_random_topic
 
@@ -1617,7 +1623,7 @@ label ch30_reset:
         # name eggs
         if persistent.playername.lower() == "sayori":
             store.mas_globals.show_s_light = True
-    
+
     python:
         # start by building event lists if they have not been built already
         if not mas_events_built:
@@ -1708,7 +1714,7 @@ label ch30_reset:
     # def ribbon always unlocked
     $ store.mas_selspr.unlock_acs(mas_acs_ribbon_def)
 
-    ## custom sprite objects 
+    ## custom sprite objects
     python:
         store.mas_selspr._validate_group_topics()
 
