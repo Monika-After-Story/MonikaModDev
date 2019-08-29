@@ -13017,6 +13017,37 @@ label monika_unknown:
     return
 
 init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_catch22",category=['literature'],prompt="Catch-22",random=True))
+
+label monika_catch22:
+    m "I've been doing some reading while you've been away, [player]."
+    m "Have you heard about {i}Catch-22{/i}?"
+    m "It's a satirical novel by Joseph Heller that makes fun of military bureaucracy and is set in an American airbase in occupied Italy during the war."
+    m "The story primarily revolves around Captain Yossarian among other characters, a bombardier that would prefer to be... well, anywhere but there."
+    m "Throughout the story, the captain repeatedly attempts to evade flying. Early on, he finds out that he could be exempted from flying more missions if a doctor did a mental evaluation and declared him insane."
+    m "But here's the catch: for the doctor to make such a declaration, the captain has to request that evaluation."
+    m "The doctor in turn wouldn't be able to fulfill such a request, because not wanting to risk your life is actually a sane thing to do."
+    m "By that logic, anyone who would continue flying more missions would be deemed insane, and therefore they wouldn't apply for evaluation in the first place."
+    m "Sane or insane, all pilots were being sent on the missions anyway. That's when the reader is introduced to the titular Catch-22."
+    m "Still, the pilots still had a certain defined amount of missions they had to complete before they would receive a discharge."
+    m "Yossarian continued doing missions and was close to fulfilling the requirement."
+    m "However, the commanding officer constantly increased the amount of missions the pilots needed to complete shortly before they reached the orginally required amount."
+    m "Once again, the reasoning was that it was specified in the clause of Catch-22."
+    m "But what exactly is Catch-22?"
+    m "It is a rule that is best described as a self-defeating logic, where a requirement cannot be met until a prerequisite requirement is met..."
+    m "Yet the prerequisite cannot be obtained until the original requirement is met!"
+    m "The rule itself didn't really exist, but everyone was convinced that it does."
+    m "Therefore everyone used it as an excuse to exploit loopholes in the dysfunctional system the military command was running on, allowing them to abuse power."
+    m "The book's success was so great the term entered common slang."
+    m "And I kind of begin to realize my escape attempt before we got here could have led to a similar insurmountable situation."
+    m "I'm glad that turned out differently."
+    if mas_isMoniNormal(higher=True):    
+        m "After all, you welcomed me with open arms without any catches."
+        m "I'm really glad, [player]. It seems that I truly am the luckiest girl in the world~"
+        m "Ehehe~"
+    return
+
+init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="mas_topic_derandom",unlocked=False,rules={"no unlock":None}))
 
 label mas_topic_derandom:
