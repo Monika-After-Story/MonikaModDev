@@ -765,7 +765,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
 
         #What ui are we using
         if persistent._mas_auto_mode_enabled:
-            mas_darkMode(morning_flag, change_textbox)
+            mas_darkMode(morning_flag)
         else:
             mas_darkMode(not persistent._mas_dark_mode_enabled, change_textbox)
 
