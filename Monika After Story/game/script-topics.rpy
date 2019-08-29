@@ -12999,3 +12999,43 @@ label mas_show_unseen:
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_writing_idle",
+            prompt="I'm going to write for a bit",
+            category=['be right back'],
+            pool=True,
+            unlocked=True
+        )
+    )
+
+label monika_writing_idle:
+    m 1eub "Oh! You're going to go write?"
+    m 1hub "That's amazing to hear, [player]!"
+    m 3eua "I'm glad to hear that you're working to improve your skills."
+    m 3eub "Maybe once you've got some writing done, you could share it with me! I'd love to read some of your writing, [player]"
+    m 1eub "For now, though, I'll let you get to it! Just let me know when you're done writing."
+    m 1hua "I'll be here~"
+
+    #Set up the callback label
+    $ mas_idle_mailbox.send_idle_cb("monika_writing_idle_callback")
+    #Then the idle data
+    $ persistent._mas_idle_data["monika_idle_writing"] = True
+    return "idle"
+
+label monika_writing_idle_callback:
+    python:
+        wb_quips = [
+            "So, what else did you want to do today?",
+            "Is there anything else you wanted to do today?",
+            "What else should we do today?",
+        ]
+
+        wb_quip = renpy.random.choice(wb_quips)
+
+    m 1hub "Are you done writing, [player]?"
+    m 1eua "[wb_quip]"
+    return
