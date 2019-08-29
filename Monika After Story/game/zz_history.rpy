@@ -789,22 +789,25 @@ init -800 python in mas_history:
         now_ahead = now_dt.replace(year=now_dt.year + 1)
         lse = store.mas_getLastSeshEnd()
 
-        if now_dt.year == lse.year:
-            # case 1
-            for mhs in mhs_sorted_list:
-                if mhs.isActiveWithin(now_dt, lse):
+        same_cal_year = now_dt.year == lse.year
+        lse_within_year = lse < now_ahead
+
+        for mhs in mhs_sorted_list:
+            if not mhs.isContinuous():
+                reset = False
+                
+                if same_cal_year:
+                    reset = mhs.isActiveWithin(now_dt, lse)
+
+                elif lse_within_year:
+                    reset = mhs.isActive(lse) or mhs.isPassed(lse)
+
+                else:
+                    reset = True
+
+                if reset:
                     mhs.resetData()
 
-        elif lse < now_ahead:
-            # case 2
-            for mhs in mhs_sorted_list:
-                if mhs.isActive(lse) or mhs.isPassed(lse):
-                    mhs.resetData()
-
-        else:
-            # case 3
-            for mhs in mhs_sorted_list:
-                mhs.resetData()
 
     # first, we need to load existing MHS data
     loadMHSData()
