@@ -475,8 +475,8 @@ init -850 python:
             self.id = mhs_id
             self.start_dt = start_dt
             self.end_dt = end_dt
-            self.setTrigger(trigger)  # use the set function for cleansing
             self.use_year_before = use_year_before
+            self.setTrigger(trigger)  # use the set function for cleansing
             self.mapping = mapping
             self.dont_reset = dont_reset
             self.entry_pp = entry_pp
@@ -521,7 +521,6 @@ init -850 python:
             # trigger has NOT passed yet, set the trigger for this year
             return _temp_trigger
 
-
         def fromTuple(self, data_tuple):
             """
             Loads data from the data tuple
@@ -532,10 +531,11 @@ init -850 python:
                     [1]: use_year_before 
                         - check for existence before loading
             """
-            self.setTrigger(data_tuple[0])
-            
+            # this should be ahead since setTrigger uses this now
             if len(data_tuple) > 1:
                 self.use_year_before = data_tuple[1]
+
+            self.setTrigger(data_tuple[0])
 
         def isActive(self, check_dt):
             """
@@ -564,6 +564,28 @@ init -850 python:
                 self.start_dt.replace(year=check_dt.year)
                 <= check_dt 
                 < self.end_dt.replace(year=check_dt.year)
+            )
+
+        def isActiveWithin(self, start_dt, end_dt):
+            """
+            Checks if this MHS would have been active within the given range
+            of dt. NOTE: if an MHS is continuous, then we are ALWAYS within
+            range.
+
+            IN:
+                start_dt - start of the range to check (inclusive)
+                end_dt - end of the range to check (inclusive)
+
+            RETURNS: True if this MHS would hav ebeen active in teh given
+                range, False ifnot
+            """
+            if self.isContinuous():
+                return True
+
+            return (
+                self.isActive(start_dt)
+                or self.isActive(end_dt)
+                or (self.isFuture(start_dt) and self.isPassed(end_dt))
             )
 
         def isContinuous(self):
@@ -606,6 +628,14 @@ init -850 python:
 
             return self.end_dt.replace(year=check_dt.year) <= check_dt
 
+        def resetData(self):
+            """
+            Resets data in teh mapping. This is highly dangerous.
+            """
+            # go through mapping and reset data
+            for p_key in self.mapping:
+                persistent.__dict__[p_key] = None
+
         def setTrigger(self, _trigger):
             """
             Sets the trigger of this object. This function does cleansing of
@@ -623,19 +653,25 @@ init -850 python:
             if first_sesh is None:
                 first_sesh = _now
 
+            trigger_year_ahead = _trigger.year - _now.year > 1
+            tt_happen_mhs_future = (
+                mas_TTDetected()
+                and not self.isContinuous() 
+                and (self.isFuture(_now) or self.isActive(_now))
+            )
+            impossible_trigger = _trigger <= first_sesh
+
             if (
-                    (
-                        mas_TTDetected()
-                        and not self.isContinuous()
-                        and (self.isFuture(_now) or self.isActive(_now))
-                    )
-                    or _trigger.year > (_now.year + 1)
-                    or _trigger <= first_sesh
-                ):
-                # if time travel occured and the event is ongoing or in
-                # the future
+                    tt_happen_mhs_future
+                    or trigger_year_ahead
+                    or impossible_trigger
+            #                    or (self.isContinuous() and trigger_year_diff > 1)
+            #        or _trigger <= first_sesh
+            ):
+                # if time travel occured and the event is:
+                #   ongoing or in the future.
                 #
-                # or if the trigger year is at least 2 years beyond current, 
+                # or if the trigger year is at least 2 years beyond current
                 # its definitely a time travel issue.
                 #
                 # or if the trigger is before or same date as the first session
@@ -646,10 +682,19 @@ init -850 python:
                 # both prevent overwrites and save data when we need to.
                 self.trigger = MASHistorySaver.correctTriggerYear(_trigger)
 
+                # if we are dealing with a use_year_before, then actually
+                # we need to add another year because of the weird trigger
+                # mechanics.
+                if (
+                        self.use_year_before
+                        and not tt_happen_mhs_future
+                        and not impossible_trigger
+                ):
+                    self.trigger = self.trigger.replace(year=self.trigger.year + 1)
+
             else:
                 # otherwise, no issues with the new trigger
                 self.trigger = _trigger
-
 
         def save(self):
             """
@@ -716,7 +761,6 @@ init -800 python in mas_history:
         # now we go through the mhs_db and run their save algs if their trigger
         # is past today.
         _now = datetime.datetime.now()
-        index = 0
     
 #        for mhs in mhs_db.itervalues():
         for mhs in mhs_sorted_list:
@@ -725,11 +769,55 @@ init -800 python in mas_history:
             if mhs.trigger <= _now:
                 mhs.save()
 
+    def _runMHSResetAlg():
+        """
+        Runs special resets in the case of TT. Do NOT call if TT not detected.
+        """
+        # cases:
+        #   1 - LSE and now is same calendar year:
+        #       -> reset all data for mhs that are active during LSE or now
+        #       -> AND (mhs that are future of now AND past of LSE)
+        #   2 - LSE and now are not same calendar year, and LSE is within 1
+        #       year of now.
+        #       -> now to the end of year is already reset by the main alg
+        #       -> start of year + 1 to LSE should be reset if:
+        #           -> mhs is active during LSE or mhs is past of LSE
+        #   3 - LSE and now are not same calendar year, and LSE is year+ over
+        #       now.
+        #       -> all non-continuous mhs data needs to be reset
+        now_dt = datetime.datetime.now()
+        now_ahead = now_dt.replace(year=now_dt.year + 1)
+        lse = store.mas_getLastSeshEnd()
+
+        same_cal_year = now_dt.year == lse.year
+        lse_within_year = lse < now_ahead
+
+        for mhs in mhs_sorted_list:
+            if not mhs.isContinuous():
+                reset = False
+                
+                if same_cal_year:
+                    reset = mhs.isActiveWithin(now_dt, lse)
+
+                elif lse_within_year:
+                    reset = mhs.isActive(lse) or mhs.isPassed(lse)
+
+                else:
+                    reset = True
+
+                if reset:
+                    mhs.resetData()
+
+
     # first, we need to load existing MHS data
     loadMHSData()
 
     # now run the algorithm
     _runMHSAlg()
+
+    # run special alg for TT
+    if store.mas_TTDetected():
+        _runMHSResetAlg()
 
     # save trigger data
     saveMHSData()

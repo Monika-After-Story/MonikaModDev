@@ -1079,6 +1079,7 @@ label ch30_autoload:
     $ quick_menu = True
     $ startup_check = True #Flag for checking events at game startup
     $ mas_skip_visuals = False
+    $ mas_cleanEventList()
 
     # set the gender
     call set_gender from _autoload_gender

@@ -1746,6 +1746,13 @@ init python:
 
         return False
 
+    def mas_cleanEventList():
+        """
+        Iterates through the event list and removes items which shouldn't be restarted
+        """
+        for index in range(len(persistent.event_list)-1,-1,-1):
+            if mas_isRstBlk(persistent.event_list[index][0]):
+                mas_rmEVL(persistent.event_list[index][0])
 
     def mas_cleanJustSeen(eventlist, db):
         """

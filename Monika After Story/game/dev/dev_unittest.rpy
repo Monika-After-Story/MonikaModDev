@@ -15,6 +15,7 @@ init -1 python in mas_dev_unit_tests:
             False
         ),
         ("MASHistorySaver", "dev_unit_test_mhs", False, False),
+        ("MASHistorySaver - correct_pbday_mhs", "dev_unit_test_mhs_cpm", False, False),
     ]
 
     class MASUnitTest(object):
@@ -392,13 +393,14 @@ label dev_unit_tests_finish_test(mhs_tester):
     python:
         passed, failed = mhs_tester.concludeTests()
         failed_test_count = len(failed)
+        passed_test_count = len(passed)
 
     if failed_test_count > 0:
         m 1ektsc "[failed_test_count] test failed."
         call dev_unit_tests_show_items(failed)
 
     else:
-        m 1hua "All tests passed!"
+        m 1hua "All [passed_test_count] tests passed!"
 
     return
 
@@ -1123,6 +1125,52 @@ label dev_unit_test_mhs:
         check_dt = datetime.datetime(2019, 1, 3)
         mhs_tester.assertFalse(test_mhs.isActive(check_dt))
 
+        mhs_tester.prepareTest("isActiveWithin|continuous")
+        test_mhs = gen_fresh_mhs()
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertTrue(test_mhs.isActiveWithin(st_dt, en_dt))
+
+        mhs_tester.prepareTest("isActiveWithin|start_dt active")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 4, 10)
+        test_mhs.end_dt = datetime.datetime(2018, 5, 10)
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertTrue(test_mhs.isActiveWithin(st_dt, en_dt))
+
+        mhs_tester.prepareTest("isActiveWithin|end_dt active")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 7, 20)
+        test_mhs.end_dt = datetime.datetime(2018, 9, 1)
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertTrue(test_mhs.isActiveWithin(st_dt, en_dt))
+
+        mhs_tester.prepareTest("isActiveWithin|within range")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 6, 4)
+        test_mhs.end_dt = datetime.datetime(2018, 7, 20)
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertTrue(test_mhs.isActiveWithin(st_dt, en_dt))
+
+        mhs_tester.prepareTest("isActiveWithin|before range")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 1, 4)
+        test_mhs.end_dt = datetime.datetime(2018, 3, 20)
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertFalse(test_mhs.isActiveWithin(st_dt, en_dt))
+
+        mhs_tester.prepareTest("isActiveWithin|after range")
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = datetime.datetime(2018, 9, 4)
+        test_mhs.end_dt = datetime.datetime(2018, 11, 20)
+        st_dt = datetime.datetime(2018, 4, 20)
+        en_dt = datetime.datetime(2018, 8, 31)
+        mhs_tester.assertFalse(test_mhs.isActiveWithin(st_dt, en_dt))
+
         mhs_tester.prepareTest("isContinuous|both dt None")
         test_mhs = gen_fresh_mhs()
         mhs_tester.assertTrue(test_mhs.isContinuous())
@@ -1240,9 +1288,10 @@ label dev_unit_test_mhs:
         # Set Trigger
         #   Cases:
         #   1 - trigger <= first_sesh -> trigger year is corrected
-        #   2 - trigger.year > now.year + 1 -> trigger yera is corrected
-        #   3 - TT detected + not continuous + (isFuture or isActive)
-        #   4 - none of the above cases are True -> trigger year is unchanged
+        #   2 - trigger year diff greater than 1 -> trigger year is corrected
+        #   3 - TT detected + non continuuous + (future or active)
+        #       -> trigger year is corrected
+        #   4 - none of the above is true -> trigger unchanged
         mhs_tester.prepareTest("setTrigger|trigger <= first_sesh")
         test_now = datetime.datetime.now()
         prev_data = (
@@ -1252,10 +1301,12 @@ label dev_unit_test_mhs:
         store.mas_globals.tt_detected = False
         MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=100)
         test_mhs = gen_fresh_mhs()
+        test_mhs.use_year_before = True
         test_dt = MASHistorySaver.first_sesh - datetime.timedelta(days=1)
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -1272,10 +1323,30 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
-        mhs_tester.prepareTest("setTrigger|trigger.year > now.year + 1")
+        mhs_tester.prepareTest(
+            "setTrigger|trigger <= first_sesh, same dt,"
+        )
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = False
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=100)
+        test_mhs = gen_fresh_mhs()
+        test_dt = MASHistorySaver.first_sesh
+        test_mhs.setTrigger(test_dt)
+        expected = MASHistorySaver.correctTriggerYear(test_dt)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
+
+        mhs_tester.prepareTest("setTrigger|trigger year diff > 1")
         test_now = datetime.datetime.now()
         prev_data = (
             store.mas_globals.tt_detected,
@@ -1288,6 +1359,7 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -1308,6 +1380,9 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertTrue(test_mhs.isFuture(test_now))
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -1328,6 +1403,10 @@ label dev_unit_test_mhs:
         test_mhs.setTrigger(test_dt)
         expected = MASHistorySaver.correctTriggerYear(test_dt)
         mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertTrue(test_mhs.isActive(test_now))
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -1343,6 +1422,7 @@ label dev_unit_test_mhs:
         test_dt = test_now + datetime.timedelta(days=10)
         test_mhs.setTrigger(test_dt)
         mhs_tester.assertEqual(test_dt, test_mhs.trigger)
+        mhs_tester.assertFalse(mas_TTDetected())
         store.mas_globals.tt_detected = prev_data[0]
         MASHistorySaver.first_sesh = prev_data[1]
 
@@ -1353,6 +1433,318 @@ label dev_unit_test_mhs:
             test_mhs.use_year_before
         )
         mhs_tester.assertEqual(test_data, test_mhs.toTuple())
+
+        mhs_tester.prepareTest(
+            "setTrigger|event in past, 2 year, not uyb"
+        )
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = True
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=600)
+        test_mhs = gen_fresh_mhs()
+        test_mhs.start_dt = test_now - datetime.timedelta(days=50)
+        test_mhs.end_dt = test_now - datetime.timedelta(days=20)
+        test_dt = test_now + datetime.timedelta(days=1)
+        test_dt = test_dt.replace(year=test_dt.year + 2)
+        test_mhs.setTrigger(test_dt)
+        expected = MASHistorySaver.correctTriggerYear(test_dt)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
+
+        mhs_tester.prepareTest(
+            "setTrigger|event in past, 2 year, uyb"
+        )
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = True
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=600)
+        test_mhs = gen_fresh_mhs()
+        test_mhs.use_year_before = True
+        test_mhs.start_dt = test_now - datetime.timedelta(days=50)
+        test_mhs.end_dt = test_now - datetime.timedelta(days=20)
+        test_dt = test_now + datetime.timedelta(days=1)
+        test_dt = test_dt.replace(year=test_dt.year + 2)
+        test_mhs.setTrigger(test_dt)
+        expected = MASHistorySaver.correctTriggerYear(test_dt)
+        expected = expected.replace(year=expected.year + 1)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
+
+        mhs_tester.prepareTest(
+            "setTrigger|event in past, 1 year, uyb"
+        )
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = True
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=600)
+        test_mhs = gen_fresh_mhs()
+        test_mhs.use_year_before = True
+        test_mhs.start_dt = test_now - datetime.timedelta(days=50)
+        test_mhs.end_dt = test_now - datetime.timedelta(days=20)
+        test_dt = test_now + datetime.timedelta(days=1)
+        test_dt = test_dt.replace(year=test_dt.year + 1)
+        test_mhs.setTrigger(test_dt)
+        expected = test_dt
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertFalse(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
+
+        mhs_tester.prepareTest(
+            "setTrigger|event in future, 1 year, uyb"
+        )
+        test_now = datetime.datetime.now()
+        prev_data = (
+            store.mas_globals.tt_detected,
+            MASHistorySaver.first_sesh
+        )
+        store.mas_globals.tt_detected = True
+        MASHistorySaver.first_sesh = test_now - datetime.timedelta(days=600)
+        test_mhs = gen_fresh_mhs()
+        test_mhs.use_year_before = True
+        test_mhs.start_dt = test_now + datetime.timedelta(days=10)
+        test_mhs.end_dt = test_now + datetime.timedelta(days=20)
+        test_dt = (
+            test_now.replace(year=test_now.year + 1)
+            - datetime.timedelta(days=1)
+        )
+        test_mhs.setTrigger(test_dt)
+        expected = MASHistorySaver.correctTriggerYear(test_dt)
+        mhs_tester.assertEqual(expected, test_mhs.trigger)
+        mhs_tester.assertTrue(mas_TTDetected())
+        mhs_tester.assertFalse(test_mhs.isContinuous())
+        mhs_tester.assertTrue(test_mhs.isFuture(test_now))
+        mhs_tester.assertFalse(test_mhs.isActive(test_now))
+        store.mas_globals.tt_detected = prev_data[0]
+        MASHistorySaver.first_sesh = prev_data[1]
+
+
+    call dev_unit_tests_finish_test(mhs_tester)
+
+    return
+
+
+label dev_unit_test_mhs_cpm:
+    m "Running Tests..."
+
+    python:
+        def sv_mhs():
+            mhs_pbday = mas_history.getMHS("player_bday")
+            return (
+                (
+                    mhs_pbday.start_dt,
+                    mhs_pbday.end_dt,
+                    mhs_pbday.use_year_before,
+                    mhs_pbday.trigger
+                ),
+                mhs_pbday
+            )
+
+        def rs_mhs(data):
+            mhs_pbday = mas_history.getMHS("player_bday")
+            mhs_pbday.start_dt = data[0]
+            mhs_pbday.end_dt = data[1]
+            mhs_pbday.use_year_before = data[2]
+            mhs_pbday.setTrigger(data[3])
+
+        mhs_tester = store.mas_dev_unit_tests.MASUnitTester()
+
+        test_name = "standard date|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 4, 20)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 4, 20),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 4, 22),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 4, 23),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "edge month date|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 5, 30)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 5, 30),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 6, 1),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 6, 2),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "12-28|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 12, 28)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 28),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 30),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 31),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "12-29|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 12, 29)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 29),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 31),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertTrue(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year + 1, 1, 1),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "12-30|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 12, 30)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 30),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year + 1, 1, 1),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertTrue(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year + 1, 1, 2),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "12-31|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 12, 31)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 12, 31),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year + 1, 1, 2),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertTrue(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year + 1, 1, 3),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
+
+        test_name = "1-1|"
+        prev_data, test_mhs = sv_mhs()
+        test_now = datetime.datetime.now()
+        bday = datetime.date(1984, 1, 1)
+        inc_year = int(bday.replace(year=test_now.year) < test_now.date())
+        store.mas_player_bday_event.correct_pbday_mhs(bday)
+        mhs_tester.prepareTest(test_name + "start dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 1, 1),
+            test_mhs.start_dt
+        )
+        mhs_tester.prepareTest(test_name + "end dt")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 1, 3),
+            test_mhs.end_dt
+        )
+        mhs_tester.prepareTest(test_name + "use year before")
+        mhs_tester.assertFalse(test_mhs.use_year_before)
+        mhs_tester.prepareTest(test_name + "trigger")
+        mhs_tester.assertEqual(
+            datetime.datetime(test_now.year + inc_year, 1, 4),
+            test_mhs.trigger
+        )
+        rs_mhs(prev_data)
 
     call dev_unit_tests_finish_test(mhs_tester)
 

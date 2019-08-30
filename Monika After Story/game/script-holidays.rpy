@@ -3366,12 +3366,8 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
-        #datetime.datetime(2020, 1, 1),
-        # NOTE: this needs to be moved ahead if on player bday on certain day:
-        #   If Jan 7 - set to Jan 5
-        #   If Jan 6 - set to Jan 4
-        #   If Jan 5 - set to Jan 3
-        datetime.datetime(2020, 1, 6),
+        # NOTE: this needs to be adjusted based on the player's bday
+        datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
             "_mas_player_bday_opened_door": "player_bday.opened_door",
@@ -3415,31 +3411,36 @@ init -11 python in mas_player_bday_event:
         if mhs_pbday is None:
             return
 
+        # first, setup the reset date to be 3 days after the bday
+        pbday_dt = datetime.datetime.combine(d_pbday, datetime.time())
+
         # determine correct year
         _now = datetime.datetime.now()
         curr_year = _now.year
-        new_date = d_pbday.replace(year=curr_year)
-        if new_date < _now.date():
+        new_dt = pbday_dt.replace(year=curr_year)
+        if new_dt < _now:
             # new date before today, set to next year
             curr_year += 1
-            new_date = d_pbday.replace(year=curr_year)
+            new_dt = pbday_dt.replace(year=curr_year)
 
-        # now modify day accordingly
-        if d_pbday.month == 1 and 5 <= d_pbday.day <= 7:
-            new_dt = datetime.datetime(curr_year, 1, d_pbday.day - 2)
-
-        else:
-            new_dt = datetime.datetime(curr_year, 1, 6)
+        # set the reset/trigger date
+        reset_dt = pbday_dt + datetime.timedelta(days=3)
 
         # setup ranges
-        new_sdt = new_dt.replace(month=d_pbday.month, day=d_pbday.day)
+        new_sdt = new_dt
         new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # NOTE: the mhs will end 2 days after the bday. The day after end_dt
+        #   is when we save
 
         # modify mhs
         mhs_pbday.start_dt = new_sdt
         mhs_pbday.end_dt = new_edt
-        mhs_pbday.use_year_before = new_dt.date() < new_date
-        mhs_pbday.setTrigger(new_dt)
+        mhs_pbday.use_year_before = (
+            d_pbday.month == 12
+            and d_pbday.day in (29, 30, 31)
+        )
+        mhs_pbday.setTrigger(reset_dt)
 
 
 label mas_player_bday_autoload_check:
@@ -3823,18 +3824,29 @@ label greeting_returned_home_player_bday:
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
-            ret_year = checkin_time.year
             left_date = checkout_time.date()
             ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+
+            # are we returning after the mhs reset
+            ret_diff_year = ret_date >= (mas_player_bday_curr(left_date) + datetime.timedelta(days=3))
+
+            # were we gone over d25
+            #TODO: do this for the rest of the holidays
+            if left_date < mas_d25 < ret_date:
+                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                    persistent._mas_d25_spent_d25 = True
+                else:
+                    persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
+
         else:
             left_year = None
-            ret_year = None
-            left_year_aff = None
             left_date = None
             ret_date = None
+            left_year_aff = None
+            ret_diff_year = None
+
         add_points = False
-        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
@@ -3843,9 +3855,6 @@ label greeting_returned_home_player_bday:
             if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-
-    if left_date < mas_d25 < ret_date:
-        $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
         $ mas_loseAffection()

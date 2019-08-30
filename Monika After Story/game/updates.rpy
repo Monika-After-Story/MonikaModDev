@@ -360,12 +360,22 @@ label v0_10_0(version="v0_10_0"):
                 mhs_pbday is not None
                 and mhs_pbday.trigger.month == 1
                 and mhs_pbday.trigger.day == 1
+                and persistent._mas_player_bday is not None
         ):
             store.mas_player_bday_event.correct_pbday_mhs(
                 persistent._mas_player_bday
             )
 
-        mhs_o31 = store.has_history.getMHS("o31")
+            now_dt = datetime.datetime.now()
+            trig_now = mhs_pbday.trigger.replace(year=now_dt.year)
+            if trig_now < now_dt:
+                # this means the trigger should have ran this year, so we need
+                # to save this data with a false trigger year
+                mhs_pbday.trigger = trig_now
+                mhs_pbday.save() # this should reset trigger to correct date
+                renpy.save_persistent()
+
+        mhs_o31 = store.mas_history.getMHS("o31")
         if (
                 mhs_o31 is not None
                 and mhs_o31.trigger.month == 11
