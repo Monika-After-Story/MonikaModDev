@@ -645,3 +645,31 @@ label mas_wrs_pixiv:
         if not _return:
             mas_unlockFailedWRS('mas_wrs_pixiv')
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent._mas_windowreacts_database,
+            eventlabel="mas_wrs_reddit",
+            category=['reddit'],
+            rules={"notif-group": "Window Reactions", "skip alert": None},
+            show_in_idle=True
+        ),
+        code="WRS"
+    )
+
+label mas_wrs_reddit:
+    $ wrs_success = display_notif(
+        m_name,
+        [
+            "Have you found any good posts, [player]?",
+            "Browsing Reddit? Just make sure you don’t spend all day looking at memes, okay?",
+            "Wonder if there are any subreddits dedicated towards me...\nAhaha, just kidding, [player].",
+        ],
+        'Window Reactions'
+    )
+
+    #Unlock again if we failed
+    if not wrs_success:
+        $ mas_unlockFailedWRS('mas_wrs_reddit')
+    return
