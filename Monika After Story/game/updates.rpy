@@ -308,8 +308,8 @@ label v0_3_1(version=version): # 0.3.1
 label v0_10_1:
     #Fix 922 time spent vars if we're not post 922 (so these vars aren't set when they shouldn't be)
     if datetime.date.today() < mas_monika_birthday:
-       persistent._mas_bday_no_time_spent = True
-       persistent._mas_bday_no_recognize = True
+       $ persistent._mas_bday_no_time_spent = True
+       $ persistent._mas_bday_no_recognize = True
 
     return
 
