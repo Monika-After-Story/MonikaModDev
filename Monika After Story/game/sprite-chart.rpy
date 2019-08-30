@@ -4313,7 +4313,7 @@ init -2 python:
 
         J_NAME_RIGHT = (
             "right",
-            "rback"
+            "rback",
             "rfront",
         )
 
@@ -4611,7 +4611,7 @@ init -2 python:
                 msg_log.append((
                     MASPoseArms.msj.MSG_WARN_T,
                     inner_ind_lvl,
-                    MASPoseARms.msj.EXTRA_PROP.format(ex_prop)
+                    MASPoseArms.msj.EXTRA_PROP.format(ex_prop)
                 ))
 
             # return the MASPoseArms.
