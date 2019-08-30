@@ -892,20 +892,6 @@ image monika 6ektpc:
         0.06
         repeat
 
-image monika 6ektrd:
-    block:
-        "monika 6ektrd_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 6dktrd_static"
-        0.06
-        repeat
-
 image monika 6ektsa:
     block:
         "monika 6ektsa_static"
@@ -931,6 +917,20 @@ image monika 6ektsc:
             choice:
                 7
         "monika 6dktsc_static"
+        0.06
+        repeat
+
+image monika 6ektud:
+    block:
+        "monika 6ektud_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 6dktud_static"
         0.06
         repeat
 
