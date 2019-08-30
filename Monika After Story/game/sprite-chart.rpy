@@ -4920,50 +4920,22 @@ init -2 python:
             else:
                 use_reg_for_l = None
 
-            # set vars based on type
-            # verifier - function to verify the data
-            #   if None, no verification done
-            # parse - function to parse the data
-            #   if None, use standard var setting
-            if mpm_type == cls.MPM_TYPE_IC:
-                # more ACS, means more image code usage
-                verifier = cls.msj._verify_str
-                parser = None
 
-            elif mpm_type == cls.MPM_TYPE_AS:
-                # more ACS, more arm splits
-                verifier = MASPoseMap._verify_mpm_as
-                parser = None
-
-            elif mpm_type == cls.MPM_TYPE_FB:
-                # clothes with fallbacks is pretty common
-                verifier = cls.msj._verify_pose
-                parser = None
-
-            elif mpm_type == cls.MPM_TYPE_PA:
-                # pose arms potentially common
-                verifier = cls.msj._verify_dict
-                parser = MASPoseArms.fromJSON
-
-            else:
-                # ED
-                # enabledisable is rarely used
-                verifier = cls.msj._verify_bool
-                parser = None
-
-           # TODO:  everything below here
-
-            # go through the json object and validate everything
+            isbad = False
             for prop_name in json_obj.keys():
                 if prop_name in cls.CONS_PARAM_NAMES:
-                    prop_val = json_obj[prop_name]
-            
-                    if is_acs and prop_name != "use_reg_for_l":
+                    prop_val = json_obj.pop(prop_name)
 
-                        if not cls.msj._verify_str(prop_val):
-                            # acs mode must be strings
+                    if mpm_type == cls.MPM_TYPE_IC:
+                        # more ACS, means more iamge code usage
+                        if cls.msj._verify_str(prop_val):
+                            mpm_data[prop_name] = prop_val
+
+                        else:
                             isbad = True
-                            errs.append(cls.msj.MSG_ERR_IDD.format(
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                inner_ind_lvl,
                                 cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
                                     prop_name,
                                     str,
@@ -4971,70 +4943,120 @@ init -2 python:
                                 )
                             ))
 
-                    elif is_fallback and prop_name != "use_reg_for_l":
+                    elif mpm_type == cls.MPM_TYPE_AS:
+                        # more ACS, more arm splits
+                        if MASPoseMap._verify_mpm_as(prop_val):
+                            mpm_data[prop_name] = prop_val
 
-                        if not cls.msj._verify_pose(prop_val):
-                            # fallback mode must verify pose
+                        else:
                             isbad = True
-                            errs.append(cls.msj.MSG_ERR_IDD.format(
-                                cls.msj.MPM_BAD_POSE.format(prop_name, prop_val)
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                inner_ind_lvl,
+                                cls.msj.MPM_AS_BAD_TYPE.format(
+                                    prop_name,
+                                    str(MASPoseMap.MPM_AS_DATA),
+                                    prop_val
+                                )
                             ))
 
-                    elif not cls.msj._verify_bool(prop_val):
-                        # otherwise, we in non fallback mode or
-                        # verifying the one boolean
-                        isbad = True
-                        errs.append(cls.msj.MSG_ERR_IDD.format(
-                            cls.msj.BAD_TYPE.format(
-                                prop_name,
-                                bool,
-                                type(prop_val)
-                            )
-                        ))
+                    elif mpm_type == cls.MPM_TYPE_ED:
+                        # enable disable is default for clothing so
+                        if cls.msj._verify_bool(prop_val):
+                            mpm_data[prop_name] = prop_val
 
-                    # else case is a valid param
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                inner_ind_lvl,
+                                cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
+                                    prop_name,
+                                    bool,
+                                    type(prop_val)
+                                )
+                            ))
+
+                    elif mpm_type == cls.MPM_TYPE_FB:
+                        # clothes with fallbacks is pretty common
+                        if cls.msj._verify_pose(prop_val)
+                            mpm_data[prop_name] = prop_val
+
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                inner_ind_lvl,
+                                cls.msj.MPM_BAD_POSE.format(
+                                    prop_name,
+                                    prop_val
+                                )
+                            ))
+
+                    else: 
+                        # otherwise pose arms
+                        if cls.msj._verify_dict(prop_val):
+                            msg_log.append((
+                                cls.msj.MSG_INFO_T,
+                                inner_ind_lvl,
+                                cls.msj.MPA_LOADING.format(prop_name)
+                            ))
+                            mpm_data[prop_name] = MASPoseArms.fromJSON(
+                                prop_val,
+                                msg_log,
+                                inner_ind_lvl + 1
+                            )
+                            msg_log.append((
+                                cls.msj.MSG_INFO_T,
+                                inner_ind_lvl,
+                                cls.msj.MPA_SUCCESS.format(prop_name)
+                            ))
+
+                        else:
+                            isbad = True
+                            msg_log.append((
+                                cls.msj.MSG_ERR_T,
+                                inner_ind_lvl,
+                                cls.msj.MPM_PA_BAD_TYPE.format(
+                                    prop_name,
+                                    type(prop_val)
+                                )
+                            ))
 
                 else:
                     # prop name NOT part of MASPoseMap. log as warning.
-                    json_obj.pop(prop_name)
-                    warns.append(cls.msj.MSG_WARN_IDD.format(
+                    msg_log.append((
+                        cls.msj.MSG_WARN_T,
+                        inner_ind_lvl,
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
 
-            # now for suggestsions based on defaults
-            # I am expecting that we will have more ACS than outfits.
-            if is_acs or is_fallback:
-                _param_default = json_obj.get("default", None)
-                _param_l_default = json_obj.get("l_default", None)
-                _param_urfl = json_obj.get("use_reg_for_l", False)
-                    
-                if _param_default is None:
-                    # we suggest using default when in fallback mode or acs
-                    if is_acs:
-                        warn_msg = cls.msj.MPM_ACS_DEF
+            # we should alwyas suggest a default
+            _param_default = mpm_data.get("default", None)
+            _param_l_default = mpm_data.get("l_default", None)
+            _param_urfl = mpm_data.get("use_reg_for_l", False)
+            if _param_default is None:
+                msg_log.append((
+                    cls.msj.MSG_WARN_T,
+                    inner_ind_lvl,
+                    cls.msj.MPM_DEF
+                ))
 
-                    else:
-                        warn_msg = cls.msj.MPM_FB_DEF
-
-                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
-
-                if _param_l_default is None and not _param_urfl:
-                    # we suggest using lean default when in fallback mode or 
-                    #   acs
-                    # and not using reg for l
-                    if is_acs:
-                        warn_msg = cls.msj.MPM_ACS_DEF_L
-
-                    else:
-                        warn_msg = cls.msj.MPM_FB_DEF_L
-
-                    warns.append(cls.msj.MSG_WARN_IDD.format(warn_msg))
+            if _param_l_default is None and not _param_urfl:
+                # we suggest using lean default when in fallback mode or 
+                #   acs
+                # and not using reg for l
+                msg_log.append((
+                    cls.msj.MSG_WARN_T,
+                    inner_ind_lvl,
+                    cls.msj.MPM_DEF_L
+                ))
 
             # finally check for valid params
             if isbad:
                 return None
 
-            return cls(**json_obj)
+            return MASPoseMap(**mpm_data)
 
 
     # base class for MAS sprite things

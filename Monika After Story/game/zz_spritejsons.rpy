@@ -340,7 +340,11 @@ init -21 python in mas_sprites_json:
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
     MPM_ACS_DEF = "acs default pose not set"
     MPM_ACS_DEF_L = "acs leaning default pose not set"
+    MPM_DEF = "default not set"
+    MPM_DEF_L = "leaning default not set"
     MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
+    MPM_AS_BAD_TYPE = "property '{0}' - expected {1}, got {2}"
+    MPM_PA_BAD_TYPE = "property '{0}' - expected object, got {1}"
 
     ## MASPoseArms
     MPA_LOADING = "loading MASPoseArms in '{0}'..."
