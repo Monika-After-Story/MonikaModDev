@@ -4861,9 +4861,7 @@ init -2 python:
             OUT:
                 msg_log - list to add messages to
 
-            RETURNS: tuple of the following format:
-                [0] - True if error occured, False if not
-                [1] - MASPoseMap object built using the JSON, or None if failed
+            RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
             outer_ind_lvl = ind_lvl
             inner_ind_lvl = ind_lvl + 1
@@ -4878,25 +4876,25 @@ init -2 python:
                     inner_ind_lvl,
                     cls.msj.REQ_MISS.format(mpm_prop)
                 ))
-                return True, None
+                return None
 
             mpm_type = json_obj.pop(mpm_prop)
 
             if not cls.msj._verify_int(mpm_type, allow_none=False):
-                errs.append((
+                msg_log.append((
                     cls.msj.MSG_ERR_T,
                     inner_ind_lvl,
                     cls.msj.BAD_TYPE.format(mpm_prop, int, type(mpm_type))
                 ))
-                return True, None
+                return None
 
             if mpm_type not in cls.MPM_TYPES:
-                errs.append((
+                msg_log.append((
                     cls.msj.MSG_ERR_T,
                     inner_ind_lvl,
                     cls.msj.MPM_BAD_TYPE.format(mpm_type)
                 ))
-                return True, None
+                return None
 
             mpm_data[mpm_prop] = mpm_type
 
@@ -4904,7 +4902,7 @@ init -2 python:
             if urfl_prop in json_obj:
                 use_reg_for_l = json_obj.pop(urfl_prop)
                 if not cls.msj._verify_bool(use_reg_for_l, allow_none=False):
-                    errs.append((
+                    msg_log.append((
                         cls.msj.MSG_ERR_T,
                         inner_ind_lvl,
                         cls.msj.BAD_TYPE.format(
@@ -4913,7 +4911,7 @@ init -2 python:
                             type(use_reg_for_l)
                         )
                     ))
-                    return True, None
+                    return None
 
                 mpm_data[urfl_prop] = use_reg_for_l
 
