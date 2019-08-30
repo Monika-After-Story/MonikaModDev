@@ -2392,7 +2392,6 @@ init -990 python in mas_utils:
     }
 
 
-
     def clean_gui_text(text):
         """
         Cleans the given text so its suitable for GUI usage
@@ -2407,6 +2406,33 @@ init -990 python in mas_utils:
             text = text.replace(bad, BAD_TEXT[bad])
 
         return text
+
+
+    def pdget(key, table, validator=None, defval=None):
+        """
+        Protected Dict GET
+        Gets an item from a dict, using protections to ensure this item is 
+        valid
+
+        IN:
+            key - key of item to get
+            table - dict to get from
+            validator - function to call with the item to validate it
+                If None, no validating done
+                (Default: None)
+            defval - default value to return if could not get from dict
+        """
+        if table is not None and key in table:
+
+            item = table[key]
+
+            if validator is None:
+                return item
+
+            if validator(table[key]):
+                return item
+
+        return defval
 
 
     def tryparseint(value, default=0):
@@ -3128,6 +3154,80 @@ init -100 python in mas_utils:
         return (ival, int((num - cleanival) * __FLIMIT), __FLIMIT)
 
 
+init -985 python:
+    # global stuff that should be defined somewhat early
+
+    def mas_getSessionLength():
+        """
+        Gets length of current session, IF this cannot be determined, a
+        time delta of 0 is returned
+        """
+        _now = datetime.datetime.now()
+        return _now - store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=_now
+        )
+
+
+    def mas_getAbsenceLength():
+        """
+        Gets time diff between current session start and last session end
+        aka the diff between last session and this
+        if not found, time delta of 0 is returned
+        """
+        return mas_getCurrSeshStart() - mas_getLastSeshEnd()
+
+
+    def mas_getCurrSeshStart():
+        """
+        Returns the current session start datetime
+        If there is None, we use first session
+        """
+        return store.mas_utils.pdget(
+            "current_session_start",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_getFirstSesh():
+        """
+        Returns the first session datetime.
+
+        If we could not get it, datetime.datetime.now() is returnd
+        """
+        return store.mas_utils.pdget(
+            "first_session",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=datetime.datetime.now()
+        )
+
+
+    def mas_getLastSeshEnd():
+        """
+        Returns datetime of the last session
+        NOTE: if there was no last session, we use first session instead
+        """
+        return store.mas_utils.pdget(
+            "last_session_end",
+            persistent.sessions,
+            validator=store.mas_ev_data_ver._verify_dt_nn,
+            defval=mas_getFirstSesh()
+        )
+
+
+    def mas_TTDetected():
+        """
+        Checks if time travel was detected
+        NOTE: TT detection occurs at init -890
+        """
+        return store.mas_globals.tt_detected
+
+
 init -1 python:
     import datetime # for mac issues i guess.
     import os
@@ -3521,16 +3621,6 @@ init -1 python:
         return "{0:0>2d}:{1:0>2d}".format(s_hour, s_min)
 
 
-    #Gets the length of the current session
-    def mas_getSessionLength():
-        return datetime.datetime.now() - persistent.sessions['current_session_start']
-
-
-    #Gets the time difference between the current session start and last session end
-    def mas_getAbsenceLength():
-        return persistent.sessions.get('current_session_start', datetime.datetime.today()) - persistent.sessions.get('last_session_end', datetime.datetime.today())
-
-
     def mas_genDateRange(_start, _end):
         """
         Generates a list of datetime.date objects with the given range.
@@ -3716,23 +3806,6 @@ init -1 python:
 
         # otherwise we passed the cases
         return True
-
-
-    def mas_getFirstSesh():
-        """
-        Returns the first session datetime.
-
-        If we could not get it, datetime.datetime.now() is returnd
-        """
-        if (
-                persistent.sessions is not None
-                and "first_session" in persistent.sessions
-                and type(persistent.sessions["first_session"])
-                    == datetime.datetime
-            ):
-            return persistent.sessions["first_session"]
-
-        return datetime.datetime.now()
 
 
     def get_pos(channel='music'):
