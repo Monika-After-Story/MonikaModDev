@@ -814,7 +814,7 @@ label spaceroom(start_bg=None, hide_mask=False, hide_monika=False, dissolve_all=
         show vignette zorder 70
 
     # monibday stuff (this checks itself)
-    if persistent._mas_922_in_922_mode:
+    if persistent._mas_bday_in_922_mode:
         $ store.mas_surpriseBdayShowVisuals()
 
     # d25 seasonal
@@ -1122,7 +1122,7 @@ label mas_ch30_post_retmoni_check:
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
 
-    if mas_isMonikaBirthday() or persistent._mas_922_in_922_mode:
+    if mas_isMonikaBirthday() or persistent._mas_bday_in_922_mode:
         jump mas_bday_autoload_check
 
 

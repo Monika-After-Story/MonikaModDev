@@ -4936,10 +4936,6 @@ default persistent._mas_bday_confirmed_party = False
 
 #Time spent tracking
 default persistent._mas_bday_opened_game = False
-#TODO: update script these to be True (what's the vers number for this again lol?)
-#if datetime.date.today() < mas_monika_birthday:
-#   persistent._mas_bday_no_time_spent = True
-#   persistent._mas_bday_no_recognize = True
 default persistent._mas_bday_no_time_spent = True
 default persistent._mas_bday_no_recognize = True
 default persistent._mas_bday_nts_seen = False
@@ -4948,7 +4944,29 @@ default persistent._mas_bday_nts_seen = False
 default persistent._mas_bday_said_happybday = False
 
 ############### [HOL060]: HISTORY
-#TODO: ^
+init -810 python:
+    store.mas_history.addMHS(MASHistorySaver(
+        "922",
+        datetime.datetime(2020, 1, 6),
+        {
+            "_mas_bday_opened_game": "922.actions.opened_game",
+            "_mas_bday_no_time_spent": "922.actions.no_time_spent",
+            "_mas_bday_no_recognize": "922.actions.no_recognize",
+            "_mas_bday_said_happybday": "922.actions.said_happybday",
+            "_mas_bday_date_count": "922.actions.date.count",
+            "_mas_bday_date_affection_lost": "922.actions.date.aff_lost",
+            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
+            "_mas_bday_sbp_aff_given": "922.actions.surprise.aff_given",
+            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
+            "_mas_bday_sbp_found_cake": "922.actions.surprise.found_cake",
+            "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
+            "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons",
+            "_mas_bday_confirmed_party": "922.actions.confirmed_party",
+            "_mas_bday_in_922_mode": "922.922_mode",
+            "_mas_bday_surprise_hint_seen": "922.hint_seen",
+        },
+        exit_pp=store.mas_history._bday_exit_pp
+    ))
 
 ############### [HOL060]: METHODS
 init -1 python:
@@ -4972,7 +4990,7 @@ init -1 python:
         Checks if the user recognized monika's birthday at all.
 
         TODO: this is one-shot. we need to make this generic to future bdays
-        TODO: ^- requires hist
+        NOTE: pretty sure this is handled by history. Verify please.
 
         RETURNS:
             True if the user recoginzed monika's birthday, False otherwise
@@ -5036,7 +5054,7 @@ init -1 python:
 label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
     if not mas_isMonikaBirthday():
-        $ persistent._mas_922_in_922_mode = False
+        $ persistent._mas_bday_in_922_mode = False
 
     #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
     elif persistent._mas_bday_sbp_reacted:
@@ -5272,7 +5290,7 @@ label mas_bday_surprise_party_reaction_end:
     $ persistent._mas_bday_sbp_reacted = True
 
     #We set this flag as true here
-    $ persistent._mas_922_in_922_mode = True
+    $ persistent._mas_bday_in_922_mode = True
     return
 
 
@@ -5652,7 +5670,7 @@ label greeting_returned_home_bday:
     #Get points and then clean everyting up, it's no longer moni-bday so we should flow here instead
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
-        $ persistent._mas_922_in_922_mode = False
+        $ persistent._mas_bday_in_922_mode = False
 
         #TODO: exps/better dlg
         m 1wud "Oh wow, [player]. We really were out for a while..."
