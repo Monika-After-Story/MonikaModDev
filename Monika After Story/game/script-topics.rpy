@@ -12999,3 +12999,34 @@ label mas_show_unseen:
     m 1esa "Just give me a second.{w=0.5}.{w=0.5}.{nw}"
     m 3hua "There you go!"
     return
+    
+init 5 python:
+    addEvent(Event(persistent.event_database,eventlabel="monika_intrusivethought",category=['Psychology'],prompt="Intrusive thoughts",random=True))
+
+label monika_intrusivethought:
+    m 1euc "Hey [player]..."
+    m 1ekd "Have you ever had thoughts that you find upsetting, distressing, or all around unpleasant?"
+    m 3eub "I've been reading on a study on what's called 'intrusive thought', it's actually quite interesting." 
+    m 3ekc "The study involves that the mind tends to think of some...{w=0.5} Unpleasant thoughts when triggered by certain, often negative circumstances."
+    m 1esd "These thoughts can by anything from sadistic, violent, vengeful, or even sexual."
+    m 2rkc "When most people start to think of these thoughts, they feel disgusted by them."
+    m 2dkd "And what's worse, they start to believe that they are a bad person because they think that!"
+    m 3wuo "But the truth is, it doesn't make you a bad person at all!"
+    m 4eub "It's very natural to have these thoughts."
+    m 1rksdlc "But what separates good people from the bad people is how they act on those thoughts."
+    m 4esd "A good person would never act on unwanted thoughts like that."
+    m 4eub "Instead, they might do something good to prove to themselves and others that they aren't a bad person at all."
+    m 2dkc "But for some people, these thoughts tend to happen very often, to the point where they can no longer block them out..."
+    m 3tkd "It breaks down their will, and eventually the thoughts overcome them...{w=0.5} And they begin to act on them."
+    m 2rksdlc "As for me, I get these unpleasant thoughts too..."
+    m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others...{w=0.5} Especially to the ones they 'love'..."
+    m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
+    m 1dkc "But of course, I would never do that...{w=0.5} Even if they deserved it."
+    m 3ekc "Please look after yourself [player]."
+    m 1ekb "I just think you are a really great person, and I wouldn't want you to throw your future away from some silly little thoughts."
+    m 1ekd "If you are ever tortured by unwanted thoughts, you can always come talk to me."
+    m 3eub "I'll help you beat those emotions."
+    m 1esc "But if all else fails, I want you to seek professional help."
+    show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "Please,{w=1.0} for me?"
+return
