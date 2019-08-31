@@ -13019,7 +13019,7 @@ label monika_intrusivethought:
     m 2dkc "But for some people, these thoughts tend to happen very often, to the point where they can no longer block them out..."
     m 3tkd "It breaks down their will, and eventually the thoughts overcome them...{w=0.5} and they begin to act on them."
     m 2rksdlc "As for me, I get these unpleasant thoughts too..."
-    m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others...{w=0.5} especially the ones they 'love'..."
+    m 2rfc "What bothers me more than anything is seeing or hearing of people mistreating others,{w=0.5} especially the ones they 'love'..."
     m 2efx "It makes me really want to subject them to the same pain they inflict upon others!"
     m 1dkc "But of course, I would never do that... even if they deserve it."
     m 3ekc "Please look after yourself, [player]."
