@@ -438,6 +438,8 @@ label dev_unit_tests:
 label dev_unit_test_json_masposemap:
     m "Running Tests..."
     python:
+        import copy
+
         def gen_data(jgroup, jdata):
             data = {}
             for index in range(len(jgroup)):
@@ -452,6 +454,25 @@ label dev_unit_test_json_masposemap:
 
         def gen_right(rdata):
             return gen_data(MASPoseArms.J_NAME_RIGHT, rdata)       
+
+        def arms_both(extra=False):
+            data = gen_both(("both_pa", True, True))
+            if extra:
+                data.update({
+                    "extra": 123,
+                    "extra2": 69,
+                })
+            return data
+
+        def arms_lr(extra=False):
+            data = gen_left(("left_pa", True, True))
+            data.update(gen_right(("right_pa", True, True)))
+            if extra:
+                data.update({
+                    "extra": 123,
+                    "extra2": 10,
+                })
+            return data
 
         prop_mpm_type = "mpm_type"
         prop_default = "default"
@@ -473,6 +494,12 @@ label dev_unit_test_json_masposemap:
         as_one = "1"
         as_star = "*"
         as_null = ""
+        pa_both = "both_pa"
+        pa_left = "left_pa"
+        pa_right = "right_pa"
+        ic_one = "1"
+        ic_zero = "0"
+        ic_custom = "special"
 
         mpm_tester = store.mas_dev_unit_tests.MASUnitTester()
 
@@ -521,12 +548,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_ED, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -543,7 +570,7 @@ label dev_unit_test_json_masposemap:
         mpm_tester.assertTrue(actual.get(pose2, False))
         mpm_tester.assertTrue(actual.get(pose3, False))
         mpm_tester.assertTrue(actual.get(pose4, False))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
         mpm_tester.assertTrue(actual.get(pose6, False))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
@@ -555,8 +582,8 @@ label dev_unit_test_json_masposemap:
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpa_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 0, no props, l_default")
         test_data = {
@@ -567,12 +594,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_ED, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
         mpm_tester.assertFalse(actual.get(pose5, True))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
@@ -584,13 +611,13 @@ label dev_unit_test_json_masposemap:
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 0, no props, default + urfl")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_ED,
-            prop_default = True,
-            prop_urfl = True
+            prop_default: True,
+            prop_urfl: True
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
@@ -608,8 +635,8 @@ label dev_unit_test_json_masposemap:
         mpm_tester.prepareTest("mpm type 0, no props, default + l_default")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_ED,
-            prop_default = True,
-            prop_l_default = False
+            prop_default: True,
+            prop_l_default: False
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
@@ -634,12 +661,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_ED, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(4, len(log))
 
@@ -656,10 +683,10 @@ label dev_unit_test_json_masposemap:
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_ED, actual._mpm_type)
         mpm_tester.assertTrue(actual.get(pose1, False))
         mpm_tester.assertFalse(actual.get(pose2, True))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
         mpm_tester.assertTrue(actual.get(pose5, False))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -674,11 +701,11 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_ED, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
         mpm_tester.assertFalse(actual.get(pose3, True))
         mpm_tester.assertTrue(actual.get(pose4, False))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
         mpm_tester.assertFalse(actual.get(pose6, True))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
@@ -785,12 +812,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -803,12 +830,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose3, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
@@ -819,8 +846,8 @@ label dev_unit_test_json_masposemap:
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpa_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 1, no props, l_default")
         test_data = {
@@ -831,12 +858,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
@@ -848,43 +875,43 @@ label dev_unit_test_json_masposemap:
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 1, no props, default + urfl")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_FB,
-            prop_default = pose3,
-            prop_urfl = True
+            prop_default: pose3,
+            prop_urfl: True
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose3, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
         mpm_tester.prepareTest("mpm type 1, no props, default + l_default")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_FB,
-            prop_default = pose3,
-            prop_l_default = pose4,
+            prop_default: pose3,
+            prop_l_default: pose4,
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose3, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
@@ -898,12 +925,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(4, len(log))
 
@@ -918,12 +945,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose2, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose2, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -938,12 +965,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose2, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose3, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose2, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -961,12 +988,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose3, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose5, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose1, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose6, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose2, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose3, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose5, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose1, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose6, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose2, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -986,12 +1013,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose6, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose5, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose2, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose5, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose6, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose5, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose2, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose5, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
@@ -1030,12 +1057,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpa_tester.assertEqual(pose6, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(pose4, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(pose5, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(pose2, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(pose5, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(pose6, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(pose4, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(pose5, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(pose2, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(pose5, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1049,12 +1076,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1067,12 +1094,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
@@ -1083,8 +1110,8 @@ label dev_unit_test_json_masposemap:
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpa_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 2, no props, l_default")
         test_data = {
@@ -1095,12 +1122,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
@@ -1112,43 +1139,43 @@ label dev_unit_test_json_masposemap:
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(1, len(log))
 
         mpm_tester.prepareTest("mpm type 2, no props, default + urfl")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default = as_one,
-            prop_urfl = True
+            prop_default: as_one,
+            prop_urfl: True
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
         mpm_tester.prepareTest("mpm type 2, no props, default + l_default")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default = as_one,
-            prop_l_default = as_star,
+            prop_default: as_one,
+            prop_l_default: as_star,
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
@@ -1162,12 +1189,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(4, len(log))
 
@@ -1182,12 +1209,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_zero, actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1202,12 +1229,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_zero, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1225,12 +1252,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_zero, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_zero, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_zero, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1250,12 +1277,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_star, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(0, len(log))
 
@@ -1294,12 +1321,12 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_star, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(as_star, actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
@@ -1313,330 +1340,351 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
-
-        # TODO:
+    
         mpm_tester.prepareTest("mpm type 3, no props, default")
         test_data = {
             prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
-            prop_default: as_one,
+            prop_default: arms_both(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(1, len(log))
+        mpm_tester.assertEqual(3, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, no props, invalid default")
+        mpm_tester.prepareTest("mpm type 3, no props, default extra props")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(True),
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(5, len(log))
+
+        mpm_tester.prepareTest("mpm type 3, no props, invalid default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
             prop_default: "test"
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpa_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, no props, l_default")
+        mpm_tester.prepareTest("mpm type 3, no props, l_default")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_l_default: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_l_default: arms_lr(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(1, len(log))
+        mpm_tester.assertEqual(3, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, no props, invalid l_default")
+        mpm_tester.prepareTest("mpm type 3, no props, l_default extra props")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_l_default: arms_lr(True),
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(5, len(log))
+
+        mpm_tester.prepareTest("mpm type 3, no props, invalid l_default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
             prop_l_default: "test",
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
+
+        mpm_tester.prepareTest("mpm type 3, no props, default + urfl")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(),
+            prop_urfl: True
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
+        mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, no props, default + urfl")
+        mpm_tester.prepareTest("mpm type 3, no props, default + l_default")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default = as_one,
-            prop_urfl = True
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(),
+            prop_l_default: arms_lr(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(0, len(log))
+        mpm_tester.assertEqual(4, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, no props, default + l_default")
+        mpm_tester.prepareTest("mpm type 3, extra props")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default = as_one,
-            prop_l_default = as_star,
-        }
-        log = []
-        actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
-        mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(0, len(log))
-
-        mpm_tester.prepareTest("mpm type 2, extra props")
-        test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
             "extra": 123,
             "extra2": 69
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(4, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, valid 1 2 5")
+        mpm_tester.prepareTest("mpm type 3, valid 1 2 5")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_p1: as_one,
-            prop_p2: as_zero,
-            prop_p5: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_p1: arms_both(),
+            prop_p2: arms_both(),
+            prop_p5: arms_lr(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_one, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(8, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, valid 3 4 6")
+        mpm_tester.prepareTest("mpm type 3, valid 3 4 6")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_p3: as_zero,
-            prop_p4: as_star,
-            prop_p6: as_one,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_p3: arms_both(),
+            prop_p4: arms_both(),
+            prop_p6: arms_lr(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(8, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, valid all, no defaults")
+        mpm_tester.prepareTest("mpm type 3, valid all, no defaults")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_p1: as_zero,
-            prop_p2: as_one,
-            prop_p3: as_star,
-            prop_p4: as_one,
-            prop_p5: as_zero,
-            prop_p6: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_p1: arms_both(),
+            prop_p2: arms_both(),
+            prop_p3: arms_lr(),
+            prop_p4: arms_lr(),
+            prop_p5: arms_lr(),
+            prop_p6: arms_both(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_zero, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_one, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_zero, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(14, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, valid all, defaults")
+        mpm_tester.prepareTest("mpm type 3, valid all, defaults")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default: as_zero,
-            prop_l_default: as_one,
-            prop_p1: as_star,
-            prop_p2: as_star,
-            prop_p3: as_star,
-            prop_p4: as_star,
-            prop_p5: as_star,
-            prop_p6: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(),
+            prop_l_default: arms_lr(),
+            prop_p1: arms_both(),
+            prop_p2: arms_lr(),
+            prop_p3: arms_lr(),
+            prop_p4: arms_both(),
+            prop_p5: arms_both(),
+            prop_p6: arms_lr(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_star, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(0, len(log))
+        mpm_tester.assertEqual(16, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, one invalid, defaults")
+        mpm_tester.prepareTest("mpm type 3, valid all, defaults, all extra")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default: as_zero,
-            prop_l_default: as_one,
-            prop_p1: as_star,
-            prop_p2: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(True),
+            prop_l_default: arms_lr(True),
+            prop_p1: arms_both(True),
+            prop_p2: arms_lr(True),
+            prop_p3: arms_lr(True),
+            prop_p4: arms_both(True),
+            prop_p5: arms_both(True),
+            prop_p6: arms_lr(True),
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(32, len(log))
+
+        mpm_tester.prepareTest("mpm type 3, one invalid, defaults")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(),
+            prop_l_default: arms_lr(),
+            prop_p1: arms_both(),
+            prop_p2: arms_lr(),
             prop_p3: "test",
-            prop_p4: as_star,
-            prop_p5: as_star,
-            prop_p6: as_star,
+            prop_p4: arms_lr(),
+            prop_p5: arms_both(),
+            prop_p6: arms_both(),
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNone(actual)
-        mpm_tester.assertEqual(1, len(log))
+        mpm_tester.assertEqual(15, len(log))
 
-        mpm_tester.prepareTest("mpm type 2, valid all, defaults, extra props")
+        mpm_tester.prepareTest("mpm type 3, valid all, defaults, extra props")
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS,
-            prop_default: as_zero,
-            prop_l_default: as_one,
-            prop_p1: as_star,
-            prop_p2: as_star,
-            prop_p3: as_star,
-            prop_p4: as_star,
-            prop_p5: as_star,
-            prop_p6: as_star,
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(),
+            prop_l_default: arms_lr(),
+            prop_p1: arms_both(),
+            prop_p2: arms_lr(),
+            prop_p3: arms_lr(),
+            prop_p4: arms_both(),
+            prop_p5: arms_both(),
+            prop_p6: arms_lr(),
             "extra": 123,
             "extra2": 69,
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpa_tester.assertEqual(as_star, actual.get(pose1, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose2, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose3, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose4, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose5, "test"))
-        mpa_tester.assertEqual(as_star, actual.get(pose6, "test"))
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(18, len(log))
 
-        mpm_tester.prepareTest("mpm type 4, no props")
+        mpm_tester.prepareTest(
+            "mpm type 3, valid all, defaults, extra extra props"
+        )
         test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_IC
-        }
-        log = []
-        actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
-        mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
-
-
-        mpm_tester.prepareTest("mpm type 1, valid")
-        test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_FB,
-            prop_p1:
-        }
-        log = []
-        actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_FB, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
-        mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
-
-        mpm_tester.prepareTest("mpm type 2, no props")
-        test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_AS
-        }
-        log = []
-        actual = MASPoseMap.fromJSON(test_data, log, 0)
-        mpm_tester.assertIsNotNone(actual)
-        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_AS, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
-        mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
-
-        mpm_tester.prepareTest("mpm type 3, no props")
-        test_data = {
-            prop_mpm_type: MASPoseMap.MPM_TYPE_PA
+            prop_mpm_type: MASPoseMap.MPM_TYPE_PA,
+            prop_default: arms_both(True),
+            prop_l_default: arms_lr(True),
+            prop_p1: arms_both(True),
+            prop_p2: arms_lr(True),
+            prop_p3: arms_lr(True),
+            prop_p4: arms_both(True),
+            prop_p5: arms_both(True),
+            prop_p6: arms_lr(True),
+            "extra": 123,
+            "extra2": 69,
         }
         log = []
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_PA, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNotNone(actual.get(pose1, None))
+        mpm_tester.assertIsNotNone(actual.get(pose2, None))
+        mpm_tester.assertIsNotNone(actual.get(pose3, None))
+        mpm_tester.assertIsNotNone(actual.get(pose4, None))
+        mpm_tester.assertIsNotNone(actual.get(pose5, None))
+        mpm_tester.assertIsNotNone(actual.get(pose6, None))
         mpm_tester.assertEqual({}, test_data)
-        mpm_tester.assertEqual(2, len(log))
+        mpm_tester.assertEqual(34, len(log))
+
+        # 4
 
         mpm_tester.prepareTest("mpm type 4, no props")
         test_data = {
@@ -1646,16 +1694,261 @@ label dev_unit_test_json_masposemap:
         actual = MASPoseMap.fromJSON(test_data, log, 0)
         mpm_tester.assertIsNotNone(actual)
         mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
-        mpm_tester.assertEqual("test", actual.get(pose1, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose2, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose3, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose4, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose5, "test"))
-        mpm_tester.assertEqual("test", actual.get(pose6, "test"))
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(2, len(log))
 
+        mpm_tester.prepareTest("mpm type 4, no props, default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(1, len(log))
 
+        mpm_tester.prepareTest("mpm type 4, no props, invalid default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: 10,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, no props, l_default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_l_default: ic_zero,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(1, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, no props, invalid l_default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_l_default: 10,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, no props, default + urfl")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+            prop_urfl: True
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(0, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, no props, default + l_default")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+            prop_l_default: ic_zero,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(0, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, extra props")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            "extra": 123,
+            "extra2": 69
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(4, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, valid 1 2 5")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_p1: ic_one,
+            prop_p2: ic_zero,
+            prop_p5: ic_custom,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose2, "test"))
+        mpm_tester.assertIsNone(actual.get(pose3, "test"))
+        mpm_tester.assertIsNone(actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose5, "test"))
+        mpm_tester.assertIsNone(actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(2, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, valid 3 4 6")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_p3: ic_custom,
+            prop_p4: ic_one,
+            prop_p6: ic_zero,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertIsNone(actual.get(pose1, "test"))
+        mpm_tester.assertIsNone(actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertIsNone(actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(2, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, valid all, no defaults")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_p1: ic_one,
+            prop_p2: ic_custom,
+            prop_p3: ic_zero,
+            prop_p4: ic_zero,
+            prop_p5: ic_one,
+            prop_p6: ic_custom,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_one, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(2, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, valid all, defaults")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+            prop_l_default: ic_zero,
+            prop_p1: ic_custom,
+            prop_p2: ic_custom,
+            prop_p3: ic_custom,
+            prop_p4: ic_one,
+            prop_p5: ic_one,
+            prop_p6: ic_zero,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_custom, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(0, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, one invalid, defaults")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+            prop_l_default: ic_zero,
+            prop_p1: ic_custom,
+            prop_p2: ic_custom,
+            prop_p3: 10,
+            prop_p4: ic_custom,
+            prop_p5: ic_one,
+            prop_p6: ic_zero,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual(1, len(log))
+
+        mpm_tester.prepareTest("mpm type 4, valid all, defaults, extra props")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_IC,
+            prop_default: ic_one,
+            prop_l_default: ic_zero,
+            prop_p1: ic_custom,
+            prop_p2: ic_custom,
+            prop_p3: ic_custom,
+            prop_p4: ic_one,
+            prop_p5: ic_one,
+            prop_p6: ic_zero,
+            "extra": 123,
+            "extra2": 69,
+        }
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0)
+        mpm_tester.assertIsNotNone(actual)
+        mpm_tester.assertEqual(MASPoseMap.MPM_TYPE_IC, actual._mpm_type)
+        mpm_tester.assertEqual(ic_custom, actual.get(pose1, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose2, "test"))
+        mpm_tester.assertEqual(ic_custom, actual.get(pose3, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose4, "test"))
+        mpm_tester.assertEqual(ic_one, actual.get(pose5, "test"))
+        mpm_tester.assertEqual(ic_zero, actual.get(pose6, "test"))
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(2, len(log))
+
+    call dev_unit_tests_finish_test(mpm_tester)
 
     return
 

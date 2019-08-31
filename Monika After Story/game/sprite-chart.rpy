@@ -4921,8 +4921,8 @@ init -2 python:
 
             isbad = False
             for prop_name in json_obj.keys():
+                prop_val = json_obj.pop(prop_name)
                 if prop_name in cls.CONS_PARAM_NAMES:
-                    prop_val = json_obj.pop(prop_name)
 
                     if mpm_type == cls.MPM_TYPE_IC:
                         # more ACS, means more iamge code usage
@@ -4977,7 +4977,7 @@ init -2 python:
 
                     elif mpm_type == cls.MPM_TYPE_FB:
                         # clothes with fallbacks is pretty common
-                        if cls.msj._verify_pose(prop_val)
+                        if cls.msj._verify_pose(prop_val, allow_none=False):
                             mpm_data[prop_name] = prop_val
 
                         else:
@@ -4993,7 +4993,7 @@ init -2 python:
 
                     else: 
                         # otherwise pose arms
-                        if cls.msj._verify_dict(prop_val):
+                        if cls.msj._verify_dict(prop_val, allow_none=False):
                             msg_log.append((
                                 cls.msj.MSG_INFO_T,
                                 inner_ind_lvl,
@@ -5010,7 +5010,7 @@ init -2 python:
                                 cls.msj.MPA_SUCCESS.format(prop_name)
                             ))
 
-                        else:
+                        elif prop_val is not None:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
@@ -5028,6 +5028,10 @@ init -2 python:
                         inner_ind_lvl,
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
+
+            # finally check for valid params
+            if isbad:
+                return None
 
             # we should alwyas suggest a default
             _param_default = mpm_data.get("default", None)
@@ -5049,10 +5053,6 @@ init -2 python:
                     inner_ind_lvl,
                     cls.msj.MPM_DEF_L
                 ))
-
-            # finally check for valid params
-            if isbad:
-                return None
 
             return MASPoseMap(**mpm_data)
 
