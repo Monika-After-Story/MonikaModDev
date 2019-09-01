@@ -2982,9 +2982,6 @@ label greeting_returned_home:
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
     # event checks
-    if mas_isMonikaBirthday() or persistent._mas_bday_on_date:
-        jump greeting_returned_home_bday
-
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
@@ -3002,6 +2999,9 @@ label greeting_returned_home:
 
     if persistent._mas_f14_gone_over_f14:
         jump greeting_gone_over_f14
+
+    if mas_isMonikaBirthday() or persistent._mas_bday_on_date:
+        jump greeting_returned_home_bday
 
     # main dialogue
     if time_out > five_minutes:

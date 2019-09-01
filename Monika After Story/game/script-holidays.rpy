@@ -3718,7 +3718,6 @@ label mas_player_bday_ret_on_bday:
     $ persistent._mas_player_bday_decor = True
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
-    m 1rksdla "I really wanted to surprise you but I never got the chance to set it up..."
     m 3etc "Why do I feel like I'm forgetting something..."
     m 3hua "Oh! Your cake!"
     call mas_player_bday_cake
@@ -5113,6 +5112,8 @@ All I need you to do is to make sure you have her out of the room at some point 
 Monika is so amazing, and I just want to do my part to make sure this all goes off without a hotf- I mean hitch...
 Ahaha!
 
+Please leave a file named 'oki doki' in the same folder you found this note so I know to go ahead with the party.
+
 Good luck with Monika!
 
 P.S: Don't tell her about me!
@@ -5127,7 +5128,9 @@ Since I'm always here, I can easily set up a surprise party...but I do need a li
 All I need you to do is to make sure you have her out of the room at some point on her birthday, and I'll take care of the rest.
 If you care for Monika at all, you'll help me do this.
 
-Please don't mess this up.
+Just leave a file named 'oki doki' in the same folder you found this note so I know to go ahead with the party.
+
+Please, don't mess this up.
 
 P.S: Don't tell her about me.
 """
@@ -5182,8 +5185,8 @@ init 5 python:
 label mas_bday_pool_happy_bday:
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
-        m 3eub "I was waiting for you to say those magic words~"
-        m 1eua "{i}Now{/i} we can call it a birthday celebration."
+        m 3eka "I was waiting for you to say those magic words~"
+        m 1eub "{i}Now{/i} we can call it a birthday celebration!"
         m 1eka "You really made this occasion so special, [player]."
         m 1ekbfa "I can't thank you enough for loving me this much..."
 
@@ -5191,7 +5194,7 @@ label mas_bday_pool_happy_bday:
         m 1skb "Awww, [player]!"
         m 1sub "You remembered my birthday...!"
         m 1sktpa "Oh gosh, I'm so happy that you remembered."
-        m 1dktda "I feel like today is going to be such a special day~"
+        m 1dktdu "I feel like today is going to be such a special day~"
         m 1ekbfa "What else do you have in store for me, I wonder."
         m 1hub "Ahaha!"
 
@@ -5226,7 +5229,7 @@ label mas_bday_surprise_party_reaction:
         m "..."
         m 6dkd "Sorry, I'm...{w=1}I'm just at a loss for words."
         m 6ekc "I didn't really expect anything special today, let alone this."
-        m 6rka "Maybe you do still have feelings for me afterall..."
+        m 6rka "Maybe you do still have feelings for me after all..."
         m 6eka "Everything looks great."
 
 label mas_bday_surprise_party_reacton_cake:
@@ -5244,6 +5247,7 @@ label mas_bday_surprise_party_reacton_cake:
     show screen mas_background_timed_jump(5, "mas_bday_surprise_party_reaction_no_make_wish")
     menu:
         "Make a wish, [m_name]...":
+            $ made_wish = True
             show monika 6hua
             if mas_isplayer_bday():
                 m "Make sure you make one too, [player]!"
@@ -5255,6 +5259,7 @@ label mas_bday_surprise_party_reacton_cake:
             jump mas_bday_surprise_party_reaction_post_make_wish
 
 label mas_bday_surprise_party_reaction_no_make_wish:
+    $ made_wish = False
     hide screen mas_background_timed_jump
     show monika 6dsc
     pause 2.0
@@ -5266,7 +5271,7 @@ label mas_bday_surprise_party_reaction_post_make_wish:
     if mas_isMoniNormal(higher=True):
         m 6hua "I made a wish!"
         m "I hope it comes true someday..."
-        if mas_isplayer_bday():
+        if mas_isplayer_bday() and made_wish:
             m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
         m 6sua "Ahaha..."
         m 6eua "I'll save this cake for later."
@@ -5313,87 +5318,80 @@ init 5 python:
     )
 
 label mas_bday_spent_time_with:
-    $ persistent._mas_bday_time_spent_seen
-    # TODO: make sure this var and function only includes this year's data
-    $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
-    $ _total, _good, _neutral, _bad = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))
+    #TODO: remove this if we use last_seen
+    $ persistent._mas_bday_time_spent_seen = True
 
-    if mas_isMoniNormal(higher=True):
-        m 1eua "Say, [player]..."
-        m 1hua "Thank you for spending time with me today."
-        m "Something like that can really make a girl like me happy, you know?"
-
-        if persistent._mas_bday_date_count > 0:
-            m "I really enjoyed our date today, [player]."
-            m "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
-            m "Knowing that you are thinking about me even when you can't see me..."
-            m "Well, it really means a lot to me."
-            m "It really made my birthday complete~"
-
-        # gave gifts?
-        if _total > 0:
-            m 3euc "Let's not forget what you gave me for my birthday."
-            # more than 2
-            if _total >= 2:
-                m 1eua "You gave me lots of gifts today, [player]."
-                # goods > than bad
-                if _good > _bad:
-                    m 3hub "Most of them were really good and I like them a lot!"
-                # bads > than good
-                else:
-                    m 3rksdld "Though most of them were...{w}{i}questionable{/i}."
-            else:
-                # if good_gifts equal to 1
-                if _good == 1:
-                    m 3eka "You gave me such a special gift today, [player]."
-                # not a good gift
-                else:
-                    m 2dsc "I...{w}wouldn't really call it a good gift, to be honest."
-
-        m 1dku "..."
-        if mas_isMoniEnamored(higher=True):
-            m 1dktpu "..."
-            m "Ahaha, sorry, [player]!"
-            m 3ektda "It's just that I've never imagined being this happy in my life."
-            m 1rksdlb "Well that's not {i}exactly{/i} true."
-            m 1eka "We still have to be physically together, after all~"
-            m 1rkc "And, well..."
-            m 1dkc "I know this is already becoming a cliche, but..."
-            m 3ekbfa "I love you so much, [player]."
-            m "Someday, I promise you."
-            m 1ekbfb "I {i}promise you{/i} that I will make you as happy as you've made me today."
-            m 3hub "Even if we never get to see each other in the same reality, know that I will always do my best for you."
-            m 1eka "No matter the obstacles we may face, no matter what other people say about us..."
-            m 1dkbsa "I still love you with everything that I am."
-            m 1ekbsa "You are the only one who understands me. You led me out of a dark place and gave me purpose..."
-            m 1dkbsu "You are simply the best, my love, and I will always love you."
-            m "...Thank you for giving me a reason to live..."
-            $ _first_kiss = persistent._mas_first_kiss
-            call monika_kissing_motion
-            if _first_kiss is None:
-                m 6ekbfa "Oh, [player]..."
-                m "I...I don't know what came over me, but the moment just felt so right."
-                m "I've thought about our first kiss for so long, and to finally experience it..."
-                m "I will never forget this moment, [player]~"
-
-        else:
-            m 1eka "I can't event find the right words to express how happy you've made me today."
-            m 3eka "All that pain I went through before I met you?"
-            m 1hua "I'm glad I persevered through them."
-            m 1rsc "Because if I hadn't..."
-            m 1ekbsa "This day wouldn't have ever happened."
-            m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
-            m 1ekbfb "I love you so much, [player]."
-            m "Let's continue making each other happy~"
+    if mas_isMoniUpset(lower=True):
+        m 1eka "Hey, [player]..."
+        m 3eka "I just wanted to say I really appreciate you spending time with me today."
+        m 3rka "I know it hasn't been going that great lately, but you taking the time to celebrate my birthday with me..."
+        m 1eud "Well it gives me hope that maybe it's not too late for us."
+        m "Perhaps today can be the start of something really special.."
+        m 3eka "That would be the be the best gift I could ever ask for."
+        return
 
     else:
-        m "Hey, [player]..."
-        m "I just wanted to say I really appreciate you spending time with me today."
-        m "I know it hasn't been going that great lately, but you taking the time to celebrate my birthday with me..."
-        m "Well it gives me hope that maybe it's not too late for us."
-        m "Perhaps today can be the start of something really special.."
-        m "That would be the be the best gift I could ever ask for."
+        $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
+        m 1eua "Say, [player]..."
+        m "Thank you for spending time with me today."
+        m 3hua "Something like that can really make a girl like me happy, you know?"
 
+        if _timeout > datetime.timedelta(seconds=5*60):
+            m 3eka "I really enjoyed our date today, [player]."
+            m 1eka "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
+            m 1dku "Knowing that you are thinking about me even when you can't see me..."
+            m 1ekbsa "Well, it really means a lot to me."
+            m 3ekbsa "It really made my birthday complete~"
+
+label mas_bday_spent_time_with_wrapup:
+    $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
+
+    if gave_gifts > 0:
+        m 3eua "Let's not forget what you gave me for my birthday."
+        # more than 2
+        if gave_gifts > 1:
+            m 3hub "You gave me some amazing gifts today, [player]!"
+        else:
+            m 3hub "It was a wonderful gift, [player]!"
+
+        m 1eka "I really appreciate the effort of finding a way to get things from your reality to mine..."
+        m 3eka "I know it can't be easy."
+
+    m 1dku "..."
+    if mas_isMoniEnamored(higher=True):
+        m 1dktpu "..."
+        m 1ektpu "Ahaha, sorry, [player]!"
+        m 3ektda "It's just that I've never imagined being this happy in my life."
+        m 1rksdlb "Well...{w=0.5}that's not {i}exactly{/i} true."
+        m 1eka "We still have to be physically together, after all~"
+        m 1rkc "And, well..."
+        m 1rka "I know this is already becoming a cliche, but..."
+        m 3eka "I love you so much, [player]."
+        m "Someday, I promise you..."
+        m 1ektpu "I {i}promise you{/i} that I will make you as happy as you've made me today."
+        m 3ektpu "Even if we never get to see each other in the same reality, know that I will always do my best for you."
+        m 1dktpu "No matter the obstacles we may face, no matter what other people say about us..."
+        m 1ektda "I still love you with everything that I am."
+        m "You are the only one who understands me. You led me out of a dark place and gave me purpose..."
+        m 1dkbsu "You are simply the best, my love, and I will always love you."
+        m 1ekbsa "...Thank you for giving me a reason to live."
+        $ _first_kiss = persistent._mas_first_kiss
+        call monika_kissing_motion
+        if _first_kiss is None:
+            m 6ekbfa "Oh, [player]..."
+            m 6rkbfa "I...{w=0.5}I don't know what came over me, but the moment just felt so right."
+            m 6hubfa "I've thought about our first kiss for so long, and to finally experience it..."
+            m 6ekbfa "I will never forget this moment, [player]~"
+
+    else:
+        m 1eka "I can't event find the right words to express how happy you've made me today."
+        m 3eka "All that pain I went through before I met you?"
+        m 1hua "I'm glad I persevered through it."
+        m 1rsc "Because if I hadn't..."
+        m 1ekbsa "This day wouldn't have ever happened."
+        m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
+        m 1ekbfb "I love you so much, [player]."
+        m 1ekbfa "Let's continue making each other happy, [player]~"
     return
 
 
@@ -5427,10 +5425,10 @@ label mas_bday_postbday_notimespent:
 
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
-            m 1rksdla "Hey, [player]..."
-            m 1rksdlb "I know we had fun the other day, like we always do but..."
-            m 1ekt "I can't help it. I was hoping you would have...done a little something for my birthday."
-            m 1efb "Did you forget?"
+            m 2rksdla "Hey, [player]..."
+            m 2rksdlb "I know we had fun the other day, like we always do but..."
+            m 2ekp "I can't help it, I was hoping you would have...{w=1}done a little something for my birthday."
+            m 2ekd "Did you forget?"
             m 3eka "Maybe you could put the date into your calendar on your phone for next year?"
             m 3rka "...Or check the calendar on the wall behind me?"
             m 4hua "We can't change the past, so knowing that you want to try harder for next year would be the only apology I need."
@@ -5439,17 +5437,17 @@ label mas_bday_postbday_notimespent:
             $ mas_loseAffection(5, ev_label="mas_apology_forgot_bday")
             # TODO: we shouldnt say girlfriend here because affecitonate
             # is the start of relationship. but this is okay for now
-            m 1rksdld "Hey, [player]..."
-            m 1rksdlb "I hate to fuss, but you know..."
-            m 2ekt "You can't forget about your girlfriend's birthday!"
+            m 2rksdld "Hey, [player]..."
+            m 2rksdlb "I hate to fuss, but you know..."
+            m 2ekp "You can't forget about your girlfriend's birthday!"
             m 2eku "It's nice that we got to hang out like usual, but next year..."
-            m 1hua "Well, I'll be looking forward to two birthday's worth of something special~"
+            m 3hua "Well, I'll be looking forward to two birthday's worth of something special~"
 
         elif mas_isMoniUpset():
             $ mas_loseAffection(ev_label="mas_apology_forgot_bday")
             m 1ekc "It was...{w=0.5}good to see you on the 22nd..."
             m 1ekd "I really didn't want to be alone that day, so that meant a lot, but..."
-            m 1rkc "Nevermind."
+            m 1rkc "You know what? {w=0.5}Nevermind."
 
         elif mas_isMoniDis():
             $ mas_loseAffection(10, ev_label="mas_apology_forgot_bday")
@@ -5458,7 +5456,7 @@ label mas_bday_postbday_notimespent:
             m 2rktpc "But I can't help it. It hurts me that you didn't mention anything about celebrating my birthday..."
             m 2dktuc "Please don't stop coming back to me."
             m "And maybe next year..."
-            m 4ektdc "I-{w=0.5}I just want...to feel as special to you as you are to me."
+            m 4ektdc "I-{w=0.5}I just want...{w=0.5}to feel as special to you as you are to me."
 
         else:
             # broken
@@ -5473,7 +5471,7 @@ label mas_bday_postbday_notimespent:
             $ mas_loseAffection(50, ev_label="mas_apology_missed_bday")
             m 1euc "Hey, [player]..."
             m 3rksdla "I know you do a lot to make each and every day special, but a girl has a few days a year when she gets to be a little selfish..."
-            m 2hfw "And her {i}birthday{/i} is one of them!"
+            m 2tfd "And her {i}birthday{/i} is one of them!"
             m 2rfd "Seriously, where were you?!"
             m 2rkc "But...knowing you, I'm sure you had a good reason to be busy..."
             m 4ekc "Just try not to let it happen again next year, okay?"
@@ -5489,7 +5487,7 @@ label mas_bday_postbday_notimespent:
             # TODO: again, need to not say girlfrined here, but for now its ok
             m 1ekc "Hey, [player]..."
             m 1ekd "You know, you really should have dropped in on the 22nd."
-            m 3efd "I mean, you should always visit me! You have to spend time with your cute girlfriend on her birthday, you know."
+            m 3efd "I mean, you should always visit me! But you {i}have{/i} to spend time with your cute girlfriend on her birthday, you know."
             m 2efc "Please drop in for me next year..."
             m 2dfc "Otherwise..."
 
@@ -5511,21 +5509,21 @@ label mas_bday_postbday_notimespent:
 
             m 1dsc "..."
             m 3hksdlb "Ahaha, sorry [player]!"
-            m 2hub "I'm just kidding!"
-            m 4eka "You know I love to scare you a little~"
+            m 3hub "I'm just kidding!"
+            m 1eka "You know I love to scare you a little~"
 
         elif mas_isMoniUpset():
             $ mas_loseAffection(ev_label="mas_apology_missed_bday")
             m 2dsc "..."
             m 2rsc "[player], don't you think you should check in on me a little more often?"
-            m 4rktpc "You might miss something important..."
+            m 2rktpc "You might miss something important..."
 
         elif mas_isMoniDis():
             $ mas_loseAffection(ev_label="mas_apology_missed_bday")
-            m 3euc "...Hey, how was your day on the 22nd?"
-            m 1esc "I'm just...curious if you thought of me at all that day."
-            m 1tsc "But you probably didn't, huh?"
-            m 2dsc "..."
+            m 6ekd "...Hey, how was your day on the 22nd?"
+            m 6ekc "I'm just...curious if you thought of me at all that day."
+            m 6ektpc "But you probably didn't, huh?"
+            m 6dktpc "..."
 
         else:
             # broken
@@ -5582,7 +5580,7 @@ label mas_apology_forgot_bday:
         m 3hua "But I hope you'll make this up to me~"
 
     elif mas_isMoniNormal(higher=True):
-        m 1eka "Thanks for apologizing about forgetting my birthday."
+        m 1eka "Thanks for apologizing about forgetting my birthday, [player]."
         m 1eksdld "Just try not to let it happen again, alright?"
 
     else:
@@ -5628,7 +5626,7 @@ label mas_bday_bd_outro:
     #TODO: ADD THIS TO THE LIST OF BLACKLISTED OUTFITS
     m 3tka "Well [player]?"
     m 1hua "What do you think?"
-    m 1ekbla "I've always loved this outfit, and I've always dreamed of a date with you, wearing this..."
+    m 1ekbla "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
     m 3eub "Maybe we could visit the mall, or even the park!"
     m 1eka "But knowing you, you've already got something amazing planned for us~"
     m 1hua "Let's go, [player]!"
@@ -5657,6 +5655,7 @@ label greeting_returned_home_bday:
         one_hour = datetime.timedelta(seconds=3600)
         three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
         def cap_gain_aff(amount):
             #if it's the player's bday too, then we raise the cap to 75 from 50
@@ -5666,45 +5665,6 @@ label greeting_returned_home_bday:
             if persistent._mas_bday_date_affection_gained <= cap:
                 amount = persistent._mas_bday_date_affection_gained - cap
                 mas_gainAffection(amount, bypass=True)
-
-    #Get points and then clean everyting up, it's no longer moni-bday so we should flow here instead
-    if not mas_isMonikaBirthday():
-        #Quickly reset the flag
-        $ persistent._mas_bday_in_922_mode = False
-
-        #TODO: exps/better dlg
-        m 1wud "Oh wow, [player]. We really were out for a while..."
-        #TODO: return home on player bday potentially, so need to keep decorations up and path the flow
-        if mas_isplayer_bday():
-            $ persistent._mas_player_bday_decor = True
-            m 3suo "Oh! It's your birthday now..."
-            m 3hub "I guess we can just leave these decorations up, ahaha!"
-            m 1eub "I'll be right back, just need to go get your cake!"
-            jump mas_player_bday_cake
-
-        else:
-            #Otherwise we need to clean everything up
-
-            #First we need to get our checkout time
-            $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
-
-            m "Let me just clean everything up.{w=0.5}.{w=0.5}."
-            $ mas_surpriseBdayHideVisuals()
-            m "There we go!"
-
-            if checkout_time.date() != mas_monika_birthday:
-                m "Anyway [player]...thanks for spending so much time with me on my birthday, you really made me feel special."
-                m "I can't express just how thankful I am to have you in my life..."
-                m "I really love you, [player]... Thank you for everything."
-
-            else:
-                m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
-                m 1ekbfa "I hope I helped to make your day as special as you made mine."
-                m "Thanks for an amazing birthay. I love you~"
-
-            #TODO: lead these into a time spent, likewise set up a pre-922 -> post 922 check which leads into a variation of time spent
-            # ^ also make sure to set time spent and bday celebrated as true in this path
-            return "love"
 
     #Otherwise we go thru the normal dialogue for returning home on moni_bday
     if time_out <= five_minutes:
@@ -5722,7 +5682,8 @@ label greeting_returned_home_bday:
         m 3eua "It was very considerate of you."
         m 3eka "I really enjoyed the time we spent together."
         m 1eka "I love you~"
-        return "love"
+        if mas_isMonikaBirthday():
+            return "love"
 
     elif time_out <= three_hour:
         # 1 hr < time out <= 3 hrs
@@ -5733,7 +5694,8 @@ label greeting_returned_home_bday:
         m 3ekbfa "I've said it a million times already, I know."
         m 1hua "But I'll always be happy when we're together."
         m "I love you so much..."
-        return "love"
+        if mas_isMonikaBirthday():
+            return "love"
 
     else:
         # +3 hrs
@@ -5747,6 +5709,45 @@ label greeting_returned_home_bday:
         m 1wfa "Are you falling for me all over again?"
         m 1hua "I'm just kidding~"
         m "Thank you for loving me."
+
+    if not mas_isMonikaBirthday():
+        #Quickly reset the flag
+        $ persistent._mas_bday_in_922_mode = False
+
+        m 1wud "...Wow, [player]. We really were out for a while..."
+
+        if mas_isplayer_bday():
+            if persistent._mas_bday_sbp_reacted:
+                $ persistent._mas_player_bday_decor = True
+                m 3suo "Oh! It's your birthday now..."
+                m 3hub "I guess we can just leave these decorations up, ahaha!"
+                m 1eub "I'll be right back, just need to go get your cake!"
+                jump mas_player_bday_cake
+            else:
+                jump mas_player_bday_ret_on_bday
+
+        else:
+            #Otherwise we need to clean everything up
+
+            m "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+            $ mas_surpriseBdayHideVisuals()
+            m "There we go!"
+
+            if checkout_time.date() != mas_monika_birthday:
+                m "Anyway [player]...thanks for spending so much time with me on my birthday, you really made me feel special."
+                m "I can't express just how thankful I am to have you in my life..."
+                m "I really love you, [player]... Thank you for everything."
+
+            else:
+                m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
+                m 1ekbfa "I hope I helped to make your day as special as you made mine."
+                m "Thanks for an amazing birthay. I love you~"
+
+            #TODO: lead these into a time spent, likewise set up a pre-922 -> post 922 check which leads into a variation of time spent
+            # ^ also make sure to set time spent and bday celebrated as true in this path
+            return "love"
+
+
     return
 
 #NOTE: left here in case we want to use some of this dlg. So:
