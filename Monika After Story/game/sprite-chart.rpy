@@ -3166,6 +3166,8 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
+        # TODO: limit accessories to only be allowed on their layer.
+        #   *with override flag
         import store.mas_sprites as mas_sprites
 
         # CONSTANTS
@@ -3190,6 +3192,12 @@ init -2 python:
             AFH_ACS,
             BBA_ACS,
             BAB_ACS,
+            BSE_ACS,
+            ASE_ACS,
+        )
+
+        # split layers
+        SPL_LAYERS = (
             BSE_ACS,
             ASE_ACS,
         )
@@ -3410,13 +3418,17 @@ init -2 python:
                 if force_acs or acs.stay_on_start
             ]
 
-
         @staticmethod
         def _verify_rec_layer(val, allow_none=True):
             if val is None:
                 return allow_none
             return val in MASMonika.REC_LAYERS
 
+        @staticmethod
+        def _verify_spl_layer(val, allow_none=True);
+            if val is None:
+                return allow_none
+            return val in MASMonika.SPL_LAYERS
 
         def change_clothes(self, new_cloth, by_user=None, startup=False):
             """
@@ -4839,9 +4851,6 @@ init -2 python:
             "p6",
         )
 
-        # NOTE: type codes are not used internally. they are for sprite jsons
-        #   only.
-
         MPM_TYPE_ED = 0
         # enable/disbale mode
         # each pose should be True/False
@@ -4984,14 +4993,26 @@ init -2 python:
             """
             return self.__all_map.get(pose, defval)
 
+        def is_fallback(self):
+            """
+            Checks if this posemap is a fallback one via type.
+
+            RETURNS: True if this posemap is a fallback one, False if not
+            """
+            return self._mpm_type == self.MPM_TYPE_FB
+
         @classmethod
-        def fromJSON(cls, json_obj, msg_log, ind_lvl):
+        def fromJSON(cls, json_obj, msg_log, ind_lvl, vaild_types=None):
             """
             Builds a MASPoseMap given a JSON format of it
 
             IN:
                 json_obj - json object to parse
                 ind_lvl - indent lvl
+                valid_types - tuple/list of MPM types we should consider valid.
+                    NOTE: this should be used by the caller to ensure that
+                    the MPM being loaded is the correct one.
+                    If not passed, then we don't check for valid types
 
             OUT:
                 msg_log - list to add messages to
@@ -5028,6 +5049,14 @@ init -2 python:
                     cls.msj.MSG_ERR_T,
                     inner_ind_lvl,
                     cls.msj.MPM_BAD_TYPE.format(mpm_type)
+                ))
+                return None
+
+            if valid_types is not None and mpm_type not in valid_types:
+                msg_log.append((
+                    cls.msj.MSG_ERR_T,
+                    inner_ind_lvl,
+                    cls.msj.MPM_TYPE_MISS.format(valid_types, mpm_type)
                 ))
                 return None
 
@@ -5394,9 +5423,7 @@ init -2 python:
         MAS sprites that can use pose maps as fallback maps.
 
         PROPERTIES:
-            fallback - If true, the PoseMap contains fallbacks that poses
-                will revert to. If something is None, then it means to
-                blacklist.
+            None
 
         SEE MASSpriteBase for inherited properties
         """
@@ -5427,9 +5454,7 @@ init -2 python:
                 stay_on_start - True means the item should reappear on startup
                     False means the item should always drop when restarting
                     (Default: False)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules.
-                    (Default: False)
+                fallback - Unused
                 entry_pp - programming point to call when wearing this sprite
                     the MASMonika object that is being changed is fed into this
                     function
@@ -5453,8 +5478,6 @@ init -2 python:
                 ex_props
             )
             self.__sp_type = -2
-            self.fallback = fallback
-
 
         def get_fallback(self, pose, lean):
             """
@@ -5509,7 +5532,7 @@ init -2 python:
                 worn, all acs with a type in this property are removed.
             arm_split - MASPoseMap determining which arm position the ACS 
                 should be visible in. This only applies to ACS that are
-                intended to be used in the ASE_ACS layer. 
+                intended to be used in a BSE or ASE ACS layer. 
                 This accepts the following values for poses;
                     "0" - sprite has "-0" version, and should be used for
                         arms-0 for this pose
@@ -5662,6 +5685,7 @@ init -2 python:
                         self.img_sit,
                         poseid
                     )
+
                     arm_codes = self.get_arm_split_code(pose)
                     if len(arm_codes) < 1:
 
@@ -5673,11 +5697,16 @@ init -2 python:
                         # add all arm versions (max 2)
                         for arm_code in arm_codes:
                             arm_prefix = (
-                                prefix + store.mas_sprites.ART_DLM + arm_code
+                                prefix
+                                + store.mas_sprites.ART_DLM
+                                + arm_code
                             )
 
                             # no arm code
-                            store.mas_sprites.alt_night(loadstrs, arm_prefix)
+                            store.mas_sprites.alt_night(
+                                loadstrs,
+                                arm_prefix
+                            )
 
             return loadstrs
 
@@ -5725,9 +5754,7 @@ init -2 python:
                 stay_on_strat - True means the hairstyle should reappear on
                     startup. False means a restart clears the hairstyle
                     (Default: True)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules.
-                    (Default: False)
+                fallback - Unused
                 entry_pp - programming point to call when wearing this sprite
                     the MASMonika object that is being changed is fed into this
                     function
@@ -5845,9 +5872,7 @@ init -2 python:
                 stay_on_start - True means the clothes should reappear on
                     startup. False means a restart clears the clothes
                     (Default: False)
-                fallback - True means the MASPoseMap includes fallback codes
-                    for each pose instead of just enable/disable rules
-                    (Default: False)
+                fallback - Unused
                 hair_map - dict of available hair styles and what they map to
                     These should all be strings. To signify a default, add
                     a single item called "all" with the value being the hair
@@ -6078,10 +6103,10 @@ init -2 python:
                 arms = "steepling"
 
             # fallback adjustments:
-            if character.hair.fallback:
+            if character.hair.pose_map.is_fallback():
                 arms, lean = character.hair.get_fallback(arms, lean)
 
-            if character.clothes.fallback:
+            if character.clothes.pose_map.is_fallback():
                 arms, lean = character.clothes.get_fallback(arms, lean)
 
             # get the mapped hair for the current clothes

@@ -340,6 +340,7 @@ init -21 python in mas_sprites_json:
     MPM_LOADING = "loading MASPoseMap in '{0}'..."
     MPM_SUCCESS = "MASPoseMap '{0}' loaded successfully!"
     MPM_BAD_TYPE = "invalid mpm_type '{0}'"
+    MPM_TYPE_MISS = "expected mpm_type in {0}, got '{1}'"
     MPM_BAD_POSE = "property '{0}' - invalid pose '{1}'"
     MPM_FB_DEF = "in fallback mode but default not set"
     MPM_FB_DEF_L = "in fallback mode but leaning default not set"
@@ -349,6 +350,7 @@ init -21 python in mas_sprites_json:
     MPM_DEF_L = "leaning default not set"
     MPM_ACS_BAD_POSE_TYPE = "property '{0}' - expected type {1}, got {2}"
     MPM_AS_BAD_TYPE = "property '{0}' - expected {1}, got {2}"
+    MPM_AS_EXTRA = "arm_split cannot be used with rec_layer '{0}'"
     MPM_PA_BAD_TYPE = "property '{0}' - expected object, got {1}"
 
     ## MASPoseArms
@@ -482,7 +484,7 @@ init -21 python in mas_sprites_json:
     OPT_ACS_PARAM_NAMES.update(OPT_AC_SHARED_PARAM_NAMES)
 
     OPT_HC_SHARED_PARAM_NAMES = {
-        "fallback": (bool, _verify_bool),
+#        "fallback": (bool, _verify_bool),
     }
 
     OPT_HAIR_PARAM_NAMES = {
@@ -504,6 +506,8 @@ init -21 python in mas_sprites_json:
         "select_info",
         "split",
         "hair_map",
+        "arm_split",
+        "pose_arms",
     )
 
     # select info params
@@ -1077,6 +1081,7 @@ init 189 python in mas_sprites_json:
             - mux_type
             - pose_map
             - giftname
+            - arm_spli
 
         IN:
             jobj - json object to pasrse
@@ -1136,13 +1141,16 @@ init 189 python in mas_sprites_json:
         ))
 
         # pose map must exist for us to reach this point.
+        # NOTE: all ACS use the IC type
+        mpm_obj = obj_based.pop("pose_map")
+        mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_IC
         mpm_msg_log = []
         pose_map = store.MASPoseMap.fromJSON(
-            obj_based.pop("pose_map"),
+            mpm_obj,
             mpm_msg_log,
             indent_lvl + 1
         )
-        if len(mpm_msg_log) > 0:
+        if pose_map is None:
             msg_log.extend(mpm_msg_log)
             return False
 
@@ -1153,6 +1161,57 @@ init 189 python in mas_sprites_json:
             MPM_SUCCESS.format("pose_map")
         ))
         save_obj["pose_map"] = pose_map
+
+        # now for arm split
+        if store.MASMonika._verify_spl_layer(rec_layer):
+            # this is an arm split layer, so we should parse it
+            if "arm_split" not in obj_based:
+                # NOTE: this is required for SPL layers
+                msg_log.append((
+                    MSG_ERR_T,
+                    indent_lvl,
+                    REQ_MISS.format("arm_split")
+                ))
+                return False
+
+            # type checking should have occurred already
+            # now for arm split
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_LOADING.format("arm_split")
+            ))
+
+            # this posemap should be treated as arm splits
+            mpm_obj = obj_based.pop("arm_split")
+            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_AS
+            mpm_msg_log = []
+            arm_split = store.MASPoseMap.fromJSON(
+                mpm_obj,
+                mpm_msg_log,
+                indent_lvl + 1
+            )
+            if arm_split is None:
+                msg_log.extend(mpm_msg_log)
+                return False
+
+            # succ
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_SUCCESS.format("arm_split")
+            ))
+            save_obj["arm_split"] = arm_split
+
+        elif "arm_split" in obj_based:
+            # otherwise, just warn if the property exists
+            obj_based.pop("arm_split")
+            msg_log.append((
+                MSG_WARN_T,
+                indent_lvl,
+                MPM_AS_EXTRA.format(rec_layer)
+            ))
+
         return True
 
 
@@ -1199,12 +1258,14 @@ init 189 python in mas_sprites_json:
         mpm_msg_log = []
         pose_map = store.MASPoseMap.fromJSON(
             obj_based.pop("pose_map"),
-            False,
-            fallback,
             mpm_msg_log,
-            indent_lvl + 1
+            indent_lvl + 1,
+            valid_types=(
+                store.MASPoseMap.MPM_TYPE_ED,
+                store.MASPoseMap.MPM_TYPE_FB
+            )
         )
-        if pose_map is None or len(mpm_msg_log) > 0:
+        if pose_map is None:
             msg_log.extend(mpm_msg_log)
             return False
 
@@ -1293,6 +1354,7 @@ init 189 python in mas_sprites_json:
         Props validated:
             - hair_map
             - giftname
+            - pose_arms
 
         IN:
             jobj - json object to parse
@@ -1320,67 +1382,104 @@ init 189 python in mas_sprites_json:
             return
 
         # validate hair_map
-        if "hair_map" not in obj_based:
-            # no hair map found, not a problem
-            return
+        if "hair_map" in obj_based:
 
-        # hair map exists, get and validate
-        msg_log.append((MSG_INFO_T, indent_lvl, HM_LOADING))
-        hair_map = obj_based.pop("hair_map")
-        is_bad = False
+            # hair map exists, get and validate
+            msg_log.append((MSG_INFO_T, indent_lvl, HM_LOADING))
+            hair_map = obj_based.pop("hair_map")
+            is_bad = False
 
-        for hair_key,hair_value in hair_map.iteritems():
-            # start with type validations
+            for hair_key,hair_value in hair_map.iteritems():
+                # start with type validations
 
-            # key
-            if _verify_str(hair_key):
-                if (
-                        not dry_run 
-                        and hair_key != "all"
-                        and hair_key not in HAIR_MAP
-                    ):
-                    _add_hair_to_verify(hair_key, hm_key_delayed_veri, sp_name)
-            else:
-                msg_log.append((
-                    MSG_ERR_T,
-                    indent_lvl + 1,
-                    HM_BAD_K_TYPE.format(hair_key, str, type(hair_key))
-                ))
-                is_bad = True
-
-            # value
-            if _verify_str(hair_value):
-                if hair_value == "custom":
-                    msg_log.append((MSG_ERR_T, indent_lvl + 1, HM_FOUND_CUST))
+                # key
+                if _verify_str(hair_key):
+                    if (
+                            not dry_run 
+                            and hair_key != "all"
+                            and hair_key not in HAIR_MAP
+                        ):
+                        _add_hair_to_verify(
+                            hair_key,
+                            hm_key_delayed_veri,
+                            sp_name
+                        )
+                else:
+                    msg_log.append((
+                        MSG_ERR_T,
+                        indent_lvl + 1,
+                        HM_BAD_K_TYPE.format(hair_key, str, type(hair_key))
+                    ))
                     is_bad = True
 
-                elif not dry_run and hair_value not in HAIR_MAP:
-                    _add_hair_to_verify(
-                        hair_value,
-                        hm_val_delayed_veri,
-                        sp_name
-                    )
+                # value
+                if _verify_str(hair_value):
+                    if hair_value == "custom":
+                        msg_log.append((
+                            MSG_ERR_T,
+                            indent_lvl + 1,
+                            HM_FOUND_CUST
+                        ))
+                        is_bad = True
 
-            else:
-                msg_log.append((
-                    MSG_ERR_T,
-                    indent_lvl + 1,
-                    HM_BAD_V_TYPE.format(hair_key, str, type(hair_value))
-                ))
-                is_bad = True
+                    elif not dry_run and hair_value not in HAIR_MAP:
+                        _add_hair_to_verify(
+                            hair_value,
+                            hm_val_delayed_veri,
+                            sp_name
+                        )
 
-        # recommend "all" and set it to default
-        if "all" not in hair_map:
-            msg_log.append((MSG_WARN_T, indent_lvl + 1, HM_MISS_ALL))
-            hair_map["all"] = "def"
+                else:
+                    msg_log.append((
+                        MSG_ERR_T,
+                        indent_lvl + 1,
+                        HM_BAD_V_TYPE.format(hair_key, str, type(hair_value))
+                    ))
+                    is_bad = True
 
-        # check for no errors
-        if is_bad:
-            return False
+            # recommend "all" and set it to default
+            if "all" not in hair_map:
+                msg_log.append((MSG_WARN_T, indent_lvl + 1, HM_MISS_ALL))
+                hair_map["all"] = "def"
 
-        # hair map loaded! verification will happen later.
-        msg_log.append((MSG_INFO_T, indent_lvl, HM_SUCCESS))
-        save_obj["hair_map"] = hair_map
+            # check for no errors
+            if is_bad:
+                return False
+
+            # hair map loaded! verification will happen later.
+            msg_log.append((MSG_INFO_T, indent_lvl, HM_SUCCESS))
+            save_obj["hair_map"] = hair_map
+
+        # validate pose arms
+        if "pose_arms" in obj_based:
+            # pose arms exists, get and validate
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_LOADING.format("pose_arms")
+            ))
+
+            # set type to pose arms
+            mpm_obj = obj_based.pop("pose_arms")
+            mpm_obj["mpm_type"] = MASPoseMap.MPM_TYPE_PA
+            mpm_msg_log = []
+            pose_arms = store.MASPoseMap.fromJSON(
+                mpm_obj,
+                mpm_msg_log,
+                indent_lvl + 1
+            )
+            if pose_arms is None:
+                msg_log.extend(mpm_msg_log)
+                return False
+
+            # succ
+            msg_log.append((
+                MSG_INFO_T,
+                indent_lvl,
+                MPM_SUCCESS.format("pose_arms")
+            ))
+            save_obj["pose_arms"] = pose_arms
+
         return True
 
 
@@ -1635,7 +1734,18 @@ init 189 python in mas_sprites_json:
         # move object-based params out of the jobj
         for param_name in OBJ_BASED_PARAM_NAMES:
             if param_name in jobj:
-                obj_based_params[param_name] = jobj.pop(param_name)
+                obj_val = jobj.pop(param_name)
+
+                # objects must be dicts
+                if not _verify_dict(obj_val, allow_none=False):
+                    writelog(MSG_ERR_ID.format(BAD_TYPE.format(
+                        param_name,
+                        dict,
+                        type(obj_val)
+                    )))
+                    return
+
+                obj_based_params[param_name] = obj_val
 
         # validate optional shared params
         msg_log = []

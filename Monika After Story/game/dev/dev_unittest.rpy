@@ -539,6 +539,17 @@ label dev_unit_test_json_masposemap:
         mpm_tester.assertEqual({}, test_data)
         mpm_tester.assertEqual(1, len(log))
 
+        mpm_tester.prepareTest("valid types")
+        test_data = {
+            prop_mpm_type: MASPoseMap.MPM_TYPE_ED,
+        }
+        valid_types = (MASPoseMap.MPM_TYPE_FB, MASPoseMap.MPM_TYPE_IC)
+        log = []
+        actual = MASPoseMap.fromJSON(test_data, log, 0, valid_types)
+        mpm_tester.assertIsNone(actual)
+        mpm_tester.assertEqual({}, test_data)
+        mpm_tester.assertEqual(1, len(log))
+
         # testing all mpm type 0 interactions
         mpm_tester.prepareTest("mpm type 0, no props")
         test_data = {
