@@ -459,6 +459,7 @@ init 6 python:
             if list_pop:
                 mas_rmEVL(ev_label)
 
+init 4 python:
     def mas_lastSeenInYear(ev_label, year=None):
         """
         Checks whether or not the even was last seen in the year provided
