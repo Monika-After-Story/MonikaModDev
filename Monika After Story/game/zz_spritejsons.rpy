@@ -234,7 +234,7 @@ init -21 python in mas_sprites_json:
     import store.mas_utils as mas_utils
 
     SP_JSON_VER = 2
-    VERSION_TXT = "sp_version"
+    VERSION_TXT = "version"
     # CURRENT SPRITE VERSION. Change if fundamental sprite format chagnes.
 
     # these imports are for the classes
@@ -1120,7 +1120,7 @@ init 189 python in mas_sprites_json:
 
         # now for mux_type
         err_log = []
-        mux_type = _validate_mux_type(jobj, err_log)
+        mux_type = _validate_mux_type(jobj, err_log, indent_lvl)
         if len(err_log) > 0:
             msg_log.extend(err_log)
             return False
