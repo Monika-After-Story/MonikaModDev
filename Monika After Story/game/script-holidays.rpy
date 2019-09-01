@@ -5126,7 +5126,7 @@ init 5 python:
             eventlabel="mas_bday_spent_time_with",
             conditional=(
                 "persistent._mas_bday_spent_bday "
-                "and not mas_getEV('mas_bday_spent_time_with').last_seen.year == datetime.date.today().year"
+                "and not mas_lastSeenInYear('mas_bday_spent_time_with')"
             ),
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
