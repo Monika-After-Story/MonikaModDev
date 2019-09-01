@@ -330,37 +330,7 @@ init -5 python in mas_sprites:
     BASE_BODY_STR = PREFIX_BODY + DEF_BODY + ART_DLM
     BASE_BODY_STR_LEAN = PREFIX_BODY_LEAN + DEF_BODY + ART_DLM
 
-    ## string builder constants
-    BS_ACS = "".join((
-        A_T_MAIN,
-        PREFIX_ACS,
-        "{0}", # acs img sit
-        ART_DLM,
-        "{1}", # poseid
-        "{2}", # arm split code
-        "{3}", # n_suffix
-        FILE_EXT,
-    ))
-
-    BS_HAIR_U = "".join((
-        H_MAIN,
-        PREFIX_HAIR,
-        "{0}", # hair img sit
-        "{1}", # hair suffix
-        "{2}", # night suffix
-        FILE_EXT,
-    ))
-
-    BS_HAIR_L = "".join((
-        H_MAIN,
-        PREFIX_HAIR_LEAN,
-        "{0}", # lean
-        ART_DLM,
-        "{1}", # hair img sit
-        "{2}", # hair suffix
-        "{3}", # night suffix
-        FILE_EXT,
-    ))
+    # string builder constants
 
     BS_TORSO = "".join((
         C_MAIN,
@@ -418,6 +388,117 @@ init -5 python in mas_sprites:
         "{3}", # night suffix
         FILE_EXT,
     ))
+
+    # split body strings:
+    # these are not complete, aka, they do not include file ext.
+    #   this is so we can avoid too much repeated code.
+    BS_BODY_BC_U = "".join((
+        C_MAIN,
+        "{0}/", # clothign img sit
+        NEW_BODY_STR,
+    ))
+
+    BS_BODY_BC_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_BODY_LEAN,
+        "{1}", # lean
+    ))
+
+    BS_ARMS_B_BC_U = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS,
+    ))
+
+    BS_ARMS_B_BC_L = "".join((
+        C_MAIN,
+        "{0}/", # clothing img sit
+        PREFIX_ARMS_LEAN,
+        "{1}", # lean
+        ART_DLM,
+    ))
+
+    BS_HAIR_U = "".join((
+        H_MAIN,
+        PREFIX_HAIR,
+        "{0}", # hair img sit
+    ))
+
+    BS_HAIR_L = "".join((
+        H_MAIN,
+        PREFIX_HAIR_LEAN,
+        "{0}", # lean
+        ART_DLM,
+        "{1}", # hair img sit
+    ))
+
+    BS_ACS = "".join((
+        A_T_MAIN,
+        PREFIX_ACS,
+        "{0}", # acs img sit
+        ART_DLM,
+        "{1}", # poseid
+    ))
+
+
+    def alt_night(v_list, prefix):
+        """
+        Adds night suffix and no night suffix version of the given prefix to
+        the given list.
+
+        IN:
+            prefix - string to add night suffix to
+
+        OUT:
+            v_list - list to add strings to
+        """
+        v_list.append(prefix + FILE_EXT)
+        v_list.append(prefix + NIGHT_SUFFIX + FILE_XST)
+
+
+    def alt_bcode(v_list, prefix, inc_night):
+        """
+        Adds bcode 0 and bcode 1 versions of the given prefix to the given
+        list.
+
+        IN:
+            prefix - string to add bcode to
+            inc_night - if True, then we also do night variants of each bcode
+                version, otherwise, just day versions
+
+        OUT:
+            v_list - list to add strings to
+        """
+        if inc_night:
+            alt_night(v_list, prefix + ART_DLM + "0")
+            alt_night(v_list, prefix + ART_DLM + "1")
+
+        else:
+            v_list.append(prefix + ART_DLM + "0" + FILE_EXT)
+            v_list.append(prefix + ART_DLM + "1" + FILE_EXT)
+
+
+    def alt_hsplit(v_list, prefix, inc_night):
+        """
+        Adds backhair/front hair versionsof the given prefix to the given list
+
+        IN:
+            prefix - string to add bhair/front hair to
+            inc_night - if Ture, then we also do night varaints of each bhair
+                fhair version, otherwise just day versions
+
+        OUT:
+            v_list - list to add strings to
+        """
+        if inc_night:
+            alt_night(v_list, prefix + FHAIR_SUFFIX)
+            alt_night(v_list, prefix + BHAIR_SUFFIX)
+
+        else:
+            v_list.append(prefix + FHAIR_SUFFIX + FILE_EXT)
+            v_list.append(prefix + BHAIR_SUFFIX + FILE_EXT)
+
 
     ## BLK010
     # ACCESSORY BLACKLIST
@@ -4382,6 +4463,60 @@ init -2 python:
                     sprite_list.append(arm_str)
                     sprite_list.extend(suffix_list)
 
+        def _build_loadstrs(self, prefix):
+            """
+            Builds list of strings for this pose arms
+
+            IN:
+                prefix - prefix to use for each string
+
+            RETURNS: list of strings
+            """
+            load_list = []
+            art_dlm = store.mas_sprites.ART_DLM
+            if self.both is not None:
+                both_prefix = prefix + self.both + art_dlm
+
+                # do only both string setup
+                if self.both_back:
+                    store.mas_sprites.alt_night(load_list, both_prefix + "0")
+
+                if self.both_front:
+                    store.mas_sprites.alt_night(load_list, both_prefix + "1")
+
+            else:
+                if self.left is not None:
+                    left_prefix = prefix + self.left + art_dlm
+                    
+                    if self.left_back:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            left_prefix + "0"
+                        )
+
+                    if self.left_front:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            left_prefix + "1"
+                        )
+
+                if self.right is not None:
+                    right_prefix = prefix + self.right + art_dlm
+
+                    if self.right_back:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            right_prefix + "0"
+                        )
+
+                    if self.right_front:
+                        store.mas_sprites.alt_night(
+                            load_list,
+                            right_prefix + "1"
+                        )
+
+            return load_list
+
         def _init_props(self):
             """
             Initializes props
@@ -5523,42 +5658,26 @@ init -2 python:
                 poseid = self.pose_map.get(pose, "")
 
                 if len(poseid) > 0:
+                    prefix = store.mas_sprites.BS_ACS.format(
+                        self.img_sit,
+                        poseid
+                    )
                     arm_codes = self.get_arm_split_code(pose)
                     if len(arm_codes) < 1:
 
                         # add both day and night versions
                         # no arm code
-                        loadstrs.append(store.mas_sprites.BS_ACS.format(
-                            self.img_sit,
-                            poseid,
-                            "",
-                            ""
-                        ))
-                        loadstrs.append(store.mas_sprites.BS_ACS.format(
-                            self.img_sit,
-                            poseid,
-                            "",
-                            store.mas_sprites.NIGHT_SUFFIX
-                        ))
+                        store.mas_sprites.alt_night(loadstrs, prefix)
 
                     else:
                         # add all arm versions (max 2)
                         for arm_code in arm_codes:
-                            arm_code = store.mas_sprites.ART_DLM + arm_code
+                            arm_prefix = (
+                                prefix + store.mas_sprites.ART_DLM + arm_code
+                            )
 
                             # no arm code
-                            loadstrs.append(store.mas_sprites.BS_ACS.format(
-                                self.img_sit,
-                                poseid,
-                                arm_code,
-                                ""
-                            ))
-                            loadstrs.append(store.mas_sprites.BS_ACS.format(
-                                self.img_sit,
-                                poseid,
-                                arm_code,
-                                store.mas_sprites.NIGHT_SUFFIX
-                            ))
+                            store.mas_sprites.alt_night(loadstrs, arm_prefix)
 
             return loadstrs
 
@@ -5657,61 +5776,24 @@ init -2 python:
             # are split
             for pose in store.mas_sprites.POSES:
                 if all_split or self.split.get(pose, False):
-                    # need front
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
-
-                    # and back
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_U.format(
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
+                    store.mas_sprites.alt_hsplit(
+                        loadstrs,
+                        store.mas_sprites.BS_HAIR_U.format(self.img_sit),
+                        True
+                    )
 
             # and for leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean = lpose.partition("|")[0]
                 if all_split or self.split.get(lpose, False):
-                    # front
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.FHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
-
-                    # back
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        ""
-                    ))
-                    loadstrs.append(store.mas_sprites.BS_HAIR_L.format(
-                        lean,
-                        self.img_sit,
-                        store.mas_sprites.BHAIR_SUFFIX,
-                        store.mas_sprites.NIGHT_SUFFIX
-                    ))
+                    store.mas_sprites.alt_hsplit(
+                        loadstrs,
+                        store.mas_sprites.BS_HAIR_L.format(
+                            lean,
+                            self.img_sit
+                        ),
+                        True
+                    )
 
             return loadstrs
 
@@ -5838,82 +5920,69 @@ init -2 python:
 
             RETURNS: list of strings
             """
-            # case 1: (split hair)
-            #   body-<type>.png
-            #   body-<type>-n.png
-            #   body-leaning-<type>.png
-            #   body-leaning-<type>-n.png
-            #   arms-<pose>.png
-            #   arms-<pose>-n.png
-            #   arms-leaning-<type>-<arms>.png
-            #   arms-leaning-<type>-<arms>-n.png
-            #
-            # case 2: (non split hair)
-            #   torso-<hair>.png
-            #   torso-<hair>-n.png
-            #   torso-leaning-<hair>-<lean>.png
-            #   torso-leaning-<hair>-<lean>-n.png
-            #   arms-<pose>.png
-            #   arms-<pose>-n.png
-            #
-            # NOTE: JSONs will NOT support non-split hair.
-            #   aka ONLY CASE 1 IS SUPPORTED
+            # NEW:
+            #   body-<type>-0.png
+            #   body-<type>-0-n.png
+            #   body-<type>-1.png
+            #   body-<type>-1-n.png
+            #   body-leaning-<type>-0.png
+            #   body-leaning-<type>-0-n.png
+            #   body-leaning-<type>-1.png
+            #   body-leaning-<type>-1-n.png
+            #   arms-<both type>-0.png (back)
+            #   arms-<both type>-0-n.png (back)
+            #   arms-<both type>-1.png (Front)
+            #   arms-<both type>-1-n.png (Front)
+            #   arms-left-<left type>-0.png (back)
+            #   arms-left-<left type>-0-n.png (back)
+            #   arms-left-<left type>-1.png (front)
+            #   arms-left-<left type>-1-n.png (front)
+            #   arms-right-<right type>-0.png (back)
+            #   arms-right-<right type>-0-n.png (back)
+            #   arms-right-<right type>-1.png (front)
+            #   arms-right-<right type>-1-n.png (front)
+
             to_verify = []
-            # TODO: include handling of the pose_arms
 
-            # starting with body types
-            to_verify.append(store.mas_sprites.BS_BODY_U.format(
-                self.img_sit,
-                ""
-            ))
-            to_verify.append(store.mas_sprites.BS_BODY_U.format(
-                self.img_sit,
-                store.mas_sprites.NIGHT_SUFFIX
-            ))
+            # body
+            store.mas_sprites.alt_bcode(
+                to_verify,
+                store.mas_sprites.BS_BODY_BC_U.format(self.img_sit),
+                True
+            )
 
-            # body leaning
-            # this needs to iterate over leaning types
+            # leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean = lpose.partition("|")[0]
-                to_verify.append(store.mas_sprites.BS_BODY_L.format(
-                    self.img_sit,
-                    lean,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_BODY_L.format(
-                    self.img_sit,
-                    lean,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                store.mas_sprites.alt_bcode(
+                    to_verify,
+                    store.mas_sprites.BS_BODY_BC_L.format(self.img_sit, lean),
+                    True
+                )
 
-            # arms
+            # determine which pose arms to use
+            if self.pose_arms is None:
+                pose_arms = store.mas_sprites.base_pose_arms_map
+            else:
+                pose_arms = self.pose_arms
+
+            # arms, upright
+            prefix = store.mas_sprites.BS_ARMS_B_BC_U.format(self.img_sit)
             for pose in store.mas_sprites.POSES:
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
-                    self.img_sit,
-                    pose,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_U.format(
-                    self.img_sit,
-                    pose,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                mpa = pose_arms.get(pose, None)
+                if mpa is not None:
+                    to_verify.extend(mpa._build_loadstrs(prefix))
 
-            # arms leaning
+            # arms, leaning
             for lpose in store.mas_sprites.L_POSES:
                 lean, pipe_sep, arms = lpose.partition("|")
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
-                    self.img_sit,
-                    lean,
-                    arms,
-                    ""
-                ))
-                to_verify.append(store.mas_sprites.BS_ARMS_NH_L.format(
-                    self.img_sit,
-                    lean,
-                    arms,
-                    store.mas_sprites.NIGHT_SUFFIX
-                ))
+                mpa = pose_arms.get(lpose, None)
+                if mpa is not None:
+                    prefix = store.mas_sprites.BS_ARMS_B_BC_L.format(
+                        self.img_sit,
+                        lean
+                    )
+                    to_verify.extend(mpa._build_loadstrs(prefix))
 
             return to_verify
 
