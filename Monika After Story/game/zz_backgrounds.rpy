@@ -10,7 +10,7 @@ init -10 python:
         PROPERTIES:
             background_id - the id which defines this bg
             prompt - button label for the bg
-            img_map - Dict mapping all images for the bgs, keys are precip types (See MASWeather)
+            image_map - Dict mapping all images for the bgs, keys are precip types (See MASWeather)
             hide_calendar - whether or not we display the calendar with this
             hide_masks - whether or not we display the window masks
             disable_progressive - weather or not we disable progesssive weather
