@@ -2982,12 +2982,18 @@ label greeting_returned_home:
     $ time_out = store.mas_dockstat.diffCheckTimes()
 
     # event checks
+    #922
     if mas_isMonikaBirthday() or persistent._mas_bday_on_date:
         jump greeting_returned_home_bday
 
+    if mas_monika_birthday < datetime.date.today() < mas_monika_birthday + datetime.timedelta(7):
+        call mas_gone_over_bday_check
+
+    #O31
     if mas_isO31() and not persistent._mas_o31_in_o31_mode:
         $ queueEvent("mas_holiday_o31_returned_home_relaunch")
 
+    #F14
     if persistent._mas_f14_on_date:
         jump greeting_returned_home_f14
 
@@ -2995,10 +3001,13 @@ label greeting_returned_home:
         # did we miss f14 because we were on a date
         call mas_gone_over_f14_check
 
-    # Note: this ordering is key, greeting_returned_home_player_bday handles the case
+    # NOTE: this ordering is key, greeting_returned_home_player_bday handles the case
     # if we left before f14 on your bday and return after f14
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
+
+    if persistent._mas_bday_gone_over_bday:
+        jump greeting_gone_over_bday
 
     if persistent._mas_f14_gone_over_f14:
         jump greeting_gone_over_f14

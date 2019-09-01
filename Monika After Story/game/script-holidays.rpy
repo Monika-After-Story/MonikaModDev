@@ -1,12 +1,30 @@
 ## holiday info goes here
 #
 # TOC
+#   [GBL000] - GLOBAL METHODS
 #   [HOL010] - O31
 #   [HOL020] - D25
 #   [HOL030] - NYE (new yeares eve, new years)
 #   [HOL040] - player_bday
 #   [HOL050] - F14
 #   [HOL060] - 922
+
+
+############################### GLOBAL METHODS ################################
+# [GBL000]
+init -1 python:
+    def mas_checkOverDate(_date):
+        """
+        Checks if the player was gone over the given date entirely (taking you somewhere)
+
+        IN:
+            date - a datetime.date of the date we want to see if we've been out all day for
+
+        OUT:
+            True if the player and Monika were out together the whole day, False if not.
+        """
+        checkout_time = store.mas_dockstat.getCheckTimes()[0]
+        return checkout_time is not None and checkout_time.date() < _date
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -1275,8 +1293,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro",
             conditional=(
-                "not persistent._mas_d25_intro_seen "
-                "and not persistent._mas_d25_started_upset "
+                "not mas_lastSeenInYear('mas_d25_monika_holiday_intro') "
+                "and not persistent._mas_d25_started_upset"
             ),
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
@@ -1369,7 +1387,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro_upset",
             conditional=(
-                "not persistent._mas_d25_intro_seen "
+                "not mas_lastSeenInYear('_mas_d25_holiday_intro_upset') "
                 "and persistent._mas_d25_started_upset "
             ),
             action=EV_ACT_PUSH,
@@ -1380,7 +1398,6 @@ init 5 python:
         ),
         skipCalendar=True
     )
-
 
 init -876 python in mas_delact:
     # delayed action to reset holiday intro upset
@@ -1409,7 +1426,6 @@ init -876 python in mas_delact:
             _mas_d25_holiday_intro_upset_reset_action,
             store.MAS_FC_IDLE_ROUTINE
         )
-
 
 #for people that started the season upset- and graduated to normal
 label mas_d25_monika_holiday_intro_upset:
@@ -1525,7 +1541,7 @@ init 5 python:
 #            prompt="Christmas",
             conditional=(
                 "persistent._mas_d25_in_d25_mode "
-                "and not persistent._mas_d25_spent_d25"
+                "and not mas_lastSeenInYear(mas_d25_monika_christmas"
             ),
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
@@ -1538,6 +1554,7 @@ init 5 python:
 
 
 label mas_d25_monika_christmas:
+    #Flag for hist
     $ persistent._mas_d25_spent_d25 = True
 
     m 1eub "[player]! Do you know what day it is?"
@@ -1682,43 +1699,16 @@ init 5 python:
             eventlabel="mas_d25_monika_carolling",
             category=["holidays", "music"],
             prompt="Carolling",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
+            rules={"undo action": None},
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.NORMAL, None)
-        )
+            aff_range=(mas_aff.NORMAL, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
-
-init -876 python in mas_delact:
-    # delayd action to reset the carolling topic
-    # NOTE: we need to do this to prevent the topic from triggering post
-    #   d25 when its not appropriate.
-
-    def _mas_d25_monika_carolling_reset_action(ev):
-        # updates conditional and action, and dates
-        if ev.shown_count <= 0:
-            ev.conditional = (
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            )
-            ev.action = store.EV_ACT_RANDOM
-        return True
-
-
-    def _mas_d25_monika_carolling_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            9,
-            "mas_d25_monika_carolling",
-            "True",
-            _mas_d25_monika_carolling_reset_action,
-            store.MAS_FC_INIT
-        )
-
 
 default persistent._mas_pm_likes_singing_d25_carols = None
 # does the user like singing christmas carols?
@@ -1792,43 +1782,16 @@ init 5 python:
             eventlabel="mas_d25_monika_mistletoe",
             category=["holidays"],
             prompt="Mistletoe",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
+            rules={"undo action": None},
             action=EV_ACT_RANDOM,
-            aff_range=(mas_aff.AFFECTIONATE, None)
-        )
+            aff_range=(mas_aff.AFFECTIONATE, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
-
-init -876 python in mas_delact:
-    # delayed action to reeset the mistle topic
-    # NOTE: this is to derandom and lock this topic post d25 season.
-
-    def _mas_d25_monika_mistletoe_reset_action(ev):
-        # updates conditional, action, random, unlocked
-        ev.conditional = (
-            "mas_isD25Season() "
-            "and not mas_isD25Post() "
-            "and persistent._mas_d25_in_d25_mode"
-        )
-        ev.action = store.EV_ACT_RANDOM
-        ev.unlocked = False
-        ev.random = False
-        return True
-
-
-    def _mas_d25_monika_mistletoe_reset():
-        # creates delayed action for mistletoe
-        return store.MASDelayedAction.makeWithLabel(
-            10,
-            "mas_d25_monika_mistletoe",
-            "True",
-            _mas_d25_monika_mistletoe_reset_action,
-            store.MAS_FC_INIT
-        )
-
 
 label mas_d25_monika_mistletoe:
     m 1eua "Say, [player]."
@@ -2052,15 +2015,14 @@ init 5 python:
             eventlabel="monika_aiwfc",
             category=["songs"],
             prompt="All I Want For Christmas",
-            conditional=(
-                "mas_isD25Season() "
-                "and not mas_isD25() "
-                "and not mas_isD25Post() "
-                "and persistent._mas_d25_in_d25_mode"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
+            start_date=mas_d25c_start,
+            end_date=mas_d25p,
             action=EV_ACT_QUEUE,
-            aff_range=(mas_aff.NORMAL, None)
-        )
+            aff_range=(mas_aff.NORMAL, None),
+            years=[]
+        ),
+        skipCalendar=True
     )
 
 label monika_aiwfc:
@@ -2150,9 +2112,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_christmas_eve",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_d25e, datetime.time(hour=20)),
             end_date=mas_d25,
@@ -2185,9 +2145,7 @@ init 5 python:
             eventlabel="mas_d25_postd25_notimespent",
             # within a week after d25, user did not recognize
             # d25 at all, and they were not long absenced or had her on a date
-            conditional=(
-                "not persistent._mas_d25_spent_d25"
-            ),
+            conditional="not persistent._mas_d25_spent_d25",
             start_date=mas_d25p,
             end_date=mas_d25p + datetime.timedelta(days=7),
             years=[],
@@ -3384,22 +3342,6 @@ init -11 python in mas_player_bday_event:
     import datetime
     import store.mas_history as mas_history
 
-    def show_player_bday_Visuals():
-        """
-        Shows player_bday visuals
-        """
-        renpy.show("mas_bday_banners", zorder=7)
-        renpy.show("mas_bday_balloons", zorder=8)
-
-
-    def hide_player_bday_Visuals():
-        """
-        Hides player_bday visuals
-        """
-        renpy.hide("mas_bday_banners")
-        renpy.hide("mas_bday_balloons")
-
-
     def correct_pbday_mhs(d_pbday):
         """
         fixes the pbday mhs usin gthe given date as pbday
@@ -3600,7 +3542,7 @@ label mas_player_bday_cake:
     show emptydesk at i11 zorder 9
     hide monika with dissolve
     $ renpy.pause(3.0, hard=True)
-    $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+    $ renpy.show("mas_player_bday_cake", zorder=store.MAS_MONIKA_Z+1)
     show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
     $ renpy.pause(0.5, hard=True)
@@ -4115,37 +4057,16 @@ init 5 python:
             eventlabel='mas_pf14_monika_lovey_dovey',
             action=EV_ACT_RANDOM,
             conditional=(
-                "not persistent._mas_f14_pre_intro_seen"
+                "not mas_lastSeenInYear('mas_pf14_monika_lovey_dovey')"
             ),
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
+            rules={"undo action": None, "force repeat": None},
             years=[]
         ),
         skipCalendar=True
     )
-
-init -876 python in mas_delact:
-    # delayed action to derandom this event on or after f14
-    # basically just check last_seen
-
-    def _mas_pf14_monika_lovey_dovey_reset_action(ev):
-        ev.random = False
-        ev.unlocked = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_pf14_monika_lovey_dovey_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            11,
-            "mas_pf14_monika_lovey_dovey",
-            "datetime.date.today() >= store.mas_f14",
-            _mas_pf14_monika_lovey_dovey_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
 
 label mas_pf14_monika_lovey_dovey:
     m 1rksdla "Hey...[player]...?"
@@ -4168,12 +4089,6 @@ label mas_pf14_monika_lovey_dovey:
     m 1ekbfa "So I want to thank you for caring for me."
     m 1hubfa "Ehehe~"
 
-    #Set this flag to True so we don't infirand
-    $ persistent._mas_f14_pre_intro_seen = True
-
-    #Add the delayed action to remove itself
-    $ mas_addDelayedAction(11)
-
     return "derandom|no_unlock|love"
 
 #######################[HOL050] INTRO:
@@ -4183,7 +4098,7 @@ init 5 python:
        Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_valentines_intro',
-            conditional=("not persistent._mas_f14_intro_seen"),
+            conditional="not mas_lastSeenInYear('mas_f14_monika_valentines_intro')",
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
@@ -4257,8 +4172,6 @@ label mas_f14_monika_valentines_intro:
     #Set the spent flag to True
     $ persistent._mas_f14_spent_f14 = True
 
-    #We have now seen the intro
-    $ persistent._mas_f14_intro_seen = True
     return "rebuild_ev|love"
 
 #######################[HOL050] TOPICS
@@ -4275,36 +4188,11 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
+            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
     )
-
-
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_colors_reset_action(ev):
-        # only reset if past end date
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_colors_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            12,
-            "mas_f14_monika_vday_colors",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_colors_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
 
 label mas_f14_monika_vday_colors:
     m 3eua "Have you ever thought about the way colors are conveyed on Valentine's Day?"
@@ -4340,34 +4228,11 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
+            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
     )
-
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_cliches_reset_action(ev):
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_cliches_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            13,
-            "mas_f14_monika_vday_cliches",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_cliches_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
 
 label mas_f14_monika_vday_cliches:
     m 2euc "Have you noticed that most Valentine's Day stories have lots of clichés?"
@@ -4396,34 +4261,11 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
+            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
     )
-
-init -876 python in mas_delact:
-
-    # delayed action to derandom and lock this event
-    def _mas_f14_monika_vday_chocolates_reset_action(ev):
-        ev.unlocked = False
-        ev.random = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_chocolates_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            14,
-            "mas_f14_monika_vday_chocolates",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_chocolates_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
 
 label mas_f14_monika_vday_chocolates:
     m 1hua "Valentine's Day is such a fun holiday for me, [player]."
@@ -4455,34 +4297,11 @@ init 5 python:
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
             aff_range=(mas_aff.NORMAL,None),
+            rules={"undo action": None},
             years=[]
         ),
         skipCalendar=True
     )
-
-init -876 python in mas_delact:
-
-    # delayed action to depool and lock this event
-    def _mas_f14_monika_vday_origins_reset_action(ev):
-        ev.unlocked = False
-        ev.pool = False
-        store.mas_idle_mailbox.send_rebuild_msg()
-        store.mas_rmEVL(ev.eventlabel)
-        return True
-
-
-    def _mas_f14_monika_vday_origins_reset():
-        return store.MASDelayedAction.makeWithLabel(
-            15,
-            "mas_f14_monika_vday_origins",
-            (
-                "datetime.date.today() >= "
-                "store.mas_f14 + datetime.timedelta(days=1)"
-            ),
-            _mas_f14_monika_vday_origins_reset_action,
-            store.MAS_FC_IDLE_ROUTINE | store.MAS_FC_IDLE_ONCE
-        )
-
 
 label mas_f14_monika_vday_origins:
     m 3eua "You'd like to learn about the history of Valentine's Day?"
@@ -4885,8 +4704,7 @@ label greeting_returned_home_f14:
 # if we went on a date pre-f14 and returned in the time period mas_f14_no_time_spent event runs
 # need to make sure we get credit for time spent and don't get the event
 label mas_gone_over_f14_check:
-    $ checkout_time = store.mas_dockstat.getCheckTimes()[0]
-    if checkout_time is not None and checkout_time.date() < mas_f14:
+    if mas_checkOverDate(mas_f14):
         $ persistent._mas_f14_spent_f14 = True
         $ persistent._mas_f14_gone_over_f14 = True
         $ mas_rmallEVL("mas_f14_no_time_spent")
@@ -4920,27 +4738,24 @@ label greeting_gone_over_f14_normal_plus:
 #Moni's bday
 define mas_monika_birthday = datetime.date(datetime.date.today().year, 9, 22)
 
+#922 mode
+default persistent._mas_bday_in_bday_mode = False
+
 #Date related vars
 default persistent._mas_bday_on_date = False
 default persistent._mas_bday_date_count = 0
 default persistent._mas_bday_date_affection_gained = 0
-
-#Whether or not we've seen the hint
-default persistent._mas_bday_surprise_hint_seen = False
+default persistent._mas_bday_gone_over_bday = False
 
 #Suprise party bits and bobs
-default persistent._mas_bday_sbp_aff_given = 0
+default persistent._mas_bday_sbp_reacted = False
 default persistent._mas_bday_spent_bday = None
-default persistent._mas_bday_time_spent_seen = None
 default persistent._mas_bday_confirmed_party = False
 
 #Time spent tracking
 default persistent._mas_bday_opened_game = False
 default persistent._mas_bday_no_time_spent = True
 default persistent._mas_bday_no_recognize = True
-default persistent._mas_bday_nts_seen = False
-
-### happy birthday pool topic
 default persistent._mas_bday_said_happybday = False
 
 ############### [HOL060]: HISTORY
@@ -4949,21 +4764,21 @@ init -810 python:
         "922",
         datetime.datetime(2020, 1, 6),
         {
+            "_mas_bday_in_bday_mode": "922.bday_mode",
+
+            "_mas_bday_on_date": "922.on_date",
+            "_mas_bday_date_count": "922.actions.date.count",
+            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
+            "_mas_bday_gone_over_bday": "922.gone_over_bday",
+
+            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
+            "_mas_bday_spent_bday": "922.actions.spent_bday",
+            "_mas_bday_confirmed_party": "922.actions.confirmed_party",
+
             "_mas_bday_opened_game": "922.actions.opened_game",
             "_mas_bday_no_time_spent": "922.actions.no_time_spent",
             "_mas_bday_no_recognize": "922.actions.no_recognize",
-            "_mas_bday_said_happybday": "922.actions.said_happybday",
-            "_mas_bday_date_count": "922.actions.date.count",
-            "_mas_bday_date_affection_lost": "922.actions.date.aff_lost",
-            "_mas_bday_date_affection_gained": "922.actions.date.aff_gained",
-            "_mas_bday_sbp_aff_given": "922.actions.surprise.aff_given",
-            "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
-            "_mas_bday_sbp_found_cake": "922.actions.surprise.found_cake",
-            "_mas_bday_sbp_found_banners": "922.actions.surprise.found_banners",
-            "_mas_bday_sbp_found_balloons": "922.actions.surprise.found_balloons",
-            "_mas_bday_confirmed_party": "922.actions.confirmed_party",
-            "_mas_bday_in_922_mode": "922.922_mode",
-            "_mas_bday_surprise_hint_seen": "922.hint_seen",
+            "_mas_bday_said_happybday": "922.actions.said_happybday"
         },
         exit_pp=store.mas_history._bday_exit_pp
     ))
@@ -5002,7 +4817,7 @@ init -1 python:
             mas_generateGiftsReport(_date)[0] > 0
             or persistent._mas_bday_date_count > 0
             or persistent._mas_bday_sbp_reacted
-            or persistent._mas_bday_said_happybday
+            or mas_lastSeenInYear('mas_bday_pool_happy_bday')
         )
 
     def mas_surpriseBdayShowVisuals(cake=False):
@@ -5010,7 +4825,7 @@ init -1 python:
         Shows bday surprise party visuals
         """
         if cake:
-            renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+            renpy.show("mas_monika_bday_cake", zorder=store.MAS_MONIKA_Z+1)
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
@@ -5039,7 +4854,7 @@ init -1 python:
             temp_filename = file[:file.index('.')] if "." in file else file
 
             #Step 3, check if the filename is present
-            if "TODO:supersecretfilename" == temp_filename:
+            if "oki doki" == temp_filename:
                 #If we got here: Step 4, file exists so flag and delete
                 persistent._mas_bday_confirmed_party = True
                 store.mas_docking_station.destroyPackage(file)
@@ -5054,7 +4869,7 @@ init -1 python:
 label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
     if not mas_isMonikaBirthday():
-        $ persistent._mas_bday_in_922_mode = False
+        $ persistent._mas_bday_in_bday_mode = False
 
     #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
     elif persistent._mas_bday_sbp_reacted:
@@ -5078,24 +4893,29 @@ init 5 python:
             eventlabel="mas_bday_surprise_party_hint",
             start_date=mas_monika_birthday - datetime.timedelta(days=7),
             end_date=mas_monika_birthday - datetime.timedelta(days=1),
+            conditional="not mas_lastSeenInYear('mas_bday_surprise_party_hint')",
             years=[],
             action=EV_ACT_RANDOM,
-            rules={"undo action": None},
+            rules={"undo action": None, "force repeat": None},
             aff_range=(mas_aff.DISTRESSED,None)
         ),
         skipCalendar=True
     )
 
 #If random hasn't shown this topic yet, we need to push this to make sure people get this
-#TODO: delact the derandoming of this so if we're past the last day, and never saw this, it's not still random.
 init 10 python:
     if (
         datetime.date.today() == mas_monika_birthday - datetime.timedelta(days=1)
-        and not persistent._mas_monika_bday_surprise_hint_seen
+        and not mas_lastSeenInYear("mas_bday_surprise_party_hint")
     ):
         pushEvent("mas_bday_surprise_party_hint")
 
-image chibi_peek = "mod_assets/other/chibi_peek.png"
+image chibi_peek = ConditionSwitch(
+    "morning_flag",
+    "mod_assets/other/chibi_peek.png",
+    "not morning_flag",
+    "mod_assets/other/chibi_peek-n.png"
+)
 
 label mas_bday_surprise_party_hint:
     #First we show chibi, she's just written the letter
@@ -5103,7 +4923,7 @@ label mas_bday_surprise_party_hint:
 
     #Set up letters
     python:
-        filepath = "/characters/for " + player + ".txt"
+        filepath = "/characters/For " + player + ".txt"
         if mas_isMoniNormal(higher=True):
             message = """\
 [player],
@@ -5159,22 +4979,23 @@ P.S: Don't tell her about me.
 
 ################## [HOL060] HAPPY BDAY TOPIC
 init 5 python:
-    #NOTE: We add this conditional so that this topic isn't added on a restart
-    #if not persistent._mas_bday_said_happybday:
-    addEvent(
-        Event(
-            persistent.event_database,
-            eventlabel="mas_bday_pool_happy_bday",
-            prompt="Happy birthday!",
-            category=["monika"],
-            action=EV_ACT_UNLOCK,
-            pool=True,
-            rules={"no unlock":0, "undo action": None}, #TODO: see if this works
-            start_date=mas_monika_birthday,
-            end_date=mas_monika_birthday + datetime.timedelta(1),
-            years=[]
+    #Conditional check so we don't show this on subsequent launches
+    if not persistent._mas_bday_said_happybday:
+        addEvent(
+            Event(
+                persistent.event_database,
+                eventlabel="mas_bday_pool_happy_bday",
+                prompt="Happy birthday!",
+                #category=["monika"],
+                action=EV_ACT_UNLOCK,
+                #pool=True,
+                rules={"no unlock":0, "undo action": None},
+                start_date=mas_monika_birthday,
+                end_date=mas_monika_birthday + datetime.timedelta(1),
+                years=[]
+            ),
+            code="CMP"
         )
-    )
 
     # make sure this event is considered seen
     persistent._seen_ever["mas_bday_pool_happy_bday"] = True
@@ -5200,10 +5021,8 @@ label mas_bday_pool_happy_bday:
         m 3hub "Happy Birthday to you too, [player]!"
         m 1hua "Ehehe!"
 
+    #Flag this for hist
     $ persistent._mas_bday_said_happybday = True
-    # dont need to say happy birthday again today, but let the game know to
-    # reset it at some point in the future
-    $ persistent._mas_bday_need_to_reset_bday = True
     $ mas_lockEVL("mas_bday_pool_happy_bday", "EVE")
     return
 
@@ -5290,7 +5109,7 @@ label mas_bday_surprise_party_reaction_end:
     $ persistent._mas_bday_sbp_reacted = True
 
     #We set this flag as true here
-    $ persistent._mas_bday_in_922_mode = True
+    $ persistent._mas_bday_in_bday_mode = True
     return
 
 
@@ -5302,7 +5121,7 @@ init 5 python:
             eventlabel="mas_bday_spent_time_with",
             conditional=(
                 "persistent._mas_bday_spent_bday "
-                "and not persistent._mas_bday_time_spent_seen"
+                "and not mas_getEV('mas_bday_spent_time_with').last_seen.year == datetime.date.today().year"
             ),
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
@@ -5313,7 +5132,6 @@ init 5 python:
     )
 
 label mas_bday_spent_time_with:
-    $ persistent._mas_bday_time_spent_seen
     # TODO: make sure this var and function only includes this year's data
     $ _timeout = store.mas_dockstat.timeOut(mas_monika_birthday)
     $ _total, _good, _neutral, _bad = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))
@@ -5396,6 +5214,13 @@ label mas_bday_spent_time_with:
 
     return
 
+############## [HOL060] GONE OVER CHECK
+label mas_gone_over_bday_check:
+    if mas_checkOverDate(mas_monika_birthday):
+        $ persistent._mas_bday_spent_bday = True
+        $ persistent._mas_bday_gone_over_bday = True
+        $ mas_rmallEVL("mas_bday_postbday_notimespent")
+    return
 
 ############## [HOL060] NO TIME SPENT
 init 5 python:
@@ -5405,8 +5230,8 @@ init 5 python:
             eventlabel="mas_bday_postbday_notimespent",
             conditional=(
                 "not persistent._mas_long_absence "
-                "and not persistent._mas_bday_no_recognize "
-                "and not persistent._mas_bday_nts_seen "
+                "and persistent._mas_bday_no_recognize "
+                "and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"
             ),
             action=EV_ACT_QUEUE,
             start_date=mas_monika_birthday+datetime.timedelta(1),
@@ -5422,9 +5247,6 @@ label mas_bday_postbday_notimespent:
         return
 
     if persistent._mas_bday_opened_game:
-        # spent time with monika but did not recognize
-        $ persistent._mas_bday_no_recognize = True
-
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
             m 1rksdla "Hey, [player]..."
@@ -5532,9 +5354,6 @@ label mas_bday_postbday_notimespent:
             $ mas_loseAffection(200)
             m 6eftsc "..."
             m 6dftdx "..."
-
-    #Flag this so we don't see it again (plus hist)
-    $ persistent._mas_bday_nts_seen = True
     return
 
 ############ [HOL060] NTS APOLOGY
@@ -5640,6 +5459,7 @@ label mas_bday_bd_outro:
 #   Some dlg review
 #   ~~Add some nods to player bday if on the same day~~
 #   ~~Black Dress Intro~~
+
 label greeting_returned_home_bday:
     #If we got to this label without having been on a bday date, we went pre 922 -> 922
     #In which case, we need to set up the party (if confirmed). Likewise if we haven't seen the party yet
@@ -5670,7 +5490,7 @@ label greeting_returned_home_bday:
     #Get points and then clean everyting up, it's no longer moni-bday so we should flow here instead
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
-        $ persistent._mas_bday_in_922_mode = False
+        $ persistent._mas_bday_in_bday_mode = False
 
         #TODO: exps/better dlg
         m 1wud "Oh wow, [player]. We really were out for a while..."
@@ -5688,7 +5508,7 @@ label greeting_returned_home_bday:
             #First we need to get our checkout time
             $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
-            m "Let me just clean everything up.{w=0.5}.{w=0.5}."
+            m "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
             $ mas_surpriseBdayHideVisuals()
             m "There we go!"
 
@@ -5748,6 +5568,12 @@ label greeting_returned_home_bday:
         m 1hua "I'm just kidding~"
         m "Thank you for loving me."
     return
+
+#Return from pre bday -> post bday
+label greeting_gone_over_bday:
+    #TODO: ME
+    pass
+
 
 #NOTE: left here in case we want to use some of this dlg. So:
 #TODO: delet this
