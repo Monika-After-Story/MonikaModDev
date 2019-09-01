@@ -531,7 +531,7 @@ screen quick_menu():
 
         # Add an in-game quick menu.
         hbox:
-            style_prefix "quick"
+            style_prefix ("quick" if not mas_globals.dark_mode else "quick_dark")
 
             xalign 0.5
             yalign 0.995

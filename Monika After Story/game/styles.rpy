@@ -65,11 +65,7 @@ init python:
             style.island_button = style.island_button_dark
             style.island_button_text = style.island_button_text_dark
             style.music_menu_outer_frame = style.music_menu_outer_frame_dark
-            style.quick_button_text = style.quick_button_text_dark
             style.button = style.button_dark
-            gui.main_menu_background = "menu_bg_d"
-            gui.game_menu_background = "game_menu_bg_d"
-            ctc = "ctc_d"
             style.main_menu_frame = style.main_menu_frame_dark
             style.window_monika = style.window_monika_dark
             style.window = style.window_dark
@@ -95,11 +91,7 @@ init python:
             style.island_button = style.island_button_def
             style.island_button_text = style.island_button_text_def
             style.music_menu_outer_frame = style.music_menu_outer_frame_def
-            style.quick_button_text = style.quick_button_text_def
             style.button = style.button_def
-            gui.main_menu_background = "menu_bg"
-            gui.game_menu_background = "game_menu_bg"
-            ctc = "ctc"
             style.main_menu_frame = style.main_menu_frame_def
             style.window_monika = style.window_monika_def
             style.window = style.window_def
@@ -746,18 +738,16 @@ style island_button_dark_text is default:
 
 
 #START: quick menu styles
-style quick_button_text_def is button_text
 
-style quick_button_text_def:
-    properties gui.button_text_properties("quick_button")
+style quick_dark_button:
+    properties gui.button_properties("quick_dark_button")
+    activate_sound gui.activate_sound
+
+#style quick_dark_button_text is button_text_dark
+
+style quick_dark_button_text:
+    properties gui.button_text_properties("quick_dark_button")
     outlines []
-
-style quick_button_text_dark is button_text_dark
-
-style quick_button_text_dark:
-    properties gui.button_text_properties("quick_button_dark")
-    outlines []
-
 
 #START: music selector styles
 style music_menu_outer_frame_def is game_menu_outer_frame_def
@@ -772,48 +762,24 @@ style music_menu_outer_frame_dark:
 
 
 #START: image definitions
-image ctc:
-    "gui/ctc.png"
-    xalign 0.81 yalign 0.98 xoffset -5 alpha 0.0 subpixel True
-    block:
-        easeout 0.75 alpha 1.0 xoffset 0
-        easein 0.75 alpha 0.5 xoffset -5
-        repeat
-
-image ctc_dark:
-    "gui/ctc.png"
-    xalign 1.10 yalign 0.98 xoffset -5 alpha 0.0 subpixel True
-    block:
-        easeout 0.75 alpha 1.0 xoffset 0
-        easein 0.75 alpha 0.5 xoffset -5
-        repeat
-
 image menu_bg:
     topleft
-    "gui/menu_bg.png"
-    menu_bg_move
-
-image menu_bg_d:
-    topleft
-    "gui/menu_bg_d.png"
+    ConditionSwitch(
+        "not mas_globals.dark_mode", "gui/menu_bg.png",
+        "mas_globals.dark_mode", "gui/menu_bg_d.png")
     menu_bg_move
 
 image game_menu_bg:
     topleft
-    "gui/menu_bg.png"
-    menu_bg_loop
-
-image game_menu_bg_d:
-    topleft
-    "gui/menu_bg_d.png"
+    ConditionSwitch(
+        "not mas_globals.dark_mode", "gui/menu_bg.png",
+        "mas_globals.dark_mode", "gui/menu_bg_d.png")
     menu_bg_loop
 
 image menu_nav:
-    "gui/overlay/main_menu.png"
-    menu_nav_move
-
-image menu_nav_d:
-    "gui/overlay/main_menu_d.png"
+    ConditionSwitch(
+        "not mas_globals.dark_mode", "gui/overlay/main_menu.png",
+        "mas_globals.dark_mode", "gui/overlay/main_menu_d.png")
     menu_nav_move
 
 
@@ -906,13 +872,13 @@ define gui.island_button_dark_text_idle_color = "#e670af"
 define gui.island_button_dark_text_hover_color = "#ffcce8"
 define gui.island_button_dark_text_kerning = 0.2
 
-define gui.quick_button_dark_text_height = None
-define gui.quick_button_dark_text_width = 205
-define gui.quick_button_dark_text_tile = False
-define gui.quick_button_dark_text_font = gui.default_font
-define gui.quick_button_dark_text_size = 14
-define gui.quick_button_dark_text_xalign = 0.5
-define gui.quick_button_dark_text_yalign = 0.995
-define gui.quick_button_dark_text_idle_color = "#F2A4F1"
-define gui.quick_button_dark_text_hover_color = "#FFDEFE"
-define gui.quick_button_dark_text_kerning = 0.2
+define gui.quick_dark_button_text_height = None
+define gui.quick_dark_button_text_width = 205
+define gui.quick_dark_button_text_tile = False
+define gui.quick_dark_button_text_font = gui.default_font
+define gui.quick_dark_button_text_size = 14
+define gui.quick_dark_button_text_xalign = 0.5
+define gui.quick_dark_button_text_yalign = 0.995
+define gui.quick_dark_button_text_idle_color = "#F2A4F1"
+define gui.quick_dark_button_text_hover_color = "#FFDEFE"
+define gui.quick_dark_button_text_kerning = 0.2
