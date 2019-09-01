@@ -454,7 +454,7 @@ init -5 python in mas_sprites:
             v_list - list to add strings to
         """
         v_list.append(prefix + FILE_EXT)
-        v_list.append(prefix + NIGHT_SUFFIX + FILE_XST)
+        v_list.append(prefix + NIGHT_SUFFIX + FILE_EXT)
 
 
     def alt_bcode(v_list, prefix, inc_night):
