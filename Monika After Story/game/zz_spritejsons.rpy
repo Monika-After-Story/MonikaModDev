@@ -1461,7 +1461,7 @@ init 189 python in mas_sprites_json:
 
             # set type to pose arms
             mpm_obj = obj_based.pop("pose_arms")
-            mpm_obj["mpm_type"] = MASPoseMap.MPM_TYPE_PA
+            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_PA
             mpm_msg_log = []
             pose_arms = store.MASPoseMap.fromJSON(
                 mpm_obj,

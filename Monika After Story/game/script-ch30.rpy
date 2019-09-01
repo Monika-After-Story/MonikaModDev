@@ -1861,8 +1861,13 @@ label ch30_reset:
 
     # set any prompt variants for acs that can be removed here
     python:
+        # TODO: all of these are in GRP TOPIC MAP, so we should create
+        #   a function to parse those and set appropriate prompts.
         if not monika_chr.is_wearing_acs_type("left-hair-clip"):
             store.mas_selspr.set_prompt("left-hair-clip", "wear")
+
+        if not monika_chr.is_wearing_acs_type("left-hair-flower"):
+            store.mas_selspr.set_prompt("left-hair-flower", "wear")
 
         if not monika_chr.is_wearing_acs_type("ribbon"):
             store.mas_selspr.set_prompt("ribbon", "wear")

@@ -976,10 +976,30 @@ init -1 python:
             default="0",
             p5="5"
         ),
+        acs_type="left-hair-flower",
+        mux_type=[
+            "left-hair-flower",
+        ],
+        ex_props={
+            "left-hair-strand-eye-level": True,
+        },
+        priority=20,
         stay_on_start=False,
         rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_ear_rose)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ear_rose,
+        "Rose",
+        "hairflower_rose",
+        "left-hair-flower",
+        hover_dlg=[
+            "TALE AS OLD AS TIME",
+        ],
+        select_dlg=[
+            "TRUE AS IT CAN BE",
+        ]
+    )
 
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown
