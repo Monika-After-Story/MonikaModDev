@@ -25,6 +25,7 @@
 #   4 - pointing right (pointright)
 #   5 - leaning (def)
 #   6 - arms down (down)
+#   7 - down left arm, rest point right (downleftpointright)
 #
 # <eyes type> - type of eyes
 #   e - normal eyes (normal)
