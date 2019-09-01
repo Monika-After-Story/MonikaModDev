@@ -211,7 +211,7 @@ init 999 python:
             "hair": {
                 "def": "Ponytail",
                 "down": "Down",
-                "bun": "Bun"
+#                "bun": "Bun"
             },
             "eyes": {
                 "e": "Normal",
@@ -338,7 +338,7 @@ init 999 python:
             "hair": [
                 "def",
                 "down",
-                "bun"
+#                "bun"
             ],
             "eyes": [
                 "e",
