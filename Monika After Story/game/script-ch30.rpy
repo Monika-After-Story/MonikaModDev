@@ -1900,5 +1900,7 @@ label ch30_reset:
 
     #Now we undo actions for evs which need them undone
     $ mas_undoEVActions()
+    #And also strip dates
+    $ mas_stripEVDates()
 
     return
