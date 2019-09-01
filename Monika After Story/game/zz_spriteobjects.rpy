@@ -766,12 +766,15 @@ init -1 python:
         "marisa",
         "marisa",
         MASPoseMap(
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
             p5="steepling",
-            p6="down"
+            p6="down",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -807,12 +810,15 @@ init -1 python:
         "rin",
         "rin",
         MASPoseMap(
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
             p5="steepling",
-            p6="down"
+            p6="down",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -855,12 +861,15 @@ init -1 python:
 #            use_reg_for_l=True
 #        ),
         MASPoseMap(
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
             p2="steepling",
             p3="restleftpointright",
             p4="restleftpointright",
             p5="steepling",
-            p6="steepling"
+            p6="steepling",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -994,7 +1003,8 @@ init -1 python:
             p3="1",
             p4="4",
             p5="5",
-            p6=None
+            p6=None,
+            p7="1"
         ),
         stay_on_start=True,
         acs_type="wrist-bracelet",
@@ -1009,7 +1019,8 @@ init -1 python:
             p2="0",
             p3="1",
             p4="0",
-            p5="1"
+            p5="1",
+            p7="1",
         )
     )
     store.mas_sprites.init_acs(mas_acs_hairties_bracelet_brown)
@@ -1087,7 +1098,8 @@ init -1 python:
             p3="1",
             p4=None,
             p5="5",
-            p6=None
+            p6=None,
+            p7=None,
         ),
         stay_on_start=True,
         acs_type="ring",

@@ -125,7 +125,8 @@ init 999 python:
                 2: "crossed",
                 3: "restleftpointright",
                 4: "pointright",
-                6: "down"
+                6: "down",
+                7: "downleftpointright",
             },
             "eyes": {
                 "e": "normal",
@@ -206,7 +207,8 @@ init 999 python:
                 3: "Rest Left, Point Right",
                 4: "Point Right",
                 5: "Leaning",
-                6: "Down"
+                6: "Down",
+                7: "Down Left, Point Right",
             },
             "hair": {
                 "def": "Ponytail",
@@ -333,7 +335,8 @@ init 999 python:
                 3,
                 4,
                 5,
-                6
+                6,
+                7,
             ],
             "hair": [
                 "def",
