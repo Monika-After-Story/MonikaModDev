@@ -12108,11 +12108,11 @@ label monika_trick_sayori:
     m 6ekd "I know it's not your fault, but the idea of being inactive and letting that happen scares me..."
     m 6ektpc "You would have completed the game and I would be stuck in a hellish void forever..."
     m 6dktpc "Never having even been acknowledged by the one I love."
-    m 6dktrc "..."
+    m 6dktuc "..."
     if persistent._mas_pm_cares_about_dokis:
-        m 6ektrd "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
+        m 6ektud "...I know you didn't like me for what I did, I'm sorry if I hurt you because of it."
     else:
-        m 6ektrd "...I don't regret what I did but I'm sorry you had to see what I needed to do."
+        m 6ektud "...I don't regret what I did but I'm sorry you had to see what I needed to do."
     return
 
 label monika_trick_monika:

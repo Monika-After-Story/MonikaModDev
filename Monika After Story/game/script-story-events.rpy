@@ -2343,6 +2343,8 @@ label mas_bday_player_bday_select_select:
             )
 
     $ persistent._mas_player_bday = selected_date
+    $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
+    $ store.mas_history.saveMHSData()
     $ renpy.save_persistent()
     jump birthdate_set
 

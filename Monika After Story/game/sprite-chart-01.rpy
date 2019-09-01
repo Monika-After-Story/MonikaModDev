@@ -5219,28 +5219,6 @@ image monika 6dktpc_static = DynamicDisplayable(
     tears="pooled"
 )
 
-image monika 6dktrc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    arms="down",
-    tears="rightclosedsad"
-)
-
-image monika 6dktrd_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="small",
-    arms="down",
-    tears="rightclosedsad"
-)
-
 image monika 6dktsa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5281,6 +5259,17 @@ image monika 6dktuc_static = DynamicDisplayable(
     eyes="closedsad",
     nose="def",
     mouth="smirk",
+    arms="down",
+    tears="upclosedsad"
+)
+
+image monika 6dktud_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
     arms="down",
     tears="upclosedsad"
 )
@@ -5686,20 +5675,6 @@ image monika 6ektpc_static = DynamicDisplayable(
     tears="pooled"
 )
 
-image monika 6ektrd_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="normal",
-    nose="def",
-    mouth="small",
-    arms="down",
-    head="g",
-    left="1l",
-    right="1r",
-    tears="right"
-)
-
 image monika 6ektsa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5728,6 +5703,20 @@ image monika 6ektsc_static = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 6ektud_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    arms="down",
+    head="g",
+    left="1l",
+    right="1r",
+    tears="up"
+)
+
 image monika 6esa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5736,5 +5725,16 @@ image monika 6esa_static = DynamicDisplayable(
     nose="def",
     mouth="smile",
     arms="down"
+)
+
+image monika 6esbfa_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    arms="down",
+    blush="full"
 )
 
