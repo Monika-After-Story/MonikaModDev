@@ -2574,7 +2574,7 @@ init -5 python in mas_sprites:
                 acs_afh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
@@ -2742,7 +2742,7 @@ init -5 python in mas_sprites:
                 acs_afh_list,
                 n_suffix,
                 True,
-                arms,
+                leanpose,
                 lean=lean
             )
 
