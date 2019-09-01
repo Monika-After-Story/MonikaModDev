@@ -2045,7 +2045,7 @@ screen calendar_overlay():
     #
     if store.mas_calendar.enabled:
         imagebutton:
-            idle "mod_assets/calendar/calendar_button_normal.png"
+            idle ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png")
             hover "mod_assets/calendar/calendar_button_hover.png"
             hover_sound gui.hover_sound
             activate_sound gui.activate_sound
@@ -2053,7 +2053,7 @@ screen calendar_overlay():
             xpos 360
             ypos 260
     else:
-        image "mod_assets/calendar/calendar_button_normal.png" xpos 360 ypos 260
+        image ("mod_assets/calendar/calendar_button_normal.png" if morning_flag else "mod_assets/calendar/calendar_button_normal-n.png") xpos 360 ypos 260
 
 init python:
 
