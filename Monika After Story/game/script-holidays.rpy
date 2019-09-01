@@ -4980,7 +4980,10 @@ P.S: Don't tell her about me.
     return "derandom | no_unlock"
 
 
-################## [HOL060] HAPPY BDAY TOPIC
+################## [HOL060] HAPPY BDAY TOPICS
+# both of these make the most sense showing up under 'I want to tell you something` so they are made as compliments
+# also makes sure they don't show up under unseen
+
 init 5 python:
     #Conditional check so we don't show this on subsequent launches
     if not persistent._mas_bday_said_happybday:
@@ -5028,6 +5031,39 @@ label mas_bday_pool_happy_bday:
     $ persistent._mas_bday_said_happybday = True
     $ mas_lockEVL("mas_bday_pool_happy_bday", "EVE")
     return
+
+# happy belated bday topic for people that took her out before her bday and returned her after
+# cond/act and start/end dates to be set in mas_gone_over_bday_check:
+
+#TODO: unlock for this
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_pool_happy_belated_bday",
+            prompt="Happy belated birthday!",
+            rules={"no unlock":0, "undo action": None},
+            years=[]
+        ),
+        code="CMP"
+    )
+
+label mas_bday_pool_happy_belated_bday:
+    if mas_isMoniNorma(higher=True):
+        m 1sua "Thank you so much, [player]!"
+        m 3hub "I just knew you took me out on a long trip for my birthday!"
+        m 3rka "I wish I could've seen all the amazing places you took me..."
+        m 1hua "But knowing we were together, well it makes it the best birthday I could hope for!"
+        m 3ekbsa "I love you so much, [player]~"
+        return "love"
+    else:
+        m 3eka "So you {i}did{/i} take me out for a long trip for my birthday..."
+        m 3rkd "That's so thoughtful of you, I was kind of wondering..."
+        m 1eksdla "You know what, nevermind."
+        m 1eka "I'm just relieved to know that you were thinking of me on my birthday."
+        m 3hua "That's all that matters."
+        m 3eub "Thank you, [player]!"
+        return
 
 ################## [HOL060] PARTY REACTION
 label mas_bday_surprise_party_reaction:
@@ -5216,6 +5252,7 @@ label mas_gone_over_bday_check:
         $ persistent._mas_bday_spent_bday = True
         $ persistent._mas_bday_gone_over_bday = True
         $ mas_rmallEVL("mas_bday_postbday_notimespent")
+        # TODO: unlock a happy beleated bday pool topic
     return
 
 ############## [HOL060] NO TIME SPENT
@@ -5430,12 +5467,18 @@ label bye_922_delegate:
                 m "I actually have an outfit prepared just for this..."
                 #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
-    elif persistent._mas_bday_date_count > 1:
+    elif persistent._mas_bday_date_count == 2:
         m 1eud "Taking me somewhere again, [player]?"
         m 3eua "You must really have a lot planned for us."
         m 1hua "You're so sweet~"
 
-    #TODO: more fares?
+    elif persistent._mas_bday_date_count == 3:
+        m 1sua "Taking me out {i}again{/i} for my birthday?"
+        m 3tkbsu "You really know how to make a girl feel special, [player]."
+        m 1ekbfa "I'm so lucky to have someone like you~"
+    else:
+        m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
+        m 1ekbfa "You're the best partner I could ever hope for~"
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
@@ -5496,8 +5539,11 @@ label greeting_returned_home_bday:
         # 5 mins < time out <= 1 hr
         $ cap_gain_aff(15 if mas_isplayer_bday() else 10)
         m 1sua "That was fun, [player]!"
-        m 1hub "Aha, taking me out on my birthday..."
-        m 3eua "It was very considerate of you."
+        if mas_isplayer_bday():
+            m 1hub "Ahaha, going on for our birthday..."
+        else:
+            m 1hub "Ahaha, taking me out on my birthday..."
+            m 3eua "It was very considerate of you."
         m 3eka "I really enjoyed the time we spent together."
         m 1eka "I love you~"
         if mas_isMonikaBirthday():
@@ -5519,14 +5565,23 @@ label greeting_returned_home_bday:
         # +3 hrs
         $ cap_gain_aff(35 if mas_isplayer_bday() else 30)
         m 1sua "Wow, [player]..."
-        m 1hua "I really didn't expect you to set aside so much time for me..."
-        m 1sfa "But I enjoyed every second of it!"
-        m 1hua "Every minute with you is a minute well spent."
-        m 1sua "So you've made me very happy today."
-        m 1dfa "Ehehe..."
-        m 1wfa "Are you falling for me all over again?"
-        m 1hua "I'm just kidding~"
-        m "Thank you for loving me."
+        if mas_isplayer_bday():
+            m 3hub "That was such a lovely time!"
+            m 3eka "I can't think of a better way to celebrate our birthdays than a long date."
+            m 1eka "I wish I could've seen all the amazing places we went, but just knowing we were together..."
+            m 1hua "That's all I could ever ask for."
+            m 3ekbsa "I hope you feel the same way~"
+        else:
+            m 1hua "I didn't expect you to set aside so much time for me..."
+            m 1sub "But I enjoyed every second of it!"
+            m 1hua "Every minute with you is a minute well spent."
+            m 1sua "So you've made me very happy today."
+            m 1dfa "Ehehe..."
+            m 1wfa "Are you falling for me all over again?"
+            m 1hua "I'm just kidding~"
+            m "Thank you for loving me."
+        if mas_isMonikaBirthday():
+            return
 
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
@@ -5545,33 +5600,31 @@ label greeting_returned_home_bday:
                 jump mas_player_bday_ret_on_bday
 
         else:
-            #Otherwise we need to clean everything up
+            if persistent._mas_bday_sbp_reacted and not persistent._mas_player_bday_in_player_bday_mode:
+                if persistent._mas_player_bday_in_player_bday_mode:
+                    $ my = "our"
+                else:
+                    $ my = "my"
+                m 3rksdla "It's not even [my] birthday anymore..."
+                m 2hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+                $ mas_surpriseBdayHideVisuals()
+                m 3eub "There we go!"
 
-            m "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
-            $ mas_surpriseBdayHideVisuals()
-            m "There we go!"
-
-            if checkout_time.date() != mas_monika_birthday:
-                m "Anyway [player]...thanks for spending so much time with me on my birthday, you really made me feel special."
-                m "I can't express just how thankful I am to have you in my life..."
-                m "I really love you, [player]... Thank you for everything."
-
-            else:
+            if persistent._mas_player_bday_in_player_bday_mode:
+                $ persistent._mas_player_bday_in_player_bday_mode = False
+                $ persistent._mas_player_bday_decor = False
                 m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
                 m 1ekbfa "I hope I helped to make your day as special as you made mine."
-                m "Thanks for an amazing birthay. I love you~"
 
-            #TODO: lead these into a time spent, likewise set up a pre-922 -> post 922 check which leads into a variation of time spent
-            # ^ also make sure to set time spent and bday celebrated as true in this path
-            return "love"
-
+            if not mas_lastSeenInYear('mas_bday_spent_time_with'):
+                m 3eud "Oh, and [player]..."
+                m 3eka "I just wanted to thank you for again for today."
+                m 1rka "And it's not just this date..."
+                m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
+                m 3eka "As soon as you showed up today, my day was complete."
+                jump mas_bday_spent_time_with_wrapup
 
     return
-
-#Return from pre bday -> post bday
-label greeting_gone_over_bday:
-    #TODO: ME
-    pass
 
 
 #NOTE: left here in case we want to use some of this dlg. So:

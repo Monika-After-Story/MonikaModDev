@@ -3003,9 +3003,6 @@ label greeting_returned_home:
     if persistent._mas_player_bday_left_on_bday:
         jump greeting_returned_home_player_bday
 
-    if persistent._mas_bday_gone_over_bday:
-        jump greeting_gone_over_bday
-
     if persistent._mas_f14_gone_over_f14:
         jump greeting_gone_over_f14
 
