@@ -1541,7 +1541,7 @@ init 5 python:
 #            prompt="Christmas",
             conditional=(
                 "persistent._mas_d25_in_d25_mode "
-                "and not mas_lastSeenInYear(mas_d25_monika_christmas"
+                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
             ),
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
