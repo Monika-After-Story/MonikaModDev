@@ -3166,8 +3166,6 @@ init -2 python:
 
     # Monika character base
     class MASMonika(renpy.store.object):
-        # TODO: limit accessories to only be allowed on their layer.
-        #   *with override flag
         import store.mas_sprites as mas_sprites
 
         # CONSTANTS
@@ -3278,6 +3276,9 @@ init -2 python:
 
             # True if we should block any changes to cas
             self.lock_acs = False
+
+            # set to True to allow ACS overriding
+            self._override_rec_layer = False
 
 
         def __get_acs(self, acs_type):
@@ -4211,6 +4212,14 @@ init -2 python:
             if self.lock_acs or accessory.name in self.acs_list_map:
                 # we never wear dupes
                 return
+
+            # if the given layer does not match rec layer, force the correct
+            # layer unless override
+            if (
+                    acs_type != accessory.get_rec_layer()
+                    and not self._override_rec_layer
+            ):
+                acs_type = accessory.get_rec_layer()
 
             acs_list = self.__get_acs(acs_type)
             temp_space = {
