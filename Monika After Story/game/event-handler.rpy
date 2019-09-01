@@ -478,7 +478,8 @@ init 4 python:
             #NOTE: try/except because of init time conditional checks
             ev = mas_getEV(ev_label)
         except:
-            pass
+            ev = None
+
         #If we can't get the ev or it hasn't been seen before, then we can't do anything and we'll just return False
         if not ev or not ev.last_seen:
             return False
