@@ -38,6 +38,7 @@
 #   d - closed sad eyes (closedsad)
 #   k - left eye wink (winkleft)
 #   n - right eye wink (winkright)
+#   f - soft eyes (soft)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)

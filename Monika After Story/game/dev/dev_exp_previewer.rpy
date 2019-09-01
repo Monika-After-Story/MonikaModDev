@@ -138,7 +138,8 @@ init 999 python:
                 "h": "closedhappy",
                 "d": "closedsad",
                 "k": "winkleft",
-                "n": "winkright"
+                "n": "winkright",
+                "f": "soft",
             },
             "eyebrows": {
                 "f": "furrowed",
@@ -224,7 +225,8 @@ init 999 python:
                 "h": "Closed (Happy)",
                 "d": "Closed (Sad)",
                 "k": "Wink Left",
-                "n": "Wink Right"
+                "n": "Wink Right",
+                "f": "Soft",
             },
             "eyebrows": {
                 "f": "Furrowed",
@@ -351,7 +353,8 @@ init 999 python:
                 "h",
                 "d",
                 "k",
-                "n"
+                "n",
+                "f",
             ],
             "eyebrows": [
                 "f",
