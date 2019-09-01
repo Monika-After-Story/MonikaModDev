@@ -1103,22 +1103,6 @@ label mas_reaction_cupcake:
     $ store.mas_filereacts.delete_file(gift_ev.category)
     return
 
-init 5 python:
-    addReaction("mas_reaction_knife", "knife", is_good=False)
-
-label mas_reaction_knife:
-    m 1euc "...?"
-    m 1wud "Is that...a knife?"
-    m 2wfc "Why would you want to give me that?"
-    m 2wfd "I don't need this here!"
-    m 3tfc "...Someone else, maybe."
-    m 1dfc "..."
-    m 1rsc "I'm not taking this, [player]."
-    m 1rfc "If you were trying to be funny, then you have {i}very{/i} poor taste."
-    $ mas_receivedGift("mas_reaction_knife") # while technically she didn't accept this one counts
-    $ gift_ev = mas_getEV("mas_reaction_knife")
-    $ store.mas_filereacts.delete_file(gift_ev.category)
-    return
 
 # ending label for gift reactions, this just resets a thing
 label mas_reaction_end:

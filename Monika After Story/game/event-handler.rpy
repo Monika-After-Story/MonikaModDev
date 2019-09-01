@@ -459,6 +459,33 @@ init 6 python:
             if list_pop:
                 mas_rmEVL(ev_label)
 
+    def mas_lastSeenInYear(ev_label, year=None):
+        """
+        Checks whether or not the even was last seen in the year provided
+
+        IN:
+            ev_label - label of the event we want to check
+            year - the year we want to check if it's been last seen in
+
+        OUT:
+            boolean - True if last seen this year, False otherwise
+
+        NOTE: if no year provided, we assume this year
+        """
+        #Get our ev
+        ev = mas_getEV(ev_label)
+        #If we can't get the ev or it hasn't been seen before, then we can't do anything and we'll just return False
+        if not ev or not ev.last_seen:
+            return False
+
+        #If no year provided, assume current year
+        if year is None:
+            year = datetime.date.today().year
+
+        #Otherwise return this evaluation
+        return ev.last_seen.year == year
+
+
 python early:
     # FLOW CHECK CONSTANTS
     # these define where in game flow should a delayed action be checked
@@ -857,13 +884,13 @@ init -875 python in mas_delact:
 #        6: _mas_bday_surprise_party_hint_reset,
 #        7: _mas_bday_spent_time_with_reset,
         8: _mas_d25_holiday_intro_upset_reset,
-        9: _mas_d25_monika_carolling_reset,
-        10: _mas_d25_monika_mistletoe_reset,
-        11: _mas_pf14_monika_lovey_dovey_reset,
-        12: _mas_f14_monika_vday_colors_reset,
-        13: _mas_f14_monika_vday_cliches_reset,
-        14: _mas_f14_monika_vday_chocolates_reset,
-        15: _mas_f14_monika_vday_origins_reset,
+#        9: _mas_d25_monika_carolling_reset,
+#        10: _mas_d25_monika_mistletoe_reset,
+#        11: _mas_pf14_monika_lovey_dovey_reset,
+#        12: _mas_f14_monika_vday_colors_reset,
+#        13: _mas_f14_monika_vday_cliches_reset,
+#        14: _mas_f14_monika_vday_chocolates_reset,
+#        15: _mas_f14_monika_vday_origins_reset,
     }
 
 

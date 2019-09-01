@@ -201,7 +201,7 @@ init -1 python:
         for k in events_dict:
             ev = events_dict[k]
 
-            if renpy.seen_label(k):
+            if renpy.seen_label(k) and not "force repeat" in ev.rules:
                 # seen event
                 mas_insertSort(seen, ev, Event.getSortShownCount)
 

@@ -1273,9 +1273,6 @@ init 200 python in mas_dockstat:
     retmoni_status = None
     retmoni_data = None
 
-    # and these are set for bday related stuff
-    retsbp_status = None
-
 
     def _buildMetaDataList(_outbuffer):
         """
@@ -2360,19 +2357,9 @@ label mas_dockstat_found_monika:
         $ monika_chr.wear_acs(mas_acs_roses)
     # select the greeting we want
     python:
-        if (
-                (store.mas_dockstat.retsbp_status
-                    & store.mas_dockstat.MAS_SBP_NONE) == 0
-                and not persistent._mas_bday_sbp_reacted
-            ):
-            # TODO: consider if this forced greeting should be changed to
-            #   work with new rules. Would have conditional and more prob
-            selected_greeting = "mas_bday_surprise_party_reaction"
-
-        else:
-            selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
-                persistent._mas_greeting_type
-            ).eventlabel
+        selected_greeting = store.mas_dockstat.selectReturnHomeGreeting(
+            persistent._mas_greeting_type
+        ).eventlabel
 
         # TODO: consider running the greeting setup label?
 
