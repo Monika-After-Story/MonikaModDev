@@ -3425,7 +3425,7 @@ init -2 python:
             return val in MASMonika.REC_LAYERS
 
         @staticmethod
-        def _verify_spl_layer(val, allow_none=True);
+        def _verify_spl_layer(val, allow_none=True):
             if val is None:
                 return allow_none
             return val in MASMonika.SPL_LAYERS
@@ -5002,7 +5002,7 @@ init -2 python:
             return self._mpm_type == self.MPM_TYPE_FB
 
         @classmethod
-        def fromJSON(cls, json_obj, msg_log, ind_lvl, vaild_types=None):
+        def fromJSON(cls, json_obj, msg_log, ind_lvl, valid_types=None):
             """
             Builds a MASPoseMap given a JSON format of it
 
