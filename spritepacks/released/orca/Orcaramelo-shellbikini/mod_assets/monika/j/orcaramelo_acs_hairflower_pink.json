@@ -10,7 +10,7 @@
     "stay_on_start": true,
     "rec_layer": 5,
     "priority": 20,
-    "acs-type": "left-hair-flower",
+    "acs_type": "left-hair-flower",
     "mux_type": [
         "left-hair-flower"
     ],
