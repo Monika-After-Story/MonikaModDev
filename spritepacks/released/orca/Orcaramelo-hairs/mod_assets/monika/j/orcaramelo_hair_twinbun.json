@@ -1,7 +1,7 @@
 {
     "version": 2,
     "type": 1,
-    "name": "orcaramelo-twinbun",
+    "name": "orcaramelo_twinbun",
     "img_sit": "orcaramelo_twinbun",
     "pose_map": {
         "mpm_type": 0,

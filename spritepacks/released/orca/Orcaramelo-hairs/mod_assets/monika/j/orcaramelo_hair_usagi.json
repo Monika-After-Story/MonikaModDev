@@ -1,7 +1,7 @@
 {
     "version": 2,
     "type": 1,
-    "name": "orcaramelo-usagi",
+    "name": "orcaramelo_usagi",
     "img_sit": "orcaramelo_usagi",
     "pose_map": {
         "mpm_type": 0,
