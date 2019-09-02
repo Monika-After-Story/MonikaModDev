@@ -779,7 +779,7 @@ init -1 python:
             p3=store.mas_sprites.use_bpam(2),
             p4=store.mas_sprites.use_bpam(4),
             p5=MASPoseArms(
-                left=("def", True, False),
+                left=("def", False, True),
                 right=("def", True, True)
             ),
             p6=store.mas_sprites.use_bpam(6),
