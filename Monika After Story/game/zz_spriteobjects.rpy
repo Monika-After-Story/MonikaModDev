@@ -795,7 +795,7 @@ init -1 python:
         visible_when_locked=True,
         hover_dlg=[
             "ITS GETTING HOT IN HERE",
-        ]
+        ],
         select_dlg=[
             "SO TAKE OFF ALL YOUR CLOTHES",
         ]
