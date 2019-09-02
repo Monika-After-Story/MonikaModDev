@@ -2785,23 +2785,6 @@ init 5 python:
         )
     )
 
-init -876 python in mas_delact:
-    
-    def _mas_sel_clothes_lock_action(ev):
-        if store.monika_chr.clothes == store.mas_clothes_def:
-            ev.unlocked = False
-        return True
-
-    # delayed action to lock the clothes selector
-    def _mas_sel_clothes_lock():
-        return store.MASDelayedAction(
-            16,
-            store.mas_getEV("monika_clothes_select"),
-            "True",  # always run this delayed action
-            _mas_sel_clothes_lock_action,
-            store.MAS_FC_IDLE_ONCE | store.MAS_FC_IDLE_ROUTINE
-        )
-
 label monika_clothes_select:
     # setup
     python:

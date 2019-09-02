@@ -626,15 +626,26 @@ init -5 python in mas_sprites:
         SP_CLOTHES: CLOTH_MAP
     }
 
+    # Numerical pose map
+    NUM_POSE = {
+        1: "steepling",
+        2: "crossed",
+        3: "restleftpointright",
+        4: "pointright",
+        5: "def|def",
+        6: "down",
+        7: "downleftpointright",
+    }
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
-        "steepling",
-        "crossed",
-        "restleftpointright",
-        "pointright",
-        "down",
-        "downleftpointright",
+        NUM_POSE[1],
+        NUM_POSE[2],
+        NUM_POSE[3],
+        NUM_POSE[4],
+        NUM_POSE[6],
+        NUM_POSE[7],
     ]
 
     ## lean poses
@@ -642,7 +653,7 @@ init -5 python in mas_sprites:
     #   lean|arms
     # NOTE: do NOT include regular poses in here
     L_POSES = [
-        "def|def"
+        NUM_POSE[5],
     ]
 
     # all poses 
@@ -6258,6 +6269,20 @@ init -1 python in mas_sprites:
             right=("restpoint", False, True)
         ),
     }
+
+    # NOTE: consider allowing spritejsons to do this
+    def use_bpam(posenum):
+        """
+        Returns the MASPoseArms for a pose num
+        
+        IN:
+            posenum - numerical digit for a pose. This corresponds to
+                NUM_POSE.
+
+        RETURNS: base MASPoseARms for this pose, or None if not found
+        """
+        return base_pose_arms_map.get(NUM_POSE.get(posenum, None), None)
+
 
 # Monika
 define monika_chr = MASMonika()
