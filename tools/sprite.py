@@ -17,6 +17,7 @@ class StaticSprite(object):
             "4": False,
             "5": True,
             "6": False,
+            "7": False,
         },
         "position": {
             "1": "steepling",
@@ -25,6 +26,7 @@ class StaticSprite(object):
             "4": "pointright",
             "5": ("def", "def"),
             "6": "down",
+            "7": "downleftpointright",
         },
         "sides": {
             "1": ("1l", "1r"),
@@ -33,6 +35,7 @@ class StaticSprite(object):
             "4": ("2l", "2r"),
             "5": ("", ""),
             "6": ("1l", "1r"),
+            "7": ("1l", "2r"),
         },
         "eyes": {
             "e": "normal",
