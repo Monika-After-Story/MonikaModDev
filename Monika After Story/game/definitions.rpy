@@ -56,6 +56,16 @@ python early:
                     ev.random=False
                 #NOTE: we don't add the rest since there's no reason to undo those.
 
+    def mas_stripEVDates():
+        """
+        Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
+        """
+        for ev in store.mas_all_ev_db.itervalues():
+            #NOTE: explicit false
+            if "strip dates" in ev.rules and ev.isWithinRange() == False:
+                ev.start_date=None
+                ev.end_date=None
+
     # custom event exceptions
     class EventException(Exception):
         def __init__(self, _msg):

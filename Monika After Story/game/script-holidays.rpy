@@ -5003,9 +5003,6 @@ init 5 python:
             code="CMP"
         )
 
-    # make sure this event is considered seen
-    persistent._seen_ever["mas_bday_pool_happy_bday"] = True
-
 label mas_bday_pool_happy_bday:
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
@@ -5035,21 +5032,26 @@ label mas_bday_pool_happy_bday:
 # happy belated bday topic for people that took her out before her bday and returned her after
 # cond/act and start/end dates to be set in mas_gone_over_bday_check:
 
-#TODO: unlock for this
 init 5 python:
     addEvent(
         Event(
             persistent.event_database,
             eventlabel="mas_bday_pool_happy_belated_bday",
             prompt="Happy belated birthday!",
-            rules={"no unlock":0, "undo action": None},
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":0, "undo action": None, "strip dates": None},
             years=[]
         ),
         code="CMP"
     )
 
 label mas_bday_pool_happy_belated_bday:
-    if mas_isMoniNorma(higher=True):
+    #We've essentially said happy birthday, let's flag this
+    $ persistent._mas_bday_said_happybday = True
+    #Lock this
+    $ mas_lockEVL("mas_bday_pool_happy_belated_bday", "CMP")
+
+    if mas_isMoniNormal(higher=True):
         m 1sua "Thank you so much, [player]!"
         m 3hub "I just knew you took me out on a long trip for my birthday!"
         m 3rka "I wish I could've seen all the amazing places we went..."
@@ -5253,7 +5255,16 @@ label mas_gone_over_bday_check:
         $ persistent._mas_bday_spent_bday = True
         $ persistent._mas_bday_gone_over_bday = True
         $ mas_rmallEVL("mas_bday_postbday_notimespent")
-        # TODO: unlock a happy beleated bday pool topic
+
+        #Now we want to handle the belated bday unlock
+        python:
+            belated_ev = mas_getEV("mas_bday_pool_happy_belated_bday")
+
+            if belated_ev is not None:
+                #Set start and end dates
+                belated_ev.start_date = datetime.date.today()
+                belated_ev.end_date = datetime.date.today() + datetime.timedelta(days=1)
+                mas_unlockEVL("mas_bday_pool_happy_belated_bday", "CMP")
     return
 
 ############## [HOL060] NO TIME SPENT
