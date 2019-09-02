@@ -766,6 +766,7 @@ init -1 python:
         "marisa",
         "marisa",
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
             default="steepling",
             use_reg_for_l=True,
             p1="steepling",
@@ -810,6 +811,7 @@ init -1 python:
         "rin",
         "rin",
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
             default="steepling",
             use_reg_for_l=True,
             p1="steepling",
@@ -861,6 +863,7 @@ init -1 python:
 #            use_reg_for_l=True
 #        ),
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
             default="steepling",
             use_reg_for_l=True,
             p1="steepling",
