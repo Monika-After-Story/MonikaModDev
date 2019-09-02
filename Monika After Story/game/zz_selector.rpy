@@ -2788,21 +2788,18 @@ label monika_clothes_select:
 
     else:
         python:
-            # list of special event clothes
-            event_clothes = [
-                mas_selspr.CLOTH_SEL_MAP["sundress_white"],
-                mas_selspr.CLOTH_SEL_MAP["santa"],
-                mas_selspr.CLOTH_SEL_MAP["rin"],
-                mas_selspr.CLOTH_SEL_MAP["marisa"]
-            ]
-
             # need to get a list of clothes that have been gifted
             # so we will get a list of all clothes and then remove the event_clothes
             gifted_clothes = mas_selspr.filter_clothes(True)
 
-            for cloth_sel_obj in event_clothes:
-                if cloth_sel_obj in gifted_clothes:
-                    gifted_clothes.remove(cloth_sel_obj)
+            for index in range(len(gifted_clothes)-1, -1, -1):
+                spr_obj = gifted_clothes[index].get_sprobj()
+                if (
+                        not spr_obj.is_custom
+                        and spr_obj != mas_clothes_def
+                        and spr_obj != mas_clothes_blazerless
+                ):
+                    gifted_clothes.pop(index)
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
