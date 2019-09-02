@@ -776,7 +776,7 @@ init -1 python:
             use_reg_for_l=True,
             p1=store.mas_sprites.use_bpam(1),
             p2=MASPoseArms(both=("crossed", True, False)),
-            p3=store.mas_sprites.use_bpam(2),
+            p3=store.mas_sprites.use_bpam(3),
             p4=store.mas_sprites.use_bpam(4),
             p5=MASPoseArms(
                 left=("def", False, True),
