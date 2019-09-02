@@ -97,7 +97,7 @@ image monika 3dkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -564,7 +564,7 @@ image monika 3efx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -904,7 +904,7 @@ image monika 3hfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedhappy",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -917,7 +917,7 @@ image monika 3hkbltpa_static = DynamicDisplayable(
     mouth="smile",
     arms="restleftpointright",
     blush="lines",
-    tears="pooled"
+    tears="pooledclosedhappy"
 )
 
 image monika 3hkbltub_static = DynamicDisplayable(
@@ -1098,7 +1098,7 @@ image monika 3lfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="left",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -1386,7 +1386,7 @@ image monika 3rfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="right",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -1684,7 +1684,7 @@ image monika 3tfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -1735,7 +1735,7 @@ image monika 3tkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -1869,7 +1869,7 @@ image monika 3wfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="wide",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 
@@ -2100,7 +2100,7 @@ image monika 4dfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -2304,7 +2304,7 @@ image monika 4dkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -2682,7 +2682,7 @@ image monika 4efx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -2978,7 +2978,7 @@ image monika 4hfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedhappy",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -3141,7 +3141,7 @@ image monika 4lfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="left",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -3414,7 +3414,7 @@ image monika 4rfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="right",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -3637,7 +3637,7 @@ image monika 4tfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -3677,7 +3677,7 @@ image monika 4tkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -3739,7 +3739,7 @@ image monika 4wfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="wide",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="pointright"
 )
 
@@ -5018,7 +5018,7 @@ image monika 6dftdx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="down",
     tears="dried"
 )
@@ -5206,28 +5206,6 @@ image monika 6dktpc_static = DynamicDisplayable(
     tears="pooled"
 )
 
-image monika 6dktrc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="smirk",
-    arms="down",
-    tears="rightclosedsad"
-)
-
-image monika 6dktrd_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="closedsad",
-    nose="def",
-    mouth="small",
-    arms="down",
-    tears="rightclosedsad"
-)
-
 image monika 6dktsa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5268,6 +5246,17 @@ image monika 6dktuc_static = DynamicDisplayable(
     eyes="closedsad",
     nose="def",
     mouth="smirk",
+    arms="down",
+    tears="upclosedsad"
+)
+
+image monika 6dktud_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="closedsad",
+    nose="def",
+    mouth="small",
     arms="down",
     tears="upclosedsad"
 )
@@ -5673,20 +5662,6 @@ image monika 6ektpc_static = DynamicDisplayable(
     tears="pooled"
 )
 
-image monika 6ektrd_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="normal",
-    nose="def",
-    mouth="small",
-    arms="down",
-    head="g",
-    left="1l",
-    right="1r",
-    tears="right"
-)
-
 image monika 6ektsa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5715,6 +5690,20 @@ image monika 6ektsc_static = DynamicDisplayable(
     tears="streaming"
 )
 
+image monika 6ektud_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="knit",
+    eyes="normal",
+    nose="def",
+    mouth="small",
+    arms="down",
+    head="g",
+    left="1l",
+    right="1r",
+    tears="up"
+)
+
 image monika 6esa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
@@ -5723,5 +5712,16 @@ image monika 6esa_static = DynamicDisplayable(
     nose="def",
     mouth="smile",
     arms="down"
+)
+
+image monika 6esbfa_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="mid",
+    eyes="normal",
+    nose="def",
+    mouth="smile",
+    arms="down",
+    blush="full"
 )
 
