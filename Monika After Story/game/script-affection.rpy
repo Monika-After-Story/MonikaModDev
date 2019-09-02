@@ -525,9 +525,6 @@ init 15 python in mas_affection:
         if store.monika_chr.clothes != store.mas_clothes_def:
             store.pushEvent("mas_change_to_def",True)
 
-        # lock blazerless
-        store.mas_selspr.lock_clothes(store.mas_clothes_blazerless)
-
 
     def _happyToAff():
         """
