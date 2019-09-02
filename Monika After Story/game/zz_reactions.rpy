@@ -618,17 +618,6 @@ init python:
         # unlock the selectable for this sprite object
         store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
 
-        # unlock the gifted clothes selector and add clothes to gifted_clothes list
-        if sp_type == store.mas_sprites.SP_CLOTHES and sp_obj is not None:
-            sp_sel = store.mas_selspr.get_sel_clothes(sp_obj)
-            if sp_sel is not None:
-                store.mas_insertSort(
-                    store.mas_selspr.gifted_clothes,
-                    sp_sel,
-                    store.mas_selspr.selectable_key
-                )
-                mas_unlockEVL("monika_clothes_select", "EVE")
-
         # save persistent
         renpy.save_persistent()
 

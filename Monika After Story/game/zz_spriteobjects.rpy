@@ -793,11 +793,9 @@ init -1 python:
         "schooluniform_blazerless",
         "clothes",
         visible_when_locked=True,
-        hover_dlg=[
-            "ITS GETTING HOT IN HERE",
-        ],
+        hover_dlg=None,
         select_dlg=[
-            "SO TAKE OFF ALL YOUR CLOTHES",
+            "Ah, feels nice without the blazer!",
         ]
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
