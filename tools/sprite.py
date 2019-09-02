@@ -70,8 +70,6 @@ class StaticSprite(object):
             "td": "dried",
             "tp": "pooled",
             "tu": "up",
-            "tl": "left",
-            "tr": "right",
         },
         "sweat": {
             "sdl": "def",
@@ -88,9 +86,10 @@ class StaticSprite(object):
             "o": "gasp",
             "u": "smug",
             "w": "wide",
-            "x": "disgust",
+            "x": "angry",
             "p": "pout",
-            "t": "triangle"
+            "t": "triangle",
+#            "g": "disgust",
         },
         "single": { # everything else will be 3b
             "a": "3a",
@@ -133,13 +132,8 @@ class StaticSprite(object):
                 "winkleft",
                 "winkright",
             ),
-            "left": (
+            "pooled": (
                 "closedhappy",
-                "closedsad",
-            ),
-            "right": (
-                "closedhappy",
-                "closedsad",
             ),
         },
     }

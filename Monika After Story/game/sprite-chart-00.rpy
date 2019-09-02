@@ -153,7 +153,7 @@ image monika 1dfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -559,7 +559,7 @@ image monika 1dkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -1089,7 +1089,7 @@ image monika 1efx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -1583,7 +1583,7 @@ image monika 1hfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedhappy",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -1643,7 +1643,7 @@ image monika 1hkbltpa_static = DynamicDisplayable(
     mouth="smile",
     arms="steepling",
     blush="lines",
-    tears="pooled"
+    tears="pooledclosedhappy"
 )
 
 image monika 1hksdla_static = DynamicDisplayable(
@@ -1847,7 +1847,7 @@ image monika 1lfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="left",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -2160,7 +2160,7 @@ image monika 1rfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="right",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -2568,7 +2568,7 @@ image monika 1tfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -2619,7 +2619,7 @@ image monika 1tkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -2795,7 +2795,7 @@ image monika 1wfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="wide",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="steepling"
 )
 
@@ -3099,7 +3099,7 @@ image monika 2dfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -3391,7 +3391,7 @@ image monika 2dkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -3833,7 +3833,7 @@ image monika 2efx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="normal",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -4172,7 +4172,7 @@ image monika 2hfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedhappy",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -4363,7 +4363,7 @@ image monika 2lfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="left",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -4659,7 +4659,7 @@ image monika 2rfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="right",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -4939,7 +4939,7 @@ image monika 2tfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -4989,7 +4989,7 @@ image monika 2tkx_static = DynamicDisplayable(
     eyebrows="knit",
     eyes="smug",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -5122,7 +5122,7 @@ image monika 2wfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="wide",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="crossed"
 )
 
@@ -5372,7 +5372,7 @@ image monika 3dfx_static = DynamicDisplayable(
     eyebrows="furrowed",
     eyes="closedsad",
     nose="def",
-    mouth="disgust",
+    mouth="angry",
     arms="restleftpointright"
 )
 

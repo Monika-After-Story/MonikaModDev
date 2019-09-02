@@ -163,8 +163,8 @@ init 999 python:
                 "td": "dried",
                 "tp": "pooled",
                 "tu": "up",
-                "tl": "left",
-                "tr": "right",
+#                "tl": "left",
+#                "tr": "right",
 #                "th": "closedhappy",
 #                "tc": "closedsad",
             },
@@ -183,9 +183,10 @@ init 999 python:
                 "o": "gasp",
                 "u": "smug",
                 "w": "wide",
-                "x": "disgust",
+                "x": "angry",
                 "p": "pout",
-                "t": "triangle"
+                "t": "triangle",
+#                "g": "disgust",
             }
         }
 
@@ -270,7 +271,8 @@ init 999 python:
                 "w": "Wide Open",
                 "x": "Grit Teeth",
                 "p": "Pout",
-                "t": "Triangle"
+                "t": "Triangle",
+#                "g": "Disgust",
             },
             "time": {
                 0: "Day",
@@ -377,8 +379,8 @@ init 999 python:
                 "td",
                 "tp",
                 "tu",
-                "tl",
-                "tr",
+#                "tl",
+#                "tr",
 #                "th",
 #                "tc",
             ],
@@ -401,7 +403,8 @@ init 999 python:
                 "w",
                 "x",
                 "p",
-                "t"
+                "t",
+#                "g",
             ],
             "time": [
                 0,
@@ -426,13 +429,8 @@ init 999 python:
                     "winkleft",
                     "winkright",
                 ),
-                "left": (
+                "pooled": (
                     "closedhappy",
-                    "closedsad",
-                ),
-                "right": (
-                    "closedhappy",
-                    "closedsad",
                 ),
             },
         }
