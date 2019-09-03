@@ -2502,20 +2502,19 @@ init 5 python:
     )
 
 label mas_change_to_def:
-    # sanity check for an extremely rare case where player dropped below happy
+    # acts as a sanity check for an extremely rare case where player dropped below happy
     # closed game before this was pushed and then deleted json before next load
-    if monika_chr.clothes == mas_clothes_def:
-        return "no_unlock"
+    if monika_chr.clothes != mas_clothes_def:
+        m 1eka "Hey [player], I miss my old school uniform..."
+        m 3eka "I'm just going to go change, be right back..."
+        
+        call mas_clothes_change()
 
-    m 1eka "Hey [player], I miss my old school uniform..."
-    m 3eka "I'm just going to go change, be right back..."
-    
-    call mas_clothes_change()
+        m "Okay, what else should we do today?"
 
-    m "Okay, what else should we do today?"
+        # remove from event list in case PP and ch30 both push
+        $ mas_rmallEVL("mas_change_to_def")
 
-    # remove from event list in case PP and ch30 both push
-    $ mas_rmallEVL("mas_change_to_def")
     return "no_unlock"
 
 # Changes clothes to the given outfit.
@@ -2546,3 +2545,24 @@ label mas_clothes_change(outfit=None):
     pause 0.5
     call monika_zoom_transition (curr_zoom, 1.0)
     return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_blazerless_intro",
+            unlocked=False
+        )
+    )
+
+label mas_blazerless_intro:
+    # only want to do this if we are wearing def
+    # people not wearing def don't need to see this, so acts as a sanity check
+    if monika_chr.clothes == mas_clothes_def:
+        m 3esa "Give me a second [player], I'm just going to make myself a little more comfortable..."
+
+        call mas_clothes_change(mas_clothes_blazerless)
+
+        m 1eua "Ah, much better!"
+
+    return "no_unlock"
