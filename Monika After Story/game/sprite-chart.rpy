@@ -25,6 +25,7 @@
 #   4 - pointing right (pointright)
 #   5 - leaning (def)
 #   6 - arms down (down)
+#   7 - down left arm, rest point right (downleftpointright)
 #
 # <eyes type> - type of eyes
 #   e - normal eyes (normal)
@@ -632,7 +633,8 @@ init -5 python in mas_sprites:
         "crossed",
         "restleftpointright",
         "pointright",
-        "down"
+        "down",
+        "downleftpointright",
     ]
 
     ## lean poses
@@ -4858,6 +4860,7 @@ init -2 python:
             "p4",
             "p5",
             "p6",
+            "p7",
         )
 
         MPM_TYPE_ED = 0
@@ -4907,7 +4910,8 @@ init -2 python:
                 p3=None,
                 p4=None,
                 p5=None,
-                p6=None
+                p6=None,
+                p7=None
             ):
             """
             Constructor
@@ -4937,13 +4941,16 @@ init -2 python:
                     - LEAN: def|def
                 p6 - pose id to use for pose 6
                     - down
+                p7 - pose id to use for pose 7
+                    - downleftpointright
             """
             self.map = {
                 self.POSES[0]: p1,
                 self.POSES[1]: p2,
                 self.POSES[2]: p3,
                 self.POSES[3]: p4,
-                self.POSES[4]: p6
+                self.POSES[4]: p6,
+                self.POSES[5]: p7,
             }
             self.l_map = {
                 self.L_POSES[0]: p5
@@ -6234,18 +6241,23 @@ init -1 python in mas_sprites:
             right=("point", True, False)
         ),
 
-        # down
-        POSES[4]: store.MASPoseArms(
-            left=("down", True, False),
-            right=("down", True, False)
-        ),
-
         # leaning def
         L_POSES[0]: store.MASPoseArms(
             left=("def", False, True),
             right=("def", True, True)
         ),
 
+        # down
+        POSES[4]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("down", True, False)
+        ),
+
+        # downleftpointright
+        POSES[5]: store.MASPoseArms(
+            left=("down", True, False),
+            right=("restpoint", False, True)
+        ),
     }
 
 # Monika
