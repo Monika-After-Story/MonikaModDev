@@ -4006,31 +4006,35 @@ init -810 python:
     ))
 
 label mas_f14_autoload_check:
-    #Since it's possible player didn't see this, we need to derandom it manually.
-    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-    $ mas_removeDelayedAction(11)
+    python:
+        #Since it's possible player didn't see this, we need to derandom it manually.
+        mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        mas_removeDelayedAction(11)
 
-    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
-        $ persistent._mas_f14_in_f14_mode = True
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
+        if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+            persistent._mas_f14_in_f14_mode = True
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            monika_chr.change_clothes(mas_clothes_sundress_white, False)
+            monika_chr.save()
+            renpy.save_persistent()
 
-    elif not mas_isF14():
-        #We want to lock and derandom/depool all of the f14 labels if it's not f14
-        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
-        $ mas_idle_mailbox.send_rebuild_msg()
+        elif not mas_isF14():
+            #We want to lock and derandom/depool all of the f14 labels if it's not f14
+            mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+            mas_idle_mailbox.send_rebuild_msg()
 
-        # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15)
+            # remove delayed actions for the above events
+            mas_removeDelayedActions(12, 13, 14, 15)
 
-        #Reset the f14 mode, and outfit if we're lower than the love aff level.
-        $ persistent._mas_f14_in_f14_mode = False
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
-            $ monika_chr.reset_clothes(False)
+            #Reset the f14 mode, and outfit if we're lower than the love aff level.
+            persistent._mas_f14_in_f14_mode = False
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -4152,14 +4156,11 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_in_f14_mode = True
         m 3wub "Oh!"
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
-        window hide
-        show monika 1dsa
-        pause 1.0
+
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
-        pause 0.5
+        call mas_clothes_change(mas_clothes_sundress_white)
+
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
