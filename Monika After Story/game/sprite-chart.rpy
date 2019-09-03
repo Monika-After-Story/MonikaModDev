@@ -39,6 +39,7 @@
 #   d - closed sad eyes (closedsad)
 #   k - left eye wink (winkleft)
 #   n - right eye wink (winkright)
+#   f - soft eyes (soft)
 #
 # <eyebrow type> - type of eyebrow
 #   f - furrowed / angery (furrowed)
@@ -626,15 +627,26 @@ init -5 python in mas_sprites:
         SP_CLOTHES: CLOTH_MAP
     }
 
+    # Numerical pose map
+    NUM_POSE = {
+        1: "steepling",
+        2: "crossed",
+        3: "restleftpointright",
+        4: "pointright",
+        5: "def|def",
+        6: "down",
+        7: "downleftpointright",
+    }
+
     ## Pose list
     # NOTE: do NOT include leans in here.
     POSES = [
-        "steepling",
-        "crossed",
-        "restleftpointright",
-        "pointright",
-        "down",
-        "downleftpointright",
+        NUM_POSE[1],
+        NUM_POSE[2],
+        NUM_POSE[3],
+        NUM_POSE[4],
+        NUM_POSE[6],
+        NUM_POSE[7],
     ]
 
     ## lean poses
@@ -642,7 +654,7 @@ init -5 python in mas_sprites:
     #   lean|arms
     # NOTE: do NOT include regular poses in here
     L_POSES = [
-        "def|def"
+        NUM_POSE[5],
     ]
 
     # all poses 
@@ -3334,8 +3346,8 @@ init -2 python:
             """
             # clothes and hair
             self.change_outfit(
-                store.mas_sprites.CLOTH_MAP[_clothes_name],
-                store.mas_sprites.HAIR_MAP[_hair_name],
+                store.mas_sprites.CLOTH_MAP.get(_clothes_name, store.mas_clothes_def),
+                store.mas_sprites.HAIR_MAP.get(_hair_name, store.mas_hair_def),
                 startup=startup
             )
 
@@ -3501,7 +3513,6 @@ init -2 python:
 
             if by_user is not None:
                 persistent._mas_force_clothes = bool(by_user)
-
 
         def change_hair(self, new_hair, by_user=None, startup=False):
             """
@@ -6259,6 +6270,20 @@ init -1 python in mas_sprites:
             right=("restpoint", False, True)
         ),
     }
+
+    # NOTE: consider allowing spritejsons to do this
+    def use_bpam(posenum):
+        """
+        Returns the MASPoseArms for a pose num
+        
+        IN:
+            posenum - numerical digit for a pose. This corresponds to
+                NUM_POSE.
+
+        RETURNS: base MASPoseARms for this pose, or None if not found
+        """
+        return base_pose_arms_map.get(NUM_POSE.get(posenum, None), None)
+
 
 # Monika
 define monika_chr = MASMonika()
