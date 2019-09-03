@@ -2754,7 +2754,6 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
 # [MONSEL]
 
 #### Begin monika clothes topics
-
 init 5 python:
     addEvent(
         Event(
@@ -2763,16 +2762,14 @@ init 5 python:
             category=["appearance"],
             prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
-            unlocked=False,
-            rules={"no unlock": None},
-            aff_range=(mas_aff.LOVE, None)
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
 label monika_clothes_select:
     # setup
     python:
-        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -2785,7 +2782,27 @@ label monika_clothes_select:
     show monika 1eua
 
     # start the selection screen
-    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+    if mas_isMoniLove():
+        # for Love, all unlocked clothes are available
+        call mas_selector_sidebar_select_clothes(store.mas_selspr.CLOTH_SEL_SL, mailbox=mailbox, select_map=sel_map)
+
+    else:
+        python:
+            # need to get a list of clothes that have been gifted
+            # so we will get a list of all clothes and then remove the event_clothes
+            gifted_clothes = mas_selspr.filter_clothes(True)
+
+            for index in range(len(gifted_clothes)-1, -1, -1):
+                spr_obj = gifted_clothes[index].get_sprobj()
+                if (
+                        not spr_obj.is_custom
+                        and spr_obj != mas_clothes_def
+                        and spr_obj != mas_clothes_blazerless
+                ):
+                    gifted_clothes.pop(index)
+
+        # below Love, only gifted clothes (and def) are available
+        call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
 
     # results
     if not _return:
@@ -2796,6 +2813,7 @@ label monika_clothes_select:
     m 1eub "If you want me to wear different clothes, just ask, okay?"
 
     return
+
 
 #### ends Monika clothes topic
 

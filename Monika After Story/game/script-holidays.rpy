@@ -77,9 +77,9 @@ init -810 python:
     # MASHistorySaver for o31
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
-        datetime.datetime(2018, 11, 2),
+        #datetime.datetime(2018, 11, 2),
         # change trigger to better date
-#        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 6),
         {
             # TODO: we should have a spent time var here
 
@@ -102,8 +102,13 @@ init -810 python:
             "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
-        }
+        },
+        use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
+        start_dt=datetime.datetime(2019, 10, 31),
+
+        # end is 1 day out in case of an overnight trick or treat
+        end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
 init -10 python:
@@ -975,7 +980,9 @@ init -810 python:
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp
+        exit_pp=store.mas_history._d25s_exit_pp,
+        start_dt=datetime.datetime(2019, 12, 1),
+        end_dt=datetime.datetime(2019, 12, 31)
     ))
 
 
@@ -2553,7 +2560,9 @@ init -810 python:
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
-        use_year_before=True
+        use_year_before=True,
+        start_dt=datetime.datetime(2019, 12, 31),
+        end_dt=datetime.datetime(2020, 1, 6)
         # TODO: programming points probably
     ))
 
@@ -3357,6 +3366,7 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
+        # NOTE: this needs to be adjusted based on the player's bday
         datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
@@ -3365,9 +3375,13 @@ init -810 python:
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
         },
         use_year_before=True,
+        # NOTE: the start and end dt needs to be chnaged depending on the
+        #   player bday
     ))
 
 init -11 python in mas_player_bday_event:
+    import datetime
+    import store.mas_history as mas_history
 
     def show_player_bday_Visuals():
         """
@@ -3376,12 +3390,58 @@ init -11 python in mas_player_bday_event:
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
+
     def hide_player_bday_Visuals():
         """
         Hides player_bday visuals
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+
+
+    def correct_pbday_mhs(d_pbday):
+        """
+        fixes the pbday mhs usin gthe given date as pbday
+
+        IN:
+            d_pbday - player birthdate
+        """
+        # get mhs
+        mhs_pbday = mas_history.getMHS("player_bday")
+        if mhs_pbday is None:
+            return
+
+        # first, setup the reset date to be 3 days after the bday
+        pbday_dt = datetime.datetime.combine(d_pbday, datetime.time())
+
+        # determine correct year
+        _now = datetime.datetime.now()
+        curr_year = _now.year
+        new_dt = pbday_dt.replace(year=curr_year)
+        if new_dt < _now:
+            # new date before today, set to next year
+            curr_year += 1
+            new_dt = pbday_dt.replace(year=curr_year)
+
+        # set the reset/trigger date
+        reset_dt = pbday_dt + datetime.timedelta(days=3)
+
+        # setup ranges
+        new_sdt = new_dt
+        new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # NOTE: the mhs will end 2 days after the bday. The day after end_dt
+        #   is when we save
+
+        # modify mhs
+        mhs_pbday.start_dt = new_sdt
+        mhs_pbday.end_dt = new_edt
+        mhs_pbday.use_year_before = (
+            d_pbday.month == 12
+            and d_pbday.day in (29, 30, 31)
+        )
+        mhs_pbday.setTrigger(reset_dt)
+
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
@@ -3764,18 +3824,29 @@ label greeting_returned_home_player_bday:
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
-            ret_year = checkin_time.year
             left_date = checkout_time.date()
             ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+
+            # are we returning after the mhs reset
+            ret_diff_year = ret_date >= (mas_player_bday_curr(left_date) + datetime.timedelta(days=3))
+
+            # were we gone over d25
+            #TODO: do this for the rest of the holidays
+            if left_date < mas_d25 < ret_date:
+                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                    persistent._mas_d25_spent_d25 = True
+                else:
+                    persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
+
         else:
             left_year = None
-            ret_year = None
-            left_year_aff = None
             left_date = None
             ret_date = None
+            left_year_aff = None
+            ret_diff_year = None
+
         add_points = False
-        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
@@ -3784,9 +3855,6 @@ label greeting_returned_home_player_bday:
             if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-
-    if left_date < mas_d25 < ret_date:
-        $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
         $ mas_loseAffection()
@@ -3932,35 +4000,41 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp
+        exit_pp=store.mas_history._f14_exit_pp,
+        start_dt=datetime.datetime(2020, 2, 13),
+        end_dt=datetime.datetime(2020, 2, 15)
     ))
 
 label mas_f14_autoload_check:
-    #Since it's possible player didn't see this, we need to derandom it manually.
-    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-    $ mas_removeDelayedAction(11)
+    python:
+        #Since it's possible player didn't see this, we need to derandom it manually.
+        mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        mas_removeDelayedAction(11)
 
-    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
-        $ persistent._mas_f14_in_f14_mode = True
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
+        if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+            persistent._mas_f14_in_f14_mode = True
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            monika_chr.change_clothes(mas_clothes_sundress_white, False)
+            monika_chr.save()
+            renpy.save_persistent()
 
-    elif not mas_isF14():
-        #We want to lock and derandom/depool all of the f14 labels if it's not f14
-        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
-        $ mas_idle_mailbox.send_rebuild_msg()
+        elif not mas_isF14():
+            #We want to lock and derandom/depool all of the f14 labels if it's not f14
+            mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+            mas_idle_mailbox.send_rebuild_msg()
 
-        # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15)
+            # remove delayed actions for the above events
+            mas_removeDelayedActions(12, 13, 14, 15)
 
-        #Reset the f14 mode, and outfit if we're lower than the love aff level.
-        $ persistent._mas_f14_in_f14_mode = False
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
-            $ monika_chr.reset_clothes(False)
+            #Reset the f14 mode, and outfit if we're lower than the love aff level.
+            persistent._mas_f14_in_f14_mode = False
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -4082,14 +4156,11 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_in_f14_mode = True
         m 3wub "Oh!"
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
-        window hide
-        show monika 1dsa
-        pause 1.0
+
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
-        pause 0.5
+        call mas_clothes_change(mas_clothes_sundress_white)
+
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."

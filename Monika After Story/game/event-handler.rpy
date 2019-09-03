@@ -23,7 +23,7 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -950 python in mas_ev_data_ver:
+init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
@@ -31,7 +31,6 @@ init -950 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
-    import store
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -54,6 +53,10 @@ init -950 python in mas_ev_data_ver:
             ):
             return False
         return _verify_item(val, datetime.datetime, allow_none)
+
+
+    def _verify_dt_nn(val):
+        return _verify_dt(val, False)
 
 
     def _verify_evact(val, allow_none=True):
@@ -138,6 +141,9 @@ init -950 python in mas_ev_data_ver:
             """
             return self.verifier(value, self.allow_none)
 
+
+init -950 python in mas_ev_data_ver:
+    import store
 
     # map data to tuples
     _verify_map = {
@@ -1740,6 +1746,13 @@ init python:
 
         return False
 
+    def mas_cleanEventList():
+        """
+        Iterates through the event list and removes items which shouldn't be restarted
+        """
+        for index in range(len(persistent.event_list)-1,-1,-1):
+            if mas_isRstBlk(persistent.event_list[index][0]):
+                mas_rmEVL(persistent.event_list[index][0])
 
     def mas_cleanJustSeen(eventlist, db):
         """
