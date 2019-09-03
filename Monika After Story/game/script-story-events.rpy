@@ -2563,6 +2563,8 @@ label mas_blazerless_intro:
 
         call mas_clothes_change(mas_clothes_blazerless)
 
-        m 1eua "Ah, much better!"
+        m 1hua "Ah, much better!"
+        # this line acts as a hint that there is a clothes selector
+        m 3eka "But if you miss my blazer, just ask and I'll put it back on."
 
     return "no_unlock"
