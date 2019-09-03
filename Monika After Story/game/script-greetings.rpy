@@ -2452,7 +2452,7 @@ label greeting_hairdown:
     # 5 - music is off (skip visual)
 
     # reset clothes if not ones that work with hairdown
-    if monika_chr.clothes.name != "def" and monika_chr.clothes.name != "santa":
+    if monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
         $ monika_chr.reset_clothes(False)
 
     # have monika's hair down
