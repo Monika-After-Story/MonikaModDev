@@ -603,6 +603,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
+        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name)
         
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
@@ -618,10 +619,7 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(
-            store.mas_sprites.get_sprite(sp_type, sp_name),
-            unlock_label=unlock_sel
-        )
+        store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
 
         # save persistent
         renpy.save_persistent()
