@@ -48,7 +48,8 @@ class StaticSprite(object):
             "h": "closedhappy",
             "d": "closedsad",
             "k": "winkleft",
-            "n": "winkright"
+            "n": "winkright",
+            "f": "soft",
         },
         "eyebrows": {
             "f": "furrowed",

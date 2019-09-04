@@ -758,6 +758,49 @@ init -1 python:
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
 
+
+    ### BLAZERLESS SCHOOL UNIFORM
+    ## blazerless
+    # Monika's school uniform, without the blazer
+    # thanks Iron/Velius94/Orca
+    mas_clothes_blazerless = MASClothes(
+        "blazerless",
+        "blazerless",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True,
+            p1=store.mas_sprites.use_bpam(1),
+            p2=MASPoseArms(both=("crossed", True, False)),
+            p3=store.mas_sprites.use_bpam(3),
+            p4=store.mas_sprites.use_bpam(4),
+            p5=MASPoseArms(
+                left=("def", False, True),
+                right=("def", True, True)
+            ),
+            p6=store.mas_sprites.use_bpam(6),
+            p7=store.mas_sprites.use_bpam(7)
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blazerless)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blazerless,
+        "School Uniform (Blazerless)",
+        "schooluniform_blazerless",
+        "clothes",
+        visible_when_locked=True,
+        hover_dlg=None,
+        select_dlg=[
+            "Ah, feels nice without the blazer!",
+        ]
+    )
+    store.mas_selspr.unlock_clothes(mas_clothes_def)
+
+
     ### MARISA COSTUME
     ## marisa
     # Witch costume based on Marisa
