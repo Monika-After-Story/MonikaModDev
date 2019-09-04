@@ -178,7 +178,7 @@ screen hkb_overlay():
 #        yalign 0.95
 
         if store.hkb_button.talk_enabled:
-            textbutton _("Talk") action Function(show_dialogue_box) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            textbutton _("Talk") action Function(show_dialogue_box)
         else:
             frame:
                 ypadding 5
@@ -189,7 +189,7 @@ screen hkb_overlay():
 
 
         if store.hkb_button.extra_enabled:
-            textbutton _("Extra") action Function(mas_open_extra_menu) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            textbutton _("Extra") action Function(mas_open_extra_menu)
         else:
             frame:
                 ypadding 5
@@ -200,7 +200,7 @@ screen hkb_overlay():
 
 
         if store.hkb_button.music_enabled:
-            textbutton _("Music") action Function(select_music) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            textbutton _("Music") action Function(select_music)
         else:
             frame:
                 ypadding 5
@@ -210,7 +210,7 @@ screen hkb_overlay():
                 text "Music"
 
         if store.hkb_button.play_enabled:
-            textbutton _("Play") action Function(pick_game) style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
+            textbutton _("Play") action Function(pick_game)
         else:
             frame:
                 ypadding 5
