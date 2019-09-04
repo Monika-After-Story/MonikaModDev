@@ -69,13 +69,13 @@ init -1 python:
 
             # button backs
             button_idle = Image(
-                "gui/button/scrollable_menu_idle_background.png"
+                mas_getTimeFile("gui/button/scrollable_menu_idle_background.png")
             )
             button_hover = Image(
-                "gui/button/scrollable_menu_hover_background.png"
+                mas_getTimeFile("gui/button/scrollable_menu_hover_background.png")
             )
             button_disable = Image(
-                "gui/button/scrollable_menu_disable_background.png"
+                mas_getTimeFile("gui/button/scrollable_menu_disable_background.png")
             )
 
             # Auto button
@@ -83,14 +83,14 @@ init -1 python:
                 "Automatically Choose",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_idle_color,
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_auto_hover = Text(
                 "Automatically Choose",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_hover_color,
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -99,14 +99,14 @@ init -1 python:
                 "OpenGL",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_idle_color,
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_gl_hover = Text(
                 "OpenGL",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_hover_color,
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -115,14 +115,14 @@ init -1 python:
                 "Angle/DirectX",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_idle_color,
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_dx_hover = Text(
                 "Angle/DirectX",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_hover_color,
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -131,14 +131,14 @@ init -1 python:
                 "Software",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_idle_color,
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_sw_hover = Text(
                 "Software",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_hover_color,
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -147,14 +147,14 @@ init -1 python:
                 "Return",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_idle_color,
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_ret_hover = Text(
                 "Return",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=mas_ui.light_button_text_hover_color,
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
