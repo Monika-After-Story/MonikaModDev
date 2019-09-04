@@ -679,7 +679,7 @@ style confirm_prompt_text_def:
 style confirm_prompt_text_dark is gui_prompt_text
 
 style confirm_prompt_text_dark:
-    color mas_ui.dark_button_text_idle_color
+    color "#e670af"
     outlines []
     text_align 0.5
     layout "subtitle"

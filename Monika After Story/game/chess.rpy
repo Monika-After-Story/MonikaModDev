@@ -2913,6 +2913,7 @@ screen mas_chess_confirm():
 
             label _("Are you sure you want to give up?"):
                 style "confirm_prompt"
+                text_color mas_globals.button_text_idle_color
                 xalign 0.5
 
             hbox:
