@@ -12,8 +12,22 @@ init -1 python in mas_globals:
     #The door-knock greets, if door open, need to keep a broken textbox, so this would be set False for those before the spaceroom call
     change_textbox = True
 
+    #The colors we're using for buttons
+    button_text_hover_color = None
+    button_text_idle_color = None
+
+init -200 python in mas_ui:
+    dark_button_text_hover_color = "#ffcce8"
+    dark_button_text_idle_color = "#e670af"
+
+    light_button_text_hover_color = "#fa9"
+    light_button_text_idle_color = "#000"
+
 #START: Helper method(s)
 init python:
+    import store.mas_globals as mas_globals
+    import store.mas_ui as mas_ui
+
     def mas_getTimeFile(filestring):
         """
         Returns the filestring pointing to the right asset for day/night
@@ -47,7 +61,9 @@ init python:
             morning_flag - if True, light mode, if False, dark mode
         """
         if not morning_flag:
-            store.mas_globals.dark_mode = True
+            mas_globals.dark_mode = True
+
+            #Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_dark
             style.mas_mbs_button = style.mas_mbs_button_dark
             style.mas_adjustable_button = style.mas_adjustable_button_dark
@@ -70,10 +86,18 @@ init python:
             style.window_monika = style.window_monika_dark
             style.window = style.window_dark
 
-            if store.mas_globals.change_textbox:
+            #Textbox handling
+            if mas_globals.change_textbox:
                 style.say_window = style.window_dark
+
+            #Global swaps
+            mas_globals.button_text_hover_color = mas_ui.dark_button_text_hover_color
+            mas_globals.button_text_idle_color = mas_ui.dark_button_text_idle_color
+
         else:
-            store.mas_globals.dark_mode = False
+            mas_globals.dark_mode = False
+
+            #Style swaps
             style.mas_adjustable_button_text = style.mas_adjustable_button_text_def
             style.mas_mbs_button = style.mas_mbs_button_def
             style.mas_adjustable_button = style.mas_adjustable_button_def
@@ -96,11 +120,16 @@ init python:
             style.window_monika = style.window_monika_def
             style.window = style.window_def
 
-            if store.mas_globals.change_textbox:
+            #Textbox
+            if mas_globals.change_textbox:
                 style.say_window = style.window_def
 
+            #Handle the global swaps
+            mas_globals.button_text_hover_color = mas_ui.light_button_text_hover_color
+            mas_globals.button_text_idle_color = mas_ui.light_button_text_idle_color
+
         #Reset the global flag
-        store.mas_globals.change_textbox = True
+        mas_globals.change_textbox = True
 
 #START: Settings menu helpers
 init python in mas_settings:
@@ -148,8 +177,8 @@ style mas_adjust_vbar_dark:
     bar_vertical True
 
 style mas_adjustable_button_text_def is default:
-    idle_color "#000"
-    hover_color "#fa9"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
     outlines []
     kerning 0.2
     xalign 0.5
@@ -158,8 +187,8 @@ style mas_adjustable_button_text_def is default:
     size gui.text_size
 
 style mas_adjustable_button_text_dark is default:
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
     outlines []
     kerning 0.2
     xalign 0.5
@@ -235,8 +264,8 @@ style hkbd_dark_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
     kerning 0.2
     outlines []
 
@@ -244,7 +273,7 @@ style hkb_dark_text is default:
     xalign 0.5
     size gui.text_size
     font gui.default_font
-    color "#e670af"
+    color mas_ui.dark_button_text_idle_color
     kerning 0.2
     outlines []
 
@@ -312,16 +341,16 @@ style choice_button_text_dark is button_text_dark
 
 style choice_button_text_dark is default:
     properties gui.button_text_properties("choice_dark_button")
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
     outlines []
 
 style choice_dark_button_text is button_text_dark
 
 style choice_dark_button_text is default:
     properties gui.button_text_properties("choice_dark_button")
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
     outlines []
 
 style talk_choice_dark_vbox is choice_dark_vbox:
@@ -335,8 +364,8 @@ style scrollable_menu_dark_button is choice_dark_button:
 
 style scrollable_menu_dark_button_text is choice_dark_button_text:
     properties gui.button_text_properties("scrollable_menu_dark_button")
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
 
 style scrollable_menu_dark_vbox:
     xalign 0.5
@@ -366,8 +395,8 @@ style twopane_scrollable_menu_dark_button is choice_dark_button:
 
 style twopane_scrollable_menu_dark_button_text is choice_dark_button_text:
     properties gui.button_text_properties("twopane_scrollable_menu_dark_button")
-    idle_color "#e670af"
-    hover_color "#ffcce8"
+    idle_color mas_ui.dark_button_text_idle_color
+    hover_color mas_ui.dark_button_text_hover_color
 
 style twopane_scrollable_menu_dark_special_button is twopane_scrollable_menu_dark_button
 
@@ -624,7 +653,7 @@ style navigation_button_text_dark is gui_button_text_dark
 style navigation_button_text_dark:
     properties gui.button_text_properties("navigation_button")
     font "gui/font/RifficFree-Bold.ttf"
-    color "#e670af"
+    color mas_ui.dark_button_text_idle_color
     outlines []
     hover_outlines [(3, "#ffcce8", 0, 0)]
     insensitive_outlines [(3, "#ffcce8", 0, 0)]
@@ -635,7 +664,7 @@ style main_menu_version_def is main_menu_text:
     outlines []
 
 style main_menu_version_dark is main_menu_text:
-    color "#e670af"
+    color mas_ui.dark_button_text_idle_color
     size 16
     outlines []
 
@@ -650,7 +679,7 @@ style confirm_prompt_text_def:
 style confirm_prompt_text_dark is gui_prompt_text
 
 style confirm_prompt_text_dark:
-    color "#e670af"
+    color mas_ui.dark_button_text_idle_color
     outlines []
     text_align 0.5
     layout "subtitle"
@@ -819,8 +848,8 @@ define gui.scrollable_menu_button_dark_borders = Borders(25, 5, 25, 5)
 define gui.scrollable_menu_button_dark_text_font = gui.default_font
 define gui.scrollable_menu_button_dark_text_size = gui.text_size
 define gui.scrollable_menu_button_dark_text_xalign = 0.0
-define gui.scrollable_menu_button_dark_text_idle_color = "#e670af"
-define gui.scrollable_menu_button_dark_text_hover_color = "#ffcce8"
+define gui.scrollable_menu_button_dark_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.scrollable_menu_button_dark_text_hover_color = mas_ui.dark_button_text_hover_color
 
 define gui.hkb_dark_button_width = 120
 define gui.hkb_dark_button_height = None
@@ -828,8 +857,8 @@ define gui.hkb_dark_button_tile = False
 define gui.hkb_dark_button_text_font = gui.default_font
 define gui.hkb_dark_button_text_size = gui.text_size
 define gui.hkb_dark_button_text_xalign = 0.5
-define gui.hkb_dark_button_text_idle_color = "#e670af"
-define gui.hkb_dark_button_text_hover_color = "#ffcce8"
+define gui.hkb_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.hkb_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 define gui.hkb_dark_button_text_kerning = 0.2
 
 define gui.choice_dark_button_width = 420
@@ -839,8 +868,8 @@ define gui.choice_dark_button_borders = Borders(100, 5, 100, 5)
 define gui.choice_dark_button_text_font = gui.default_font
 define gui.choice_dark_button_text_size = gui.text_size
 define gui.choice_dark_button_text_xalign = 0.5
-define gui.choice_dark_button_text_idle_color = "#e670af"
-define gui.choice_dark_button_text_hover_color = "#ffcce8"
+define gui.choice_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.choice_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 
 define gui.scrollable_menu_dark_button_width = 560
 define gui.scrollable_menu_dark_button_height = None
@@ -849,8 +878,8 @@ define gui.scrollable_menu_dark_button_borders = Borders(25, 5, 25, 5)
 define gui.scrollable_menu_dark_button_text_font = gui.default_font
 define gui.scrollable_menu_dark_button_text_size = gui.text_size
 define gui.scrollable_menu_dark_button_text_xalign = 0.0
-define gui.scrollable_menu_dark_button_text_idle_color = "#e670af"
-define gui.scrollable_menu_dark_button_text_hover_color = "#ffcce8"
+define gui.scrollable_menu_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.scrollable_menu_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 
 define gui.twopane_scrollable_menu_dark_button_width = 250
 define gui.twopane_scrollable_menu_dark_button_height = None
@@ -859,8 +888,8 @@ define gui.twopane_scrollable_menu_dark_button_borders = Borders(25, 5, 25, 5)
 define gui.twopane_scrollable_menu_dark_button_text_font = gui.default_font
 define gui.twopane_scrollable_menu_dark_button_text_size = gui.text_size
 define gui.twopane_scrollable_menu_dark_button_text_xalign = 0.0
-define gui.twopane_scrollable_menu_dark_button_text_idle_color = "#e670af"
-define gui.twopane_scrollable_menu_dark_button_text_hover_color = "#ffcce8"
+define gui.twopane_scrollable_menu_dark_button_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.twopane_scrollable_menu_dark_button_text_hover_color = mas_ui.dark_button_text_hover_color
 
 define gui.island_button_dark_height = None
 define gui.island_button_dark_width = 205
@@ -868,8 +897,8 @@ define gui.island_button_dark_tile = False
 define gui.island_button_dark_text_font = gui.default_font
 define gui.island_button_dark_text_size = gui.text_size
 define gui.island_button_dark_text_xalign = 0.5
-define gui.island_button_dark_text_idle_color = "#e670af"
-define gui.island_button_dark_text_hover_color = "#ffcce8"
+define gui.island_button_dark_text_idle_color = mas_ui.dark_button_text_idle_color
+define gui.island_button_dark_text_hover_color = mas_ui.dark_button_text_hover_color
 define gui.island_button_dark_text_kerning = 0.2
 
 define gui.quick_dark_button_text_height = None

@@ -2355,84 +2355,84 @@ init 810 python:
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_done_text_hover = Text(
                 "Done",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_cancel_text_idle = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_cancel_text_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_reset_text_idle = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_reset_text_hover = Text(
                 "Reset",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_resetall_text_idle = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_resetall_text_hover = Text(
                 "Reset All",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_config_text_idle = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_config_text_hover = Text(
                 "Config",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
             button_quit_text_idle = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_quit_text_hover = Text(
                 "Quit",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

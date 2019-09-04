@@ -1742,9 +1742,9 @@ init -1 python:
                 the text object for the display name
             """
             if selected:
-                color = "#fa9"
+                color = mas_ui.light_button_text_hover_color
             else:
-                color = "#000"
+                color = mas_ui.light_button_text_idle_color
 
             return Text(
                 _text,

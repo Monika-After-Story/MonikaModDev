@@ -404,6 +404,9 @@ init:
         import collections
         import os
 
+        #For the buttons
+        import store.mas_ui as mas_ui
+
         ON_POSIX = 'posix' in sys.builtin_module_names
 
         def enqueue_output(out, queue, lock):
@@ -544,21 +547,21 @@ init:
                     "Save",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_ui.light_button_text_idle_color,
                     outlines=[]
                 )
                 button_text_giveup_idle = Text(
                     "Give Up",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_ui.light_button_text_idle_color,
                     outlines=[]
                 )
                 button_text_done_idle = Text(
                     "Done",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#000",
+                    color=mas_ui.light_button_text_idle_color,
                     outlines=[]
                 )
 
@@ -567,21 +570,21 @@ init:
                     "Save",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_ui.light_button_text_hover_color,
                     outlines=[]
                 )
                 button_text_giveup_hover = Text(
                     "Give Up",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_ui.light_button_text_hover_color,
                     outlines=[]
                 )
                 button_text_done_hover = Text(
                     "Done",
                     font=gui.default_font,
                     size=gui.text_size,
-                    color="#fa9",
+                    color=mas_ui.light_button_text_hover_color,
                     outlines=[]
                 )
 

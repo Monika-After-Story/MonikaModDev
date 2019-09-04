@@ -419,8 +419,8 @@ define gui.island_button_tile = False
 define gui.island_button_text_font = gui.default_font
 define gui.island_button_text_size = gui.text_size
 define gui.island_button_text_xalign = 0.5
-define gui.island_button_text_idle_color = "#000"
-define gui.island_button_text_hover_color = "#fa9"
+define gui.island_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.island_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.island_button_text_kerning = 0.2
 
 style island_button is button

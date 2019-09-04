@@ -2124,8 +2124,8 @@ define gui.scrollable_menu_button_borders = Borders(25, 5, 25, 5)
 define gui.scrollable_menu_button_text_font = gui.default_font
 define gui.scrollable_menu_button_text_size = gui.text_size
 define gui.scrollable_menu_button_text_xalign = 0.0
-define gui.scrollable_menu_button_text_idle_color = "#000"
-define gui.scrollable_menu_button_text_hover_color = "#fa9"
+define gui.scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
 
 # twopane_scrollabe is now a prefix
 define gui.twopane_scrollable_menu_button_width = 250
@@ -2136,8 +2136,8 @@ define gui.twopane_scrollable_menu_button_borders = Borders(25, 5, 25, 5)
 define gui.twopane_scrollable_menu_button_text_font = gui.default_font
 define gui.twopane_scrollable_menu_button_text_size = gui.text_size
 define gui.twopane_scrollable_menu_button_text_xalign = 0.0
-define gui.twopane_scrollable_menu_button_text_idle_color = "#000"
-define gui.twopane_scrollable_menu_button_text_hover_color = "#fa9"
+define gui.twopane_scrollable_menu_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.twopane_scrollable_menu_button_text_hover_color = mas_ui.light_button_text_hover_color
 
 #Define the styles used for scrollable_menu_vbox, scrollable_menu_button and scrollable_menu_button_text
 # The line properties gui.button_properties("scrollable_menu_button") assigns all

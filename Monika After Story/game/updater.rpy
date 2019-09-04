@@ -132,14 +132,14 @@ init -1 python:
                 "Ok",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_ok_hover = Text(
                 "Ok",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -148,14 +148,14 @@ init -1 python:
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_cancel_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -164,14 +164,14 @@ init -1 python:
                 "Update",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_update_hover = Text(
                 "Update",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -180,14 +180,14 @@ init -1 python:
                 "Retry",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#000" if not mas_globals.dark_mode else "#e670af"),
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_retry_hover = Text(
                 "Retry",
                 font=gui.default_font,
                 size=gui.text_size,
-                color=("#fa9" if not mas_globals.dark_mode else "#ffcce8"),
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

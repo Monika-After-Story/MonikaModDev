@@ -109,8 +109,8 @@ define gui.hkb_button_text_font = gui.default_font
 define gui.hkb_button_text_size = gui.text_size
 define gui.hkb_button_text_xalign = 0.5
 #define gui.hkb_button_text_xanchor = 0.5
-define gui.hkb_button_text_idle_color = "#000"
-define gui.hkb_button_text_hover_color = "#fa9"
+define gui.hkb_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.hkb_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.hkb_button_text_kerning = 0.2
 
 # starting with a new style: hkb (hotkey button)
@@ -152,8 +152,8 @@ style hkbd_button_text is default:
 #    properties gui.button_text_properties("hkb_button")
     font gui.default_font
     size gui.text_size
-    idle_color "#000"
-    hover_color "#000"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_idle_color
     kerning 0.2
     outlines []
 
@@ -161,7 +161,7 @@ style hkb_text is default:
     xalign 0.5
     size gui.text_size
     font gui.default_font
-    color "#000"
+    color mas_ui.light_button_text_idle_color
     kerning 0.2
     outlines []
 

@@ -245,8 +245,8 @@ style mas_mbs_button_text is default:
     font gui.default_font
     size gui.text_size
     xalign 0.5
-    idle_color "#000"
-    hover_color "#fa9"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
     outlines []
 
 #screen mas_modebar_toggle():
@@ -324,8 +324,8 @@ style mas_adjustable_button is default:
     activate_sound gui.activate_sound
 
 style mas_adjustable_button_text is default:
-    idle_color "#000"
-    hover_color "#fa9"
+    idle_color mas_ui.light_button_text_idle_color
+    hover_color mas_ui.light_button_text_hover_color
     outlines []
     kerning 0.2
     xalign 0.5
