@@ -12,7 +12,11 @@
     "select_info": {
         "display_name": "Bikini (Shell)",
         "thumb": "orcaramelo_bikini_shell",
-        "group": "clothes"
+        "group": "clothes",
+        "select_dlg": [
+            "Seashells seashells, by the sea shore~",
+            "Who says mermaids aren't real?"
+        ]
     },
     "giftname": "shellbikini",
     "pose_arms": {
