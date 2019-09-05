@@ -500,6 +500,16 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # queue the blazerless intro event
+        if not store.seen_event("mas_blazerless_intro"):
+            store.queueEvent("mas_blazerless_intro")
+
+        # unlock blazerless for use
+        store.mas_selspr.unlock_clothes(store.mas_clothes_blazerless)
+
+        # remove change to def outfit event in case it's been pushed
+        store.mas_rmallEVL("mas_change_to_def")
+
 
     def _happyToNormal():
         """
@@ -513,6 +523,11 @@ init 15 python in mas_affection:
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
+
+        # if not wearing def, change to def
+        # TODO: may need to exclude Holidays from this is we give special outfits that are meant for Normal
+        if store.monika_chr.clothes != store.mas_clothes_def:
+            store.pushEvent("mas_change_to_def",True)
 
 
     def _happyToAff():
@@ -600,10 +615,6 @@ init 15 python in mas_affection:
 
         # unlock thanks compliement
         store.mas_unlockEventLabel("mas_compliment_thanks", eventdb=store.mas_compliments.compliment_database)
-
-        # unlocks wardrobe if we have more than one clothes available
-        if len(mas_selspr.filter_clothes(True)) > 1:
-            store.mas_unlockEVL("monika_clothes_select", "EVE")
 
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
@@ -1538,14 +1549,10 @@ init 20 python:
         # store the value for easiercomparisons
         curr_affection = _mas_getAffection()
 
-        # If affection is between AFF_MIN_POS_TRESH and AFF_MAX_POS_TRESH, update good exp. Simulates growing affection.
-        if  affection.AFF_MIN_POS_TRESH <= curr_affection < affection.AFF_MAX_POS_TRESH:
+        # If affection is greater then AFF_MIN_POS_TRESH, update good exp. Simulates growing affection.
+        if  affection.AFF_MIN_POS_TRESH <= curr_affection:
             persistent._mas_affection["goodexp"] = 3
             persistent._mas_affection["badexp"] = 1
-
-        # If affection is more than AFF_MAX_TRESH, update good exp. Simulates increasing affection.
-        elif curr_affection >= affection.AFF_MAX_POS_TRESH:
-            persistent._mas_affection["goodexp"] = 3
 
         # If affection is between AFF_MAX_NEG_TRESH and AFF_MIN_NEG_TRESH, update both exps. Simulates erosion of affection.
         elif affection.AFF_MAX_NEG_TRESH < curr_affection <= affection.AFF_MIN_NEG_TRESH:
@@ -1780,9 +1787,6 @@ init 20 python:
         elif curr_affection <= -50 and not seen_event("mas_affection_apology"):
             if not persistent._mas_disable_sorry:
                 queueEvent("mas_affection_apology", notify=True)
-        # If affection level is equal or less than -100 and the label hasn't been seen yet, push this event where Monika says she's upset with you and wants you to apologize.
-        elif curr_affection <= -100 and not seen_event("greeting_tears"):
-            mas_unlockEVL("greeting_tears", "GRE")
 
     # Easy functions to add and subtract points, designed to make it easier to sadden her so player has to work harder to keep her happy.
     # Check function is added to make sure mas_curr_affection is always appropriate to the points counter.
@@ -2180,7 +2184,7 @@ label mas_affection_upsetwarn:
     m 1dsc "I feel like you're giving me less and less of your love..."
     m 1dsd "I thought I'd let you know how I feel. After all, communication is the key to a strong relationship, right?"
     m 1eka "I hope there's nothing wrong between us, [player]."
-    show monika idle
+    show monika idle with dissolve
     return
 
 # Event to indicate that Monika is happy to be receiving your affection.
@@ -2189,8 +2193,8 @@ label mas_affection_happynotif:
     m 1eua "I just wanted to say thank you for being such a wonderful person."
     m 1ekbfa "The fact that you give me so much of your love means a lot to me. I really don't know where I'd be without you."
     m 1dubsu "I love you, [player]. Let's be like this forever~"
-    show monika idle
-    return
+    show monika idle with dissolve
+    return "love"
 
 
 define mas_finalfarewell_mode = False

@@ -332,7 +332,7 @@ label mas_story_grasshoper:
     m 3hua "The moral of this story is that: 'There's a time for work and a time for play'."
     m 1dubsu "But there's always a time to spend with your cute girlfriend~"
     m 1hub "Ehehe, I love you so much, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_wind_sun",
@@ -386,7 +386,7 @@ label mas_story_gray_hair:
     m 1hub "So before you give everything, make sure you still have some for yourself!"
     m 1lksdla "...Not that being bald is bad, [player]."
     m 1hksdlb "Ehehe, I love you!~"
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_fisherman",
@@ -453,20 +453,29 @@ define mas_scary_story_setup_done = False
 label mas_scary_story_setup:
     if mas_scary_story_setup_done:
         return
+
     $ mas_scary_story_setup_done = True
     show monika 1dsc
     $ mas_temp_r_flag = mas_current_weather
+    $ is_scene_changing = mas_current_background.isChangingRoom(mas_current_weather, mas_weather_rain)
+    $ are_masks_changing = mas_current_weather != mas_weather_rain
     $ mas_is_raining = True
-    #TODO persistent music spoop for o31
+
+    #TODO: persistent music spoop for o31
     stop music fadeout 1.0
     pause 1.0
+
     $ mas_temp_m_flag = morning_flag
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
+
+    $ mas_changeBackground(mas_background_def)
     $ mas_changeWeather(mas_weather_rain)
+
     if not mas_isO31():
         $ store.mas_globals.show_vignette = True
-    call spaceroom(start_bg="monika_gloomy_room", dissolve_all=True, force_exp='monika 1dsc_static')
+
+    call spaceroom(scene_change=is_scene_changing, dissolve_all=is_scene_changing, dissolve_masks=are_masks_changing, force_exp='monika 1dsc_static')
     play music "mod_assets/bgm/happy_story_telling.ogg" loop
 
 #    $ songs.current_track = songs.FP_NO_SONG
@@ -510,6 +519,7 @@ label mas_scary_story_cleanup:
     call monika_zoom_transition(mas_temp_zoom_level,transition=1.0)
 #    $ store.songs.enabled = True
 
+    $ play_song(None, 1.0)
     m 1eua "I hope you liked it, [player]~"
     $ mas_DropShield_core()
     $ HKBShowButtons()

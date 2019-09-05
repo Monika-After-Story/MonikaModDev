@@ -600,6 +600,7 @@ init python:
             return
 
         sp_data = (sp_type, sp_name)
+        sp_obj = store.mas_sprites.get_sprite(sp_type, sp_name)
         
         if sp_data in persistent._mas_filereacts_sprite_reacted:
             persistent._mas_filereacts_sprite_reacted.pop(sp_data)
@@ -615,10 +616,7 @@ init python:
             )
 
         # unlock the selectable for this sprite object
-        store.mas_selspr.json_sprite_unlock(
-            store.mas_sprites.get_sprite(sp_type, sp_name),
-            unlock_label=unlock_sel
-        )
+        store.mas_selspr.json_sprite_unlock(sp_obj, unlock_label=unlock_sel)
 
         # save persistent
         renpy.save_persistent()
@@ -1637,12 +1635,12 @@ label _mas_reaction_ribbon_helper(label):
     #if we already have that ribbon
     if store.mas_selspr.get_sel_acs(_mas_gifted_ribbon_acs).unlocked:
         call mas_reaction_old_ribbon
+
     else:
         # since we don't have it we can accept it
         call mas_reaction_new_ribbon
         $ persistent._mas_current_gifted_ribbons += 1
-        #unlock the ribbon selector
-        $ store.mas_unlockEVL("monika_ribbon_select", "EVE")
+
     # normal gift processing
     $ mas_receivedGift(label)
     $ gift_ev = mas_getEV(label)
