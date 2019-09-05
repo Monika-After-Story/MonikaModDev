@@ -322,8 +322,8 @@ label v0_10_1:
             ("monika_aiwfc", "persistent._mas_d25_in_d25_mode"),
             ("mas_pf14_monika_lovey_dovey", "not mas_lastSeenInYear('mas_pf14_monika_lovey_dovey')"),
             ("mas_f14_monika_valentines_intro", "not mas_lastSeenInYear('mas_f14_monika_valentines_intro')"),
-            ("mas_bday_spent_time_with", "persistent._mas_bday_spent_bday and not mas_lastSeenInYear('mas_bday_spent_time_with')"),
-            ("mas_bday_postbday_notimespent", "not persistent._mas_long_absence and persistent._mas_bday_no_recognize and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"),
+            ("mas_bday_spent_time_with", "persistent._mas_bday_gone_over_bday and not mas_lastSeenInYear('mas_bday_spent_time_with')"),
+            ("mas_bday_postbday_notimespent", "(not persistent._mas_long_absence or not persistent._mas_bday_gone_over_bday) and not mas_recognizedBday() and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"),
             ("mas_bday_surprise_party_hint", "not mas_lastSeenInYear('mas_bday_surprise_party_hint')"),
             ("mas_bday_pool_happy_bday", None),
         ]

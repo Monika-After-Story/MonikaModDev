@@ -4751,7 +4751,6 @@ default persistent._mas_bday_gone_over_bday = False
 
 #Suprise party bits and bobs
 default persistent._mas_bday_sbp_reacted = False
-default persistent._mas_bday_spent_bday = None
 default persistent._mas_bday_confirmed_party = False
 
 #Need to store the name of the file chibi writes
@@ -4777,7 +4776,6 @@ init -810 python:
             "_mas_bday_gone_over_bday": "922.gone_over_bday",
 
             "_mas_bday_sbp_reacted": "922.actions.surprise.reacted",
-            "_mas_bday_spent_bday": "922.actions.spent_bday",
             "_mas_bday_confirmed_party": "922.actions.confirmed_party",
 
             "_mas_bday_opened_game": "922.actions.opened_game",
@@ -5174,7 +5172,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
             conditional=(
-                "persistent._mas_bday_spent_bday "
+                "persistent._mas_bday_gone_over_bday "
                 "and not mas_lastSeenInYear('mas_bday_spent_time_with')"
             ),
             action=EV_ACT_QUEUE,
@@ -5262,7 +5260,6 @@ label mas_bday_spent_time_with_wrapup:
 ############## [HOL060] GONE OVER CHECK
 label mas_gone_over_bday_check:
     if mas_checkOverDate(mas_monika_birthday):
-        $ persistent._mas_bday_spent_bday = True
         $ persistent._mas_bday_gone_over_bday = True
         $ mas_rmallEVL("mas_bday_postbday_notimespent")
 
@@ -5284,8 +5281,8 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_bday_postbday_notimespent",
             conditional=(
-                "not persistent._mas_long_absence "
-                "and persistent._mas_bday_no_recognize "
+                "(not persistent._mas_long_absence or not persistent._mas_bday_gone_over_bday) "
+                "and not mas_recognizedBday() "
                 "and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"
             ),
             action=EV_ACT_QUEUE,
