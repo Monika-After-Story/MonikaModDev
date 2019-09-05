@@ -1246,14 +1246,20 @@ init -10 python in mas_selspr:
         _unlock_item(acs, SELECT_ACS)
 
 
-    def unlock_clothes(clothes):
+    def unlock_clothes(clothes, add_to_holiday_map=False):
         """
         Unlocks the given clothes' selectable
 
         IN:
             clothes - MASClothes object to unlock
+            add_to_holiday_map - add to the holiday map if we want this for happy+ for the day
         """
+        import datetime
+
         _unlock_item(clothes, SELECT_CLOTH)
+
+        if add_to_holiday_map:
+            renpy.game.persistent._mas_event_clothes_map[datetime.date.today()] = clothes.name
 
 
     def unlock_hair(hair):
@@ -2800,6 +2806,15 @@ label monika_clothes_select:
                         and spr_obj != mas_clothes_blazerless
                 ):
                     gifted_clothes.pop(index)
+
+            #Now we handle holiday clothes
+            clothes_to_add = persistent._mas_event_clothes_map.get(datetime.date.today())
+
+            #If there's something for today, then we'll add it to be unlocked
+            if clothes_to_add:
+                #Get the outfit selector and add it
+                outfit_to_add = mas_selspr.get_sel_clothes(mas_sprites.get_sprite(2, clothes_to_add))
+                gifted_clothes.append(outfit_to_add)
 
         # below Love, only gifted clothes (and def) are available
         call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)

@@ -1,7 +1,7 @@
 ## holiday info goes here
 #
 # TOC
-#   [GBL000] - GLOBAL METHODS
+#   [GBL000] - GLOBAL SPACE
 #   [HOL010] - O31
 #   [HOL020] - D25
 #   [HOL030] - NYE (new yeares eve, new years)
@@ -10,8 +10,10 @@
 #   [HOL060] - 922
 
 
-############################### GLOBAL METHODS ################################
+############################### GLOBAL SPACE ################################
 # [GBL000]
+default persistent._mas_event_clothes_map = dict()
+
 init -1 python:
     def mas_checkOverDate(_date):
         """
@@ -287,7 +289,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31mcg")
                 )
-                store.mas_selspr.unlock_clothes(mas_clothes_marisa)
+                store.mas_selspr.unlock_clothes(mas_clothes_marisa, True)
 
             else:
                 persistent._mas_o31_current_costume = "rin"
@@ -295,7 +297,7 @@ label mas_holiday_o31_autoload_check:
                 store.mas_o31_event.o31_cg_decoded = (
                     store.mas_o31_event.decodeImage("o31rcg")
                 )
-                store.mas_selspr.unlock_clothes(mas_clothes_rin)
+                store.mas_selspr.unlock_clothes(mas_clothes_rin, True)
 
             persistent._mas_o31_seen_costumes[persistent._mas_o31_current_costume] = True
 
@@ -4022,7 +4024,7 @@ label mas_f14_autoload_check:
 
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
-            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
             monika_chr.change_clothes(mas_clothes_sundress_white, False)
             monika_chr.save()
             renpy.save_persistent()
@@ -4140,7 +4142,7 @@ label mas_f14_monika_valentines_intro:
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
 
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white, True)
         call mas_clothes_change(mas_clothes_sundress_white)
 
         m 1eua "..."
