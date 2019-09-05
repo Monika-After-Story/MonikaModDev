@@ -1389,7 +1389,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro_upset",
             conditional=(
-                "not mas_lastSeenInYear('_mas_d25_holiday_intro_upset') "
+                "not mas_lastSeenInYear('mas_d25_monika_holiday_intro_upset') "
                 "and persistent._mas_d25_started_upset "
             ),
             action=EV_ACT_PUSH,
@@ -4911,7 +4911,7 @@ init 5 python:
 #If random hasn't shown this topic yet, we need to push this to make sure people get this
 init 10 python:
     if (
-        datetime.date.today() == mas_monika_birthday - datetime.timedelta(days=1)
+        mas_monika_birthday - datetime.timedelta(days=2) <= datetime.date.today() < mas_monika_birthday
         and not mas_lastSeenInYear("mas_bday_surprise_party_hint")
     ):
         pushEvent("mas_bday_surprise_party_hint")

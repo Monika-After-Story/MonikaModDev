@@ -311,6 +311,29 @@ label v0_10_1:
        $ persistent._mas_bday_no_time_spent = True
        $ persistent._mas_bday_no_recognize = True
 
+    #Fix all of the topics which are now having actions undone (conditional updates)
+    python:
+        ev_label_list = [
+            ("mas_d25_monika_holiday_intro", "not mas_lastSeenInYear('mas_d25_monika_holiday_intro') and not persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_holiday_intro_upset", "not mas_lastSeenInYear('mas_d25_monika_holiday_intro_upset') and persistent._mas_d25_started_upset"),
+            ("mas_d25_monika_christmas", "persistent._mas_d25_in_d25_mode and not mas_lastSeenInYear('mas_d25_monika_christmas')"),
+            ("mas_d25_monika_carolling", "persistent._mas_d25_in_d25_mode"),
+            ("mas_d25_monika_mistletoe", "persistent._mas_d25_in_d25_mode"),
+            ("monika_aiwfc", "persistent._mas_d25_in_d25_mode"),
+            ("mas_pf14_monika_lovey_dovey", "not mas_lastSeenInYear('mas_pf14_monika_lovey_dovey')"),
+            ("mas_f14_monika_valentines_intro", "not mas_lastSeenInYear('mas_f14_monika_valentines_intro')"),
+            ("mas_bday_spent_time_with", "persistent._mas_bday_spent_bday and not mas_lastSeenInYear('mas_bday_spent_time_with')"),
+            ("mas_bday_postbday_notimespent", "not persistent._mas_long_absence and persistent._mas_bday_no_recognize and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"),
+            ("mas_bday_surprise_party_hint", "not mas_lastSeenInYear('mas_bday_surprise_party_hint')"),
+            ("mas_bday_pool_happy_bday", None),
+        ]
+
+        for ev_label, conditional in ev_label_list:
+            ev = mas_getEV(ev_label)
+
+            if ev:
+                ev.conditional = conditional
+
     return
 
 # 0.10.0
