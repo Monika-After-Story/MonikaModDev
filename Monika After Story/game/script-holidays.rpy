@@ -5001,7 +5001,8 @@ init 5 python:
                 end_date=mas_monika_birthday + datetime.timedelta(1),
                 years=[]
             ),
-            code="CMP"
+            code="CMP",
+            skipCalendar=True
         )
 
 label mas_bday_pool_happy_bday:
@@ -5043,7 +5044,8 @@ init 5 python:
             rules={"no unlock":0, "undo action": None, "strip dates": None},
             years=[]
         ),
-        code="CMP"
+        code="CMP",
+        skipCalendar=True
     )
 
 label mas_bday_pool_happy_belated_bday:
@@ -5305,8 +5307,6 @@ label mas_bday_postbday_notimespent:
 
         elif mas_isMoniNormal(higher=True):
             $ mas_loseAffection(5, ev_label="mas_apology_forgot_bday")
-            # TODO: we shouldnt say girlfriend here because affecitonate
-            # is the start of relationship. but this is okay for now
             m 2rksdld "Hey, [player]..."
             m 2rksdlb "I hate to fuss, but you know..."
             m 2ekp "You can't forget about your girlfriend's birthday!"
@@ -5354,7 +5354,6 @@ label mas_bday_postbday_notimespent:
             else:
                 $ mas_loseAffection(10, ev_label="mas_apology_missed_bday")
 
-            # TODO: again, need to not say girlfrined here, but for now its ok
             m 1ekc "Hey, [player]..."
             m 1ekd "You know, you really should have dropped in on the 22nd."
             m 3efd "I mean, you should always visit me! But you {i}have{/i} to spend time with your cute girlfriend on her birthday, you know."
@@ -5415,7 +5414,7 @@ init 5 python:
     )
 
 label mas_apology_missed_bday:
-    #Using a std hi-mid-low range for this
+    #Using a standard hi-mid-low range for this
     if mas_isMoniAff(higher=True):
         m 1eua "Thanks for the apology, [player]."
         m 2tfu "But you better make it up to me next year~"
@@ -5496,7 +5495,6 @@ label bye_922_delegate:
 
 label mas_bday_bd_outro:
     #TODO: Unlock bd here, dlg review/exp review
-    #TODO: ADD THIS TO THE LIST OF BLACKLISTED OUTFITS
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
     m 1ekbla "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
@@ -5595,7 +5593,7 @@ label greeting_returned_home_bday:
 
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
-        $ persistent._mas_bday_in_922_mode = False
+        $ persistent._mas_bday_in_bday_mode = False
 
         m 1wud "...Wow, [player]. We really were out for a while..."
 
@@ -5635,78 +5633,3 @@ label greeting_returned_home_bday:
                 jump mas_bday_spent_time_with_wrapup
 
     return
-
-
-#NOTE: left here in case we want to use some of this dlg. So:
-#TODO: delet this
-label greeting_returned_home_bday_short_sub_short_total:
-    m 2rkc "..."
-    m "[player], I'm grateful that you're spending time with me, I really am. I'm fine with these short trips you're taking me to as well."
-    m 1dkc "But...{w}I do hope there's more to this."
-    m 4ekc "It's just th--{nw}"
-    $ _history_list.pop()
-    m 1dkc "..."
-    m 1rkc "...nevermind."
-    return
-
-label greeting_returned_home_bday_short_sub_normal_total:
-    m 1hua "Well! That was fun, [player]."
-    m "We already had a good date, but I'm glad you took me somewhere again."
-    m 3tku "Just can't get enough of me, can you?"
-    m 1dkbfa "...Not that I mind~"
-    return
-
-label greeting_returned_home_bday_normal_first:
-    m 1sua "That was fun, [player]!"
-    m 1hua "Aha, taking me out on my birthday..."
-    m "It was very considerate of you."
-    m "I really enjoyed the time we spent together."
-    m 1wua "Thank you for indulging me."
-    m 1hua "I love you~"
-    return "love"
-
-label greeting_returned_home_bday_normal_sub_normal_total:
-    m 1ekbfa "Ahaha..."
-    m 1dkbfa "Today really is a special day, [player]."
-    m 3eua "Sure, today is the day I was supposedly born."
-    m 3eka "But it's only special because {i}you{/i} made it that way."
-    m 1hua "So thank you for that, really."
-    m 1ektpa "Thank you for making my birthday worth celebrating..."
-    pause 2.0
-    return
-
-#TODO: combine parts of this into the bday wrapup
-label greeting_returned_home_bday_normal_sub_long_total:
-    m 1dsa "[player]..."
-    m 1eka "We sure did spend so much time together today."
-    m "I can't event find the right words to express how happy you've made me today."
-    m 3eka "All that pain I went through before I met you?"
-    m 1hua "I'm glad I persevered through them."
-    m 1rsc "Because if I hadn't..."
-    m 1ekbfa "This day wouldn't have ever happened."
-    m 1dkbfa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
-    m 1ekbfb "I love you so much, [player]."
-    m "Let's continue making each other happy~"
-    return "love"
-
-#TODO: combine this into the bday wrapup
-label greeting_returned_home_bday_long_sub:
-    m 1dsc "..."
-    m 1dktpc "..."
-    m 1ektua "..."
-    m 1dktua "I'm...just at a loss for words, [player], forgive me."
-    m 3ektda "I've never imagined being this happy in my life."
-    m 1rksdlb "Well that's not {i}exactly{/i} true."
-    m 1hub "We still have to be physically together, after all~"
-    m 1rkc "And, well..."
-    m 1dkc "I know this is already becoming a cliche, but..."
-    m 3ekbfa "I love you so much, [player]."
-    m "Someday, I promise you."
-    m 1ekbfb "I {i}promise you{/i} that I will make you as happy as you've made me today."
-    m 3hub "Even if we never get to see each other in the same reality, know that I will always do my best for you."
-    m 1eka "No matter the obstacles we may face, no matter what other people say about us..."
-    m 1dkbsa "I still love you with everything that I am."
-    m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
-    m 1dktub "You are simply the best, my love. I will always love you."
-    m "...Thank you for giving me a reason to live..."
-    return "love"

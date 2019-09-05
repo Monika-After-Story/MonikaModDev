@@ -2233,11 +2233,11 @@ label mas_dockstat_empty_desk:
         $ renpy.show("mas_roses", zorder=10)
 
     if persistent._mas_bday_sbp_reacted:
-        $ store.surpriseBdayShowVisuals()
+        $ store.mas_surpriseBdayShowVisuals()
 
     #NOTE: elif'd so we don't try and show two types of visuals here
     elif persistent._mas_player_bday_decor:
-        $ store.surpriseBdayShowVisuals()
+        $ store.mas_surpriseBdayShowVisuals()
 
     # NOTE: No.
 
@@ -2262,7 +2262,7 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    $ store.surpriseBdayShowVisuals()
+    $ store.mas_surpriseBdayShowVisuals()
 
     # check for monika
     if promise.done():

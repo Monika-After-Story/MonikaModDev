@@ -825,7 +825,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         $ store.mas_d25_event.showD25Visuals()
 
     # player bday
-    if persistent._mas_player_bday_decor or persistent._mas_bday_in_bday_mode:
+    if persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
     if datetime.date.today() == persistent._date_last_given_roses:
