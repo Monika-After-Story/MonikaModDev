@@ -1920,3 +1920,43 @@ label mas_remove_choc:
     m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
     $ monika_chr.remove_acs(mas_acs_heartchoc)
     return
+
+label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
+    $ sprite_data = mas_getSpriteObjInfo()
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 1sua "Oh! {w=0.5}A seashell bikini!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2ekbfa "Well...{w=0.5} What do you think?"
+    m 2hubfa "Do I look like a mermaid? Ehehe."
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "I think it's really cute, [player]..."
+    m 5hubfa "We'll have to go to the beach sometime!"
+
+    if mas_isWinter() or mas_isMoniNormal(lower=True):
+        if mas_isWinter():
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2rksdla "...But for now, it's a little chilly in here..."
+            m 2eka "So I'm going to go put on something a little warmer..."
+
+        elif mas_isMoniNormal(lower=True):
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2hksdlb "Ahaha..."
+            m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
+            m 2eka "I hope you don't mind, but I'm going to go change..."
+
+        # change to def
+        call mas_clothes_change()
+
+        m 2eua "Ah, that's better..."
+        m 3hua "Thanks again for the wonderful gift~"
+
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
