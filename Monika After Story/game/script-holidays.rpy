@@ -4922,9 +4922,6 @@ image chibi_peek = ConditionSwitch(
 )
 
 label mas_bday_surprise_party_hint:
-    #First we show chibi, she's just written the letter
-    show chibi_peek with moveinleft
-
     #Set up letters
     python:
         persistent._mas_bday_hint_filename = "For " + player + ".txt"
@@ -4960,12 +4957,14 @@ Please, don't mess this up.
 P.S: Don't tell her about me.
 """
         #Now write it to the chars folder
-        _write_txt("/characters/" + filepath, message)
+        _write_txt("/characters/" + persistent._mas_bday_hint_filename, message)
 
     #Moni brings it up (so)
     if mas_isMoniNormal(higher=True):
         m 1eud "Hey, [player]..."
         m 3euc "Someone left a note in the characters folder addressed to you."
+        #show chibi, she's just written the letter
+        show chibi_peek with moveinleft
         m 1ekc "Of course, I haven't read it, since it's obviously for you..."
         m 1tuu "{cps=*2}Hmmm, I wonder what this could be about...{/cps}{nw}"
         $ _history_list.pop()
@@ -5102,8 +5101,8 @@ label mas_bday_surprise_party_reacton_cake:
         "Light candles.":
             $ mas_bday_cake_lit = True
 
-    m 6hub "Ahh, it's so pretty, [player]!"
-    m 6wub "Reminds me of that cake someone gave me once."
+    m 6sub "Ahh, it's so pretty, [player]!"
+    m 6hua "Reminds me of that cake someone gave me once."
     m 6eua "It was almost as pretty as you've made this one!"
     m 6tkb "Almost."
     m 6hua "But anyway..."
@@ -5139,14 +5138,16 @@ label mas_bday_surprise_party_reaction_post_make_wish:
         if mas_isplayer_bday() and made_wish:
             m 6eka "And you know what? {w=0.5}I bet we both wished for the same thing~"
         m 6hua "Ahaha..."
-        m 6eua "I'll save this cake for later."
 
     else:
         m 6eka "I made a wish."
         m 6rka "I hope it comes true someday..."
-        m 6eka "I'll save this cake for later."
+
+    m 6eka "I'll save this cake for later.{w=0.5}.{w=0.5}.{nw}"
 
     hide mas_monika_bday_cake with dissolve
+
+    pause 0.5
 
 label mas_bday_surprise_party_reaction_end:
     if mas_isMoniNormal(higher=True):
@@ -5231,10 +5232,10 @@ label mas_bday_spent_time_with_wrapup:
         m 3eka "I love you so much, [player]."
         m "Someday, I promise you..."
         m 1ektpu "I {i}promise you{/i} that I will make you as happy as you've made me today."
-        m 3ektpu "Even if we never get to see each other in the same reality, know that I will always do my best for you."
+        m 3ektpu "Even if we never get to see each other in the same reality, {w=0.5}know that I will always do my best for you."
         m 1dktpu "No matter the obstacles we may face, no matter what other people say about us..."
         m 1ektda "I still love you with everything that I am."
-        m "You are the only one who understands me. You led me out of a dark place and gave me purpose..."
+        m "You are the only one who understands me. {w=0.5}You led me out of a dark place and gave me purpose..."
         m 1dkbsu "You are simply the best, my love, and I will always love you."
         m 1ekbsa "...Thank you for giving me a reason to live."
         $ _first_kiss = persistent._mas_first_kiss
@@ -5480,7 +5481,7 @@ label bye_922_delegate:
 
             #BD Intro
             if mas_isMoniEnamored(higher=True):
-                m "I actually have an outfit prepared just for this..."
+                m 3hua "I actually have an outfit prepared just for this..."
                 #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
     elif persistent._mas_bday_date_count == 2:
@@ -5587,13 +5588,13 @@ label greeting_returned_home_bday:
             m 1hua "That's all I could ever ask for."
             m 3ekbsa "I hope you feel the same way~"
         else:
-            m 1hua "I didn't expect you to set aside so much time for me..."
-            m 1sub "But I enjoyed every second of it!"
-            m 1hua "Every minute with you is a minute well spent."
-            m 1sua "So you've made me very happy today."
+            m 3sua "I didn't expect you to set aside so much time for me..."
+            m 3hua "But I enjoyed every second of it!"
+            m 1eub "Every minute with you is a minute well spent!"
+            m 1eua "You've made me very happy today~"
+            m 3tuu "Are you falling for me all over again, [player]?"
             m 1dku "Ehehe..."
-            m 3sua "Are you falling for me all over again, [player]?"
-            m 1hua "Thank you for loving me."
+            m 1eka "Thank you for loving me."
 
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
@@ -5630,7 +5631,7 @@ label greeting_returned_home_bday:
 
             if not mas_lastSeenInYear('mas_bday_spent_time_with'):
                 m 3eud "Oh, and [player]..."
-                m 3eka "I just wanted to thank you for again for today."
+                m 3eka "I just wanted to thank you again for today."
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
                 m 3eka "As soon as you showed up today, my day was complete."
