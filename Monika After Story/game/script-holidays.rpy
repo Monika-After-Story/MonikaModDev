@@ -4018,7 +4018,7 @@ label mas_f14_autoload_check:
     python:
         #Since it's possible player didn't see this, we need to derandom it manually.
         mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-        mas_removeDelayedAction(11)
+        #mas_removeDelayedAction(11)
 
         if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
             persistent._mas_f14_in_f14_mode = True
@@ -4036,7 +4036,7 @@ label mas_f14_autoload_check:
             mas_idle_mailbox.send_rebuild_msg()
 
             # remove delayed actions for the above events
-            mas_removeDelayedActions(12, 13, 14, 15)
+            #mas_removeDelayedActions(12, 13, 14, 15)
 
             #Reset the f14 mode, and outfit if we're lower than the love aff level.
             persistent._mas_f14_in_f14_mode = False
@@ -4752,6 +4752,9 @@ default persistent._mas_bday_sbp_reacted = False
 default persistent._mas_bday_spent_bday = None
 default persistent._mas_bday_confirmed_party = False
 
+#Need to store the name of the file chibi writes
+default persistent._mas_bday_hint_filename = None
+
 #Time spent tracking
 default persistent._mas_bday_opened_game = False
 default persistent._mas_bday_no_time_spent = True
@@ -4855,9 +4858,10 @@ init -1 python:
 
             #Step 3, check if the filename is present
             if "oki doki" == temp_filename:
-                #If we got here: Step 4, file exists so flag and delete
+                #If we got here: Step 4, file exists so flag and delete. Also get rid of note
                 persistent._mas_bday_confirmed_party = True
                 store.mas_docking_station.destroyPackage(file)
+                store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
 
                 #Step 5a, return true since party is confirmed
                 return True
@@ -4923,7 +4927,7 @@ label mas_bday_surprise_party_hint:
 
     #Set up letters
     python:
-        filepath = "/characters/For " + player + ".txt"
+        persistent._mas_bday_hint_filename = "For " + player + ".txt"
         if mas_isMoniNormal(higher=True):
             message = """\
 [player],
@@ -4956,7 +4960,7 @@ Please, don't mess this up.
 P.S: Don't tell her about me.
 """
         #Now write it to the chars folder
-        _write_txt(filepath, message)
+        _write_txt("/characters/" + filepath, message)
 
     #Moni brings it up (so)
     if mas_isMoniNormal(higher=True):
