@@ -5572,6 +5572,9 @@ default persistent._mas_enable_random_repeats = False
 #default persistent._mas_monika_repeated_herself = False
 default persistent._mas_first_calendar_check = False
 
+#Var for daily checks in the ch30 loop
+default persistent._mas_last_daily_check_date = datetime.date.today()
+
 # rain
 define mas_is_raining = False
 

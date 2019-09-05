@@ -774,6 +774,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 morning_flag = False
                 monika_room = night_bg
 
+        #What ui are we using
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
+
         ## are we hiding monika
         if not hide_monika:
             if force_exp is None:
@@ -1396,8 +1402,6 @@ label ch30_loop:
             or mas_weather.should_scene_change
         )
 
-    #NOTE: putting the scene change condition directly in here because
-    #It doesn't like being in the python block
     call spaceroom(scene_change=mas_weather.should_scene_change, dissolve_all=should_dissolve_all, dissolve_masks=should_dissolve_masks)
 
     #This should be set back to false so we're not constantly scene changing
@@ -1437,6 +1441,18 @@ label ch30_visual_skip:
         except:
             calendar_last_checked=persistent.sessions['current_session_start']
         time_since_check=datetime.datetime.now()-calendar_last_checked
+
+        #Daily check zone
+        if persistent._mas_last_daily_check_date < datetime.date.today():
+            #Run daily check
+
+            #Undo ev actions if needed
+            mas_undoEVActions()
+            #And also strip dates
+            mas_stripEVDates()
+
+            #Set flag so we don't come back here until tomorrow
+            persistent._mas_last_daily_check_date = datetime.date.today()
 
         if time_since_check.total_seconds()>60:
 
@@ -1488,6 +1504,7 @@ label ch30_visual_skip:
 
             # save the persistent
             renpy.save_persistent()
+
 
 label ch30_post_mid_loop_eval:
 
@@ -1921,4 +1938,7 @@ label ch30_reset:
     #And also strip dates
     $ mas_stripEVDates()
 
+    #Also verify that our last checked date is valid
+    if persistent._mas_last_daily_check_date > datetime.date.today():
+        $ persistent._mas_last_daily_check_date = datetime.date.today() - datetime.timedelta(days=1)
     return
