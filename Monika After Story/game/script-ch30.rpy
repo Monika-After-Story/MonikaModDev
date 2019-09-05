@@ -774,6 +774,12 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
                 morning_flag = False
                 monika_room = night_bg
 
+        #What ui are we using
+        if persistent._mas_auto_mode_enabled:
+            mas_darkMode(morning_flag)
+        else:
+            mas_darkMode(not persistent._mas_dark_mode_enabled)
+
         ## are we hiding monika
         if not hide_monika:
             if force_exp is None:
