@@ -3533,6 +3533,10 @@ label mas_player_bday_cake:
     $ mas_gainAffection(5,bypass=True)
     $ persistent._mas_player_bday_spent_time = True
     $ persistent._mas_player_bday_in_player_bday_mode = True
+    if mas_isMonikaBirthday():
+        $ your = "our"
+    else:
+        $ your = "your"
 
     #If it's Monika's birthday too, we'll just use those delegates instead of this one
     if not mas_isMonikaBirthday():
@@ -3593,7 +3597,7 @@ label mas_player_bday_cake:
     # monika puts away the cake and zoom is reset back to the player's pref
     show emptydesk at i11 zorder 9
     hide monika with dissolve
-    hide mas_bday_cake with dissolve
+    hide mas_player_bday_cake with dissolve
     $ renpy.pause(3.0, hard=True)
     show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
@@ -3655,10 +3659,8 @@ label mas_player_bday_ret_on_bday:
     m "..."
     m 2wuo "Oh!"
     m 2wuw "Oh my gosh!"
-    m 2tsu "Just give me a moment, [player]..."
-    show monika 1dsc
-    pause 2.0
-    $ store.mas_surpriseBdayShowVisuals()
+    m 2tsu "Just give me a moment, [player].{w=0.5}.{w=0.5}.{nw}"
+    $ mas_surpriseBdayShowVisuals()
     $ persistent._mas_player_bday_decor = True
     m 3eub "Happy Birthday, [player]!"
     m 3hub "Ahaha!"
@@ -3846,7 +3848,7 @@ label greeting_returned_home_player_bday:
 
     if mas_isMonikaBirthday():
         $ mas_gainAffection(25, bypass=True)
-        $ renpy.show("mas_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+        $ renpy.show("mas_monika_bday_cake", zorder=store.MAS_MONIKA_Z+1)
         if time_out < five_minutes:
             m 6ekp "That wasn't much of a da--"
         else:
@@ -3916,14 +3918,11 @@ label return_home_post_player_bday:
     $ persistent._mas_player_bday_in_player_bday_mode = False
     $ mas_lockEVL("bye_player_bday", "BYE")
     $ persistent._mas_player_bday_left_on_bday = False
-    $ persistent._mas_player_bday_decor = False
     if not mas_isMonikaBirthday():
         if persistent._mas_player_bday_decor:
             m 3rksdla "Oh...it's not your birthday anymore..."
             m 3hksdlb "We should probably take these decorations down now, ahaha!"
-            m 3eka "Just give me one second..."
-            show monika 1dsc
-            pause 2.0
+            m 3eka "Just give me one second.{w=0.5}.{w=0.5}.{nw}"
             $ mas_surpriseBdayHideVisuals()
             m 3eua "There we go!"
             if not persistent._mas_f14_gone_over_f14:
@@ -3933,6 +3932,8 @@ label return_home_post_player_bday:
             m 3wuo "..."
             m 3wud "Wow, [player], I just realized we were gone so long we missed Valentine's Day!"
             call greeting_gone_over_f14_normal_plus
+
+    $ persistent._mas_player_bday_decor = False
     return
 
 # birthday card/poem for player
@@ -4822,7 +4823,7 @@ init -1 python:
             mas_generateGiftsReport(_date)[0] > 0
             or persistent._mas_bday_date_count > 0
             or persistent._mas_bday_sbp_reacted
-            or mas_lastSeenInYear('mas_bday_pool_happy_bday')
+            or persistent._mas_bday_said_happybday
         )
 
     def mas_surpriseBdayShowVisuals(cake=False):
