@@ -1482,7 +1482,7 @@ label monika_kiss:
                 "My Dear, [player]~",
                 "You are my world,~",
                 "I cant express how much I love you~",
-                "But know, Forever [player], you will always mean everything to me~",
+                "Forever [player], you will always mean everything to me~",
                 "I love you, [player]~",
             ]
 
