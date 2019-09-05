@@ -1479,15 +1479,15 @@ label monika_kiss:
     if mas_isMoniEnamored(higher=True) and persistent._mas_first_kiss is not None:
         python:
             kiss_quips_after = [
+                "My Dear, [player]~",
+                "You are my world,~",
+                "I cant express how much I love you~",
+                "But know, Forever [player], you will always mean everything to me~",
                 "I love you, [player]~",
-                "I love you so much, [player]~",
-                "I love you more than you'll ever know, [player]~",
-                "I love you so much, [player]. You mean everything to me~"
             ]
 
             kiss_quip = renpy.random.choice(kiss_quips_after)
-
-        if renpy.random.randint(1,50) == 1:
+        if renpy.random.randint(1,25) == 1:
             call monika_kiss_tease
 
         else:
@@ -1501,7 +1501,7 @@ label monika_kiss:
 
         window hide
         menu:
-            "I love you too, [m_name]~":
+            "I love you so much, [m_name]~":
                 show monika 6ekbfa
                 pause 2.0
 
@@ -1509,13 +1509,20 @@ label monika_kiss:
         m 1wubsw "Eh? D-Did you say...k...kiss?"
         m 2lkbsa "This suddenly...it's a little embarrassing..."
         m 2lsbssdlb "But...if it's with you...I-I might be okay with it..."
+        pause 5.0
+        play kissing.ogg 1.0
+        m 2hksdlb "chu~"
         m 2hksdlb "...Ahahaha! Wow, sorry..."
         m 1eka "I really couldn't keep a straight face there."
         m 1eua "That's the kind of thing girls say in these kinds of romance games, right?"
         m 1tku "Don't lie if it turned you on a little bit."
+        m 1tku "Might take it a little futher..."
         m 1hub "Ahaha! I'm kidding."
         m 1eua "Well, to be honest, I do start getting all romantic when the mood is right..."
         m 5lubfu "But that'll be our secret~"
+        pause 1.0
+        m 2lkbsa "I love you, [player]~"
+        pause 2.0
     return
 
 label monika_kiss_tease:
@@ -1531,7 +1538,9 @@ label monika_kiss_tease:
     m 2tfb "Ahaha!"
     m 2efu "I had you going for a second there, didn't I?"
     m 2eka "Of course you can kiss me, [player]!"
+    pause 2.0
     return
+
 
 init 5 python:
     addEvent(
