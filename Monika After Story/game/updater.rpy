@@ -123,23 +123,23 @@ init -1 python:
             )
 
             # button backs
-            button_idle = Image("mod_assets/hkb_idle_background.png")
-            button_hover = Image("mod_assets/hkb_hover_background.png")
-            button_disabled = Image("mod_assets/hkb_disabled_background.png")
+            button_idle = Image(mas_getTimeFile("mod_assets/hkb_idle_background.png"))
+            button_hover = Image(mas_getTimeFile("mod_assets/hkb_hover_background.png"))
+            button_disabled = Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
 
             # ok button text
             button_text_ok_idle = Text(
                 "Ok",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_ok_hover = Text(
                 "Ok",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -148,14 +148,14 @@ init -1 python:
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_cancel_hover = Text(
                 "Cancel",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -164,14 +164,14 @@ init -1 python:
                 "Update",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_update_hover = Text(
                 "Update",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 
@@ -180,14 +180,14 @@ init -1 python:
                 "Retry",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#000",
+                color=mas_globals.button_text_idle_color,
                 outlines=[]
             )
             button_text_retry_hover = Text(
                 "Retry",
                 font=gui.default_font,
                 size=gui.text_size,
-                color="#fa9",
+                color=mas_globals.button_text_hover_color,
                 outlines=[]
             )
 

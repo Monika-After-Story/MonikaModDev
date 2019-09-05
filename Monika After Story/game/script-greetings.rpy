@@ -5,7 +5,7 @@
 # HOW GREETINGS USE EVENTS:
 #   unlocked - determines if the greeting can even be shown
 #   rules - specific event rules are used for things:
-#       MASSelectiveRepeatRule - repeat on certain year/month/day/whatever 
+#       MASSelectiveRepeatRule - repeat on certain year/month/day/whatever
 #       MASNumericalRepeatRule - repeat every x time
 #       MASPriorityRule - priority of this event. if not given, we assume
 #           the default priority (which is also the lowest)
@@ -171,7 +171,7 @@ init -1 python in mas_greetings:
                 and renpy.has_label(store.persistent._mas_forcegreeting)
             ):
             return store.mas_getEV(store.persistent._mas_forcegreeting)
-        
+
         # local reference of the gre database
         gre_db = store.evhand.greeting_database
 
@@ -1096,6 +1096,12 @@ init 5 python:
 
 label i_greeting_monikaroom:
 
+    #Set up dark mode
+    if persistent._mas_auto_mode_enabled:
+        $ mas_darkMode(morning_flag)
+    else:
+        $ mas_darkMode(not persistent._mas_dark_mode_enabled)
+
     # couple of things:
     # 1 - if you quit here, monika doesnt know u here
     $ mas_enable_quit()
@@ -1532,6 +1538,7 @@ label monikaroom_greeting_opendoor_locked:
     m "Now let me fix up this room..."
 
     hide paper_glitch2
+    $ mas_globals.change_textbox = False
     call spaceroom(scene_change=True)
 
     if renpy.seen_label("monikaroom_greeting_opendoor_locked_tbox"):
@@ -1695,7 +1702,7 @@ label monikaroom_greeting_opendoor:
     show monika 1eua_static at t33
     m 1eud_static "...and..."
     if mas_isMorning():
-        show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft 
+        show monika_day_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     else:
         show monika_room as sp_mas_room zorder MAS_BACKGROUND_Z with wipeleft
     show monika 1eua_static at t32
@@ -2885,7 +2892,7 @@ init -876 python in mas_delact:
 
     # NOTE: we dont need this anymore
     #   We originally needed this since aff_range was not used by greetings
-    #   so we wanted to get this to unlock if we are only able to decode 
+    #   so we wanted to get this to unlock if we are only able to decode
     #   islands. Now that aff range is part of gre parsing, the only thing
     #   that matters is whether or not the event is active, which in this
     #   case, only happens if the islands were decoded and aff is enamored+
@@ -3037,7 +3044,7 @@ label greeting_returned_home_morethan5mins:
 label greeting_returned_home_morethan5mins_cleanup:
 
     $ grant_xp(xp.NEW_GAME)
-    
+
     # jump to cleanup
     jump greeting_returned_home_cleanup
 
@@ -3065,7 +3072,7 @@ label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
-        call return_home_post_player_bday 
+        call return_home_post_player_bday
     return
 
 label greeting_returned_home_morethan5mins_other_dlg:
@@ -3083,7 +3090,7 @@ label greeting_returned_home_lessthan5mins:
         m 2ekp "That wasn't much of a trip, [player]."
         m "Next time better last a little longer..."
         if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
-            call return_home_post_player_bday 
+            call return_home_post_player_bday
         return False
 
     elif mas_isMoniUpset():
@@ -3687,7 +3694,7 @@ label greeting_rent:
     m 1eub "Welcome back, dear!"
     m 2tub "You know, you spend so much time here that I should start charging you for rent."
     m 2ttu "Or would you rather pay a mortgage?"
-    m 2hua "..." 
+    m 2hua "..."
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
