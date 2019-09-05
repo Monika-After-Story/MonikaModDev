@@ -402,6 +402,11 @@ label v0_10_0(version="v0_10_0"):
 
         # always save mhs
         store.mas_history.saveMHSData()
+
+        # unlock clothes select
+        clothes_sel_ev = mas_getEV("monika_clothes_select")
+        if clothes_sel_ev is not None:
+            clothes_sel_ev.unlocked = True
             
     return
 

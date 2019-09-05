@@ -40,7 +40,7 @@ init -100 python in mas_selspr:
         },
     }
 
-    
+
     def get_prompt(key, prompt_key="change"):
         """
         Gets prompt with the given key and prompt key
@@ -57,7 +57,7 @@ init -100 python in mas_selspr:
         return PROMPT_MAP.get(key, {}).get(prompt_key, "")
 
 
-    def in_prompt_map(key): 
+    def in_prompt_map(key):
         """
         Checks if a key is in the prompt select map
 
@@ -214,7 +214,7 @@ init -20 python:
         Wrapper around MASAccessory sprite objects.
 
         PROPERTIES:
-            remover - True if this item is a remover, aka a blank ACS, 
+            remover - True if this item is a remover, aka a blank ACS,
                 False if not
 
 
@@ -468,7 +468,7 @@ init -10 python in mas_selspr:
     CLOTH_SEL_SL = []
 
     # selector group - topic map
-    # key: group 
+    # key: group
     # value: tuple of following format:
     #   [0] - topic label
     #   [2] - number of items before unlocking
@@ -1129,7 +1129,7 @@ init -10 python in mas_selspr:
 
         IN:
             item - sprite objct to find the Selectable for
-            
+
         RETURNS: selectable for the given item
         """
         if item.gettype() == store.mas_sprites_json.SP_ACS:
@@ -1452,9 +1452,9 @@ init -1 python:
         selector objects are unlocked.
 
         IN:
-            sp_type - sprite type to filter on 
+            sp_type - sprite type to filter on
             group - group to use for filtering selectors
-            unlock_min - minimum number that has to be unlocked for us to 
+            unlock_min - minimum number that has to be unlocked for us to
                 unock the selector topic.
                 IF None, then we use the amount provided by the GRP_TOPIC_MAP
                 (Default: None)
@@ -1560,8 +1560,8 @@ init -1 python:
                 thumb_path = self.THUMB_DIR + "remove.png"
 
             else:
-                # as a precaution, if a thumb doesn't exist, we use a 
-                # placeholder. 
+                # as a precaution, if a thumb doesn't exist, we use a
+                # placeholder.
                 thumb_path = self.THUMB_DIR + _selectable.thumb
                 if not renpy.loadable(thumb_path):
                     thumb_path = self.THUMB_DIR + "unknown.png"
@@ -1570,25 +1570,25 @@ init -1 python:
 
             # image setups
             self.thumb_overlay = Image(
-                "mod_assets/frames/selector_overlay.png"
+                mas_getTimeFile("mod_assets/frames/selector_overlay.png")
             )
             self.thumb_overlay_locked = Image(
-                "mod_assets/frames/selector_overlay_disabled.png"
+                mas_getTimeFile("mod_assets/frames/selector_overlay_disabled.png")
             )
             self.top_frame = Frame(
-                "mod_assets/frames/selector_top_frame.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame.png"),
                 left=4,
                 top=4,
                 tile=True
             )
             self.top_frame_selected = Frame(
-                "mod_assets/frames/selector_top_frame_selected.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame_selected.png"),
                 left=4,
                 top=4,
                 tile=True
             )
             self.top_frame_locked = Frame(
-                "mod_assets/frames/selector_top_frame_disabled.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame_disabled.png"),
                 left=4,
                 top=4,
                 tile=True
@@ -1742,9 +1742,9 @@ init -1 python:
                 the text object for the display name
             """
             if selected:
-                color = "#fa9"
+                color = mas_ui.light_button_text_hover_color
             else:
-                color = "#000"
+                color = mas_ui.light_button_text_idle_color
 
             return Text(
                 _text,
@@ -2380,7 +2380,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 
     frame:
         area (1075, 5, 200, 625)
-        background Frame("mod_assets/frames/black70_pinkborder100_5px.png", left=6, top=6, tile=True)
+        background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
 
         vbox:
             xsize 200
@@ -2410,7 +2410,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style "hkb_button"
+                    style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
                     xalign 0.5
                     action Jump(confirm)
             else:
@@ -2419,11 +2419,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                     xsize 120
                     xalign 0.5
 
-                    background Image("mod_assets/hkb_disabled_background.png")
-                    text "Confirm" style "hkb_text"
+                    background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                    text "Confirm" style ("hkb_text" if not mas_globals.dark_mode else "hkb_dark_text")
 
             textbutton _("Cancel"):
-                style "hkb_button"
+                style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
@@ -2754,7 +2754,6 @@ label mas_selector_sidebar_select_clothes(items, preview_selections=True, only_u
 # [MONSEL]
 
 #### Begin monika clothes topics
-
 init 5 python:
     addEvent(
         Event(
@@ -2763,16 +2762,14 @@ init 5 python:
             category=["appearance"],
             prompt=store.mas_selspr.get_prompt("clothes", "change"),
             pool=True,
-            unlocked=False,
-            rules={"no unlock": None},
-            aff_range=(mas_aff.LOVE, None)
+            unlocked=True,
+            aff_range=(mas_aff.HAPPY, None)
         )
     )
 
 label monika_clothes_select:
     # setup
     python:
-        sorted_clothes = store.mas_selspr.CLOTH_SEL_SL
         mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
             "Which clothes would you like me to wear?"
         )
@@ -2785,7 +2782,27 @@ label monika_clothes_select:
     show monika 1eua
 
     # start the selection screen
-    call mas_selector_sidebar_select_clothes(sorted_clothes, mailbox=mailbox, select_map=sel_map)
+    if mas_isMoniLove():
+        # for Love, all unlocked clothes are available
+        call mas_selector_sidebar_select_clothes(store.mas_selspr.CLOTH_SEL_SL, mailbox=mailbox, select_map=sel_map)
+
+    else:
+        python:
+            # need to get a list of clothes that have been gifted
+            # so we will get a list of all clothes and then remove the event_clothes
+            gifted_clothes = mas_selspr.filter_clothes(True)
+
+            for index in range(len(gifted_clothes)-1, -1, -1):
+                spr_obj = gifted_clothes[index].get_sprobj()
+                if (
+                        not spr_obj.is_custom
+                        and spr_obj != mas_clothes_def
+                        and spr_obj != mas_clothes_blazerless
+                ):
+                    gifted_clothes.pop(index)
+
+        # below Love, only gifted clothes (and def) are available
+        call mas_selector_sidebar_select_clothes(gifted_clothes, mailbox=mailbox, select_map=sel_map)
 
     # results
     if not _return:
@@ -2796,6 +2813,7 @@ label monika_clothes_select:
     m 1eub "If you want me to wear different clothes, just ask, okay?"
 
     return
+
 
 #### ends Monika clothes topic
 
