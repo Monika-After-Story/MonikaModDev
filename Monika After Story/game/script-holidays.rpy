@@ -5489,18 +5489,14 @@ label mas_bday_bd_outro:
 #   ~~Black Dress Intro~~
 
 label greeting_returned_home_bday:
-    #If we got to this label without having been on a bday date, we went pre 922 -> 922
-    #In which case, we need to set up the party (if confirmed). Likewise if we haven't seen the party yet
-    if (
-        (not persistent._mas_bday_on_date or not persistent._mas_bday_sbp_reacted)
-        and mas_confirmedParty()
-    ):
+    #First, reset this flag, we're no longer on a date
+    $ persistent._mas_bday_on_date = False
+
+    #Set party if need be
+    if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
         jump mas_bday_surprise_party_reaction
 
     python:
-        #Reset this flag, we're no longer on a date
-        persistent._mas_bday_on_date = False
-
         five_minutes = datetime.timedelta(seconds=5*60)
         one_hour = datetime.timedelta(seconds=3600)
         three_hour = datetime.timedelta(seconds=3*3600)
