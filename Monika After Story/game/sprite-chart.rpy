@@ -184,7 +184,7 @@ image mas_roses = ConditionSwitch(
 
 ### bday stuff
 define mas_bday_cake_lit = False
-image mas_monika_bday_cake = ConditionSwitch(
+image mas_bday_cake_monika = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
     "mod_assets/location/spaceroom/bday/monika_birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",
@@ -195,7 +195,7 @@ image mas_monika_bday_cake = ConditionSwitch(
     "mod_assets/location/spaceroom/bday/monika_birthday_cake-n.png"
 )
 
-image mas_player_bday_cake = ConditionSwitch(
+image mas_bday_cake_player = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
     "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",

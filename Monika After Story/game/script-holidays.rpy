@@ -3503,14 +3503,6 @@ label mas_player_bday_opendoor_listened:
 
 # all paths lead here
 label mas_player_bday_cake:
-    $ mas_gainAffection(5,bypass=True)
-    $ persistent._mas_player_bday_spent_time = True
-    $ persistent._mas_player_bday_in_player_bday_mode = True
-    if mas_isMonikaBirthday():
-        $ your = "our"
-    else:
-        $ your = "your"
-
     #If it's Monika's birthday too, we'll just use those delegates instead of this one
     if not mas_isMonikaBirthday():
         $ mas_unlockEVL("bye_player_bday", "BYE")
@@ -3521,7 +3513,7 @@ label mas_player_bday_cake:
     show emptydesk at i11 zorder 9
     hide monika with dissolve
     $ renpy.pause(3.0, hard=True)
-    $ renpy.show("mas_player_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+    $ renpy.show("mas_bday_cake_player", zorder=store.MAS_MONIKA_Z+1)
     show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
     hide emptydesk
     $ renpy.pause(0.5, hard=True)
@@ -3567,18 +3559,14 @@ label mas_player_bday_cake:
     else:
         m 6hksdlb "I think I'll just save this for later. It seems kind of rude for me to eat {i}your{/i} birthday cake in front of you, ahaha!"
 
-    # monika puts away the cake and zoom is reset back to the player's pref
-    show emptydesk at i11 zorder 9
-    hide monika with dissolve
-    hide mas_player_bday_cake with dissolve
-    $ renpy.pause(3.0, hard=True)
-    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
-    hide emptydesk
-    $ renpy.pause(1.0, hard=True)
-    call monika_zoom_transition(mas_temp_zoom_level,1.0)
+    call mas_HideCake('mas_bday_cake_player')
+
     # fall thru
 label mas_player_bday_card:
-    pause 0.5
+    $ mas_gainAffection(5,bypass=True)
+    $ persistent._mas_player_bday_spent_time = True
+    $ persistent._mas_player_bday_in_player_bday_mode = True
+
     m 6dkbsu "..."
     if mas_isMonikaBirthday():
         m 6sub "Oh!"
@@ -3600,13 +3588,15 @@ label mas_player_bday_card:
             if mas_isMonikaBirthday():
                 m 6ekbsu "And I can't think of a more perfect time than on this special day we share together~"
         else:
-            m 6ekbfa "I love you, [player]~"
+            m 6ekbsa "I love you, [player]~"
             call monika_kissing_motion(duration=0.5, initial_exp="6hkbfa", fade_duration=0.5)
             if mas_isplayer_bday():
-                m 6ekbsa "Let's enjoy [your] special day~"
+                m 6eka "I'm so glad we get to spend our birthday together..."
+                m 6hua "Let's enjoy our special day~"
     else:
         if mas_isplayer_bday():
-            m 1ekbfa "I love you, [player]! Let's enjoy [your] special day~"
+            m 1ekbfa "I love you, [player]! I'm so glad we get to spend our birthday together..."
+            m 3ekbfa "Let's enjoy our special day~"
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
@@ -3821,7 +3811,7 @@ label greeting_returned_home_player_bday:
 
     if mas_isMonikaBirthday():
         $ mas_gainAffection(25, bypass=True)
-        $ renpy.show("mas_monika_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+        $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
         if time_out < five_minutes:
             m 6ekp "That wasn't much of a da--"
         else:
@@ -4802,7 +4792,7 @@ init -1 python:
         Shows bday surprise party visuals
         """
         if cake:
-            renpy.show("mas_monika_bday_cake", zorder=store.MAS_MONIKA_Z+1)
+            renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
@@ -5049,6 +5039,8 @@ label mas_bday_pool_happy_belated_bday:
 
 ################## [HOL060] PARTY REACTION
 label mas_bday_surprise_party_reaction:
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
     #Setup visuals, with cake
     $ store.mas_surpriseBdayShowVisuals(cake=True)
     #+25 aff for following through and getting the party
@@ -5119,7 +5111,7 @@ label mas_bday_surprise_party_reaction_post_make_wish:
 
     m 6eka "I'll save this cake for later.{w=0.5}.{w=0.5}.{nw}"
 
-    hide mas_monika_bday_cake with dissolve
+    call mas_HideCake('mas_bday_cake_monika')
 
     pause 0.5
 
@@ -5494,23 +5486,13 @@ label greeting_returned_home_bday:
 
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
-        jump mas_bday_surprise_party_reaction
+        if mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode and persistent._mas_bday_date_count == 1:
+            jump mas_monika_cake_on_player_bday
+        
+        else:
+            jump mas_bday_surprise_party_reaction
 
-    python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
-        time_out = store.mas_dockstat.diffCheckTimes()
-        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
-
-        def cap_gain_aff(amount):
-            #if it's the player's bday too, then we raise the cap to 75 from 50
-            cap = 75 if store.mas_isplayer_bday() else 50
-
-            persistent._mas_bday_date_affection_gained += amount
-            if persistent._mas_bday_date_affection_gained <= cap:
-                amount = persistent._mas_bday_date_affection_gained - cap
-                mas_gainAffection(amount, bypass=True)
+    call mas_bday_cap_check
 
     #Otherwise we go thru the normal dialogue for returning home on moni_bday
     if time_out <= five_minutes:
@@ -5522,7 +5504,7 @@ label greeting_returned_home_bday:
 
     elif time_out <= one_hour:
         # 5 mins < time out <= 1 hr
-        $ cap_gain_aff(15 if mas_isplayer_bday() else 10)
+        $ cap_gain_aff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
         m 1sua "That was fun, [player]!"
         if mas_isplayer_bday():
             m 1hub "Ahaha, going on for our birthday..."
@@ -5536,7 +5518,7 @@ label greeting_returned_home_bday:
 
     elif time_out <= three_hour:
         # 1 hr < time out <= 3 hrs
-        $ cap_gain_aff(25 if mas_isplayer_bday() else 20)
+        $ cap_gain_aff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
         m 1hua "Ehehe~"
         m 3eub "We sure spent a lot of time together today, [player]."
         m 1ekbfa "...and thank you for that."
@@ -5548,7 +5530,7 @@ label greeting_returned_home_bday:
 
     else:
         # +3 hrs
-        $ cap_gain_aff(35 if mas_isplayer_bday() else 30)
+        $ cap_gain_aff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
         m 1sua "Wow, [player]..."
         if mas_isplayer_bday():
             m 3hub "That was such a lovely time!"
@@ -5582,21 +5564,22 @@ label greeting_returned_home_bday:
                 jump mas_player_bday_ret_on_bday
 
         else:
-            if persistent._mas_bday_sbp_reacted and not persistent._mas_player_bday_in_player_bday_mode:
-                if persistent._mas_player_bday_in_player_bday_mode:
-                    $ my = "our"
-                else:
-                    $ my = "my"
-                m 3rksdla "It's not even [my] birthday anymore..."
+            if not persistent._mas_bday_sbp_reacted:
+
+            elif persistent._mas_bday_sbp_reacted and not persistent._mas_player_bday_decor:
+                m 3rksdla "It's not even my birthday anymore..."
                 m 2hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
                 $ mas_surpriseBdayHideVisuals()
                 m 3eub "There we go!"
 
-            if persistent._mas_player_bday_in_player_bday_mode:
+            elif persistent._mas_player_bday_decor or persistent._mas_bday_sbp_reacted:
                 $ persistent._mas_player_bday_in_player_bday_mode = False
                 $ persistent._mas_player_bday_decor = False
                 m 1eka "Anyway [player]...I really enjoyed spending our birthdays together."
-                m 1ekbfa "I hope I helped to make your day as special as you made mine."
+                m 1ekbsa "I hope I helped to make your day as special as you made mine."
+                m 3hua "Let me just clean everything up.{w=0.5}.{w=0.5}.{nw}"
+                $ mas_surpriseBdayHideVisuals()
+                m 3eub "There we go!"
 
             if not mas_lastSeenInYear('mas_bday_spent_time_with'):
                 m 3eud "Oh, and [player]..."
@@ -5606,4 +5589,81 @@ label greeting_returned_home_bday:
                 m 3eka "As soon as you showed up today, my day was complete."
                 jump mas_bday_spent_time_with_wrapup
 
+    return
+
+label mas_bday_cap_check:
+    python:
+        five_minutes = datetime.timedelta(seconds=5*60)
+        one_hour = datetime.timedelta(seconds=3600)
+        three_hour = datetime.timedelta(seconds=3*3600)
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
+
+        def cap_gain_aff(amount):
+            #if it's the player's bday too, then we raise the cap to 75 from 50
+            cap = 75 if persistent._mas_player_bday_in_player_bday_mode else 50
+
+            if persistent._mas_bday_date_affection_gained <= cap:
+                persistent._mas_bday_date_affection_gained += amount
+                mas_gainAffection(amount, bypass=True)
+        return
+
+label mas_monika_cake_on_player_bday:
+    $ mas_temp_zoom_level = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset(1.0)
+    $ mas_gainAffection(25, bypass=True)
+    $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+    $ persistent._mas_bday_sbp_reacted = True
+
+    call mas_bday_cap_check
+
+    if time_out <= one_hour:
+        $ cap_gain_aff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+    elif time_out <= three_hour:
+        $ cap_gain_aff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+    else:
+        # +3 hrs
+        $ cap_gain_aff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
+    m 6eua "That was--"
+    m 6wuo "Oh! You made {i}me{/i} a cake!"
+
+    menu:
+        "Light candles.":
+            $ mas_bday_cake_lit = True
+
+    m 6sub "It's {i}so{/i} pretty, [player]!"
+    m 6hua "Ehehe, I know we already made a wish when I blew out the candles on your cake, but let's do it again..."
+    m 6tub "It'll be twice as likely to come true, right?"
+    m 6hua "Make a wish, [player]!"
+
+    window hide
+    pause 1.5
+    show monika 6hft
+    pause 0.1
+    show monika 6hua
+    $ mas_bday_cake_lit = False
+
+    m 6eua "I still can't believe how stunning this cake looks, [player]..."
+    m 6hua "It's almost too pretty to eat."
+    m 6tub "Almost."
+    m "Ahaha!"
+    m 6eka "Anyway, I'll just save this for later."
+
+    call mas_HideCake('mas_bday_cake_monika')
+
+    m 1eua "Thank you so much, [player]..."
+    m 3hub "This is an amazing birthday!"
+    return
+
+label mas_HideCake(cake_type):
+    show emptydesk at i11 zorder 9
+    hide monika with dissolve
+    $ renpy.hide(cake_type)
+    with dissolve
+    $ renpy.pause(3.0, hard=True)
+    show monika 6esa at i11 zorder MAS_MONIKA_Z with dissolve
+    hide emptydesk
+    $ renpy.pause(1.0, hard=True)
+    call monika_zoom_transition(mas_temp_zoom_level,1.0)
     return
