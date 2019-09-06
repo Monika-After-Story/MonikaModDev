@@ -1938,6 +1938,9 @@ label ch30_reset:
     #And also strip dates
     $ mas_stripEVDates()
 
+    if mas_monika_birthday - datetime.timedelta(days=7) <= datetime.date.today() < mas_monika_birthday:
+        $ mas_confirmedParty()
+
     #Also verify that our last checked date is valid
     if persistent._mas_last_daily_check_date > datetime.date.today():
         $ persistent._mas_last_daily_check_date = datetime.date.today() - datetime.timedelta(days=1)
