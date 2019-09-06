@@ -1389,7 +1389,7 @@ init 5 python:
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro_upset",
             conditional=(
-                "not mas_lastSeenInYear('mas_d25_monika_holiday_intro_upset') "
+                "not persistent._mas_d25_intro_seen "
                 "and persistent._mas_d25_started_upset "
             ),
             action=EV_ACT_PUSH,
@@ -1401,42 +1401,15 @@ init 5 python:
         skipCalendar=True
     )
 
-init -876 python in mas_delact:
-    # delayed action to reset holiday intro upset
-    # NOTE: we are using delayed action here because we might need to
-    #   retrigger this event in case of an affection drop during runtime.
-
-    def _mas_d25_holiday_intro_upset_reset_action(ev):
-        # updates conditional and action, and dates
-        ev.conditional = (
-            "not persistent._mas_d25_intro_seen "
-            "and persistent._mas_d25_started_upset "
-        )
-        ev.action = store.EV_ACT_PUSH
-        ev.start_date = store.mas_d25c_start
-        ev.end_date = store.mas_d25p
-        store.Event._verifyAndSetDatesEV(ev)
-        return True
-
-
-    def _mas_d25_holiday_intro_upset_reset():
-        # creates delayed action for holiday intro
-        return store.MASDelayedAction.makeWithLabel(
-            8,
-            "mas_d25_monika_holiday_intro_upset",
-            "True",
-            _mas_d25_holiday_intro_upset_reset_action,
-            store.MAS_FC_IDLE_ROUTINE
-        )
-
 #for people that started the season upset- and graduated to normal
 label mas_d25_monika_holiday_intro_upset:
-    # NOTE: because of the async nature of this event, if
-    # the user manages to trigger this event but drops below normal
-    # before viewing this, we will reset this event's conditional and
-    # delay action the reset for idle
+    # sanity check with reset of start/end dates in case somehow we drop back below normal before this is seen
     if mas_isMoniUpset(lower=True):
-        $ mas_addDelayedAction(8)
+        python:
+            upset_ev = mas_getEV('mas_d25_monika_holiday_intro_upset')
+            if upset_ev is not None:
+                upset_ev.start_date = mas_d25c_start
+                upset_ev.end_date = mas_d25p
         return
 
     m 2rksdlc "So [player]...{w=1} I hadn't really been feeling very festive this year..."
