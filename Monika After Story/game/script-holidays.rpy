@@ -77,9 +77,9 @@ init -810 python:
     # MASHistorySaver for o31
     store.mas_history.addMHS(MASHistorySaver(
         "o31",
-        datetime.datetime(2018, 11, 2),
+        #datetime.datetime(2018, 11, 2),
         # change trigger to better date
-#        datetime.datetime(2020, 1, 6),
+        datetime.datetime(2020, 1, 6),
         {
             # TODO: we should have a spent time var here
 
@@ -102,8 +102,13 @@ init -810 python:
             "_mas_o31_trick_or_treating_start_late": "o31.actions.tt.start.late",
             "_mas_o31_trick_or_treating_aff_gain": "o31.actions.tt.aff_gain"
 
-        }
+        },
+        use_year_before=True,
 #        exit_pp=store.mas_history._o31_exit_pp
+        start_dt=datetime.datetime(2019, 10, 31),
+
+        # end is 1 day out in case of an overnight trick or treat
+        end_dt=datetime.datetime(2019, 11, 2) 
     ))
 
 init -10 python:
@@ -975,7 +980,9 @@ init -810 python:
             "_mas_d25_seen_santa_costume": "d25.monika.wore_santa"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._d25s_exit_pp
+        exit_pp=store.mas_history._d25s_exit_pp,
+        start_dt=datetime.datetime(2019, 12, 1),
+        end_dt=datetime.datetime(2019, 12, 31)
     ))
 
 
@@ -2024,12 +2031,14 @@ label mas_d25_spent_time_monika:
                 $ enable_esc()
                 $ mas_MUMUDropShield()
                 $ HKBShowButtons()
+        return
 
-    elif mas_isMoniAff(higher=True):
+    elif mas_isMoniAff():
         m 5ekbfa "I love you so much, [player]~"
-    elif mas_isMoniNormal(higher=True):
+    # Normal and happy
+    else:
         m 1hubfa "I love you, [player]~"
-    return
+    return "love"
 
 
 #NOTE, if you're running with config.developer being True, timing WILL be off on the song
@@ -2086,7 +2095,7 @@ label monika_aiwfc:
         m 1ekbfa "I love you."
 
     play music curr_song fadein 1.0
-    return
+    return "love"
 
 label monika_aiwfc_song:
     # TODO: consider doing something where we can use lyric bar and style
@@ -2209,6 +2218,7 @@ label mas_d25_postd25_notimespent:
         m 2eka "And, in the future, if you ever can't come visit me on Christmas, try to at least take me with you..."
         m 1eka "All I want is to be close to you, [player]..."
         m 3ekbfa "I love you~"
+        return "love"
 
     elif mas_isMoniNormal(higher=True):
         $ mas_loseAffection(5, reason=6)
@@ -2550,7 +2560,9 @@ init -810 python:
 
             "_mas_nye_date_aff_gain": "nye.aff.date_gain"
         },
-        use_year_before=True
+        use_year_before=True,
+        start_dt=datetime.datetime(2019, 12, 31),
+        end_dt=datetime.datetime(2020, 1, 6)
         # TODO: programming points probably
     ))
 
@@ -2736,7 +2748,7 @@ label mas_nye_monika_nyd:
             jump mas_nye_monika_nyd_fresh_start
 
     m "Happy New Year~"
-    return
+    return "love"
 
 label mas_nye_monika_nyd_fresh_start:
     m 2ekc "How about we put all that in the past, forget about last year, and focus on a new beginning this year?"
@@ -3065,14 +3077,14 @@ label monika_nye_year_review:
                 m 5hubfb "Let's make this year better than the last."
 
         else:
-            m "Let's make this year the best we can, [player]."
+            m "Let's make this year the best we can, [player]. I love you~"
     else:
         m 1dsa "Thank you for deciding to let go of the past, and start over."
         m 1eka "I think if we just try, we can make this work, [player]."
         m "Let's make this year great for each other."
         m 1ekbfa "I love you."
 
-    return "derandom"
+    return "derandom|love"
 
 label greeting_nye_aff_gain:
     # gaining affection for nye
@@ -3180,7 +3192,7 @@ label greeting_nye_prefw:
     m "It means a lot to me that you take me with you so we can spend special days like these together."
     show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbfa "I love you, [player]."
-    return
+    return "love"
 
 label greeting_nye_infw:
     #if within firework time:
@@ -3189,7 +3201,7 @@ label greeting_nye_infw:
     m 1hua "It was a lot of fun just to spend time with you today."
     m 1ekbsa "It really means so much to me that even though you can't be here personally to spend these days with me, you still take me with you."
     m 1ekbfa "I love you, [player]."
-    return
+    return "love"
 
 #===========================================================Going to take you somewhere on NYD===========================================================#
 
@@ -3354,6 +3366,7 @@ init -810 python:
     # MASHistorySaver for player_bday
     store.mas_history.addMHS(MASHistorySaver(
         "player_bday",
+        # NOTE: this needs to be adjusted based on the player's bday
         datetime.datetime(2020, 1, 1),
         {
             "_mas_player_bday_spent_time": "player_bday.spent_time",
@@ -3362,9 +3375,13 @@ init -810 python:
             "_mas_player_bday_date_aff_gain": "player_bday.date_aff_gain",
         },
         use_year_before=True,
+        # NOTE: the start and end dt needs to be chnaged depending on the
+        #   player bday
     ))
 
 init -11 python in mas_player_bday_event:
+    import datetime
+    import store.mas_history as mas_history
 
     def show_player_bday_Visuals():
         """
@@ -3373,12 +3390,58 @@ init -11 python in mas_player_bday_event:
         renpy.show("mas_bday_banners", zorder=7)
         renpy.show("mas_bday_balloons", zorder=8)
 
+
     def hide_player_bday_Visuals():
         """
         Hides player_bday visuals
         """
         renpy.hide("mas_bday_banners")
         renpy.hide("mas_bday_balloons")
+
+
+    def correct_pbday_mhs(d_pbday):
+        """
+        fixes the pbday mhs usin gthe given date as pbday
+
+        IN:
+            d_pbday - player birthdate
+        """
+        # get mhs
+        mhs_pbday = mas_history.getMHS("player_bday")
+        if mhs_pbday is None:
+            return
+
+        # first, setup the reset date to be 3 days after the bday
+        pbday_dt = datetime.datetime.combine(d_pbday, datetime.time())
+
+        # determine correct year
+        _now = datetime.datetime.now()
+        curr_year = _now.year
+        new_dt = pbday_dt.replace(year=curr_year)
+        if new_dt < _now:
+            # new date before today, set to next year
+            curr_year += 1
+            new_dt = pbday_dt.replace(year=curr_year)
+
+        # set the reset/trigger date
+        reset_dt = pbday_dt + datetime.timedelta(days=3)
+
+        # setup ranges
+        new_sdt = new_dt
+        new_edt = new_sdt + datetime.timedelta(days=2)
+
+        # NOTE: the mhs will end 2 days after the bday. The day after end_dt
+        #   is when we save
+
+        # modify mhs
+        mhs_pbday.start_dt = new_sdt
+        mhs_pbday.end_dt = new_edt
+        mhs_pbday.use_year_before = (
+            d_pbday.month == 12
+            and d_pbday.day in (29, 30, 31)
+        )
+        mhs_pbday.setTrigger(reset_dt)
+
 
 label mas_player_bday_autoload_check:
     # making sure we are already not in bday mode, have confirmed birthday, have normal+ affection and have not celebrated in any way
@@ -3590,6 +3653,8 @@ label mas_player_bday_cake:
         else:
             m 1ekbfa "I love you, [player]!"
     $ mas_rmallEVL("mas_player_bday_no_restart")
+    # "love" return key won't work here without adding a bunch of return _returns, so we'll set this manually
+    $ mas_ILY()
     return
 
 # event for if you went on a date pre-bday and return on bday
@@ -3759,18 +3824,29 @@ label greeting_returned_home_player_bday:
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
             left_year = checkout_time.year
-            ret_year = checkin_time.year
             left_date = checkout_time.date()
             ret_date = checkin_time.date()
             left_year_aff = mas_HistLookup("player_bday.date_aff_gain",left_year)[1]
+
+            # are we returning after the mhs reset
+            ret_diff_year = ret_date >= (mas_player_bday_curr(left_date) + datetime.timedelta(days=3))
+
+            # were we gone over d25
+            #TODO: do this for the rest of the holidays
+            if left_date < mas_d25 < ret_date:
+                if ret_date < mas_history.getMHS("d25s").trigger.replace(year=left_year+1):
+                    persistent._mas_d25_spent_d25 = True
+                else:
+                    persistent._mas_history_archives[left_year]["d25.actions.spent_d25"] = True
+
         else:
             left_year = None
-            ret_year = None
-            left_year_aff = None
             left_date = None
             ret_date = None
+            left_year_aff = None
+            ret_diff_year = None
+
         add_points = False
-        ret_diff_year = ret_year > left_year
 
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
@@ -3779,9 +3855,6 @@ label greeting_returned_home_player_bday:
             if persistent._mas_player_bday_date_aff_gain < 25:
                 persistent._mas_player_bday_date_aff_gain += amt
                 mas_gainAffection(amt, bypass=True)
-
-    if left_date < mas_d25 < ret_date:
-        $ persistent._mas_d25_spent_d25 = True
 
     if time_out < five_minutes:
         $ mas_loseAffection()
@@ -3927,35 +4000,41 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp
+        exit_pp=store.mas_history._f14_exit_pp,
+        start_dt=datetime.datetime(2020, 2, 13),
+        end_dt=datetime.datetime(2020, 2, 15)
     ))
 
 label mas_f14_autoload_check:
-    #Since it's possible player didn't see this, we need to derandom it manually.
-    $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
-    $ mas_removeDelayedAction(11)
+    python:
+        #Since it's possible player didn't see this, we need to derandom it manually.
+        mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
+        mas_removeDelayedAction(11)
 
-    if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
-        $ persistent._mas_f14_in_f14_mode = True
-        $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
+        if not persistent._mas_f14_in_f14_mode and mas_isMoniNormal(higher=True):
+            persistent._mas_f14_in_f14_mode = True
+            store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
+            monika_chr.change_clothes(mas_clothes_sundress_white, False)
+            monika_chr.save()
+            renpy.save_persistent()
 
-    elif not mas_isF14():
-        #We want to lock and derandom/depool all of the f14 labels if it's not f14
-        $ mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
-        $ mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
-        $ mas_idle_mailbox.send_rebuild_msg()
+        elif not mas_isF14():
+            #We want to lock and derandom/depool all of the f14 labels if it's not f14
+            mas_hideEVL("mas_f14_monika_vday_colors","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_cliches","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
+            mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
+            mas_idle_mailbox.send_rebuild_msg()
 
-        # remove delayed actions for the above events
-        $ mas_removeDelayedActions(12, 13, 14, 15)
+            # remove delayed actions for the above events
+            mas_removeDelayedActions(12, 13, 14, 15)
 
-        #Reset the f14 mode, and outfit if we're lower than the love aff level.
-        $ persistent._mas_f14_in_f14_mode = False
-        if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
-            $ monika_chr.reset_clothes(False)
+            #Reset the f14 mode, and outfit if we're lower than the love aff level.
+            persistent._mas_f14_in_f14_mode = False
+            if mas_isMoniEnamored(lower=True) and monika_chr.clothes == mas_clothes_sundress_white:
+                monika_chr.reset_clothes(False)
+                monika_chr.save()
+                renpy.save_persistent()
 
     if mas_isplayer_bday() or persistent._mas_player_bday_in_player_bday_mode:
         jump mas_player_bday_autoload_check
@@ -4031,7 +4110,7 @@ label mas_pf14_monika_lovey_dovey:
     #Add the delayed action to remove itself
     $ mas_addDelayedAction(11)
 
-    return "derandom|no_unlock"
+    return "derandom|no_unlock|love"
 
 #######################[HOL050] INTRO:
 
@@ -4077,14 +4156,11 @@ label mas_f14_monika_valentines_intro:
         $ persistent._mas_f14_in_f14_mode = True
         m 3wub "Oh!"
         m 3tsu "I have a little surprise for you...{w=1}I think you're gonna like it, ehehe~"
-        window hide
-        show monika 1dsa
-        pause 1.0
+
         $ mas_hideEVL("mas_pf14_monika_lovey_dovey","EVE",derandom=True)
         $ store.mas_selspr.unlock_clothes(mas_clothes_sundress_white)
-        $ monika_chr.change_clothes(mas_clothes_sundress_white, False)
-        $ monika_chr.save()
-        pause 0.5
+        call mas_clothes_change(mas_clothes_sundress_white)
+
         m 1eua "..."
         m 2eksdla "..."
         m 2rksdla "Ahaha...{w=1}it's not polite to stare, [player]..."
@@ -4116,7 +4192,7 @@ label mas_f14_monika_valentines_intro:
 
     #We have now seen the intro
     $ persistent._mas_f14_intro_seen = True
-    return "rebuild_ev"
+    return "rebuild_ev|love"
 
 #######################[HOL050] TOPICS
 
@@ -4457,6 +4533,7 @@ label mas_f14_monika_spent_time_with:
         m 1ekbfa "Thank you for always being by my side."
         show monika 5ekbfa at t11 zorder MAS_MONIKA_Z with dissolve
         m 5ekbfa "I love you so much, [player]. Happy Valentine's Day~"
+        return "love"
 
     else:
         m 1eka "Thank you for being by my side."

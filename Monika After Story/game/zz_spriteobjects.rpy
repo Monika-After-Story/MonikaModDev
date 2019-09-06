@@ -7,6 +7,7 @@
 #   [SPR010] - Hair programming points
 #   [SPR020] - Clothes programming points
 #   [SPR030] - ACS programming points
+#   [SPR100] - special base objects
 #   [SPR110] - Hair sprite objects
 #   [SPR120] - Clothes sprite objects
 #   [SPR130] - ACS sprite objects
@@ -223,7 +224,7 @@ init -2 python in mas_sprites:
             p2=None,
             p3="1",
             p4=None,
-            p5="5old",
+            p5=None,
             p6=None
         )
 
@@ -423,9 +424,9 @@ init -2 python in mas_sprites:
         temp_storage["clothes.santa"] = store.mas_acs_promisering.pose_map
         store.mas_acs_promisering.pose_map = store.MASPoseMap(
             p1=None,
-            p2="7",
+            p2=None,
             p3="1",
-            p4=None,
+            p4="1",
             p5=None,
             p6=None
         )
@@ -533,6 +534,17 @@ init -2 python in mas_sprites:
             _moni_chr.wear_acs(store.mas_acs_quetzalplushie)
 
 
+init -2 python in mas_sprites:
+    # Base objects (SPR100)
+    # special objects
+
+    import store
+
+    base_pose_map = store.MASPoseMap(
+        mpm_type=store.MASPoseMap.MPM_TYPE_PA
+        # TODO
+    )
+
 
 init -1 python:
     # HAIR (SPR110)
@@ -574,7 +586,7 @@ init -1 python:
     ### PONYTAIL WITH RIBBON (default)
     ## def
     # Monika's default hairstyle, aka the ponytail
-    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO
+    # thanks Ryuse/Iron707/Taross/Metisz/Tri/JMO/Orca
     mas_hair_def = MASHair(
         "def",
         "def",
@@ -604,7 +616,7 @@ init -1 python:
     ### DOWN
     ## down
     # Hair is down, not tied up
-    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO
+    # thanks Ryuse/Finale/Iron707/Taross/Metisz/Tri/JMO/Orca
     mas_hair_down = MASHair(
         "down",
         "down",
@@ -730,7 +742,7 @@ init -1 python:
             use_reg_for_l=True
         ),
         stay_on_start=True,
-        entry_pp=store.mas_sprites._clothes_def_entry,
+        entry_pp=store.mas_sprites._clothes_def_entry
     )
     store.mas_sprites.init_clothes(mas_clothes_def)
     store.mas_selspr.init_selectable_clothes(
@@ -746,6 +758,49 @@ init -1 python:
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
 
+
+    ### BLAZERLESS SCHOOL UNIFORM
+    ## blazerless
+    # Monika's school uniform, without the blazer
+    # thanks Iron/Velius94/Orca
+    mas_clothes_blazerless = MASClothes(
+        "blazerless",
+        "blazerless",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True,
+            p1=store.mas_sprites.use_bpam(1),
+            p2=MASPoseArms(both=("crossed", True, False)),
+            p3=store.mas_sprites.use_bpam(3),
+            p4=store.mas_sprites.use_bpam(4),
+            p5=MASPoseArms(
+                left=("def", False, True),
+                right=("def", True, True)
+            ),
+            p6=store.mas_sprites.use_bpam(6),
+            p7=store.mas_sprites.use_bpam(7)
+        )
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blazerless)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blazerless,
+        "School Uniform (Blazerless)",
+        "schooluniform_blazerless",
+        "clothes",
+        visible_when_locked=True,
+        hover_dlg=None,
+        select_dlg=[
+            "Ah, feels nice without the blazer!",
+        ]
+    )
+    store.mas_selspr.unlock_clothes(mas_clothes_def)
+
+
     ### MARISA COSTUME
     ## marisa
     # Witch costume based on Marisa
@@ -754,11 +809,16 @@ init -1 python:
         "marisa",
         "marisa",
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
-            p6="down"
+            p5="steepling",
+            p6="down",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -794,11 +854,16 @@ init -1 python:
         "rin",
         "rin",
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
             p2="crossed",
             p3="restleftpointright",
             p4="pointright",
-            p6="down"
+            p5="steepling",
+            p6="down",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -841,11 +906,16 @@ init -1 python:
 #            use_reg_for_l=True
 #        ),
         MASPoseMap(
+            mpm_type=MASPoseMap.MPM_TYPE_FB,
+            default="steepling",
+            use_reg_for_l=True,
             p1="steepling",
-            p2="crossed",
+            p2="steepling",
             p3="restleftpointright",
-            p4="pointright",
-            p6="down"
+            p4="restleftpointright",
+            p5="steepling",
+            p6="steepling",
+            p7="restleftpointright"
         ),
         fallback=True,
         hair_map={
@@ -887,6 +957,10 @@ init -1 python:
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_sundress_white_entry,
         exit_pp=store.mas_sprites._clothes_sundress_white_exit,
+        pose_arms=MASPoseMap(
+            default=None,
+            use_reg_for_l=True
+        )
     )
     store.mas_sprites.init_clothes(mas_clothes_sundress_white)
     store.mas_selspr.init_selectable_clothes(
@@ -975,14 +1049,25 @@ init -1 python:
             p3="1",
             p4="4",
             p5="5",
-            p6=None
+            p6=None,
+            p7="1"
         ),
         stay_on_start=True,
         acs_type="wrist-bracelet",
         mux_type=["wrist-bracelet"],
         ex_props={
             "bare wrist": True,
-        }
+        },
+        rec_layer=MASMonika.ASE_ACS,
+        arm_split=MASPoseMap(
+            default="",
+            p1="1",
+            p2="0",
+            p3="1",
+            p4="0",
+            p5="1",
+            p7="1",
+        )
     )
     store.mas_sprites.init_acs(mas_acs_hairties_bracelet_brown)
 
@@ -1039,7 +1124,11 @@ init -1 python:
         ex_props={
             "bare collar": True,
         },
-        rec_layer=MASMonika.BFH_ACS
+        rec_layer=MASMonika.BSE_ACS,
+        arm_split=MASPoseMap(
+            default="0",
+            use_reg_for_l=True
+        )
     )
     store.mas_sprites.init_acs(mas_acs_musicnote_necklace_gold)
 
@@ -1055,7 +1144,8 @@ init -1 python:
             p3="1",
             p4=None,
             p5="5",
-            p6=None
+            p6=None,
+            p7=None,
         ),
         stay_on_start=True,
         acs_type="ring",

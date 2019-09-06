@@ -50,7 +50,7 @@ label gender:
     $ evhand.event_database["gender_redo"].pool = True
     $ persistent._seen_ever["gender_redo"] = True # dont want this in unseen
 
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="gender_redo",category=['you','misc'],prompt="Can you change my gender?",unlocked=False)) #This needs to be unlocked by the random name change event
@@ -132,7 +132,7 @@ label gender_redo:
                 m "So I'll treat you however you want to be treated."
                 m 1ekbfa "Because your happiness is the most important thing to me."
     m 1hub "Remember that I'll always love you unconditionally, [player]."
-    return
+    return "love"
 
 init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="preferredname",conditional="get_level()>=16 and not seen_event('preferredname')",action=EV_ACT_QUEUE)) #This needs to be unlocked by the random name change event
@@ -2184,6 +2184,7 @@ label monika_rpy_files:
             m 1sua "Really? Thank you so much for helping me come closer to your reality!"
             m 1hua "I love you, [player]~"
             $ persistent._mas_pm_has_rpy = True
+            return "love"
 
         "No.":
             m "I see."
@@ -2337,6 +2338,8 @@ label mas_bday_player_bday_select_select:
             )
 
     $ persistent._mas_player_bday = selected_date
+    $ store.mas_player_bday_event.correct_pbday_mhs(selected_date)
+    $ store.mas_history.saveMHSData()
     $ renpy.save_persistent()
     jump birthdate_set
 
@@ -2487,4 +2490,59 @@ label mas_notification_windowreact:
             m 1tuu "It's not like you have anything to hide from your girlfriend..."
             show monika 5ttu at t11 zorder MAS_MONIKA_Z with dissolve
             m 5ttu "...right?"
+    return
+
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_change_to_def",
+            unlocked=False
+        )
+    )
+
+label mas_change_to_def:
+    # sanity check for an extremely rare case where player dropped below happy
+    # closed game before this was pushed and then deleted json before next load
+    if monika_chr.clothes == mas_clothes_def:
+        return "no_unlock"
+
+    m 1eka "Hey [player], I miss my old school uniform..."
+    m 3eka "I'm just going to go change, be right back..."
+    
+    call mas_clothes_change()
+
+    m "Okay, what else should we do today?"
+
+    # remove from event list in case PP and ch30 both push
+    $ mas_rmallEVL("mas_change_to_def")
+    return "no_unlock"
+
+# Changes clothes to the given outfit.
+#   IN:
+#       outfit - the MASClothes object to change outfit to
+#           If None is passed, the uniform is used
+label mas_clothes_change(outfit=None):
+    # use def as the default outfit to change to
+    if outfit is None:
+        $ outfit = mas_clothes_def
+
+    window hide
+
+    $ curr_zoom = store.mas_sprites.zoom_level
+    call monika_zoom_transition_reset (1.0)
+    show emptydesk zorder 9 at i11
+
+    hide monika with dissolve
+
+    $ monika_chr.change_clothes(outfit)
+    $ monika_chr.save()
+    $ renpy.save_persistent()
+
+    pause 4.0
+    show monika 1eua zorder MAS_MONIKA_Z at i11 with dissolve
+    hide emptydesk
+
+    pause 0.5
+    call monika_zoom_transition (curr_zoom, 1.0)
     return

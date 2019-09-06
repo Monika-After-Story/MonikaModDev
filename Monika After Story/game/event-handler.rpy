@@ -23,7 +23,7 @@ transform prompt_monika:
     tcommon(950,z=0.8)
 
 
-init -950 python in mas_ev_data_ver:
+init -999 python in mas_ev_data_ver:
     # must be before -900 so we can use in persistent backup/cleanup
 
     # need to use real lists and dicts here
@@ -31,7 +31,6 @@ init -950 python in mas_ev_data_ver:
 
     # special store dedicated to verification of Event-based data
     import datetime
-    import store
 
     ## verification type functions
     ## most of these lead into verify_item
@@ -54,6 +53,10 @@ init -950 python in mas_ev_data_ver:
             ):
             return False
         return _verify_item(val, datetime.datetime, allow_none)
+
+
+    def _verify_dt_nn(val):
+        return _verify_dt(val, False)
 
 
     def _verify_evact(val, allow_none=True):
@@ -138,6 +141,9 @@ init -950 python in mas_ev_data_ver:
             """
             return self.verifier(value, self.allow_none)
 
+
+init -950 python in mas_ev_data_ver:
+    import store
 
     # map data to tuples
     _verify_map = {
@@ -302,7 +308,8 @@ init 4 python:
         "CMP": store.mas_compliments.compliment_database,
         "FLR": store.mas_filereacts.filereact_db,
         "APL": store.mas_apology.apology_db,
-        "WRS": store.mas_windowreacts.windowreact_db
+        "WRS": store.mas_windowreacts.windowreact_db,
+        "FFF": store.mas_fun_facts.fun_fact_db
     }
 
 
@@ -1739,6 +1746,13 @@ init python:
 
         return False
 
+    def mas_cleanEventList():
+        """
+        Iterates through the event list and removes items which shouldn't be restarted
+        """
+        for index in range(len(persistent.event_list)-1,-1,-1):
+            if mas_isRstBlk(persistent.event_list[index][0]):
+                mas_rmEVL(persistent.event_list[index][0])
 
     def mas_cleanJustSeen(eventlist, db):
         """
@@ -1971,6 +1985,9 @@ label call_next_event:
                 $ persistent._mas_in_idle_mode = True
                 $ renpy.save_persistent()
 
+            if "love" in ret_items:
+                $ mas_ILY()
+
             if "quit" in ret_items:
                 $ persistent.closed_self = True #Monika happily closes herself
                 $ mas_clearNotifs()
@@ -2094,7 +2111,11 @@ label prompt_menu:
         talk_menu.append(("Hey, [m_name]...", "prompt"))
         if len(repeatable_events)>0:
             talk_menu.append(("Repeat conversation", "repeat"))
-        talk_menu.append(("I love you!", "love"))
+        if _mas_getAffection() > -50:
+            if mas_passedILY(pass_time=datetime.timedelta(0,10)):
+                talk_menu.append(("I love you, too!","love_too"))
+            else:
+                talk_menu.append(("I love you!", "love"))
         talk_menu.append(("I'm feeling...", "moods"))
         talk_menu.append(("Goodbye", "goodbye"))
         talk_menu.append(("Nevermind","nevermind"))
@@ -2116,6 +2137,9 @@ label prompt_menu:
 
     elif madechoice == "love":
         $ pushEvent("monika_love",True)
+
+    elif madechoice == "love_too":
+        $ pushEvent("monika_love_too",True)
 
     elif madechoice == "moods":
         call mas_mood_start from _call_mas_mood_start

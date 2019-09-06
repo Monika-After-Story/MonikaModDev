@@ -191,6 +191,8 @@ label mas_monika_cherry_blossom3:
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
+    # manually handle the "love" return key
+    $ mas_ILY()
     return
 
 label mas_monika_cherry_blossom4:

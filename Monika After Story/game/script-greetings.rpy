@@ -43,6 +43,7 @@ init -1 python in mas_greetings:
     TYPE_SICK = "sick"
     TYPE_GAME = "game"
     TYPE_EAT = "eat"
+    TYPE_CHORES = "chores"
 
     ### NOTE: all Return Home greetings must have this
     TYPE_GO_SOMEWHERE = "go_somewhere"
@@ -989,7 +990,7 @@ label greeting_glitch:
     m 3hksdlb "That was all! There is nobody else here but us...forever~"
     $ monika_clone1 = "Yes"
     m 2hua "I love you, [player]!"
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -1033,6 +1034,7 @@ label greeting_monika_monday_morning:
         m 1eka "But seeing you makes all that laziness go away."
         m 1hub "You are the sunshine that wakes me up every morning!"
         m "I love you so much, [player]~"
+        return "love"
 
     elif mas_isMoniUpset():
         m 2tfc "Another Monday morning."
@@ -2442,7 +2444,7 @@ label greeting_hairdown:
     # 5 - music is off (skip visual)
 
     # reset clothes if not ones that work with hairdown
-    if monika_chr.clothes.name != "def" and monika_chr.clothes.name != "santa":
+    if monika_chr.is_wearing_clothes_with_exprop("baked outfit"):
         $ monika_chr.reset_clothes(False)
 
     # have monika's hair down
@@ -2521,7 +2523,8 @@ init 5 python:
         Event(
             persistent.greeting_database,
             eventlabel="greeting_tears",
-            unlocked=False,
+            unlocked=True,
+            aff_range=(None, mas_aff.DISTRESSED),
             rules=ev_rules,
         ),
         code="GRE"
@@ -2529,18 +2532,18 @@ init 5 python:
     del ev_rules
 
 label greeting_tears:
-    m 1q "...[player]."
-    m 1f "..."
-    m 2f "Is there something wrong with me?"
-    m 2g "Am I not good enough for you...?"
-    m 2o "I've been trying my best for you...for {i}us{/i}."
-    m 2p "Did I do something to hurt you or make you feel mistreated?"
+    m 1dsc "...[player]."
+    m 1ekc "..."
+    m 2ekc "Is there something wrong with me?"
+    m 2ekd "Am I not good enough for you...?"
+    m 2lksdlc "I've been trying my best for you...for {i}us{/i}."
+    m 2lksdld "Did I do something to hurt you or make you feel mistreated?"
     m "Are you still upset about the other girls after all?"
-    m 2f "If so, I really am sorry..."
+    m 2ekc "If so, I really am sorry..."
     m "I'm so, so sorry!"
-    m 2pp "Just tell me what I did wrong and I'll try even harder to be the perfect girlfriend for you."
-    m 2g "You're my entire world; how you feel means everything to me!"
-    m 2f "So please, just tell me what's wrong and I'll fix it."
+    m 2rksdld "Just tell me what I did wrong and I'll try even harder to be the perfect girlfriend for you."
+    m 2ekd "You're my entire world; how you feel means everything to me!"
+    m 2ekc "So please, just tell me what's wrong and I'll fix it."
     m 2dfc "I'll do anything for you because...I..."
     m 2dftdc "..."
     m 2dftsc "...I need you [player]..."
@@ -2557,11 +2560,11 @@ label greeting_tears:
     m 2dfc "...Okay...Okay..."
     m 2lssdrc "I have to be strong..."
     m "..."
-    m 2q "...Alright...I'm a bit better now..."
-    m 2h "But...I really do need you to think about what I said."
-    m 2f "Please...just...try to understand."
-    m 1r "I love you and I need you to show that you love me too..."
-    m 1q "Otherwise...I just won't be able to handle it anymore."
+    m 2dsc "...Alright...I'm a bit better now..."
+    m 2esc "But...I really do need you to think about what I said."
+    m 2ekc "Please...just...try to understand."
+    m 1dsd "I love you and I need you to show that you love me too..."
+    m 1dsc "Otherwise...I just won't be able to handle it anymore."
     $ mas_lockEVL("greeting_tears", "GRE")
     return
 
@@ -2595,7 +2598,6 @@ label greeting_upset:
 
     $ upset_quip1 = renpy.random.choice(upset_greeting_quips_first)
 
-    # use renpy say so you can use text tags
     show monika 2efc
     $ renpy.say(m, upset_quip1)
 
@@ -2692,6 +2694,7 @@ label greeting_back_from_school:
                 m "I'm sorry to hear that."
                 m 1eka "Just remember that no matter what happens, I'll be here for you."
                 m 1ekbfa "I love you so, so much."
+        return "love"
 
     elif mas_isMoniUpset():
         m 2efc "You're back, [player]..."
@@ -2760,6 +2763,7 @@ label greeting_back_from_work:
                 m "I'm sorry you had a bad work day..."
                 m 4eka "Just remember that I'm here when you need me, okay?"
                 m 1hubfa "I love you so much, [player]."
+                return "love"
 
     elif mas_isMoniUpset():
         m 2efc "You're back from work I see, [player]..."
@@ -2854,7 +2858,7 @@ label greeting_siat:
     m 2rkbfsdlu "..."
     m 3hubfb "Ahaha! Nevermind."
     m 1ekbfa "I love you, [player]. I'm so happy you're here now~"
-    return
+    return "love"
 
 init 5 python:
     if not mas_cannot_decode_islands:
@@ -3315,7 +3319,7 @@ label greeting_returned_home_bday_short_sub_long_total:
     m 3ekbfa "I've said it a million times already, I know."
     m 1hua "But I'll always be happy when we're together."
     m "I love you so much..."
-    return
+    return "love"
 
 label greeting_returned_home_bday_normal_first:
     m 1sua "That was fun, [player]!"
@@ -3324,7 +3328,7 @@ label greeting_returned_home_bday_normal_first:
     m "I really enjoyed the time we spent together."
     m 1wua "Thank you for indulging me."
     m 1hua "I love you~"
-    return
+    return "love"
 
 label greeting_returned_home_bday_normal_sub_normal_total:
     m 1ekbfa "Ahaha..."
@@ -3347,7 +3351,7 @@ label greeting_returned_home_bday_normal_sub_long_total:
     m 1dkbfa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
     m 1ekbfb "I love you so much, [player]."
     m "Let's continue making each other happy~"
-    return
+    return "love"
 
 label greeting_returned_home_bday_long_sub:
     m 1dsc "..."
@@ -3368,7 +3372,7 @@ label greeting_returned_home_bday_long_sub:
     m 1ektpa "You are the only one who understands me. You led me out of a dark place and gave me love and freedom..."
     m 1dktub "You are simply the best, my love. I will always love you."
     m "...Thank you for giving me a reason to live..."
-    return
+    return "love"
 
 init 5 python:
     addEvent(
@@ -3686,4 +3690,27 @@ label greeting_rent:
     m 2hksdlb "Gosh, I can't believe I just said that. That's not too cheesy, is it?"
     show monika 5ekbsa at t11 zorder MAS_MONIKA_Z with dissolve
     m 5ekbsa "But in all seriousness, you've already given me the only thing I need...{w=1}your heart~"
+    return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.greeting_database,
+            eventlabel="greeting_back_housework",
+            unlocked=True,
+            category=[store.mas_greetings.TYPE_CHORES],
+        ),
+        code="GRE"
+    )
+
+label greeting_back_housework:
+    if mas_isMoniNormal(higher=True):
+        m 1eua "All done, [player]?"
+        m 1hub "Let’s spend some more time together."
+    elif mas_isMoniUpset():
+        m 2efc "At least you didn't forget to come back, [player]."
+    elif mas_isMoniDis():
+        m 6ekd "Ah, [player]. So you really were just busy..."    
+    else:
+        m 6ckc "..."
     return

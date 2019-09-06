@@ -305,8 +305,8 @@ label v0_3_1(version=version): # 0.3.1
 
 # non generic updates go here
 
-# 0.9.6
-label v0_9_6(version="v0_9_6"):
+# 0.10.0
+label v0_10_0(version="v0_10_0"):
     python:
         ev_label_list = [
             ("monika_whatwatching","mas_wrs_youtube"),
@@ -326,12 +326,72 @@ label v0_9_6(version="v0_9_6"):
                 old_ev = None
 
             if ev is not None and old_ev is not None:
-                ev.shown_count = old_ev.shown_count
-                ev.last_seen = old_ev.last_seen
+                ev.shown_count += old_ev.shown_count
+
+                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                    ev.last_seen = old_ev.last_seen
+
                 mas_transferTopicSeen(old_ev_label, new_ev_label)
 
                 # erase this topic
                 mas_eraseTopic(old_ev_label, persistent.event_database)
+
+        # this doesn't need to be locked by default anymore with the new greet code
+        if not renpy.seen_label("greeting_tears"):
+            mas_unlockEVL("greeting_tears", "GRE")
+
+        # let's actually pool this finally
+        family_ev = mas_getEV("monika_family")
+        if family_ev is not None:
+            family_ev.pool = True
+
+        # MHS checking
+        mhs_922 = store.mas_history.getMHS("922")
+        if (
+                mhs_922 is not None 
+                and mhs_922.trigger.month == 9
+                and mhs_922.trigger.day == 30
+        ):
+            mhs_922.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_922.use_year_before = True
+
+        mhs_pbday = store.mas_history.getMHS("player_bday")
+        if (
+                mhs_pbday is not None
+                and mhs_pbday.trigger.month == 1
+                and mhs_pbday.trigger.day == 1
+                and persistent._mas_player_bday is not None
+        ):
+            store.mas_player_bday_event.correct_pbday_mhs(
+                persistent._mas_player_bday
+            )
+
+            now_dt = datetime.datetime.now()
+            trig_now = mhs_pbday.trigger.replace(year=now_dt.year)
+            if trig_now < now_dt:
+                # this means the trigger should have ran this year, so we need
+                # to save this data with a false trigger year
+                mhs_pbday.trigger = trig_now
+                mhs_pbday.save() # this should reset trigger to correct date
+                renpy.save_persistent()
+
+        mhs_o31 = store.mas_history.getMHS("o31")
+        if (
+                mhs_o31 is not None
+                and mhs_o31.trigger.month == 11
+                and mhs_o31.trigger.day == 2
+        ):
+            mhs_o31.setTrigger(datetime.datetime(2020, 1, 6))
+            mhs_o31.use_year_before = True
+
+        # always save mhs
+        store.mas_history.saveMHSData()
+
+        # unlock clothes select
+        clothes_sel_ev = mas_getEV("monika_clothes_select")
+        if clothes_sel_ev is not None:
+            clothes_sel_ev.unlocked = True
+            
     return
 
 # 0.9.5

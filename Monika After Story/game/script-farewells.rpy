@@ -1452,3 +1452,37 @@ label bye_dinner_noon_to_mn:
         m 2euc "I guess it's dinner time for you."
         m 2esd "Well...{w=1}enjoy."
     return
+    
+init 5 python:
+    addEvent(
+        Event(
+            persistent.farewell_database,
+            eventlabel="bye_prompt_housework",
+            unlocked=True,
+            prompt="I'm going to do some housework.",
+            pool=True
+        ),
+        code="BYE"
+    )
+
+label bye_prompt_housework:
+    if mas_isMoniNormal(higher=True):
+        m 1eub "Doing your chores, [player]?"
+        m 1ekc "I would like to help you out, but there’s not really much I can do since I’m stuck in here..."
+        m 3eka "Just make sure to come back as soon as you’re done, okay?"
+        m 3hub "I’ll be waiting here for you."
+    elif mas_isMoniUpset():
+        m 2esc "Fine."
+        m 2tsc "At least you're doing something responsible."
+        m 2tfc "{cps=*2}...For once.{/cps}{nw}"
+        $ _history_list.pop()        
+        m 2efc "Goodbye."
+    elif mas_isMoniDis():
+        m 6ekc "I see..."
+        m 6rkc "I don’t want to keep you from completing your household responsibilities."
+        m 6dkd "I just hope you're actually busy and not saying that just to get away from me..."
+        m 6ekc "Goodbye, [player]."
+    else:
+        m 6ckc "..."
+    $ persistent._mas_greeting_type = store.mas_greetings.TYPE_CHORES
+    return 'quit'
