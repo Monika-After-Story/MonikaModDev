@@ -8477,7 +8477,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_careful",category=['you'],prompt="Be careful",random=True))
 
 label monika_careful:
-    m 1lsc "..."
+    m 1lsc "Hey, [player]..."
     m 1ekc "Whenever you leave this room, promise me to be extra careful, okay?"
     m 1ekd "It's just that..."
     m 3eksdld "There's a lot of dangerous things out there, and I want my sweetie to always return to me safe and sound."
