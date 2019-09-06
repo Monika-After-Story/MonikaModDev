@@ -671,8 +671,8 @@ init 5 python:
 
 label greeting_visit5:
     m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
-    show monika 5wuw at t11 zorder MAS_MONIKA_Z with dissolve
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
+    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
     return
 
