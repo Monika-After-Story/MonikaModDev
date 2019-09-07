@@ -1466,6 +1466,20 @@ image monika 6tst:
         0.06
         repeat
 
+image monika 6tub:
+    block:
+        "monika 6tub_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 6dub_static"
+        0.06
+        repeat
+
 image monika 6tubfa:
     block:
         "monika 6tubfa_static"

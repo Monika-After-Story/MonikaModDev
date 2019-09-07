@@ -626,6 +626,16 @@ image monika 6tst_static = DynamicDisplayable(
     arms="down"
 )
 
+image monika 6tub_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="smug",
+    nose="def",
+    mouth="big",
+    arms="down"
+)
+
 image monika 6tubfa_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,

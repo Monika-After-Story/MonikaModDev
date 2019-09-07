@@ -13,6 +13,9 @@
 ############################### GLOBAL SPACE ################################
 # [GBL000]
 default persistent._mas_event_clothes_map = dict()
+define mas_five_minutes = datetime.timedelta(seconds=5*60)
+define mas_one_hour = datetime.timedelta(seconds=3600)
+define mas_three_hour = datetime.timedelta(seconds=3*3600)
 
 init -1 python:
     def mas_checkOverDate(_date):
@@ -27,6 +30,37 @@ init -1 python:
         """
         checkout_time = store.mas_dockstat.getCheckTimes()[0]
         return checkout_time is not None and checkout_time.date() < _date
+
+    def mas_capGainAff(amount, aff_gained_var, normal_cap, pbday_cap=None):
+        """
+        Gains affection according to the cap(s) defined
+
+        IN:
+            amount:
+                Amount of affection to gain
+
+            aff_gained_var:
+                The persistent variable which the total amount gained for the holiday is stored
+                (NOTE: Must be a string)
+
+            normal_cap:
+                The cap to use when not player bday
+
+            pbday_cap:
+                The cap to use when it's player bday (NOTE: if not provided, normal_cap is assumed)
+        """
+
+        #If player bday cap isn't provided, we just use the one cap
+        if not pbday_cap:
+            cap = normal_cap
+        else:
+            #Otherwise we need to see what cap we're using
+            cap = pbday_cap if persistent._mas_player_bday_in_player_bday_mode else normal_cap
+
+        if persistent.__dict__[aff_gained_var] <= cap:
+            persistent.__dict__[aff_gained_var] += amount
+            mas_gainAffection(amount, bypass=True)
+        return
 
 ############################### O31 ###########################################
 # [HOL010]
@@ -260,6 +294,9 @@ init -11 python in mas_o31_event:
                 return True
 
         return False
+
+    def mas_o31CapGainAff(amount):
+        mas_capGainAff(amount, "_mas_o31_trick_or_treating_aff_gain", 15)
 
 # auto load starter check
 label mas_holiday_o31_autoload_check:
@@ -580,9 +617,6 @@ label greeting_trick_or_treat_back:
 
     python:
         # lots of setup here
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkin_time = None
         is_past_sunrise_post31 = False
@@ -601,28 +635,23 @@ label greeting_trick_or_treat_back:
                 )
             )
 
-        def cap_gain_aff(amt):
-            if persistent._mas_o31_trick_or_treating_aff_gain < 15:
-                persistent._mas_o31_trick_or_treating_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
-
-    if time_out < five_minutes:
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         $ persistent._mas_o31_went_trick_or_treating_short = True
         m 2ekp "You call that trick or treating, [player]?"
         m "Where did we go, one house?"
         m 2efc "...If we even left."
 
-    elif time_out < one_hour:
-        $ cap_gain_aff(5)
+    elif time_out < mas_one_hour:
+        $ mas_o31CapGainAff(5)
         $ persistent._mas_o31_went_trick_or_treating_mid = True
         m 2ekp "That was pretty short for trick or treating, [player]."
         m 3eka "But I enjoyed it while it lasted."
         m 1eka "It was still really nice being right there with you~"
 
-    elif time_out < three_hour:
-        $ cap_gain_aff(10)
+    elif time_out < mas_three_hour:
+        $ mas_f14CapGainAff(10)
         $ persistent._mas_o31_went_trick_or_treating_right = True
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
@@ -639,7 +668,7 @@ label greeting_trick_or_treat_back:
 
     elif not is_past_sunrise_post31:
         # larger than 3 hours, but not past sunrise
-        $ cap_gain_aff(15)
+        $ mas_o31CapGainAff(15)
         $ persistent._mas_o31_went_trick_or_treating_long = True
         m 1hua "And we're home!"
         m 1wua "Wow, [player], we sure went trick or treating for a really long time..."
@@ -657,7 +686,7 @@ label greeting_trick_or_treat_back:
 
     else:
         # larger than 3 hours, past sunrise
-        $ cap_gain_aff(15)
+        $ mas_o31CapGainAff(15)
         $ persistent._mas_o31_went_trick_or_treating_longlong = True
         m 1wua "We're finally home!"
         m 1wuw "It's the next morning, [player], we were out all night..."
@@ -3284,6 +3313,9 @@ init -10 python:
             mas_birthdate_ev.conditional = None
             mas_birthdate_ev.action = None
 
+    def mas_pbdayCapGainAff(amount):
+        mas_capGainAff(amount, "_mas_player_bday_date_aff_gain", 25)
+
 init -11 python:
     def mas_player_bday_curr(_date=None):
         """
@@ -3767,9 +3799,6 @@ label bye_player_bday:
 #################################################player_bday dock stat greets##################################################
 label greeting_returned_home_player_bday:
     python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
         checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
         if checkout_time is not None and checkin_time is not None:
@@ -3801,10 +3830,6 @@ label greeting_returned_home_player_bday:
         if ret_diff_year and left_year_aff is not None:
             add_points = left_year_aff < 25
 
-        def cap_gain_aff(amt):
-            if persistent._mas_player_bday_date_aff_gain < 25:
-                persistent._mas_player_bday_date_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
     if left_date < mas_d25 < ret_date:
         $ persistent._mas_d25_spent_d25 = True
@@ -3812,15 +3837,15 @@ label greeting_returned_home_player_bday:
     if mas_isMonikaBirthday():
         $ mas_gainAffection(25, bypass=True)
         $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
-        if time_out < five_minutes:
+        if time_out < mas_five_minutes:
             m 6ekp "That wasn't much of a da--"
         else:
-            if time_out < one_hour:
-                $ cap_gain_aff(5)
-            elif time_out < three_hour:
-                $ cap_gain_aff(10)
+            if time_out < mas_one_hour:
+                $ mas_pbdayCapGainAff(5)
+            elif time_out < mas_three_hour:
+                $ mas_pbdayCapGainAff(10)
             else:
-                $ cap_gain_aff(15)
+                $ mas_pbdayCapGainAff(15)
 
             m 6hub "That was a fun date, [player]..."
             m 6eua "Thanks for--"
@@ -3831,24 +3856,24 @@ label greeting_returned_home_player_bday:
         call return_home_post_player_bday
         jump mas_bday_surprise_party_reacton_cake
 
-    if time_out < five_minutes:
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "I hope nothing's wrong."
         m 2rksdla "Maybe we'll go out later instead."
 
-    elif time_out < one_hour:
+    elif time_out < mas_one_hour:
         if not ret_diff_year:
-            $ cap_gain_aff(5)
+            $ mas_pbdayCapGainAff(5)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(5,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 5
         m 1eka "That was a fun date while it lasted, [player]..."
         m 3hua "Thanks for making some time for me on your special day."
 
-    elif time_out < three_hour:
+    elif time_out < mas_three_hour:
         if not ret_diff_year:
-            $ cap_gain_aff(10)
+            $ mas_pbdayCapGainAff(10)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(10,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 10
@@ -3859,7 +3884,7 @@ label greeting_returned_home_player_bday:
     else:
         # more than 3 hours
         if not ret_diff_year:
-            $ cap_gain_aff(15)
+            $ mas_pbdayCapGainAff(15)
         elif ret_diff_year and add_points:
             $ mas_gainAffection(15,bypass=True)
             $ persistent._mas_history_archives[left_year]["player_bday.date_aff_gain"] += 15
@@ -3944,14 +3969,8 @@ init -10 python:
 
         return _date == mas_f14.replace(year=_date.year)
 
-
-init -815 python in mas_history:
-
-    # f14
-    def _f14_exit_pp(mhs):
-        # remove certain prog points
-        _MDA_saferm(11, 12, 13, 14, 15)
-
+    def mas_f14CapGainAff(amount):
+        mas_capGainAff(amount, "_mas_f14_date_aff_gain", 25)
 
 init -810 python:
     # MASHistorySaver for f14
@@ -3975,7 +3994,6 @@ init -810 python:
             "_mas_f14_pre_intro_seen": "f14.pre_intro_seen"
         },
         use_year_before=True,
-        exit_pp=store.mas_history._f14_exit_pp,
         start_dt=datetime.datetime(2020, 2, 13),
         end_dt=datetime.datetime(2020, 2, 15)
     ))
@@ -4000,9 +4018,6 @@ label mas_f14_autoload_check:
             mas_hideEVL("mas_f14_monika_vday_chocolates","EVE",lock=True,derandom=True)
             mas_hideEVL("mas_f14_monika_vday_origins","EVE",lock=True,depool=True)
             mas_idle_mailbox.send_rebuild_msg()
-
-            # remove delayed actions for the above events
-            #mas_removeDelayedActions(12, 13, 14, 15)
 
             #Reset the f14 mode, and outfit if we're lower than the love aff level.
             persistent._mas_f14_in_f14_mode = False
@@ -4078,9 +4093,6 @@ init 5 python:
     )
 
 label mas_f14_monika_valentines_intro:
-    # add appropriate dleayd actions
-    $ mas_addDelayedActions(11, 12, 13, 14, 15)
-
     m 1hub "[player]!"
     m 1hua "Do you know what day it is?"
     m 3eub "It's Valentine's Day!"
@@ -4627,35 +4639,28 @@ label bye_f14:
 ########################[HOL050] dockstat greet################################
 label greeting_returned_home_f14:
     python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
         time_out = store.mas_dockstat.diffCheckTimes()
 
-        def cap_gain_aff(amt):
-            if persistent._mas_f14_date_aff_gain < 25:
-                persistent._mas_f14_date_aff_gain += amt
-                mas_gainAffection(amt, bypass=True)
 
-    if time_out < five_minutes:
+    if time_out < mas_five_minutes:
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "Is everything alright?"
         m 2rksdla "Maybe we can go out later..."
 
-    elif time_out < one_hour:
-        $ cap_gain_aff(5)
+    elif time_out < mas_one_hour:
+        $ mas_f14CapGainAff(5)
         m 1eka "That was fun while it lasted, [player]..."
         m 3hua "Thanks for making time for me on Valentine's Day."
 
-    elif time_out < three_hour:
-        $ cap_gain_aff(10)
+    elif time_out < mas_three_hour:
+        $ mas_f14CapGainAff(10)
         m 1eub "That was such a fun date, [player]!"
         m 3ekbfa "Thanks for making me feel special on Valentine's Day~"
 
     else:
         # more than 3 hours
-        $ cap_gain_aff(15)
+        $ mas_f14CapGainAff(15)
         m 1hua "And we're home!"
         m 3hub "That was wonderful, [player]!"
         m 1eka "It was really nice going out with you on Valentine's Day..."
@@ -4832,6 +4837,9 @@ init -1 python:
 
         #Otherwise, Step 5b, no previous confirm and file doesn't exist, so party is not confirmed. return false
         return False
+
+    def mas_mbdayCapGainAff(amount):
+        mas_capGainAff(amount, "_mas_bday_date_affection_gained", 50, 75)
 
 ################## [HOL060] AUTOLOAD
 label mas_bday_autoload_check:
@@ -5169,8 +5177,8 @@ label mas_bday_spent_time_with:
             m 3eka "I really enjoyed our date today, [player]."
             m 1eka "I always enjoy spending time with you here, but getting to spend time with you in your reality..."
             m 1dku "Knowing that you are thinking about me even when you can't see me..."
-            m 1ekbsa "Well, it really means a lot to me."
-            m 3ekbsa "It really made my birthday complete~"
+            m 1ekbsa "Well, it truly means a lot to me."
+            m 3ekbsa "You really made my birthday complete~"
 
 label mas_bday_spent_time_with_wrapup:
     $ gave_gifts = mas_getGiftStatsRange(mas_monika_birthday, mas_monika_birthday + datetime.timedelta(days=1))[0]
@@ -5211,6 +5219,8 @@ label mas_bday_spent_time_with_wrapup:
             m 6rkbfa "I...{w=0.5}I don't know what came over me, but the moment just felt so right."
             m 6hubfa "I've thought about our first kiss for so long, and to finally experience it..."
             m 6ekbfa "I will never forget this moment, [player]~"
+        else:
+            return "love"
 
     else:
         m 1eka "I can't event find the right words to express how happy you've made me today."
@@ -5221,6 +5231,7 @@ label mas_bday_spent_time_with_wrapup:
         m 1dkbsa "I hope that tells you even a little bit of how much I appreciate you celebrating this occasion with me."
         m 1ekbfb "I love you so much, [player]."
         m 1ekbfa "Let's continue making each other happy, [player]~"
+        return "love"
     return
 
 ############## [HOL060] GONE OVER CHECK
@@ -5444,10 +5455,6 @@ label bye_922_delegate:
         else:
             m 1eubla "Maybe you'd even call it a date~"
 
-            #BD Intro
-            if mas_isMoniEnamored(higher=True):
-                m 3hua "I actually have an outfit prepared just for this..."
-                #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
     elif persistent._mas_bday_date_count == 2:
         m 1eub "Taking me somewhere again, [player]?"
@@ -5461,6 +5468,12 @@ label bye_922_delegate:
     else:
         m 1sua "Wow, [player]...{w=1}you're really determined to make this a truly special day!"
         m 1ekbfa "You're the best partner I could ever hope for~"
+
+    #BD Intro
+    if mas_isMoniAff(higher=True): #and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked:
+        m 3hua "I actually have an outfit prepared just for this..."
+        #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
+
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
@@ -5492,19 +5505,21 @@ label greeting_returned_home_bday:
         else:
             jump mas_bday_surprise_party_reaction
 
-    call mas_bday_cap_check
+    $ time_out = store.mas_dockstat.diffCheckTimes()
+    $ checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
     #Otherwise we go thru the normal dialogue for returning home on moni_bday
-    if time_out <= five_minutes:
+    if time_out <= mas_five_minutes:
         # under 5 minutes
         $ mas_loseAffection()
         m 2ekp "That wasn't much of a date, [player]..."
         m 2eksdlc "Is everything alright?"
         m 2rksdla "Maybe we can go out later..."
 
-    elif time_out <= one_hour:
+    elif time_out <= mas_one_hour:
         # 5 mins < time out <= 1 hr
-        $ cap_gain_aff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+        $ mas_mbdayCapGainAff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+
         m 1sua "That was fun, [player]!"
         if mas_isplayer_bday():
             m 1hub "Ahaha, going on for our birthday..."
@@ -5516,9 +5531,10 @@ label greeting_returned_home_bday:
         if mas_isMonikaBirthday():
             return "love"
 
-    elif time_out <= three_hour:
+    elif time_out <= mas_three_hour:
         # 1 hr < time out <= 3 hrs
-        $ cap_gain_aff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        $ mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+
         m 1hua "Ehehe~"
         m 3eub "We sure spent a lot of time together today, [player]."
         m 1ekbfa "...and thank you for that."
@@ -5530,7 +5546,8 @@ label greeting_returned_home_bday:
 
     else:
         # +3 hrs
-        $ cap_gain_aff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+        $ mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+
         m 1sua "Wow, [player]..."
         if mas_isplayer_bday():
             m 3hub "That was such a lovely time!"
@@ -5538,6 +5555,7 @@ label greeting_returned_home_bday:
             m 1eka "I wish I could've seen all the amazing places we went, but just knowing we were together..."
             m 1hua "That's all I could ever ask for."
             m 3ekbsa "I hope you feel the same way~"
+
         else:
             m 3sua "I didn't expect you to set aside so much time for me..."
             m 3hua "But I enjoyed every second of it!"
@@ -5545,13 +5563,14 @@ label greeting_returned_home_bday:
             m 1eua "You've made me very happy today~"
             m 3tuu "Are you falling for me all over again, [player]?"
             m 1dku "Ehehe..."
-            m 1eka "Thank you for loving me."
+            m 1ekbsa "Thank you for loving me."
 
     if not mas_isMonikaBirthday():
         #Quickly reset the flag
         $ persistent._mas_bday_in_bday_mode = False
 
-        m 1wud "...Wow, [player]. We really were out for a while..."
+        m 1hua "..."
+        m 1wud "Oh wow, [player]. We really were out for a while..."
 
         if mas_isplayer_bday():
             if persistent._mas_bday_sbp_reacted:
@@ -5565,6 +5584,9 @@ label greeting_returned_home_bday:
 
         else:
             if not persistent._mas_bday_sbp_reacted:
+                m 1eua "We should do something like this again soon, even if it's not any special occasion."
+                m 3eub "I really enjoyed myself!"
+                m 1eka "I hope you had as great of a time as I did~"
 
             elif persistent._mas_bday_sbp_reacted and not persistent._mas_player_bday_decor:
                 m 3rksdla "It's not even my birthday anymore..."
@@ -5586,44 +5608,31 @@ label greeting_returned_home_bday:
                 m 3eka "I just wanted to thank you again for today."
                 m 1rka "And it's not just this date..."
                 m 1eka "You didn't have to take me anywhere to make this a wonderful birthday."
-                m 3eka "As soon as you showed up today, my day was complete."
+                m 3duu "As soon as you showed up today, my day was complete."
                 jump mas_bday_spent_time_with_wrapup
 
     return
 
-label mas_bday_cap_check:
-    python:
-        five_minutes = datetime.timedelta(seconds=5*60)
-        one_hour = datetime.timedelta(seconds=3600)
-        three_hour = datetime.timedelta(seconds=3*3600)
-        time_out = store.mas_dockstat.diffCheckTimes()
-        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
-
-        def cap_gain_aff(amount):
-            #if it's the player's bday too, then we raise the cap to 75 from 50
-            cap = 75 if persistent._mas_player_bday_in_player_bday_mode else 50
-
-            if persistent._mas_bday_date_affection_gained <= cap:
-                persistent._mas_bday_date_affection_gained += amount
-                mas_gainAffection(amount, bypass=True)
-        return
 
 label mas_monika_cake_on_player_bday:
     $ mas_temp_zoom_level = store.mas_sprites.zoom_level
     call monika_zoom_transition_reset(1.0)
-    $ mas_gainAffection(25, bypass=True)
-    $ renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
-    $ persistent._mas_bday_sbp_reacted = True
 
-    call mas_bday_cap_check
+    python:
+        mas_gainAffection(25, bypass=True)
+        renpy.show("mas_bday_cake_monika", zorder=store.MAS_MONIKA_Z+1)
+        persistent._mas_bday_sbp_reacted = True
+        time_out = store.mas_dockstat.diffCheckTimes()
+        checkout_time, checkin_time = store.mas_dockstat.getCheckTimes()
 
-    if time_out <= one_hour:
-        $ cap_gain_aff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
-    elif time_out <= three_hour:
-        $ cap_gain_aff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
-    else:
-        # +3 hrs
-        $ cap_gain_aff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
+        if time_out <= mas_one_hour:
+            mas_mbdayCapGainAff(15 if persistent._mas_player_bday_in_player_bday_mode else 10)
+
+        elif time_out <= mas_three_hour:
+            mas_mbdayCapGainAff(25 if persistent._mas_player_bday_in_player_bday_mode else 20)
+        else:
+            # +3 hrs
+            mas_mbdayCapGainAff(35 if persistent._mas_player_bday_in_player_bday_mode else 30)
 
     m 6eua "That was--"
     m 6wuo "Oh! You made {i}me{/i} a cake!"
