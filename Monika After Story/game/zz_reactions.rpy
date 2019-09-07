@@ -1956,8 +1956,11 @@ label mas_remove_choc:
     return
 
 label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
-    $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_bikini_shell")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     m 1sua "Oh! {w=0.5}A seashell bikini!"
     m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
@@ -1996,8 +1999,11 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
     return
 
 label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
-    $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, "orcaramelo_hairflower_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     m 3sua "Oh!{w=0.5} What a cute little flower!"
     m 1ekbsa "Thanks [player], you're so sweet~"
@@ -2012,8 +2018,11 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
     return
 
 label mas_reaction_gift_clothes_velius94_shirt_pink:
-    $ sprite_data = mas_getSpriteObjInfo()
-    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "velius94_shirt_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
     m 1suo "Oh my gosh!"
     m 1suo "It's {i}so{/i} pretty!"
