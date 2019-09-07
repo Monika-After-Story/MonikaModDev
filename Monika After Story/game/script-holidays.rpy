@@ -651,7 +651,7 @@ label greeting_trick_or_treat_back:
         m 1eka "It was still really nice being right there with you~"
 
     elif time_out < mas_three_hour:
-        $ mas_f14CapGainAff(10)
+        $ mas_o31CapGainAff(10)
         $ persistent._mas_o31_went_trick_or_treating_right = True
         m 1hua "And we're home!"
         m 1hub "I hope we got lots of delicious candy!"
@@ -3841,11 +3841,11 @@ label greeting_returned_home_player_bday:
             m 6ekp "That wasn't much of a da--"
         else:
             if time_out < mas_one_hour:
-                $ mas_pbdayCapGainAff(5)
+                $ mas_mbdayCapGainAff(5)
             elif time_out < mas_three_hour:
-                $ mas_pbdayCapGainAff(10)
+                $ mas_mbdayCapGainAff(10)
             else:
-                $ mas_pbdayCapGainAff(15)
+                $ mas_mbdayCapGainAff(15)
 
             m 6hub "That was a fun date, [player]..."
             m 6eua "Thanks for--"
