@@ -773,7 +773,7 @@ init 5 python:
 
 label monika_twitter:
     m 1eud "Did you know I'm on Twitter?"
-    m 3esa "My username is lilmonix3."
+    m 3esa "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
     m 1esa "I guess someone was kind enough to make an account for me."
     m 3hub "I picked the username, though!"
     m 1hua "I love sharing my thoughts and chatting with the world..."
@@ -1305,7 +1305,7 @@ label monika_outfit:
     m 4hua "You can share it with me on Twitter, actually!"
     # TODO: need to respond to twitter question, as well whehter or not users
     # have seen teh twitter topic
-    m "My username is lilmonix3."
+    m "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
     m 4eka "Just...try to keep it PG!"
     if store.mas_anni.pastSixMonths() and mas_isMoniEnamored(higher=True):
         m 1lsbssdrb "I don't want something so embarrassing on there!"
@@ -5357,6 +5357,10 @@ label monika_penname:
     m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
+    if seen_event("monika_1984"):
+        m 3esd "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933."
+        m 1eua "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways."
+        m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]."
     m 1ekbfa "You already know that I'm in love with you after all~"
