@@ -1994,3 +1994,19 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
+    $ sprite_data = mas_getSpriteObjInfo()
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 3sua "Oh!{w=0.5} What a cute little flower!"
+    m 1ekbsa "Thanks [player], you're so sweet~"
+    m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
+    $ monika_chr.wear_acs(mas_sprites.get_sprite(sprite_type, sprite_name))
+    m 1hua "Ehehe~"
+    m 1hub "Thanks again, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
