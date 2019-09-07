@@ -37,14 +37,14 @@ init -1 python in mas_compliments:
         ]
 
 
-# entry point for stories flow
+# entry point for compliments flow
 label mas_compliments_start:
 
     python:
         import store.mas_compliments as mas_compliments
 
         # Unlock any compliments that need to be unlocked
-#        Event.checkConditionals(mas_compliments.compliment_database)
+        Event.checkEvents(mas_compliments.compliment_database)
 
         # filter comps
         filtered_comps = Event.filterEvents(

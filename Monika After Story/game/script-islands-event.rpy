@@ -176,12 +176,12 @@ label mas_monika_cherry_blossom1:
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
-    m "Just staring at the falling petals is just awe-inspiring."
+    m "Just staring at the falling petals is awe-inspiring."
     return
 
 label mas_monika_cherry_blossom2:
-    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
-    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 

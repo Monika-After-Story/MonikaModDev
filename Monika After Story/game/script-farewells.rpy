@@ -648,7 +648,7 @@ init 5 python: ## Implementing Date/Time for added responses based on the time o
 label bye_haveagoodday:
     if mas_isMoniNormal(higher=True):
         m 1eua "Have a good day today, [player]."
-        m "I hope you accomplish everything you had planned for today."
+        m 3eua "I hope you accomplish everything you had planned."
         m 1hua "I'll be here waiting for you when you get back."
 
     elif mas_isMoniUpset():

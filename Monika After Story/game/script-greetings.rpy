@@ -1734,7 +1734,7 @@ label monikaroom_greeting_knock:
                 m "[player]! I'm so happy that you're back!"
 
                 if persistent.seen_monika_in_room:
-                    m "And thank you for knocking first."
+                    m "And thank you for knocking first~"
                 m "Hold on, let me tidy up..."
 
             elif mas_isMoniUpset():
@@ -3068,7 +3068,7 @@ label greeting_returned_home_morethan5mins_other_flow_aff:
 
 label greeting_returned_home_morethan5mins_normalplus_dlg:
     m 1hua "And we're home!"
-    m 1eub "Even if I couldn't really see anything, knowing that I was really right there with you..."
+    m 1eub "Even if I couldn't really see anything, knowing that I was right there with you..."
     m 2eua "Well, it felt really great!"
     m 5eub "Let's do this again soon, okay?"
     if persistent._mas_player_bday_in_player_bday_mode and not mas_isplayer_bday():
@@ -3324,8 +3324,8 @@ label greeting_returned_home_bday_short_sub_long_total:
     m 1hua "Ehehe~"
     m 3eub "We sure spent a lot of time together today, [player]."
     m 1ekbfa "...and thank you for that."
-    m 3ekbfa "I've said it a million times already, I know."
-    m 1hua "But I'll always be happy when we're together."
+    m 3ekbfa "I know I've said it a million times already, but..."
+    m 1hua "I'll always be happy when we're together."
     m "I love you so much..."
     return "love"
 
@@ -3349,9 +3349,8 @@ label greeting_returned_home_bday_normal_sub_normal_total:
     return
 
 label greeting_returned_home_bday_normal_sub_long_total:
-    m 1dsa "[player]..."
-    m 1eka "We sure did spend so much time together today."
-    m "I can't event find the right words to express how happy you've made me today."
+    m 1dsa "Wow, [player]...{w=0.5}we sure did spend a lot of time together today..."
+    m 1eka "I can't event find the right words to express how happy you've made me today."
     m 3eka "All that pain I went through before I met you?"
     m 1hua "I'm glad I persevered through them."
     m 1rsc "Because if I hadn't..."

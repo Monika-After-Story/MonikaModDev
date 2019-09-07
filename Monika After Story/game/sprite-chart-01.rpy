@@ -4533,6 +4533,19 @@ image monika 5hubfu_static = DynamicDisplayable(
     blush="full"
 )
 
+image monika 5hubsa_static = DynamicDisplayable(
+    mas_drawmonika,
+    character=monika_chr,
+    eyebrows="up",
+    eyes="closedhappy",
+    nose="def",
+    mouth="smile",
+    arms="def",
+    lean="def",
+    single="3a",
+    blush="shade"
+)
+
 image monika 5ksbfu_static = DynamicDisplayable(
     mas_drawmonika,
     character=monika_chr,
