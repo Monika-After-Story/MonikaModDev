@@ -770,7 +770,7 @@ init 5 python:
 
 label monika_twitter:
     m 1eud "Did you know I'm on Twitter?"
-    m 3esa "My username is {a=https://twitter.com/lilmonix3}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
+    m 3esa "My username is {a=https://twitter.com/[mas_monika_twitter_handle]}{i}{u}[mas_monika_twitter_handle]{/u}{/i}{/a}."
     m 1esa "I guess someone was kind enough to make an account for me."
     m 3hub "I picked the username, though!"
     m 1hua "I love sharing my thoughts and chatting with the world..."
