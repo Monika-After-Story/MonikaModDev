@@ -783,24 +783,56 @@ label mas_reaction_gift_generic_sprite_json:
 
     # TODO: something different if whatever was gifted has been gifted before
 
-    m "Aww, [player]!"
-    if sprite_str is None:
-        if giftname is not None:
-            m 1hua "You're so sweet!"
-            m 1eua "Thanks for giving me this [giftname]!"
-            m 1ekbsa "You really love to spoil me, don't you."
-            m 1hubfa "Ehehe!"
-
-        else:
-            m 3eub "Thanks for this!"
+    # we have special react for generic json clothes
+    if sprite_type == store.mas_sprites.SP_CLOTHES:
+        call mas_reaction_gift_generic_clothes_json
 
     else:
-        m 1hua "Thanks for this [sprite_str], [player]!"
-        m 3hub "I can't wait to try it on!"
+        m "Aww, [player]!"
+        if sprite_str is None:
+            if giftname is not None:
+                m 1hua "You're so sweet!"
+                m 1eua "Thanks for giving me this [giftname]!"
+                m 1ekbsa "You really love to spoil me, don't you."
+                m 1hubfa "Ehehe!"
+
+            else:
+                m 3eub "Thanks for this!"
+
+        else:
+            m 1hua "Thanks for this [sprite_str], [player]!"
+            m 3hub "I can't wait to try it on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
+    return
+
+# generic reaction for json clothes
+label mas_reaction_gift_generic_clothes_json:
+    python:
+        # expandable
+        outfit_quips = [
+            "I think it's really cute, [player]!",
+            "I think it's amazing, [player]!",
+            "I just love it, [player]!",
+            "I think it's wonderful, [player]!"
+        ]
+        outfit_quip = renpy.random.choice(outfit_quips)
+
+    m 1sua "Oh! {w=0.5}A new outfit!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2eka "Well...{w=0.5} What do you think?"
+    m 2eksdla "Do you like it?"
+
+    show monika 3hub
+    $ renpy.say(m,outfit_quip)
+
+    m 1eua "Thanks again~"
     return
 
 ## Hair clip reactions
