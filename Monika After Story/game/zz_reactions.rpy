@@ -828,6 +828,8 @@ label mas_reaction_gift_generic_clothes_json:
 
     m 2eka "Well...{w=0.5} What do you think?"
     m 2eksdla "Do you like it?"
+    # TODO: outfit randomization should actually get a response here
+    #   should influence monika outfit selection
 
     show monika 3hub
     $ renpy.say(m,outfit_quip)
