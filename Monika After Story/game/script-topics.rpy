@@ -5248,7 +5248,7 @@ label monika_penname:
     if seen_event("monika_1984"):
         m 3esd "Also, if you remember me talking about George Orwell, that was also a pen name which he adopted in 1933."
         m 1eua "His actual name is Eric Blair, and before settling on his more famous pen name, he considered P.S. Burton, Kenneth Miles and H. Lewis Allways."
-        m 1lud "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
+        m 1lksdlc "One of the reasons he chose to publish his works under a pseudonym was to avoid embarrassment to his family over his time as a tramp."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
     m 1eua "There's no need to know more about me though, [player]."
     m 1ekbfa "You already know that I'm in love with you after all~"
