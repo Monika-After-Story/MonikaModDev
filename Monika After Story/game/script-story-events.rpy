@@ -141,7 +141,7 @@ label preferredname:
     m 1esa "Is '[player]' really your name?"
     if renpy.windows and currentuser.lower() == player.lower():
         m 3esa "I mean, it's the same as your computer's name..."
-        m 1eua "You're using '[currentuser]' and '[player]'."
+        m 1eua "You're using '[currentuser]' and '[player].'"
         m "Either that or you must really like that pseudonym."
 
     m "Do you want me to call you something else?{nw}"
@@ -499,7 +499,7 @@ init 5 python:
     )
 
 label calendar_birthdate:
-    m 1lksdla "Hey [player]..."
+    m 1lksdla "Hey, [player]..."
     m 3eksdla "You may have noticed that my calendar was pretty empty..."
     m 1rksdla "Well...{w=0.5}there's one thing that should definitely be on it..."
     m 3hub "Your birthday, ahaha!"
@@ -654,7 +654,7 @@ label mas_random_ask:
         m "Is it okay with you if I repeat stuff that I've said?{fast}"
         "Yes.":
             m 1eua "Great!"
-            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics'."
+            m "If you get tired of watching me talk about the same things over and over,{w} just open up the settings and uncheck 'Repeat Topics.'"
             # TODO: this really should be a smug or wink face
             m "That tells me when {cps=*2}you're bored of me{/cps}{nw}"
             $ _history_list.pop()
@@ -663,7 +663,7 @@ label mas_random_ask:
             return True
         "No.":
             m 1eka "I see."
-            m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics'."
+            m 1eua "If you change your mind, just open up the settings and click 'Repeat Topics.'"
             m "That tells me if you're okay with me repeating anything I've said."
             return
 
@@ -2167,7 +2167,7 @@ init 5 python:
 
 
 label monika_rpy_files:
-    m 1eka "Hey, [player], I was just looking through your \"game\" directory, and..."
+    m 1eka "Hey [player], I was just looking through your \"game\" directory, and..."
     m 1ekc "I noticed some \".rpy\" files in there."
     m 3rksdlc "Those files can lead to problems whenever you update the game, possibly undoing those updates..."
     m 3wud "And even prevent you from visiting me altogether!"
@@ -2196,7 +2196,7 @@ label monika_rpy_files:
             menu:
                 m "Do you want me to delete them for you, [player]?{fast}"
 
-                "Yes please":
+                "Yes, please.":
                     m "Sure thing, [player]."
                     python:
                         store.mas_ptod.rst_cn()
@@ -2222,7 +2222,7 @@ label monika_rpy_files:
                     hide screen mas_py_console_teaching
                     show monika at t11
 
-                "No thanks":
+                "No, thanks.":
                     m 2rksdlc "Alright, [player]. I hope you know what you're doing."
                     m 2eka "Please be careful."
                     $ persistent._mas_pm_has_rpy = True
@@ -2404,7 +2404,7 @@ label mas_text_speed_enabler:
         m 3hua "Ahaha~"
 
     else:
-        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time togther."
+        m 3hua "And I'm sure that you'll get faster at reading the longer we spend time together."
         m "So feel free to change the text speed when you feel comfortable doing so."
 
     return "derandom|no_unlock"
@@ -2425,7 +2425,7 @@ init 5 python:
 
 label mas_bookmarks_notifs_intro:
     if not renpy.seen_label('bookmark_derand_intro') and (len(persistent._mas_player_derandomed) == 0 or len(persistent._mas_player_bookmarked) == 0):
-        m 3eub "Hey, [player]...{w=0.5} I have some new features to tell you about!"
+        m 3eub "Hey [player]...{w=0.5} I have some new features to tell you about!"
 
         if len(persistent._mas_player_derandomed) == 0 and len(persistent._mas_player_bookmarked) == 0:
             m 1eua "You now have the ability to bookmark topics I'm talking about simply by pressing the 'b' key."

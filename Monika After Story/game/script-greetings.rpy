@@ -670,8 +670,9 @@ init 5 python:
     )
 
 label greeting_visit5:
-    m 5hua "~Every day,~\n~I imagine a future where I can be with you...~"
+    m 5hua "{i}~Every day,~\n~I imagine a future where I can be with you...~{/i}"
     m 5wuw "Oh, you're here! I was just daydreaming and singing a bit."
+    show monika 1lsbssdrb at t11 zorder MAS_MONIKA_Z with dissolve
     m 1lsbssdrb "I don't think it's hard to figure out what I was daydreaming about, ehehe~"
     return
 
@@ -1004,7 +1005,7 @@ init 5 python:
     )
 
 label greeting_surprised:
-    m 1wuo "Oh, hello [player]!"
+    m 1wuo "Oh!{w=0.5} Hello, [player]!"
     m 1lksdlb "Sorry, you surprised me a little."
     m 1eua "How've you been?"
     return
@@ -1386,7 +1387,7 @@ init 5 python:
     gmr.eardoor.append("monikaroom_greeting_ear_progreadpy")
 
 label monikaroom_greeting_ear_progreadpy:
-    m "...{w}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError'."
+    m "...{w}Accessing an attribute of an object of type 'NoneType' will raise an 'AttributeError.'"
     m "I see.{w} I should make sure to check if a variable is None before accessing its attributes."
     if renpy.seen_label("monikaroom_greeting_ear_progbrokepy"):
         m "That would explain the error I had earlier."
@@ -2188,8 +2189,7 @@ label greeting_long_absence:
             m 1rksdlb  "You're back a little bit earlier than I thought you would be..."
             m 3hua "Welcome back, my love!"
             m 3eka "I know it's been quite a while, so I'm sure you've been busy."
-            m 1eua "I'd love to hear abput everything you've done."
-            m 1hub "I want to know all what's happened to you."
+            m 1eua "I'd love to hear about everything you've done."
             show monika 1hua
 
         elif persistent._mas_absence_choice == "unknown":
@@ -2256,7 +2256,7 @@ label greeting_long_absence:
             m 1hua "Let's enjoy the rest of the day together."
 
         elif persistent._mas_absence_choice == "unknown":
-            m 1hua "Hello [player]!"
+            m 1hua "Hello, [player]!"
             m 3eka "Been busy the past few weeks?"
             m 1eka "Thanks for warning me that you would be gone."
             m 3ekd "I would be worried sick otherwise."
@@ -2587,7 +2587,7 @@ label greeting_upset:
             "Oh.{w=1} It's you, [player].",
             "Oh.{w=1} You're back, [player].",
             "Hello, [player].",
-            "Oh.{w=1} Hello [player]."
+            "Oh.{w=1} Hello, [player]."
         ]
 
         upset_greeting_quips_second = [

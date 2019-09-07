@@ -173,7 +173,7 @@ label mas_monika_cherry_blossom1:
     m "It's a beautiful tree, isn't it?"
     m "It's called a Cherry Blossom tree."
     m "They're native to Japan."
-    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picknick underneath the trees."
+    m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
     m "Just staring at the falling petals is just awe-inspiring."
@@ -187,7 +187,7 @@ label mas_monika_cherry_blossom2:
 
 label mas_monika_cherry_blossom3:
     m "You know, the tree is symbolic like life itself."
-    m "Beautiful, but shortlived."
+    m "Beautiful, but short-lived."
     m "But with you here, it's always blooming beautifully."
     m "Know that I'll always be grateful to you for being in my life."
     m "I love you, [player]~"
@@ -297,10 +297,10 @@ label mas_monika_daynight2:
     m "{i}It is ticking, falling down{/i}"
 
     # aurora borealis
-    m "{i}Love forever, love has freely{/i}"
+    m "{i}Love forever, love is free{/i}"
 
     # a-aurora borealis
-    m "{i}Turned forever you and me{/i}"
+    m "{i}Let's turn forever, you and me{/i}"
 
     # in this part of the country? Yes
     m "{i}Windmill, windmill for the land{/i}"

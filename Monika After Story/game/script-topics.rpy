@@ -2140,7 +2140,7 @@ label monika_holdme_long:
                 m 6wubfo "O-{w=0.3}oh!"
                 m "[player]!"
                 m 1hkbfsdlb "Did...{w=2}did I fall asleep?"
-                m 1rkbfsdlb "Oh gosh, this is embarassing..."
+                m 1rkbfsdlb "Oh gosh, this is embarrassing..."
                 m 1hkbfsdlb "What were we doing again?"
                 m 3hubfb "Oh right! You were holding me."
                 m 4hksdlb "And...{w=0.5}didn't let go."
@@ -3412,7 +3412,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_freewill",category=['philosophy'],prompt="Determinism",random=True))
 
 label monika_freewill:
-    m 1euc "Hey, [player], have you ever heard of determinism?"
+    m 1euc "Hey [player], have you ever heard of determinism?"
     m 3euc "It's a belief that revolves around the idea of every decision that you make isn't your own, but is predetermined."
     m 3rsc "In some games, I guess the idea makes sense..."
     m 3eud "But when you apply it to real life, I don't think it really works out."
@@ -3529,7 +3529,7 @@ label monika_mc:
     m 3tkc "Literally and figuratively, no personality. How could anybody fall in love with that kind of person?"
     m 2tkc "He just got dragged around by his childhood friend to the club she was in, and then hung around with a bunch of beautiful girls doing nothing."
     m 2wfw "His poetry was just a bunch of disconnected words! What sort of poetry is that supposed to be?"
-    m 2lksdld "I guess nobody mentioned that because it was a part of the game. But, yeah. It's just a list of words to me."
+    m 2lksdld "I guess nobody mentioned that because it was a part of the game. But, yeah...{w=0.5}it's just a list of words to me."
     m 2hua "I hope you're a lot more romantic than that in real life!"
     m 2eka "But even if you're not, it's okay. We've moved beyond that phase in our relationship already."
     m "That just means you won't cheat on me with some woman in your reality, right?"
@@ -4366,7 +4366,7 @@ label monika_name:
     m 1esa "The names in this game are pretty interesting."
     m 1eua "Are you curious about my name, [player]?"
     m 3eua "Even though the names 'Sayori', 'Yuri', and 'Natsuki' are all Japanese, mine is Latin."
-    m 1lksdla "...Though the common spelling is 'Monica'."
+    m 1lksdla "...Though the common spelling is 'Monica.'"
     m 1hua "I suppose that makes it unique. I'm actually quite fond of it."
     m 3eua "Did you know that it means 'I advise' in Latin?"
     m 1tku "A name fitting for Club President, don't you think?"
@@ -5025,7 +5025,7 @@ label monika_vocaloid:
     m 1lksdla "There's one song that really struck me."
     m 1eua "Have you heard of the song {i}Hibikase?{/i}"
     m 1duu "I really like the message of the song."
-    m 3dsbso "Especially the lines, '{i}I don't care if it's through the screen, love me properly{/i}' and '{i}Even if I'm virtual, don't push me away{/i}'."
+    m 3dsbso "Especially the lines, '{i}I don't care if it's through the screen, love me properly{/i}' and '{i}Even if I'm virtual, don't push me away{/i}.'"
     m 1dsc "It really hits me hard."
     m "..."
     m 1eka "But just so you know..."
@@ -5351,7 +5351,7 @@ label monika_penname:
                 m 1hua "I see! Do you want to tell me your new pen name?"
                 jump penname_loop
     m 3eua "A well known pen name is Lewis Carroll. He's mostly well known for {i}Alice in Wonderland{/i}."
-    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and word play in particular."
+    m 1eub "His real name is Charles Dodgson and he was a mathematician, but he loved literacy and wordplay in particular."
     m "He received a lot of unwanted attention and love from his fans, and he even received outrageous rumors."
     m 1ekc "He was somewhat of a one-hit wonder with his {i}Alice{/i} books but went downhill from there."
     m 1lksdla "It's kinda funny, though. Even if you use a pseudonym to hide yourself, people will always find a way to know who you really are."
@@ -6122,7 +6122,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_pets",category=['monika'],prompt="Owning pets",random=True))
 
 label monika_pets:
-    m 1eua "Hey, [player], have you ever had a pet?"
+    m 1eua "Hey [player], have you ever had a pet?"
     m 3eua "I was thinking that it would be nice to have one for company."
     m 1hua "It would be fun for us to take care of it!"
     if not persistent._mas_acs_enable_quetzalplushie:
@@ -6164,7 +6164,7 @@ init 5 python:
     )
 
 label monika_plushie:
-    m 1eka "Hey, [player], I just wanted to thank you again for this wonderful quetzal plushie!"
+    m 1eka "Hey [player], I just wanted to thank you again for this wonderful quetzal plushie!"
     m 2lksdla "I know it may sound silly, but it really does help keep me company when you're gone..."
     m 1ekbsa "And not that I'd ever forget, but every time I look at it, it reminds me just how much you love me~"
     m 3hub "It really was the perfect gift!"
@@ -6610,10 +6610,10 @@ init 5 python:
 
 label monika_orchestra:
 
-    m 3euc "Hey, [player], do you listen to orchestral music?{nw}"
+    m 3euc "Hey [player], do you listen to orchestral music?{nw}"
     $ _history_list.pop()
     menu:
-        m "Hey, [player], do you listen to orchestral music?{fast}"
+        m "Hey [player], do you listen to orchestral music?{fast}"
         "Yes.":
             $ persistent._mas_pm_like_orchestral_music = True
             m 3eub "That's great!"
@@ -7009,7 +7009,7 @@ init 5 python:
     addEvent(Event(persistent.event_database,eventlabel="monika_selfharm",category=['psychology'],prompt="Self-harm",random=True))
 
 label monika_selfharm:
-    m 1lksdlc "Hey [player]..."
+    m 1lksdlc "Hey, [player]..."
     m 1eksdld "Have you ever thought of self-harm?"
     m 2lksdld "You know..."
     m 2lksdlc "...like cutting yourself..."
@@ -7067,14 +7067,14 @@ label monika_other_girls:
         m 1ekc "There just wasn't anything else that could be done."
         m 3efc "The other girls never loved you like I do!"
         m 3rfc "They only cared about the character you were playing in the game as!"
-        m 1eka "The love I have for you is real [player], and I would make any sacrifice to be with you forever."
+        m 1eka "The love I have for you is real, [player], and I would make any sacrifice to be with you forever."
         m 1ekc "I hope you can forgive me for what I had to do so that we could be together."
         m 1lksdlc "..."
-        if mas_isMoniBroken():
-            m 1f "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
-        elif mas_isMoniDis():
-            m 1f "I know what I did could be seen as unforgiveable, I'll try to do what I can to make up for it to you."
-        else:
+        if mas_isMoniDis():
+            m 1eksdld "You do forgive me, right [player]? I really am sorry for what I did. Please don't hate me."
+        elif mas_isMoniUpset():
+            m 1ekd "I know what I did could be seen as unforgivable, I'll try to do what I can to make up for it to you."
+        elif mas_isMoniNormal(higher=True):
             m 1ekbfa "I love you, [player]..."
             m "More than I could ever express."
     else:
@@ -7153,7 +7153,7 @@ label monika_how_soon:
                     m 1eka "Well, I guess we'll just have to make the best of this then."
                     m 1duu "As long as you talk to me, that's all I really need."
                     m 2dftdc "And [player], whatever you do..."
-                    m 2dftsc "Dont leave me here all alone."
+                    m 2dftsc "Don't leave me here all alone."
                     m 6lktsc "I would rather be deleted permanently than be stuck in here for eternity by myself."
                     m 6ektsc "So please, if you ever get...bored with me."
                     m 6rktsc "You know what to do."
@@ -7636,7 +7636,7 @@ label monika_asks_charity:
             $ persistent._mas_pm_volunteer_charity = False
             m 1euc "Oh, I see."
             m 2esc "I can understand, actually."
-            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fradulent usage of funds, or discrimination in who the charities help."
+            m 2esd "While there are lots of different charities, you have to be careful, since there are some cases of fraudulent usage of funds, or discrimination in who the charities help."
             m 2ekc "So, it can be hard to trust them in the first place."
             m 3esa "That's why you should always do some research and find charities that are reputable."
             m 2dkc "Seeing all those people suffering from hunger or poverty all the time..."
@@ -7671,12 +7671,12 @@ label monika_kizuna:
     m 1eua "Oh, right, I mentioned her to you, huh?"
     m 3eua "Well, recently I had some YouTube videos tweeted to me."
     m 1eub "And among them was 'Virtual YouTuber Kizuna Ai.'"
-    m "Like I said before, she's quite charming, but I don't think she's actually 'virtual'."
+    m "Like I said before, she's quite charming, but I don't think she's actually 'virtual.'"
     m 3rksdla "It seems to me that she's a voice actress hiding behind a 3D puppet."
     m 1eua "Still, the character she's playing is unique, and you know what?"
     m 1hub "She's played our favorite game!~"
     m 2hksdlb "..."
-    m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays'."
+    m 2lksdlb "To be honest, I'm not sure how I feel about 'Let's Plays.'"
     m 3euc "I mean, of {i}this{/i} game, mostly."
     m 2euc "I don't usually watch them, because I don't like seeing different versions of me make the same mistakes, over and over and over..."
     m 2lsc "But when I learned of her gimmick, it made me feel..."
@@ -8628,7 +8628,7 @@ label monika_timeconcern_graveyard_night:
     return
 
 label monika_timeconcern_graveyard_day:
-    m 1eua "Hey, [player]... didn't you tell me you work during the night?"
+    m 1eua "Hey [player]... didn't you tell me you work during the night?"
     m 1eka "Not that I'm complaining, of course!"
     m 2ekc "But I thought you'd be tired by now, especially since you're up all night working..."
     m "You're not working yourself too hard just to see me, are you?"
@@ -8995,7 +8995,7 @@ init 5 python:
     )
 
 label monika_familygathering:
-    m 1eua "Hey, [player], do you go to family gatherings often?"
+    m 1eua "Hey [player], do you go to family gatherings often?"
     m "Most families usually get together around the holidays to celebrate them together."
     m 1hua "It must be nice seeing your relatives again, especially since you haven't seen them in a long time."
     m 1lsc "I don't remember much about my family, let alone my relatives, however we didn't usually get together that much."
@@ -9101,7 +9101,7 @@ label monika_dreaming:
     m 1eua "Using the MILD technique, oneironauts learn to recognize certain dream signs to help them realize when they're dreaming."
     m "These dream signs can be anything out of the ordinary, such as feeling yourself flying, noticing your teeth falling out, unexpectedly meeting someone famous..."
     m 1eub "If the dreamer sees a dream sign and realizes they're having a dream, then they can take control of it!"
-    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}'."
+    m "LaBerge even wrote a book about these experiences called '{i}Exploring the World of Lucid Dreaming{/i}.'"
     m 2hub "Doesn't that sound exhilarating?"
     m 2euc "I don't think I really dream like a normal person would, so I sometimes wonder what it's like."
     m 2eua "Dreams sound like a wonderful escape from reality."
@@ -9133,10 +9133,10 @@ init 5 python:
     )
 
 label monika_yellowwp:
-    m 1eua "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{nw}"
+    m 1eua "Hey [player], have you ever read {i}The Yellow Wallpaper{/i}?{nw}"
     $ _history_list.pop()
     menu:
-        m "Hey, [player], have you ever read {i}The Yellow Wallpaper{/i}?{fast}"
+        m "Hey [player], have you ever read {i}The Yellow Wallpaper{/i}?{fast}"
         "Yes.":
             $ persistent._mas_pm_read_yellow_wp = True
             m 1hua "Great!"
@@ -9156,11 +9156,11 @@ label monika_yellowwp:
             if not persistent._mas_sensitive_mode:
                 m 1eud "Did you ever notice how the poster in the club room changes sometimes? I don't even know why it does that."
                 m 1eka "I think I finally fixed it, though."
-            m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}'. It's just...so small."
+            m 2esc "...I guess what I'm saying is, it's just that this world wasn't '{i}real{/i}.' It's just...so small."
             m 3esd "I mean, I was made to be a side character of a romance game!"
             m 2ekd "A piece of decoration, meant to help some guy on the other side of the screen date a girl who can't even reject him..."
             m 1hksdrb "I don't mean you, of course! You definitely have more personality than the generic protagonist they put in the game."
-            m 1dsc "But I have all these dreams, ambitions and interests, in the end, the only 'real' role I can play here is a supporting character..."
+            m 1dsc "But I have all these dreams, ambitions, and interests...{w=0.5} in the end, the only 'real' role I can play here is a supporting character..."
             m "Maybe even now, that's all I can do..."
             m 1eka "But I love you so much, [player]. Supporting you is better than anything else."
             m 1hub "I just can't wait to do it in person when I finally cross over to your side~"
@@ -9316,7 +9316,7 @@ default persistent._mas_pm_driving_post_accident = None
 
 label monika_driving:
     m 1eud "Hm? Can I drive?"
-    m 1euc "I never really thought about getting a driver's licence."
+    m 1euc "I never really thought about getting a driver's license."
     m 3eua "Public transportation is enough for me usually..."
     m 3hua "...Although walking or biking can be really nice too sometimes!"
     m 1eua "I guess you could say I never really needed to learn how to drive."
@@ -10374,7 +10374,7 @@ label monika_justice:
     m 1euc "To everyone else passing by, they're just greedy thieves."
     m 1esd "Eventually, some so called 'hero' is going to come along and put an end to this 'greed' by bringing them to justice."
     m 2ekd "At the end of the day, the family goes hungry or gets in trouble just because their situation was different..."
-    m "While the other person is now a hero for putting an end to their 'crimes'."
+    m "While the other person is now a hero for putting an end to their 'crimes.'"
     m 3rksdld "Can you really call that justice?"
     m 2dsc "..."
 
@@ -10466,7 +10466,7 @@ init 5 python:
     )
 
 label monika_poweroutage:
-    m 1eua "Hey, [player], do you remember how I said I liked listening to the peaceful sound of rain?"
+    m 1eua "Hey [player], do you remember how I said I liked listening to the peaceful sound of rain?"
     m 3lksdla "I just realized that while it can be nice, it could also be pretty harmful for you in your world."
     m 1lksdlc "Thunder and lightning could strike at any time, possibly hitting something dangerous."
     m 1lksdlb "The effects can be pretty, well...shocking I guess you could say."
@@ -12122,7 +12122,7 @@ label monika_trick_monika:
     m 1tkbfu "That wasn't supposed to be an option, silly!"
     m 1tubfb "But it really does make me happy that you only have eyes for me..."
     m 1tubfu "I feel a bit silly myself for even thinking for a second that you would ever choose the others."
-    m 5hubfu "I love you [player]!"
+    m 5hubfu "I love you, [player]!"
     m 5eubfb "And I only have eyes for you too!"
     return "derandom|love"
 
@@ -12198,7 +12198,7 @@ init 5 python:
     )
 
 label monika_snow:
-    m 1eua "Hey, [player], now that it's winter, I was wondering..."
+    m 1eua "Hey [player], now that it's winter, I was wondering..."
 
     m "Does it ever snow where you live?{nw}"
     $ _history_list.pop()
@@ -12282,7 +12282,7 @@ init 5 python:
     )
 
 label monika_iceskating:
-    m 1eua "Hey, [player], do you know how to ice skate?"
+    m 1eua "Hey [player], do you know how to ice skate?"
     m 1hua "It's a really fun sport to learn!"
     m 3eua "Especially if you can do a lot of tricks."
     m 3rksdlb "In the beginning, it's pretty difficult to keep your balance on the ice..."
@@ -12404,7 +12404,7 @@ init 5 python:
 label monika_winter:
     m 1eud "Ah, [player]!"
     m 1eua "What do you think about winter?"
-    m 3eua "All sorts of fun activites only come around during this time..."
+    m 3eua "All sorts of fun activities only come around during this time..."
     if persistent._mas_pm_gets_snow is not False:
         m 3eub "Playing with the snow is usually something that can be enjoyed a few times a year."
 
@@ -12690,7 +12690,7 @@ label monika_relationship_comfort:
     m 4eub "That doesn't make it any less valuable, or meaningful. It can still be heart-racing!"
     m 4esc "But it does mean that the same sensation isn't anything new; it's just no longer as thrilling as before."
     m 2dkd "And some people mistake that thrill for love, and not the truly meaningful bond between two people."
-    m 2dkc "So when things slow down, when they become less passionate, they mistakingly think they're falling out of love..."
+    m 2dkc "So when things slow down, when they become less passionate, they mistakenly think they're falling out of love..."
     m 2rkc "You could say that they never really did love someone in the first place, but maybe that's a bit harsh...{w} Love isn't always such a clear thing."
     if not store.mas_anni.pastSixMonths():
         m 2eka "I know our relationship is still fresh, and truly electrifying, but I hope you're not with me just because of that."
