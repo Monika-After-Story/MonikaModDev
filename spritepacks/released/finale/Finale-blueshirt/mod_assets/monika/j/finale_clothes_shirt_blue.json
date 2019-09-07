@@ -50,7 +50,7 @@
         "p4": {
             "left": "down",
             "lback": true,
-            "front": false,
+            "lfront": false,
             "right": "point",
             "rback": true,
             "rfront": false
