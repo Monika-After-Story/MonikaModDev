@@ -197,13 +197,13 @@ image mas_bday_cake_monika = ConditionSwitch(
 
 image mas_bday_cake_player = ConditionSwitch(
     "morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit.png",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit.png",
     "morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake.png",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake.png",
     "not morning_flag and mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake_lit-n.png",
+    "mod_assets/location/spaceroom/bday/player_birthday_cake_lit-n.png",
     "not morning_flag and not mas_bday_cake_lit",
-    "mod_assets/location/spaceroom/bday/birthday_cake-n.png"
+    "mod_assets/location/spaceroom/bday/player_birthday_cake-n.png"
 )
 
 image mas_bday_banners = ConditionSwitch(
