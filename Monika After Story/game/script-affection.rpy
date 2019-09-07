@@ -2088,7 +2088,7 @@ label monika_affection_nickname:
                     m 1eka "Try again~"
                 elif lowername in mom_nickname_list:
                     # mother flow
-                    m 1tku "Oh, you're a momma's boy, huh?"
+                    m 1tku "Oh, you're a momma's [boy], huh?"
                     $ persistent._mas_monika_nickname = inputname
                     $ m_name = inputname
 
