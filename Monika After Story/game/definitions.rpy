@@ -54,6 +54,9 @@ python early:
                     ev.unlocked=False
                 elif act == EV_ACT_RANDOM:
                     ev.random=False
+                    #And just pull this out of the event list if it's in there at all
+                    mas_rmallEVL(ev.eventlabel)
+
                 #NOTE: we don't add the rest since there's no reason to undo those.
 
     def mas_stripEVDates():
