@@ -2539,7 +2539,7 @@ label mas_clothes_change(outfit=None):
     $ renpy.save_persistent()
 
     pause 4.0
-    show monika 1eua zorder MAS_MONIKA_Z at i11 with dissolve
+    show monika 2eua zorder MAS_MONIKA_Z at i11 with dissolve
     hide emptydesk
 
     pause 0.5
@@ -2563,7 +2563,7 @@ label mas_blazerless_intro:
 
         call mas_clothes_change(mas_clothes_blazerless)
 
-        m 1hua "Ah, much better!"
+        m 2hua "Ah, much better!"
         # this line acts as a hint that there is a clothes selector
         m 3eka "But if you miss my blazer, just ask and I'll put it back on."
 

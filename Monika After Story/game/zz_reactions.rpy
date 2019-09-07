@@ -2010,3 +2010,34 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
     return
+
+label mas_reaction_gift_clothes_velius94_shirt_pink:
+    $ sprite_data = mas_getSpriteObjInfo()
+    $ sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 1suo "Oh my gosh!"
+    m 1suo "It's {i}so{/i} pretty!"
+    m 3hub "Thank you so much, [player]!"
+    m 3eua "Hold on, let me try it on real quick..."
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2sub "Ahh, it's a perfect fit!"
+    m 3hub "I really like the colors, too! Pink and black go so well together."
+    m 3eub "Not to mention the skirt looks really cute with those frills!"
+    m 2tfbsd "Yet for some reason I can't help but feel that your eyes are kind of drifting...{w=0.5}ahem...{w=0.5}{i}elsewhere{/i}."
+
+    if mas_selspr.get_sel_clothes(mas_clothes_sundress_white).unlocked:
+        m 2lfbsp "I told you it's not polite to stare, [player]."
+    else:
+        m 2lfbsp "It's not polite to stare, you know?"
+
+    m 2hubsb "Ahaha!"
+    m 2tkbsu "Relax, relax...{w=0.5}just teasing you~"
+    m 3hub "Once again, thank you so much for this outfit, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
