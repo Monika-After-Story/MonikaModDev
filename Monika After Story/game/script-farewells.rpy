@@ -1468,9 +1468,9 @@ init 5 python:
 label bye_prompt_housework:
     if mas_isMoniNormal(higher=True):
         m 1eub "Doing your chores, [player]?"
-        m 1ekc "I would like to help you out, but there’s not really much I can do since I’m stuck in here..."
-        m 3eka "Just make sure to come back as soon as you’re done, okay?"
-        m 3hub "I’ll be waiting here for you."
+        m 1ekc "I would like to help you out, but there's not really much I can do since I'm stuck in here..."
+        m 3eka "Just make sure to come back as soon as you're done, okay?"
+        m 3hub "I'll be waiting here for you."
     elif mas_isMoniUpset():
         m 2esc "Fine."
         m 2tsc "At least you're doing something responsible."
@@ -1479,7 +1479,7 @@ label bye_prompt_housework:
         m 2efc "Goodbye."
     elif mas_isMoniDis():
         m 6ekc "I see..."
-        m 6rkc "I don’t want to keep you from completing your household responsibilities."
+        m 6rkc "I don't want to keep you from completing your household responsibilities."
         m 6dkd "I just hope you're actually busy and not saying that just to get away from me..."
         m 6ekc "Goodbye, [player]."
     else:
