@@ -5711,17 +5711,3 @@ image monika 6ektda_static = DynamicDisplayable(
     tears="dried"
 )
 
-image monika 6ektdc_static = DynamicDisplayable(
-    mas_drawmonika,
-    character=monika_chr,
-    eyebrows="knit",
-    eyes="normal",
-    nose="def",
-    mouth="smirk",
-    arms="down",
-    head="f",
-    left="1l",
-    right="1r",
-    tears="dried"
-)
-
