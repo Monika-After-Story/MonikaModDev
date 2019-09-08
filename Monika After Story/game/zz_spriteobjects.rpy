@@ -338,7 +338,7 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
             store.mas_filterUnlockGroup(SP_ACS, "ribbon")
         else:
-            store.mas_lockEVL("mas_ribbon_select", "EVE")
+            store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -438,7 +438,7 @@ init -2 python in mas_sprites:
         if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
             store.mas_filterUnlockGroup(SP_ACS, "ribbon")
         else:
-            store.mas_lockEVL("monika_hair_select", "EVE")
+            store.mas_lockEVL("monika_ribbon_select", "EVE")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
