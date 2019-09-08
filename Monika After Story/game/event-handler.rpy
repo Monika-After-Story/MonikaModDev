@@ -482,12 +482,20 @@ python early:
     # NOTE: in other words, only check when we enter spcaeroom
     MAS_FC_IDLE_ONCE = 16
 
+    # checked during idle, once per hour
+    MAS_FC_IDLE_HOUR = 32
+
+    # checked during idle, once per day
+    MAS_FC_IDLE_DAY = 64
+
     MAS_FC_CONSTANTS = [
         MAS_FC_INIT,
         MAS_FC_START,
         MAS_FC_END,
         MAS_FC_IDLE_ROUTINE,
-        MAS_FC_IDLE_ONCE
+        MAS_FC_IDLE_ONCE,
+        MAS_FC_IDLE_HOUR,
+        MAS_FC_IDLE_DAY,
     ]
 
 
