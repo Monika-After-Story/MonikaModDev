@@ -986,6 +986,28 @@ label bye_going_somewhere_post_aff_check:
                 m 2ekp "Oh, okay."
 
 
+label bye_going_somewhere_normalplus_flow_aff_check:
+
+    if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        menu:
+            m 3tub "Where are you taking me?"
+            "School.":
+                m 1eka "Ahaha [Player], I cant wait to see all your friends!"
+            "Work.":
+                m 1eka "How Fun!"
+            "A date.":
+                m 1eka "How Romantic [Player]!"
+            "Vacation.":
+                m 1eka "Im sure its going to be amazing"
+            "Beach.":
+                m 1eka "Want to see me in a bikini eh?
+                m 2hub "Ok lets go [Player]!"
+            "Road Trip.":
+                m 1eka "You Remembered. How Romantic!"
+        m 1hua "I can't wait!"
+        
+
 label bye_going_somewhere_iostart:
     # NOTE: jump back to this label to begin io generation
 
@@ -1099,26 +1121,6 @@ label bye_going_somewhere_normalplus_flow:
     if mas_isF14() and persistent._mas_f14_in_f14_mode:
         jump bye_f14
 
-label bye_going_somewhere_normalplus_flow_aff_check:
-
-    if mas_isMoniLove(higher=True):
-        m 1hub "Oh, okay!"
-        m 3tub "Taking me somewhere special today?"
-        m 1hua "I can't wait!"
-
-#    elif mas_isMoniAff(higher=True):
-    # TODO: affecitonate/enamored monika will always go wtih you and assume its a
-    #   nother date and will ask u to wait for her to get ready
-#        m 1hua "TODO: LETS GO ON DATE"
-
-    else:
-        # TODO: normal/happy monika will always go with you and be excited you asked
-        #   and will ask u to wait for her to get ready
-        m 1sub "Really?"
-        m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
-
-    jump bye_going_somewhere_post_aff_check
 
 label bye_going_somewhere_nothanks:
     m 2lksdlc "...No thanks."
