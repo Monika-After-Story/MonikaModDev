@@ -5493,7 +5493,7 @@ label mas_bday_bd_outro:
 #   ~~Add some nods to player bday if on the same day~~
 #   ~~Black Dress Intro~~
 
-label greeting_returned_home_bday:
+label fix_label_please_greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
     $ persistent._mas_bday_on_date = False
 

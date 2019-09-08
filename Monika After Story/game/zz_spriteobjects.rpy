@@ -783,6 +783,35 @@ init -1 python:
     )
     store.mas_selspr.unlock_clothes(mas_clothes_def)
 
+    
+    ### BLACK DRESS (OUR TIME)
+    ## blackdress
+    # Blackdress from Our Time Mod
+    # thanks SovietSpartan/JMO/Orca/Velius94/Orca
+    mas_clothes_blackdress = MASClothes(
+        "blackdress",
+        "blackdress",
+        MASPoseMap(
+            default=True,
+            use_reg_for_l=True
+        ),
+        stay_on_start=True
+    )
+    store.mas_sprites.init_clothes(mas_clothes_blackdress)
+    store.mas_selspr.init_selectable_clothes(
+        mas_clothes_blackdress,
+        "Black Dress",
+        "blackdress",
+        "clothes",
+        visible_when_locked=False,
+        hover_dlg=[
+            "BLACK DRESS, WITH THE TIGHTS UNDERNEATH"
+        ],
+        select_dlg=[
+            "I HAVE THE BREATH OF A LAST CIGARETTE ON MY TEETH"
+        ]
+    )
+
 
     ### BLAZERLESS SCHOOL UNIFORM
     ## blazerless
@@ -943,9 +972,6 @@ init -1 python:
             p7="restleftpointright"
         ),
         fallback=True,
-        hair_map={
-            "bun": "def"
-        },
         stay_on_start=True,
         entry_pp=store.mas_sprites._clothes_santa_entry,
         exit_pp=store.mas_sprites._clothes_santa_exit,
