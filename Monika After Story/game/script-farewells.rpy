@@ -947,6 +947,25 @@ label bye_going_somewhere:
         $ _history_list.pop()
         m 1lksdlc "..."
         m 1eksdlb "What am I saying? Of course I'll go with you!"
+        if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        menu:
+            m 3tub "Where are you taking me?"
+            "School.":
+                m 1eka "Ahaha [Player], I cant wait to see all your friends!"
+            "Work.":
+                m 1eka "How Fun!"
+            "A date.":
+                m 1eka "How Romantic [Player]!"
+            "Vacation.":
+                m 1eka "Im sure its going to be amazing"
+            "Beach.":
+                m 1eka "Want to see me in a bikini eh?
+                m 2hub "Ok lets go [Player]!"
+            "Road Trip.":
+                m 1eka "You Remembered. How Romantic!"
+        m 1hua "I can't wait!"
+        
 
     elif mas_isMoniUpset(lower=True):
         # upset monika has a 10% chance of not going with you
@@ -960,6 +979,25 @@ label bye_going_somewhere:
         m 2dsc "Just...please."
         m 2rkc "{i}Please{/i} understand what I'm going through."
         m 1dkc "..."
+        if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        menu:
+            m 3tub "Where are you taking me?"
+            "School.":
+                m 1eka "Ahaha [Player], I cant wait to see all your friends!"
+            "Work.":
+                m 1eka "How Fun!"
+            "A date.":
+                m 1eka "How Romantic [Player]!"
+            "Vacation.":
+                m 1eka "Im sure its going to be amazing"
+            "Beach.":
+                m 1eka "Want to see me in a bikini eh?
+                m 2hub "Ok lets go [Player]!"
+            "Road Trip.":
+                m 1eka "You Remembered. How Romantic!"
+        m 1hua "I can't wait!"
+        
 
     else:
         jump bye_going_somewhere_normalplus_flow
@@ -1103,7 +1141,23 @@ label bye_going_somewhere_normalplus_flow_aff_check:
 
     if mas_isMoniLove(higher=True):
         m 1hub "Oh, okay!"
-        m 3tub "Taking me somewhere special today?"
+        if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        menu:
+            m 3tub "Where are you taking me?"
+            "School.":
+                m 1eka "Ahaha [Player], I cant wait to see all your friends!"
+            "Work.":
+                m 1eka "How Fun!"
+            "A date.":
+                m 1eka "How Romantic [Player]!"
+            "Vacation.":
+                m 1eka "Im sure its going to be amazing"
+            "Beach.":
+                m 1eka "Want to see me in a bikini eh?
+                m 2hub "Ok lets go [Player]!"
+            "Road Trip.":
+                m 1eka "You Remembered. How Romantic!"
         m 1hua "I can't wait!"
 
 #    elif mas_isMoniAff(higher=True):
@@ -1116,7 +1170,25 @@ label bye_going_somewhere_normalplus_flow_aff_check:
         #   and will ask u to wait for her to get ready
         m 1sub "Really?"
         m 1hua "Yay!"
-        m 1ekbfa "I wonder where you'll take me today..."
+        if mas_isMoniLove(higher=True):
+        m 1hub "Oh, okay!"
+        menu:
+            m 3tub "Where are you taking me?"
+            "School.":
+                m 1eka "Ahaha [Player], I cant wait to see all your friends!"
+            "Work.":
+                m 1eka "How Fun!"
+            "A date.":
+                m 1eka "How Romantic [Player]!"
+            "Vacation.":
+                m 1eka "Im sure its going to be amazing"
+            "Beach.":
+                m 1eka "Want to see me in a bikini eh?
+                m 2hub "Ok lets go [Player]!"
+            "Road Trip.":
+                m 1eka "You Remembered. How Romantic!"
+        m 1hua "I can't wait!"
+        
 
     jump bye_going_somewhere_post_aff_check
 
