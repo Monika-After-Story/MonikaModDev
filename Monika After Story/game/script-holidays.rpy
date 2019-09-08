@@ -5470,14 +5470,16 @@ label bye_922_delegate:
         m 1ekbfa "You're the best partner I could ever hope for~"
 
     #BD Intro
-    if mas_isMoniAff(higher=True): #and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked:
+    if mas_isMoniAff(higher=True) and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
-    #TODO: Unlock bd here, dlg review/exp review
+    $ monika_chr.change_clothes(mas_clothes_blackdress)
+    $ store.mas_selspr.unlock_clothes(mas_clothes_blackdress, True)
+
     m 3tka "Well, [player]?"
     m 1hua "What do you think?"
     m 1ekbla "I've always loved this outfit and dreamt of going on a date with you, wearing this..."
@@ -5489,9 +5491,7 @@ label mas_bday_bd_outro:
 
 ########## [HOL060] DOCKSTAT GREETS ##########
 #TODO:
-#   Some dlg review
-#   ~~Add some nods to player bday if on the same day~~
-#   ~~Black Dress Intro~~
+#   Dlg review
 
 label fix_label_please_greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
