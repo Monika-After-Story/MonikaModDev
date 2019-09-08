@@ -804,11 +804,8 @@ init -1 python:
         "blackdress",
         "clothes",
         visible_when_locked=False,
-        hover_dlg=[
-            "BLACK DRESS, WITH THE TIGHTS UNDERNEATH"
-        ],
         select_dlg=[
-            "I HAVE THE BREATH OF A LAST CIGARETTE ON MY TEETH"
+            "Are we going somewhere special, [player]?"
         ]
     )
 
