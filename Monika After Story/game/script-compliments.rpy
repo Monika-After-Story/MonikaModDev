@@ -37,7 +37,7 @@ init -1 python in mas_compliments:
         ]
 
 
-# entry point for stories flow
+# entry point for compliments flow
 label mas_compliments_start:
 
     python:

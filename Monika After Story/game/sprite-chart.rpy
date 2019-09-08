@@ -4738,27 +4738,25 @@ init -2 python:
             RETURNS: MASPoseArms object built using the JSON, or 
                 None if failed
             """
-            inner_ind_lvl = ind_lvl + 1
-
             # parse all data, then decide what to do
             both_data = MASPoseArms._fromJSON_parseJGroup(
                 json_obj,
                 MASPoseArms.J_NAME_BOTH,
                 msg_log,
-                inner_ind_lvl
+                ind_lvl
             )
             left_data = MASPoseArms._fromJSON_parseJGroup(
                 json_obj,
                 MASPoseArms.J_NAME_LEFT,
                 msg_log,
-                inner_ind_lvl
+                ind_lvl
             )
 
             right_data = MASPoseArms._fromJSON_parseJGroup(
                 json_obj,
                 MASPoseArms.J_NAME_RIGHT,
                 msg_log,
-                inner_ind_lvl
+                ind_lvl
             )
 
             if both_data is None:
@@ -4766,7 +4764,7 @@ init -2 python:
                 if left_data is None and right_data is None:
                     msg_log.append((
                         MASPoseArms.msj.MSG_WARN_T,
-                        inner_ind_lvl,
+                        ind_lvl,
                         MASPoseArms.msj.MPA_NO_DATA
                     ))
 
@@ -4776,7 +4774,7 @@ init -2 python:
                 if left_data is not None or right_data is not None:
                     msg_log.append((
                         MASPoseArms.msj.MSG_WARN_T,
-                        inner_ind_lvl,
+                        ind_lvl,
                         MASPoseArms.msj.MPA_BOTH_OVER
                     ))
 
@@ -4788,7 +4786,7 @@ init -2 python:
                 json_obj.pop(ex_prop)
                 msg_log.append((
                     MASPoseArms.msj.MSG_WARN_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     MASPoseArms.msj.EXTRA_PROP.format(ex_prop)
                 ))
 
@@ -5055,8 +5053,6 @@ init -2 python:
 
             RETURNS: MASPoseMap object built using the JSON, or None if failed
             """
-            outer_ind_lvl = ind_lvl
-            inner_ind_lvl = ind_lvl + 1
             mpm_prop = "mpm_type"
             urfl_prop = "use_reg_for_l"
             mpm_data = {}
@@ -5065,7 +5061,7 @@ init -2 python:
             if mpm_prop not in json_obj:
                 msg_log.append((
                     cls.msj.MSG_ERR_T, 
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.REQ_MISS.format(mpm_prop)
                 ))
                 return None
@@ -5075,7 +5071,7 @@ init -2 python:
             if not cls.msj._verify_int(mpm_type, allow_none=False):
                 msg_log.append((
                     cls.msj.MSG_ERR_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.BAD_TYPE.format(mpm_prop, int, type(mpm_type))
                 ))
                 return None
@@ -5083,7 +5079,7 @@ init -2 python:
             if mpm_type not in cls.MPM_TYPES:
                 msg_log.append((
                     cls.msj.MSG_ERR_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.MPM_BAD_TYPE.format(mpm_type)
                 ))
                 return None
@@ -5091,7 +5087,7 @@ init -2 python:
             if valid_types is not None and mpm_type not in valid_types:
                 msg_log.append((
                     cls.msj.MSG_ERR_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.MPM_TYPE_MISS.format(valid_types, mpm_type)
                 ))
                 return None
@@ -5104,7 +5100,7 @@ init -2 python:
                 if not cls.msj._verify_bool(use_reg_for_l, allow_none=False):
                     msg_log.append((
                         cls.msj.MSG_ERR_T,
-                        inner_ind_lvl,
+                        ind_lvl,
                         cls.msj.BAD_TYPE.format(
                             urfl_prop,
                             str, 
@@ -5133,7 +5129,7 @@ init -2 python:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
                                     prop_name,
                                     str,
@@ -5150,7 +5146,7 @@ init -2 python:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPM_AS_BAD_TYPE.format(
                                     prop_name,
                                     str(MASPoseMap.MPM_AS_DATA),
@@ -5167,7 +5163,7 @@ init -2 python:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPM_ACS_BAD_POSE_TYPE.format(
                                     prop_name,
                                     bool,
@@ -5184,7 +5180,7 @@ init -2 python:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPM_BAD_POSE.format(
                                     prop_name,
                                     prop_val
@@ -5193,28 +5189,32 @@ init -2 python:
 
                     else: 
                         # otherwise pose arms
-                        if cls.msj._verify_dict(prop_val, allow_none=False):
+                        if prop_val is None:
+                            # none is allowed as it means use no layers
+                            mpm_data[prop_name] = None
+
+                        elif cls.msj._verify_dict(prop_val, allow_none=False):
                             msg_log.append((
                                 cls.msj.MSG_INFO_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPA_LOADING.format(prop_name)
                             ))
                             mpm_data[prop_name] = MASPoseArms.fromJSON(
                                 prop_val,
                                 msg_log,
-                                inner_ind_lvl + 1
+                                ind_lvl + 1
                             )
                             msg_log.append((
                                 cls.msj.MSG_INFO_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPA_SUCCESS.format(prop_name)
                             ))
 
-                        elif prop_val is not None:
+                        else:
                             isbad = True
                             msg_log.append((
                                 cls.msj.MSG_ERR_T,
-                                inner_ind_lvl,
+                                ind_lvl,
                                 cls.msj.MPM_PA_BAD_TYPE.format(
                                     prop_name,
                                     type(prop_val)
@@ -5225,7 +5225,7 @@ init -2 python:
                     # prop name NOT part of MASPoseMap. log as warning.
                     msg_log.append((
                         cls.msj.MSG_WARN_T,
-                        inner_ind_lvl,
+                        ind_lvl,
                         cls.msj.EXTRA_PROP.format(prop_name)
                     ))
 
@@ -5234,23 +5234,21 @@ init -2 python:
                 return None
 
             # we should alwyas suggest a default
-            _param_default = mpm_data.get("default", None)
-            _param_l_default = mpm_data.get("l_default", None)
             _param_urfl = mpm_data.get("use_reg_for_l", False)
-            if _param_default is None:
+            if "default" not in mpm_data:
                 msg_log.append((
                     cls.msj.MSG_WARN_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.MPM_DEF
                 ))
 
-            if _param_l_default is None and not _param_urfl:
+            if "l_default" not in mpm_data and not _param_urfl:
                 # we suggest using lean default when in fallback mode or 
                 #   acs
                 # and not using reg for l
                 msg_log.append((
                     cls.msj.MSG_WARN_T,
-                    inner_ind_lvl,
+                    ind_lvl,
                     cls.msj.MPM_DEF_L
                 ))
 

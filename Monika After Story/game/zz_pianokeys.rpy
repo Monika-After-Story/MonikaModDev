@@ -332,7 +332,7 @@ label mas_piano_hb_prac:
         m 1eksdla "Ehehe, trying the Birthday Song on your birthday, [player]?"
         m 3hua "Keep trying, I know you can do it!"
     else:
-        m 1eua "You're practing the Birthday Song?"
+        m 1eua "You're practicing the Birthday Song?"
         m 3hua "I know you can do it, [player]!"
     return
 

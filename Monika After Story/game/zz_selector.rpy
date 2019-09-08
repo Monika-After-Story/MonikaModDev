@@ -33,6 +33,11 @@ init -100 python in mas_selspr:
             "change": "Can you change your hairclip?",
             "wear": "Can you wear a hairclip?",
         },
+        "left-hair-flower": {
+            "_ev": "monika_hairflower_select",
+            "change": "Can you change the flower in your hair?",
+            "wear": "Can you wear a flower in your hair?",
+        },
         "ribbon": {
             "_ev": "monika_ribbon_select",
             "change": "Can you change your ribbon?",
@@ -475,6 +480,7 @@ init -10 python in mas_selspr:
     GRP_TOPIC_MAP = {
         "ribbon": ("monika_ribbon_select", 1),
         "left-hair-clip": ("monika_hairclip_select", 1),
+        "left-hair-flower": ("monika_hairflower_select", 1),
     }
 
 
@@ -3030,5 +3036,49 @@ label monika_hairclip_select:
 
 
 #### End Monika hairclips/strand topics
+
+#### Monika left hair flower
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hairflower_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("left-hair-flower", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_hairflower_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-flower")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which flower would you like me to put in my hair?"
+        )
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type("left-hair-flower"):
+        $ store.mas_selspr.set_prompt("left-hair-flower", "change")
+        m 1eka "If you want me to change the flower, just ask, okay?"
+    else:
+        $ store.mas_selspr.set_prompt("left-hair-flower", "wear")
+        m 1eka "If you want me to wear a flower, just ask, okay?"
+
+    return
+
+#### End Monika hairflower
+
 
 ############### END SELECTOR TOPICS ###########################################

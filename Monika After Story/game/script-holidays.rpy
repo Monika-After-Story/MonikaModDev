@@ -567,7 +567,7 @@ label greeting_o31_rin:
 
     else:
         show monika 1eua at t11 zorder MAS_MONIKA_Z
-        m 1hub "Hi [player]!"
+        m 1hub "Hi, [player]!"
         hide emptydesk
         m 3hub "Do you like my costume?"
 
@@ -1657,7 +1657,7 @@ label mas_d25_monika_hanukkah:
     m 3esa "It is said in the Jewish tradition, that one day's worth of olive oil gave the menorah eight days of light."
     m 3eub "Eight nights worth of celebration!"
     m 3eua "Hanukkah also shifts a bit from year to year. It's date is determined by the Hebrew Lunar Calendar."
-    m "It's on the 25th of Kislev, meaning 'trust' or 'hope'."
+    m "It's on the 25th of Kislev, meaning 'trust' or 'hope.'"
     m 1hua "A very appropriate meaning for such an occasion, don't you think?"
 
     # NOTE: wtf is this
@@ -2778,7 +2778,7 @@ default persistent._mas_pm_has_new_years_res = None
 
 label monika_resolutions:
     $ persistent._mas_nye_spent_nye = True
-    m 2eub "Hey [player]?"
+    m 2eub "Hey, [player]?"
     m 2eka "I was wondering..."
 
     m 3eub "Did you make any New Year's resolutions last year?{nw}"
