@@ -1460,8 +1460,9 @@ label ch30_visual_skip:
         $ mas_globals.last_hour = now_check.hour
 
     # check minute
-    if now_check.minute != mas_globals.last_minute_dt.minute:
-        call ch30_minute(now_check)
+    $ time_since_check = now_check - mas_globals.last_minute_dt
+    if now_check.minute != mas_globals.last_minute_dt.minute or time_since_check.total_seconds() >= 60:
+        call ch30_minute(time_since_check)
         $ mas_globals.last_minute_dt = now_check
 
 
@@ -1619,9 +1620,8 @@ label ch30_end:
 # label for things that should run about once per minute
 # NOTE: it only runs whent he minute changes, so don't expect this to run
 #   on start right away
-label ch30_minute(now_dt):
+label ch30_minute(time_since_check):
     python:
-        time_since_check = now_dt - mas_globals.last_minute_dt
 
         #Checks to see if affection levels have met the criteria to push an event or not.
         mas_checkAffection()
