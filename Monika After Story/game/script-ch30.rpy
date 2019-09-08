@@ -54,6 +54,15 @@ init -1 python in mas_globals:
     late_farewell = False
     # set to True if we had a late farewell
 
+    last_minute_dt = None
+    # last minute datetime (replaces calendar_last_chcked)
+
+    last_hour = None
+    # number of the hour we last ran ch30_hour
+
+    last_day = None
+    # numbr of the day we last ran ch30_day
+
 
 init 970 python:
     import store.mas_filereacts as mas_filereacts
@@ -1361,6 +1370,9 @@ label ch30_preloop:
     $ persistent._mas_game_crashed = True
     $ startup_check = False
     $ mas_checked_update = False
+    $ mas_globals.last_minute_dt = datetime.datetime.now()
+    $ mas_globals.last_hour = mas_globals.last_minute_dt.hour
+    $ mas_globals.last_day = mas_globals.last_minute_dt.day
 
     # delayed actions in here please
     $ mas_runDelayedActions(MAS_FC_IDLE_ONCE)
@@ -1434,64 +1446,25 @@ label ch30_visual_skip:
 #    if mas_weather.weatherProgress() and mas_isMoniNormal(higher=True):
 #        call spaceroom(dissolve_masks=True)
 
-    #Check time based events and grant time xp
-    python:
-        try:
-            calendar_last_checked
-        except:
-            calendar_last_checked=persistent.sessions['current_session_start']
-        time_since_check=datetime.datetime.now()-calendar_last_checked
+    # check reoccuring checks
+    $ now_check = datetime.datetime.now()
 
-        if time_since_check.total_seconds()>60:
+    # check day
+    if now_check.day != mas_globals.last_day:
+        call ch30_day
+        $ mas_globals.last_day = now_check.day
 
-            #Checks to see if affection levels have met the criteria to push an event or not.
-            mas_checkAffection()
+    # check hour
+    if now_check.hour != mas_globals.last_hour:
+        call ch30_hour
+        $ mas_globals.last_hour = now_check.hour
 
-            #Check if we should expire apologies
-            mas_checkApologies()
+    # check minute
+    $ time_since_check = now_check - mas_globals.last_minute_dt
+    if now_check.minute != mas_globals.last_minute_dt.minute or time_since_check.total_seconds() >= 60:
+        call ch30_minute(time_since_check)
+        $ mas_globals.last_minute_dt = now_check
 
-            # limit xp gathering to when we are not maxed
-            # and once per minute
-            if (persistent.idlexp_total < xp.IDLE_XP_MAX):
-
-                idle_xp=xp.IDLE_PER_MINUTE*(time_since_check.total_seconds())/60.0
-                persistent.idlexp_total += idle_xp
-                if persistent.idlexp_total>=xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
-                    idle_xp = idle_xp-(persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
-                    persistent.idlexp_total=xp.IDLE_XP_MAX
-
-                grant_xp(idle_xp)
-
-            # runs actions for both conditionals and calendar-based events
-            Event.checkEvents(evhand.event_database, rebuild_ev=False)
-
-            # Run delayed actions
-            mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
-
-            # run file checks
-            mas_checkReactions()
-
-            # run seasonal check
-            mas_seasonalCheck()
-
-            #Clear the notifications tray
-            mas_clearNotifs()
-
-            #Now we check if we should queue windowreact evs
-            mas_checkForWindowReacts()
-
-            # check if we need to rebulid ev
-            if mas_idle_mailbox.get_rebuild_msg():
-                mas_rebuildEventLists()
-
-            #Update time
-            calendar_last_checked=datetime.datetime.now()
-
-            # split affection values prior to saving
-            _mas_AffSave()
-
-            # save the persistent
-            renpy.save_persistent()
 
 label ch30_post_mid_loop_eval:
 
@@ -1643,6 +1616,76 @@ label mas_ch30_select_mostseen:
 # monika, so we could probably throw in something here
 label ch30_end:
     jump ch30_main
+
+# label for things that should run about once per minute
+# NOTE: it only runs whent he minute changes, so don't expect this to run
+#   on start right away
+label ch30_minute(time_since_check):
+    python:
+
+        #Checks to see if affection levels have met the criteria to push an event or not.
+        mas_checkAffection()
+
+        #Check if we should expire apologies
+        mas_checkApologies()
+
+        # limit xp gathering to when we are not maxed
+        # and once per minute
+        if (persistent.idlexp_total < xp.IDLE_XP_MAX):
+
+            idle_xp = xp.IDLE_PER_MINUTE * ((time_since_check.total_seconds())/60.0)
+            persistent.idlexp_total += idle_xp
+            if persistent.idlexp_total >= xp.IDLE_XP_MAX: # never grant more than 120 xp in a session
+                idle_xp = idle_xp - (persistent.idlexp_total-xp.IDLE_XP_MAX) #Remove excess XP
+                persistent.idlexp_total = xp.IDLE_XP_MAX
+
+            grant_xp(idle_xp)
+
+        # runs actions for both conditionals and calendar-based events
+        Event.checkEvents(evhand.event_database, rebuild_ev=False)
+
+        # Run delayed actions
+        mas_runDelayedActions(MAS_FC_IDLE_ROUTINE)
+
+        # run file checks
+        mas_checkReactions()
+
+        # run seasonal check
+        mas_seasonalCheck()
+
+        #Clear the notifications tray
+        mas_clearNotifs()
+
+        #Now we check if we should queue windowreact evs
+        mas_checkForWindowReacts()
+
+        # check if we need to rebulid ev
+        if mas_idle_mailbox.get_rebuild_msg():
+            mas_rebuildEventLists()
+
+        # split affection values prior to saving
+        _mas_AffSave()
+
+        # save the persistent
+        renpy.save_persistent()
+
+    return
+
+
+# label for things that should run about once per hour
+# NOTE: it only runs when the hour changes, so don't expect this to run 
+#   on start right away
+label ch30_hour:
+    $ mas_runDelayedActions(MAS_FC_IDLE_HOUR)
+    return
+
+# label for things that should run about once per day
+# NOTE: it only runs when the day changes, so don't expect this to run on 
+#   staart right away
+label ch30_day:
+    $ mas_runDelayedActions(MAS_FC_IDLE_DAY)
+    return
+
 
 # label for things that may reset after a certain amount of time/conditions
 label ch30_reset:
