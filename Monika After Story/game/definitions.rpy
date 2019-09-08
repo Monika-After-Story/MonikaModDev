@@ -531,16 +531,30 @@ python early:
             new_start, new_end, was_changed = Event._yearAdjustEV(self, force)
 
             if was_changed:
+                if self.isWithinRange():
+                    store.evhand.addYearsetBlacklist(
+                        self.eventlabel,
+                        self.end_date
+                    )
                 self.start_date = new_start
                 self.end_date = new_end
 
             return True
 
-        def isWithinRange(self):
-            #No range if both or either of these are none
-            if not (self.start_date or self.end_date):
+        def isWithinRange(self, check_dt=None):
+            """
+            Checks if the given dt is within range of this events start/end
+
+            IN:
+                check_dt - datetime to check, if None passed, we use .now()
+
+            RETURNS: True if within range, False if not within range, None
+                if no dts to compare
+            """
+            if self.start_date is None or self.end_date is None:
                 return None
-            return self.start_date <= datetime.datetime.now() < self.end_date
+            check_dt = datetime.datetime.now()
+            return self.start_date <= check_dt < self.end_date
 
         @staticmethod
         def getSortPrompt(ev):
@@ -632,11 +646,15 @@ python early:
 
             IN:
                 ev - event object to verify and set
+
+            RETURNS: was_changed
             """
             new_start, new_end, was_changed = Event._verifyDatesEV(ev)
             if was_changed:
                 ev.start_date = new_start
                 ev.end_date = new_end
+
+            return was_changed
 
 
         @staticmethod
@@ -739,7 +757,7 @@ python early:
                     new_end = add_yr_fun(_end, diff)
 
                 # now return the new start and the modified end
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff > 0)
 
             # otherwise, we have a list of years, and shoudl determine next
             if force:
@@ -770,7 +788,7 @@ python early:
 
             if force:
                 # force means we should just use this diff right away
-                return (add_yr_fun(_start, diff), new_end, True)
+                return (add_yr_fun(_start, diff), new_end, diff > 0)
 
             if new_end <= _now:
                 if len(new_years) <= 1:
@@ -781,7 +799,7 @@ python early:
                 diff = _now.year - new_years[1]
                 new_end = add_yr_fun(_end, diff)
 
-            return (add_yr_fun(_start, diff), new_end, True)
+            return (add_yr_fun(_start, diff), new_end, diff > 0)
 
 
         @staticmethod

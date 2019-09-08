@@ -295,7 +295,16 @@ init -500 python:
     Event.INIT_LOCKDB = persistent._mas_event_init_lockdb
 
 
+
 init 4 python:
+
+    # ev reset handling
+#    if persistent._mas_ev_reset_date is None:
+#        persistent._mas_ev_reset_date = datetime.date.today()
+
+#    else:
+        # 
+
 
     # the mapping is built here so events can use to build 
     # map databses to a code
@@ -490,6 +499,9 @@ init 4 python:
 
         #Otherwise return this evaluation
         return ev.last_seen.year == year
+
+    # clean yearset
+    store.evhand.cleanYearsetBlacklist()
 
 
 python early:
@@ -929,6 +941,11 @@ init 994 python in mas_delact:
     # now run the init
     loadDelayedActionMap()
 
+
+default persistent._mas_ev_yearset_blacklist = {}
+# key: label of the ev to reset yeras
+# value: datetime that this blacklist expires
+
 # special store to contain scrollable menu constants
 init -1 python in evhand:
     import store
@@ -1200,6 +1217,50 @@ init -1 python in evhand:
         """
         _unlockEvent(eventdb.get(evlabel, None))
 
+    
+    def addYearsetBlacklist(evl, expire_dt):
+        """
+        Adds the given evl to the yearset blacklist, with the given expiration
+        dt
+
+        IN:
+            evl - event label
+            expire_dt - when the evl should be removed from the blacklist
+        """
+        if expire_dt > datetime.datetime.now():
+            store.persistent._mas_ev_yearset_blacklist[evl] = expire_dt
+
+
+    def cleanYearsetBlacklist():
+        """
+        Goes through the year setblacklist and removes expired entries
+        """
+        now_dt = datetime.datetime.now()
+        for evl in store.persistent._mas_ev_yearset_blacklist.keys():
+            if store.persistent._mas_ev_yearset_blacklist[evl] <= now_dt:
+                store.persistent._mas_ev_yearset_blacklist.pop(evl)
+
+
+    def isYearsetBlacklisted(evl):
+        """
+        Checks if the given evl is yearset blacklisted. Also checks expiration
+        date and removes if needed.
+
+        IN:
+            evl - event label
+
+        RETURNS: True if blacklisted, false if not
+        """
+        if evl not in store.persistent._mas_ev_yearset_blacklist:
+            return False
+
+        expire_dt = store.persistent._mas_ev_yearset_blacklist[evl]
+        if expire_dt <= datetime.datetime.now():
+            store.persistent._mas_ev_yearset_blacklist.pop(evl)
+            return False
+
+        return True
+
 
 init python:
     import store.evhand as evhand
@@ -1251,7 +1312,8 @@ init python:
 
         # verify the event's dates
         # NOTE: this covers time travel
-        Event._verifyAndSetDatesEV(event)
+        if not store.evhand.isYearsetBlacklisted(event.eventlabel):
+            Event._verifyAndSetDatesEV(event)
 
         # now this event has passsed checks, we can add it to the db
         eventdb.setdefault(event.eventlabel, event)
