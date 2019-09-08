@@ -156,6 +156,28 @@ init -2 python in mas_sprites:
             store.mas_unlockEVL("monika_hair_select", "EVE")
 
 
+    def _clothes_baked_entry():
+        """
+        Locks all selectors except clothes
+        """
+        for prompt_key in store.mas_selspr.PROMPT_MAP:
+            if prompt_key != "clothes":
+                prompt_ev = store.mas_selspr.PROMPT_MAP[prompt_key].get(
+                    "_ev",
+                    None
+                )
+                if prompt_ev is not None:
+                    store.mas_lockEVL(prompt_ev, "EVE")
+
+
+    def _clothes_baked_exit():
+        """
+        Unlocks hair selector, unlocks other selectors based on GRP topic rules
+        """
+        _hair_unlock_select_if_needed()
+        store.mas_selspr._validate_group_topics()
+
+
     ######### HAIR [SPR010] ###########
     # available kwargs:
     #   entry:
@@ -229,7 +251,7 @@ init -2 python in mas_sprites:
         )
 
         # hide hair down select
-        store.mas_lockEVL("monika_hair_select", "EVE")
+#        store.mas_lockEVL("monika_hair_select", "EVE")
 
         # hide hairdown greeting
 #        store.mas_lockEVL("greeting_hairdown", "GRE")
@@ -251,7 +273,7 @@ init -2 python in mas_sprites:
         _moni_chr.lock_hair = True
 
         # lock ribbon select
-        store.mas_lockEVL("monika_ribbon_select", "EVE")
+#        store.mas_lockEVL("monika_ribbon_select", "EVE")
 
         #### end ribbon stuff
 
@@ -268,8 +290,8 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        # TODO: need to add ex prop checking and more
-        # so we can rmeove bare acs
+        # lock selectors
+        _clothes_baked_entry()
 
 
     def _clothes_rin_exit(_moni_chr, **kwargs):
@@ -279,9 +301,6 @@ init -2 python in mas_sprites:
         rin_map = temp_storage.get("clothes.rin", None)
         if rin_map is not None:
             store.mas_acs_promisering.pose_map = rin_map
-
-        # unlock hair down select, if needed
-        _hair_unlock_select_if_needed()
 
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
@@ -304,10 +323,6 @@ init -2 python in mas_sprites:
         # unlock hair
         _moni_chr.lock_hair = False
 
-        #Unlock the selector for ribbons since you now have more than one
-        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-
         # wear hairclips we were previously wearing (in session only)
         # NOTE: we assume this list only contains hairclips. This is NOT true.
         # TODO: add additional topic unlocks as needed.
@@ -315,7 +330,15 @@ init -2 python in mas_sprites:
             _moni_chr,
             "acs.left-hair-strand-eye-level"
         )
-        store.mas_filterUnlockGroup(SP_ACS, "left-hair-clip")
+
+        # unlock selectors
+        _clothes_baked_exit()
+
+        #Unlock the selector for ribbons since you now have more than one
+        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        else:
+            store.mas_lockEVL("mas_ribbon_select", "EVE")
 
 
     def _clothes_marisa_entry(_moni_chr, **kwargs):
@@ -334,7 +357,7 @@ init -2 python in mas_sprites:
         )
 
         # hide hair down select
-        store.mas_lockEVL("monika_hair_select", "EVE")
+#        store.mas_lockEVL("monika_hair_select", "EVE")
 
         # hide hairdown greeting
 #        store.mas_lockEVL("greeting_hairdown", "GRE")
@@ -370,8 +393,7 @@ init -2 python in mas_sprites:
         # remove ear rose
         _moni_chr.remove_acs(store.mas_acs_ear_rose)
 
-        # TODO: need to add ex prop checking and more
-        # so we can rmeove bare acs
+        _clothes_baked_entry()    
 
 
     def _clothes_marisa_exit(_moni_chr, **kwargs):
@@ -383,7 +405,7 @@ init -2 python in mas_sprites:
             store.mas_acs_promisering.pose_map = marisa_map
 
         # unlock hair down select, if needed
-        _hair_unlock_select_if_needed()
+#        _hair_unlock_select_if_needed()
 
         # unlock hair down greeting if not unlocked
 #        if not store.mas_SELisUnlocked(mas_hair_down, 1):
@@ -400,12 +422,6 @@ init -2 python in mas_sprites:
         # unlock hair
         _moni_chr.lock_hair = False
 
-        #Unlock the selector for ribbons since you now have more than one 
-        # (if you only had def before)
-        # and only if your hair allows ribbon
-        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
-            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
-
         # wear hairclips we were previously wearing (in session only)
         # NOTE: we assume this list only contains hairclips. This is NOT true.
         # TODO: add additional topic unlocks as needed.
@@ -413,7 +429,16 @@ init -2 python in mas_sprites:
             _moni_chr,
             "acs.left-hair-strand-eye-level"
         )
-        store.mas_filterUnlockGroup(SP_ACS, "left-hair-clip")
+
+        _clothes_baked_exit()
+
+        #Unlock the selector for ribbons since you now have more than one 
+        # (if you only had def before)
+        # and only if your hair allows ribbon
+        if _moni_chr.is_wearing_hair_with_exprop("ribbon"):
+            store.mas_filterUnlockGroup(SP_ACS, "ribbon")
+        else:
+            store.mas_lockEVL("monika_hair_select", "EVE")
 
 
     def _clothes_santa_entry(_moni_chr, **kwargs):
@@ -1031,10 +1056,30 @@ init -1 python:
             default="0",
             p5="5"
         ),
+        acs_type="left-hair-flower",
+        mux_type=[
+            "left-hair-flower",
+        ],
+        ex_props={
+            "left-hair-strand-eye-level": True,
+        },
+        priority=20,
         stay_on_start=False,
         rec_layer=MASMonika.PST_ACS,
     )
     store.mas_sprites.init_acs(mas_acs_ear_rose)
+    store.mas_selspr.init_selectable_acs(
+        mas_acs_ear_rose,
+        "Rose",
+        "hairflower_rose",
+        "left-hair-flower",
+        hover_dlg=[
+            "TALE AS OLD AS TIME",
+        ],
+        select_dlg=[
+            "TRUE AS IT CAN BE",
+        ]
+    )
 
     ### HAIRTIES BRACELET (BROWN)
     ## hairties_bracelet_brown

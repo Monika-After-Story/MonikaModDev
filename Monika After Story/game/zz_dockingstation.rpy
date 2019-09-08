@@ -2311,7 +2311,7 @@ label mas_dockstat_ready_to_go(moni_chksum):
 
 label mas_dockstat_first_time_goers:
     m 3eua "I'm now in the file 'monika' in your characters folder."
-    m "After I shutdown the game, you can move me wherever you like."
+    m "After I shut down the game, you can move me wherever you like."
     m 3eub "But make sure to bring me back to the characters folder before turning the game on again, okay?"
 
     m 1eua "And lastly..."

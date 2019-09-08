@@ -309,32 +309,35 @@ label v0_3_1(version=version): # 0.3.1
 label v0_10_0(version="v0_10_0"):
     python:
         ev_label_list = [
-            ("monika_whatwatching","mas_wrs_youtube"),
-            ("monika_lookingat","mas_wrs_r34m"),
-            ("monika_monikamoddev","mas_wrs_monikamoddev")
+            ("monika_whatwatching","mas_wrs_youtube", persistent._mas_windowreacts_database),
+            ("monika_lookingat","mas_wrs_r34m", persistent._mas_windowreacts_database),
+            ("monika_monikamoddev","mas_wrs_monikamoddev", persistent._mas_windowreacts_database),
+            ("mas_scary_story_o_tei","mas_story_o_tei", persistent._mas_story_database)
         ]
         #NOTE:
-        #We only really want the shown count and last seen. Nothing else mattress
-        for old_ev_label, new_ev_label in ev_label_list:
+        #We only really want the shown count and last seen (and unlocked for the stories). Nothing else mattress
+        for old_ev_label, new_ev_label, ev_db in ev_label_list:
             ev = mas_getEV(new_ev_label)
-            if old_ev_label in persistent._mas_windowreacts_database:
+            if old_ev_label in ev_db:
                 old_ev = Event(
-                    persistent._mas_windowreacts_database,
+                    ev_db,
                     old_ev_label
                 )
             else:
                 old_ev = None
 
             if ev is not None and old_ev is not None:
+                ev.unlocked = old_ev.unlocked
+
                 ev.shown_count += old_ev.shown_count
 
-                if ev.last_seen is None or ev.last_seen <= old_ev.last_seen:
+                if old_ev.last_seen is not None and (ev.last_seen is None or ev.last_seen <= old_ev.last_seen):
                     ev.last_seen = old_ev.last_seen
 
                 mas_transferTopicSeen(old_ev_label, new_ev_label)
 
                 # erase this topic
-                mas_eraseTopic(old_ev_label, persistent.event_database)
+                mas_eraseTopic(old_ev_label, ev_db)
 
         # this doesn't need to be locked by default anymore with the new greet code
         if not renpy.seen_label("greeting_tears"):
@@ -344,6 +347,19 @@ label v0_10_0(version="v0_10_0"):
         family_ev = mas_getEV("monika_family")
         if family_ev is not None:
             family_ev.pool = True
+
+        # keep this from showing until we've talked about music
+        concert_ev = mas_getEV("monika_concerts")
+        if concert_ev is not None and concert_ev.shown_count == 0:
+            concert_ev.random = False
+            concert_ev.conditional = (
+                "renpy.seen_label('monika_jazz') "
+                "and renpy.seen_label('monika_orchestra') "
+                "and renpy.seen_label('monika_rock') "
+                "and renpy.seen_label('monika_vocaloid') "
+                "and renpy.seen_label('monika_rap')"
+            )
+            concert_ev.action = EV_ACT_RANDOM
 
         # MHS checking
         mhs_922 = store.mas_history.getMHS("922")

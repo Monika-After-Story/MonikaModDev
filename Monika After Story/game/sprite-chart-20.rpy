@@ -2662,6 +2662,20 @@ image monika 2lfb:
         0.06
         repeat
 
+image monika 2lfbsp:
+    block:
+        "monika 2lfbsp_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dfbsp_static"
+        0.06
+        repeat
+
 image monika 2lfc:
     block:
         "monika 2lfc_static"
@@ -3404,6 +3418,20 @@ image monika 2tfb:
         0.06
         repeat
 
+image monika 2tfbsd:
+    block:
+        "monika 2tfbsd_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dfbsd_static"
+        0.06
+        repeat
+
 image monika 2tfc:
     block:
         "monika 2tfc_static"
@@ -3485,6 +3513,20 @@ image monika 2tkb:
             choice:
                 7
         "monika 2dkb_static"
+        0.06
+        repeat
+
+image monika 2tkbsu:
+    block:
+        "monika 2tkbsu_static"
+        block:
+            choice:
+                3
+            choice:
+                5
+            choice:
+                7
+        "monika 2dkbsu_static"
         0.06
         repeat
 
@@ -6943,48 +6985,6 @@ image monika 4wubfsdld:
             choice:
                 7
         "monika 4dubfsdld_static"
-        0.06
-        repeat
-
-image monika 4wubso:
-    block:
-        "monika 4wubso_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dubso_static"
-        0.06
-        repeat
-
-image monika 4wubsw:
-    block:
-        "monika 4wubsw_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4dubsw_static"
-        0.06
-        repeat
-
-image monika 4wuc:
-    block:
-        "monika 4wuc_static"
-        block:
-            choice:
-                3
-            choice:
-                5
-            choice:
-                7
-        "monika 4duc_static"
         0.06
         repeat
 
