@@ -33,6 +33,11 @@ init -100 python in mas_selspr:
             "change": "Can you change your hairclip?",
             "wear": "Can you wear a hairclip?",
         },
+        "left-hair-flower": {
+            "_ev": "monika_hairflower_select",
+            "change": "Can you change the flower in your hair?",
+            "wear": "Can you wear a flower in your hair?",
+        },
         "ribbon": {
             "_ev": "monika_ribbon_select",
             "change": "Can you change your ribbon?",
@@ -40,7 +45,7 @@ init -100 python in mas_selspr:
         },
     }
 
-    
+
     def get_prompt(key, prompt_key="change"):
         """
         Gets prompt with the given key and prompt key
@@ -57,7 +62,7 @@ init -100 python in mas_selspr:
         return PROMPT_MAP.get(key, {}).get(prompt_key, "")
 
 
-    def in_prompt_map(key): 
+    def in_prompt_map(key):
         """
         Checks if a key is in the prompt select map
 
@@ -214,7 +219,7 @@ init -20 python:
         Wrapper around MASAccessory sprite objects.
 
         PROPERTIES:
-            remover - True if this item is a remover, aka a blank ACS, 
+            remover - True if this item is a remover, aka a blank ACS,
                 False if not
 
 
@@ -468,13 +473,14 @@ init -10 python in mas_selspr:
     CLOTH_SEL_SL = []
 
     # selector group - topic map
-    # key: group 
+    # key: group
     # value: tuple of following format:
     #   [0] - topic label
     #   [2] - number of items before unlocking
     GRP_TOPIC_MAP = {
         "ribbon": ("monika_ribbon_select", 1),
         "left-hair-clip": ("monika_hairclip_select", 1),
+        "left-hair-flower": ("monika_hairflower_select", 1),
     }
 
 
@@ -1129,7 +1135,7 @@ init -10 python in mas_selspr:
 
         IN:
             item - sprite objct to find the Selectable for
-            
+
         RETURNS: selectable for the given item
         """
         if item.gettype() == store.mas_sprites_json.SP_ACS:
@@ -1452,9 +1458,9 @@ init -1 python:
         selector objects are unlocked.
 
         IN:
-            sp_type - sprite type to filter on 
+            sp_type - sprite type to filter on
             group - group to use for filtering selectors
-            unlock_min - minimum number that has to be unlocked for us to 
+            unlock_min - minimum number that has to be unlocked for us to
                 unock the selector topic.
                 IF None, then we use the amount provided by the GRP_TOPIC_MAP
                 (Default: None)
@@ -1560,8 +1566,8 @@ init -1 python:
                 thumb_path = self.THUMB_DIR + "remove.png"
 
             else:
-                # as a precaution, if a thumb doesn't exist, we use a 
-                # placeholder. 
+                # as a precaution, if a thumb doesn't exist, we use a
+                # placeholder.
                 thumb_path = self.THUMB_DIR + _selectable.thumb
                 if not renpy.loadable(thumb_path):
                     thumb_path = self.THUMB_DIR + "unknown.png"
@@ -1570,25 +1576,25 @@ init -1 python:
 
             # image setups
             self.thumb_overlay = Image(
-                "mod_assets/frames/selector_overlay.png"
+                mas_getTimeFile("mod_assets/frames/selector_overlay.png")
             )
             self.thumb_overlay_locked = Image(
-                "mod_assets/frames/selector_overlay_disabled.png"
+                mas_getTimeFile("mod_assets/frames/selector_overlay_disabled.png")
             )
             self.top_frame = Frame(
-                "mod_assets/frames/selector_top_frame.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame.png"),
                 left=4,
                 top=4,
                 tile=True
             )
             self.top_frame_selected = Frame(
-                "mod_assets/frames/selector_top_frame_selected.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame_selected.png"),
                 left=4,
                 top=4,
                 tile=True
             )
             self.top_frame_locked = Frame(
-                "mod_assets/frames/selector_top_frame_disabled.png",
+                mas_getTimeFile("mod_assets/frames/selector_top_frame_disabled.png"),
                 left=4,
                 top=4,
                 tile=True
@@ -1742,9 +1748,9 @@ init -1 python:
                 the text object for the display name
             """
             if selected:
-                color = "#fa9"
+                color = mas_ui.light_button_text_hover_color
             else:
-                color = "#000"
+                color = mas_ui.light_button_text_idle_color
 
             return Text(
                 _text,
@@ -2380,7 +2386,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 
     frame:
         area (1075, 5, 200, 625)
-        background Frame("mod_assets/frames/black70_pinkborder100_5px.png", left=6, top=6, tile=True)
+        background Frame(mas_getTimeFile("mod_assets/frames/black70_pinkborder100_5px.png"), left=6, top=6, tile=True)
 
         vbox:
             xsize 200
@@ -2410,7 +2416,7 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
 
             if mailbox.read_conf_enable():
                 textbutton _("Confirm"):
-                    style "hkb_button"
+                    style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
                     xalign 0.5
                     action Jump(confirm)
             else:
@@ -2419,11 +2425,11 @@ screen mas_selector_sidebar(items, mailbox, confirm, cancel, remover=None):
                     xsize 120
                     xalign 0.5
 
-                    background Image("mod_assets/hkb_disabled_background.png")
-                    text "Confirm" style "hkb_text"
+                    background Image(mas_getTimeFile("mod_assets/hkb_disabled_background.png"))
+                    text "Confirm" style ("hkb_text" if not mas_globals.dark_mode else "hkb_dark_text")
 
             textbutton _("Cancel"):
-                style "hkb_button"
+                style ("hkb_button" if not mas_globals.dark_mode else "hkb_dark_button")
                 xalign 0.5
                 action Jump(cancel)
 #                action Function(mailbox.mas_send_return, -1)
@@ -3015,5 +3021,49 @@ label monika_hairclip_select:
 
 
 #### End Monika hairclips/strand topics
+
+#### Monika left hair flower
+init 5 python:
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="monika_hairflower_select",
+            category=["appearance"],
+            prompt=store.mas_selspr.get_prompt("left-hair-flower", "change"),
+            pool=True,
+            unlocked=False,
+            rules={"no unlock": None},
+            aff_range=(mas_aff.HAPPY, None)
+        )
+    )
+
+label monika_hairflower_select:
+    python:
+        use_acs = store.mas_selspr.filter_acs(True, group="left-hair-flower")
+
+        mailbox = store.mas_selspr.MASSelectableSpriteMailbox(
+            "Which flower would you like me to put in my hair?"
+        )
+        sel_map = {}
+
+    m 1eua "Sure [player]!"
+
+    call mas_selector_sidebar_select_acs(use_acs, mailbox=mailbox, select_map=sel_map, add_remover=True)
+
+    if not _return:
+        m 1eka "Oh, alright."
+
+    # set the appropriate prompt and dialogue
+    if monika_chr.get_acs_of_type("left-hair-flower"):
+        $ store.mas_selspr.set_prompt("left-hair-flower", "change")
+        m 1eka "If you want me to change the flower, just ask, okay?"
+    else:
+        $ store.mas_selspr.set_prompt("left-hair-flower", "wear")
+        m 1eka "If you want me to wear a flower, just ask, okay?"
+
+    return
+
+#### End Monika hairflower
+
 
 ############### END SELECTOR TOPICS ###########################################

@@ -11,7 +11,7 @@ init -10 python:
     #
     #   if for some reason we fail to convert the files into images
     #   then we must backout of showing the event.
-    # 
+    #
     #   NOTE: other things to note:
     #       on o31, we cannot have islands event
     mas_cannot_decode_islands = not store.mas_island_event.decodeImages()
@@ -176,12 +176,12 @@ label mas_monika_cherry_blossom1:
     m "Traditionally, when the flowers are in bloom, people would go flower viewing and have a picnic underneath the trees."
     m "Well, I didn't choose this tree because of tradition."
     m "I chose it because it's lovely and pleasing to look at."
-    m "Just staring at the falling petals is just awe-inspiring."
+    m "Just staring at the falling petals is awe-inspiring."
     return
 
 label mas_monika_cherry_blossom2:
-    m "Did you know you can eat the flower petals of a  Cherry Blossom tree?"
-    m "I don't know the taste myself, but I'm sure it'd be as sweet as you."
+    m "Did you know you can eat the flower petals of a Cherry Blossom tree?"
+    m "I don't know the taste myself, but I'm sure it can't be as sweet as you."
     m "Ehehe~"
     return
 
@@ -419,8 +419,8 @@ define gui.island_button_tile = False
 define gui.island_button_text_font = gui.default_font
 define gui.island_button_text_size = gui.text_size
 define gui.island_button_text_xalign = 0.5
-define gui.island_button_text_idle_color = "#000"
-define gui.island_button_text_hover_color = "#fa9"
+define gui.island_button_text_idle_color = mas_ui.light_button_text_idle_color
+define gui.island_button_text_hover_color = mas_ui.light_button_text_hover_color
 define gui.island_button_text_kerning = 0.2
 
 style island_button is button

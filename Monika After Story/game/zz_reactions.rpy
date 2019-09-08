@@ -783,24 +783,58 @@ label mas_reaction_gift_generic_sprite_json:
 
     # TODO: something different if whatever was gifted has been gifted before
 
-    m "Aww, [player]!"
-    if sprite_str is None:
-        if giftname is not None:
-            m 1hua "You're so sweet!"
-            m 1eua "Thanks for giving me this [giftname]!"
-            m 1ekbsa "You really love to spoil me, don't you."
-            m 1hubfa "Ehehe!"
-
-        else:
-            m 3eub "Thanks for this!"
+    # we have special react for generic json clothes
+    if sprite_type == store.mas_sprites.SP_CLOTHES:
+        call mas_reaction_gift_generic_clothes_json
 
     else:
-        m 1hua "Thanks for this [sprite_str], [player]!"
-        m 3hub "I can't wait to try it on!"
+        m "Aww, [player]!"
+        if sprite_str is None:
+            if giftname is not None:
+                m 1hua "You're so sweet!"
+                m 1eua "Thanks for giving me this [giftname]!"
+                m 1ekbsa "You really love to spoil me, don't you."
+                m 1hubfa "Ehehe!"
+
+            else:
+                m 3eub "Thanks for this!"
+
+        else:
+            m 1hua "Thanks for this [sprite_str], [player]!"
+            m 3hub "I can't wait to try it on!"
 
     $ mas_finishSpriteObjInfo(sprite_data)
     if giftname is not None:
         $ store.mas_filereacts.delete_file(giftname)
+    return
+
+# generic reaction for json clothes
+label mas_reaction_gift_generic_clothes_json:
+    python:
+        # expandable
+        outfit_quips = [
+            "I think it's really cute, [player]!",
+            "I think it's amazing, [player]!",
+            "I just love it, [player]!",
+            "I think it's wonderful, [player]!"
+        ]
+        outfit_quip = renpy.random.choice(outfit_quips)
+
+    m 1sua "Oh! {w=0.5}A new outfit!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2eka "Well...{w=0.5} What do you think?"
+    m 2eksdla "Do you like it?"
+    # TODO: outfit randomization should actually get a response here
+    #   should influence monika outfit selection
+
+    show monika 3hub
+    $ renpy.say(m,outfit_quip)
+
+    m 1eua "Thanks again~"
     return
 
 ## Hair clip reactions
@@ -1919,4 +1953,100 @@ label mas_remove_choc:
     m 3hksdlb "Ahaha! I should probably put these away for now..."
     m 1rksdla "If I leave them here much longer there won't be any left to enjoy later!"
     $ monika_chr.remove_acs(mas_acs_heartchoc)
+    return
+
+label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "orcaramelo_bikini_shell")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 1sua "Oh! {w=0.5}A seashell bikini!"
+    m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2ekbfa "Well...{w=0.5} What do you think?"
+    m 2hubfa "Do I look like a mermaid? Ehehe."
+    show monika 5ekbfa at i11 zorder MAS_MONIKA_Z with dissolve
+    m 5ekbfa "I think it's really cute, [player]..."
+    m 5hubfa "We'll have to go to the beach sometime!"
+
+    if mas_isWinter() or mas_isMoniNormal(lower=True):
+        if mas_isWinter():
+            show monika 2rksdla at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2rksdla "...But for now, it's a little chilly in here..."
+            m 2eka "So I'm going to go put on something a little warmer..."
+
+        elif mas_isMoniNormal(lower=True):
+            show monika 2hksdlb at i11 zorder MAS_MONIKA_Z with dissolve
+            m 2hksdlb "Ahaha..."
+            m 2rksdla "It's a little embarrassing just sitting here like this in front of you."
+            m 2eka "I hope you don't mind, but I'm going to go change..."
+
+        # change to def
+        call mas_clothes_change()
+
+        m 2eua "Ah, that's better..."
+        m 3hua "Thanks again for the wonderful gift~"
+
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_ACS, "orcaramelo_hairflower_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 3sua "Oh!{w=0.5} What a cute little flower!"
+    m 1ekbsa "Thanks [player], you're so sweet~"
+    m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
+    $ monika_chr.wear_acs(mas_sprites.get_sprite(sprite_type, sprite_name))
+    m 1hua "Ehehe~"
+    m 1hub "Thanks again, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
+    return
+
+label mas_reaction_gift_clothes_velius94_shirt_pink:
+    python:
+        sprite_data = mas_getSpriteObjInfo(
+            (store.mas_sprites.SP_CLOTHES, "velius94_shirt_pink")
+        )
+        sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+    m 1suo "Oh my gosh!"
+    m 1suo "It's {i}so{/i} pretty!"
+    m 3hub "Thank you so much, [player]!"
+    m 3eua "Hold on, let me try it on real quick..."
+
+    # try it on
+    call mas_clothes_change(store.mas_sprites.get_sprite(sprite_type,sprite_name))
+
+    m 2sub "Ahh, it's a perfect fit!"
+    m 3hub "I really like the colors, too! Pink and black go so well together."
+    m 3eub "Not to mention the skirt looks really cute with those frills!"
+    m 2tfbsd "Yet for some reason I can't help but feel that your eyes are kind of drifting...{w=0.5}ahem...{w=0.5}{i}elsewhere{/i}."
+
+    if mas_selspr.get_sel_clothes(mas_clothes_sundress_white).unlocked:
+        m 2lfbsp "I told you it's not polite to stare, [player]."
+    else:
+        m 2lfbsp "It's not polite to stare, you know?"
+
+    m 2hubsb "Ahaha!"
+    m 2tkbsu "Relax, relax...{w=0.5}just teasing you~"
+    m 3hub "Once again, thank you so much for this outfit, [player]!"
+
+    $ mas_finishSpriteObjInfo(sprite_data)
+    if giftname is not None:
+        $ store.mas_filereacts.delete_file(giftname)
     return

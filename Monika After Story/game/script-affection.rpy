@@ -500,6 +500,10 @@ init 15 python in mas_affection:
         # always rebuild randos
         store.mas_idle_mailbox.send_rebuild_msg()
 
+        # queue the blazerless intro event
+        if not store.seen_event("mas_blazerless_intro"):
+            store.queueEvent("mas_blazerless_intro")
+
         # unlock blazerless for use
         store.mas_selspr.unlock_clothes(store.mas_clothes_blazerless)
 

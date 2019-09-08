@@ -447,6 +447,45 @@ label mas_story_immortal_love:
     m 1hua "Thanks for listening~"
     return
 
+init 5 python:
+    addEvent(Event(persistent._mas_story_database,eventlabel="mas_story_o_tei",
+        prompt="The tale of O-Tei",unlocked=False),code="STY")
+
+label mas_story_o_tei:
+    call mas_story_begin
+    m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
+    m 3eub "He was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
+    m 1esc "Unfortunately, Tomoe contracted a serious illness before that could happen."
+    m 2dsd "It wasn't long until she was bedridden, nearing the end of her life."
+    m 2esd "Kenji knelt by her bedside, and she said to him, 'We have been promised to each other since childhood...'"
+    m 3ekc "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
+    m "'Please do not grieve when I go. I believe we shall meet again.'"
+    m 3eud "He asked, 'How would I know of your return?'"
+    m 2dsc "Unfortunately, she had succumbed before she could give him an answer."
+    m "Kenji grieved deeply for the loss of his love, taken too soon from him."
+    m 2esc "He never forgot about Tomoe as time moved on, but he was required to marry someone else and preserve the family name."
+    m "He soon married another girl, but his heart stayed somewhere else."
+    m 2esd "And as everything does in life, his family too had been taken by time and he was left all alone again."
+    m 4eud "It was then that he decided to abandon his home and take a long journey to forget his troubles."
+    m 1esc "He travelled all around the country, searching for a cure to his malaise."
+    m 1euc "And then on one evening, he came across an inn and stopped there to rest."
+    m "As he settled down in his room, a nakai opened the door to greet him."
+    m 3euc "His heart leapt..."
+    m 3wud "The girl that greeted him looked exactly like Tomoe."
+    m "Everything he saw in her reminded him perfectly of his past love."
+    m 1esc "Kenji then remembered the last words they exchanged before her departure."
+    m 1esc "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
+    m 3euc "'If you don't mind me asking, what is your name?'"
+    m 3wud "Immediately, in the unforgotten voice of his deceased beloved, the girl answered, 'My name is Tomoe, and you are Kenji, my promised husband.'"
+    m 1wud "'I had died tragically before we could complete our marriage...'"
+    m "'And now I have returned, Kenji, my husband-to-be.'"
+    m 1dsc "The girl then collapsed to the floor, unconscious."
+    m 1esa "Kenji held her to his arms, tears flowing from his face."
+    m 1dsa "'...Welcome back, Tomoe...'"
+    m 3esa "As she came to, she had no memory of what happened in the inn."
+    m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
+    return
+
 define mas_scary_story_setup_done = False
 
 # Scary stories start here
@@ -538,8 +577,8 @@ label mas_scary_story_hunter:
     m 1esd "He was soon approached by a salesman, who kept his face covered."
     m 3esd "The salesman offered seven magic bullets that would hit whatever target the owner wanted without fail."
     m "He would give the hunter these bullets on one condition."
-    m "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
-    m 1euc "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
+    m 1euc "The hunter could use the first six bullets as he wished, but the last bullet's mark would be chosen by the salesman."
+    m "The hunter agreed and quickly became famous in his town for bringing home kill after kill."
     m 3eud "It wasn't long before the hunter used up all six bullets."
     m 1esc "On his next hunt, the hunter saw a wild boar, the largest he had ever seen. It was too great of a prey to pass up on."
     m 1euc "He loaded the last bullet hoping to take down the beast..."
@@ -548,10 +587,10 @@ label mas_scary_story_hunter:
     m 1esd "'I will give you a chance for redemption, hunter.' The salesman told him."
     m 4esb "'Remain ever faithful to your slain beloved for the remainder of your life, and you would be reunited with her after death.'"
     m 1eud "The hunter vowed to remain true to her for as long as he lived..."
-    m 1dsd "...{w}or so he would."
+    m 1dsd "...{w=1}or so he would."
     m 1dsc "Long after her demise, he fell in love with another woman and soon married her, forgetting his past love."
-    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved."
-    m 3wud "To his horror,{w=1.0} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
+    m 1esc "It was until one year to the day after the fatal incident, as the hunter rode through the forest chasing some game, he came across the spot where he slayed his beloved..."
+    m 3wud "He couldn't believe his eyes;{w=1} her corpse, which was buried elsewhere, was standing in the same spot she was slain."
     m "She approached the hunter, scorning him for being unfaithful and vowing revenge for slaying her."
     m "The hunter rode away in a panic."
     m 1euc "After a short way, he looked behind him to see if she was following him any longer..."
@@ -647,54 +686,6 @@ label .end:
     m 3esc "However..."
     m "If you're not smart with how you deal with the question..."
     m 3tku "You might just end up like her."
-    call mas_scary_story_cleanup
-    return
-
-init 5 python:
-    addEvent(Event(persistent._mas_story_database,eventlabel="mas_scary_story_o_tei",
-    category=[store.mas_stories.TYPE_SCARY], prompt="The tale of O-Tei",unlocked=False),
-    code="STY")
-
-label mas_scary_story_o_tei:
-    call mas_scary_story_setup
-    m 1eua "A long time ago, there lived a man named Kenji, who was studying to be a physician."
-    m 3eub "He was engaged to a young woman named Tomoe and they were to be married after he finished his studies."
-    m 1esd "Unfortunately, Tomoe contracted a serious illness before that could happen."
-    m 2dsd "It wasn't long until she was bedridden, nearing the end of her life."
-    m 2esd "Kenji knelt by her bedside, and she said to him, 'We have been promised to each other since childhood...'"
-    m 4ekd "'Unfortunately with this frail body of mine, my time has come and I am going to die before I could become your wife.'"
-    m 3ekd "'Please do not grieve when I go. I believe we shall meet again.'"
-    m 3eud "He asked, 'How would I know of your return?'"
-    m 2dsc "Unfortunately, she had succumbed before she could give him an answer."
-    m "Kenji grieved deeply for the loss of his love, taken too soon from him."
-    m 2esc "He never forgot about Tomoe as time moved on, but he was required to marry someone else and preserve the family name."
-    m "He soon married another girl, but his heart stayed somewhere else."
-    m 2esd "And as everything does in life, his family too had been taken by time and he was left all alone again."
-    m 4eud "It was then that he decided to abandon his home and take a long journey to forget his troubles."
-    m 1euc "He travelled all around the country, searching for a cure to his malaise."
-    m "And then on one evening, he came across an inn and stopped there to rest."
-    m "As he settled down in his room, a nakai opened the door to greet him."
-    m 3eud "His heart leapt..."
-    m 3wud "The girl that greeted him looked exactly like Tomoe."
-    m "Everything he saw in her reminded him perfectly of his past love."
-    # 1 in 9
-    if (persistent._mas_pm_likes_spoops and renpy.random.randint(1,9) == 1) or mas_full_scares:
-        show yuri eyes zorder 73 at otei_appear(a=0.075,time=4.0)
-        show yuri eyes_base zorder 72 at otei_appear(a=0.085,time=3.0)
-        show yuripupils zorder 74 at otei_appear(a=0.095,time=5.0)
-    m 1eud "Kenji then remembered the last words they exchanged before her departure."
-    m "He flagged down the girl and told her, 'I'm sorry to be a bother, but you remind me so much of someone I knew long ago that it startled me at first.'"
-    m "'If you don't mind me asking, what is your name?'"
-    m 3wud "Immediately, in the unforgotten voice of his deceased beloved, the girl answered, 'My name is Tomoe, and you are Kenji, my promised husband.'"
-    m 1wud "'I had died tragically before we could complete our marriage...'"
-    m "'And now I have returned, Kenji, my husband-to-be.'"
-    hide yuri
-    hide yuripupils
-    m 1dsc "The girl then collapsed to the floor, unconscious."
-    m 1esa "Kenji held her to his arms, tears flowing from his face."
-    m 1dsa "'...Welcome back, Tomoe...'"
-    m 3esa "As she came to, she had no memory of what happened in the inn."
-    m 1hua "Not long after, Kenji married her as soon as they could, and lived on happily for the rest of their lives."
     call mas_scary_story_cleanup
     return
 
