@@ -1150,8 +1150,8 @@ init 189 python in mas_sprites_json:
             mpm_msg_log,
             indent_lvl + 1
         )
+        msg_log.extend(mpm_msg_log)
         if pose_map is None:
-            msg_log.extend(mpm_msg_log)
             return False
 
         # and succ
@@ -1191,8 +1191,8 @@ init 189 python in mas_sprites_json:
                 mpm_msg_log,
                 indent_lvl + 1
             )
+            msg_log.extend(mpm_msg_log)
             if arm_split is None:
-                msg_log.extend(mpm_msg_log)
                 return False
 
             # succ
@@ -1265,8 +1265,8 @@ init 189 python in mas_sprites_json:
                 store.MASPoseMap.MPM_TYPE_FB
             )
         )
+        msg_log.extend(mpm_msg_log)
         if pose_map is None:
-            msg_log.extend(mpm_msg_log)
             return False
 
         # and successful
@@ -1461,15 +1461,15 @@ init 189 python in mas_sprites_json:
 
             # set type to pose arms
             mpm_obj = obj_based.pop("pose_arms")
-            mpm_obj["mpm_type"] = MASPoseMap.MPM_TYPE_PA
+            mpm_obj["mpm_type"] = store.MASPoseMap.MPM_TYPE_PA
             mpm_msg_log = []
             pose_arms = store.MASPoseMap.fromJSON(
                 mpm_obj,
                 mpm_msg_log,
                 indent_lvl + 1
             )
+            msg_log.extend(mpm_msg_log)
             if pose_arms is None:
-                msg_log.extend(mpm_msg_log)
                 return False
 
             # succ
