@@ -773,7 +773,7 @@ style quick_dark_button:
     activate_sound gui.activate_sound
 
 #style quick_dark_button_text is button_text_dark
-
+style quick_dark_button_selected_text
 style quick_dark_button_text:
     properties gui.button_text_properties("quick_dark_button")
     outlines []
@@ -909,5 +909,6 @@ define gui.quick_dark_button_text_size = 14
 define gui.quick_dark_button_text_xalign = 0.5
 define gui.quick_dark_button_text_yalign = 0.995
 define gui.quick_dark_button_text_idle_color = "#F2A4F1"
+define gui.quick_dark_button_text_selected_color = "#DFDFDF"
 define gui.quick_dark_button_text_hover_color = "#FFDEFE"
 define gui.quick_dark_button_text_kerning = 0.2
