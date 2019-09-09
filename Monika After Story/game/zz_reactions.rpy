@@ -804,6 +804,7 @@ label mas_reaction_gift_generic_sprite_json:
         call mas_reaction_gift_generic_clothes_json
 
     else:
+        $ mas_giftCapGainAff(1)
         m "Aww, [player]!"
         if sprite_str is None:
             if giftname is not None:
@@ -827,6 +828,7 @@ label mas_reaction_gift_generic_sprite_json:
 # generic reaction for json clothes
 label mas_reaction_gift_generic_clothes_json:
     python:
+        mas_giftCapGainAff(3)
         # expandable
         outfit_quips = [
             "I think it's really cute, [player]!",
@@ -848,7 +850,7 @@ label mas_reaction_gift_generic_clothes_json:
     #   should influence monika outfit selection
 
     show monika 3hub
-    $ renpy.say(m,outfit_quip)
+    $ renpy.say(m, outfit_quip)
 
     m 1eua "Thanks again~"
     return
@@ -883,6 +885,9 @@ label mas_reaction_gift_hairclip(hairclip_name):
         m 1rksdlb "You already gave me this hairclip, silly!"
 
     else:
+        #Grant affection
+        $ mas_giftCapGainAff(1)
+
         if len(store.mas_selspr.filter_acs(True, "left-hair-clip")) > 0:
             m 1hub "Oh!{w=1} Another hairclip!"
             m 3hua "Thanks, [player]."
@@ -1922,6 +1927,8 @@ label mas_reaction_gift_clothes_orcaramelo_bikini_shell:
         )
         sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
+        mas_giftCapGainAff(3)
+
     m 1sua "Oh! {w=0.5}A seashell bikini!"
     m 1hub "Thank you, [player]!{w=0.5} I'm going to try it on right now!"
 
@@ -1965,6 +1972,8 @@ label mas_reaction_gift_acs_orcaramelo_hairflower_pink:
         )
         sprite_type, sprite_name, giftname, gifted_before = sprite_data
 
+        mas_giftCapGainAff(1)
+
     m 3sua "Oh!{w=0.5} What a cute little flower!"
     m 1ekbsa "Thanks [player], you're so sweet~"
     m 1dua "Hold on.{w=0.5}.{w=0.5}.{nw}"
@@ -1983,6 +1992,8 @@ label mas_reaction_gift_clothes_velius94_shirt_pink:
             (store.mas_sprites.SP_CLOTHES, "velius94_shirt_pink")
         )
         sprite_type, sprite_name, giftname, gifted_before = sprite_data
+
+        mas_giftCapGainAff(3)
 
     m 1suo "Oh my gosh!"
     m 1suo "It's {i}so{/i} pretty!"
