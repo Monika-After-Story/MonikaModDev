@@ -1690,6 +1690,11 @@ label ch30_day:
         #And also strip dates
         mas_stripEVDates()
 
+        #Reset the gift aff gain/reset date
+        #NOTE: if we got here, it has to be a new day
+        persistent._mas_filereacts_gift_aff_gained = 0
+        persistent._mas_filereacts_last_aff_gained_reset_date = datetime.date.today()
+
         #Run delayed actions
         mas_runDelayedActions(MAS_FC_IDLE_DAY)
     return
@@ -1981,7 +1986,16 @@ label ch30_reset:
     #And also strip dates
     $ mas_stripEVDates()
 
+    #Let's see if someone did a time travel
+    if persistent._mas_filereacts_last_aff_gained_reset_date > today:
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
+    #See if we need to reset the daily gift aff amt
+    if persistent._mas_filereacts_last_aff_gained_reset_date < today:
+        $ persistent._mas_filereacts_gift_aff_gained = 0
+        $ persistent._mas_filereacts_last_aff_gained_reset_date = today
+
     #Run a confirmed party check within a week of Moni's bday
-    if mas_monika_birthday - datetime.timedelta(days=7) <= datetime.date.today() < mas_monika_birthday:
+    if mas_monika_birthday - datetime.timedelta(days=7) <= today < mas_monika_birthday:
         $ mas_confirmedParty()
     return
