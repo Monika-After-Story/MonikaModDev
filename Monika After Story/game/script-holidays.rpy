@@ -1323,10 +1323,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_d25_monika_holiday_intro",
-            conditional=(
-                "not mas_lastSeenInYear('mas_d25_monika_holiday_intro') "
-                "and not persistent._mas_d25_started_upset"
-            ),
+            conditional="not persistent._mas_d25_started_upset",
             action=EV_ACT_PUSH,
             start_date=mas_d25c_start,
             end_date=mas_d25,
@@ -1543,10 +1540,7 @@ init 5 python:
             eventlabel="mas_d25_monika_christmas",
 #            category=["holidays"],
 #            prompt="Christmas",
-            conditional=(
-                "persistent._mas_d25_in_d25_mode "
-                "and not mas_lastSeenInYear('mas_d25_monika_christmas')"
-            ),
+            conditional="persistent._mas_d25_in_d25_mode",
             action=store.EV_ACT_PUSH,
             start_date=mas_d25,
             end_date=mas_d25p,
@@ -4040,9 +4034,6 @@ init 5 python:
             persistent.event_database,
             eventlabel='mas_pf14_monika_lovey_dovey',
             action=EV_ACT_RANDOM,
-            conditional=(
-                "not mas_lastSeenInYear('mas_pf14_monika_lovey_dovey')"
-            ),
             start_date=mas_f14-datetime.timedelta(days=3),
             end_date=mas_f14,
             aff_range=(mas_aff.NORMAL,None),
@@ -4082,7 +4073,6 @@ init 5 python:
        Event(
             persistent.event_database,
             eventlabel='mas_f14_monika_valentines_intro',
-            conditional="not mas_lastSeenInYear('mas_f14_monika_valentines_intro')",
             action=EV_ACT_PUSH,
             start_date=mas_f14,
             end_date=mas_f14+datetime.timedelta(days=1),
@@ -4869,7 +4859,6 @@ init 5 python:
             eventlabel="mas_bday_surprise_party_hint",
             start_date=mas_monika_birthday - datetime.timedelta(days=7),
             end_date=mas_monika_birthday - datetime.timedelta(days=1),
-            conditional="not mas_lastSeenInYear('mas_bday_surprise_party_hint')",
             years=[],
             action=EV_ACT_RANDOM,
             rules={"undo action": None, "force repeat": None},
@@ -5145,10 +5134,7 @@ init 5 python:
         Event(
             persistent.event_database,
             eventlabel="mas_bday_spent_time_with",
-            conditional=(
-                "persistent._mas_bday_gone_over_bday "
-                "and not mas_lastSeenInYear('mas_bday_spent_time_with')"
-            ),
+            conditional="mas_recognizedBday()",
             action=EV_ACT_QUEUE,
             start_date=datetime.datetime.combine(mas_monika_birthday, datetime.time(20)),
             end_date=datetime.datetime.combine(mas_monika_birthday+datetime.timedelta(1), datetime.time(hour=1)),
@@ -5259,8 +5245,7 @@ init 5 python:
             eventlabel="mas_bday_postbday_notimespent",
             conditional=(
                 "(not persistent._mas_long_absence or not persistent._mas_bday_gone_over_bday) "
-                "and not mas_recognizedBday() "
-                "and not mas_lastSeenInYear('mas_bday_postbday_notimespent')"
+                "and not mas_recognizedBday()"
             ),
             action=EV_ACT_QUEUE,
             start_date=mas_monika_birthday+datetime.timedelta(1),
@@ -5271,10 +5256,6 @@ init 5 python:
     )
 
 label mas_bday_postbday_notimespent:
-    # sanity check
-    if mas_recognizedBday():
-        return
-
     if persistent._mas_bday_opened_game:
         if mas_isMoniAff(higher=True):
             $ mas_loseAffection(15, ev_label="mas_apology_forgot_bday")
