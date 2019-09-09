@@ -2232,7 +2232,7 @@ label mas_dockstat_empty_desk:
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
-    if persistent._mas_bday_sbp_reacted:
+    if persistent._mas_bday_in_bday_mode:
         $ store.mas_surpriseBdayShowVisuals()
 
     #NOTE: elif'd so we don't try and show two types of visuals here
@@ -2262,7 +2262,8 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    $ store.mas_surpriseBdayShowVisuals()
+    if persistent._mas_bday_in_bday_mode:
+        $ store.mas_surpriseBdayShowVisuals()
 
     # check for monika
     if promise.done():
