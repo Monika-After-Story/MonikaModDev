@@ -832,7 +832,7 @@ label spaceroom(start_bg=None, hide_mask=None, hide_monika=False, dissolve_all=F
         show vignette zorder 70
 
     # monibday stuff (this checks itself)
-    if persistent._mas_bday_in_bday_mode:
+    if persistent._mas_bday_visuals:
         $ store.mas_surpriseBdayShowVisuals()
 
     # d25 seasonal
@@ -1686,9 +1686,9 @@ label ch30_hour:
 label ch30_day:
     python:
         #Undo ev actions if needed
-        mas_undoEVActions()
+        #mas_undoEVActions()
         #And also strip dates
-        mas_stripEVDates()
+        #mas_stripEVDates()
 
         #Reset the gift aff gain/reset date
         #NOTE: if we got here, it has to be a new day
@@ -1982,9 +1982,9 @@ label ch30_reset:
                 persistent.event_list.pop(index)
 
     #Now we undo actions for evs which need them undone
-    $ mas_undoEVActions()
+    #$ mas_undoEVActions()
     #And also strip dates
-    $ mas_stripEVDates()
+    #$ mas_stripEVDates()
 
     #Let's see if someone did a time travel
     if persistent._mas_filereacts_last_aff_gained_reset_date > today:

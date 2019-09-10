@@ -39,35 +39,35 @@ python early:
         EV_ACT_POOL
     ]
 
-    def mas_undoEVActions():
-        """
-        Iterates thru events, those with the rule "undo action" will have their actions reversed
-        if their actions are unlock or random.
-        """
-        for ev in store.mas_all_ev_db.itervalues():
-            #NOTE: this needs to explicitly be False.
-            if "undo action" in ev.rules and ev.isWithinRange() == False:
-                act = ev.action
+#    def mas_undoEVActions():
+#        """
+#        Iterates thru events, those with the rule "undo action" will have their actions reversed
+#        if their actions are unlock or random.
+#        """
+#        for ev in store.mas_all_ev_db.itervalues():
+#            #NOTE: this needs to explicitly be False.
+#            if "undo action" in ev.rules and ev.isWithinRange() == False:
+#                act = ev.action
+#
+#                #Now we undo these actions
+#                if act == EV_ACT_UNLOCK:
+#                    ev.unlocked=False
+#                elif act == EV_ACT_RANDOM:
+#                    ev.random=False
+#                    #And just pull this out of the event list if it's in there at all
+#                    mas_rmallEVL(ev.eventlabel)
+#
+#                #NOTE: we don't add the rest since there's no reason to undo those.
 
-                #Now we undo these actions
-                if act == EV_ACT_UNLOCK:
-                    ev.unlocked=False
-                elif act == EV_ACT_RANDOM:
-                    ev.random=False
-                    #And just pull this out of the event list if it's in there at all
-                    mas_rmallEVL(ev.eventlabel)
-
-                #NOTE: we don't add the rest since there's no reason to undo those.
-
-    def mas_stripEVDates():
-        """
-        Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
-        """
-        for ev in store.mas_all_ev_db.itervalues():
-            #NOTE: explicit false
-            if "strip dates" in ev.rules and ev.isWithinRange() == False:
-                ev.start_date=None
-                ev.end_date=None
+#    def mas_stripEVDates():
+#        """
+#        Iterates thru events, those with rule "strip dates" will have their start/end dates stripped
+#        """
+#        for ev in store.mas_all_ev_db.itervalues():
+#            #NOTE: explicit false
+#            if "strip dates" in ev.rules and ev.isWithinRange() == False:
+#                ev.start_date=None
+#                ev.end_date=None
 
     # custom event exceptions
     class EventException(Exception):

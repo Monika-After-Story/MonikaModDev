@@ -1061,11 +1061,6 @@ default persistent._mas_bday_sbp_reacted = False
 # NOTE: we need to consider how we want to do this in future bdays. probably
 # may do historical when we can
 
-# this will act historial until we have better data poitns
-default persistent._mas_bday_sbp_found_cake = False
-default persistent._mas_bday_sbp_found_banners = False
-default persistent._mas_bday_sbp_found_balloons = False
-
 
 init -500 python in mas_dockstat:
     # blocksize is relatively constant
@@ -2164,6 +2159,14 @@ label mas_dockstat_ready_to_go(moni_chksum):
             call mas_dockstat_first_time_goers
 
         else:
+            #If bday + aff+, we use this fare
+            if (
+                mas_isMoniAff(higher=True) and mas_isMonikaBirthday()
+                and not mas_selspr.get_sel_clothes(mas_clothes_blackdress).unlocked
+            ):
+                jump mas_bday_bd_outro
+
+            #Otherwise we use the standard flow
             m 1eua "Alright."
 
         # setup check and log this file checkout
@@ -2232,14 +2235,13 @@ label mas_dockstat_empty_desk:
     if checkout_time is not None and checkout_time.date() == persistent._date_last_given_roses:
         $ renpy.show("mas_roses", zorder=10)
 
-    if persistent._mas_bday_in_bday_mode:
+    if peristent._mas_bday_visuals:
         $ store.mas_surpriseBdayShowVisuals()
 
     #NOTE: elif'd so we don't try and show two types of visuals here
     elif persistent._mas_player_bday_decor:
         $ store.mas_surpriseBdayShowVisuals()
 
-    # NOTE: No.
 
 label mas_dockstat_empty_desk_preloop:
 
@@ -2262,7 +2264,7 @@ label mas_dockstat_empty_desk_from_empty:
     $ renpy.pause(1.0, hard=True)
 
     # check for surprise visuals
-    if persistent._mas_bday_in_bday_mode:
+    if persistent._mas_bday_visuals:
         $ store.mas_surpriseBdayShowVisuals()
 
     # check for monika

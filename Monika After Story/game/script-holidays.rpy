@@ -4712,6 +4712,9 @@ default persistent._mas_bday_gone_over_bday = False
 default persistent._mas_bday_sbp_reacted = False
 default persistent._mas_bday_confirmed_party = False
 
+#Bday visuals
+default persistent._mas_bday_visuals = False
+
 #Need to store the name of the file chibi writes
 default persistent._mas_bday_hint_filename = None
 
@@ -4777,7 +4780,6 @@ init -1 python:
 
         return (
             mas_generateGiftsReport(_date)[0] > 0
-            or persistent._mas_bday_date_count > 0
             or persistent._mas_bday_sbp_reacted
             or persistent._mas_bday_said_happybday
         )
@@ -4820,13 +4822,24 @@ init -1 python:
                 #If we got here: Step 4, file exists so flag and delete. Also get rid of note
                 persistent._mas_bday_confirmed_party = True
                 store.mas_docking_station.destroyPackage(file)
-                store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
+
+                if persistent._mas_bday_hint_filename:
+                    store.mas_docking_station.destroyPackage(persistent._mas_bday_hint_filename)
 
                 #Step 5a, return true since party is confirmed
                 return True
 
         #Otherwise, Step 5b, no previous confirm and file doesn't exist, so party is not confirmed. return false
         return False
+
+    def mas_bdayTopicCleanup():
+        """
+        Hides the topics we don't need/want to see
+        """
+        #TODO: ME
+        #SINCE RULES NO LONGER WORK AS A RESULT OF THE FIX TO EV DATES, WE NEED TO CLEAN UP MANUALLY
+        #UNTIL I CAN MAKE PROPER RULES FOR THIS
+        return
 
     def mas_mbdayCapGainAff(amount):
         mas_capGainAff(amount, "_mas_bday_date_affection_gained", 50, 75)
@@ -4836,6 +4849,8 @@ label mas_bday_autoload_check:
     #First, if it's no longer 922 and we're here, that means we're in 922 mode and need to fix that
     if not mas_isMonikaBirthday():
         $ persistent._mas_bday_in_bday_mode = False
+        #Also make sure we're no longer showing visuals
+        $ persistent._mas_bday_visuals = False
 
     #Otherwise, if we've seen the surprise party reaction and it is Moni's bday, then we do visuals
     elif persistent._mas_bday_sbp_reacted:
@@ -4950,26 +4965,29 @@ P.S: Don't tell her about me.
 # also makes sure they don't show up under unseen
 
 init 5 python:
-    #Conditional check so we don't show this on subsequent launches
-    if not persistent._mas_bday_said_happybday:
-        addEvent(
-            Event(
-                persistent.event_database,
-                eventlabel="mas_bday_pool_happy_bday",
-                prompt="Happy birthday!",
-                #category=["monika"],
-                action=EV_ACT_UNLOCK,
-                #pool=True,
-                rules={"no unlock":0, "undo action": None},
-                start_date=mas_monika_birthday,
-                end_date=mas_monika_birthday + datetime.timedelta(1),
-                years=[]
-            ),
-            code="CMP",
-            skipCalendar=True
-        )
+    addEvent(
+        Event(
+            persistent.event_database,
+            eventlabel="mas_bday_pool_happy_bday",
+            prompt="Happy birthday!",
+            action=EV_ACT_UNLOCK,
+            rules={"no unlock":0, "undo action": None},
+            start_date=mas_monika_birthday,
+            end_date=mas_monika_birthday + datetime.timedelta(1),
+            years=[]
+        ),
+        code="CMP",
+        skipCalendar=True
+    )
 
 label mas_bday_pool_happy_bday:
+    #Flag this for hist
+    $ persistent._mas_bday_no_recognize = False
+    $ persistent._mas_bday_said_happybday = True
+
+    #Lock this
+    $ mas_lockEVL("mas_bday_pool_happy_bday", "CMP")
+
     if mas_recognizedBday():
         m 3hub "Ehehe, thanks [player]!"
         m 3eka "I was waiting for you to say those magic words~"
@@ -4989,10 +5007,6 @@ label mas_bday_pool_happy_bday:
         m 1eua "Oh, and..."
         m 3hub "Happy Birthday to you too, [player]!"
         m 1hua "Ehehe!"
-
-    #Flag this for hist
-    $ persistent._mas_bday_said_happybday = True
-    $ mas_lockEVL("mas_bday_pool_happy_bday", "EVE")
     return
 
 # happy belated bday topic for people that took her out before her bday and returned her after
@@ -5015,6 +5029,8 @@ init 5 python:
 label mas_bday_pool_happy_belated_bday:
     #We've essentially said happy birthday, let's flag this
     $ persistent._mas_bday_said_happybday = True
+    $ persistent._mas_bday_no_recognize = False
+
     #Lock this
     $ mas_lockEVL("mas_bday_pool_happy_belated_bday", "CMP")
 
@@ -5123,8 +5139,9 @@ label mas_bday_surprise_party_reaction_end:
         m 6ektpa "Thank you, [player]. It really means a lot that you did this for me."
     $ persistent._mas_bday_sbp_reacted = True
 
-    #We set this flag as true here
+    #We set these flags as true here
     $ persistent._mas_bday_in_bday_mode = True
+    $ persistent._mas_bday_no_recognize = False
     return
 
 
@@ -5455,6 +5472,9 @@ label bye_922_delegate:
         m 3hua "I actually have an outfit prepared just for this..."
         #NOTE: We use the "give me a second to get ready..." for Moni to get into this outfit
 
+    #Let's flag if we need to show visuals
+    if mas_confirmedParty():
+        $ persistent._mas_bday_visuals = True
     jump bye_going_somewhere_iostart
 
 label mas_bday_bd_outro:
@@ -5474,15 +5494,17 @@ label mas_bday_bd_outro:
 #TODO:
 #   Dlg review
 
-label fix_label_please_greeting_returned_home_bday:
+label greeting_returned_home_bday:
     #First, reset this flag, we're no longer on a date
     $ persistent._mas_bday_on_date = False
+    #Now we make sure monibday visuals shouldn't show up anymore
+    $ persistent._mas_bday_visuals = False
 
     #Set party if need be
     if mas_confirmedParty() and not persistent._mas_bday_sbp_reacted:
         if mas_isplayer_bday() and persistent._mas_player_bday_in_player_bday_mode and persistent._mas_bday_date_count == 1:
             jump mas_monika_cake_on_player_bday
-        
+
         else:
             jump mas_bday_surprise_party_reaction
 
